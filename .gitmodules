@@ -1,0 +1,4 @@
+[submodule "lib/trezor-crypto"]
+	path = lib/trezor-crypto
+	url = https://github.com/jpochyla/trezor-crypto.git
+	branch = emscripten
