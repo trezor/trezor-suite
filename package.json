@@ -7,8 +7,9 @@
     "build": "make build",
     "watch": "make watch"
   },
-  "author": "",
-  "license": "GPLv3",
+  "author": "Jan Pochyla <jpochyla@gmail.com>",
+  "repository": "https://github.com/jpochyla/hd-wallet",
+  "license": "GPL-3.0+",
   "dependencies": {
     "bitcoinjs-lib": "2.1.3",
     "socket.io-client": "1.3.7"
