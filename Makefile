@@ -3,11 +3,14 @@ SRC=lib/index.js
 TARGET=dist/index.js
 TEST=test/*.js
 
-TRANSFORMS=--presets [ es2015 ]
+TRANSFORMS=--presets [ es2015 stage-0 react ]
 
 .PHONY: all build watch test clean
 
 all: build
+
+check: ${SRC} node_modules
+	flow lib/
 
 build: ${SRC} node_modules
 	${BIN}/browserify ${SRC} \
@@ -25,7 +28,7 @@ watch: ${SRC} node_modules
 clean:
 	rm -f ${TARGET} ${TARGET}.map
 
-example: build
+server:
 	@echo starting server, open http://localhost:8000/dist/index.html in browser.
 	python -m SimpleHTTPServer 8000
 
