@@ -1,0 +1,10 @@
+[ignore]
+
+[include]
+../node_modules/bitcoinjs-lib
+../node_modules/socket.io-client
+
+[libs]
+../type
+
+[options]
