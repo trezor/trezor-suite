@@ -1,11 +1,11 @@
 import {HDNode} from 'bitcoinjs-lib';
 
-import {WorkerChannel} from './worker';
-import {WorkerAddressSource, PrefatchingSource, CachingSource} from './address';
-import {AccountDiscovery, ListDiscovery} from './discovery';
-import {TxCollection} from './transaction';
-import {Blockchain} from './bitcore';
-import {deriveTransactionImpacts} from './history';
+import {WorkerChannel} from '../lib/worker';
+import {WorkerAddressSource, PrefatchingSource, CachingSource} from '../lib/address';
+import {AccountDiscovery, ListDiscovery} from '../lib/discovery';
+import {TxCollection} from '../lib/transaction';
+import {Blockchain} from '../lib/bitcore';
+import {deriveTransactionImpacts} from '../lib/history';
 
 import h from 'virtual-dom/h';
 import diff from 'virtual-dom/diff';
