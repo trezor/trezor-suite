@@ -2,10 +2,16 @@ import {HDNode} from 'bitcoinjs-lib';
 
 import {WorkerChannel} from '../lib/worker';
 import {WorkerAddressSource, PrefatchingSource, CachingSource} from '../lib/address';
-import {AccountDiscovery, ListDiscovery} from '../lib/discovery';
-import {TxCollection} from '../lib/transaction';
+import {
+    newAccountDiscovery,
+    isAccountEmpty,
+    discoverAccount,
+    discoverPortfolio,
+    lookupBlockRange
+} from '../lib/discovery';
 import {Blockchain} from '../lib/bitcore';
-import {deriveTransactionImpacts} from '../lib/history';
+import {deriveImpacts} from '../lib/history';
+import {collectUnspents} from '../lib/wallet';
 
 import h from 'virtual-dom/h';
 import diff from 'virtual-dom/diff';
@@ -36,16 +42,25 @@ function createAccountDiscoveryFactory(blockchain, channel, nodeFactory) {
     const addressVersion = 0x0;
 
     return (index) => nodeFactory(index).then((node) => {
-        let collection = new TxCollection();
         let external = createAddressSource(channel, node.derive(0), addressVersion);
         let internal = createAddressSource(channel, node.derive(1), addressVersion);
-        return new AccountDiscovery(
-            [external, internal],
-            collection,
-            blockchain,
-            chunkSize,
-            gapLength
-        );
+
+        // let blocksP = lookupBlockRange(blockchain);
+        let blocksP = Promise.resolve({
+            sinceHeight: 0,
+            untilHeight: 395626,
+            untilBlock: '0000000000000000071f2097ae80c26cef6cead86603ac5edd3a4325122cd62c',
+        });
+
+        return blocksP.then((blocks) => {
+            return discoverAccount(
+                newAccountDiscovery(blocks),
+                [external, internal],
+                chunkSize,
+                blockchain,
+                gapLength
+            );
+        });
     });
 }
 
@@ -67,75 +82,49 @@ function render(state) {
     return h('div', state.map(renderAccount));
 }
 
-class Account {
-    impacts: Array<TxImpact>;
-    wallet: Wallet;
-
-    constructor(impacts: Array<TxImpact>, wallet: Wallet) {
-        this.impacts = impacts;
-        this.wallet = wallet;
-    }
-
-    static fromDiscovery(ad: AccountDiscovery) {
-        let external = ad.discoveries[0].chain;
-        let internal = ad.discoveries[1].chain;
-        let impacts = deriveImpacts(ad.collection, external, internal);
-
-        let unspents = collectUnspents(ad.collection);
-        let wallet = new Wallet(unspents);
-
-        let account = new Account(impacts, wallet);
-        return account;
-    }
-}
-
-let state = [];
-let tree = render(state);
+let appState = [];
+let tree = render(appState);
 let rootNode = createElement(tree);
 
 document.body.appendChild(rootNode);
 
 function refresh() {
-    var newTree = render(state);
+    var newTree = render(appState);
     var patches = diff(tree, newTree);
     rootNode = patch(rootNode, patches);
     tree = newTree;
 }
 
 function discoverList(adf) {
-    // TODO: storage?
-
-    let ld = new ListDiscovery(adf);
-
-    ld.on('account', (ad, ai) => {
-        console.time(ai);
-        console.log('start', ai);
-
-        ad.on('transaction', (record, cd, ci) => {
-            console.log(ai, ci, record);
+    let process = discoverPortfolio(adf, 0, 1);
+    let index = 0;
+    console.time('portfolio');
+    process.values.attach(({chains, firstChunks, lastChunks}) => {
+        let i = index++;
+        firstChunks.then((account) => {
+            console.log(i, 'account firstChunks, isEmpty', isAccountEmpty(account));
         });
+        lastChunks.then((account) => {
+            console.log(i, 'account lastChunks', account);
+            console.log(i, 'next external addresses', account[0].history.nextIndex);
 
-        ad.on('history', (histories) => {
-            console.timeEnd(ai);
-            console.log(ai, 0, 'length', histories[0].nextIndex);
-            console.log(ai, 1, 'length', histories[1].nextIndex);
-            state[ai] = Account.fromDiscovery(ad);
+            let transactions = account[0].transactions.extend(
+                account[1].transactions.asArray()
+            );
+            let impacts = deriveImpacts(transactions, account[0].chain, account[1].chain);
+            let unspents = collectUnspents(transactions);
+            appState[i] = {
+                account,
+                transactions,
+                impacts,
+                unspents,
+            };
             refresh();
         });
-
-        ad.on('error', (error) => {
-            console.timeEnd(ai);
-            console.error(error);
-        });
     });
-
-    console.time('list');
-
-    ld.on('end', () => {
-        console.timeEnd('list');
+    process.finish.attach(() => {
+        console.timeEnd('portfolio');
     });
-
-    ld.start();
 }
 
 window.run = () => {
@@ -151,15 +140,16 @@ window.run = () => {
     ];
 
     const TREZORCRYPTO_URL = '/lib/trezor-crypto/emscripten/trezor-crypto.js';
-    const BITCORE_URL = 'http://dev.sldev.cz:3001';
+    const BITCORE_URL = 'https://bitcore.mytrezor.com';
 
     let blockchain = new Blockchain(BITCORE_URL);
     let worker = new Worker(TREZORCRYPTO_URL);
     let channel = new WorkerChannel(worker);
 
-    blockchain.setMaxListeners(Infinity);
-
     let nf = createNodeFactory(XPUBS);
     let adf = createAccountDiscoveryFactory(blockchain, channel, nf);
     discoverList(adf);
+};
+
+window.stop = () => {
 };
