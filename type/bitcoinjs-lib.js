@@ -12,25 +12,29 @@ type Network = {
 type Input = {
     script: Buffer;
     hash: Buffer;
-    id: string;
     index: number;
     sequence: number;
+
+    // additional: hash converted to tx id
+    id: string;
 };
 
 type Output = {
-    address: ?string;
     script: Buffer;
     value: number;
+
+    // additional: cached address from the script
+    address: ?string;
 };
 
 declare module 'bitcoinjs-lib' {
 
     declare var address: {
-        fromOutputScript(script: Buffer): string;
+        fromOutputScript(script: Buffer, network?: Network): string;
     };
 
     declare var script: {
-        fromAddress(address: string): Buffer;
+        fromAddress(address: string, network?: Network): Buffer;
     };
 
     declare class HDNode {
