@@ -9,7 +9,7 @@ import {
     discoverPortfolio,
     lookupBlockRange
 } from '../lib/discovery';
-import {Blockchain} from '../lib/bitcore';
+import {BitcoreBlockchain} from '../lib/bitcore';
 import {deriveImpacts} from '../lib/history';
 import {collectUnspents} from '../lib/wallet';
 
@@ -142,7 +142,7 @@ window.run = () => {
     const TREZORCRYPTO_URL = '/lib/trezor-crypto/emscripten/trezor-crypto.js';
     const BITCORE_URL = 'https://bitcore.mytrezor.com';
 
-    let blockchain = new Blockchain(BITCORE_URL);
+    let blockchain = new BitcoreBlockchain(BITCORE_URL);
     let worker = new Worker(TREZORCRYPTO_URL);
     let channel = new WorkerChannel(worker);
 
