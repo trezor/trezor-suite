@@ -11,9 +11,18 @@
   "repository": "https://github.com/jpochyla/hd-wallet",
   "license": "GPL-3.0+",
   "browserify": {
-    "transform": [["babelify", {
-      "presets": ["es2015", "stage-0", "react"]
-    }]]
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015",
+            "stage-0",
+            "react"
+          ]
+        }
+      ]
+    ]
   },
   "dependencies": {
     "bitcoinjs-lib": "2.1.3",
@@ -28,6 +37,7 @@
     "browserify": "12.0.1",
     "exorcist": "0.4.0",
     "uglifyify": "3.0.1",
+    "virtual-dom": "2.1.1",
     "watchify": "3.6.0"
   }
 }
