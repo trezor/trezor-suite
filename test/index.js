@@ -95,9 +95,11 @@ function refresh() {
     tree = newTree;
 }
 
+let process;
+
 function discoverList(adf) {
-    let process = discoverPortfolio(adf, 0, 1);
     let index = 0;
+    process = discoverPortfolio(adf, 0, 1);
     console.time('portfolio');
     process.values.attach(({chains, firstChunks, lastChunks}) => {
         let i = index++;
@@ -152,4 +154,6 @@ window.run = () => {
 };
 
 window.stop = () => {
+    process.dispose();
+    console.timeEnd('portfolio');
 };
