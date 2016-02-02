@@ -110,11 +110,12 @@ function discoverList(adf) {
             console.log(i, 'account lastChunks', account);
             console.log(i, 'next external addresses', account[0].history.nextIndex);
 
-            let transactions = account[0].transactions.extend(
-                account[1].transactions.asArray()
-            );
+            let t0 = account[0].transactions;
+            let t1 = account[1].transactions;
+
+            let transactions = t0.extend(t1.asArray());
             let impacts = deriveImpacts(transactions, account[0].chain, account[1].chain);
-            let unspents = collectUnspents(transactions);
+            let unspents = collectUnspents(transactions, account[0].chain, account[1].chain);
             appState[i] = {
                 account,
                 transactions,
