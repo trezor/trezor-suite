@@ -8,6 +8,7 @@ all: build
 
 check: node_modules
 	flow lib/
+	eslint lib/*.js
 
 build: node_modules
 	${BIN}/browserify ${TEST} -g [ uglifyify ] -d \
