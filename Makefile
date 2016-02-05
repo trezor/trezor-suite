@@ -21,8 +21,8 @@ clean:
 	rm -f ${TARGET} ${TARGET}.map
 
 server:
-	@echo ready at http://localhost:8000/dist/index.html
-	python -m SimpleHTTPServer 8000
+	@echo ready at http://localhost:8080/dist/index.html
+	python -m SimpleHTTPServer 8080
 
 node_modules:
 	npm install

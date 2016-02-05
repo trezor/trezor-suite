@@ -11,7 +11,8 @@ discovery.
 
 ## Usage
 
-Set `BITCORE_URL` and `XPUB` constants in `lib/index.js` and run `make example`.
+Set `BITCORE_URL` and `XPUB` constants in `lib/index.js` and run
+`make build server`.
 
 **Note**: Currently uses custom modifications of `bitcore-node`, hopefully the
 changes will land in upstream soon.
