@@ -1,28 +1,38 @@
 BIN=`npm bin`
-TEST=test/index.js
-TARGET=dist/index.js
 
-.PHONY: all check build watch clean server
+LIB=lib/index.js
+LIB_TARGET=dist/index.js
 
-all: build
+EXAMPLE=example/index.js
+EXAMPLE_TARGET=dist/example.js
+
+.PHONY: all check lib example watch server clean
+
+all: lib
 
 check: node_modules
 	flow lib/
 	eslint lib/*.js
 
-build: node_modules
-	${BIN}/browserify ${TEST} -g [ uglifyify ] -d \
-		| ${BIN}/exorcist ${TARGET}.map > ${TARGET}
+lib: node_modules
+	${BIN}/browserify ${LIB} -g [ uglifyify ] -d \
+		| ${BIN}/exorcist ${LIB_TARGET}.map > ${LIB_TARGET}
+
+example: node_modules
+	${BIN}/browserify ${EXAMPLE} -g [ uglifyify ] -d \
+		| ${BIN}/exorcist ${EXAMPLE_TARGET}.map > ${EXAMPLE_TARGET}
 
 watch: node_modules
-	${BIN}/watchify ${TEST} -o ${TARGET} -v
-
-clean:
-	rm -f ${TARGET} ${TARGET}.map
+	${BIN}/watchify ${EXAMPLE} -o ${EXAMPLE_TARGET} -v
 
 server:
-	@echo ready at http://localhost:8080/dist/index.html
+	@echo ready at http://localhost:8080/dist/example.html
 	python -m SimpleHTTPServer 8080
+
+clean:
+	rm -f \
+		${LIB_TARGET} ${LIB_TARGET}.map \
+		${EXAMPLE_TARGET} ${EXAMPLE_TARGET}.map
 
 node_modules:
 	npm install

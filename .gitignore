@@ -1,4 +1,6 @@
 node_modules
 dist/index.js
 dist/index.js.map
+dist/example.js
+dist/example.js.map
 .idea

@@ -12,7 +12,7 @@ discovery.
 ## Usage
 
 Set `BITCORE_URL` and `XPUB` constants in `test/index.js` and run
-`make build server`.
+`make example server`.
 
 **Note**: Currently uses custom modifications of `bitcore-node`, hopefully the
 changes will land in upstream soon.
