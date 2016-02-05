@@ -41,6 +41,7 @@
     "babelify": "7.2.0",
     "browserify": "12.0.1",
     "exorcist": "0.4.0",
+    "tape": "4.4.0",
     "uglifyify": "3.0.1",
     "virtual-dom": "2.1.1",
     "watchify": "3.6.0"

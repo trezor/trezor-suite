@@ -3,10 +3,12 @@ BIN=`npm bin`
 LIB=lib/index.js
 LIB_TARGET=dist/index.js
 
+TEST=test/*.js
+
 EXAMPLE=example/index.js
 EXAMPLE_TARGET=dist/example.js
 
-.PHONY: all check lib example watch server clean
+.PHONY: all check lib test example watch server clean
 
 all: lib
 
@@ -17,6 +19,9 @@ check: node_modules
 lib: node_modules
 	${BIN}/browserify ${LIB} -g [ uglifyify ] -d \
 		| ${BIN}/exorcist ${LIB_TARGET}.map > ${LIB_TARGET}
+
+test: node_modules
+	${BIN}/browserify ${TEST} | node
 
 example: node_modules
 	${BIN}/browserify ${EXAMPLE} -g [ uglifyify ] -d \
