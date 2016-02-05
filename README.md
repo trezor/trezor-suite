@@ -9,10 +9,10 @@ Supports persisting discovered state and doing partial update later on.
 Should out-perform all wallets available today that do client-side chain
 discovery.
 
-## Usage
+## Example usage
 
-Set `BITCORE_URL` and `XPUB` constants in `test/index.js` and run
-`make example server`.
+Don't forget to `git submodule update --recursive --init`, set `BITCORE_URL` and
+`XPUB` constants in `test/index.js` and run `make example server`.
 
 **Note**: Currently uses custom modifications of `bitcore-node`, hopefully the
 changes will land in upstream soon.
