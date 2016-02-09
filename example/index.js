@@ -114,7 +114,7 @@ function discoverList(adf) {
             let t0 = account[0].transactions;
             let t1 = account[1].transactions;
 
-            let transactions = t0.extend(t1.asArray());
+            let transactions = t0.merge(t1);
             let impacts = deriveImpacts(transactions, account[0].chain, account[1].chain);
             let unspents = collectUnspents(transactions, account[0].chain, account[1].chain);
             appState[i] = {
