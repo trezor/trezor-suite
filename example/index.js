@@ -95,18 +95,19 @@ function refresh() {
     tree = newTree;
 }
 
-let process;
+let portfolio;
 
 function discoverList(adf) {
     let index = 0;
-    process = discoverPortfolio(adf, 0, 1);
+    portfolio = discoverPortfolio(adf, 0, 1);
     console.time('portfolio');
-    process.values.attach(({chains, firstChunks, lastChunks}) => {
+    portfolio.values.attach((process) => {
         let i = index++;
-        firstChunks.then((account) => {
-            console.log(i, 'account firstChunks, isEmpty', isAccountEmpty(account));
+        process.values.attach((account) => {
+            console.log(i, 'account chunk', account);
+            console.log(i, 'next external addresses', account[0].history.nextIndex);
         });
-        lastChunks.then((account) => {
+        process.awaitLast().then((account) => {
             console.log(i, 'account lastChunks', account);
             console.log(i, 'next external addresses', account[0].history.nextIndex);
 
@@ -125,7 +126,7 @@ function discoverList(adf) {
             refresh();
         });
     });
-    process.finish.attach(() => {
+    portfolio.finish.attach(() => {
         console.timeEnd('portfolio');
     });
 }
