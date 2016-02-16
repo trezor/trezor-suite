@@ -2,50 +2,60 @@
  * Type definitions for bitcoinjs-lib
  */
 
-type Network = {
-    pubKeyHash: number;
-    scriptHash: number;
-    dustThreshold: number;
-    feePerKB: number;
-};
-
-type Input = {
-    script: Buffer;
-    hash: Buffer;
-    index: number;
-    sequence: number;
-
-    // additional: hash converted to tx id
-    id: string;
-};
-
-type Output = {
-    script: Buffer;
-    value: number;
-
-    // additional: cached address from the script
-    address: ?string;
-};
-
 declare module 'bitcoinjs-lib' {
 
+    declare type Network = {
+        messagePrefix: string;
+        bip32: {
+            public: number;
+            private: number;
+        };
+        pubKeyHash: number;
+        scriptHash: number;
+        wif: number;
+        dustThreshold: number;
+        feePerKB: number;
+    }
+
+    declare type Input = {
+        script: Buffer;
+        hash: Buffer;
+        index: number;
+        sequence: number;
+
+        // additional: hash converted to tx id
+        id: string;
+    };
+
+    declare type Output = {
+        script: Buffer;
+        value: number;
+
+        // additional: cached address from the script
+        address: ?string;
+    };
+
     declare var address: {
+        fromBase58(address: string): {hash: Buffer, version: number};
         fromOutputScript(script: Buffer, network?: Network): string;
     };
 
     declare var script: {
         fromAddress(address: string, network?: Network): Buffer;
+        pubKeyHashOutput(pkh: Buffer): Buffer;
+        scriptHashOutput(sho: Buffer): Buffer;
     };
     
     declare class ECPair {
         d: ?Buffer;
         Q: ?Buffer;
         constructor(d: ?Buffer, Q: ?Buffer): void;
+        getPublicKeyBuffer(): Buffer;
     }
 
     declare class HDNode {
         depth: number;
-        fingerprint: number;
+        parentFingerprint: number;
         index: number;
         keyPair: ECPair;
         chainCode: Buffer;
@@ -55,13 +65,21 @@ declare module 'bitcoinjs-lib' {
         ): HDNode;
         derive(index: number): HDNode;
         toBase58(): string;
+        getAddress(): string;
         constructor(keyPair: ECPair, chainCode: Buffer): void;
     }
 
     declare class Transaction {
+        version: number;
+        locktime: number;
+
+        constructor(): void;
         static fromHex(hex: string): Transaction;
         ins: Array<Input>;
         outs: Array<Output>;
         toHex(): string;
+        static isCoinbaseHash(buffer: Buffer): boolean;
     }
+
+    declare var networks: {[key: string]: Network}
 }
