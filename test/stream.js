@@ -2,50 +2,56 @@ import test from 'tape';
 
 import { Emitter, Stream } from '../lib/stream';
 
-test('Emitter.attach', (t) => {
+test('Emitter.attach maintains order', (t) => {
 
-    // calls in correct order
-    let e1 = newEmitter();
-    let rec = [0, 0, 0];
-    e1.attach((v) => { t.deepEqual(rec, [0, 0, 0]); rec[0] = v; });
-    e1.attach((v) => { t.deepEqual(rec, [1, 0, 0]); rec[1] = v; });
-    e1.attach((v) => { t.deepEqual(rec, [1, 1, 0]); rec[2] = v; });
-    e1.emit(1);
-    t.deepEqual(rec, [1, 1, 1]);
+    let e = newEmitter();
+    let r = [0, 0, 0];
 
-    // does not affect current .emit
-    let e2 = newEmitter();
-    let fn = called();
-    e2.attach((arg) => e2.attach(fn));
-    e2.emit(2);
-    t.deepEqual(fn.counter, 0);
-    e2.emit(3);
-    t.deepEqual(fn.counter, 1);
-    t.deepEqual(fn.args, [3]);
-
+    e.attach((v) => { t.deepEqual(r, [0, 0, 0]); r[0] = v; });
+    e.attach((v) => { t.deepEqual(r, [1, 0, 0]); r[1] = v; });
+    e.attach((v) => { t.deepEqual(r, [1, 1, 0]); r[2] = v; });
+    e.emit(1);
+    t.deepEqual(r, [1, 1, 1]);
     t.end();
 });
 
-test('Emitter.detach', (t) => {
+test('Emitter.attach does not affect current .emit', (t) => {
 
-    // doesn't call after detach
-    let e1 = newEmitter();
-    let fn1 = called();
-    e1.attach(fn1);
-    e1.emit(1);
-    e1.detach(fn1);
-    e1.emit(2);
-    t.deepEqual(fn1.counter, 1);
-    t.deepEqual(fn1.args, [1]);
+    let e = newEmitter();
+    let f = fnRecord();
 
-    // does affect current .emit
-    let e2 = newEmitter();
-    let fn2 = called();
-    e2.attach(() => e2.detach(fn2));
-    e2.attach(fn2);
-    e2.emit(3);
-    t.deepEqual(fn2.counter, 0);
+    e.attach(() => e.attach(f));
+    e.emit(1);
+    t.deepEqual(f.counter, 0);
+    e.emit(2);
+    t.deepEqual(f.counter, 1);
+    t.deepEqual(f.args, [2]);
+    t.end();
+});
 
+test('Emitter.detach removes handler', (t) => {
+
+    let e = newEmitter();
+    let f = fnRecord();
+
+    e.attach(f);
+    e.emit(1);
+    e.detach(f);
+    e.emit(2);
+    t.deepEqual(f.counter, 1);
+    t.deepEqual(f.args, [1]);
+    t.end();
+});
+
+test('Emitter.detach affects current .emit', (t) => {
+
+    let e = newEmitter();
+    let f = fnRecord();
+
+    e.attach(() => e.detach(f));
+    e.attach(f);
+    e.emit(1);
+    t.deepEqual(f.counter, 0);
     t.end();
 });
 
@@ -94,7 +100,7 @@ function calledWith(t, ...args) {
     };
 }
 
-function called(t) {
+function fnRecord(t) {
     let fn = (...args) => {
         fn.args = args;
         fn.counter++;
