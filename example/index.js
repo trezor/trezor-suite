@@ -45,12 +45,7 @@ function createAccountDiscoveryFactory(blockchain, channel, nodeFactory) {
         let external = createAddressSource(channel, node.derive(0), addressVersion);
         let internal = createAddressSource(channel, node.derive(1), addressVersion);
 
-        // let blocksP = lookupBlockRange(blockchain);
-        let blocksP = Promise.resolve({
-            sinceHeight: 0,
-            untilHeight: 395626,
-            untilBlock: '0000000000000000071f2097ae80c26cef6cead86603ac5edd3a4325122cd62c',
-        });
+        let blocksP = lookupBlockRange(blockchain);
 
         return blocksP.then((blocks) => {
             return discoverAccount(
@@ -147,7 +142,7 @@ window.run = () => {
     const TREZORCRYPTO_URL = '/lib/trezor-crypto/emscripten/trezor-crypto.js';
     const BITCORE_URL = 'https://bitcore.mytrezor.com';
 
-    let blockchain = new BitcoreBlockchain(BITCORE_URL);
+    let blockchain = new BitcoreBlockchain(BITCORE_URL, { upgrade: false });
     let worker = new Worker(TREZORCRYPTO_URL);
     let channel = new WorkerChannel(worker);
 
