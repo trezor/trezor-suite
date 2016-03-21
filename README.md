@@ -14,5 +14,4 @@ discovery.
 Don't forget to `git submodule update --recursive --init`, set `BITCORE_URL` and
 `XPUB` constants in `test/index.js` and run `make example server`.
 
-**Note**: Currently uses custom modifications of `bitcore-node`, hopefully the
-changes will land in upstream soon.
+**Note**: Bitcore backend needs to have `insight-api` plugin enabled.
