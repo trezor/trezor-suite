@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "bitcoinjs-lib": "2.1.3",
-    "socket.io-client": "1.3.7"
+    "socket.io-client": "1.3.7",
+    "whatwg-fetch": "0.11.0"
   },
   "devDependencies": {
     "babel-plugin-add-module-exports": "0.1.2",
