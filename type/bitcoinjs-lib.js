@@ -36,8 +36,10 @@ declare module 'bitcoinjs-lib' {
     };
 
     declare var address: {
-        fromBase58(address: string): {hash: Buffer, version: number};
-        fromOutputScript(script: Buffer, network?: Network): string;
+        fromBase58Check(address: string): {hash: Buffer, version: number};
+        fromOutputScript(scriptPubKey: Buffer, network?: Network): string;
+        toBase58Check(hash: Buffer, version: number): string;
+        toOutputScript(address: string, network?: Network): string;
     };
 
     declare var script: {
@@ -45,7 +47,7 @@ declare module 'bitcoinjs-lib' {
         pubKeyHashOutput(pkh: Buffer): Buffer;
         scriptHashOutput(sho: Buffer): Buffer;
     };
-    
+
     declare class ECPair {
         d: ?Buffer;
         Q: ?Buffer;
