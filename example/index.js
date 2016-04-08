@@ -141,7 +141,10 @@ window.run = () => {
     const TREZORCRYPTO_URL = '/lib/trezor-crypto/emscripten/trezor-crypto.js';
     const BITCORE_URL = 'https://bitcore.mytrezor.com';
 
-    let blockchain = new BitcoreBlockchain(BITCORE_URL, { upgrade: false });
+    let blockchain = new BitcoreBlockchain(BITCORE_URL, {
+        upgrade: false,
+        insightPath: 'insight-api',
+    });
     let worker = new Worker(TREZORCRYPTO_URL);
     let channel = new WorkerChannel(worker);
 
