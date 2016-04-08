@@ -22,17 +22,11 @@ declare module 'bitcoinjs-lib' {
         hash: Buffer;
         index: number;
         sequence: number;
-
-        // additional: hash converted to tx id
-        id: string;
     };
 
     declare type Output = {
         script: Buffer;
         value: number;
-
-        // additional: cached address from the script
-        address: ?string;
     };
 
     declare var address: {
