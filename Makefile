@@ -28,7 +28,7 @@ example: node_modules
 		| ${BIN}/exorcist ${EXAMPLE_TARGET}.map > ${EXAMPLE_TARGET}
 
 watch: node_modules
-	${BIN}/watchify ${EXAMPLE} -o ${EXAMPLE_TARGET} -v
+	${BIN}/watchify ${EXAMPLE} -o ${EXAMPLE_TARGET} -d -v
 
 server:
 	@echo ready at http://localhost:8080/dist/example.html
