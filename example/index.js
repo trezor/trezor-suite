@@ -1,4 +1,4 @@
-import {HDNode} from 'bitcoinjs-lib';
+import {address as baddress, HDNode} from 'bitcoinjs-lib';
 
 import {WorkerChannel} from '../lib/worker';
 import {WorkerAddressSource, PrefatchingSource, CachingSource} from '../lib/address';
@@ -65,7 +65,7 @@ function renderImpact(impact) {
         h('td', impact.height ? impact.height.toString() : 'unconfirmed'),
         h('td', impact.value.toString()),
         h('td', impact.type),
-        h('td', impact.targets.map((t) => h('span', `${t.address} (${t.value}) `)))
+        h('td', impact.targets.map((t) => h('span', `${baddress.fromOutputScript(t.script)} (${t.value}) `)))
     ]);
 }
 
@@ -141,10 +141,12 @@ window.run = () => {
     const TREZORCRYPTO_URL = '/lib/trezor-crypto/emscripten/trezor-crypto.js';
     const BITCORE_URL = 'https://bitcore.mytrezor.com';
 
+    let socketWorker = new Worker('./socket-worker.js');
+
     let blockchain = new BitcoreBlockchain(BITCORE_URL, {
         upgrade: false,
         insightPath: 'insight-api',
-    });
+    }, socketWorker);
     let worker = new Worker(TREZORCRYPTO_URL);
     let channel = new WorkerChannel(worker);
 

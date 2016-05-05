@@ -7,6 +7,8 @@ TEST=test/*.js
 
 EXAMPLE=example/index.js
 EXAMPLE_TARGET=dist/example.js
+SOCKET_WORKER=lib/socket-worker.js
+SOCKET_TARGET=dist/socket-worker.js
 
 .PHONY: all check lib test example watch server clean
 
@@ -26,6 +28,8 @@ test: node_modules
 example: node_modules
 	${BIN}/browserify ${EXAMPLE} -g [ uglifyify ] -d \
 		| ${BIN}/exorcist ${EXAMPLE_TARGET}.map > ${EXAMPLE_TARGET}
+	${BIN}/browserify ${SOCKET_WORKER} -g [ uglifyify ] -d \
+		| ${BIN}/exorcist ${SOCKET_WORKER}.map > ${SOCKET_TARGET}
 
 watch: node_modules
 	${BIN}/watchify ${EXAMPLE} -o ${EXAMPLE_TARGET} -d -v

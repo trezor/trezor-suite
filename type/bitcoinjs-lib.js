@@ -57,7 +57,7 @@ declare module 'bitcoinjs-lib' {
         chainCode: Buffer;
         static fromBase58(
             str: string,
-            networks: Array<Network> | Network
+            networks?: ?(Array<Network> | Network)
         ): HDNode;
         derive(index: number): HDNode;
         toBase58(): string;
