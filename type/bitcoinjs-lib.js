@@ -71,9 +71,11 @@ declare module 'bitcoinjs-lib' {
 
         constructor(): void;
         static fromHex(hex: string): Transaction;
+        static fromBuffer(buffer: Buffer): Transaction;
         ins: Array<Input>;
         outs: Array<Output>;
         toHex(): string;
+        toBuffer(): Buffer;
         static isCoinbaseHash(buffer: Buffer): boolean;
     }
 
