@@ -14,7 +14,7 @@ const REPORT_ID = 63;
 
 function deviceToJson(device: ChromeHidDeviceInfo): TrezorDeviceInfo {
   return {
-    path: device.deviceId,
+    path: device.deviceId.toString(),
     vendor: device.vendorId,
     product: device.productId,
   };
@@ -109,6 +109,11 @@ export class ChromeTransport {
 
   _hasReportId: {[id: string]: boolean} = {};
 
+  catchUdevError(e: Error) {
+    // handle
+    throw e;
+  }
+
   enumerate(): Promise<Array<TrezorDeviceInfo>> {
     return hidEnumerate().then(devices => devices.filter(
       device => !FORBIDDEN_DESCRIPTORS.some(des => des === device.collections[0].usagePage))
@@ -123,7 +128,7 @@ export class ChromeTransport {
     }).then(devices => devices.map(device => deviceToJson(device)));
   }
 
-  send(device: number | string, session: number | string, data: ArrayBuffer): Promise<void> {
+  send(device: string, session: string, data: ArrayBuffer): Promise<void> {
     const sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
       return Promise.reject(new Error(`Session ${session} is not a number`));
@@ -139,10 +144,10 @@ export class ChromeTransport {
       ab = newArray.buffer;
     }
 
-    return hidSend(sessionNu, reportId, ab);
+    return hidSend(sessionNu, reportId, ab).catch(e => this.catchUdevError(e));
   }
 
-  receive(device: number | string, session: number | string): Promise<ArrayBuffer> {
+  receive(device: string, session: string): Promise<ArrayBuffer> {
     const sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
       return Promise.reject(new Error(`Session ${session} is not a number`));
@@ -153,18 +158,18 @@ export class ChromeTransport {
       } else {
         return data.slice(1);
       }
-    });
+    }).catch(e => this.catchUdevError(e));
   }
 
-  connect(device: number | string): Promise<number | string> {
+  connect(device: string): Promise<string> {
     const deviceNu = parseInt(device);
     if (isNaN(deviceNu)) {
       return Promise.reject(new Error(`Device ${deviceNu} is not a number`));
     }
-    return hidConnect(deviceNu);
+    return hidConnect(deviceNu).then(d => d.toString()).catch(e => this.catchUdevError(e));
   }
 
-  disconnect(session: number): Promise<void> {
+  disconnect(session: string): Promise<void> {
     const sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
       return Promise.reject(new Error(`Session ${session} is not a number`));
