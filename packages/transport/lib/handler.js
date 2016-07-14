@@ -1,59 +1,53 @@
-/* @flow */
+
 
 "use strict";
 
-import type {TrezorDeviceInfo, Transport} from './transports';
-import {create as createDefered} from './defered';
-import type {Defered} from './defered';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Handler = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _defered = require('./defered');
+
+var _parse_protocol = require('./protobuf/parse_protocol');
+
+var _verify = require('./verify');
 
 // eslint-disable-next-line quotes
 const stringify = require('json-stable-stringify');
 
-type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
-  session: ?string;
-}
-
-type InternalAcquireInput = {
-  path: string;
-  previous: ?string;
-  checkPrevious: boolean;
-}
-
-type AcquireInput = {
-  path: string;
-  previous: ?string;
-} | string;
-
-function parseAcquireInput(input: AcquireInput): InternalAcquireInput {
+function parseAcquireInput(input) {
   // eslint-disable-next-line quotes
   if (typeof input !== 'string') {
     const path = input.path.toString();
     const previous = input.previous == null ? null : input.previous.toString();
     return {
-      path,
-      previous,
-      checkPrevious: true,
+      path: path,
+      previous: previous,
+      checkPrevious: true
     };
   } else {
     const path = input.toString();
     return {
-      path,
+      path: path,
       previous: null,
-      checkPrevious: false,
+      checkPrevious: false
     };
   }
 }
 
-function compare(a: TrezorDeviceInfoWithSession, b: TrezorDeviceInfoWithSession): number {
+function compare(a, b) {
   if (!isNaN(a.path)) {
     return parseInt(a.path) - parseInt(b.path);
   } else {
-    return a.path < a.path ? -1 : (a.path > a.path ? 1 : 0);
+    return a.path < a.path ? -1 : a.path > a.path ? 1 : 0;
   }
 }
 
-function timeoutPromise(delay: number): Promise<void> {
-  return new Promise((resolve) => {
+function timeoutPromise(delay) {
+  return new Promise(resolve => {
     window.setTimeout(() => resolve(), delay);
   });
 }
@@ -61,35 +55,39 @@ function timeoutPromise(delay: number): Promise<void> {
 const ITER_MAX = 60;
 const ITER_DELAY = 500;
 
-export class Handler {
-  transport: Transport;
-  constructor(transport: Transport) {
+class Handler {
+
+  // session => path
+
+
+  // path => promise rejecting on release
+
+
+  constructor(transport) {
+    this._lock = Promise.resolve();
+    this.deferedOnRelease = {};
+    this.connections = {};
+    this.reverse = {};
+    this._lastStringified = ``;
+
     this.transport = transport;
   }
 
-  _lock: Promise<any> = Promise.resolve();
-  lock<X>(fn: () => (X|Promise<X>)): Promise<X> {
+  // path => session
+
+
+  lock(fn) {
     const res = this._lock.then(() => fn());
     this._lock = res.catch(() => {});
     return res;
   }
 
-  // path => promise rejecting on release
-  deferedOnRelease: {[path: string]: Defered};
-
-  // path => session
-  connections: {[path: string]: string};
-
-  // session => path
-  reverse: {[session: string]: string};
-
-  enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
-    return this.lock((): Promise<Array<TrezorDeviceInfoWithSession>> => {
-      return this.transport.enumerate().then((devices) => devices.map(device => {
-        return {
-          ...device,
-          session: this.connections[device.path],
-        };
+  enumerate() {
+    return this.lock(() => {
+      return this.transport.enumerate().then(devices => devices.map(device => {
+        return _extends({}, device, {
+          session: this.connections[device.path]
+        });
       })).then(devices => {
         this._releaseDisconnected(devices);
         return devices;
@@ -99,21 +97,18 @@ export class Handler {
     });
   }
 
-  _releaseDisconnected(devices: Array<TrezorDeviceInfoWithSession>) {
-  }
+  _releaseDisconnected(devices) {}
 
-  _lastStringified: string = ``;
-
-  listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
+  listen(old) {
     const oldStringified = stringify(old);
     const last = old == null ? this._lastStringified : oldStringified;
     return this._runIter(0, last);
   }
 
-  _runIter(iteration: number, oldStringified: string): Promise<Array<TrezorDeviceInfoWithSession>> {
+  _runIter(iteration, oldStringified) {
     return this.enumerate().then(devices => {
       const stringified = stringify(devices);
-      if ((stringified !== oldStringified) || (iteration === ITER_MAX)) {
+      if (stringified !== oldStringified || iteration === ITER_MAX) {
         this._lastStringified = stringified;
         return devices;
       }
@@ -121,52 +116,64 @@ export class Handler {
     });
   }
 
-  _checkAndReleaseBeforeAcquire(parsed: InternalAcquireInput): Promise<any> {
+  _checkAndReleaseBeforeAcquire(parsed) {
     const realPrevious = this.connections[parsed.path];
     if (parsed.checkPrevious) {
       let error = false;
       if (realPrevious == null) {
-        error = (parsed.previous != null);
+        error = parsed.previous != null;
       } else {
-        error = (parsed.previous !== realPrevious);
+        error = parsed.previous !== realPrevious;
       }
       if (error) {
         throw new Error(`wrong previous session`);
       }
     }
     if (realPrevious != null) {
-      const releasePromise: Promise<void> = this._realRelease(realPrevious);
+      const releasePromise = this._realRelease(realPrevious);
       return releasePromise;
     } else {
       return Promise.resolve();
     }
   }
 
-  acquire(input: AcquireInput): Promise<{session: string}> {
+  acquire(input) {
     const parsed = parseAcquireInput(input);
-    return this.lock((): Promise<{session: string}> => {
-      return this._checkAndReleaseBeforeAcquire(parsed).then(() =>
-        this.transport.connect(parsed.path)
-      ).then((session: string) => {
+    return this.lock(() => {
+      return this._checkAndReleaseBeforeAcquire(parsed).then(() => this.transport.connect(parsed.path)).then(session => {
         this.connections[parsed.path] = session;
         this.reverse[session] = parsed.path;
-        this.deferedOnRelease[parsed.path] = createDefered();
-        return {session: session};
+        this.deferedOnRelease[parsed.path] = (0, _defered.create)();
+        return { session: session };
       });
     });
   }
 
-  _realRelease(path: string): Promise<void> {
+  release(path) {
+    return this.lock(() => this._realRelease(path));
+  }
+
+  _realRelease(path) {
     return this.transport.disconnect(path).then(() => {
       this._releaseCleanup(path);
     });
   }
 
-  _releaseCleanup(path: string) {
-    const session: string = this.connections[path];
+  _releaseCleanup(path) {
+    const session = this.connections[path];
     delete this.reverse[session];
     delete this.connections[path];
     this.deferedOnRelease[path].reject(new Error(`Device released or disconnected`));
     return;
   }
+
+  configure(signedData) {
+    return (0, _verify.verifyHexBin)(signedData).then(data => {
+      return (0, _parse_protocol.parseConfigure)(data);
+    }).then(messages => {
+      this._messages = messages;
+      return;
+    });
+  }
 }
+exports.Handler = Handler;
