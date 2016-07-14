@@ -1,9 +1,12 @@
 check: node_modules
-	flow check lib/
-	eslint lib/*.js
+	flow check src/
+	eslint src/*.js
 
 node_modules:
 	npm install
 
-build:
-	`npm bin`/browserify lib/index.js > dist/index.js
+build-browser:
+	`npm bin`/browserify src/index.js > dist/index.js
+
+build-node:
+	`npm bin`/babel src --out-dir lib
