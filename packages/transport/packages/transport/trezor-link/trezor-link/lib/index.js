@@ -1,7 +1,39 @@
-/* @flow */
+
 
 "use strict";
 
-export default function ping(): number {
-  return 333;
-}
+var _handler = require('./handler');
+
+var _mock = require('./transports/mock');
+
+const handler = new _handler.Handler(_mock.mockTransport);
+
+/*
+ browserify
+fetch('./config_signed.bin').then(res => {
+  return res.text();
+}).then(res => {
+  handler.configure(res).then(
+    () => {
+      console.log("yay");
+    },
+    (e) => {
+      console.error(e);
+    }
+  );
+});
+console.log(`fuck`);
+*/
+
+const fs = require('fs');
+fs.readFile('../dist/config_signed.bin', 'utf8', function (err, data) {
+  if (err) {
+    return console.log(err);
+  }
+
+  handler.configure(data).then(() => {
+    console.log(handler._messages);
+  }, e => {
+    console.error(e);
+  });
+});

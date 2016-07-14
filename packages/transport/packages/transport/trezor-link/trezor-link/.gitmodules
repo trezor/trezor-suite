@@ -1,0 +1,3 @@
+[submodule "flowtype/bitcoinjs-flow"]
+	path = flowtype/bitcoinjs-flow
+	url = https://github.com/runn1ng/bitcoinjs-flow.git
