@@ -2,10 +2,11 @@
   "name": "trezor-connection",
   "version": "1.0.0",
   "description": "Trezor Connection",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "scripts": {
-    "build": "make build",
-    "check": "make check"
+    "build-browser": "make build-browser",
+    "check": "make check",
+    "build-node": "make build-node"
   },
   "repository": "https://github.com/runn1ng/trezor-connection.git",
   "author": "Karel Bílek <kb@karelbilek.com>",
@@ -28,20 +29,38 @@
       ]
     ]
   },
+  "babel": {
+    "presets": [
+      "es2015-node5"
+    ],
+    "plugins": [
+      "transform-flow-strip-types",
+      "transform-class-properties",
+      "transform-object-rest-spread",
+      "add-module-exports"
+    ]
+  },
   "bugs": {
     "url": "https://github.com/runn1ng/trezor-connection/issues"
   },
   "homepage": "https://github.com/runn1ng/trezor-connection",
   "devDependencies": {
+    "babel-cli": "^6.10.1",
     "babel-plugin-add-module-exports": "0.1.2",
     "babel-plugin-transform-class-properties": "6.4.0",
     "babel-plugin-transform-flow-strip-types": "6.4.0",
     "babel-plugin-transform-object-rest-spread": "6.3.13",
     "babel-preset-es2015": "6.3.13",
+    "babel-preset-es2015-node5": "^1.2.0",
     "babelify": "7.2.0",
     "browserify": "12.0.1"
   },
   "dependencies": {
-    "json-stable-stringify": "^1.0.1"
+    "bigi": "^1.4.1",
+    "bitcoinjs-lib": "^2.2.0",
+    "ecurve": "^1.0.3",
+    "json-stable-stringify": "^1.0.1",
+    "object.values": "^1.0.3",
+    "protobufjs": "3.8.2"
   }
 }
