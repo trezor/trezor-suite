@@ -1,47 +1,45 @@
-
+/* @flow */
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.storageGet = storageGet;
-exports.storageSet = storageSet;
-
+import type {Transport, TrezorDeviceInfo} from './index.js';
 
 const TREZOR_DESC = {
   vendorId: 0x534c,
-  productId: 0x0001
+  productId: 0x0001,
 };
 
 const FORBIDDEN_DESCRIPTORS = [0xf1d0, 0xff01];
 const REPORT_ID = 63;
 
-function deviceToJson(device) {
+function deviceToJson(device: ChromeHidDeviceInfo): TrezorDeviceInfo {
   return {
     path: device.deviceId.toString(),
     vendor: device.vendorId,
-    product: device.productId
+    product: device.productId,
   };
 }
 
-function hidEnumerate() {
+function hidEnumerate(): Promise<Array<ChromeHidDeviceInfo>> {
   return new Promise((resolve, reject) => {
     try {
-      chrome.hid.getDevices(TREZOR_DESC, devices => {
-        if (chrome.runtime.lastError) {
-          reject(new Error(chrome.runtime.lastError));
-        } else {
-          resolve(devices);
+      chrome.hid.getDevices(
+        TREZOR_DESC,
+        (devices: Array<ChromeHidDeviceInfo>): void => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError));
+          } else {
+            resolve(devices);
+          }
         }
-      });
+      );
     } catch (e) {
       reject(e);
     }
   });
 }
 
-function hidSend(id, reportId, data) {
+function hidSend(id: number, reportId: number, data: ArrayBuffer): Promise<void> {
   return new Promise((resolve, reject) => {
     try {
       chrome.hid.send(id, reportId, data, () => {
@@ -57,14 +55,14 @@ function hidSend(id, reportId, data) {
   });
 }
 
-function hidReceive(id) {
+function hidReceive(id: number): Promise<{data: ArrayBuffer, reportId: number}> {
   return new Promise((resolve, reject) => {
     try {
-      chrome.hid.receive(id, (reportId, data) => {
+      chrome.hid.receive(id, (reportId: number, data: ArrayBuffer) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
-          resolve({ data: data, reportId: reportId });
+          resolve({data, reportId});
         }
       });
     } catch (e) {
@@ -73,10 +71,10 @@ function hidReceive(id) {
   });
 }
 
-function hidConnect(id) {
+function hidConnect(id: number): Promise<number> {
   return new Promise((resolve, reject) => {
     try {
-      chrome.hid.connect(id, connection => {
+      chrome.hid.connect(id, (connection) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
@@ -91,7 +89,7 @@ function hidConnect(id) {
 
 // Disconnects from trezor.
 // First parameter is connection ID (*not* device ID!)
-function hidDisconnect(id) {
+function hidDisconnect(id: number): Promise<void> {
   return new Promise((resolve, reject) => {
     try {
       chrome.hid.disconnect(id, () => {
@@ -108,10 +106,10 @@ function hidDisconnect(id) {
 }
 
 // encapsulating chrome's platform info into Promise API
-function platformInfo() {
+function platformInfo(): Promise<ChromePlatformInfo> {
   return new Promise((resolve, reject) => {
     try {
-      chrome.runtime.getPlatformInfo(info => {
+      chrome.runtime.getPlatformInfo((info: ChromePlatformInfo) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
@@ -128,10 +126,10 @@ function platformInfo() {
   });
 }
 
-function storageGet(key) {
+export function storageGet(key: string): Promise<any> {
   return new Promise((resolve, reject) => {
     try {
-      chrome.storage.local.get(key, items => {
+      chrome.storage.local.get(key, (items) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
@@ -150,10 +148,10 @@ function storageGet(key) {
 }
 
 // Set to storage
-function storageSet(key, value) {
+export function storageSet(key:string, value:any): Promise<void> {
   return new Promise((resolve, reject) => {
     try {
-      const obj = {};
+      const obj: {} = {};
       obj[key] = value;
       chrome.storage.local.set(obj, () => {
         if (chrome.runtime.lastError) {
@@ -167,13 +165,14 @@ function storageSet(key, value) {
     }
   });
 }
-class ChromeTransport {
-  constructor() {
-    this._hasReportId = {};
-    this._udevError = false;
-  }
+export class ChromeTransport {
 
-  _catchUdevError(error) {
+  _hasReportId: {[id: string]: boolean} = {};
+
+  _udevError: boolean = false;
+  _isLinuxCached: ?boolean;
+
+  _catchUdevError(error: Error) {
     let errMessage = error;
     if (errMessage.message !== undefined) {
       errMessage = error.message;
@@ -187,7 +186,7 @@ class ChromeTransport {
     throw error;
   }
 
-  _isLinux() {
+  _isLinux(): Promise<boolean> {
     if (this._isLinuxCached != null) {
       return Promise.resolve(this._isLinuxCached);
     }
@@ -198,13 +197,13 @@ class ChromeTransport {
     });
   }
 
-  _isAfterInstall() {
-    return storageGet(`afterInstall`).then(afterInstall => {
-      return afterInstall !== false;
+  _isAfterInstall(): Promise<boolean> {
+    return storageGet(`afterInstall`).then((afterInstall) => {
+      return (afterInstall !== false);
     });
   }
 
-  showUdevError() {
+  showUdevError(): Promise<boolean> {
     return this._isLinux().then(isLinux => {
       if (!isLinux) {
         return false;
@@ -219,13 +218,15 @@ class ChromeTransport {
     });
   }
 
-  clearUdevError() {
+  clearUdevError(): Promise<void> {
     this._udevError = false;
     return storageSet(`afterInstall`, true);
   }
 
-  enumerate() {
-    return hidEnumerate().then(devices => devices.filter(device => !FORBIDDEN_DESCRIPTORS.some(des => des === device.collections[0].usagePage))).then(devices => {
+  enumerate(): Promise<Array<TrezorDeviceInfo>> {
+    return hidEnumerate().then(devices => devices.filter(
+      device => !FORBIDDEN_DESCRIPTORS.some(des => des === device.collections[0].usagePage))
+    ).then(devices => {
       this._hasReportId = {};
 
       devices.forEach(device => {
@@ -236,17 +237,17 @@ class ChromeTransport {
     }).then(devices => devices.map(device => deviceToJson(device)));
   }
 
-  send(device, session, data) {
+  send(device: string, session: string, data: ArrayBuffer): Promise<void> {
     const sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
-      return Promise.reject(new Error(`Session ${ session } is not a number`));
+      return Promise.reject(new Error(`Session ${session} is not a number`));
     }
     const hasReportId = this._hasReportId[device.toString()];
     const reportId = hasReportId ? REPORT_ID : 0;
 
-    let ab = data;
+    let ab: ArrayBuffer = data;
     if (!hasReportId) {
-      const newArray = new Uint8Array(64);
+      const newArray: Uint8Array = new Uint8Array(64);
       newArray[0] = 63;
       newArray.set(new Uint8Array(data), 1);
       ab = newArray.buffer;
@@ -255,39 +256,37 @@ class ChromeTransport {
     return hidSend(sessionNu, reportId, ab).catch(e => this._catchUdevError(e));
   }
 
-  receive(device, session) {
+  receive(device: string, session: string): Promise<ArrayBuffer> {
     const sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
-      return Promise.reject(new Error(`Session ${ session } is not a number`));
+      return Promise.reject(new Error(`Session ${session} is not a number`));
     }
-    return hidReceive(sessionNu).then(_ref => {
-      let data = _ref.data;
-      let reportId = _ref.reportId;
-
+    return hidReceive(sessionNu).then(({data, reportId}) => {
       if (reportId !== 0) {
         return data;
       } else {
         return data.slice(1);
       }
-    }).then(res => this.clearUdevError().then(() => res)).catch(e => this._catchUdevError(e));
+    }).then(res =>
+      this.clearUdevError().then(() => res)
+    ).catch(e => this._catchUdevError(e));
   }
 
-  connect(device) {
+  connect(device: string): Promise<string> {
     const deviceNu = parseInt(device);
     if (isNaN(deviceNu)) {
-      return Promise.reject(new Error(`Device ${ deviceNu } is not a number`));
+      return Promise.reject(new Error(`Device ${deviceNu} is not a number`));
     }
     return hidConnect(deviceNu).then(d => d.toString()).catch(e => this._catchUdevError(e));
   }
 
-  disconnect(session) {
+  disconnect(session: string): Promise<void> {
     const sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
-      return Promise.reject(new Error(`Session ${ session } is not a number`));
+      return Promise.reject(new Error(`Session ${session} is not a number`));
     }
     return hidDisconnect(sessionNu);
   }
 }
 
-exports.ChromeTransport = ChromeTransport;
-const chromeTransport = exports.chromeTransport = new ChromeTransport();
+export const chromeTransport: Transport = new ChromeTransport();
