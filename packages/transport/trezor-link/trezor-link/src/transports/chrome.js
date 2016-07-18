@@ -14,9 +14,7 @@ const REPORT_ID = 63;
 
 function deviceToJson(device: ChromeHidDeviceInfo): TrezorDeviceInfo {
   return {
-    path: device.deviceId.toString(),
-    vendor: device.vendorId,
-    product: device.productId,
+    path: device.deviceId.toString()
   };
 }
 
@@ -280,7 +278,7 @@ export class ChromeTransport {
     return hidConnect(deviceNu).then(d => d.toString()).catch(e => this._catchUdevError(e));
   }
 
-  disconnect(session: string): Promise<void> {
+  disconnect(path: string, session: string): Promise<void> {
     const sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
       return Promise.reject(new Error(`Session ${session} is not a number`));

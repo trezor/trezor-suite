@@ -1,7 +1,7 @@
 {
-  "name": "trezor-connection",
+  "name": "trezor-link",
   "version": "1.0.0",
-  "description": "Trezor Connection",
+  "description": "Trezor Link",
   "main": "src/index.js",
   "scripts": {
     "build-browser": "make build-browser",
@@ -41,9 +41,9 @@
     ]
   },
   "bugs": {
-    "url": "https://github.com/runn1ng/trezor-connection/issues"
+    "url": "https://github.com/runn1ng/trezor-link/issues"
   },
-  "homepage": "https://github.com/runn1ng/trezor-connection",
+  "homepage": "https://github.com/runn1ng/trezor-link",
   "devDependencies": {
     "babel-cli": "^6.10.1",
     "babel-plugin-add-module-exports": "0.1.2",
