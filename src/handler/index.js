@@ -146,33 +146,34 @@ export class Handler {
       }
     }
     if (realPrevious != null) {
-      const releasePromise: Promise<void> = this._realRelease(realPrevious);
+      const releasePromise: Promise<void> = this._realRelease(parsed.path, realPrevious);
       return releasePromise;
     } else {
       return Promise.resolve();
     }
   }
 
-  acquire(input: AcquireInput): Promise<{session: string}> {
+  acquire(input: AcquireInput): Promise<string> {
     const parsed = parseAcquireInput(input);
-    return this.lock((): Promise<{session: string}> => {
+    return this.lock((): Promise<string> => {
       return this._checkAndReleaseBeforeAcquire(parsed).then(() =>
         this.transport.connect(parsed.path)
       ).then((session: string) => {
         this.connections[parsed.path] = session;
         this.reverse[session] = parsed.path;
         this.deferedOnRelease[parsed.path] = createDefered();
-        return {session: session};
+        return session;
       });
     });
   }
 
   release(session: string): Promise<void> {
-    return this.lock(() => this._realRelease(session));
+    const path = this.reverse[session];
+    return this.lock(() => this._realRelease(path, session));
   }
 
-  _realRelease(session: string): Promise<void> {
-    return this.transport.disconnect(session).then(() => {
+  _realRelease(path:string, session: string): Promise<void> {
+    return this.transport.disconnect(path, session).then(() => {
       this._releaseCleanup(session);
     });
   }

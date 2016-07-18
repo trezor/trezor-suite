@@ -23216,11 +23216,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _defered = require('./defered');
+var _defered = require('../defered');
 
-var _parse_protocol = require('./protobuf/parse_protocol');
+var _parse_protocol = require('../protobuf/parse_protocol');
 
 var _verify = require('./verify');
+
+var _send = require('./send');
+
+var _receive = require('./receive');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -23378,32 +23382,32 @@ var Handler = exports.Handler = function () {
           _this3.connections[parsed.path] = session;
           _this3.reverse[session] = parsed.path;
           _this3.deferedOnRelease[parsed.path] = (0, _defered.create)();
-          return { session: session };
+          return session;
         });
       });
     }
   }, {
     key: 'release',
-    value: function release(path) {
+    value: function release(session) {
       var _this4 = this;
 
       return this.lock(function () {
-        return _this4._realRelease(path);
+        return _this4._realRelease(session);
       });
     }
   }, {
     key: '_realRelease',
-    value: function _realRelease(path) {
+    value: function _realRelease(session) {
       var _this5 = this;
 
-      return this.transport.disconnect(path).then(function () {
-        _this5._releaseCleanup(path);
+      return this.transport.disconnect(session).then(function () {
+        _this5._releaseCleanup(session);
       });
     }
   }, {
     key: '_releaseCleanup',
-    value: function _releaseCleanup(path) {
-      var session = this.connections[path];
+    value: function _releaseCleanup(session) {
+      var path = this.reverse[session];
       delete this.reverse[session];
       delete this.connections[path];
       this.deferedOnRelease[path].reject(new Error('Device released or disconnected'));
@@ -23421,50 +23425,465 @@ var Handler = exports.Handler = function () {
         return;
       });
     }
+  }, {
+    key: '_sendTransport',
+    value: function _sendTransport(session) {
+      var _this7 = this;
+
+      var path = this.reverse[session];
+      return function (data) {
+        return _this7.transport.send(path, session, data);
+      };
+    }
+  }, {
+    key: '_receiveTransport',
+    value: function _receiveTransport(session) {
+      var _this8 = this;
+
+      var path = this.reverse[session];
+      return function () {
+        return _this8.transport.receive(path, session);
+      };
+    }
+  }, {
+    key: 'call',
+    value: function call(session, name, data) {
+      var _this9 = this;
+
+      if (this._messages == null) {
+        return Promise.reject(new Error('Handler not configured.'));
+      }
+      var messages = this._messages;
+      return (0, _send.buildAndSend)(messages, this._sendTransport(session), name, data).then(function () {
+        return (0, _receive.receiveAndParse)(messages, _this9._receiveTransport(session));
+      });
+    }
   }]);
 
   return Handler;
 }();
 
-},{"./defered":116,"./protobuf/parse_protocol":121,"./verify":124,"json-stable-stringify":72}],118:[function(require,module,exports){
+},{"../defered":116,"../protobuf/parse_protocol":125,"./receive":118,"./send":119,"./verify":120,"json-stable-stringify":72}],118:[function(require,module,exports){
+
+
+"use strict";
+
+// Logic of recieving data from trezor
+// Logic of "call" is broken to two parts - sending and recieving
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.receiveAndParse = receiveAndParse;
+
+var _message_decoder = require("../protobuf/message_decoder.js");
+
+var _protobufjs = require("protobufjs");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MESSAGE_HEADER_BYTE = 0x23;
+
+// input that might or might not be fully parsed yet
+
+var PartiallyParsedInput = function () {
+  // Expected length of the raq message, in bytes
+
+  function PartiallyParsedInput(typeNumber, length) {
+    _classCallCheck(this, PartiallyParsedInput);
+
+    this.typeNumber = typeNumber;
+    this.expectedLength = length;
+    this.buffer = new _protobufjs.ByteBuffer(length);
+  }
+  // Buffer with the beginning of message; can be non-complete and WILL be modified
+  // during the object's lifetime
+
+  // Message type number
+
+
+  _createClass(PartiallyParsedInput, [{
+    key: "isDone",
+    value: function isDone() {
+      return this.buffer.offset >= this.expectedLength;
+    }
+  }, {
+    key: "append",
+    value: function append(buffer) {
+      this.buffer.append(buffer);
+    }
+  }, {
+    key: "arrayBuffer",
+    value: function arrayBuffer() {
+      var byteBuffer = this.buffer;
+      byteBuffer.reset();
+      return byteBuffer.toArrayBuffer();
+    }
+  }]);
+
+  return PartiallyParsedInput;
+}();
+
+// Parses first raw input that comes from Trezor and returns some information about the whole message.
+
+
+function parseFirstInput(bytes) {
+  // convert to ByteBuffer so it's easier to read
+  var byteBuffer = _protobufjs.ByteBuffer.concat([bytes]);
+
+  // checking first two bytes
+  var sharp1 = byteBuffer.readByte();
+  var sharp2 = byteBuffer.readByte();
+  if (sharp1 !== MESSAGE_HEADER_BYTE || sharp2 !== MESSAGE_HEADER_BYTE) {
+    throw new Error("Didn't receive expected header signature.");
+  }
+
+  // reading things from header
+  var type = byteBuffer.readUint16();
+  var length = byteBuffer.readUint32();
+
+  // creating a new buffer with the right size
+  var res = new PartiallyParsedInput(type, length);
+  res.append(byteBuffer);
+  return res;
+}
+
+// If the whole message wasn't loaded in the first input, loads more inputs until everything is loaded.
+// note: the return value is not at all important since it's still the same parsedinput
+function receiveRest(parsedInput, receiver) {
+  if (parsedInput.isDone()) {
+    return Promise.resolve();
+  }
+
+  return receiver().then(function (data) {
+    // sanity check
+    if (data == null) {
+      throw new Error("Received no data.");
+    }
+
+    parsedInput.append(data);
+    return receiveRest(parsedInput, receiver);
+  });
+}
+
+// Receives the whole message as a raw data buffer (but without headers or type info)
+function receiveBuffer(receiver) {
+  return receiver().then(function (data) {
+    var partialInput = parseFirstInput(data);
+
+    return receiveRest(partialInput, receiver).then(function () {
+      return partialInput;
+    });
+  });
+}
+
+// Reads data from device and returns decoded message, that can be sent back to trezor.js
+function receiveAndParse(messages, receiver) {
+  return receiveBuffer(receiver).then(function (received) {
+    var typeId = received.typeNumber;
+    var buffer = received.arrayBuffer();
+    var decoder = new _message_decoder.MessageDecoder(messages, typeId, buffer);
+    return {
+      message: decoder.decodedJSON(),
+      type: decoder.messageName()
+    };
+  });
+}
+
+},{"../protobuf/message_decoder.js":123,"protobufjs":87}],119:[function(require,module,exports){
+
+
+"use strict";
+
+// Logic of sending data to trezor
+//
+// Logic of "call" is broken to two parts - sending and recieving
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.buildAndSend = buildAndSend;
+
+var _protobufjs = require("protobufjs");
+
+var ProtoBuf = _interopRequireWildcard(_protobufjs);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var HEADER_SIZE = 1 + 1 + 4 + 2;
+var MESSAGE_HEADER_BYTE = 0x23;
+var BUFFER_SIZE = 63;
+
+// Sends more buffers to device.
+function sendBuffers(sender, buffers) {
+  return buffers.reduce(function (prevPromise, buffer) {
+    return prevPromise.then(function () {
+      return sender(buffer);
+    });
+  }, Promise.resolve());
+}
+
+// already built PB message
+
+var BuiltMessage = function () {
+  function BuiltMessage(messages, // Builders, generated by reading config
+  name, // Name of the message
+  data // data as "pure" object, from trezor.js
+  ) {
+    _classCallCheck(this, BuiltMessage);
+
+    var Builder = messages.messagesByName[name];
+    if (Builder == null) {
+      throw new Error("The message name " + name + " is not found.");
+    }
+
+    // cleans up stuff from angular and remove "null" that crashes in builder
+    cleanupInput(data);
+
+    if (data) {
+      this.message = new Builder(data);
+    } else {
+      this.message = new Builder();
+    }
+
+    this.type = messages.messageTypes["MessageType_" + name];
+  }
+
+  // encodes into "raw" data, but it can be too long and needs to be split into
+  // smaller buffers
+
+
+  _createClass(BuiltMessage, [{
+    key: "_encodeLong",
+    value: function _encodeLong() {
+      var headerSize = HEADER_SIZE; // should be 8
+      var bytes = new Uint8Array(this.message.encodeAB());
+      var fullSize = headerSize + bytes.length;
+
+      var encodedByteBuffer = new _protobufjs.ByteBuffer(fullSize);
+
+      // first encode header
+
+      // 2*1 byte
+      encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
+      encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
+
+      // 2 bytes
+      encodedByteBuffer.writeUint16(this.type);
+
+      // 4 bytes (so 8 in total)
+      encodedByteBuffer.writeUint32(bytes.length);
+
+      // then put in the actual message
+      encodedByteBuffer.append(bytes);
+
+      // and convert to uint8 array
+      // (it can still be too long to send though)
+      var encoded = new Uint8Array(encodedByteBuffer.buffer);
+
+      return encoded;
+    }
+
+    // encodes itself and splits into "nice" chunks
+
+  }, {
+    key: "encode",
+    value: function encode() {
+      var bytes = this._encodeLong();
+
+      var result = [];
+      var size = BUFFER_SIZE;
+
+      // How many pieces will there actually be
+      var count = Math.floor((bytes.length - 1) / size) + 1;
+
+      // slice and dice
+      for (var i = 0; i < count; i++) {
+        var slice = bytes.subarray(i * size, (i + 1) * size);
+        var newArray = new Uint8Array(size);
+        newArray.set(slice);
+        result.push(newArray.buffer);
+      }
+
+      return result;
+    }
+  }]);
+
+  return BuiltMessage;
+}();
+
+// Removes $$hashkey from angular and remove nulls
+
+
+function cleanupInput(message) {
+  delete message.$$hashKey;
+
+  for (var key in message) {
+    var value = message[key];
+    if (value == null) {
+      delete message[key];
+    } else {
+      if (Array.isArray(value)) {
+        value.forEach(function (i) {
+          if (typeof i === "object") {
+            cleanupInput(i);
+          }
+        });
+      }
+      if (typeof value === "object") {
+        cleanupInput(value);
+      }
+    }
+  }
+}
+
+// Builds buffers to send.
+// messages: Builders, generated by reading config
+// name: Name of the message
+// data: Data to serialize, exactly as given by trezor.js
+// Returning buffers that will be sent to Trezor
+function buildBuffers(messages, name, data) {
+  var message = new BuiltMessage(messages, name, data);
+  var encoded = message.encode();
+  return encoded;
+}
+
+// Sends message to device.
+// Resolves iff everything gets sent
+function buildAndSend(messages, sender, name, data) {
+  var buffers = buildBuffers(messages, name, data);
+  return sendBuffers(sender, buffers);
+}
+
+},{"protobufjs":87}],120:[function(require,module,exports){
+(function (Buffer){
+
+
+"use strict";
+
+// Module for verifying ECDSA signature of configuration.
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.verifyHexBin = verifyHexBin;
+
+var _bitcoinjsLib = require("bitcoinjs-lib");
+
+var _bigi = require("bigi");
+
+var _bigi2 = _interopRequireDefault(_bigi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* eslint-disable quotes */
+var SATOSHI_KEYS = ['\x04\xd5\x71\xb7\xf1\x48\xc5\xe4\x23\x2c\x38\x14\xf7\x77\xd8\xfa\xea\xf1\xa8\x42\x16\xc7\x8d\x56\x9b\x71\x04\x1f\xfc\x76\x8a\x5b\x2d\x81\x0f\xc3\xbb\x13\x4d\xd0\x26\xb5\x7e\x65\x00\x52\x75\xae\xde\xf4\x3e\x15\x5f\x48\xfc\x11\xa3\x2e\xc7\x90\xa9\x33\x12\xbd\x58', '\x04\x63\x27\x9c\x0c\x08\x66\xe5\x0c\x05\xc7\x99\xd3\x2b\xd6\xba\xb0\x18\x8b\x6d\xe0\x65\x36\xd1\x10\x9d\x2e\xd9\xce\x76\xcb\x33\x5c\x49\x0e\x55\xae\xe1\x0c\xc9\x01\x21\x51\x32\xe8\x53\x09\x7d\x54\x32\xed\xa0\x6b\x79\x20\x73\xbd\x77\x40\xc9\x4c\xe4\x51\x6c\xb1', '\x04\x43\xae\xdb\xb6\xf7\xe7\x1c\x56\x3f\x8e\xd2\xef\x64\xec\x99\x81\x48\x25\x19\xe7\xef\x4f\x4a\xa9\x8b\x27\x85\x4e\x8c\x49\x12\x6d\x49\x56\xd3\x00\xab\x45\xfd\xc3\x4c\xd2\x6b\xc8\x71\x0d\xe0\xa3\x1d\xbd\xf6\xde\x74\x35\xfd\x0b\x49\x2b\xe7\x0a\xc7\x5f\xde\x58', '\x04\x87\x7c\x39\xfd\x7c\x62\x23\x7e\x03\x82\x35\xe9\xc0\x75\xda\xb2\x61\x63\x0f\x78\xee\xb8\xed\xb9\x24\x87\x15\x9f\xff\xed\xfd\xf6\x04\x6c\x6f\x8b\x88\x1f\xa4\x07\xc4\xa4\xce\x6c\x28\xde\x0b\x19\xc1\xf4\xe2\x9f\x1f\xcb\xc5\xa5\x8f\xfd\x14\x32\xa3\xe0\x93\x8a', '\x04\x73\x84\xc5\x1a\xe8\x1a\xdd\x0a\x52\x3a\xdb\xb1\x86\xc9\x1b\x90\x6f\xfb\x64\xc2\xc7\x65\x80\x2b\xf2\x6d\xbd\x13\xbd\xf1\x2c\x31\x9e\x80\xc2\x21\x3a\x13\x6c\x8e\xe0\x3d\x78\x74\xfd\x22\xb7\x0d\x68\xe7\xde\xe4\x69\xde\xcf\xbb\xb5\x10\xee\x9a\x46\x0c\xda\x45'];
+/* eslint-enable */
+
+var keys = SATOSHI_KEYS.map(function (key) {
+  return new Buffer(key, "binary");
+});
+
+// Verifies ECDSA signature
+// pubkeys - Public keys
+// signature - ECDSA signature (concatenated R and S, both 32 bytes)
+// data - Data that are signed
+// returns True, iff the signature is correct with any of the pubkeys
+function verify(pubkeys, bsignature, data) {
+  var r = _bigi2.default.fromBuffer(bsignature.slice(0, 32));
+  var s = _bigi2.default.fromBuffer(bsignature.slice(32));
+  var signature = new _bitcoinjsLib.ECSignature(r, s);
+
+  var hash = _bitcoinjsLib.crypto.sha256(data);
+
+  return pubkeys.some(function (pubkey) {
+    var pair = _bitcoinjsLib.ECPair.fromPublicKeyBuffer(pubkey);
+    return pair.verify(hash, signature);
+  });
+}
+
+// Verifies if a given data is a correctly signed config
+// Returns the data, if correctly signed, else reject
+function verifyHexBin(data) {
+  var signature = new Buffer(data.slice(0, 64 * 2), "hex");
+  var dataB = new Buffer(data.slice(64 * 2), "hex");
+  var verified = verify(keys, signature, dataB);
+  if (!verified) {
+    return Promise.reject("Not correctly signed.");
+  } else {
+    return Promise.resolve(dataB);
+  }
+}
+
+}).call(this,require("buffer").Buffer)
+},{"bigi":5,"bitcoinjs-lib":16,"buffer":33}],121:[function(require,module,exports){
 
 
 "use strict";
 
 var _handler = require('./handler');
 
-var _mock = require('./transports/mock');
+var _chrome = require('./transports/chrome');
 
-var handler = new _handler.Handler(_mock.mockTransport);
+var handler = new _handler.Handler(_chrome.chromeTransport);
 
-/*
- browserify
-fetch('./config_signed.bin').then(res => {
+fetch('./config_signed.bin').then(function (res) {
   return res.text();
-}).then(res => {
-  handler.configure(res).then(
+}).then(function (res) {
+  handler.configure(res).then(function () {
+    handler.enumerate().then(function (enres) {
+      handler.acquire(enres[0].path).then(function (session) {
+        handler.call(session, "GetFeatures", {}).then(function (features) {
+          console.log(features);
+        });
+      });
+    });
+  }, function (e) {
+    console.error(e);
+  });
+});
+
+/**/
+
+/*const fs = require(`fs`);
+fs.readFile(`../dist/config_signed.bin`, `utf8`, function (err, data) {
+  if (err) {
+    return console.log(err);
+  }
+
+  handler.configure(data).then(
     () => {
-      console.log("yay");
+      console.log(handler._messages);
     },
     (e) => {
       console.error(e);
     }
   );
-});
-console.log(`fuck`);
-*/
+});*/
 
-fs = require('fs');
-fs.readFile('/etc/hosts', 'utf8', function (err, data) {
-  if (err) {
-    return console.log(err);
-  }
-  console.log(data);
-});
-
-},{"./handler":117,"./transports/mock":123,"fs":26}],119:[function(require,module,exports){
+},{"./handler":117,"./transports/chrome":127}],122:[function(require,module,exports){
 "use strict";
 
+/*
+ re-build this by:
+
+sed 's/\(google\/protobuf\)/\.\/\1/' trezor-common/protob/config.proto > trezor-common/protob/config_fixed.proto
+$(npm bin)/proto2js trezor-common/protob/config_fixed.proto -commonjs > config_proto_compiled.js
+rm trezor-common/protob/config_fixed.proto
+
+given trezor-common is from github trezor-common
+
+the config.proto is not changed much
+
+*/
 module.exports = require("protobufjs").newBuilder({})["import"]({
     "package": null,
     "messages": [{
@@ -24313,7 +24732,145 @@ module.exports = require("protobufjs").newBuilder({})["import"]({
     "services": []
 }).build();
 
-},{"protobufjs":87}],120:[function(require,module,exports){
+},{"protobufjs":87}],123:[function(require,module,exports){
+
+
+"use strict";
+
+// Helper module for converting Trezor's raw input to
+// ProtoBuf's message and from there to regular JSON to trezor.js
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MessageDecoder = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _protobufjs = require("protobufjs");
+
+var ProtoBuf = _interopRequireWildcard(_protobufjs);
+
+var _messages = require("./messages.js");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MessageDecoder = exports.MessageDecoder = function () {
+  // message type number
+
+  function MessageDecoder(messages, type, data) {
+    _classCallCheck(this, MessageDecoder);
+
+    this.type = type;
+    this.data = data;
+    this.messages = messages;
+  }
+
+  // Returns an info about this message,
+  // which includes the constructor object and a name
+
+  // raw data to push to Trezor
+
+  // Builders, generated by reading config
+
+
+  _createClass(MessageDecoder, [{
+    key: "_messageInfo",
+    value: function _messageInfo() {
+      var r = this.messages.messagesByType[this.type];
+      if (r == null) {
+        throw new Error("Method type not found", this.type);
+      }
+      return new MessageInfo(r.constructor, r.name);
+    }
+
+    // Returns the name of the message
+
+  }, {
+    key: "messageName",
+    value: function messageName() {
+      return this._messageInfo().name;
+    }
+
+    // Returns the actual decoded message, as a ProtoBuf.js object
+
+  }, {
+    key: "_decodedMessage",
+    value: function _decodedMessage() {
+      var constructor = this._messageInfo().messageConstructor;
+      return constructor.decode(this.data);
+    }
+
+    // Returns the message decoded to JSON, that could be handed back
+    // to trezor.js
+
+  }, {
+    key: "decodedJSON",
+    value: function decodedJSON() {
+      var decoded = this._decodedMessage();
+      var converted = messageToJSON(decoded);
+
+      return JSON.parse(JSON.stringify(converted));
+    }
+  }]);
+
+  return MessageDecoder;
+}();
+
+var MessageInfo = function MessageInfo(messageConstructor, name) {
+  _classCallCheck(this, MessageInfo);
+
+  this.messageConstructor = messageConstructor;
+  this.name = name;
+};
+
+// Converts any ProtoBuf message to JSON in Trezor.js-friendly format
+
+
+function messageToJSON(message) {
+  var res = {};
+  var meta = message.$type;
+
+  var _loop = function _loop(key) {
+    var value = message[key];
+    if (typeof value === "function") {
+      // ignoring
+    } else if (value instanceof _protobufjs.ByteBuffer) {
+      var hex = value.toHex();
+      res[key] = hex;
+    } else if (value instanceof _protobufjs.Long) {
+      var num = value.toNumber();
+      res[key] = num;
+    } else if (Array.isArray(value)) {
+      var decodedArr = value.map(function (i) {
+        if (typeof i === "object") {
+          return messageToJSON(i);
+        } else {
+          return i;
+        }
+      });
+      res[key] = decodedArr;
+    } else if (value instanceof ProtoBuf.Builder.Message) {
+      res[key] = messageToJSON(value);
+    } else if (meta._fieldsByName[key].type.name === "enum") {
+      var enumValues = meta._fieldsByName[key].resolvedType.getChildren();
+      res[key] = enumValues.find(function (e) {
+        return e.id === value;
+      }).name;
+    } else {
+      res[key] = value;
+    }
+  };
+
+  for (var key in message) {
+    _loop(key);
+  }
+  return res;
+}
+
+},{"./messages.js":124,"protobufjs":87}],124:[function(require,module,exports){
 
 
 "use strict";
@@ -24353,7 +24910,7 @@ var Messages = exports.Messages = function Messages(messages) {
   this.messageTypes = messages.MessageType;
 };
 
-},{"protobufjs":87}],121:[function(require,module,exports){
+},{"protobufjs":87}],125:[function(require,module,exports){
 
 
 "use strict";
@@ -24397,7 +24954,7 @@ function parseConfigure(data) {
   return new _messages.Messages(protobufMessages);
 }
 
-},{"./config_proto_compiled.js":119,"./messages.js":120,"./to_json.js":122,"protobufjs":87}],122:[function(require,module,exports){
+},{"./config_proto_compiled.js":122,"./messages.js":124,"./to_json.js":126,"protobufjs":87}],126:[function(require,module,exports){
 
 
 "use strict";
@@ -24525,7 +25082,7 @@ function fieldToJSON(field) {
   return res;
 }
 
-},{"object.values":80}],123:[function(require,module,exports){
+},{"object.values":80}],127:[function(require,module,exports){
 
 
 "use strict";
@@ -24536,106 +25093,342 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+exports.storageGet = storageGet;
+exports.storageSet = storageSet;
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MockTransport = exports.MockTransport = function () {
-  function MockTransport() {
-    _classCallCheck(this, MockTransport);
+var TREZOR_DESC = {
+  vendorId: 0x534c,
+  productId: 0x0001
+};
+
+var FORBIDDEN_DESCRIPTORS = [0xf1d0, 0xff01];
+var REPORT_ID = 63;
+
+function deviceToJson(device) {
+  return {
+    path: device.deviceId.toString(),
+    vendor: device.vendorId,
+    product: device.productId
+  };
+}
+
+function hidEnumerate() {
+  return new Promise(function (resolve, reject) {
+    try {
+      chrome.hid.getDevices(TREZOR_DESC, function (devices) {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError));
+        } else {
+          resolve(devices);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function hidSend(id, reportId, data) {
+  return new Promise(function (resolve, reject) {
+    try {
+      chrome.hid.send(id, reportId, data, function () {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError));
+        } else {
+          resolve();
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function hidReceive(id) {
+  return new Promise(function (resolve, reject) {
+    try {
+      chrome.hid.receive(id, function (reportId, data) {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve({ data: data, reportId: reportId });
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function hidConnect(id) {
+  return new Promise(function (resolve, reject) {
+    try {
+      chrome.hid.connect(id, function (connection) {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve(connection.connectionId);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+// Disconnects from trezor.
+// First parameter is connection ID (*not* device ID!)
+function hidDisconnect(id) {
+  return new Promise(function (resolve, reject) {
+    try {
+      chrome.hid.disconnect(id, function () {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve();
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+// encapsulating chrome's platform info into Promise API
+function platformInfo() {
+  return new Promise(function (resolve, reject) {
+    try {
+      chrome.runtime.getPlatformInfo(function (info) {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          if (info == null) {
+            reject(new Error("info is null"));
+          } else {
+            resolve(info);
+          }
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function storageGet(key) {
+  return new Promise(function (resolve, reject) {
+    try {
+      chrome.storage.local.get(key, function (items) {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          if (items[key] === null || items[key] === undefined) {
+            resolve(null);
+          } else {
+            resolve(items[key]);
+          }
+          resolve(items);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+// Set to storage
+function storageSet(key, value) {
+  return new Promise(function (resolve, reject) {
+    try {
+      var obj = {};
+      obj[key] = value;
+      chrome.storage.local.set(obj, function () {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve(undefined);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+var ChromeTransport = exports.ChromeTransport = function () {
+  function ChromeTransport() {
+    _classCallCheck(this, ChromeTransport);
+
+    this._hasReportId = {};
+    this._udevError = false;
   }
 
-  _createClass(MockTransport, [{
+  _createClass(ChromeTransport, [{
+    key: "_catchUdevError",
+    value: function _catchUdevError(error) {
+      var errMessage = error;
+      if (errMessage.message !== undefined) {
+        errMessage = error.message;
+      }
+      // A little heuristics.
+      // If error message is one of these and the type of original message is initialization, it's
+      // probably udev error.
+      if (errMessage === "Failed to open HID device." || errMessage === "Transfer failed.") {
+        this._udevError = true;
+      }
+      throw error;
+    }
+  }, {
+    key: "_isLinux",
+    value: function _isLinux() {
+      var _this = this;
+
+      if (this._isLinuxCached != null) {
+        return Promise.resolve(this._isLinuxCached);
+      }
+      return platformInfo().then(function (info) {
+        var linux = info.os === "linux";
+        _this._isLinuxCached = linux;
+        return linux;
+      });
+    }
+  }, {
+    key: "_isAfterInstall",
+    value: function _isAfterInstall() {
+      return storageGet("afterInstall").then(function (afterInstall) {
+        return afterInstall !== false;
+      });
+    }
+  }, {
+    key: "showUdevError",
+    value: function showUdevError() {
+      var _this2 = this;
+
+      return this._isLinux().then(function (isLinux) {
+        if (!isLinux) {
+          return false;
+        }
+        return _this2._isAfterInstall().then(function (isAfterInstall) {
+          if (isAfterInstall) {
+            return true;
+          } else {
+            return _this2._udevError;
+          }
+        });
+      });
+    }
+  }, {
+    key: "clearUdevError",
+    value: function clearUdevError() {
+      this._udevError = false;
+      return storageSet("afterInstall", true);
+    }
+  }, {
     key: "enumerate",
     value: function enumerate() {
-      return Promise.resolve([]);
+      var _this3 = this;
+
+      return hidEnumerate().then(function (devices) {
+        return devices.filter(function (device) {
+          return !FORBIDDEN_DESCRIPTORS.some(function (des) {
+            return des === device.collections[0].usagePage;
+          });
+        });
+      }).then(function (devices) {
+        _this3._hasReportId = {};
+
+        devices.forEach(function (device) {
+          _this3._hasReportId[device.deviceId.toString()] = device.collections[0].reportIds.length !== 0;
+        });
+
+        return devices;
+      }).then(function (devices) {
+        return devices.map(function (device) {
+          return deviceToJson(device);
+        });
+      });
     }
   }, {
     key: "send",
     value: function send(device, session, data) {
-      return Promise.resolve();
+      var _this4 = this;
+
+      var sessionNu = parseInt(session);
+      if (isNaN(sessionNu)) {
+        return Promise.reject(new Error("Session " + session + " is not a number"));
+      }
+      var hasReportId = this._hasReportId[device.toString()];
+      var reportId = hasReportId ? REPORT_ID : 0;
+
+      var ab = data;
+      if (!hasReportId) {
+        var newArray = new Uint8Array(64);
+        newArray[0] = 63;
+        newArray.set(new Uint8Array(data), 1);
+        ab = newArray.buffer;
+      }
+
+      return hidSend(sessionNu, reportId, ab).catch(function (e) {
+        return _this4._catchUdevError(e);
+      });
     }
   }, {
     key: "receive",
     value: function receive(device, session) {
-      return Promise.resolve(new ArrayBuffer(0));
+      var _this5 = this;
+
+      var sessionNu = parseInt(session);
+      if (isNaN(sessionNu)) {
+        return Promise.reject(new Error("Session " + session + " is not a number"));
+      }
+      return hidReceive(sessionNu).then(function (_ref) {
+        var data = _ref.data;
+        var reportId = _ref.reportId;
+
+        if (reportId !== 0) {
+          return data;
+        } else {
+          return data.slice(1);
+        }
+      }).then(function (res) {
+        return _this5.clearUdevError().then(function () {
+          return res;
+        });
+      }).catch(function (e) {
+        return _this5._catchUdevError(e);
+      });
     }
   }, {
     key: "connect",
     value: function connect(device) {
-      return Promise.resolve("mock");
+      var _this6 = this;
+
+      var deviceNu = parseInt(device);
+      if (isNaN(deviceNu)) {
+        return Promise.reject(new Error("Device " + deviceNu + " is not a number"));
+      }
+      return hidConnect(deviceNu).then(function (d) {
+        return d.toString();
+      }).catch(function (e) {
+        return _this6._catchUdevError(e);
+      });
     }
   }, {
     key: "disconnect",
     value: function disconnect(session) {
-      return Promise.resolve();
+      var sessionNu = parseInt(session);
+      if (isNaN(sessionNu)) {
+        return Promise.reject(new Error("Session " + session + " is not a number"));
+      }
+      return hidDisconnect(sessionNu);
     }
   }]);
 
-  return MockTransport;
+  return ChromeTransport;
 }();
 
-var mockTransport = exports.mockTransport = new MockTransport();
+var chromeTransport = exports.chromeTransport = new ChromeTransport();
 
-},{}],124:[function(require,module,exports){
-(function (Buffer){
-
-
-"use strict";
-
-// Module for verifying ECDSA signature of configuration.
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.verifyHexBin = verifyHexBin;
-
-var _bitcoinjsLib = require("bitcoinjs-lib");
-
-var _bigi = require("bigi");
-
-var _bigi2 = _interopRequireDefault(_bigi);
-
-var _ecurve = require("ecurve");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var SATOSHI_KEYSS = ['\x04\xd5\x71\xb7\xf1\x48\xc5\xe4\x23\x2c\x38\x14\xf7\x77\xd8\xfa\xea\xf1\xa8\x42\x16\xc7\x8d\x56\x9b\x71\x04\x1f\xfc\x76\x8a\x5b\x2d\x81\x0f\xc3\xbb\x13\x4d\xd0\x26\xb5\x7e\x65\x00\x52\x75\xae\xde\xf4\x3e\x15\x5f\x48\xfc\x11\xa3\x2e\xc7\x90\xa9\x33\x12\xbd\x58', '\x04\x63\x27\x9c\x0c\x08\x66\xe5\x0c\x05\xc7\x99\xd3\x2b\xd6\xba\xb0\x18\x8b\x6d\xe0\x65\x36\xd1\x10\x9d\x2e\xd9\xce\x76\xcb\x33\x5c\x49\x0e\x55\xae\xe1\x0c\xc9\x01\x21\x51\x32\xe8\x53\x09\x7d\x54\x32\xed\xa0\x6b\x79\x20\x73\xbd\x77\x40\xc9\x4c\xe4\x51\x6c\xb1', '\x04\x43\xae\xdb\xb6\xf7\xe7\x1c\x56\x3f\x8e\xd2\xef\x64\xec\x99\x81\x48\x25\x19\xe7\xef\x4f\x4a\xa9\x8b\x27\x85\x4e\x8c\x49\x12\x6d\x49\x56\xd3\x00\xab\x45\xfd\xc3\x4c\xd2\x6b\xc8\x71\x0d\xe0\xa3\x1d\xbd\xf6\xde\x74\x35\xfd\x0b\x49\x2b\xe7\x0a\xc7\x5f\xde\x58', '\x04\x87\x7c\x39\xfd\x7c\x62\x23\x7e\x03\x82\x35\xe9\xc0\x75\xda\xb2\x61\x63\x0f\x78\xee\xb8\xed\xb9\x24\x87\x15\x9f\xff\xed\xfd\xf6\x04\x6c\x6f\x8b\x88\x1f\xa4\x07\xc4\xa4\xce\x6c\x28\xde\x0b\x19\xc1\xf4\xe2\x9f\x1f\xcb\xc5\xa5\x8f\xfd\x14\x32\xa3\xe0\x93\x8a', '\x04\x73\x84\xc5\x1a\xe8\x1a\xdd\x0a\x52\x3a\xdb\xb1\x86\xc9\x1b\x90\x6f\xfb\x64\xc2\xc7\x65\x80\x2b\xf2\x6d\xbd\x13\xbd\xf1\x2c\x31\x9e\x80\xc2\x21\x3a\x13\x6c\x8e\xe0\x3d\x78\x74\xfd\x22\xb7\x0d\x68\xe7\xde\xe4\x69\xde\xcf\xbb\xb5\x10\xee\x9a\x46\x0c\xda\x45'];
-
-var keys = SATOSHI_KEYSS.map(function (key) {
-  return new Buffer(key, "binary");
-});
-
-var curve = (0, _ecurve.getCurveByName)("secp256k1");
-
-// Verifies ECDSA signature
-// pubkeys - Public keys
-// signature - ECDSA signature (concatenated R and S, both 32 bytes)
-// data - Data that are signed
-// returns True, iff the signature is correct with any of the pubkeys
-function verify(pubkeys, bsignature, data) {
-  var r = _bigi2.default.fromBuffer(bsignature.slice(0, 32));
-  var s = _bigi2.default.fromBuffer(bsignature.slice(32));
-  var signature = new _bitcoinjsLib.ECSignature(r, s);
-
-  var hash = _bitcoinjsLib.crypto.sha256(data);
-
-  return pubkeys.some(function (pubkey) {
-    var pair = _bitcoinjsLib.ECPair.fromPublicKeyBuffer(pubkey);
-    return pair.verify(hash, signature);
-  });
-}
-
-// Verifies if a given data is a correctly signed config
-// Returns the data, if correctly signed, else reject
-function verifyHexBin(data) {
-  var signature = new Buffer(data.slice(0, 64 * 2), "hex");
-  var dataB = new Buffer(data.slice(64 * 2), "hex");
-  var verified = verify(keys, signature, dataB);
-  if (!verified) {
-    return Promise.reject("Not correctly signed.");
-  } else {
-    return Promise.resolve(dataB);
-  }
-}
-
-}).call(this,require("buffer").Buffer)
-},{"bigi":5,"bitcoinjs-lib":16,"buffer":33,"ecurve":45}]},{},[118]);
+},{}]},{},[121]);
