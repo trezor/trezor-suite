@@ -19,9 +19,7 @@ const REPORT_ID = 63;
 
 function deviceToJson(device) {
   return {
-    path: device.deviceId.toString(),
-    vendor: device.vendorId,
-    product: device.productId
+    path: device.deviceId.toString()
   };
 }
 
@@ -280,7 +278,7 @@ class ChromeTransport {
     return hidConnect(deviceNu).then(d => d.toString()).catch(e => this._catchUdevError(e));
   }
 
-  disconnect(session) {
+  disconnect(path, session) {
     const sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
       return Promise.reject(new Error(`Session ${ session } is not a number`));

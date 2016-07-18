@@ -9,11 +9,15 @@ exports.Handler = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _defered = require('./defered');
+var _defered = require('../defered');
 
-var _parse_protocol = require('./protobuf/parse_protocol');
+var _parse_protocol = require('../protobuf/parse_protocol');
 
 var _verify = require('./verify');
+
+var _send = require('./send');
+
+var _receive = require('./receive');
 
 // eslint-disable-next-line quotes
 const stringify = require('json-stable-stringify');
@@ -130,7 +134,7 @@ class Handler {
       }
     }
     if (realPrevious != null) {
-      const releasePromise = this._realRelease(realPrevious);
+      const releasePromise = this._realRelease(parsed.path, realPrevious);
       return releasePromise;
     } else {
       return Promise.resolve();
@@ -144,23 +148,24 @@ class Handler {
         this.connections[parsed.path] = session;
         this.reverse[session] = parsed.path;
         this.deferedOnRelease[parsed.path] = (0, _defered.create)();
-        return { session: session };
+        return session;
       });
     });
   }
 
-  release(path) {
-    return this.lock(() => this._realRelease(path));
+  release(session) {
+    const path = this.reverse[session];
+    return this.lock(() => this._realRelease(path, session));
   }
 
-  _realRelease(path) {
-    return this.transport.disconnect(path).then(() => {
-      this._releaseCleanup(path);
+  _realRelease(path, session) {
+    return this.transport.disconnect(path, session).then(() => {
+      this._releaseCleanup(session);
     });
   }
 
-  _releaseCleanup(path) {
-    const session = this.connections[path];
+  _releaseCleanup(session) {
+    const path = this.reverse[session];
     delete this.reverse[session];
     delete this.connections[path];
     this.deferedOnRelease[path].reject(new Error(`Device released or disconnected`));
@@ -173,6 +178,26 @@ class Handler {
     }).then(messages => {
       this._messages = messages;
       return;
+    });
+  }
+
+  _sendTransport(session) {
+    const path = this.reverse[session];
+    return data => this.transport.send(path, session, data);
+  }
+
+  _receiveTransport(session) {
+    const path = this.reverse[session];
+    return () => this.transport.receive(path, session);
+  }
+
+  call(session, name, data) {
+    if (this._messages == null) {
+      return Promise.reject(new Error(`Handler not configured.`));
+    }
+    const messages = this._messages;
+    return (0, _send.buildAndSend)(messages, this._sendTransport(session), name, data).then(() => {
+      return (0, _receive.receiveAndParse)(messages, this._receiveTransport(session));
     });
   }
 }
