@@ -10,7 +10,6 @@ import {ByteBuffer} from "protobufjs";
 import type {Messages} from "../protobuf/messages.js";
 import type {MessageFromTrezor} from "./index";
 
-
 const MESSAGE_HEADER_BYTE: number = 0x23;
 
 // input that might or might not be fully parsed yet

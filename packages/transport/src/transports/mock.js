@@ -22,7 +22,7 @@ export class MockTransport {
     return Promise.resolve(`mock`);
   }
 
-  disconnect(session: string): Promise<void> {
+  disconnect(path:string, session: string): Promise<void> {
     return Promise.resolve();
   }
 }

@@ -1,5 +1,17 @@
 "use strict";
 
+/*
+ re-build this by:
+
+sed 's/\(google\/protobuf\)/\.\/\1/' trezor-common/protob/config.proto > trezor-common/protob/config_fixed.proto
+$(npm bin)/proto2js trezor-common/protob/config_fixed.proto -commonjs > config_proto_compiled.js
+rm trezor-common/protob/config_fixed.proto
+
+given trezor-common is from github trezor-common
+
+the config.proto is not changed much
+
+*/
 module.exports = require("protobufjs").newBuilder({})["import"]({
     "package": null,
     "messages": [{
