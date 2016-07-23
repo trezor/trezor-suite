@@ -1,12 +1,11 @@
 {
   "name": "trezor-link",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Trezor Link",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "build-browser": "make build-browser",
-    "check": "make check",
-    "build-node": "make build-node"
+    "build": "make build",
+    "check": "make check"
   },
   "repository": "https://github.com/runn1ng/trezor-connection.git",
   "author": "Karel Bílek <kb@karelbilek.com>",
@@ -29,31 +28,18 @@
       ]
     ]
   },
-  "babel": {
-    "presets": [
-      "es2015-node5"
-    ],
-    "plugins": [
-      "transform-flow-strip-types",
-      "transform-class-properties",
-      "transform-object-rest-spread",
-      "add-module-exports"
-    ]
-  },
   "bugs": {
     "url": "https://github.com/runn1ng/trezor-link/issues"
   },
   "homepage": "https://github.com/runn1ng/trezor-link",
   "devDependencies": {
-    "babel-cli": "^6.10.1",
-    "babel-plugin-add-module-exports": "0.1.2",
-    "babel-plugin-transform-class-properties": "6.4.0",
-    "babel-plugin-transform-flow-strip-types": "6.4.0",
-    "babel-plugin-transform-object-rest-spread": "6.3.13",
-    "babel-preset-es2015": "6.3.13",
-    "babel-preset-es2015-node5": "^1.2.0",
-    "babelify": "7.2.0",
-    "browserify": "12.0.1"
+    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-transform-class-properties": "^6.4.0",
+    "babel-plugin-transform-flow-strip-types": "^6.4.0",
+    "babel-plugin-transform-object-rest-spread": "^6.3.13",
+    "babel-preset-es2015": "^6.3.13",
+    "babelify": "^7.2.0",
+    "browserify": "^12.0.1"
   },
   "dependencies": {
     "bigi": "^1.4.1",

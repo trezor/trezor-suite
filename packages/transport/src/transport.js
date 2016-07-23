@@ -14,3 +14,4 @@ export type Transport = {
   connect: (path: string) => Promise<string>;
   disconnect: (path: string, session: string) => Promise<void>;
 }
+
