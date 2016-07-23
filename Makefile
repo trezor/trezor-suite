@@ -7,5 +7,7 @@ node_modules:
 
 build:
 	rm -rf dist
-	mkdir -p dist
+	cp -r src/ dist
+	find dist/ -type f ! -name '*.js' | xargs -I {} rm {}
+	find dist/ -name '*.js' | xargs -I {} mv {} {}.flow
 	`npm bin`/browserify src/index.js > dist/index.js
