@@ -41,3 +41,13 @@ Flow
 If you want to use flow for typechecking, just include the file as normally, it will automatically use the included flow file. However, you need to add flowtype/bitcoinjs-libs.js to your `[libs]` (or copy it yourself from flow-typed repository), and probably other libs from 
 
 I myself recommend 100% using Flow, but it can be a pain to set up, so it's on you.
+
+License
+----
+LGPLv3
+
+* (C) 2015 Karel Bilek (SatoshiLabs) <kb@karelbilek.com>
+* (C) 2014 Mike Tsao <mike@sowbug.com>
+* (C) 2014 Liz Fong-Jones <lizf@google.com>
+* (C) 2015 William Wolf <throughnothing@gmail.com>
+

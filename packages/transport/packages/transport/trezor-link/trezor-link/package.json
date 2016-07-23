@@ -9,7 +9,7 @@
   },
   "repository": "https://github.com/runn1ng/trezor-connection.git",
   "author": "Karel Bílek <kb@karelbilek.com>",
-  "license": "GPL-3.0+",
+  "license": "LGPL-3.0+",
   "browserify": {
     "transform": [
       [
