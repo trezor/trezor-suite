@@ -2104,11 +2104,11 @@ module.exports = BigInteger
 module.exports={
   "_args": [
     [
-      "bigi",
-      "/home/peepee/dev/trezor-connection"
+      "bigi@^1.4.1",
+      "/home/peepee/dev/trezor-link"
     ]
   ],
-  "_from": "bigi@latest",
+  "_from": "bigi@>=1.4.1 <2.0.0",
   "_id": "bigi@1.4.1",
   "_inCache": true,
   "_installable": true,
@@ -2122,11 +2122,11 @@ module.exports={
   "_phantomChildren": {},
   "_requested": {
     "name": "bigi",
-    "raw": "bigi",
-    "rawSpec": "",
+    "raw": "bigi@^1.4.1",
+    "rawSpec": "^1.4.1",
     "scope": null,
-    "spec": "latest",
-    "type": "tag"
+    "spec": ">=1.4.1 <2.0.0",
+    "type": "range"
   },
   "_requiredBy": [
     "/",
@@ -2136,8 +2136,8 @@ module.exports={
   "_resolved": "https://registry.npmjs.org/bigi/-/bigi-1.4.1.tgz",
   "_shasum": "726e8ab08d1fe1dfb8aa6bb6309bffecf93a21b7",
   "_shrinkwrap": null,
-  "_spec": "bigi",
-  "_where": "/home/peepee/dev/trezor-connection",
+  "_spec": "bigi@^1.4.1",
+  "_where": "/home/peepee/dev/trezor-link",
   "bugs": {
     "url": "https://github.com/cryptocoinjs/bigi/issues"
   },
@@ -23180,8 +23180,6 @@ module.exports = {
 
 }).call(this,require("buffer").Buffer)
 },{"bs58check":28,"buffer":33}],116:[function(require,module,exports){
-
-
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23203,8 +23201,6 @@ function create() {
 }
 
 },{}],117:[function(require,module,exports){
-
-
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23276,7 +23272,6 @@ var Handler = exports.Handler = function () {
 
 
   // path => promise rejecting on release
-
   function Handler(transport) {
     _classCallCheck(this, Handler);
 
@@ -23363,7 +23358,7 @@ var Handler = exports.Handler = function () {
         }
       }
       if (realPrevious != null) {
-        var releasePromise = this._realRelease(realPrevious);
+        var releasePromise = this._realRelease(parsed.path, realPrevious);
         return releasePromise;
       } else {
         return Promise.resolve();
@@ -23391,16 +23386,17 @@ var Handler = exports.Handler = function () {
     value: function release(session) {
       var _this4 = this;
 
+      var path = this.reverse[session];
       return this.lock(function () {
-        return _this4._realRelease(session);
+        return _this4._realRelease(path, session);
       });
     }
   }, {
     key: '_realRelease',
-    value: function _realRelease(session) {
+    value: function _realRelease(path, session) {
       var _this5 = this;
 
-      return this.transport.disconnect(session).then(function () {
+      return this.transport.disconnect(path, session).then(function () {
         _this5._releaseCleanup(session);
       });
     }
@@ -23464,8 +23460,6 @@ var Handler = exports.Handler = function () {
 }();
 
 },{"../defered":116,"../protobuf/parse_protocol":125,"./receive":118,"./send":119,"./verify":120,"json-stable-stringify":72}],118:[function(require,module,exports){
-
-
 "use strict";
 
 // Logic of recieving data from trezor
@@ -23491,7 +23485,6 @@ var MESSAGE_HEADER_BYTE = 0x23;
 
 var PartiallyParsedInput = function () {
   // Expected length of the raq message, in bytes
-
   function PartiallyParsedInput(typeNumber, length) {
     _classCallCheck(this, PartiallyParsedInput);
 
@@ -23594,8 +23587,6 @@ function receiveAndParse(messages, receiver) {
 }
 
 },{"../protobuf/message_decoder.js":123,"protobufjs":87}],119:[function(require,module,exports){
-
-
 "use strict";
 
 // Logic of sending data to trezor
@@ -23765,8 +23756,6 @@ function buildAndSend(messages, sender, name, data) {
 
 },{"protobufjs":87}],120:[function(require,module,exports){
 (function (Buffer){
-
-
 "use strict";
 
 // Module for verifying ECDSA signature of configuration.
@@ -23825,51 +23814,14 @@ function verifyHexBin(data) {
 
 }).call(this,require("buffer").Buffer)
 },{"bigi":5,"bitcoinjs-lib":16,"buffer":33}],121:[function(require,module,exports){
-
-
-"use strict";
+'use strict';
 
 var _handler = require('./handler');
 
-var _chrome = require('./transports/chrome');
+// not sure how to do this in ES6 syntax, so I won't
+module.exports = _handler.Handler;
 
-var handler = new _handler.Handler(_chrome.chromeTransport);
-
-fetch('./config_signed.bin').then(function (res) {
-  return res.text();
-}).then(function (res) {
-  handler.configure(res).then(function () {
-    handler.enumerate().then(function (enres) {
-      handler.acquire(enres[0].path).then(function (session) {
-        handler.call(session, "GetFeatures", {}).then(function (features) {
-          console.log(features);
-        });
-      });
-    });
-  }, function (e) {
-    console.error(e);
-  });
-});
-
-/**/
-
-/*const fs = require(`fs`);
-fs.readFile(`../dist/config_signed.bin`, `utf8`, function (err, data) {
-  if (err) {
-    return console.log(err);
-  }
-
-  handler.configure(data).then(
-    () => {
-      console.log(handler._messages);
-    },
-    (e) => {
-      console.error(e);
-    }
-  );
-});*/
-
-},{"./handler":117,"./transports/chrome":127}],122:[function(require,module,exports){
+},{"./handler":117}],122:[function(require,module,exports){
 "use strict";
 
 /*
@@ -24733,8 +24685,6 @@ module.exports = require("protobufjs").newBuilder({})["import"]({
 }).build();
 
 },{"protobufjs":87}],123:[function(require,module,exports){
-
-
 "use strict";
 
 // Helper module for converting Trezor's raw input to
@@ -24759,7 +24709,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var MessageDecoder = exports.MessageDecoder = function () {
   // message type number
-
   function MessageDecoder(messages, type, data) {
     _classCallCheck(this, MessageDecoder);
 
@@ -24871,8 +24820,6 @@ function messageToJSON(message) {
 }
 
 },{"./messages.js":124,"protobufjs":87}],124:[function(require,module,exports){
-
-
 "use strict";
 
 // This is a simple class that represents information about messages,
@@ -24911,8 +24858,6 @@ var Messages = exports.Messages = function Messages(messages) {
 };
 
 },{"protobufjs":87}],125:[function(require,module,exports){
-
-
 "use strict";
 
 // Module for loading the protobuf description from serialized description
@@ -24955,8 +24900,6 @@ function parseConfigure(data) {
 }
 
 },{"./config_proto_compiled.js":122,"./messages.js":124,"./to_json.js":126,"protobufjs":87}],126:[function(require,module,exports){
-
-
 "use strict";
 
 // Helper module that does conversion from already parsed protobuf's
@@ -24979,9 +24922,7 @@ var _object = require("object.values");
 
 if (!Object.values) {
   (0, _object.shim)();
-}
-
-function protocolToJSON(p) {
+}function protocolToJSON(p) {
   // TODO: what if there are more files?
   var res = fileToJSON(p.file[2]);
   res.imports = [fileToJSON(p.file[1])];
@@ -25082,353 +25023,4 @@ function fieldToJSON(field) {
   return res;
 }
 
-},{"object.values":80}],127:[function(require,module,exports){
-
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-exports.storageGet = storageGet;
-exports.storageSet = storageSet;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var TREZOR_DESC = {
-  vendorId: 0x534c,
-  productId: 0x0001
-};
-
-var FORBIDDEN_DESCRIPTORS = [0xf1d0, 0xff01];
-var REPORT_ID = 63;
-
-function deviceToJson(device) {
-  return {
-    path: device.deviceId.toString(),
-    vendor: device.vendorId,
-    product: device.productId
-  };
-}
-
-function hidEnumerate() {
-  return new Promise(function (resolve, reject) {
-    try {
-      chrome.hid.getDevices(TREZOR_DESC, function (devices) {
-        if (chrome.runtime.lastError) {
-          reject(new Error(chrome.runtime.lastError));
-        } else {
-          resolve(devices);
-        }
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-function hidSend(id, reportId, data) {
-  return new Promise(function (resolve, reject) {
-    try {
-      chrome.hid.send(id, reportId, data, function () {
-        if (chrome.runtime.lastError) {
-          reject(new Error(chrome.runtime.lastError));
-        } else {
-          resolve();
-        }
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-function hidReceive(id) {
-  return new Promise(function (resolve, reject) {
-    try {
-      chrome.hid.receive(id, function (reportId, data) {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          resolve({ data: data, reportId: reportId });
-        }
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-function hidConnect(id) {
-  return new Promise(function (resolve, reject) {
-    try {
-      chrome.hid.connect(id, function (connection) {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          resolve(connection.connectionId);
-        }
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-// Disconnects from trezor.
-// First parameter is connection ID (*not* device ID!)
-function hidDisconnect(id) {
-  return new Promise(function (resolve, reject) {
-    try {
-      chrome.hid.disconnect(id, function () {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          resolve();
-        }
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-// encapsulating chrome's platform info into Promise API
-function platformInfo() {
-  return new Promise(function (resolve, reject) {
-    try {
-      chrome.runtime.getPlatformInfo(function (info) {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          if (info == null) {
-            reject(new Error("info is null"));
-          } else {
-            resolve(info);
-          }
-        }
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-function storageGet(key) {
-  return new Promise(function (resolve, reject) {
-    try {
-      chrome.storage.local.get(key, function (items) {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          if (items[key] === null || items[key] === undefined) {
-            resolve(null);
-          } else {
-            resolve(items[key]);
-          }
-          resolve(items);
-        }
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-// Set to storage
-function storageSet(key, value) {
-  return new Promise(function (resolve, reject) {
-    try {
-      var obj = {};
-      obj[key] = value;
-      chrome.storage.local.set(obj, function () {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          resolve(undefined);
-        }
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-var ChromeTransport = exports.ChromeTransport = function () {
-  function ChromeTransport() {
-    _classCallCheck(this, ChromeTransport);
-
-    this._hasReportId = {};
-    this._udevError = false;
-  }
-
-  _createClass(ChromeTransport, [{
-    key: "_catchUdevError",
-    value: function _catchUdevError(error) {
-      var errMessage = error;
-      if (errMessage.message !== undefined) {
-        errMessage = error.message;
-      }
-      // A little heuristics.
-      // If error message is one of these and the type of original message is initialization, it's
-      // probably udev error.
-      if (errMessage === "Failed to open HID device." || errMessage === "Transfer failed.") {
-        this._udevError = true;
-      }
-      throw error;
-    }
-  }, {
-    key: "_isLinux",
-    value: function _isLinux() {
-      var _this = this;
-
-      if (this._isLinuxCached != null) {
-        return Promise.resolve(this._isLinuxCached);
-      }
-      return platformInfo().then(function (info) {
-        var linux = info.os === "linux";
-        _this._isLinuxCached = linux;
-        return linux;
-      });
-    }
-  }, {
-    key: "_isAfterInstall",
-    value: function _isAfterInstall() {
-      return storageGet("afterInstall").then(function (afterInstall) {
-        return afterInstall !== false;
-      });
-    }
-  }, {
-    key: "showUdevError",
-    value: function showUdevError() {
-      var _this2 = this;
-
-      return this._isLinux().then(function (isLinux) {
-        if (!isLinux) {
-          return false;
-        }
-        return _this2._isAfterInstall().then(function (isAfterInstall) {
-          if (isAfterInstall) {
-            return true;
-          } else {
-            return _this2._udevError;
-          }
-        });
-      });
-    }
-  }, {
-    key: "clearUdevError",
-    value: function clearUdevError() {
-      this._udevError = false;
-      return storageSet("afterInstall", true);
-    }
-  }, {
-    key: "enumerate",
-    value: function enumerate() {
-      var _this3 = this;
-
-      return hidEnumerate().then(function (devices) {
-        return devices.filter(function (device) {
-          return !FORBIDDEN_DESCRIPTORS.some(function (des) {
-            return des === device.collections[0].usagePage;
-          });
-        });
-      }).then(function (devices) {
-        _this3._hasReportId = {};
-
-        devices.forEach(function (device) {
-          _this3._hasReportId[device.deviceId.toString()] = device.collections[0].reportIds.length !== 0;
-        });
-
-        return devices;
-      }).then(function (devices) {
-        return devices.map(function (device) {
-          return deviceToJson(device);
-        });
-      });
-    }
-  }, {
-    key: "send",
-    value: function send(device, session, data) {
-      var _this4 = this;
-
-      var sessionNu = parseInt(session);
-      if (isNaN(sessionNu)) {
-        return Promise.reject(new Error("Session " + session + " is not a number"));
-      }
-      var hasReportId = this._hasReportId[device.toString()];
-      var reportId = hasReportId ? REPORT_ID : 0;
-
-      var ab = data;
-      if (!hasReportId) {
-        var newArray = new Uint8Array(64);
-        newArray[0] = 63;
-        newArray.set(new Uint8Array(data), 1);
-        ab = newArray.buffer;
-      }
-
-      return hidSend(sessionNu, reportId, ab).catch(function (e) {
-        return _this4._catchUdevError(e);
-      });
-    }
-  }, {
-    key: "receive",
-    value: function receive(device, session) {
-      var _this5 = this;
-
-      var sessionNu = parseInt(session);
-      if (isNaN(sessionNu)) {
-        return Promise.reject(new Error("Session " + session + " is not a number"));
-      }
-      return hidReceive(sessionNu).then(function (_ref) {
-        var data = _ref.data;
-        var reportId = _ref.reportId;
-
-        if (reportId !== 0) {
-          return data;
-        } else {
-          return data.slice(1);
-        }
-      }).then(function (res) {
-        return _this5.clearUdevError().then(function () {
-          return res;
-        });
-      }).catch(function (e) {
-        return _this5._catchUdevError(e);
-      });
-    }
-  }, {
-    key: "connect",
-    value: function connect(device) {
-      var _this6 = this;
-
-      var deviceNu = parseInt(device);
-      if (isNaN(deviceNu)) {
-        return Promise.reject(new Error("Device " + deviceNu + " is not a number"));
-      }
-      return hidConnect(deviceNu).then(function (d) {
-        return d.toString();
-      }).catch(function (e) {
-        return _this6._catchUdevError(e);
-      });
-    }
-  }, {
-    key: "disconnect",
-    value: function disconnect(session) {
-      var sessionNu = parseInt(session);
-      if (isNaN(sessionNu)) {
-        return Promise.reject(new Error("Session " + session + " is not a number"));
-      }
-      return hidDisconnect(sessionNu);
-    }
-  }]);
-
-  return ChromeTransport;
-}();
-
-var chromeTransport = exports.chromeTransport = new ChromeTransport();
-
-},{}]},{},[121]);
+},{"object.values":80}]},{},[121]);
