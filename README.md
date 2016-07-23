@@ -18,7 +18,7 @@ Use like this (in node):
 
 ```javascript
 var Link = require('trezor-link');
-var nodeTransport = require('trezor-link-node-hid');
+var nodeTransport = require('trezor-link-node-hid'); // in npm
 
 var link = new Link(hidTransport);
 link.enumerate().then(function (devices) {
