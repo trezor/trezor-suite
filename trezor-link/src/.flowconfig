@@ -8,14 +8,9 @@
 ../node_modules/json-stable-stringify/
 ../node_modules/protobufjs/
 ../node_modules/object.values/
-../node_modules/node-hid/
 
 [libs]
-../flowtype/chrome.js
-../flowtype/node-hid.js
-../flowtype/bitcoinjs-flow/ecurve.js
-../flowtype/bitcoinjs-flow/bigi.js
-../flowtype/bitcoinjs-flow/bitcoin.js
+../flowtype/bitcoinjs-lib.js
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue

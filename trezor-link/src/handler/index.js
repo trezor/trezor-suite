@@ -2,7 +2,7 @@
 
 "use strict";
 
-import type {TrezorDeviceInfo, Transport} from '../transports';
+import type {TrezorDeviceInfo, Transport} from '../transport';
 import {create as createDefered} from '../defered';
 import {parseConfigure} from '../protobuf/parse_protocol';
 import {verifyHexBin} from './verify';

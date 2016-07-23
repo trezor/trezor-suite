@@ -5,8 +5,7 @@ check: node_modules
 node_modules:
 	npm install
 
-build-browser:
+build:
+	rm -rf dist
+	mkdir -p dist
 	`npm bin`/browserify src/index.js > dist/index.js
-
-build-node:
-	`npm bin`/babel src --out-dir lib
