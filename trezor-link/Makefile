@@ -1,6 +1,6 @@
 check: node_modules
 	flow check src/
-	eslint src/*.js
+	cd src/; eslint .
 
 node_modules:
 	npm install
