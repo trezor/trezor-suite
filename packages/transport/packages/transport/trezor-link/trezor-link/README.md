@@ -20,8 +20,23 @@ Use like this (in node):
 var Link = require('trezor-link');
 var nodeTransport = require('trezor-link-node-hid'); // in npm
 
+// for simple config load; you can also load by file API from a disk without node-fetch
+var fetch = require('node-fetch');
+
+var config = fetch('https://wallet.mytrezor.com/data/config_signed.bin').then(function (response) {
+  if (response.ok) {
+    return response.text();
+  } else {
+    throw new Error(`Fetch error ${response.status}`);
+  }
+});
+
 var link = new Link(hidTransport);
-link.enumerate().then(function (devices) {
+config.then(function (configData) {
+  return link.configure(configData);
+}).then(function () {
+  return link.enumerate();
+}).then(function (devices) {
   return link.acquire(devices[0].path);
 }).then(function (session) {
   return link.call(session, 'GetFeatures', {}).then(function (features) {
@@ -34,7 +49,7 @@ link.enumerate().then(function (devices) {
 
 ```
 
-Similarly with chrome and its module.
+Similarly with chrome and its module; no need to use node-fetch replacement in Chrome though, since it's built-in there.
 
 Flow
 ----
