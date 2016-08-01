@@ -23459,7 +23459,7 @@ var Handler = exports.Handler = function () {
   return Handler;
 }();
 
-},{"../defered":116,"../protobuf/parse_protocol":125,"./receive":118,"./send":119,"./verify":120,"json-stable-stringify":72}],118:[function(require,module,exports){
+},{"../defered":116,"../protobuf/parse_protocol":126,"./receive":118,"./send":119,"./verify":120,"json-stable-stringify":72}],118:[function(require,module,exports){
 "use strict";
 
 // Logic of recieving data from trezor
@@ -23818,10 +23818,14 @@ function verifyHexBin(data) {
 
 var _handler = require('./handler');
 
+var _monkey_patch = require('./protobuf/monkey_patch');
+
+(0, _monkey_patch.patch)();
+
 // not sure how to do this in ES6 syntax, so I won't
 module.exports = _handler.Handler;
 
-},{"./handler":117}],122:[function(require,module,exports){
+},{"./handler":117,"./protobuf/monkey_patch":125}],122:[function(require,module,exports){
 "use strict";
 
 /*
@@ -24860,6 +24864,46 @@ var Messages = exports.Messages = function Messages(messages) {
 },{"protobufjs":87}],125:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.patch = patch;
+
+var _protobufjs = require("protobufjs");
+
+var ProtoBuf = _interopRequireWildcard(_protobufjs);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var patched = false;
+
+// monkey-patching ProtoBuf,
+// so that bytes are loaded and decoded from hexadecimal
+// when we expect bytes and we get string
+function patch() {
+  if (!patched) {
+    ProtoBuf.Reflect.Message.Field.prototype.verifyValueOriginal = ProtoBuf.Reflect.Message.Field.prototype.verifyValue;
+
+    // note: don't rewrite this function to arrow (value, skipRepeated) => ....
+    // since I need `this` from the original context
+    ProtoBuf.Reflect.Message.Field.prototype.verifyValue = function (value, skipRepeated) {
+      var newValue = value;
+      if (this.type === ProtoBuf.TYPES["bytes"]) {
+        if (value != null) {
+          if (typeof value === "string") {
+            newValue = _protobufjs.ByteBuffer.wrap(value, "hex");
+          }
+        }
+      }
+      return this.verifyValueOriginal(newValue, skipRepeated);
+    };
+  }
+  patched = true;
+}
+
+},{"protobufjs":87}],126:[function(require,module,exports){
+"use strict";
+
 // Module for loading the protobuf description from serialized description
 
 Object.defineProperty(exports, "__esModule", {
@@ -24899,7 +24943,7 @@ function parseConfigure(data) {
   return new _messages.Messages(protobufMessages);
 }
 
-},{"./config_proto_compiled.js":122,"./messages.js":124,"./to_json.js":126,"protobufjs":87}],126:[function(require,module,exports){
+},{"./config_proto_compiled.js":122,"./messages.js":124,"./to_json.js":127,"protobufjs":87}],127:[function(require,module,exports){
 "use strict";
 
 // Helper module that does conversion from already parsed protobuf's
