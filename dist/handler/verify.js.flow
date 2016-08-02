@@ -39,14 +39,14 @@ function verify(pubkeys: Array<Buffer>, bsignature: Buffer, data: Buffer): boole
 }
 
 // Verifies if a given data is a correctly signed config
-// Returns the data, if correctly signed, else reject
-export function verifyHexBin(data: string): Promise<Buffer> {
+// Returns the data, if correctly signed, else throws
+export function verifyHexBin(data: string): Buffer {
   const signature = new Buffer(data.slice(0, 64 * 2), `hex`);
   const dataB = new Buffer(data.slice(64 * 2), `hex`);
   const verified = verify(keys, signature, dataB);
   if (!verified) {
-    return Promise.reject(`Not correctly signed.`);
+    throw new Error(`Not correctly signed.`);
   } else {
-    return Promise.resolve(dataB);
+    return dataB;
   }
 }
