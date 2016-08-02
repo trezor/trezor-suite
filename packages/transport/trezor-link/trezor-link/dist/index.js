@@ -23412,47 +23412,56 @@ var Handler = exports.Handler = function () {
   }, {
     key: 'configure',
     value: function configure(signedData) {
-      var _this6 = this;
-
-      return (0, _verify.verifyHexBin)(signedData).then(function (data) {
-        return (0, _parse_protocol.parseConfigure)(data);
-      }).then(function (messages) {
-        _this6._messages = messages;
-        return;
-      });
+      try {
+        var buffer = (0, _verify.verifyHexBin)(signedData);
+        var messages = (0, _parse_protocol.parseConfigure)(buffer);
+        this._messages = messages;
+        return Promise.resolve();
+      } catch (e) {
+        return Promise.reject(e);
+      }
     }
   }, {
     key: '_sendTransport',
     value: function _sendTransport(session) {
-      var _this7 = this;
+      var _this6 = this;
 
       var path = this.reverse[session];
       return function (data) {
-        return _this7.transport.send(path, session, data);
+        return _this6.transport.send(path, session, data);
       };
     }
   }, {
     key: '_receiveTransport',
     value: function _receiveTransport(session) {
-      var _this8 = this;
+      var _this7 = this;
 
       var path = this.reverse[session];
       return function () {
-        return _this8.transport.receive(path, session);
+        return _this7.transport.receive(path, session);
       };
     }
   }, {
     key: 'call',
     value: function call(session, name, data) {
-      var _this9 = this;
+      var _this8 = this;
 
       if (this._messages == null) {
         return Promise.reject(new Error('Handler not configured.'));
       }
       var messages = this._messages;
       return (0, _send.buildAndSend)(messages, this._sendTransport(session), name, data).then(function () {
-        return (0, _receive.receiveAndParse)(messages, _this9._receiveTransport(session));
+        return (0, _receive.receiveAndParse)(messages, _this8._receiveTransport(session));
       });
+    }
+  }, {
+    key: 'hasMessages',
+    value: function hasMessages() {
+      if (this._messages == null) {
+        return Promise.resolve(false);
+      } else {
+        return Promise.resolve(true);
+      }
     }
   }]);
 
@@ -23800,15 +23809,15 @@ function verify(pubkeys, bsignature, data) {
 }
 
 // Verifies if a given data is a correctly signed config
-// Returns the data, if correctly signed, else reject
+// Returns the data, if correctly signed, else throws
 function verifyHexBin(data) {
   var signature = new Buffer(data.slice(0, 64 * 2), "hex");
   var dataB = new Buffer(data.slice(64 * 2), "hex");
   var verified = verify(keys, signature, dataB);
   if (!verified) {
-    return Promise.reject("Not correctly signed.");
+    throw new Error("Not correctly signed.");
   } else {
-    return Promise.resolve(dataB);
+    return dataB;
   }
 }
 
