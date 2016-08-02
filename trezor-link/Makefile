@@ -6,8 +6,8 @@ node_modules:
 	npm install
 
 build:
-	rm -rf dist
-	cp -r src/ dist
-	find dist/ -type f ! -name '*.js' | xargs -I {} rm {}
-	find dist/ -name '*.js' | xargs -I {} mv {} {}.flow
-	`npm bin`/browserify src/index.js > dist/index.js
+	rm -rf lib
+	cp -r src/ lib
+	find lib/ -type f ! -name '*.js' | xargs -I {} rm {}
+	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
+	`npm bin`/babel src --out-dir lib
