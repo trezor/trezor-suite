@@ -17,7 +17,7 @@ export type MessageFromTrezor = {type: string, message: Object};
 // eslint-disable-next-line quotes
 const stringify = require('json-stable-stringify');
 
-type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
+export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
   session: ?string;
 }
 
@@ -27,7 +27,7 @@ type InternalAcquireInput = {
   checkPrevious: boolean;
 }
 
-type AcquireInput = {
+export type AcquireInput = {
   path: string;
   previous: ?string;
 } | string;
