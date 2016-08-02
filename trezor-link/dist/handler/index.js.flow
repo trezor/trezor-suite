@@ -17,7 +17,7 @@ export type MessageFromTrezor = {type: string, message: Object};
 // eslint-disable-next-line quotes
 const stringify = require('json-stable-stringify');
 
-type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
+export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
   session: ?string;
 }
 
@@ -27,7 +27,7 @@ type InternalAcquireInput = {
   checkPrevious: boolean;
 }
 
-type AcquireInput = {
+export type AcquireInput = {
   path: string;
   previous: ?string;
 } | string;
@@ -187,12 +187,14 @@ export class Handler {
   }
 
   configure(signedData: string): Promise<void> {
-    return verifyHexBin(signedData).then((data: Buffer): Messages => {
-      return parseConfigure(data);
-    }).then((messages: Messages) => {
+    try {
+      const buffer = verifyHexBin(signedData);
+      const messages = parseConfigure(buffer);
       this._messages = messages;
-      return;
-    });
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 
   _sendTransport(session: string): (data: ArrayBuffer) => Promise<void> {
@@ -213,5 +215,13 @@ export class Handler {
     return buildAndSend(messages, this._sendTransport(session), name, data).then(() => {
       return receiveAndParse(messages, this._receiveTransport(session));
     });
+  }
+
+  hasMessages(): Promise<boolean> {
+    if (this._messages == null) {
+      return Promise.resolve(false);
+    } else {
+      return Promise.resolve(true);
+    }
   }
 }
