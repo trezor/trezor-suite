@@ -187,12 +187,14 @@ export class Handler {
   }
 
   configure(signedData: string): Promise<void> {
-    return verifyHexBin(signedData).then((data: Buffer): Messages => {
-      return parseConfigure(data);
-    }).then((messages: Messages) => {
+    try {
+      const buffer = verifyHexBin(signedData);
+      const messages = parseConfigure(buffer);
       this._messages = messages;
-      return;
-    });
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 
   _sendTransport(session: string): (data: ArrayBuffer) => Promise<void> {
