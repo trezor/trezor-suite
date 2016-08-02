@@ -216,4 +216,12 @@ export class Handler {
       return receiveAndParse(messages, this._receiveTransport(session));
     });
   }
+
+  hasMessages(): Promise<boolean> {
+    if (this._messages == null) {
+      return Promise.resolve(false);
+    } else {
+      return Promise.resolve(true);
+    }
+  }
 }
