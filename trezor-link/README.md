@@ -11,6 +11,8 @@ The long-term plan is to merge trezor.js and trezor-link, so that we don't have 
 
 trezor-link uses plugins for various transports. So far, we have two transports - one for communicating via Chrome HID API in extensions, and one for communicating via node-hid in Node.js environment (for use in Electron apps, or regular node apps).
 
+We are transpiling to JS that runs on chrome >= 49 and node >= 5, since it doesn't run anywhere else anyway and there is no need to transpile to the other environments. If you have a reason why to transpile to anything else (older node / other browser), just write a github issue!
+
 How to use
 -----
 
