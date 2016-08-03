@@ -23,18 +23,18 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 // Parse configure data (it has to be already verified)
 function parseConfigure(data) {
-  var configBuilder = compiledConfigProto["Configuration"];
-  var loadedConfig = configBuilder.decode(data);
+  const configBuilder = compiledConfigProto[`Configuration`];
+  const loadedConfig = configBuilder.decode(data);
 
-  var validUntil = loadedConfig.valid_until;
-  var timeNow = Math.floor(Date.now() / 1000);
+  const validUntil = loadedConfig.valid_until;
+  const timeNow = Math.floor(Date.now() / 1000);
   if (timeNow >= validUntil) {
-    throw new Error("Config too old; " + timeNow + " >= " + validUntil);
+    throw new Error(`Config too old; ` + timeNow + ` >= ` + validUntil);
   }
 
-  var wireProtocol = loadedConfig.wire_protocol;
-  var protocolJSON = (0, _to_json.protocolToJSON)(wireProtocol.toRaw());
-  var protobufMessages = ProtoBuf.newBuilder({})["import"](protocolJSON).build();
+  const wireProtocol = loadedConfig.wire_protocol;
+  const protocolJSON = (0, _to_json.protocolToJSON)(wireProtocol.toRaw());
+  const protobufMessages = ProtoBuf.newBuilder({})[`import`](protocolJSON).build();
 
   return new _messages.Messages(protobufMessages);
 }
