@@ -6,6 +6,7 @@ export type Defered = {
   promise: Promise<void>;
   resolve: () => void;
   reject: (e: Error) => void;
+  rejectingPromise: Promise<any>;
 };
 
 export function create(): Defered {
@@ -15,8 +16,12 @@ export function create(): Defered {
     _resolve = resolve;
     _reject = reject;
   });
+  const rejectingPromise = promise.then(() => {
+    throw new Error(`Promise is always rejecting`);
+  });
   return {
     promise,
+    rejectingPromise,
     resolve: _resolve,
     reject: _reject,
   };
