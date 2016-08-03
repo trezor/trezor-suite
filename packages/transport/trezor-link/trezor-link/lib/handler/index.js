@@ -185,7 +185,7 @@ var Handler = exports.Handler = function () {
         }).then(function (session) {
           _this3.connections[parsed.path] = session;
           _this3.reverse[session] = parsed.path;
-          _this3.deferedOnRelease[parsed.path] = (0, _defered.create)();
+          _this3.deferedOnRelease[session] = (0, _defered.create)();
           return session;
         });
       });
@@ -215,7 +215,8 @@ var Handler = exports.Handler = function () {
       var path = this.reverse[session];
       delete this.reverse[session];
       delete this.connections[path];
-      this.deferedOnRelease[path].reject(new Error('Device released or disconnected'));
+      this.deferedOnRelease[session].reject(new Error('Device released or disconnected'));
+      delete this.deferedOnRelease[session];
       return;
     }
   }, {
@@ -259,9 +260,10 @@ var Handler = exports.Handler = function () {
         return Promise.reject(new Error('Handler not configured.'));
       }
       var messages = this._messages;
-      return (0, _send.buildAndSend)(messages, this._sendTransport(session), name, data).then(function () {
+      var resPromise = (0, _send.buildAndSend)(messages, this._sendTransport(session), name, data).then(function () {
         return (0, _receive.receiveAndParse)(messages, _this8._receiveTransport(session));
       });
+      return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
     }
   }, {
     key: 'hasMessages',

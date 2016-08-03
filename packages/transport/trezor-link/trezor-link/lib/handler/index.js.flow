@@ -86,7 +86,7 @@ export class Handler {
   _lock: Promise<any> = Promise.resolve();
 
   // path => promise rejecting on release
-  deferedOnRelease: {[path: string]: Defered} = {};
+  deferedOnRelease: {[session: string]: Defered} = {};
 
   // path => session
   connections: {[path: string]: string} = {};
@@ -173,7 +173,7 @@ export class Handler {
       ).then((session: string) => {
         this.connections[parsed.path] = session;
         this.reverse[session] = parsed.path;
-        this.deferedOnRelease[parsed.path] = createDefered();
+        this.deferedOnRelease[session] = createDefered();
         return session;
       });
     });
@@ -194,7 +194,8 @@ export class Handler {
     const path: string = this.reverse[session];
     delete this.reverse[session];
     delete this.connections[path];
-    this.deferedOnRelease[path].reject(new Error(`Device released or disconnected`));
+    this.deferedOnRelease[session].reject(new Error(`Device released or disconnected`));
+    delete this.deferedOnRelease[session];
     return;
   }
 
@@ -224,9 +225,10 @@ export class Handler {
       return Promise.reject(new Error(`Handler not configured.`));
     }
     const messages = this._messages;
-    return buildAndSend(messages, this._sendTransport(session), name, data).then(() => {
+    const resPromise = buildAndSend(messages, this._sendTransport(session), name, data).then(() => {
       return receiveAndParse(messages, this._receiveTransport(session));
     });
+    return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
   }
 
   hasMessages(): Promise<boolean> {
