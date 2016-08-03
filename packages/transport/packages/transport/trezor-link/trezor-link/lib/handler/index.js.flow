@@ -192,6 +192,9 @@ export class Handler {
 
   release(session: string): Promise<void> {
     const path = this.reverse[session];
+    if (path == null) {
+      return Promise.reject(new Error(`Trying to double release.`));
+    }
     return this.lock(() => this._realRelease(path, session));
   }
 
