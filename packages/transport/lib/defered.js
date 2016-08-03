@@ -11,8 +11,12 @@ function create() {
     _resolve = resolve;
     _reject = reject;
   });
+  var rejectingPromise = promise.then(function () {
+    throw new Error("Promise is always rejecting");
+  });
   return {
     promise: promise,
+    rejectingPromise: rejectingPromise,
     resolve: _resolve,
     reject: _reject
   };
