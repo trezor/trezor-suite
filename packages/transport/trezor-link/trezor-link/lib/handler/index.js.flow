@@ -235,6 +235,9 @@ export class Handler {
     if (this._messages == null) {
       return Promise.reject(new Error(`Handler not configured.`));
     }
+    if (this.reverse[session] == null) {
+      return Promise.reject(new Error(`Trying to use device after release.`));
+    }
     const messages = this._messages;
     const resPromise = buildAndSend(messages, this._sendTransport(session), name, data).then(() => {
       return receiveAndParse(messages, this._receiveTransport(session));
