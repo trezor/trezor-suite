@@ -109,7 +109,19 @@ class Handler {
     });
   }
 
-  _releaseDisconnected(devices) {}
+  _releaseDisconnected(devices) {
+    const connected = {};
+    devices.forEach(device => {
+      connected[device.path] = true;
+    });
+    Object.keys(this.connections).forEach(path => {
+      if (connected[path] == null) {
+        if (this.connections[path] != null) {
+          this._releaseCleanup(this.connections[path]);
+        }
+      }
+    });
+  }
 
   listen(old) {
     const oldStringified = stableStringify(old);
