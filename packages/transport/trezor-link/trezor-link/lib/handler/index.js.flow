@@ -123,6 +123,17 @@ export class Handler {
   }
 
   _releaseDisconnected(devices: Array<TrezorDeviceInfoWithSession>) {
+    const connected: {[path: string]: boolean} = {};
+    devices.forEach(device => {
+      connected[device.path] = true;
+    });
+    Object.keys(this.connections).forEach(path => {
+      if (connected[path] == null) {
+        if (this.connections[path] != null) {
+          this._releaseCleanup(this.connections[path]);
+        }
+      }
+    });
   }
 
   _lastStringified: string = ``;
