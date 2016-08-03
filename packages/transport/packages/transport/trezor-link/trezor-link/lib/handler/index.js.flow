@@ -32,6 +32,18 @@ export type AcquireInput = {
   previous: ?string;
 } | string;
 
+function stableStringify(devices: ?Array<TrezorDeviceInfoWithSession>): string {
+  if (devices == null) {
+    return `null`;
+  }
+  const pureDevices = devices.map(device => {
+    const path = device.path;
+    const session = device.session == null ? null : device.session;
+    return {path, session};
+  });
+  return stringify(pureDevices);
+}
+
 function parseAcquireInput(input: AcquireInput): InternalAcquireInput {
   // eslint-disable-next-line quotes
   if (typeof input !== 'string') {
@@ -116,14 +128,14 @@ export class Handler {
   _lastStringified: string = ``;
 
   listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
-    const oldStringified = stringify(old);
+    const oldStringified = stableStringify(old);
     const last = old == null ? this._lastStringified : oldStringified;
     return this._runIter(0, last);
   }
 
   _runIter(iteration: number, oldStringified: string): Promise<Array<TrezorDeviceInfoWithSession>> {
     return this.enumerate().then(devices => {
-      const stringified = stringify(devices);
+      const stringified = stableStringify(devices);
       if ((stringified !== oldStringified) || (iteration === ITER_MAX)) {
         this._lastStringified = stringified;
         return devices;
