@@ -24,6 +24,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // eslint-disable-next-line quotes
 var stringify = require('json-stable-stringify');
 
+function stableStringify(devices) {
+  if (devices == null) {
+    return 'null';
+  }
+  var pureDevices = devices.map(function (device) {
+    var path = device.path;
+    var session = device.session == null ? null : device.session;
+    return { path: path, session: session };
+  });
+  return stringify(pureDevices);
+}
+
 function parseAcquireInput(input) {
   // eslint-disable-next-line quotes
   if (typeof input !== 'string') {
@@ -119,7 +131,7 @@ var Handler = exports.Handler = function () {
   }, {
     key: 'listen',
     value: function listen(old) {
-      var oldStringified = stringify(old);
+      var oldStringified = stableStringify(old);
       var last = old == null ? this._lastStringified : oldStringified;
       return this._runIter(0, last);
     }
@@ -129,7 +141,7 @@ var Handler = exports.Handler = function () {
       var _this2 = this;
 
       return this.enumerate().then(function (devices) {
-        var stringified = stringify(devices);
+        var stringified = stableStringify(devices);
         if (stringified !== oldStringified || iteration === ITER_MAX) {
           _this2._lastStringified = stringified;
           return devices;
