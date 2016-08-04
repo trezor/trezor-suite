@@ -2,13 +2,14 @@
 
 "use strict";
 
-import type {TrezorDeviceInfo, Transport} from '../transport';
 import {create as createDefered} from '../defered';
 import {parseConfigure} from '../protobuf/parse_protocol';
 import {verifyHexBin} from './verify';
 import {buildAndSend} from './send';
 import {receiveAndParse} from './receive';
+import {CombinedTransport} from '../combined-transport';
 
+import type {TrezorDeviceInfo, Transport} from '../transport';
 import type {Defered} from '../defered';
 import type {Messages} from '../protobuf/messages';
 
@@ -254,5 +255,9 @@ export class Handler {
     } else {
       return Promise.resolve(true);
     }
+  }
+
+  static combineTransports(transports: {[short: string]: Transport}): Transport {
+    return new CombinedTransport(transports);
   }
 }
