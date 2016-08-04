@@ -25,7 +25,7 @@ export class CombinedTransport {
   }
 
   enumerate(): Promise<Array<TrezorDeviceInfo>> {
-    const enumerations = this._shorts.map(short => {
+    const enumerations = this._shorts().map(short => {
       const transport = this.transports[short];
       return transport.enumerate().then(devices => {
         return devices.map(device => {
