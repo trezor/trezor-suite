@@ -17,6 +17,8 @@ var _send = require('./send');
 
 var _receive = require('./receive');
 
+var _combinedTransport = require('../combined-transport');
+
 // eslint-disable-next-line quotes
 const stringify = require('json-stable-stringify');
 
@@ -237,6 +239,10 @@ class Handler {
     } else {
       return Promise.resolve(true);
     }
+  }
+
+  static combineTransports(transports) {
+    return new _combinedTransport.CombinedTransport(transports);
   }
 }
 exports.Handler = Handler;
