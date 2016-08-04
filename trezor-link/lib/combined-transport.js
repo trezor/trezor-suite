@@ -26,7 +26,7 @@ class CombinedTransport {
   }
 
   enumerate() {
-    const enumerations = this._shorts.map(short => {
+    const enumerations = this._shorts().map(short => {
       const transport = this.transports[short];
       return transport.enumerate().then(devices => {
         return devices.map(device => {
