@@ -15,15 +15,13 @@ const MESSAGE_HEADER_BYTE: number = 0x23;
 const BUFFER_SIZE: number = 63;
 
 // Sends more buffers to device.
-function sendBuffers(
+async function sendBuffers(
   sender: (data: ArrayBuffer) => Promise<void>,
   buffers: Array<ArrayBuffer>
 ): Promise<void> {
-  return buffers.reduce((prevPromise: Promise<void>, buffer: ArrayBuffer) => {
-    return prevPromise.then(() => {
-      return sender(buffer);
-    });
-  }, Promise.resolve());
+  for (let buffer of buffers) {
+    await sender(buffer);
+  }
 }
 
 // already built PB message
@@ -141,7 +139,7 @@ function buildBuffers(messages: Messages, name: string, data: Object): Array<Arr
 
 // Sends message to device.
 // Resolves iff everything gets sent
-export function buildAndSend(
+export async function buildAndSend(
   messages: Messages,
   sender: (data: ArrayBuffer) => Promise<void>,
   name: string,
