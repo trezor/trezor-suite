@@ -24,18 +24,19 @@ export class CombinedTransport {
     return Object.keys(this.transports);
   }
 
-  enumerate(): Promise<Array<TrezorDeviceInfo>> {
-    const enumerations = this._shorts().map(short => {
+  async enumerate(): Promise<Array<TrezorDeviceInfo>> {
+    const res: Array<TrezorDeviceInfo> = [];
+    const enumerationsP = this._shorts().map(async short => {
       const transport = this.transports[short];
-      return transport.enumerate().then(devices => {
-        return devices.map(device => {
-          return {path: `${short}-${device.path}`};
-        });
-      });
+      const devices = await transport.enumerate();
+
+      res.push(...devices.map(device => {
+        return {path: `${short}-${device.path}`};
+      }))
     });
-    return Promise.all(enumerations).then(enumerationResults => {
-      return enumerationResults.reduce((a, b) => a.concat(b), []);
-    });
+
+    await Promise.all(enumerationsP)
+    return res;
   }
 
   _parse(path: string): {actual: string, short: string, transport: Transport} {
@@ -65,22 +66,23 @@ export class CombinedTransport {
     };
   }
 
-  send(path: string, session: string, data: ArrayBuffer): Promise<void> {
+  async send(path: string, session: string, data: ArrayBuffer): Promise<void> {
     const {transport, actualPath, actualSession} = this._parseBoth(path, session);
     return transport.send(actualPath, actualSession, data);
   }
 
-  receive(path: string, session: string): Promise<ArrayBuffer> {
+  async receive(path: string, session: string): Promise<ArrayBuffer> {
     const {transport, actualPath, actualSession} = this._parseBoth(path, session);
     return transport.receive(actualPath, actualSession);
   }
 
-  connect(path: string): Promise<string> {
+  async connect(path: string): Promise<string> {
     const {transport, short, actual} = this._parse(path);
-    return transport.connect(actual).then(session => `${short}-${session}`);
+    const session = await transport.connect(actual);
+    return `${short}-${session}`;
   }
 
-  disconnect(path: string, session: string): Promise<void> {
+  async disconnect(path: string, session: string): Promise<void> {
     const {transport, actualPath, actualSession} = this._parseBoth(path, session);
     return transport.disconnect(actualPath, actualSession);
   }
