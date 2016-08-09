@@ -11,29 +11,31 @@
   "author": "Karel Bílek <kb@karelbilek.com>",
   "license": "LGPL-3.0+",
   "babel": {
-      "presets": [
-        "es2015-node5",
-        "chrome-49"
-      ],
-      "plugins": [
-        "transform-flow-strip-types",
-        "transform-class-properties",
-        "transform-object-rest-spread",
-        "add-module-exports"
-      ]
+    "presets": [
+      "es2015-node5",
+      "chrome-49"
+    ],
+    "plugins": [
+      "transform-flow-strip-types",
+      "transform-class-properties",
+      "transform-object-rest-spread",
+      "add-module-exports",
+      "fast-async"
+    ]
   },
   "bugs": {
     "url": "https://github.com/runn1ng/trezor-link/issues"
   },
   "homepage": "https://github.com/runn1ng/trezor-link",
   "devDependencies": {
+    "babel-cli": "^6.10.1",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-plugin-transform-class-properties": "^6.4.0",
     "babel-plugin-transform-flow-strip-types": "^6.4.0",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
-    "babel-preset-es2015-node5": "^1.2.0",
     "babel-preset-chrome-49": "^1.0.0",
-    "babel-cli": "^6.10.1"
+    "babel-preset-es2015-node5": "^1.2.0",
+    "fast-async": "^6.0.32"
   },
   "dependencies": {
     "bigi": "^1.4.1",

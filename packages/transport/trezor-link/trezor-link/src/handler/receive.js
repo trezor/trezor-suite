@@ -63,50 +63,46 @@ function parseFirstInput(bytes: ArrayBuffer): PartiallyParsedInput {
 
 // If the whole message wasn't loaded in the first input, loads more inputs until everything is loaded.
 // note: the return value is not at all important since it's still the same parsedinput
-function receiveRest(
+async function receiveRest(
   parsedInput: PartiallyParsedInput,
   receiver: () => Promise<ArrayBuffer>
 ): Promise<void> {
   if (parsedInput.isDone()) {
-    return Promise.resolve();
+    return;
+  }
+  const data = await receiver();
+
+  // sanity check
+  if (data == null) {
+    throw new Error(`Received no data.`);
   }
 
-  return receiver().then((data) => {
-    // sanity check
-    if (data == null) {
-      throw new Error(`Received no data.`);
-    }
-
-    parsedInput.append(data);
-    return receiveRest(parsedInput, receiver);
-  });
+  parsedInput.append(data);
+  return receiveRest(parsedInput, receiver);
 }
 
 // Receives the whole message as a raw data buffer (but without headers or type info)
-function receiveBuffer(
+async function receiveBuffer(
   receiver: () => Promise<ArrayBuffer>
 ): Promise<PartiallyParsedInput> {
-  return receiver().then((data: ArrayBuffer) => {
-    const partialInput: PartiallyParsedInput = parseFirstInput(data);
+  const data = await receiver();
+  const partialInput: PartiallyParsedInput = parseFirstInput(data);
 
-    return receiveRest(partialInput, receiver).then(() => {
-      return partialInput;
-    });
-  });
+  await receiveRest(partialInput, receiver);
+  return partialInput;
 }
 
 // Reads data from device and returns decoded message, that can be sent back to trezor.js
-export function receiveAndParse(
+export async function receiveAndParse(
   messages: Messages,
   receiver: () => Promise<ArrayBuffer>
 ): Promise<MessageFromTrezor> {
-  return receiveBuffer(receiver).then((received) => {
-    const typeId: number = received.typeNumber;
-    const buffer: ArrayBuffer = received.arrayBuffer();
-    const decoder: MessageDecoder = new MessageDecoder(messages, typeId, buffer);
-    return {
-      message: decoder.decodedJSON(),
-      type: decoder.messageName(),
-    };
-  });
+  const received = await receiveBuffer(receiver);
+  const typeId: number = received.typeNumber;
+  const buffer: ArrayBuffer = received.arrayBuffer();
+  const decoder: MessageDecoder = new MessageDecoder(messages, typeId, buffer);
+  return {
+    message: decoder.decodedJSON(),
+    type: decoder.messageName(),
+  };
 }
