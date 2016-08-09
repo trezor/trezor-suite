@@ -101,25 +101,23 @@ export class Handler {
     this.transport = transport;
   }
 
-  lock<X>(fn: () => (X|Promise<X>)): Promise<X> {
+  lock<X>(fn: () => (Promise<X>)): Promise<X> {
     const res = this._lock.then(() => fn());
     this._lock = res.catch(() => {});
     return res;
   }
 
   enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
-    return this.lock((): Promise<Array<TrezorDeviceInfoWithSession>> => {
-      return this.transport.enumerate().then((devices) => devices.map(device => {
+    return this.lock(async (): Promise<Array<TrezorDeviceInfoWithSession>> => {
+      const devices = await this.transport.enumerate();
+      const devicesWithSessions = devices.map(device => {
         return {
           ...device,
           session: this.connections[device.path],
         };
-      })).then(devices => {
-        this._releaseDisconnected(devices);
-        return devices;
-      }).then(devices => {
-        return devices.sort(compare);
       });
+      this._releaseDisconnected(devicesWithSessions);
+      return devicesWithSessions.sort(compare);
     });
   }
 
@@ -139,24 +137,24 @@ export class Handler {
 
   _lastStringified: string = ``;
 
-  listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
+  async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
     const oldStringified = stableStringify(old);
     const last = old == null ? this._lastStringified : oldStringified;
     return this._runIter(0, last);
   }
 
-  _runIter(iteration: number, oldStringified: string): Promise<Array<TrezorDeviceInfoWithSession>> {
-    return this.enumerate().then(devices => {
-      const stringified = stableStringify(devices);
-      if ((stringified !== oldStringified) || (iteration === ITER_MAX)) {
-        this._lastStringified = stringified;
-        return devices;
-      }
-      return timeoutPromise(ITER_DELAY).then(() => this._runIter(iteration + 1, stringified));
-    });
+  async _runIter(iteration: number, oldStringified: string): Promise<Array<TrezorDeviceInfoWithSession>> {
+    const devices = await this.enumerate();
+    const stringified = stableStringify(devices);
+    if ((stringified !== oldStringified) || (iteration === ITER_MAX)) {
+      this._lastStringified = stringified;
+      return devices;
+    }
+    await timeoutPromise(ITER_DELAY);
+    return this._runIter(iteration + 1, stringified);
   }
 
-  _checkAndReleaseBeforeAcquire(parsed: InternalAcquireInput): Promise<any> {
+  async _checkAndReleaseBeforeAcquire(parsed: InternalAcquireInput): Promise<any> {
     const realPrevious = this.connections[parsed.path];
     if (parsed.checkPrevious) {
       let error = false;
@@ -170,39 +168,33 @@ export class Handler {
       }
     }
     if (realPrevious != null) {
-      const releasePromise: Promise<void> = this._realRelease(parsed.path, realPrevious);
-      return releasePromise;
-    } else {
-      return Promise.resolve();
+      return this._realRelease(parsed.path, realPrevious);
     }
   }
 
-  acquire(input: AcquireInput): Promise<string> {
+  async acquire(input: AcquireInput): Promise<string> {
     const parsed = parseAcquireInput(input);
-    return this.lock((): Promise<string> => {
-      return this._checkAndReleaseBeforeAcquire(parsed).then(() =>
-        this.transport.connect(parsed.path)
-      ).then((session: string) => {
-        this.connections[parsed.path] = session;
-        this.reverse[session] = parsed.path;
-        this.deferedOnRelease[session] = createDefered();
-        return session;
-      });
+    return this.lock(async (): Promise<string> => {
+      await this._checkAndReleaseBeforeAcquire(parsed);
+      const session = await this.transport.connect(parsed.path);
+      this.connections[parsed.path] = session;
+      this.reverse[session] = parsed.path;
+      this.deferedOnRelease[session] = createDefered();
+      return session;
     });
   }
 
-  release(session: string): Promise<void> {
+  async release(session: string): Promise<void> {
     const path = this.reverse[session];
     if (path == null) {
-      return Promise.reject(new Error(`Trying to double release.`));
+      throw new Error(`Trying to double release.`);
     }
     return this.lock(() => this._realRelease(path, session));
   }
 
-  _realRelease(path:string, session: string): Promise<void> {
-    return this.transport.disconnect(path, session).then(() => {
-      this._releaseCleanup(session);
-    });
+  async _realRelease(path:string, session: string): Promise<void> {
+    await this.transport.disconnect(path, session);
+    this._releaseCleanup(session);
   }
 
   _releaseCleanup(session: string) {
@@ -214,15 +206,10 @@ export class Handler {
     return;
   }
 
-  configure(signedData: string): Promise<void> {
-    try {
-      const buffer = verifyHexBin(signedData);
-      const messages = parseConfigure(buffer);
-      this._messages = messages;
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+  async configure(signedData: string): Promise<void> {
+    const buffer = verifyHexBin(signedData);
+    const messages = parseConfigure(buffer);
+    this._messages = messages;
   }
 
   _sendTransport(session: string): (data: ArrayBuffer) => Promise<void> {
@@ -235,26 +222,23 @@ export class Handler {
     return () => this.transport.receive(path, session);
   }
 
-  call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
+  async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
     if (this._messages == null) {
-      return Promise.reject(new Error(`Handler not configured.`));
+      throw new Error(`Handler not configured.`);
     }
     if (this.reverse[session] == null) {
-      return Promise.reject(new Error(`Trying to use device after release.`));
+      throw new Error(`Trying to use device after release.`);
     }
     const messages = this._messages;
-    const resPromise = buildAndSend(messages, this._sendTransport(session), name, data).then(() => {
+    const resPromise: Promise<MessageFromTrezor> = (async () => {
+      await buildAndSend(messages, this._sendTransport(session), name, data);
       return receiveAndParse(messages, this._receiveTransport(session));
-    });
+    })();
     return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
   }
 
-  hasMessages(): Promise<boolean> {
-    if (this._messages == null) {
-      return Promise.resolve(false);
-    } else {
-      return Promise.resolve(true);
-    }
+  async hasMessages(): Promise<boolean> {
+    return (this._messages != null);
   }
 
   static combineTransports(transports: {[short: string]: Transport}): Transport {
