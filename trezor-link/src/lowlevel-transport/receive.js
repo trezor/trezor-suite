@@ -8,7 +8,7 @@
 import {MessageDecoder} from "../protobuf/message_decoder.js";
 import {ByteBuffer} from "protobufjs";
 import type {Messages} from "../protobuf/messages.js";
-import type {MessageFromTrezor} from "./index";
+import type {MessageFromTrezor} from "../transport";
 
 const MESSAGE_HEADER_BYTE: number = 0x23;
 
