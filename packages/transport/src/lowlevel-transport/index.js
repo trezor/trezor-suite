@@ -8,29 +8,19 @@ import {verifyHexBin} from './verify';
 import {buildAndSend} from './send';
 import {receiveAndParse} from './receive';
 
-import type {TrezorDeviceInfo, LowlevelTransportPlugin} from './plugin';
+import type {LowlevelTransportPlugin} from './plugin';
 import type {Defered} from '../defered';
 import type {Messages} from '../protobuf/messages';
-
-export type MessageFromTrezor = {type: string, message: Object};
+import type {MessageFromTrezor, TrezorDeviceInfo, TrezorDeviceInfoWithSession, AcquireInput} from '../transport';
 
 // eslint-disable-next-line quotes
 const stringify = require('json-stable-stringify');
-
-export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
-  session: ?string;
-}
 
 type InternalAcquireInput = {
   path: string;
   previous: ?string;
   checkPrevious: boolean;
 }
-
-export type AcquireInput = {
-  path: string;
-  previous: ?string;
-} | string;
 
 function stableStringify(devices: ?Array<TrezorDeviceInfoWithSession>): string {
   if (devices == null) {
