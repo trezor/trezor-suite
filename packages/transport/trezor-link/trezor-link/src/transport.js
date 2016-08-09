@@ -1,0 +1,26 @@
+/* @flow */
+
+// does not have session
+export type TrezorDeviceInfo = {
+  path: string;
+}
+
+export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
+  session: ?string;
+}
+
+export type AcquireInput = {
+  path: string;
+  previous: ?string;
+} | string;
+
+export type MessageFromTrezor = {type: string, message: Object};
+
+export type Transport = {
+  enumerate(): Promise<Array<TrezorDeviceInfoWithSession>>;
+  listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>>;
+  acquire(input: AcquireInput): Promise<string>;
+  release(session: string): Promise<void>;
+  configure(signedData: string): Promise<void>;
+  call(session: string, name: string, data: Object): Promise<MessageFromTrezor>;
+}

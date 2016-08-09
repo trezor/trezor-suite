@@ -2,10 +2,7 @@
 
 "use strict";
 
-// does not have session
-export type TrezorDeviceInfo = {
-  path: string;
-}
+import type {TrezorDeviceInfo} from '../transport';
 
 export type LowlevelTransportPlugin = {
   enumerate: () => Promise<Array<TrezorDeviceInfo>>;
