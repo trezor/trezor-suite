@@ -7,9 +7,8 @@ import {parseConfigure} from '../protobuf/parse_protocol';
 import {verifyHexBin} from './verify';
 import {buildAndSend} from './send';
 import {receiveAndParse} from './receive';
-import {CombinedTransport} from '../combined-transport';
 
-import type {TrezorDeviceInfo, Transport} from '../transport';
+import type {TrezorDeviceInfo, LowlevelTransportPlugin} from './plugin';
 import type {Defered} from '../defered';
 import type {Messages} from '../protobuf/messages';
 
@@ -82,8 +81,8 @@ function timeoutPromise(delay: number): Promise<void> {
 const ITER_MAX = 60;
 const ITER_DELAY = 500;
 
-export class Handler {
-  transport: Transport;
+export class LowlevelTransport {
+  plugin: LowlevelTransportPlugin;
   _lock: Promise<any> = Promise.resolve();
 
   // path => promise rejecting on release
@@ -97,8 +96,8 @@ export class Handler {
 
   _messages: ?Messages;
 
-  constructor(transport: Transport) {
-    this.transport = transport;
+  constructor(plugin: LowlevelTransportPlugin) {
+    this.plugin = plugin;
   }
 
   lock<X>(fn: () => (Promise<X>)): Promise<X> {
@@ -109,7 +108,7 @@ export class Handler {
 
   enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     return this.lock(async (): Promise<Array<TrezorDeviceInfoWithSession>> => {
-      const devices = await this.transport.enumerate();
+      const devices = await this.plugin.enumerate();
       const devicesWithSessions = devices.map(device => {
         return {
           ...device,
@@ -176,7 +175,7 @@ export class Handler {
     const parsed = parseAcquireInput(input);
     return this.lock(async (): Promise<string> => {
       await this._checkAndReleaseBeforeAcquire(parsed);
-      const session = await this.transport.connect(parsed.path);
+      const session = await this.plugin.connect(parsed.path);
       this.connections[parsed.path] = session;
       this.reverse[session] = parsed.path;
       this.deferedOnRelease[session] = createDefered();
@@ -193,7 +192,7 @@ export class Handler {
   }
 
   async _realRelease(path:string, session: string): Promise<void> {
-    await this.transport.disconnect(path, session);
+    await this.plugin.disconnect(path, session);
     this._releaseCleanup(session);
   }
 
@@ -212,36 +211,33 @@ export class Handler {
     this._messages = messages;
   }
 
-  _sendTransport(session: string): (data: ArrayBuffer) => Promise<void> {
+  _sendLowlevel(session: string): (data: ArrayBuffer) => Promise<void> {
     const path: string = this.reverse[session];
-    return (data) => this.transport.send(path, session, data);
+    return (data) => this.plugin.send(path, session, data);
   }
 
-  _receiveTransport(session: string): () => Promise<ArrayBuffer> {
+  _receiveLowlevel(session: string): () => Promise<ArrayBuffer> {
     const path: string = this.reverse[session];
-    return () => this.transport.receive(path, session);
+    return () => this.plugin.receive(path, session);
   }
 
   async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
     if (this._messages == null) {
-      throw new Error(`Handler not configured.`);
+      throw new Error(`Transport not configured.`);
     }
     if (this.reverse[session] == null) {
       throw new Error(`Trying to use device after release.`);
     }
     const messages = this._messages;
     const resPromise: Promise<MessageFromTrezor> = (async () => {
-      await buildAndSend(messages, this._sendTransport(session), name, data);
-      return receiveAndParse(messages, this._receiveTransport(session));
+      await buildAndSend(messages, this._sendLowlevel(session), name, data);
+      const message = await receiveAndParse(messages, this._receiveLowlevel(session));
+      return message;
     })();
     return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
   }
 
   async hasMessages(): Promise<boolean> {
     return (this._messages != null);
-  }
-
-  static combineTransports(transports: {[short: string]: Transport}): Transport {
-    return new CombinedTransport(transports);
   }
 }
