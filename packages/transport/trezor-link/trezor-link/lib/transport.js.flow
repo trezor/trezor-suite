@@ -1,17 +1,33 @@
 /* @flow */
 
-"use strict";
-
 // does not have session
 export type TrezorDeviceInfo = {
   path: string;
 }
 
-export type Transport = {
-  enumerate: () => Promise<Array<TrezorDeviceInfo>>;
-  send: (path: string, session: string, data: ArrayBuffer) => Promise<void>;
-  receive: (path: string, session: string) => Promise<ArrayBuffer>;
-  connect: (path: string) => Promise<string>;
-  disconnect: (path: string, session: string) => Promise<void>;
+export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
+  session: ?string;
 }
 
+export type AcquireInput = {
+  path: string;
+  previous: ?string;
+  checkPrevious: boolean;
+}
+
+export type MessageFromTrezor = {type: string, message: Object};
+
+export type Transport = {
+  enumerate(): Promise<Array<TrezorDeviceInfoWithSession>>;
+  listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>>;
+  acquire(input: AcquireInput): Promise<string>;
+  release(session: string): Promise<void>;
+  configure(signedData: string): Promise<void>;
+  call(session: string, name: string, data: Object): Promise<MessageFromTrezor>;
+
+  // resolves when the transport can be used; rejects when it cannot
+  init(): Promise<void>;
+
+  configured: boolean;
+  version: string;
+}
