@@ -1,6 +1,8 @@
 Trezor-link
 ====
 
+*DO NOT USE THIS YET - IT IS STILL IN DEVELOPMENT AND THE API IS CHANGING RAPIDLY*
+
 A library for communication with TREZOR via various means.
 
 Trezor-link only works on a "low level"; it only sends messages to TREZOR and receives messages back, and parses them from and to JSON.
