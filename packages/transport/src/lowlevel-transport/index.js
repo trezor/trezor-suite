@@ -11,16 +11,10 @@ import {receiveAndParse} from './receive';
 import type {LowlevelTransportPlugin} from './plugin';
 import type {Defered} from '../defered';
 import type {Messages} from '../protobuf/messages';
-import type {MessageFromTrezor, TrezorDeviceInfo, TrezorDeviceInfoWithSession, AcquireInput} from '../transport';
+import type {MessageFromTrezor, TrezorDeviceInfoWithSession, AcquireInput} from '../transport';
 
 // eslint-disable-next-line quotes
 const stringify = require('json-stable-stringify');
-
-type InternalAcquireInput = {
-  path: string;
-  previous: ?string;
-  checkPrevious: boolean;
-}
 
 function stableStringify(devices: ?Array<TrezorDeviceInfoWithSession>): string {
   if (devices == null) {
@@ -32,26 +26,6 @@ function stableStringify(devices: ?Array<TrezorDeviceInfoWithSession>): string {
     return {path, session};
   });
   return stringify(pureDevices);
-}
-
-function parseAcquireInput(input: AcquireInput): InternalAcquireInput {
-  // eslint-disable-next-line quotes
-  if (typeof input !== 'string') {
-    const path = input.path.toString();
-    const previous = input.previous == null ? null : input.previous.toString();
-    return {
-      path,
-      previous,
-      checkPrevious: true,
-    };
-  } else {
-    const path = input.toString();
-    return {
-      path,
-      previous: null,
-      checkPrevious: false,
-    };
-  }
 }
 
 function compare(a: TrezorDeviceInfoWithSession, b: TrezorDeviceInfoWithSession): number {
@@ -85,9 +59,12 @@ export class LowlevelTransport {
   reverse: {[session: string]: string} = {};
 
   _messages: ?Messages;
+  version: string;
+  configured: boolean = false;
 
   constructor(plugin: LowlevelTransportPlugin) {
     this.plugin = plugin;
+    this.version = plugin.version;
   }
 
   lock<X>(fn: () => (Promise<X>)): Promise<X> {
@@ -143,31 +120,30 @@ export class LowlevelTransport {
     return this._runIter(iteration + 1, stringified);
   }
 
-  async _checkAndReleaseBeforeAcquire(parsed: InternalAcquireInput): Promise<any> {
-    const realPrevious = this.connections[parsed.path];
-    if (parsed.checkPrevious) {
+  async _checkAndReleaseBeforeAcquire(input: AcquireInput): Promise<void> {
+    const realPrevious = this.connections[input.path];
+    if (input.checkPrevious) {
       let error = false;
       if (realPrevious == null) {
-        error = (parsed.previous != null);
+        error = (input.previous != null);
       } else {
-        error = (parsed.previous !== realPrevious);
+        error = (input.previous !== realPrevious);
       }
       if (error) {
         throw new Error(`wrong previous session`);
       }
     }
     if (realPrevious != null) {
-      return this._realRelease(parsed.path, realPrevious);
+      await this._realRelease(input.path, realPrevious);
     }
   }
 
   async acquire(input: AcquireInput): Promise<string> {
-    const parsed = parseAcquireInput(input);
     return this.lock(async (): Promise<string> => {
-      await this._checkAndReleaseBeforeAcquire(parsed);
-      const session = await this.plugin.connect(parsed.path);
-      this.connections[parsed.path] = session;
-      this.reverse[session] = parsed.path;
+      await this._checkAndReleaseBeforeAcquire(input);
+      const session = await this.plugin.connect(input.path);
+      this.connections[input.path] = session;
+      this.reverse[session] = input.path;
       this.deferedOnRelease[session] = createDefered();
       return session;
     });
@@ -199,6 +175,7 @@ export class LowlevelTransport {
     const buffer = verifyHexBin(signedData);
     const messages = parseConfigure(buffer);
     this._messages = messages;
+    this.configured = true;
   }
 
   _sendLowlevel(session: string): (data: ArrayBuffer) => Promise<void> {
@@ -227,7 +204,7 @@ export class LowlevelTransport {
     return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
   }
 
-  async hasMessages(): Promise<boolean> {
-    return (this._messages != null);
+  async init(): Promise<void> {
+    return this.plugin.init();
   }
 }
