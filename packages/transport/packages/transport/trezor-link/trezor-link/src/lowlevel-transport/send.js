@@ -19,7 +19,7 @@ async function sendBuffers(
   sender: (data: ArrayBuffer) => Promise<void>,
   buffers: Array<ArrayBuffer>
 ): Promise<void> {
-  for (let buffer of buffers) {
+  for (const buffer of buffers) {
     await sender(buffer);
   }
 }
