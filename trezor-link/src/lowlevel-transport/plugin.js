@@ -10,5 +10,8 @@ export type LowlevelTransportPlugin = {
   receive: (path: string, session: string) => Promise<ArrayBuffer>;
   connect: (path: string) => Promise<string>;
   disconnect: (path: string, session: string) => Promise<void>;
+
+  init: () => Promise<void>;
+  version: string;
 }
 

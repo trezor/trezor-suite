@@ -12,7 +12,8 @@ export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
 export type AcquireInput = {
   path: string;
   previous: ?string;
-} | string;
+  checkPrevious: boolean;
+}
 
 export type MessageFromTrezor = {type: string, message: Object};
 
@@ -23,4 +24,10 @@ export type Transport = {
   release(session: string): Promise<void>;
   configure(signedData: string): Promise<void>;
   call(session: string, name: string, data: Object): Promise<MessageFromTrezor>;
+
+  // resolves when the transport can be used; rejects when it cannot
+  init(): Promise<void>;
+
+  configured: boolean;
+  version: string;
 }
