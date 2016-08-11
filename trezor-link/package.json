@@ -4,6 +4,8 @@
   "description": "Trezor Link",
   "main": "lib/index.js",
   "scripts": {
+    "preversion": "make check && make build && git add -A lib && git commit -am 'Build'",
+    "postversion": "git push && git push --tags && npm publish",
     "build": "make build",
     "check": "make check"
   },
