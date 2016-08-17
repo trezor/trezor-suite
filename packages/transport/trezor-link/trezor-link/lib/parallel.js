@@ -210,9 +210,9 @@ class ParallelTransport {
     const rest = restArray.join(`-`);
 
     return {
-      transport: transport,
-      name: name,
-      rest: rest
+      transport,
+      name,
+      rest
     };
   }
 

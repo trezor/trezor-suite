@@ -134,8 +134,8 @@ function create() {
     throw new Error(`Promise is always rejecting`);
   });
   return {
-    promise: promise,
-    rejectingPromise: rejectingPromise,
+    promise,
+    rejectingPromise,
     resolve: _resolve,
     reject: _reject
   };
