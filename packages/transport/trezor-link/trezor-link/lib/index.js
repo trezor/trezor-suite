@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.LowlevelTransport = undefined;
+exports.ParallelTransport = exports.LowlevelTransport = undefined;
 
 var _lowlevelTransport = require('./lowlevel-transport');
 
@@ -11,6 +11,15 @@ Object.defineProperty(exports, 'LowlevelTransport', {
   enumerable: true,
   get: function get() {
     return _lowlevelTransport.LowlevelTransport;
+  }
+});
+
+var _parallel = require('./parallel');
+
+Object.defineProperty(exports, 'ParallelTransport', {
+  enumerable: true,
+  get: function get() {
+    return _parallel.ParallelTransport;
   }
 });
 
