@@ -145,7 +145,7 @@ function stableStringify(devices) {
   const pureDevices = devices.map(device => {
     const path = device.path;
     const session = device.session == null ? null : device.session;
-    return { path: path, session: session };
+    return { path, session };
   });
   return stringify(pureDevices);
 }
