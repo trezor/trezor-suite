@@ -14,7 +14,6 @@
   "license": "LGPL-3.0+",
   "babel": {
     "presets": [
-      "es2015-node5",
       "chrome-49"
     ],
     "plugins": [
