@@ -19,6 +19,16 @@ export class ParallelTransport {
     });
   }
 
+  _filter(name: string, devices: Array<TrezorDeviceInfoWithSession>): Array<TrezorDeviceInfoWithSession> {
+    return devices.filter(device => this._parseName(name).name === name).map(device => {
+      return {
+        ...device,
+        path: this._parseName(device.path).rest,
+        session: device.session == null ? device.session : this._parseName(device.session).rest,
+      };
+    });
+  }
+
   async enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     const res = [];
     // eslint-disable-next-line prefer-const
@@ -33,7 +43,8 @@ export class ParallelTransport {
     const res = [];
     // eslint-disable-next-line prefer-const
     for (let name of Object.keys(this.transports)) {
-      const devices = await this.transports[name].listen(old);
+      const oldFiltered = old == null ? null : this._filter(name, old);
+      const devices = await this.transports[name].listen(oldFiltered);
       res.push(...(this._prepend(name, devices)));
     }
     return res;
