@@ -21,7 +21,8 @@ export class ParallelTransport {
 
   async enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     const res = [];
-    for (const name of Object.keys(this.transports)) {
+    // eslint-disable-next-line prefer-const
+    for (let name of Object.keys(this.transports)) {
       const devices = await this.transports[name].enumerate();
       res.push(...(this._prepend(name, devices)));
     }
@@ -30,7 +31,8 @@ export class ParallelTransport {
 
   async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
     const res = [];
-    for (const name of Object.keys(this.transports)) {
+    // eslint-disable-next-line prefer-const
+    for (let name of Object.keys(this.transports)) {
       const devices = await this.transports[name].listen(old);
       res.push(...(this._prepend(name, devices)));
     }
@@ -95,7 +97,8 @@ export class ParallelTransport {
   }
 
   async configure(signedData: string): Promise<void> {
-    for (const name of Object.keys(this.transports)) {
+    // eslint-disable-next-line prefer-const
+    for (let name of Object.keys(this.transports)) {
       const transport = this.transports[name];
       await transport.configure(signedData);
     }
@@ -110,7 +113,8 @@ export class ParallelTransport {
   // resolves when the transport can be used; rejects when it cannot
   async init(): Promise<void> {
     let version = ``;
-    for (const name of Object.keys(this.transports)) {
+    // eslint-disable-next-line prefer-const
+    for (let name of Object.keys(this.transports)) {
       const transport = this.transports[name];
       await transport.init();
       version = version + `${name}:${transport.version};`;
