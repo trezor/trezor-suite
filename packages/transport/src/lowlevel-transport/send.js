@@ -19,7 +19,8 @@ async function sendBuffers(
   sender: (data: ArrayBuffer) => Promise<void>,
   buffers: Array<ArrayBuffer>
 ): Promise<void> {
-  for (const buffer of buffers) {
+  // eslint-disable-next-line prefer-const
+  for (let buffer of buffers) {
     await sender(buffer);
   }
 }
