@@ -142,7 +142,7 @@ class ParallelTransport {
   }
 
   _filter(name, devices) {
-    return devices.filter(device => this._parseName(name).name === name).map(device => {
+    return devices.filter(device => this._parseName(device.path).name === name).map(device => {
       return _extends({}, device, {
         path: this._parseName(device.path).rest,
         session: device.session == null ? device.session : this._parseName(device.session).rest
