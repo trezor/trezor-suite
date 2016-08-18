@@ -20,7 +20,7 @@ export class ParallelTransport {
   }
 
   _filter(name: string, devices: Array<TrezorDeviceInfoWithSession>): Array<TrezorDeviceInfoWithSession> {
-    return devices.filter(device => this._parseName(name).name === name).map(device => {
+    return devices.filter(device => this._parseName(device.path).name === name).map(device => {
       return {
         ...device,
         path: this._parseName(device.path).rest,
