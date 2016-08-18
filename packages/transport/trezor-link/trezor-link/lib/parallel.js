@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
@@ -139,6 +141,15 @@ class ParallelTransport {
     });
   }
 
+  _filter(name, devices) {
+    return devices.filter(device => this._parseName(name).name === name).map(device => {
+      return _extends({}, device, {
+        path: this._parseName(device.path).rest,
+        session: device.session == null ? device.session : this._parseName(device.session).rest
+      });
+    });
+  }
+
   enumerate() {
     return new Promise(function ($return, $error) {
       var res, devices, name, $iterator_name;
@@ -165,7 +176,7 @@ class ParallelTransport {
 
   listen(old) {
     return new Promise(function ($return, $error) {
-      var res, devices, name, $iterator_name;
+      var res, oldFiltered, devices, name, $iterator_name;
       res = [];
       $iterator_name = [Object.keys(this.transports)[Symbol.iterator]()];
       return function $ForStatement_2_loop($ForStatement_2_exit, $error) {
@@ -174,7 +185,8 @@ class ParallelTransport {
         }
 
         if (!($iterator_name[1] = $iterator_name[0].next()).done && ((name = $iterator_name[1].value) || true)) {
-          return this.transports[name].listen(old).then(function ($await_11) {
+          oldFiltered = old == null ? null : this._filter(name, old);
+          return this.transports[name].listen(oldFiltered).then(function ($await_11) {
             devices = $await_11;
 
             res.push(...this._prepend(name, devices));
