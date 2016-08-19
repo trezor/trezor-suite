@@ -8,9 +8,11 @@
 ../node_modules/json-stable-stringify/
 ../node_modules/protobufjs/
 ../node_modules/object.values/
+../node_modules/semver-compare/
 
 [libs]
 ../flowtype/bitcoinjs-lib.js
+../flowtype/chrome.js
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
