@@ -1,39 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ParallelTransport = exports.FallbackTransport = exports.LowlevelTransport = undefined;
-
-var _lowlevelTransport = require('./lowlevel-transport');
-
-Object.defineProperty(exports, 'LowlevelTransport', {
-  enumerable: true,
-  get: function get() {
-    return _lowlevelTransport.LowlevelTransport;
-  }
-});
-
-var _fallback = require('./fallback');
-
-Object.defineProperty(exports, 'FallbackTransport', {
-  enumerable: true,
-  get: function get() {
-    return _fallback.FallbackTransport;
-  }
-});
-
-var _parallel = require('./parallel');
-
-Object.defineProperty(exports, 'ParallelTransport', {
-  enumerable: true,
-  get: function get() {
-    return _parallel.ParallelTransport;
-  }
-});
-
-var _monkey_patch = require('./protobuf/monkey_patch');
-
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
 
@@ -152,4 +118,4 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-(0, _monkey_patch.patch)();
+// export is empty, you can import by "trezor-link/parallel", "trezor-link/lowlevel", "trezor-link/bridge"
