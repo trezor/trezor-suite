@@ -7,9 +7,11 @@ exports.LowlevelTransport = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _monkey_patch = require('./protobuf/monkey_patch');
+
 var _defered = require('../defered');
 
-var _parse_protocol = require('../protobuf/parse_protocol');
+var _parse_protocol = require('./protobuf/parse_protocol');
 
 var _verify = require('./verify');
 
@@ -146,7 +148,7 @@ function stableStringify(devices) {
   const pureDevices = devices.map(device => {
     const path = device.path;
     const session = device.session == null ? null : device.session;
-    return { path, session };
+    return { path: path, session: session };
   });
 
   return stringify(pureDevices);
@@ -165,6 +167,8 @@ function timeoutPromise(delay) {
     window.setTimeout(() => resolve(), delay);
   });
 }
+
+(0, _monkey_patch.patch)();
 
 // eslint-disable-next-line quotes
 stringify = require('json-stable-stringify');

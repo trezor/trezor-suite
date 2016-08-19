@@ -1,9 +1,12 @@
-"use strict";
+
+/*global chrome:false*/
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.create = create;
+exports.exists = exists;
+exports.send = send;
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -34,7 +37,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
       }
 
       function isThenable(obj) {
-        return obj && obj instanceof Object && typeof obj.then === "function";
+        return obj && obj instanceof Object && typeof obj.then === 'function';
       }
 
       function EagerThenable(resolver) {
@@ -71,11 +74,11 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
         }
 
         function toString() {
-          return "EagerThenable{" + {
-            "-1": "pending",
-            0: "resolved",
-            1: "rejected"
-          }[phase] + "}=" + result.toString();
+          return 'EagerThenable{' + {
+            '-1': 'pending',
+            0: 'resolved',
+            1: 'rejected'
+          }[phase] + '}=' + result.toString();
         }
 
         this.then = settler;
@@ -109,7 +112,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 
   function then(result, error) {
     try {
-      return result && result instanceof Object && typeof result.then === "function" ? result.then(then, catcher) : resolver.call(self, result, error || catcher);
+      return result && result instanceof Object && typeof result.then === 'function' ? result.then(then, catcher) : resolver.call(self, result, error || catcher);
     } catch (ex) {
       return (error || catcher)(ex);
     }
@@ -123,22 +126,52 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-function create() {
-  let localResolve = t => {};
-  let localReject = e => {};
+function exists() {
+  return new Promise(function ($return, $error) {
+    if (typeof chrome === `undefined`) {
+      return $error(new Error(`Global chrome does not exist; probably not running chrome`));
+    }
+    if (typeof chrome.runtime === `undefined`) {
+      return $error(new Error(`Global chrome.runtime does not exist; probably not running chrome`));
+    }
+    if (typeof chrome.runtime.sendMessage === `undefined`) {
+      return $error(new Error(`Global chrome.runtime.sendMessage does not exist; probably not whitelisted website in extension manifest`));
+    }
+    return $return();
+  }.$asyncbind(this));
+}
 
-  const promise = new Promise((resolve, reject) => {
-    localResolve = resolve;
-    localReject = reject;
-  });
-  const rejectingPromise = promise.then(() => {
-    throw new Error(`Promise is always rejecting`);
-  });
+function send(extensionId, message) {
+  return new Promise(function (resolve, reject) {
+    const callback = function callback(response) {
+      if (response === undefined) {
+        console.error(`[trezor.js] [chrome-messages] Chrome runtime error`, chrome.runtime.lastError);
+        reject(chrome.runtime.lastError);
+        return;
+      }
+      if (typeof response !== `object` || response == null) {
+        reject(new Error(`Response is not an object.`));
+        return;
+      }
+      if (response.type === `response`) {
+        resolve(response.body);
+      } else if (response.type === `error`) {
+        console.error(`[trezor.js] [chrome-messages] Error received`, response);
+        reject(new Error(response.message));
+      } else {
+        console.error(`[trezor.js] [chrome-messages] Unknown response type `, response.type);
+        reject(new Error(`Unknown response type ` + response.type));
+      }
+    };
 
-  return {
-    resolve: localResolve,
-    reject: localReject,
-    promise: promise,
-    rejectingPromise: rejectingPromise
-  };
+    if (chrome.runtime.id === extensionId) {
+      // extension sending to itself
+      // (only for including trezor.js in the management part of the extension)
+      chrome.runtime.sendMessage(message, {}, callback);
+    } else {
+      // either another extension, or not sent from extension at all
+      // (this will be run most probably)
+      chrome.runtime.sendMessage(extensionId, message, {}, callback);
+    }
+  });
 }
