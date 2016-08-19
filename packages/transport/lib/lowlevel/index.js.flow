@@ -2,19 +2,22 @@
 
 "use strict";
 
+import {patch} from './protobuf/monkey_patch';
+patch();
+
 import {create as createDefered} from '../defered';
-import {parseConfigure} from '../protobuf/parse_protocol';
+import {parseConfigure} from './protobuf/parse_protocol';
 import {verifyHexBin} from './verify';
 import {buildAndSend} from './send';
 import {receiveAndParse} from './receive';
 
-import type {LowlevelTransportPlugin} from './plugin';
-import type {Defered} from '../defered';
-import type {Messages} from '../protobuf/messages';
-import type {MessageFromTrezor, TrezorDeviceInfoWithSession, AcquireInput} from '../transport';
-
 // eslint-disable-next-line quotes
 const stringify = require('json-stable-stringify');
+
+import type {LowlevelTransportPlugin} from './plugin';
+import type {Defered} from '../defered';
+import type {Messages} from './protobuf/messages';
+import type {MessageFromTrezor, TrezorDeviceInfoWithSession, AcquireInput} from '../transport';
 
 function stableStringify(devices: ?Array<TrezorDeviceInfoWithSession>): string {
   if (devices == null) {
@@ -52,7 +55,7 @@ export class LowlevelTransport {
   _lock: Promise<any> = Promise.resolve();
 
   // path => promise rejecting on release
-  deferedOnRelease: {[session: string]: Defered} = {};
+  deferedOnRelease: {[session: string]: Defered<void>} = {};
 
   // path => session
   connections: {[path: string]: string} = {};
