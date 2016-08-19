@@ -1,13 +1,12 @@
 {
   "name": "trezor-link",
-  "version": "0.1.23",
+  "version": "0.2.0",
   "description": "Trezor Link",
   "main": "lib/index.js",
   "scripts": {
     "preversion": "make check && make build",
     "version": "make build && git add -A lib && git commit -m 'Build'",
     "postversion": "git push && git push --tags && npm publish",
-
     "build": "make build",
     "check": "make check"
   },
