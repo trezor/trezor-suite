@@ -20,7 +20,8 @@ export class FallbackTransport {
   async _tryTransports(): Promise<Transport> {
     let lastError: ?Error = null;
     // eslint-disable-next-line prefer-const
-    for (let {transport} of this.transports) {
+    for (let transportObj of this.transports) {
+      const transport = transportObj.transport;
       try {
         await transport.init();
         return transport;
