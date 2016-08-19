@@ -17,7 +17,7 @@ function acceptsTransport(t: Transport) {}
 acceptsTransport(new BridgeTransport());
 acceptsTransport(new ExtensionTransport());
 acceptsTransport(new ParallelTransport({"a": new BridgeTransport()}));
-acceptsTransport(new FallbackTransport([{name: "a", transport: new BridgeTransport()}]));
+acceptsTransport(new FallbackTransport([{name: `a`, transport: new BridgeTransport()}]));
 
 acceptsTransport(new LowlevelTransport(new ChromeHidPlugin()));
 acceptsTransport(new LowlevelTransport(new ChromeUdpPlugin()));
