@@ -20,11 +20,13 @@ function stableStringify(devices: ?Array<TrezorDeviceInfoWithSession>): string {
   if (devices == null) {
     return `null`;
   }
+
   const pureDevices = devices.map(device => {
     const path = device.path;
     const session = device.session == null ? null : device.session;
     return {path, session};
   });
+
   return stringify(pureDevices);
 }
 
@@ -195,12 +197,14 @@ export class LowlevelTransport {
     if (this.reverse[session] == null) {
       throw new Error(`Trying to use device after release.`);
     }
+
     const messages = this._messages;
     const resPromise: Promise<MessageFromTrezor> = (async () => {
       await buildAndSend(messages, this._sendLowlevel(session), name, data);
       const message = await receiveAndParse(messages, this._receiveLowlevel(session));
       return message;
     })();
+
     return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
   }
 
