@@ -1,7 +1,5 @@
 /* @flow */
 
-"use strict";
-
 declare var __VERSION__: string;
 
 type TrezorDeviceInfo = {path: string};
