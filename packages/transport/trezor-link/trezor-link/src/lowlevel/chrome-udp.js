@@ -1,7 +1,5 @@
 /* @flow */
 
-"use strict";
-
 declare var __VERSION__: string;
 
 import {create as createDefered} from '../defered';
@@ -19,8 +17,12 @@ export default class ChromeUdpPlugin {
 
   version: string = __VERSION__;
 
-  constructor(portDiff: number) {
-    this.portDiff = portDiff;
+  constructor(portDiff?: ?number) {
+    if (portDiff == null) {
+      this.portDiff = 3;
+    } else {
+      this.portDiff = portDiff;
+    }
   }
 
   init(): Promise<void> {
