@@ -2,7 +2,7 @@
 
 import type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from './transport';
 
-export class ParallelTransport {
+export default class ParallelTransport {
 
   transports: {[key: string]: Transport};
 

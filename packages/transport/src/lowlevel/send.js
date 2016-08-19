@@ -1,7 +1,5 @@
 /* @flow */
 
-"use strict";
-
 // Logic of sending data to trezor
 //
 // Logic of "call" is broken to two parts - sending and recieving
