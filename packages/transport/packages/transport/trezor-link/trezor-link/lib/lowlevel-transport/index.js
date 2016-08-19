@@ -142,11 +142,13 @@ function stableStringify(devices) {
   if (devices == null) {
     return `null`;
   }
+
   const pureDevices = devices.map(device => {
     const path = device.path;
     const session = device.session == null ? null : device.session;
     return { path, session };
   });
+
   return stringify(pureDevices);
 }
 
@@ -360,6 +362,7 @@ class LowlevelTransport {
       if (this.reverse[session] == null) {
         return $error(new Error(`Trying to use device after release.`));
       }
+
       const messages = this._messages;
       const resPromise = (() => {
         return new Promise(function ($return, $error) {
@@ -373,6 +376,7 @@ class LowlevelTransport {
           }.$asyncbind(this, $error), $error);
         }.$asyncbind(this));
       })();
+
       return $return(Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]));
     }.$asyncbind(this));
   }
