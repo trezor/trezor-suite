@@ -1,7 +1,5 @@
 /* @flow */
 
-"use strict";
-
 import {patch} from './protobuf/monkey_patch';
 patch();
 
@@ -50,7 +48,7 @@ function timeoutPromise(delay: number): Promise<void> {
 const ITER_MAX = 60;
 const ITER_DELAY = 500;
 
-export class LowlevelTransport {
+export default class LowlevelTransport {
   plugin: LowlevelTransportPlugin;
   _lock: Promise<any> = Promise.resolve();
 

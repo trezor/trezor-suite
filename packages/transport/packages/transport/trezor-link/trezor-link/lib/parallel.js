@@ -347,4 +347,5 @@ class ParallelTransport {
   }
 
 }
-exports.ParallelTransport = ParallelTransport;
+exports.default = ParallelTransport;
+module.exports = exports['default'];

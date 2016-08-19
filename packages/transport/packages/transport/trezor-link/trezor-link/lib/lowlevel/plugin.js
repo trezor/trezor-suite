@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -29,7 +29,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
       }
 
       function isThenable(obj) {
-        return obj && obj instanceof Object && typeof obj.then === "function";
+        return obj && obj instanceof Object && typeof obj.then === 'function';
       }
 
       function EagerThenable(resolver) {
@@ -66,11 +66,11 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
         }
 
         function toString() {
-          return "EagerThenable{" + {
-            "-1": "pending",
-            0: "resolved",
-            1: "rejected"
-          }[phase] + "}=" + result.toString();
+          return 'EagerThenable{' + {
+            '-1': 'pending',
+            0: 'resolved',
+            1: 'rejected'
+          }[phase] + '}=' + result.toString();
         }
 
         this.then = settler;
@@ -104,7 +104,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 
   function then(result, error) {
     try {
-      return result && result instanceof Object && typeof result.then === "function" ? result.then(then, catcher) : resolver.call(self, result, error || catcher);
+      return result && result instanceof Object && typeof result.then === 'function' ? result.then(then, catcher) : resolver.call(self, result, error || catcher);
     } catch (ex) {
       return (error || catcher)(ex);
     }
