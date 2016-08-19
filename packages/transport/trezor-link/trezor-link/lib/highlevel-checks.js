@@ -1,9 +1,15 @@
-"use strict";
+'use strict';
+
+// input checks for high-level transports
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.create = create;
+exports.info = info;
+exports.version = version;
+exports.devices = devices;
+exports.acquire = acquire;
+exports.call = call;
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -34,7 +40,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
       }
 
       function isThenable(obj) {
-        return obj && obj instanceof Object && typeof obj.then === "function";
+        return obj && obj instanceof Object && typeof obj.then === 'function';
       }
 
       function EagerThenable(resolver) {
@@ -71,11 +77,11 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
         }
 
         function toString() {
-          return "EagerThenable{" + {
-            "-1": "pending",
-            0: "resolved",
-            1: "rejected"
-          }[phase] + "}=" + result.toString();
+          return 'EagerThenable{' + {
+            '-1': 'pending',
+            0: 'resolved',
+            1: 'rejected'
+          }[phase] + '}=' + result.toString();
         }
 
         this.then = settler;
@@ -109,7 +115,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 
   function then(result, error) {
     try {
-      return result && result instanceof Object && typeof result.then === "function" ? result.then(then, catcher) : resolver.call(self, result, error || catcher);
+      return result && result instanceof Object && typeof result.then === 'function' ? result.then(then, catcher) : resolver.call(self, result, error || catcher);
     } catch (ex) {
       return (error || catcher)(ex);
     }
@@ -123,22 +129,81 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-function create() {
-  let localResolve = t => {};
-  let localReject = e => {};
+function info(res) {
+  if (typeof res !== `object` || res == null) {
+    throw new Error(`Wrong result type.`);
+  }
+  const version = res.version;
+  if (typeof version !== `string`) {
+    throw new Error(`Wrong result type.`);
+  }
+  const configured = !!res.configured;
+  return { version: version, configured: configured };
+}
 
-  const promise = new Promise((resolve, reject) => {
-    localResolve = resolve;
-    localReject = reject;
-  });
-  const rejectingPromise = promise.then(() => {
-    throw new Error(`Promise is always rejecting`);
-  });
+function version(version) {
+  if (typeof version !== `string`) {
+    throw new Error(`Wrong result type.`);
+  }
+  return version.trim();
+}
 
-  return {
-    resolve: localResolve,
-    reject: localReject,
-    promise: promise,
-    rejectingPromise: rejectingPromise
-  };
+function devices(res) {
+  if (typeof res !== `object`) {
+    throw new Error(`Wrong result type.`);
+  }
+  if (!(res instanceof Array)) {
+    throw new Error(`Wrong result type.`);
+  }
+  return res.map(o => {
+    if (typeof o !== `object` || o == null) {
+      throw new Error(`Wrong result type.`);
+    }
+    const path = o.path;
+    if (typeof path !== `number` && typeof path !== `string`) {
+      throw new Error(`Wrong result type.`);
+    }
+    const pathS = path.toString();
+    const session = o.session;
+    if (session == null) {
+      return {
+        path: pathS,
+        session: null
+      };
+    } else {
+      if (typeof session !== `number` && typeof session !== `string`) {
+        throw new Error(`Wrong result type.`);
+      }
+      return {
+        path: pathS,
+        session: session.toString()
+      };
+    }
+  });
+}
+
+function acquire(res) {
+  if (typeof res !== `object` || res == null) {
+    throw new Error(`Wrong result type.`);
+  }
+  const session = res.session;
+  if (typeof session !== `string` && typeof session !== `number`) {
+    throw new Error(`Wrong result type.`);
+  }
+  return session.toString();
+}
+
+function call(res) {
+  if (typeof res !== `object` || res == null) {
+    throw new Error(`Wrong result type.`);
+  }
+  const type = res.type;
+  if (typeof type !== `string`) {
+    throw new Error(`Wrong result type.`);
+  }
+  const message = res.message;
+  if (typeof message !== `object` || message == null) {
+    throw new Error(`Wrong result type.`);
+  }
+  return { type: type, message: message };
 }

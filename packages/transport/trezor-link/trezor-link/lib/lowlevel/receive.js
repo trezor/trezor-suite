@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.receiveAndParse = receiveAndParse;
 
-var _message_decoder = require("../protobuf/message_decoder.js");
+var _message_decoder = require("./protobuf/message_decoder.js");
 
 var _protobufjs = require("protobufjs");
 
