@@ -1,7 +1,5 @@
 /* @flow */
 
-"use strict";
-
 export type Defered<T> = {
   promise: Promise<T>;
   resolve: (t: T) => void;

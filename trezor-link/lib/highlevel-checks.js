@@ -1,7 +1,5 @@
 'use strict';
 
-// input checks for high-level transports
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -128,6 +126,8 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   boundThen.then = boundThen;
   return boundThen;
 };
+
+// input checks for high-level transports
 
 function info(res) {
   if (typeof res !== `object` || res == null) {

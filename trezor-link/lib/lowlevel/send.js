@@ -1,9 +1,5 @@
 "use strict";
 
-// Logic of sending data to trezor
-//
-// Logic of "call" is broken to two parts - sending and recieving
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -132,6 +128,10 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   boundThen.then = boundThen;
   return boundThen;
 };
+
+// Logic of sending data to trezor
+//
+// Logic of "call" is broken to two parts - sending and recieving
 
 const HEADER_SIZE = 1 + 1 + 4 + 2;
 const MESSAGE_HEADER_BYTE = 0x23;

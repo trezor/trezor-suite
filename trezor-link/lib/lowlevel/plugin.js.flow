@@ -1,7 +1,5 @@
 /* @flow */
 
-"use strict";
-
 import type {TrezorDeviceInfo} from '../transport';
 
 export type LowlevelTransportPlugin = {
