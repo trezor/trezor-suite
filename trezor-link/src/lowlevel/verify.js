@@ -1,7 +1,5 @@
 /* @flow */
 
-"use strict";
-
 // Module for verifying ECDSA signature of configuration.
 
 import {ECPair, ECSignature, crypto} from "bitcoinjs-lib";

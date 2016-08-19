@@ -2,7 +2,7 @@
 
 import type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from './transport';
 
-export class FallbackTransport {
+export default class FallbackTransport {
 
   transports: Array<{name: string, transport: Transport}>;
   configured: boolean;
