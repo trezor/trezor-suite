@@ -5,9 +5,9 @@
 // Logic of recieving data from trezor
 // Logic of "call" is broken to two parts - sending and recieving
 
-import {MessageDecoder} from "../protobuf/message_decoder.js";
+import {MessageDecoder} from "./protobuf/message_decoder.js";
 import {ByteBuffer} from "protobufjs";
-import type {Messages} from "../protobuf/messages.js";
+import type {Messages} from "./protobuf/messages.js";
 import type {MessageFromTrezor} from "../transport";
 
 const MESSAGE_HEADER_BYTE: number = 0x23;

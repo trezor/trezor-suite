@@ -8,7 +8,7 @@
 
 import * as ProtoBuf from "protobufjs";
 import {ByteBuffer} from "protobufjs";
-import type {Messages} from "../protobuf/messages.js";
+import type {Messages} from "./protobuf/messages.js";
 
 const HEADER_SIZE = 1 + 1 + 4 + 2;
 const MESSAGE_HEADER_BYTE: number = 0x23;
