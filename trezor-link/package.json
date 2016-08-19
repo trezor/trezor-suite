@@ -4,8 +4,10 @@
   "description": "Trezor Link",
   "main": "lib/index.js",
   "scripts": {
-    "preversion": "make check && make build && git add -A lib && git commit -am 'Build'",
+    "preversion": "make check && make build",
+    "version": "make build && git add -A lib && git commit -m 'Build'",
     "postversion": "git push && git push --tags && npm publish",
+
     "build": "make build",
     "check": "make check"
   },
@@ -14,14 +16,16 @@
   "license": "LGPL-3.0+",
   "babel": {
     "presets": [
-      "chrome-49"
+      "chrome-49",
+      "es2015-node5"
     ],
     "plugins": [
       "transform-flow-strip-types",
       "transform-class-properties",
       "transform-object-rest-spread",
       "add-module-exports",
-      "fast-async"
+      "fast-async",
+      "inline-version"
     ]
   },
   "bugs": {
@@ -36,6 +40,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
     "babel-preset-chrome-49": "^1.0.0",
     "babel-preset-es2015-node5": "^1.2.0",
+    "babel-plugin-inline-version": "^1.0.2",
     "fast-async": "^6.0.32"
   },
   "dependencies": {
@@ -43,7 +48,9 @@
     "bitcoinjs-lib": "^2.2.0",
     "ecurve": "^1.0.3",
     "json-stable-stringify": "^1.0.1",
+    "node-hid": "^0.5.1",
     "object.values": "^1.0.3",
-    "protobufjs": "3.8.2"
+    "protobufjs": "3.8.2",
+    "semver-compare": "^1.0.0"
   }
 }
