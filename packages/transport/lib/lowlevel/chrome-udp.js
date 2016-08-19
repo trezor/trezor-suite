@@ -130,10 +130,14 @@ class ChromeUdpPlugin {
     this.waiting = {};
     this.buffered = {};
     this.infos = {};
-    this.version = "0.2.0";
+    this.version = "0.2.1";
     this.ports = [];
 
-    this.portDiff = portDiff;
+    if (portDiff == null) {
+      this.portDiff = 3;
+    } else {
+      this.portDiff = portDiff;
+    }
   }
 
   init() {
