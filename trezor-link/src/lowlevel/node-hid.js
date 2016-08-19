@@ -26,7 +26,7 @@ export default class NodeHidPlugin {
 
   async init(): Promise<void> {
     // try if it's a Node environment
-    if (typeof process === 'object' && process != null && process.toString()  === '[object process]'){
+    if (typeof process === `object` && process != null && process.toString() === `[object process]`) {
       return;
     }
     HID.devices(); // try to read devices once, to maybe get an error now before it's too late
