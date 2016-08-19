@@ -135,20 +135,18 @@ class FallbackTransport {
   // everywhere I am using it is in `async`, so error gets returned as Promise.reject
   _tryTransports() {
     return new Promise(function ($return, $error) {
+      var transport, transportObj, $iterator_transportObj;
       let lastError;
-      var _ref;
-
-      let transport = _ref.transport;let $iterator_undefined;
       lastError = null;
-      $iterator_undefined = [this.transports[Symbol.iterator]()];
+      $iterator_transportObj = [this.transports[Symbol.iterator]()];
       return function $ForStatement_2_loop($ForStatement_2_exit, $error) {
-        var _$iterator_undefined$;
-
         function $ForStatement_2_next() {
           return $ForStatement_2_loop($ForStatement_2_exit, $error);
         }
 
-        if (!($iterator_undefined[1] = $iterator_undefined[0].next()).done && ((_$iterator_undefined$ = $iterator_undefined[1].value, transport = _$iterator_undefined$.transport, _$iterator_undefined$) || true)) {
+        if (!($iterator_transportObj[1] = $iterator_transportObj[0].next()).done && ((transportObj = $iterator_transportObj[1].value) || true)) {
+          transport = transportObj.transport;
+
           function $Try_1_Post() {
             return void $ForStatement_2_next.call(this);
           }
