@@ -4,6 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _nodeHid = require('node-hid');
+
+var HID = _interopRequireWildcard(_nodeHid);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
 
@@ -122,109 +128,96 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-class FallbackTransport {
+const REPORT_ID = 63;
 
-  constructor(transports) {
-    this.transports = transports;
+const TREZOR_DESC = {
+  vendorId: 0x534c,
+  productId: 0x0001
+};
+
+class NodeHidPlugin {
+  constructor() {
+    this._sessionCounter = 0;
+    this._devices = {};
+    this.version = "0.2.1";
   }
 
-  // first one that inits successfuly is the final one; others won't even start initing
+  // path => device
 
-
-  // note: activeTransport is actually "?Transport", but
-  // everywhere I am using it is in `async`, so error gets returned as Promise.reject
-  _tryTransports() {
-    return new Promise(function ($return, $error) {
-      var transport, transportObj, $iterator_transportObj;
-      let lastError;
-      lastError = null;
-      $iterator_transportObj = [this.transports[Symbol.iterator]()];
-      return function $ForStatement_2_loop($ForStatement_2_exit, $error) {
-        function $ForStatement_2_next() {
-          return $ForStatement_2_loop($ForStatement_2_exit, $error);
-        }
-
-        if (!($iterator_transportObj[1] = $iterator_transportObj[0].next()).done && ((transportObj = $iterator_transportObj[1].value) || true)) {
-          transport = transportObj.transport;
-
-          function $Try_1_Post() {
-            return void $ForStatement_2_next.call(this);
-          }
-
-          var $Try_1_Catch = function (e) {
-            lastError = e;
-            // ...
-            $Try_1_Post.call(this)
-          }.$asyncbind(this, $error);
-
-          try {
-            return transport.init().then(function ($await_4) {
-              return $return(transport);
-            }.$asyncbind(this, $Try_1_Catch), $Try_1_Catch);
-          } catch (e) {
-            $Try_1_Catch(e)
-          }
-        } else return void $ForStatement_2_exit();
-      }.$asyncbind(this).then(function ($await_5) {
-        return $error(lastError || new Error(`No transport could be initialized.`));
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
 
   init() {
     return new Promise(function ($return, $error) {
-      var transport;
-      return this._tryTransports().then(function ($await_6) {
-        transport = $await_6;
-
-        this.activeTransport = transport;
-        this.version = this.activeTransport.version;
-        this.configured = this.activeTransport.configured;
+      // try if it's a Node environment
+      if (typeof process === `object` && process != null && process.toString() === `[object process]`) {
         return $return();
-      }.$asyncbind(this, $error), $error);
+      }
+      HID.devices(); // try to read devices once, to maybe get an error now before it's too late
+      return $error(new Error(`Not a node environment.`));
     }.$asyncbind(this));
   }
 
-  // using async so I get Promise.recect on this.activeTransport == null (or other error), not Error
   enumerate() {
     return new Promise(function ($return, $error) {
-      return $return(this.activeTransport.enumerate());
+      const devices = HID.devices().filter(d => d.vendorId === TREZOR_DESC.vendorId && d.productId === TREZOR_DESC.productId).map(device => {
+        const path = device.path;
+        return {
+          path: path
+        };
+      });
+      return $return(devices);
     }.$asyncbind(this));
   }
 
-  listen(old) {
+  send(path, session, data) {
     return new Promise(function ($return, $error) {
-      return $return(this.activeTransport.listen(old));
+      const device = this._devices[path];
+      const toWrite = [REPORT_ID].concat(Array.from(new Uint8Array(data)));
+      device.write(toWrite);
+      return $return();
     }.$asyncbind(this));
   }
 
-  acquire(input) {
+  receive(path, session) {
+    const device = this._devices[path];
+    return new Promise((resolve, reject) => {
+      device.read((error, data) => {
+        if (error != null) {
+          reject(error);
+        } else {
+          if (data == null) {
+            reject(new Error(`Data is null`));
+          } else {
+            resolve(nodeBuffer2arrayBuffer(data));
+          }
+        }
+      });
+    });
+  }
+
+  connect(path) {
     return new Promise(function ($return, $error) {
-      return $return(this.activeTransport.acquire(input));
+      const counter = this._sessionCounter;
+      this._sessionCounter++;
+      const device = new HID.HID(path);
+      this._devices[path] = device;
+      // I am pausing, since I am not using the EventEmitter API, but the read() API
+      device.pause();
+      return $return(counter.toString());
     }.$asyncbind(this));
   }
 
-  release(session) {
+  disconnect(path, session) {
     return new Promise(function ($return, $error) {
-      return $return(this.activeTransport.release(session));
+      const device = this._devices[path];
+      device.close();
+      delete this._devices[path];
+      return $return();
     }.$asyncbind(this));
   }
-
-  configure(signedData) {
-    return new Promise(function ($return, $error) {
-      return this.activeTransport.configure(signedData).then(function ($await_7) {
-        this.configured = this.activeTransport.configured;
-        return $return();
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  call(session, name, data) {
-    return new Promise(function ($return, $error) {
-      return $return(this.activeTransport.call(session, name, data));
-    }.$asyncbind(this));
-  }
-
 }
-exports.default = FallbackTransport;
+
+exports.default = NodeHidPlugin;
+function nodeBuffer2arrayBuffer(b) {
+  return new Uint8Array(b).buffer;
+}
 module.exports = exports['default'];

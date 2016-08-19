@@ -1,5 +1,4 @@
 /* @flow */
-'use strict';
 
 // input checks for high-level transports
 
