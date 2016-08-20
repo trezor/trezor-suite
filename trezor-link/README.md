@@ -3,17 +3,15 @@ Trezor-link
 
 *DO NOT USE THIS YET - IT IS STILL IN DEVELOPMENT AND THE API IS CHANGING RAPIDLY*
 
-A library for communication with TREZOR via various means.
+Library for low-level communication with TREZOR.
 
-Trezor-link only works on a "low level"; it only sends messages to TREZOR and receives messages back, and parses them from and to JSON.
+Intended as a "building block" for other packages - it is used in trezor.js and chrome extension.
 
-For more "high-level" access, you should use trezor.js. 
+*You probably don't want to use this package directly.* For communicating with Trezor with a more high-level API, use trezor.js (TODO).
 
-The long-term plan is to merge trezor.js and trezor-link, so that we don't have two distinct libraries. But so far, we have trezor-link for "low-level" access and trezor.js for "high level" access.
+How to use
+---
 
-trezor-link uses plugins for various transports. So far, we have two transports - one for communicating via Chrome HID API in extensions, and one for communicating via node-hid in Node.js environment (for use in Electron apps, or regular node apps).
-
-We are transpiling to JS that runs on chrome >= 49 and node >= 5, since it doesn't run anywhere else anyway and there is no need to transpile to the other environments. If you have a reason why to transpile to anything else (older node / other browser), just write a github issue!
 
 How to use
 -----
@@ -21,8 +19,10 @@ How to use
 Use like this (in node):
 
 ```javascript
-var Link = require('trezor-link');
-var nodeTransport = require('trezor-link-node-hid'); // in npm
+var LowlevelTransport = require('trezor-link/lib/lowlevel');
+var NodeHidPlugin = require('trezor-link-node-hid'); // in npm
+
+var link = new LowlevelTransport(new NodeHidPlugin());
 
 // for simple config load; you can also load by file API from a disk without node-fetch
 var fetch = require('node-fetch');
@@ -35,9 +35,10 @@ var config = fetch('https://wallet.mytrezor.com/data/config_signed.bin').then(fu
   }
 });
 
-var link = new Link(hidTransport);
-config.then(function (configData) {
-  return link.configure(configData);
+return link.init().then(function () { 
+  return config.then(function (configData) {
+    return link.configure(configData);
+  });
 }).then(function () {
   return link.enumerate();
 }).then(function (devices) {
@@ -53,13 +54,32 @@ config.then(function (configData) {
 
 ```
 
-Similarly with chrome and its module; no need to use node-fetch replacement in Chrome though, since it's built-in there.
+We have several transports.
+
+* `trezor-link/lib/bridge` uses bridge
+* `trezor-link/lib/extension` uses official TREZOR Chrome Extension by contacting it
+* `trezor-link/lib/parallel` allows you to use more transports at the same time
+  * useful when you have different classes of device - for example, virtual UDP simulator *and* actual device
+  * `ParallelTransport` creates a new transport that acts like a normal transport from outside
+* `trezor-link/lib/fallback` tries to init multiple transports and uses the first one
+* `trezor-link/lib/lowlevel` creates a low-level transport that "actually" talks to the device; you need to select one of the plug-ins
+  * `trezor-link/lib/lowlevel/chrome-hid` is a plug-in for HID API inside Chrome App environment (note: you should try to use `trezor-link/lib/extension` first)
+  * `trezor-link/lib/lowlevel/chrome-udp` is for a virtual simulator (internal SatoshiLabs tool, not yet released),which is connected via UDP inside Chrome App environment
+  * `trezor-link/lib/lowlevel/node-hid` is for HID API inside Node environment
+
+
+Notes
+---
+We are transpiling to JS that runs on chrome >= 49 and node >= 5, since it doesn't run anywhere else anyway and there is no need to transpile to the other environments. If you have a reason why to transpile to anything else (older node / other browser), just write a github issue!
+
+Source is annotated with Flow types, so it's more obvious what is going on from source code.
+
+We use `node-hid` as a dependency, but it's only used in node environment and it's compiled from C++, which might cause some issues down the line. Ping us if it's a problem.
 
 Flow
 ----
-If you want to use flow for typechecking, just include the file as normally, it will automatically use the included flow file. However, you need to add flowtype/bitcoinjs-libs.js to your `[libs]` (or copy it yourself from flow-typed repository), and probably other libs from 
+If you want to use flow for typechecking, just include the file as normally, it will automatically use the included flow file. However, you need to add `flowtype/*.js` to your `[libs]` (or copy it yourself from flow-typed repository), and probably libs from flowconfig.
 
-I myself recommend 100% using Flow, but it can be a pain to set up, so it's on you.
 
 License
 ----
