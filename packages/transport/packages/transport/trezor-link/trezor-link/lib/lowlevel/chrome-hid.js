@@ -285,7 +285,7 @@ class ChromeHidPlugin {
   constructor() {
     this._hasReportId = {};
     this._udevError = false;
-    this.version = "0.2.1";
+    this.version = "0.2.2";
   }
 
   init() {
