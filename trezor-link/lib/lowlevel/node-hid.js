@@ -139,7 +139,7 @@ class NodeHidPlugin {
   constructor() {
     this._sessionCounter = 0;
     this._devices = {};
-    this.version = "0.2.1";
+    this.version = "0.2.2";
   }
 
   // path => device
