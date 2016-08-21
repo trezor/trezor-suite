@@ -5,6 +5,8 @@ declare var __VERSION__: string;
 import {create as createDefered} from '../defered';
 import type {Defered} from "../defered";
 
+import {debugInOut} from '../debug-decorator';
+
 type TrezorDeviceInfo = {path: string};
 
 export default class ChromeUdpPlugin {
@@ -16,6 +18,7 @@ export default class ChromeUdpPlugin {
   portDiff: number;
 
   version: string = __VERSION__;
+  debug: boolean = false;
 
   constructor(portDiff?: ?number) {
     if (portDiff == null) {
@@ -25,7 +28,9 @@ export default class ChromeUdpPlugin {
     }
   }
 
-  init(): Promise<void> {
+  @debugInOut
+  init(debug: ?boolean): Promise<void> {
+    this.debug = !!debug;
     try {
       chrome.sockets.udp.onReceive.addListener(({socketId, data}) => {
         this._udpListener(socketId, data);
@@ -71,6 +76,7 @@ export default class ChromeUdpPlugin {
     return this._udpReceive(socket);
   }
 
+  @debugInOut
   connect(device: string): Promise<string> {
     const port = parseInt(device);
     if (isNaN(port)) {
@@ -79,6 +85,7 @@ export default class ChromeUdpPlugin {
     return this._udpConnect(port).then(n => n.toString());
   }
 
+  @debugInOut
   disconnect(path: string, session: string): Promise<void> {
     const socket = parseInt(session);
     if (isNaN(socket)) {
