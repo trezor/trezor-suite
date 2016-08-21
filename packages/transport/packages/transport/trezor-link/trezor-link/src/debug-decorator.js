@@ -1,21 +1,20 @@
 /* @flow weak */
-export function debugInOut(target, name, descriptor) {
 
-  const original = descriptor.value
-  descriptor.value = function() {
-    const self = this;
-    const debug = this.debug || (name === 'init' && arguments[0]);
+export function debugInOut(target, name, descriptor) {
+  const original = descriptor.value;
+  descriptor.value = function () {
+    const debug = this.debug || (name === `init` && arguments[0]);
     if (debug) {
-      console.log(`[trezor-link] Calling ${target.name}.${name}(${arguments.map(f=>JSON.stringify(f)).join(', ')})`); 
+      console.log(`[trezor-link] Calling ${target.name}.${name}(${arguments.map(f => JSON.stringify(f)).join(`, `)})`);
     }
     // assuming that the function is a promise
     const resP = original.apply(this, arguments);
     return resP.then(function (res) {
       if (debug) {
         if (res == null) {
-          console.log(`[trezor-link] Done ${target.name}.${name}`); 
+          console.log(`[trezor-link] Done ${target.name}.${name}`);
         } else {
-          console.log(`[trezor-link] Done ${target.name}.${name}, result ${JSON.stringify(res)}`); 
+          console.log(`[trezor-link] Done ${target.name}.${name}, result ${JSON.stringify(res)}`);
         }
       }
       return res;
@@ -25,9 +24,7 @@ export function debugInOut(target, name, descriptor) {
       }
       throw err;
     });
-  }
+  };
 
-  return descriptor
+  return descriptor;
 }
-
-

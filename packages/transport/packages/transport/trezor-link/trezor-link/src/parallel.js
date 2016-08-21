@@ -1,6 +1,7 @@
 /* @flow */
 
 import type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from './transport';
+import {debugInOut} from './debug-decorator';
 
 export default class ParallelTransport {
 
@@ -52,7 +53,6 @@ export default class ParallelTransport {
     }
     return res;
   }
-
   _parseName(input: string): {
     transport: Transport,
     name: string,
