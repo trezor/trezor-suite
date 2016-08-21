@@ -129,7 +129,7 @@ function debugInOut(target, name, descriptor) {
   const original = descriptor.value;
   descriptor.value = function () {
     const debug = this.debug || name === `init` && arguments[0];
-    const objName = this.constructor.name;
+    const objName = this.name;
     const argsArr = Array.prototype.slice.call(arguments);
     if (debug) {
       console.log(`[trezor-link] Calling ${ objName }.${ name }(${ argsArr.map(f => {
