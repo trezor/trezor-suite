@@ -4,8 +4,9 @@ export function debugInOut(target, name, descriptor) {
   const original = descriptor.value;
   descriptor.value = function () {
     const debug = this.debug || (name === `init` && arguments[0]);
+    const argsArr = Array.prototype.slice.call(arguments);
     if (debug) {
-      console.log(`[trezor-link] Calling ${target.name}.${name}(${arguments.map(f => JSON.stringify(f)).join(`, `)})`);
+      console.log(`[trezor-link] Calling ${target.name}.${name}(${argsArr.map(f => JSON.stringify(f)).join(`, `)})`);
     }
     // assuming that the function is a promise
     const resP = original.apply(this, arguments);
