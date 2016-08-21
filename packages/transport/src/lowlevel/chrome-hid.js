@@ -2,6 +2,8 @@
 
 declare var __VERSION__: string;
 
+import {debugInOut} from '../debug-decorator';
+
 type TrezorDeviceInfo = {path: string};
 
 const TREZOR_DESC = {
@@ -172,8 +174,11 @@ export default class ChromeHidPlugin {
   _isLinuxCached: ?boolean;
 
   version: string = __VERSION__;
+  debug: boolean = false;
 
-  init(): Promise<void> {
+  @debugInOut
+  init(debug: ?boolean): Promise<void> {
+    this.debug = !!debug;
     try {
       if (chrome.hid.getDevices == null) {
         return Promise.reject(new Error(`chrome.hid.getDevices is null`));
@@ -285,6 +290,7 @@ export default class ChromeHidPlugin {
     ).catch(e => this._catchUdevError(e));
   }
 
+  @debugInOut
   connect(device: string): Promise<string> {
     const deviceNu = parseInt(device);
     if (isNaN(deviceNu)) {
@@ -293,6 +299,7 @@ export default class ChromeHidPlugin {
     return hidConnect(deviceNu).then(d => d.toString()).catch(e => this._catchUdevError(e));
   }
 
+  @debugInOut
   disconnect(path: string, session: string): Promise<void> {
     const sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
