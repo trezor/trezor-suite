@@ -18,6 +18,7 @@ type IncompleteRequestOptions = {
 };
 
 export default class BridgeTransport {
+  name: string = `BridgeTransport`;
   version: string = ``;
   configured: boolean = false;
   isOutdated: boolean;
