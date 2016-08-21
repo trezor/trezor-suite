@@ -26,7 +26,7 @@ export type Transport = {
   call(session: string, name: string, data: Object): Promise<MessageFromTrezor>;
 
   // resolves when the transport can be used; rejects when it cannot
-  init(): Promise<void>;
+  init(debug: ?boolean): Promise<void>;
 
   configured: boolean;
   version: string;

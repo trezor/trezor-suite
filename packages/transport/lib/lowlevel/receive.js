@@ -133,7 +133,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 const MESSAGE_HEADER_BYTE = 0x23;
 
 // input that might or might not be fully parsed yet
-class PartiallyParsedInput {
+let PartiallyParsedInput = class PartiallyParsedInput {
   // Expected length of the raq message, in bytes
   constructor(typeNumber, length) {
     this.typeNumber = typeNumber;
@@ -156,9 +156,10 @@ class PartiallyParsedInput {
     byteBuffer.reset();
     return byteBuffer.toArrayBuffer();
   }
-}
+};
 
 // Parses first raw input that comes from Trezor and returns some information about the whole message.
+
 function parseFirstInput(bytes) {
   // convert to ByteBuffer so it's easier to read
   const byteBuffer = _protobufjs.ByteBuffer.concat([bytes]);

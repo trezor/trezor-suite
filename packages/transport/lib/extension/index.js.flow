@@ -6,6 +6,8 @@ import * as messages from './messages';
 import type {AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from '../transport';
 import * as check from '../highlevel-checks';
 
+import {debugInOut} from '../debug-decorator';
+
 const EXTENSION_ID: string = `jcjjhjgimijdkoamemaghajlhegmoclj`;
 
 export default class ChromeExtensionTransport {
@@ -14,6 +16,8 @@ export default class ChromeExtensionTransport {
 
   id: string;
   showUdevError: boolean = false;
+
+  debug: boolean = false;
 
   constructor(id?: ?string) {
     this.id = id == null ? EXTENSION_ID : id;
@@ -38,7 +42,13 @@ export default class ChromeExtensionTransport {
     return check.info(infoS);
   }
 
-  async init(): Promise<void> {
+  @debugInOut
+  async init(debug: ?boolean): Promise<void> {
+    this.debug = !!debug;
+    await this._silentInit();
+  }
+
+  async _silentInit(): Promise<void> {
     await messages.exists();
     await this.ping();
     const info = await this.info();
@@ -46,15 +56,17 @@ export default class ChromeExtensionTransport {
     this.configured = info.configured;
   }
 
+  @debugInOut
   async configure(config: string): Promise<void> {
     await this._send({
       type: `configure`,
       body: config,
     });
     // we should reload configured after configure
-    await this.init();
+    await this._silentInit();
   }
 
+  @debugInOut
   async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
     const devicesS: mixed = await (
       this._send({
@@ -74,6 +86,7 @@ export default class ChromeExtensionTransport {
     return devices;
   }
 
+  @debugInOut
   async enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     const devicesS: mixed = await this._send({type: `enumerate`});
     const devices = check.devices(devicesS);
@@ -98,11 +111,13 @@ export default class ChromeExtensionTransport {
     }
   }
 
+  @debugInOut
   async acquire(input: AcquireInput): Promise<string> {
     const acquireS = await this._acquireMixed(input);
     return check.acquire(acquireS);
   }
 
+  @debugInOut
   async release(session: string): Promise<void> {
     await this._send({
       type: `release`,
@@ -110,6 +125,7 @@ export default class ChromeExtensionTransport {
     });
   }
 
+  @debugInOut
   async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
     const res = await this._send({
       type: `call`,

@@ -3,8 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _desc, _value, _class;
 
 var _messages = require('./messages');
 
@@ -14,7 +17,38 @@ var _highlevelChecks = require('../highlevel-checks');
 
 var check = _interopRequireWildcard(_highlevelChecks);
 
+var _debugDecorator = require('../debug-decorator');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -136,12 +170,13 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 
 var EXTENSION_ID;
 EXTENSION_ID = `jcjjhjgimijdkoamemaghajlhegmoclj`;
-class ChromeExtensionTransport {
+let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
 
   constructor(id) {
     this.version = ``;
     this.configured = false;
     this.showUdevError = false;
+    this.debug = false;
 
     this.id = id == null ? EXTENSION_ID : id;
   }
@@ -186,13 +221,22 @@ class ChromeExtensionTransport {
     }.$asyncbind(this));
   }
 
-  init() {
+  init(debug) {
+    return new Promise(function ($return, $error) {
+      this.debug = !!debug;
+      return this._silentInit().then(function ($await_5) {
+        return $return();
+      }.$asyncbind(this, $error), $error);
+    }.$asyncbind(this));
+  }
+
+  _silentInit() {
     return new Promise(function ($return, $error) {
       var info;
-      return messages.exists().then(function ($await_5) {
-        return this.ping().then(function ($await_6) {
-          return this.info().then(function ($await_7) {
-            info = $await_7;
+      return messages.exists().then(function ($await_6) {
+        return this.ping().then(function ($await_7) {
+          return this.info().then(function ($await_8) {
+            info = $await_8;
 
             this.version = info.version;
             this.configured = info.configured;
@@ -208,8 +252,8 @@ class ChromeExtensionTransport {
       return this._send({
         type: `configure`,
         body: config
-      }).then(function ($await_8) {
-        return this.init().then(function ($await_9) {
+      }).then(function ($await_9) {
+        return this._silentInit().then(function ($await_10) {
           return $return();
         }.$asyncbind(this, $error), $error);
       }.$asyncbind(this, $error), $error);
@@ -229,8 +273,8 @@ class ChromeExtensionTransport {
             serialNumber: 0
           });
         })
-      }).then(function ($await_10) {
-        devicesS = $await_10;
+      }).then(function ($await_11) {
+        devicesS = $await_11;
         devices = check.devices(devicesS);
 
         return $return(devices);
@@ -241,8 +285,8 @@ class ChromeExtensionTransport {
   enumerate() {
     return new Promise(function ($return, $error) {
       var devicesS, devices;
-      return this._send({ type: `enumerate` }).then(function ($await_11) {
-        devicesS = $await_11;
+      return this._send({ type: `enumerate` }).then(function ($await_12) {
+        devicesS = $await_12;
         devices = check.devices(devicesS);
 
         return $return(devices);
@@ -274,8 +318,8 @@ class ChromeExtensionTransport {
   acquire(input) {
     return new Promise(function ($return, $error) {
       var acquireS;
-      return this._acquireMixed(input).then(function ($await_12) {
-        acquireS = $await_12;
+      return this._acquireMixed(input).then(function ($await_13) {
+        acquireS = $await_13;
 
         return $return(check.acquire(acquireS));
       }.$asyncbind(this, $error), $error);
@@ -287,7 +331,7 @@ class ChromeExtensionTransport {
       return this._send({
         type: `release`,
         body: session
-      }).then(function ($await_13) {
+      }).then(function ($await_14) {
         return $return();
       }.$asyncbind(this, $error), $error);
     }.$asyncbind(this));
@@ -303,13 +347,13 @@ class ChromeExtensionTransport {
           type: name,
           message: data
         }
-      }).then(function ($await_14) {
-        res = $await_14;
+      }).then(function ($await_15) {
+        res = $await_15;
 
         return $return(check.call(res));
       }.$asyncbind(this, $error), $error);
     }.$asyncbind(this));
   }
-}
+}, (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'configure', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'configure'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'listen', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'listen'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'enumerate', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'enumerate'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'acquire', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'acquire'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'release', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'release'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'call', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'call'), _class.prototype)), _class);
 exports.default = ChromeExtensionTransport;
 module.exports = exports['default'];

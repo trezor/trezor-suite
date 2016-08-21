@@ -7,6 +7,8 @@ import http from './http';
 import type {AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from '../transport';
 import * as check from '../highlevel-checks';
 
+import {debugInOut} from '../debug-decorator';
+
 const DEFAULT_URL = `https://localback.net:21324`;
 const DEFAULT_VERSION_URL = `https://wallet.mytrezor.com/data/bridge/latest.txt`;
 
@@ -22,6 +24,7 @@ export default class BridgeTransport {
 
   url: string;
   newestVersionUrl: string;
+  debug: boolean = false;
 
   constructor(url?: ?string, newestVersionUrl?: ?string) {
     this.url = url == null ? DEFAULT_URL : url;
@@ -36,7 +39,13 @@ export default class BridgeTransport {
     return await http({ ...options, method: `GET`, url: this.url + options.url });
   }
 
-  async init(): Promise<void> {
+  @debugInOut
+  async init(debug: ?boolean): Promise<void> {
+    this.debug = !!debug;
+    await this._silentInit();
+  }
+
+  async _silentInit(): Promise<void> {
     const infoS: mixed = await http({
       url: this.url,
       method: `GET`,
@@ -51,15 +60,17 @@ export default class BridgeTransport {
     this.isOutdated = semvercmp(this.version, newVersion) < 0;
   }
 
+  @debugInOut
   async configure(config: string): Promise<void> {
     await this._post({
       url: `/configure`,
       body: config,
     });
     // we should reload configured after configure
-    await this.init();
+    await this._silentInit();
   }
 
+  @debugInOut
   async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
     const devicesS: mixed = await (
       old == null
@@ -80,6 +91,7 @@ export default class BridgeTransport {
     return devices;
   }
 
+  @debugInOut
   async enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     const devicesS: mixed = await this._get({url: `/enumerate`});
     const devices = check.devices(devicesS);
@@ -97,15 +109,18 @@ export default class BridgeTransport {
     }
   }
 
+  @debugInOut
   async acquire(input: AcquireInput): Promise<string> {
     const acquireS = await this._acquireMixed(input);
     return check.acquire(acquireS);
   }
 
+  @debugInOut
   async release(session: string): Promise<void> {
     await this._post({url: `/release/` + session});
   }
 
+  @debugInOut
   async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
     const res = await this._post({
       url: `/call/` + session,
