@@ -320,7 +320,7 @@ let ChromeHidPlugin = (_class = class ChromeHidPlugin {
   constructor() {
     this._hasReportId = {};
     this._udevError = false;
-    this.version = "0.2.6";
+    this.version = "0.2.7";
     this.debug = false;
   }
 
