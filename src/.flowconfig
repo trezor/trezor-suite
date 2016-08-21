@@ -20,3 +20,4 @@
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
 esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
+esproposal.decorators=ignore

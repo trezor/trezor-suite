@@ -2,11 +2,14 @@
 
 import type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from './transport';
 
+import {debugInOut} from './debug-decorator';
+
 export default class FallbackTransport {
 
   transports: Array<{name: string, transport: Transport}>;
   configured: boolean;
   version: string;
+  debug: boolean = false;
 
   // note: activeTransport is actually "?Transport", but
   // everywhere I am using it is in `async`, so error gets returned as Promise.reject
@@ -22,18 +25,20 @@ export default class FallbackTransport {
     // eslint-disable-next-line prefer-const
     for (let transportObj of this.transports) {
       const transport = transportObj.transport;
+      const name = transportObj.name;
       try {
-        await transport.init();
+        await transport.init(this.debug);
         return transport;
       } catch (e) {
         lastError = e;
-        // ...
       }
     }
     throw lastError || new Error(`No transport could be initialized.`);
   }
 
-  async init(): Promise<void> {
+  @debugInOut
+  async init(debug: ?boolean): Promise<void> {
+    this.debug = !!debug;
     const transport = await this._tryTransports();
     this.activeTransport = transport;
     this.version = this.activeTransport.version;
