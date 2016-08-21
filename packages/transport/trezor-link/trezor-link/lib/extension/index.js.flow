@@ -11,6 +11,7 @@ import {debugInOut} from '../debug-decorator';
 const EXTENSION_ID: string = `jcjjhjgimijdkoamemaghajlhegmoclj`;
 
 export default class ChromeExtensionTransport {
+  name: string = `ChromeExtensionTransport`;
   version: string = ``;
   configured: boolean = false;
 

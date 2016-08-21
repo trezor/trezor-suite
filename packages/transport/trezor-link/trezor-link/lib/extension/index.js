@@ -173,6 +173,7 @@ EXTENSION_ID = `jcjjhjgimijdkoamemaghajlhegmoclj`;
 let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
 
   constructor(id) {
+    this.name = `ChromeExtensionTransport`;
     this.version = ``;
     this.configured = false;
     this.showUdevError = false;

@@ -30,4 +30,5 @@ export type Transport = {
 
   configured: boolean;
   version: string;
+  name: string;
 }
