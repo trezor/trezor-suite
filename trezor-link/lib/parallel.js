@@ -3,10 +3,44 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _desc, _value, _class;
+
+var _debugDecorator = require('./debug-decorator');
+
 function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -126,9 +160,11 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-class ParallelTransport {
+let ParallelTransport = (_class = class ParallelTransport {
 
   constructor(transports) {
+    this.debug = false;
+
     this.transports = transports;
   }
 
@@ -198,7 +234,6 @@ class ParallelTransport {
       }.$asyncbind(this, $error), $error);
     }.$asyncbind(this));
   }
-
   _parseName(input) {
     if (input == null) {
       throw new Error(`Wrong input`);
@@ -320,10 +355,13 @@ class ParallelTransport {
   }
 
   // resolves when the transport can be used; rejects when it cannot
-  init() {
+
+  init(debug) {
     return new Promise(function ($return, $error) {
       var transport, name, $iterator_name;
       let version;
+
+      this.debug = !!debug;
       version = ``;
       $iterator_name = [Object.keys(this.transports)[Symbol.iterator]()];
       return function $ForStatement_4_loop($ForStatement_4_exit, $error) {
@@ -333,7 +371,7 @@ class ParallelTransport {
 
         if (!($iterator_name[1] = $iterator_name[0].next()).done && ((name = $iterator_name[1].value) || true)) {
           transport = this.transports[name];
-          return transport.init().then(function ($await_16) {
+          return transport.init(debug).then(function ($await_16) {
             version = version + `${ name }:${ transport.version };`;
             return void $ForStatement_4_next.call(this);
           }.$asyncbind(this, $error), $error);
@@ -346,6 +384,6 @@ class ParallelTransport {
     }.$asyncbind(this));
   }
 
-}
+}, (_applyDecoratedDescriptor(_class.prototype, 'enumerate', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'enumerate'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'listen', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'listen'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'acquire', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'acquire'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'release', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'release'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'configure', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'configure'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'call', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'call'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype)), _class);
 exports.default = ParallelTransport;
 module.exports = exports['default'];

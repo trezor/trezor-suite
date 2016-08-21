@@ -1,19 +1,9 @@
 "use strict";
 
-// This is a simple class that represents information about messages,
-// as they are loaded from the protobuf definition,
-// so they are understood by both sending and recieving code.
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Messages = undefined;
-
-var _protobufjs = require("protobufjs");
-
-var ProtoBuf = _interopRequireWildcard(_protobufjs);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+exports.debugInOut = debugInOut;
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -133,21 +123,33 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-let Messages = exports.Messages = class Messages {
+/*  weak */
 
-  constructor(messages) {
-    this.messagesByName = messages;
-
-    const messagesByType = {};
-    Object.keys(messages.MessageType).forEach(longName => {
-      const typeId = messages.MessageType[longName];
-      const shortName = longName.split(`_`)[1];
-      messagesByType[typeId] = {
-        name: shortName,
-        constructor: messages[shortName]
-      };
+function debugInOut(target, name, descriptor) {
+  const original = descriptor.value;
+  descriptor.value = function () {
+    const debug = this.debug || name === `init` && arguments[0];
+    if (debug) {
+      console.log(`[trezor-link] Calling ${ target.name }.${ name }(${ arguments.map(f => JSON.stringify(f)).join(`, `) })`);
+    }
+    // assuming that the function is a promise
+    const resP = original.apply(this, arguments);
+    return resP.then(function (res) {
+      if (debug) {
+        if (res == null) {
+          console.log(`[trezor-link] Done ${ target.name }.${ name }`);
+        } else {
+          console.log(`[trezor-link] Done ${ target.name }.${ name }, result ${ JSON.stringify(res) }`);
+        }
+      }
+      return res;
+    }, function (err) {
+      if (debug) {
+        console.error(`[trezor-link] Error in ${ target.name }.${ name }`, err);
+      }
+      throw err;
     });
-    this.messagesByType = messagesByType;
-    this.messageTypes = messages.MessageType;
-  }
-};
+  };
+
+  return descriptor;
+}

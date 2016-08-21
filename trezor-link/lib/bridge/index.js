@@ -3,8 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _desc, _value, _class;
 
 var _semverCompare = require('semver-compare');
 
@@ -18,9 +21,40 @@ var _highlevelChecks = require('../highlevel-checks');
 
 var check = _interopRequireWildcard(_highlevelChecks);
 
+var _debugDecorator = require('../debug-decorator');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -143,11 +177,12 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 var DEFAULT_URL, DEFAULT_VERSION_URL;
 DEFAULT_URL = `https://localback.net:21324`;
 DEFAULT_VERSION_URL = `https://wallet.mytrezor.com/data/bridge/latest.txt`;
-class BridgeTransport {
+let BridgeTransport = (_class = class BridgeTransport {
 
   constructor(url, newestVersionUrl) {
     this.version = ``;
     this.configured = false;
+    this.debug = false;
 
     this.url = url == null ? DEFAULT_URL : url;
     this.newestVersionUrl = newestVersionUrl == null ? DEFAULT_VERSION_URL : newestVersionUrl;
@@ -165,14 +200,23 @@ class BridgeTransport {
     }.$asyncbind(this));
   }
 
-  init() {
+  init(debug) {
+    return new Promise(function ($return, $error) {
+      this.debug = !!debug;
+      return this._silentInit().then(function ($await_3) {
+        return $return();
+      }.$asyncbind(this, $error), $error);
+    }.$asyncbind(this));
+  }
+
+  _silentInit() {
     return new Promise(function ($return, $error) {
       var infoS, info, newVersion;
       return (0, _http2.default)({
         url: this.url,
         method: `GET`
-      }).then(function ($await_3) {
-        infoS = $await_3;
+      }).then(function ($await_4) {
+        infoS = $await_4;
         info = check.info(infoS);
 
         this.version = info.version;
@@ -180,8 +224,8 @@ class BridgeTransport {
         return (0, _http2.default)({
           url: this.newestVersionUrl,
           method: `GET`
-        }).then(function ($await_4) {
-          newVersion = check.version($await_4);
+        }).then(function ($await_5) {
+          newVersion = check.version($await_5);
 
           this.isOutdated = (0, _semverCompare2.default)(this.version, newVersion) < 0;
           return $return();
@@ -195,8 +239,8 @@ class BridgeTransport {
       return this._post({
         url: `/configure`,
         body: config
-      }).then(function ($await_5) {
-        return this.init().then(function ($await_6) {
+      }).then(function ($await_6) {
+        return this._silentInit().then(function ($await_7) {
           return $return();
         }.$asyncbind(this, $error), $error);
       }.$asyncbind(this, $error), $error);
@@ -215,8 +259,8 @@ class BridgeTransport {
             vendor: 21324
           });
         })
-      })).then(function ($await_7) {
-        devicesS = $await_7;
+      })).then(function ($await_8) {
+        devicesS = $await_8;
         devices = check.devices(devicesS);
 
         return $return(devices);
@@ -227,8 +271,8 @@ class BridgeTransport {
   enumerate() {
     return new Promise(function ($return, $error) {
       var devicesS, devices;
-      return this._get({ url: `/enumerate` }).then(function ($await_8) {
-        devicesS = $await_8;
+      return this._get({ url: `/enumerate` }).then(function ($await_9) {
+        devicesS = $await_9;
         devices = check.devices(devicesS);
 
         return $return(devices);
@@ -253,8 +297,8 @@ class BridgeTransport {
   acquire(input) {
     return new Promise(function ($return, $error) {
       var acquireS;
-      return this._acquireMixed(input).then(function ($await_9) {
-        acquireS = $await_9;
+      return this._acquireMixed(input).then(function ($await_10) {
+        acquireS = $await_10;
 
         return $return(check.acquire(acquireS));
       }.$asyncbind(this, $error), $error);
@@ -263,7 +307,7 @@ class BridgeTransport {
 
   release(session) {
     return new Promise(function ($return, $error) {
-      return this._post({ url: `/release/` + session }).then(function ($await_10) {
+      return this._post({ url: `/release/` + session }).then(function ($await_11) {
         return $return();
       }.$asyncbind(this, $error), $error);
     }.$asyncbind(this));
@@ -278,13 +322,13 @@ class BridgeTransport {
           type: name,
           message: data
         }
-      }).then(function ($await_11) {
-        res = $await_11;
+      }).then(function ($await_12) {
+        res = $await_12;
 
         return $return(check.call(res));
       }.$asyncbind(this, $error), $error);
     }.$asyncbind(this));
   }
-}
+}, (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'configure', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'configure'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'listen', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'listen'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'enumerate', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'enumerate'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'acquire', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'acquire'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'release', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'release'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'call', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'call'), _class.prototype)), _class);
 exports.default = BridgeTransport;
 module.exports = exports['default'];

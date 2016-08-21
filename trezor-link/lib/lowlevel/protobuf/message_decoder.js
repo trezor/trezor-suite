@@ -134,7 +134,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-class MessageDecoder {
+let MessageDecoder = exports.MessageDecoder = class MessageDecoder {
   // message type number
   constructor(messages, type, data) {
     this.type = type;
@@ -175,17 +175,16 @@ class MessageDecoder {
 
     return JSON.parse(JSON.stringify(converted));
   }
-}
-
-exports.MessageDecoder = MessageDecoder;
-class MessageInfo {
+};
+let MessageInfo = class MessageInfo {
   constructor(messageConstructor, name) {
     this.messageConstructor = messageConstructor;
     this.name = name;
   }
-}
+};
 
 // Converts any ProtoBuf message to JSON in Trezor.js-friendly format
+
 function messageToJSON(message) {
   const res = {};
   const meta = message.$type;
