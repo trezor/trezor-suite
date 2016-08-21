@@ -1,10 +1,12 @@
 /* @flow */
 
 import type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from './transport';
+import {debugInOut} from './debug-decorator';
 
 export default class ParallelTransport {
 
   transports: {[key: string]: Transport};
+  debug: boolean = false;
 
   constructor(transports: {[key: string]: Transport}) {
     this.transports = transports;
@@ -29,6 +31,7 @@ export default class ParallelTransport {
     });
   }
 
+  @debugInOut
   async enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     const res = [];
     // eslint-disable-next-line prefer-const
@@ -39,6 +42,7 @@ export default class ParallelTransport {
     return res;
   }
 
+  @debugInOut
   async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
     const res = [];
     // eslint-disable-next-line prefer-const
@@ -49,7 +53,6 @@ export default class ParallelTransport {
     }
     return res;
   }
-
   _parseName(input: string): {
     transport: Transport,
     name: string,
@@ -76,6 +79,7 @@ export default class ParallelTransport {
     };
   }
 
+  @debugInOut
   async acquire(input: AcquireInput): Promise<string> {
     const path = this._parseName(input.path);
     const previous = input.previous == null ? null : this._parseName(input.previous);
@@ -91,6 +95,7 @@ export default class ParallelTransport {
     return `${path.name}-${res}`;
   }
 
+  @debugInOut
   async release(session: string): Promise<void> {
     const sessionP = this._parseName(session);
     return sessionP.transport.release(sessionP.rest);
@@ -107,6 +112,7 @@ export default class ParallelTransport {
     return true;
   }
 
+  @debugInOut
   async configure(signedData: string): Promise<void> {
     // eslint-disable-next-line prefer-const
     for (let name of Object.keys(this.transports)) {
@@ -116,18 +122,21 @@ export default class ParallelTransport {
     this.configured = this._checkConfigured();
   }
 
+  @debugInOut
   async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
     const sessionP = this._parseName(session);
     return sessionP.transport.call(sessionP.rest, name, data);
   }
 
   // resolves when the transport can be used; rejects when it cannot
-  async init(): Promise<void> {
+  @debugInOut
+  async init(debug: ?boolean): Promise<void> {
+    this.debug = !!debug;
     let version = ``;
     // eslint-disable-next-line prefer-const
     for (let name of Object.keys(this.transports)) {
       const transport = this.transports[name];
-      await transport.init();
+      await transport.init(debug);
       version = version + `${name}:${transport.version};`;
     }
     this.version = version;

@@ -17,6 +17,8 @@ import type {Defered} from '../defered';
 import type {Messages} from './protobuf/messages';
 import type {MessageFromTrezor, TrezorDeviceInfoWithSession, AcquireInput} from '../transport';
 
+import {debugInOut} from '../debug-decorator';
+
 function stableStringify(devices: ?Array<TrezorDeviceInfoWithSession>): string {
   if (devices == null) {
     return `null`;
@@ -51,6 +53,7 @@ const ITER_DELAY = 500;
 export default class LowlevelTransport {
   plugin: LowlevelTransportPlugin;
   _lock: Promise<any> = Promise.resolve();
+  debug: boolean = false;
 
   // path => promise rejecting on release
   deferedOnRelease: {[session: string]: Defered<void>} = {};
@@ -76,7 +79,12 @@ export default class LowlevelTransport {
     return res;
   }
 
+  @debugInOut
   enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
+    return this._silentEnumerate();
+  }
+
+  _silentEnumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     return this.lock(async (): Promise<Array<TrezorDeviceInfoWithSession>> => {
       const devices = await this.plugin.enumerate();
       const devicesWithSessions = devices.map(device => {
@@ -106,6 +114,7 @@ export default class LowlevelTransport {
 
   _lastStringified: string = ``;
 
+  @debugInOut
   async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
     const oldStringified = stableStringify(old);
     const last = old == null ? this._lastStringified : oldStringified;
@@ -113,7 +122,7 @@ export default class LowlevelTransport {
   }
 
   async _runIter(iteration: number, oldStringified: string): Promise<Array<TrezorDeviceInfoWithSession>> {
-    const devices = await this.enumerate();
+    const devices = await this._silentEnumerate();
     const stringified = stableStringify(devices);
     if ((stringified !== oldStringified) || (iteration === ITER_MAX)) {
       this._lastStringified = stringified;
@@ -141,6 +150,7 @@ export default class LowlevelTransport {
     }
   }
 
+  @debugInOut
   async acquire(input: AcquireInput): Promise<string> {
     return this.lock(async (): Promise<string> => {
       await this._checkAndReleaseBeforeAcquire(input);
@@ -152,6 +162,7 @@ export default class LowlevelTransport {
     });
   }
 
+  @debugInOut
   async release(session: string): Promise<void> {
     const path = this.reverse[session];
     if (path == null) {
@@ -174,6 +185,7 @@ export default class LowlevelTransport {
     return;
   }
 
+  @debugInOut
   async configure(signedData: string): Promise<void> {
     const buffer = verifyHexBin(signedData);
     const messages = parseConfigure(buffer);
@@ -191,6 +203,7 @@ export default class LowlevelTransport {
     return () => this.plugin.receive(path, session);
   }
 
+  @debugInOut
   async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
     if (this._messages == null) {
       throw new Error(`Transport not configured.`);
@@ -209,7 +222,9 @@ export default class LowlevelTransport {
     return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
   }
 
-  async init(): Promise<void> {
-    return this.plugin.init();
+  @debugInOut
+  async init(debug: ?boolean): Promise<void> {
+    this.debug = !!debug;
+    return this.plugin.init(debug);
   }
 }

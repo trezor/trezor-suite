@@ -3,8 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _desc, _value, _class;
 
 var _monkey_patch = require('./protobuf/monkey_patch');
 
@@ -17,6 +20,37 @@ var _verify = require('./verify');
 var _send = require('./send');
 
 var _receive = require('./receive');
+
+var _debugDecorator = require('../debug-decorator');
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -173,7 +207,7 @@ function timeoutPromise(delay) {
 stringify = require('json-stable-stringify');
 ITER_MAX = 60;
 ITER_DELAY = 500;
-class LowlevelTransport {
+let LowlevelTransport = (_class = class LowlevelTransport {
 
   // session => path
 
@@ -181,6 +215,7 @@ class LowlevelTransport {
   // path => promise rejecting on release
   constructor(plugin) {
     this._lock = Promise.resolve();
+    this.debug = false;
     this.deferedOnRelease = {};
     this.connections = {};
     this.reverse = {};
@@ -201,6 +236,10 @@ class LowlevelTransport {
   }
 
   enumerate() {
+    return this._silentEnumerate();
+  }
+
+  _silentEnumerate() {
     return this.lock(() => {
       return new Promise(function ($return, $error) {
         var devices, devicesWithSessions;
@@ -244,7 +283,7 @@ class LowlevelTransport {
   _runIter(iteration, oldStringified) {
     return new Promise(function ($return, $error) {
       var devices, stringified;
-      return this.enumerate().then(function ($await_3) {
+      return this._silentEnumerate().then(function ($await_3) {
         devices = $await_3;
         stringified = stableStringify(devices);
 
@@ -384,11 +423,12 @@ class LowlevelTransport {
     }.$asyncbind(this));
   }
 
-  init() {
+  init(debug) {
     return new Promise(function ($return, $error) {
-      return $return(this.plugin.init());
+      this.debug = !!debug;
+      return $return(this.plugin.init(debug));
     }.$asyncbind(this));
   }
-}
+}, (_applyDecoratedDescriptor(_class.prototype, 'enumerate', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'enumerate'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'listen', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'listen'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'acquire', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'acquire'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'release', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'release'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'configure', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'configure'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'call', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'call'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype)), _class);
 exports.default = LowlevelTransport;
 module.exports = exports['default'];
