@@ -164,7 +164,7 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
     this.waiting = {};
     this.buffered = {};
     this.infos = {};
-    this.version = "0.2.3";
+    this.version = "0.2.4";
     this.debug = false;
     this.ports = [];
 
