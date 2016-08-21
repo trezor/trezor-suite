@@ -9,7 +9,7 @@ export type LowlevelTransportPlugin = {
   connect: (path: string) => Promise<string>;
   disconnect: (path: string, session: string) => Promise<void>;
 
-  init: () => Promise<void>;
+  init: (debug: ?boolean) => Promise<void>;
   version: string;
 }
 
