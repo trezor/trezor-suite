@@ -5,6 +5,7 @@ import type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTr
 import {debugInOut} from './debug-decorator';
 
 export default class FallbackTransport {
+  name: string = `FallbackTransport`;
 
   _availableTransports: Array<Transport>;
   transports: Array<Transport>;

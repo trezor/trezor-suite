@@ -159,6 +159,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 let FallbackTransport = (_class = class FallbackTransport {
 
   constructor(transports) {
+    this.name = `FallbackTransport`;
     this.debug = false;
 
     this.transports = transports;

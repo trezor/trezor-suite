@@ -214,6 +214,7 @@ let LowlevelTransport = (_class = class LowlevelTransport {
 
   // path => promise rejecting on release
   constructor(plugin) {
+    this.name = `LowlevelTransport`;
     this._lock = Promise.resolve();
     this.debug = false;
     this.deferedOnRelease = {};

@@ -173,7 +173,7 @@ let NodeHidPlugin = (_class = class NodeHidPlugin {
   constructor() {
     this._sessionCounter = 0;
     this._devices = {};
-    this.version = "0.2.7";
+    this.version = "0.2.8";
     this.debug = false;
   }
 
