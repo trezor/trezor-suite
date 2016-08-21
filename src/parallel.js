@@ -4,6 +4,7 @@ import type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTr
 import {debugInOut} from './debug-decorator';
 
 export default class ParallelTransport {
+  name: string = `ParallelTransport`;
 
   transports: {[key: string]: Transport};
   debug: boolean = false;

@@ -51,6 +51,8 @@ const ITER_MAX = 60;
 const ITER_DELAY = 500;
 
 export default class LowlevelTransport {
+  name: string = `LowlevelTransport`;
+
   plugin: LowlevelTransportPlugin;
   _lock: Promise<any> = Promise.resolve();
   debug: boolean = false;
