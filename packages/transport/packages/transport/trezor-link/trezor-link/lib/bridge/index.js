@@ -180,6 +180,7 @@ DEFAULT_VERSION_URL = `https://wallet.mytrezor.com/data/bridge/latest.txt`;
 let BridgeTransport = (_class = class BridgeTransport {
 
   constructor(url, newestVersionUrl) {
+    this.name = `BridgeTransport`;
     this.version = ``;
     this.configured = false;
     this.debug = false;
