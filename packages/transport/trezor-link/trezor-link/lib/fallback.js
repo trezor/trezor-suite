@@ -169,19 +169,21 @@ let FallbackTransport = (_class = class FallbackTransport {
 
   // note: activeTransport is actually "?Transport", but
   // everywhere I am using it is in `async`, so error gets returned as Promise.reject
-  _tryTransports() {
+  _tryInitTransports() {
     return new Promise(function ($return, $error) {
-      let lastError, transport, $iterator_transport;
+      var res, transport, $iterator_transport;
+      let lastError;
+      res = [];
       lastError = null;
       $iterator_transport = [this.transports[Symbol.iterator]()];
-      return function $ForStatement_2_loop($ForStatement_2_exit, $error) {
-        function $ForStatement_2_next() {
-          return $ForStatement_2_loop.$asyncbind(this)($ForStatement_2_exit, $error);
+      return function $ForStatement_3_loop($ForStatement_3_exit, $error) {
+        function $ForStatement_3_next() {
+          return $ForStatement_3_loop.$asyncbind(this)($ForStatement_3_exit, $error);
         }
 
         if (!($iterator_transport[1] = $iterator_transport[0].next()).done && ((transport = $iterator_transport[1].value) || true)) {
           function $Try_1_Post() {
-            return void $ForStatement_2_next.call(this);
+            return void $ForStatement_3_next.call(this);
           }
 
           var $Try_1_Catch = function (e) {
@@ -190,14 +192,53 @@ let FallbackTransport = (_class = class FallbackTransport {
           }.$asyncbind(this, $error);
 
           try {
-            return transport.init(this.debug).then(function ($await_4) {
-              return $return(transport);
+            return transport.init(this.debug).then(function ($await_7) {
+              res.push(transport);
+              $Try_1_Post.call(this)
             }.$asyncbind(this, $Try_1_Catch), $Try_1_Catch);
           } catch (e) {
             $Try_1_Catch(e)
           }
-        } else return void $ForStatement_2_exit();
-      }.$asyncbind(this).then(function ($await_5) {
+        } else return void $ForStatement_3_exit();
+      }.$asyncbind(this).then(function ($await_8) {
+        if (res.length === 0) {
+          return $error(lastError || new Error(`No transport could be initialized.`));
+        }
+        return $return(res);
+      }.$asyncbind(this, $error), $error);
+    }.$asyncbind(this));
+  }
+
+  // first one that inits successfuly is the final one; others won't even start initing
+  _tryConfigureTransports(data) {
+    return new Promise(function ($return, $error) {
+      let lastError, transport, $iterator_transport;
+      lastError = null;
+      $iterator_transport = [this._availableTransports[Symbol.iterator]()];
+      return function $ForStatement_4_loop($ForStatement_4_exit, $error) {
+        function $ForStatement_4_next() {
+          return $ForStatement_4_loop($ForStatement_4_exit, $error);
+        }
+
+        if (!($iterator_transport[1] = $iterator_transport[0].next()).done && ((transport = $iterator_transport[1].value) || true)) {
+          function $Try_2_Post() {
+            return void $ForStatement_4_next.call(this);
+          }
+
+          var $Try_2_Catch = function (e) {
+            lastError = e;
+            $Try_2_Post.call(this)
+          }.$asyncbind(this, $error);
+
+          try {
+            return transport.configure(data).then(function ($await_9) {
+              return $return(transport);
+            }.$asyncbind(this, $Try_2_Catch), $Try_2_Catch);
+          } catch (e) {
+            $Try_2_Catch(e)
+          }
+        } else return void $ForStatement_4_exit();
+      }.$asyncbind(this).then(function ($await_10) {
         return $error(lastError || new Error(`No transport could be initialized.`));
       }.$asyncbind(this, $error), $error);
     }.$asyncbind(this));
@@ -205,15 +246,31 @@ let FallbackTransport = (_class = class FallbackTransport {
 
   init(debug) {
     return new Promise(function ($return, $error) {
-      var transport;
+      var transports;
 
       this.debug = !!debug;
-      return this._tryTransports().then(function ($await_6) {
-        transport = $await_6;
 
-        this.activeTransport = transport;
-        this.version = this.activeTransport.version;
+      // init ALL OF THEM
+      return this._tryInitTransports().then(function ($await_11) {
+        transports = $await_11;
+
+        this._availableTransports = transports;
+
+        // a slight hack - configured is always false, so we force caller to call configure()
+        // to find out the actual working transport (bridge falls on configure, not on info)
+        this.version = transports[0].version;
+        this.configured = false;
+        return $return();
+      }.$asyncbind(this, $error), $error);
+    }.$asyncbind(this));
+  }
+
+  configure(signedData) {
+    return new Promise(function ($return, $error) {
+      return this._tryConfigureTransports(signedData).then(function ($await_12) {
+        this.activeTransport = $await_12;
         this.configured = this.activeTransport.configured;
+        this.version = this.activeTransport.version;
         return $return();
       }.$asyncbind(this, $error), $error);
     }.$asyncbind(this));
@@ -241,15 +298,6 @@ let FallbackTransport = (_class = class FallbackTransport {
   release(session) {
     return new Promise(function ($return, $error) {
       return $return(this.activeTransport.release(session));
-    }.$asyncbind(this));
-  }
-
-  configure(signedData) {
-    return new Promise(function ($return, $error) {
-      return this.activeTransport.configure(signedData).then(function ($await_7) {
-        this.configured = this.activeTransport.configured;
-        return $return();
-      }.$asyncbind(this, $error), $error);
     }.$asyncbind(this));
   }
 
