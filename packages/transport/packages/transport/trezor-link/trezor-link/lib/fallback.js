@@ -3,6 +3,40 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = undefined;
+
+var _desc, _value, _class;
+
+var _debugDecorator = require('./debug-decorator');
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -122,9 +156,11 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-class FallbackTransport {
+let FallbackTransport = (_class = class FallbackTransport {
 
   constructor(transports) {
+    this.debug = false;
+
     this.transports = transports;
   }
 
@@ -135,30 +171,26 @@ class FallbackTransport {
   // everywhere I am using it is in `async`, so error gets returned as Promise.reject
   _tryTransports() {
     return new Promise(function ($return, $error) {
-      var transport, transportObj, $iterator_transportObj;
-      let lastError;
+      let lastError, transport, $iterator_transport;
       lastError = null;
-      $iterator_transportObj = [this.transports[Symbol.iterator]()];
+      $iterator_transport = [this.transports[Symbol.iterator]()];
       return function $ForStatement_2_loop($ForStatement_2_exit, $error) {
         function $ForStatement_2_next() {
-          return $ForStatement_2_loop($ForStatement_2_exit, $error);
+          return $ForStatement_2_loop.$asyncbind(this)($ForStatement_2_exit, $error);
         }
 
-        if (!($iterator_transportObj[1] = $iterator_transportObj[0].next()).done && ((transportObj = $iterator_transportObj[1].value) || true)) {
-          transport = transportObj.transport;
-
+        if (!($iterator_transport[1] = $iterator_transport[0].next()).done && ((transport = $iterator_transport[1].value) || true)) {
           function $Try_1_Post() {
             return void $ForStatement_2_next.call(this);
           }
 
           var $Try_1_Catch = function (e) {
             lastError = e;
-            // ...
             $Try_1_Post.call(this)
           }.$asyncbind(this, $error);
 
           try {
-            return transport.init().then(function ($await_4) {
+            return transport.init(this.debug).then(function ($await_4) {
               return $return(transport);
             }.$asyncbind(this, $Try_1_Catch), $Try_1_Catch);
           } catch (e) {
@@ -171,9 +203,11 @@ class FallbackTransport {
     }.$asyncbind(this));
   }
 
-  init() {
+  init(debug) {
     return new Promise(function ($return, $error) {
       var transport;
+
+      this.debug = !!debug;
       return this._tryTransports().then(function ($await_6) {
         transport = $await_6;
 
@@ -225,6 +259,6 @@ class FallbackTransport {
     }.$asyncbind(this));
   }
 
-}
+}, (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype)), _class);
 exports.default = FallbackTransport;
 module.exports = exports['default'];

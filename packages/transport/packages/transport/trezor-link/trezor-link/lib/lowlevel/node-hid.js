@@ -3,12 +3,46 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = undefined;
+
+var _desc, _value, _class;
 
 var _nodeHid = require('node-hid');
 
 var HID = _interopRequireWildcard(_nodeHid);
 
+var _debugDecorator = require('../debug-decorator');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
 
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
@@ -135,17 +169,18 @@ const TREZOR_DESC = {
   productId: 0x0001
 };
 
-class NodeHidPlugin {
+let NodeHidPlugin = (_class = class NodeHidPlugin {
   constructor() {
     this._sessionCounter = 0;
     this._devices = {};
-    this.version = "0.2.2";
+    this.version = "0.2.3";
+    this.debug = false;
   }
 
   // path => device
 
 
-  init() {
+  init(debug) {
     return new Promise(function ($return, $error) {
       // try if it's a Node environment
       if (typeof process === `object` && process != null && process.toString() === `[object process]`) {
@@ -214,9 +249,10 @@ class NodeHidPlugin {
       return $return();
     }.$asyncbind(this));
   }
-}
-
+}, (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'connect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'connect'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'disconnect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'disconnect'), _class.prototype)), _class);
 exports.default = NodeHidPlugin;
+
+
 function nodeBuffer2arrayBuffer(b) {
   return new Uint8Array(b).buffer;
 }

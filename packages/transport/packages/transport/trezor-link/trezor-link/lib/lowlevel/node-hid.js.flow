@@ -6,6 +6,8 @@ import * as HID from 'node-hid';
 
 import type {HID as HIDDevice, HIDDeviceDescription} from 'node-hid';
 
+import {debugInOut} from '../debug-decorator';
+
 const REPORT_ID = 63;
 
 const TREZOR_DESC = {
@@ -24,7 +26,10 @@ export default class NodeHidPlugin {
 
   version: string = __VERSION__;
 
-  async init(): Promise<void> {
+  debug: boolean = false;
+
+  @debugInOut
+  async init(debug: ?boolean): Promise<void> {
     // try if it's a Node environment
     if (typeof process === `object` && process != null && process.toString() === `[object process]`) {
       return;
@@ -68,6 +73,7 @@ export default class NodeHidPlugin {
     });
   }
 
+  @debugInOut
   async connect(path: string): Promise<string> {
     const counter = this._sessionCounter;
     this._sessionCounter++;
@@ -78,6 +84,7 @@ export default class NodeHidPlugin {
     return counter.toString();
   }
 
+  @debugInOut
   async disconnect(path: string, session: string): Promise<void> {
     const device = this._devices[path];
     device.close();
