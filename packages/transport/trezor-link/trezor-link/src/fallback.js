@@ -6,7 +6,7 @@ import {debugInOut} from './debug-decorator';
 
 export default class FallbackTransport {
 
-  transports: Array<{name: string, transport: Transport}>;
+  transports: Array<Transport>;
   configured: boolean;
   version: string;
   debug: boolean = false;
@@ -15,7 +15,7 @@ export default class FallbackTransport {
   // everywhere I am using it is in `async`, so error gets returned as Promise.reject
   activeTransport: Transport;
 
-  constructor(transports: Array<{name: string, transport: Transport}>) {
+  constructor(transports: Array<Transport>) {
     this.transports = transports;
   }
 
@@ -23,9 +23,7 @@ export default class FallbackTransport {
   async _tryTransports(): Promise<Transport> {
     let lastError: ?Error = null;
     // eslint-disable-next-line prefer-const
-    for (let transportObj of this.transports) {
-      const transport = transportObj.transport;
-      const name = transportObj.name;
+    for (let transport of this.transports) {
       try {
         await transport.init(this.debug);
         return transport;
