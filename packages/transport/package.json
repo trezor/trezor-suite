@@ -28,6 +28,13 @@
       "inline-version"
     ]
   },
+  "browserify": {
+    "transform": [
+      ["babelify", {
+        "presets": ["es2015"]
+      }]
+    ]
+  },
   "bugs": {
     "url": "https://github.com/runn1ng/trezor-link/issues"
   },
