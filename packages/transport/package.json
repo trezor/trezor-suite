@@ -14,19 +14,23 @@
   "author": "Karel Bílek <kb@karelbilek.com>",
   "license": "LGPL-3.0+",
   "babel": {
-    "presets": [
-      "chrome-49",
-      "es2015-node5"
-    ],
-    "plugins": [
-      "transform-flow-strip-types",
-      "transform-decorators-legacy",
-      "transform-class-properties",
-      "transform-object-rest-spread",
-      "add-module-exports",
-      "fast-async",
-      "inline-version"
-    ]
+    "env": {
+      "srctolib": {
+        "presets": [
+          "chrome-49",
+          "es2015-node5"
+        ],
+        "plugins": [
+          "transform-flow-strip-types",
+          "transform-decorators-legacy",
+          "transform-class-properties",
+          "transform-object-rest-spread",
+          "add-module-exports",
+          "fast-async",
+          "inline-version"
+        ]
+      }
+    }
   },
   "browserify": {
     "transform": [
