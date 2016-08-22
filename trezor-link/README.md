@@ -10,10 +10,6 @@ Intended as a "building block" for other packages - it is used in trezor.js and 
 *You probably don't want to use this package directly.* For communicating with Trezor with a more high-level API, use trezor.js (TODO).
 
 How to use
----
-
-
-How to use
 -----
 
 Use like this (in node):
