@@ -1,6 +1,6 @@
 {
   "name": "trezor-link",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Trezor Link",
   "main": "lib/index.js",
   "scripts": {
@@ -30,9 +30,14 @@
   },
   "browserify": {
     "transform": [
-      ["babelify", {
-        "presets": ["es2015"]
-      }]
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
     ]
   },
   "bugs": {
