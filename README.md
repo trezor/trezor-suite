@@ -20,7 +20,7 @@ Use like this (in node):
 
 ```javascript
 var LowlevelTransport = require('trezor-link/lib/lowlevel');
-var NodeHidPlugin = require('trezor-link-node-hid'); // in npm
+var NodeHidPlugin = require('trezor-link/lib/lowlevel/node-hid')
 
 var link = new LowlevelTransport(new NodeHidPlugin());
 
