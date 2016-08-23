@@ -10,6 +10,8 @@ import {debugInOut} from '../debug-decorator';
 type TrezorDeviceInfo = {path: string};
 
 export default class ChromeUdpPlugin {
+  name: string = `ChromeUdpPlugin`;
+
   waiting: {[id: string]: Defered<ArrayBuffer>} = {};
   buffered: {[id: string]: Array<ArrayBuffer>} = {};
 
