@@ -197,12 +197,20 @@ export default class LowlevelTransport {
 
   _sendLowlevel(session: string): (data: ArrayBuffer) => Promise<void> {
     const path: string = this.reverse[session];
-    return (data) => this.plugin.send(path, session, data);
+    return (data) => {
+      return this.lock((): Promise<void> => {
+        return this.plugin.send(path, session, data);
+      });
+    };
   }
 
   _receiveLowlevel(session: string): () => Promise<ArrayBuffer> {
     const path: string = this.reverse[session];
-    return () => this.plugin.receive(path, session);
+    return () => {
+      return this.lock((): Promise<ArrayBuffer> => {
+        return this.plugin.receive(path, session);
+      });
+    };
   }
 
   @debugInOut
