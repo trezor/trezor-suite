@@ -10,7 +10,7 @@ export type HttpRequestOptions = {
 // slight hack to make Flow happy, but to allow Node to set its own fetch
 // Request, RequestOptions and Response are built-in types of Flow for fetch API
 let _fetch: (input: string | Request, init?: RequestOptions) => Promise<Response> =
-  window.fetch == null
+  window == null
   ? () => Promise.reject()
   : window.fetch;
 
