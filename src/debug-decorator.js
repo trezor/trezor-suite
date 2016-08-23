@@ -7,13 +7,7 @@ export function debugInOut(target, name, descriptor) {
     const objName = this.name;
     const argsArr = Array.prototype.slice.call(arguments);
     if (debug) {
-      console.log(`[trezor-link] Calling ${objName}.${name}(${argsArr.map(f => {
-        const stringified = JSON.stringify(f);
-        if (stringified.length > 1000) {
-          return `${stringified.substring(0, 1000)}...`;
-        }
-        return stringified;
-      }).join(`, `)})`);
+      console.log(`[trezor-link] Calling ${objName}.${name}(`, ...argsArr, `)`);
     }
     // assuming that the function is a promise
     const resP = original.apply(this, arguments);
@@ -22,7 +16,7 @@ export function debugInOut(target, name, descriptor) {
         if (res == null) {
           console.log(`[trezor-link] Done ${objName}.${name}`);
         } else {
-          console.log(`[trezor-link] Done ${objName}.${name}, result ${JSON.stringify(res)}`);
+          console.log(`[trezor-link] Done ${objName}.${name}, result `, res);
         }
       }
       return res;
