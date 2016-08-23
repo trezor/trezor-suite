@@ -23,7 +23,7 @@ export function debugInOut(target, name, descriptor) {
         if (res == null) {
           console.log(`[trezor-link] Done ${objName}.${name}`);
         } else {
-          console.log(`[trezor-link] Done ${objName}.${name}, result ${JSON.stringify(res)}`);
+          console.log(`[trezor-link] Done ${objName}.${name}, result `, res);
         }
       }
       return res;
