@@ -407,20 +407,25 @@ let LowlevelTransport = (_class = class LowlevelTransport {
       }
 
       const messages = this._messages;
-      const resPromise = this.lock(() => {
+
+      return $return(this.lock(() => {
         return new Promise(function ($return, $error) {
-          var message;
-          return (0, _send.buildAndSend)(messages, this._sendLowlevel(session), name, data).then(function ($await_9) {
-            return (0, _receive.receiveAndParse)(messages, this._receiveLowlevel(session)).then(function ($await_10) {
-              message = $await_10;
+          const resPromise = (() => {
+            return new Promise(function ($return, $error) {
+              var message;
+              return (0, _send.buildAndSend)(messages, this._sendLowlevel(session), name, data).then(function ($await_9) {
+                return (0, _receive.receiveAndParse)(messages, this._receiveLowlevel(session)).then(function ($await_10) {
+                  message = $await_10;
 
-              return $return(message);
-            }.$asyncbind(this, $error), $error);
-          }.$asyncbind(this, $error), $error);
+                  return $return(message);
+                }.$asyncbind(this, $error), $error);
+              }.$asyncbind(this, $error), $error);
+            }.$asyncbind(this));
+          })();
+
+          return $return(Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]));
         }.$asyncbind(this));
-      });
-
-      return $return(Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]));
+      }));
     }.$asyncbind(this));
   }
 
