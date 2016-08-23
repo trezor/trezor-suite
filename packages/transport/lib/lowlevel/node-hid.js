@@ -174,7 +174,7 @@ let NodeHidPlugin = (_class = class NodeHidPlugin {
     this.name = `NodeHidPlugin`;
     this._sessionCounter = 0;
     this._devices = {};
-    this.version = "0.2.17";
+    this.version = "0.2.18";
     this.debug = false;
   }
 
@@ -223,7 +223,10 @@ let NodeHidPlugin = (_class = class NodeHidPlugin {
           if (data == null) {
             reject(new Error(`Data is null`));
           } else {
-            resolve(nodeBuffer2arrayBuffer(data));
+            if (data[0] !== 63) {
+              reject(new Error(`Invalid data; first byte should be 63, is ${ data[0] }`));
+            }
+            resolve(nodeBuffer2arrayBuffer(data.slice(1)));
           }
         }
       });
