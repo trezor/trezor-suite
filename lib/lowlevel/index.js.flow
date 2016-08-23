@@ -197,20 +197,12 @@ export default class LowlevelTransport {
 
   _sendLowlevel(session: string): (data: ArrayBuffer) => Promise<void> {
     const path: string = this.reverse[session];
-    return (data) => {
-      return this.lock((): Promise<void> => {
-        return this.plugin.send(path, session, data);
-      });
-    };
+    return (data) => this.plugin.send(path, session, data);
   }
 
   _receiveLowlevel(session: string): () => Promise<ArrayBuffer> {
     const path: string = this.reverse[session];
-    return () => {
-      return this.lock((): Promise<ArrayBuffer> => {
-        return this.plugin.receive(path, session);
-      });
-    };
+    return () => this.plugin.receive(path, session);
   }
 
   @debugInOut
@@ -223,11 +215,11 @@ export default class LowlevelTransport {
     }
 
     const messages = this._messages;
-    const resPromise: Promise<MessageFromTrezor> = (async () => {
+    const resPromise = this.lock(async (): Promise<MessageFromTrezor> => {
       await buildAndSend(messages, this._sendLowlevel(session), name, data);
       const message = await receiveAndParse(messages, this._receiveLowlevel(session));
       return message;
-    })();
+    });
 
     return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
   }
