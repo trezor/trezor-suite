@@ -167,6 +167,7 @@ export function storageSet(key:string, value:any): Promise<void> {
 }
 
 export default class ChromeHidPlugin {
+  name: string = `ChromeHidPlugin`;
 
   _hasReportId: {[id: string]: boolean} = {};
 
