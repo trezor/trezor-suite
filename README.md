@@ -53,6 +53,7 @@ return link.init().then(function () {
 We have several transports.
 
 * `trezor-link/lib/bridge` uses bridge
+  * if you use this transport from node, the constructor needs some implementation on `fetch` as third argument, for example `node-fetch`.
 * `trezor-link/lib/extension` uses official TREZOR Chrome Extension by contacting it
 * `trezor-link/lib/parallel` allows you to use more transports at the same time
   * useful when you have different classes of device - for example, virtual UDP simulator *and* actual device
