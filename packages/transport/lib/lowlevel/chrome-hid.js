@@ -318,6 +318,7 @@ function storageSet(key, value) {
 
 let ChromeHidPlugin = (_class = class ChromeHidPlugin {
   constructor() {
+    this.name = `ChromeHidPlugin`;
     this._hasReportId = {};
     this._udevError = false;
     this.version = "0.2.13";
