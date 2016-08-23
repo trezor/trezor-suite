@@ -389,12 +389,20 @@ let LowlevelTransport = (_class = class LowlevelTransport {
 
   _sendLowlevel(session) {
     const path = this.reverse[session];
-    return data => this.plugin.send(path, session, data);
+    return data => {
+      return this.lock(() => {
+        return this.plugin.send(path, session, data);
+      });
+    };
   }
 
   _receiveLowlevel(session) {
     const path = this.reverse[session];
-    return () => this.plugin.receive(path, session);
+    return () => {
+      return this.lock(() => {
+        return this.plugin.receive(path, session);
+      });
+    };
   }
 
   call(session, name, data) {
