@@ -3,7 +3,7 @@
 'use strict';
 
 import semvercmp from 'semver-compare';
-import http from './http';
+import {request as http, setFetch} from './http';
 import type {AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from '../transport';
 import * as check from '../highlevel-checks';
 
@@ -27,9 +27,13 @@ export default class BridgeTransport {
   newestVersionUrl: string;
   debug: boolean = false;
 
-  constructor(url?: ?string, newestVersionUrl?: ?string) {
+  // nodeFetch for using bridge in node (so it is not needlessly imported in browserify)
+  constructor(url?: ?string, newestVersionUrl?: ?string, nodeFetch?: ?any) {
     this.url = url == null ? DEFAULT_URL : url;
     this.newestVersionUrl = newestVersionUrl == null ? DEFAULT_VERSION_URL : newestVersionUrl;
+    if (nodeFetch != null) {
+      setFetch(nodeFetch);
+    }
   }
 
   async _post(options: IncompleteRequestOptions): Promise<mixed> {

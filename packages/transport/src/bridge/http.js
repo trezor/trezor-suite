@@ -1,11 +1,22 @@
 /* @flow */
 'use strict';
 
-export type RequestOptions = {
+export type HttpRequestOptions = {
     body?: ?(Array<any> | Object | string);
     url: string;
     method: 'POST' | 'GET';
 };
+
+// slight hack to make Flow happy, but to allow Node to set its own fetch
+// Request, RequestOptions and Response are built-in types of Flow for fetch API
+let _fetch: (input: string | Request, init?: RequestOptions) => Promise<Response> =
+  window.fetch == null
+  ? () => Promise.reject()
+  : window.fetch;
+
+export function setFetch(fetch: any) {
+  _fetch = fetch;
+}
 
 function contentType(body: any): string {
   if (typeof body === `string`) {
@@ -34,8 +45,8 @@ function parseResult(text: string): mixed {
   }
 }
 
-export default async function request(options: RequestOptions): Promise<mixed> {
-  const res = await fetch(options.url, {
+export async function request(options: HttpRequestOptions): Promise<mixed> {
+  const res = await _fetch(options.url, {
     method: options.method,
     headers: {
       'Content-Type': contentType(options.body || ``),
