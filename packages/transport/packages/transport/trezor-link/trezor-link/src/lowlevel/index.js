@@ -43,7 +43,7 @@ function compare(a: TrezorDeviceInfoWithSession, b: TrezorDeviceInfoWithSession)
 
 function timeoutPromise(delay: number): Promise<void> {
   return new Promise((resolve) => {
-    window.setTimeout(() => resolve(), delay);
+    setTimeout(() => resolve(), delay);
   });
 }
 
