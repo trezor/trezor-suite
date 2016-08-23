@@ -15,8 +15,6 @@ var _semverCompare2 = _interopRequireDefault(_semverCompare);
 
 var _http = require('./http');
 
-var _http2 = _interopRequireDefault(_http);
-
 var _highlevelChecks = require('../highlevel-checks');
 
 var check = _interopRequireWildcard(_highlevelChecks);
@@ -179,7 +177,8 @@ DEFAULT_URL = `https://localback.net:21324`;
 DEFAULT_VERSION_URL = `https://wallet.mytrezor.com/data/bridge/latest.txt`;
 let BridgeTransport = (_class = class BridgeTransport {
 
-  constructor(url, newestVersionUrl) {
+  // nodeFetch for using bridge in node (so it is not needlessly imported in browserify)
+  constructor(url, newestVersionUrl, nodeFetch) {
     this.name = `BridgeTransport`;
     this.version = ``;
     this.configured = false;
@@ -187,17 +186,20 @@ let BridgeTransport = (_class = class BridgeTransport {
 
     this.url = url == null ? DEFAULT_URL : url;
     this.newestVersionUrl = newestVersionUrl == null ? DEFAULT_VERSION_URL : newestVersionUrl;
+    if (nodeFetch != null) {
+      (0, _http.setFetch)(nodeFetch);
+    }
   }
 
   _post(options) {
     return new Promise(function ($return, $error) {
-      return (0, _http2.default)(_extends({}, options, { method: `POST`, url: this.url + options.url })).then($return, $error);
+      return (0, _http.request)(_extends({}, options, { method: `POST`, url: this.url + options.url })).then($return, $error);
     }.$asyncbind(this));
   }
 
   _get(options) {
     return new Promise(function ($return, $error) {
-      return (0, _http2.default)(_extends({}, options, { method: `GET`, url: this.url + options.url })).then($return, $error);
+      return (0, _http.request)(_extends({}, options, { method: `GET`, url: this.url + options.url })).then($return, $error);
     }.$asyncbind(this));
   }
 
@@ -213,7 +215,7 @@ let BridgeTransport = (_class = class BridgeTransport {
   _silentInit() {
     return new Promise(function ($return, $error) {
       var infoS, info, newVersion;
-      return (0, _http2.default)({
+      return (0, _http.request)({
         url: this.url,
         method: `GET`
       }).then(function ($await_4) {
@@ -222,7 +224,7 @@ let BridgeTransport = (_class = class BridgeTransport {
 
         this.version = info.version;
         this.configured = info.configured;
-        return (0, _http2.default)({
+        return (0, _http.request)({
           url: this.newestVersionUrl,
           method: `GET`
         }).then(function ($await_5) {
