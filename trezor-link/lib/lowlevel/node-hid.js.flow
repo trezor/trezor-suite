@@ -67,7 +67,10 @@ export default class NodeHidPlugin {
           if (data == null) {
             reject(new Error(`Data is null`));
           } else {
-            resolve(nodeBuffer2arrayBuffer(data));
+            if (data[0] !== 63) {
+              reject(new Error(`Invalid data; first byte should be 63, is ${data[0]}`));
+            }
+            resolve(nodeBuffer2arrayBuffer(data.slice(1)));
           }
         }
       });
