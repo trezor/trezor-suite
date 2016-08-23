@@ -1,6 +1,6 @@
 {
   "name": "trezor-link",
-  "version": "0.2.20",
+  "version": "0.2.21",
   "description": "Trezor Link",
   "main": "lib/index.js",
   "scripts": {
