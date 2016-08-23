@@ -18,6 +18,7 @@ const TREZOR_DESC = {
 type TrezorDeviceInfo = {path:string};
 
 export default class NodeHidPlugin {
+  name: string = `NodeHidPlugin`;
 
   _sessionCounter: number = 0;
 
