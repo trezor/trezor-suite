@@ -161,6 +161,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
 
   constructor(portDiff) {
+    this.name = `ChromeUdpPlugin`;
     this.waiting = {};
     this.buffered = {};
     this.infos = {};
