@@ -11,5 +11,6 @@ export type LowlevelTransportPlugin = {
 
   init: (debug: ?boolean) => Promise<void>;
   version: string;
+  name: string;
 }
 
