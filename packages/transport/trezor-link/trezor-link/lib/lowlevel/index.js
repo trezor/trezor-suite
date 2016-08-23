@@ -389,20 +389,12 @@ let LowlevelTransport = (_class = class LowlevelTransport {
 
   _sendLowlevel(session) {
     const path = this.reverse[session];
-    return data => {
-      return this.lock(() => {
-        return this.plugin.send(path, session, data);
-      });
-    };
+    return data => this.plugin.send(path, session, data);
   }
 
   _receiveLowlevel(session) {
     const path = this.reverse[session];
-    return () => {
-      return this.lock(() => {
-        return this.plugin.receive(path, session);
-      });
-    };
+    return () => this.plugin.receive(path, session);
   }
 
   call(session, name, data) {
@@ -415,7 +407,7 @@ let LowlevelTransport = (_class = class LowlevelTransport {
       }
 
       const messages = this._messages;
-      const resPromise = (() => {
+      const resPromise = this.lock(() => {
         return new Promise(function ($return, $error) {
           var message;
           return (0, _send.buildAndSend)(messages, this._sendLowlevel(session), name, data).then(function ($await_9) {
@@ -426,7 +418,7 @@ let LowlevelTransport = (_class = class LowlevelTransport {
             }.$asyncbind(this, $error), $error);
           }.$asyncbind(this, $error), $error);
         }.$asyncbind(this));
-      })();
+      });
 
       return $return(Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]));
     }.$asyncbind(this));
