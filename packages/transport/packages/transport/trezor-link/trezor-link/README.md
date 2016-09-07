@@ -1,13 +1,11 @@
 Trezor-link
 ====
 
-*DO NOT USE THIS YET - IT IS STILL IN DEVELOPMENT AND THE API IS CHANGING RAPIDLY*
-
 Library for low-level communication with TREZOR.
 
 Intended as a "building block" for other packages - it is used in trezor.js and chrome extension.
 
-*You probably don't want to use this package directly.* For communicating with Trezor with a more high-level API, use trezor.js (TODO).
+*You probably don't want to use this package directly.* For communication with Trezor with a more high-level API, use [trezor.js](https://www.npmjs.com/package/trezor.js).
 
 How to use
 -----
@@ -67,7 +65,7 @@ We have several transports.
 
 Notes
 ---
-We are transpiling to JS that runs on chrome >= 49 and node >= 5, since it doesn't run anywhere else anyway and there is no need to transpile to the other environments. If you have a reason why to transpile to anything else (older node / other browser), just write a github issue!
+We are transpiling to JS that runs on chrome >= 49 and node >= 5, since there is right now no need to transpile to anything "lower". If you have a reason why to transpile to anything else (older node / es2015 / ...), just write a github issue!
 
 Source is annotated with Flow types, so it's more obvious what is going on from source code.
 
