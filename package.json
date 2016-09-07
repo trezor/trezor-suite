@@ -10,7 +10,7 @@
     "build": "make build",
     "check": "make check"
   },
-  "repository": "https://github.com/runn1ng/trezor-link.git",
+  "repository": "https://github.com/trezor/trezor-link.git",
   "author": "Karel Bílek <kb@karelbilek.com>",
   "license": "LGPL-3.0+",
   "babel": {
@@ -45,9 +45,9 @@
     ]
   },
   "bugs": {
-    "url": "https://github.com/runn1ng/trezor-link/issues"
+    "url": "https://github.com/trezor/trezor-link/issues"
   },
-  "homepage": "https://github.com/runn1ng/trezor-link",
+  "homepage": "https://github.com/trezor/trezor-link",
   "devDependencies": {
     "babel-cli": "^6.10.1",
     "babel-plugin-add-module-exports": "^0.1.2",
