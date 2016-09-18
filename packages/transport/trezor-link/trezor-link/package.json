@@ -65,9 +65,11 @@
     "bitcoinjs-lib": "^2.2.0",
     "ecurve": "^1.0.3",
     "json-stable-stringify": "^1.0.1",
-    "node-hid": "^0.5.1",
     "object.values": "^1.0.3",
     "protobufjs": "3.8.2",
     "semver-compare": "^1.0.0"
+  },
+  "optionalDependencies": {
+    "node-hid": "^0.5.1"
   }
 }
