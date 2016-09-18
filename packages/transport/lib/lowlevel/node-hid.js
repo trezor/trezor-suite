@@ -174,7 +174,7 @@ let NodeHidPlugin = (_class = class NodeHidPlugin {
     this.name = `NodeHidPlugin`;
     this._sessionCounter = 0;
     this._devices = {};
-    this.version = "0.2.25";
+    this.version = "0.2.26";
     this.debug = false;
   }
 
