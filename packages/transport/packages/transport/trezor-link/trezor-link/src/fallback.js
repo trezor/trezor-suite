@@ -6,6 +6,7 @@ import {debugInOut} from './debug-decorator';
 
 export default class FallbackTransport {
   name: string = `FallbackTransport`;
+  activeName: string = ``;
 
   _availableTransports: Array<Transport>;
   transports: Array<Transport>;
@@ -71,6 +72,7 @@ export default class FallbackTransport {
     this.activeTransport = await this._tryConfigureTransports(signedData);
     this.configured = this.activeTransport.configured;
     this.version = this.activeTransport.version;
+    this.activeName = this.activeTransport.name;
   }
 
   // using async so I get Promise.recect on this.activeTransport == null (or other error), not Error
