@@ -2,6 +2,10 @@ check: node_modules
 	flow check src/
 	cd src/; eslint .
 
+git-ancestor:
+	git fetch origin
+	git merge-base --is-ancestor origin/master master
+
 node_modules:
 	npm install
 
@@ -13,7 +17,7 @@ build: node_modules
 	BABEL_ENV=srctolib `npm bin`/babel src --out-dir lib
 	rm -rf lib/flow-test
 
-npm_preversion: check build
+npm_preversion: git-ancestor check build
 
 npm_version: build
 	git add -A lib
