@@ -160,6 +160,7 @@ let FallbackTransport = (_class = class FallbackTransport {
 
   constructor(transports) {
     this.name = `FallbackTransport`;
+    this.activeName = ``;
     this.debug = false;
 
     this.transports = transports;
@@ -272,6 +273,7 @@ let FallbackTransport = (_class = class FallbackTransport {
         this.activeTransport = $await_12;
         this.configured = this.activeTransport.configured;
         this.version = this.activeTransport.version;
+        this.activeName = this.activeTransport.name;
         return $return();
       }.$asyncbind(this, $error), $error);
     }.$asyncbind(this));
