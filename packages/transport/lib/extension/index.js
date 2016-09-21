@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _desc, _value, _class;
 
 var _messages = require('./messages');
@@ -169,6 +167,16 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 };
 
 var EXTENSION_ID;
+
+
+function maybeParseInt(input) {
+  if (isNaN(input)) {
+    return input;
+  } else {
+    return parseInt(input);
+  }
+}
+
 EXTENSION_ID = `jcjjhjgimijdkoamemaghajlhegmoclj`;
 let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
 
@@ -267,12 +275,17 @@ let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
       return this._send({
         type: `listen`,
         body: old == null ? null : old.map(device => {
-          return _extends({}, device, {
+          // hack for old extension
+          const session = maybeParseInt(device.session);
+          const path = maybeParseInt(device.path);
+          return {
+            session: session,
+            path: path,
             // hack for old extension
             product: 1,
             vendor: 21324,
             serialNumber: 0
-          });
+          };
         })
       }).then(function ($await_11) {
         devicesS = $await_11;
@@ -302,14 +315,14 @@ let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
         return $return(this._send({
           type: `acquire`,
           body: {
-            path: input.path,
-            previous: input.previous
+            path: maybeParseInt(input.path),
+            previous: maybeParseInt(input.previous)
           }
         }));
       } else {
         return $return(this._send({
           type: `acquire`,
-          body: input.path
+          body: maybeParseInt(input.path)
         }));
       }
       return $return();
@@ -331,7 +344,7 @@ let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
     return new Promise(function ($return, $error) {
       return this._send({
         type: `release`,
-        body: session
+        body: maybeParseInt(session)
       }).then(function ($await_14) {
         return $return();
       }.$asyncbind(this, $error), $error);
@@ -344,7 +357,7 @@ let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
       return this._send({
         type: `call`,
         body: {
-          id: session,
+          id: maybeParseInt(session),
           type: name,
           message: data
         }
