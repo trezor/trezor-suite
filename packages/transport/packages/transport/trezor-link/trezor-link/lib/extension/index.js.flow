@@ -10,6 +10,14 @@ import {debugInOut} from '../debug-decorator';
 
 const EXTENSION_ID: string = `jcjjhjgimijdkoamemaghajlhegmoclj`;
 
+function maybeParseInt(input: ?string): ?(string | number) {
+  if (isNaN(input)) {
+    return input;
+  } else {
+    return parseInt(input);
+  }
+}
+
 export default class ChromeExtensionTransport {
   name: string = `ChromeExtensionTransport`;
   version: string = ``;
@@ -73,8 +81,12 @@ export default class ChromeExtensionTransport {
       this._send({
         type: `listen`,
         body: old == null ? null : old.map(device => {
+          // hack for old extension
+          const session = maybeParseInt(device.session);
+          const path = maybeParseInt(device.path);
           return {
-            ...device,
+            session,
+            path,
             // hack for old extension
             product: 1,
             vendor: 21324,
@@ -100,14 +112,14 @@ export default class ChromeExtensionTransport {
       return this._send({
         type: `acquire`,
         body: {
-          path: input.path,
-          previous: input.previous,
+          path: maybeParseInt(input.path),
+          previous: maybeParseInt(input.previous),
         },
       });
     } else {
       return this._send({
         type: `acquire`,
-        body: input.path,
+        body: maybeParseInt(input.path),
       });
     }
   }
@@ -122,7 +134,7 @@ export default class ChromeExtensionTransport {
   async release(session: string): Promise<void> {
     await this._send({
       type: `release`,
-      body: session,
+      body: maybeParseInt(session),
     });
   }
 
@@ -131,7 +143,7 @@ export default class ChromeExtensionTransport {
     const res = await this._send({
       type: `call`,
       body: {
-        id: session,
+        id: maybeParseInt(session),
         type: name,
         message: data,
       },
