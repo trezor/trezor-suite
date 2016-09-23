@@ -11,10 +11,17 @@ import {debugInOut} from '../debug-decorator';
 const EXTENSION_ID: string = `jcjjhjgimijdkoamemaghajlhegmoclj`;
 
 function maybeParseInt(input: ?string): ?(string | number) {
+  if (input == null) {
+    return null;
+  }
   if (isNaN(input)) {
     return input;
   } else {
-    return parseInt(input);
+    const parsed = parseInt(input);
+    if (isNaN(parsed)) {
+      return input;
+    }
+    return parsed;
   }
 }
 
@@ -84,14 +91,18 @@ export default class ChromeExtensionTransport {
           // hack for old extension
           const session = maybeParseInt(device.session);
           const path = maybeParseInt(device.path);
-          return {
-            session,
+          let res = {
             path,
             // hack for old extension
             product: 1,
             vendor: 21324,
             serialNumber: 0,
           };
+          // hack for old extension
+          if (session != null) {
+            res = { session, ...res };
+          }
+          return res;
         }),
       })
     );
