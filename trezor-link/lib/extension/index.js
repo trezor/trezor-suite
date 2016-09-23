@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _desc, _value, _class;
 
 var _messages = require('./messages');
@@ -170,10 +172,17 @@ var EXTENSION_ID;
 
 
 function maybeParseInt(input) {
+  if (input == null) {
+    return null;
+  }
   if (isNaN(input)) {
     return input;
   } else {
-    return parseInt(input);
+    const parsed = parseInt(input);
+    if (isNaN(parsed)) {
+      return input;
+    }
+    return parsed;
   }
 }
 
@@ -278,14 +287,18 @@ let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
           // hack for old extension
           const session = maybeParseInt(device.session);
           const path = maybeParseInt(device.path);
-          return {
-            session: session,
+          let res = {
             path: path,
             // hack for old extension
             product: 1,
             vendor: 21324,
             serialNumber: 0
           };
+          // hack for old extension
+          if (session != null) {
+            res = _extends({ session: session }, res);
+          }
+          return res;
         })
       }).then(function ($await_11) {
         devicesS = $await_11;
