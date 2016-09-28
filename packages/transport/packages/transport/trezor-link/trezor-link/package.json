@@ -14,33 +14,17 @@
   "author": "Karel Bílek <kb@karelbilek.com>",
   "license": "LGPL-3.0+",
   "babel": {
-    "env": {
-      "srctolib": {
-        "presets": [
-          "modern"
-        ],
-        "plugins": [
-          "transform-flow-strip-types",
-          "transform-decorators-legacy",
-          "transform-class-properties",
-          "transform-object-rest-spread",
-          "add-module-exports",
-          "fast-async",
-          "inline-version"
-        ]
-      }
-    }
-  },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "es2015"
-          ]
-        }
-      ]
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "transform-flow-strip-types",
+      "transform-decorators-legacy",
+      "transform-class-properties",
+      "transform-object-rest-spread",
+      "add-module-exports",
+      "fast-async",
+      "inline-version"
     ]
   },
   "bugs": {
@@ -50,11 +34,12 @@
   "devDependencies": {
     "babel-cli": "^6.10.1",
     "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-inline-version": "^1.0.2",
     "babel-plugin-transform-class-properties": "^6.4.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-flow-strip-types": "^6.4.0",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-plugin-inline-version": "^1.0.2",
+    "babel-preset-es2015": "^6.14.0",
     "babel-preset-modern": "^1.1.0",
     "fast-async": "^6.0.32"
   },
