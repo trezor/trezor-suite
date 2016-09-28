@@ -40,7 +40,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -142,25 +144,25 @@ if (!Object.values) {
 
 function protocolToJSON(p) {
   // TODO: what if there are more files?
-  const res = fileToJSON(p.file[2]);
+  var res = fileToJSON(p.file[2]);
   res.imports = [fileToJSON(p.file[1])];
   return res;
 }
 
 function fileToJSON(f) {
-  const res = {};
+  var res = {};
   res.package = f.package;
   res.options = f.options;
   res.services = [];
-  const messagesSimple = Object.values(f.message_type).map(messageToJSON);
-  const messagesRef = extensionToJSON(f.extension);
+  var messagesSimple = Object.values(f.message_type).map(messageToJSON);
+  var messagesRef = extensionToJSON(f.extension);
   res.messages = messagesRef.concat(messagesSimple);
   res.enums = Object.values(f.enum_type).map(enumToJSON);
   return res;
 }
 
 function enumToJSON(enumm) {
-  const res = {};
+  var res = {};
   res.name = enumm.name;
   res.values = Object.values(enumm.value).map(enum_valueToJSON);
   res.options = {};
@@ -168,9 +170,9 @@ function enumToJSON(enumm) {
 }
 
 function extensionToJSON(extensions) {
-  const res = {};
+  var res = {};
   Object.values(extensions).forEach(function (extension) {
-    const extendee = extension.extendee.slice(1);
+    var extendee = extension.extendee.slice(1);
     if (res[extendee] == null) {
       res[extendee] = {};
       res[extendee].ref = extendee;
@@ -182,14 +184,14 @@ function extensionToJSON(extensions) {
 }
 
 function enum_valueToJSON(val) {
-  const res = {};
+  var res = {};
   res.name = val.name;
   res.id = val.number;
   return res;
 }
 
 function messageToJSON(message) {
-  const res = {};
+  var res = {};
   res.enums = [];
   res.name = message.name;
   res.options = message.options || {};
@@ -199,7 +201,7 @@ function messageToJSON(message) {
   return res;
 }
 
-const type_map = {
+var type_map = {
   "1": `double`,
   "2": `float`,
   "3": `int64`,
@@ -221,7 +223,7 @@ const type_map = {
 };
 
 function fieldToJSON(field) {
-  const res = {};
+  var res = {};
   if (field.label === 1) {
     res.rule = `optional`;
   }

@@ -27,7 +27,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -126,11 +128,11 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 /*  weak */
 
 function debugInOut(target, name, descriptor) {
-  const original = descriptor.value;
+  var original = descriptor.value;
   descriptor.value = function () {
-    const debug = this.debug || name === `init` && arguments[0];
-    const objName = this.name;
-    const argsArr = Array.prototype.slice.call(arguments);
+    var debug = this.debug || name === `init` && arguments[0];
+    var objName = this.name;
+    var argsArr = Array.prototype.slice.call(arguments);
     if (debug) {
       console.log(`[trezor-link] Calling ${ objName }.${ name }(`, ...argsArr.map(f => {
         if (typeof f === `string`) {
@@ -142,7 +144,7 @@ function debugInOut(target, name, descriptor) {
       }), `)`);
     }
     // assuming that the function is a promise
-    const resP = original.apply(this, arguments);
+    var resP = original.apply(this, arguments);
     return resP.then(function (res) {
       if (debug) {
         if (res == null) {

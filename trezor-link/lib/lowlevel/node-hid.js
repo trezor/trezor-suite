@@ -66,7 +66,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -162,19 +164,19 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-const REPORT_ID = 63;
+var REPORT_ID = 63;
 
-const TREZOR_DESC = {
+var TREZOR_DESC = {
   vendorId: 0x534c,
   productId: 0x0001
 };
 
-let NodeHidPlugin = (_class = class NodeHidPlugin {
+var NodeHidPlugin = (_class = class NodeHidPlugin {
   constructor() {
     this.name = `NodeHidPlugin`;
     this._sessionCounter = 0;
     this._devices = {};
-    this.version = "0.2.29";
+    this.version = "0.2.30";
     this.debug = false;
   }
 
@@ -194,10 +196,10 @@ let NodeHidPlugin = (_class = class NodeHidPlugin {
 
   enumerate() {
     return new Promise(function ($return, $error) {
-      const devices = HID.devices().filter(d => d.vendorId === TREZOR_DESC.vendorId && d.productId === TREZOR_DESC.productId).map(device => {
-        const path = device.path;
+      var devices = HID.devices().filter(d => d.vendorId === TREZOR_DESC.vendorId && d.productId === TREZOR_DESC.productId).map(device => {
+        var path = device.path;
         return {
-          path: path
+          path
         };
       });
       return $return(devices);
@@ -206,15 +208,15 @@ let NodeHidPlugin = (_class = class NodeHidPlugin {
 
   send(path, session, data) {
     return new Promise(function ($return, $error) {
-      const device = this._devices[path];
-      const toWrite = [REPORT_ID].concat(Array.from(new Uint8Array(data)));
+      var device = this._devices[path];
+      var toWrite = [REPORT_ID].concat(Array.from(new Uint8Array(data)));
       device.write(toWrite);
       return $return();
     }.$asyncbind(this));
   }
 
   receive(path, session) {
-    const device = this._devices[path];
+    var device = this._devices[path];
     return new Promise((resolve, reject) => {
       device.read((error, data) => {
         if (error != null) {
@@ -235,9 +237,9 @@ let NodeHidPlugin = (_class = class NodeHidPlugin {
 
   connect(path) {
     return new Promise(function ($return, $error) {
-      const counter = this._sessionCounter;
+      var counter = this._sessionCounter;
       this._sessionCounter++;
-      const device = new HID.HID(path);
+      var device = new HID.HID(path);
       this._devices[path] = device;
       // I am pausing, since I am not using the EventEmitter API, but the read() API
       device.pause();
@@ -247,7 +249,7 @@ let NodeHidPlugin = (_class = class NodeHidPlugin {
 
   disconnect(path, session) {
     return new Promise(function ($return, $error) {
-      const device = this._devices[path];
+      var device = this._devices[path];
       device.close();
       delete this._devices[path];
       return $return();
