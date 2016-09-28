@@ -65,8 +65,6 @@ We have several transports.
 
 Notes
 ---
-We are transpiling to JS that runs on chrome >= 49 and node >= 5, since there is right now no need to transpile to anything "lower". If you have a reason why to transpile to anything else (older node / es2015 / ...), just write a github issue!
-
 Source is annotated with Flow types, so it's more obvious what is going on from source code.
 
 We use `node-hid` as a dependency, but it's only used in node environment and it's compiled from C++, which might cause some issues down the line. Ping us if it's a problem.
