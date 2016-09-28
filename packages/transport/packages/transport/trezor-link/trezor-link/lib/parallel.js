@@ -64,7 +64,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -160,7 +162,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-let ParallelTransport = (_class = class ParallelTransport {
+var ParallelTransport = (_class = class ParallelTransport {
 
   constructor(transports) {
     this.name = `ParallelTransport`;
@@ -244,23 +246,23 @@ let ParallelTransport = (_class = class ParallelTransport {
 
     var _input$split2 = _toArray(_input$split);
 
-    const name = _input$split2[0];
+    var name = _input$split2[0];
 
-    const restArray = _input$split2.slice(1);
+    var restArray = _input$split2.slice(1);
 
     if (restArray.length === 0) {
       throw new Error(`Input has to contain transport name.`);
     }
-    const transport = this.transports[name];
+    var transport = this.transports[name];
     if (transport == null) {
       throw new Error(`Input has to contain valid transport name.`);
     }
-    const rest = restArray.join(`-`);
+    var rest = restArray.join(`-`);
 
     return {
-      transport: transport,
-      name: name,
-      rest: rest
+      transport,
+      name,
+      rest
     };
   }
 
@@ -288,7 +290,7 @@ let ParallelTransport = (_class = class ParallelTransport {
 
   release(session) {
     return new Promise(function ($return, $error) {
-      const sessionP = this._parseName(session);
+      var sessionP = this._parseName(session);
       return $return(sessionP.transport.release(sessionP.rest));
     }.$asyncbind(this));
   }
@@ -301,9 +303,9 @@ let ParallelTransport = (_class = class ParallelTransport {
 
     try {
       for (var _iterator = Object.keys(this.transports)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        const name = _step.value;
+        var name = _step.value;
 
-        const transport = this.transports[name];
+        var transport = this.transports[name];
         if (!transport.configured) {
           return false;
         }
@@ -350,7 +352,7 @@ let ParallelTransport = (_class = class ParallelTransport {
 
   call(session, name, data) {
     return new Promise(function ($return, $error) {
-      const sessionP = this._parseName(session);
+      var sessionP = this._parseName(session);
       return $return(sessionP.transport.call(sessionP.rest, name, data));
     }.$asyncbind(this));
   }
@@ -360,7 +362,7 @@ let ParallelTransport = (_class = class ParallelTransport {
   init(debug) {
     return new Promise(function ($return, $error) {
       var transport, name, $iterator_name;
-      let version;
+      var version = void 0;
 
       this.debug = !!debug;
       version = ``;

@@ -43,7 +43,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -141,18 +143,18 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 
 // Parse configure data (it has to be already verified)
 function parseConfigure(data) {
-  const configBuilder = compiledConfigProto[`Configuration`];
-  const loadedConfig = configBuilder.decode(data);
+  var configBuilder = compiledConfigProto[`Configuration`];
+  var loadedConfig = configBuilder.decode(data);
 
-  const validUntil = loadedConfig.valid_until;
-  const timeNow = Math.floor(Date.now() / 1000);
+  var validUntil = loadedConfig.valid_until;
+  var timeNow = Math.floor(Date.now() / 1000);
   if (timeNow >= validUntil) {
     throw new Error(`Config too old; ` + timeNow + ` >= ` + validUntil);
   }
 
-  const wireProtocol = loadedConfig.wire_protocol;
-  const protocolJSON = (0, _to_json.protocolToJSON)(wireProtocol.toRaw());
-  const protobufMessages = ProtoBuf.newBuilder({})[`import`](protocolJSON).build();
+  var wireProtocol = loadedConfig.wire_protocol;
+  var protocolJSON = (0, _to_json.protocolToJSON)(wireProtocol.toRaw());
+  var protobufMessages = ProtoBuf.newBuilder({})[`import`](protocolJSON).build();
 
   return new _messages.Messages(protobufMessages);
 }
