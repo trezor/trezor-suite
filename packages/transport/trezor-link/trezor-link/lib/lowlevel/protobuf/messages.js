@@ -15,6 +15,8 @@ var ProtoBuf = _interopRequireWildcard(_protobufjs);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   var resolver = this;
 
@@ -135,21 +137,20 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-var Messages = exports.Messages = class Messages {
+var Messages = exports.Messages = function Messages(messages) {
+  _classCallCheck(this, Messages);
 
-  constructor(messages) {
-    this.messagesByName = messages;
+  this.messagesByName = messages;
 
-    var messagesByType = {};
-    Object.keys(messages.MessageType).forEach(longName => {
-      var typeId = messages.MessageType[longName];
-      var shortName = longName.split(`_`)[1];
-      messagesByType[typeId] = {
-        name: shortName,
-        constructor: messages[shortName]
-      };
-    });
-    this.messagesByType = messagesByType;
-    this.messageTypes = messages.MessageType;
-  }
+  var messagesByType = {};
+  Object.keys(messages.MessageType).forEach(function (longName) {
+    var typeId = messages.MessageType[longName];
+    var shortName = longName.split("_")[1];
+    messagesByType[typeId] = {
+      name: shortName,
+      constructor: messages[shortName]
+    };
+  });
+  this.messagesByType = messagesByType;
+  this.messageTypes = messages.MessageType;
 };

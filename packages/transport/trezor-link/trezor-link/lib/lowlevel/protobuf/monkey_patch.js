@@ -144,10 +144,10 @@ function patch() {
     // since I need `this` from the original context
     ProtoBuf.Reflect.Message.Field.prototype.verifyValue = function (value, skipRepeated) {
       var newValue = value;
-      if (this.type === ProtoBuf.TYPES[`bytes`]) {
+      if (this.type === ProtoBuf.TYPES["bytes"]) {
         if (value != null) {
-          if (typeof value === `string`) {
-            newValue = _protobufjs.ByteBuffer.wrap(value, `hex`);
+          if (typeof value === "string") {
+            newValue = _protobufjs.ByteBuffer.wrap(value, "hex");
           }
         }
       }

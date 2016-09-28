@@ -7,6 +7,8 @@ exports.default = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _desc, _value, _class;
 
 var _messages = require('./messages');
@@ -20,6 +22,8 @@ var check = _interopRequireWildcard(_highlevelChecks);
 var _debugDecorator = require('../debug-decorator');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
   var desc = {};
@@ -188,12 +192,13 @@ function maybeParseInt(input) {
   }
 }
 
-EXTENSION_ID = `jcjjhjgimijdkoamemaghajlhegmoclj`;
-var ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
+EXTENSION_ID = 'jcjjhjgimijdkoamemaghajlhegmoclj';
+var ChromeExtensionTransport = (_class = function () {
+  function ChromeExtensionTransport(id) {
+    _classCallCheck(this, ChromeExtensionTransport);
 
-  constructor(id) {
-    this.name = `ChromeExtensionTransport`;
-    this.version = ``;
+    this.name = 'ChromeExtensionTransport';
+    this.version = '';
     this.configured = false;
     this.showUdevError = false;
     this.debug = false;
@@ -201,188 +206,204 @@ var ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
     this.id = id == null ? EXTENSION_ID : id;
   }
 
-  _send(message) {
-    return new Promise(function ($return, $error) {
-      var res, udev;
-      return messages.send(this.id, message).then(function ($await_1) {
-        res = $await_1;
-        return messages.send(this.id, { type: `udevStatus` }).then(function ($await_2) {
-          udev = $await_2;
+  _createClass(ChromeExtensionTransport, [{
+    key: '_send',
+    value: function _send(message) {
+      return new Promise(function ($return, $error) {
+        var res, udev;
+        return messages.send(this.id, message).then(function ($await_1) {
+          res = $await_1;
+          return messages.send(this.id, { type: 'udevStatus' }).then(function ($await_2) {
+            udev = $await_2;
 
-          this.showUdevError = udev === `display`;
-          return $return(res);
+            this.showUdevError = udev === 'display';
+            return $return(res);
+          }.$asyncbind(this, $error), $error);
         }.$asyncbind(this, $error), $error);
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'ping',
+    value: function ping() {
+      return new Promise(function ($return, $error) {
+        var res;
+        return this._send({ type: 'ping' }).then(function ($await_3) {
+          res = $await_3;
 
-  ping() {
-    return new Promise(function ($return, $error) {
-      var res;
-      return this._send({ type: `ping` }).then(function ($await_3) {
-        res = $await_3;
+          if (res !== 'pong') {
+            return $error(new Error('Response to "ping" should be "pong".'));
+          }
+          return $return();
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'info',
+    value: function info() {
+      return new Promise(function ($return, $error) {
+        var infoS;
+        return this._send({ type: 'info' }).then(function ($await_4) {
+          infoS = $await_4;
 
-        if (res !== `pong`) {
-          return $error(new Error(`Response to "ping" should be "pong".`));
-        }
-        return $return();
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
+          return $return(check.info(infoS));
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'init',
+    value: function init(debug) {
+      return new Promise(function ($return, $error) {
+        this.debug = !!debug;
+        return this._silentInit().then(function ($await_5) {
+          return $return();
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: '_silentInit',
+    value: function _silentInit() {
+      return new Promise(function ($return, $error) {
+        var info;
+        return messages.exists().then(function ($await_6) {
+          return this.ping().then(function ($await_7) {
+            return this.info().then(function ($await_8) {
+              info = $await_8;
 
-  info() {
-    return new Promise(function ($return, $error) {
-      var infoS;
-      return this._send({ type: `info` }).then(function ($await_4) {
-        infoS = $await_4;
-
-        return $return(check.info(infoS));
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  init(debug) {
-    return new Promise(function ($return, $error) {
-      this.debug = !!debug;
-      return this._silentInit().then(function ($await_5) {
-        return $return();
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  _silentInit() {
-    return new Promise(function ($return, $error) {
-      var info;
-      return messages.exists().then(function ($await_6) {
-        return this.ping().then(function ($await_7) {
-          return this.info().then(function ($await_8) {
-            info = $await_8;
-
-            this.version = info.version;
-            this.configured = info.configured;
+              this.version = info.version;
+              this.configured = info.configured;
+              return $return();
+            }.$asyncbind(this, $error), $error);
+          }.$asyncbind(this, $error), $error);
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'configure',
+    value: function configure(config) {
+      return new Promise(function ($return, $error) {
+        return this._send({
+          type: 'configure',
+          body: config
+        }).then(function ($await_9) {
+          return this._silentInit().then(function ($await_10) {
             return $return();
           }.$asyncbind(this, $error), $error);
         }.$asyncbind(this, $error), $error);
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'listen',
+    value: function listen(old) {
+      return new Promise(function ($return, $error) {
+        var devicesS, devices;
+        return this._send({
+          type: 'listen',
+          body: old == null ? null : old.map(function (device) {
+            // hack for old extension
+            var session = maybeParseInt(device.session);
+            var path = maybeParseInt(device.path);
+            var res = {
+              path: path,
+              // hack for old extension
+              product: 1,
+              vendor: 21324,
+              serialNumber: 0
+            };
+            // hack for old extension
+            if (session != null) {
+              res = _extends({ session: session }, res);
+            }
+            return res;
+          })
+        }).then(function ($await_11) {
+          devicesS = $await_11;
+          devices = check.devices(devicesS);
 
-  configure(config) {
-    return new Promise(function ($return, $error) {
-      return this._send({
-        type: `configure`,
-        body: config
-      }).then(function ($await_9) {
-        return this._silentInit().then(function ($await_10) {
+          return $return(devices);
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'enumerate',
+    value: function enumerate() {
+      return new Promise(function ($return, $error) {
+        var devicesS, devices;
+        return this._send({ type: 'enumerate' }).then(function ($await_12) {
+          devicesS = $await_12;
+          devices = check.devices(devicesS);
+
+          return $return(devices);
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: '_acquireMixed',
+    value: function _acquireMixed(input) {
+      return new Promise(function ($return, $error) {
+        var checkPrevious = input.checkPrevious;
+        if (checkPrevious) {
+          return $return(this._send({
+            type: 'acquire',
+            body: {
+              path: maybeParseInt(input.path),
+              previous: maybeParseInt(input.previous)
+            }
+          }));
+        } else {
+          return $return(this._send({
+            type: 'acquire',
+            body: maybeParseInt(input.path)
+          }));
+        }
+        return $return();
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'acquire',
+    value: function acquire(input) {
+      return new Promise(function ($return, $error) {
+        var acquireS;
+        return this._acquireMixed(input).then(function ($await_13) {
+          acquireS = $await_13;
+
+          return $return(check.acquire(acquireS));
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'release',
+    value: function release(session) {
+      return new Promise(function ($return, $error) {
+        return this._send({
+          type: 'release',
+          body: maybeParseInt(session)
+        }).then(function ($await_14) {
           return $return();
         }.$asyncbind(this, $error), $error);
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  listen(old) {
-    return new Promise(function ($return, $error) {
-      var devicesS, devices;
-      return this._send({
-        type: `listen`,
-        body: old == null ? null : old.map(device => {
-          // hack for old extension
-          var session = maybeParseInt(device.session);
-          var path = maybeParseInt(device.path);
-          var res = {
-            path,
-            // hack for old extension
-            product: 1,
-            vendor: 21324,
-            serialNumber: 0
-          };
-          // hack for old extension
-          if (session != null) {
-            res = _extends({ session }, res);
-          }
-          return res;
-        })
-      }).then(function ($await_11) {
-        devicesS = $await_11;
-        devices = check.devices(devicesS);
-
-        return $return(devices);
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  enumerate() {
-    return new Promise(function ($return, $error) {
-      var devicesS, devices;
-      return this._send({ type: `enumerate` }).then(function ($await_12) {
-        devicesS = $await_12;
-        devices = check.devices(devicesS);
-
-        return $return(devices);
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  _acquireMixed(input) {
-    return new Promise(function ($return, $error) {
-      var checkPrevious = input.checkPrevious;
-      if (checkPrevious) {
-        return $return(this._send({
-          type: `acquire`,
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'call',
+    value: function call(session, name, data) {
+      return new Promise(function ($return, $error) {
+        var res;
+        return this._send({
+          type: 'call',
           body: {
-            path: maybeParseInt(input.path),
-            previous: maybeParseInt(input.previous)
+            id: maybeParseInt(session),
+            type: name,
+            message: data
           }
-        }));
-      } else {
-        return $return(this._send({
-          type: `acquire`,
-          body: maybeParseInt(input.path)
-        }));
-      }
-      return $return();
-    }.$asyncbind(this));
-  }
+        }).then(function ($await_15) {
+          res = $await_15;
 
-  acquire(input) {
-    return new Promise(function ($return, $error) {
-      var acquireS;
-      return this._acquireMixed(input).then(function ($await_13) {
-        acquireS = $await_13;
+          return $return(check.call(res));
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }]);
 
-        return $return(check.acquire(acquireS));
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  release(session) {
-    return new Promise(function ($return, $error) {
-      return this._send({
-        type: `release`,
-        body: maybeParseInt(session)
-      }).then(function ($await_14) {
-        return $return();
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  call(session, name, data) {
-    return new Promise(function ($return, $error) {
-      var res;
-      return this._send({
-        type: `call`,
-        body: {
-          id: maybeParseInt(session),
-          type: name,
-          message: data
-        }
-      }).then(function ($await_15) {
-        res = $await_15;
-
-        return $return(check.call(res));
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-}, (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'configure', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'configure'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'listen', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'listen'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'enumerate', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'enumerate'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'acquire', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'acquire'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'release', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'release'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'call', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'call'), _class.prototype)), _class);
+  return ChromeExtensionTransport;
+}(), (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'configure', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'configure'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'listen', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'listen'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'enumerate', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'enumerate'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'acquire', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'acquire'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'release', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'release'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'call', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'call'), _class.prototype)), _class);
 exports.default = ChromeExtensionTransport;
 module.exports = exports['default'];
