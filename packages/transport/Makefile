@@ -14,7 +14,7 @@ build: node_modules
 	cp -r src/ lib
 	find lib/ -type f ! -name '*.js' | xargs -I {} rm {}
 	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
-	BABEL_ENV=srctolib `npm bin`/babel src --out-dir lib
+	`npm bin`/babel src --out-dir lib
 	rm -rf lib/flow-test
 
 npm_preversion: git-ancestor check build
