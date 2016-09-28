@@ -63,7 +63,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -159,13 +161,13 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-const TREZOR_DESC = {
+var TREZOR_DESC = {
   vendorId: 0x534c,
   productId: 0x0001
 };
 
-const FORBIDDEN_DESCRIPTORS = [0xf1d0, 0xff01];
-const REPORT_ID = 63;
+var FORBIDDEN_DESCRIPTORS = [0xf1d0, 0xff01];
+var REPORT_ID = 63;
 
 function deviceToJson(device) {
   return {
@@ -212,7 +214,7 @@ function hidReceive(id) {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
-          resolve({ data: data, reportId: reportId });
+          resolve({ data, reportId });
         }
       });
     } catch (e) {
@@ -301,7 +303,7 @@ function storageGet(key) {
 function storageSet(key, value) {
   return new Promise((resolve, reject) => {
     try {
-      const obj = {};
+      var obj = {};
       obj[key] = value;
       chrome.storage.local.set(obj, () => {
         if (chrome.runtime.lastError) {
@@ -316,12 +318,12 @@ function storageSet(key, value) {
   });
 }
 
-let ChromeHidPlugin = (_class = class ChromeHidPlugin {
+var ChromeHidPlugin = (_class = class ChromeHidPlugin {
   constructor() {
     this.name = `ChromeHidPlugin`;
     this._hasReportId = {};
     this._udevError = false;
-    this.version = "0.2.29";
+    this.version = "0.2.30";
     this.debug = false;
   }
 
@@ -339,7 +341,7 @@ let ChromeHidPlugin = (_class = class ChromeHidPlugin {
   }
 
   _catchUdevError(error) {
-    let errMessage = error;
+    var errMessage = error;
     if (errMessage.message !== undefined) {
       errMessage = error.message;
     }
@@ -357,7 +359,7 @@ let ChromeHidPlugin = (_class = class ChromeHidPlugin {
       return Promise.resolve(this._isLinuxCached);
     }
     return platformInfo().then(info => {
-      const linux = info.os === `linux`;
+      var linux = info.os === `linux`;
       this._isLinuxCached = linux;
       return linux;
     });
@@ -402,16 +404,16 @@ let ChromeHidPlugin = (_class = class ChromeHidPlugin {
   }
 
   send(device, session, data) {
-    const sessionNu = parseInt(session);
+    var sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
       return Promise.reject(new Error(`Session ${ session } is not a number`));
     }
-    const hasReportId = this._hasReportId[device.toString()];
-    const reportId = hasReportId ? REPORT_ID : 0;
+    var hasReportId = this._hasReportId[device.toString()];
+    var reportId = hasReportId ? REPORT_ID : 0;
 
-    let ab = data;
+    var ab = data;
     if (!hasReportId) {
-      const newArray = new Uint8Array(64);
+      var newArray = new Uint8Array(64);
       newArray[0] = 63;
       newArray.set(new Uint8Array(data), 1);
       ab = newArray.buffer;
@@ -421,13 +423,13 @@ let ChromeHidPlugin = (_class = class ChromeHidPlugin {
   }
 
   receive(device, session) {
-    const sessionNu = parseInt(session);
+    var sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
       return Promise.reject(new Error(`Session ${ session } is not a number`));
     }
     return hidReceive(sessionNu).then(_ref => {
-      let data = _ref.data;
-      let reportId = _ref.reportId;
+      var data = _ref.data;
+      var reportId = _ref.reportId;
 
       if (reportId !== 0) {
         return data;
@@ -438,7 +440,7 @@ let ChromeHidPlugin = (_class = class ChromeHidPlugin {
   }
 
   connect(device) {
-    const deviceNu = parseInt(device);
+    var deviceNu = parseInt(device);
     if (isNaN(deviceNu)) {
       return Promise.reject(new Error(`Device ${ deviceNu } is not a number`));
     }
@@ -446,7 +448,7 @@ let ChromeHidPlugin = (_class = class ChromeHidPlugin {
   }
 
   disconnect(path, session) {
-    const sessionNu = parseInt(session);
+    var sessionNu = parseInt(session);
     if (isNaN(sessionNu)) {
       return Promise.reject(new Error(`Session ${ session } is not a number`));
     }

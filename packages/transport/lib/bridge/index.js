@@ -76,7 +76,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -175,7 +177,7 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 var DEFAULT_URL, DEFAULT_VERSION_URL;
 DEFAULT_URL = `https://localback.net:21324`;
 DEFAULT_VERSION_URL = `https://wallet.mytrezor.com/data/bridge/latest.txt`;
-let BridgeTransport = (_class = class BridgeTransport {
+var BridgeTransport = (_class = class BridgeTransport {
 
   // nodeFetch for using bridge in node (so it is not needlessly imported in browserify)
   constructor(url, newestVersionUrl, nodeFetch) {
@@ -285,11 +287,11 @@ let BridgeTransport = (_class = class BridgeTransport {
 
   _acquireMixed(input) {
     return new Promise(function ($return, $error) {
-      const checkPrevious = input.checkPrevious && (0, _semverCompare2.default)(this.version, `1.1.3`) >= 0;
+      var checkPrevious = input.checkPrevious && (0, _semverCompare2.default)(this.version, `1.1.3`) >= 0;
       if (checkPrevious) {
-        const previousStr = input.previous == null ? `null` : input.previous;
-        const url = `/acquire/` + input.path + `/` + previousStr;
-        return $return(this._post({ url: url }));
+        var previousStr = input.previous == null ? `null` : input.previous;
+        var _url = `/acquire/` + input.path + `/` + previousStr;
+        return $return(this._post({ url: _url }));
       } else {
         return $return(this._post({ url: `/acquire/` + input.path }));
       }
