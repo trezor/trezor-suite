@@ -62,7 +62,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -158,14 +160,14 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
+var ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
 
   constructor(portDiff) {
     this.name = `ChromeUdpPlugin`;
     this.waiting = {};
     this.buffered = {};
     this.infos = {};
-    this.version = "0.2.29";
+    this.version = "0.2.30";
     this.debug = false;
     this.ports = [];
 
@@ -180,8 +182,8 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
     this.debug = !!debug;
     try {
       chrome.sockets.udp.onReceive.addListener(_ref => {
-        let socketId = _ref.socketId;
-        let data = _ref.data;
+        var socketId = _ref.socketId;
+        var data = _ref.data;
 
         this._udpListener(socketId, data);
       });
@@ -200,7 +202,7 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
   }
 
   enumerate() {
-    const devices = this.ports.map(port => {
+    var devices = this.ports.map(port => {
       return {
         path: port.toString()
       };
@@ -209,7 +211,7 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
   }
 
   send(device, session, data) {
-    const socket = parseInt(session);
+    var socket = parseInt(session);
     if (isNaN(socket)) {
       return Promise.reject(new Error(`Session not a number`));
     }
@@ -217,7 +219,7 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
   }
 
   receive(device, session) {
-    const socket = parseInt(session);
+    var socket = parseInt(session);
     if (isNaN(socket)) {
       return Promise.reject(new Error(`Session not a number`));
     }
@@ -225,7 +227,7 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
   }
 
   connect(device) {
-    const port = parseInt(device);
+    var port = parseInt(device);
     if (isNaN(port)) {
       return Promise.reject(new Error(`Device not a number`));
     }
@@ -233,7 +235,7 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
   }
 
   disconnect(path, session) {
-    const socket = parseInt(session);
+    var socket = parseInt(session);
     if (isNaN(socket)) {
       return Promise.reject(new Error(`Session not a number`));
     }
@@ -258,11 +260,11 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
   }
 
   _udpConnect(port) {
-    const address = `127.0.0.1`;
+    var address = `127.0.0.1`;
     return new Promise((resolve, reject) => {
       try {
         chrome.sockets.udp.create({}, _ref2 => {
-          let socketId = _ref2.socketId;
+          var socketId = _ref2.socketId;
 
           if (chrome.runtime.lastError) {
             reject(chrome.runtime.lastError);
@@ -293,7 +295,7 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
 
   _udpReceive(socketId) {
     return this._udpReceiveUnsliced(socketId).then(data => {
-      const dataView = new Uint8Array(data);
+      var dataView = new Uint8Array(data);
       if (dataView[0] !== 63) {
         throw new Error(`Invalid data; first byte should be 63, is ${ dataView[0] }`);
       }
@@ -302,10 +304,10 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
   }
 
   _udpReceiveUnsliced(socketId) {
-    const id = socketId.toString();
+    var id = socketId.toString();
 
     if (this.buffered[id] != null) {
-      const res = this.buffered[id].shift();
+      var res = this.buffered[id].shift();
       if (this.buffered[id].length === 0) {
         delete this.buffered[id];
       }
@@ -315,27 +317,27 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
     if (this.waiting[id] != null) {
       return Promise.reject(`Something else already listening on socketId ${ socketId }`);
     }
-    const d = (0, _defered.create)();
+    var d = (0, _defered.create)();
     this.waiting[id] = d;
     return d.promise;
   }
 
   _udpSend(socketId, data) {
-    const id = socketId.toString();
-    const info = this.infos[id];
+    var id = socketId.toString();
+    var info = this.infos[id];
     if (info == null) {
       return Promise.reject(`Socket ${ socketId } does not exist`);
     }
 
-    const sendDataV = new Uint8Array(64);
+    var sendDataV = new Uint8Array(64);
     sendDataV[0] = 63;
     sendDataV.set(new Uint8Array(data), 1);
-    const sendData = sendDataV.buffer;
+    var sendData = sendDataV.buffer;
 
     return new Promise((resolve, reject) => {
       try {
         chrome.sockets.udp.send(socketId, sendData, info.address, info.port, _ref3 => {
-          let resultCode = _ref3.resultCode;
+          var resultCode = _ref3.resultCode;
 
           if (chrome.runtime.lastError) {
             reject(chrome.runtime.lastError);
@@ -354,8 +356,8 @@ let ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
   }
 
   _udpListener(socketId, data) {
-    const id = socketId.toString();
-    const d = this.waiting[id];
+    var id = socketId.toString();
+    var d = this.waiting[id];
     if (d != null) {
       d.resolve(data);
       delete this.waiting[id];

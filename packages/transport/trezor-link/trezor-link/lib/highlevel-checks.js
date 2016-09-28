@@ -31,7 +31,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -133,12 +135,12 @@ function info(res) {
   if (typeof res !== `object` || res == null) {
     throw new Error(`Wrong result type.`);
   }
-  const version = res.version;
+  var version = res.version;
   if (typeof version !== `string`) {
     throw new Error(`Wrong result type.`);
   }
-  const configured = !!res.configured;
-  return { version: version, configured: configured };
+  var configured = !!res.configured;
+  return { version, configured };
 }
 
 function version(version) {
@@ -159,12 +161,12 @@ function devices(res) {
     if (typeof o !== `object` || o == null) {
       throw new Error(`Wrong result type.`);
     }
-    const path = o.path;
+    var path = o.path;
     if (typeof path !== `number` && typeof path !== `string`) {
       throw new Error(`Wrong result type.`);
     }
-    const pathS = path.toString();
-    const session = o.session;
+    var pathS = path.toString();
+    var session = o.session;
     if (session == null) {
       return {
         path: pathS,
@@ -186,7 +188,7 @@ function acquire(res) {
   if (typeof res !== `object` || res == null) {
     throw new Error(`Wrong result type.`);
   }
-  const session = res.session;
+  var session = res.session;
   if (typeof session !== `string` && typeof session !== `number`) {
     throw new Error(`Wrong result type.`);
   }
@@ -197,13 +199,13 @@ function call(res) {
   if (typeof res !== `object` || res == null) {
     throw new Error(`Wrong result type.`);
   }
-  const type = res.type;
+  var type = res.type;
   if (typeof type !== `string`) {
     throw new Error(`Wrong result type.`);
   }
-  const message = res.message;
+  var message = res.message;
   if (typeof message !== `object` || message == null) {
     throw new Error(`Wrong result type.`);
   }
-  return { type: type, message: message };
+  return { type, message };
 }

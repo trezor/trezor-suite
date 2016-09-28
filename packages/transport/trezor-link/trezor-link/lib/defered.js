@@ -27,7 +27,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -124,21 +126,21 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 };
 
 function create() {
-  let localResolve = t => {};
-  let localReject = e => {};
+  var localResolve = t => {};
+  var localReject = e => {};
 
-  const promise = new Promise((resolve, reject) => {
+  var promise = new Promise((resolve, reject) => {
     localResolve = resolve;
     localReject = reject;
   });
-  const rejectingPromise = promise.then(() => {
+  var rejectingPromise = promise.then(() => {
     throw new Error(`Promise is always rejecting`);
   });
 
   return {
     resolve: localResolve,
     reject: localReject,
-    promise: promise,
-    rejectingPromise: rejectingPromise
+    promise,
+    rejectingPromise
   };
 }

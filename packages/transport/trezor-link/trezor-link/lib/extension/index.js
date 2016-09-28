@@ -72,7 +72,9 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
           var t = _tasks[i + 1],
               r = _tasks[i];
 
-          for (var j = 0; j < t.length; j++) t[j].call(null, r);
+          for (var j = 0; j < t.length; j++) {
+            t[j].call(null, r);
+          }
         }
 
         _tasks = [];
@@ -178,7 +180,7 @@ function maybeParseInt(input) {
   if (isNaN(input)) {
     return input;
   } else {
-    const parsed = parseInt(input);
+    var parsed = parseInt(input);
     if (isNaN(parsed)) {
       return input;
     }
@@ -187,7 +189,7 @@ function maybeParseInt(input) {
 }
 
 EXTENSION_ID = `jcjjhjgimijdkoamemaghajlhegmoclj`;
-let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
+var ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
 
   constructor(id) {
     this.name = `ChromeExtensionTransport`;
@@ -285,10 +287,10 @@ let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
         type: `listen`,
         body: old == null ? null : old.map(device => {
           // hack for old extension
-          const session = maybeParseInt(device.session);
-          const path = maybeParseInt(device.path);
-          let res = {
-            path: path,
+          var session = maybeParseInt(device.session);
+          var path = maybeParseInt(device.path);
+          var res = {
+            path,
             // hack for old extension
             product: 1,
             vendor: 21324,
@@ -296,7 +298,7 @@ let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
           };
           // hack for old extension
           if (session != null) {
-            res = _extends({ session: session }, res);
+            res = _extends({ session }, res);
           }
           return res;
         })
@@ -323,7 +325,7 @@ let ChromeExtensionTransport = (_class = class ChromeExtensionTransport {
 
   _acquireMixed(input) {
     return new Promise(function ($return, $error) {
-      const checkPrevious = input.checkPrevious;
+      var checkPrevious = input.checkPrevious;
       if (checkPrevious) {
         return $return(this._send({
           type: `acquire`,
