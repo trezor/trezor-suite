@@ -128,25 +128,27 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 
 // slight hack to make Flow happy, but to allow Node to set its own fetch
 // Request, RequestOptions and Response are built-in types of Flow for fetch API
-var _fetch = typeof window === `undefined` ? () => Promise.reject() : window.fetch;
+var _fetch = typeof window === 'undefined' ? function () {
+  return Promise.reject();
+} : window.fetch;
 
 function setFetch(fetch) {
   _fetch = fetch;
 }
 
 function contentType(body) {
-  if (typeof body === `string`) {
-    if (body === ``) {
-      return `text/plain`;
+  if (typeof body === 'string') {
+    if (body === '') {
+      return 'text/plain';
     }
-    return `application/octet-stream`;
+    return 'application/octet-stream';
   } else {
-    return `application/json`;
+    return 'application/json';
   }
 }
 
 function wrapBody(body) {
-  if (typeof body === `string`) {
+  if (typeof body === 'string') {
     return body;
   } else {
     return JSON.stringify(body);
@@ -167,7 +169,7 @@ function request(options) {
     return _fetch(options.url, {
       method: options.method,
       headers: {
-        'Content-Type': contentType(options.body || ``)
+        'Content-Type': contentType(options.body || '')
       },
       body: wrapBody(options.body)
     }).then(function ($await_1) {

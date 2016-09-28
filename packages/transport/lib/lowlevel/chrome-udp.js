@@ -5,11 +5,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _desc, _value, _class;
 
 var _defered = require('../defered');
 
 var _debugDecorator = require('../debug-decorator');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
   var desc = {};
@@ -160,14 +164,15 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
   return boundThen;
 };
 
-var ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
+var ChromeUdpPlugin = (_class = function () {
+  function ChromeUdpPlugin(portDiff) {
+    _classCallCheck(this, ChromeUdpPlugin);
 
-  constructor(portDiff) {
-    this.name = `ChromeUdpPlugin`;
+    this.name = 'ChromeUdpPlugin';
     this.waiting = {};
     this.buffered = {};
     this.infos = {};
-    this.version = "0.2.30";
+    this.version = "0.2.31";
     this.debug = false;
     this.ports = [];
 
@@ -178,199 +183,223 @@ var ChromeUdpPlugin = (_class = class ChromeUdpPlugin {
     }
   }
 
-  init(debug) {
-    this.debug = !!debug;
-    try {
-      chrome.sockets.udp.onReceive.addListener(_ref => {
-        var socketId = _ref.socketId;
-        var data = _ref.data;
+  _createClass(ChromeUdpPlugin, [{
+    key: 'init',
+    value: function init(debug) {
+      var _this = this;
 
-        this._udpListener(socketId, data);
+      this.debug = !!debug;
+      try {
+        chrome.sockets.udp.onReceive.addListener(function (_ref) {
+          var socketId = _ref.socketId;
+          var data = _ref.data;
+
+          _this._udpListener(socketId, data);
+        });
+        return Promise.resolve();
+      } catch (e) {
+        // if not Chrome, not sockets etc, this will reject
+        return Promise.reject(e);
+      }
+    }
+  }, {
+    key: 'setPorts',
+    value: function setPorts(ports) {
+      if (ports.length > this.portDiff) {
+        throw new Error('Too many ports. Max ' + this.portDiff + ' allowed.');
+      }
+      this.ports = ports;
+    }
+  }, {
+    key: 'enumerate',
+    value: function enumerate() {
+      var devices = this.ports.map(function (port) {
+        return {
+          path: port.toString()
+        };
       });
-      return Promise.resolve();
-    } catch (e) {
-      // if not Chrome, not sockets etc, this will reject
-      return Promise.reject(e);
+      return Promise.resolve(devices);
     }
-  }
-
-  setPorts(ports) {
-    if (ports.length > this.portDiff) {
-      throw new Error(`Too many ports. Max ${ this.portDiff } allowed.`);
-    }
-    this.ports = ports;
-  }
-
-  enumerate() {
-    var devices = this.ports.map(port => {
-      return {
-        path: port.toString()
-      };
-    });
-    return Promise.resolve(devices);
-  }
-
-  send(device, session, data) {
-    var socket = parseInt(session);
-    if (isNaN(socket)) {
-      return Promise.reject(new Error(`Session not a number`));
-    }
-    return this._udpSend(socket, data);
-  }
-
-  receive(device, session) {
-    var socket = parseInt(session);
-    if (isNaN(socket)) {
-      return Promise.reject(new Error(`Session not a number`));
-    }
-    return this._udpReceive(socket);
-  }
-
-  connect(device) {
-    var port = parseInt(device);
-    if (isNaN(port)) {
-      return Promise.reject(new Error(`Device not a number`));
-    }
-    return this._udpConnect(port).then(n => n.toString());
-  }
-
-  disconnect(path, session) {
-    var socket = parseInt(session);
-    if (isNaN(socket)) {
-      return Promise.reject(new Error(`Session not a number`));
-    }
-    return this._udpDisconnect(socket);
-  }
-
-  _udpDisconnect(socketId) {
-    return new Promise((resolve, reject) => {
-      try {
-        chrome.sockets.udp.close(socketId, () => {
-          if (chrome.runtime.lastError) {
-            reject(chrome.runtime.lastError);
-          } else {
-            delete this.infos[socketId.toString()];
-            resolve();
-          }
-        });
-      } catch (e) {
-        reject(e);
+  }, {
+    key: 'send',
+    value: function send(device, session, data) {
+      var socket = parseInt(session);
+      if (isNaN(socket)) {
+        return Promise.reject(new Error('Session not a number'));
       }
-    });
-  }
-
-  _udpConnect(port) {
-    var address = `127.0.0.1`;
-    return new Promise((resolve, reject) => {
-      try {
-        chrome.sockets.udp.create({}, _ref2 => {
-          var socketId = _ref2.socketId;
-
-          if (chrome.runtime.lastError) {
-            reject(chrome.runtime.lastError);
-          } else {
-            try {
-              chrome.sockets.udp.bind(socketId, `127.0.0.1`, port + this.portDiff, result => {
-                if (chrome.runtime.lastError) {
-                  reject(chrome.runtime.lastError);
-                } else {
-                  if (result >= 0) {
-                    this.infos[socketId.toString()] = { address: address, port: port };
-                    resolve(socketId);
-                  } else {
-                    reject(`Cannot create socket, error: ${ result }`);
-                  }
-                }
-              });
-            } catch (e) {
-              reject(e);
-            }
-          }
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
-
-  _udpReceive(socketId) {
-    return this._udpReceiveUnsliced(socketId).then(data => {
-      var dataView = new Uint8Array(data);
-      if (dataView[0] !== 63) {
-        throw new Error(`Invalid data; first byte should be 63, is ${ dataView[0] }`);
-      }
-      return data.slice(1);
-    });
-  }
-
-  _udpReceiveUnsliced(socketId) {
-    var id = socketId.toString();
-
-    if (this.buffered[id] != null) {
-      var res = this.buffered[id].shift();
-      if (this.buffered[id].length === 0) {
-        delete this.buffered[id];
-      }
-      return Promise.resolve(res);
+      return this._udpSend(socket, data);
     }
-
-    if (this.waiting[id] != null) {
-      return Promise.reject(`Something else already listening on socketId ${ socketId }`);
+  }, {
+    key: 'receive',
+    value: function receive(device, session) {
+      var socket = parseInt(session);
+      if (isNaN(socket)) {
+        return Promise.reject(new Error('Session not a number'));
+      }
+      return this._udpReceive(socket);
     }
-    var d = (0, _defered.create)();
-    this.waiting[id] = d;
-    return d.promise;
-  }
-
-  _udpSend(socketId, data) {
-    var id = socketId.toString();
-    var info = this.infos[id];
-    if (info == null) {
-      return Promise.reject(`Socket ${ socketId } does not exist`);
+  }, {
+    key: 'connect',
+    value: function connect(device) {
+      var port = parseInt(device);
+      if (isNaN(port)) {
+        return Promise.reject(new Error('Device not a number'));
+      }
+      return this._udpConnect(port).then(function (n) {
+        return n.toString();
+      });
     }
+  }, {
+    key: 'disconnect',
+    value: function disconnect(path, session) {
+      var socket = parseInt(session);
+      if (isNaN(socket)) {
+        return Promise.reject(new Error('Session not a number'));
+      }
+      return this._udpDisconnect(socket);
+    }
+  }, {
+    key: '_udpDisconnect',
+    value: function _udpDisconnect(socketId) {
+      var _this2 = this;
 
-    var sendDataV = new Uint8Array(64);
-    sendDataV[0] = 63;
-    sendDataV.set(new Uint8Array(data), 1);
-    var sendData = sendDataV.buffer;
-
-    return new Promise((resolve, reject) => {
-      try {
-        chrome.sockets.udp.send(socketId, sendData, info.address, info.port, _ref3 => {
-          var resultCode = _ref3.resultCode;
-
-          if (chrome.runtime.lastError) {
-            reject(chrome.runtime.lastError);
-          } else {
-            if (resultCode >= 0) {
-              resolve();
+      return new Promise(function (resolve, reject) {
+        try {
+          chrome.sockets.udp.close(socketId, function () {
+            if (chrome.runtime.lastError) {
+              reject(chrome.runtime.lastError);
             } else {
-              reject(`Cannot send, error: ${ resultCode }`);
+              delete _this2.infos[socketId.toString()];
+              resolve();
             }
-          }
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
-
-  _udpListener(socketId, data) {
-    var id = socketId.toString();
-    var d = this.waiting[id];
-    if (d != null) {
-      d.resolve(data);
-      delete this.waiting[id];
-    } else {
-      if (this.infos[id] != null) {
-        if (this.buffered[id] == null) {
-          this.buffered[id] = [];
+          });
+        } catch (e) {
+          reject(e);
         }
-        this.buffered[id].pop(data);
+      });
+    }
+  }, {
+    key: '_udpConnect',
+    value: function _udpConnect(port) {
+      var _this3 = this;
+
+      var address = '127.0.0.1';
+      return new Promise(function (resolve, reject) {
+        try {
+          chrome.sockets.udp.create({}, function (_ref2) {
+            var socketId = _ref2.socketId;
+
+            if (chrome.runtime.lastError) {
+              reject(chrome.runtime.lastError);
+            } else {
+              try {
+                chrome.sockets.udp.bind(socketId, '127.0.0.1', port + _this3.portDiff, function (result) {
+                  if (chrome.runtime.lastError) {
+                    reject(chrome.runtime.lastError);
+                  } else {
+                    if (result >= 0) {
+                      _this3.infos[socketId.toString()] = { address: address, port: port };
+                      resolve(socketId);
+                    } else {
+                      reject('Cannot create socket, error: ' + result);
+                    }
+                  }
+                });
+              } catch (e) {
+                reject(e);
+              }
+            }
+          });
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+  }, {
+    key: '_udpReceive',
+    value: function _udpReceive(socketId) {
+      return this._udpReceiveUnsliced(socketId).then(function (data) {
+        var dataView = new Uint8Array(data);
+        if (dataView[0] !== 63) {
+          throw new Error('Invalid data; first byte should be 63, is ' + dataView[0]);
+        }
+        return data.slice(1);
+      });
+    }
+  }, {
+    key: '_udpReceiveUnsliced',
+    value: function _udpReceiveUnsliced(socketId) {
+      var id = socketId.toString();
+
+      if (this.buffered[id] != null) {
+        var res = this.buffered[id].shift();
+        if (this.buffered[id].length === 0) {
+          delete this.buffered[id];
+        }
+        return Promise.resolve(res);
+      }
+
+      if (this.waiting[id] != null) {
+        return Promise.reject('Something else already listening on socketId ' + socketId);
+      }
+      var d = (0, _defered.create)();
+      this.waiting[id] = d;
+      return d.promise;
+    }
+  }, {
+    key: '_udpSend',
+    value: function _udpSend(socketId, data) {
+      var id = socketId.toString();
+      var info = this.infos[id];
+      if (info == null) {
+        return Promise.reject('Socket ' + socketId + ' does not exist');
+      }
+
+      var sendDataV = new Uint8Array(64);
+      sendDataV[0] = 63;
+      sendDataV.set(new Uint8Array(data), 1);
+      var sendData = sendDataV.buffer;
+
+      return new Promise(function (resolve, reject) {
+        try {
+          chrome.sockets.udp.send(socketId, sendData, info.address, info.port, function (_ref3) {
+            var resultCode = _ref3.resultCode;
+
+            if (chrome.runtime.lastError) {
+              reject(chrome.runtime.lastError);
+            } else {
+              if (resultCode >= 0) {
+                resolve();
+              } else {
+                reject('Cannot send, error: ' + resultCode);
+              }
+            }
+          });
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+  }, {
+    key: '_udpListener',
+    value: function _udpListener(socketId, data) {
+      var id = socketId.toString();
+      var d = this.waiting[id];
+      if (d != null) {
+        d.resolve(data);
+        delete this.waiting[id];
+      } else {
+        if (this.infos[id] != null) {
+          if (this.buffered[id] == null) {
+            this.buffered[id] = [];
+          }
+          this.buffered[id].pop(data);
+        }
       }
     }
-  }
+  }]);
 
-}, (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'connect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'connect'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'disconnect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'disconnect'), _class.prototype)), _class);
+  return ChromeUdpPlugin;
+}(), (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'connect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'connect'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'disconnect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'disconnect'), _class.prototype)), _class);
 exports.default = ChromeUdpPlugin;
 module.exports = exports['default'];

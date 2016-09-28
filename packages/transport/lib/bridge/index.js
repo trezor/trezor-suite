@@ -7,6 +7,8 @@ exports.default = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _desc, _value, _class;
 
 var _semverCompare = require('semver-compare');
@@ -24,6 +26,8 @@ var _debugDecorator = require('../debug-decorator');
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
   var desc = {};
@@ -175,14 +179,16 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 };
 
 var DEFAULT_URL, DEFAULT_VERSION_URL;
-DEFAULT_URL = `https://localback.net:21324`;
-DEFAULT_VERSION_URL = `https://wallet.mytrezor.com/data/bridge/latest.txt`;
-var BridgeTransport = (_class = class BridgeTransport {
+DEFAULT_URL = 'https://localback.net:21324';
+DEFAULT_VERSION_URL = 'https://wallet.mytrezor.com/data/bridge/latest.txt';
+var BridgeTransport = (_class = function () {
 
   // nodeFetch for using bridge in node (so it is not needlessly imported in browserify)
-  constructor(url, newestVersionUrl, nodeFetch) {
-    this.name = `BridgeTransport`;
-    this.version = ``;
+  function BridgeTransport(url, newestVersionUrl, nodeFetch) {
+    _classCallCheck(this, BridgeTransport);
+
+    this.name = 'BridgeTransport';
+    this.version = '';
     this.configured = false;
     this.debug = false;
 
@@ -193,147 +199,162 @@ var BridgeTransport = (_class = class BridgeTransport {
     }
   }
 
-  _post(options) {
-    return new Promise(function ($return, $error) {
-      return (0, _http.request)(_extends({}, options, { method: `POST`, url: this.url + options.url })).then($return, $error);
-    }.$asyncbind(this));
-  }
-
-  _get(options) {
-    return new Promise(function ($return, $error) {
-      return (0, _http.request)(_extends({}, options, { method: `GET`, url: this.url + options.url })).then($return, $error);
-    }.$asyncbind(this));
-  }
-
-  init(debug) {
-    return new Promise(function ($return, $error) {
-      this.debug = !!debug;
-      return this._silentInit().then(function ($await_3) {
-        return $return();
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  _silentInit() {
-    return new Promise(function ($return, $error) {
-      var infoS, info, newVersion;
-      return (0, _http.request)({
-        url: this.url,
-        method: `GET`
-      }).then(function ($await_4) {
-        infoS = $await_4;
-        info = check.info(infoS);
-
-        this.version = info.version;
-        this.configured = info.configured;
+  _createClass(BridgeTransport, [{
+    key: '_post',
+    value: function _post(options) {
+      return new Promise(function ($return, $error) {
+        return (0, _http.request)(_extends({}, options, { method: 'POST', url: this.url + options.url })).then($return, $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: '_get',
+    value: function _get(options) {
+      return new Promise(function ($return, $error) {
+        return (0, _http.request)(_extends({}, options, { method: 'GET', url: this.url + options.url })).then($return, $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'init',
+    value: function init(debug) {
+      return new Promise(function ($return, $error) {
+        this.debug = !!debug;
+        return this._silentInit().then(function ($await_3) {
+          return $return();
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: '_silentInit',
+    value: function _silentInit() {
+      return new Promise(function ($return, $error) {
+        var infoS, info, newVersion;
         return (0, _http.request)({
-          url: this.newestVersionUrl,
-          method: `GET`
-        }).then(function ($await_5) {
-          newVersion = check.version($await_5);
+          url: this.url,
+          method: 'GET'
+        }).then(function ($await_4) {
+          infoS = $await_4;
+          info = check.info(infoS);
 
-          this.isOutdated = (0, _semverCompare2.default)(this.version, newVersion) < 0;
-          return $return();
+          this.version = info.version;
+          this.configured = info.configured;
+          return (0, _http.request)({
+            url: this.newestVersionUrl,
+            method: 'GET'
+          }).then(function ($await_5) {
+            newVersion = check.version($await_5);
+
+            this.isOutdated = (0, _semverCompare2.default)(this.version, newVersion) < 0;
+            return $return();
+          }.$asyncbind(this, $error), $error);
         }.$asyncbind(this, $error), $error);
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  configure(config) {
-    return new Promise(function ($return, $error) {
-      return this._post({
-        url: `/configure`,
-        body: config
-      }).then(function ($await_6) {
-        return this._silentInit().then(function ($await_7) {
-          return $return();
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'configure',
+    value: function configure(config) {
+      return new Promise(function ($return, $error) {
+        return this._post({
+          url: '/configure',
+          body: config
+        }).then(function ($await_6) {
+          return this._silentInit().then(function ($await_7) {
+            return $return();
+          }.$asyncbind(this, $error), $error);
         }.$asyncbind(this, $error), $error);
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'listen',
+    value: function listen(old) {
+      return new Promise(function ($return, $error) {
+        var devicesS, devices;
+        return (old == null ? this._get({ url: '/listen' }) : this._post({
+          url: '/listen',
+          body: old.map(function (device) {
+            return _extends({}, device, {
+              // hack for old trezord
+              product: 1,
+              vendor: 21324
+            });
+          })
+        })).then(function ($await_8) {
+          devicesS = $await_8;
+          devices = check.devices(devicesS);
 
-  listen(old) {
-    return new Promise(function ($return, $error) {
-      var devicesS, devices;
-      return (old == null ? this._get({ url: `/listen` }) : this._post({
-        url: `/listen`,
-        body: old.map(device => {
-          return _extends({}, device, {
-            // hack for old trezord
-            product: 1,
-            vendor: 21324
-          });
-        })
-      })).then(function ($await_8) {
-        devicesS = $await_8;
-        devices = check.devices(devicesS);
+          return $return(devices);
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'enumerate',
+    value: function enumerate() {
+      return new Promise(function ($return, $error) {
+        var devicesS, devices;
+        return this._get({ url: '/enumerate' }).then(function ($await_9) {
+          devicesS = $await_9;
+          devices = check.devices(devicesS);
 
-        return $return(devices);
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  enumerate() {
-    return new Promise(function ($return, $error) {
-      var devicesS, devices;
-      return this._get({ url: `/enumerate` }).then(function ($await_9) {
-        devicesS = $await_9;
-        devices = check.devices(devicesS);
-
-        return $return(devices);
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  _acquireMixed(input) {
-    return new Promise(function ($return, $error) {
-      var checkPrevious = input.checkPrevious && (0, _semverCompare2.default)(this.version, `1.1.3`) >= 0;
-      if (checkPrevious) {
-        var previousStr = input.previous == null ? `null` : input.previous;
-        var _url = `/acquire/` + input.path + `/` + previousStr;
-        return $return(this._post({ url: _url }));
-      } else {
-        return $return(this._post({ url: `/acquire/` + input.path }));
-      }
-      return $return();
-    }.$asyncbind(this));
-  }
-
-  acquire(input) {
-    return new Promise(function ($return, $error) {
-      var acquireS;
-      return this._acquireMixed(input).then(function ($await_10) {
-        acquireS = $await_10;
-
-        return $return(check.acquire(acquireS));
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  release(session) {
-    return new Promise(function ($return, $error) {
-      return this._post({ url: `/release/` + session }).then(function ($await_11) {
-        return $return();
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-
-  call(session, name, data) {
-    return new Promise(function ($return, $error) {
-      var res;
-      return this._post({
-        url: `/call/` + session,
-        body: {
-          type: name,
-          message: data
+          return $return(devices);
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: '_acquireMixed',
+    value: function _acquireMixed(input) {
+      return new Promise(function ($return, $error) {
+        var checkPrevious = input.checkPrevious && (0, _semverCompare2.default)(this.version, '1.1.3') >= 0;
+        if (checkPrevious) {
+          var previousStr = input.previous == null ? 'null' : input.previous;
+          var _url = '/acquire/' + input.path + '/' + previousStr;
+          return $return(this._post({ url: _url }));
+        } else {
+          return $return(this._post({ url: '/acquire/' + input.path }));
         }
-      }).then(function ($await_12) {
-        res = $await_12;
+        return $return();
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'acquire',
+    value: function acquire(input) {
+      return new Promise(function ($return, $error) {
+        var acquireS;
+        return this._acquireMixed(input).then(function ($await_10) {
+          acquireS = $await_10;
 
-        return $return(check.call(res));
-      }.$asyncbind(this, $error), $error);
-    }.$asyncbind(this));
-  }
-}, (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'configure', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'configure'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'listen', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'listen'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'enumerate', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'enumerate'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'acquire', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'acquire'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'release', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'release'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'call', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'call'), _class.prototype)), _class);
+          return $return(check.acquire(acquireS));
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'release',
+    value: function release(session) {
+      return new Promise(function ($return, $error) {
+        return this._post({ url: '/release/' + session }).then(function ($await_11) {
+          return $return();
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }, {
+    key: 'call',
+    value: function call(session, name, data) {
+      return new Promise(function ($return, $error) {
+        var res;
+        return this._post({
+          url: '/call/' + session,
+          body: {
+            type: name,
+            message: data
+          }
+        }).then(function ($await_12) {
+          res = $await_12;
+
+          return $return(check.call(res));
+        }.$asyncbind(this, $error), $error);
+      }.$asyncbind(this));
+    }
+  }]);
+
+  return BridgeTransport;
+}(), (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'configure', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'configure'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'listen', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'listen'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'enumerate', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'enumerate'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'acquire', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'acquire'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'release', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'release'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'call', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'call'), _class.prototype)), _class);
 exports.default = BridgeTransport;
 module.exports = exports['default'];
