@@ -5,12 +5,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _desc, _value, _class;
 
 exports.storageGet = storageGet;
 exports.storageSet = storageSet;
 
 var _debugDecorator = require('../debug-decorator');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
   var desc = {};
@@ -176,9 +180,9 @@ function deviceToJson(device) {
 }
 
 function hidEnumerate() {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     try {
-      chrome.hid.getDevices(TREZOR_DESC, devices => {
+      chrome.hid.getDevices(TREZOR_DESC, function (devices) {
         if (chrome.runtime.lastError) {
           reject(new Error(chrome.runtime.lastError));
         } else {
@@ -192,9 +196,9 @@ function hidEnumerate() {
 }
 
 function hidSend(id, reportId, data) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     try {
-      chrome.hid.send(id, reportId, data, () => {
+      chrome.hid.send(id, reportId, data, function () {
         if (chrome.runtime.lastError) {
           reject(new Error(chrome.runtime.lastError));
         } else {
@@ -208,13 +212,13 @@ function hidSend(id, reportId, data) {
 }
 
 function hidReceive(id) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     try {
-      chrome.hid.receive(id, (reportId, data) => {
+      chrome.hid.receive(id, function (reportId, data) {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
-          resolve({ data, reportId });
+          resolve({ data: data, reportId: reportId });
         }
       });
     } catch (e) {
@@ -224,9 +228,9 @@ function hidReceive(id) {
 }
 
 function hidConnect(id) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     try {
-      chrome.hid.connect(id, connection => {
+      chrome.hid.connect(id, function (connection) {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
@@ -242,9 +246,9 @@ function hidConnect(id) {
 // Disconnects from trezor.
 // First parameter is connection ID (*not* device ID!)
 function hidDisconnect(id) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     try {
-      chrome.hid.disconnect(id, () => {
+      chrome.hid.disconnect(id, function () {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
@@ -259,14 +263,14 @@ function hidDisconnect(id) {
 
 // encapsulating chrome's platform info into Promise API
 function platformInfo() {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     try {
-      chrome.runtime.getPlatformInfo(info => {
+      chrome.runtime.getPlatformInfo(function (info) {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
           if (info == null) {
-            reject(new Error(`info is null`));
+            reject(new Error('info is null'));
           } else {
             resolve(info);
           }
@@ -279,9 +283,9 @@ function platformInfo() {
 }
 
 function storageGet(key) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     try {
-      chrome.storage.local.get(key, items => {
+      chrome.storage.local.get(key, function (items) {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
@@ -301,11 +305,11 @@ function storageGet(key) {
 
 // Set to storage
 function storageSet(key, value) {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     try {
       var obj = {};
       obj[key] = value;
-      chrome.storage.local.set(obj, () => {
+      chrome.storage.local.set(obj, function () {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
@@ -318,141 +322,192 @@ function storageSet(key, value) {
   });
 }
 
-var ChromeHidPlugin = (_class = class ChromeHidPlugin {
-  constructor() {
-    this.name = `ChromeHidPlugin`;
+var ChromeHidPlugin = (_class = function () {
+  function ChromeHidPlugin() {
+    _classCallCheck(this, ChromeHidPlugin);
+
+    this.name = 'ChromeHidPlugin';
     this._hasReportId = {};
     this._udevError = false;
-    this.version = "0.2.30";
+    this.version = "0.2.31";
     this.debug = false;
   }
 
-  init(debug) {
-    this.debug = !!debug;
-    try {
-      if (chrome.hid.getDevices == null) {
-        return Promise.reject(new Error(`chrome.hid.getDevices is null`));
-      } else {
-        return Promise.resolve();
-      }
-    } catch (e) {
-      return Promise.reject(e);
-    }
-  }
-
-  _catchUdevError(error) {
-    var errMessage = error;
-    if (errMessage.message !== undefined) {
-      errMessage = error.message;
-    }
-    // A little heuristics.
-    // If error message is one of these and the type of original message is initialization, it's
-    // probably udev error.
-    if (errMessage === `Failed to open HID device.` || errMessage === `Transfer failed.`) {
-      this._udevError = true;
-    }
-    throw error;
-  }
-
-  _isLinux() {
-    if (this._isLinuxCached != null) {
-      return Promise.resolve(this._isLinuxCached);
-    }
-    return platformInfo().then(info => {
-      var linux = info.os === `linux`;
-      this._isLinuxCached = linux;
-      return linux;
-    });
-  }
-
-  _isAfterInstall() {
-    return storageGet(`afterInstall`).then(afterInstall => {
-      return afterInstall !== false;
-    });
-  }
-
-  showUdevError() {
-    return this._isLinux().then(isLinux => {
-      if (!isLinux) {
-        return false;
-      }
-      return this._isAfterInstall().then(isAfterInstall => {
-        if (isAfterInstall) {
-          return true;
+  _createClass(ChromeHidPlugin, [{
+    key: 'init',
+    value: function init(debug) {
+      this.debug = !!debug;
+      try {
+        if (chrome.hid.getDevices == null) {
+          return Promise.reject(new Error('chrome.hid.getDevices is null'));
         } else {
-          return this._udevError;
+          return Promise.resolve();
         }
-      });
-    });
-  }
-
-  clearUdevError() {
-    this._udevError = false;
-    return storageSet(`afterInstall`, true);
-  }
-
-  enumerate() {
-    return hidEnumerate().then(devices => devices.filter(device => !FORBIDDEN_DESCRIPTORS.some(des => des === device.collections[0].usagePage))).then(devices => {
-      this._hasReportId = {};
-
-      devices.forEach(device => {
-        this._hasReportId[device.deviceId.toString()] = device.collections[0].reportIds.length !== 0;
-      });
-
-      return devices;
-    }).then(devices => devices.map(device => deviceToJson(device)));
-  }
-
-  send(device, session, data) {
-    var sessionNu = parseInt(session);
-    if (isNaN(sessionNu)) {
-      return Promise.reject(new Error(`Session ${ session } is not a number`));
-    }
-    var hasReportId = this._hasReportId[device.toString()];
-    var reportId = hasReportId ? REPORT_ID : 0;
-
-    var ab = data;
-    if (!hasReportId) {
-      var newArray = new Uint8Array(64);
-      newArray[0] = 63;
-      newArray.set(new Uint8Array(data), 1);
-      ab = newArray.buffer;
-    }
-
-    return hidSend(sessionNu, reportId, ab).catch(e => this._catchUdevError(e));
-  }
-
-  receive(device, session) {
-    var sessionNu = parseInt(session);
-    if (isNaN(sessionNu)) {
-      return Promise.reject(new Error(`Session ${ session } is not a number`));
-    }
-    return hidReceive(sessionNu).then(_ref => {
-      var data = _ref.data;
-      var reportId = _ref.reportId;
-
-      if (reportId !== 0) {
-        return data;
-      } else {
-        return data.slice(1);
+      } catch (e) {
+        return Promise.reject(e);
       }
-    }).then(res => this.clearUdevError().then(() => res)).catch(e => this._catchUdevError(e));
-  }
-
-  connect(device) {
-    var deviceNu = parseInt(device);
-    if (isNaN(deviceNu)) {
-      return Promise.reject(new Error(`Device ${ deviceNu } is not a number`));
     }
-    return hidConnect(deviceNu).then(d => d.toString()).catch(e => this._catchUdevError(e));
-  }
-
-  disconnect(path, session) {
-    var sessionNu = parseInt(session);
-    if (isNaN(sessionNu)) {
-      return Promise.reject(new Error(`Session ${ session } is not a number`));
+  }, {
+    key: '_catchUdevError',
+    value: function _catchUdevError(error) {
+      var errMessage = error;
+      if (errMessage.message !== undefined) {
+        errMessage = error.message;
+      }
+      // A little heuristics.
+      // If error message is one of these and the type of original message is initialization, it's
+      // probably udev error.
+      if (errMessage === 'Failed to open HID device.' || errMessage === 'Transfer failed.') {
+        this._udevError = true;
+      }
+      throw error;
     }
-    return hidDisconnect(sessionNu);
-  }
-}, (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'connect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'connect'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'disconnect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'disconnect'), _class.prototype)), _class);
+  }, {
+    key: '_isLinux',
+    value: function _isLinux() {
+      var _this = this;
+
+      if (this._isLinuxCached != null) {
+        return Promise.resolve(this._isLinuxCached);
+      }
+      return platformInfo().then(function (info) {
+        var linux = info.os === 'linux';
+        _this._isLinuxCached = linux;
+        return linux;
+      });
+    }
+  }, {
+    key: '_isAfterInstall',
+    value: function _isAfterInstall() {
+      return storageGet('afterInstall').then(function (afterInstall) {
+        return afterInstall !== false;
+      });
+    }
+  }, {
+    key: 'showUdevError',
+    value: function showUdevError() {
+      var _this2 = this;
+
+      return this._isLinux().then(function (isLinux) {
+        if (!isLinux) {
+          return false;
+        }
+        return _this2._isAfterInstall().then(function (isAfterInstall) {
+          if (isAfterInstall) {
+            return true;
+          } else {
+            return _this2._udevError;
+          }
+        });
+      });
+    }
+  }, {
+    key: 'clearUdevError',
+    value: function clearUdevError() {
+      this._udevError = false;
+      return storageSet('afterInstall', true);
+    }
+  }, {
+    key: 'enumerate',
+    value: function enumerate() {
+      var _this3 = this;
+
+      return hidEnumerate().then(function (devices) {
+        return devices.filter(function (device) {
+          return !FORBIDDEN_DESCRIPTORS.some(function (des) {
+            return des === device.collections[0].usagePage;
+          });
+        });
+      }).then(function (devices) {
+        _this3._hasReportId = {};
+
+        devices.forEach(function (device) {
+          _this3._hasReportId[device.deviceId.toString()] = device.collections[0].reportIds.length !== 0;
+        });
+
+        return devices;
+      }).then(function (devices) {
+        return devices.map(function (device) {
+          return deviceToJson(device);
+        });
+      });
+    }
+  }, {
+    key: 'send',
+    value: function send(device, session, data) {
+      var _this4 = this;
+
+      var sessionNu = parseInt(session);
+      if (isNaN(sessionNu)) {
+        return Promise.reject(new Error('Session ' + session + ' is not a number'));
+      }
+      var hasReportId = this._hasReportId[device.toString()];
+      var reportId = hasReportId ? REPORT_ID : 0;
+
+      var ab = data;
+      if (!hasReportId) {
+        var newArray = new Uint8Array(64);
+        newArray[0] = 63;
+        newArray.set(new Uint8Array(data), 1);
+        ab = newArray.buffer;
+      }
+
+      return hidSend(sessionNu, reportId, ab).catch(function (e) {
+        return _this4._catchUdevError(e);
+      });
+    }
+  }, {
+    key: 'receive',
+    value: function receive(device, session) {
+      var _this5 = this;
+
+      var sessionNu = parseInt(session);
+      if (isNaN(sessionNu)) {
+        return Promise.reject(new Error('Session ' + session + ' is not a number'));
+      }
+      return hidReceive(sessionNu).then(function (_ref) {
+        var data = _ref.data;
+        var reportId = _ref.reportId;
+
+        if (reportId !== 0) {
+          return data;
+        } else {
+          return data.slice(1);
+        }
+      }).then(function (res) {
+        return _this5.clearUdevError().then(function () {
+          return res;
+        });
+      }).catch(function (e) {
+        return _this5._catchUdevError(e);
+      });
+    }
+  }, {
+    key: 'connect',
+    value: function connect(device) {
+      var _this6 = this;
+
+      var deviceNu = parseInt(device);
+      if (isNaN(deviceNu)) {
+        return Promise.reject(new Error('Device ' + deviceNu + ' is not a number'));
+      }
+      return hidConnect(deviceNu).then(function (d) {
+        return d.toString();
+      }).catch(function (e) {
+        return _this6._catchUdevError(e);
+      });
+    }
+  }, {
+    key: 'disconnect',
+    value: function disconnect(path, session) {
+      var sessionNu = parseInt(session);
+      if (isNaN(sessionNu)) {
+        return Promise.reject(new Error('Session ' + session + ' is not a number'));
+      }
+      return hidDisconnect(sessionNu);
+    }
+  }]);
+
+  return ChromeHidPlugin;
+}(), (_applyDecoratedDescriptor(_class.prototype, 'init', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'connect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'connect'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'disconnect', [_debugDecorator.debugInOut], Object.getOwnPropertyDescriptor(_class.prototype, 'disconnect'), _class.prototype)), _class);
 exports.default = ChromeHidPlugin;

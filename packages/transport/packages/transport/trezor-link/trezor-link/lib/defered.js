@@ -126,21 +126,21 @@ Function.prototype.$asyncbind = function $asyncbind(self, catcher) {
 };
 
 function create() {
-  var localResolve = t => {};
-  var localReject = e => {};
+  var localResolve = function localResolve(t) {};
+  var localReject = function localReject(e) {};
 
-  var promise = new Promise((resolve, reject) => {
+  var promise = new Promise(function (resolve, reject) {
     localResolve = resolve;
     localReject = reject;
   });
-  var rejectingPromise = promise.then(() => {
-    throw new Error(`Promise is always rejecting`);
+  var rejectingPromise = promise.then(function () {
+    throw new Error("Promise is always rejecting");
   });
 
   return {
     resolve: localResolve,
     reject: localReject,
-    promise,
-    rejectingPromise
+    promise: promise,
+    rejectingPromise: rejectingPromise
   };
 }
