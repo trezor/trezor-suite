@@ -1,34 +1,23 @@
-Trezor-link
+Trezor-link-browser-extension
 ====
 
-Library for low-level communication with TREZOR.
+Library for low-level communication with TREZOR for browser extensions.
 
-Intended as a "building block" for other packages - it is used in trezor.js and chrome extension.
+Intended as a "building block" for extension that talks with TREZOR.
 
 *You probably don't want to use this package directly.* For communication with Trezor with a more high-level API, use [trezor.js](https://www.npmjs.com/package/trezor.js).
-
-Packages
-----
-We have three different npm packages for different usecases, unfortunately.
-
-* `require('trezor-link')` for browser
-* `require('trezor-link-node')` for node.js (and electron apps)
-* `require('trezor-link-browser-extension')` for browser extensions
 
 How to use
 -----
 
-Use like this (in node):
+Use like this:
 
 ```javascript
-var link = require('trezor-link-node');
-var LowlevelTransport = link.lowlevel;
-var NodeHidPlugin = link.nodeHid;
+var Link = require('trezor-link-browser-extension');
+var LowlevelTransport = Link.lowlevel;
+var ChromeHidPlugin = Link.chromeHid;
 
-var link = new LowlevelTransport(new NodeHidPlugin());
-
-// for simple config load; you can also load by file API from a disk without node-fetch
-var fetch = require('node-fetch');
+var link = new LowlevelTransport(new ChromeHidPlugin());
 
 var config = fetch('https://wallet.mytrezor.com/data/config_signed.bin').then(function (response) {
   if (response.ok) {
