@@ -40,8 +40,8 @@ versions: git-clean git-ancestor check .version-node .version-browser .version-b
 	rm -rf lib
 	git add package*.json
 	mv package-node.json package.json
-	git commit -m '`npm -v`'
-	git tag v`npm -v`
+	git commit -m `npm view . version`
+	git tag v`npm view . version`
 	mv package.json package-node.json
 	git push
 	git push --tags
