@@ -34,6 +34,7 @@ build: node_modules
 	`npm bin`/bump patch || ( make .cleanup-$* && false )
 	make build || ( make .cleanup-$* && false )
 	npm publish || ( make .cleanup-$* && false )
+	make .cleanup-$*
 
 versions: git-clean git-ancestor check .version-node .version-browser .version-browser-extension
 	rm -rf lib
