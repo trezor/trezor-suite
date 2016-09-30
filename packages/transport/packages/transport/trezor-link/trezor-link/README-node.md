@@ -7,23 +7,15 @@ Intended as a "building block" for other packages - it is used in trezor.js and 
 
 *You probably don't want to use this package directly.* For communication with Trezor with a more high-level API, use [trezor.js](https://www.npmjs.com/package/trezor.js).
 
-Packages
-----
-We have three different npm packages for different usecases, unfortunately.
-
-* `require('trezor-link')` for browser
-* `require('trezor-link-node')` for node.js (and electron apps)
-* `require('trezor-link-browser-extension')` for browser extensions
-
 How to use
 -----
 
-Use like this (in node):
+Use like this:
 
 ```javascript
-var link = require('trezor-link-node');
-var LowlevelTransport = link.lowlevel;
-var NodeHidPlugin = link.nodeHid;
+var Link = require('trezor-link-node');
+var LowlevelTransport = Link.lowlevel;
+var NodeHidPlugin = Link.nodeHid;
 
 var link = new LowlevelTransport(new NodeHidPlugin());
 
@@ -64,6 +56,7 @@ Source is annotated with Flow types, so it's more obvious what is going on from 
 Flow
 ----
 If you want to use flow for typechecking, just include the file as normally, it will automatically use the included flow file. However, you need to add `flowtype/*.js` to your `[libs]` (or copy it yourself from flow-typed repository), and probably libs from flowconfig.
+
 
 License
 ----
