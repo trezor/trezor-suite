@@ -1,12 +1,12 @@
 {
-  "name": "trezor-link",
+  "name": "trezor-link-browser-extension",
   "version": "0.2.31",
-  "description": "Trezor Link",
-  "main": "lib/index.js",
+  "description": "Trezor Link for browser extension",
+  "main": "lib/index-browser-extension.js",
   "scripts": {
-    "preversion": "make npm_preversion",
-    "version": "make npm_version",
-    "postversion": "make npm_postversion",
+    "preversion": "make .npm_preversion",
+    "version": "make .npm_version",
+    "postversion": "make .npm_postversion",
     "build": "make build",
     "check": "make check"
   },
@@ -40,8 +40,8 @@
     "babel-plugin-transform-flow-strip-types": "^6.4.0",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
     "babel-preset-es2015": "^6.14.0",
-    "babel-preset-modern": "^1.1.0",
-    "fast-async": "^6.0.32"
+    "fast-async": "^6.0.32",
+    "bump-version": "^0.5.0"
   },
   "dependencies": {
     "bigi": "^1.4.1",
@@ -51,8 +51,5 @@
     "object.values": "^1.0.3",
     "protobufjs": "3.8.2",
     "semver-compare": "^1.0.0"
-  },
-  "optionalDependencies": {
-    "node-hid": "^0.5.1"
   }
 }
