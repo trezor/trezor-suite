@@ -17,13 +17,34 @@ build: node_modules
 	`npm bin`/babel src --out-dir lib
 	rm -rf lib/flow-test
 
-npm_preversion: git-ancestor check build
+.move-in-%:
+	mv README.md README.old.md
+	mv README-$*.md README.md
+	mv package-$*.json package.json
 
-npm_version: build
-	git add -A lib
-	git commit -m 'Build'
+.cleanup-%:
+	mv README.md README-$*.md 
+	mv README.old.md README.md
+	mv package.json package-$*.json 
+	rm -rf lib
 
-npm_postversion:
+.version-%: .move-in-%
+	npm install
+	make build || ( make .cleanup-$* && false )
+	`npm bin`/bump patch || ( make .cleanup-$* && false )
+	make build || ( make .cleanup-$* && false )
+	npm publish || ( make .cleanup-$* && false )
+
+versions: git-clean git-ancestor check .version-node .version-browser .version-browser-extension
+	rm -rf lib
+	git add package*.json
+	mv package-node.json package.json
+	git commit -m '`npm -v`'
+	git tag v`npm -v`
+	mv package.json package-node.json
 	git push
 	git push --tags
-	npm publish
+
+git-clean:
+	test ! -n "$$(git status --porcelain)"
+
