@@ -14,8 +14,8 @@ Use like this:
 
 ```javascript
 var Link = require('trezor-link-browser-extension');
-var LowlevelTransport = Link.lowlevel;
-var ChromeHidPlugin = Link.chromeHid;
+var LowlevelTransport = Link.Lowlevel;
+var ChromeHidPlugin = Link.ChromeHid;
 
 var link = new LowlevelTransport(new ChromeHidPlugin());
 

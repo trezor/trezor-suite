@@ -15,10 +15,10 @@ import ChromeHidPlugin from './lowlevel/chrome-hid';
 BridgeTransport.setFetch(fetch);
 
 export default {
-  bridge: BridgeTransport,
-  parallel: ParallelTransport,
-  fallback: FallbackTransport,
-  chromeUdp: ChromeUdpPlugin,
-  chromeHid: ChromeHidPlugin,
-  lowlevel: LowlevelTransport,
+  Bridge: BridgeTransport,
+  Parallel: ParallelTransport,
+  Fallback: FallbackTransport,
+  ChromeUdp: ChromeUdpPlugin,
+  ChromeHid: ChromeHidPlugin,
+  Lowlevel: LowlevelTransport,
 };
