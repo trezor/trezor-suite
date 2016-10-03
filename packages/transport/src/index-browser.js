@@ -15,8 +15,8 @@ import 'whatwg-fetch';
 BridgeTransport.setFetch(fetch);
 
 export default {
-  bridge: BridgeTransport,
-  extension: ExtensionTransport,
-  parallel: ParallelTransport,
-  fallback: FallbackTransport,
+  Bridge: BridgeTransport,
+  Extension: ExtensionTransport,
+  Parallel: ParallelTransport,
+  Fallback: FallbackTransport,
 };
