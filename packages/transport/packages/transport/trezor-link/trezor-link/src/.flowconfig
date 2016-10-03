@@ -10,6 +10,8 @@
 ../node_modules/object.values/
 ../node_modules/semver-compare/
 ../node_modules/node-hid/
+../node_modules/node-fetch/
+../node_modules/whatwg-fetch/
 
 [libs]
 ../flowtype/bitcoinjs-lib.js

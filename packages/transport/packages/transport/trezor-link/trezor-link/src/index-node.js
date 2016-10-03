@@ -12,6 +12,11 @@ import ParallelTransport from './parallel';
 import FallbackTransport from './fallback';
 import NodeHidPlugin from './lowlevel/chrome-hid';
 
+// eslint-disable-next-line quotes
+const fetch = require('node-fetch');
+
+BridgeTransport.setFetch(fetch);
+
 export default {
   bridge: BridgeTransport,
   extension: ExtensionTransport,
