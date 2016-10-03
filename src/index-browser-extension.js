@@ -12,6 +12,8 @@ import FallbackTransport from './fallback';
 import ChromeUdpPlugin from './lowlevel/chrome-udp';
 import ChromeHidPlugin from './lowlevel/chrome-hid';
 
+BridgeTransport.setFetch(fetch);
+
 export default {
   bridge: BridgeTransport,
   parallel: ParallelTransport,
