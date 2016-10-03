@@ -4,9 +4,6 @@
   "description": "Trezor Link for node",
   "main": "lib/index-node.js",
   "scripts": {
-    "preversion": "make .npm_preversion",
-    "version": "make .npm_version",
-    "postversion": "make .npm_postversion",
     "build": "make build",
     "check": "make check"
   },
@@ -50,6 +47,7 @@
     "object.values": "^1.0.3",
     "protobufjs": "3.8.2",
     "semver-compare": "^1.0.0",
-    "node-hid": "^0.5.1"
+    "node-hid": "^0.5.1",
+    "node-fetch": "^1.6.0"
   }
 }

@@ -10,6 +10,10 @@ import ExtensionTransport from './extension';
 import ParallelTransport from './parallel';
 import FallbackTransport from './fallback';
 
+import 'whatwg-fetch';
+
+BridgeTransport.setFetch(fetch);
+
 export default {
   bridge: BridgeTransport,
   extension: ExtensionTransport,
