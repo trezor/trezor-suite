@@ -22,8 +22,8 @@ Use like this (in node):
 
 ```javascript
 var link = require('trezor-link-node');
-var LowlevelTransport = link.lowlevel;
-var NodeHidPlugin = link.nodeHid;
+var LowlevelTransport = link.Lowlevel;
+var NodeHidPlugin = link.NodeHid;
 
 var link = new LowlevelTransport(new NodeHidPlugin());
 
