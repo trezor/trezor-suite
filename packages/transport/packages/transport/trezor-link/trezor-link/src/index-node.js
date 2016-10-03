@@ -18,10 +18,10 @@ const fetch = require('node-fetch');
 BridgeTransport.setFetch(fetch);
 
 export default {
-  bridge: BridgeTransport,
-  extension: ExtensionTransport,
-  parallel: ParallelTransport,
-  fallback: FallbackTransport,
-  nodeHid: NodeHidPlugin,
-  lowlevel: LowlevelTransport,
+  Bridge: BridgeTransport,
+  Extension: ExtensionTransport,
+  Parallel: ParallelTransport,
+  Fallback: FallbackTransport,
+  NodeHid: NodeHidPlugin,
+  Lowlevel: LowlevelTransport,
 };
