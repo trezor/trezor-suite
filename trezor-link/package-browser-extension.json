@@ -4,9 +4,6 @@
   "description": "Trezor Link for browser extension",
   "main": "lib/index-browser-extension.js",
   "scripts": {
-    "preversion": "make .npm_preversion",
-    "version": "make .npm_version",
-    "postversion": "make .npm_postversion",
     "build": "make build",
     "check": "make check"
   },
