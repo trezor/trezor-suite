@@ -16,6 +16,10 @@ build-node: node_modules
 	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
 	`npm bin`/babel src --out-dir lib
 	rm -rf lib/flow-test
+	rm lib/index-browser.js
+	rm lib/index-browser.js.flow
+	rm lib/index-browser-extension.js
+	rm lib/index-browser-extension.js.flow
 
 build-browser: node_modules
 	rm -rf lib
@@ -25,6 +29,10 @@ build-browser: node_modules
 	`npm bin`/babel src --out-dir lib
 	rm -rf lib/flow-test
 	rm -rf lib/lowlevel
+	rm lib/index-node.js
+	rm lib/index-node.js.flow
+	rm lib/index-browser-extension.js
+	rm lib/index-browser-extension.js.flow
 
 build-browser-extension: node_modules
 	rm -rf lib
@@ -33,6 +41,10 @@ build-browser-extension: node_modules
 	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
 	`npm bin`/babel src --out-dir lib
 	rm -rf lib/flow-test
+	rm lib/index-node.js
+	rm lib/index-node.js.flow
+	rm lib/index-browser.js
+	rm lib/index-browser.js.flow
 
 .move-in-%:
 	mv README.md README.old.md
