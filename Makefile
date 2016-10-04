@@ -15,7 +15,7 @@ build-node: node_modules
 	find lib/ -type f ! -name '*.js' | xargs -I {} rm {}
 	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
 	`npm bin`/babel src --out-dir lib
-	rm -rf lib/flow-test
+	rm -r lib/flow-test
 	rm lib/index-browser.js
 	rm lib/index-browser.js.flow
 	rm lib/index-browser-extension.js
@@ -27,8 +27,8 @@ build-browser: node_modules
 	find lib/ -type f ! -name '*.js' | xargs -I {} rm {}
 	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
 	`npm bin`/babel src --out-dir lib
-	rm -rf lib/flow-test
-	rm -rf lib/lowlevel
+	rm -r lib/flow-test
+	rm -r lib/lowlevel
 	rm lib/index-node.js
 	rm lib/index-node.js.flow
 	rm lib/index-browser-extension.js
@@ -40,7 +40,7 @@ build-browser-extension: node_modules
 	find lib/ -type f ! -name '*.js' | xargs -I {} rm {}
 	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
 	`npm bin`/babel src --out-dir lib
-	rm -rf lib/flow-test
+	rm -r lib/flow-test
 	rm lib/index-node.js
 	rm lib/index-node.js.flow
 	rm lib/index-browser.js
