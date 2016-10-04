@@ -1,0 +1,14 @@
+sudo: false
+language: node_js
+
+node_js:
+  - "4.4"
+
+before_script:
+  - npm install -g eslint eslint-plugin-flow-vars babel-eslint eslint-plugin-standard eslint-plugin-promise flow-bin
+
+script:
+  - make check
+  - make .version-node
+  - make .version-browser 
+  - make .version-browser-extension
