@@ -13,6 +13,7 @@ const REPORT_ID = 63;
 const TREZOR_DESC = {
   vendorId: 0x534c,
   productId: 0x0001,
+  interface: 0,
 };
 
 type TrezorDeviceInfo = {path:string};
@@ -41,7 +42,11 @@ export default class NodeHidPlugin {
 
   async enumerate(): Promise<Array<TrezorDeviceInfo>> {
     const devices = HID.devices()
-    .filter(d => d.vendorId === TREZOR_DESC.vendorId && d.productId === TREZOR_DESC.productId)
+    .filter(d =>
+      d.vendorId === TREZOR_DESC.vendorId &&
+      d.productId === TREZOR_DESC.productId &&
+      d.interface === TREZOR_DESC.interface
+    )
     .map((device: HIDDeviceDescription): TrezorDeviceInfo => {
       const path = device.path;
       return {
