@@ -47,7 +47,7 @@ build-browser-extension: node_modules
 
 .version-%: .move-in-%
 	npm install
-	make build || ( make .cleanup-$* && false )
+	make build-$* || ( make .cleanup-$* && false )
 	`npm bin`/bump patch || ( make .cleanup-$* && false )
 	make build-$* || ( make .cleanup-$* && false )
 	npm publish || ( make .cleanup-$* && false )
