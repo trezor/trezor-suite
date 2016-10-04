@@ -56,12 +56,14 @@ build-browser-extension: node_modules
 	mv README.old.md README.md
 	mv package.json package-$*.json 
 	rm -rf lib
+	git checkout src/
 
 .version-%: .move-in-%
 	npm install
 	make build-$* || ( make .cleanup-$* && false )
 	`npm bin`/bump patch || ( make .cleanup-$* && false )
 	make build-$* || ( make .cleanup-$* && false )
+	rm -r src
 	npm publish || ( make .cleanup-$* && false )
 	make .cleanup-$*
 
