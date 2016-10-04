@@ -9,7 +9,24 @@ git-ancestor:
 node_modules:
 	npm install
 
-build: node_modules
+build-node: node_modules
+	rm -rf lib
+	cp -r src/ lib
+	find lib/ -type f ! -name '*.js' | xargs -I {} rm {}
+	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
+	`npm bin`/babel src --out-dir lib
+	rm -rf lib/flow-test
+
+build-browser: node_modules
+	rm -rf lib
+	cp -r src/ lib
+	find lib/ -type f ! -name '*.js' | xargs -I {} rm {}
+	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
+	`npm bin`/babel src --out-dir lib
+	rm -rf lib/flow-test
+	rm -rf lib/lowlevel
+
+build-browser-extension: node_modules
 	rm -rf lib
 	cp -r src/ lib
 	find lib/ -type f ! -name '*.js' | xargs -I {} rm {}
@@ -32,7 +49,7 @@ build: node_modules
 	npm install
 	make build || ( make .cleanup-$* && false )
 	`npm bin`/bump patch || ( make .cleanup-$* && false )
-	make build || ( make .cleanup-$* && false )
+	make build-$* || ( make .cleanup-$* && false )
 	npm publish || ( make .cleanup-$* && false )
 	make .cleanup-$*
 
