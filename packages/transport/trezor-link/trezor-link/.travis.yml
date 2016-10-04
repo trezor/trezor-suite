@@ -9,6 +9,6 @@ before_script:
 
 script:
   - make check
-  - make .version-node
-  - make .version-browser 
-  - make .version-browser-extension
+  - make .move-in-node build .cleanup-node
+  - make .move-in-browser build .cleanup-browser
+  - make .move-in-browser-extension build .cleanup-browser-extension
