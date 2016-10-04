@@ -10,7 +10,7 @@ import LowlevelTransport from './lowlevel';
 import ExtensionTransport from './extension';
 import ParallelTransport from './parallel';
 import FallbackTransport from './fallback';
-import NodeHidPlugin from './lowlevel/chrome-hid';
+import NodeHidPlugin from './lowlevel/node-hid';
 
 // eslint-disable-next-line quotes
 const fetch = require('node-fetch');
