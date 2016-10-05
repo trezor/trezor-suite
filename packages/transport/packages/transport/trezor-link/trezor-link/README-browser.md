@@ -1,5 +1,4 @@
-Trezor-link
-====
+# trezor-link
 
 Library for low-level communication with TREZOR.
 
@@ -7,8 +6,7 @@ Intended as a "building block" for other packages - it is used in trezor.js and 
 
 *You probably don't want to use this package directly.* For communication with Trezor with a more high-level API, use [trezor.js](https://www.npmjs.com/package/trezor.js).
 
-How to use
------
+## How to use
 
 Use like this:
 
@@ -46,17 +44,16 @@ return link.init().then(function () {
 
 ```
 
-Notes
----
+## Notes
+
 Source is annotated with Flow types, so it's more obvious what is going on from source code.
 
-Flow
-----
+## Flow
+
 If you want to use flow for typechecking, just include the file as normally, it will automatically use the included flow file. However, you need to add `flowtype/*.js` to your `[libs]` (or copy it yourself from flow-typed repository), and probably libs from flowconfig.
 
+## License
 
-License
-----
 LGPLv3
 
 * (C) 2015 Karel Bilek (SatoshiLabs) <kb@karelbilek.com>
