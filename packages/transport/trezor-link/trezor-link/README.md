@@ -1,5 +1,6 @@
-Trezor-link
-====
+# trezor-link
+
+[![Build Status](https://travis-ci.org/trezor/trezor-link.svg?branch=master)](https://travis-ci.org/trezor/trezor-link) [![gitter](https://badges.gitter.im/trezor/community.svg)](https://gitter.im/trezor/community)
 
 Library for low-level communication with TREZOR.
 
@@ -7,23 +8,22 @@ Intended as a "building block" for other packages - it is used in trezor.js and 
 
 *You probably don't want to use this package directly.* For communication with Trezor with a more high-level API, use [trezor.js](https://www.npmjs.com/package/trezor.js).
 
-Packages
-----
+## Packages
+
 We have three different npm packages for different usecases, unfortunately.
 
 * `require('trezor-link')` for browser
 * `require('trezor-link-node')` for node.js (and electron apps)
 * `require('trezor-link-browser-extension')` for browser extensions
 
-How to use
------
+## How to use
 
 Use like this (in node):
 
 ```javascript
-var link = require('trezor-link-node');
-var LowlevelTransport = link.Lowlevel;
-var NodeHidPlugin = link.NodeHid;
+var Link = require('trezor-link-node');
+var LowlevelTransport = Link.Lowlevel;
+var NodeHidPlugin = Link.NodeHid;
 
 var link = new LowlevelTransport(new NodeHidPlugin());
 
@@ -57,16 +57,16 @@ return link.init().then(function () {
 
 ```
 
-Notes
----
+## Notes
+
 Source is annotated with Flow types, so it's more obvious what is going on from source code.
 
-Flow
-----
+## Flow
+
 If you want to use flow for typechecking, just include the file as normally, it will automatically use the included flow file. However, you need to add `flowtype/*.js` to your `[libs]` (or copy it yourself from flow-typed repository), and probably libs from flowconfig.
 
-License
-----
+## License
+
 LGPLv3
 
 * (C) 2015 Karel Bilek (SatoshiLabs) <kb@karelbilek.com>
