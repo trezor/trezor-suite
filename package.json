@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "bitcoinjs-lib": "2.1.3",
-    "immutable": "hallettj/immutable-js.git",
+    "immutable": "git://github.com/hallettj/immutable-js.git",
     "socket.io-client": "1.3.7",
     "whatwg-fetch": "0.11.0"
   },
