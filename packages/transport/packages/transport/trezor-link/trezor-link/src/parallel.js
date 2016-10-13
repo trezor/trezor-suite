@@ -3,6 +3,14 @@
 import type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from './transport';
 import {debugInOut} from './debug-decorator';
 
+function compare(a: TrezorDeviceInfoWithSession, b: TrezorDeviceInfoWithSession): number {
+  if (!isNaN(parseInt(a.path))) {
+    return parseInt(a.path) - parseInt(b.path);
+  } else {
+    return a.path < b.path ? -1 : (a.path > b.path ? 1 : 0);
+  }
+}
+
 export default class ParallelTransport {
   name: string = `ParallelTransport`;
 
@@ -32,6 +40,16 @@ export default class ParallelTransport {
     });
   }
 
+  _antiFilter(name: string, devices: Array<TrezorDeviceInfoWithSession>): Array<TrezorDeviceInfoWithSession> {
+    return devices.filter(device => this._parseName(device.path).name !== name).map(device => {
+      return {
+        ...device,
+        path: this._parseName(device.path).rest,
+        session: device.session == null ? device.session : this._parseName(device.session).rest,
+      };
+    });
+  }
+
   @debugInOut
   async enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     const res = [];
@@ -40,25 +58,25 @@ export default class ParallelTransport {
       const devices = await this.transports[name].enumerate();
       res.push(...(this._prepend(name, devices)));
     }
-    return res;
+    return res.sort(compare);
   }
 
   @debugInOut
   async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
-    const res = [];
-
     const promises = Object.keys(this.transports).map(async (name) => {
       const oldFiltered = old == null ? null : this._filter(name, old);
       const devices = await this.transports[name].listen(oldFiltered);
-      return this._prepend(name, devices);
+      return {name: name, devices: devices};
     });
 
-    const devicess: Array<Array<TrezorDeviceInfoWithSession>> = await Promise.all(promises);
+    const {name, devices} = await Promise.race(promises);
 
-    devicess.forEach(devices => res.push(...devices));
+    const antiFiltered = old == null ? [] : this._antiFilter(name, old);
+    const prepended = this._prepend(name, devices);
 
-    return res;
+    return antiFiltered.concat(prepended).sort(compare);
   }
+
   _parseName(input: string): {
     transport: Transport,
     name: string,
