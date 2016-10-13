@@ -55,7 +55,7 @@ export default class BridgeTransport {
     this.version = info.version;
     this.configured = info.configured;
     const newVersion = check.version(await http({
-      url: this.newestVersionUrl,
+      url: `${this.newestVersionUrl}?${Date.now()}`,
       method: `GET`,
     }));
     this.isOutdated = semvercmp(this.version, newVersion) < 0;
