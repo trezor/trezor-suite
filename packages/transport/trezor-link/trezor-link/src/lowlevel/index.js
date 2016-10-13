@@ -34,10 +34,10 @@ function stableStringify(devices: ?Array<TrezorDeviceInfoWithSession>): string {
 }
 
 function compare(a: TrezorDeviceInfoWithSession, b: TrezorDeviceInfoWithSession): number {
-  if (!isNaN(a.path)) {
+  if (!isNaN(parseInt(a.path))) {
     return parseInt(a.path) - parseInt(b.path);
   } else {
-    return a.path < a.path ? -1 : (a.path > a.path ? 1 : 0);
+    return a.path < b.path ? -1 : (a.path > b.path ? 1 : 0);
   }
 }
 
