@@ -10,7 +10,7 @@ import * as check from '../highlevel-checks';
 import {debugInOut} from '../debug-decorator';
 
 const DEFAULT_URL = `https://localback.net:21324`;
-const DEFAULT_VERSION_URL = `https://wallet.mytrezor.com/data/bridge/latest.txt`;
+const DEFAULT_VERSION_URL = `https://wallet.trezor.io/data/bridge/latest.txt`;
 
 type IncompleteRequestOptions = {
   body?: ?(Array<any> | Object | string);
