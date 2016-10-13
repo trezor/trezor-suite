@@ -41,13 +41,7 @@ export default class ParallelTransport {
   }
 
   _antiFilter(name: string, devices: Array<TrezorDeviceInfoWithSession>): Array<TrezorDeviceInfoWithSession> {
-    return devices.filter(device => this._parseName(device.path).name !== name).map(device => {
-      return {
-        ...device,
-        path: this._parseName(device.path).rest,
-        session: device.session == null ? device.session : this._parseName(device.session).rest,
-      };
-    });
+    return devices.filter(device => this._parseName(device.path).name !== name);
   }
 
   @debugInOut
