@@ -46,12 +46,17 @@ export default class ParallelTransport {
   @debugInOut
   async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
     const res = [];
-    // eslint-disable-next-line prefer-const
-    for (let name of Object.keys(this.transports)) {
+
+    const promises = Object.keys(this.transports).map(async (name) => {
       const oldFiltered = old == null ? null : this._filter(name, old);
       const devices = await this.transports[name].listen(oldFiltered);
-      res.push(...(this._prepend(name, devices)));
-    }
+      return this._prepend(name, devices);
+    });
+
+    const devicess: Array<Array<TrezorDeviceInfoWithSession>> = await Promise.all(promises);
+
+    devicess.forEach(devices => res.push(...devices));
+
     return res;
   }
   _parseName(input: string): {
