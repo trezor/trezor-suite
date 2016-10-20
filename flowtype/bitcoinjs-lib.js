@@ -257,6 +257,9 @@ declare module 'bitcoinjs-lib' {
         static isCoinbaseHash(buffer: Buffer): boolean;
         isCoinbase(): boolean;
         byteLength(): number;
+
+        // this is only for zcash branch
+        joinsplitByteLength(): number;
         clone(): Transaction;
         hashForSignature(inIndex: number, prevOutScript: Buffer, hashType: number): Buffer;
         setInputScript(index: number, scriptSig: Buffer): void;
