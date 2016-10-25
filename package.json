@@ -29,10 +29,10 @@
     ]
   },
   "dependencies": {
-    "bitcoinjs-lib": "git://github.com/runn1ng/bitcoinjs-lib.git#zcash",
-    "immutable": "git://github.com/hallettj/immutable-js.git",
-    "socket.io-client": "1.3.7",
-    "whatwg-fetch": "0.11.0"
+    "bitcoinjs-lib-zcash": "^2.3.0",
+    "immutable": "^3.8.1",
+    "socket.io-client": "^1.5.1",
+    "whatwg-fetch": "^0.11.0"
   },
   "devDependencies": {
     "babel-plugin-add-module-exports": "0.1.2",
