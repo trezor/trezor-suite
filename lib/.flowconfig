@@ -2,7 +2,7 @@
 .*/node_modules/bitcoinjs-lib/.*
 
 [include]
-../node_modules/bitcoinjs-lib
+../node_modules/bitcoinjs-lib-zcash
 ../node_modules/socket.io-client
 ../node_modules/whatwg-fetch
 ../node_modules/immutable
