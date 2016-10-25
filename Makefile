@@ -15,7 +15,7 @@ SOCKET_TARGET=dist/socket-worker.js
 all: lib
 
 check: node_modules
-	flow lib/
+	flow check lib/
 	eslint lib/*.js
 
 lib: node_modules
