@@ -1,6 +1,6 @@
 {
   "name": "hd-wallet",
-  "version": "1.0.5-bitcore3",
+  "version": "1.0.6-bitcore3",
   "description": "Data structures and algorithms for Bitcoin HD wallet.",
   "main": "lib/index.js",
   "scripts": {
