@@ -12,5 +12,12 @@ export type LowlevelTransportPlugin = {
   init: (debug: ?boolean) => Promise<void>;
   version: string;
   name: string;
+
+  // in signal hid API, there is an issue that we cannot simultaneously
+  // write and list devices.
+  // HOWEVER, there is a separate (and maybe connected) issue in Chrome,
+  // where sometimes write doesn't fail on disconnect unless we enumerate
+  // so we need to have an "optional lock"
+  allowsWriteAndEnumerate: boolean;
 }
 
