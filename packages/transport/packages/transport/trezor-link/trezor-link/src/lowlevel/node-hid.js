@@ -30,6 +30,8 @@ export default class NodeHidPlugin {
 
   debug: boolean = false;
 
+  allowsWriteAndEnumerate: boolean = false;
+
   @debugInOut
   async init(debug: ?boolean): Promise<void> {
     // try if it's a Node environment

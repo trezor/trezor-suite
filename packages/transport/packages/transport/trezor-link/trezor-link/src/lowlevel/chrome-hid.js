@@ -177,6 +177,8 @@ export default class ChromeHidPlugin {
   version: string = __VERSION__;
   debug: boolean = false;
 
+  allowsWriteAndEnumerate: boolean = true;
+
   @debugInOut
   init(debug: ?boolean): Promise<void> {
     this.debug = !!debug;
