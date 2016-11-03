@@ -22,6 +22,8 @@ export default class ChromeUdpPlugin {
   version: string = __VERSION__;
   debug: boolean = false;
 
+  allowsWriteAndEnumerate: boolean = true;
+
   constructor(portDiff?: ?number) {
     if (portDiff == null) {
       this.portDiff = 3;
