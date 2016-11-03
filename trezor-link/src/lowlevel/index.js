@@ -216,15 +216,15 @@ export default class LowlevelTransport {
 
     const messages = this._messages;
 
-    return this.lock(async (): Promise<MessageFromTrezor> => {
-      const resPromise: Promise<MessageFromTrezor> = (async () => {
-        await buildAndSend(messages, this._sendLowlevel(session), name, data);
-        const message = await receiveAndParse(messages, this._receiveLowlevel(session));
-        return message;
-      })();
+    // return this.lock(async (): Promise<MessageFromTrezor> => {
+    const resPromise: Promise<MessageFromTrezor> = (async () => {
+      await buildAndSend(messages, this._sendLowlevel(session), name, data);
+      const message = await receiveAndParse(messages, this._receiveLowlevel(session));
+      return message;
+    })();
 
-      return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
-    });
+    return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
+    // });
   }
 
   @debugInOut
