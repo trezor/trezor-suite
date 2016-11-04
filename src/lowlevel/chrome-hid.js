@@ -40,7 +40,13 @@ function hidEnumerate(): Promise<Array<ChromeHidDeviceInfo>> {
 }
 
 function hidSend(id: number, reportId: number, data: ArrayBuffer): Promise<void> {
-  return new Promise((resolve, reject) => {
+  // if send (of one data packet!) does not happen within 10 seconds, the connection
+  // probably failed in an unexpected way => return an error!!
+  const rejecting = new Promise((resolve, reject) => {
+    setTimeout(() => reject(new Error(`Cannot send data to device, check the cable.`)), 10 * 1000);
+  });
+
+  const sendRes = new Promise((resolve, reject) => {
     try {
       chrome.hid.send(id, reportId, data, () => {
         if (chrome.runtime.lastError) {
@@ -53,6 +59,8 @@ function hidSend(id: number, reportId: number, data: ArrayBuffer): Promise<void>
       reject(e);
     }
   });
+
+  return Promise.race([rejecting, sendRes]);
 }
 
 function hidReceive(id: number): Promise<{data: ArrayBuffer, reportId: number}> {
