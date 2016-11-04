@@ -57,15 +57,19 @@ export default class ParallelTransport {
 
   @debugInOut
   async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
+    const actualOld: Array<TrezorDeviceInfoWithSession> = (old == null)
+      ? await this.enumerate()
+      : old;
+
     const promises = Object.keys(this.transports).map(async (name) => {
-      const oldFiltered = old == null ? null : this._filter(name, old);
+      const oldFiltered = this._filter(name, actualOld);
       const devices = await this.transports[name].listen(oldFiltered);
       return {name: name, devices: devices};
     });
 
     const {name, devices} = await Promise.race(promises);
 
-    const antiFiltered = old == null ? [] : this._antiFilter(name, old);
+    const antiFiltered = old == null ? [] : this._antiFilter(name, actualOld);
     const prepended = this._prepend(name, devices);
 
     return antiFiltered.concat(prepended).sort(compare);
