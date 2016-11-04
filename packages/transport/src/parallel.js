@@ -69,7 +69,7 @@ export default class ParallelTransport {
 
     const {name, devices} = await Promise.race(promises);
 
-    const antiFiltered = old == null ? [] : this._antiFilter(name, actualOld);
+    const antiFiltered = this._antiFilter(name, actualOld);
     const prepended = this._prepend(name, devices);
 
     return antiFiltered.concat(prepended).sort(compare);
