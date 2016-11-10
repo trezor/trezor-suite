@@ -47,7 +47,7 @@
     "object.values": "^1.0.3",
     "protobufjs": "3.8.2",
     "semver-compare": "^1.0.0",
-    "node-hid": "^0.5.1",
+    "node-hid": "^0.5.2",
     "node-fetch": "^1.6.0"
   }
 }
