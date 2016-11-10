@@ -15,7 +15,10 @@ import NodeHidPlugin from './lowlevel/node-hid';
 // eslint-disable-next-line quotes
 const fetch = require('node-fetch');
 
-BridgeTransport.setFetch(fetch);
+// Allow electron apps to use native browser fetch (works better)
+if (typeof window === `undefined`) {
+  BridgeTransport.setFetch(fetch);
+}
 
 export default {
   Bridge: BridgeTransport,
