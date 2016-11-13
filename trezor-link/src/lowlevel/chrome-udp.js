@@ -63,15 +63,20 @@ export default class ChromeUdpPlugin {
     for (const port of this.ports) {
       try {
         const socket: number = await this._udpConnect(port);
-        await this._udpSend(socket, pingBuffer);
-        const resBuffer = await Promise.race([
-          rejectTimeoutPromise(1000, new Error()),
-          this._udpReceiveUnsliced(socket),
-        ]);
-        if (!arraybufferEqual(pingBuffer, resBuffer)) {
-          throw new Error();
+        try {
+          await this._udpSend(socket, pingBuffer);
+          const resBuffer = await Promise.race([
+            rejectTimeoutPromise(1000, new Error()),
+            this._udpReceiveUnsliced(socket),
+          ]);
+          if (!arraybufferEqual(pingBuffer, resBuffer)) {
+            throw new Error();
+          }
+          res.push({path: port.toString()});
+        } catch (e) {
+          // ignore
         }
-        res.push({path: port.toString()});
+        await this._udpDisconnect(socket);
       } catch (e) {
         // ignore
       }
