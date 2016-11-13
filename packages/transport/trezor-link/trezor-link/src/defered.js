@@ -26,3 +26,19 @@ export function create<T>(): Defered<T> {
     rejectingPromise,
   };
 }
+
+export function resolveTimeoutPromise<T>(delay: number, result: T): Promise<T> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(result);
+    }, delay);
+  });
+}
+
+export function rejectTimeoutPromise(delay: number, error: Error): Promise<any> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject(error);
+    }, delay);
+  });
+}

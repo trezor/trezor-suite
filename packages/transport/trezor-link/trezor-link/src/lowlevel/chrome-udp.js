@@ -6,6 +6,7 @@ import {create as createDefered} from '../defered';
 import type {Defered} from "../defered";
 
 import {debugInOut} from '../debug-decorator';
+import {rejectTimeoutPromise} from '../defered';
 
 type TrezorDeviceInfo = {path: string};
 
