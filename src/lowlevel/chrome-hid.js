@@ -3,6 +3,7 @@
 declare var __VERSION__: string;
 
 import {debugInOut} from '../debug-decorator';
+import {rejectTimeoutPromise} from '../defered';
 
 type TrezorDeviceInfo = {path: string};
 
@@ -42,9 +43,7 @@ function hidEnumerate(): Promise<Array<ChromeHidDeviceInfo>> {
 function hidSend(id: number, reportId: number, data: ArrayBuffer): Promise<void> {
   // if send (of one data packet!) does not happen within 10 seconds, the connection
   // probably failed in an unexpected way => return an error!!
-  const rejecting = new Promise((resolve, reject) => {
-    setTimeout(() => reject(new Error(`Cannot send data to device, check the cable.`)), 10 * 1000);
-  });
+  const rejecting = rejectTimeoutPromise(10 * 1000, new Error(`Cannot send data to device, check the cable.`));
 
   const sendRes = new Promise((resolve, reject) => {
     try {
