@@ -10,6 +10,8 @@ import {rejectTimeoutPromise} from '../defered';
 
 type TrezorDeviceInfo = {path: string};
 
+const pingBuffer = new Uint8Array(Array(64).fill(255)).buffer;
+
 export default class ChromeUdpPlugin {
   name: string = `ChromeUdpPlugin`;
 
@@ -56,13 +58,25 @@ export default class ChromeUdpPlugin {
     this.ports = ports;
   }
 
-  enumerate(): Promise<Array<TrezorDeviceInfo>> {
-    const devices = this.ports.map(port => {
-      return {
-        path: port.toString(),
-      };
-    });
-    return Promise.resolve(devices);
+  async enumerate(): Promise<Array<TrezorDeviceInfo>> {
+    const res: Array<TrezorDeviceInfo> = [];
+    for (let port of this.ports) {
+      try {
+        const socket: number = await this._udpConnect(port);
+        await this._udpSend(socket, pingBuffer);
+        const resBuffer = await Promise.race([
+            rejectTimeoutPromise(1000, new Error()),
+            this._udpReceiveUnsliced(socket)
+        ]);
+        if (!arraybufferEqual(pingBuffer, resBuffer)) {
+          throw new Error();
+        }
+        res.push({path: port.toString()});
+      } catch (e) {
+        // ignore
+      }
+    }
+    return res;
   }
 
   send(device: string, session: string, data: ArrayBuffer): Promise<void> {
@@ -182,16 +196,19 @@ export default class ChromeUdpPlugin {
   }
 
   _udpSend(socketId: number, data: ArrayBuffer): Promise<void> {
+    const sendDataV: Uint8Array = new Uint8Array(64);
+    sendDataV[0] = 63;
+    sendDataV.set(new Uint8Array(data), 1);
+    const sendData = sendDataV.buffer;
+    return this._udpLowSend(socketId, sendData);
+  }
+
+  _udpLowSend(socketId: number, sendData: ArrayBuffer): Promise<void> {
     const id = socketId.toString();
     const info = this.infos[id];
     if (info == null) {
       return Promise.reject(`Socket ${socketId} does not exist`);
     }
-
-    const sendDataV: Uint8Array = new Uint8Array(64);
-    sendDataV[0] = 63;
-    sendDataV.set(new Uint8Array(data), 1);
-    const sendData = sendDataV.buffer;
 
     return new Promise((resolve, reject) => {
       try {
@@ -227,6 +244,28 @@ export default class ChromeUdpPlugin {
       }
     }
   }
-
 }
 
+// from https://github.com/wbinnssmith/arraybuffer-equal
+// (c) 2015 Will Binns-Smith. Licensed MIT.
+function arraybufferEqual(buf1: ArrayBuffer, buf2: ArrayBuffer): boolean {
+  if (buf1 === buf2) {
+    return true;
+  }
+
+  if (buf1.byteLength !== buf2.byteLength) {
+    return false;
+  }
+
+  var view1 = new DataView(buf1);
+  var view2 = new DataView(buf2);
+
+  var i = buf1.byteLength;
+  while (i--) {
+    if (view1.getUint8(i) !== view2.getUint8(i)) {
+      return false;
+    }
+  }
+
+  return true;
+};
