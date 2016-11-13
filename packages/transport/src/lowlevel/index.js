@@ -8,6 +8,7 @@ import {parseConfigure} from './protobuf/parse_protocol';
 import {verifyHexBin} from './verify';
 import {buildAndSend} from './send';
 import {receiveAndParse} from './receive';
+import {resolveTimeoutPromise} from '../defered';
 
 // eslint-disable-next-line quotes
 const stringify = require('json-stable-stringify');
@@ -39,12 +40,6 @@ function compare(a: TrezorDeviceInfoWithSession, b: TrezorDeviceInfoWithSession)
   } else {
     return a.path < b.path ? -1 : (a.path > b.path ? 1 : 0);
   }
-}
-
-function timeoutPromise(delay: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), delay);
-  });
 }
 
 const ITER_MAX = 60;
@@ -130,7 +125,7 @@ export default class LowlevelTransport {
       this._lastStringified = stringified;
       return devices;
     }
-    await timeoutPromise(ITER_DELAY);
+    await resolveTimeoutPromise(ITER_DELAY, null);
     return this._runIter(iteration + 1, stringified);
   }
 
