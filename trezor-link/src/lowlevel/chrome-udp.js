@@ -10,7 +10,8 @@ import {rejectTimeoutPromise} from '../defered';
 
 type TrezorDeviceInfo = {path: string};
 
-const pingBuffer = new Uint8Array(Array(64).fill(255)).buffer;
+const pingBuffer = new TextEncoder().encode(`PINGPING`).buffer;
+const pongBuffer = new TextEncoder().encode(`PONGPONG`).buffer;
 
 // This is overcomplicated and could probable be simplier
 export default class ChromeUdpPlugin {
@@ -92,7 +93,7 @@ export default class ChromeUdpPlugin {
             rejectTimeoutPromise(1000, wrongBufferError),
             this._udpLowReceive(socket, 255),
           ]);
-          if (!arraybufferEqual(pingBuffer, resBuffer)) {
+          if (!arraybufferEqual(pongBuffer, resBuffer)) {
             throw wrongBufferError;
           }
           res.push({path: port.toString()});
