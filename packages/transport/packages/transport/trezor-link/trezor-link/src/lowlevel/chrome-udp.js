@@ -67,32 +67,46 @@ export default class ChromeUdpPlugin {
   }
 
   async enumerate(): Promise<Array<TrezorDeviceInfo>> {
+    console.log(`Inner enumerate.`);
     const res: Array<TrezorDeviceInfo> = [];
     const wrongBufferError = new Error();
     for (const port of this.ports) {
+      console.log(`ENUM 1`);
       try {
+        console.log(`ENUM 2`);
         const socket: number = await this._udpConnect(port, this.portDiff * 2);
+        console.log(`ENUM 3`);
         try {
+          console.log(`ENUM 4`);
           await this._udpLowSend(socket, pingBuffer);
+          console.log(`ENUM 5`);
           const resBuffer = await Promise.race([
             rejectTimeoutPromise(1000, wrongBufferError),
             this._udpLowReceive(socket),
           ]);
+          console.log(`ENUM 6`);
           if (!arraybufferEqual(pingBuffer, resBuffer)) {
             throw wrongBufferError;
           }
+          console.log(`ENUM 7`);
           res.push({path: port.toString()});
+          console.log(`ENUM 8`);
         } catch (e) {
+          console.log(`Error 1`, e);
           // remove bound port if cancelled
           if (e === wrongBufferError) {
+            console.log(`ENUM 9`);
             const socket = this.sockets[port.toString()];
+            console.log(`ENUM 10`);
             if (socket) {
+              console.log(`ENUM 11`);
               await this._udpDisconnect(parseInt(socket));
             }
           }
         }
         await this._udpDisconnect(socket);
       } catch (e) {
+        console.log(`Error 2`, e);
         // ignore
       }
     }
