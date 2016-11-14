@@ -18,8 +18,8 @@ export default class ChromeUdpPlugin {
   waiting: {[id: string]: Defered<ArrayBuffer>} = {};
   buffered: {[id: string]: Array<ArrayBuffer>} = {};
 
-  infos: {[socket: string]: {address: string, port: number}} = {};
-  sockets: {[port: string]: string} = {};
+  infos: {[socket: string]: {address: string, portOut: number, portIn: number}} = {};
+  sockets: {[portIn: string]: string} = {};
 
   portDiff: number;
 
@@ -58,9 +58,13 @@ export default class ChromeUdpPlugin {
     }
     const oldPorts = this.ports;
     for (const port of oldPorts) {
-      const socket = this.sockets[port.toString()];
+      const socket = this.sockets[(port + this.portDiff).toString()];
       if (socket) {
         await this._udpDisconnect(parseInt(socket));
+      }
+      const socket2 = this.sockets[(port + this.portDiff * 2).toString()];
+      if (socket2) {
+        await this._udpDisconnect(parseInt(socket2));
       }
     }
     this.ports = ports;
@@ -96,7 +100,7 @@ export default class ChromeUdpPlugin {
           // remove bound port if cancelled
           if (e === wrongBufferError) {
             console.log(`ENUM 9`);
-            const socket = this.sockets[port.toString()];
+            const socket = this.sockets[(port + this.portDiff * 2).toString()];
             console.log(`ENUM 10`);
             if (socket) {
               console.log(`ENUM 11`);
@@ -157,7 +161,7 @@ export default class ChromeUdpPlugin {
             const info = this.infos[socketId.toString()];
             delete this.infos[socketId.toString()];
             if (info != null) {
-              delete this.sockets[info.port.toString()];
+              delete this.sockets[info.portIn.toString()];
             }
             resolve();
           }
@@ -185,8 +189,9 @@ export default class ChromeUdpPlugin {
                   reject(new Error(`Bind error ${JSON.stringify(chrome.runtime.lastError)}`));
                 } else {
                   if (result >= 0) {
-                    this.infos[socketId.toString()] = {address: address, port: port};
-                    this.sockets[port.toString()] = socketId.toString();
+                    const portIn = port + diff;
+                    this.infos[socketId.toString()] = {address: address, portOut: port, portIn: portIn};
+                    this.sockets[portIn.toString()] = socketId.toString();
                     resolve(socketId);
                   } else {
                     reject(`Cannot create socket, error: ${result}`);
@@ -252,7 +257,7 @@ export default class ChromeUdpPlugin {
 
     return new Promise((resolve, reject) => {
       try {
-        chrome.sockets.udp.send(socketId, sendData, info.address, info.port, ({resultCode}) => {
+        chrome.sockets.udp.send(socketId, sendData, info.address, info.portOut, ({resultCode}) => {
           if (chrome.runtime.lastError) {
             reject(new Error(`Send error ${JSON.stringify(chrome.runtime.lastError)}`));
           } else {
