@@ -222,15 +222,20 @@ export default class ChromeUdpPlugin {
   _udpLowReceive(
     socketId: number
   ): Promise<ArrayBuffer> {
+    console.log(`LOW RECEIVE`);
     const id = socketId.toString();
 
     if (this.buffered[id] != null) {
+      console.log(`JE BUFFERED`);
       const res = this.buffered[id].shift();
       if (this.buffered[id].length === 0) {
+        console.log(`A TED JE PRAZDNY`);
         delete this.buffered[id];
       }
       return Promise.resolve(res);
     }
+
+    console.log(`TVORIM WAITING PROMISE`);
 
     if (this.waiting[id] != null) {
       return Promise.reject(`Something else already listening on socketId ${socketId}`);
@@ -278,18 +283,23 @@ export default class ChromeUdpPlugin {
     if (data == null) {
       console.log(`PLEASE HELP ME I AM TRAPPED IN HERE`);
       return;
+    } else {
+      console.log(`DATA - `, socketId, new Uint8Array(data));
     }
     const id = socketId.toString();
+    console.log(`LISTENER - WAITING?`);
     const d: ?Defered<ArrayBuffer> = this.waiting[id];
     if (d != null) {
+      console.log(`LISTENER - WAITING YES`);
       d.resolve(data);
       delete this.waiting[id];
     } else {
+      console.log(`LISTENER - WAITING NO`);
       if (this.infos[id] != null) {
         if (this.buffered[id] == null) {
           this.buffered[id] = [];
         }
-        this.buffered[id].pop(data);
+        this.buffered[id].push(data);
       }
     }
   }
