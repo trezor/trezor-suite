@@ -73,10 +73,10 @@ export default class ChromeUdpPlugin {
       try {
         const socket: number = await this._udpConnect(port, this.portDiff * 2);
         try {
-          await this._udpSend(socket, pingBuffer);
+          await this._udpLowSend(socket, pingBuffer);
           const resBuffer = await Promise.race([
             rejectTimeoutPromise(1000, wrongBufferError),
-            this._udpReceiveUnsliced(socket),
+            this._udpLowReceive(socket),
           ]);
           if (!arraybufferEqual(pingBuffer, resBuffer)) {
             throw wrongBufferError;
@@ -191,7 +191,7 @@ export default class ChromeUdpPlugin {
   }
 
   _udpReceive(socketId: number): Promise<ArrayBuffer> {
-    return this._udpReceiveUnsliced(socketId).then(data => {
+    return this._udpLowReceive(socketId).then(data => {
       const dataView: Uint8Array = new Uint8Array(data);
       if (dataView[0] !== 63) {
         throw new Error(`Invalid data; first byte should be 63, is ${dataView[0]}`);
@@ -200,7 +200,7 @@ export default class ChromeUdpPlugin {
     });
   }
 
-  _udpReceiveUnsliced(
+  _udpLowReceive(
     socketId: number
   ): Promise<ArrayBuffer> {
     const id = socketId.toString();
