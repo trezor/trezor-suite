@@ -18,6 +18,7 @@ export function create<T>(): Defered<T> {
   const rejectingPromise = promise.then(() => {
     throw new Error(`Promise is always rejecting`);
   });
+  rejectingPromise.catch(() => {});
 
   return {
     resolve: localResolve,
