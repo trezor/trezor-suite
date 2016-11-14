@@ -58,7 +58,7 @@ export async function request(options: HttpRequestOptions): Promise<mixed> {
     return parseResult(resText);
   } else {
     const resJson: mixed = parseResult(resText);
-    if (typeof resJson === 'object' && resJson != null && resJson.error != null) {
+    if (typeof resJson === `object` && resJson != null && resJson.error != null) {
       throw new Error(resJson.error);
     } else {
       throw new Error(resText);
