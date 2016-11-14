@@ -79,8 +79,10 @@ export default class ChromeUdpPlugin {
       try {
         console.log(`ENUM 2`);
         let socket: number;
-        if (this.sockets[port.toString()]) {
-          socket = parseInt(this.sockets[port.toString()]);
+        const portIn: string = (port + this.portDiff).toString();
+        const socketS: ?string = this.sockets[portIn];
+        if (socketS) {
+          socket = parseInt(socketS);
         } else {
           socket = await this._udpConnect(port, this.portDiff);
         }
@@ -143,7 +145,7 @@ export default class ChromeUdpPlugin {
     if (isNaN(port)) {
       return Promise.reject(new Error(`Device not a number`));
     }
-    const socket = this.sockets[device];
+    const socket = this.sockets[(port + this.portDiff).toString()];
     if (socket == null) {
       return Promise.reject(new Error(`Unknown device ${device}`));
     }
