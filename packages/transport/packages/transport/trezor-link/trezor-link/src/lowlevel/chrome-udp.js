@@ -152,7 +152,7 @@ export default class ChromeUdpPlugin {
       try {
         chrome.sockets.udp.close(socketId, () => {
           if (chrome.runtime.lastError) {
-            reject(new Error(chrome.runtime.lastError));
+            reject(new Error(`Disconnect error ${JSON.stringify(chrome.runtime.lastError)}`));
           } else {
             const info = this.infos[socketId.toString()];
             delete this.infos[socketId.toString()];
@@ -177,12 +177,12 @@ export default class ChromeUdpPlugin {
       try {
         chrome.sockets.udp.create({}, ({socketId}) => {
           if (chrome.runtime.lastError) {
-            reject(new Error(chrome.runtime.lastError));
+            reject(new Error(`Connect error ${JSON.stringify(chrome.runtime.lastError)}`));
           } else {
             try {
               chrome.sockets.udp.bind(socketId, `127.0.0.1`, port + diff, (result: number) => {
                 if (chrome.runtime.lastError) {
-                  reject(new Error(chrome.runtime.lastError));
+                  reject(new Error(`Bind error ${JSON.stringify(chrome.runtime.lastError)}`));
                 } else {
                   if (result >= 0) {
                     this.infos[socketId.toString()] = {address: address, port: port};
@@ -254,7 +254,7 @@ export default class ChromeUdpPlugin {
       try {
         chrome.sockets.udp.send(socketId, sendData, info.address, info.port, ({resultCode}) => {
           if (chrome.runtime.lastError) {
-            reject(new Error(chrome.runtime.lastError));
+            reject(new Error(`Send error ${JSON.stringify(chrome.runtime.lastError)}`));
           } else {
             if (resultCode >= 0) {
               resolve();
