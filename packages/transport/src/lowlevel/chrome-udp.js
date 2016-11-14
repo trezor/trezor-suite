@@ -275,6 +275,10 @@ export default class ChromeUdpPlugin {
   }
 
   _udpListener(socketId: number, data: ArrayBuffer) {
+    if (data == null) {
+      console.log(`PLEASE HELP ME I AM TRAPPED IN HERE`);
+      return;
+    }
     const id = socketId.toString();
     const d: ?Defered<ArrayBuffer> = this.waiting[id];
     if (d != null) {
