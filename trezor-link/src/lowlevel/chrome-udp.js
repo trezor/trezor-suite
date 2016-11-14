@@ -100,7 +100,7 @@ export default class ChromeUdpPlugin {
           // remove bound port if cancelled
           if (e === wrongBufferError) {
             console.log(`ENUM 9`);
-            const socket = this.sockets[(port + this.portDiff * 2).toString()];
+            const socket = this.sockets[(port + this.portDiff).toString()];
             console.log(`ENUM 10`);
             if (socket) {
               console.log(`ENUM 11`);
