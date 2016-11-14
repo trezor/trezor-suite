@@ -15,8 +15,8 @@ const pingBuffer = new Uint8Array(Array(64).fill(255)).buffer;
 export default class ChromeUdpPlugin {
   name: string = `ChromeUdpPlugin`;
 
-  waiting: {[id: string]: Defered<ArrayBuffer>} = {};
-  buffered: {[id: string]: Array<ArrayBuffer>} = {};
+  waiting: {[socketPlusType: string]: Defered<ArrayBuffer>} = {};
+  buffered: {[socketPlusType: string]: Array<ArrayBuffer>} = {};
 
   infos: {[socket: string]: {address: string, portOut: number, portIn: number}} = {};
   sockets: {[portIn: string]: string} = {};
@@ -78,7 +78,12 @@ export default class ChromeUdpPlugin {
       console.log(`ENUM 1`);
       try {
         console.log(`ENUM 2`);
-        const socket: number = await this._udpConnect(port, this.portDiff * 2);
+        let socket: number;
+        if (this.sockets[port.toString()]) {
+          socket = parseInt(this.sockets[port.toString()]);
+        } else {
+          socket = await this._udpConnect(port, this.portDiff);
+        }
         console.log(`ENUM 3`);
         try {
           console.log(`ENUM 4`);
@@ -86,7 +91,7 @@ export default class ChromeUdpPlugin {
           console.log(`ENUM 5`);
           const resBuffer = await Promise.race([
             rejectTimeoutPromise(1000, wrongBufferError),
-            this._udpLowReceive(socket),
+            this._udpLowReceive(socket, 255),
           ]);
           console.log(`ENUM 6`);
           if (!arraybufferEqual(pingBuffer, resBuffer)) {
@@ -108,7 +113,6 @@ export default class ChromeUdpPlugin {
             }
           }
         }
-        await this._udpDisconnect(socket);
       } catch (e) {
         console.log(`Error 2`, e);
         // ignore
@@ -139,7 +143,11 @@ export default class ChromeUdpPlugin {
     if (isNaN(port)) {
       return Promise.reject(new Error(`Device not a number`));
     }
-    return this._udpConnect(port, this.portDiff).then(n => n.toString());
+    const socket = this.sockets[device];
+    if (socket == null) {
+      return Promise.reject(new Error(`Unknown device ${device}`));
+    }
+    return Promise.resolve(socket);
   }
 
   @debugInOut
@@ -148,7 +156,7 @@ export default class ChromeUdpPlugin {
     if (isNaN(socket)) {
       return Promise.reject(new Error(`Session not a number`));
     }
-    return this._udpDisconnect(socket);
+    return Promise.resolve();
   }
 
   _udpDisconnect(socketId: number): Promise<void> {
@@ -210,7 +218,7 @@ export default class ChromeUdpPlugin {
   }
 
   _udpReceive(socketId: number): Promise<ArrayBuffer> {
-    return this._udpLowReceive(socketId).then(data => {
+    return this._udpLowReceive(socketId, 63).then(data => {
       const dataView: Uint8Array = new Uint8Array(data);
       if (dataView[0] !== 63) {
         throw new Error(`Invalid data; first byte should be 63, is ${dataView[0]}`);
@@ -220,28 +228,30 @@ export default class ChromeUdpPlugin {
   }
 
   _udpLowReceive(
-    socketId: number
+    socketId: number,
+    type: number
   ): Promise<ArrayBuffer> {
     console.log(`LOW RECEIVE`);
     const id = socketId.toString();
+    const socketPlusType = `${id}-${type}`;
 
-    if (this.buffered[id] != null) {
+    if (this.buffered[socketPlusType] != null) {
       console.log(`JE BUFFERED`);
-      const res = this.buffered[id].shift();
-      if (this.buffered[id].length === 0) {
+      const res = this.buffered[socketPlusType].shift();
+      if (this.buffered[socketPlusType].length === 0) {
         console.log(`A TED JE PRAZDNY`);
-        delete this.buffered[id];
+        delete this.buffered[socketPlusType];
       }
       return Promise.resolve(res);
     }
 
     console.log(`TVORIM WAITING PROMISE`);
 
-    if (this.waiting[id] != null) {
-      return Promise.reject(`Something else already listening on socketId ${socketId}`);
+    if (this.waiting[socketPlusType] != null) {
+      return Promise.reject(`Something else already listening on socketId ${socketPlusType}`);
     }
     const d = createDefered();
-    this.waiting[id] = d;
+    this.waiting[socketPlusType] = d;
     return d.promise;
   }
 
@@ -287,19 +297,24 @@ export default class ChromeUdpPlugin {
       console.log(`DATA - `, socketId, new Uint8Array(data));
     }
     const id = socketId.toString();
+    const dataArr = new Uint8Array(data);
+    const type = dataArr[0];
+
+    const socketPlusType = `${id}-${type}`;
+
     console.log(`LISTENER - WAITING?`);
-    const d: ?Defered<ArrayBuffer> = this.waiting[id];
+    const d: ?Defered<ArrayBuffer> = this.waiting[socketPlusType];
     if (d != null) {
       console.log(`LISTENER - WAITING YES`);
       d.resolve(data);
-      delete this.waiting[id];
+      delete this.waiting[socketPlusType];
     } else {
       console.log(`LISTENER - WAITING NO`);
-      if (this.infos[id] != null) {
-        if (this.buffered[id] == null) {
-          this.buffered[id] = [];
+      if (this.infos[socketPlusType] != null) {
+        if (this.buffered[socketPlusType] == null) {
+          this.buffered[socketPlusType] = [];
         }
-        this.buffered[id].push(data);
+        this.buffered[socketPlusType].push(data);
       }
     }
   }
