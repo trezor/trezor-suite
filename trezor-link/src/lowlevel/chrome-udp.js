@@ -91,7 +91,7 @@ export default class ChromeUdpPlugin {
           await this._udpLowSend(socket, pingBuffer);
           const resBuffer = await Promise.race([
             rejectTimeoutPromise(1000, wrongBufferError),
-            this._udpLowReceive(socket, 255),
+            this._udpLowReceive(socket, 80), // 80 is "P" in "PONG"
           ]);
           if (!arraybufferEqual(pongBuffer, resBuffer)) {
             throw wrongBufferError;
