@@ -12,12 +12,15 @@ type TrezorDeviceInfo = {path: string};
 
 const pingBuffer = new Uint8Array(Array(64).fill(255)).buffer;
 
+// This is overcomplicated and could probable be simplier
 export default class ChromeUdpPlugin {
   name: string = `ChromeUdpPlugin`;
 
+  // for streaming of reading results
   waiting: {[socketPlusType: string]: Defered<ArrayBuffer>} = {};
   buffered: {[socketPlusType: string]: Array<ArrayBuffer>} = {};
 
+  // state of connections
   infos: {[socket: string]: {address: string, portOut: number, portIn: number}} = {};
   sockets: {[portIn: string]: string} = {};
 
@@ -71,13 +74,10 @@ export default class ChromeUdpPlugin {
   }
 
   async enumerate(): Promise<Array<TrezorDeviceInfo>> {
-    console.log(`Inner enumerate.`);
     const res: Array<TrezorDeviceInfo> = [];
     const wrongBufferError = new Error();
     for (const port of this.ports) {
-      console.log(`ENUM 1`);
       try {
-        console.log(`ENUM 2`);
         let socket: number;
         const portIn: string = (port + this.portDiff).toString();
         const socketS: ?string = this.sockets[portIn];
@@ -86,37 +86,26 @@ export default class ChromeUdpPlugin {
         } else {
           socket = await this._udpConnect(port, this.portDiff);
         }
-        console.log(`ENUM 3`);
         try {
-          console.log(`ENUM 4`);
           await this._udpLowSend(socket, pingBuffer);
-          console.log(`ENUM 5`);
           const resBuffer = await Promise.race([
             rejectTimeoutPromise(1000, wrongBufferError),
             this._udpLowReceive(socket, 255),
           ]);
-          console.log(`ENUM 6`);
           if (!arraybufferEqual(pingBuffer, resBuffer)) {
             throw wrongBufferError;
           }
-          console.log(`ENUM 7`);
           res.push({path: port.toString()});
-          console.log(`ENUM 8`);
         } catch (e) {
-          console.log(`Error 1`, e);
           // remove bound port if cancelled
           if (e === wrongBufferError) {
-            console.log(`ENUM 9`);
             const socket = this.sockets[(port + this.portDiff).toString()];
-            console.log(`ENUM 10`);
             if (socket) {
-              console.log(`ENUM 11`);
               await this._udpDisconnect(parseInt(socket));
             }
           }
         }
       } catch (e) {
-        console.log(`Error 2`, e);
         // ignore
       }
     }
@@ -233,21 +222,16 @@ export default class ChromeUdpPlugin {
     socketId: number,
     type: number
   ): Promise<ArrayBuffer> {
-    console.log(`LOW RECEIVE`);
     const id = socketId.toString();
     const socketPlusType = `${id}-${type}`;
 
     if (this.buffered[socketPlusType] != null) {
-      console.log(`JE BUFFERED`);
       const res = this.buffered[socketPlusType].shift();
       if (this.buffered[socketPlusType].length === 0) {
-        console.log(`A TED JE PRAZDNY`);
         delete this.buffered[socketPlusType];
       }
       return Promise.resolve(res);
     }
-
-    console.log(`TVORIM WAITING PROMISE`);
 
     if (this.waiting[socketPlusType] != null) {
       return Promise.reject(`Something else already listening on socketId ${socketPlusType}`);
@@ -292,26 +276,17 @@ export default class ChromeUdpPlugin {
   }
 
   _udpListener(socketId: number, data: ArrayBuffer) {
-    if (data == null) {
-      console.log(`PLEASE HELP ME I AM TRAPPED IN HERE`);
-      return;
-    } else {
-      console.log(`DATA - `, socketId, new Uint8Array(data));
-    }
     const id = socketId.toString();
     const dataArr = new Uint8Array(data);
     const type = dataArr[0];
 
     const socketPlusType = `${id}-${type}`;
 
-    console.log(`LISTENER - WAITING?`);
     const d: ?Defered<ArrayBuffer> = this.waiting[socketPlusType];
     if (d != null) {
-      console.log(`LISTENER - WAITING YES`);
       d.resolve(data);
       delete this.waiting[socketPlusType];
     } else {
-      console.log(`LISTENER - WAITING NO`);
       if (this.infos[socketPlusType] != null) {
         if (this.buffered[socketPlusType] == null) {
           this.buffered[socketPlusType] = [];
