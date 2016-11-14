@@ -1,6 +1,6 @@
 {
   "name": "trezor-link-browser-extension",
-  "version": "0.2.60",
+  "version": "0.2.61",
   "description": "Trezor Link for browser extension",
   "main": "lib/index-browser-extension.js",
   "scripts": {
