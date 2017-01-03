@@ -7,10 +7,13 @@ import {rejectTimeoutPromise} from '../defered';
 
 type TrezorDeviceInfo = {path: string};
 
-const TREZOR_DESC = {
+const TREZOR_DESCS = [{
   vendorId: 0x534c,
   productId: 0x0001,
-};
+}, {
+  vendorId: 0x1209,
+  productId: 0x53c1,
+}];
 
 const FORBIDDEN_DESCRIPTORS = [0xf1d0, 0xff01];
 const REPORT_ID = 63;
@@ -25,7 +28,7 @@ function hidEnumerate(): Promise<Array<ChromeHidDeviceInfo>> {
   return new Promise((resolve, reject) => {
     try {
       chrome.hid.getDevices(
-        TREZOR_DESC,
+        TREZOR_DESCS,
         (devices: Array<ChromeHidDeviceInfo>): void => {
           if (chrome.runtime.lastError) {
             reject(new Error(chrome.runtime.lastError));
