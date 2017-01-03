@@ -10,11 +10,15 @@ import {debugInOut} from '../debug-decorator';
 
 const REPORT_ID = 63;
 
-const TREZOR_DESC = {
+const TREZOR_DESCS = [{
   vendorId: 0x534c,
   productId: 0x0001,
   interface: 0,
-};
+}, {
+  vendorId: 0x1209,
+  productId: 0x53c1,
+  interface: 0,
+}];
 
 type TrezorDeviceInfo = {path:string};
 
@@ -45,9 +49,11 @@ export default class NodeHidPlugin {
   async enumerate(): Promise<Array<TrezorDeviceInfo>> {
     const devices = HID.devices()
     .filter(d =>
-      d.vendorId === TREZOR_DESC.vendorId &&
-      d.productId === TREZOR_DESC.productId &&
-      d.interface === TREZOR_DESC.interface
+      TREZOR_DESCS.some(trezorDesc =>
+        d.vendorId === trezorDesc.vendorId &&
+        d.productId === trezorDesc.productId &&
+        d.interface === trezorDesc.interface
+      )
     )
     .map((device: HIDDeviceDescription): TrezorDeviceInfo => {
       const path = device.path;
