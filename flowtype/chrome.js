@@ -61,10 +61,16 @@ declare class ChromeHidDeviceInfo {
 declare type ChromeHidGetDevicesOptions = {
   vendorId? : number;
   productId? : number;
+  filters?: Array<{
+    vendorId? : number;
+    productId? : number;
+    usagePage? : number;
+    usage? : number;
+  }>
 }
 
 declare class ChromeHid {
-  getDevices: (options: Array<ChromeHidGetDevicesOptions> | ChromeHidGetDevicesOptions,
+  getDevices: (options: ChromeHidGetDevicesOptions,
               callback: (i: Array<ChromeHidDeviceInfo>) => void) => void;
 
   send: (connectionId: number, reportId: number, data: ArrayBuffer, callback: () => void) => void;
