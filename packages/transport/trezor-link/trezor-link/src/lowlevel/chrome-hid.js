@@ -28,7 +28,7 @@ function hidEnumerate(): Promise<Array<ChromeHidDeviceInfo>> {
   return new Promise((resolve, reject) => {
     try {
       chrome.hid.getDevices(
-        TREZOR_DESCS,
+        {filters: TREZOR_DESCS},
         (devices: Array<ChromeHidDeviceInfo>): void => {
           if (chrome.runtime.lastError) {
             reject(new Error(chrome.runtime.lastError));
