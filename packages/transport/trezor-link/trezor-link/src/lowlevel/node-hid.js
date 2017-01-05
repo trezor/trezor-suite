@@ -20,7 +20,7 @@ const TREZOR_DESCS = [{
   interface: 0,
 }];
 
-type TrezorDeviceInfo = {path:string};
+type TrezorDeviceInfo = {path:string, canGrab: boolean};
 
 export default class NodeHidPlugin {
   name: string = `NodeHidPlugin`;
@@ -59,6 +59,7 @@ export default class NodeHidPlugin {
       const path = device.path;
       return {
         path,
+        canGrab: true,
       };
     });
     return devices;
