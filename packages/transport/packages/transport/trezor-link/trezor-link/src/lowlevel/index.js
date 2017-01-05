@@ -85,9 +85,11 @@ export default class LowlevelTransport {
     return this.lock(async (): Promise<Array<TrezorDeviceInfoWithSession>> => {
       const devices = await this.plugin.enumerate();
       const devicesWithSessions = devices.map(device => {
+        const canGrab = device.canGrab;
+        const session = canGrab ? this.connections[device.path] : `virtual-` + device.path;
         return {
-          ...device,
-          session: this.connections[device.path],
+          path: device.path,
+          session: session,
         };
       });
       this._releaseDisconnected(devicesWithSessions);

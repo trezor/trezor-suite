@@ -5,7 +5,7 @@ declare var __VERSION__: string;
 import {debugInOut} from '../debug-decorator';
 import {rejectTimeoutPromise} from '../defered';
 
-type TrezorDeviceInfo = {path: string};
+type TrezorDeviceInfo = {path: string, canGrab: boolean};
 
 const TREZOR_DESCS = [{
   vendorId: 0x534c,
@@ -21,6 +21,7 @@ const REPORT_ID = 63;
 function deviceToJson(device: ChromeHidDeviceInfo): TrezorDeviceInfo {
   return {
     path: device.deviceId.toString(),
+    canGrab: true,
   };
 }
 
