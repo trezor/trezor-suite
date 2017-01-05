@@ -4,7 +4,7 @@ declare var __VERSION__: string;
 
 import {debugInOut} from '../debug-decorator';
 
-type TrezorDeviceInfo = {path: string};
+type TrezorDeviceInfo = {path: string, canGrab: boolean};
 
 const TREZOR_DESCS = [{
   vendorId: 0x534c,
