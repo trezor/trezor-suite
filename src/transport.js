@@ -5,6 +5,10 @@ export type TrezorDeviceInfo = {
   path: string;
 }
 
+export type TrezorDeviceInfoCanGrab = TrezorDeviceInfo & {
+  canGrab: boolean;
+}
+
 export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
   session: ?string;
 }

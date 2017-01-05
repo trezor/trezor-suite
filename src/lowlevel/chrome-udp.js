@@ -8,7 +8,7 @@ import type {Defered} from "../defered";
 import {debugInOut} from '../debug-decorator';
 import {rejectTimeoutPromise} from '../defered';
 
-type TrezorDeviceInfo = {path: string};
+type TrezorDeviceInfo = {path: string, canGrab: boolean};
 
 const pingBuffer = new TextEncoder().encode(`PINGPING`).buffer;
 const pongBuffer = new TextEncoder().encode(`PONGPONG`).buffer;
@@ -96,7 +96,7 @@ export default class ChromeUdpPlugin {
           if (!arraybufferEqual(pongBuffer, resBuffer)) {
             throw wrongBufferError;
           }
-          res.push({path: port.toString()});
+          res.push({path: port.toString(), canGrab: true});
         } catch (e) {
           // remove bound port if cancelled
           if (e === wrongBufferError) {
