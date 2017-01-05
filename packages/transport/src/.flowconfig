@@ -17,6 +17,7 @@
 ../flowtype/bitcoinjs-lib.js
 ../flowtype/chrome.js
 ../flowtype/node-hid.js
+../flowtype/webusb.js
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue

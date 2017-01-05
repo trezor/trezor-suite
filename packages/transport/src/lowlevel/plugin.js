@@ -1,9 +1,9 @@
 /* @flow */
 
-import type {TrezorDeviceInfo} from '../transport';
+import type {TrezorDeviceInfoCanGrab} from '../transport';
 
 export type LowlevelTransportPlugin = {
-  +enumerate: () => Promise<Array<TrezorDeviceInfo>>;
+  +enumerate: () => Promise<Array<TrezorDeviceInfoCanGrab>>;
   +send: (path: string, session: string, data: ArrayBuffer) => Promise<void>;
   +receive: (path: string, session: string) => Promise<ArrayBuffer>;
   +connect: (path: string) => Promise<string>;
