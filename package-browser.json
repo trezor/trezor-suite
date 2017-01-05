@@ -1,6 +1,6 @@
 {
   "name": "trezor-link",
-  "version": "0.2.76",
+  "version": "0.2.77",
   "description": "Trezor Link for browser",
   "main": "lib/index-browser.js",
   "scripts": {
@@ -45,13 +45,11 @@
   },
   "dependencies": {
     "semver-compare": "^1.0.0",
-
     "bigi": "^1.4.1",
     "bitcoinjs-lib-zcash": "^2.3.1",
     "ecurve": "^1.0.3",
     "json-stable-stringify": "^1.0.1",
     "object.values": "^1.0.3",
-    "protobufjs": "3.8.2",
-    "semver-compare": "^1.0.0"
+    "protobufjs": "3.8.2"
   }
 }
