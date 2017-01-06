@@ -8,7 +8,7 @@ import type {Defered} from "../defered";
 import {debugInOut} from '../debug-decorator';
 import {rejectTimeoutPromise} from '../defered';
 
-type TrezorDeviceInfo = {path: string, canGrab: boolean};
+type TrezorDeviceInfo = {path: string};
 
 const pingBuffer = new TextEncoder().encode(`PINGPING`).buffer;
 const pongBuffer = new TextEncoder().encode(`PONGPONG`).buffer;
@@ -96,7 +96,7 @@ export default class ChromeUdpPlugin {
           if (!arraybufferEqual(pongBuffer, resBuffer)) {
             throw wrongBufferError;
           }
-          res.push({path: port.toString(), canGrab: true});
+          res.push({path: port.toString()});
         } catch (e) {
           // remove bound port if cancelled
           if (e === wrongBufferError) {
@@ -296,6 +296,13 @@ export default class ChromeUdpPlugin {
       }
     }
   }
+
+  requestDevice(): Promise<void> {
+    return Promise.reject();
+  }
+
+  requestNeeded: boolean = false;
+
 }
 
 // from https://github.com/wbinnssmith/arraybuffer-equal
