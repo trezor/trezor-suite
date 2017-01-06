@@ -6,7 +6,8 @@
 // ProtoBuf's message and from there to regular JSON to trezor.js
 
 import * as ProtoBuf from "protobufjs";
-import {ByteBuffer, Long} from "protobufjs";
+const ByteBuffer = ProtoBuf.ByteBuffer;
+const Long = ProtoBuf.Long;
 
 import {Messages} from "./messages.js";
 
