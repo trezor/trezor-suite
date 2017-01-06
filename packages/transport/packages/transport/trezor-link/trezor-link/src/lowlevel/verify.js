@@ -2,7 +2,7 @@
 
 // Module for verifying ECDSA signature of configuration.
 
-import {ECPair, ECSignature, crypto} from "bitcoinjs-lib";
+import {ECPair, ECSignature, crypto} from "bitcoinjs-lib-zcash";
 
 import BigInteger from "bigi";
 
