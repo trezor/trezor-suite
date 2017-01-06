@@ -1,6 +1,6 @@
 [ignore]
 .*/node_modules/protobufjs/src/bower.json
-.*/node_modules/bitcoinjs-lib/.*
+.*/node_modules/bitcoinjs-lib-zcash/.*
 .*/node_modules/bigi/.*
 .*/node_modules/ecurve/.*
 
