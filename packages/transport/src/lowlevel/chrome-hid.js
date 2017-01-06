@@ -5,7 +5,7 @@ declare var __VERSION__: string;
 import {debugInOut} from '../debug-decorator';
 import {rejectTimeoutPromise} from '../defered';
 
-type TrezorDeviceInfo = {path: string, canGrab: boolean};
+type TrezorDeviceInfo = {path: string};
 
 const TREZOR_DESCS = [{
   vendorId: 0x534c,
@@ -21,7 +21,6 @@ const REPORT_ID = 63;
 function deviceToJson(device: ChromeHidDeviceInfo): TrezorDeviceInfo {
   return {
     path: device.deviceId.toString(),
-    canGrab: true,
   };
 }
 
@@ -321,4 +320,11 @@ export default class ChromeHidPlugin {
     }
     return hidDisconnect(sessionNu);
   }
+
+  requestDevice(): Promise<void> {
+    return Promise.reject();
+  }
+
+  requestNeeded: boolean = false;
+
 }
