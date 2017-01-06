@@ -92,7 +92,7 @@ export default class WebUsbPlugin {
     newArray[0] = 63;
     newArray.set(new Uint8Array(data), 1);
 
-    return uDevice.transferOut(2, data).then(() => {});
+    return uDevice.transferOut(2, newArray).then(() => {});
   }
 
   receive(path: string, session: string): Promise<ArrayBuffer> {
@@ -104,7 +104,7 @@ export default class WebUsbPlugin {
     const uDevice: USBDevice = device;
 
     return uDevice.transferIn(2, 64).then(result => {
-      return result.data.buffer;
+      return result.data.buffer.slice(1);
     });
   }
 
