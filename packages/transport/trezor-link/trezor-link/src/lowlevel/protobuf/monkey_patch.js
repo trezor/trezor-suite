@@ -2,7 +2,7 @@
 "use strict";
 
 import * as ProtoBuf from "protobufjs";
-import {ByteBuffer} from "protobufjs";
+const ByteBuffer = ProtoBuf.ByteBuffer;
 
 let patched = false;
 
