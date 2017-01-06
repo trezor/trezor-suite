@@ -101,7 +101,7 @@ declare module 'ecurve' {
 }
 // ---------- copypasta end ---- 
 
-declare module 'bitcoinjs-lib' {
+declare module 'bitcoinjs-lib-zcash' {
 
     declare type Network = {
         messagePrefix: string;
