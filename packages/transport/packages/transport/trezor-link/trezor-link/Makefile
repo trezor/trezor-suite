@@ -28,6 +28,8 @@ build-browser: node_modules
 	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
 	`npm bin`/babel src --out-dir lib
 	rm -r lib/flow-test
+	rm lib/lowlevel/node-hid.js
+	rm lib/lowlevel/node-hid.js.flow
 	rm lib/index-node.js
 	rm lib/index-node.js.flow
 	rm lib/index-browser-extension.js
