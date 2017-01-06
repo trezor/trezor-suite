@@ -160,6 +160,9 @@ export default class ParallelTransport {
       const transport = this.transports[name];
       await transport.init(debug);
       version = version + `${name}:${transport.version};`;
+      if (transport.requestNeeded) {
+        this.requestNeeded = transport.requestNeeded;
+      }
     }
     this.version = version;
     this.configured = this._checkConfigured();
@@ -168,4 +171,17 @@ export default class ParallelTransport {
   configured: boolean;
 
   version: string;
+
+  async requestDevice(): Promise<void> {
+    for (const name of Object.keys(this.transports)) {
+      const transport = this.transports[name];
+      if (transport.requestNeeded) {
+        return transport.requestDevice();
+      }
+    }
+
+    return Promise.reject();
+  }
+
+  requestNeeded: boolean = false;
 }

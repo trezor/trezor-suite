@@ -161,4 +161,10 @@ export default class ChromeExtensionTransport {
     });
     return check.call(res);
   }
+
+  requestDevice(): Promise<void> {
+    return Promise.reject();
+  }
+
+  requestNeeded: boolean = false;
 }
