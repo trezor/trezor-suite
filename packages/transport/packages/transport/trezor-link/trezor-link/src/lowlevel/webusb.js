@@ -4,7 +4,7 @@ declare var __VERSION__: string;
 
 import {debugInOut} from '../debug-decorator';
 
-type TrezorDeviceInfo = {path: string, canGrab: boolean};
+type TrezorDeviceInfo = {path: string};
 
 const TREZOR_DESCS = [{
   vendorId: 0x534c,
@@ -24,10 +24,9 @@ export default class WebUsbPlugin {
 
   allowsWriteAndEnumerate: boolean = true;
 
-  devices: {[path: string]: {
-    device: USBDevice;
-    requested: boolean;
-  }} = {};
+  devices: {[path: string]:
+    USBDevice;
+  } = {};
   lastPath: number = 0;
 
   @debugInOut
@@ -57,25 +56,22 @@ export default class WebUsbPlugin {
         if (isTrezor) {
           let isPresent = false;
           let path: string = ``;
-          let canGrab = false;
           Object.keys(this.devices).forEach(kpath => {
-            if (this.devices[kpath].device === dev) {
+            if (this.devices[kpath] === dev) {
               isPresent = true;
               path = kpath;
-              canGrab = this.devices[kpath].requested;
             }
           });
           if (!isPresent) {
             this.lastPath++;
-            this.devices[this.lastPath.toString()] = {device: dev, requested: false};
+            this.devices[this.lastPath.toString()] = dev;
             path = this.lastPath.toString();
-            canGrab = false;
           }
-          res.push({path, canGrab});
+          res.push({path});
         }
       });
       Object.keys(this.devices).forEach(kpath => {
-        const isPresent = devices.some(device => this.devices[kpath].device === device);
+        const isPresent = devices.some(device => this.devices[kpath] === device);
         if (!isPresent) {
           delete this.devices[kpath];
         }
@@ -90,7 +86,7 @@ export default class WebUsbPlugin {
       return Promise.reject(new Error(`Device not found`));
     }
 
-    const uDevice: USBDevice = device.device;
+    const uDevice: USBDevice = device;
 
     const newArray: Uint8Array = new Uint8Array(64);
     newArray[0] = 63;
@@ -105,52 +101,26 @@ export default class WebUsbPlugin {
       return Promise.reject(new Error(`Device not found`));
     }
 
-    const uDevice: USBDevice = device.device;
+    const uDevice: USBDevice = device;
 
     return uDevice.transferIn(2, 64).then(result => {
       return result.data.buffer;
     });
   }
 
-  request(path: string): Promise<USBDevice> {
-    return this.usb.requestDevice({filters: TREZOR_DESCS}).then(device => {
-      // idiotic thing - the requested path should match the path in this.devices
-      // but I cannot really say what the user selected!
-      // So I fake it by changing the order in this.devices
-      Object.keys(this.devices).forEach(kpath => {
-        if (this.devices[kpath].device === device) {
-          if (kpath !== path) {
-            const sw = this.devices[path];
-            this.devices[path] = {device: device, requested: true};
-            this.devices[kpath] = sw;
-          } else {
-            this.devices[path].requested = true;
-          }
-        }
-      });
-      return device;
-    });
-  }
-
   @debugInOut
   connect(path: string): Promise<string> {
-    const preReqDevice = this.devices[path];
-    if (preReqDevice == null) {
+    const device = this.devices[path];
+    if (device == null) {
       return Promise.reject(new Error(`Device not present.`));
     }
 
-    const deviceP: Promise<USBDevice> = preReqDevice.requested
-      ? Promise.resolve(preReqDevice.device)
-      : this.request(path);
-
-    return deviceP.then(device => {
-      return device.open().then(() => {
-        return device.reset();
-      }).then(() => {
-        return device.selectConfiguration(1);
-      }).then(() => {
-        return device.claimInterface(2);
-      });
+    return device.open().then(() => {
+      return device.reset();
+    }).then(() => {
+      return device.selectConfiguration(1);
+    }).then(() => {
+      return device.claimInterface(2);
     }).then(() => path); // path == session, why not?
   }
 
@@ -161,8 +131,16 @@ export default class WebUsbPlugin {
       return Promise.reject(new Error(`Device not present.`));
     }
 
-    return device.device.releaseInterface(2).then(() => {
-      return device.device.close();
+    return device.releaseInterface(2).then(() => {
+      return device.close();
     });
   }
+
+  requestDevice(): Promise<void> {
+    // I am throwing away the resulting device, since it appears in enumeration anyway
+    return this.usb.requestDevice({filters: TREZOR_DESCS}).then(() => {});
+  }
+
+  requestNeeded: boolean = true;
+
 }

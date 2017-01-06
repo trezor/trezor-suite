@@ -20,7 +20,7 @@ const TREZOR_DESCS = [{
   interface: 0,
 }];
 
-type TrezorDeviceInfo = {path:string, canGrab: boolean};
+type TrezorDeviceInfo = {path:string};
 
 export default class NodeHidPlugin {
   name: string = `NodeHidPlugin`;
@@ -59,7 +59,6 @@ export default class NodeHidPlugin {
       const path = device.path;
       return {
         path,
-        canGrab: true,
       };
     });
     return devices;
@@ -108,6 +107,13 @@ export default class NodeHidPlugin {
     device.close();
     delete this._devices[path];
   }
+
+  requestDevice(): Promise<void> {
+    return Promise.reject();
+  }
+
+  requestNeeded: boolean = false;
+
 }
 
 function nodeBuffer2arrayBuffer(b: Buffer): ArrayBuffer {
