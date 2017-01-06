@@ -73,6 +73,7 @@ export default class FallbackTransport {
     this.configured = this.activeTransport.configured;
     this.version = this.activeTransport.version;
     this.activeName = this.activeTransport.name;
+    this.requestNeeded = this.activeTransport.requestNeeded;
   }
 
   // using async so I get Promise.recect on this.activeTransport == null (or other error), not Error
@@ -96,4 +97,9 @@ export default class FallbackTransport {
     return this.activeTransport.call(session, name, data);
   }
 
+  async requestDevice(): Promise<void> {
+    return this.activeTransport.requestDevice();
+  }
+
+  requestNeeded: boolean = false;
 }

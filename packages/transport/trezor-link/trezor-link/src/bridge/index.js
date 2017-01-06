@@ -136,4 +136,10 @@ export default class BridgeTransport {
   static setFetch(fetch: any) {
     rSetFetch(fetch);
   }
+
+  requestDevice(): Promise<void> {
+    return Promise.reject();
+  }
+
+  requestNeeded: boolean = false;
 }

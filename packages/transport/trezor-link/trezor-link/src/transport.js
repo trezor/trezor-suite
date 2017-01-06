@@ -5,10 +5,6 @@ export type TrezorDeviceInfo = {
   path: string;
 }
 
-export type TrezorDeviceInfoCanGrab = TrezorDeviceInfo & {
-  canGrab: boolean;
-}
-
 export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
   session: ?string;
 }
@@ -35,4 +31,9 @@ export type Transport = {
   configured: boolean;
   version: string;
   name: string;
+
+  // webusb has a different model, where you have to
+  // request device connection
+  +requestDevice: () => Promise<void>;
+  requestNeeded: boolean;
 }
