@@ -1,4 +1,4 @@
-declare type USBConnectionEvent = {
+declare class USBConnectionEvent extends Event {
   device: USBDevice;
 };
 
@@ -6,7 +6,7 @@ declare type USBConnectionEventHandler = (event: USBConnectionEvent) => mixed;
 
 declare type BufferSource = ArrayBuffer | DataView | $TypedArray;
 
-declare type USB = {
+declare class USB extends EventTarget {
   onconnect: ?USBConnectionEventHandler;
   ondisconnect: ?USBConnectionEventHandler;
   getDevices: () => Promise<Array<USBDevice>>;
@@ -23,9 +23,11 @@ declare type USBDeviceFilter = {
   classCode?: number;
   subclassCode?: number;
   protocolCode?: number;
+  serialNumber?: string;
+
 };
 
-declare type USBDevice = {
+declare class USBDevice {
   usbVersionMajor: number;
   usbVersionMinor: number;
   usbVersionSubminor: number;
@@ -61,20 +63,20 @@ declare type USBDevice = {
 
 declare type USBDirection = 'in' | 'out';
 
-declare type USBConfiguration = {
+declare class USBConfiguration {
   configurationValue: number;
   configurationName: ?string;
   interfaces: Array<USBInterface>;
 };
 
-declare type USBInterface = {
+declare class USBInterface {
   interfaceNumber: number;
   alternate: USBAlternateInterface;
   alternates: Array<USBAlternateInterface>;
   claimed: boolean;
 };
 
-declare type USBAlternateInterface = {
+declare class USBAlternateInterface {
   alternateSetting: number;
   interfaceClass: number;
   interfaceSubclass: number;
@@ -83,7 +85,7 @@ declare type USBAlternateInterface = {
   endpoints: Array<USBEndpoint>;
 };
 
-declare type USBEndpoint = {
+declare class USBEndpoint {
   endpointNumber: number;
   direction: USBDirection;
   type: 'bulk' | 'interrupt' |  'isochronous';
@@ -103,31 +105,32 @@ declare type USBControlTransferParameters = {
 
 declare type USBTransferStatus = 'ok' | 'stall' | 'babble';
 
-declare type USBInTransferResult = {
+declare class USBInTransferResult {
   data: DataView;
   status: USBTransferStatus;
 };
 
-declare type USBOutTransferResult = {
+declare class USBOutTransferResult {
   bytesWritten: number;
   status: USBTransferStatus;
 };
 
-declare type USBIsochronousInTransferPacket = {
+declare class USBIsochronousInTransferPacket {
   data: DataView;
   status: USBTransferStatus;
 };
 
-declare type USBIsochronousInTransferResult = {
+declare class USBIsochronousInTransferResult {
   data: DataView;
   packets: Array<USBIsochronousInTransferPacket>;
 };
 
-declare type USBIsochronousOutTransferPacket = {
+declare class USBIsochronousOutTransferPacket {
+  protocolCode?: number,
   bytesWritten: number;
   status: USBTransferStatus;
 };
 
-declare type USBIsochronousOutTransferResult = {
+declare class USBIsochronousOutTransferResult {
   packets: Array<USBIsochronousOutTransferPacket>;
 };
