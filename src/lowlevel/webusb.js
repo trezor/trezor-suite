@@ -110,7 +110,7 @@ export default class WebUsbPlugin {
         }
       });
       Object.keys(this.devices).forEach(kpath => {
-        const isPresent = devices.some(device => this.devices[kpath] === device);
+        const isPresent = devices.some(device => this.devices[kpath].device === device);
         if (!isPresent) {
           delete this.devices[kpath];
         }
