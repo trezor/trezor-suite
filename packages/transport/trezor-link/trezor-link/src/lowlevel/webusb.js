@@ -109,18 +109,29 @@ export default class WebUsbPlugin {
   }
 
   @debugInOut
-  connect(path: string): Promise<string> {
+  connect(path: string, previous: ?string): Promise<string> {
     const device = this.devices[path];
     if (device == null) {
       return Promise.reject(new Error(`Device not present.`));
     }
 
     return device.open().then(() => {
-      return device.reset();
-    }).then(() => {
       return device.selectConfiguration(1);
     }).then(() => {
-      return device.claimInterface(2);
+      if (previous != null) {
+        return device.reset();
+      }
+    }).then(() => {
+      return device.claimInterface(2).catch((e) => {
+        if (typeof e === `object`) {
+          if (e.code) {
+            if (e.code === 19 && previous == null) {
+              throw new Error(`wrong previous session`);
+            }
+          }
+        }
+        throw e;
+      });
     }).then(() => path); // path == session, why not?
   }
 
