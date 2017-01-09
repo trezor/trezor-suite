@@ -152,7 +152,7 @@ export default class LowlevelTransport {
   async acquire(input: AcquireInput): Promise<string> {
     return this.lock(async (): Promise<string> => {
       await this._checkAndReleaseBeforeAcquire(input);
-      const session = await this.plugin.connect(input.path);
+      const session = await this.plugin.connect(input.path, input.previous);
       this.connections[input.path] = session;
       this.reverse[session] = input.path;
       this.deferedOnRelease[session] = createDefered();
