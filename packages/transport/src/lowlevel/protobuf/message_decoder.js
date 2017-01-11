@@ -92,8 +92,12 @@ function messageToJSON(message: ProtoBuf.Builder.Message) : Object {
     } else if (value instanceof ProtoBuf.Builder.Message) {
       res[key] = messageToJSON(value);
     } else if (meta._fieldsByName[key].type.name === `enum`) {
-      const enumValues = meta._fieldsByName[key].resolvedType.getChildren();
-      res[key] = enumValues.find(e => e.id === value).name;
+      if (value == null) {
+        res[key] = null;
+      } else {
+        const enumValues = meta._fieldsByName[key].resolvedType.getChildren();
+        res[key] = enumValues.find(e => e.id === value).name;
+      }
     } else {
       res[key] = value;
     }
