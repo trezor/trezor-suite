@@ -61,6 +61,9 @@ export default class LowlevelTransport {
   // session => path
   reverse: {[session: string]: string} = {};
 
+  // path => session
+  externalConnections: {[path: string]: string} = {};
+
   _messages: ?Messages;
   version: string;
   configured: boolean = false;
@@ -68,6 +71,7 @@ export default class LowlevelTransport {
   constructor(plugin: LowlevelTransportPlugin) {
     this.plugin = plugin;
     this.version = plugin.version;
+    plugin.onExternalSessionChange = (a, b) => { this._externalSessionChange(a, b); };
   }
 
   lock<X>(fn: () => (Promise<X>)): Promise<X> {
@@ -85,7 +89,9 @@ export default class LowlevelTransport {
     return this.lock(async (): Promise<Array<TrezorDeviceInfoWithSession>> => {
       const devices = await this.plugin.enumerate();
       const devicesWithSessions = devices.map(device => {
-        const session = this.connections[device.path];
+        const session = this.connections[device.path] == null
+          ? this.externalConnections[device.path]
+          : this.connections[device.path];
         return {
           path: device.path,
           session: session,
@@ -131,20 +137,26 @@ export default class LowlevelTransport {
   }
 
   async _checkAndReleaseBeforeAcquire(input: AcquireInput): Promise<void> {
-    const realPrevious = this.connections[input.path];
+    const myPrevious = this.connections[input.path];
+    const externalPrevious = this.externalConnections[input.path];
+    const checkedPrevious = myPrevious == null ? externalPrevious : myPrevious;
+
     if (input.checkPrevious) {
       let error = false;
-      if (realPrevious == null) {
+      if (checkedPrevious == null) {
         error = (input.previous != null);
       } else {
-        error = (input.previous !== realPrevious);
+        error = (input.previous !== checkedPrevious);
       }
       if (error) {
         throw new Error(`wrong previous session`);
       }
     }
-    if (realPrevious != null) {
-      await this._realRelease(input.path, realPrevious);
+    if (myPrevious != null) {
+      await this._realRelease(input.path, myPrevious);
+    }
+    if (externalPrevious != null) {
+      delete this.externalConnections[input.path];
     }
   }
 
@@ -167,6 +179,17 @@ export default class LowlevelTransport {
       throw new Error(`Trying to double release.`);
     }
     return this.lock(() => this._realRelease(path, session));
+  }
+
+  async _externalSessionChange(path: string, session: ?string): Promise<void> {
+    if (this.connections[path] != null) {
+      this._releaseCleanup(this.connections[path]);
+    }
+    if (session == null) {
+      delete this.externalConnections[path];
+    } else {
+      this.externalConnections[path] = session;
+    }
   }
 
   async _realRelease(path:string, session: string): Promise<void> {

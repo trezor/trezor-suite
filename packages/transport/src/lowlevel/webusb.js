@@ -58,6 +58,9 @@ export default class WebUsbPlugin {
           (d.device.serialNumber === obj.serialNumber)
         ) {
           d.session = obj.session;
+          if (this.onExternalSessionChange != null) {
+            this.onExternalSessionChange(k, obj.session);
+          }
         }
       });
       return Promise.resolve();
@@ -213,4 +216,6 @@ export default class WebUsbPlugin {
     this._lock = res.catch(() => {});
     return res;
   }
+
+  onExternalSessionChange: ?((path: string, session: ?string) => void) = null;
 }

@@ -24,5 +24,7 @@ export type LowlevelTransportPlugin = {
   // where sometimes write doesn't fail on disconnect unless we enumerate
   // so we need to have an "optional lock"
   allowsWriteAndEnumerate: boolean;
+
+  onExternalSessionChange?: ?((path: string, session: ?string) => void);
 }
 
