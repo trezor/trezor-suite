@@ -67,7 +67,7 @@ export default class WebUsbPlugin {
   async _findDevice(path: string): Promise<USBDevice> {
     const deviceO = (this._lastDevices).find(d => d.path === path);
     if (deviceO == null) {
-      throw new Error(`Device not present.`);
+      throw new Error(`Action was interrupted.`);
     }
     return deviceO.device;
   }
@@ -89,13 +89,20 @@ export default class WebUsbPlugin {
   async receive(path: string): Promise<ArrayBuffer> {
     const device: USBDevice = await this._findDevice(path);
 
-    if (!device.opened) {
-      await this.connect(path);
-    }
+    try {
+      if (!device.opened) {
+        await this.connect(path);
+      }
 
-    return device.transferIn(2, 64).then(result => {
-      return result.data.buffer.slice(1);
-    });
+      const res = await device.transferIn(2, 64);
+      return res.data.buffer.slice(1);
+    } catch (e) {
+      if (e.message === `Device unavailable.`) {
+        throw new Error(`Action was interrupted.`);
+      } else {
+        throw e;
+      }
+    }
   }
 
   @debugInOut
