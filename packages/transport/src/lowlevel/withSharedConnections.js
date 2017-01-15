@@ -202,6 +202,7 @@ export default class LowlevelTransportWithSharedConnections {
 
   @debugInOut
   async release(session: string): Promise<void> {
+    this._releaseCleanup(session);
     const messback = await this.sendToWorker({type: `release-intent`, session});
     if (messback.type === `double-release`) {
       throw new Error(`Trying to double release.`);
@@ -211,7 +212,6 @@ export default class LowlevelTransportWithSharedConnections {
     }
     const path = messback.path;
 
-    this._releaseCleanup(session);
     try {
       await this.plugin.disconnect(path);
     } catch (e) {
