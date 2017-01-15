@@ -5,7 +5,7 @@
 export type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from './transport';
 
 import BridgeTransport from './bridge';
-import LowlevelTransport from './lowlevel';
+import LowlevelTransportWithSharedConnections from './lowlevel/withSharedConnections';
 import ExtensionTransport from './extension';
 import ParallelTransport from './parallel';
 import FallbackTransport from './fallback';
@@ -20,6 +20,6 @@ export default {
   Extension: ExtensionTransport,
   Parallel: ParallelTransport,
   Fallback: FallbackTransport,
-  Lowlevel: LowlevelTransport,
+  Lowlevel: LowlevelTransportWithSharedConnections,
   WebUsb: WebUsbPlugin,
 };
