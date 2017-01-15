@@ -76,6 +76,10 @@ export default class WebUsbPlugin {
     newArray[0] = 63;
     newArray.set(new Uint8Array(data), 1);
 
+    if (!device.opened) {
+      await this.connect(path);
+    }
+
     return device.transferOut(2, newArray).then(() => {});
   }
 
