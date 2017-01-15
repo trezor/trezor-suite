@@ -99,12 +99,15 @@ export default class WebUsbPlugin {
   async connect(path: string): Promise<void> {
     for (let i = 0; i < 5; i++) {
       if (i > 0) {
-        await new Promise((resolve) => setTimeout(i * 200));
+        await new Promise((resolve) => setTimeout(() => resolve(), i * 200));
       }
       try {
         return await this._connectIn(path);
       } catch (e) {
         // ignore
+        if (i === 4) {
+          throw e;
+        }
       }
     }
   }
