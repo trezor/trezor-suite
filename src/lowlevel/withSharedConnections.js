@@ -94,16 +94,13 @@ export default class LowlevelTransportWithSharedConnections {
   version: string;
   configured: boolean = false;
 
+  _sharedWorkerFactory: () => SharedWorker;
   sharedWorker: SharedWorker;
 
-  constructor(plugin: LowlevelTransportPlugin, sharedWorker: SharedWorker) {
+  constructor(plugin: LowlevelTransportPlugin, sharedWorkerFactory: () => SharedWorker) {
     this.plugin = plugin;
     this.version = plugin.version;
-    this.sharedWorker = sharedWorker;
-    sharedWorker.port.onmessage = (e) => {
-      // $FlowIssue
-      this.receiveFromWorker(e.data);
-    };
+    this._sharedWorkerFactory = sharedWorkerFactory;
     if (!this.plugin.allowsWriteAndEnumerate) {
       // This should never happen anyway
       throw new Error(`Plugin with shared connections cannot disallow write and enumerate`);
@@ -267,7 +264,13 @@ export default class LowlevelTransportWithSharedConnections {
   async init(debug: ?boolean): Promise<void> {
     this.debug = !!debug;
     this.requestNeeded = this.plugin.requestNeeded;
-    return this.plugin.init(debug);
+    await this.plugin.init(debug);
+    // create the worker ONLY when the plugin is successfully inited
+    this.sharedWorker = this._sharedWorkerFactory();
+    this.sharedWorker.port.onmessage = (e) => {
+      // $FlowIssue
+      this.receiveFromWorker(e.data);
+    };
   }
 
   async requestDevice(): Promise<void> {
