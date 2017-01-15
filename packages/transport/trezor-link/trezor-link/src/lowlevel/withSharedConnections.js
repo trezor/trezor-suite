@@ -64,6 +64,11 @@ export type MessageToSharedWorker = {
   session: string,
 } | {
   type: 'release-done',
+} | {
+  type: 'call-intent',
+  session: string
+} | {
+  type: 'call-done'
 };
 
 export type MessageFromSharedWorker = {
@@ -81,6 +86,8 @@ export type MessageFromSharedWorker = {
 } | {
   type: 'path',
   path: string;
+} | {
+  type: 'wrong-session'
 };
 
 export default class LowlevelTransportWithSharedConnections {
@@ -238,28 +245,22 @@ export default class LowlevelTransportWithSharedConnections {
 
   @debugInOut
   async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
-    const sessionsM = await this.sendToWorker({type: `get-sessions`});
+    const pathM = await this.sendToWorker({type: `call-intent`, session: session});
 
     if (this._messages == null) {
       throw new Error(`Transport not configured.`);
     }
     const messages = this._messages;
 
-    if (sessionsM.type !== `sessions`) {
-      throw new Error(`Wrong reply`);
-    }
-
-    let path_: ?string = null;
-    Object.keys(sessionsM.sessions).forEach(kpath => {
-      if (sessionsM.sessions[kpath] === session) {
-        path_ = kpath;
-      }
-    });
-
-    if (path_ == null) {
+    if (pathM.type === `wrong-session`) {
       throw new Error(`Session not available.`);
     }
-    const path: string = path_;
+
+    if (pathM.type !== `path`) {
+      throw new Error(`Strange reply.`);
+    }
+
+    const path: string = pathM.path;
 
     const resPromise: Promise<MessageFromTrezor> = (async () => {
       await buildAndSend(messages, this._sendLowlevel(path), name, data);
@@ -267,7 +268,14 @@ export default class LowlevelTransportWithSharedConnections {
       return message;
     })();
 
-    return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
+    try {
+      const res = await Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
+      await this.sendToWorker({type: `call-done`});
+      return res;
+    } catch (e) {
+      await this.sendToWorker({type: `call-done`});
+      throw e;
+    }
   }
 
   @debugInOut
