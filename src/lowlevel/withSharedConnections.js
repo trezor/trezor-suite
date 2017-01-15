@@ -57,6 +57,9 @@ export type MessageToSharedWorker = {
 } | {
   type: 'get-sessions',
 } | {
+  type: 'get-sessions-and-disconnect',
+  devices: Array<TrezorDeviceInfo>
+} | {
   type: 'release-intent',
   session: string,
 } | {
@@ -113,7 +116,7 @@ export default class LowlevelTransportWithSharedConnections {
 
   async _silentEnumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     const devices: Array<TrezorDeviceInfo> = await this.plugin.enumerate();
-    const sessionsM = await this.sendToWorker({type: `get-sessions`});
+    const sessionsM = await this.sendToWorker({type: `get-sessions-and-disconnect`, devices});
     if (sessionsM.type !== `sessions`) {
       throw new Error(`Wrong reply`);
     }
@@ -205,15 +208,16 @@ export default class LowlevelTransportWithSharedConnections {
     try {
       await this.plugin.disconnect(path);
     } catch (e) {
-      await this.sendToWorker({type: `release-done`});
-      throw e;
+      // ignore release errors, it's not important that much
     }
     await this.sendToWorker({type: `release-done`});
   }
 
   _releaseCleanup(session: string) {
-    this.deferedOnRelease[session].reject(new Error(`Device released or disconnected`));
-    delete this.deferedOnRelease[session];
+    if (this.deferedOnRelease[session] != null) {
+      this.deferedOnRelease[session].reject(new Error(`Device released or disconnected`));
+      delete this.deferedOnRelease[session];
+    }
   }
 
   @debugInOut
