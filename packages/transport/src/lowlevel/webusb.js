@@ -69,7 +69,7 @@ export default class WebUsbPlugin {
     return deviceO.device;
   }
 
-  async send(path: string, session: string, data: ArrayBuffer): Promise<void> {
+  async send(path: string, data: ArrayBuffer): Promise<void> {
     const device: USBDevice = await this._findDevice(path);
 
     const newArray: Uint8Array = new Uint8Array(64);
@@ -79,7 +79,7 @@ export default class WebUsbPlugin {
     return device.transferOut(2, newArray).then(() => {});
   }
 
-  async receive(path: string, session: string): Promise<ArrayBuffer> {
+  async receive(path: string): Promise<ArrayBuffer> {
     const device: USBDevice = await this._findDevice(path);
 
     return device.transferIn(2, 64).then(result => {
@@ -88,7 +88,7 @@ export default class WebUsbPlugin {
   }
 
   @debugInOut
-  async connect(path: string): Promise<string> {
+  async connect(path: string): Promise<void> {
     const device: USBDevice = await this._findDevice(path);
     await device.open();
 
@@ -97,13 +97,10 @@ export default class WebUsbPlugin {
     await device.reset();
 
     await device.claimInterface(2);
-
-    // path == session == serial code, why not?
-    return path;
   }
 
   @debugInOut
-  async disconnect(path: string, session: string): Promise<void> {
+  async disconnect(path: string): Promise<void> {
     const device: USBDevice = await this._findDevice(path);
 
     await device.releaseInterface(2);

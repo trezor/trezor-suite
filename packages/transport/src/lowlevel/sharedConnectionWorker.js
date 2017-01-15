@@ -57,8 +57,7 @@ function handleMessage({id, message}: {id: number, message: MessageToSharedWorke
     waitInQueue(() => handleAcquireIntent(path, checkPrevious, previous, id, port));
   }
   if (message.type === `acquire-done`) {
-    const session: string = message.session;
-    handleAcquireDone(session, id); // port is the same as original
+    handleAcquireDone(id); // port is the same as original
   }
   if (message.type === `acquire-failed`) {
     handleAcquireFailed(id); // port is the same as original
@@ -67,42 +66,45 @@ function handleMessage({id, message}: {id: number, message: MessageToSharedWorke
     waitInQueue(() => handleGetSessions(id, port));
   }
   if (message.type === `release-intent`) {
-    waitInQueue(() => handleReleaseIntent(id, port));
+    const session: string = message.session;
+    waitInQueue(() => handleReleaseIntent(session, id, port));
   }
   if (message.type === `release-done`) {
-    const path: string = message.path;
-    handleReleaseDone(path, id); // port is the same as original
-  }
-  if (message.type === `release-failed`) {
-    handleReleaseFailed(id); // port is the same as original
+    handleReleaseDone(id); // port is the same as original
   }
 }
 
 function handleReleaseDone(
-  path: string,
-  id: number
-) {
-  releaseLock({path, id});
-}
-
-function handleReleaseFailed(
   id: number
 ) {
   releaseLock({id});
 }
 
 function handleReleaseIntent(
+    session: string,
     id: number,
     port: PortObject
 ): Promise<void> {
-  startLock();
-  sendBack({type: `ok`}, id, port);
-  // if lock times out, promise rejects and queue goes on
-  return waitForLock().then((obj: {path: ?string, id: number}) => {
-    if (obj.path != null) {
-      // failure => nothing happens, but still has to reply "ok"
-      delete state[obj.path];
+  let path_: ?string = null;
+  Object.keys(state).forEach(kpath => {
+    if (state[kpath] === session) {
+      path_ = kpath;
     }
+  });
+  if (path_ == null) {
+    sendBack({type: `double-release`}, id, port);
+    return Promise.resolve();
+  }
+
+  const path: string = path_;
+
+  startLock();
+  sendBack({type: `path`, path}, id, port);
+
+  // if lock times out, promise rejects and queue goes on
+  return waitForLock().then((obj: {id: number}) => {
+    // failure => nothing happens, but still has to reply "ok"
+    delete state[path];
     sendBack({type: `ok`}, obj.id, port);
   });
 }
@@ -115,17 +117,17 @@ function handleGetSessions(
   return Promise.resolve();
 }
 
+let lastSession = 0;
 function handleAcquireDone(
-  session: string,
   id: number
 ) {
-  releaseLock({session, id});
+  releaseLock({good: true, id});
 }
 
 function handleAcquireFailed(
   id: number
 ) {
-  releaseLock({id});
+  releaseLock({good: false, id});
 }
 
 function handleAcquireIntent(
@@ -152,11 +154,14 @@ function handleAcquireIntent(
     startLock();
     sendBack({type: `ok`}, id, port);
     // if lock times out, promise rejects and queue goes on
-    return waitForLock().then((obj: {session: ?string, id: number}) => {
-      if (obj.session != null) {
-        // failure => nothing happens, but still has to reply "ok"
-        state[path] = obj.session;
+    return waitForLock().then((obj: {good: boolean, id: number}) => {
+      if (obj.good) {
+        lastSession++;
+        const session = lastSession.toString();
+        state[path] = session;
+        sendBack({type: `session-number`, number: session}, obj.id, port);
       }
+      // failure => nothing happens, but still has to reply "ok"
       sendBack({type: `ok`}, obj.id, port);
     });
   }
