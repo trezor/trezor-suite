@@ -1,16 +1,5 @@
 /* @flow */
 
-type ChannelData = {
-    serialNumber: ?string;
-    session: ?string;
-};
-
-declare class BroadcastChannel {
-  constructor(name: string): void;
-  onmessage: ?((event: {data: ChannelData}) => void);
-  postMessage: (data: ChannelData) => void;
-}
-
 declare var __VERSION__: string;
 
 import {debugInOut} from '../debug-decorator';
@@ -35,187 +24,96 @@ export default class WebUsbPlugin {
 
   allowsWriteAndEnumerate: boolean = true;
 
-  devices: {[path: string]:
-    {
-      device: USBDevice;
-      session: ?string;
-    }
-  } = {};
-  lastPath: number = 0;
-  lastSession: number = 0;
-
-  channel: BroadcastChannel;
-
-  onChannelMessage(obj: ChannelData) {
-    this.lock(() => {
-      if (obj.session != null) {
-        this.lastSession = parseInt(obj.session);
-      }
-      Object.keys(this.devices).forEach(k => {
-        const d = this.devices[k];
-        if (
-          (obj.serialNumber == null && d.device.serialNumber == null) ||
-          (d.device.serialNumber === obj.serialNumber)
-        ) {
-          d.session = obj.session;
-          if (this.onExternalSessionChange != null) {
-            this.onExternalSessionChange(k, obj.session);
-          }
-        }
-      });
-      return Promise.resolve();
-    });
-  }
-
   @debugInOut
-  init(debug: ?boolean): Promise<void> {
+  async init(debug: ?boolean): Promise<void> {
     this.debug = !!debug;
-    try {
-      // $FlowIssue
-      const usb = navigator.usb;
-      if (usb == null) {
-        return Promise.reject(new Error(`WebUSB is not available on this browser.`));
-      } else {
-        this.usb = usb;
-
-        this.channel = new BroadcastChannel(`trezor_webusb_sessions`);
-        this.channel.onmessage = (event) => { this.onChannelMessage(event.data); };
-
-        return Promise.resolve();
-      }
-    } catch (e) {
-      return Promise.reject(e);
+    // $FlowIssue
+    const usb = navigator.usb;
+    if (usb == null) {
+      throw new Error(`WebUSB is not available on this browser.`);
+    } else {
+      this.usb = usb;
     }
   }
 
-  enumerate(): Promise<Array<TrezorDeviceInfo>> {
-    return this.usb.getDevices().then(devices => {
-      const res: Array<TrezorDeviceInfo> = [];
-      devices.forEach((dev, i) => {
-        const isTrezor = TREZOR_DESCS.some(desc =>
-          dev.vendorId === desc.vendorId && dev.productId === desc.productId
-        );
-        if (isTrezor) {
-          let isPresent = false;
-          let path: string = ``;
-          Object.keys(this.devices).forEach(kpath => {
-            if (this.devices[kpath].device === dev) {
-              isPresent = true;
-              path = kpath;
-            }
-          });
-          if (!isPresent) {
-            this.lastPath++;
-            this.devices[this.lastPath.toString()] = {device: dev, session: null};
-            path = this.lastPath.toString();
-          }
-          res.push({path});
-        }
-      });
-      Object.keys(this.devices).forEach(kpath => {
-        const isPresent = devices.some(device => this.devices[kpath].device === device);
-        if (!isPresent) {
-          delete this.devices[kpath];
-        }
-      });
-      return res;
+  async _listDevices(): Promise<Array<{path: string, device: USBDevice}>> {
+    let bootloaderId = 0;
+    const devices = await this.usb.getDevices();
+    return devices.filter(dev => {
+      const isTrezor = TREZOR_DESCS.some(desc =>
+        dev.vendorId === desc.vendorId && dev.productId === desc.productId
+      );
+      return isTrezor;
+    }).map(device => {
+      // path is just serial number
+      // more bootloaders => number them, hope for the best
+      const serialNumber = device.serialNumber;
+      let path = (serialNumber == null || serialNumber === ``) ? `bootloader` : serialNumber;
+      if (path === `bootloader`) {
+        bootloaderId++;
+        path = path + bootloaderId;
+      }
+      return {path, device};
     });
   }
 
-  send(path: string, session: string, data: ArrayBuffer): Promise<void> {
-    const device = this.devices[path];
-    if (device == null) {
-      return Promise.reject(new Error(`Device not found`));
-    }
+  async enumerate(): Promise<Array<TrezorDeviceInfo>> {
+    return (await this._listDevices()).map(info => ({path: info.path}));
+  }
 
-    const uDevice: USBDevice = device.device;
+  async _findDevice(path: string): Promise<USBDevice> {
+    const deviceO = (await this._listDevices()).find(d => d.path === path);
+    if (deviceO == null) {
+      throw new Error(`Device not present.`);
+    }
+    return deviceO.device;
+  }
+
+  async send(path: string, session: string, data: ArrayBuffer): Promise<void> {
+    const device: USBDevice = await this._findDevice(path);
 
     const newArray: Uint8Array = new Uint8Array(64);
     newArray[0] = 63;
     newArray.set(new Uint8Array(data), 1);
 
-    return uDevice.transferOut(2, newArray).then(() => {});
+    return device.transferOut(2, newArray).then(() => {});
   }
 
-  receive(path: string, session: string): Promise<ArrayBuffer> {
-    const device = this.devices[path];
-    if (device == null) {
-      return Promise.reject(new Error(`Device not found`));
-    }
+  async receive(path: string, session: string): Promise<ArrayBuffer> {
+    const device: USBDevice = await this._findDevice(path);
 
-    const uDevice: USBDevice = device.device;
-
-    return uDevice.transferIn(2, 64).then(result => {
+    return device.transferIn(2, 64).then(result => {
       return result.data.buffer.slice(1);
     });
   }
 
   @debugInOut
-  connect(path: string, previous: ?string): Promise<string> {
-    return this.lock(() => {
-      const device = this.devices[path];
-      if (device == null) {
-        return Promise.reject(new Error(`Device not present.`));
-      }
+  async connect(path: string): Promise<string> {
+    const device: USBDevice = await this._findDevice(path);
+    await device.open();
 
-      return device.device.open().then(() => {
-        return device.device.selectConfiguration(1);
-      }).then(() => {
-        if (previous != null) {
-          return device.device.reset();
-        }
-      }).then(() => {
-        return device.device.claimInterface(2).catch((e) => {
-          if (typeof e === `object`) {
-            if (e.code) {
-              if (e.code === 19 && previous == null) {
-                throw new Error(`wrong previous session`);
-              }
-            }
-          }
-          throw e;
-        });
-      }).then(() => {
-        this.lastSession++;
-        const newSession = this.lastSession.toString();
-        device.session = newSession;
-        this.channel.postMessage({serialNumber: device.device.serialNumber, session: device.session});
-        return newSession;
-      }); // path == session, why not?
-    });
+    await device.selectConfiguration(1);
+    // always resetting -> I don't want to fail when other tab quits before release
+    await device.reset();
+
+    await device.claimInterface(2);
+
+    // path == session == serial code, why not?
+    return path;
   }
 
   @debugInOut
-  disconnect(path: string, session: string): Promise<void> {
-    return this.lock(() => {
-      const device = this.devices[path];
-      if (device == null) {
-        return Promise.reject(new Error(`Device not present.`));
-      }
+  async disconnect(path: string, session: string): Promise<void> {
+    const device: USBDevice = await this._findDevice(path);
 
-      return device.device.releaseInterface(2).then(() => {
-        return device.device.close();
-      }).then(() => {
-        device.session = null;
-        this.channel.postMessage({serialNumber: device.device.serialNumber, session: null});
-        return;
-      });
-    });
+    await device.releaseInterface(2);
+    await device.close();
   }
 
-  requestDevice(): Promise<void> {
+  async requestDevice(): Promise<void> {
     // I am throwing away the resulting device, since it appears in enumeration anyway
-    return this.usb.requestDevice({filters: TREZOR_DESCS}).then(() => {});
+    await this.usb.requestDevice({filters: TREZOR_DESCS});
   }
 
   requestNeeded: boolean = true;
-
-  _lock: Promise<any> = Promise.resolve();
-  lock<X>(fn: () => (Promise<X>)): Promise<X> {
-    const res = this._lock.then(() => fn());
-    this._lock = res.catch(() => {});
-    return res;
-  }
-
-  onExternalSessionChange: ?((path: string, session: ?string) => void) = null;
 }
