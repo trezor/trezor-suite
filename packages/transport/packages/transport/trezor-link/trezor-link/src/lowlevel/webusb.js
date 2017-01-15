@@ -86,6 +86,10 @@ export default class WebUsbPlugin {
   async receive(path: string): Promise<ArrayBuffer> {
     const device: USBDevice = await this._findDevice(path);
 
+    if (!device.opened) {
+      await this.connect(path);
+    }
+
     return device.transferIn(2, 64).then(result => {
       return result.data.buffer.slice(1);
     });
