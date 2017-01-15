@@ -39,7 +39,7 @@ export default class WebUsbPlugin {
   async _listDevices(): Promise<Array<{path: string, device: USBDevice}>> {
     let bootloaderId = 0;
     const devices = await this.usb.getDevices();
-    return devices.filter(dev => {
+    this._lastDevices = devices.filter(dev => {
       const isTrezor = TREZOR_DESCS.some(desc =>
         dev.vendorId === desc.vendorId && dev.productId === desc.productId
       );
@@ -55,14 +55,17 @@ export default class WebUsbPlugin {
       }
       return {path, device};
     });
+    return this._lastDevices;
   }
+
+  _lastDevices: Array<{path: string, device: USBDevice}> = [];
 
   async enumerate(): Promise<Array<TrezorDeviceInfo>> {
     return (await this._listDevices()).map(info => ({path: info.path}));
   }
 
   async _findDevice(path: string): Promise<USBDevice> {
-    const deviceO = (await this._listDevices()).find(d => d.path === path);
+    const deviceO = (this._lastDevices).find(d => d.path === path);
     if (deviceO == null) {
       throw new Error(`Device not present.`);
     }
