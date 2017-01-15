@@ -13,6 +13,7 @@ import {create as createDefered} from '../defered';
 import type {Defered} from '../defered';
 
 import type {MessageFromSharedWorker, MessageToSharedWorker} from './withSharedConnections';
+import type {TrezorDeviceInfo} from '../transport';
 
 // path => session
 const state: {[path: string]: string} = {};
@@ -65,6 +66,12 @@ function handleMessage({id, message}: {id: number, message: MessageToSharedWorke
   if (message.type === `get-sessions`) {
     waitInQueue(() => handleGetSessions(id, port));
   }
+
+  if (message.type === `get-sessions-and-disconnect`) {
+    const devices = message.devices;
+    waitInQueue(() => handleGetSessions(id, port, devices));
+  }
+
   if (message.type === `release-intent`) {
     const session: string = message.session;
     waitInQueue(() => handleReleaseIntent(session, id, port));
@@ -111,8 +118,18 @@ function handleReleaseIntent(
 
 function handleGetSessions(
   id: number,
-  port: PortObject
+  port: PortObject,
+  devices: ?Array<TrezorDeviceInfo>
 ): Promise<void> {
+  if (devices != null) {
+    const connected: {[path: string]: boolean} = {};
+    devices.forEach(d => { connected[d.path] = true; });
+    Object.keys(state).forEach(path => {
+      if (!connected[path]) {
+        delete state[path];
+      }
+    });
+  }
   sendBack({type: `sessions`, sessions: state}, id, port);
   return Promise.resolve();
 }
@@ -160,9 +177,10 @@ function handleAcquireIntent(
         const session = lastSession.toString();
         state[path] = session;
         sendBack({type: `session-number`, number: session}, obj.id, port);
+      } else {
+        // failure => nothing happens, but still has to reply "ok"
+        sendBack({type: `ok`}, obj.id, port);
       }
-      // failure => nothing happens, but still has to reply "ok"
-      sendBack({type: `ok`}, obj.id, port);
     });
   }
 }
