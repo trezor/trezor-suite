@@ -6,7 +6,7 @@ export type LowlevelTransportPlugin = {
   +enumerate: () => Promise<Array<TrezorDeviceInfo>>;
   +send: (path: string, session: string, data: ArrayBuffer) => Promise<void>;
   +receive: (path: string, session: string) => Promise<ArrayBuffer>;
-  +connect: (path: string, previous: ?string) => Promise<string>;
+  +connect: (path: string) => Promise<string>;
   +disconnect: (path: string, session: string) => Promise<void>;
 
   // webusb has a different model, where you have to
@@ -25,6 +25,5 @@ export type LowlevelTransportPlugin = {
   // so we need to have an "optional lock"
   allowsWriteAndEnumerate: boolean;
 
-  onExternalSessionChange?: ?((path: string, session: ?string) => void);
 }
 
