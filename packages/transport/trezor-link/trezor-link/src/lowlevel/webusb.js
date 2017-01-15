@@ -97,6 +97,19 @@ export default class WebUsbPlugin {
 
   @debugInOut
   async connect(path: string): Promise<void> {
+    for (let i = 0; i < 5; i++) {
+      if (i > 0) {
+        await new Promise((resolve) => setTimeout(i * 200));
+      }
+      try {
+        return await this._connectIn(path);
+      } catch (e) {
+        // ignore
+      }
+    }
+  }
+
+  async _connectIn(path: string): Promise<void> {
     const device: USBDevice = await this._findDevice(path);
     await device.open();
 

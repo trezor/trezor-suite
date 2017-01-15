@@ -23,10 +23,10 @@ let waitPromise: Promise<void> = Promise.resolve();
 
 type PortObject = {postMessage: (message: Object) => void};
 
-function startLock(ms: number): void {
+function startLock(): void {
   const newLock = createDefered();
   lock = newLock;
-  setTimeout(() => newLock.reject(new Error(`Timed out`)), ms);
+  setTimeout(() => newLock.reject(new Error(`Timed out`)), 10 * 1000);
 }
 
 function releaseLock(obj: Object): void {
@@ -79,52 +79,12 @@ function handleMessage({id, message}: {id: number, message: MessageToSharedWorke
   if (message.type === `release-done`) {
     handleReleaseDone(id); // port is the same as original
   }
-
-  if (message.type === `call-intent`) {
-    const session: string = message.session;
-    waitInQueue(() => handleCallIntent(session, id, port));
-  }
-  if (message.type === `call-done`) {
-    handleCallDone(id); // port is the same as original
-  }
 }
 
 function handleReleaseDone(
   id: number
 ) {
   releaseLock({id});
-}
-
-function handleCallDone(
-  id: number
-) {
-  releaseLock({id});
-}
-
-function handleCallIntent(
-    session: string,
-    id: number,
-    port: PortObject
-): Promise<void> {
-  let path_: ?string = null;
-  Object.keys(state).forEach(kpath => {
-    if (state[kpath] === session) {
-      path_ = kpath;
-    }
-  });
-  if (path_ == null) {
-    sendBack({type: `wrong-session`}, id, port);
-    return Promise.resolve();
-  }
-
-  const path: string = path_;
-
-  startLock(10 * 10 * 1000);
-  sendBack({type: `path`, path}, id, port);
-
-  return waitForLock().then((obj: {id: number}) => {
-    sendBack({type: `ok`}, obj.id, port);
-  });
 }
 
 function handleReleaseIntent(
@@ -145,7 +105,7 @@ function handleReleaseIntent(
 
   const path: string = path_;
 
-  startLock(10 * 1000);
+  startLock();
   sendBack({type: `path`, path}, id, port);
 
   // if lock times out, promise rejects and queue goes on
@@ -208,7 +168,7 @@ function handleAcquireIntent(
     sendBack({type: `wrong-previous-session`}, id, port);
     return Promise.resolve();
   } else {
-    startLock(10 * 1000);
+    startLock();
     sendBack({type: `ok`}, id, port);
     // if lock times out, promise rejects and queue goes on
     return waitForLock().then((obj: {good: boolean, id: number}) => {
