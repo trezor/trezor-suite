@@ -64,11 +64,6 @@ export type MessageToSharedWorker = {
   session: string,
 } | {
   type: 'release-done',
-} | {
-  type: 'call-intent',
-  session: string
-} | {
-  type: 'call-done'
 };
 
 export type MessageFromSharedWorker = {
@@ -86,8 +81,6 @@ export type MessageFromSharedWorker = {
 } | {
   type: 'path',
   path: string;
-} | {
-  type: 'wrong-session'
 };
 
 export default class LowlevelTransportWithSharedConnections {
@@ -202,7 +195,6 @@ export default class LowlevelTransportWithSharedConnections {
 
   @debugInOut
   async release(session: string): Promise<void> {
-    this._releaseCleanup(session);
     const messback = await this.sendToWorker({type: `release-intent`, session});
     if (messback.type === `double-release`) {
       throw new Error(`Trying to double release.`);
@@ -212,6 +204,7 @@ export default class LowlevelTransportWithSharedConnections {
     }
     const path = messback.path;
 
+    this._releaseCleanup(session);
     try {
       await this.plugin.disconnect(path);
     } catch (e) {
@@ -245,22 +238,28 @@ export default class LowlevelTransportWithSharedConnections {
 
   @debugInOut
   async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
-    const pathM = await this.sendToWorker({type: `call-intent`, session: session});
+    const sessionsM = await this.sendToWorker({type: `get-sessions`});
 
     if (this._messages == null) {
       throw new Error(`Transport not configured.`);
     }
     const messages = this._messages;
 
-    if (pathM.type === `wrong-session`) {
+    if (sessionsM.type !== `sessions`) {
+      throw new Error(`Wrong reply`);
+    }
+
+    let path_: ?string = null;
+    Object.keys(sessionsM.sessions).forEach(kpath => {
+      if (sessionsM.sessions[kpath] === session) {
+        path_ = kpath;
+      }
+    });
+
+    if (path_ == null) {
       throw new Error(`Session not available.`);
     }
-
-    if (pathM.type !== `path`) {
-      throw new Error(`Strange reply.`);
-    }
-
-    const path: string = pathM.path;
+    const path: string = path_;
 
     const resPromise: Promise<MessageFromTrezor> = (async () => {
       await buildAndSend(messages, this._sendLowlevel(path), name, data);
@@ -268,14 +267,7 @@ export default class LowlevelTransportWithSharedConnections {
       return message;
     })();
 
-    try {
-      const res = await Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
-      await this.sendToWorker({type: `call-done`});
-      return res;
-    } catch (e) {
-      await this.sendToWorker({type: `call-done`});
-      throw e;
-    }
+    return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
   }
 
   @debugInOut
