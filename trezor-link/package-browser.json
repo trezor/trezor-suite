@@ -50,6 +50,6 @@
     "ecurve": "^1.0.3",
     "json-stable-stringify": "^1.0.1",
     "object.values": "^1.0.3",
-    "protobufjs-old-fixed-webpack": "3.8.2"
+    "protobufjs-old-fixed-webpack": "3.8.3"
   }
 }
