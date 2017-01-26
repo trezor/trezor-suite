@@ -4,7 +4,7 @@
 // Logic of "call" is broken to two parts - sending and recieving
 
 import {MessageDecoder} from "./protobuf/message_decoder.js";
-import {ByteBuffer} from "protobufjs";
+import {ByteBuffer} from "protobufjs-old-fixed-webpack";
 import type {Messages} from "./protobuf/messages.js";
 import type {MessageFromTrezor} from "../transport";
 

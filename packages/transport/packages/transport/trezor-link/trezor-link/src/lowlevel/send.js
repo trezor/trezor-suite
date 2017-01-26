@@ -4,8 +4,8 @@
 //
 // Logic of "call" is broken to two parts - sending and recieving
 
-import * as ProtoBuf from "protobufjs";
-import {ByteBuffer} from "protobufjs";
+import * as ProtoBuf from "protobufjs-old-fixed-webpack";
+import {ByteBuffer} from "protobufjs-old-fixed-webpack";
 import type {Messages} from "./protobuf/messages.js";
 
 const HEADER_SIZE = 1 + 1 + 4 + 2;

@@ -10,7 +10,7 @@ given trezor-common is from github trezor-common
 the config.proto is not changed much
 
 */
-module.exports = require("protobufjs").newBuilder({})["import"]({
+module.exports = require("protobufjs-old-fixed-webpack").newBuilder({})["import"]({
     "package": null,
     "messages": [
         {

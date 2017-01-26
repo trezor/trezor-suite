@@ -5,7 +5,7 @@
 // Helper module for converting Trezor's raw input to
 // ProtoBuf's message and from there to regular JSON to trezor.js
 
-import * as ProtoBuf from "protobufjs";
+import * as ProtoBuf from "protobufjs-old-fixed-webpack";
 const ByteBuffer = ProtoBuf.ByteBuffer;
 const Long = ProtoBuf.Long;
 
