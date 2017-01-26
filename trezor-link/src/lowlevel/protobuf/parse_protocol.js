@@ -4,7 +4,7 @@
 
 // Module for loading the protobuf description from serialized description
 
-import * as ProtoBuf from "protobufjs";
+import * as ProtoBuf from "protobufjs-old-fixed-webpack";
 
 import {Messages} from "./messages.js";
 import {protocolToJSON} from "./to_json.js";

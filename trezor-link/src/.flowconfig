@@ -1,12 +1,12 @@
 [ignore]
-.*/node_modules/protobufjs/src/bower.json
+.*/node_modules/protobufjs-old-fixed-webpack/src/bower.json
 .*/node_modules/bitcoinjs-lib-zcash/.*
 .*/node_modules/bigi/.*
 .*/node_modules/ecurve/.*
 
 [include]
 ../node_modules/json-stable-stringify/
-../node_modules/protobufjs/
+../node_modules/protobufjs-old-fixed-webpack/
 ../node_modules/object.values/
 ../node_modules/semver-compare/
 ../node_modules/node-hid/

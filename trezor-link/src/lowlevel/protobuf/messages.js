@@ -6,7 +6,7 @@
 // as they are loaded from the protobuf definition,
 // so they are understood by both sending and recieving code.
 
-import * as ProtoBuf from "protobufjs";
+import * as ProtoBuf from "protobufjs-old-fixed-webpack";
 
 type MessageArray<KeyType> = { [key: KeyType]: ProtoBuf.Bulder.Message };
 
