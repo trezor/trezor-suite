@@ -1,7 +1,7 @@
 /* @flow */
 "use strict";
 
-import * as ProtoBuf from "protobufjs";
+import * as ProtoBuf from "protobufjs-old-fixed-webpack";
 const ByteBuffer = ProtoBuf.ByteBuffer;
 
 let patched = false;
