@@ -47,7 +47,7 @@
     "bitcoinjs-lib-zcash": "^2.2.0",
     "json-stable-stringify": "^1.0.1",
     "object.values": "^1.0.3",
-    "protobufjs-old-fixed-webpack": "3.8.3",
+    "protobufjs-old-fixed-webpack": "3.8.4",
     "semver-compare": "^1.0.0",
     "node-hid": "^0.5.2",
     "node-fetch": "^1.6.0"
