@@ -1,6 +1,6 @@
 {
   "name": "hd-wallet",
-  "version": "2.0.15-bitcore3",
+  "version": "2.0.16-bitcore3",
   "description": "Data structures and algorithms for Bitcoin HD wallet.",
   "main": "lib/index.js",
   "scripts": {
@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "bitcoinjs-lib-zcash": "^2.3.1",
+    "bitcoinjs-lib-zcash": "^2.3.3",
     "immutable": "^3.8.1",
     "socket.io-client": "^1.5.1",
     "whatwg-fetch": "^0.11.0"
