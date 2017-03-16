@@ -12,7 +12,7 @@
   "plugins": [
     "standard",
     "promise",
-    "flow-vars"
+    "flowtype"
   ],
   "env": {
     "es6": true,
@@ -20,8 +20,8 @@
     "browser": true
   },
   "rules": {
-    "flow-vars/define-flow-type": 1,
-    "flow-vars/use-flow-type": 1,
+    "flowtype/define-flow-type": 1,
+    "flowtype/use-flow-type": 1,
     "comma-dangle": [2, "always-multiline"],
     "no-unused-vars": [2, {
       "args": "none",

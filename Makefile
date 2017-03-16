@@ -16,7 +16,7 @@ all: lib
 
 check: node_modules
 	flow check lib/
-	eslint lib/*.js
+	cd lib && eslint .
 
 lib: node_modules
 	${BIN}/browserify ${LIB} -g [ uglifyify ] -d \
