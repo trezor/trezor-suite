@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "bitcoinjs-lib-zcash": "^2.3.3",
+    "bitcoinjs-lib-zcash": "2.4.3",
     "immutable": "^3.8.1",
     "socket.io-client": "^1.5.1",
     "whatwg-fetch": "^0.11.0"

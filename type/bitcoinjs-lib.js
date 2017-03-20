@@ -247,8 +247,8 @@ declare module 'bitcoinjs-lib' {
         joinsplits: Array<any>;
 
         constructor(): void;
-        static fromHex(hex: string): Transaction;
-        static fromBuffer(buffer: Buffer): Transaction;
+        static fromHex(hex: string, isZcash: boolean): Transaction;
+        static fromBuffer(buffer: Buffer, isZcash: boolean): Transaction;
         toHex(): string;
         addInput(hash: Buffer, index: number, sequence?: ?number, scriptSig?: Buffer): void;
         addOutput(scriptPubKey: Buffer, value: number): void;
