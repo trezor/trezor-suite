@@ -11,10 +11,11 @@ discovery.
 
 ## Example usage
 
-Don't forget to `git submodule update --recursive --init`, set `BITCORE_URL` and
-`XPUB` constants in `test/index.js` and run `make example server`.
+Example is in `example/index.js`; it is compiled in makefile to `gh-pages` directory by `make example`.
 
-**Note**: Bitcore backend needs to have `insight-api` plugin enabled.
+Built version is in `gh-pages` branch.
+
+You can also try it yourself here - http://trezor.github.io/hd-wallet/example.html (note that xpubs are preloaded there, but some simple GUI for inputing the XPUBs could be probably done).
 
 ## License
 
