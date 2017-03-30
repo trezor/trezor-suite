@@ -1,76 +1,35 @@
-import {address as baddress, HDNode} from 'bitcoinjs-lib';
+import {address as baddress, HDNode, networks} from 'bitcoinjs-lib-zcash';
 
-import {WorkerChannel} from '../lib/worker';
-import {WorkerAddressSource, PrefatchingSource, CachingSource} from '../lib/address';
-import {
-    newAccountDiscovery,
-    isAccountEmpty,
-    discoverAccount,
-    discoverPortfolio,
-    lookupBlockRange
-} from '../lib/discovery';
+import {WorkerChannel} from '../lib/utils/simple-worker-channel';
+import {WorkerAddressSource, PrefatchingSource, CachingSource} from '../lib/address-source';
+import {WorkerDiscovery} from '../lib/discovery/worker-discovery';
 import {BitcoreBlockchain} from '../lib/bitcore';
-import {deriveImpacts} from '../lib/history';
-import {collectUnspents} from '../lib/wallet';
 
 import h from 'virtual-dom/h';
 import diff from 'virtual-dom/diff';
 import patch from 'virtual-dom/patch';
 import createElement from 'virtual-dom/create-element';
 
-function createAddressSource(channel, node, addressVersion) {
-    let source;
-    source = new WorkerAddressSource(channel, node, addressVersion);
-    source = new PrefatchingSource(source);
-    source = new CachingSource(source);
-    return source;
-}
+// setting up workers
+const cryptoWorker = new Worker('./trezor-crypto.js');
+const socketWorkerFactory = () => new Worker('./socket-worker.js');
+const discoveryWorkerFactory = () => new Worker('./discovery-worker.js');
 
-function createNodeFactory(xpubs) {
-    return (index) => {
-        if (xpubs[index]) {
-            return Promise.resolve(HDNode.fromBase58(xpubs[index]));
-        } else {
-            return Promise.reject();
-        }
-    };
-}
-
-function createAccountDiscoveryFactory(blockchain, channel, nodeFactory) {
-    const chunkSize = 20; // for derivation and blockchain lookup
-    const gapLength = 20;
-    const addressVersion = 0x0;
-
-    return (index) => nodeFactory(index).then((node) => {
-        let external = createAddressSource(channel, node.derive(0), addressVersion);
-        let internal = createAddressSource(channel, node.derive(1), addressVersion);
-
-        let blocksP = lookupBlockRange(blockchain);
-
-        return blocksP.then((blocks) => {
-            return discoverAccount(
-                newAccountDiscovery(blocks),
-                [external, internal],
-                chunkSize,
-                blockchain,
-                gapLength
-            );
-        });
-    });
-}
-
-function renderImpact(impact) {
+function renderTx(tx) {
     return h('tr', [
-        h('td', impact.id),
-        h('td', impact.height ? impact.height.toString() : 'unconfirmed'),
-        h('td', impact.value.toString()),
-        h('td', impact.type),
-        h('td', impact.targets.map((t) => h('span', `${baddress.fromOutputScript(t.script)} (${t.value}) `)))
+        h('td', tx.hash),
+        h('td', tx.height ? tx.height.toString() : 'unconfirmed'),
+        h('td', tx.value.toString()),
+        h('td', tx.type),
+        h('td', tx.targets.map((t) => h('span', `${t.address} (${t.value}) `)))
     ]);
 }
 
 function renderAccount(account) {
-    return h('table', account.impacts.map(renderImpact));
+    if (typeof account.info === 'number') {
+        return h('div', `${account.xpub} - Loading (${account.info} transactions)`);
+    }
+    return [h('div', `${account.xpub} - Balance: ${account.info.balance}`), h('table', account.info.transactions.map(renderTx))];
 }
 
 function render(state) {
@@ -78,6 +37,7 @@ function render(state) {
 }
 
 let appState = [];
+let processes = [];
 let tree = render(appState);
 let rootNode = createElement(tree);
 
@@ -92,70 +52,53 @@ function refresh() {
 
 let portfolio;
 
-function discoverList(adf) {
+function discover(xpubs, discovery, network) {
     let index = 0;
-    portfolio = discoverPortfolio(adf, 0, 1);
-    console.time('portfolio');
-    portfolio.values.attach((process) => {
-        let i = index++;
-        process.values.attach((account) => {
-            console.log(i, 'account chunk', account);
-            console.log(i, 'next external addresses', account[0].history.nextIndex);
-        });
-        process.awaitLast().then((account) => {
-            console.log(i, 'account lastChunks', account);
-            console.log(i, 'next external addresses', account[0].history.nextIndex);
-
-            let t0 = account[0].transactions;
-            let t1 = account[1].transactions;
-
-            let transactions = t0.merge(t1);
-            let impacts = deriveImpacts(transactions, account[0].chain, account[1].chain);
-            let unspents = collectUnspents(transactions, account[0].chain, account[1].chain);
-            appState[i] = {
-                account,
-                transactions,
-                impacts,
-                unspents,
-            };
+    let done = 0;
+    xpubs.forEach((xpub, i) => {
+        let process = discovery.discoverAccount(null, xpub, network);
+        appState[i] = {xpub, info: 0};
+        
+        process.stream.values.attach(status => {
+            appState[i] = {xpub, info: status.transactions};
             refresh();
         });
+        process.ending.then(info => {
+            appState[i] = {xpub, info};
+            refresh();
+            done++;
+            if (done === xpubs.length) {
+                console.timeEnd('portfolio');
+            }
+        });
+        processes.push(process);
+        refresh();
     });
-    portfolio.finish.attach(() => {
-        console.timeEnd('portfolio');
-    });
+    console.time('portfolio');
 }
 
 window.run = () => {
     const XPUBS = [
-        'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
-        'xpub6BiVtCpG9fQQ1EW99bMSYwySbPWvzTFRQZCFgTmV3samLSZAYU7C3f4Je9vkNh7h1GAWi5Fn93BwoGBy9EAXbWTTgTnVKAbthHpxM1fXVRL',
-        'xpub6BiVtCpG9fQQ4xJHzNkdmqspAeMdBTDFZ2kYM39RzDYMAcb4wtkWZNSu7k3BbJgoPgTzx62G69mBiUjDnD3EJrTA5ZYZg4vfz1YWcGBnX2x',
-        'xpub6BiVtCpG9fQQ77Qr7WArXSG3yWYm2bkRYpoSYtRkVEAk5nrcULBG8AeRYMMKVUXAsNeXdR7TGuL6SkUc4RF2YC7X4afLyZrT9NrrUFyotkH',
         'xpub6BiVtCpG9fQQ8pVjVF7jm3kLahkNbQRkWGUvzsKQpXWYvhYD4d4UDADxZUL4xp9UwsDT5YgwNKofTWRtwJgnHkbNxuzLDho4mxfS9KLesGP',
         'xpub6BiVtCpG9fQQCgxA541qm9qZ9VrGLScde4zsAMj2d15ewiMysCAnbgvSDSZXhFUdsyA2BfzzMrMFJbC4VSkXbzrXLZRitAmUVURmivxxqMJ',
         'xpub6BiVtCpG9fQQDvwDNekCEzAr3gYcoGXEF27bMwSBsCVP3bJYdUZ6m3jhv9vSG7hVxff3VEfnfK4fcMr2YRwfTfHcJwM4ioS6Eiwnrm1wcuf',
         'xpub6BiVtCpG9fQQGq7bXBjjf5zyguEXHrmxDu4t7pdTFUtDWD5epi4ecKmWBTMHvPQtRmQnby8gET7ArTzxjL4SNYdD2RYSdjk7fwYeEDMzkce'
     ];
 
-    const TREZORCRYPTO_URL = '/lib/trezor-crypto/emscripten/trezor-crypto.js';
-    const BITCORE_URL = 'https://bitcore.mytrezor.com';
+    const BITCORE_URLS = ['https://bitcore1.trezor.io', 'https://bitcore3.trezor.io'];
 
-    let socketWorker = new Worker('./socket-worker.js');
+    let socketWorkerFactory = () => new Worker('./socket-worker.js');
+    let discoveryWorkerFactory = () => new Worker('./discovery-worker.js');
 
-    let blockchain = new BitcoreBlockchain(BITCORE_URL, {
-        upgrade: false,
-        insightPath: 'insight-api',
-    }, socketWorker);
-    let worker = new Worker(TREZORCRYPTO_URL);
-    let channel = new WorkerChannel(worker);
+    let blockchain = new BitcoreBlockchain(BITCORE_URLS, socketWorkerFactory);
+    let cryptoChannel = new WorkerChannel(cryptoWorker);
 
-    let nf = createNodeFactory(XPUBS);
-    let adf = createAccountDiscoveryFactory(blockchain, channel, nf);
-    discoverList(adf);
+    let discovery = new WorkerDiscovery(discoveryWorkerFactory, cryptoChannel, blockchain);
+    let network = networks.bitcoin;
+    discover(XPUBS, discovery, network);
 };
 
 window.stop = () => {
-    process.dispose();
+    processes.forEach(p => p.dispose());
     console.timeEnd('portfolio');
 };

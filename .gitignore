@@ -1,7 +1,9 @@
 node_modules
-dist/index.js
-dist/index.js.map
-dist/example.js
-dist/socket-worker.js
-dist/example.js.map
+gh-pages/index.js
+gh-pages/index.js.map
+gh-pages/example.js
+gh-pages/discovery-worker.js
+gh-pages/socket-worker.js
+gh-pages/trezor-crypto.js
+gh-pages/example.js.map
 .idea
