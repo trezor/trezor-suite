@@ -1,5 +1,5 @@
 dist: trusty
-sudo: required
+sudo: false
 language: node_js
 node_js:
   - "7"
@@ -7,11 +7,7 @@ matrix:
   include:
     - node_js: "7"
       before_script:
-        - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        - sudo apt-get -qq update
-        - sudo apt-get install -y gdebi
-        - sudo gdebi --non-interactive google-chrome*.deb
-        - export CHROME_BIN=google-chrome
+        - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
       env: TEST_SUITE=karma-chrome
