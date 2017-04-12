@@ -8,7 +8,8 @@
     "unit": "mocha --compilers js:babel-register",
     "coverage": "nyc --require babel-register --check-coverage mocha --compilers js:babel-register",
     "flow": "flow check lib",
-    "eslint": "cd lib && eslint ."
+    "eslint": "cd lib && eslint .",
+    "karma": "karma start --single-run"
   },
   "author": "Jan Pochyla <jpochyla@gmail.com>",
   "repository": "https://github.com/trezor/hd-wallet",
@@ -31,6 +32,9 @@
       ]
     ]
   },
+  "browserify-shim": {
+      "../../../lib/socketio-worker/inside.js": "global:thisIsJustForKarmaTestButIHaveToWriteItHere"
+  },
   "dependencies": {
     "bitcoinjs-lib-zcash": "^3.0.0",
     "socket.io-client": "^1.5.1",
@@ -46,17 +50,24 @@
     "babel-register": "^6.24.1",
     "babelify": "7.2.0",
     "browserify": "12.0.1",
+    "browserify-shim": "^3.8.14",
     "eslint": "^3.19.0",
     "eslint-plugin-flowtype": "^2.30.4",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "exorcist": "0.4.0",
     "flow-bin": "^0.43.1",
+    "karma": "^1.6.0",
+    "karma-browserify": "^5.1.1",
+    "karma-chai": "^0.1.0",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-mocha": "^1.3.0",
     "mocha": "^3.1.0",
     "nyc": "^8.1.10",
     "tiny-worker": "^2.0.3",
     "uglifyify": "3.0.1",
     "virtual-dom": "2.1.1",
-    "watchify": "3.6.0"
+    "watchify": "3.6.0",
+    "workerify": "^0.3.0"
   }
 }

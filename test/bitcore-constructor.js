@@ -1,5 +1,4 @@
 import assert from 'assert';
-import Worker from 'tiny-worker';
 
 import {BitcoreBlockchain} from '../lib/bitcore';
 import {Stream} from '../lib/utils/stream';
@@ -11,14 +10,21 @@ function killAllWorkers() {
   workers = [];
 }
 
+// hack for workers in both node and browser
 var socketWorkerFactory = () => {
-   var w = new Worker(() => {
+  var w = null;
+  if (typeof Worker === 'undefined') {
+    var TinyWorker = require('tiny-worker');
+    w = new TinyWorker(() => {
       require('babel-register');
       require('../../../lib/socketio-worker/inside.js');
-   });
+    });
+  } else {
+    w = new Worker('../../lib/socketio-worker/inside.js');
+  }
 
-   workers.push(w);
-   return w;
+  workers.push(w);
+  return w;
 }
 
 describe('bitcore', () => {
