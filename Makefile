@@ -20,25 +20,11 @@ check: node_modules
 	flow check lib/
 	cd lib && eslint .
 
-lib: node_modules
-	${BIN}/browserify ${LIB} -g [ uglifyify ] -d \
-		| ${BIN}/exorcist ${LIB_TARGET}.map > ${LIB_TARGET}
-
-test: node_modules
-	${BIN}/browserify ${TEST} | node
-
 example: node_modules
 	${BIN}/browserify ${EXAMPLE} -g [ uglifyify ] -d > ${EXAMPLE_TARGET}
 	${BIN}/browserify ${SOCKET_WORKER} -g [ uglifyify ] -d > ${SOCKET_TARGET}
 	${BIN}/browserify ${DISCOVERY_WORKER} -g [ uglifyify ] -d  > ${DISCOVERY_TARGET}
 	cp lib/trezor-crypto/emscripten/trezor-crypto.js gh-pages
-
-watch: node_modules
-	${BIN}/watchify ${EXAMPLE} -o ${EXAMPLE_TARGET} -d -v
-
-server:
-	@echo ready at http://localhost:8080/dist/example.html
-	python -m SimpleHTTPServer 8080
 
 clean:
 	rm -f \

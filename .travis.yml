@@ -1,0 +1,17 @@
+sudo: false
+language: node_js
+node_js:
+  - "4"
+  - "5"
+  - "6"
+  - "7"
+matrix:
+  include:
+    - node_js: "7"
+      env: TEST_SUITE=flow
+    - node_js: "7"
+      env: TEST_SUITE=eslint
+env:
+  - TEST_SUITE=unit
+  - TEST_SUITE=build-example
+script: npm run-script $TEST_SUITE

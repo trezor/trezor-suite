@@ -4,8 +4,11 @@
   "description": "Data structures and algorithms for Bitcoin HD wallet.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "make build",
-    "watch": "make watch"
+    "build-example": "make example",
+    "unit": "mocha --compilers js:babel-register",
+    "coverage": "nyc --require babel-register --check-coverage mocha --compilers js:babel-register",
+    "flow": "flow check lib",
+    "eslint": "cd lib && eslint ."
   },
   "author": "Jan Pochyla <jpochyla@gmail.com>",
   "repository": "https://github.com/trezor/hd-wallet",
@@ -39,10 +42,15 @@
     "babel-plugin-transform-flow-strip-types": "6.4.0",
     "babel-plugin-transform-object-rest-spread": "6.3.13",
     "babel-preset-es2015": "6.3.13",
+    "babel-register": "^6.24.1",
     "babelify": "7.2.0",
     "browserify": "12.0.1",
+    "eslint": "^3.19.0",
     "exorcist": "0.4.0",
-    "tape": "4.4.0",
+    "flow-bin": "^0.43.1",
+    "mocha": "^3.1.0",
+    "nyc": "^8.1.10",
+    "tiny-worker": "^2.0.3",
     "uglifyify": "3.0.1",
     "virtual-dom": "2.1.1",
     "watchify": "3.6.0"
