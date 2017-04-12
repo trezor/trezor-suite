@@ -10,7 +10,7 @@ matrix:
         - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         - sudo apt-get -qq update
         - sudo apt-get install -y gdebi
-        - sudo gdebi google-chrome*.deb
+        - sudo gdebi --non-interactive google-chrome*.deb
         - export CHROME_BIN=google-chrome
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
