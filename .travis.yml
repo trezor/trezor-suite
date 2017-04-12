@@ -2,13 +2,28 @@ dist: trusty
 sudo: false
 language: node_js
 node_js:
+  - "4"
+  - "5"
+  - "6"
   - "7"
 matrix:
   include:
+    - node_js: "7"
+      env: TEST_SUITE=flow
+    - node_js: "7"
+      env: TEST_SUITE=eslint
     - node_js: "7"
       before_script:
         - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
       env: TEST_SUITE=karma-chrome
+    - node_js: "7"
+      before_script:
+        - export DISPLAY=:99.0
+        - sh -e /etc/init.d/xvfb start
+      env: TEST_SUITE=karma-firefox
+env:
+  - TEST_SUITE=unit
+  - TEST_SUITE=build-example
 script: npm run-script $TEST_SUITE
