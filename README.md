@@ -1,5 +1,7 @@
 # High-performance Bitcoin HD Wallet
 
+[![Build Status](https://travis-ci.org/trezor/hd-wallet.svg?branch=master)](https://travis-ci.org/trezor/hd-wallet) [![gitter](https://badges.gitter.im/trezor/community.svg)](https://gitter.im/trezor/community)
+
 For now, mostly a PoC.  Uses
 [bitcore-node](https://github.com/bitpay/bitcore-node)
 for transaction lookup and
