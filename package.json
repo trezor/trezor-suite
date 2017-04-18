@@ -8,7 +8,7 @@
     "unit": "mocha --compilers js:babel-register",
     "coverage": "nyc --require babel-register --check-coverage mocha --compilers js:babel-register",
     "flow": "flow check lib",
-    "eslint": "cd lib && eslint .",
+    "eslint": "cd lib && eslint . && cd ../test && eslint . && cd ../test_helpers && eslint .",
     "karma-firefox": "karma start --browsers Firefox --single-run",
     "karma-chrome": "karma start --browsers Chrome --single-run"
   },
@@ -58,6 +58,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "exorcist": "0.4.0",
     "flow-bin": "^0.43.1",
+    "isomorphic-fetch": "^2.2.1",
     "karma": "^1.6.0",
     "karma-browserify": "^5.1.1",
     "karma-chai": "^0.1.0",
