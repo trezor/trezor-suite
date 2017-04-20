@@ -218,5 +218,23 @@ describe('bitcore', () => {
         it('subscribes to address', function () {
             blockchain.subscribe(new Set(['mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp']));
         });
+
+        it('socket registers tx mined to address', function (done) {
+            blockchain.socket.promise.then(socket => {
+                const stream = socket.observe('bitcoind/addresstxid');
+                testStream(stream, a => /^[a-f0-6]{64}$/.test(a.txid), 1000, done);
+                run('generatetoaddress 1 mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp');
+            });
+        });
+
+        it('socket registers normal tx', function (done) {
+            blockchain.socket.promise.then(socket => {
+                const stream = socket.observe('bitcoind/addresstxid');
+                testStream(stream, a => /^[a-f0-6]{64}$/.test(a.txid), 1000, done);
+                run('bitcore-regtest-cli generate 300').then(() =>
+                    run('bitcore-regtest-cli sendtoaddress mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp 1')
+                );
+            });
+        });
     });
 });
