@@ -22,9 +22,23 @@ const socketWorkerFactory = () => {
 
 function startBitcore() {
     return run('su bitcore-regtest -c /opt/satoshilabs/bitcore-regtest/bitcore/bin/bitcored -s /bin/bash > /opt/satoshilabs/logs 2>&1 &')
-        .then(() => {
-            return new Promise(resolve => setTimeout(resolve, 15 * 1000));
-        });
+        .then(() => new Promise(resolve => setTimeout(resolve, 15 * 1000)));
+}
+
+function stopBitcore() {
+    return run('pkill bitcore-regtest')
+        .then(() => new Promise(resolve => setTimeout(resolve, 15 * 1000)));
+}
+
+function testPromiseRejection(promise, done) {
+    promise.then(() => {
+        done(new Error('Expected method to reject.'));
+    })
+    .catch((err) => {
+        assert.isDefined(err);
+        done();
+    })
+    .catch(done);
 }
 
 describe('bitcore', () => {
@@ -87,6 +101,19 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             blockchain._silent = true;
             return blockchain.hardStatusCheck();
+        });
+
+        it('stops bitcore', function () {
+            this.timeout(60 * 1000);
+            return stopBitcore();
+        });
+
+        it('rejects on non-working bitcore', function (done) {
+            this.timeout(20 * 1000);
+
+            const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+            blockchain._silent = true;
+            testPromiseRejection(blockchain.hardStatusCheck(), done);
         });
     });
 });
