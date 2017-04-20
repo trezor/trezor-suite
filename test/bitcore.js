@@ -31,6 +31,26 @@ function stopBitcore() {
           .then(() => new Promise(resolve => setTimeout(resolve, 15 * 1000)));
 }
 
+function testStream(stream, test, timeout, done) {
+    let ended = false;
+    const fun = (value, detach) => {
+        ended = true;
+        detach();
+        if (test(value)) {
+            done();
+        } else {
+            done(new Error('Value does not meet test.'));
+        }
+    };
+    stream.values.attach(fun);
+    setTimeout(() => {
+        if (!ended) {
+            stream.values.detach(fun);
+            done(new Error('Timeout'));
+        }
+    }, timeout);
+}
+
 describe('bitcore', () => {
     describe('constructor', () => {
         let blockchain;
@@ -90,6 +110,13 @@ describe('bitcore', () => {
             });
         });
 
+        it('emits error event on non-working bitcore', function (done) {
+            this.timeout(20 * 1000);
+
+            const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+            testStream(blockchain.errors, (error) => error.message === 'All backends are offline.', 19 * 1000, done);
+        });
+
         it('starts bitcore', function () {
             this.timeout(60 * 1000);
             return startBitcore();
@@ -106,6 +133,26 @@ describe('bitcore', () => {
             }, () => {
                 done(new Error('blockchain.socket rejected'));
             });
+        });
+
+        it('does not emit error event on working bitcore', function (done) {
+            this.timeout(20 * 1000);
+
+            const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+
+            let ended = false;
+            const fun = (value, detach) => {
+                ended = true;
+                detach();
+                done(new Error('Emitted error.'));
+            };
+            blockchain.errors.values.attach(fun);
+            setTimeout(() => {
+                if (!ended) {
+                    blockchain.errors.values.detach(fun);
+                    done();
+                }
+            }, 19 * 1000);
         });
 
         it('stops bitcore', function () {
@@ -143,6 +190,33 @@ describe('bitcore', () => {
             return blockchain.hardStatusCheck().then((res) => {
                 assert.ok(!res);
             });
+        });
+    });
+
+    describe('subscribe', () => {
+        let blockchain;
+
+        it('starts bitcore + connects to it', function () {
+            this.timeout(60 * 1000);
+            return startBitcore().then(() => {
+                blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+            });
+        });
+
+        // note - bitcore.js doesn't know about versions bytes, it doesn't check address validity
+        it('throws on wrong input', function () {
+            for (const inputs of [['foo'], 'foo', [123], new Set([123])]) {
+                try {
+                    blockchain.subscribe(inputs);
+                    assert(false);
+                } catch (e) {
+                    assert(true);
+                }
+            }
+        });
+
+        it('subscribes to address', function () {
+            blockchain.subscribe(new Set(['mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp']));
         });
     });
 });
