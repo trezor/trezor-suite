@@ -4,6 +4,7 @@ import assert from 'assert';
 
 import {BitcoreBlockchain} from '../lib/bitcore';
 import {Stream} from '../lib/utils/stream';
+import {Socket} from '../lib/socketio-worker/outside';
 
 import {run} from '../test_helpers/_node_client.js';
 
@@ -75,6 +76,41 @@ describe('bitcore', () => {
             it('returns Promise on sendTransaction', () => {
                 assert.ok(blockchain.sendTransaction('abcd').catch(() => {}) instanceof Promise);
             });
+        });
+
+        it('socket and workingUrl are null on non-working bitcore', function (done) {
+            this.timeout(20 * 1000);
+
+            const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+            blockchain.socket.promise.then(() => {
+                done(new Error('blockchain.socket should not resolve'));
+            }, () => {
+                assert.ok(blockchain.workingUrl === 'none');
+                done();
+            });
+        });
+
+        it('starts bitcore', function () {
+            this.timeout(60 * 1000);
+            return startBitcore();
+        });
+
+        it('socket and workingUrl are as expected on working bitcore', function (done) {
+            this.timeout(20 * 1000);
+
+            const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+            blockchain.socket.promise.then((socket) => {
+                assert.ok(socket instanceof Socket);
+                assert.ok(blockchain.workingUrl === 'http://localhost:3005');
+                done();
+            }, () => {
+                done(new Error('blockchain.socket rejected'));
+            });
+        });
+
+        it('stops bitcore', function () {
+            this.timeout(60 * 1000);
+            return stopBitcore();
         });
     });
 
