@@ -8,6 +8,8 @@ import {Socket} from '../lib/socketio-worker/outside';
 
 import {run} from '../test_helpers/_node_client.js';
 
+import {address, Transaction, networks} from 'bitcoinjs-lib-zcash';
+
 // hack for workers in both node and browser
 const socketWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
@@ -36,9 +38,13 @@ function testStream(stream, test, timeout, done) {
     const fun = (value, detach) => {
         ended = true;
         detach();
-        if (test(value)) {
-            done();
-        } else {
+        try {
+            if (test(value)) {
+                done();
+            } else {
+                done(new Error('Value does not meet test.'));
+            }
+        } catch (e) {
             done(new Error('Value does not meet test.'));
         }
     };
@@ -95,6 +101,7 @@ describe('bitcore', () => {
             });
             it('returns Promise on sendTransaction', () => {
                 assert.ok(blockchain.sendTransaction('abcd').catch(() => {}) instanceof Promise);
+                blockchain.destroy();
             });
         });
 
@@ -103,9 +110,11 @@ describe('bitcore', () => {
 
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             blockchain.socket.promise.then(() => {
+                blockchain.destroy();
                 done(new Error('blockchain.socket should not resolve'));
             }, () => {
                 assert.ok(blockchain.workingUrl === 'none');
+                blockchain.destroy();
                 done();
             });
         });
@@ -114,7 +123,15 @@ describe('bitcore', () => {
             this.timeout(20 * 1000);
 
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-            testStream(blockchain.errors, (error) => error.message === 'All backends are offline.', 19 * 1000, done);
+            testStream(
+                blockchain.errors,
+                (error) => error.message === 'All backends are offline.',
+                19 * 1000,
+                () => {
+                    blockchain.destroy();
+                    done();
+                }
+            );
         });
 
         it('starts bitcore', function () {
@@ -129,8 +146,10 @@ describe('bitcore', () => {
             blockchain.socket.promise.then((socket) => {
                 assert.ok(socket instanceof Socket);
                 assert.ok(blockchain.workingUrl === 'http://localhost:3005');
+                blockchain.destroy();
                 done();
             }, () => {
+                blockchain.destroy();
                 done(new Error('blockchain.socket rejected'));
             });
         });
@@ -144,12 +163,14 @@ describe('bitcore', () => {
             const fun = (value, detach) => {
                 ended = true;
                 detach();
+                blockchain.destroy();
                 done(new Error('Emitted error.'));
             };
             blockchain.errors.values.attach(fun);
             setTimeout(() => {
                 if (!ended) {
                     blockchain.errors.values.detach(fun);
+                    blockchain.destroy();
                     done();
                 }
             }, 19 * 1000);
@@ -174,6 +195,7 @@ describe('bitcore', () => {
             blockchain._silent = true;
             return blockchain.hardStatusCheck().then((res) => {
                 assert.ok(res);
+                blockchain.destroy();
             });
         });
 
@@ -188,6 +210,7 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             blockchain._silent = true;
             return blockchain.hardStatusCheck().then((res) => {
+                blockchain.destroy();
                 assert.ok(!res);
             });
         });
@@ -220,21 +243,94 @@ describe('bitcore', () => {
         });
 
         it('socket registers tx mined to address', function (done) {
+            this.timeout(20 * 1000);
             blockchain.socket.promise.then(socket => {
                 const stream = socket.observe('bitcoind/addresstxid');
-                testStream(stream, a => /^[a-f0-6]{64}$/.test(a.txid), 1000, done);
-                run('generatetoaddress 1 mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp');
+                testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
+                run('bitcore-regtest-cli generatetoaddress 1 mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp');
             });
         });
 
         it('socket registers normal tx', function (done) {
+            this.timeout(20 * 1000);
             blockchain.socket.promise.then(socket => {
                 const stream = socket.observe('bitcoind/addresstxid');
-                testStream(stream, a => /^[a-f0-6]{64}$/.test(a.txid), 1000, done);
+                testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
                 run('bitcore-regtest-cli generate 300').then(() =>
                     run('bitcore-regtest-cli sendtoaddress mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp 1')
                 );
             });
+        });
+
+        it('notifications register tx mined to address', function (done) {
+            this.timeout(20 * 1000);
+            const stream = blockchain.notifications;
+            testStream(stream, tx => {
+                // can be either 1 or 2 with second opreturn
+                if (tx.outputAddresses.length > 2) {
+                    return false;
+                }
+                if (tx.outputAddresses[0] !== 'mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp') {
+                    return false;
+                }
+                if (tx.zcash !== false) {
+                    return false;
+                }
+                const bjstx = Transaction.fromHex(tx.hex, false);
+                if (!bjstx.isCoinbase()) {
+                    return false;
+                }
+                if (bjstx.getId() !== tx.hash) {
+                    return false;
+                }
+                const raddress = address.fromOutputScript(bjstx.outs[0].script, networks.testnet);
+
+                if (raddress !== 'mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp') {
+                    return false;
+                }
+
+                return true;
+            },
+            15 * 1000, done);
+            run('bitcore-regtest-cli generatetoaddress 1 mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp');
+        });
+
+        it('notifications register normal tx', function (done) {
+            this.timeout(20 * 1000);
+
+            const stream = blockchain.notifications;
+            testStream(stream, tx => {
+                if (tx.outputAddresses.findIndex((k) => k === 'mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp') === -1) {
+                    return false;
+                }
+                if (tx.zcash !== false) {
+                    return false;
+                }
+                const bjstx = Transaction.fromHex(tx.hex, false);
+                if (bjstx.isCoinbase()) {
+                    return false;
+                }
+                if (bjstx.getId() !== tx.hash) {
+                    return false;
+                }
+                const raddresses = bjstx.outs.map(o => address.fromOutputScript(o.script, networks.testnet));
+                if (raddresses.findIndex((k) => k === 'mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp') === -1) {
+                    return false;
+                }
+
+                return true;
+            },
+            15 * 1000, done);
+
+            run('bitcore-regtest-cli generate 300').then(() =>
+                run('bitcore-regtest-cli sendtoaddress mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp 1')
+            );
+        });
+
+        it('stops bitcore', function () {
+            this.timeout(60 * 1000);
+            blockchain.destroy();
+            return stopBitcore();
         });
     });
 });
