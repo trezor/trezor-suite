@@ -8,7 +8,7 @@ import {Socket} from '../lib/socketio-worker/outside';
 
 import {run} from '../test_helpers/_node_client.js';
 
-import {address, Transaction, networks} from 'bitcoinjs-lib-zcash';
+import {address, Transaction, networks, HDNode} from 'bitcoinjs-lib-zcash';
 
 // hack for workers in both node and browser
 const socketWorkerFactory = () => {
@@ -55,6 +55,18 @@ function testStream(stream, test, timeout, done) {
             done(new Error('Timeout'));
         }
     }, timeout);
+}
+
+const hdnode = HDNode.fromBase58(
+    'tpubDD7tXK8KeQ3YY83yWq755fHY2JW8Ha8Q765tknUM5rSvjPcGWfUppDFMpQ1ScziKfW3ZNtZvAD7M3u7bSs7HofjTD3KP3YxPK7X6hwV8Rk2',
+    networks.testnet
+);
+
+let i = -1;
+function getAddress() {
+    i = i + 1;
+    const addressNode = hdnode.derive(i);
+    return addressNode.getAddress();
 }
 
 describe('bitcore', () => {
@@ -238,39 +250,44 @@ describe('bitcore', () => {
             }
         });
 
-        it('subscribes to address', function () {
-            blockchain.subscribe(new Set(['mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp']));
-        });
-
         it('socket registers tx mined to address', function (done) {
             this.timeout(20 * 1000);
+            const address = getAddress();
+            blockchain.subscribe(new Set([address]));
             blockchain.socket.promise.then(socket => {
                 const stream = socket.observe('bitcoind/addresstxid');
                 testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
-                run('bitcore-regtest-cli generatetoaddress 1 mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp');
+                run('bitcore-regtest-cli generatetoaddress 1 ' + address);
             });
         });
 
         it('socket registers normal tx', function (done) {
             this.timeout(20 * 1000);
+
+            const address = getAddress();
+            blockchain.subscribe(new Set([address]));
             blockchain.socket.promise.then(socket => {
                 const stream = socket.observe('bitcoind/addresstxid');
                 testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
                 run('bitcore-regtest-cli generate 300').then(() =>
-                    run('bitcore-regtest-cli sendtoaddress mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp 1')
+                    run('bitcore-regtest-cli sendtoaddress ' + address + ' 1')
                 );
             });
         });
 
         it('notifications register tx mined to address', function (done) {
             this.timeout(20 * 1000);
+
             const stream = blockchain.notifications;
+            const saddress = getAddress();
+            blockchain.subscribe(new Set([saddress]));
+
             testStream(stream, tx => {
                 // can be either 1 or 2 with second opreturn
                 if (tx.outputAddresses.length > 2) {
                     return false;
                 }
-                if (tx.outputAddresses[0] !== 'mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp') {
+                if (tx.outputAddresses[0] !== saddress) {
                     return false;
                 }
                 if (tx.zcash !== false) {
@@ -285,22 +302,25 @@ describe('bitcore', () => {
                 }
                 const raddress = address.fromOutputScript(bjstx.outs[0].script, networks.testnet);
 
-                if (raddress !== 'mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp') {
+                if (raddress !== saddress) {
                     return false;
                 }
 
                 return true;
             },
             15 * 1000, done);
-            run('bitcore-regtest-cli generatetoaddress 1 mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp');
+            run('bitcore-regtest-cli generatetoaddress 1 ' + saddress);
         });
 
         it('notifications register normal tx', function (done) {
             this.timeout(20 * 1000);
 
             const stream = blockchain.notifications;
+            const saddress = getAddress();
+            blockchain.subscribe(new Set([saddress]));
+
             testStream(stream, tx => {
-                if (tx.outputAddresses.findIndex((k) => k === 'mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp') === -1) {
+                if (tx.outputAddresses.findIndex((k) => k === saddress) === -1) {
                     return false;
                 }
                 if (tx.zcash !== false) {
@@ -314,7 +334,7 @@ describe('bitcore', () => {
                     return false;
                 }
                 const raddresses = bjstx.outs.map(o => address.fromOutputScript(o.script, networks.testnet));
-                if (raddresses.findIndex((k) => k === 'mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp') === -1) {
+                if (raddresses.findIndex((k) => k === saddress) === -1) {
                     return false;
                 }
 
@@ -323,7 +343,7 @@ describe('bitcore', () => {
             15 * 1000, done);
 
             run('bitcore-regtest-cli generate 300').then(() =>
-                run('bitcore-regtest-cli sendtoaddress mmac7YSL3AapEyMGCKHp1Jq6HiEpbztAQp 1')
+                run('bitcore-regtest-cli sendtoaddress ' + saddress + ' 1')
             );
         });
 
