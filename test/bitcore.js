@@ -233,7 +233,7 @@ describe('bitcore', () => {
         const realDone = (anything) => { blockchain.destroy(); done(anything); };
 
         doFirst(blockchain, realDone);
-        setTimeout(() => doLater(), 1000);
+        setTimeout(() => doLater(), 5 * 1000);
     }
 
     describe('subscribe', () => {
@@ -257,27 +257,27 @@ describe('bitcore', () => {
         });
 
         it('socket registers tx mined to address', function (done) {
-            this.timeout(20 * 1000);
+            this.timeout(30 * 1000);
             const address = getAddress();
 
             testBlockchain((blockchain, done) => {
                 blockchain.subscribe(new Set([address]));
                 blockchain.socket.promise.then(socket => {
                     const stream = socket.observe('bitcoind/addresstxid');
-                    testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
+                    testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 20 * 1000, done);
                 });
             }, () => run('bitcore-regtest-cli generatetoaddress 1 ' + address), done);
         });
 
         it('socket registers normal tx', function (done) {
-            this.timeout(20 * 1000);
+            this.timeout(30 * 1000);
             const address = getAddress();
 
             testBlockchain((blockchain, done) => {
                 blockchain.subscribe(new Set([address]));
                 blockchain.socket.promise.then(socket => {
                     const stream = socket.observe('bitcoind/addresstxid');
-                    testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
+                    testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 20 * 1000, done);
                 });
             }, () => {
                 run('bitcore-regtest-cli generate 300').then(() =>
@@ -287,7 +287,7 @@ describe('bitcore', () => {
         });
 
         it('notifications register tx mined to address', function (done) {
-            this.timeout(20 * 1000);
+            this.timeout(30 * 1000);
             const saddress = getAddress();
 
             testBlockchain((blockchain, done) => {
@@ -320,12 +320,12 @@ describe('bitcore', () => {
 
                     return true;
                 },
-                15 * 1000, done);
+                20 * 1000, done);
             }, () => run('bitcore-regtest-cli generatetoaddress 1 ' + saddress), done);
         });
 
         it('notifications register normal tx', function (done) {
-            this.timeout(20 * 1000);
+            this.timeout(30 * 1000);
             const saddress = getAddress();
 
             testBlockchain((blockchain, done) => {
@@ -353,7 +353,7 @@ describe('bitcore', () => {
 
                     return true;
                 },
-                15 * 1000, done);
+                20 * 1000, done);
             }, () => {
                 run('bitcore-regtest-cli generate 300').then(() =>
                     run('bitcore-regtest-cli sendtoaddress ' + saddress + ' 1')
