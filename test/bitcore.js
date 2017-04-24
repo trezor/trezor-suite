@@ -439,10 +439,61 @@ describe('bitcore', () => {
                     if (tx.height !== null) {
                         return false;
                     }
+                    if (tx.timestamp !== null) {
+                        return false;
+                    }
                     return true;
                 }, 30 * 1000, done, 100 * 3);
             }, done);
         });
+
+        it('looks up confirmed transactions', function (done) {
+            this.timeout(2 * 60 * 1000);
+            const addresses = [getAddress(), getAddress(), getAddress()];
+
+            testBlockchain(() => {
+                let p = run('bitcore-regtest-cli generate 300');
+
+                for (let i = 0; i < 100; i++) {
+                    p = p
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[0] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[1] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[2] + ' 1'));
+                }
+                p = p.then(() => run('bitcore-regtest-cli generate 300'));
+                return p;
+            }, (blockchain, done) => {
+                const stream = blockchain.lookupTransactionsStream(addresses, 10000000, 0);
+
+                testStreamMultiple(stream, (tx) => {
+                    if (!hasIntersection(tx.outputAddresses, addresses)) {
+                        return false;
+                    }
+                    if (tx.zcash !== false) {
+                        return false;
+                    }
+                    const bjstx = Transaction.fromHex(tx.hex, false);
+                    if (bjstx.isCoinbase()) {
+                        return false;
+                    }
+                    if (bjstx.getId() !== tx.hash) {
+                        return false;
+                    }
+                    const raddresses = bjstx.outs.map(o => address.fromOutputScript(o.script, networks.testnet));
+                    if (!hasIntersection(raddresses, addresses)) {
+                        return false;
+                    }
+                    if (tx.height == null) {
+                        return false;
+                    }
+                    if (tx.timestamp == null) {
+                        return false;
+                    }
+                    return true;
+                }, 30 * 1000, done, 100 * 3);
+            }, done);
+        });
+
         it('stops bitcore', function () {
             this.timeout(60 * 1000);
             return stopBitcore();
