@@ -228,18 +228,23 @@ describe('bitcore', () => {
         });
     });
 
-    describe('subscribe', () => {
-        let blockchain;
+    function testBlockchain(doFirst, doLater, done) {
+        const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+        const realDone = (anything) => { blockchain.destroy(); done(anything); };
 
-        it('starts bitcore + connects to it', function () {
-            this.timeout(60 * 1000);
-            return startBitcore().then(() => {
-                blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-            });
+        doFirst(blockchain, realDone);
+        setTimeout(() => doLater(), 1000);
+    }
+
+    describe('subscribe', () => {
+        it('starts bitcore', function () {
+            this.timeout(20 * 1000);
+            return startBitcore();
         });
 
         // note - bitcore.js doesn't know about versions bytes, it doesn't check address validity
         it('throws on wrong input', function () {
+            const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             for (const inputs of [['foo'], 'foo', [123], new Set([123])]) {
                 try {
                     blockchain.subscribe(inputs);
@@ -248,108 +253,116 @@ describe('bitcore', () => {
                     assert(true);
                 }
             }
+            blockchain.destroy();
         });
 
         it('socket registers tx mined to address', function (done) {
             this.timeout(20 * 1000);
             const address = getAddress();
-            blockchain.subscribe(new Set([address]));
-            blockchain.socket.promise.then(socket => {
-                const stream = socket.observe('bitcoind/addresstxid');
-                testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
-                run('bitcore-regtest-cli generatetoaddress 1 ' + address);
-            });
+
+            testBlockchain((blockchain, done) => {
+                blockchain.subscribe(new Set([address]));
+                blockchain.socket.promise.then(socket => {
+                    const stream = socket.observe('bitcoind/addresstxid');
+                    testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
+                });
+            }, () => run('bitcore-regtest-cli generatetoaddress 1 ' + address), done);
         });
 
         it('socket registers normal tx', function (done) {
             this.timeout(20 * 1000);
-
             const address = getAddress();
-            blockchain.subscribe(new Set([address]));
-            blockchain.socket.promise.then(socket => {
-                const stream = socket.observe('bitcoind/addresstxid');
-                testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
+
+            testBlockchain((blockchain, done) => {
+                blockchain.subscribe(new Set([address]));
+                blockchain.socket.promise.then(socket => {
+                    const stream = socket.observe('bitcoind/addresstxid');
+                    testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 15 * 1000, done);
+                });
+            }, () => {
                 run('bitcore-regtest-cli generate 300').then(() =>
                     run('bitcore-regtest-cli sendtoaddress ' + address + ' 1')
                 );
-            });
+            }, done);
         });
 
         it('notifications register tx mined to address', function (done) {
             this.timeout(20 * 1000);
-
-            const stream = blockchain.notifications;
             const saddress = getAddress();
-            blockchain.subscribe(new Set([saddress]));
 
-            testStream(stream, tx => {
-                // can be either 1 or 2 with second opreturn
-                if (tx.outputAddresses.length > 2) {
-                    return false;
-                }
-                if (tx.outputAddresses[0] !== saddress) {
-                    return false;
-                }
-                if (tx.zcash !== false) {
-                    return false;
-                }
-                const bjstx = Transaction.fromHex(tx.hex, false);
-                if (!bjstx.isCoinbase()) {
-                    return false;
-                }
-                if (bjstx.getId() !== tx.hash) {
-                    return false;
-                }
-                const raddress = address.fromOutputScript(bjstx.outs[0].script, networks.testnet);
+            testBlockchain((blockchain, done) => {
+                const stream = blockchain.notifications;
+                blockchain.subscribe(new Set([saddress]));
 
-                if (raddress !== saddress) {
-                    return false;
-                }
+                testStream(stream, tx => {
+                    // can be either 1 or 2 with second opreturn
+                    if (tx.outputAddresses.length > 2) {
+                        return false;
+                    }
+                    if (tx.outputAddresses[0] !== saddress) {
+                        return false;
+                    }
+                    if (tx.zcash !== false) {
+                        return false;
+                    }
+                    const bjstx = Transaction.fromHex(tx.hex, false);
+                    if (!bjstx.isCoinbase()) {
+                        return false;
+                    }
+                    if (bjstx.getId() !== tx.hash) {
+                        return false;
+                    }
+                    const raddress = address.fromOutputScript(bjstx.outs[0].script, networks.testnet);
 
-                return true;
-            },
-            15 * 1000, done);
-            run('bitcore-regtest-cli generatetoaddress 1 ' + saddress);
+                    if (raddress !== saddress) {
+                        return false;
+                    }
+
+                    return true;
+                },
+                15 * 1000, done);
+            }, () => run('bitcore-regtest-cli generatetoaddress 1 ' + saddress), done);
         });
 
         it('notifications register normal tx', function (done) {
             this.timeout(20 * 1000);
-
-            const stream = blockchain.notifications;
             const saddress = getAddress();
-            blockchain.subscribe(new Set([saddress]));
 
-            testStream(stream, tx => {
-                if (tx.outputAddresses.findIndex((k) => k === saddress) === -1) {
-                    return false;
-                }
-                if (tx.zcash !== false) {
-                    return false;
-                }
-                const bjstx = Transaction.fromHex(tx.hex, false);
-                if (bjstx.isCoinbase()) {
-                    return false;
-                }
-                if (bjstx.getId() !== tx.hash) {
-                    return false;
-                }
-                const raddresses = bjstx.outs.map(o => address.fromOutputScript(o.script, networks.testnet));
-                if (raddresses.findIndex((k) => k === saddress) === -1) {
-                    return false;
-                }
+            testBlockchain((blockchain, done) => {
+                const stream = blockchain.notifications;
+                blockchain.subscribe(new Set([saddress]));
 
-                return true;
-            },
-            15 * 1000, done);
+                testStream(stream, tx => {
+                    if (tx.outputAddresses.findIndex((k) => k === saddress) === -1) {
+                        return false;
+                    }
+                    if (tx.zcash !== false) {
+                        return false;
+                    }
+                    const bjstx = Transaction.fromHex(tx.hex, false);
+                    if (bjstx.isCoinbase()) {
+                        return false;
+                    }
+                    if (bjstx.getId() !== tx.hash) {
+                        return false;
+                    }
+                    const raddresses = bjstx.outs.map(o => address.fromOutputScript(o.script, networks.testnet));
+                    if (raddresses.findIndex((k) => k === saddress) === -1) {
+                        return false;
+                    }
 
-            run('bitcore-regtest-cli generate 300').then(() =>
-                run('bitcore-regtest-cli sendtoaddress ' + saddress + ' 1')
-            );
+                    return true;
+                },
+                15 * 1000, done);
+            }, () => {
+                run('bitcore-regtest-cli generate 300').then(() =>
+                    run('bitcore-regtest-cli sendtoaddress ' + saddress + ' 1')
+                );
+            }, done);
         });
 
         it('stops bitcore', function () {
             this.timeout(60 * 1000);
-            blockchain.destroy();
             return stopBitcore();
         });
     });
