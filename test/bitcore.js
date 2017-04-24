@@ -436,10 +436,10 @@ describe('bitcore', () => {
                     if (!hasIntersection(raddresses, addresses)) {
                         return false;
                     }
-                    if (tx.height !== null) {
+                    if (tx.height != null) {
                         return false;
                     }
-                    if (tx.timestamp !== null) {
+                    if (tx.timestamp != null) {
                         return false;
                     }
                     return true;
