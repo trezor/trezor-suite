@@ -33,19 +33,31 @@ function stopBitcore() {
           .then(() => new Promise(resolve => setTimeout(resolve, 15 * 1000)));
 }
 
-function testStream(stream, test, timeout, done) {
+function testStreamMultiple(stream, test, timeout, done, times) {
     let ended = false;
-    const fun = (value, detach) => {
+    let i = 0;
+    const thisDone = (detach, anything) => {
         ended = true;
         detach();
-        try {
-            if (test(value)) {
-                done();
-            } else {
-                done(new Error('Value does not meet test.'));
+        done(anything);
+    };
+
+    const fun = (value, detach) => {
+        if (typeof value === 'object' && value instanceof Array) {
+            value.forEach(v => fun(v, detach));
+        } else {
+            try {
+                if (test(value)) {
+                    i++;
+                    if (i === times) {
+                        thisDone(detach);
+                    }
+                } else {
+                    thisDone(detach, new Error('Value does not meet test.'));
+                }
+            } catch (e) {
+                thisDone(detach, new Error('Value does not meet test.'));
             }
-        } catch (e) {
-            done(new Error('Value does not meet test.'));
         }
     };
     stream.values.attach(fun);
@@ -57,12 +69,25 @@ function testStream(stream, test, timeout, done) {
     }, timeout);
 }
 
+function testStream(stream, test, timeout, done) {
+    return testStreamMultiple(stream, test, timeout, done, 1);
+}
+
+function testBlockchain(doFirst, doLater, done) {
+    const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+    const realDone = (anything) => { blockchain.destroy(); done(anything); };
+
+    Promise.resolve(doFirst(blockchain, realDone)).then(() => {
+        setTimeout(() => doLater(blockchain, realDone), 5 * 1000);
+    });
+}
+
 const hdnode = HDNode.fromBase58(
     'tpubDD7tXK8KeQ3YY83yWq755fHY2JW8Ha8Q765tknUM5rSvjPcGWfUppDFMpQ1ScziKfW3ZNtZvAD7M3u7bSs7HofjTD3KP3YxPK7X6hwV8Rk2',
     networks.testnet
 );
 
-let i = -1;
+let i = 0;
 function getAddress() {
     i = i + 1;
     const addressNode = hdnode.derive(i);
@@ -228,14 +253,6 @@ describe('bitcore', () => {
         });
     });
 
-    function testBlockchain(doFirst, doLater, done) {
-        const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-        const realDone = (anything) => { blockchain.destroy(); done(anything); };
-
-        doFirst(blockchain, realDone);
-        setTimeout(() => doLater(), 5 * 1000);
-    }
-
     describe('subscribe', () => {
         it('starts bitcore', function () {
             this.timeout(20 * 1000);
@@ -361,6 +378,39 @@ describe('bitcore', () => {
             }, done);
         });
 
+        it('stops bitcore', function () {
+            this.timeout(60 * 1000);
+            return stopBitcore();
+        });
+    });
+
+    describe('lookupTransactionsStream', () => {
+        it('starts bitcore', function () {
+            this.timeout(20 * 1000);
+            return startBitcore();
+        });
+
+        it('looks up unconfirmed transactions', function (done) {
+            this.timeout(2 * 60 * 1000);
+            const addresses = [getAddress(), getAddress(), getAddress()];
+
+            testBlockchain(() => {
+                let p = run('bitcore-regtest-cli generate 300');
+
+                for (let i = 0; i < 100; i++) {
+                    p = p
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[0] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[1] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[2] + ' 1'));
+                }
+                return p;
+            }, (blockchain, done) => {
+                const stream = blockchain.lookupTransactionsStream(addresses, 10000000, 0);
+                testStreamMultiple(stream, (tx) => {
+                    return tx.height == null;
+                }, 30 * 1000, done, 100 * 3);
+            }, done);
+        });
         it('stops bitcore', function () {
             this.timeout(60 * 1000);
             return stopBitcore();
