@@ -50,7 +50,7 @@
     "babel-preset-es2015": "6.3.13",
     "babel-register": "^6.24.1",
     "babelify": "7.2.0",
-    "browserify": "12.0.1",
+    "browserify": "^14.0.0",
     "browserify-shim": "^3.8.14",
     "eslint": "^3.19.0",
     "eslint-plugin-flowtype": "^2.30.4",
@@ -71,6 +71,6 @@
     "uglifyify": "3.0.1",
     "virtual-dom": "2.1.1",
     "watchify": "3.6.0",
-    "workerify": "^0.3.0"
+    "workerify": "runn1ng/workerify"
   }
 }
