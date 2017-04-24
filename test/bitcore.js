@@ -82,6 +82,17 @@ function testBlockchain(doFirst, doLater, done) {
     });
 }
 
+function hasIntersection(array1, array2) {
+    for (const i1 of array1) {
+        for (const i2 of array2) {
+            if (i1 === i2) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 const hdnode = HDNode.fromBase58(
     'tpubDD7tXK8KeQ3YY83yWq755fHY2JW8Ha8Q765tknUM5rSvjPcGWfUppDFMpQ1ScziKfW3ZNtZvAD7M3u7bSs7HofjTD3KP3YxPK7X6hwV8Rk2',
     networks.testnet
@@ -406,8 +417,29 @@ describe('bitcore', () => {
                 return p;
             }, (blockchain, done) => {
                 const stream = blockchain.lookupTransactionsStream(addresses, 10000000, 0);
+
                 testStreamMultiple(stream, (tx) => {
-                    return tx.height == null;
+                    if (!hasIntersection(tx.outputAddresses, addresses)) {
+                        return false;
+                    }
+                    if (tx.zcash !== false) {
+                        return false;
+                    }
+                    const bjstx = Transaction.fromHex(tx.hex, false);
+                    if (bjstx.isCoinbase()) {
+                        return false;
+                    }
+                    if (bjstx.getId() !== tx.hash) {
+                        return false;
+                    }
+                    const raddresses = bjstx.outs.map(o => address.fromOutputScript(o.script, networks.testnet));
+                    if (!hasIntersection(raddresses, addresses)) {
+                        return false;
+                    }
+                    if (tx.height !== null) {
+                        return false;
+                    }
+                    return true;
                 }, 30 * 1000, done, 100 * 3);
             }, done);
         });
