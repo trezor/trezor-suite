@@ -46,17 +46,19 @@ function testStreamMultiple(stream, test, timeout, done, times) {
         if (typeof value === 'object' && value instanceof Array) {
             value.forEach(v => fun(v, detach));
         } else {
-            try {
-                if (test(value)) {
-                    i++;
-                    if (i === times) {
-                        thisDone(detach);
+            if (!ended) {
+                try {
+                    if (test(value)) {
+                        i++;
+                        if (i === times) {
+                            thisDone(detach);
+                        }
+                    } else {
+                        thisDone(detach, new Error('Value does not meet test.'));
                     }
-                } else {
+                } catch (e) {
                     thisDone(detach, new Error('Value does not meet test.'));
                 }
-            } catch (e) {
-                thisDone(detach, new Error('Value does not meet test.'));
             }
         }
     };
