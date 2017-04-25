@@ -547,6 +547,19 @@ describe('bitcore', () => {
             }, done);
         });
 
+        it('streams error when sent error from bitcore', function (done) {
+            const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+            const addresses = [getAddress(), getAddress(), getAddress()];
+            const stream = blockchain.lookupTransactionsStream(addresses, 0, 10000000);
+
+            testStream(stream, (e) => {
+                if (typeof e === 'object' && e instanceof Error) {
+                    return true;
+                }
+                return false;
+            }, 1000, done);
+        });
+
         it('stops bitcore', function () {
             this.timeout(60 * 1000);
             return stopBitcore();
