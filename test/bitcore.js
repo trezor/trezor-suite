@@ -8,7 +8,7 @@ import {Socket} from '../lib/socketio-worker/outside';
 
 import {run} from '../test_helpers/_node_client.js';
 
-import {address, Transaction, networks, HDNode} from 'bitcoinjs-lib-zcash';
+import bitcoin from 'bitcoinjs-lib-zcash';
 
 // hack for workers in both node and browser
 const socketWorkerFactory = () => {
@@ -95,9 +95,10 @@ function hasIntersection(array1, array2) {
     return false;
 }
 
-const hdnode = HDNode.fromBase58(
-    'tpubDD7tXK8KeQ3YY83yWq755fHY2JW8Ha8Q765tknUM5rSvjPcGWfUppDFMpQ1ScziKfW3ZNtZvAD7M3u7bSs7HofjTD3KP3YxPK7X6hwV8Rk2',
-    networks.testnet
+const hdnode = bitcoin.HDNode.fromBase58(
+    'tprv8ZgxMBicQKsPcsbCVeqqF1KVdH7gwDJbxbzpCxDUsoXHdb6SnTPYxdwSAKDC6KKJzv7khnNWRAJQsRA8BBQyiSfYnRt6zuu4vZQGKjeW4YF',
+//     'tpubDD7tXK8KeQ3YY83yWq755fHY2JW8Ha8Q765tknUM5rSvjPcGWfUppDFMpQ1ScziKfW3ZNtZvAD7M3u7bSs7HofjTD3KP3YxPK7X6hwV8Rk2',
+    bitcoin.networks.testnet
 );
 
 let i = 0;
@@ -105,6 +106,31 @@ function getAddress() {
     i = i + 1;
     const addressNode = hdnode.derive(i);
     return addressNode.getAddress();
+}
+
+function makeTx(inTxHex, inTxOutputAddresses, outAddress) {
+    function findInput() {
+        for (let j = i; j >= 0; j--) {
+            const nodeaddress = hdnode.derive(j).getAddress();
+            for (let k = 0; k < inTxOutputAddresses.length; k++) {
+                if (inTxOutputAddresses === nodeaddress) {
+                    return {
+                        ecpair: hdnode.derive(j).keypair,
+                        outputid: k,
+                    };
+                }
+            }
+        }
+        throw new Error('Not found');
+    }
+
+    const input = findInput();
+    const transaction = bitcoin.Transaction.fromHex(inTxHex);
+    const builder = new bitcoin.TransactionBuilder(bitcoin.networks.testnet);
+    builder.addInput(transaction, input.outputid, 0);
+    builder.addOutput(outAddress, 50000000);
+    builder.sign(0, input.ecpair);
+    return builder.tx.toHex();
 }
 
 describe('bitcore', () => {
@@ -335,14 +361,14 @@ describe('bitcore', () => {
                     if (tx.zcash !== false) {
                         return false;
                     }
-                    const bjstx = Transaction.fromHex(tx.hex, false);
+                    const bjstx = bitcoin.Transaction.fromHex(tx.hex, false);
                     if (!bjstx.isCoinbase()) {
                         return false;
                     }
                     if (bjstx.getId() !== tx.hash) {
                         return false;
                     }
-                    const raddress = address.fromOutputScript(bjstx.outs[0].script, networks.testnet);
+                    const raddress = bitcoin.address.fromOutputScript(bjstx.outs[0].script, bitcoin.networks.testnet);
 
                     if (raddress !== saddress) {
                         return false;
@@ -353,6 +379,9 @@ describe('bitcore', () => {
                 20 * 1000, done);
             }, () => run('bitcore-regtest-cli generatetoaddress 1 ' + saddress), done);
         });
+
+        // saving transactions for later sending
+        const inTxs = [];
 
         it('notifications register normal tx', function (done) {
             this.timeout(30 * 1000);
@@ -369,17 +398,19 @@ describe('bitcore', () => {
                     if (tx.zcash !== false) {
                         return false;
                     }
-                    const bjstx = Transaction.fromHex(tx.hex, false);
+                    const bjstx = bitcoin.Transaction.fromHex(tx.hex, false);
                     if (bjstx.isCoinbase()) {
                         return false;
                     }
                     if (bjstx.getId() !== tx.hash) {
                         return false;
                     }
-                    const raddresses = bjstx.outs.map(o => address.fromOutputScript(o.script, networks.testnet));
+                    const raddresses = bjstx.outs.map(o => bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet));
                     if (raddresses.findIndex((k) => k === saddress) === -1) {
                         return false;
                     }
+
+                    inTxs.push(tx);
 
                     return true;
                 },
@@ -388,6 +419,24 @@ describe('bitcore', () => {
                 run('bitcore-regtest-cli generate 300').then(() =>
                     run('bitcore-regtest-cli sendtoaddress ' + saddress + ' 1')
                 );
+            }, done);
+        });
+
+        it('socket registers outgoing tx', function (done) {
+            this.timeout(30 * 1000);
+            const address = getAddress();
+
+            testBlockchain((blockchain, done) => {
+                blockchain.subscribe(new Set([address]));
+                blockchain.socket.promise.then(socket => {
+                    const stream = socket.observe('bitcoind/addresstxid');
+                    testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 20 * 1000, done);
+                });
+            }, () => {
+                const inTx = inTxs.shift();
+
+                const outTx = makeTx(inTx.hex, inTx.outputAddresses, address);
+                run('bitcore-regtest-cli sendrawtransaction "' + outTx + '" true');
             }, done);
         });
 
@@ -427,14 +476,14 @@ describe('bitcore', () => {
                     if (tx.zcash !== false) {
                         return false;
                     }
-                    const bjstx = Transaction.fromHex(tx.hex, false);
+                    const bjstx = bitcoin.Transaction.fromHex(tx.hex, false);
                     if (bjstx.isCoinbase()) {
                         return false;
                     }
                     if (bjstx.getId() !== tx.hash) {
                         return false;
                     }
-                    const raddresses = bjstx.outs.map(o => address.fromOutputScript(o.script, networks.testnet));
+                    const raddresses = bjstx.outs.map(o => bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet));
                     if (!hasIntersection(raddresses, addresses)) {
                         return false;
                     }
@@ -474,14 +523,14 @@ describe('bitcore', () => {
                     if (tx.zcash !== false) {
                         return false;
                     }
-                    const bjstx = Transaction.fromHex(tx.hex, false);
+                    const bjstx = bitcoin.Transaction.fromHex(tx.hex, false);
                     if (bjstx.isCoinbase()) {
                         return false;
                     }
                     if (bjstx.getId() !== tx.hash) {
                         return false;
                     }
-                    const raddresses = bjstx.outs.map(o => address.fromOutputScript(o.script, networks.testnet));
+                    const raddresses = bjstx.outs.map(o => bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet));
                     if (!hasIntersection(raddresses, addresses)) {
                         return false;
                     }
