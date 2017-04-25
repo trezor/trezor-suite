@@ -115,7 +115,7 @@ function makeTx(inTxHex, inTxOutputAddresses, outAddress) {
             for (let k = 0; k < inTxOutputAddresses.length; k++) {
                 if (inTxOutputAddresses[k] === nodeaddress) {
                     return {
-                        ecpair: hdnode.derive(j).keypair,
+                        ecpair: hdnode.derive(j).keyPair,
                         outputid: k,
                     };
                 }
