@@ -96,7 +96,7 @@ function hasIntersection(array1, array2) {
 }
 
 const hdnode = bitcoin.HDNode.fromBase58(
-    'tprv8ZgxMBicQKsPcsbCVeqqF1KVdH7gwDJbxbzpCxDUsoXHdb6SnTPYxdwSAKDC6KKJzv7khnNWRAJQsRA8BBQyiSfYnRt6zuu4vZQGKjeW4YF',
+    'tprv8ZgxMBicQKsPdfrBPLV36ipU9BHcXhufs1yjchpUWjryXmWEDtciLdgUWXQBGbTqxjzgCxZxA5vMeqSmoBaFjRZLHbhBzzVGZZPmzHqHaSm',
 //     'tpubDD7tXK8KeQ3YY83yWq755fHY2JW8Ha8Q765tknUM5rSvjPcGWfUppDFMpQ1ScziKfW3ZNtZvAD7M3u7bSs7HofjTD3KP3YxPK7X6hwV8Rk2',
     bitcoin.networks.testnet
 );
