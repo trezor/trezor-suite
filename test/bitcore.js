@@ -130,7 +130,7 @@ function makeTx(inTxHex, inTxOutputAddresses, outAddress) {
     builder.addInput(transaction, input.outputid, 0);
     builder.addOutput(outAddress, 50000000);
     builder.sign(0, input.ecpair);
-    return builder.tx.toHex();
+    return builder.buildIncomplete().toHex();
 }
 
 describe('bitcore', () => {
@@ -380,12 +380,13 @@ describe('bitcore', () => {
             }, () => run('bitcore-regtest-cli generatetoaddress 1 ' + saddress), done);
         });
 
-        // saving transactions for later sending
-        const inTxs = [];
+        let lastTx = null;
+        let lastAddress = null;
 
         it('notifications register normal tx', function (done) {
             this.timeout(30 * 1000);
             const saddress = getAddress();
+            lastAddress = saddress;
 
             testBlockchain((blockchain, done) => {
                 const stream = blockchain.notifications;
@@ -410,7 +411,7 @@ describe('bitcore', () => {
                         return false;
                     }
 
-                    inTxs.push(tx);
+                    lastTx = tx;
 
                     return true;
                 },
@@ -424,18 +425,19 @@ describe('bitcore', () => {
 
         it('socket registers outgoing tx', function (done) {
             this.timeout(30 * 1000);
-            const address = getAddress();
+            if (lastTx == null) {
+                done(new Error('previous null'));
+            }
+            const outAddress = getAddress();
 
             testBlockchain((blockchain, done) => {
-                blockchain.subscribe(new Set([address]));
+                blockchain.subscribe(new Set([lastAddress]));
                 blockchain.socket.promise.then(socket => {
                     const stream = socket.observe('bitcoind/addresstxid');
                     testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 20 * 1000, done);
                 });
             }, () => {
-                const inTx = inTxs.shift();
-
-                const outTx = makeTx(inTx.hex, inTx.outputAddresses, address);
+                const outTx = makeTx(lastTx.hex, lastTx.outputAddresses, outAddress);
                 run('bitcore-regtest-cli sendrawtransaction "' + outTx + '" true');
             }, done);
         });
