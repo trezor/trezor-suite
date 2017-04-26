@@ -130,7 +130,11 @@ function makeTx(inTxHex, inTxOutputAddresses, outAddress) {
     builder.addInput(transaction, input.outputid, 0);
     builder.addOutput(outAddress, 50000000);
     builder.sign(0, input.ecpair);
-    return builder.buildIncomplete().toHex();
+    const newTx = builder.buildIncomplete();
+    return {
+        hex: newTx.toHex(),
+        id: newTx.getId(),
+    };
 }
 
 describe('bitcore', () => {
@@ -386,6 +390,8 @@ describe('bitcore', () => {
         it('notifications register normal tx', function (done) {
             this.timeout(30 * 1000);
             const saddress = getAddress();
+
+            // keep address for further tests
             lastAddress = saddress;
 
             testBlockchain((blockchain, done) => {
@@ -411,6 +417,7 @@ describe('bitcore', () => {
                         return false;
                     }
 
+                    // keep tx for further tests
                     lastTx = tx;
 
                     return true;
@@ -437,7 +444,7 @@ describe('bitcore', () => {
                     testStream(stream, a => /^[a-f0-9]{64}$/.test(a.txid), 20 * 1000, done);
                 });
             }, () => {
-                const outTx = makeTx(lastTx.hex, lastTx.outputAddresses, outAddress);
+                const outTx = makeTx(lastTx.hex, lastTx.outputAddresses, outAddress).hex;
                 run('bitcore-regtest-cli sendrawtransaction "' + outTx + '" true');
             }, done);
         });
@@ -587,6 +594,8 @@ describe('bitcore', () => {
         });
     }
 
+    let lastTx = null;
+
     describe('lookupTransactions', () => {
         it('starts bitcore', function () {
             this.timeout(20 * 1000);
@@ -681,6 +690,9 @@ describe('bitcore', () => {
                     if (tx.timestamp == null) {
                         return false;
                     }
+
+                    // keep tx for further tests
+                    lastTx = tx;
                     return true;
                 }, done);
             }, done);
@@ -698,6 +710,49 @@ describe('bitcore', () => {
             }, () => {
                 done();
             });
+        });
+
+        it('stops bitcore', function () {
+            this.timeout(60 * 1000);
+            return stopBitcore();
+        });
+    });
+
+    describe('lookupTransaction + sendTransaction', () => {
+        let outTx;
+
+        it('starts bitcore', function () {
+            this.timeout(20 * 1000);
+            return startBitcore();
+        });
+
+        it('sends tx', function (done) {
+            this.timeout(30 * 1000);
+            if (lastTx == null) {
+                done(new Error('previous null'));
+            }
+            const outAddress = getAddress();
+
+            testBlockchain((blockchain, done) => {
+                outTx = makeTx(lastTx.hex, lastTx.outputAddresses, outAddress);
+                blockchain.sendTransaction(outTx.hex).then(id => {
+                    assert(outTx.id === id);
+                    done();
+                });
+            }, () => {}, done);
+        });
+
+        it('looks up tx', function (done) {
+            this.timeout(30 * 1000);
+            if (lastTx == null) {
+                done(new Error('previous null'));
+            }
+            testBlockchain((blockchain, done) => {
+                blockchain.lookupTransaction(outTx.id).then((tx) => {
+                    assert(tx.hash === outTx.id);
+                    done();
+                });
+            }, () => {}, done);
         });
 
         it('stops bitcore', function () {
