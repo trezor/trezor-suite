@@ -549,7 +549,9 @@ describe('bitcore', () => {
 
         it('streams error when sent error from bitcore', function (done) {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+
             const addresses = [getAddress(), getAddress(), getAddress()];
+
             const stream = blockchain.lookupTransactionsStream(addresses, 0, 10000000);
 
             testStream(stream, (e) => {
@@ -558,6 +560,143 @@ describe('bitcore', () => {
                 }
                 return false;
             }, 1000, done);
+        });
+
+        it('stops bitcore', function () {
+            this.timeout(60 * 1000);
+            return stopBitcore();
+        });
+    });
+
+    function testTxsPromise(promise, test, done) {
+        promise.then((txs) => {
+            for (const tx of txs) {
+                if (!test(tx)) {
+                    done(new Error('Value does not meet test.'));
+                }
+            }
+            done();
+        },
+        (error) => {
+            if (error != null) {
+                done(error);
+            } else {
+                done(new Error());
+            }
+        });
+    }
+
+    describe('lookupTransactions', () => {
+        it('starts bitcore', function () {
+            this.timeout(20 * 1000);
+            return startBitcore();
+        });
+
+        it('looks up unconfirmed transactions', function (done) {
+            this.timeout(2 * 60 * 1000);
+            const addresses = [getAddress(), getAddress(), getAddress()];
+
+            testBlockchain(() => {
+                let p = run('bitcore-regtest-cli generate 300');
+
+                for (let i = 0; i < 100; i++) {
+                    p = p
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[0] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[1] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[2] + ' 1'));
+                }
+                return p;
+            }, (blockchain, done) => {
+                const promise = blockchain.lookupTransactions(addresses, 10000000, 0);
+
+                testTxsPromise(promise, (tx) => {
+                    if (!hasIntersection(tx.outputAddresses, addresses)) {
+                        return false;
+                    }
+                    if (tx.zcash !== false) {
+                        return false;
+                    }
+                    const bjstx = bitcoin.Transaction.fromHex(tx.hex, false);
+                    if (bjstx.isCoinbase()) {
+                        return false;
+                    }
+                    if (bjstx.getId() !== tx.hash) {
+                        return false;
+                    }
+                    const raddresses = bjstx.outs.map(o => bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet));
+                    if (!hasIntersection(raddresses, addresses)) {
+                        return false;
+                    }
+                    if (tx.height != null) {
+                        return false;
+                    }
+                    if (tx.timestamp != null) {
+                        return false;
+                    }
+                    return true;
+                }, done);
+            }, done);
+        });
+
+        it('looks up confirmed transactions', function (done) {
+            this.timeout(2 * 60 * 1000);
+            const addresses = [getAddress(), getAddress(), getAddress()];
+
+            testBlockchain(() => {
+                let p = run('bitcore-regtest-cli generate 300');
+
+                for (let i = 0; i < 100; i++) {
+                    p = p
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[0] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[1] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[2] + ' 1'));
+                }
+                p = p.then(() => run('bitcore-regtest-cli generate 300'));
+                return p;
+            }, (blockchain, done) => {
+                const promise = blockchain.lookupTransactions(addresses, 10000000, 0);
+
+                testTxsPromise(promise, (tx) => {
+                    if (!hasIntersection(tx.outputAddresses, addresses)) {
+                        return false;
+                    }
+                    if (tx.zcash !== false) {
+                        return false;
+                    }
+                    const bjstx = bitcoin.Transaction.fromHex(tx.hex, false);
+                    if (bjstx.isCoinbase()) {
+                        return false;
+                    }
+                    if (bjstx.getId() !== tx.hash) {
+                        return false;
+                    }
+                    const raddresses = bjstx.outs.map(o => bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet));
+                    if (!hasIntersection(raddresses, addresses)) {
+                        return false;
+                    }
+                    if (tx.height == null) {
+                        return false;
+                    }
+                    if (tx.timestamp == null) {
+                        return false;
+                    }
+                    return true;
+                }, done);
+            }, done);
+        });
+
+        it('streams error when sent error from bitcore', function (done) {
+            const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
+
+            const addresses = [getAddress(), getAddress(), getAddress()];
+
+            const promise = blockchain.lookupTransactions(addresses, 0, 10000000);
+
+            promise.then(() => {
+                done(new Error('Should reject.'));
+            }, () => {
+                done();
+            });
         });
 
         it('stops bitcore', function () {
