@@ -559,7 +559,7 @@ describe('bitcore', () => {
                     return true;
                 }
                 return false;
-            }, 1000, done);
+            }, 20 * 1000, done);
         });
 
         it('stops bitcore', function () {
@@ -573,6 +573,7 @@ describe('bitcore', () => {
             for (const tx of txs) {
                 if (!test(tx)) {
                     done(new Error('Value does not meet test.'));
+                    return;
                 }
             }
             done();
