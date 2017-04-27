@@ -649,7 +649,7 @@ describe('bitcore', () => {
         });
 
         it('looks up confirmed transactions', function (done) {
-            this.timeout(2 * 60 * 1000);
+            this.timeout(5 * 60 * 1000);
             const addresses = [getAddress(), getAddress(), getAddress()];
 
             testBlockchain(() => {
@@ -735,10 +735,10 @@ describe('bitcore', () => {
 
             testBlockchain((blockchain, done) => {
                 outTx = makeTx(lastTx.hex, lastTx.outputAddresses, outAddress);
-                blockchain.sendTransaction(outTx.hex).then(id => {
+                blockchain.sendTransaction(outTx.hex, true).then(id => {
                     assert(outTx.id === id);
                     done();
-                });
+                }, err => done(err));
             }, () => {}, done);
         });
 
@@ -751,7 +751,7 @@ describe('bitcore', () => {
                 blockchain.lookupTransaction(outTx.id).then((tx) => {
                     assert(tx.hash === outTx.id);
                     done();
-                });
+                }, err => done(err));
             }, () => {}, done);
         });
 
