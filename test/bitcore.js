@@ -695,6 +695,46 @@ describe('bitcore', () => {
         });
     });
 
+    describe('sync status', () => {
+        it('looks up sync status', function (done) {
+            this.timeout(30 * 1000);
+            if (lastTx == null) {
+                done(new Error('previous null'));
+            }
+            testBlockchain((blockchain, done) => {
+                blockchain.lookupSyncStatus().then(oldStatus => {
+                    return run('bitcore-regtest-cli generate 300').then(() => {
+                        return blockchain.lookupSyncStatus().then(newStatus => {
+                            assert(typeof oldStatus.height === 'number');
+                            assert(typeof newStatus.height === 'number');
+                            assert(newStatus.height > oldStatus.height);
+                            done();
+                        });
+                    });
+                }).catch((e) => {
+                    done(e);
+                });
+            }, () => {}, done);
+        });
+    });
+
+    describe('blockhash', () => {
+        it('looks up blockhash', function (done) {
+            this.timeout(30 * 1000);
+            if (lastTx == null) {
+                done(new Error('previous null'));
+            }
+            testBlockchain((blockchain, done) => {
+                blockchain.lookupBlockHash(0).then(hash => {
+                    assert(hash === '000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943');
+                    done();
+                }).catch((e) => {
+                    done(e);
+                });
+            }, () => {}, done);
+        });
+    });
+
     describe('lookupTransaction + sendTransaction', () => {
         let outTx;
 
