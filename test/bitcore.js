@@ -718,9 +718,7 @@ describe('bitcore', () => {
                 done(new Error('previous null'));
             }
             testBlockchain((blockchain, done) => {
-                console.warn("testBlockchain in");
                 blockchain.lookupTransaction(outTx.id).then((tx) => {
-                    console.warn("lookupTransaction in, assert");
                     assert(tx.hash === outTx.id);
                     done();
                 }, err => done(err));
