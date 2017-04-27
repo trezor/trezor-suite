@@ -1,11 +1,4 @@
-const iFetch = require('isomorphic-fetch');
-
-let myFetch;
-if (typeof fetch === 'undefined') {
-    myFetch = iFetch;
-} else {
-    myFetch = fetch;
-}
+const myFetch = require('isomorphic-fetch');
 
 function run(stuff) {
     return myFetch('http://localhost:1234', {
