@@ -24,6 +24,12 @@ matrix:
         - test_helpers/install_nodejs4.sh
         - sudo test_helpers/install_regtest.sh
       env: TEST_SUITE=unit
+    - before_script:
+        - export DISPLAY=:99.0
+        - sh -e /etc/init.d/xvfb start
+        - test_helpers/install_nodejs4.sh
+        - sudo test_helpers/install_regtest.sh
+      env: TEST_SUITE=coverage
 env:
   - TEST_SUITE=eslint
   - TEST_SUITE=flow
