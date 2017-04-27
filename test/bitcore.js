@@ -559,6 +559,23 @@ describe('bitcore', () => {
                 return false;
             }, 20 * 1000, done);
         });
+
+        it('streams error when bitcore turned off', function (done) {
+            const addresses = [getAddress(), getAddress(), getAddress()];
+
+            testBlockchain(() => {
+                return stopBitcore();
+            }, (blockchain, done) => {
+                const stream = blockchain.lookupTransactionsStream(addresses, 10000000, 0);
+
+                testStreamMultiple(stream, (e) => {
+                    if (typeof e === 'object' && e instanceof Error) {
+                        return true;
+                    }
+                    return false;
+                }, 30 * 1000, done, 100 * 3);
+            }, done);
+        });
     });
 
     function testTxsPromise(promise, test, done) {
@@ -583,6 +600,11 @@ describe('bitcore', () => {
     let lastTx = null;
 
     describe('lookupTransactions', () => {
+        it('starts bitcore', function () {
+            this.timeout(60 * 1000);
+            return startBitcore();
+        });
+
         it('looks up unconfirmed transactions', function (done) {
             this.timeout(2 * 60 * 1000);
             const addresses = [getAddress(), getAddress(), getAddress()];
