@@ -448,19 +448,9 @@ describe('bitcore', () => {
                 run('bitcore-regtest-cli sendrawtransaction "' + outTx + '" true');
             }, done);
         });
-
-        it('stops bitcore', function () {
-            this.timeout(60 * 1000);
-            return stopBitcore();
-        });
     });
 
     describe('lookupTransactionsStream', () => {
-        it('starts bitcore', function () {
-            this.timeout(20 * 1000);
-            return startBitcore();
-        });
-
         it('looks up unconfirmed transactions', function (done) {
             this.timeout(2 * 60 * 1000);
             const addresses = [getAddress(), getAddress(), getAddress()];
@@ -568,11 +558,6 @@ describe('bitcore', () => {
                 return false;
             }, 20 * 1000, done);
         });
-
-        it('stops bitcore', function () {
-            this.timeout(60 * 1000);
-            return stopBitcore();
-        });
     });
 
     function testTxsPromise(promise, test, done) {
@@ -597,11 +582,6 @@ describe('bitcore', () => {
     let lastTx = null;
 
     describe('lookupTransactions', () => {
-        it('starts bitcore', function () {
-            this.timeout(20 * 1000);
-            return startBitcore();
-        });
-
         it('looks up unconfirmed transactions', function (done) {
             this.timeout(2 * 60 * 1000);
             const addresses = [getAddress(), getAddress(), getAddress()];
@@ -711,20 +691,10 @@ describe('bitcore', () => {
                 done();
             });
         });
-
-        it('stops bitcore', function () {
-            this.timeout(60 * 1000);
-            return stopBitcore();
-        });
     });
 
     describe('lookupTransaction + sendTransaction', () => {
         let outTx;
-
-        it('starts bitcore', function () {
-            this.timeout(20 * 1000);
-            return startBitcore();
-        });
 
         it('sends tx', function (done) {
             this.timeout(30 * 1000);
@@ -748,16 +718,13 @@ describe('bitcore', () => {
                 done(new Error('previous null'));
             }
             testBlockchain((blockchain, done) => {
+                console.warn("testBlockchain in");
                 blockchain.lookupTransaction(outTx.id).then((tx) => {
+                    console.warn("lookupTransaction in, assert");
                     assert(tx.hash === outTx.id);
                     done();
                 }, err => done(err));
             }, () => {}, done);
-        });
-
-        it('stops bitcore', function () {
-            this.timeout(60 * 1000);
-            return stopBitcore();
         });
     });
 });
