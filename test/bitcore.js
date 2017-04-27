@@ -725,4 +725,14 @@ describe('bitcore', () => {
             }, () => {}, done);
         });
     });
+
+    describe('disconnect errors', () => {
+        it('throws error on disconnect', function (done) {
+            this.timeout(30 * 1000);
+
+            testBlockchain((blockchain, done) => {
+                testStream(blockchain.errors, a => a instanceof Error, 20 * 1000, done);
+            }, () => stopBitcore(), done);
+        });
+    });
 });
