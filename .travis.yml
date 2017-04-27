@@ -4,6 +4,12 @@ before_script: test_helpers/install_nodejs4.sh
 matrix:
   include:
     - before_script:
+        - export DISPLAY=:99.0
+        - sh -e /etc/init.d/xvfb start
+        - test_helpers/install_nodejs4.sh
+        - sudo test_helpers/install_regtest.sh
+      env: TEST_SUITE=unit
+    - before_script:
         - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
@@ -18,12 +24,6 @@ matrix:
       env: TEST_SUITE=karma-firefox
       addons:
         firefox: latest
-    - before_script:
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-      env: TEST_SUITE=unit
     - before_script:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
