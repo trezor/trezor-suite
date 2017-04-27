@@ -77,10 +77,14 @@ function testStream(stream, test, timeout, done) {
 
 function testBlockchain(doFirst, doLater, done) {
     const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-    const realDone = (anything) => { blockchain.destroy(); done(anything); };
+    blockchain.socket.promise.then(() => {
+        const realDone = (anything) => { blockchain.destroy(); done(anything); };
 
-    Promise.resolve(doFirst(blockchain, realDone)).then(() => {
-        setTimeout(() => doLater(blockchain, realDone), 5 * 1000);
+        Promise.resolve(doFirst(blockchain, realDone)).then(() => {
+            setTimeout(() => doLater(blockchain, realDone), 5 * 1000);
+        });
+    }, (e) => {
+        done(e);
     });
 }
 
