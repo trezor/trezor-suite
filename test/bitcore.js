@@ -578,8 +578,9 @@ describe('bitcore', () => {
                         return true;
                     }
                     return false;
-                }, 30 * 1000, done, 100 * 3);
+                }, 30 * 1000, done, 2);
             }, done);
+
         });
     });
 
