@@ -616,6 +616,7 @@ describe('bitcore', () => {
                     if (typeof t === 'object' && t instanceof Error) {
                         return false;
                     }
+                    return true;
                 });
 
                 stopBitcore();
