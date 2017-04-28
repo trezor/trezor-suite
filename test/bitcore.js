@@ -612,7 +612,7 @@ describe('bitcore', () => {
 
                 testStreamMultiple(stream, (e) => {
                     return true;
-                }, 30 * 1000, done, 2, (t) => {
+                }, 30 * 1000, done, 1, (t) => {
                     if (typeof t === 'object' && t instanceof Error) {
                         return false;
                     }
