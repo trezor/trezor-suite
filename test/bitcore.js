@@ -608,7 +608,6 @@ describe('bitcore', () => {
                 p = p.then(() => run('bitcore-regtest-cli generate 300'));
                 return p;
             }, (blockchain, done) => {
-                let turnedOff = false;
                 const stream = blockchain.lookupTransactionsStream(addresses, 10000000, 0);
 
                 testStreamMultiple(stream, (e) => {
@@ -617,11 +616,9 @@ describe('bitcore', () => {
                     if (typeof t === 'object' && t instanceof Error) {
                         return false;
                     }
-                    if (!turnedOff) {
-                        turnedOff = true;
-                        stopBitcore();
-                    }
                 });
+
+                stopBitcore();
             }, done);
         });
     });
