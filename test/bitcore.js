@@ -33,7 +33,7 @@ function stopBitcore() {
           .then(() => new Promise(resolve => setTimeout(resolve, 15 * 1000)));
 }
 
-function testStreamMultiple(stream, test, timeout, done, times) {
+function testStreamMultiple(stream, test, timeout, done, times, ignoreTest) {
     let ended = false;
     let i = 0;
     const thisDone = (detach, anything) => {
@@ -47,6 +47,11 @@ function testStreamMultiple(stream, test, timeout, done, times) {
             value.forEach(v => fun(v, detach));
         } else {
             if (!ended) {
+                if (ignoreTest != null) {
+                    if (ignoreTest(value)) {
+                        return;
+                    }
+                }
                 try {
                     if (test(value)) {
                         i++;
@@ -579,6 +584,44 @@ describe('bitcore', () => {
                     }
                     return false;
                 }, 30 * 1000, done, 2);
+            }, done);
+        });
+
+        it('starts bitcore', function () {
+            this.timeout(60 * 1000);
+            return startBitcore();
+        });
+
+        it('streams error when bitcore turned off during action', function (done) {
+            this.timeout(60 * 1000);
+            const addresses = [getAddress(), getAddress(), getAddress()];
+
+            testBlockchain(() => {
+                let p = Promise.resolve();
+
+                for (let i = 0; i < 100; i++) {
+                    p = p
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[0] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[1] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[2] + ' 1'));
+                }
+                p = p.then(() => run('bitcore-regtest-cli generate 300'));
+                return p;
+            }, (blockchain, done) => {
+                let turnedOff = false;
+                const stream = blockchain.lookupTransactionsStream(addresses, 10000000, 0);
+
+                testStreamMultiple(stream, (e) => {
+                    return true;
+                }, 30 * 1000, done, 2, (t) => {
+                    if (typeof t === 'object' && t instanceof Error) {
+                        return false;
+                    }
+                    if (!turnedOff) {
+                        turnedOff = true;
+                        stopBitcore();
+                    }
+                });
             }, done);
         });
     });
