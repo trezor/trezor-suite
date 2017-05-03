@@ -6,6 +6,7 @@ import {BitcoreBlockchain} from '../lib/bitcore';
 import {Stream} from '../lib/utils/stream';
 import {Socket} from '../lib/socketio-worker/outside';
 
+import {startBitcore, stopBitcore} from '../test_helpers/common.js';
 import {run} from '../test_helpers/_node_client.js';
 
 import bitcoin from 'bitcoinjs-lib-zcash';
@@ -22,16 +23,6 @@ const socketWorkerFactory = () => {
         return new Worker('../../lib/socketio-worker/inside.js');
     }
 };
-
-function startBitcore() {
-    return run('test_helpers/start_bitcore.sh')
-        .then(() => new Promise(resolve => setTimeout(resolve, 15 * 1000)));
-}
-
-function stopBitcore() {
-    return run('pkill bitcored')
-          .then(() => new Promise(resolve => setTimeout(resolve, 15 * 1000)));
-}
 
 function testStreamMultiple(stream, test, timeout, done, times, ignoreTest) {
     let ended = false;
