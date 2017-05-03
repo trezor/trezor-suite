@@ -26,7 +26,8 @@ const discoveryWorkerFactory = () => {
         const TinyWorker = require('tiny-worker');
         return new TinyWorker(() => {
             require('babel-register');
-            require('../../../lib/discovery/worker/inside/index.js');
+            const requireHack = eval('req' + 'uire');
+            requireHack('../../../lib/discovery/worker/inside/index.js');
         });
     } else {
         return new Worker('../../lib/discovery/worker/inside/index.js');
@@ -38,7 +39,8 @@ const cryptoWorkerFactory = () => {
         const TinyWorker = require('tiny-worker');
         return new TinyWorker(() => {
             require('babel-register');
-            require('../../../lib/trezor-crypto/emscripten/trezor-crypto.js');
+            const requireHack = eval('req' + 'uire');
+            requireHack('../../../lib/trezor-crypto/emscripten/trezor-crypto.js');
         });
     } else {
         return new Worker('../../lib/trezor-crypto/emscripten/trezor-crypto.js');
