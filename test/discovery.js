@@ -43,7 +43,6 @@ const cryptoWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         const TinyWorker = require('tiny-worker');
         return new TinyWorker(() => {
-            require('babel-register');
             // Terrible hack
             // Browserify throws error if I don't do this
             // Maybe it could be fixed with noParse instead of eval, but I don't know how,
