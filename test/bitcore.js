@@ -837,7 +837,7 @@ describe('bitcore', () => {
     });
 
     describe('estimatetx fees', () => {
-        it('estimates something', function(done) {
+        it('estimates something', function (done) {
             testBlockchain((blockchain, done) => {
                 blockchain.estimateTxFees([5, 6, 7], false).then(res => {
                     assert(typeof res === 'object');
@@ -851,7 +851,7 @@ describe('bitcore', () => {
                     });
                     done();
                 });
-            }, () => {}, done)
+            }, () => {}, done);
         });
     });
 
