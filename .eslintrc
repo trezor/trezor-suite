@@ -7,7 +7,10 @@
     },
     "sourceType": "module"
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "eslint:recommended",
+    "plugin:flowtype/recommended"
+  ],
   "parser": "babel-eslint",
   "plugins": [
     "standard",
@@ -22,6 +25,14 @@
   "rules": {
     "flowtype/define-flow-type": 1,
     "flowtype/use-flow-type": 1,
+    "flowtype/object-type-delimiter": [
+      2,
+      "comma"
+    ],
+    "flowtype/delimiter-dangle": [
+      2,
+      "always-multiline",
+    ],
     "comma-dangle": [2, "always-multiline"],
     "no-unused-vars": [2, {
       "args": "none",
