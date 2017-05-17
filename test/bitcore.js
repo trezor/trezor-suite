@@ -839,10 +839,13 @@ describe('bitcore', () => {
     describe('estimatetx fees', () => {
         it('estimates something', function(done) {
             testBlockchain((blockchain, done) => {
-                blockchain.estimateTxFees(false).then(res => {
+                blockchain.estimateTxFees([5, 6, 7], false).then(res => {
                     assert(typeof res === 'object');
+                    assert(Object.keys(res).length === 3);
+                    assert(5 in res);
+                    assert(6 in res);
+                    assert(7 in res);
                     Object.keys(res).forEach((key) => {
-                        assert(key.match(/^\d+$/));
                         // note - estimations are now all -1 most probably
                         assert((/(^0.\d+$)|(^-1$)/).test(res[key]));
                     });
