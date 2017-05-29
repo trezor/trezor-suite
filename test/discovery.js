@@ -164,5 +164,70 @@ describe('discovery', () => {
             const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
             testDiscovery(discovery, done, xpub, testEmpty, lastEmpty);
         });
+
+        function testUnconf(info) {
+            if (info.utxos.length !== 1) {
+                return false;
+            }
+            if (info.utxos[0].height !== null) {
+                return false;
+            }
+            if (info.usedAddresses.length !== 1) {
+                return false;
+            }
+            if (info.usedAddresses.length[0] !== 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q') {
+                return false;
+            }
+            if (info.changeAddresses.length !== 20) {
+                return false;
+            }
+            if (info.changeAddresses[0] !== 'mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ') {
+                return false;
+            }
+            if (info.changeAddresses[1] !== 'mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6') {
+                return false;
+            }
+            if (info.unusedAddresses.length !== 19) {
+                return false;
+            }
+            if (info.unusedAddresses[0] !== 'mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b') {
+                return false;
+            }
+            if (info.changeIndex !== 0) {
+                return false;
+            }
+            if (!info.allowChange) {
+                return false;
+            }
+            if (info.balance < 0.5) {
+                return false;
+            }
+            if (info.balance > 1) {
+                return false;
+            }
+            if (Object.keys(info.sentAddresses).length !== 0) {
+                return false;
+            }
+
+            return true;
+        }
+
+        it('one unconfirmed', function (done) {
+            this.timeout(60 * 1000);
+            const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
+            const address = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q';
+            run('bitcore-regtest-cli sendtoaddress ' + address + ' 1').then(() =>
+                testDiscovery(discovery, done, xpub, testUnconf);
+            );
+        });
+
+        it('one unconfirmed - from previous', function (done) {
+            this.timeout(60 * 1000);
+            const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
+            const address = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q';
+            run('bitcore-regtest-cli sendtoaddress ' + address + ' 1').then(() =>
+                testDiscovery(discovery, done, xpub, testUnconf, lastEmpty);
+            );
+        });
     });
 });
