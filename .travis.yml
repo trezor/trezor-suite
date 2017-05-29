@@ -3,30 +3,30 @@ sudo: required
 before_script: test_helpers/install_nodejs4.sh
 matrix:
   include:
-    - before_script:
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - rm test/discovery.js
-      env: TEST_SUITE=unit TEST=bitcore
-    - before_script:
-        - export CHROME_BIN=chromium-browser
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - mv karma.conf.js-bitcore karma.conf.js
-      env: TEST_SUITE=karma-chrome TEST=bitcore
-    - before_script:
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - mv karma.conf.js-bitcore karma.conf.js
-      env: TEST_SUITE=karma-firefox TEST=bitcore
-      addons:
-        firefox: latest
+#    - before_script:
+#        - export DISPLAY=:99.0
+#        - sh -e /etc/init.d/xvfb start
+#        - test_helpers/install_nodejs4.sh
+#        - sudo test_helpers/install_regtest.sh
+#        - rm test/discovery.js
+#      env: TEST_SUITE=unit TEST=bitcore
+#    - before_script:
+#        - export CHROME_BIN=chromium-browser
+#        - export DISPLAY=:99.0
+#        - sh -e /etc/init.d/xvfb start
+#        - test_helpers/install_nodejs4.sh
+#        - sudo test_helpers/install_regtest.sh
+#        - mv karma.conf.js-bitcore karma.conf.js
+#      env: TEST_SUITE=karma-chrome TEST=bitcore
+#    - before_script:
+#        - export DISPLAY=:99.0
+#        - sh -e /etc/init.d/xvfb start
+#        - test_helpers/install_nodejs4.sh
+#        - sudo test_helpers/install_regtest.sh
+#        - mv karma.conf.js-bitcore karma.conf.js
+#      env: TEST_SUITE=karma-firefox TEST=bitcore
+#      addons:
+#        firefox: latest
 
     - before_script:
         - export DISPLAY=:99.0
@@ -53,14 +53,14 @@ matrix:
       addons:
         firefox: latest
 
-    - before_script:
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-      env: TEST_SUITE=coverage
-env:
-  - TEST_SUITE=eslint
-  - TEST_SUITE=flow
-  - TEST_SUITE=build-example
+#    - before_script:
+#        - export DISPLAY=:99.0
+#        - sh -e /etc/init.d/xvfb start
+#        - test_helpers/install_nodejs4.sh
+#        - sudo test_helpers/install_regtest.sh
+#      env: TEST_SUITE=coverage
+#env:
+#  - TEST_SUITE=eslint
+#  - TEST_SUITE=flow
+#  - TEST_SUITE=build-example
 script: npm run-script $TEST_SUITE
