@@ -59,6 +59,22 @@ const cryptoWorkerFactory = () => {
 const cryptoWorker = cryptoWorkerFactory();
 const addressChannel = new WorkerChannel(cryptoWorker);
 
+function testDiscovery(discovery, done, xpub, testfun) {
+    const stream = discovery.discoverAccount(
+        null,
+        xpub,
+        bitcoin.networks.testnet,
+        'off'
+    );
+    stream.ending.then((res) => {
+        if (testfun(res)) {
+            done();
+        } else {
+            done(new Error('Test not satisfied.'));
+        }
+    }, (e) => done(e));
+}
+
 describe('discovery', () => {
     describe('constructor', () => {
         let discovery;
@@ -76,13 +92,31 @@ describe('discovery', () => {
 
         it('does some discovery', function (done) {
             this.timeout(60 * 1000);
-            const stream = discovery.discoverAccount(
-                null,
-                'tprv8ZgxMBicQKsPe5YMU9gHen4Ez3ApihUfykaqUorj9t6FDqy3nP6eoXiAo2ssvpAjoLroQxHqr3R5nE3a5dU3DHTjTgJDd7zrbniJr6nrCzd',
-                bitcoin.networks.testnet,
-                'off'
-            );
-            stream.ending.then(() => done(), (e) => done(e));
+            const xpub = 'tprv8hfY7uEoozgCAdFuTmhxnzM5fxDqoNe1AkeMCiKJ3NqJVzi6d5vQJhPsLdTnenmKNMobAM5Znrm3LEswj7GV1mBGm28DH4zVfcvBkYbTGqR';
+            testDiscovery(discovery, done, xpub, () => true);
+        });
+
+        it('returns empty on empty account', function (done) {
+            this.timeout(60 * 1000);
+            const xpub = 'tprv8hfY7uEoozgCAdFuTmhxnzM5fxDqoNe1AkeMCiKJ3NqJVzi6d5vQJhPsLdTnenmKNMobAM5Znrm3LEswj7GV1mBGm28DH4zVfcvBkYbTGqR';
+            testDiscovery(discovery, done, xpub, (info) => {
+                if (info.utxos.length !== 0) {
+                    return false;
+                }
+                if (info.usedAddresses.length !== 0) {
+                    return false;
+                }
+                if (info.changeAddresses.length !== 20) {
+                    return false;
+                }
+                if (info.changeAddresses[0] !== 'mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ') {
+                    return false;
+                }
+                if (info.changeAddresses[1] !== 'mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6') {
+                    return false;
+                }
+                return true;
+            });
         });
     });
 });
