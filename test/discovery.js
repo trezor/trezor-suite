@@ -98,7 +98,7 @@ describe('discovery', () => {
 
         it('returns empty on empty account', function (done) {
             this.timeout(60 * 1000);
-            const xpub = 'tprv8hfY7uEoozgCAdFuTmhxnzM5fxDqoNe1AkeMCiKJ3NqJVzi6d5vQJhPsLdTnenmKNMobAM5Znrm3LEswj7GV1mBGm28DH4zVfcvBkYbTGqR';
+            const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
             testDiscovery(discovery, done, xpub, (info) => {
                 if (info.utxos.length !== 0) {
                     return false;
