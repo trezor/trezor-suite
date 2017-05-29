@@ -4,6 +4,7 @@ import assert from 'assert';
 import bitcoin from 'bitcoinjs-lib-zcash';
 
 import {startBitcore} from '../test_helpers/common.js';
+import {run} from '../test_helpers/_node_client.js';
 import {WorkerChannel} from '../lib/utils/simple-worker-channel';
 import {BitcoreBlockchain} from '../lib/bitcore';
 import {WorkerDiscovery} from '../lib/discovery/worker-discovery';
@@ -59,18 +60,29 @@ const cryptoWorkerFactory = () => {
 const cryptoWorker = cryptoWorkerFactory();
 const addressChannel = new WorkerChannel(cryptoWorker);
 
-function testDiscovery(discovery, done, xpub, testfun) {
+function testDiscovery(discovery, done, xpub, testfun, last) {
     const stream = discovery.discoverAccount(
-        null,
+        last,
         xpub,
         bitcoin.networks.testnet,
         'off'
     );
     stream.ending.then((res) => {
-        if (testfun(res)) {
-            done();
-        } else {
-            done(new Error('Test not satisfied.'));
+        try {
+            if (!(/^[0-9]+$/.test(res.lastBlock.height))) {
+                done(new Error('block not number'));
+            }
+            if (!(/^[0-9a-f]+$/.test(res.lastBlock.hash))) {
+                done(new Error('block not hexa'));
+            }
+
+            if (testfun(res)) {
+                done();
+            } else {
+                done(new Error('Test not satisfied.'));
+            }
+        } catch (e) {
+            done(e);
         }
     }, (e) => done(e));
 }
@@ -81,7 +93,9 @@ describe('discovery', () => {
 
         it('starts bitcore', function () {
             this.timeout(60 * 1000);
-            return startBitcore();
+            return startBitcore().then(() => {
+                return run('bitcore-regtest-cli generate 30');
+            });
         });
 
         it('creates something', () => {
@@ -96,27 +110,59 @@ describe('discovery', () => {
             testDiscovery(discovery, done, xpub, () => true);
         });
 
+        let lastEmpty;
+        function testEmpty(info) {
+            lastEmpty = info;
+            if (info.utxos.length !== 0) {
+                return false;
+            }
+            if (info.usedAddresses.length !== 0) {
+                return false;
+            }
+            if (info.changeAddresses.length !== 20) {
+                return false;
+            }
+            if (info.changeAddresses[0] !== 'mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ') {
+                return false;
+            }
+            if (info.changeAddresses[1] !== 'mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6') {
+                return false;
+            }
+            if (info.unusedAddresses.length !== 20) {
+                return false;
+            }
+            if (info.unusedAddresses[0] !== 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q') {
+                return false;
+            }
+            if (info.unusedAddresses[1] !== 'mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b') {
+                return false;
+            }
+            if (info.changeIndex !== 0) {
+                return false;
+            }
+            if (!info.allowChange) {
+                return false;
+            }
+            if (info.balance !== 0) {
+                return false;
+            }
+            if (Object.keys(info.sentAddresses).length !== 0) {
+                return false;
+            }
+
+            return true;
+        }
+
         it('returns empty on empty account', function (done) {
             this.timeout(60 * 1000);
             const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
-            testDiscovery(discovery, done, xpub, (info) => {
-                if (info.utxos.length !== 0) {
-                    return false;
-                }
-                if (info.usedAddresses.length !== 0) {
-                    return false;
-                }
-                if (info.changeAddresses.length !== 20) {
-                    return false;
-                }
-                if (info.changeAddresses[0] !== 'mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ') {
-                    return false;
-                }
-                if (info.changeAddresses[1] !== 'mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6') {
-                    return false;
-                }
-                return true;
-            });
+            testDiscovery(discovery, done, xpub, testEmpty);
+        });
+
+        it('continuing empty is still empty', function (done) {
+            this.timeout(60 * 1000);
+            const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
+            testDiscovery(discovery, done, xpub, testEmpty, lastEmpty);
         });
     });
 });
