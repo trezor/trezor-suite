@@ -94,7 +94,7 @@ describe('discovery', () => {
         it('starts bitcore', function () {
             this.timeout(60 * 1000);
             return startBitcore().then(() => {
-                return run('bitcore-regtest-cli generate 30');
+                return run('bitcore-regtest-cli generate 300');
             });
         });
 
@@ -149,6 +149,9 @@ describe('discovery', () => {
             if (Object.keys(info.sentAddresses).length !== 0) {
                 return false;
             }
+            if (info.transactions.length !== 0) {
+                return false;
+            }
 
             return true;
         }
@@ -166,6 +169,7 @@ describe('discovery', () => {
         });
 
         function testUnconf(info) {
+            const btc = 1e8;
             if (info.utxos.length !== 1) {
                 return false;
             }
@@ -175,9 +179,13 @@ describe('discovery', () => {
             if (info.usedAddresses.length !== 1) {
                 return false;
             }
-            if (info.usedAddresses.length[0] !== 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q') {
+            if (info.usedAddresses[0].address !== 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q') {
                 return false;
             }
+            if (info.usedAddresses[0].received !== btc) {
+                return false;
+            }
+
             if (info.changeAddresses.length !== 20) {
                 return false;
             }
@@ -199,16 +207,25 @@ describe('discovery', () => {
             if (!info.allowChange) {
                 return false;
             }
-            if (info.balance < 0.5) {
-                return false;
-            }
-            if (info.balance > 1) {
+            if (info.balance !== btc) {
                 return false;
             }
             if (Object.keys(info.sentAddresses).length !== 0) {
                 return false;
             }
-
+            if (info.transactions.length !== 1) {
+                return false;
+            }
+            const t = info.transactions[0];
+            if (t.isCoinbase === true) {
+                return false;
+            }
+            if (t.height !== null) {
+                return false;
+            }
+            if (t.type !== 'recv') {
+                return false;
+            }
             return true;
         }
 
@@ -216,18 +233,19 @@ describe('discovery', () => {
             this.timeout(60 * 1000);
             const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
             const address = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q';
-            run('bitcore-regtest-cli sendtoaddress ' + address + ' 1').then(() =>
-                testDiscovery(discovery, done, xpub, testUnconf);
-            );
+            run('bitcore-regtest-cli sendtoaddress ' + address + ' 1').then((response) => {
+                setTimeout(() =>
+                    testDiscovery(discovery, done, xpub, testUnconf)
+                , 20 * 1000);
+            });
         });
 
         it('one unconfirmed - from previous', function (done) {
             this.timeout(60 * 1000);
             const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
-            const address = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q';
-            run('bitcore-regtest-cli sendtoaddress ' + address + ' 1').then(() =>
-                testDiscovery(discovery, done, xpub, testUnconf, lastEmpty);
-            );
+            setTimeout(() =>
+                testDiscovery(discovery, done, xpub, testUnconf, lastEmpty)
+            , 20 * 1000);
         });
     });
 });
