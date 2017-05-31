@@ -346,5 +346,20 @@ describe('discovery', () => {
             const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
             testDiscovery(discovery, done, xpub, testConf, lastConf);
         });
+
+        it('one confirmed - from unconf - testing orphaned blocks', function (done) {
+            this.timeout(60 * 1000);
+            const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
+            lastUnconf.lastBlock.hash = 'deadbeef';
+            testDiscovery(discovery, done, xpub, testConf, lastUnconf);
+        });
+
+        it('one unconfirmed - from empty - testing orphaned blocks', function (done) {
+            this.timeout(60 * 1000);
+            lastEmpty.lastBlock.hash = 'deadbeef';
+            const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
+            testDiscovery(discovery, done, xpub, testUnconf, lastEmpty);
+        });
+
     });
 });
