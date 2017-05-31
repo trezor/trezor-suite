@@ -584,7 +584,7 @@ describe('bitcore', () => {
         });
 
         it('streams error when bitcore turned off during action', function (done) {
-            this.timeout(60 * 1000);
+            this.timeout(10 * 60 * 1000);
             const addresses = [getAddress(), getAddress(), getAddress()];
 
             testBlockchain(() => {
