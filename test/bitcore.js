@@ -682,6 +682,7 @@ describe('bitcore', () => {
 
     describe('estimatetx fees', () => {
         it('estimates something', function (done) {
+            this.timeout(60 * 1000);
             testBlockchain((blockchain, done) => {
                 blockchain.estimateTxFees([5, 6, 7], false).then(res => {
                     assert(typeof res === 'object');
