@@ -33,6 +33,11 @@
       ]
     ]
   },
+  "nyc": {
+    "exclude": [
+      "test_helpers"
+    ]
+  },
   "browserify-shim": {
     "../../../lib/socketio-worker/inside.js": "global:thisIsJustForKarmaTestButIHaveToWriteItHere"
   },
