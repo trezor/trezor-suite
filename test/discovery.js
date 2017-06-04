@@ -384,7 +384,7 @@ describe('discovery', () => {
 
                 builder.addInput(transaction, inTxVout, 0);
 
-                const data = Buffer.from('bitcoinjs-lib');
+                const data = new Buffer('bitcoinjs-lib');
                 const dataScript = bitcoin.script.nullData.output.encode(data);
 
                 builder.addOutput(dataScript, 1000);
