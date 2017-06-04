@@ -432,7 +432,7 @@ describe('bitcore', () => {
                     assert(tx.zcash === false);
                     const bjstx = bitcoin.Transaction.fromHex(tx.hex, false);
                     assert(!bjstx.isCoinbase());
-                    assert(bjstx.getId() !== tx.hash);
+                    assert(bjstx.getId() === tx.hash);
                     const raddresses = bjstx.outs.map(o => bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet));
                     assert(hasIntersection(raddresses, addresses));
                     assert(tx.height != null);
