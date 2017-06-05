@@ -35,7 +35,8 @@
   },
   "nyc": {
     "exclude": [
-      "test_helpers"
+      "test_helpers",
+      "node_modules"
     ]
   },
   "browserify-shim": {
