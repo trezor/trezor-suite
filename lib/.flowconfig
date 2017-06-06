@@ -1,5 +1,5 @@
 [ignore]
-.*/node_modules/bitcoinjs-lib/.*
+.*/node_modules/bitcoinjs-lib-zcash/.*
 
 [include]
 ../node_modules/bitcoinjs-lib-zcash
