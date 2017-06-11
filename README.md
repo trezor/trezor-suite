@@ -30,4 +30,4 @@ Since running the tests require an installed regtest-bitcore *and* an empty regt
 
 ## License
 
-GPLv3, (C) 2016 Karel Bilek, Jan Pochyla
+LGPLv3, (C) 2016 Karel Bilek, Jan Pochyla
