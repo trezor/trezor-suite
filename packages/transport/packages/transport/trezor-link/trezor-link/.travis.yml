@@ -19,3 +19,11 @@ script:
   - make .move-in-node build-node .cleanup-node
   - make .move-in-browser build-browser .cleanup-browser
   - make .move-in-browser-extension build-browser-extension .cleanup-browser-extension
+
+notifications:
+  webhooks:
+    urls:
+      - http://ci-bot.satoshilabs.com:5000/travis
+    on_success: always
+    on_failure: always
+    on_start: always
