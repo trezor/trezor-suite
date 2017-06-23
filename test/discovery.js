@@ -158,6 +158,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height === null);
         assert(t.type === 'recv');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('one unconfirmed', function () {
@@ -216,6 +218,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height !== null);
         assert(t.type === 'recv');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('one confirmed', function () {
@@ -322,6 +326,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height === null);
         assert(t.type === 'sent');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('sent tx', function () {
@@ -355,6 +361,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height === null);
         assert(t.type === 'recv');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('another received', function () {
@@ -430,6 +438,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height === null);
         assert(t.type === 'sent');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('another sent, to op-return', function () {
