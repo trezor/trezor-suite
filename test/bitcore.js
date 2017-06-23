@@ -498,13 +498,13 @@ describe('bitcore', () => {
                 p = p.then(() => run('bitcore-regtest-cli generate 300'));
                 return p;
             }, (blockchain, done) => {
-                const stream = blockchain.lookupTransactionsStream(addresses, 10000000, 0);
+                stopBitcore().then(() => {
+                    const stream = blockchain.lookupTransactionsStream(addresses, 10000000, 0);
 
-                testStreamMultiple(stream, (e) => {
-                    assert(typeof e === 'object' && e instanceof Error);
-                }, 30 * 1000, done, 1);
-
-                stopBitcore();
+                    testStreamMultiple(stream, (e) => {
+                        assert(typeof e === 'object' && e instanceof Error);
+                    }, 30 * 1000, done, 1);
+                });
             }, done);
         });
     });
