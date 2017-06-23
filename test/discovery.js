@@ -158,6 +158,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height === null);
         assert(t.type === 'recv');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('one unconfirmed', function () {
@@ -216,6 +218,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height !== null);
         assert(t.type === 'recv');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('one confirmed', function () {
@@ -251,6 +255,18 @@ describe('discovery', () => {
         res.then(
             () => { lastUnconf.lastBlock.hash = old; },
             () => { lastUnconf.lastBlock.hash = old; }
+        );
+        return res;
+    });
+
+    it('one confirmed - from unconf - testing version == null', function () {
+        this.timeout(60 * 1000);
+        lastUnconf.version = null;
+        const res = testDiscovery(discovery, xpub, testConf, lastUnconf);
+
+        res.then(
+            () => { lastUnconf.version = 1; },
+            () => { lastUnconf.version = 1; }
         );
         return res;
     });
@@ -322,6 +338,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height === null);
         assert(t.type === 'sent');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('sent tx', function () {
@@ -355,6 +373,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height === null);
         assert(t.type === 'recv');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('another received', function () {
@@ -430,6 +450,8 @@ describe('discovery', () => {
         assert(t.isCoinbase !== true);
         assert(t.height === null);
         assert(t.type === 'sent');
+        assert(t.vsize === t.tsize);
+        assert(/^[0-9]+$/.test(t.fee) && t.fee !== 0);
     }
 
     it('another sent, to op-return', function () {
