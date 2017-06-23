@@ -71,6 +71,6 @@
     "uglifyify": "3.0.1",
     "virtual-dom": "2.1.1",
     "watchify": "3.6.0",
-    "workerify": "runn1ng/workerify"
+    "workerify": "1.0.0"
   }
 }
