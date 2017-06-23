@@ -312,7 +312,7 @@ describe('bitcore', () => {
                     assert(tx.outputAddresses.length <= 2);
                     assert(tx.outputAddresses[0] === saddress);
                     assert(tx.zcash === false);
-                    assert(/^[0-9]+$/.test(tx.fee) && tx.fee !== 0);
+                    assert(/^[0-9]+$/.test(tx.fee) && tx.fee === 0);
                     assert(tx.vsize === tx.hex.length / 2);
                     const bjstx = bitcoin.Transaction.fromHex(tx.hex, false);
                     assert(bjstx.isCoinbase());
