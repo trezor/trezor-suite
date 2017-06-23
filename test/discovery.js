@@ -259,6 +259,18 @@ describe('discovery', () => {
         return res;
     });
 
+    it('one confirmed - from unconf - testing version == null', function () {
+        this.timeout(60 * 1000);
+        lastUnconf.version = null;
+        const res = testDiscovery(discovery, xpub, testConf, lastUnconf);
+
+        res.then(
+            () => { lastUnconf.version = 1; },
+            () => { lastUnconf.version = 1; }
+        );
+        return res;
+    });
+
     it('builds and sends tx from info', function () {
         this.timeout(60 * 1000);
 
