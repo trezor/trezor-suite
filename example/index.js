@@ -10,7 +10,6 @@ import patch from 'virtual-dom/patch';
 import createElement from 'virtual-dom/create-element';
 
 // setting up workers
-const cryptoWorker = new Worker('./trezor-crypto.js');
 const socketWorkerFactory = () => new Worker('./socket-worker.js');
 const discoveryWorkerFactory = () => new Worker('./discovery-worker.js');
 
@@ -84,9 +83,8 @@ window.run = () => {
     const BITCORE_URLS = ['https://bitcore1.trezor.io', 'https://bitcore3.trezor.io'];
 
     const blockchain = new BitcoreBlockchain(BITCORE_URLS, socketWorkerFactory);
-    const cryptoChannel = new WorkerChannel(cryptoWorker);
 
-    const discovery = new WorkerDiscovery(discoveryWorkerFactory, cryptoChannel, blockchain);
+    const discovery = new WorkerDiscovery(discoveryWorkerFactory, blockchain);
     const network = networks.bitcoin;
     discover(XPUBS, discovery, network);
 };
