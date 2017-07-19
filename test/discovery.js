@@ -5,7 +5,6 @@ import bitcoin from 'bitcoinjs-lib-zcash';
 
 import {promiseTimeout, startBitcore, stopBitcore, testStream} from '../test_helpers/common.js';
 import {run} from '../test_helpers/_node_client.js';
-import {WorkerChannel} from '../lib/utils/simple-worker-channel';
 import {BitcoreBlockchain} from '../lib/bitcore';
 import {WorkerDiscovery} from '../lib/discovery/worker-discovery';
 import {Stream} from '../lib/utils/stream';
