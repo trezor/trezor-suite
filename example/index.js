@@ -1,6 +1,5 @@
 import {networks} from 'bitcoinjs-lib-zcash';
 
-import {WorkerChannel} from '../lib/utils/simple-worker-channel';
 import {WorkerDiscovery} from '../lib/discovery/worker-discovery';
 import {BitcoreBlockchain} from '../lib/bitcore';
 
