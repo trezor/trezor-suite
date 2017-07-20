@@ -4,9 +4,8 @@
 
 For now, mostly a PoC.  Uses
 [bitcore-node](https://github.com/bitpay/bitcore-node)
-for transaction lookup and
-[trezor-crypto](https://github.com/trezor/trezor-crypto)
-for address derivation, compiled through emscripten and run in a web worker.
+for transaction lookup.
+
 Supports persisting discovered state and doing partial update later on.
 Should out-perform all wallets available today that do client-side chain
 discovery.

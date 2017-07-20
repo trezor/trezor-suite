@@ -1,4 +1,0 @@
-[submodule "lib/trezor-crypto"]
-	path = lib/trezor-crypto
-	url = https://github.com/trezor/trezor-crypto.git
-	branch = master
