@@ -24,6 +24,8 @@ example: node_modules
 	${BIN}/browserify ${EXAMPLE} -g [ uglifyify ] -d > ${EXAMPLE_TARGET}
 	${BIN}/browserify ${SOCKET_WORKER} -g [ uglifyify ] -d > ${SOCKET_TARGET}
 	${BIN}/browserify ${DISCOVERY_WORKER} -g [ uglifyify ] -d  > ${DISCOVERY_TARGET}
+	cp lib/trezor-crypto/emscripten/trezor-crypto.js gh-pages
+	cp lib/trezor-crypto/emscripten/trezor-crypto.wasm gh-pages
 
 clean:
 	rm -f \

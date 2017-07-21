@@ -5,6 +5,7 @@ import bitcoin from 'bitcoinjs-lib-zcash';
 
 import {promiseTimeout, startBitcore, stopBitcore, testStream} from '../test_helpers/common.js';
 import {run} from '../test_helpers/_node_client.js';
+import {WorkerChannel} from '../lib/utils/simple-worker-channel';
 import {BitcoreBlockchain} from '../lib/bitcore';
 import {WorkerDiscovery} from '../lib/discovery/worker-discovery';
 import {Stream} from '../lib/utils/stream';
@@ -39,6 +40,26 @@ const discoveryWorkerFactory = () => {
         return new Worker('../../lib/discovery/worker/inside/index.js');
     }
 };
+
+const cryptoWorkerFactory = () => {
+    if (typeof Worker === 'undefined') {
+        const TinyWorker = require('tiny-worker');
+        return new TinyWorker(() => {
+            // Terrible hack
+            // Browserify throws error if I don't do this
+            // Maybe it could be fixed with noParse instead of eval, but I don't know how,
+            // since this is all pretty hacky anyway
+            // eslint-disable-next-line no-eval
+            const requireHack = eval('req' + 'uire');
+            requireHack('../../../lib/trezor-crypto/emscripten/trezor-crypto.js');
+        });
+    } else {
+        return new Worker('../../lib/trezor-crypto/emscripten/trezor-crypto.js');
+    }
+};
+
+const cryptoWorker = cryptoWorkerFactory();
+const addressChannel = new WorkerChannel(cryptoWorker);
 
 function reversePromise(p) {
     return p.then(
@@ -76,7 +97,7 @@ describe('discovery', () => {
 
     it('creates something', () => {
         blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-        discovery = new WorkerDiscovery(discoveryWorkerFactory, blockchain);
+        discovery = new WorkerDiscovery(discoveryWorkerFactory, addressChannel, blockchain);
         assert.ok(discovery);
     });
 
