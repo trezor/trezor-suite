@@ -1,12 +1,12 @@
 dist: trusty
 sudo: required
-before_script: test_helpers/install_nodejs4.sh
+before_script: test_helpers/install_nodejs8.sh
 matrix:
   include:
     - before_script:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
+        - test_helpers/install_nodejs8.sh
         - sudo test_helpers/install_regtest.sh
         - rm test/discovery.js
       env: TEST_SUITE=unit TEST=bitcore
@@ -14,14 +14,14 @@ matrix:
         - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
+        - test_helpers/install_nodejs8.sh
         - sudo test_helpers/install_regtest.sh
         - mv karma.conf.js-bitcore karma.conf.js
       env: TEST_SUITE=karma-chrome TEST=bitcore
     - before_script:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
+        - test_helpers/install_nodejs8.sh
         - sudo test_helpers/install_regtest.sh
         - mv karma.conf.js-bitcore karma.conf.js
       env: TEST_SUITE=karma-firefox TEST=bitcore
@@ -31,7 +31,7 @@ matrix:
     - before_script:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
+        - test_helpers/install_nodejs8.sh
         - sudo test_helpers/install_regtest.sh
         - rm test/bitcore.js
       env: TEST_SUITE=unit TEST=discovery
@@ -39,14 +39,14 @@ matrix:
         - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
+        - test_helpers/install_nodejs8.sh
         - sudo test_helpers/install_regtest.sh
         - mv karma.conf.js-discovery karma.conf.js
       env: TEST_SUITE=karma-chrome TEST=discovery
     - before_script:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
+        - test_helpers/install_nodejs8.sh
         - sudo test_helpers/install_regtest.sh
         - mv karma.conf.js-discovery karma.conf.js
       env: TEST_SUITE=karma-firefox TEST=discovery
@@ -56,7 +56,7 @@ matrix:
     - before_script:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
+        - test_helpers/install_nodejs8.sh
         - sudo test_helpers/install_regtest.sh
       env: TEST_SUITE=coverage
 env:

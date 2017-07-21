@@ -33,6 +33,9 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'test/discovery.js',
+            {pattern: 'lib/trezor-crypto/emscripten/trezor-crypto.js', included: false},
+            {pattern: 'lib/trezor-crypto/emscripten/trezor-crypto.wasm', included: false}
+
         ],
 
         // list of files to exclude

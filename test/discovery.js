@@ -54,7 +54,10 @@ const cryptoWorkerFactory = () => {
             requireHack('../../../lib/trezor-crypto/emscripten/trezor-crypto.js');
         });
     } else {
-        return new Worker('../../lib/trezor-crypto/emscripten/trezor-crypto.js');
+        // using this, so Workerify doesn't try to browserify this
+        const WorkerHack = eval('Work' + 'er');
+        // files are served by karma on base/lib/...
+        return new WorkerHack('./base/lib/trezor-crypto/emscripten/trezor-crypto.js');
     }
 };
 
