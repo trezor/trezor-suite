@@ -55,6 +55,7 @@ const cryptoWorkerFactory = () => {
         });
     } else {
         // using this, so Workerify doesn't try to browserify this
+        // eslint-disable-next-line no-eval
         const WorkerHack = eval('Work' + 'er');
         // files are served by karma on base/lib/...
         return new WorkerHack('./base/lib/trezor-crypto/emscripten/trezor-crypto.js');
