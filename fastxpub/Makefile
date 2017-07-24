@@ -29,9 +29,6 @@ benchmark-browserify.js: node_modules fastxpub.js benchmark.js
 	$(shell npm bin)/browserify benchmark.js -o $@ --noparse=`pwd`/fastxpub.js
 	@echo "open benchmark.html in your favourite browser"
 
-benchmark-node: node_modules fastxpub.js benchmark.js
-	node benchmark.js
-
 node_modules:
 	npm install
 	npm install browserify
@@ -39,14 +36,24 @@ node_modules:
 clean:
 	rm -f fastxpub.js fastxpub.wasm benchmark-browserify.js
 
-docker:
-	docker pull apiaryio/emcc
-	docker run --rm -i -v $(shell pwd)/..:/src -t apiaryio/emcc /bin/bash
+benchmark: node_modules fastxpub.js benchmark.js
+	node benchmark.js
 
-docker-build:
-	docker pull apiaryio/emcc
-	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make'
-
-test-correctness: node_modules
+test: node_modules fastxpub.js
 	node test-correctness.js
 	node test-correctness-segwit-p2sh.js
+
+.docker:
+	docker pull apiaryio/emcc
+
+docker-shell: .docker
+	docker run --rm -i -v $(shell pwd)/..:/src -t apiaryio/emcc /bin/bash
+
+docker-build: .docker
+	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make'
+
+docker-test: .docker
+	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make test'
+
+docker-benchmark: .docker
+	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make benchmark'

@@ -25,7 +25,7 @@ fastxpub.init(file).then(() => {
 
     for (var i = 0; i < 1000; i++) {
       if (loaded[i] !== addresses[i]) {
-        console.log("bad address", i);
+        console.log("bad address", i, loaded[i], addresses[i]);
         process.exit(1)
       }
     }
