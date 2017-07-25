@@ -1,8 +1,10 @@
 CRYPTODIR = trezor-crypto
 
 EMFLAGS = \
-	-Oz --closure 1 \
-	--pre-js pre.js --post-js post.js \
+	-Oz \
+	--closure 1 \
+	--pre-js pre.js \
+	--post-js post.js \
 	-I $(CRYPTODIR)/ed25519-donna \
 	-s EXPORTED_FUNCTIONS='["_hdnode_public_ckd_address_optimized", "_ecdsa_read_pubkey"]' \
 	-s NO_EXIT_RUNTIME=1 \
@@ -26,22 +28,20 @@ fastxpub.js: $(SRC)
 	emcc $(EMFLAGS) -o $@ $^
 
 benchmark-browserify.js: node_modules fastxpub.js benchmark.js
-	$(shell npm bin)/browserify benchmark.js -o $@ --noparse=`pwd`/fastxpub.js
-	@echo "open benchmark.html in your favourite browser"
+	$(shell npm bin)/browserify benchmark.js -o $@ --noparse=fastxpub.js
 
 node_modules:
 	npm install
 	npm install browserify
 
-clean:
-	rm -f fastxpub.js fastxpub.wasm benchmark-browserify.js
-
 benchmark: node_modules fastxpub.js benchmark.js
 	node benchmark.js
 
 test: node_modules fastxpub.js
-	node test-correctness.js
-	node test-correctness-segwit-p2sh.js
+	node test.js
+
+clean:
+	rm -f fastxpub.js fastxpub.wasm benchmark-browserify.js
 
 .docker:
 	docker pull apiaryio/emcc
@@ -52,8 +52,8 @@ docker-shell: .docker
 docker-build: .docker
 	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make'
 
-docker-test: .docker
-	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make test'
-
 docker-benchmark: .docker
 	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make benchmark'
+
+docker-test: .docker
+	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make test'

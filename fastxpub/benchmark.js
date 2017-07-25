@@ -2,8 +2,7 @@ var fastxpub = require('./fastxpub');
 var bitcoin  = require('bitcoinjs-lib');
 
 var XPUB =
-    'xpub6AHA9hZDN11k2ijHMeS5QqHx2KP9aMBRhTDqANMnwVtdyw2TDYRm' +
-    'F8PjpvwUFcL1Et8Hj59S3gTSMcUQ5gAqTz3Wd8EsMTmF3DChhqPQBnU';
+    'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy';
 var node = bitcoin.HDNode.fromBase58(XPUB).derive(0);
 
 var nodeStruct = {
@@ -72,17 +71,15 @@ function benchmark(suite, delay, ops) {
 }
 
 function benchBitcoinJS(ops, fn) {
-    var i;
-    for (i = 0; i < ops; i++) {
+    for (var i = 0; i < ops; i++) {
         node.derive(i).getAddress();
     }
     fn();
 }
 
 function benchBrowserify(ops, fn) {
-    var i;
-    fastxpub.serializeNode(nodeStruct);
-    for (i = 0; i < ops; i++) {
+    fastxpub.loadNode(nodeStruct);
+    for (var i = 0; i < ops; i++) {
         fastxpub.deriveAddress(i, 0);
     }
     fn();

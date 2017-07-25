@@ -1,14 +1,3 @@
-    /*
-    typedef struct {
-    uint32_t depth;
-    uint32_t fingerprint;
-    uint32_t child_num;
-    uint8_t chain_code[32];
-    uint8_t private_key[32];
-    uint8_t public_key[33];
-    } HDNode;
-    */
-
     var readyResolve = null;
     var readyPromise = new Promise(function(resolve) {
         readyResolve = resolve;
@@ -23,7 +12,7 @@
         var Pointer_stringify = Module['Pointer_stringify'];
 
         // HDNode structs global
-        var PUBPOINT_SIZE = 2 * 9 * 4; // (2 * bignum256 (= 9 * uint32_t))
+        var PUBPOINT_SIZE = 2 * 9 * 4; // (2 * bignum256 =  2 * 9 * uint32_t)
         var _pubpoint = _malloc(PUBPOINT_SIZE);
         var PUBKEY_SIZE = 33;
         var _pubkey = _malloc(PUBKEY_SIZE);
@@ -41,7 +30,7 @@
         /**
         * @param {HDNode} node  HDNode struct, see the definition above
         */
-        function serializeNode(node) {
+        function loadNode(node) {
             var u8_pubkey = new Uint8Array(33);
             u8_pubkey.set(node['public_key'], 0);
             HEAPU8.set(u8_pubkey, _pubkey);
@@ -54,30 +43,29 @@
         }
 
         /**
-        * @param {Number} index       BIP32 index of the address
-        * @param {Number} version     address version byte
-        * @param {Number} addrformat  address format (0 = normal, 1 = segwit-in-p2sh)
+        * @param {Number} index          BIP32 index of the address
+        * @param {Number} version        address version byte
+        * @param {Number} addressFormat  address format (0 = normal, 1 = segwit-in-p2sh)
         * @return {String}
         */
-        function deriveAddress(index, version, addrformat) {
-            _hdnode_public_ckd_address_optimized(_pubpoint, _chaincode, index, version, _address, ADDRESS_SIZE, addrformat);
+        function deriveAddress(index, version, addressFormat) {
+            _hdnode_public_ckd_address_optimized(_pubpoint, _chaincode, index, version, _address, ADDRESS_SIZE, addressFormat);
             return Pointer_stringify(_address);
         }
 
         /**
-        * @param {HDNode} node        HDNode struct, see the definition above
-        * @param {Number} firstIndex  index of the first address
-        * @param {Number} lastIndex   index of the last address
-        * @param {Number} version     address version byte
-        * @param {Number} addrformat  address format (0 = normal, 1 = segwit-in-p2sh)
+        * @param {HDNode} node           HDNode struct, see the definition above
+        * @param {Number} firstIndex     index of the first address
+        * @param {Number} lastIndex      index of the last address
+        * @param {Number} version        address version byte
+        * @param {Number} addressFormat  address format (0 = normal, 1 = segwit-in-p2sh)
         * @return {Array<String>}
         */
-        function deriveAddressRange(node, firstIndex, lastIndex, version, addrformat) {
+        function deriveAddressRange(node, firstIndex, lastIndex, version, addressFormat) {
             var addresses = [];
-            serializeNode(node);
-            var i;
-            for (i = firstIndex; i <= lastIndex; i++) {
-                addresses.push(deriveAddress(i, version, addrformat));
+            loadNode(node);
+            for (var i = firstIndex; i <= lastIndex; i++) {
+                addresses.push(deriveAddress(i, version, addressFormat));
             }
             return addresses;
         }
@@ -97,7 +85,7 @@
                     data['firstIndex'],
                     data['lastIndex'],
                     data['version'],
-                    data['addrformat']
+                    data['addressFormat']
                 );
                 self.postMessage({
                     'addresses': addresses,
@@ -112,7 +100,7 @@
         }
         readyResolve({
             'processMessage': processMessage,
-            'serializeNode': serializeNode,
+            'loadNode': loadNode,
             'deriveAddress': deriveAddress,
             'deriveAddressRange': deriveAddressRange,
         });
@@ -168,7 +156,7 @@ if (typeof module !== 'undefined') {
     }
 
     module['exports'] = {
-        'serializeNode': wrapExport('serializeNode'),
+        'loadNode': wrapExport('loadNode'),
         'deriveAddress': wrapExport('deriveAddress'),
         'deriveAddressRange': wrapExport('deriveAddressRange'),
         'init': init
