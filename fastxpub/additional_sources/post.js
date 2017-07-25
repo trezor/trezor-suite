@@ -1,7 +1,15 @@
-    var readyResolve = null;
-    var readyPromise = new Promise(function(resolve) {
-        readyResolve = resolve;
-    });
+    /*
+    typedef struct {
+    uint32_t depth;
+    uint32_t fingerprint;
+    uint32_t child_num;
+    uint8_t chain_code[32];
+    uint8_t private_key[32];
+    uint8_t public_key[33];
+    } HDNode;
+    */
+
+    var readyDfd = deferred();
 
     Module['onRuntimeInitialized'] = function() {
         var HEAPU8 = Module['HEAPU8'];
@@ -98,67 +106,77 @@
                 throw new Error('Unknown message type: ' + type);
             }
         }
-        readyResolve({
+        readyDfd.resolve({
             'processMessage': processMessage,
             'loadNode': loadNode,
             'deriveAddress': deriveAddress,
             'deriveAddressRange': deriveAddressRange,
         });
     }
-    return readyPromise;
+    return readyDfd.promise;
 }
 
-var ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
 
+// ------ asynchronous wasm file setup ------
+
+// setting up calls for webworker
+// (not for browserify/node import)
+// init() loads the wasm file; unless the wasm file is loaded, the other functions wait
+
+var ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
 if (ENVIRONMENT_IS_WORKER) {
 
-    var readyResolve = null;
-    var readyPromise = new Promise(function (resolve) {
-        readyResolve = resolve;
-    });
+    // callsDfd is resolved when init is finished
+    var callsDfd = deferred();
 
     self.onmessage = function(event) {
         var data = event['data'];
         var type = data['type'];
 
+        // type is either init or something else
+        // init inits right away, else it waits for init
         if (type === 'init') {
             var binary = data['binary'];
             prepareModule(binary).then(function (result) {
-                readyResolve(result);
+                callsDfd.resolve(result);
             });
         } else {
-            readyPromise.then(function (result) {
-                result['processMessage'](event);
+            callsDfd.promise.then(function (calls) {
+                // self.postMessage is called in the processMessage call
+                calls['processMessage'](event);
             });
         };
     };
 }
 
+// setting up exports for node / browserify import
+// (not in webworker environment)
+// init() loads the wasm file; unless the wasm file is loaded, the other functions return error
+// init() returns promise, resolved when init is done
 if (typeof module !== 'undefined') {
-    var readyResult = null;
+    var calls = null;
 
+    // this is a function that is exported and that loads the binary
     var init = function(binary) {
-        var readyPromise = prepareModule(binary);
-        var readyPromiseSet = readyPromise.then(function (ready) {
-            readyResult = ready;
-        });
-        return readyPromiseSet;
+        return prepareModule(binary).then(function(retCalls) {
+            calls = retCalls;
+        })
     }
 
-    function wrapExport(name) {
+    function callFunctionIfInited(name) {
         return function () {
-            if (readyResult === null) {
+            if (calls === null) {
                 throw new Error('fastxpub not yet inited.');
             } else {
-                return readyResult[name].apply(undefined, arguments);
+                return calls[name].apply(undefined, arguments);
             }
         }
     }
 
     module['exports'] = {
-        'loadNode': wrapExport('loadNode'),
-        'deriveAddress': wrapExport('deriveAddress'),
-        'deriveAddressRange': wrapExport('deriveAddressRange'),
+        'loadNode': callFunctionIfInited('loadNode'),
+        'deriveAddress': callFunctionIfInited('deriveAddress'),
+        'deriveAddressRange': callFunctionIfInited('deriveAddressRange'),
         'init': init
     }
 }
