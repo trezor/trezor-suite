@@ -28,7 +28,7 @@ if (typeof Worker !== 'undefined') {
 
     promise.then(binary => {
         fastxpub.init(binary).then(() => {
-            worker = new Worker('./fastxpub.js');
+            worker = new Worker('../build/fastxpub.js');
             worker.onerror = function (error) {
                 console.error('worker:', error);
             };
