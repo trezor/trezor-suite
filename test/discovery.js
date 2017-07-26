@@ -55,7 +55,7 @@ const fastXpubWorkerFactory = () => {
         const WorkerHack = eval('Work' + 'er');
         // files are served by karma on base/lib/...
         const worker = new WorkerHack('./base/fastxpub/build/fastxpub.js');
-        const filePromise = fetch('base/fastxpub/build/fastxpub.js')
+        const filePromise = fetch('base/fastxpub/build/fastxpub.wasm')
             .then(response => response.ok ? response.arrayBuffer() : Promise.reject('failed to load'));
         return {worker, filePromise};
     }
