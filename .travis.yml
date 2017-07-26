@@ -1,8 +1,22 @@
 dist: trusty
 sudo: required
 before_script: test_helpers/install_nodejs4.sh
+addons:
+  firefox: "52.0"
 matrix:
   include:
+
+    - env: BUILD=emscripten-fastxpub
+      script:
+        - cd fastxpub && make clean && make docker-build && nvm install 8 && nvm use 8 && make test && cd ..
+      services:
+        - docker
+      sudo: required
+      install: true
+      compiler: true
+      node_js:
+        - "8"
+
     - before_script:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
