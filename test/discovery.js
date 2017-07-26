@@ -5,7 +5,6 @@ import bitcoin from 'bitcoinjs-lib-zcash';
 
 import {promiseTimeout, startBitcore, stopBitcore, testStream} from '../test_helpers/common.js';
 import {run} from '../test_helpers/_node_client.js';
-import {WorkerChannel} from '../lib/utils/simple-worker-channel';
 import {BitcoreBlockchain} from '../lib/bitcore';
 import {WorkerDiscovery} from '../lib/discovery/worker-discovery';
 import {Stream} from '../lib/utils/stream';
@@ -41,29 +40,26 @@ const discoveryWorkerFactory = () => {
     }
 };
 
-const cryptoWorkerFactory = () => {
+const fastXpubWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         const TinyWorker = require('tiny-worker');
-        return new TinyWorker(() => {
-            // Terrible hack
-            // Browserify throws error if I don't do this
-            // Maybe it could be fixed with noParse instead of eval, but I don't know how,
-            // since this is all pretty hacky anyway
-            // eslint-disable-next-line no-eval
-            const requireHack = eval('req' + 'uire');
-            requireHack('../../../lib/trezor-crypto/emscripten/trezor-crypto.js');
-        });
+        const worker = new TinyWorker('../../fastxpub/build/fastxpub.js');
+        const fs = require('fs');
+        const filePromise = require('util').promisify(fs.readFile)('../../fastxpub/build/fastxpub.js');
+        return {worker, filePromise};
     } else {
         // using this, so Workerify doesn't try to browserify this
         // eslint-disable-next-line no-eval
         const WorkerHack = eval('Work' + 'er');
         // files are served by karma on base/lib/...
-        return new WorkerHack('./base/lib/trezor-crypto/emscripten/trezor-crypto.js');
+        const worker = new WorkerHack('./base/lib/trezor-crypto/emscripten/trezor-crypto.js');
+        const filePromise = fetch('base/lib/trezor-crypto/emscripten/trezor-crypto.js')
+            .then(response => response.ok ? response.arrayBuffer() : Promise.reject('failed to load'));
+        return {worker, filePromise};
     }
 };
 
-const cryptoWorker = cryptoWorkerFactory();
-const addressChannel = new WorkerChannel(cryptoWorker);
+const {worker: xpubWorker, filePromise: xpubFilePromise} = fastXpubWorkerFactory();
 
 function reversePromise(p) {
     return p.then(
@@ -101,7 +97,7 @@ describe('discovery', () => {
 
     it('creates something', () => {
         blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-        discovery = new WorkerDiscovery(discoveryWorkerFactory, addressChannel, blockchain);
+        discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain);
         assert.ok(discovery);
     });
 
