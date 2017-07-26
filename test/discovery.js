@@ -43,9 +43,11 @@ const discoveryWorkerFactory = () => {
 const fastXpubWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         const TinyWorker = require('tiny-worker');
-        const worker = new TinyWorker('../../fastxpub/build/fastxpub.js');
+        const worker = new TinyWorker('./fastxpub/build/fastxpub.js');
         const fs = require('fs');
-        const filePromise = require('util').promisify(fs.readFile)('../../fastxpub/build/fastxpub.js');
+        const filePromise = require('util').promisify(fs.readFile)('./fastxpub/build/fastxpub.wasm')
+            // issue with tiny-worker - https://github.com/avoidwork/tiny-worker/issues/18
+            .then((buf) => Array.from(buf))
         return {worker, filePromise};
     } else {
         // using this, so Workerify doesn't try to browserify this
