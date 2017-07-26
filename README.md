@@ -25,7 +25,7 @@ Since running the tests require an installed regtest-bitcore *and* an empty regt
 
 * `cd docker_test`
 * `docker build -t hdwallet_docker_test .`
-* `docker run -v /path-to-hd-wallet/hd-wallet:/hd-wallet hdwallet_docker_test bash -c './do.sh && cd /hd-wallet/ && npm run coverage'`
+* `docker run -v /path-to-hd-wallet/hd-wallet:/hd-wallet hdwallet_docker_test bash -c './do.sh && source ~/.nvm/nvm.sh && cd /hd-wallet/ && npm run coverage'`
   * or any goal instead of coverage
 
 ## License
