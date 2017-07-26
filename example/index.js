@@ -11,7 +11,7 @@ import createElement from 'virtual-dom/create-element';
 // setting up workers
 const fastXpubWorker = new Worker('fastxpub.js');
 const fastXpubWasmFilePromise = fetch('fastxpub.wasm')
-    .then(response => response.ok ? response.arrayBuffer() : Promise.reject("failed to load"));
+    .then(response => response.ok ? response.arrayBuffer() : Promise.reject('failed to load'));
 
 const socketWorkerFactory = () => new Worker('./socket-worker.js');
 const discoveryWorkerFactory = () => new Worker('./discovery-worker.js');
