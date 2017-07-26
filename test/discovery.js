@@ -40,6 +40,29 @@ const discoveryWorkerFactory = () => {
     }
 };
 
+const fastXpubWorkerFactory = () => {
+    if (typeof Worker === 'undefined') {
+        const TinyWorker = require('tiny-worker');
+        const worker = new TinyWorker('./fastxpub/build/fastxpub.js');
+        const fs = require('fs');
+        const filePromise = require('util').promisify(fs.readFile)('./fastxpub/build/fastxpub.wasm')
+            // issue with tiny-worker - https://github.com/avoidwork/tiny-worker/issues/18
+            .then((buf) => Array.from(buf));
+        return {worker, filePromise};
+    } else {
+        // using this, so Workerify doesn't try to browserify this
+        // eslint-disable-next-line no-eval
+        const WorkerHack = eval('Work' + 'er');
+        // files are served by karma on base/lib/...
+        const worker = new WorkerHack('./base/fastxpub/build/fastxpub.js');
+        const filePromise = fetch('base/fastxpub/build/fastxpub.wasm')
+            .then(response => response.ok ? response.arrayBuffer() : Promise.reject('failed to load'));
+        return {worker, filePromise};
+    }
+};
+
+const {worker: xpubWorker, filePromise: xpubFilePromise} = fastXpubWorkerFactory();
+
 function reversePromise(p) {
     return p.then(
         () => Promise.reject('Not rejected'),
@@ -76,7 +99,7 @@ describe('discovery', () => {
 
     it('creates something', () => {
         blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-        discovery = new WorkerDiscovery(discoveryWorkerFactory, blockchain);
+        discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain);
         assert.ok(discovery);
     });
 

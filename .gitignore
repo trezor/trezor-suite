@@ -7,3 +7,4 @@ gh-pages/socket-worker.js
 gh-pages/trezor-crypto.js
 gh-pages/example.js.map
 .idea
+.nyc_output

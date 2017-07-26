@@ -1,3 +1,4 @@
 [submodule "fastxpub/trezor-crypto"]
 	path = fastxpub/trezor-crypto
 	url = https://github.com/trezor/trezor-crypto.git
+	branch = webasm

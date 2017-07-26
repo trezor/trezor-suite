@@ -33,6 +33,9 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'test/discovery.js',
+            {pattern: 'fastxpub/build/fastxpub.js', included: false},
+            {pattern: 'fastxpub/build/fastxpub.wasm', included: false}
+
         ],
 
         // list of files to exclude

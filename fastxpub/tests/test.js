@@ -1,6 +1,6 @@
-var fastxpub = require('./fastxpub');
+var fastxpub = require('../build/fastxpub');
 var fs = require('fs');
-var file = fs.readFileSync('fastxpub.wasm');
+var file = fs.readFileSync('../build/fastxpub.wasm');
 
 function test_derivation(xpub, version, addressFormat, filename) {
   var bitcoin  = require('bitcoinjs-lib');

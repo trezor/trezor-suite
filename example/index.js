@@ -9,6 +9,10 @@ import patch from 'virtual-dom/patch';
 import createElement from 'virtual-dom/create-element';
 
 // setting up workers
+const fastXpubWorker = new Worker('fastxpub.js');
+const fastXpubWasmFilePromise = fetch('fastxpub.wasm')
+    .then(response => response.ok ? response.arrayBuffer() : Promise.reject('failed to load'));
+
 const socketWorkerFactory = () => new Worker('./socket-worker.js');
 const discoveryWorkerFactory = () => new Worker('./discovery-worker.js');
 
@@ -83,7 +87,7 @@ window.run = () => {
 
     const blockchain = new BitcoreBlockchain(BITCORE_URLS, socketWorkerFactory);
 
-    const discovery = new WorkerDiscovery(discoveryWorkerFactory, blockchain);
+    const discovery = new WorkerDiscovery(discoveryWorkerFactory, fastXpubWorker, fastXpubWasmFilePromise, blockchain);
     const network = networks.bitcoin;
     discover(XPUBS, discovery, network);
 };

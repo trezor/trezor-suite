@@ -4,8 +4,9 @@
 
 For now, mostly a PoC.  Uses
 [bitcore-node](https://github.com/bitpay/bitcore-node)
-for transaction lookup.
-
+for transaction lookup and
+[trezor-crypto](https://github.com/trezor/trezor-crypto)
+for address derivation, compiled through emscripten and run in a web worker.
 Supports persisting discovered state and doing partial update later on.
 Should out-perform all wallets available today that do client-side chain
 discovery.
@@ -24,7 +25,7 @@ Since running the tests require an installed regtest-bitcore *and* an empty regt
 
 * `cd docker_test`
 * `docker build -t hdwallet_docker_test .`
-* `docker run -v /path-to-hd-wallet/hd-wallet:/hd-wallet hdwallet_docker_test bash -c './do.sh && cd /hd-wallet/ && npm run coverage'`
+* `docker run -v /path-to-hd-wallet/hd-wallet:/hd-wallet hdwallet_docker_test bash -c './do.sh && source ~/.nvm/nvm.sh && cd /hd-wallet/ && npm run coverage'`
   * or any goal instead of coverage
 
 ## License

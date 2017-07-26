@@ -1,4 +1,4 @@
-var fastxpub = require('./fastxpub');
+var fastxpub = require('../build/fastxpub');
 var bitcoin  = require('bitcoinjs-lib');
 
 var XPUB =
@@ -16,7 +16,7 @@ var nodeStruct = {
 var suite;
 var worker;
 
-var wasmBinaryFile = 'fastxpub.wasm';
+var wasmBinaryFile = '../build/fastxpub.wasm';
 
 if (typeof Worker !== 'undefined') {
     var promise = fetch(wasmBinaryFile, { credentials: 'same-origin' }).then(function(response) {
@@ -28,7 +28,7 @@ if (typeof Worker !== 'undefined') {
 
     promise.then(binary => {
         fastxpub.init(binary).then(() => {
-            worker = new Worker('./fastxpub.js');
+            worker = new Worker('../build/fastxpub.js');
             worker.onerror = function (error) {
                 console.error('worker:', error);
             };

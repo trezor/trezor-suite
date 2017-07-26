@@ -16,14 +16,12 @@ DISCOVERY_TARGET=gh-pages/discovery-worker.js
 
 all: lib
 
-check: node_modules
-	flow check lib/
-	cd lib && eslint .
-
 example: node_modules
 	${BIN}/browserify ${EXAMPLE} -g [ uglifyify ] -d > ${EXAMPLE_TARGET}
 	${BIN}/browserify ${SOCKET_WORKER} -g [ uglifyify ] -d > ${SOCKET_TARGET}
 	${BIN}/browserify ${DISCOVERY_WORKER} -g [ uglifyify ] -d  > ${DISCOVERY_TARGET}
+	cp fastxpub/build/fastxpub.js gh-pages
+	cp fastxpub/build/fastxpub.wasm gh-pages
 
 clean:
 	rm -f \

@@ -3,8 +3,8 @@ CRYPTODIR = trezor-crypto
 EMFLAGS = \
 	-Oz \
 	--closure 1 \
-	--pre-js pre.js \
-	--post-js post.js \
+	--pre-js additional_sources/pre.js \
+	--post-js additional_sources/post.js \
 	-I $(CRYPTODIR)/ed25519-donna \
 	-s EXPORTED_FUNCTIONS='["_hdnode_public_ckd_address_optimized", "_ecdsa_read_pubkey"]' \
 	-s NO_EXIT_RUNTIME=1 \
@@ -20,28 +20,28 @@ SRC += $(CRYPTODIR)/base58.c
 SRC += $(CRYPTODIR)/ripemd160.c
 SRC += $(CRYPTODIR)/sha2.c
 SRC += $(CRYPTODIR)/address.c
-SRC += rand-mock.c
+SRC += additional_sources/rand-mock.c
 
-all: fastxpub.js benchmark-browserify.js
+all: build/fastxpub.js tests/benchmark-browserify.js
 
-fastxpub.js: $(SRC)
+build/fastxpub.js: $(SRC)
 	emcc $(EMFLAGS) -o $@ $^
 
-benchmark-browserify.js: node_modules fastxpub.js benchmark.js
-	$(shell npm bin)/browserify benchmark.js -o $@ --noparse=fastxpub.js
+tests/benchmark-browserify.js: node_modules build/fastxpub.js tests/benchmark.js
+	$(shell npm bin)/browserify tests/benchmark.js -o $@ --noparse=`pwd`/build/fastxpub.js
 
 node_modules:
 	npm install
 	npm install browserify
 
-benchmark: node_modules fastxpub.js benchmark.js
-	node benchmark.js
+benchmark: node_modules build/fastxpub.js tests/benchmark.js
+	cd tests && node benchmark.js
 
-test: node_modules fastxpub.js
-	node test.js
+test: node_modules build/fastxpub.js
+	cd tests && node test.js
 
 clean:
-	rm -f fastxpub.js fastxpub.wasm benchmark-browserify.js
+	rm -f build/fastxpub.js build/fastxpub.wasm tests/benchmark-browserify.js
 
 .docker:
 	docker pull apiaryio/emcc
