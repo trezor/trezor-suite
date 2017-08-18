@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "bitcoinjs-lib-zcash": "^3.0.0",
+    "coinselect": "runn1ng/coinselect#03e68d34c1b569c4acef026d6d009a54fc69dd00",
     "socket.io-client": "^1.7.3",
     "whatwg-fetch": "^0.11.0"
   },
