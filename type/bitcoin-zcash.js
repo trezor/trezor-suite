@@ -131,7 +131,7 @@ declare module 'bitcoinjs-lib-zcash' {
         fromBase58Check(address: string): {hash: Buffer, version: number};
         fromOutputScript(script: Buffer, network?: Network): string;
         toBase58Check(hash: Buffer, version: number): string;
-        toOutputScipt(network?: Network): Buffer;
+        toOutputScript(address: string, network?: Network): Buffer;
     };
 
     declare type Stack = Array<Buffer | number>;
