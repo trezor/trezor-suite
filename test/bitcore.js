@@ -712,6 +712,26 @@ describe('bitcore', () => {
         });
     });
 
+    describe('estimate smart tx fees', () => {
+        it('estimates something', function (done) {
+            this.timeout(60 * 1000);
+            testBlockchain((blockchain, done) => {
+                blockchain.estimateSmartTxFees([5, 6, 7], false).then(res => {
+                    assert(typeof res === 'object');
+                    assert(Object.keys(res).length === 3);
+                    assert(5 in res);
+                    assert(6 in res);
+                    assert(7 in res);
+                    Object.keys(res).forEach((key) => {
+                        // note - estimations are now all -1 most probably
+                        assert((/(^0.\d+$)|(^-1$)/).test(res[key]));
+                    });
+                    done();
+                });
+            }, () => {}, done);
+        });
+    });
+
     describe('disconnect errors', () => {
         it('throws error on disconnect', function (done) {
             this.timeout(30 * 1000);
