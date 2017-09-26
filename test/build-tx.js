@@ -34,10 +34,10 @@ describe('build tx', () => {
         const changeAddress = '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT';
 
         const res = buildTx(utxos, outputs, height, feeRate, segwit, inputAmounts, basePath, network, changeId, changeAddress);
-        assert(res.type, 'final');
-        assert(res.totalSpent, 100000);
-        assert(res.fee, 2001);
-        assert(res.feePerByte, 10);
-        assert(res.bytes, 1);
+        assert.deepEqual(res.type, 'final');
+        assert.deepEqual(res.totalSpent, 100000);
+        assert.deepEqual(res.fee, 2001);
+        assert.deepEqual(Math.floor(res.feePerByte), 10);
+        assert.deepEqual(res.bytes, 193);
     });
 });
