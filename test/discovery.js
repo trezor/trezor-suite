@@ -639,32 +639,6 @@ describe('discovery', () => {
         promiseTimeout(2 * 1000).then(() => run('bitcore-regtest-cli generate 1'));
     });
 
-    it('does not update on block when there is no unconf', function (done) {
-        this.timeout(60 * 1000);
-        const stream = discovery.monitorAccountActivity(
-            lastTwoRcvSent,
-            xpub,
-            bitcoin.networks.testnet,
-            'off'
-        );
-        let isdone = false;
-        stream.values.attach((value, detach) => {
-            isdone = true;
-            done(new Error('Should not update.'));
-        });
-
-        const bashstr = 'bitcore-regtest-cli generate 1';
-        promiseTimeout(2 * 1000)
-            .then(() => run(bashstr))
-            .then(() => promiseTimeout(15 * 1000))
-            .then(() => {
-                stream.values.destroy();
-                if (!isdone) {
-                    done();
-                }
-            });
-    });
-
     it('returns rejected on nonsensic xpub', function () {
         this.timeout(60 * 1000);
         const xpub2 = 'thisisnotxpub';
