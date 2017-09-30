@@ -2,42 +2,35 @@
 
 import assert from 'assert';
 import {buildTx} from '../lib/build-tx';
+import {Permutation} from '../lib/build-tx/permutation';
 
 import bitcoin from 'bitcoinjs-lib-zcash';
 
-describe('build tx', () => {
-    it('builds a simple tx with 1 output, no change', () => {
-        const utxos = [{
-            index: 0,
-            transactionHash: 'fba6cbdccc01b85901f0372e1b0105586b2b503218f5aee432d2166fbeb6e35f',
-            value: 102001,
-            addressPath: [0, 0],
-            height: 100,
-            coinbase: false,
-            tsize: 0,
-            vsize: 0,
-            fee: 0,
-            own: true,
-        }];
-        const outputs = [{
-            type: 'complete',
-            address: '1BitcoinEaterAddressDontSendf59kuE',
-            amount: 100000,
-        }];
-        const height = 100;
-        const feeRate = 10;
-        const segwit = false;
-        const inputAmounts = false;
-        const basePath = [0, 0];
-        const network = bitcoin.networks.bitcoin;
-        const changeId = 0;
-        const changeAddress = '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT';
+import fixtures from './fixtures/build-tx.json';
 
-        const res = buildTx(utxos, outputs, height, feeRate, segwit, inputAmounts, basePath, network, changeId, changeAddress);
-        assert.deepEqual(res.type, 'final');
-        assert.deepEqual(res.totalSpent, 100000);
-        assert.deepEqual(res.fee, 2001);
-        assert.deepEqual(Math.floor(res.feePerByte), 10);
-        assert.deepEqual(res.bytes, 193);
+describe('build tx', () => {
+    fixtures.forEach(({description, request, result}) => {
+        it(description, () => {
+            request.network = bitcoin.networks.bitcoin;
+            if (result.trezorTx) {
+              result.trezorTx.inputs.forEach(input => {
+                  input.hash = reverseBuffer(new Buffer(input.REV_hash, 'hex'));
+                  delete input.REV_hash;
+              });
+              const o = result.trezorTx.PERM_outputs;
+              result.trezorTx.outputs = new Permutation(o.sorted, o.permutation);
+              delete result.trezorTx.PERM_outputs;
+            }
+            assert.deepEqual(buildTx(request), result);
+        })
     });
 });
+
+function reverseBuffer(src: Buffer): Buffer {
+    const buffer = new Buffer(src.length);
+    for (let i = 0, j = src.length - 1; i <= j; ++i, --j) {
+        buffer[i] = src[j];
+        buffer[j] = src[i];
+    }
+    return buffer;
+}
