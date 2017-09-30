@@ -22,11 +22,20 @@ matrix:
         - sh -e /etc/init.d/xvfb start
         - test_helpers/install_nodejs4.sh
         - sudo test_helpers/install_regtest.sh
-        - rm test/discovery.js
+        - rm test/discovery.js test/bitcore.js
+        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+        - nvm install 8
+      env: TEST_SUITE=unit TEST=build-tx
+
+    - before_script:
+        - export DISPLAY=:99.0
+        - sh -e /etc/init.d/xvfb start
+        - test_helpers/install_nodejs4.sh
+        - sudo test_helpers/install_regtest.sh
+        - rm test/discovery.js test/build-tx.js
         - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
         - nvm install 8
       env: TEST_SUITE=unit TEST=bitcore
-
     - before_script:
         - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
@@ -50,7 +59,7 @@ matrix:
         - sh -e /etc/init.d/xvfb start
         - test_helpers/install_nodejs4.sh
         - sudo test_helpers/install_regtest.sh
-        - rm test/bitcore.js
+        - rm test/bitcore.js test/build-tx.js
         - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
         - nvm install 8
       env: TEST_SUITE=unit TEST=discovery
