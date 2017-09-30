@@ -13,16 +13,16 @@ describe('build tx', () => {
         it(description, () => {
             request.network = bitcoin.networks.bitcoin;
             if (result.trezorTx) {
-              result.trezorTx.inputs.forEach(input => {
-                  input.hash = reverseBuffer(new Buffer(input.REV_hash, 'hex'));
-                  delete input.REV_hash;
-              });
-              const o = result.trezorTx.PERM_outputs;
-              result.trezorTx.outputs = new Permutation(o.sorted, o.permutation);
-              delete result.trezorTx.PERM_outputs;
+                result.trezorTx.inputs.forEach(input => {
+                    input.hash = reverseBuffer(new Buffer(input.REV_hash, 'hex'));
+                    delete input.REV_hash;
+                });
+                const o = result.trezorTx.PERM_outputs;
+                result.trezorTx.outputs = new Permutation(o.sorted, o.permutation);
+                delete result.trezorTx.PERM_outputs;
             }
             assert.deepEqual(buildTx(request), result);
-        })
+        });
     });
 });
 
