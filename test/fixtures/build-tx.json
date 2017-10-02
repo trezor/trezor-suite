@@ -44,7 +44,7 @@
       "feePerByte": 10.367875647668393,
       "max": -1,
       "bytes": 193,
-      "trezorTx": {
+      "transaction": {
         "inputs": [
           {
             "REV_hash": "b4dc0ffeee",
@@ -204,7 +204,7 @@
       "feePerByte": 10,
       "max": 100071,
       "bytes": 193,
-      "trezorTx": {
+      "transaction": {
         "inputs": [
           {
             "REV_hash": "b4dc0ffeee",
@@ -350,7 +350,7 @@
       "feePerByte": 10,
       "max": -1,
       "bytes": 261,
-      "trezorTx": {
+      "transaction": {
         "inputs": [
           {
             "REV_hash": "b4dc0ffeee",
@@ -443,7 +443,7 @@
       "feePerByte": 10,
       "max": -1,
       "bytes": 203,
-      "trezorTx": {
+      "transaction": {
         "inputs": [
           {
             "amount": 102001,
@@ -547,7 +547,7 @@
       "feePerByte": 10.367875647668393,
       "max": -1,
       "bytes": 193,
-      "trezorTx": {
+      "transaction": {
         "inputs": [
           {
             "REV_hash": "b4dc0ffeee",
@@ -680,7 +680,7 @@
       "feePerByte": 11.701754385964913,
       "max": -1,
       "bytes": 342,
-      "trezorTx": {
+      "transaction": {
         "inputs": [
           {
             "REV_hash": "b4dc0ffeee",
@@ -767,7 +767,7 @@
       "feePerByte": 10,
       "max": -1,
       "bytes": 203,
-      "trezorTx": {
+      "transaction": {
         "inputs": [
           {
             "amount": 102001,

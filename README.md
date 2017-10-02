@@ -31,3 +31,5 @@ Since running the tests require an installed regtest-bitcore *and* an empty regt
 ## License
 
 LGPLv3, (C) 2016 Karel Bilek, Jan Pochyla
+
+Coinselect MIT, (C) 2015 Daniel Cousens
