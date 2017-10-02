@@ -35,10 +35,16 @@ function reverseBuffer(src: Buffer): Buffer {
     return buffer;
 }
 
+// eslint-disable-next-line no-unused-vars
 import accumulative from './coinselect-lib/accumulative';
+// eslint-disable-next-line no-unused-vars
 import bnb from './coinselect-lib/bnb';
+// eslint-disable-next-line no-unused-vars
 import errors from './coinselect-lib/index-errors';
+// eslint-disable-next-line no-unused-vars
 import index from './coinselect-lib/index';
+// eslint-disable-next-line no-unused-vars
 import split from './coinselect-lib/split';
+// eslint-disable-next-line no-unused-vars
 import utils from './coinselect-lib/utils';
 
