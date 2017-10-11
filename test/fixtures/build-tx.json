@@ -274,7 +274,69 @@
     }
   },
   {
-    "description": "fails on empty input",
+    "description": "fails on empty outputs + utxos input",
+    "request": {
+      "utxos": [
+      ],
+      "outputs": [
+      ],
+      "height": 100,
+      "feeRate": 10,
+      "segwit": false,
+      "inputAmounts": false,
+      "basePath": [
+        44,
+        1
+      ],
+      "changeId": 0,
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+    },
+    "result": {
+      "type": "error",
+      "error": "EMPTY"
+    }
+  },
+  {
+    "description": "fails on empty outputs input",
+    "request": {
+      "utxos": [
+        {
+          "index": 0,
+          "transactionHash": "b4dc0ffeee",
+          "value": 102001,
+          "addressPath": [
+            3,
+            4
+          ],
+          "height": 100,
+          "coinbase": false,
+          "tsize": 0,
+          "vsize": 0,
+          "fee": 0,
+          "own": true
+        }
+
+      ],
+      "outputs": [
+      ],
+      "height": 100,
+      "feeRate": 10,
+      "segwit": false,
+      "inputAmounts": false,
+      "basePath": [
+        44,
+        1
+      ],
+      "changeId": 0,
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+    },
+    "result": {
+      "type": "error",
+      "error": "EMPTY"
+    }
+  },
+  {
+    "description": "fails on empty utxos input",
     "request": {
       "utxos": [
       ],
@@ -297,7 +359,7 @@
     },
     "result": {
       "type": "error",
-      "error": "EMPTY"
+      "error": "NOT-ENOUGH-FUNDS"
     }
   },
   {
