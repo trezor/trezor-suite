@@ -35,7 +35,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "final",
@@ -107,7 +108,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "nonfinal",
@@ -153,7 +155,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "error",
@@ -195,7 +198,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "final",
@@ -266,7 +270,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "error",
@@ -289,7 +294,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "error",
@@ -328,7 +334,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "error",
@@ -355,7 +362,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "error",
@@ -403,7 +411,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "final",
@@ -496,7 +505,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "final",
@@ -600,7 +610,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "final",
@@ -676,7 +687,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "error",
@@ -733,7 +745,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "final",
@@ -820,7 +833,8 @@
         1
       ],
       "changeId": 0,
-      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT"
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "dustThreshold": 546
     },
     "result": {
       "type": "final",
