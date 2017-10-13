@@ -23,7 +23,8 @@
       "fee": 2001
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, change expected",
@@ -52,7 +53,8 @@
       "fee": 1130
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, change expected, value > 2^32",
@@ -81,7 +83,8 @@
       "fee": 1130
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, sub-optimal inputs (if re-ordered), direct possible",
@@ -109,7 +112,8 @@
       "fee": 2300
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, sub-optimal inputs (if re-ordered), direct possible, but slightly higher fee",
@@ -137,7 +141,8 @@
       "fee": 3200
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, sub-optimal inputs (if re-ordered, no direct possible), change expected",
@@ -168,7 +173,8 @@
       "fee": 1130
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, passes, skipped detrimental input",
@@ -209,7 +215,8 @@
       ]
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, fails, skips (and finishes on) detrimental input",
@@ -229,7 +236,8 @@
       "fee": 18700
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, passes, poor ordering causing high fee",
@@ -277,7 +285,8 @@
       "fee": 5000
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, passes, improved ordering causing low fee, no waste",
@@ -318,7 +327,8 @@
       "fee": 2000
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, optimal inputs, no change",
@@ -344,7 +354,8 @@
       "fee": 2300
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, no fee, change expected",
@@ -398,7 +409,8 @@
       "fee": 0
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, script provided, no change",
@@ -432,7 +444,8 @@
       "fee": 5000
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, script provided, change expected",
@@ -469,7 +482,8 @@
       "fee": 4010
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, 2 inputs (related), no change",
@@ -503,7 +517,8 @@
       "fee": 2000
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "many outputs, no change",
@@ -551,7 +566,8 @@
       "fee": 6221
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "many outputs, change expected",
@@ -602,7 +618,8 @@
       "fee": 6240
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "many outputs, no fee, change expected",
@@ -660,7 +677,8 @@
       "fee": 0
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "no outputs, no change",
@@ -680,7 +698,8 @@
       "fee": 1900
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "no outputs, change expected",
@@ -704,7 +723,8 @@
       "fee": 1920
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "inputs used in order of DESCENDING",
@@ -751,7 +771,8 @@
       ]
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "not enough funds, empty result",
@@ -766,7 +787,8 @@
       "fee": 1920
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "not enough funds (w/ fee), empty result",
@@ -781,7 +803,8 @@
       "fee": 1920
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "not enough funds (no inputs), empty result",
@@ -792,7 +815,8 @@
       "fee": 100
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "not enough funds (no inputs), empty result (>1KiB)",
@@ -833,7 +857,8 @@
       "fee": 9960
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "2 outputs, some with missing value (NaN)",
@@ -849,7 +874,8 @@
       "fee": 2260
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "input with float values (NaN)",
@@ -865,7 +891,8 @@
       "fee": 2260
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "2 outputs, with float values (NaN)",
@@ -881,7 +908,8 @@
       "fee": 2260
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "2 outputs, string values (NaN)",
@@ -901,7 +929,8 @@
       "fee": 2260
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "inputs and outputs, bad feeRate (NaN)",
@@ -914,7 +943,8 @@
     ],
     "expected": {},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "inputs and outputs, bad feeRate (NaN)",
@@ -927,6 +957,7 @@
     ],
     "expected": {},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   }
 ]

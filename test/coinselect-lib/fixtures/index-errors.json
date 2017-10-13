@@ -15,7 +15,8 @@
     ],
     "expected": "Null script length",
     "inputLength": null,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "forgotten outputLength",

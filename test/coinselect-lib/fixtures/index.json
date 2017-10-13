@@ -37,7 +37,8 @@
       "fee": 2001
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, no change, spendable coinbase",
@@ -71,7 +72,8 @@
       "fee": 2001
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, no change, more confirmed given preference",
@@ -111,7 +113,8 @@
       "fee": 2001
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, no change, little confirmed own given preference",
@@ -151,7 +154,8 @@
       "fee": 2001
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
 
 
@@ -187,7 +191,8 @@
       "fee": 2001
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, no change, value > 2^32",
@@ -221,7 +226,8 @@
       "fee": 2001
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, bnb change rejected, value > 2^32",
@@ -258,7 +264,8 @@
       "fee": 1130
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, only possibility with change, bnb rejects",
@@ -298,7 +305,8 @@
 			"fee": 1130
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, sub-optimal inputs (if re-ordered), direct possible",
@@ -344,7 +352,8 @@
       "fee": 2300
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, sub-optimal inputs (if re-ordered), direct possible, but slightly higher fee, bnb rejects",
@@ -396,7 +405,8 @@
 			"fee": 2260
 		},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, needs combination of conf + unconf",
@@ -443,7 +453,8 @@
       ]
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, passes, skipped detrimental input",
@@ -499,7 +510,8 @@
       ]
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, fails, skips (and finishes on) detrimental input",
@@ -525,7 +537,8 @@
       "fee": 18700
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, passes, good match despite bad ordering",
@@ -581,7 +594,8 @@
       "fee": 2000
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, optimal inputs, no change",
@@ -615,7 +629,8 @@
       "fee": 2300
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, no fee, no bnb match",
@@ -737,7 +752,8 @@
     
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "1 output, 2 inputs (related), no change",
@@ -780,7 +796,8 @@
       "fee": 2000
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "many outputs, no change",
@@ -852,7 +869,8 @@
       "fee": 6221
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "many outputs, bnb no match",
@@ -936,7 +954,8 @@
 			"fee": 6240
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "many outputs, no match",
@@ -1069,7 +1088,8 @@
 			"fee": 0
 		},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "no outputs, no change",
@@ -1097,7 +1117,8 @@
       "fee": 1900
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "no outputs, bnb no match",
@@ -1135,7 +1156,8 @@
 			"fee": 1920
 		},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "not enough funds, bnb empty result",
@@ -1155,7 +1177,8 @@
 			"fee": 1920
 		},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "not enough funds (w/ fee), bnb empty result",
@@ -1175,7 +1198,8 @@
 			"fee": 1920
 		},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "not enough funds (no inputs), empty result",
@@ -1185,7 +1209,8 @@
     "expected": {
 		},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "not enough funds (no inputs), empty result (>1KiB)",
@@ -1224,7 +1249,8 @@
     ],
     "expected": {},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "2 outputs, some with missing value (NaN)",
@@ -1245,7 +1271,8 @@
       "fee": 2260
 		},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "input is unspendable coinbase",
@@ -1265,7 +1292,8 @@
     "expected": {
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "input with float values (NaN)",
@@ -1286,7 +1314,8 @@
 			"fee": 2260
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "2 outputs, with float values (NaN)",
@@ -1307,7 +1336,8 @@
 			"fee": 2260
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "2 outputs, string values (NaN)",
@@ -1332,7 +1362,8 @@
 			"fee": 2260
     },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "inputs and outputs, bad feeRate (NaN)",
@@ -1350,7 +1381,8 @@
     ],
     "expected": {},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "inputs and outputs, bad feeRate (NaN)",
@@ -1368,7 +1400,8 @@
     ],
     "expected": {},
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   },
   {
     "description": "exhausting BnB",
@@ -3839,6 +3872,7 @@
         
         },
     "inputLength": 107,
-    "outputLength": 25
+    "outputLength": 25,
+    "dustThreshold": 546
   }
 ]

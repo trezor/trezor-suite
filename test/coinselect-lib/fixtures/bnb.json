@@ -24,6 +24,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -51,6 +52,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
 
@@ -69,6 +71,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
 
@@ -86,6 +89,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -115,6 +119,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -133,6 +138,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -175,6 +181,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -196,6 +203,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -238,6 +246,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -265,6 +274,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -286,6 +296,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -321,6 +332,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -370,6 +382,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -391,6 +404,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -413,6 +427,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -434,6 +449,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -448,6 +464,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -464,6 +481,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -480,6 +498,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -492,6 +511,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -534,6 +554,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -551,6 +572,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -568,6 +590,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -585,6 +608,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -606,6 +630,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -620,6 +645,7 @@
     "expected": {},
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -634,6 +660,7 @@
     "expected": {},
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   },
   {
@@ -671,6 +698,7 @@
     },
     "inputLength": 107,
     "outputLength": 25,
+    "dustThreshold": 546,
     "factor": 0.5
   }
 ]
