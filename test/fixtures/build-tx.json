@@ -39,7 +39,7 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 100000,
+      "totalSpent": 102001,
       "fee": 2001,
       "feePerByte": 10.367875647668393,
       "max": -1,
@@ -111,7 +111,7 @@
     },
     "result": {
       "type": "nonfinal",
-      "totalSpent": 100000,
+      "totalSpent": 102001,
       "fee": 2001,
       "feePerByte": 10.367875647668393,
       "max": -1,
@@ -199,7 +199,7 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 100071,
+      "totalSpent": 102001,
       "fee": 1930,
       "feePerByte": 10,
       "max": 100071,
@@ -407,7 +407,7 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 50000,
+      "totalSpent": 52610,
       "fee": 2610,
       "feePerByte": 10,
       "max": -1,
@@ -500,7 +500,7 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 50000,
+      "totalSpent": 52030,
       "fee": 2030,
       "feePerByte": 10,
       "max": -1,
@@ -604,7 +604,7 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 100000,
+      "totalSpent": 102001,
       "fee": 2001,
       "feePerByte": 10.367875647668393,
       "max": -1,
@@ -737,7 +737,7 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 200000,
+      "totalSpent": 204002,
       "fee": 4002,
       "feePerByte": 11.701754385964913,
       "max": -1,
@@ -824,7 +824,7 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 60000,
+      "totalSpent": 62030,
       "fee": 2030,
       "feePerByte": 10,
       "max": -1,
