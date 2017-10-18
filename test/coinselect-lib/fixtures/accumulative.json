@@ -47,10 +47,10 @@
           "value": 100000
         },
         {
-          "value": 4871
+          "value": 4866
         }
       ],
-      "fee": 1130
+      "fee": 1135
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -77,10 +77,10 @@
           "value": 1
         },
         {
-          "value": 4999998869
+          "value": 4999998864
         }
       ],
-      "fee": 1130
+      "fee": 1135
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -167,10 +167,10 @@
           "value": 4700
         },
         {
-          "value": 4170
+          "value": 4165
         }
       ],
-      "fee": 1130
+      "fee": 1135
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -233,7 +233,7 @@
       38000
     ],
     "expected": {
-      "fee": 18700
+      "fee": 18755
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -476,10 +476,10 @@
           "value": 95000
         },
         {
-          "value": 100990
+          "value": 100980
         }
       ],
-      "fee": 4010
+      "fee": 4020
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -612,10 +612,10 @@
           "value": 1000
         },
         {
-          "value": 1981
+          "value": 1971
         }
       ],
-      "fee": 6240
+      "fee": 6250
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -717,10 +717,10 @@
       ],
       "outputs": [
         {
-          "value": 18080
+          "value": 18070
         }
       ],
-      "fee": 1920
+      "fee": 1930
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -743,7 +743,7 @@
       25000
     ],
     "expected": {
-      "fee": 7150,
+      "fee": 7160,
       "inputs": [
         {
           "i": 0,
@@ -766,7 +766,7 @@
           "value": 25000
         },
         {
-          "value": 7850
+          "value": 7840
         }
       ]
     },
@@ -784,7 +784,7 @@
       40000
     ],
     "expected": {
-      "fee": 1920
+      "fee": 1930
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -800,7 +800,7 @@
       40000
     ],
     "expected": {
-      "fee": 1920
+      "fee": 1930
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -812,7 +812,7 @@
     "inputs": [],
     "outputs": [],
     "expected": {
-      "fee": 100
+      "fee": 110
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -854,7 +854,7 @@
       1
     ],
     "expected": {
-      "fee": 9960
+      "fee": 9970
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -871,7 +871,7 @@
       {}
     ],
     "expected": {
-      "fee": 2260
+      "fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -888,7 +888,7 @@
       1200
     ],
     "expected": {
-      "fee": 2260
+      "fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -905,7 +905,7 @@
       1200.5
     ],
     "expected": {
-      "fee": 2260
+      "fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -926,7 +926,7 @@
       }
     ],
     "expected": {
-      "fee": 2260
+      "fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,

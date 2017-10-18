@@ -42,9 +42,9 @@
       "type": "final",
       "totalSpent": 102001,
       "fee": 2001,
-      "feePerByte": 10.367875647668393,
+      "feePerByte": 10.261538461538462,
       "max": -1,
-      "bytes": 193,
+      "bytes": 195,
       "transaction": {
         "inputs": [
           {
@@ -115,9 +115,9 @@
       "type": "nonfinal",
       "totalSpent": 102001,
       "fee": 2001,
-      "feePerByte": 10.367875647668393,
+      "feePerByte": 10.261538461538462,
       "max": -1,
-      "bytes": 193
+      "bytes": 195
     }
   },
   {
@@ -204,10 +204,10 @@
     "result": {
       "type": "final",
       "totalSpent": 102001,
-      "fee": 1930,
+      "fee": 1950,
       "feePerByte": 10,
-      "max": 100071,
-      "bytes": 193,
+      "max": 100051,
+      "bytes": 195,
       "transaction": {
         "inputs": [
           {
@@ -228,7 +228,7 @@
           ],
           "sorted": [
             {
-              "value": 100071,
+              "value": 100051,
               "address": "1BitcoinEaterAddressDontSendf59kuE"
             }
           ]
@@ -416,11 +416,11 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 52610,
-      "fee": 2610,
+      "totalSpent": 52630,
+      "fee": 2630,
       "feePerByte": 10,
       "max": -1,
-      "bytes": 261,
+      "bytes": 263,
       "transaction": {
         "inputs": [
           {
@@ -458,7 +458,7 @@
                 0
               ],
               "segwit": false,
-              "value": 49391
+              "value": 49371
             }
           ]
         }
@@ -510,11 +510,11 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 52030,
-      "fee": 2030,
+      "totalSpent": 52050,
+      "fee": 2050,
       "feePerByte": 10,
       "max": -1,
-      "bytes": 203,
+      "bytes": 205,
       "transaction": {
         "inputs": [
           {
@@ -553,7 +553,7 @@
                 0
               ],
               "segwit": true,
-              "value": 49971
+              "value": 49951
             }
           ]
         }
@@ -617,9 +617,9 @@
       "type": "final",
       "totalSpent": 102001,
       "fee": 2001,
-      "feePerByte": 10.367875647668393,
+      "feePerByte": 10.261538461538462,
       "max": -1,
-      "bytes": 193,
+      "bytes": 195,
       "transaction": {
         "inputs": [
           {
@@ -752,9 +752,9 @@
       "type": "final",
       "totalSpent": 204002,
       "fee": 4002,
-      "feePerByte": 11.701754385964913,
+      "feePerByte": 11.6,
       "max": -1,
-      "bytes": 342,
+      "bytes": 345,
       "transaction": {
         "inputs": [
           {
@@ -838,11 +838,11 @@
     },
     "result": {
       "type": "final",
-      "totalSpent": 62030,
-      "fee": 2030,
+      "totalSpent": 62050,
+      "fee": 2050,
       "feePerByte": 10,
       "max": -1,
-      "bytes": 203,
+      "bytes": 205,
       "transaction": {
         "inputs": [
           {
@@ -881,7 +881,7 @@
                 0
               ],
               "segwit": true,
-              "value": 39971
+              "value": 39951
             }
           ]
         }
@@ -931,9 +931,9 @@
       "type": "final",
       "totalSpent": 972463,
       "fee": 43503,
-      "feePerByte": 322.24444444444447,
+      "feePerByte": 317.54014598540147,
       "max": -1,
-      "bytes": 135,
+      "bytes": 137,
       "transaction": {
         "inputs": [
           {

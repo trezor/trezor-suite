@@ -258,10 +258,10 @@
           "value": 1
         },
         {
-          "value": 4999998869
+          "value": 4999998864
         }
       ],
-      "fee": 1130
+      "fee": 1135
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -299,10 +299,10 @@
 					"value": 100000
 				},
 				{
-					"value": 4871
+					"value": 4866
 				}
 			],
-			"fee": 1130
+			"fee": 1135
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -399,10 +399,10 @@
 					"value": 6800
 				},
 				{
-					"value": 30940
+					"value": 30930
 				}
 			],
-			"fee": 2260
+			"fee": 2270
 		},
     "inputLength": 107,
     "outputLength": 25,
@@ -534,7 +534,7 @@
       38000
     ],
     "expected": {
-      "fee": 18700
+      "fee": 18755
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -948,10 +948,10 @@
 					"value": 1000
 				},
 				{
-					"value": 1981
+					"value": 1971
 				}
 			],
-			"fee": 6240
+			"fee": 6250
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -1147,13 +1147,13 @@
 			],
 			"outputs": [
 				{
-					"value": 18080,
+					"value": 18070,
 					"script": {
 						"length": 25
 					}
 				}
 			],
-			"fee": 1920
+			"fee": 1930
 		},
     "inputLength": 107,
     "outputLength": 25,
@@ -1174,7 +1174,7 @@
       40000
     ],
     "expected": {
-			"fee": 1920
+			"fee": 1930
 		},
     "inputLength": 107,
     "outputLength": 25,
@@ -1195,7 +1195,7 @@
       40000
     ],
     "expected": {
-			"fee": 1920
+			"fee": 1930
 		},
     "inputLength": 107,
     "outputLength": 25,
@@ -1268,7 +1268,7 @@
       {}
     ],
     "expected": {
-      "fee": 2260
+      "fee": 2270
 		},
     "inputLength": 107,
     "outputLength": 25,
@@ -1311,7 +1311,7 @@
       1200
     ],
     "expected": {
-			"fee": 2260
+			"fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -1333,7 +1333,7 @@
       1200.5
     ],
     "expected": {
-			"fee": 2260
+			"fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -1359,7 +1359,7 @@
       }
     ],
     "expected": {
-			"fee": 2260
+			"fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -3862,15 +3862,14 @@
           }
         },
         {
-          "value": 4580,
+          "value": 4570,
           "script": {
             "length": 25
           }
         }
       ],
-      "fee": 175420
-        
-        },
+      "fee": 175430
+    },
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546

@@ -19,16 +19,16 @@
       ],
       "outputs": [
         {
-          "value": 5133
+          "value": 5130
         },
         {
-          "value": 5133
+          "value": 5130
         },
         {
-          "value": 5133
+          "value": 5130
         }
       ],
-      "fee": 2601
+      "fee": 2610
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -73,13 +73,13 @@
       ],
       "outputs": [
         {
-          "value": 20910
+          "value": 20905
         },
         {
-          "value": 20910
+          "value": 20905
         }
       ],
-      "fee": 8180
+      "fee": 8190
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -113,10 +113,10 @@
       ],
       "outputs": [
         {
-          "value": 25120
+          "value": 25110
         }
       ],
-      "fee": 4880
+      "fee": 4890
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -162,13 +162,13 @@
         },
         {
           "address": "fizzbuzz",
-          "value": 6220
+          "value": 6215
         },
         {
-          "value": 6220
+          "value": 6215
         }
       ],
-      "fee": 5560
+      "fee": 5570
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -183,7 +183,7 @@
     ],
     "outputs": [],
     "expected": {
-      "fee": 3060
+      "fee": 3070
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -198,7 +198,7 @@
       {}
     ],
     "expected": {
-      "fee": 780
+      "fee": 790
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -214,7 +214,7 @@
       {}
     ],
     "expected": {
-      "fee": 1920
+      "fee": 1930
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -244,10 +244,10 @@
           "value": 4000
         },
         {
-          "value": 13514
+          "value": 13503
         }
       ],
-      "fee": 2486
+      "fee": 2497
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -266,7 +266,7 @@
       {}
     ],
     "expected": {
-      "fee": 2260
+      "fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -287,7 +287,7 @@
       }
     ],
     "expected": {
-      "fee": 2486
+      "fee": 2497
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -304,7 +304,7 @@
       {}
     ],
     "expected": {
-      "fee": 2260
+      "fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
