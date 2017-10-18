@@ -157,8 +157,6 @@
     "outputLength": 25,
     "dustThreshold": 546
   },
-
-
   {
     "description": "1 output, no change",
     "feeRate": 10,
@@ -282,27 +280,27 @@
       100000
     ],
     "expected": {
-			"inputs": [
-				{
-					"i": 0,
-					"value": 106001,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				}
-			],
-			"outputs": [
-				{
-					"value": 100000
-				},
-				{
-					"value": 4866
-				}
-			],
-			"fee": 1135
+      "inputs": [
+        {
+          "i": 0,
+          "value": 106001,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "value": 100000
+        },
+        {
+          "value": 4866
+        }
+      ],
+      "fee": 1135
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -382,28 +380,28 @@
       6800
     ],
     "expected": {
-			"inputs": [
-				{
-					"i": 1,
-					"value": 40000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				}
-			],
-			"outputs": [
-				{
-					"value": 6800
-				},
-				{
-					"value": 30930
-				}
-			],
-			"fee": 2270
-		},
+      "inputs": [
+        {
+          "i": 1,
+          "value": 40000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "value": 6800
+        },
+        {
+          "value": 30930
+        }
+      ],
+      "fee": 2270
+    },
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546
@@ -466,7 +464,7 @@
         "own": true,
         "confirmations": 100,
         "script": {
-            "length": 1000
+          "length": 1000
         }
       },
       {
@@ -524,7 +522,7 @@
         "confirmations": 100
       },
       {
-        "value":  800,
+        "value": 800,
         "coinbase": false,
         "own": true,
         "confirmations": 100
@@ -677,79 +675,77 @@
       28000
     ],
     "expected": {
-			"inputs": [
-				{
-					"i": 0,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 1,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 2,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 3,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 4,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 5,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				}
-			],
-			"outputs": [
-				{
-					"value": 28000
-				},
-				{
-					"value": 2000
-				}
-			],
-			"fee": 0
-
-    
+      "inputs": [
+        {
+          "i": 0,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 1,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 2,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 3,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 4,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 5,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "value": 28000
+        },
+        {
+          "value": 2000
+        }
+      ],
+      "fee": 0
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -902,56 +898,56 @@
       1000
     ],
     "expected": {
-			"inputs": [
-				{
-					"i": 0,
-					"value": 30000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 1,
-					"value": 14220,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 2,
-					"value": 10001,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				}
-			],
-			"outputs": [
-				{
-					"value": 35000
-				},
-				{
-					"value": 5000
-				},
-				{
-					"value": 5000
-				},
-				{
-					"value": 1000
-				},
-				{
-					"value": 1971
-				}
-			],
-			"fee": 6250
+      "inputs": [
+        {
+          "i": 0,
+          "value": 30000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 1,
+          "value": 14220,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 2,
+          "value": 10001,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "value": 35000
+        },
+        {
+          "value": 5000
+        },
+        {
+          "value": 5000
+        },
+        {
+          "value": 1000
+        },
+        {
+          "value": 1971
+        }
+      ],
+      "fee": 6250
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -1003,90 +999,90 @@
       1000
     ],
     "expected": {
-			"inputs": [
-				{
-					"i": 0,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 1,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 2,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 3,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 4,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				},
-				{
-					"i": 5,
-					"value": 5000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				}
-			],
-			"outputs": [
-				{
-					"value": 28000,
-					"script": {
-						"length": 25
-					}
-				},
-				{
-					"value": 1000,
-					"script": {
-						"length": 25
-					}
-				},
-				{
-					"value": 1000,
-					"script": {
-						"length": 25
-					}
-				}
-			],
-			"fee": 0
-		},
+      "inputs": [
+        {
+          "i": 0,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 1,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 2,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 3,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 4,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        },
+        {
+          "i": 5,
+          "value": 5000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "value": 28000,
+          "script": {
+            "length": 25
+          }
+        },
+        {
+          "value": 1000,
+          "script": {
+            "length": 25
+          }
+        },
+        {
+          "value": 1000,
+          "script": {
+            "length": 25
+          }
+        }
+      ],
+      "fee": 0
+    },
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546
@@ -1133,28 +1129,28 @@
     ],
     "outputs": [],
     "expected": {
-			"inputs": [
-				{
-					"i": 0,
-					"value": 20000,
-					"coinbase": false,
-					"own": true,
-					"confirmations": 100,
-					"script": {
-						"length": 107
-					}
-				}
-			],
-			"outputs": [
-				{
-					"value": 18070,
-					"script": {
-						"length": 25
-					}
-				}
-			],
-			"fee": 1930
-		},
+      "inputs": [
+        {
+          "i": 0,
+          "value": 20000,
+          "coinbase": false,
+          "own": true,
+          "confirmations": 100,
+          "script": {
+            "length": 107
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "value": 18070,
+          "script": {
+            "length": 25
+          }
+        }
+      ],
+      "fee": 1930
+    },
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546
@@ -1174,8 +1170,8 @@
       40000
     ],
     "expected": {
-			"fee": 1930
-		},
+      "fee": 1930
+    },
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546
@@ -1195,8 +1191,8 @@
       40000
     ],
     "expected": {
-			"fee": 1930
-		},
+      "fee": 1930
+    },
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546
@@ -1206,8 +1202,7 @@
     "feeRate": 10,
     "inputs": [],
     "outputs": [],
-    "expected": {
-		},
+    "expected": {},
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546
@@ -1269,7 +1264,7 @@
     ],
     "expected": {
       "fee": 2270
-		},
+    },
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546
@@ -1289,8 +1284,7 @@
       10000,
       1200
     ],
-    "expected": {
-    },
+    "expected": {},
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546
@@ -1311,7 +1305,7 @@
       1200
     ],
     "expected": {
-			"fee": 2270
+      "fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -1333,7 +1327,7 @@
       1200.5
     ],
     "expected": {
-			"fee": 2270
+      "fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,
@@ -1359,7 +1353,7 @@
       }
     ],
     "expected": {
-			"fee": 2270
+      "fee": 2270
     },
     "inputLength": 107,
     "outputLength": 25,

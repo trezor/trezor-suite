@@ -35,7 +35,7 @@
     "expected": "Null script length",
     "inputLength": 25,
     "outputLength": null
-  }, 
+  },
   {
     "description": "missing input info",
     "feeRate": 10,
@@ -51,4 +51,4 @@
     "inputLength": 25,
     "outputLength": null
   }
-] 
+]
