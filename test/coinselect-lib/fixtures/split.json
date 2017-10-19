@@ -337,5 +337,41 @@
     "inputLength": 107,
     "outputLength": 25,
     "dustThreshold": 546
+  },
+  {
+    "description": "1 to 1, not enough funds",
+    "feeRate": 1000,
+    "inputs": [
+      5000
+    ],
+    "outputs": [
+      {}
+    ],
+    "expected": {
+      "fee": 193000
+    },
+    "inputLength": 107,
+    "outputLength": 25,
+    "dustThreshold": 546
+  },
+  {
+    "description": "1 to 1, not enough funds (coinbase)",
+    "feeRate": 10,
+    "inputs": [
+      {
+        "i": 0,
+        "value": 10000,
+        "coinbase": true
+      }
+    ],
+    "outputs": [
+      {}
+    ],
+    "expected": {
+      "fee": 450
+    },
+    "inputLength": 107,
+    "outputLength": 25,
+    "dustThreshold": 546
   }
 ]
