@@ -196,6 +196,18 @@ describe('discovery', () => {
         return res;
     });
 
+    it('one unconfirmed - from empty - testing orphaned blocks (longer chain)', function () {
+        this.timeout(60 * 1000);
+        const oldheight = lastEmpty.lastBlock.height;
+        lastEmpty.lastBlock.height = oldheight + 1000;
+        const res = testDiscovery(discovery, xpub, testUnconf, lastEmpty);
+        res.then(
+            () => { lastEmpty.lastBlock.height = oldheight; },
+            () => { lastEmpty.lastBlock.height = oldheight; }
+        );
+        return res;
+    });
+
     let lastConf;
 
     function testConf(info) {
