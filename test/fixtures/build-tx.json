@@ -164,6 +164,79 @@
     }
   },
   {
+    "description": "builds a send-max with large input",
+    "request": {
+      "basePath": [
+        44,
+        1
+      ],
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "changeId": 0,
+      "dustThreshold": 546,
+      "feeRate": 10,
+      "height": 100,
+      "inputAmounts": false,
+      "outputs": [
+        {
+          "address": "1BitcoinEaterAddressDontSendf59kuE",
+          "type": "send-max"
+        }
+      ],
+      "segwit": false,
+      "utxos": [
+        {
+          "addressPath": [
+            3,
+            4
+          ],
+          "coinbase": false,
+          "fee": 0,
+          "height": 100,
+          "index": 0,
+          "own": true,
+          "transactionHash": "b4dc0ffeee",
+          "tsize": 0,
+          "value": 50000000000,
+          "vsize": 0
+        }
+      ]
+    },
+    "result": {
+      "bytes": 195,
+      "fee": 1950,
+      "feePerByte": 10,
+      "max": 49999998050,
+      "totalSpent": 50000000000,
+      "transaction": {
+        "PERM_outputs": {
+          "permutation": [
+            0
+          ],
+          "sorted": [
+            {
+              "address": "1BitcoinEaterAddressDontSendf59kuE",
+              "value": 49999998050
+            }
+          ]
+        },
+        "inputs": [
+          {
+            "REV_hash": "b4dc0ffeee",
+            "index": 0,
+            "path": [
+              44,
+              1,
+              3,
+              4
+            ],
+            "segwit": false
+          }
+        ]
+      },
+      "type": "final"
+    }
+  },
+  {
     "description": "builds a send-max",
     "request": {
       "basePath": [
