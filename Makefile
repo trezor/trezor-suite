@@ -1,14 +1,14 @@
 BIN=`npm bin`
 
-LIB=lib/index.js
+LIB=src/index.js
 LIB_TARGET=dist/index.js
 
 TEST=test/*.js
 
 EXAMPLE=example/index.js
 EXAMPLE_TARGET=gh-pages/example.js
-SOCKET_WORKER=lib/socketio-worker/inside.js
-DISCOVERY_WORKER=lib/discovery/worker/inside/index.js
+SOCKET_WORKER=src/socketio-worker/inside.js
+DISCOVERY_WORKER=src/discovery/worker/inside/index.js
 SOCKET_TARGET=gh-pages/socket-worker.js
 DISCOVERY_TARGET=gh-pages/discovery-worker.js
 

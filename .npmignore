@@ -1,0 +1,41 @@
+# Dev directories
+src
+.babelrc
+.eslintc
+.gitignore
+.gitmodules
+.travis.yml
+karma.conf.js-bitcore
+karma.conf.js-buildtx
+karma.conf.js-discovery
+Makefile
+docker_test
+example
+test
+test_helpers
+type
+
+# Example directories
+examples
+
+# Fastxpub source
+fastxpub
+
+# Dependency directory
+node_modules
+yarn.lock
+
+# OSX
+.DS_Store
+
+# Editors
+.editorconfig
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+logs
+*.log
+.yarnclean
