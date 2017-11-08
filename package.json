@@ -4,6 +4,7 @@
   "description": "Data structures and algorithms for Bitcoin HD wallet.",
   "main": "lib/index.js",
   "scripts": {
+    "build-lib": "rm -rf lib && babel src --out-dir lib && cp -r ./fastxpub/build ./lib/fastxpub",
     "build-example": "make example",
     "unit": "mocha --compilers js:babel-register",
     "coverage": "nyc --require babel-register --check-coverage mocha --compilers js:babel-register",
