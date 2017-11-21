@@ -8,8 +8,8 @@
     "build-example": "make example",
     "unit": "mocha --compilers js:babel-register",
     "coverage": "nyc --require babel-register --check-coverage mocha --compilers js:babel-register",
-    "flow": "flow check lib",
-    "eslint": "cd lib && eslint . && cd ../test && eslint . && cd ../example && eslint . cd ../test_helpers && eslint .",
+    "flow": "flow check src",
+    "eslint": "cd src && eslint . && cd ../test && eslint . && cd ../example && eslint . cd ../test_helpers && eslint .",
     "karma-firefox": "karma start --browsers Firefox --single-run",
     "karma-chrome": "karma start --browsers Chrome --single-run"
   },
