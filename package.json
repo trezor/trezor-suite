@@ -13,7 +13,7 @@
     "karma-firefox": "karma start --browsers Firefox --single-run",
     "karma-chrome": "karma start --browsers Chrome --single-run"
   },
-  "author": "Jan Pochyla <jpochyla@gmail.com>",
+  "author": "TREZOR <info@trezor.io>",
   "repository": "https://github.com/trezor/hd-wallet",
   "license": "LGPL-3.0+",
   "browserify": {
