@@ -1,19 +1,19 @@
-'use strict';
+/* @flow */
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.startDiscoveryPromise = exports.initPromise = undefined;
-exports.lookupSyncStatus = lookupSyncStatus;
-exports.lookupBlockHash = lookupBlockHash;
-exports.doesTransactionExist = doesTransactionExist;
-exports.chunkTransactions = chunkTransactions;
-exports.returnSuccess = returnSuccess;
-exports.returnError = returnError;
+import { deferred } from '../../../utils/deferred';
+import { Emitter, Stream } from '../../../utils/stream';
+import type {
+    InMessage,
+    PromiseRequestType,
+    StreamRequestType,
+    ChunkDiscoveryInfo,
+    OutMessage,
+} from '../types';
 
-var _deferred = require('../../../utils/deferred');
-
-var _stream = require('../../../utils/stream');
+import type {
+    AccountInfo,
+} from '../../index';
+import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
 
 // Code for all communication with outside
 
@@ -27,20 +27,20 @@ var _stream = require('../../../utils/stream');
 // It's maybe a little overkill :( but it allows me to have multiple streams
 // and promises over one worker communication
 
-var lastId = 0;
+let lastId: number = 0;
 
-var messageEmitter = new _stream.Emitter();
+const messageEmitter: Emitter<InMessage> = new Emitter();
 
-function askPromise(request) {
-    var id = lastId + 1;
+function askPromise(request: PromiseRequestType): Promise<any> {
+    const id = lastId + 1;
     lastId++;
     doPostMessage({
         type: 'promiseRequest',
-        request: request,
-        id: id
+        request,
+        id,
     });
-    var dfd = (0, _deferred.deferred)();
-    messageEmitter.attach(function (message, detach) {
+    const dfd = deferred();
+    messageEmitter.attach((message, detach) => {
         if (message.type === 'promiseResponseSuccess') {
             if (message.response.type === request.type) {
                 if (message.id === id) {
@@ -59,17 +59,17 @@ function askPromise(request) {
     return dfd.promise;
 }
 
-function askStream(request) {
-    var id = lastId + 1;
+function askStream(request: StreamRequestType): Stream<any> {
+    const id = lastId + 1;
     lastId++;
     doPostMessage({
         type: 'streamRequest',
-        request: request,
-        id: id
+        request,
+        id,
     });
-    return new _stream.Stream(function (update, finish) {
-        var emitterDetach = function emitterDetach() {};
-        messageEmitter.attach(function (message, detach) {
+    return new Stream((update, finish) => {
+        let emitterDetach = () => {};
+        messageEmitter.attach((message: InMessage, detach) => {
             emitterDetach = detach;
             if (message.type === 'streamResponseUpdate') {
                 if (message.update.type === request.type) {
@@ -85,35 +85,43 @@ function askStream(request) {
                 }
             }
         });
-        return function () {
+        return () => {
             emitterDetach();
         };
     });
 }
 
-function lookupSyncStatus() {
-    return askPromise({ type: 'lookupSyncStatus' });
+export function lookupSyncStatus(): Promise<number> {
+    return askPromise({type: 'lookupSyncStatus'});
 }
 
-function lookupBlockHash(height) {
-    return askPromise({ type: 'lookupBlockHash', height: height });
+export function lookupBlockHash(height: number): Promise<string> {
+    return askPromise({type: 'lookupBlockHash', height});
 }
 
-function doesTransactionExist(txid) {
-    return askPromise({ type: 'doesTransactionExist', txid: txid });
+export function doesTransactionExist(txid: string): Promise<boolean> {
+    return askPromise({type: 'doesTransactionExist', txid});
 }
 
-function chunkTransactions(chainId, firstIndex, lastIndex, startBlock, endBlock, pseudoCount, addresses) {
+export function chunkTransactions(
+    chainId: number,
+    firstIndex: number,
+    lastIndex: number,
+    startBlock: number,
+    endBlock: number,
+    pseudoCount: number,
+    addresses: ?Array<string>
+): Stream<ChunkDiscoveryInfo | Error> {
     return askStream({
         type: 'chunkTransactions',
-        chainId: chainId,
-        firstIndex: firstIndex,
-        lastIndex: lastIndex,
-        startBlock: startBlock,
-        endBlock: endBlock,
-        pseudoCount: pseudoCount,
-        addresses: addresses
-    }).map(function (k) {
+        chainId,
+        firstIndex,
+        lastIndex,
+        startBlock,
+        endBlock,
+        pseudoCount,
+        addresses,
+    }).map((k: ChunkDiscoveryInfo | string): (ChunkDiscoveryInfo | Error) => {
         if (typeof k === 'string') {
             return new Error(k);
         }
@@ -121,39 +129,41 @@ function chunkTransactions(chainId, firstIndex, lastIndex, startBlock, endBlock,
     });
 }
 
-function returnSuccess(result) {
-    doPostMessage({ type: 'result', result: result });
+export function returnSuccess(result: AccountInfo): void {
+    doPostMessage({type: 'result', result});
 }
 
-function returnError(error) {
-    var errorMessage = error instanceof Error ? error.message : error.toString();
-    doPostMessage({ type: 'error', error: errorMessage });
+export function returnError(error: Error | string): void {
+    const errorMessage: string = error instanceof Error ? error.message : error.toString();
+    doPostMessage({type: 'error', error: errorMessage});
 }
 
-function doPostMessage(data) {
-    self.postMessage(data);
+function doPostMessage(data: OutMessage) {
+    self.postMessage(
+        data
+    );
 }
 
 // eslint-disable-next-line no-undef
-self.onmessage = function (event) {
-    var data = event.data;
+self.onmessage = function (event: {data: InMessage}) {
+    const data: InMessage = event.data;
     messageEmitter.emit(data);
 };
 
-var initDfd = (0, _deferred.deferred)();
-var initPromise = exports.initPromise = initDfd.promise;
+const initDfd = deferred();
+export const initPromise: Promise<{accountInfo: ?AccountInfo, network: BitcoinJsNetwork, xpub: string, segwit: boolean, webassembly: boolean}> = initDfd.promise;
 
-messageEmitter.attach(function (message, detach) {
+messageEmitter.attach((message, detach) => {
     if (message.type === 'init') {
         detach();
-        initDfd.resolve({ accountInfo: message.state, network: message.network, xpub: message.xpub, segwit: message.segwit, webassembly: message.webassembly });
+        initDfd.resolve({accountInfo: message.state, network: message.network, xpub: message.xpub, segwit: message.segwit, webassembly: message.webassembly});
     }
 });
 
-var startDiscoveryDfd = (0, _deferred.deferred)();
-var startDiscoveryPromise = exports.startDiscoveryPromise = startDiscoveryDfd.promise;
+const startDiscoveryDfd = deferred();
+export const startDiscoveryPromise: Promise<void> = startDiscoveryDfd.promise;
 
-messageEmitter.attach(function (message, detach) {
+messageEmitter.attach((message, detach) => {
     if (message.type === 'startDiscovery') {
         detach();
         startDiscoveryDfd.resolve();

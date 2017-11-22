@@ -1,62 +1,72 @@
-'use strict';
+/* @flow */
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.empty = undefined;
-exports.getNonfinalResult = getNonfinalResult;
-exports.getFinalResult = getFinalResult;
-
-var _transaction = require('./transaction');
-
-var transaction = _interopRequireWildcard(_transaction);
-
-var _coinselect = require('./coinselect');
-
-var coinselect = _interopRequireWildcard(_coinselect);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+import * as transaction from './transaction';
+import * as coinselect from './coinselect';
 
 // ---------- Output from algorigthm
 // 'nonfinal' - contains info about the outputs, but not Trezor tx
 // 'final' - contains info about outputs + Trezor tx
 // 'error' - some error, so far only NOT-ENOUGH-FUNDS and EMPTY strings
-var empty = exports.empty = {
+export type Result = {
     type: 'error',
-    error: 'EMPTY'
+    error: string,
+} | {
+    type: 'nonfinal',
+    max: number,
+    totalSpent: number, // all the outputs, no fee, no change
+    fee: number,
+    feePerByte: number,
+    bytes: number,
+} | {
+    type: 'final',
+    max: number,
+    totalSpent: number, // all the outputs, no fee, no change
+    fee: number,
+    feePerByte: number,
+    bytes: number,
+    transaction: transaction.Transaction,
 };
 
-function getNonfinalResult(result) {
-    var max = result.result.max;
-    var fee = result.result.fee;
-    var feePerByte = result.result.feePerByte;
-    var bytes = result.result.bytes;
-    var totalSpent = result.result.totalSpent;
+export const empty: Result = {
+    type: 'error',
+    error: 'EMPTY',
+};
+
+export function getNonfinalResult(result: coinselect.CompleteResult): Result {
+    const max = result.result.max;
+    const fee = result.result.fee;
+    const feePerByte = result.result.feePerByte;
+    const bytes = result.result.bytes;
+    const totalSpent = result.result.totalSpent;
 
     return {
         type: 'nonfinal',
-        fee: fee,
-        feePerByte: feePerByte,
-        bytes: bytes,
-        max: max,
-        totalSpent: totalSpent
+        fee,
+        feePerByte,
+        bytes,
+        max,
+        totalSpent,
     };
 }
 
-function getFinalResult(result, transaction) {
-    var max = result.result.max;
-    var fee = result.result.fee;
-    var feePerByte = result.result.feePerByte;
-    var bytes = result.result.bytes;
-    var totalSpent = result.result.totalSpent;
+export function getFinalResult(
+    result: coinselect.CompleteResult,
+    transaction: transaction.Transaction
+): Result {
+    const max = result.result.max;
+    const fee = result.result.fee;
+    const feePerByte = result.result.feePerByte;
+    const bytes = result.result.bytes;
+    const totalSpent = result.result.totalSpent;
 
     return {
         type: 'final',
-        fee: fee,
-        feePerByte: feePerByte,
-        bytes: bytes,
-        transaction: transaction,
-        max: max,
-        totalSpent: totalSpent
+        fee,
+        feePerByte,
+        bytes,
+        transaction,
+        max,
+        totalSpent,
     };
 }
+

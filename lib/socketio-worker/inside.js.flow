@@ -1,41 +1,67 @@
-'use strict';
-
-var _socket2 = require('socket.io-client');
-
-var _socket3 = _interopRequireDefault(_socket2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+/* @flow */
 
 // socket.io is enclosed inside worker,
 // because it behaves unpredictably + is slow
 // (I don't like socket.io.)
+import socketIO from 'socket.io-client';
 
+export type InMessage = {
+    type: 'init',
+    endpoint: string,
+    connectionType: string,
+} | {
+    type: 'observe',
+    event: string,
+} | {
+    type: 'unobserve',
+    event: string,
+} | {
+    type: 'subscribe',
+    event: string,
+    values: Array<any>,
+} | {
+    type: 'send',
+    message: Object,
+    id: number,
+} | {
+    type: 'close',
+}
 
-var socket = null;
-var events = {};
+export type OutMessage = {
+    type: 'emit',
+    event: string,
+    data: any,
+} | {
+    type: 'sendReply',
+    reply: any,
+    id: number,
+} | {
+    type: 'initDone',
+} | {
+    type: 'initError',
+}
+
+let socket: socketIO = null;
+const events: {[key: number]: Function} = {};
 
 // eslint-disable-next-line no-undef
-onmessage = function onmessage(event) {
-    var data = JSON.parse(event.data);
+onmessage = function (event: {data: string}) {
+    const data = JSON.parse(event.data);
 
     if (data.type === 'init') {
-        var _endpoint = data.endpoint,
-            _connectionType = data.connectionType;
-
-        socket = (0, _socket3.default)(_endpoint, {
-            transports: [_connectionType],
-            reconnection: false
+        const {endpoint, connectionType} = data;
+        socket = socketIO(endpoint, {
+            transports: [connectionType],
+            reconnection: false,
         });
-        socket.on('connect', function () {
-            return doPostMessage({
-                type: 'initDone'
-            });
-        });
-        socket.on('connect_error', function (e) {
+        socket.on('connect', () =>
             doPostMessage({
-                type: 'initError'
+                type: 'initDone',
+            })
+        );
+        socket.on('connect_error', (e) => {
+            doPostMessage({
+                type: 'initError',
             });
             close();
         });
@@ -59,11 +85,11 @@ onmessage = function onmessage(event) {
     }
 
     if (data.type === 'observe') {
-        var eventFunction = function eventFunction(reply) {
+        const eventFunction = function (reply) {
             doPostMessage({
                 type: 'emit',
                 event: data.event,
-                data: reply
+                data: reply,
             });
         };
         events[data.id] = eventFunction;
@@ -71,31 +97,31 @@ onmessage = function onmessage(event) {
     }
 
     if (data.type === 'unobserve') {
-        var _eventFunction = events[data.id];
+        const eventFunction = events[data.id];
         if (socket != null) {
-            socket.removeListener(data.event, _eventFunction);
+            socket.removeListener(data.event, eventFunction);
         }
         delete events[data.id];
     }
 
     if (data.type === 'subscribe') {
-        var _socket;
-
-        (_socket = socket).emit.apply(_socket, ['subscribe', data.event].concat(_toConsumableArray(data.values)));
+        socket.emit('subscribe', data.event, ...data.values);
     }
 
     if (data.type === 'send') {
-        socket.send(data.message, function (reply) {
+        socket.send(data.message, (reply) => {
             doPostMessage({
                 type: 'sendReply',
                 reply: reply,
-                id: data.id
+                id: data.id,
             });
         });
     }
 };
 
-function doPostMessage(data) {
+function doPostMessage(data: Object) {
     /* $FlowIssue worker postMessage missing */
-    postMessage(JSON.stringify(data));
+    postMessage(
+        JSON.stringify(data)
+    );
 }

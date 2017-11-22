@@ -1,19 +1,23 @@
-'use strict';
+/* @flow
+ */
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+// Super simple webworker interface.
+// Used ONLY for the address generation;
+// socket worker + discovery workers have more complicated protocols
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+type Deferred<T, U> = {
+    resolve: (value: T) => void,
+    reject: (reason: U) => void,
+};
 
 // requires an exclusive access to worker.
 // requires worker to reply in a linear manner (strict FIFO).
-var WorkerChannel = exports.WorkerChannel = function () {
-    function WorkerChannel(worker) {
-        _classCallCheck(this, WorkerChannel);
+export class WorkerChannel {
+    worker: Worker;
+    pending: Array<Deferred<any, any>>;
+    onMessage: (event: Event) => void;
 
+    constructor(worker: Worker) {
         this.worker = worker;
         this.pending = [];
         this.onMessage = this.receiveMessage.bind(this);
@@ -21,34 +25,21 @@ var WorkerChannel = exports.WorkerChannel = function () {
         this.open();
     }
 
-    _createClass(WorkerChannel, [{
-        key: 'open',
-        value: function open() {
-            this.worker.addEventListener('message', this.onMessage);
-        }
-    }, {
-        key: 'postMessage',
-        value: function postMessage(msg) {
-            var _this = this;
+    open() {
+        this.worker.addEventListener('message', this.onMessage);
+    }
 
-            return new Promise(function (resolve, reject) {
-                _this.pending.push({ resolve: resolve, reject: reject });
-                _this.worker.postMessage(msg);
-            });
-        }
-    }, {
-        key: 'receiveMessage',
-        value: function receiveMessage(event) {
-            var dfd = this.pending.shift();
-            if (dfd) {
-                dfd.resolve(event.data);
-            }
-        }
-    }]);
+    postMessage<T, U>(msg: T): Promise<U> {
+        return new Promise((resolve, reject) => {
+            this.pending.push({resolve, reject});
+            this.worker.postMessage(msg);
+        });
+    }
 
-    return WorkerChannel;
-}();
-
-// Super simple webworker interface.
-// Used ONLY for the address generation;
-// socket worker + discovery workers have more complicated protocols
+    receiveMessage(event: any) {
+        const dfd = this.pending.shift();
+        if (dfd) {
+            dfd.resolve(event.data);
+        }
+    }
+}

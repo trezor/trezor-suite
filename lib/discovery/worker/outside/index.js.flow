@@ -1,188 +1,183 @@
-'use strict';
+/* @flow */
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.WorkerDiscoveryHandler = undefined;
+import type {
+    PromiseRequestType,
+    StreamRequestType,
+    ChunkDiscoveryInfo,
+} from '../types';
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+import { Emitter, Stream, StreamWithEnding } from '../../../utils/stream';
+import type {Blockchain, TransactionWithHeight} from '../../../bitcore';
+import type { AddressSource } from '../../../address-source';
+import type { AccountInfo, AccountLoadStatus, ForceAddedTransaction } from '../../index';
 
-var _stream = require('../../../utils/stream');
+import {WorkerChannel} from './channel';
 
-var _channel = require('./channel');
+type WorkerFactory = () => Worker;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var WorkerDiscoveryHandler = exports.WorkerDiscoveryHandler = function () {
-    function WorkerDiscoveryHandler(f, blockchain, addressSources, network, forceAddedTransactions) {
-        var _this = this;
-
-        _classCallCheck(this, WorkerDiscoveryHandler);
-
-        this.forceAddedTransactions = [];
-        this.counter = new TransactionCounter();
-
-        this.blockchain = blockchain;
-        this.addressSources = addressSources;
-
-        this.workerChannel = new _channel.WorkerChannel(f, function (r) {
-            return _this.getPromise(r);
-        }, function (r) {
-            return _this.getStream(r);
-        });
-        this.network = network;
-        this.forceAddedTransactions = forceAddedTransactions;
-    }
+export class WorkerDiscoveryHandler {
+    blockchain: Blockchain;
+    addressSources: Array<?AddressSource>;
+    workerChannel: WorkerChannel;
+    network: BitcoinJsNetwork;
 
     // this array is the SAME object as in the WorkerDiscovery object
     // it will be changed here - this is intentional
     // we want to delete from this array if we actually see the tx in the wild
+    forceAddedTransactions: Array<ForceAddedTransaction> = [];
 
+    constructor(
+        f: WorkerFactory,
+        blockchain: Blockchain,
+        addressSources: Array<?AddressSource>,
+        network: BitcoinJsNetwork,
+        forceAddedTransactions: Array<ForceAddedTransaction>
+    ) {
+        this.blockchain = blockchain;
+        this.addressSources = addressSources;
 
-    _createClass(WorkerDiscoveryHandler, [{
-        key: 'discovery',
-        value: function discovery(ai, xpub, segwit) {
-            var _this2 = this;
-
-            // $FlowIssue
-            var webassembly = typeof WebAssembly !== 'undefined';
-            this.workerChannel.postToWorker({ type: 'init', state: ai, network: this.network, webassembly: webassembly, xpub: xpub, segwit: segwit });
-            this.workerChannel.postToWorker({ type: 'startDiscovery' });
-
-            var promise = this.workerChannel.resPromise(function () {
-                return _this2.counter.finisher.emit();
-            });
-
-            var stream = this.counter.stream;
-
-            var res = _stream.StreamWithEnding.fromStreamAndPromise(stream, promise);
-            return res;
-        }
-    }, {
-        key: 'getStream',
-        value: function getStream(p) {
-            if (p.type === 'chunkTransactions') {
-                var source = this.addressSources[p.chainId];
-                if (p.chainId === 0) {
-                    this.counter.setCount(p.pseudoCount);
-                }
-                return this.getChunkStream(source, p.firstIndex, p.lastIndex, p.startBlock, p.endBlock, p.chainId === 0, p.addresses);
-            }
-            return _stream.Stream.simple('Unknown request ' + p.type);
-        }
-    }, {
-        key: 'getPromise',
-        value: function getPromise(p) {
-            if (p.type === 'lookupBlockHash') {
-                return this.blockchain.lookupBlockHash(p.height);
-            }
-            if (p.type === 'lookupSyncStatus') {
-                return this.blockchain.lookupSyncStatus().then(function (_ref) {
-                    var height = _ref.height;
-                    return height;
-                });
-            }
-            if (p.type === 'doesTransactionExist') {
-                return this.blockchain.lookupTransaction(p.txid).then(function () {
-                    return true;
-                }, function () {
-                    return false;
-                });
-            }
-            return Promise.reject(new Error('Unknown request ' + p.type));
-        }
-    }, {
-        key: 'getChunkStream',
-        value: function getChunkStream(source, firstIndex, lastIndex, startBlock, endBlock, add, addresses) {
-            var _this3 = this;
-
-            var addressPromise = WorkerDiscoveryHandler.deriveAddresses(source, addresses, firstIndex, lastIndex);
-
-            return _stream.Stream.fromPromise(addressPromise.then(function (addresses) {
-                return _this3.blockchain.lookupTransactionsStream(addresses, endBlock, startBlock).map(function (transactions) {
-                    if (transactions instanceof Error) {
-                        return transactions.message;
-                    } else {
-                        var transactions_ = transactions;
-
-                        // code for handling forceAdded transactions
-                        var addedTransactions = [];
-                        _this3.forceAddedTransactions.slice().forEach(function (transaction, i) {
-                            var transaction_ = _extends({}, transaction, {
-                                height: null,
-                                timestamp: null
-                            });
-                            if (transactions_.map(function (t) {
-                                return t.hash;
-                            }).some(function (hash) {
-                                return transaction.hash === hash;
-                            })) {
-                                // transaction already came from blockchain again
-                                _this3.forceAddedTransactions.slice(i, 1);
-                            } else {
-                                var txAddresses = new Set();
-                                transaction.inputAddresses.concat(transaction.outputAddresses).forEach(function (a) {
-                                    if (a != null) {
-                                        txAddresses.add(a);
-                                    }
-                                });
-                                if (addresses.some(function (address) {
-                                    return txAddresses.has(address);
-                                })) {
-                                    addedTransactions.push(transaction_);
-                                }
-                            }
-                        });
-
-                        _this3.counter.setCount(_this3.counter.count + transactions.length);
-
-                        var ci = {
-                            transactions: transactions.concat(addedTransactions), addresses: addresses
-                        };
-                        return ci;
-                    }
-                });
-            }));
-        }
-    }], [{
-        key: 'deriveAddresses',
-        value: function deriveAddresses(source, addresses, firstIndex, lastIndex) {
-            if (addresses == null) {
-                if (source == null) {
-                    return Promise.reject(new Error('Cannot derive addresses in worker without webassembly'));
-                } else {
-                    return source.derive(firstIndex, lastIndex);
-                }
-            } else {
-                return Promise.resolve(addresses);
-            }
-        }
-    }]);
-
-    return WorkerDiscoveryHandler;
-}();
-
-var TransactionCounter = function () {
-    function TransactionCounter() {
-        _classCallCheck(this, TransactionCounter);
-
-        this.count = 0;
-        this.emitter = new _stream.Emitter();
-        this.finisher = new _stream.Emitter();
-        this.stream = _stream.Stream.fromEmitterFinish(this.emitter, this.finisher, function () {});
+        this.workerChannel = new WorkerChannel(f, (r) => this.getPromise(r), (r) => this.getStream(r));
+        this.network = network;
+        this.forceAddedTransactions = forceAddedTransactions;
     }
 
-    _createClass(TransactionCounter, [{
-        key: 'setCount',
-        value: function setCount(i) {
-            if (i > this.count) {
-                this.count = i;
-                this.emitter.emit({ transactions: this.count });
-            }
-        }
-    }]);
+    discovery(ai: ?AccountInfo, xpub: string, segwit: boolean): StreamWithEnding<AccountLoadStatus, AccountInfo> {
+        // $FlowIssue
+        const webassembly = typeof WebAssembly !== 'undefined';
+        this.workerChannel.postToWorker({type: 'init', state: ai, network: this.network, webassembly, xpub, segwit});
+        this.workerChannel.postToWorker({type: 'startDiscovery'});
 
-    return TransactionCounter;
-}();
+        const promise = this.workerChannel.resPromise(() => this.counter.finisher.emit());
+
+        const stream: Stream<AccountLoadStatus> = this.counter.stream;
+
+        const res: StreamWithEnding<AccountLoadStatus, AccountInfo> = StreamWithEnding.fromStreamAndPromise(stream, promise);
+        return res;
+    }
+
+    counter = new TransactionCounter();
+
+    getStream(p: StreamRequestType): Stream<any> {
+        if (p.type === 'chunkTransactions') {
+            const source = this.addressSources[p.chainId];
+            if (p.chainId === 0) {
+                this.counter.setCount(p.pseudoCount);
+            }
+            return this.getChunkStream(
+                source,
+                p.firstIndex,
+                p.lastIndex,
+                p.startBlock,
+                p.endBlock,
+                p.chainId === 0,
+                p.addresses
+            );
+        }
+        return Stream.simple('Unknown request ' + p.type);
+    }
+
+    getPromise(p: PromiseRequestType): Promise<any> {
+        if (p.type === 'lookupBlockHash') {
+            return this.blockchain.lookupBlockHash(p.height);
+        }
+        if (p.type === 'lookupSyncStatus') {
+            return this.blockchain.lookupSyncStatus().then(({height}) => height);
+        }
+        if (p.type === 'doesTransactionExist') {
+            return this.blockchain.lookupTransaction(p.txid)
+                .then(() => true, () => false);
+        }
+        return Promise.reject(new Error('Unknown request ' + p.type));
+    }
+
+    static deriveAddresses(
+        source: ?AddressSource,
+        addresses: ?Array<string>,
+        firstIndex: number,
+        lastIndex: number,
+    ): Promise<Array<string>> {
+        if (addresses == null) {
+            if (source == null) {
+                return Promise.reject(new Error('Cannot derive addresses in worker without webassembly'));
+            } else {
+                return source.derive(firstIndex, lastIndex);
+            }
+        } else {
+            return Promise.resolve(addresses);
+        }
+    }
+
+    getChunkStream(
+        source: ?AddressSource,
+        firstIndex: number,
+        lastIndex: number,
+        startBlock: number,
+        endBlock: number,
+        add: boolean,
+        addresses: ?Array<string>
+    ): Stream<ChunkDiscoveryInfo | string> {
+        const addressPromise = WorkerDiscoveryHandler.deriveAddresses(source, addresses, firstIndex, lastIndex);
+
+        return Stream.fromPromise(
+            addressPromise.then(addresses => {
+                return this.blockchain.lookupTransactionsStream(addresses, endBlock, startBlock)
+                .map(
+                    transactions => {
+                        if (transactions instanceof Error) {
+                            return transactions.message;
+                        } else {
+                            const transactions_: Array<TransactionWithHeight> = transactions;
+
+                            // code for handling forceAdded transactions
+                            const addedTransactions = [];
+                            this.forceAddedTransactions.slice().forEach((transaction, i) => {
+                                const transaction_: TransactionWithHeight = {
+                                    ...transaction,
+                                    height: null,
+                                    timestamp: null,
+                                };
+                                if (transactions_.map(t => t.hash).some(hash => transaction.hash === hash)) {
+                                    // transaction already came from blockchain again
+                                    this.forceAddedTransactions.slice(i, 1);
+                                } else {
+                                    const txAddresses = new Set();
+                                    transaction.inputAddresses.concat(transaction.outputAddresses).forEach(a => {
+                                        if (a != null) {
+                                            txAddresses.add(a);
+                                        }
+                                    });
+                                    if (addresses.some(address => txAddresses.has(address))) {
+                                        addedTransactions.push(transaction_);
+                                    }
+                                }
+                            });
+
+                            this.counter.setCount(this.counter.count + transactions.length);
+
+                            const ci: ChunkDiscoveryInfo = {
+                                transactions: transactions.concat(addedTransactions), addresses,
+                            };
+                            return ci;
+                        }
+                    }
+                );
+            })
+        );
+    }
+}
+
+class TransactionCounter {
+    count: number = 0;
+    emitter: Emitter<AccountLoadStatus> = new Emitter();
+    finisher: Emitter<void> = new Emitter();
+    stream: Stream<AccountLoadStatus> = Stream.fromEmitterFinish(this.emitter, this.finisher, () => { });
+    setCount(i: number) {
+        if (i > this.count) {
+            this.count = i;
+            this.emitter.emit({transactions: this.count});
+        }
+    }
+}
+

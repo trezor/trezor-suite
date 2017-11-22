@@ -1,19 +1,21 @@
-"use strict";
+/* @flow */
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.deferred = deferred;
-function deferred() {
-    var outResolve = function outResolve(t) {};
-    var outReject = function outReject(e) {};
-    var promise = new Promise(function (resolve, reject) {
+export type Deferred<T> = {
+    promise: Promise<T>,
+    resolve: (t: T) => void,
+    reject: (e: Error) => void,
+};
+
+export function deferred<T>(): Deferred<T> {
+    let outResolve = (t: T) => {};
+    let outReject = (e: Error) => {};
+    const promise = new Promise((resolve, reject) => {
         outResolve = resolve;
         outReject = reject;
     });
     return {
-        promise: promise,
+        promise,
         resolve: outResolve,
-        reject: outReject
+        reject: outReject,
     };
 }

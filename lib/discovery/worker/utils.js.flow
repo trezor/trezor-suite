@@ -1,19 +1,17 @@
-'use strict';
+/* @flow */
+import type { Input as BitcoinJsInput } from 'bitcoinjs-lib-zcash';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.getInputId = getInputId;
-exports.objectValues = objectValues;
-function getInputId(i) {
-    var hash = i.hash;
+export function getInputId(
+    i: BitcoinJsInput
+): string {
+    const hash = i.hash;
     Array.prototype.reverse.call(hash);
-    var res = hash.toString('hex');
+    const res = (hash.toString('hex'));
     Array.prototype.reverse.call(hash);
     return res;
 }
-function objectValues(k) {
-    return Object.keys(k).map(function (key) {
-        return k[key];
-    });
+
+export function objectValues<T>(k: {[k: any]: T}): Array<T> {
+    return Object.keys(k).map(key => k[key]);
 }
+

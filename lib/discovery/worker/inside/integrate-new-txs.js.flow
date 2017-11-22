@@ -1,121 +1,164 @@
-'use strict';
+/* @flow */
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+import type {
+    AccountInfo,
+    TransactionInfo,
+    AddressWithReceived,
+} from '../../index';
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+import type {
+    AccountNewInfo,
+    Block,
+    AddressToPath,
+    ChainNewTransactions,
+} from '../types';
 
-exports.integrateNewTxs = integrateNewTxs;
+import {
+    deriveUtxos,
+} from './derive-utxos';
 
-var _deriveUtxos = require('./derive-utxos');
+import {
+    deriveAnalysis,
+} from './derive-analysis';
 
-var _deriveAnalysis = require('./derive-analysis');
+import {
+    objectValues,
+} from '../utils';
 
-var _utils = require('../utils');
+const GAP_SIZE: number = 20;
 
-var GAP_SIZE = 20;
-
-function deleteTxs(oldInfo, txs) {
-    var set = new Set(txs);
-    var utxos = oldInfo.utxos.filter(function (utxo) {
-        return !set.has(utxo.transactionHash);
-    });
-    var transactions = oldInfo.transactions.filter(function (tx) {
-        return !set.has(tx.hash);
-    });
-    return _extends({}, oldInfo, {
-        utxos: utxos,
-        transactions: transactions
-    });
+function deleteTxs(
+    oldInfo: AccountInfo,
+    txs: Array<string>
+): AccountInfo {
+    const set: Set<string> = new Set(txs);
+    const utxos = oldInfo.utxos.filter(utxo => !set.has(utxo.transactionHash));
+    const transactions = oldInfo.transactions.filter(tx => !set.has(tx.hash));
+    return {
+        ...oldInfo,
+        utxos,
+        transactions,
+    };
 }
 
-function integrateNewTxs(newInfo, oldInfoUndeleted, lastBlock, deletedTxs) {
-    var oldInfo = deletedTxs.length !== 0 ? deleteTxs(oldInfoUndeleted, deletedTxs) : oldInfoUndeleted;
-    var addressToPath = deriveAddressToPath(newInfo.main.allAddresses, newInfo.change.allAddresses);
+export function integrateNewTxs(
+    newInfo: AccountNewInfo,
+    oldInfoUndeleted: AccountInfo,
+    lastBlock: Block,
+    deletedTxs: Array<string>
+): AccountInfo {
+    const oldInfo = (deletedTxs.length !== 0)
+        ? deleteTxs(oldInfoUndeleted, deletedTxs)
+        : oldInfoUndeleted;
+    const addressToPath = deriveAddressToPath(
+        newInfo.main.allAddresses,
+        newInfo.change.allAddresses
+    );
 
-    var joined = deriveJoined(newInfo.main.newTransactions, newInfo.change.newTransactions);
+    const joined = deriveJoined(
+        newInfo.main.newTransactions,
+        newInfo.change.newTransactions
+    );
 
-    var utxos = (0, _deriveUtxos.deriveUtxos)(newInfo, oldInfo, addressToPath, joined);
+    const utxos = deriveUtxos(
+        newInfo,
+        oldInfo,
+        addressToPath,
+        joined
+    );
 
-    var transactions = (0, _deriveAnalysis.deriveAnalysis)(joined, oldInfo.transactions, addressToPath);
+    const transactions = deriveAnalysis(
+        joined,
+        oldInfo.transactions,
+        addressToPath
+    );
 
-    var _deriveUsedAddresses = deriveUsedAddresses(transactions, addressToPath, newInfo.main.allAddresses, 0),
-        usedAddresses = _deriveUsedAddresses.usedAddresses,
-        unusedAddresses = _deriveUsedAddresses.unusedAddresses,
-        lastConfirmedMain = _deriveUsedAddresses.lastConfirmed;
+    const {usedAddresses, unusedAddresses, lastConfirmed: lastConfirmedMain} = deriveUsedAddresses(
+        transactions,
+        addressToPath,
+        newInfo.main.allAddresses,
+        0
+    );
 
-    var usedChange = deriveUsedAddresses(transactions, addressToPath, newInfo.change.allAddresses, 1);
+    const usedChange = deriveUsedAddresses(
+        transactions,
+        addressToPath,
+        newInfo.change.allAddresses,
+        1
+    );
 
-    var balance = transactions.length > 0 ? transactions[0].balance : 0;
-    var utxoBalance = utxos.reduce(function (prev, a) {
-        return a.value + prev;
-    }, 0);
+    const balance = transactions.length > 0 ? transactions[0].balance : 0;
+    const utxoBalance: number = utxos.reduce((prev, a) => a.value + prev, 0);
     if (balance !== utxoBalance) {
         throw new Error('Inconsistent info.');
     }
 
-    var sentAddresses = deriveSentAddresses(transactions);
+    const sentAddresses = deriveSentAddresses(transactions);
 
-    var changeAddresses = newInfo.change.allAddresses;
-    var changeIndex = usedChange.usedAddresses.length;
-    var allowChange = usedChange.unusedAddresses.length > 0;
-    var lastConfirmedChange = usedChange.lastConfirmed;
+    const changeAddresses = newInfo.change.allAddresses;
+    const changeIndex = usedChange.usedAddresses.length;
+    const allowChange = usedChange.unusedAddresses.length > 0;
+    const lastConfirmedChange = usedChange.lastConfirmed;
 
-    var state = {
-        utxos: utxos,
-        transactions: transactions,
-        usedAddresses: usedAddresses,
-        unusedAddresses: unusedAddresses,
-        lastConfirmedMain: lastConfirmedMain,
-        lastConfirmedChange: lastConfirmedChange,
-        changeIndex: changeIndex,
-        balance: balance,
-        lastBlock: lastBlock,
-        sentAddresses: sentAddresses,
-        changeAddresses: changeAddresses,
-        allowChange: allowChange,
-        version: oldInfoUndeleted.version
+    const state = {
+        utxos,
+        transactions,
+        usedAddresses,
+        unusedAddresses,
+        lastConfirmedMain,
+        lastConfirmedChange,
+        changeIndex,
+        balance,
+        lastBlock,
+        sentAddresses,
+        changeAddresses,
+        allowChange,
+        version: oldInfoUndeleted.version,
     };
     return state;
 }
 
-function deriveAddressToPath(main, change) {
-    var res = {};
+function deriveAddressToPath(
+    main: Array<string>,
+    change: Array<string>
+): AddressToPath {
+    const res: AddressToPath = {};
 
-    main.forEach(function (a, i) {
+    main.forEach((a, i) => {
         res[a] = [0, i];
     });
-    change.forEach(function (a, i) {
+    change.forEach((a, i) => {
         res[a] = [1, i];
     });
 
     return res;
 }
 
-function deriveJoined(main, change) {
-    var res = {};
+function deriveJoined(
+    main: ChainNewTransactions,
+    change: ChainNewTransactions
+): ChainNewTransactions {
+    const res = {};
 
-    Object.keys(main).forEach(function (id) {
+    Object.keys(main).forEach(id => {
         res[id] = main[id];
     });
-    Object.keys(change).forEach(function (id) {
+    Object.keys(change).forEach(id => {
         res[id] = change[id];
     });
 
     return res;
 }
 
-function deriveSentAddresses(transactions) {
-    var res = {};
-    transactions.forEach(function (t) {
+function deriveSentAddresses(
+    transactions: Array<TransactionInfo>
+): {[txPlusIndex: string]: string} {
+    const res = {};
+    transactions.forEach(t => {
         if (t.type === 'sent') {
-            t.targets.forEach(function (_ref) {
-                var address = _ref.address,
-                    i = _ref.i;
-
-                var txId = t.hash;
-                var key = txId + ':' + i;
+            t.targets.forEach(({address, i}) => {
+                const txId = t.hash;
+                const key = txId + ':' + i;
                 res[key] = address;
             });
         }
@@ -123,18 +166,27 @@ function deriveSentAddresses(transactions) {
     return res;
 }
 
-function deriveUsedAddresses(transactions, addressToPath, allAddresses, chain) {
-    var allReceived = [];
-    var lastUsed = -1;
-    var lastConfirmed = -1;
+function deriveUsedAddresses(
+    transactions: Array<TransactionInfo>,
+    addressToPath: AddressToPath,
+    allAddresses: Array<string>,
+    chain: number
+): {
+    usedAddresses: Array<AddressWithReceived>,
+    unusedAddresses: Array<string>,
+    lastConfirmed: number,
+} {
+    const allReceived: Array<number> = [];
+    let lastUsed = -1;
+    let lastConfirmed = -1;
 
-    transactions.forEach(function (t) {
-        (0, _utils.objectValues)(t.myOutputs).forEach(function (o) {
-            var address = o.address;
-            var value = o.value;
-            var path = addressToPath[address];
+    transactions.forEach(t => {
+        objectValues(t.myOutputs).forEach(o => {
+            const address = o.address;
+            const value = o.value;
+            const path = addressToPath[address];
             if (path[0] === chain) {
-                var id = path[1];
+                const id = path[1];
                 if (allReceived[id] == null) {
                     allReceived[id] = value;
                 } else {
@@ -152,15 +204,16 @@ function deriveUsedAddresses(transactions, addressToPath, allAddresses, chain) {
         });
     });
 
-    var usedAddresses = [];
-    for (var i = 0; i <= lastUsed; i++) {
-        var address = allAddresses[i];
-        var received = allReceived[i] == null ? 0 : allReceived[i];
-        usedAddresses.push({ address: address, received: received });
+    const usedAddresses = [];
+    for (let i = 0; i <= lastUsed; i++) {
+        const address = allAddresses[i];
+        const received = allReceived[i] == null ? 0 : allReceived[i];
+        usedAddresses.push({address, received});
     }
-    var unusedAddresses = [];
-    for (var _i = lastUsed + 1; _i <= lastConfirmed + GAP_SIZE; _i++) {
-        unusedAddresses.push(allAddresses[_i]);
+    const unusedAddresses = [];
+    for (let i = lastUsed + 1; i <= lastConfirmed + GAP_SIZE; i++) {
+        unusedAddresses.push(allAddresses[i]);
     }
-    return { usedAddresses: usedAddresses, unusedAddresses: unusedAddresses, lastConfirmed: lastConfirmed };
+    return {usedAddresses, unusedAddresses, lastConfirmed};
 }
+

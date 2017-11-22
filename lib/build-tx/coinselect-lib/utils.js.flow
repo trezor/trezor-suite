@@ -1,9 +1,7 @@
-'use strict';
-
 // baseline estimates, used to improve performance
-var TX_EMPTY_SIZE = 4 + 1 + 1 + 4 + 1; // 8 bytes start, 2 times 1 byte count in/out, 1 extra byte for segwit start
-var TX_INPUT_BASE = 32 + 4 + 1 + 4;
-var TX_OUTPUT_BASE = 8 + 1;
+const TX_EMPTY_SIZE = 4 + 1 + 1 + 4 + 1; // 8 bytes start, 2 times 1 byte count in/out, 1 extra byte for segwit start
+const TX_INPUT_BASE = 32 + 4 + 1 + 4;
+const TX_OUTPUT_BASE = 8 + 1;
 
 function inputBytes(input) {
     if (input.script.length == null) {
@@ -20,18 +18,16 @@ function outputBytes(output) {
 }
 
 function dustThreshold(feeRate, inputLength, outputLength, explicitDustThreshold) {
-    var size = transactionBytes([{ script: { length: inputLength } }], [{ script: { length: outputLength } }]);
-    var price = size * feeRate;
-    var threshold = Math.max(explicitDustThreshold, price);
+    const size = transactionBytes([{script: {length: inputLength}}], [{script: {length: outputLength}}]);
+    const price = size * feeRate;
+    const threshold = Math.max(explicitDustThreshold, price);
     return threshold;
 }
 
 function transactionBytes(inputs, outputs) {
-    return TX_EMPTY_SIZE + inputs.reduce(function (a, x) {
-        return a + inputBytes(x);
-    }, 0) + outputs.reduce(function (a, x) {
-        return a + outputBytes(x);
-    }, 0);
+    return TX_EMPTY_SIZE +
+    inputs.reduce(function (a, x) { return a + inputBytes(x); }, 0) +
+    outputs.reduce(function (a, x) { return a + outputBytes(x); }, 0);
 }
 
 function uintOrNaN(v) {
@@ -43,44 +39,40 @@ function uintOrNaN(v) {
 }
 
 function sumForgiving(range) {
-    return range.reduce(function (a, x) {
-        return a + (isFinite(x.value) ? x.value : 0);
-    }, 0);
+    return range.reduce(function (a, x) { return a + (isFinite(x.value) ? x.value : 0); }, 0);
 }
 
 function sumOrNaN(range) {
-    return range.reduce(function (a, x) {
-        return a + uintOrNaN(x.value);
-    }, 0);
+    return range.reduce(function (a, x) { return a + uintOrNaN(x.value); }, 0);
 }
 
 function finalize(inputs, outputs, feeRate, inputLength, outputLength, explicitDustThreshold) {
-    var bytesAccum = transactionBytes(inputs, outputs);
-    var blankOutputBytes = outputBytes({ script: { length: outputLength } });
-    var feeAfterExtraOutput = feeRate * (bytesAccum + blankOutputBytes);
-    var remainderAfterExtraOutput = sumOrNaN(inputs) - (sumOrNaN(outputs) + feeAfterExtraOutput);
+    const bytesAccum = transactionBytes(inputs, outputs);
+    const blankOutputBytes = outputBytes({script: {length: outputLength}});
+    const feeAfterExtraOutput = feeRate * (bytesAccum + blankOutputBytes);
+    const remainderAfterExtraOutput = sumOrNaN(inputs) - (sumOrNaN(outputs) + feeAfterExtraOutput);
 
     // is it worth a change output?
     if (remainderAfterExtraOutput > dustThreshold(feeRate, inputLength, outputLength, explicitDustThreshold)) {
-        outputs = outputs.concat({ value: remainderAfterExtraOutput, script: { length: outputLength } });
+        outputs = outputs.concat({ value: remainderAfterExtraOutput, script: {length: outputLength} });
     }
 
-    var fee = sumOrNaN(inputs) - sumOrNaN(outputs);
+    const fee = sumOrNaN(inputs) - sumOrNaN(outputs);
     if (!isFinite(fee)) return { fee: feeRate * bytesAccum };
 
     return {
         inputs: inputs,
         outputs: outputs,
-        fee: fee
+        fee: fee,
     };
 }
 
 function anyOf(algorithms) {
     return function (utxos, outputs, feeRate, inputLength, outputLength) {
-        var result = { fee: Infinity };
+        let result = { fee: Infinity };
 
-        for (var i = 0; i < algorithms.length; i++) {
-            var algorithm = algorithms[i];
+        for (let i = 0; i < algorithms.length; i++) {
+            const algorithm = algorithms[i];
             result = algorithm(utxos, outputs, feeRate, inputLength, outputLength);
             if (result.inputs) {
                 return result;
@@ -92,7 +84,7 @@ function anyOf(algorithms) {
 }
 
 function utxoScore(x, feeRate) {
-    return x.value - feeRate * inputBytes(x);
+    return x.value - (feeRate * inputBytes(x));
 }
 
 module.exports = {
@@ -105,5 +97,5 @@ module.exports = {
     transactionBytes: transactionBytes,
     uintOrNaN: uintOrNaN,
     anyOf: anyOf,
-    utxoScore: utxoScore
+    utxoScore: utxoScore,
 };
