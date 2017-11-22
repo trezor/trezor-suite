@@ -527,7 +527,7 @@ describe('bitcore', () => {
 
     let lastTx = null;
 
-    describe('lookupTransactions', () => {
+    describe('lookupTransactions + lookupTransactionIds', () => {
         it('starts bitcore', function () {
             this.timeout(60 * 1000);
             return startBitcore();
@@ -563,6 +563,55 @@ describe('bitcore', () => {
                     assert(tx.height == null);
                     assert(tx.timestamp == null);
                 }, done);
+            }, done);
+        });
+
+        it('looks up unconfirmed transactions ids', function (done) {
+            this.timeout(2 * 60 * 1000);
+            const addresses = [getAddress(), getAddress(), getAddress()];
+
+            testBlockchain(() => {
+                let p = run('bitcore-regtest-cli generate 300');
+
+                for (let i = 0; i < 100; i++) {
+                    p = p
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[0] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[1] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[2] + ' 1'));
+                }
+                return p;
+            }, (blockchain, done) => {
+                const promise = blockchain.lookupTransactionsIds(addresses, 10000000, 0);
+                promise.then(txs => {
+                    assert(txs.length === 300);
+                    assert(txs.every(tx => /^[0-9a-f]{64}$/.test(tx)));
+                    done();
+                }, err => done(err));
+            }, done);
+        });
+
+        it('looks up confirmed transactions ids', function (done) {
+            this.timeout(5 * 60 * 1000);
+            const addresses = [getAddress(), getAddress(), getAddress()];
+
+            testBlockchain(() => {
+                let p = run('bitcore-regtest-cli generate 300');
+
+                for (let i = 0; i < 100; i++) {
+                    p = p
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[0] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[1] + ' 1'))
+                        .then(() => run('bitcore-regtest-cli sendtoaddress ' + addresses[2] + ' 1'));
+                }
+                p = p.then(() => run('bitcore-regtest-cli generate 300'));
+                return p;
+            }, (blockchain, done) => {
+                const promise = blockchain.lookupTransactionsIds(addresses, 10000000, 0);
+                promise.then(txs => {
+                    assert(txs.length === 300);
+                    assert(txs.every(tx => /^[0-9a-f]{64}$/.test(tx)));
+                    done();
+                }, err => done(err));
             }, done);
         });
 

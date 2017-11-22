@@ -45,6 +45,13 @@ export type Blockchain = {
         start: number,
         end: number
     ): Promise<Array<TransactionWithHeight>>,
+
+    lookupTransactionsIds(
+        addresses: Array<string>,
+        start: number,
+        end: number
+    ): Promise<Array<string>>,
+
     lookupTransaction(hash: string): Promise<TransactionWithHeight>,
     lookupBlockHash(height: number): Promise<string>,
     lookupSyncStatus(): Promise<SyncStatus>,
@@ -290,6 +297,19 @@ export class BitcoreBlockchain {
         });
     }
 
+    lookupTransactionsIds(
+        addresses: Array<string>,
+        start: number,
+        end: number
+    ): Promise<Array<string>> {
+        return this.socket.promise.then(socket =>
+            Promise.all([
+                lookupTransactionsIdsMempool(socket, addresses, true, start, end),
+                lookupTransactionsIdsMempool(socket, addresses, false, start, end),
+            ])
+        ).then(([a, b]) => a.concat(b));
+    }
+
     lookupTransaction(hash: string): Promise<TransactionWithHeight> {
         return this.socket.promise.then(socket =>
             lookupDetailedTransaction(socket, hash)
@@ -437,6 +457,30 @@ function lookupAddressHistoriesMempool(
             return state.to < state.totalCount;
         }
     );
+}
+
+function lookupTransactionsIdsMempool(
+    socket: Socket,
+    addresses: Array<string>,
+    mempool: boolean,
+    start: number, // recent block height (inclusive)
+    end: number    // older block height (inclusive)
+): Promise<Array<string>> {
+    const method = 'getAddressTxids';
+    const rangeParam = mempool ? {
+        start,
+        end,
+        queryMempoolOnly: true,
+    } : {
+        start,
+        end,
+        queryMempol: false,
+    };
+    const params = [
+        addresses,
+        rangeParam,
+    ];
+    return socket.send({ method, params });
 }
 
 function lookupAddressHistories(
