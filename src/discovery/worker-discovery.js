@@ -12,7 +12,8 @@ import {HDNode as BitcoinJsHDNode} from 'bitcoinjs-lib-zcash';
 import {WorkerChannel as AddressWorkerChannel} from '../utils/simple-worker-channel';
 
 import type {Blockchain, TransactionWithHeight} from '../bitcore';
-import {WorkerAddressSource} from '../address-source';
+import {BrowserAddressSource, WorkerAddressSource} from '../address-source';
+import type {AddressSource} from '../address-source';
 
 import type {ForceAddedTransaction} from './index';
 
@@ -62,6 +63,33 @@ export class WorkerDiscovery {
         this.forceAddedTransactionsEmitter.emit(true);
     }
 
+    detectUsedAccount(
+        xpub: string,
+        network: BitcoinJsNetwork,
+        segwit: 'off' | 'p2sh'
+    ): Promise<boolean> {
+        const node = this.tryHDNode(xpub, network);
+        if (node instanceof Error) {
+            return Promise.reject(node);
+        }
+        const external = node.derive(0);
+        const internal = node.derive(1);
+
+        const sources = [
+            this.createAddressSource(external, network, segwit),
+            this.createAddressSource(internal, network, segwit),
+        ];
+        // I do not actually need to do any logic in the separate worker for discovery
+
+        const GAP_SIZE: number = 20;
+        return Promise.all([
+            WorkerDiscoveryHandler.deriveAddresses(sources[0], null, 0, GAP_SIZE - 1),
+            WorkerDiscoveryHandler.deriveAddresses(sources[1], null, 0, GAP_SIZE - 1),
+        ]).then(([addressesA, addressesB]) =>
+            this.chain.lookupTransactionsIds(addressesA.concat(addressesB), 100000000, 0)
+        ).then((ids) => ids.length !== 0);
+    }
+
     discoverAccount(
         initial: ?AccountInfo,
         xpub: string,
@@ -76,8 +104,8 @@ export class WorkerDiscovery {
         const internal = node.derive(1);
 
         const sources = [
-            this.createAddressSource(external, network, segwit),
-            this.createAddressSource(internal, network, segwit),
+            this.createWorkerAddressSource(external, network, segwit),
+            this.createWorkerAddressSource(internal, network, segwit),
         ];
 
         const out = new WorkerDiscoveryHandler(
@@ -104,8 +132,8 @@ export class WorkerDiscovery {
         const internal = node.derive(1);
 
         const sources = [
-            this.createAddressSource(external, network, segwit),
-            this.createAddressSource(internal, network, segwit),
+            this.createWorkerAddressSource(external, network, segwit),
+            this.createWorkerAddressSource(internal, network, segwit),
         ];
 
         function allAddresses(info: AccountInfo): Set<string> {
@@ -156,7 +184,15 @@ export class WorkerDiscovery {
         return res;
     }
 
-    createAddressSource(node: BitcoinJsHDNode, network: BitcoinJsNetwork, segwit: 'off' | 'p2sh'): ?WorkerAddressSource {
+    createAddressSource(node: BitcoinJsHDNode, network: BitcoinJsNetwork, segwit: 'off' | 'p2sh'): AddressSource {
+        const source = this.createWorkerAddressSource(node, network, segwit);
+        if (source == null) {
+            return new BrowserAddressSource(node, network, segwit === 'p2sh');
+        }
+        return source;
+    }
+
+    createWorkerAddressSource(node: BitcoinJsHDNode, network: BitcoinJsNetwork, segwit: 'off' | 'p2sh'): ?WorkerAddressSource {
         const addressWorkerChannel = this.addressWorkerChannel;
         if (addressWorkerChannel == null) {
             return null;

@@ -161,6 +161,12 @@ export type Discovery = {
         segwit: 'off' | 'p2sh'
     ) => StreamWithEnding<AccountLoadStatus, AccountInfo>,
 
+    +detectUsedAccount: (
+        xpub: string,
+        network: BitcoinJsNetwork,
+        segwit: 'off' | 'p2sh'
+    ) => Promise<boolean>,
+
     +monitorAccountActivity: (
         initial: AccountInfo,
         xpub: string,

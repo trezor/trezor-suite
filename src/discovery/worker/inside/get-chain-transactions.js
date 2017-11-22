@@ -29,11 +29,11 @@ import {
     Transaction as BitcoinJsTransaction,
     address as BitcoinJsAddress,
     HDNode as BitcoinJsHDNode,
-    crypto as BitcoinJsCrypto,
     script as BitcoinJsScript,
 } from 'bitcoinjs-lib-zcash';
 import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
 import type {TransactionInfo} from '../../index';
+import { BrowserAddressSource } from '../../../address-source';
 
 const GAP_SIZE: number = 20;
 
@@ -98,6 +98,7 @@ export class GetChainTransactions {
     ) => Stream<ChunkDiscoveryInfo | Error>;
 
     webassembly: boolean;
+    source: BrowserAddressSource; // used only if webassembly
 
     constructor(
         id: number,
@@ -130,6 +131,7 @@ export class GetChainTransactions {
         this.xpub = xpub;
         this.segwit = segwit;
         this.webassembly = webassembly;
+        this.source = new BrowserAddressSource(BitcoinJsHDNode.fromBase58(this.xpub, this.network).derive(this.chainId), this.network, this.segwit);
     }
 
     discover(): Promise<ChainNewInfo> {
@@ -149,60 +151,40 @@ export class GetChainTransactions {
         last: number, // last is inclusive
         range: BlockRange,
     ) {
-        let addresses: ?Array<string> = null;
+        let addressesP: Promise<?Array<string>> = Promise.resolve(null);
         if (this.allAddresses.length - 1 >= last) {
-            addresses = this.allAddresses.slice(first, last + 1);
+            addressesP = Promise.resolve(this.allAddresses.slice(first, last + 1));
         } else {
             if (!this.webassembly) {
-                addresses = [];
-                // if webassembly is off => we generate everything here
-                const chainNode = BitcoinJsHDNode.fromBase58(this.xpub, this.network).derive(this.chainId);
-                for (let i = first; i <= last; i++) {
-                    const addressNode = chainNode.derive(i);
-                    let address = '';
-
-                    if (!this.segwit) {
-                        address = addressNode.getAddress();
-                    } else {
-                        // see https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
-                        // address derivation + test vectors
-                        const pkh = addressNode.getIdentifier();
-                        const scriptSig = new Buffer(pkh.length + 2);
-                        scriptSig[0] = 0;
-                        scriptSig[1] = 0x14;
-                        pkh.copy(scriptSig, 2);
-                        const addressBytes = BitcoinJsCrypto.hash160(scriptSig);
-                        address = BitcoinJsAddress.toBase58Check(addressBytes, this.network.scriptHash);
-                    }
-
-                    addresses[i - first] = address;
-                }
+                addressesP = this.source.derive(first, last);
             }
         }
 
-        const stream = this.getStream(
-            this.chainId,
-            first,
-            last,
-            range.first.height,
-            range.last.height,
-            this.txids.size,
-            addresses
-        );
+        addressesP.then(addresses => {
+            const stream = this.getStream(
+                this.chainId,
+                first,
+                last,
+                range.first.height,
+                range.last.height,
+                this.txids.size,
+                addresses
+            );
 
-        stream.values.attach((value_) => {
-            if (value_ instanceof Error) {
-                this.dfd.reject(value_);
-                stream.dispose();
-                return;
-            }
+            stream.values.attach((value_) => {
+                if (value_ instanceof Error) {
+                    this.dfd.reject(value_);
+                    stream.dispose();
+                    return;
+                }
 
-            const value = value_;
-            this.handleTransactions(value, first);
-        });
+                const value = value_;
+                this.handleTransactions(value, first);
+            });
 
-        stream.finish.attach(() => {
-            this.handleFinish(last);
+            stream.finish.attach(() => {
+                this.handleFinish(last);
+            });
         });
     }
 

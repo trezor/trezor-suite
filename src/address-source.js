@@ -3,7 +3,12 @@
  */
 
 import type { HDNode } from 'bitcoinjs-lib-zcash';
+import type { Network } from 'bitcoinjs-lib-zcash';
 import type { WorkerChannel } from './utils/simple-worker-channel';
+import {
+    crypto,
+    address,
+} from 'bitcoinjs-lib-zcash';
 
 export type AddressSource = {
     derive(
@@ -11,6 +16,47 @@ export type AddressSource = {
         lastIndex: number
     ): Promise<Array<string>>,
 };
+
+export class BrowserAddressSource {
+    network: Network;
+
+    segwit: boolean;
+    node: HDNode;
+
+    constructor(hdnode: HDNode, network: Network, segwit: boolean) {
+        this.network = network;
+        this.segwit = segwit;
+        this.node = hdnode;
+    }
+
+    derive(
+        first: number,
+        last: number
+    ): Promise<Array<string>> {
+        const addresses: Array<string> = [];
+        // const chainNode = HDNode.fromBase58(this.xpub, this.network).derive(this.chainId);
+        for (let i = first; i <= last; i++) {
+            const addressNode = this.node.derive(i);
+            let naddress = '';
+
+            if (!this.segwit) {
+                naddress = addressNode.getAddress();
+            } else {
+                // see https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
+                // address derivation + test vectors
+                const pkh = addressNode.getIdentifier();
+                const scriptSig = new Buffer(pkh.length + 2);
+                scriptSig[0] = 0;
+                scriptSig[1] = 0x14;
+                pkh.copy(scriptSig, 2);
+                const addressBytes = crypto.hash160(scriptSig);
+                naddress = address.toBase58Check(addressBytes, this.network.scriptHash);
+            }
+            addresses.push(naddress);
+        }
+        return Promise.resolve(addresses);
+    }
+}
 
 export class WorkerAddressSource {
     channel: WorkerChannel;
