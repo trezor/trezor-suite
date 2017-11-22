@@ -6,12 +6,12 @@
   "scripts": {
     "build-lib": "rm -rf lib && babel src --out-dir lib && cp -r ./fastxpub/build ./lib/fastxpub && cd ./src && find . -name '*.js' | xargs -I {} cp {} ../lib/{}.flow",
     "build-example": "make example",
-    "unit": "mocha --compilers js:babel-register",
-    "coverage": "nyc --require babel-register --check-coverage mocha --compilers js:babel-register",
+    "unit": "npm run build-lib; mocha --compilers js:babel-register",
+    "coverage": "npm run build-lib; nyc --require babel-register --check-coverage mocha --compilers js:babel-register",
     "flow": "flow check src",
     "eslint": "cd src && eslint . && cd ../test && eslint . && cd ../example && eslint . cd ../test_helpers && eslint .",
-    "karma-firefox": "karma start --browsers Firefox --single-run",
-    "karma-chrome": "karma start --browsers Chrome --single-run"
+    "karma-firefox": "npm run build-lib; karma start --browsers Firefox --single-run",
+    "karma-chrome": "npm run build-lib; karma start --browsers Chrome --single-run"
   },
   "author": "TREZOR <info@trezor.io>",
   "repository": "https://github.com/trezor/hd-wallet",
