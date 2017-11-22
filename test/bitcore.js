@@ -365,6 +365,7 @@ describe('bitcore', () => {
             this.timeout(30 * 1000);
             if (lastTx == null) {
                 done(new Error('previous null'));
+                return;
             }
             const outAddress = getAddress();
 
@@ -620,7 +621,7 @@ describe('bitcore', () => {
             const addresses = [getAddress(), getAddress(), getAddress()];
 
             testBlockchain(() => {
-                let p = run('bitcore-regtest-cli generate 300');
+                let p = Promise.resolve();
 
                 for (let i = 0; i < 100; i++) {
                     p = p
@@ -671,9 +672,6 @@ describe('bitcore', () => {
     describe('sync status', () => {
         it('looks up sync status', function (done) {
             this.timeout(30 * 1000);
-            if (lastTx == null) {
-                done(new Error('previous null'));
-            }
             testBlockchain((blockchain, done) => {
                 blockchain.lookupSyncStatus().then(oldStatus => {
                     return run('bitcore-regtest-cli generate 300').then(() => {
@@ -694,9 +692,6 @@ describe('bitcore', () => {
     describe('blockhash', () => {
         it('looks up blockhash', function (done) {
             this.timeout(30 * 1000);
-            if (lastTx == null) {
-                done(new Error('previous null'));
-            }
             testBlockchain((blockchain, done) => {
                 blockchain.lookupBlockHash(0).then(hash => {
                     assert(hash === '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
@@ -715,6 +710,7 @@ describe('bitcore', () => {
             this.timeout(30 * 1000);
             if (lastTx == null) {
                 done(new Error('previous null'));
+                return;
             }
             const outAddress = getAddress();
 
@@ -729,9 +725,6 @@ describe('bitcore', () => {
 
         it('looks up tx', function (done) {
             this.timeout(30 * 1000);
-            if (lastTx == null) {
-                done(new Error('previous null'));
-            }
             testBlockchain((blockchain, done) => {
                 blockchain.lookupTransaction(outTx.id).then((tx) => {
                     assert(tx.hash === outTx.id);
