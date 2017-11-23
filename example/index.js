@@ -1,7 +1,7 @@
 import {networks} from 'bitcoinjs-lib-zcash';
 
-import {WorkerDiscovery} from '../lib/discovery/worker-discovery';
-import {BitcoreBlockchain} from '../lib/bitcore';
+import {WorkerDiscovery} from '../src/discovery/worker-discovery';
+import {BitcoreBlockchain} from '../src/bitcore';
 
 import h from 'virtual-dom/h';
 import diff from 'virtual-dom/diff';
