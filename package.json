@@ -4,14 +4,14 @@
   "description": "Data structures and algorithms for Bitcoin HD wallet.",
   "main": "lib/index.js",
   "scripts": {
-    "build-lib": "rm -rf lib && babel src --out-dir lib && cp -r ./fastxpub/build ./lib/fastxpub && cd ./src && find . -name '*.js' | xargs -I {} cp {} ../lib/{}.flow",
+    "build-lib": "make clean;make lib",
     "build-example": "make example",
-    "unit": "npm run build-lib; mocha --compilers js:babel-register",
-    "coverage": "npm run build-lib; nyc --require babel-register --check-coverage mocha --compilers js:babel-register",
-    "flow": "flow check src",
-    "eslint": "cd src && eslint . && cd ../test && eslint . && cd ../example && eslint . cd ../test_helpers && eslint .",
-    "karma-firefox": "npm run build-lib; karma start --browsers Firefox --single-run",
-    "karma-chrome": "npm run build-lib; karma start --browsers Chrome --single-run"
+    "unit": "make unit",
+    "coverage": "make coverage",
+    "flow": "make flow",
+    "eslint": "make eslint",
+    "karma-firefox": "make karma-firefox",
+    "karma-chrome": "make karma-chrome"
   },
   "author": "TREZOR <info@trezor.io>",
   "repository": "https://github.com/trezor/hd-wallet",
@@ -40,6 +40,7 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "bitcoinjs-lib-zcash": "^3.0.0",
+    "bump-version": "^0.5.0",
     "socket.io-client": "^1.7.3",
     "whatwg-fetch": "^0.11.0"
   },

@@ -1,7 +1,6 @@
 BIN=`npm bin`
 
 LIB=src/index.js
-LIB_TARGET=dist/index.js
 
 TEST=test/*.js
 
@@ -25,8 +24,69 @@ example: node_modules
 
 clean:
 	rm -f \
-		${LIB_TARGET} ${LIB_TARGET}.map \
 		${EXAMPLE_TARGET} ${EXAMPLE_TARGET}.map
+	rm -rf lib
 
 node_modules:
-	npm install
+	yarn
+
+lib:
+	`npm bin`/babel src --out-dir lib
+	cp -r ./fastxpub/build ./lib/fastxpub
+	cd ./src && find . -name '*.js' | xargs -I {} cp {} ../lib/{}.flow
+
+unit: lib
+	`npm bin`/mocha --compilers js:babel-register
+
+coverage: lib
+	`npm bin`/nyc --require babel-register --check-coverage mocha --compilers js:babel-register
+
+flow:
+	`npm bin`/flow check src
+
+eslint:
+	cd src && `npm bin`/eslint .
+	cd ./test && `npm bin`/eslint .
+	cd ./example && `npm bin`/eslint .
+	cd ./test_helpers && `npm bin`/eslint .
+
+karma-firefox: lib
+	`npm bin`/karma start --browsers Firefox --single-run
+
+karma-chrome: lib
+	`npm bin`/karma start --browsers Chrome --single-run
+
+git-ancestor:
+	git fetch origin
+	git merge-base --is-ancestor origin/master master
+
+.version-%: .move-in-%
+	npm install	
+	make build-$* || ( make .cleanup-$* && false )
+	`npm bin`/bump ${TYPE} || ( make .cleanup-$* && false )
+	make build-$* || ( make .cleanup-$* && false )
+	npm publish || ( make .cleanup-$* && false )
+	make .cleanup-$*
+
+.version: clean git-clean git-ancestor flow eslint lib
+	`npm bin`/bump ${TYPE}
+	npm publish
+	git add package.json
+	git commit -m `npm view . version`
+	git tag v`npm view . version`
+	git push
+	git push --tags
+
+version-patch: TYPE = patch
+version-patch: .version
+
+version-minor: TYPE = minor
+version-minor: .version
+
+version-major: TYPE = major
+version-major: .version
+
+git-clean:
+	test ! -n "$$(git status --porcelain)"
+
+
