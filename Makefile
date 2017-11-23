@@ -60,17 +60,11 @@ git-ancestor:
 	git fetch origin
 	git merge-base --is-ancestor origin/master master
 
-.version-%: .move-in-%
-	npm install	
-	make build-$* || ( make .cleanup-$* && false )
-	`npm bin`/bump ${TYPE} || ( make .cleanup-$* && false )
-	make build-$* || ( make .cleanup-$* && false )
-	npm publish || ( make .cleanup-$* && false )
-	make .cleanup-$*
-
-.version: clean git-clean git-ancestor flow eslint lib
+.publish: clean git-clean git-ancestor flow eslint lib
 	`npm bin`/bump ${TYPE}
 	npm publish
+
+.version: .publish
 	git add package.json
 	git commit -m `npm view . version`
 	git tag v`npm view . version`
