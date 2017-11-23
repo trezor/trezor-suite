@@ -40,7 +40,6 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "bitcoinjs-lib-zcash": "^3.0.0",
-    "bump-version": "^0.5.0",
     "socket.io-client": "^1.7.3",
     "whatwg-fetch": "^0.11.0"
   },
