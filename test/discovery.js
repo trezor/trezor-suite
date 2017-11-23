@@ -131,6 +131,18 @@ describe('discovery', () => {
         return testDiscovery(discovery, xpub, testEmpty);
     });
 
+    it('detects unused on empty account', function () {
+        this.timeout(60 * 1000);
+        const used = discovery.detectUsedAccount(
+            xpub,
+            bitcoin.networks.testnet,
+            'off'
+        );
+        return used.then(k => {
+            assert(!k);
+        });
+    });
+
     it('continuing empty is still empty', function () {
         this.timeout(60 * 1000);
         return testDiscovery(discovery, xpub, testEmpty, lastEmpty);
@@ -182,6 +194,18 @@ describe('discovery', () => {
     it('one unconfirmed - from same', function () {
         this.timeout(60 * 1000);
         return testDiscovery(discovery, xpub, testUnconf, lastUnconf);
+    });
+
+    it('detects used on one unconfirmed', function () {
+        this.timeout(60 * 1000);
+        const used = discovery.detectUsedAccount(
+            xpub,
+            bitcoin.networks.testnet,
+            'off'
+        );
+        return used.then(k => {
+            assert(k);
+        });
     });
 
     it('one unconfirmed - from empty - testing orphaned blocks', function () {
@@ -255,9 +279,21 @@ describe('discovery', () => {
         return testDiscovery(discovery, xpub, testConf, lastUnconf);
     });
 
-    it('one unconfirmed - from same', function () {
+    it('one confirmed - from same', function () {
         this.timeout(60 * 1000);
         return testDiscovery(discovery, xpub, testConf, lastConf);
+    });
+
+    it('detects used on confirmed', function () {
+        this.timeout(60 * 1000);
+        const used = discovery.detectUsedAccount(
+            xpub,
+            bitcoin.networks.testnet,
+            'off'
+        );
+        return used.then(k => {
+            assert(k);
+        });
     });
 
     it('one confirmed - from unconf - testing orphaned blocks', function () {
