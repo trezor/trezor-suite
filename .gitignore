@@ -11,7 +11,7 @@ gh-pages/example.js.map
 .nyc_output
 
 # Npm library
-# lib
+lib
 
 # OSX
 .DS_Store
