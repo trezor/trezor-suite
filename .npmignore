@@ -19,7 +19,7 @@ type
 examples
 
 # Fastxpub source
-fastxpub
+./fastxpub/
 
 # Dependency directory
 node_modules
