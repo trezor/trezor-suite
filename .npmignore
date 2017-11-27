@@ -17,9 +17,11 @@ type
 
 # Example directories
 examples
+gh-pages
 
 # Fastxpub source
-./fastxpub/
+fastxpub
+!lib/fastxpub/
 
 # Dependency directory
 node_modules
