@@ -8,7 +8,7 @@ import * as coinselect from './coinselect';
 export {empty as BuildTxEmptyResult} from './result';
 export {Request as BuildTxRequest, OutputRequest as BuildTxOutputRequest} from './request';
 export {Result as BuildTxResult} from './result';
-export {Transaction as BuildTxTransaction} from './transaction';
+export {Transaction as BuildTxTransaction, Output as BuildTxOutput, Input as BuildTxInput} from './transaction';
 
 export function buildTx(
     {utxos, outputs, height, feeRate, segwit, inputAmounts, basePath, network, changeId, changeAddress, dustThreshold}: request.Request
