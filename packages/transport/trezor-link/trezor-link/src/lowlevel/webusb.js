@@ -14,6 +14,10 @@ const TREZOR_DESCS = [{
   productId: 0x53c1,
 }];
 
+const CONFIGURATION_ID = 1;
+const INTERFACE_ID = 0;
+const ENDPOINT_ID = 1;
+
 export default class WebUsbPlugin {
   name: string = `WebUsbPlugin`;
 
@@ -23,6 +27,10 @@ export default class WebUsbPlugin {
   usb: USB;
 
   allowsWriteAndEnumerate: boolean = true;
+
+  configurationId: number = CONFIGURATION_ID;
+  interfaceId: number = INTERFACE_ID;
+  endpointId: number = ENDPOINT_ID;
 
   @debugInOut
   async init(debug: ?boolean): Promise<void> {
@@ -83,7 +91,7 @@ export default class WebUsbPlugin {
       await this.connect(path);
     }
 
-    return device.transferOut(2, newArray).then(() => {});
+    return device.transferOut(this.endpointId, newArray).then(() => {});
   }
 
   async receive(path: string): Promise<ArrayBuffer> {
@@ -94,7 +102,7 @@ export default class WebUsbPlugin {
         await this.connect(path);
       }
 
-      const res = await device.transferIn(2, 64);
+      const res = await device.transferIn(this.endpointId, 64);
       return res.data.buffer.slice(1);
     } catch (e) {
       if (e.message === `Device unavailable.`) {
@@ -126,18 +134,18 @@ export default class WebUsbPlugin {
     const device: USBDevice = await this._findDevice(path);
     await device.open();
 
-    await device.selectConfiguration(1);
+    await device.selectConfiguration(this.configurationId);
     // always resetting -> I don't want to fail when other tab quits before release
     await device.reset();
 
-    await device.claimInterface(2);
+    await device.claimInterface(this.interfaceId);
   }
 
   @debugInOut
   async disconnect(path: string): Promise<void> {
     const device: USBDevice = await this._findDevice(path);
 
-    await device.releaseInterface(2);
+    await device.releaseInterface(this.interfaceId);
     await device.close();
   }
 
