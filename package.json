@@ -1,0 +1,62 @@
+{
+    "name": "trezor-connect-react-boilerplate",
+    "version": "1.0.0",
+    "author": "TREZOR <info@trezor.io>",
+    "description": "",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/szymonlesisz/trezor-connect-react-boilerplate.git"
+    },
+    "bugs": {
+        "url": "https://github.com/szymonlesisz/trezor-connect-react-boilerplate/issues"
+    },
+    "license": "LGPL-3.0+",
+    "scripts": {
+        "dev": "babel-node ./webpack/server.js --library",
+        "dev:library": "babel-node ./webpack/server.js --library",
+        "dev:connect": "babel-node ./webpack/server.js --connect",
+        "build": "rm -rf build && webpack --config ./webpack/webpack.config.prod.babel.js",
+        "flow": "cd app/scripts && flow check",
+        "test": ""
+    },
+    "dependencies": {
+        "babel-preset-react": "^6.24.1",
+        "react": "^16.1.1",
+        "react-dom": "^16.1.1",
+        "react-hot-loader": "^3.1.3",
+        "react-redux": "^5.0.6",
+        "react-router-dom": "^4.2.2",
+        "react-router-redux": "next",
+        "react-transition-group": "^2.2.1",
+        "redux": "^3.7.2",
+        "redux-logger": "^3.0.6",
+        "redux-thunk": "^2.2.0"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.24.1",
+        "babel-loader": "^7.1.0",
+        "babel-plugin-transform-class-properties": "^6.24.1",
+        "babel-plugin-transform-flow-strip-types": "^6.22.0",
+        "babel-plugin-transform-object-rest-spread": "^6.23.0",
+        "babel-plugin-transform-runtime": "^6.23.0",
+        "babel-plugin-webpack-alias": "^2.1.2",
+        "babel-preset-env": "^1.6.0",
+        "copy-webpack-plugin": "^4.0.1",
+        "css-loader": "^0.28.4",
+        "express": "^4.15.3",
+        "extract-text-webpack-plugin": "^3.0.0",
+        "file-loader": "^0.11.2",
+        "html-webpack-plugin": "^2.29.0",
+        "json-loader": "^0.5.7",
+        "less": "^2.7.2",
+        "less-loader": "^4.0.5",
+        "open": "^0.0.5",
+        "style-loader": "^0.18.2",
+        "webpack": "^3.4.1",
+        "webpack-dev-middleware": "^1.11.0",
+        "webpack-hot-middleware": "^2.18.0",
+        "webpack-merge": "^4.1.1",
+        "whatwg-fetch": "^2.0.3",
+        "yargs": "^10.0.3"
+    }
+}
