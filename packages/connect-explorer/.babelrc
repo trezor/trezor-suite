@@ -1,0 +1,38 @@
+{
+  "presets": [
+    ["env", {
+      "useBuiltIns": true,
+      "loose": true
+    }],
+    "react"
+  ],
+  "plugins": [
+    "transform-class-properties",
+    "transform-object-rest-spread",
+    "transform-flow-strip-types",
+    ["transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }]
+  ],
+  "env": {
+    "development-connect": {
+      "plugins": [
+        "react-hot-loader/babel",
+        [ 
+          "babel-plugin-webpack-alias",
+          { "config": "./webpack/webpack.config.connect.js", "findConfig": true }
+        ]
+      ]
+    },
+    "development-library": {
+      "plugins": [
+        "react-hot-loader/babel",
+        [ 
+          "babel-plugin-webpack-alias",
+          { "config": "./webpack/webpack.config.library.js", "findConfig": true }
+        ]
+      ]
+    }
+  }
+}
