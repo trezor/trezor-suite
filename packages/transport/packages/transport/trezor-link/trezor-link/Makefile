@@ -1,5 +1,5 @@
 check: node_modules
-	flow check src/
+	`npm bin`/flow check src/
 	cd src/; eslint .
 
 git-ancestor:
