@@ -125,3 +125,55 @@ export function onPermissionRejected(): any {
         type: ACTIONS.CLOSE_MODAL
     }
 }
+
+export function onAccountSelect(account): any {
+    TrezorConnect.uiMessage({
+        type: UI.RECEIVE_ACCOUNT,
+        data: account + ''
+    });
+
+    return {
+        type: ACTIONS.CLOSE_MODAL
+    }
+}
+
+export function onFeeSelect(fee: number): any {
+    TrezorConnect.uiMessage({
+        type: UI.RECEIVE_FEE,
+        data: fee + ':fee'
+    });
+
+    return {
+        type: ACTIONS.CLOSE_MODAL
+    }
+}
+
+export function onChangeAccount(): any {
+    TrezorConnect.uiMessage({
+        type: UI.RECEIVE_FEE,
+        data: 'change_account'
+    });
+    return {
+        type: ACTIONS.CLOSE_MODAL
+    }
+}
+
+
+export function onCustomFeeOpen(): any {
+    return {
+        type: ACTIONS.ON_CUSTOM_FEE_OPEN
+    }
+}
+
+export function onCustomFeeChange(value: number): any {
+
+    TrezorConnect.uiMessage({
+        type: UI.RECEIVE_FEE,
+        data: value + ':custom'
+    });
+
+    return {
+        type: ACTIONS.ON_CUSTOM_FEE_CHANGE,
+        value
+    }
+}

@@ -13,6 +13,11 @@ type ModalState = {
     passphraseVisible: boolean;
     passphraseCached: boolean;
     confirmation: ?string;
+
+    coinInfo?: any;
+    accounts?: Array<any>;
+    customFeeOpened?: boolean;
+    customFee: number;
 }
 
 const initialState: ModalState = {
@@ -24,6 +29,8 @@ const initialState: ModalState = {
     passphraseVisible: false,
     passphraseCached: true,
     confirmation: null,
+
+    customFee: 0,
 };
 
 export default function modal(state: ModalState = initialState, action: any): any {
@@ -55,6 +62,54 @@ export default function modal(state: ModalState = initialState, action: any): an
                 windowType: action.type
             };
 
+        case UI.SELECT_DEVICE :
+            return {
+                ...state,
+                opened: true,
+                windowType: action.type
+            };
+
+        case UI.SELECT_ACCOUNT :
+            return {
+                ...state,
+                opened: true,
+                windowType: action.type,
+                accounts: action.data.accounts,
+                coinInfo: action.data.coinInfo,
+                complete: action.data.complete
+            };
+
+        case UI.SELECT_FEE :
+            return {
+                ...state,
+                opened: true,
+                windowType: action.type,
+                feeList: action.data.list,
+                coinInfo: action.data.coinInfo,
+            };
+
+        case UI.UPDATE_CUSTOM_FEE :
+            return {
+                ...state,
+                opened: true,
+                windowType: action.type
+            };
+
+        case UI.INSUFFICIENT_FUNDS :
+            return {
+                ...state,
+                opened: true,
+                windowType: action.type
+            };
+        case UI.REQUEST_BUTTON :
+            return {
+                ...state,
+                opened: true,
+                windowType: action.type
+            };
+
+        
+        case UI.CLOSE_UI_WINDOW :
         case ACTIONS.CLOSE_MODAL :
             return {
                 ...initialState,
@@ -112,6 +167,17 @@ export default function modal(state: ModalState = initialState, action: any): an
             return {
                 ...state,
                 passphraseFocused: false
+            }
+
+        case ACTIONS.ON_CUSTOM_FEE_OPEN :
+            return {
+                ...state,
+                customFeeOpened: true
+            }
+        case ACTIONS.ON_CUSTOM_FEE_CHANGE :
+            return {
+                ...state,
+                customFee: action.value
             }
 
         default:
