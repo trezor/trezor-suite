@@ -12,6 +12,9 @@ import Passphrase from './Passphrase';
 import Permission from './Permission';
 import Confirmation from './Confirmation';
 
+import AccountSelection from './AccountSelection';
+import FeeSelection from './FeeSelection';
+
 const duration = 300;
 
 const defaultStyle = {
@@ -69,6 +72,13 @@ export default class Modal extends Component {
             break;
             case UI.REQUEST_CONFIRMATION :
                 component = (<Confirmation { ...this.props } />);
+            break;
+
+            case UI.SELECT_ACCOUNT :
+                component = (<AccountSelection { ...this.props } />);
+            break;
+            case UI.SELECT_FEE :
+                component = (<FeeSelection { ...this.props } />);
             break;
         }
 
