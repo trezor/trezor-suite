@@ -1,13 +1,22 @@
 /* @flow */
 
-// $FlowIssue
+// To ensure that two website don't read from/to Trezor at the same time, I need a sharedworker
+// to synchronize them.
+// However, sharedWorker cannot directly use webusb API... so I need to send messages
+// about intent to acquire/release and then send another message when that is done.
+// Other windows then can acquire/release
+
 // eslint-disable-next-line no-undef
-onconnect = function (e) {
-  const port = e.ports[0];
-  port.onmessage = function (e) {
-    handleMessage(e.data, port);
+// $FlowIssue
+if (typeof onconnect !== `undefined`) {
+  // eslint-disable-next-line no-undef
+  onconnect = function (e) {
+    const port = e.ports[0];
+    port.onmessage = function (e) {
+      handleMessage(e.data, port);
+    };
   };
-};
+}
 
 import {create as createDefered} from '../defered';
 import type {Defered} from '../defered';
@@ -187,5 +196,10 @@ function handleAcquireIntent(
 
 function sendBack(message: MessageFromSharedWorker, id: number, port: PortObject) {
   port.postMessage({id, message});
+}
+
+// when shared worker is not loaded as a shared loader, use it as a module instead
+export function postModuleMessage({id, message}: {id: number, message: MessageToSharedWorker}, fn: (message: Object) => void) {
+  handleMessage({id, message}, {postMessage: fn});
 }
 
