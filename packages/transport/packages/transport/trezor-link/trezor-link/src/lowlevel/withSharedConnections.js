@@ -97,10 +97,10 @@ export default class LowlevelTransportWithSharedConnections {
   version: string;
   configured: boolean = false;
 
-  _sharedWorkerFactory: ?() => SharedWorker;
+  _sharedWorkerFactory: ?() => ?SharedWorker;
   sharedWorker: ?SharedWorker;
 
-  constructor(plugin: LowlevelTransportSharedPlugin, sharedWorkerFactory: ?() => SharedWorker) {
+  constructor(plugin: LowlevelTransportSharedPlugin, sharedWorkerFactory: ?() => ?SharedWorker) {
     this.plugin = plugin;
     this.version = plugin.version;
     this._sharedWorkerFactory = sharedWorkerFactory;
@@ -279,10 +279,12 @@ export default class LowlevelTransportWithSharedConnections {
     // create the worker ONLY when the plugin is successfully inited
     if (this._sharedWorkerFactory != null) {
       this.sharedWorker = this._sharedWorkerFactory();
-      this.sharedWorker.port.onmessage = (e) => {
-        // $FlowIssue
-        this.receiveFromWorker(e.data);
-      };
+      if (this.sharedWorker != null) {
+        this.sharedWorker.port.onmessage = (e) => {
+          // $FlowIssue
+          this.receiveFromWorker(e.data);
+        };
+      }
     }
   }
 
