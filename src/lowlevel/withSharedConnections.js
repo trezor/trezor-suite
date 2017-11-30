@@ -19,6 +19,7 @@ import type {Messages} from './protobuf/messages';
 import type {MessageFromTrezor, TrezorDeviceInfo, TrezorDeviceInfoWithSession, AcquireInput} from '../transport';
 
 import {debugInOut} from '../debug-decorator';
+import {postModuleMessage} from './sharedConnectionWorker';
 
 function stableStringify(devices: ?Array<TrezorDeviceInfoWithSession>): string {
   if (devices == null) {
@@ -96,10 +97,10 @@ export default class LowlevelTransportWithSharedConnections {
   version: string;
   configured: boolean = false;
 
-  _sharedWorkerFactory: () => SharedWorker;
-  sharedWorker: SharedWorker;
+  _sharedWorkerFactory: ?() => SharedWorker;
+  sharedWorker: ?SharedWorker;
 
-  constructor(plugin: LowlevelTransportSharedPlugin, sharedWorkerFactory: () => SharedWorker) {
+  constructor(plugin: LowlevelTransportSharedPlugin, sharedWorkerFactory: ?() => SharedWorker) {
     this.plugin = plugin;
     this.version = plugin.version;
     this._sharedWorkerFactory = sharedWorkerFactory;
@@ -276,11 +277,13 @@ export default class LowlevelTransportWithSharedConnections {
     this.requestNeeded = this.plugin.requestNeeded;
     await this.plugin.init(debug);
     // create the worker ONLY when the plugin is successfully inited
-    this.sharedWorker = this._sharedWorkerFactory();
-    this.sharedWorker.port.onmessage = (e) => {
-      // $FlowIssue
-      this.receiveFromWorker(e.data);
-    };
+    if (this._sharedWorkerFactory != null) {
+      this.sharedWorker = this._sharedWorkerFactory();
+      this.sharedWorker.port.onmessage = (e) => {
+        // $FlowIssue
+        this.receiveFromWorker(e.data);
+      };
+    }
   }
 
   async requestDevice(): Promise<void> {
@@ -295,7 +298,14 @@ export default class LowlevelTransportWithSharedConnections {
     this.latestId++;
     const id = this.latestId;
     this.defereds[id] = createDefered();
-    this.sharedWorker.port.postMessage({id, message});
+
+    // when shared worker is not loaded as a shared loader, use it as a module instead
+    if (this.sharedWorker != null) {
+      this.sharedWorker.port.postMessage({id, message});
+    } else {
+      postModuleMessage({id, message}, (m) => this.receiveFromWorker(m));
+    }
+
     return this.defereds[id].promise;
   }
 
