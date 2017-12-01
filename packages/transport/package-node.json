@@ -1,6 +1,6 @@
 {
   "name": "trezor-link-node",
-  "version": "0.2.108",
+  "version": "0.2.109",
   "description": "Trezor Link for node",
   "main": "lib/index-node.js",
   "scripts": {
@@ -11,7 +11,9 @@
   "author": "Karel Bílek <kb@karelbilek.com>",
   "license": "LGPL-3.0+",
   "babel": {
-    "ignore": ["src/flow_fake_node_modules"],
+    "ignore": [
+      "src/flow_fake_node_modules"
+    ],
     "presets": [
       "es2015",
       "es2016",
