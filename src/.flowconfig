@@ -13,3 +13,7 @@ esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
 esproposal.decorators=ignore
 module.system.node.resolve_dirname=flow_fake_node_modules
+include_warnings=true
+
+[lints]
+all=warn
