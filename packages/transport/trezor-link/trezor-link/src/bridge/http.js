@@ -49,7 +49,7 @@ export async function request(options: HttpRequestOptions): Promise<mixed> {
   const res = await _fetch(options.url, {
     method: options.method,
     headers: {
-      'Content-Type': contentType(options.body || ``),
+      'Content-Type': contentType(options.body == null ? `` : options.body),
     },
     body: wrapBody(options.body),
   });
