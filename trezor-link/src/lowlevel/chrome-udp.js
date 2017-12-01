@@ -82,7 +82,7 @@ export default class ChromeUdpPlugin {
         let socket: number;
         const portIn: string = (port + this.portDiff).toString();
         const socketS: ?string = this.sockets[portIn];
-        if (socketS) {
+        if (socketS != null) {
           socket = parseInt(socketS);
         } else {
           socket = await this._udpConnect(port, this.portDiff);
