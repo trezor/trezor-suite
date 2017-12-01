@@ -30,7 +30,7 @@ export class MessageDecoder {
   _messageInfo() : MessageInfo {
     const r = this.messages.messagesByType[this.type];
     if (r == null) {
-      throw new Error(`Method type not found`, this.type);
+      throw new Error(`Method type not found - ${this.type}`);
     }
     return new MessageInfo(r.constructor, r.name);
   }
