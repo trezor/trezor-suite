@@ -195,7 +195,7 @@ function deriveUsedAddresses(
                 if (lastUsed < id) {
                     lastUsed = id;
                 }
-                if (t.height) {
+                if (t.height != null) {
                     if (lastConfirmed < id) {
                         lastConfirmed = id;
                     }

@@ -1,14 +1,9 @@
-[ignore]
-.*/node_modules/bitcoinjs-lib-zcash/.*
-
-[include]
-../node_modules/bitcoinjs-lib-zcash
-../node_modules/socket.io-client
-../node_modules/whatwg-fetch
-../node_modules/coinselect
-
 [libs]
 ../type
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
+include_warnings=true
+
+[lints]
+all=warn

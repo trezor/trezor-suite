@@ -213,7 +213,8 @@ declare module 'bitcoinjs-lib-zcash' {
         chainCode: Buffer;
         static fromBase58(
             str: string,
-            networks: ?(Array<Network> | Network)
+            networks: ?(Array<Network> | Network),
+            skipCheck: boolean
         ): HDNode;
         derive(index: number): HDNode;
         deriveHardened(index: number): HDNode;
