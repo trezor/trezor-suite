@@ -1,17 +1,5 @@
 [ignore]
 .*/node_modules/protobufjs-old-fixed-webpack/src/bower.json
-.*/node_modules/bitcoinjs-lib-zcash/.*
-.*/node_modules/bigi/.*
-.*/node_modules/ecurve/.*
-
-[include]
-../node_modules/json-stable-stringify/
-../node_modules/protobufjs-old-fixed-webpack/
-../node_modules/object.values/
-../node_modules/semver-compare/
-../node_modules/node-hid/
-../node_modules/node-fetch/
-../node_modules/whatwg-fetch/
 
 [libs]
 ../flowtype/bitcoinjs-lib.js
@@ -24,3 +12,4 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
 esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
 esproposal.decorators=ignore
+module.system.node.resolve_dirname=flow_fake_node_modules
