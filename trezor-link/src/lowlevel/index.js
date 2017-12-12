@@ -242,5 +242,4 @@ export default class LowlevelTransport {
   }
 
   requestNeeded: boolean = false;
-
 }

@@ -97,9 +97,9 @@ function handleReleaseDone(
 }
 
 function handleReleaseIntent(
-    session: string,
-    id: number,
-    port: PortObject
+  session: string,
+  id: number,
+  port: PortObject
 ): Promise<void> {
   let path_: ?string = null;
   Object.keys(state).forEach(kpath => {
@@ -157,11 +157,11 @@ function handleAcquireFailed(
 }
 
 function handleAcquireIntent(
-    path: string,
-    checkPrevious: boolean,
-    previous: ?string,
-    id: number,
-    port: PortObject
+  path: string,
+  checkPrevious: boolean,
+  previous: ?string,
+  id: number,
+  port: PortObject
 ): Promise<void> {
   let error = false;
   if (checkPrevious) {

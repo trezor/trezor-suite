@@ -326,5 +326,4 @@ export default class ChromeHidPlugin {
   }
 
   requestNeeded: boolean = false;
-
 }

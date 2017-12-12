@@ -173,8 +173,8 @@ export default class ChromeUdpPlugin {
   }
 
   _udpConnect(
-      port: number,
-      diff: number
+    port: number,
+    diff: number
   ): Promise<number> {
     const address = `127.0.0.1`;
     return new Promise((resolve, reject) => {
@@ -302,7 +302,6 @@ export default class ChromeUdpPlugin {
   }
 
   requestNeeded: boolean = false;
-
 }
 
 // from https://github.com/wbinnssmith/arraybuffer-equal
