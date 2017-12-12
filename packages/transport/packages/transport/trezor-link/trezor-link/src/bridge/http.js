@@ -11,8 +11,8 @@ export type HttpRequestOptions = {
 // Request, RequestOptions and Response are built-in types of Flow for fetch API
 let _fetch: (input: string | Request, init?: RequestOptions) => Promise<Response> =
   typeof window === `undefined`
-  ? () => Promise.reject()
-  : window.fetch;
+    ? () => Promise.reject()
+    : window.fetch;
 
 export function setFetch(fetch: any) {
   _fetch = fetch;
