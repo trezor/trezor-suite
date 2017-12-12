@@ -100,6 +100,12 @@ class BuiltMessage {
 
     return result;
   }
+  
+  // encodes itself into one long arraybuffer
+  encodeOne(): Buffer {
+    const bytes: Uint8Array = this._encodeLong();
+    return new Buffer([...bytes]);
+  }
 }
 
 // Removes $$hashkey from angular and remove nulls
@@ -134,6 +140,17 @@ function buildBuffers(messages: Messages, name: string, data: Object): Array<Arr
   const message: BuiltMessage = new BuiltMessage(messages, name, data);
   const encoded: Array<ArrayBuffer> = message.encode();
   return encoded;
+}
+
+// Sends message to device.
+// Resolves iff everything gets sent
+export function buildOne(
+  messages: Messages,
+  name: string,
+  data: Object
+): Buffer {
+  const message: BuiltMessage = new BuiltMessage(messages, name, data);
+  return message.encodeOne();
 }
 
 // Sends message to device.
