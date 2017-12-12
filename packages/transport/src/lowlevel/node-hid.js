@@ -48,19 +48,19 @@ export default class NodeHidPlugin {
 
   async enumerate(): Promise<Array<TrezorDeviceInfo>> {
     const devices = HID.devices()
-    .filter(d =>
-      TREZOR_DESCS.some(trezorDesc =>
-        d.vendorId === trezorDesc.vendorId &&
+      .filter(d =>
+        TREZOR_DESCS.some(trezorDesc =>
+          d.vendorId === trezorDesc.vendorId &&
         d.productId === trezorDesc.productId &&
         d.interface === trezorDesc.interface
+        )
       )
-    )
-    .map((device: HIDDeviceDescription): TrezorDeviceInfo => {
-      const path = device.path;
-      return {
-        path,
-      };
-    });
+      .map((device: HIDDeviceDescription): TrezorDeviceInfo => {
+        const path = device.path;
+        return {
+          path,
+        };
+      });
     return devices;
   }
 
@@ -113,7 +113,6 @@ export default class NodeHidPlugin {
   }
 
   requestNeeded: boolean = false;
-
 }
 
 function nodeBuffer2arrayBuffer(b: Buffer): ArrayBuffer {

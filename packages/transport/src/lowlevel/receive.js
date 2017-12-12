@@ -94,7 +94,7 @@ export function receiveOne(
   messages: Messages,
   data: Buffer
 ): MessageFromTrezor {
-  const byteBuffer: ByteBuffer = ByteBuffer.concat([data]); 
+  const byteBuffer: ByteBuffer = ByteBuffer.concat([data]);
   const typeId: number = byteBuffer.readUint16();
   const length: number = byteBuffer.readUint32();
   const decoder: MessageDecoder = new MessageDecoder(messages, typeId, byteBuffer.toArrayBuffer());
