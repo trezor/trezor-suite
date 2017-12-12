@@ -72,7 +72,7 @@ export default class BridgeTransport {
       method: `GET`,
     }));
     this.isOutdated = semvercmp(this.version, newVersion) < 0;
-    this.isDirect = semvercmp(this.version, '2.0.0') >= 0;
+    this.isDirect = semvercmp(this.version, `2.0.0`) >= 0;
   }
 
   @debugInOut
@@ -96,18 +96,18 @@ export default class BridgeTransport {
   async listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>> {
     const devicesS: mixed = await (
       old == null
-      ? this._get({url: `/listen`})
-      : this._post({
-        url: `/listen`,
-        body: old.map(device => {
-          return {
-            ...device,
-            // hack for old trezord
-            product: 1,
-            vendor: 21324,
-          };
-        }),
-      })
+        ? this._get({url: `/listen`})
+        : this._post({
+          url: `/listen`,
+          body: old.map(device => {
+            return {
+              ...device,
+              // hack for old trezord
+              product: 1,
+              vendor: 21324,
+            };
+          }),
+        })
     );
     const devices = check.devices(devicesS);
     return devices;
@@ -149,13 +149,13 @@ export default class BridgeTransport {
         throw new Error(`Transport not configured.`);
       }
       const messages = this._messages;
-      const outData = buildOne(messages, name, data).toString('hex');
+      const outData = buildOne(messages, name, data).toString(`hex`);
       const resData = await this._post({
         url: `/call/` + session,
-        body: outData
+        body: outData,
       });
-      if (typeof resData !== "string") {
-          throw new Error("Returning data is not string.");
+      if (typeof resData !== `string`) {
+        throw new Error(`Returning data is not string.`);
       }
       const jsonData = receiveOne(messages, new Buffer(resData));
       return check.call(jsonData);
