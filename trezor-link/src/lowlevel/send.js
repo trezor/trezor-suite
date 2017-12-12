@@ -51,18 +51,20 @@ class BuiltMessage {
 
   // encodes into "raw" data, but it can be too long and needs to be split into
   // smaller buffers
-  _encodeLong(): Uint8Array {
+  _encodeLong(addTrezorHeaders: boolean): Uint8Array {
     const headerSize: number = HEADER_SIZE; // should be 8
     const bytes: Uint8Array = new Uint8Array(this.message.encodeAB());
-    const fullSize: number = headerSize + bytes.length;
+    const fullSize: number = (addTrezorHeaders ? headerSize : (headerSize - 2)) + bytes.length;
 
     const encodedByteBuffer = new ByteBuffer(fullSize);
 
     // first encode header
 
-    // 2*1 byte
-    encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
-    encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
+    if (addTrezorHeaders) {
+      // 2*1 byte
+      encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
+      encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
+    }
 
     // 2 bytes
     encodedByteBuffer.writeUint16(this.type);
@@ -82,7 +84,7 @@ class BuiltMessage {
 
   // encodes itself and splits into "nice" chunks
   encode(): Array<ArrayBuffer> {
-    const bytes: Uint8Array = this._encodeLong();
+    const bytes: Uint8Array = this._encodeLong(true);
 
     const result: Array<ArrayBuffer> = [];
     const size: number = BUFFER_SIZE;
@@ -103,7 +105,7 @@ class BuiltMessage {
 
   // encodes itself into one long arraybuffer
   encodeOne(): Buffer {
-    const bytes: Uint8Array = this._encodeLong();
+    const bytes: Uint8Array = this._encodeLong(false);
     return new Buffer([...bytes]);
   }
 }
