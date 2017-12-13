@@ -157,7 +157,7 @@ export default class BridgeTransport {
       if (typeof resData !== `string`) {
         throw new Error(`Returning data is not string.`);
       }
-      const jsonData = receiveOne(messages, new Buffer(resData));
+      const jsonData = receiveOne(messages, new Buffer(resData, `hex`));
       return check.call(jsonData);
     }
 
