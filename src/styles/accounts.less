@@ -1,0 +1,27 @@
+.accounts {
+    width: 25%;
+
+    .header {
+        background: red;
+    }
+
+    a {
+        position: relative;
+        display: block;
+        cursor: pointer;
+        padding: 10px 15px;
+        white-space: nowrap;
+        color: black;
+        &.selected {
+            background: #FFFFFF;
+            border-left: 4px solid @color_green;
+            padding-left: 11px;
+        }
+
+        span {
+            display: block;
+            font-size: 12px;
+            color: gray;
+        }
+    }
+}
