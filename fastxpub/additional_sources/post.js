@@ -50,7 +50,9 @@
 
         function loadNodeStruct(xpub, version_public) {
             stringToUTF8(xpub, _xpub, XPUB_SIZE);
-            _hdnode_deserialize(_xpub, version_public, 0, _hdnode, 0);
+            if (_hdnode_deserialize(_xpub, version_public, 0, _hdnode, 0) != 0) {
+                throw new Error("Wrong XPUB type!!"); // abort everything (should not happen, should be catched already outside of asm.js, but this is emergency)
+            };
             fingerprint = _hdnode_fingerprint(_hdnode);
         }
 
