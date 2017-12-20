@@ -72,7 +72,7 @@
         }
 
         function deriveNodeFromStruct(index, version_public) {
-            if (_hdnode_public_ckd(_hdnode, index) !== 0) {
+            if (_hdnode_public_ckd(_hdnode, index) !== 1) {
                 throw new Error("Strange return type");
             };
             if (_hdnode_serialize_public(_hdnode, fingerprint, version_public, _xpub, XPUB_SIZE) === 0) {
