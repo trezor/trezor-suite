@@ -38,7 +38,7 @@ export class WorkerChannel {
         const i: number = event.data.i;
         const dfd = this.pending[i];
         if (dfd) {
-            dfd.resolve(event.data);
+            dfd(event.data);
             delete this.pending[i];
         }
     }
