@@ -521,4 +521,20 @@ export class StreamWithEnding<UpdateT, EndingT> {
         res.ending = def.promise.then(() => ending);
         return res;
     }
+
+    static fromPromise<U, E>(p: Promise<StreamWithEnding<U, E>>): StreamWithEnding<U, E> {
+        const res: StreamWithEnding<U, E> = new StreamWithEnding();
+        res.stream = Stream.fromPromise(p.then(s => s.stream));
+        res.ending = p.then(s => s.ending);
+        let resolved = null;
+        p.then(s => {
+            resolved = s;
+        });
+        res.dispose = (e: Error) => {
+            if (resolved != null) {
+                resolved.dispose(e);
+            }
+        };
+        return res;
+    }
 }

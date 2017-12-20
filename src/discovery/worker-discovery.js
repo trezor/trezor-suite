@@ -100,22 +100,27 @@ export class WorkerDiscovery {
         if (node instanceof Error) {
             return StreamWithEnding.fromStreamAndPromise(Stream.fromArray([]), Promise.reject(node));
         }
-        const external = node.derive(0);
-        const internal = node.derive(1);
 
-        const sources = [
-            this.createWorkerAddressSource(external, network, segwit),
-            this.createWorkerAddressSource(internal, network, segwit),
-        ];
+        return StreamWithEnding.fromPromise(
+            Promise.all([this.deriveXpub(xpub, network, 0), this.deriveXpub(xpub, network, 1)]).then(([externalXpub, internalXpub]) => {
+                const internal = BitcoinJsHDNode.fromBase58(internalXpub, network, true);
+                const external = BitcoinJsHDNode.fromBase58(externalXpub, network, true);
 
-        const out = new WorkerDiscoveryHandler(
-            this.discoveryWorkerFactory,
-            this.chain,
-            sources,
-            network,
-            this.forceAddedTransactions
+                const sources = [
+                    this.createWorkerAddressSource(external, network, segwit),
+                    this.createWorkerAddressSource(internal, network, segwit),
+                ];
+
+                const out = new WorkerDiscoveryHandler(
+                    this.discoveryWorkerFactory,
+                    this.chain,
+                    sources,
+                    network,
+                    this.forceAddedTransactions
+                );
+                return out.discovery(initial, xpub, segwit === 'p2sh');
+            })
         );
-        return out.discovery(initial, xpub, segwit === 'p2sh');
     }
 
     monitorAccountActivity(
@@ -128,60 +133,64 @@ export class WorkerDiscovery {
         if (node instanceof Error) {
             return Stream.simple(node);
         }
-        const external = node.derive(0);
-        const internal = node.derive(1);
+        return Stream.fromPromise(
+            Promise.all([this.deriveXpub(xpub, network, 0), this.deriveXpub(xpub, network, 1)]).then(([externalXpub, internalXpub]) => {
+                const internal = BitcoinJsHDNode.fromBase58(internalXpub, network, true);
+                const external = BitcoinJsHDNode.fromBase58(externalXpub, network, true);
 
-        const sources = [
-            this.createWorkerAddressSource(external, network, segwit),
-            this.createWorkerAddressSource(internal, network, segwit),
-        ];
+                const sources = [
+                    this.createWorkerAddressSource(external, network, segwit),
+                    this.createWorkerAddressSource(internal, network, segwit),
+                ];
 
-        function allAddresses(info: AccountInfo): Set<string> {
-            return new Set(
-                info.usedAddresses.map(a => a.address)
-                .concat(info.unusedAddresses)
-                .concat(info.changeAddresses)
-            );
-        }
-
-        this.chain.subscribe(allAddresses(initial));
-        let currentState = initial;
-
-        const txNotifs: Stream<'block' | TransactionWithHeight> = this.chain.notifications.filter(tx => {
-            // determine if it's mine
-            const addresses = allAddresses(currentState);
-            let mine = false;
-            tx.inputAddresses.concat(tx.outputAddresses).forEach(a => {
-                if (a != null) {
-                    if (addresses.has(a)) {
-                        mine = true;
-                    }
+                function allAddresses(info: AccountInfo): Set<string> {
+                    return new Set(
+                        info.usedAddresses.map(a => a.address)
+                        .concat(info.unusedAddresses)
+                        .concat(info.changeAddresses)
+                    );
                 }
-            });
-            return mine;
-        })
-        // flow thing
-        .map((tx: TransactionWithHeight): ('block' | TransactionWithHeight) => tx);
 
-        // we need to do updates on blocks, if there are unconfs
-        const blockStream: Stream<'block' | TransactionWithHeight> = this.chain.blocks.map(() => 'block');
+                this.chain.subscribe(allAddresses(initial));
+                let currentState = initial;
 
-        const resNull: Stream<?(AccountInfo | Error)> = blockStream.concat(txNotifs).concat(this.forceAddedTransactionsStream).mapPromiseError(() => {
-            const out = new WorkerDiscoveryHandler(
-                this.discoveryWorkerFactory,
-                this.chain,
-                sources,
-                network,
-                this.forceAddedTransactions
-            );
-            return out.discovery(currentState, xpub, segwit === 'p2sh').ending.then(res => {
-                currentState = res;
+                const txNotifs: Stream<'block' | TransactionWithHeight> = this.chain.notifications.filter(tx => {
+                    // determine if it's mine
+                    const addresses = allAddresses(currentState);
+                    let mine = false;
+                    tx.inputAddresses.concat(tx.outputAddresses).forEach(a => {
+                        if (a != null) {
+                            if (addresses.has(a)) {
+                                mine = true;
+                            }
+                        }
+                    });
+                    return mine;
+                })
+                // flow thing
+                .map((tx: TransactionWithHeight): ('block' | TransactionWithHeight) => tx);
+
+                // we need to do updates on blocks, if there are unconfs
+                const blockStream: Stream<'block' | TransactionWithHeight> = this.chain.blocks.map(() => 'block');
+
+                const resNull: Stream<?(AccountInfo | Error)> = blockStream.concat(txNotifs).concat(this.forceAddedTransactionsStream).mapPromiseError(() => {
+                    const out = new WorkerDiscoveryHandler(
+                        this.discoveryWorkerFactory,
+                        this.chain,
+                        sources,
+                        network,
+                        this.forceAddedTransactions
+                    );
+                    return out.discovery(currentState, xpub, segwit === 'p2sh').ending.then(res => {
+                        currentState = res;
+                        return res;
+                    });
+                });
+
+                const res: Stream<AccountInfo | Error> = Stream.filterNull(resNull);
                 return res;
-            });
-        });
-
-        const res: Stream<AccountInfo | Error> = Stream.filterNull(resNull);
-        return res;
+            })
+        );
     }
 
     createAddressSource(node: BitcoinJsHDNode, network: BitcoinJsNetwork, segwit: 'off' | 'p2sh'): AddressSource {
@@ -199,5 +208,23 @@ export class WorkerDiscovery {
         }
         const version = segwit === 'p2sh' ? network.scriptHash : network.pubKeyHash;
         return new WorkerAddressSource(addressWorkerChannel, node, version, segwit);
+    }
+
+    deriveXpub(
+        xpub: string,
+        network: BitcoinJsNetwork,
+        index: number
+    ): Promise<string> {
+        const addressWorkerChannel = this.addressWorkerChannel;
+        if (addressWorkerChannel == null) {
+            return Promise.resolve(BitcoinJsHDNode.fromBase58(xpub, network, true).derive(index).toBase58());
+        } else {
+            return addressWorkerChannel.postMessage({
+                type: 'deriveNode',
+                xpub: xpub,
+                version: network.bip32.public,
+                index: index,
+            });
+        }
     }
 }

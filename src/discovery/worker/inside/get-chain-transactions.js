@@ -98,7 +98,7 @@ export class GetChainTransactions {
     ) => Stream<ChunkDiscoveryInfo | Error>;
 
     webassembly: boolean;
-    source: BrowserAddressSource; // used only if webassembly
+    source: BrowserAddressSource; // used only if not webassembly
 
     constructor(
         id: number,
@@ -131,7 +131,9 @@ export class GetChainTransactions {
         this.xpub = xpub;
         this.segwit = segwit;
         this.webassembly = webassembly;
-        this.source = new BrowserAddressSource(BitcoinJsHDNode.fromBase58(this.xpub, this.network).derive(this.chainId), this.network, this.segwit);
+        if (!this.webassembly) {
+            this.source = new BrowserAddressSource(BitcoinJsHDNode.fromBase58(this.xpub, this.network).derive(this.chainId), this.network, this.segwit);
+        }
     }
 
     discover(): Promise<ChainNewInfo> {

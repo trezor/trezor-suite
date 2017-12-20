@@ -179,4 +179,11 @@ export type Discovery = {
     +forceAddTransaction: (
         transaction: ForceAddedTransaction
     ) => void,
+
+    // helper function for the rest of wallet for xpub derivation -
+    // it is here because WASM is done here...
+    +deriveXpub: (
+        xpub: string,
+        index: number
+    ) => Promise<string>,
 }
