@@ -184,6 +184,7 @@ export type Discovery = {
     // it is here because WASM is done here...
     +deriveXpub: (
         xpub: string,
+        network: BitcoinJsNetwork,
         index: number
     ) => Promise<string>,
 }
