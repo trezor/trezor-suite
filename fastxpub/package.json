@@ -4,6 +4,6 @@
   "description": "",
   "dependencies": {
     "bitcoinjs-lib": "^2.1.1",
-    "browserify": "^14.4.0"
+    "browserify": "^14.5.0"
   }
 }

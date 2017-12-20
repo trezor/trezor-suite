@@ -15,7 +15,12 @@
         var HEAPU8 = Module['HEAPU8'];
 
         var _malloc = Module['_malloc'];
+        var _hdnode_public_ckd_xpub_optimized = Module['_hdnode_public_ckd_xpub_optimized'];
         var _hdnode_public_ckd_address_optimized = Module['_hdnode_public_ckd_address_optimized'];
+        var _hdnode_deserialize = Module['_hdnode_deserialize'];
+        var _hdnode_fingerprint = Module['_hdnode_fingerprint'];
+        var _hdnode_public_ckd = Module['_hdnode_public_ckd'];
+        var _hdnode_serialize_public = Module['_hdnode_serialize_public'];
         var _ecdsa_read_pubkey = Module['_ecdsa_read_pubkey'];
         var Pointer_stringify = Module['Pointer_stringify'];
 
@@ -27,27 +32,52 @@
         var CHAINCODE_SIZE = 32;
         var _chaincode = _malloc(CHAINCODE_SIZE);
 
+        var HDNODE_SIZE = 3 * 4 + 32 + 32 + 33;
+        var _hdnode = _malloc(HDNODE_SIZE);
+
         // address string global
         var ADDRESS_SIZE = 60; // maximum size
         var _address = _malloc(ADDRESS_SIZE);
+
+        var XPUB_SIZE = 200; // maximum size
+        var _xpub = _malloc(XPUB_SIZE);
+
+        var fingerprint = 0;
 
         /*
         * public library interface
         */
 
+        function loadNodeStruct(xpub, version_public) {
+            stringToUTF8(xpub, _xpub, XPUB_SIZE);
+            _hdnode_deserialize(_xpub, version_public, 0, _hdnode, 0);
+            fingerprint = _hdnode_fingerprint(_hdnode);
+        }
+
         /**
         * @param {HDNode} node  HDNode struct, see the definition above
         */
         function loadNode(node) {
-            var u8_pubkey = new Uint8Array(33);
+            var u8_pubkey = new Uint8Array(PUBKEY_SIZE);
             u8_pubkey.set(node['public_key'], 0);
             HEAPU8.set(u8_pubkey, _pubkey);
 
-            var u8_chaincode = new Uint8Array(32);
+            var u8_chaincode = new Uint8Array(CHAINCODE_SIZE);
             u8_chaincode.set(node['chain_code'], 0);
             HEAPU8.set(u8_chaincode, _chaincode);
 
             _ecdsa_read_pubkey(0, _pubkey, _pubpoint);
+        }
+
+        function deriveNodeFromStruct(index, version_public) {
+            _hdnode_public_ckd(_hdnode, index);
+            _hdnode_serialize_public(_hdnode, fingerprint, version_public, _xpub, XPUB_SIZE);
+            return UTF8ToString(_xpub);
+        }
+
+        function deriveNode(xpub, index, version_public) {
+            loadNodeStruct(xpub, version_public);
+            return deriveNodeFromStruct(index, version_public);
         }
 
         /**
@@ -98,10 +128,21 @@
                 self.postMessage({
                     'addresses': addresses,
                     'firstIndex': data['firstIndex'],
-                    'lastIndex': data['lastIndex']
+                    'lastIndex': data['lastIndex'],
+                    'i': data['i']
                 });
                 break;
-
+            case 'deriveNode':
+                var node = deriveNode(
+                    data['xpub'],
+                    data['index'],
+                    data['version']
+                );
+                self.postMessage({
+                    'xpub': node,
+                    'i': data['i']
+                });
+                break;
             default:
                 throw new Error('Unknown message type: ' + type);
             }
@@ -110,6 +151,7 @@
             'processMessage': processMessage,
             'loadNode': loadNode,
             'deriveAddress': deriveAddress,
+            'deriveNode': deriveNode,
             'deriveAddressRange': deriveAddressRange,
         });
     }
@@ -174,6 +216,7 @@ if (typeof module !== 'undefined') {
     }
 
     module['exports'] = {
+        'deriveNode': callFunctionIfInited('deriveNode'),
         'loadNode': callFunctionIfInited('loadNode'),
         'deriveAddress': callFunctionIfInited('deriveAddress'),
         'deriveAddressRange': callFunctionIfInited('deriveAddressRange'),

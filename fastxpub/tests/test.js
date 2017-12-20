@@ -27,6 +27,12 @@ function test_derivation(xpub, version, addressFormat, filename) {
   return true;
 }
 
+function sanity_check_xpub() {
+  var master = "xpub68Gmy5EdvgibQVfPdqkBBCHxA5htiqg55crXYuXoQRKfDBFA1WEjWgP6LHhwBZeNK1VTsfTFUHCdrfp1bgwQ9xv5ski8PX9rL2dZXvgGDnw";
+  var child = bitcoin.HDNode.fromBase58(child).derive(1);
+  return fastxpub.deriveNode(master, 1, bitcoin.networks.bitcoin.bip32.public) === child;
+}
+
 fastxpub.init(file).then(() => {
 
     var success;
@@ -36,6 +42,8 @@ fastxpub.init(file).then(() => {
 
     success = test_derivation('xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx', 5, 1, 'test-addresses-segwit-p2sh.txt');
     if (!success) process.exit(1);
+
+    if (!(sanity_check_xpub())) process.exit(1);
 
     console.log('PASSED');
     process.exit(0);

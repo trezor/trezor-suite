@@ -6,7 +6,7 @@ EMFLAGS = \
 	--pre-js additional_sources/pre.js \
 	--post-js additional_sources/post.js \
 	-I $(CRYPTODIR)/ed25519-donna \
-	-s EXPORTED_FUNCTIONS='["_hdnode_public_ckd_address_optimized", "_ecdsa_read_pubkey"]' \
+	-s EXPORTED_FUNCTIONS='["_hdnode_public_ckd_address_optimized", "_ecdsa_read_pubkey", "_hdnode_deserialize", "_hdnode_fingerprint", "_hdnode_public_ckd", "_hdnode_serialize_public"]' \
 	-s NO_EXIT_RUNTIME=1 \
 	-s NO_FILESYSTEM=1 \
 	-s WASM=1
@@ -20,6 +20,8 @@ SRC += $(CRYPTODIR)/base58.c
 SRC += $(CRYPTODIR)/ripemd160.c
 SRC += $(CRYPTODIR)/sha2.c
 SRC += $(CRYPTODIR)/address.c
+SRC += $(CRYPTODIR)/curves.c
+SRC += $(CRYPTODIR)/nist256p1.c
 SRC += additional_sources/rand-mock.c
 
 all: build/fastxpub.js tests/benchmark-browserify.js
