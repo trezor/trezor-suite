@@ -21,3 +21,4 @@ lib
 .vscode
 *.sublime-project
 *.sublime-workspace
+*.swp
