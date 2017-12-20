@@ -224,7 +224,7 @@ export class WorkerDiscovery {
                 xpub: xpub,
                 version: network.bip32.public,
                 index: index,
-            });
+            }).then(x => x.xpub);
         }
     }
 }
