@@ -88,7 +88,7 @@ function testDiscovery(discovery, xpub, testfun, last) {
 describe('discovery', () => {
     let discovery;
     let blockchain;
-    //const xpub = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
+    const xprv = 'tprv8gdjtqr3TjNXgxpdi4LurDeG1Z8rQR2cGXYbaifKAPypiaF8hG5k5XxT7bTsjdkN9ERUkLVb47tvJ7sYRsJrkbbFf2UTRqAkkGRcaWEhRuY';
     const xpub = 'tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U';
 
     it('starts bitcore', function () {
@@ -326,7 +326,7 @@ describe('discovery', () => {
         this.timeout(60 * 1000);
 
         function makeTx(inTxId, inTxVout, inTxHdnodeIndex, outs) {
-            const hdnode = bitcoin.HDNode.fromBase58(xpub,
+            const hdnode = bitcoin.HDNode.fromBase58(xprv,
                 bitcoin.networks.testnet
             ).derive(0);
             const ecpair = hdnode.derive(inTxHdnodeIndex).keyPair;
@@ -443,7 +443,7 @@ describe('discovery', () => {
         this.timeout(60 * 1000);
 
         function makeTx(inTxId, inTxVout, inTxHdnodePath) {
-            const hdnode = bitcoin.HDNode.fromBase58(xpub,
+            const hdnode = bitcoin.HDNode.fromBase58(xprv,
                 bitcoin.networks.testnet
             );
             const ecpair = hdnode.derivePath(inTxHdnodePath).keyPair;
@@ -569,7 +569,7 @@ describe('discovery', () => {
         this.timeout(60 * 1000);
 
         function makeTx(inTxId, inTxVout, inTxHdnodePath) {
-            const hdnode = bitcoin.HDNode.fromBase58(xpub,
+            const hdnode = bitcoin.HDNode.fromBase58(xprv,
                 bitcoin.networks.testnet
             );
             const ecpair = hdnode.derivePath(inTxHdnodePath).keyPair;
