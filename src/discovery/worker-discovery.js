@@ -45,6 +45,9 @@ export class WorkerDiscovery {
     tryHDNode(xpub: string, network: BitcoinJsNetwork): BitcoinJsHDNode | Error {
         try {
             const node = BitcoinJsHDNode.fromBase58(xpub, network, true);
+            if (!node.isNeutered()) {
+                throw new Error("XPRV entrered instead of XPUB. Exiting.");
+            }
             return node;
         } catch (e) {
             return e;
