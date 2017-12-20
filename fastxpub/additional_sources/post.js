@@ -50,7 +50,7 @@
 
         function loadNodeStruct(xpub, version_public) {
             stringToUTF8(xpub, _xpub, XPUB_SIZE);
-            if (_hdnode_deserialize(_xpub, version_public, 0, _hdnode, 0) != 0) {
+            if (_hdnode_deserialize(_xpub, version_public, 0, _hdnode, 0) !== 0) {
                 throw new Error("Wrong XPUB type!!"); // abort everything (should not happen, should be catched already outside of asm.js, but this is emergency)
             };
             fingerprint = _hdnode_fingerprint(_hdnode);
@@ -72,8 +72,12 @@
         }
 
         function deriveNodeFromStruct(index, version_public) {
-            _hdnode_public_ckd(_hdnode, index);
-            _hdnode_serialize_public(_hdnode, fingerprint, version_public, _xpub, XPUB_SIZE);
+            if (_hdnode_public_ckd(_hdnode, index) !== 0) {
+                throw new Error("Strange return type");
+            };
+            if (_hdnode_serialize_public(_hdnode, fingerprint, version_public, _xpub, XPUB_SIZE) === 0) {
+                throw new Error("Strange return type");
+            };
             return UTF8ToString(_xpub);
         }
 
