@@ -13,14 +13,19 @@ import type {
 import { Emitter, Stream } from '../../../utils/stream';
 import type { AccountInfo } from '../../index';
 
+import queue from 'queue';
+
 type WorkerFactory = () => Worker;
 
 // will get injected
 type GetPromise = (p: PromiseRequestType) => Promise<any>;
 type GetStream = (p: StreamRequestType) => Stream<any>;
 
+const CONCURRENT_WORKERS = 4;
+const q = queue({concurrency: CONCURRENT_WORKERS, autostart: true});
+
 export class WorkerChannel {
-    w: Promise<Worker>;
+    w: Promise<{worker: Worker, finish: () => void}>;
     messageEmitter: Emitter<OutMessage> = new Emitter();
 
     getPromise: GetPromise;
@@ -31,18 +36,24 @@ export class WorkerChannel {
         getPromise: GetPromise,
         getStream: GetStream
     ) {
-        const pw = Promise.resolve(f());
         this.getPromise = getPromise;
         this.getStream = getStream;
 
-        this.w = pw.then(w => {
-            // $FlowIssue
-            w.onmessage = (event: {data: OutMessage}) => {
-                const data: OutMessage = event.data;
-                this.messageEmitter.emit(data);
-            };
-            return w;
+        this.w = new Promise((resolve) => {
+            q.push((cb) => {
+                const worker = f();
+                const finish = cb;
+
+                // $FlowIssue
+                worker.onmessage = (event: {data: OutMessage}) => {
+                    const data: OutMessage = event.data;
+                    this.messageEmitter.emit(data);
+                };
+
+                resolve({worker, finish});
+            });
         });
+
         this.messageEmitter.attach((message) => {
             if (message.type === 'promiseRequest') {
                 this.handlePromiseRequest(message);
@@ -54,7 +65,7 @@ export class WorkerChannel {
     }
 
     postToWorker(m: InMessage) {
-        this.w.then(w => w.postMessage(m));
+        this.w.then(w => w.worker.postMessage(m));
     }
 
     resPromise(onFinish: () => void): Promise<AccountInfo> {
@@ -64,13 +75,19 @@ export class WorkerChannel {
                     resolve(message.result);
                     detach();
                     onFinish();
-                    this.w.then(w => w.terminate());
+                    this.w.then(w => {
+                        w.worker.terminate();
+                        w.finish();
+                    });
                 }
                 if (message.type === 'error') {
                     reject(message.error);
                     detach();
                     onFinish();
-                    this.w.then(w => w.terminate());
+                    this.w.then(w => {
+                        w.worker.terminate();
+                        w.finish();
+                    });
                 }
             });
         });
