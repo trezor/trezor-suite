@@ -20,7 +20,7 @@ type GetPromise = (p: PromiseRequestType) => Promise<any>;
 type GetStream = (p: StreamRequestType) => Stream<any>;
 
 export class WorkerChannel {
-    w: Worker;
+    w: Promise<Worker>;
     messageEmitter: Emitter<OutMessage> = new Emitter();
 
     getPromise: GetPromise;
@@ -31,15 +31,18 @@ export class WorkerChannel {
         getPromise: GetPromise,
         getStream: GetStream
     ) {
-        this.w = f();
+        const pw = Promise.resolve(f());
         this.getPromise = getPromise;
         this.getStream = getStream;
 
-        // $FlowIssue
-        this.w.onmessage = (event: {data: OutMessage}) => {
-            const data: OutMessage = event.data;
-            this.messageEmitter.emit(data);
-        };
+        this.w = pw.then(w => {
+            // $FlowIssue
+            w.onmessage = (event: {data: OutMessage}) => {
+                const data: OutMessage = event.data;
+                this.messageEmitter.emit(data);
+            };
+            return w;
+        });
         this.messageEmitter.attach((message) => {
             if (message.type === 'promiseRequest') {
                 this.handlePromiseRequest(message);
@@ -51,7 +54,7 @@ export class WorkerChannel {
     }
 
     postToWorker(m: InMessage) {
-        this.w.postMessage(m);
+        this.w.then(w => w.postMessage(m));
     }
 
     resPromise(onFinish: () => void): Promise<AccountInfo> {
@@ -61,13 +64,13 @@ export class WorkerChannel {
                     resolve(message.result);
                     detach();
                     onFinish();
-                    this.w.terminate();
+                    this.w.then(w => w.terminate());
                 }
                 if (message.type === 'error') {
                     reject(message.error);
                     detach();
                     onFinish();
-                    this.w.terminate();
+                    this.w.then(w => w.terminate());
                 }
             });
         });
