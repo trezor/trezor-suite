@@ -70,7 +70,8 @@ export function integrateNewTxs(
     const transactions = deriveAnalysis(
         joined,
         oldInfo.transactions,
-        addressToPath
+        addressToPath,
+        lastBlock
     );
 
     const {usedAddresses, unusedAddresses, lastConfirmed: lastConfirmedMain} = deriveUsedAddresses(

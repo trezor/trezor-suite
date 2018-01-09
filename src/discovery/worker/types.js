@@ -170,8 +170,10 @@ export type TransactionInfoBalanceless = {
     dateInfo: ?string,
     dateInfoDayFormat: ?string,
     dateInfoTimeFormat: ?string,
-    height: ?number,
     hash: string,
+
+    height: ?number,
+    confirmations: ?number,
 
     targets: Array<TargetInfo>,
     myOutputs: {[i: number]: TargetInfo},
