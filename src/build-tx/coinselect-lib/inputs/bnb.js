@@ -23,14 +23,14 @@ function calculateEffectiveValues(utxos, feeRate) {
 module.exports = function branchAndBound(factor) {
     return function (utxos, outputs, feeRate, options) {
         const inputLength = options.inputLength;
-        const outputLength = options.outputLength;
+        const changeOutputLength = options.changeOutputLength;
         const explicitDustThreshold = options.dustThreshold;
 
         if (!isFinite(utils.uintOrNaN(feeRate))) return {};
 
-        const costPerOutput = utils.outputBytes({script: {length: outputLength}}) * feeRate;
+        const costPerChangeOutput = utils.outputBytes({script: {length: changeOutputLength}}) * feeRate;
         const costPerInput = utils.inputBytes({script: {length: inputLength}}) * feeRate;
-        const costOfChange = Math.floor((costPerInput + costPerOutput) * factor);
+        const costOfChange = Math.floor((costPerInput + costPerChangeOutput) * factor);
 
         const outAccum = utils.sumOrNaN(outputs) + utils.transactionBytes([], outputs) * feeRate;
 
@@ -60,7 +60,7 @@ module.exports = function branchAndBound(factor) {
                 }
             }
 
-            return utils.finalize(inputs, outputs, feeRate, inputLength, outputLength, explicitDustThreshold);
+            return utils.finalize(inputs, outputs, feeRate, inputLength, changeOutputLength, explicitDustThreshold);
         } else {
             return {
                 fee: 0,

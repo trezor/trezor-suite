@@ -129,6 +129,7 @@ declare module 'bitcoinjs-lib-zcash' {
 
     declare var address: {
         fromBase58Check(address: string): {hash: Buffer, version: number};
+        fromBech32(address: string): {data: Buffer, version: number, prefix: string};
         fromOutputScript(script: Buffer, network?: Network): string;
         toBase58Check(hash: Buffer, version: number): string;
         toOutputScript(address: string, network?: Network): Buffer;
@@ -165,6 +166,16 @@ declare module 'bitcoinjs-lib-zcash' {
           check: (script: Stack) => boolean;
           encode: (pubKeyHash: Buffer) => Buffer;
           decode: (script: Buffer) => Buffer;
+        };
+      };
+      witnessPubKeyHash: {
+        input: {
+          check: (script: Buffer) => boolean;
+        };
+        output: {
+          check: (script: Stack) => boolean;
+          encode: (pubkeyHash: Buffer) => Buffer;
+          decode: (buffer: Buffer) => Buffer;
         };
       };
       witnessScriptHash: {

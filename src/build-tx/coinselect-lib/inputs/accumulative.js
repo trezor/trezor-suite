@@ -4,7 +4,7 @@ const utils = require('../utils');
 // worst-case: O(n)
 module.exports = function accumulative(utxos, outputs, feeRate, options) {
     const inputLength = options.inputLength;
-    const outputLength = options.outputLength;
+    const changeOutputLength = options.changeOutputLength;
     const explicitDustThreshold = options.dustThreshold;
 
     if (!isFinite(utils.uintOrNaN(feeRate))) return {};
@@ -35,7 +35,7 @@ module.exports = function accumulative(utxos, outputs, feeRate, options) {
         // go again?
         if (inAccum < outAccum + fee) continue;
 
-        return utils.finalize(inputs, outputs, feeRate, inputLength, outputLength, explicitDustThreshold);
+        return utils.finalize(inputs, outputs, feeRate, inputLength, changeOutputLength, explicitDustThreshold);
     }
 
     return { fee: feeRate * bytesAccum };

@@ -12,7 +12,7 @@ function filterCoinbase(utxos, minConfCoinbase) {
 // split utxos between each output, ignores outputs with .value defined
 module.exports = function split(utxos, outputs, feeRate, options) {
     const inputLength = options.inputLength;
-    const outputLength = options.outputLength;
+    const changeOutputLength = options.changeOutputLength;
     const explicitDustThreshold = options.dustThreshold;
     const coinbase = options.coinbase || 100;
 
@@ -33,7 +33,7 @@ module.exports = function split(utxos, outputs, feeRate, options) {
         return a + !isFinite(x.value);
     }, 0);
 
-    if (remaining === 0 && unspecified === 0) return utils.finalize(utxos, outputs, feeRate, inputLength, outputLength);
+    if (remaining === 0 && unspecified === 0) return utils.finalize(utxos, outputs, feeRate, inputLength, changeOutputLength);
 
     const splitOutputsCount = outputs.reduce(function (a, x) {
         return a + !isFinite(x.value);
@@ -42,7 +42,7 @@ module.exports = function split(utxos, outputs, feeRate, options) {
 
     // ensure every output is either user defined, or over the threshold
     if (!outputs.every(function (x) {
-        return x.value !== undefined || (splitValue > utils.dustThreshold(feeRate, inputLength, outputLength, explicitDustThreshold));
+        return x.value !== undefined || (splitValue > utils.dustThreshold(feeRate, inputLength, changeOutputLength, explicitDustThreshold));
     })) return { fee: fee };
 
     // assign splitValue to outputs not user defined
@@ -56,5 +56,5 @@ module.exports = function split(utxos, outputs, feeRate, options) {
         return y;
     });
 
-    return utils.finalize(utxos, outputs, feeRate, inputLength, outputLength, explicitDustThreshold);
+    return utils.finalize(utxos, outputs, feeRate, inputLength, changeOutputLength, explicitDustThreshold);
 };

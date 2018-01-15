@@ -30,7 +30,7 @@ export function buildTx(
 
     let csResult: coinselect.Result = {type: 'false'};
     try {
-        csResult = coinselect.coinselect(utxos, outputs, height, feeRate, segwit, countMax.exists, countMax.id, dustThreshold);
+        csResult = coinselect.coinselect(utxos, outputs, height, feeRate, segwit, countMax.exists, countMax.id, dustThreshold, network);
     } catch (e) {
         return {type: 'error', error: e.message};
     }

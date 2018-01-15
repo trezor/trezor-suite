@@ -46,15 +46,15 @@ function sumOrNaN(range) {
     return range.reduce(function (a, x) { return a + uintOrNaN(x.value); }, 0);
 }
 
-function finalize(inputs, outputs, feeRate, inputLength, outputLength, explicitDustThreshold) {
+function finalize(inputs, outputs, feeRate, inputLength, changeOutputLength, explicitDustThreshold) {
     const bytesAccum = transactionBytes(inputs, outputs);
-    const blankOutputBytes = outputBytes({script: {length: outputLength}});
+    const blankOutputBytes = outputBytes({script: {length: changeOutputLength}});
     const feeAfterExtraOutput = feeRate * (bytesAccum + blankOutputBytes);
     const remainderAfterExtraOutput = sumOrNaN(inputs) - (sumOrNaN(outputs) + feeAfterExtraOutput);
 
     // is it worth a change output?
-    if (remainderAfterExtraOutput > dustThreshold(feeRate, inputLength, outputLength, explicitDustThreshold)) {
-        outputs = outputs.concat({ value: remainderAfterExtraOutput, script: {length: outputLength} });
+    if (remainderAfterExtraOutput > dustThreshold(feeRate, inputLength, changeOutputLength, explicitDustThreshold)) {
+        outputs = outputs.concat({ value: remainderAfterExtraOutput, script: {length: changeOutputLength} });
     }
 
     const fee = sumOrNaN(inputs) - sumOrNaN(outputs);
