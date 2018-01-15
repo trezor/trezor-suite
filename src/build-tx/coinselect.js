@@ -146,8 +146,15 @@ function isBech32(address: string): boolean {
 
 function getScriptAddress(address: string, network: BitcoinJsNetwork): {length: number} {
     const bech = isBech32(address);
-    const decoded = bech ? BitcoinJsAddress.fromBech32(address) : BitcoinJsAddress.fromBase58Check(address);
-    const pubkeyhash = decoded.version === network.pubKeyHash;
+    let pubkeyhash;
+    if (bech) {
+        const decoded = BitcoinJsAddress.fromBase58Check(address);
+        pubkeyhash = decoded.version === network.pubKeyHash;
+    } else {
+        const decoded = BitcoinJsAddress.fromBech32(address);
+        pubkeyhash = decoded.data.length === 20;
+    }
+
     const length = bech
         ? (pubkeyhash ? P2WPKH_OUTPUT_SCRIPT_LENGTH : P2WSH_OUTPUT_SCRIPT_LENGTH)
         : (pubkeyhash ? P2PKH_OUTPUT_SCRIPT_LENGTH : P2SH_OUTPUT_SCRIPT_LENGTH);
