@@ -578,11 +578,11 @@
       ]
     },
     "result": {
-      "bytes": 205,
-      "fee": 2050,
+      "bytes": 203,
+      "fee": 2030,
       "feePerByte": 10,
       "max": -1,
-      "totalSpent": 52050,
+      "totalSpent": 52030,
       "transaction": {
         "PERM_outputs": {
           "permutation": [
@@ -607,7 +607,7 @@
                 0
               ],
               "segwit": true,
-              "value": 49951
+              "value": 49971
             }
           ]
         },
@@ -910,11 +910,11 @@
       ]
     },
     "result": {
-      "bytes": 205,
-      "fee": 2050,
+      "bytes": 203,
+      "fee": 2030,
       "feePerByte": 10,
       "max": -1,
-      "totalSpent": 62050,
+      "totalSpent": 62030,
       "transaction": {
         "PERM_outputs": {
           "permutation": [
@@ -939,7 +939,7 @@
                 0
               ],
               "segwit": true,
-              "value": 39951
+              "value": 39971
             }
           ]
         },
