@@ -7,13 +7,14 @@ import {rejectTimeoutPromise} from '../defered';
 
 type TrezorDeviceInfo = {path: string};
 
-const TREZOR_DESCS = [{
-  vendorId: 0x534c,
-  productId: 0x0001,
-}, {
-  vendorId: 0x1209,
-  productId: 0x53c1,
-}];
+const TREZOR_DESCS = [
+  // TREZOR v1
+  { vendorId: 0x534c, productId: 0x0001, },
+  // TREZOR v2 Bootloader
+  { vendorId: 0x1209, productId: 0x53c0, },
+  // TREZOR v2 Firmware
+  { vendorId: 0x1209, productId: 0x53c1, },
+];
 
 const FORBIDDEN_DESCRIPTORS = [0xf1d0, 0xff01];
 const REPORT_ID = 63;
