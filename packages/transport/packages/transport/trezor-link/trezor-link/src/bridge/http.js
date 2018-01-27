@@ -5,6 +5,7 @@ export type HttpRequestOptions = {
     body?: ?(Array<any> | Object | string);
     url: string;
     method: 'POST' | 'GET';
+    skipContentTypeHeader?: boolean;
 };
 
 // slight hack to make Flow happy, but to allow Node to set its own fetch
@@ -46,13 +47,21 @@ function parseResult(text: string): mixed {
 }
 
 export async function request(options: HttpRequestOptions): Promise<mixed> {
-  const res = await _fetch(options.url, {
+  let fetchOptions = {
     method: options.method,
-    headers: {
-      'Content-Type': contentType(options.body == null ? `` : options.body),
-    },
     body: wrapBody(options.body),
-  });
+  };
+
+  // this is just for flowtype
+  if (options.skipContentTypeHeader == null || options.skipContentTypeHeader === false) {
+    fetchOptions = {
+      ...fetchOptions,
+      headers: {
+        'Content-Type': contentType(options.body == null ? `` : options.body),
+      },
+    };
+  }
+  const res = await _fetch(options.url, fetchOptions);
   const resText = await res.text();
   if (res.ok) {
     return parseResult(resText);
