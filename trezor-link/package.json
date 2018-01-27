@@ -1,8 +1,8 @@
 {
-  "name": "trezor-link-node",
+  "name": "trezor-link",
   "version": "0.2.114",
-  "description": "Trezor Link for node",
-  "main": "lib/index-node.js",
+  "description": "Trezor Link for browser",
+  "main": "lib/index-browser.js",
   "scripts": {
     "build": "make build",
     "check": "make check"
@@ -46,16 +46,17 @@
     "babel-preset-es2016": "^6.18.0",
     "babel-preset-es2017": "^6.18.0",
     "bump-version": "^0.5.0",
-    "flow-bin": "0.59.0"
+    "flow-bin": "0.59.0",
+    "whatwg-fetch": "0.11.0"
   },
   "dependencies": {
+    "semver-compare": "^1.0.0",
     "bigi": "^1.4.1",
     "bitcoinjs-lib-zcash": "^3.0.0",
+    "ecurve": "^1.0.3",
     "json-stable-stringify": "^1.0.1",
+    "node-fetch": "^1.6.0",
     "object.values": "^1.0.3",
-    "protobufjs-old-fixed-webpack": "3.8.5",
-    "semver-compare": "^1.0.0",
-    "node-hid": "^0.5.2",
-    "node-fetch": "^1.6.0"
+    "protobufjs-old-fixed-webpack": "3.8.5"
   }
 }

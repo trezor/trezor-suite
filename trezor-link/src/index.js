@@ -13,7 +13,13 @@ import WebUsbPlugin from './lowlevel/webusb';
 
 import 'whatwg-fetch';
 
-BridgeTransport.setFetch(fetch);
+if (typeof window === `undefined`) {
+  // eslint-disable-next-line quotes
+  const fetch = require('node-fetch');
+  BridgeTransport.setFetch(fetch);
+} else {
+  BridgeTransport.setFetch(fetch);
+}
 
 export default {
   Bridge: BridgeTransport,

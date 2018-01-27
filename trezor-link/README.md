@@ -8,27 +8,16 @@ Intended as a "building block" for other packages - it is used in trezor.js and 
 
 *You probably don't want to use this package directly.* For communication with Trezor with a more high-level API, use [trezor.js](https://www.npmjs.com/package/trezor.js).
 
-## Packages
-
-We have three different npm packages for different usecases, unfortunately.
-
-* `require('trezor-link')` for browser
-* `require('trezor-link-node')` for node.js (and electron apps)
-* `require('trezor-link-browser-extension')` for browser extensions
-
 ## How to use
 
-Use like this (in node):
+Use like this:
 
 ```javascript
-var Link = require('trezor-link-node');
+var Link = require('trezor-link');
 var LowlevelTransport = Link.Lowlevel;
 var NodeHidPlugin = Link.NodeHid;
 
 var link = new LowlevelTransport(new NodeHidPlugin());
-
-// for simple config load; you can also load by file API from a disk without node-fetch
-var fetch = require('node-fetch');
 
 var config = fetch('https://wallet.mytrezor.com/data/config_signed.bin').then(function (response) {
   if (response.ok) {
