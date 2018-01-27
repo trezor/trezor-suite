@@ -8,10 +8,12 @@ node_js:
 before_script:
   - yarn
 
-script:
-  - make flow
-  - make eslint
-  - make build
+env:
+  - GOAL=flow
+  - GOAL=eslint
+  - GOAL=build
+
+script: make $GOAL
 
 notifications:
   webhooks:
