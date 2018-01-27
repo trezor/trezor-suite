@@ -6,19 +6,12 @@ node_js:
   - "4.4"
 
 before_script:
-  - npm install -g eslint eslint-plugin-flowtype babel-eslint eslint-plugin-standard eslint-plugin-promise flow-bin
-  - npm install rimraf
-  - sudo apt-get install libusb-1.0-0-dev
-  - cp package-node.json package.json && npm install
-  - cp package-browser.json package.json && npm install
-  - cp package-browser-extension.json package.json && npm install
-  - rm package.json
+  - yarn
 
 script:
-  - make check
-  - make .move-in-node build-node .cleanup-node
-  - make .move-in-browser build-browser .cleanup-browser
-  - make .move-in-browser-extension build-browser-extension .cleanup-browser-extension
+  - make flow
+  - make eslint
+  - make build
 
 notifications:
   webhooks:
