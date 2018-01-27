@@ -11,12 +11,6 @@ import {request as http, setFetch as rSetFetch} from './http';
 import type {AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from '../transport';
 import * as check from '../highlevel-checks';
 
-import {buildOne} from '../lowlevel/send';
-import type {Messages} from '../lowlevel/protobuf/messages';
-import {parseConfigure} from '../lowlevel/protobuf/parse_protocol';
-import {verifyHexBin} from '../lowlevel/verify';
-import {receiveOne} from '../lowlevel/receive';
-
 import {debugInOut} from '../debug-decorator';
 
 const DEFAULT_URL = `https://localback.net:21324`;
@@ -32,13 +26,10 @@ export default class BridgeTransport {
   version: string = ``;
   configured: boolean = false;
   isOutdated: boolean;
-  isDirect: boolean;
 
   url: string;
   newestVersionUrl: string;
   debug: boolean = false;
-
-  _messages: ?Messages;
 
   constructor(url?: ?string, newestVersionUrl?: ?string) {
     this.url = url == null ? DEFAULT_URL : url;
@@ -72,18 +63,10 @@ export default class BridgeTransport {
       method: `GET`,
     }));
     this.isOutdated = semvercmp(this.version, newVersion) < 0;
-    this.isDirect = semvercmp(this.version, `2.0.0`) >= 0;
   }
 
   @debugInOut
   async configure(config: string): Promise<void> {
-    if (this.isDirect) {
-      const buffer = verifyHexBin(config);
-      const messages = parseConfigure(buffer);
-      this._messages = messages;
-      this.configured = true;
-    }
-
     await this._post({
       url: `/configure`,
       body: config,
@@ -144,23 +127,6 @@ export default class BridgeTransport {
 
   @debugInOut
   async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
-    if (this.isDirect) {
-      if (this._messages == null) {
-        throw new Error(`Transport not configured.`);
-      }
-      const messages = this._messages;
-      const outData = buildOne(messages, name, data).toString(`hex`);
-      const resData = await this._post({
-        url: `/call/` + session,
-        body: outData,
-      });
-      if (typeof resData !== `string`) {
-        throw new Error(`Returning data is not string.`);
-      }
-      const jsonData = receiveOne(messages, new Buffer(resData, `hex`));
-      return check.call(jsonData);
-    }
-
     const res = await this._post({
       url: `/call/` + session,
       body: {
