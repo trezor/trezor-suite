@@ -1,0 +1,29 @@
+# Sources
+src
+.babelrc
+.eslintc
+.gitignore
+.gitmodules
+.travis.yml
+Makefile
+flowtype
+
+# Dependency directory
+node_modules
+yarn.lock
+
+# OSX
+.DS_Store
+
+# Editors
+.editorconfig
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+*.swp
+
+# Logs
+logs
+*.log
+.yarnclean
