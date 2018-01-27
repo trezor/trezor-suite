@@ -15,12 +15,19 @@
       "src/flow_fake_node_modules"
     ],
     "presets": [
-      ["env", {
-        "targets": {
-          "browsers": ["chrome >= 56", "firefox >= 55", "chromeandroid >= 56"],
-          "node": "8.9.4"
+      [
+        "env",
+        {
+          "targets": {
+            "browsers": [
+              "chrome >= 56",
+              "firefox >= 55",
+              "chromeandroid >= 56"
+            ],
+            "node": "8.9.4"
+          }
         }
-      }]
+      ]
     ],
     "plugins": [
       "transform-flow-strip-types",
@@ -38,6 +45,7 @@
   "homepage": "https://github.com/trezor/trezor-link",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-inline-version": "^1.0.2",
     "babel-plugin-syntax-class-properties": "^6.13.0",
@@ -47,17 +55,21 @@
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-env": "^1.6.1",
     "bump-version": "^0.5.0",
+    "eslint": "^4.16.0",
+    "eslint-plugin-flowtype": "^2.42.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
     "flow-bin": "0.59.0",
     "whatwg-fetch": "0.11.0"
   },
   "dependencies": {
-    "semver-compare": "^1.0.0",
     "bigi": "^1.4.1",
     "bitcoinjs-lib-zcash": "^3.0.0",
     "ecurve": "^1.0.3",
     "json-stable-stringify": "^1.0.1",
     "node-fetch": "^1.6.0",
     "object.values": "^1.0.3",
-    "protobufjs-old-fixed-webpack": "3.8.5"
+    "protobufjs-old-fixed-webpack": "3.8.5",
+    "semver-compare": "^1.0.0"
   }
 }
