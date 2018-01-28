@@ -6,7 +6,6 @@ src
 .gitmodules
 .travis.yml
 Makefile
-flowtype
 
 # Dependency directory
 node_modules
