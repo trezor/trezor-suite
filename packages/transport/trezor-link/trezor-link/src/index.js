@@ -4,7 +4,8 @@
 
 export type {Transport, AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor} from './transport';
 
-import BridgeTransport from './bridge';
+import BridgeTransportV1 from './bridge/v1';
+import BridgeTransportV2 from './bridge/v2';
 import LowlevelTransportWithSharedConnections from './lowlevel/withSharedConnections';
 import ExtensionTransport from './extension';
 import ParallelTransport from './parallel';
@@ -16,13 +17,16 @@ import 'whatwg-fetch';
 if (typeof window === `undefined`) {
   // eslint-disable-next-line quotes
   const fetch = require('node-fetch');
-  BridgeTransport.setFetch(fetch);
+  BridgeTransportV1.setFetch(fetch);
+  BridgeTransportV2.setFetch(fetch);
 } else {
-  BridgeTransport.setFetch(fetch);
+  BridgeTransportV1.setFetch(fetch);
+  BridgeTransportV2.setFetch(fetch);
 }
 
 export default {
-  Bridge: BridgeTransport,
+  BridgeV1: BridgeTransportV1,
+  BridgeV2: BridgeTransportV2,
   Extension: ExtensionTransport,
   Parallel: ParallelTransport,
   Fallback: FallbackTransport,
