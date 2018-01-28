@@ -1,9 +1,5 @@
 /* @flow */
 
-// bridge is now half-way between lowlevel and not
-// however, it is not doing actual sending in/to the devices
-// and it refers enumerate to bridge
-
 'use strict';
 
 import semvercmp from 'semver-compare';
