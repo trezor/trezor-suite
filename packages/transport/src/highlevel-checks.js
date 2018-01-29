@@ -44,6 +44,8 @@ export function devices(res: mixed): Array<TrezorDeviceInfoWithSession> {
       return {
         path: pathS,
         session: null,
+        product: o.product,
+        vendor: o.vendor,
       };
     } else {
       if (typeof session !== `number` && typeof session !== `string`) {
@@ -52,6 +54,8 @@ export function devices(res: mixed): Array<TrezorDeviceInfoWithSession> {
       return {
         path: pathS,
         session: session.toString(),
+        product: o.product,
+        vendor: o.vendor,
       };
     }
   });
