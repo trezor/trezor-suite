@@ -56,6 +56,8 @@ export type TransactionInfo = {
     dateInfoTimeFormat: ?string,
 
     height: ?number,
+    confirmations: ?number,
+
     hash: string,
 
     // targets - only the shown and "relevant" outputs

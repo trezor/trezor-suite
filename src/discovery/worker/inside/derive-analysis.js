@@ -5,6 +5,7 @@ import type {
     AddressToPath,
     TransactionInfoBalanceless,
     TargetsType,
+    Block,
 } from '../types';
 import type {
     TransactionInfo,
@@ -41,7 +42,8 @@ type OutputsForAnalysisMap = {[txid: string]: OutputsForAnalysis};
 export function deriveAnalysis(
     newTransactions: ChainNewTransactions,
     oldTransactions: Array<TransactionInfo>,
-    addressToPath: AddressToPath
+    addressToPath: AddressToPath,
+    lastBlock: Block
 ) {
     // I need the outputs in format txid+i -> address/value
     // For old transactions, that are in history, I just need my outputs
@@ -57,7 +59,8 @@ export function deriveAnalysis(
         newTransactions,
         oldTransactions,
         outputsForAnalysis,
-        addressToPath
+        addressToPath,
+        lastBlock
     );
 
     // Add "balance" (which means balance after the transaction)
@@ -114,7 +117,8 @@ function deriveBalancelessAnalysisMap(
     newTs: ChainNewTransactions,
     oldTs: Array<TransactionInfo>,
     outputs: OutputsForAnalysisMap,
-    addressToPath: AddressToPath
+    addressToPath: AddressToPath,
+    lastBlock: Block
 ): {[id: string]: TransactionInfoBalanceless} {
     const res = {};
     // first, save the old ones
@@ -122,7 +126,7 @@ function deriveBalancelessAnalysisMap(
         res[t.hash] = t;
     });
     Object.keys(newTs).forEach(id => {
-        res[id] = analyzeTransaction(newTs[id], outputs, addressToPath);
+        res[id] = analyzeTransaction(newTs[id], outputs, addressToPath, lastBlock);
     });
     return res;
 }
@@ -131,7 +135,8 @@ function deriveBalancelessAnalysisMap(
 function analyzeTransaction(
     t: ChainNewTransaction,
     outputs: OutputsForAnalysisMap,
-    addressToPath: AddressToPath
+    addressToPath: AddressToPath,
+    lastBlock: Block
 ): TransactionInfoBalanceless {
     const inputIds = t.tx.ins.map(input =>
         ({id: getInputId(input), index: input.index})
@@ -152,10 +157,13 @@ function analyzeTransaction(
     );
     const dates = deriveDateFormats(t.timestamp);
 
+    const confirmations = (t.height == null) ? null : ((lastBlock.height - t.height) + 1);
+
     return {
         isCoinbase,
         ...dates,
         height: t.height,
+        confirmations,
         hash,
         ...targets,
         inputs: inputIds,
