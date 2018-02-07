@@ -844,6 +844,10 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+bech32@^1.1.2:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/bech32/-/bech32-1.1.3.tgz#bd47a8986bbb3eec34a56a097a84b8d3e9a2dfcd"
+
 better-assert@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/better-assert/-/better-assert-1.0.2.tgz#40866b9e1b9e0b55b481894311e68faffaebc522"
@@ -866,10 +870,11 @@ bitcoin-ops@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/bitcoin-ops/-/bitcoin-ops-1.3.0.tgz#6b126b585537bc679b02ed499f14450cffc37e13"
 
-bitcoinjs-lib-zcash@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/bitcoinjs-lib-zcash/-/bitcoinjs-lib-zcash-3.0.0.tgz#0a36cc2145977d3861a9c859719916638e85a86c"
+bitcoinjs-lib-zcash@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/bitcoinjs-lib-zcash/-/bitcoinjs-lib-zcash-3.3.2.tgz#62df456f10889838925537c7721bfe28381e747b"
   dependencies:
+    bech32 "^1.1.2"
     bigi "^1.4.0"
     bip66 "^1.1.0"
     bitcoin-ops "^1.3.0"
@@ -877,10 +882,11 @@ bitcoinjs-lib-zcash@^3.0.0:
     create-hash "^1.1.0"
     create-hmac "^1.1.3"
     ecurve "^1.0.0"
-    merkle-lib "^1.0.0"
+    merkle-lib "^2.0.10"
     pushdata-bitcoin "^1.0.1"
     randombytes "^2.0.1"
-    typeforce "^1.8.7"
+    safe-buffer "^5.0.1"
+    typeforce "^1.11.3"
     varuint-bitcoin "^1.0.4"
     wif "^2.0.1"
 
@@ -3127,9 +3133,9 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
 
-merkle-lib@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/merkle-lib/-/merkle-lib-1.0.0.tgz#bd088b2c7b1026339103a0f3429ae09022cfb25c"
+merkle-lib@^2.0.10:
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/merkle-lib/-/merkle-lib-2.0.10.tgz#82b8dbae75e27a7785388b73f9d7725d0f6f3326"
 
 micromatch@^2.1.5, micromatch@^2.3.11:
   version "2.3.11"
@@ -4492,11 +4498,9 @@ typedarray@~0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typeforce@^1.8.7:
-  version "1.10.6"
-  resolved "https://registry.yarnpkg.com/typeforce/-/typeforce-1.10.6.tgz#71bdca35b4e635b61245371b57c008cedfbec4db"
-  dependencies:
-    inherits "^2.0.1"
+typeforce@^1.11.3:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/typeforce/-/typeforce-1.12.0.tgz#ca40899919f1466d7819e37be039406beb912a2e"
 
 uglify-js@2.x.x, uglify-js@^2.6:
   version "2.8.12"
