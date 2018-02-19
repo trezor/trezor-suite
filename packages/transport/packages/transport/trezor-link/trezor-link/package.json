@@ -1,6 +1,6 @@
 {
   "name": "trezor-link",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Trezor Link for browser",
   "main": "lib/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "ignore": [
       "src/flow_fake_node_modules"
     ],
-    "presets" : [
+    "presets": [
       "env"
     ],
     "plugins": [
