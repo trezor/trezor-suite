@@ -14,6 +14,9 @@
     "ignore": [
       "src/flow_fake_node_modules"
     ],
+    "presets" : [
+      "env"
+    ],
     "plugins": [
       "transform-es2015-template-literals",
       "transform-flow-strip-types",
