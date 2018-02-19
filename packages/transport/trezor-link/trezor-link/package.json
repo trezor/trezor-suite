@@ -14,21 +14,6 @@
     "ignore": [
       "src/flow_fake_node_modules"
     ],
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "browsers": [
-              "chrome >= 56",
-              "firefox >= 55",
-              "chromeandroid >= 56"
-            ],
-            "node": "8.9.4"
-          }
-        }
-      ]
-    ],
     "plugins": [
       "transform-es2015-template-literals",
       "transform-flow-strip-types",
