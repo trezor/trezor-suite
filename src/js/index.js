@@ -3,26 +3,25 @@
 
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux';
-import store, { history } from './store';
+import store from './store';
 import router from './router';
-import { onResize } from './actions/DOMActions';
+import { onResize, onBeforeUnload } from './actions/AppActions';
 
 import styles from '../styles/index.less';
 
 render(
-    <Provider store={store}>
-        <ConnectedRouter history={history}>
-            { router }
-        </ConnectedRouter>
-    </Provider>,
+    router,
     document.getElementById('root')
 );
 
+// handle resize event and pass it to DOM reducer
 window.addEventListener('resize', () => {
-    store.dispatch(onResize());
+    store.dispatch( onResize() );
 });
+
+window.onbeforeunload = () => {
+    store.dispatch( onBeforeUnload() );
+}
 
 // workaround
 // yarn add web3@^0.19.0

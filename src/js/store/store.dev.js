@@ -2,9 +2,10 @@
 'use strict';
 
 import { createStore, applyMiddleware, compose } from 'redux';
-import { routerMiddleware, push } from 'react-router-redux';
+import { syncHistoryWithStore, routerMiddleware, push } from 'react-router-redux';
 import thunk from 'redux-thunk';
-//import createHistory from 'history/createBrowserHistory';
+// import createHistory from 'history/createBrowserHistory';
+// import { useRouterHistory } from 'react-router';
 import createHistory from 'history/createHashHistory';
 import { createLogger } from 'redux-logger';
 import reducers from '../reducers';
@@ -12,7 +13,7 @@ import services from '../services';
 import { Middleware } from 'redux';
 import { GenericStoreEnhancer } from 'redux';
 
-export const history = createHistory();
+export const history = createHistory( { queryKey: false } );
 
 const initialState: any = {};
 const enhancers = [];
@@ -23,7 +24,7 @@ const middleware = [
 
 const excludeLogger = (getState: any, action: any): boolean => {
     //'@@router/LOCATION_CHANGE'
-    let excluded = ['MQTT_PING'];
+    let excluded = ['LOG_TO_EXCLUDE'];
     let pass = excluded.filter((act) => {
         return action.type === act;
     });

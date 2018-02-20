@@ -39,6 +39,15 @@ module.exports = {
                 })
             },
             {
+                test: /\.css$/,
+                loader: extractLess.extract({
+                    use: [
+                        { loader: 'css-loader' }
+                    ],
+                    fallback: 'style-loader'
+                })
+            },
+            {
                 test: /\.(png|gif|jpg)$/,
                 loader: 'file-loader?name=./images/[name].[ext]'
             },
@@ -50,14 +59,14 @@ module.exports = {
                 },
             },
             {
-                test: /\.json$/,
+                test: /\.json($|\?)/,
                 loader: 'json-loader'
             },
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader',
                 query: {
-                    name: '[name].[ext]',
+                    name: './fonts/[name].[hash].[ext]',
                 },
             },
             
@@ -71,6 +80,7 @@ module.exports = {
     },
     plugins: [
         extractLess,
+        
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
@@ -91,7 +101,8 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('development'),
             PRODUCTION: JSON.stringify(false)
-        })
+        }),
+        new webpack.IgnorePlugin(/node-fetch/), // for trezor-link warning
     ],
     // ignoring "fs" import in fastxpub
     node: {

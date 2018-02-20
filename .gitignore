@@ -19,3 +19,5 @@ logs
 
 # Local config file
 webpack/constants.js
+
+_old

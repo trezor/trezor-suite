@@ -1,65 +1,93 @@
 /* @flow */
 'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE, push } from 'react-router-redux';
 
-import TrezorConnect, { DEVICE_EVENT, UI_EVENT, UI, DEVICE } from 'trezor-connect';
+import TrezorConnect, { TRANSPORT, DEVICE_EVENT, UI_EVENT, UI, DEVICE } from 'trezor-connect';
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
+import * as ModalActions from '../actions/ModalActions';
+import { init as initWeb3 } from '../actions/Web3Actions';
+import * as WEB3 from '../actions/constants/Web3';
+import * as STORAGE from '../actions/constants/LocalStorage';
+import * as CONNECT from '../actions/constants/TrezorConnect';
+import * as ACTIONS from '../actions';
 
-let inited: boolean = false;
 
-const TrezorConnectService = store => next => action => {
-    // Pass all actions through by default
+const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
+
+    const prevState = store.getState().connect;
+    const prevModalState = store.getState().connect;
+
     next(action);
 
-    if (action.type === LOCATION_CHANGE && !inited) {
-        inited = true;
+    if (action.type === STORAGE.READY) {
+        store.dispatch( TrezorConnectActions.init() );
 
-        TrezorConnect.init()
-        .then(r => {
-            // post action inited
-        })
-        .catch(error => {
-            // TODO: show some ui with errors
-            console.log("ERROR", error);
-        });
+    } else if (action.type === TRANSPORT.ERROR) {
+        store.dispatch( push('/') );
 
-        TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
-            // post event to reducer
+    } else if (action.type === WEB3.READY) {
+        store.dispatch( TrezorConnectActions.postInit() );
+
+    } else if (action.type === DEVICE.DISCONNECT) {
+        store.dispatch( TrezorConnectActions.deviceDisconnect(action.device) );
+
+    } else if (action.type === CONNECT.FORGET) {
+        //store.dispatch( TrezorConnectActions.forgetDevice(action.device) );
+        store.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
+    } else if (action.type === CONNECT.FORGET_SINGLE) {
+
+        //store.dispatch( TrezorConnectActions.forgetDevice(action.device) );
+
+        if (store.getState().connect.devices.length < 1 && action.device.connected) {
+            // prompt disconnect device modal
             store.dispatch({
-                type: event.type,
-                device: event.data
+                type: CONNECT.DISCONNECT_REQUEST,
+                device: action.device
             });
-        });
+        } else {
+            store.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
+        }
+    } else if (action.type === DEVICE.CHANGED) {
+        // selected device was previously unacquired, but now it's acquired
+        // we need to change route 
+        if (prevState.selectedDevice) {
+            if (!action.device.unacquired && action.device.path === prevState.selectedDevice.id) {
+                store.dispatch( TrezorConnectActions.onSelectDevice(action.device) );
+            }
+        }
+    } else if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
 
-        const version: Object = TrezorConnect.getVersion();
+        store.dispatch( TrezorConnectActions.restoreDiscovery() );
 
-        if (version.type === 'library') {
-            // handle UI events only if TrezorConnect isn't using popup
-            TrezorConnect.on(UI_EVENT, (type: string, data: any): void => {
-                // post event to reducer
+        // interrupt process of remembering device (force forget)
+        // TODO: the same for disconnect more than 1 device at once
+        const { modal } = store.getState();
+        if (modal.opened && modal.windowType === CONNECT.REMEMBER_REQUEST) {
+            if (action.device.features && modal.device.features.device_id === action.device.features.device_id) {
                 store.dispatch({
-                    type,
-                    data
+                    type: ACTIONS.CLOSE_MODAL,
                 });
-            });
+            } else {
+                store.dispatch({
+                    type: CONNECT.FORGET,
+                    device: modal.device
+                });
+            }
         }
 
-        const handleDeviceConnect = (device) => {
-            store.dispatch( TrezorConnectActions.discover(device.path) );
-        }
+    } else if (action.type === CONNECT.AUTH_DEVICE) {
+        store.dispatch( TrezorConnectActions.checkDiscoveryStatus() );
 
-        const handleDeviceDisconnect = (device) => {
-            store.dispatch( TrezorConnectActions.remove(device.path) );
-        }
+    } else if (action.type === CONNECT.DUPLICATE) {
+        store.dispatch( TrezorConnectActions.onDuplicateDevice() );
 
-        TrezorConnect.on(DEVICE.CONNECT, handleDeviceConnect);
-        //TrezorConnect.on(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
+    } else if (action.type === DEVICE.ACQUIRED || action.type === CONNECT.SELECT_DEVICE) {
+        store.dispatch( TrezorConnectActions.getSelectedDeviceState() );
 
-        TrezorConnect.on(DEVICE.DISCONNECT, handleDeviceDisconnect);
-        //TrezorConnect.on(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
-
+    } else if (action.type === CONNECT.COIN_CHANGED) {
+        store.dispatch( TrezorConnectActions.coinChanged( action.payload.coin ) );
     }
-};
+}
 
 export default TrezorConnectService;

@@ -1,0 +1,126 @@
+.notification {
+    position: relative;
+    color: @color_info_primary;
+    background: @color_info_secondary;
+    padding: 24px 48px 24px 80px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    text-align: left;
+
+    .notification-body {
+        flex: 1;
+        margin-right: 24px;
+    }
+
+    .notification-action button {
+        padding: 12px 58px;
+    }
+
+    .notification-close {
+        position: absolute;
+        top: 8px;
+        right: 0;
+        padding: 12px;
+        color: inherit;
+        transition: opacity 0.3s;
+
+        &:after {
+            .icomoon-close;
+        }
+        &:active,
+        &:hover {
+            opacity: 0.6;
+            color: inherit;
+        }
+    }
+
+    h2 {
+        font-size: 14px;
+        font-weight: bold;
+        
+        padding: 0px;
+        &:before {
+            .icomoon-info;
+            position: absolute;
+            top: 17px;
+            left: 40px;
+            font-size: 32px !important;
+        }
+    }
+
+    p {
+        padding: 0px;
+        margin-bottom: 8px 0px;
+        color: inherit;
+    }
+
+    &.info {
+        .notification-action button {
+            border: 1px solid @color_info_primary;
+            color: @color_info_primary;
+            &:hover {
+                color: @color_white;
+                background: @color_info_primary;
+            }
+        }
+    }
+
+    
+
+    &.success {
+        color: @color_success_primary;
+        background: @color_success_secondary;
+
+        .notification-action button {
+            border: 1px solid @color_success_primary;
+            color: @color_success_primary;
+            &:hover {
+                color: @color_white;
+                background: @color_success_primary;
+            }
+        }
+    }
+
+    &.warning {
+        color: @color_warning_primary;
+        background: @color_warning_secondary;
+        h2:before {
+            .icomoon-warning;
+        }
+
+        .notification-action button {
+            border: 1px solid @color_warning_primary;
+            color: @color_warning_primary;
+            &:hover {
+                color: @color_white;
+                background: @color_warning_primary;
+            }
+        }
+    }
+
+    &.error {
+        color: @color_error_primary;
+        background: @color_error_secondary;
+        h2:before {
+            .icomoon-error;
+        }
+
+        .notification-close {
+            color: @color_error_primary;
+            &:hover {
+                color: @color_error_primary;
+            }
+        }
+
+        .notification-action button {
+            border: 1px solid @color_error_primary;
+            color: @color_error_primary;
+            &:hover {
+                color: @color_white;
+                background: @color_error_primary;
+            }
+        }
+    }
+}

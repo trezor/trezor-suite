@@ -3,116 +3,105 @@
 
 import { UI, DEVICE } from 'trezor-connect';
 import * as ACTIONS from '../actions';
+import * as RECEIVE from '../actions/constants/receive';
+import * as MODAL from '../actions/constants/Modal';
+import * as CONNECT from '../actions/constants/TrezorConnect';
 
 type ModalState = {
     opened: boolean;
+    device: any;
     windowType: ?string;
-    pin: string;
-    passphrase: string;
-    passphraseFocused: boolean;
-    passphraseVisible: boolean;
-    passphraseCached: boolean;
-    confirmation: ?string;
 }
 
 const initialState: ModalState = {
     opened: false,
-    windowType: null,
-    pin: "",
-    passphrase: "",
-    passphraseFocused: false,
-    passphraseVisible: false,
-    passphraseCached: true,
-    confirmation: null,
+    device: null,
+    windowType: null
 };
 
 export default function modal(state: ModalState = initialState, action: any): any {
 
     switch (action.type) {
 
+        case RECEIVE.REQUEST_UNVERIFIED :
+            return {
+                ...state,
+                opened: true,
+                windowType: action.type
+            }
+
+        case CONNECT.REMEMBER_REQUEST :
+        case CONNECT.FORGET_REQUEST :
+        case CONNECT.DISCONNECT_REQUEST :
+            return {
+                ...state,
+                device: action.device,
+                opened: true,
+                windowType: action.type
+            };
+
+        case CONNECT.TRY_TO_DUPLICATE :
+            return {
+                ...state,
+                device: action.device,
+                opened: true,
+                windowType: action.type
+            };
+
+        case DEVICE.CHANGED :
+            if (state.opened && state.device && action.device.path === state.device.path && action.device.isUsedElsewhere) {
+                return {
+                    ...initialState,
+                };
+            }
+            return state;
+
+        case DEVICE.DISCONNECT :
+            if (state.device && action.device.path === state.device.path) {
+                return {
+                    ...initialState,
+                }
+            }
+            return state;
+
+        // case DEVICE.CONNECT :
+        // case DEVICE.CONNECT_UNACQUIRED : 
+        //     if (state.opened && state.windowType === CONNECT.TRY_TO_FORGET) {
+        //         return {
+        //             ...initialState,
+        //             passphraseCached: state.passphraseCached
+        //         }
+        //     }
+        //     return state;
+
         case UI.REQUEST_PIN :
         case UI.INVALID_PIN :
         case UI.REQUEST_PASSPHRASE :
             return {
                 ...state,
+                device: action.data.device,
                 opened: true,
                 windowType: action.type
             };
 
-        case UI.REQUEST_CONFIRMATION :
+        case UI.REQUEST_BUTTON :
             return {
                 ...state,
                 opened: true,
-                confirmation: action.data.label,
-                windowType: action.type
-            };
-
-        case UI.REQUEST_PERMISSION :
-            return {
-                ...state,
-                opened: true,
-                confirmation: action.data.label,
-                windowType: action.type
-            };
-
+                windowType: action.data.code
+            }
+        
+        case UI.CLOSE_UI_WINDOW :
         case ACTIONS.CLOSE_MODAL :
+        
+        case CONNECT.FORGET :
+        case CONNECT.FORGET_SINGLE :
+        case CONNECT.REMEMBER :
             return {
                 ...initialState,
-                passphraseCached: state.passphraseCached
             };
 
-
-        case ACTIONS.ON_PIN_ADD :
-            let pin: string = state.pin;
-            if (pin.length < 9) {
-                pin += action.number;
-            }
-            return {
-                ...state,
-                pin: pin,
-            };
-        case ACTIONS.ON_PIN_BACKSPACE :
-            return {
-                ...state,
-                pin: state.pin.substring(0, state.pin.length - 1),
-            };
-
-
-        case ACTIONS.ON_PASSPHRASE_CHANGE :
-            return {
-                ...state,
-                passphrase: action.value
-            }
-        case ACTIONS.ON_PASSPHRASE_SHOW :
-            return {
-                ...state,
-                passphraseVisible: true
-            }
-        case ACTIONS.ON_PASSPHRASE_HIDE :
-            return {
-                ...state,
-                passphraseVisible: false
-            }
-        case ACTIONS.ON_PASSPHRASE_SAVE :
-            return {
-                ...state,
-                passphraseCached: true
-            }
-        case ACTIONS.ON_PASSPHRASE_FORGET :
-            return {
-                ...state,
-                passphraseCached: false
-            }
-        case ACTIONS.ON_PASSPHRASE_FOCUS :
-            return {
-                ...state,
-                passphraseFocused: true
-            }
-        case ACTIONS.ON_PASSPHRASE_BLUR :
-            return {
-                ...state,
-                passphraseFocused: false
-            }
+            
 
         default:
             return state;

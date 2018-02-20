@@ -1,0 +1,329 @@
+// https://github.com/JedWatson/react-select/blob/master/less/select.less
+
+@import '~react-select/less/select';
+
+// override predefined colors
+@select-primary-color: @color_white;
+@select-input-hover-box-shadow: none;
+@select-input-box-shadow-focus: transparent;
+@select-input-border-radius: 0px;
+@select-item-border-radius: 0px;
+@select-input-border-color: transparent;
+@select-input-border-focus: @color_divider;
+
+.Select-focus-state(@color) {
+    // do nothing
+    background: transparent;
+    box-shadow: none;
+}
+
+.Select-focus-state-classic() {
+    background: transparent;
+    box-shadow: none;
+}
+
+.Select-arrow-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    padding-right: 0px !important;
+    width: 24px;
+    height: 24px;
+    right: 8px;
+
+    .Select-arrow {
+        top: 0px;
+        border: 0px;
+        width: 24px;
+
+        &:after {
+            .icomoon-arrow-down;
+            transition: transform 0.3s, color 0.3s;
+            color: @color_text_secondary;
+            transform-origin: 50% 50%;
+            font-size: 24px;
+        }
+    }
+}
+
+.Select {
+
+    .Select-control {
+        cursor: pointer;
+
+        .Select-input {
+            background: transparent;
+            position: absolute;
+            top: 0;
+            // display: none !important; // uncomment for disable auto closing
+        }
+
+        &:hover {
+            .Select-arrow:after {
+                color: @color_text_primary;
+            }
+        }
+    }
+
+    .Select-noresults {
+        
+    }
+
+    .Select-value-label {
+        color: @color_text_primary;
+    }
+
+    .Select-menu-outer {
+        border-radius: 0px;
+        border: 1px solid @color_divider;
+        box-shadow: none;
+    }
+
+    &.is-open {
+        .Select-arrow {
+            top: 0px !important;
+            border: 0px;
+            &:after {
+                transform: rotate(180deg);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+/*@select-input-height: 34px;
+@select-primary-color: #fff;
+@select-input-bg-focus: #ff0000;
+@select-input-border-radius: 0px;
+@select-input-border-focus: @select-input-border-color;
+
+.Select {
+    width: 240px;
+    height: 34px;
+    display: inline-block;
+    vertical-align: middle;
+
+    &.is-focused:not(.is-open) > .Select-control {
+        border-color: @select-input-border-color;
+        box-shadow: none;
+    }
+}
+
+.Select-control {
+    &:hover {
+        box-shadow: none;
+    }
+}
+
+
+
+
+
+.Select-menu-outer {
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+.Select-option {
+    &:last-child {
+        border-radius: 0px;
+    }
+
+    .fee-label {
+        display: inline-block;
+        width: 70%;
+    }
+    .fee-size {
+        display: inline-block;
+        text-align: right;
+    }
+}
+
+.CurrencySelect {
+    width: 70px;
+    vertical-align: top;
+}
+
+
+.CoinSelect {
+    width: 290px;
+    height: 64px;
+    .Select-control {
+        height: 63px;
+        border: 0px;
+        border-radius: 4px 0px 0px 0px;
+        border-right: 1px solid @color_divider;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+
+        .Select-input {
+            background: transparent;
+            //display: none !important;
+        }
+
+        &:hover {
+            background: #F2F2F2;
+            .Select-arrow {
+                &:after {
+                    color: #494949;
+                }
+            }
+        }
+    }
+
+    .Select-value {
+        padding: 0px;
+        .Select-value-label {
+            display: inline-block;
+            height: 63px;
+            padding-top: 20px;
+            padding-left: 50px;
+            font-size: 1.15em;
+            font-weight: bold;
+            line-height: 26px;
+            color: #494949;
+            
+        }
+        &:before {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            z-index: 2;
+            left: 20px;
+            top: 21px;
+            
+
+            background-image: url(../images/eth-logo.png);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: auto 20px;
+        }
+    }
+
+    .Select-menu-outer {
+        position: relative;
+        top: 0;
+        border: 0px;
+        border-top: 1px solid rgba(218, 218, 218, 0.5);
+        border-right: 1px solid rgba(218, 218, 218, 0.5);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+        max-height: none;
+    }
+
+    .Select-menu {
+        max-height: none;
+        overflow-x: none;
+    }
+
+    .Select-option {
+        width: 290px;
+        height: 64px;
+        padding-top: 20px;
+        padding-left: 60px;
+        position: relative;
+        transition: all 0.2s ease-in-out;
+
+        span {
+            height: 63px;
+            font-size: 1.15em;
+            font-weight: bold;
+            line-height: 26px;
+            color: #494949;
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            z-index: 2;
+            left: 20px;
+            top: 21px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 20px 20px;
+        }
+
+        &.btc:before {
+            background-image: url('../images/btc-logo.png');
+        }
+        &.ltc:before {
+            background-image: url('../images/ltc-logo.png');
+        }
+        &.btg:before {
+            background-image: url('../images/btg-logo.png');
+        }
+        &.bch:before {
+            background-image: url('../images/bch-logo.png');
+        }
+        &.dash:before {
+            background-image: url('../images/dash-logo.png');
+        }
+        &.zec:before {
+            background-image: url('../images/zec-logo.png');
+        }
+        &.eth:before {
+            background-image: url('../images/eth-logo.png');
+            background-size: auto 20px;
+        }
+        &.etc:before {
+            background-image: url('../images/etc-logo.png');
+            background-size: auto 20px;
+        }
+
+        &:hover {
+            background: #F2F2F2;
+        }
+
+        &.is-selected { 
+            background: yellow;
+        }
+    }
+
+    .Select-arrow-zone {
+        width: 28px;
+    }
+
+    .Select-arrow {
+        border: 0px;
+        width: 28px;
+
+        &:after {
+            .glyphicon-down;
+            color: #B3B3B3;
+            position: absolute;
+            left: 0px;
+            top: -8px;
+            transition: all 0.2s ease-in-out;
+        }
+    }
+
+    &.is-open {
+        .Select-arrow {
+            top: 0px;
+            &:after {
+                .glyphicon-up;
+            }
+        }
+    }
+}
+
+
+
+// /*
+// 
+//     
+//     
+//     */

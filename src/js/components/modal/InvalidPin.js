@@ -4,9 +4,11 @@
 import React from 'react';
 
 const InvalidPin = (props): any => {
+    const { device } = props.modal;
     return (
-        <div className="invalid_pin">
-            <h3>Entered PIN is not correct. Retrying...</h3>
+        <div className="pin">
+            <h3>Entered PIN for { device.label } is not correct.</h3>
+            <p>Retrying...</p>
         </div>
     );
 }

@@ -15,7 +15,7 @@ export const httpRequest = async (url: string, type: string = 'text'): any => {
             return await response.text();
         }
     } else {
-        throw new Error(response.statusText);
+        throw new Error(`${ url } ${ response.statusText }`);
     }
 
     // return fetch(url, { credentials: 'same-origin' }).then((response) => {

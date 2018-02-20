@@ -1,0 +1,36 @@
+.signverify {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    background: @color_white;
+
+    h2 {
+        line-height: 74px;
+    }
+
+    .sign,
+    .verify {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding-left: 50px;
+
+        textarea {
+            resize: vertical;
+            width: 100%;
+        }
+
+        // textarea[readonly] {
+        //     background: #A9A9A9;
+        // }
+    }
+
+    label {
+        color: #A9A9A9;
+        padding: 5px 0px;
+    }
+
+    .verify {
+        padding-right: 20px;
+    }
+}

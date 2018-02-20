@@ -3,125 +3,75 @@
 
 import TrezorConnect, { UI, UI_EVENT } from 'trezor-connect';
 import * as ACTIONS from './index';
+import * as MODAL from './constants/Modal';
+import * as CONNECT from './constants/TrezorConnect';
 
-export function onPinAdd(number: number): any {
-    return {
-        type: ACTIONS.ON_PIN_ADD,
-        number
-    }
-}
 
-export function onPinBackspace(): any {
-    return {
-        type: ACTIONS.ON_PIN_BACKSPACE
-    }
-}
-
-export function onPinSubmit(value: string): void {
+export function onPinSubmit(value: string): any {
     TrezorConnect.uiMessage({ type: UI.RECEIVE_PIN, data: value });
     return {
         type: ACTIONS.CLOSE_MODAL
     }
 }
 
-export function onPassphraseChange(value: string): any {
-    return {
-        type: ACTIONS.ON_PASSPHRASE_CHANGE,
-        value
+export function onPassphraseSubmit(passphrase: string): any {
+    return async (dispatch, getState): Promise<void> => {
+        const resp = await TrezorConnect.uiMessage({ 
+            type: UI.RECEIVE_PASSPHRASE, 
+            data: {
+                value: passphrase,
+                save: true
+            } 
+        });
+
+        dispatch({
+            type: ACTIONS.CLOSE_MODAL
+        });
     }
 }
 
-export function onPassphraseShow(): any {
+export const askForRemember = (device: any) => {
     return {
-        type: ACTIONS.ON_PASSPHRASE_SHOW
+        type: MODAL.REMEMBER,
+        device
     }
 }
 
-export function onPassphraseHide(): any {
+export const onRememberDevice = (device: any) => {
     return {
-        type: ACTIONS.ON_PASSPHRASE_HIDE
+        type: CONNECT.REMEMBER,
+        device
     }
 }
 
-export function onPassphraseSave(): any {
+export const onForgetDevice = (device: any) => {
     return {
-        type: ACTIONS.ON_PASSPHRASE_SAVE
+        type: CONNECT.FORGET,
+        device,
     }
 }
 
-export function onPassphraseForget(): any {
+export const onForgetSingleDevice = (device: any) => {
     return {
-        type: ACTIONS.ON_PASSPHRASE_FORGET
+        type: CONNECT.FORGET_SINGLE,
+        device,
     }
 }
 
-export function onPassphraseFocus(): any {
-    return {
-        type: ACTIONS.ON_PASSPHRASE_FOCUS
-    }
-}
-
-export function onPassphraseBlur(): any {
-    return {
-        type: ACTIONS.ON_PASSPHRASE_BLUR
-    }
-}
-
-export function onPassphraseSubmit(value: string, cache: boolean): void {
-    TrezorConnect.uiMessage({ 
-        type: UI.RECEIVE_PASSPHRASE, 
-        data: {
-            value,
-            save: cache
-        } 
-    });
+export const onCancel = () => {
     return {
         type: ACTIONS.CLOSE_MODAL
     }
 }
 
-export function onConfirmation(): any {
-    //postMessage(new UiMessage(UI.RECEIVE_CONFIRMATION, 'true') );
-    TrezorConnect.uiMessage({
-        type: UI.RECEIVE_CONFIRMATION,
-        data: 'true'
-    });
-    
-    return {
-        type: ACTIONS.CLOSE_MODAL
-    }
-}
+export const onDuplicateDevice = (device: any): any => {
+    return (dispatch: any, getState: any): void => {
 
-export function onConfirmationCancel(): any {
-    TrezorConnect.uiMessage({
-        type: UI.RECEIVE_CONFIRMATION,
-        data: 'false'
-    });
+        dispatch( onCancel() );
 
-    return {
-        type: ACTIONS.CLOSE_MODAL
-    }
-}
-
-export function onPermissionGranted(): any {
-    //postMessage(new UiMessage(UI.RECEIVE_CONFIRMATION, 'true') );
-    TrezorConnect.uiMessage({
-        type: UI.RECEIVE_PERMISSION,
-        data: 'true'
-    });
-
-    return {
-        type: ACTIONS.CLOSE_MODAL
-    }
-}
-
-export function onPermissionRejected(): any {
-    TrezorConnect.uiMessage({
-        type: UI.RECEIVE_PERMISSION,
-        data: 'false'
-    });
-
-    return {
-        type: ACTIONS.CLOSE_MODAL
+        dispatch({
+            type: CONNECT.DUPLICATE,
+            device
+        });
     }
 }

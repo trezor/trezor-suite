@@ -1,0 +1,60 @@
+article {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    nav {
+        height: 64px;
+        border-bottom: 1px solid @color_divider;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+        display: flex;
+        background: @color_white;
+        position: relative;
+
+        .account-tabs {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0px 48px;
+            max-width: 600px;
+    
+            a {
+                font-weight: 500;
+                font-size: 14px;
+                color: @color_text_secondary;
+                margin: 0px 4px;
+                &.active,
+                &:hover {
+                    color: @color_text_primary;
+                }
+    
+                &:first-child {
+                    margin-left: 0px;
+                }
+    
+                &:last-child {
+                    margin-right: 0px;
+                }
+            }
+        }
+    }
+
+    section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: @color_white;
+
+        h2 {
+            font-size: 16px;
+            font-weight: 500;
+            padding: 24px 48px;
+        }
+    
+        p {
+            padding: 0px 48px;
+            color: @color_text_secondary;
+        }
+    }
+}

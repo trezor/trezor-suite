@@ -1,0 +1,226 @@
+input, textarea {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.42857143;
+    font-family: @font-family-monospace;
+    color: @color_text_primary;
+    background-color: @color_white;
+    border: 1px solid @color_divider;
+    border-radius: 2px;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    padding: 6px 12px;
+
+    &:focus {
+        box-shadow: 0 1px 2px 0 rgba(169, 169, 169, 0.25);
+    }
+
+    &:disabled {
+        background: @color_gray_light;
+        color: @color_text_secondary;
+    }
+}
+
+input {
+
+    &.valid {
+        border-color: @color_success_primary;
+        &:focus {
+            box-shadow: 0 1px 4px 0 rgba(1, 183, 87, 0.25);
+        }
+    }
+
+    &.warning {
+        border-color: @color_warning_primary;
+        &:focus {
+            box-shadow: 0 1px 4px 0 rgba(1, 183, 87, 0.25);
+        }
+    }
+
+    &.not-valid {
+        border-color: @color_error_primary;
+        &:focus {
+            box-shadow: 0 1px 4px 0 rgba(255, 111, 109, 0.25);
+        }
+    }
+}
+
+
+button {
+    padding: 12px 24px;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 300;
+    cursor: pointer;
+    background: @color_green_primary;
+    color: @color_white;
+    border: 0px;
+
+    .hover();
+
+    &:hover {
+        background: @color_green_secondary;
+    }
+
+    &:active {
+        background: @color_green_tertiary;
+    }
+
+    &:disabled {
+        pointer-events: none;
+        color: @color_text_secondary;
+        background: @color_gray_light;
+    }
+
+    &.blue {
+        background: transparent;
+        border: 1px solid @color_info_primary;
+        color: @color_info_primary;
+        padding: 12px 58px;
+
+        &:hover {
+            color: @color_white;
+            background: @color_info_primary;
+        }
+    }
+
+    &.white {
+        background: @color_white;
+        color: @color_text_secondary;
+        border: 1px solid @color_divider;
+        &:hover {
+            //color: @color_text_primary;
+            //border-color: @color_text_primary;
+            background: @color_divider;
+        }
+        &:active {
+            color: @color_text_primary;
+            background: @color_divider;
+        }
+    }
+
+    &.transparent {
+        background: transparent;
+        border: 0px;
+        color: @color_text_secondary;
+        .hover();
+
+        &:hover,
+        &:active {
+            color: @color_text_primary;
+            background: transparent;
+        }
+    }
+}
+
+
+.custom-checkbox {
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: @color_text_secondary;
+
+    input {
+        position: absolute;
+        left: -9999px;
+        z-index: -1;
+        opacity: 0;
+
+        &:checked + .indicator:after {
+            background-color: @color_green_primary;
+            border-color: @color_green_primary;
+        }
+        &:disabled + .indicator:after {
+            background-color: @color_text_secondary;
+        }
+    }
+
+    .indicator {
+        position: relative;
+        height: 24px;
+        width: 24px;
+        margin-right: 12px;
+
+        &:after {
+            .icomoon-checked;
+            .hover();
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            color: @color_white;
+            background-color: @color_white;
+            border: 1px solid @color_divider;
+            border-radius: 2px;
+        }
+
+        &:hover {
+            border-color: @color_text_secondary;
+        }
+    }
+
+    &.radio {
+        .indicator {
+            &:after {
+                border-radius: 50%;
+            }
+        }
+
+        input:checked + .indicator:after {
+            content: '';
+            background: white;
+            border: 4px solid @color_green_primary;
+        }
+    }
+
+    &.align-left {
+        padding-left: 20px;
+        padding-right: 10px;
+        .indicator {
+            position: absolute;
+            left: 0;
+            top: 2px;
+            margin: 0;
+            &:after {
+                top: 0px;
+            }
+        }
+    }
+}
+
+a.green, 
+a.green:visited {
+    position: relative;
+    color: @color_green_primary;
+    .hover();
+
+    &:after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        border-top: 1px solid @color_green_primary;
+        line-height: 1px;
+        left: 0px;
+        bottom: -1px;
+        transition: border-color 0.3s;
+    }
+    
+    &:hover {
+        color: @color_green_secondary;
+    }
+
+    &:active {
+        color: @color_green_tertiary;
+    }
+
+    &:hover,
+    &:active {
+        &:after {
+            border-color: @color_white;
+        }
+    }
+
+    
+}

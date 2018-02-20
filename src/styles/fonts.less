@@ -1,7 +1,16 @@
+// custom Roboto with Zero without the thing inside, so it's more readable as number
+// since 0 doesn't look too similar to 8
+@font-face {
+    font-family: 'Roboto Zero';
+    src: url('../fonts/roboto/RobotoZero.eot') format('embedded-opentype'),
+         url('../fonts/roboto/RobotoZero.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/roboto/RobotoZero.woff') format('woff'),
+         url('../fonts/roboto/RobotoZero.ttf') format('truetype');
+}
+
 @font-face {
     font-family: 'Roboto Mono';
     font-style: normal;
-    font-weight: 400;
     src: url('../fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.eot') format('embedded-opentype'), /* IE9 Compat Modes */
          url('../fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
          url('../fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.woff2') format('woff2'), /* Super Modern Browsers */
@@ -10,5 +19,219 @@
          url('../fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.svg#RobotoMono') format('svg'); /* Legacy iOS */
 }
 
+@font-face {
+    font-family: 'glyphicons';
+    src: url('../fonts/glyphicons.eot') format('embedded-opentype'),
+         url('../fonts/glyphicons.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/glyphicons.woff') format('woff'),
+         url('../fonts/glyphicons.ttf') format('truetype'),
+         url('../fonts/glyphicons.svg#icomoon') format('svg');
+}
+
+@font-face {
+    font-family: 'icomoon';
+    src: url('../fonts/icomoon.eot') format('embedded-opentype'),
+         url('../fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/icomoon.woff') format('woff'),
+         url('../fonts/icomoon.ttf') format('truetype'),
+         url('../fonts/icomoon.svg#icomoon') format('svg');
+}
+
+@font-face {
+    font-family: 'fontello';
+    src: url('../fonts/pass.ttf') format('truetype');
+}
+
 @font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+@font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
 @font-family-monospace: "Roboto Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
+@font-family-monospace-numbers: "Roboto Zero", "Roboto Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
+
+// ::selection,
+// ::-moz-selection {
+//     background: @color_info_secondary;
+// }
+
+.glyphicon-base() {
+    display: inline-block;
+    font-family: 'glyphicons';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+}
+
+.glyphicon-trezor {
+    .glyphicon-base();
+    content: "\5f";
+    padding-top: 1px;
+    font-size: 14px;
+}
+
+.glyphicon-info {
+    .glyphicon-base();
+    content: "\ea0c";
+}
+
+.glyphicon-warning {
+    .glyphicon-base();
+    content: "\ea07";
+}
+
+.glyphicon-cross {
+    .glyphicon-base();
+    content: "\ea0f";
+}
+
+.glyphicon-checkmark {
+    .glyphicon-base();
+    content: "\ea10";
+}
+
+.glyphicon-up {
+    .glyphicon-base();
+    content: "\e113";
+}
+
+.glyphicon-down {
+    .glyphicon-base();
+    content: "\e114";
+}
+
+.glyphicon-eye-open {
+    .glyphicon-base();
+    content: "\e105";
+}
+
+.glyphicon-settings {
+    .glyphicon-base();
+    content: "\e019";
+}
+
+.glyphicon-refresh {
+    .glyphicon-base();
+    content: "\e031";
+}
+
+.glyphicon-plus {
+    .glyphicon-base();
+    content: "\2b";
+    position: relative;
+    top: 1px;
+}
+
+
+.icomoon-base() {
+    display: inline-block;
+    font-family: 'icomoon';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    font-size: 24px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+}
+
+
+
+
+.icomoon-eject {
+    .icomoon-base();
+    content: "\e902";
+}
+
+.icomoon-info {
+    .icomoon-base();
+    content: "\e904";
+}
+
+.icomoon-refresh {
+    .icomoon-base();
+    content: "\e903";
+}
+
+.icomoon-chat {
+    .icomoon-base();
+    content: "\e905";
+}
+
+.icomoon-redirect {
+    .icomoon-base();
+    content: "\e906";
+}
+
+.icomoon-settings {
+    .icomoon-base();
+    content: "\e907";
+}
+
+.icomoon-warning {
+    .icomoon-base();
+    content: "\e908";
+}
+
+.icomoon-arrow-down {
+    .icomoon-base();
+    content: "\e909";
+}
+
+.icomoon-eye-error {
+    .icomoon-base();
+    content: "\e912";
+}
+
+.icomoon-T1 {
+    .icomoon-base();
+    content: "\e913";
+}
+
+.icomoon-close {
+    .icomoon-base();
+    content: "\e90a";
+}
+
+.icomoon-arrow-left {
+    .icomoon-base();
+    content: "\e90b";
+}
+
+.icomoon-arrow-up {
+    .icomoon-base();
+    content: "\e90c";
+}
+
+.icomoon-arrow-right {
+    .icomoon-base();
+    content: "\e90d";
+}
+
+.icomoon-plus {
+    .icomoon-base();
+    content: "\e90e";
+}
+
+.icomoon-help {
+    .icomoon-base();
+    content: "\e90f";
+}
+
+
+.icomoon-setmax {
+    .icomoon-base();
+    content: "\e91b";
+}
+
+.icomoon-checked {
+    .icomoon-base();
+    content: "\e91c";
+}
+
+.icomoon-error {
+    .icomoon-base();
+    content: "\e91d";
+}
+
+.icomoon-eye {
+    .icomoon-base();
+    content: "\e91e";
+}

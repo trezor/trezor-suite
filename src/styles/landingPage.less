@@ -1,0 +1,142 @@
+.app {
+    &.connect-device {
+        //min-height: 100vh;
+        // overflow: hidden;
+        background: @color_landing;
+
+        main {
+            flex-direction: column;
+            text-align: center;
+            padding-top: 65px;
+            margin-top: 0px;
+
+            h2.claim {
+                font-size: 36px;
+                padding-bottom: 24px;
+            }
+
+            .row {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 36px 0px;
+                margin: 0 auto;
+                width: 720px;
+
+                p {
+                    // flex: 1;
+                    align-self: center;
+                }
+
+                // a {
+                //     color: @color_green_primary;
+                //     text-decoration: underline;
+                //     font-weight: 500;
+                //     .hover();
+                //     &:hover {
+                //         text-decoration: none;
+                //         color: @color_green_secondary;
+                //     }
+                // }
+            }
+
+            p {
+                color: @color_text_secondary;
+                line-height: 1.8;
+
+                &.connect {
+                    color: @color_green_primary;
+                    font-size: 16px;
+                    font-weight: 500;
+
+                    span {
+                        vertical-align: top;
+                        position: relative;
+                        top: 1px;
+                        left: 12px;
+                        animation: pulsate 1.3s ease-out infinite;
+                        position: relative;
+
+                        svg {
+                            position: absolute;
+                            top: -8px;
+                            left: -24px;
+                        }
+                    }
+                }
+            }
+
+            .image {
+                width: 100%;
+                height: calc(100vh - 143px);
+                min-height: 500px;
+                flex: 1;
+                background-image: url('../images/case.png');
+                background-repeat: no-repeat;
+                background-position: center 0px;
+                background-size: contain;
+            }
+
+            img {
+                width: 90%;
+                height: auto;
+                margin: auto;
+            }
+        }
+
+        .connect-usb-pin,
+        .connect-usb-cable {
+            animation: connect 1.3s ease-out infinite;
+        }
+    
+        footer {
+            border: 0px;
+            justify-content: center;
+            width: 100%;
+            max-width: 1170px;
+            margin: 0px auto;
+        }
+    
+        .notification {
+            width: 100%;
+            max-width: 1170px;
+            margin: 0px auto;
+        }
+    }
+}
+
+
+.landing {
+    text-align: center;
+    position: relative;
+    min-height: 100vh;
+    background: @color_landing;
+
+    .loader-circle {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+}
+
+@keyframes pulsate {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1.0;
+    }
+}
+
+@keyframes connect {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-4px)
+    }
+}
+

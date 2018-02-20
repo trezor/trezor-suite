@@ -1,0 +1,20 @@
+[ignore]
+.*/node_modules/bitcoinjs-lib-zcash/.*
+.*/node_modules/bitcoinjs-lib/.*
+.*/node_modules/hd-wallet/.*
+.*/node_modules/protobufjs-old-fixed-webpack/src/bower.json
+.*/node_modules/trezor-link/lib/.*
+.*/_old/.*
+
+[libs]
+
+
+
+[options]
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+esproposal.export_star_as=enable
+suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
+esproposal.decorators=ignore
+module.name_mapper='.*\(.less\)' -> 'CSSModule'
+module.system=haste

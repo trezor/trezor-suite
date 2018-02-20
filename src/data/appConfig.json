@@ -1,0 +1,81 @@
+{
+    "coins1": [
+        { 
+            "name": "Ethereum Ropsten",
+            "symbol": "eth",
+            "network": "ropsten-eth",
+            "shortcut": "eth",
+            "bip44": "m/44'/60'/0'/0",
+            "defaultGasPrice": 64,
+            "defaultGasLimit": 21000,
+            "defaultGasLimitTokens": 200000,
+            "backends": [
+                {
+                    "name": "TREZOR Wallet - Ethereum",
+                    "urls": [
+                        "https://ropsten.infura.io/QGyVKozSUEh2YhL4s2G4",
+                        "http://10.34.2.5:8545"
+                    ],
+                    "explorer": "https://blockexplorer.com"
+                }
+            ]
+        }
+    ],
+
+    "coins": [
+        { 
+            "name": "Ethereum Ropsten",
+            "symbol": "eth",
+            "network": "ropsten-eth",
+            "shortcut": "eth",
+            "bip44": "m/44'/60'/0'/0",
+            "defaultGasPrice": 64,
+            "defaultGasLimit": 21000,
+            "defaultGasLimitTokens": 200000,
+            "backends": [
+                {
+                    "name": "TREZOR Wallet - Ethereum",
+                    "urls": [
+                        "https://ropsten.infura.io/QGyVKozSUEh2YhL4s2G4",
+                        "http://10.34.2.5:8545"
+                    ],
+                    "explorer": "https://blockexplorer.com"
+                }
+            ]
+        },
+        { 
+            "name": "Ethereum Rinkeby",
+            "symbol": "etc",
+            "network": "ropsten-eth",
+            "shortcut": "etc",
+            "bip44": "m/44'/61'/0'/0",
+            "defaultGasPrice": 64,
+            "defaultGasLimit": 21000,
+            "defaultGasLimitTokens": 200000,
+            "backends": [
+                {
+                    "name": "TREZOR Wallet - Ethereum",
+                    "urls": [
+                        "https://rinkeby.infura.io/QGyVKozSUEh2YhL4s2G4",
+                        "http://10.34.2.5:8545"
+                    ],
+                    "explorer": "https://blockexplorer.com"
+                }
+            ]
+        }
+    ],
+
+    "fiatValueTickers": [
+
+    ],
+
+    "bridge": {
+        "url": "https://localback.net:21324",
+        "configUrl": "data/config_signed.bin",
+        "latestUrl": "data/bridge/latest.txt"
+    },
+    "extensionId": "jcjjhjgimijdkoamemaghajlhegmoclj",
+    "storageVersion": "1.1.0",
+    "metadataVersion": "1.0.0"
+
+}
