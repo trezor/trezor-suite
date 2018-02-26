@@ -315,4 +315,7 @@ export default class LowlevelTransportWithSharedConnections {
     this.defereds[m.id].resolve(m.message);
     delete this.defereds[m.id];
   }
+
+  setBridgeLatestUrl(url: string): void {
+  }
 }
