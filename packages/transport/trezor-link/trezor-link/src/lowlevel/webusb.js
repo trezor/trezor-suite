@@ -65,7 +65,7 @@ export default class WebUsbPlugin {
       return isTrezor;
     });
     const hidDevices = trezorDevices.filter(dev => this._deviceIsHid(dev));
-    const nonHidDevices = trezorDevices.filter(dev => this._deviceIsHid(dev));
+    const nonHidDevices = trezorDevices.filter(dev => !this._deviceIsHid(dev));
 
     this._lastDevices = nonHidDevices.map(device => {
       // path is just serial number
