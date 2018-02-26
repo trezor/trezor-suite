@@ -144,4 +144,8 @@ export default class BridgeTransport {
   }
 
   requestNeeded: boolean = false;
+
+  setBridgeLatestUrl(url: string): void {
+    this.newestVersionUrl = url;
+  }
 }
