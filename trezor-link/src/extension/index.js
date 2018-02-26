@@ -170,4 +170,5 @@ export default class ChromeExtensionTransport {
 
   setBridgeLatestUrl(url: string): void {
   }
+  isOutdated: boolean = false;
 }
