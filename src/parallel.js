@@ -135,6 +135,8 @@ export default class ParallelTransport {
     return true;
   }
 
+  isOutdated: boolean;
+
   @debugInOut
   async configure(signedData: string): Promise<void> {
     // eslint-disable-next-line prefer-const
@@ -143,6 +145,13 @@ export default class ParallelTransport {
       await transport.configure(signedData);
     }
     this.configured = this._checkConfigured();
+    this.isOutdated = false;
+    for (const name of Object.keys(this.workingTransports)) {
+      const transport = this.workingTransports[name];
+      if (transport.isOutdated) {
+        this.isOutdated = true;
+      }
+    }
   }
 
   @debugInOut

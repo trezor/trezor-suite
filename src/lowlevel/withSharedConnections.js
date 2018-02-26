@@ -318,4 +318,5 @@ export default class LowlevelTransportWithSharedConnections {
 
   setBridgeLatestUrl(url: string): void {
   }
+  isOutdated: boolean = false;
 }
