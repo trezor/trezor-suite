@@ -199,4 +199,11 @@ export default class ParallelTransport {
   }
 
   requestNeeded: boolean = false;
+
+  setBridgeLatestUrl(url: string): void {
+    for (const name of Object.keys(this.transports)) {
+      const transport = this.transports[name];
+      transport.setBridgeLatestUrl(url);
+    }
+  }
 }

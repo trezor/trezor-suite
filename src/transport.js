@@ -36,4 +36,6 @@ export type Transport = {
   // request device connection
   +requestDevice: () => Promise<void>;
   requestNeeded: boolean;
+
+  setBridgeLatestUrl(url: string): void;
 }
