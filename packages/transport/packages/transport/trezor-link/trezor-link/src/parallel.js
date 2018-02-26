@@ -157,6 +157,7 @@ export default class ParallelTransport {
     this.debug = !!debug;
     let version = ``;
     let usable = false;
+    this.workingTransports = {};
     // eslint-disable-next-line prefer-const
     for (let name of Object.keys(this.transports)) {
       const transport = this.transports[name];
