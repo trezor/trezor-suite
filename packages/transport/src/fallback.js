@@ -102,4 +102,10 @@ export default class FallbackTransport {
   }
 
   requestNeeded: boolean = false;
+
+  setBridgeLatestUrl(url: string): void {
+    for (const transport of this.transports) {
+      transport.setBridgeLatestUrl(url);
+    }
+  }
 }

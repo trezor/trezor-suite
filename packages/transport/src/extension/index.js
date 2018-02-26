@@ -167,4 +167,7 @@ export default class ChromeExtensionTransport {
   }
 
   requestNeeded: boolean = false;
+
+  setBridgeLatestUrl(url: string): void {
+  }
 }
