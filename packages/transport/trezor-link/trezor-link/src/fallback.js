@@ -68,12 +68,15 @@ export default class FallbackTransport {
     this.configured = false;
   }
 
+  isOutdated: boolean;
   async configure(signedData: string): Promise<void> {
-    this.activeTransport = await this._tryConfigureTransports(signedData);
+    const pt: Promise<Transport> = this._tryConfigureTransports(signedData);
+    this.activeTransport = await pt;
     this.configured = this.activeTransport.configured;
     this.version = this.activeTransport.version;
     this.activeName = this.activeTransport.name;
     this.requestNeeded = this.activeTransport.requestNeeded;
+    this.isOutdated = this.activeTransport.isOutdated;
   }
 
   // using async so I get Promise.recect on this.activeTransport == null (or other error), not Error
