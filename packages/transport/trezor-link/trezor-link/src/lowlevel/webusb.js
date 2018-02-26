@@ -2,6 +2,8 @@
 
 declare var __VERSION__: string;
 
+import EventEmitter from 'events';
+
 import {debugInOut} from '../debug-decorator';
 
 type TrezorDeviceInfo = {path: string};
@@ -34,6 +36,8 @@ export default class WebUsbPlugin {
   endpointId: number = ENDPOINT_ID;
 
   unreadableHidDevice: boolean = false;
+
+  unreadableHidDeviceChange: EventEmitter = new EventEmitter();
 
   @debugInOut
   async init(debug: ?boolean): Promise<void> {
@@ -79,7 +83,13 @@ export default class WebUsbPlugin {
       return {path, device};
     });
 
+    const oldUnreadableHidDevice = this.unreadableHidDevice;
     this.unreadableHidDevice = hidDevices.length > 0;
+
+    if (oldUnreadableHidDevice !== this.unreadableHidDevice) {
+      this.unreadableHidDeviceChange.emit(`change`);
+    }
+
     return this._lastDevices;
   }
 
