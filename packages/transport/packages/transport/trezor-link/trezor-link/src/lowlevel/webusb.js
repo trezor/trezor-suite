@@ -33,6 +33,8 @@ export default class WebUsbPlugin {
   interfaceId: number = INTERFACE_ID;
   endpointId: number = ENDPOINT_ID;
 
+  unreadableHidDevice: boolean = false;
+
   @debugInOut
   async init(debug: ?boolean): Promise<void> {
     this.debug = !!debug;
@@ -45,15 +47,27 @@ export default class WebUsbPlugin {
     }
   }
 
+  _deviceIsHid(device: USBDevice): boolean {
+    try {
+      return device.configurations[0].interfaces[0].alternates[0].interfaceClass === 3;
+    } catch (e) {
+      return true;
+    }
+  }
+
   async _listDevices(): Promise<Array<{path: string, device: USBDevice}>> {
     let bootloaderId = 0;
     const devices = await this.usb.getDevices();
-    this._lastDevices = devices.filter(dev => {
+    const trezorDevices = devices.filter(dev => {
       const isTrezor = TREZOR_DESCS.some(desc =>
         dev.vendorId === desc.vendorId && dev.productId === desc.productId
       );
       return isTrezor;
-    }).map(device => {
+    });
+    const hidDevices = trezorDevices.filter(dev => this._deviceIsHid(dev));
+    const nonHidDevices = trezorDevices.filter(dev => this._deviceIsHid(dev));
+
+    this._lastDevices = nonHidDevices.map(device => {
       // path is just serial number
       // more bootloaders => number them, hope for the best
       const serialNumber = device.serialNumber;
@@ -64,6 +78,8 @@ export default class WebUsbPlugin {
       }
       return {path, device};
     });
+
+    this.unreadableHidDevice = hidDevices.length > 0;
     return this._lastDevices;
   }
 
