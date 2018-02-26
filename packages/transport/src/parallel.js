@@ -15,6 +15,7 @@ export default class ParallelTransport {
   name: string = `ParallelTransport`;
 
   transports: {[key: string]: Transport};
+  workingTransports: {[key: string]: Transport};
   debug: boolean = false;
 
   constructor(transports: {[key: string]: Transport}) {
@@ -48,8 +49,8 @@ export default class ParallelTransport {
   async enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
     const res = [];
     // eslint-disable-next-line prefer-const
-    for (let name of Object.keys(this.transports)) {
-      const devices = await this.transports[name].enumerate();
+    for (let name of Object.keys(this.workingTransports)) {
+      const devices = await this.workingTransports[name].enumerate();
       res.push(...(this._prepend(name, devices)));
     }
     return res.sort(compare);
@@ -61,9 +62,9 @@ export default class ParallelTransport {
       ? await this.enumerate()
       : old;
 
-    const promises = Object.keys(this.transports).map(async (name) => {
+    const promises = Object.keys(this.workingTransports).map(async (name) => {
       const oldFiltered = this._filter(name, actualOld);
-      const devices = await this.transports[name].listen(oldFiltered);
+      const devices = await this.workingTransports[name].listen(oldFiltered);
       return {name: name, devices: devices};
     });
 
@@ -88,7 +89,7 @@ export default class ParallelTransport {
     if (restArray.length === 0) {
       throw new Error(`Input has to contain transport name.`);
     }
-    const transport: Transport = this.transports[name];
+    const transport: Transport = this.workingTransports[name];
     if (transport == null) {
       throw new Error(`Input has to contain valid transport name.`);
     }
@@ -125,8 +126,8 @@ export default class ParallelTransport {
 
   _checkConfigured(): boolean {
     // configured is true if all of the transports are configured
-    for (const name of Object.keys(this.transports)) {
-      const transport = this.transports[name];
+    for (const name of Object.keys(this.workingTransports)) {
+      const transport = this.workingTransports[name];
       if (!transport.configured) {
         return false;
       }
@@ -137,8 +138,8 @@ export default class ParallelTransport {
   @debugInOut
   async configure(signedData: string): Promise<void> {
     // eslint-disable-next-line prefer-const
-    for (let name of Object.keys(this.transports)) {
-      const transport = this.transports[name];
+    for (let name of Object.keys(this.workingTransports)) {
+      const transport = this.workingTransports[name];
       await transport.configure(signedData);
     }
     this.configured = this._checkConfigured();
@@ -155,14 +156,27 @@ export default class ParallelTransport {
   async init(debug: ?boolean): Promise<void> {
     this.debug = !!debug;
     let version = ``;
+    let usable = false;
     // eslint-disable-next-line prefer-const
     for (let name of Object.keys(this.transports)) {
       const transport = this.transports[name];
-      await transport.init(debug);
-      version = version + `${name}:${transport.version};`;
-      if (transport.requestNeeded) {
-        this.requestNeeded = transport.requestNeeded;
+      let tUsable = true;
+      try {
+        await transport.init(debug);
+      } catch (e) {
+        tUsable = false;
       }
+      if (tUsable) {
+        version = version + `${name}:${transport.version};`;
+        if (transport.requestNeeded) {
+          this.requestNeeded = transport.requestNeeded;
+        }
+        usable = true;
+        this.workingTransports[name] = transport;
+      }
+    }
+    if (!usable) {
+      throw new Error(`None of the transports are usable.`);
     }
     this.version = version;
     this.configured = this._checkConfigured();
@@ -173,8 +187,8 @@ export default class ParallelTransport {
   version: string;
 
   async requestDevice(): Promise<void> {
-    for (const name of Object.keys(this.transports)) {
-      const transport = this.transports[name];
+    for (const name of Object.keys(this.workingTransports)) {
+      const transport = this.workingTransports[name];
       if (transport.requestNeeded) {
         return transport.requestDevice();
       }
