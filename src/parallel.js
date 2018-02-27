@@ -14,11 +14,17 @@ function compare(a: TrezorDeviceInfoWithSession, b: TrezorDeviceInfoWithSession)
 export default class ParallelTransport {
   name: string = `ParallelTransport`;
 
-  transports: {[key: string]: Transport};
+  transports: {[key: string]: {
+      transport: Transport,
+      mandatory: boolean,
+  }};
   workingTransports: {[key: string]: Transport};
   debug: boolean = false;
 
-  constructor(transports: {[key: string]: Transport}) {
+  constructor(transports: {[key: string]: {
+      transport: Transport,
+      mandatory: boolean,
+  }}) {
     this.transports = transports;
   }
 
@@ -170,19 +176,23 @@ export default class ParallelTransport {
     // eslint-disable-next-line prefer-const
     for (let name of Object.keys(this.transports)) {
       const transport = this.transports[name];
+      const ttransport = transport.transport;
       let tUsable = true;
       try {
-        await transport.init(debug);
+        await ttransport.init(debug);
       } catch (e) {
         tUsable = false;
+        if (transport.mandatory) {
+          throw e;
+        }
       }
       if (tUsable) {
-        version = version + `${name}:${transport.version};`;
-        if (transport.requestNeeded) {
-          this.requestNeeded = transport.requestNeeded;
+        version = version + `${name}:${ttransport.version};`;
+        if (ttransport.requestNeeded) {
+          this.requestNeeded = ttransport.requestNeeded;
         }
         usable = true;
-        this.workingTransports[name] = transport;
+        this.workingTransports[name] = ttransport;
       }
     }
     if (!usable) {
@@ -212,7 +222,7 @@ export default class ParallelTransport {
   setBridgeLatestUrl(url: string): void {
     for (const name of Object.keys(this.transports)) {
       const transport = this.transports[name];
-      transport.setBridgeLatestUrl(url);
+      transport.transport.setBridgeLatestUrl(url);
     }
   }
 }
