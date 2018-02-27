@@ -16,7 +16,10 @@ function acceptsTransport(t: Transport) {}
 acceptsTransport(new BridgeTransport1());
 acceptsTransport(new BridgeTransport2());
 acceptsTransport(new ExtensionTransport());
-acceptsTransport(new ParallelTransport({"a": new BridgeTransport2()}));
+acceptsTransport(new ParallelTransport({"a": {
+  transport: new BridgeTransport2(),
+  mandatory: false,
+}}));
 acceptsTransport(new FallbackTransport([new BridgeTransport2()]));
 
 acceptsTransport(new LowlevelTransportWithSharedConnections(new WebUsbPlugin(), () => new SharedWorker(`bla`)));
