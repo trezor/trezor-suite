@@ -50,6 +50,7 @@ export async function request(options: HttpRequestOptions): Promise<mixed> {
   let fetchOptions = {
     method: options.method,
     body: wrapBody(options.body),
+    credentials: `same-origin`,
   };
 
   // this is just for flowtype
