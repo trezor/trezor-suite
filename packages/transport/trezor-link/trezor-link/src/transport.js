@@ -21,7 +21,7 @@ export type Transport = {
   enumerate(): Promise<Array<TrezorDeviceInfoWithSession>>;
   listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>>;
   acquire(input: AcquireInput): Promise<string>;
-  release(session: string): Promise<void>;
+  release(session: string, onclose: boolean): Promise<void>;
   configure(signedData: string): Promise<void>;
   call(session: string, name: string, data: Object): Promise<MessageFromTrezor>;
 
