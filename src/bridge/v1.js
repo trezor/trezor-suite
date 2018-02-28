@@ -117,8 +117,12 @@ export default class BridgeTransport {
   }
 
   @debugInOut
-  async release(session: string): Promise<void> {
-    await this._post({url: `/release/` + session});
+  async release(session: string, onclose: boolean): Promise<void> {
+    const res = this._post({url: `/release/` + session});
+    if (onclose) {
+      return;
+    }
+    await res;
   }
 
   @debugInOut

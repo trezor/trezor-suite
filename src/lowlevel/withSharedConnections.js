@@ -64,6 +64,9 @@ export type MessageToSharedWorker = {
   type: 'release-intent',
   session: string,
 } | {
+  type: 'release-onclose',
+  session: string,
+} | {
   type: 'release-done',
 };
 
@@ -195,7 +198,10 @@ export default class LowlevelTransportWithSharedConnections {
   }
 
   @debugInOut
-  async release(session: string): Promise<void> {
+  async release(session: string, onclose: boolean): Promise<void> {
+    if (onclose) {
+      this.sendToWorker({type: `release-onclose`, session});
+    }
     const messback = await this.sendToWorker({type: `release-intent`, session});
     if (messback.type === `double-release`) {
       throw new Error(`Trying to double release.`);

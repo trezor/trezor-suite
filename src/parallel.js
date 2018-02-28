@@ -125,9 +125,9 @@ export default class ParallelTransport {
   }
 
   @debugInOut
-  async release(session: string): Promise<void> {
+  async release(session: string, onclose: boolean): Promise<void> {
     const sessionP = this._parseName(session);
-    return sessionP.transport.release(sessionP.rest);
+    return sessionP.transport.release(sessionP.rest, onclose);
   }
 
   _checkConfigured(): boolean {
