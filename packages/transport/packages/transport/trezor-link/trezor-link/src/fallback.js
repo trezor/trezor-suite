@@ -92,8 +92,8 @@ export default class FallbackTransport {
     return this.activeTransport.acquire(input);
   }
 
-  async release(session: string): Promise<void> {
-    return this.activeTransport.release(session);
+  async release(session: string, onclose: boolean): Promise<void> {
+    return this.activeTransport.release(session, onclose);
   }
 
   async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {

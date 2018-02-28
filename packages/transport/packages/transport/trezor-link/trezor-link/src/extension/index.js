@@ -142,11 +142,15 @@ export default class ChromeExtensionTransport {
   }
 
   @debugInOut
-  async release(session: string): Promise<void> {
-    await this._send({
+  async release(session: string, onclose: boolean): Promise<void> {
+    const res = this._send({
       type: `release`,
       body: maybeParseInt(session),
     });
+    if (onclose) {
+      return;
+    }
+    await res;
   }
 
   @debugInOut
