@@ -81,6 +81,11 @@ function handleMessage({id, message}: {id: number, message: MessageToSharedWorke
     waitInQueue(() => handleGetSessions(id, port, devices));
   }
 
+  if (message.type === `release-onclose`) {
+    const session: string = message.session;
+    waitInQueue(() => handleReleaseOnClose(session));
+  }
+
   if (message.type === `release-intent`) {
     const session: string = message.session;
     waitInQueue(() => handleReleaseIntent(session, id, port));
@@ -94,6 +99,24 @@ function handleReleaseDone(
   id: number
 ) {
   releaseLock({id});
+}
+
+function handleReleaseOnClose(
+  session: string,
+): Promise<void> {
+  let path_: ?string = null;
+  Object.keys(state).forEach(kpath => {
+    if (state[kpath] === session) {
+      path_ = kpath;
+    }
+  });
+  if (path_ == null) {
+    return Promise.resolve();
+  }
+
+  const path: string = path_;
+  delete state[path];
+  return Promise.resolve();
 }
 
 function handleReleaseIntent(
