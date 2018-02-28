@@ -130,6 +130,9 @@ export default class WebUsbPlugin {
       }
 
       const res = await device.transferIn(this.endpointId, 64);
+      if (res.data.byteLength === 0) {
+        return this.receive(path);
+      }
       return res.data.buffer.slice(1);
     } catch (e) {
       if (e.message === `Device unavailable.`) {
