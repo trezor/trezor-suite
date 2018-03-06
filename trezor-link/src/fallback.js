@@ -112,7 +112,6 @@ export default class FallbackTransport {
     }
   }
 
-  @debugInOut
   stop(): void {
     for (const transport of this.transports) {
       transport.stop();
