@@ -107,6 +107,8 @@ export default class LowlevelTransportWithSharedConnections {
   _sharedWorkerFactory: ?() => ?SharedWorker;
   sharedWorker: ?SharedWorker;
 
+  stopped: boolean = false;
+
   constructor(plugin: LowlevelTransportSharedPlugin, sharedWorkerFactory: ?() => ?SharedWorker) {
     this.plugin = plugin;
     this.version = plugin.version;
@@ -318,6 +320,10 @@ export default class LowlevelTransportWithSharedConnections {
   latestId: number = 0;
   defereds: {[id: number]: Defered<MessageFromSharedWorker>} = {};
   sendToWorker(message: MessageToSharedWorker): Promise<MessageFromSharedWorker> {
+    if (this.stopped) {
+      return Promise.reject(`Transport stopped.`);
+    }
+
     this.latestId++;
     const id = this.latestId;
     this.defereds[id] = createDefered();
@@ -340,4 +346,9 @@ export default class LowlevelTransportWithSharedConnections {
   setBridgeLatestUrl(url: string): void {
   }
   isOutdated: boolean = false;
+
+  stop(): void {
+    this.stopped = true;
+    this.sharedWorker = null;
+  }
 }

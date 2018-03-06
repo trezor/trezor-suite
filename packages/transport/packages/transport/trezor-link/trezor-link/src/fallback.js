@@ -111,4 +111,11 @@ export default class FallbackTransport {
       transport.setBridgeLatestUrl(url);
     }
   }
+
+  @debugInOut
+  stop(): void {
+    for (const transport of this.transports) {
+      transport.stop();
+    }
+  }
 }
