@@ -176,6 +176,7 @@ export default class WebUsbPlugin {
     const device: USBDevice = await this._findDevice(path);
 
     await device.releaseInterface(this.interfaceId);
+    await device.reset();
     await device.close();
   }
 
