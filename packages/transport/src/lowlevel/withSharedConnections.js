@@ -200,7 +200,11 @@ export default class LowlevelTransportWithSharedConnections {
   @debugInOut
   async release(session: string, onclose: boolean): Promise<void> {
     if (onclose) {
+      // if we wait for worker messages, shared worker survives
+      // and delays closing
+      // so we "fake" release
       this.sendToWorker({type: `release-onclose`, session});
+      return;
     }
     const messback = await this.sendToWorker({type: `release-intent`, session});
     if (messback.type === `double-release`) {
