@@ -35,11 +35,17 @@ export default class ChromeExtensionTransport {
 
   debug: boolean = false;
 
+  stopped: boolean = false;
+
   constructor(id?: ?string) {
     this.id = id == null ? EXTENSION_ID : id;
   }
 
   async _send(message: messages.ChromeMessage): Promise<mixed> {
+    if (this.stopped) {
+      return Promise.reject(`Transport stopped.`);
+    }
+
     const res = await messages.send(this.id, message);
     const udev = await messages.send(this.id, {type: `udevStatus`});
     this.showUdevError = (udev === `display`);
@@ -175,4 +181,8 @@ export default class ChromeExtensionTransport {
   setBridgeLatestUrl(url: string): void {
   }
   isOutdated: boolean = false;
+
+  stop(): void {
+    this.stopped = true;
+  }
 }
