@@ -27,6 +27,7 @@ export type Transport = {
 
   // resolves when the transport can be used; rejects when it cannot
   init(debug: ?boolean): Promise<void>;
+  stop(): void;
 
   configured: boolean;
   version: string;

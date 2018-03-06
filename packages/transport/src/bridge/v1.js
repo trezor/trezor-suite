@@ -27,16 +27,24 @@ export default class BridgeTransport {
   newestVersionUrl: string;
   debug: boolean = false;
 
+  stopped: boolean = false;
+
   constructor(url?: ?string, newestVersionUrl?: ?string) {
     this.url = url == null ? DEFAULT_URL : url;
     this.newestVersionUrl = newestVersionUrl == null ? DEFAULT_VERSION_URL : newestVersionUrl;
   }
 
   async _post(options: IncompleteRequestOptions): Promise<mixed> {
+    if (this.stopped) {
+      return Promise.reject(`Transport stopped.`);
+    }
     return await http({ ...options, method: `POST`, url: this.url + options.url });
   }
 
   async _get(options: IncompleteRequestOptions): Promise<mixed> {
+    if (this.stopped) {
+      return Promise.reject(`Transport stopped.`);
+    }
     return await http({ ...options, method: `GET`, url: this.url + options.url });
   }
 
@@ -149,5 +157,9 @@ export default class BridgeTransport {
 
   setBridgeLatestUrl(url: string): void {
     this.newestVersionUrl = url;
+  }
+
+  stop(): void {
+    this.stopped = true;
   }
 }
