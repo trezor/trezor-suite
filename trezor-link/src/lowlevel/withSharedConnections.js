@@ -68,6 +68,10 @@ export type MessageToSharedWorker = {
   session: string,
 } | {
   type: 'release-done',
+} | {
+  type: 'enumerate-intent',
+} | {
+  type: 'enumerate-done',
 };
 
 export type MessageFromSharedWorker = {
@@ -119,7 +123,14 @@ export default class LowlevelTransportWithSharedConnections {
   }
 
   async _silentEnumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
-    const devices: Array<TrezorDeviceInfo> = await this.plugin.enumerate();
+    await this.sendToWorker({type: `enumerate-intent`});
+    let devices: Array<TrezorDeviceInfo> = [];
+    try {
+      devices = await this.plugin.enumerate();
+    } finally {
+      await this.sendToWorker({type: `enumerate-done`});
+    }
+
     const sessionsM = await this.sendToWorker({type: `get-sessions-and-disconnect`, devices});
     if (sessionsM.type !== `sessions`) {
       throw new Error(`Wrong reply`);
