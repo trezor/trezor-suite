@@ -170,11 +170,21 @@ export default class WebUsbPlugin {
       await device.reset();
     } catch (e) {
       // write reset error to console, but otherwise ignore
-      // some android devices crash on device.reset
+      // some linux devices (including android)
+      // crash on device.reset or claimInterface
+      // because system auto-claims
       console.error(e);
     }
 
-    await device.claimInterface(this.interfaceId);
+    try {
+      await device.claimInterface(this.interfaceId);
+    } catch (e) {
+      // write reset error to console, but otherwise ignore
+      // some linux devices (including android)
+      // crash on device.reset or claimInterface
+      // because system auto-claims
+      console.error(e);
+    }
   }
 
   @debugInOut
@@ -186,7 +196,7 @@ export default class WebUsbPlugin {
       await device.reset();
     } catch (e) {
       // write reset error to console, but otherwise ignore
-      // some android devices crash on device.reset
+      // some linux devices (incl. android) crash on device.reset
       console.error(e);
     }
     await device.close();
