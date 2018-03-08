@@ -16,7 +16,8 @@ function mapStateToProps(state, own) {
         discovery: state.discovery,
         tokens: state.tokens,
         summary: state.summary,
-        fiatRate: state.web3.fiatRate
+        fiat: state.fiat,
+        localStorage: state.localStorage
     };
 }
 

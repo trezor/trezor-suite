@@ -70,7 +70,9 @@ const Value = (props: any): any => {
                 <span className="label">{ device.instanceLabel }</span>
                 <span className="status">{ deviceStatus }</span>
             </div>
-            { deviceMenu }
+            <div className="device-menu">
+                { deviceMenuButtons }
+            </div>
         </div>
     );
 }

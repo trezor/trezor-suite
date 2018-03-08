@@ -12,11 +12,12 @@ article {
         position: relative;
 
         .account-tabs {
+            position: relative;
             display: flex;
             flex: 1;
             align-items: center;
             justify-content: space-between;
-            padding: 0px 48px;
+            padding: 0px 28px; // 20px padding arround links
             max-width: 600px;
     
             a {
@@ -24,6 +25,9 @@ article {
                 font-size: 14px;
                 color: @color_text_secondary;
                 margin: 0px 4px;
+                padding: 20px;
+                .hover();
+
                 &.active,
                 &:hover {
                     color: @color_text_primary;
@@ -37,6 +41,16 @@ article {
                     margin-right: 0px;
                 }
             }
+
+            .indicator {
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                width: 100px;
+                height: 2px;
+                background: @color_green_primary;
+                transition: all 0.3s ease-in-out;
+            }
         }
     }
 
@@ -48,7 +62,7 @@ article {
 
         h2 {
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             padding: 24px 48px;
         }
     

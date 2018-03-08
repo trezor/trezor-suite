@@ -15,7 +15,6 @@ export const ON_GAS_PRICE_CHANGE: string = 'send__on_gas_price_change';
 export const ON_GAS_LIMIT_CHANGE: string = 'send__on_gas_limit_change';
 export const ON_TX_DATA_CHANGE: string = 'send__on_data_change';
 export const ON_TX_SEND: string = 'send__on_send';
-export const ON_TX_COMPLETE: string = 'send__on_tx_complete';
 export const ON_GAS_PRICE_UPDATE: string = 'send__on_gas_price_update';
 
 

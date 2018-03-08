@@ -38,7 +38,7 @@ const validation = (store: any, params: UrlParams): boolean => {
     if (params.hasOwnProperty('device')) {
         const { devices } = store.getState().connect;
 
-        let device; // = devices.find(d => d.path === params.device || d.features.device_id === params.device);
+        let device;
         if (params.hasOwnProperty('deviceInstance')) {
             device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === params.deviceInstance );
         } else {
@@ -50,7 +50,7 @@ const validation = (store: any, params: UrlParams): boolean => {
 
     if (params.hasOwnProperty('coin')) {
         const { config } = store.getState().localStorage;
-        const coin = config.coins.find(c => c.symbol === params.coin);
+        const coin = config.coins.find(c => c.network === params.coin);
         if (!coin) return false;
         if (!params.address) return false;
     }

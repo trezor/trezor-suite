@@ -25,9 +25,8 @@
     "coins": [
         { 
             "name": "Ethereum Ropsten",
-            "symbol": "eth",
-            "network": "ropsten-eth",
-            "shortcut": "eth",
+            "symbol": "tETH",
+            "network": "ropsten",
             "bip44": "m/44'/60'/0'/0",
             "defaultGasPrice": 64,
             "defaultGasLimit": 21000,
@@ -38,16 +37,15 @@
                     "urls": [
                         "https://ropsten.infura.io/QGyVKozSUEh2YhL4s2G4",
                         "http://10.34.2.5:8545"
-                    ],
-                    "explorer": "https://blockexplorer.com"
+                    ]
                 }
-            ]
+            ],
+            "explorer": "https://ropsten.etherscan.io"
         },
         { 
             "name": "Ethereum Rinkeby",
-            "symbol": "etc",
-            "network": "ropsten-eth",
-            "shortcut": "etc",
+            "symbol": "tETH",
+            "network": "rinkeby",
             "bip44": "m/44'/61'/0'/0",
             "defaultGasPrice": 64,
             "defaultGasLimit": 21000,
@@ -56,18 +54,27 @@
                 {
                     "name": "TREZOR Wallet - Ethereum",
                     "urls": [
-                        "https://rinkeby.infura.io/QGyVKozSUEh2YhL4s2G4",
-                        "http://10.34.2.5:8545"
-                    ],
-                    "explorer": "https://blockexplorer.com"
+                        "https://rinkeby.infura.io/QGyVKozSUEh2YhL4s2G4"
+                    ]
                 }
-            ]
+            ],
+            "explorer": "https://rinkeby.etherscan.io"
         }
     ],
 
     "fiatValueTickers": [
-
+        { 
+            "network": "ropsten",
+            "url": "https://api.coinmarketcap.com/v1/ticker/ethereum/"
+        },
+        { 
+            "network": "rinkeby",
+            "url": "https://api.coinmarketcap.com/v1/ticker/ethereum-classic/"
+        }
     ],
+
+
+    
 
     "bridge": {
         "url": "https://localback.net:21324",
@@ -76,6 +83,20 @@
     },
     "extensionId": "jcjjhjgimijdkoamemaghajlhegmoclj",
     "storageVersion": "1.1.0",
-    "metadataVersion": "1.0.0"
+    "metadataVersion": "1.0.0",
+
+
+    "supportedBrowsers": {
+        "chrome": {
+            "version": 59,
+            "download": "https://www.google.com/chrome/",
+            "update": "https://support.google.com/chrome/answer/95414"
+        },
+        "firefox": {
+            "version": 54,
+            "download": "https://www.mozilla.org/en-US/firefox/new/",
+            "update": "https://support.mozilla.org/en-US/kb/update-firefox-latest-version"
+        }
+    }
 
 }

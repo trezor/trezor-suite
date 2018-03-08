@@ -38,7 +38,7 @@ const History = (props): any => {
 
                 return (
                     <div key={i} className="history-pending-transaction">
-                        <a href={ etherscanLink } target="_blank">Details</a>
+                        <a href={ etherscanLink } target="_blank" rel="noreferrer noopener">Details</a>
                         <span className="address">{ tx.to }</span>
                         Pending...
                     </div>

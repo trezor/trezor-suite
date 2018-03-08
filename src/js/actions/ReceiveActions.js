@@ -65,6 +65,7 @@ export const showAddress = (address_n: string): any => {
     return async (dispatch, getState) => {
 
         const selected = findSelectedDevice(getState().connect);
+        if (!selected) return;
 
         if (selected && !selected.connected) {
             dispatch({

@@ -12,6 +12,7 @@ import reducers from '../reducers';
 import services from '../services';
 import { Middleware } from 'redux';
 import { GenericStoreEnhancer } from 'redux';
+import RavenMiddleware from 'redux-raven-middleware';
 
 export const history = createHistory( { queryKey: false } );
 
@@ -19,6 +20,7 @@ const initialState: any = {};
 const enhancers = [];
 const middleware = [
     thunk,
+    RavenMiddleware('https://497392c3ff6e46dc9e54eef123979378@sentry.io/294339'),
     routerMiddleware(history)
 ];
 

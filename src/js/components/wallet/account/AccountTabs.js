@@ -1,8 +1,61 @@
 /* @flow */
 'use strict';
 
-import React from 'react';
+import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+
+type State = {
+    style: any;
+
+}
+
+class Indicator extends Component {
+
+    state: State;
+
+    constructor(props: any) {
+        super(props);
+
+        this.state = {
+            style: {
+                width: 0,
+                left: 0
+            },
+        }
+    }
+
+    componentDidMount() {
+        this.reposition();
+    }
+
+    componentDidUpdate(newProps: any) {
+        this.reposition();
+    }
+
+    reposition() {
+        const tabs = document.querySelector('.account-tabs');
+        const active = tabs.querySelector('.active');
+        const bounds = active.getBoundingClientRect();
+
+        const left = bounds.left - tabs.getBoundingClientRect().left;
+
+        if (this.state.style.left !== left) {
+            this.setState({
+                style: {
+                    width: bounds.width,
+                    left: left,
+                }
+            })
+        }
+
+    }
+
+    render() {
+        return (
+            <div className="indicator" style={ this.state.style }>{ this.props.pathname }</div>
+        );
+    }
+}
 
 const AccountTabs = (props: any): any => {
 
@@ -24,9 +77,10 @@ const AccountTabs = (props: any): any => {
             <NavLink to={ `${basePath}/receive` }>
                 Receive
             </NavLink>
-            <NavLink to={ `${basePath}/signverify` }>
+            {/* <NavLink to={ `${basePath}/signverify` }>
                 Sign &amp; Verify
-            </NavLink>
+            </NavLink> */}
+            <Indicator pathname={props.match.pathname } />
         </div>
     );
 }

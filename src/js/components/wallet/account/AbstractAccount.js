@@ -14,25 +14,6 @@ export default class AbstractAccount extends Component {
         this.props.updateAccount();
     }
 
-    // shouldInitAccount(newProps: any): boolean {
-    //     const locationChanged: boolean = newProps.location.pathname !== this.props.location.pathname;
-    //     const accountNotLoaded: boolean = !newProps.detail.loaded && !this.props.detail.loaded;
-    //     return (locationChanged || accountNotLoaded);
-    // }
-
-    // shouldUpdateAccount(newProps: any): boolean {
-    //     const { detail } = this.props;
-    //     const loaded: boolean = detail.loaded;
-
-    //     if (detail.address === '') {
-    //         const currentAccount = this.props.accounts.find(a => a.index === detail.addressIndex && a.coin === detail.coin && a.checksum === detail.checksum);
-
-    //     }
-        
-        
-    //    // return (loaded && );
-    // }
-
     componentWillUnmount() {
         this.props.disposeAccount();
     }

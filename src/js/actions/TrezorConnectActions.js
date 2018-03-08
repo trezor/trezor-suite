@@ -19,7 +19,7 @@ import { getTransactionHistory } from '../services/EtherscanService';
 
 import { push } from 'react-router-redux';
 
-import { init as initWeb3, getNonce, getBalanceAsync, getTokenBalanceAsync } from './Web3Actions';
+import { init as initWeb3, getNonceAsync, getBalanceAsync, getTokenBalanceAsync } from './Web3Actions';
 
 import type { Discovery } from '../reducers/DiscoveryReducer';
 import { resolveAfter } from '../utils/promiseUtils';
@@ -53,6 +53,10 @@ export const init = (): any => {
         try {
             await TrezorConnect.init({
                 transport_reconnect: true,
+                coins_src: './data/coins.json',
+                firmware_releases_src: './data/releases-1.json',
+                transport_config_src: './data/config_signed.bin',
+                latest_bridge_src: './data/latest.txt'
             });
 
             setTimeout(() => {
@@ -116,12 +120,19 @@ export const postInit = (): any => {
 export const initConnectedDevice = (device: any): any => {
     return (dispatch, getState): void => {
 
+        //dispatch( onSelectDevice(device) );
+
         const selected = findSelectedDevice(getState().connect);
-        if (device.unacquired && selected && selected.path !== device.path && !selected.connected) {
+        if (selected && selected.checksum) {
             dispatch( onSelectDevice(device) );
         } else if (!selected) {
             dispatch( onSelectDevice(device) );
         }
+        // if (device.unacquired && selected && selected.path !== device.path && !selected.connected) {
+        //     dispatch( onSelectDevice(device) );
+        // } else if (!selected) {
+        //     dispatch( onSelectDevice(device) );
+        // }
     }
 }
 
@@ -235,47 +246,27 @@ export const getSelectedDeviceState = (): any => {
 export const deviceDisconnect = (device: any): any => {
     return async (dispatch, getState): Promise<void> => {
 
-        if (!device || !device.features) return null;
-
         const selected = findSelectedDevice(getState().connect);
-        if (selected && selected.features.device_id === device.features.device_id) {
-            stopDiscoveryProcess(selected);
+
+        if (device && device.features) {
+            if (selected && selected.features.device_id === device.features.device_id) {
+                stopDiscoveryProcess(selected);
+            }
+
+            const affected = getState().connect.devices.filter(d => d.features && d.checksum && !d.remember && d.features.device_id === device.features.device_id);
+            if (affected.length > 0) {
+                dispatch({
+                    type: CONNECT.REMEMBER_REQUEST,
+                    device,
+                    allInstances: affected
+                });
+            }
         }
 
-        const affected = getState().connect.devices.filter(d => d.features && d.checksum && !d.remember && d.features.device_id === device.features.device_id);
-        if (affected.length > 0) {
-            dispatch({
-                type: CONNECT.REMEMBER_REQUEST,
-                device,
-                allInstances: affected
-            });
-        }
-
-
-        // if (selected && selected.checksum) {
-        //     if (device.features && device.features.device_id === selected.features.device_id) {
-        //         stopDiscoveryProcess(selected);
-        //     } 
-        // }
-
-        
-
-        // // stop running discovery process on this device
-        // if (selected && selected.path === device.path){
-        //     if (selected.checksum) {
-        //         stopDiscoveryProcess(selected);
-        //     }
-        // }
-
-        // // check if disconnected device was remembered before. 
-        // // request modal if not 
-        // const affected = getState().connect.devices.filter(d => d.path === device.path && d.checksum && !device.remember);
-        
-
-        // check if reload is needed
         if (!selected) {
             dispatch( switchToFirstAvailableDevice() );
         }
+
     }
 }
 
@@ -397,7 +388,7 @@ export const beginDiscoveryProcess = (device: any, coin: string): any => {
     return async (dispatch, getState) => {
 
         const { config } = getState().localStorage;
-        const coinToDiscover = config.coins.find(c => c.symbol === coin);
+        const coinToDiscover = config.coins.find(c => c.network === coin);
 
         // TODO: validate device checksum
         // const checksum = await __acquire(device.path, device.instance);
@@ -455,7 +446,7 @@ export const beginDiscoveryProcess = (device: any, coin: string): any => {
         // send data to reducer
         dispatch({
             type: DISCOVERY.START,
-            coin: coinToDiscover.shortcut,
+            coin: coinToDiscover.network,
             device,
             xpub: response.data.publicKey,
             basePath,
@@ -574,7 +565,7 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
             })
         }
 
-        const nonce = await getNonce(web3instance.web3, ethAddress);
+        const nonce = await getNonceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
         dispatch({
             type: ADDRESS.SET_NONCE,

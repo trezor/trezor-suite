@@ -5,36 +5,32 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as SendFormActions from '../../actions/SendFormActions';
-import { getAddress } from '../../actions/TrezorConnectActions';
-
+import * as LogActions from '../../actions/LogActions';
 
 const Log = (props: any) => {
+
+    if (!props.log.opened)
+        return null;
+    
     return (
-        <details className="log">
-            Log
-        </details>
+        <div className="log">
+            <button className="log-close transparent" onClick={ props.toggle }></button>
+            <h2>Log</h2>
+            <p>Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.</p>
+            <textarea></textarea>
+        </div>
     )
-}
-
-function mapStateToProps(state, own) {
-    
-}
-
-function mapDispatchToProps(dispatch) {
-    
 }
 
 export default connect( 
     (state) => {
         return {
-            accounts: state.accounts,
-            receive: state.receive
+            log: state.log
         };
     },
     (dispatch) => {
         return { 
-            getAddress: bindActionCreators(getAddress, dispatch),
+            toggle: bindActionCreators(LogActions.toggle, dispatch),
         };
     }
 )(Log);

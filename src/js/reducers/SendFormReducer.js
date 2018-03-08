@@ -13,6 +13,7 @@ export type State = {
     +checksum: ?string;
     +accountIndex: number;
     +coin: string;
+    +coinSymbol: string;
     token: string;
     location: string;
     
@@ -36,7 +37,6 @@ export type State = {
     nonce: string;
     total: string;
     sending: boolean;
-    sendingStatus: ?SendStatus;
     errors: {[k: string]: string};
     warnings: {[k: string]: string};
     infos: {[k: string]: string};
@@ -48,15 +48,12 @@ export type FeeLevel = {
     value: string;
 }
 
-type SendStatus = {
-    success: boolean;
-    message: string;
-}
 
 export const initialState: State = {
     checksum: null,
     accountIndex: 0,
     coin: '',
+    coinSymbol: '',
     token: '',
     location: '',
 
@@ -64,8 +61,8 @@ export const initialState: State = {
     untouched: true,
     touched: {},
     balanceNeedUpdate: false,
-    //address: '',
-    address: '0x574BbB36871bA6b78E27f4B4dCFb76eA0091880B',
+    address: '',
+    //address: '0x574BbB36871bA6b78E27f4B4dCFb76eA0091880B',
     amount: '',
     setMax: false,
     feeLevels: [],
@@ -78,7 +75,6 @@ export const initialState: State = {
     nonce: '0',
     total: '0',
     sending: false,
-    sendingStatus: null,
     errors: {},
     warnings: {},
     infos: {},
@@ -166,26 +162,32 @@ export default (state: State = initialState, action: any): State => {
             return {
                 ...state,
                 sending: true,
-                sendingStatus: null,
             }
 
         case SEND.TX_COMPLETE :
             return {
                 ...state,
+
                 sending: false,
-                sendingStatus: {
-                    success: true,
-                    message: action.txid
-                }
+                touched: {},
+                address: '',
+                amount: '',
+                setMax: false,
+                gasPriceNeedsUpdate: false,
+                gasLimit: state.gasLimit,
+                gasPrice: state.recommendedGasPrice,
+                data: '',
+                nonce: '0',
+                total: '0',
+                errors: {},
+                warnings: {},
+                infos: {},
+
             }
         case SEND.TX_ERROR :
             return {
                 ...state,
                 sending: false,
-                sendingStatus: {
-                    success: false,
-                    message: action.response
-                }
             }
 
 

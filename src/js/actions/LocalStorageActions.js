@@ -35,7 +35,6 @@ export function loadTokensFromJSON(): any {
             const ethERC20 = await httpRequest('data/ethERC20.json', 'json');
 
             const devices: ?string = get('devices');
-            console.log("GET23", JSON.parse(devices))
             if (devices) {
                 dispatch({
                     type: CONNECT.DEVICE_FROM_STORAGE,
@@ -56,6 +55,14 @@ export function loadTokensFromJSON(): any {
                 dispatch({
                     type: TOKEN.FROM_STORAGE,
                     payload: JSON.parse(tokens)
+                })
+            }
+
+            const pending: ?string = get('pending');
+            if (pending) {
+                dispatch({
+                    type: 'PENDING.FROM_STORAGE',
+                    payload: JSON.parse(pending)
                 })
             }
 
@@ -88,12 +95,11 @@ export function loadTokensFromJSON(): any {
 export const save = (key: string, value: string): any => {
     return (dispatch, getState) => {
         if (typeof window.localStorage !== 'undefined') {
-            //console.log("SAVEE!!!!", key, value)
             try {
                 window.localStorage.setItem(key, value);
             } catch (error) {
                 // available = false;
-                console.error("ERROR: " + error)
+                console.error("Local Storage ERROR: " + error)
             }
         }
     }
@@ -102,7 +108,6 @@ export const save = (key: string, value: string): any => {
 export const get = (key: string): ?string => {
     if (typeof window.localStorage !== 'undefined') {
         try {
-            console.log("GETTT", JSON.parse(window.localStorage.getItem(key)))
             return window.localStorage.getItem(key);
         } catch (error) {
             // available = false;

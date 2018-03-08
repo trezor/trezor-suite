@@ -133,8 +133,8 @@ export default class Pin extends Component {
                     <button type="button" data-value="3" onClick={ event => this.onPinAdd(3) }>&#8226;</button>
                 </div>
                 
-                <div><button className="submit" type="button" onClick={ event => onPinSubmit(pin) }>Enter pin</button></div>
-                <p>Not sure how PIN works? <a className="green" href="http://doc.satoshilabs.com/trezor-user/enteringyourpin.html" target="_blank">Learn more</a></p>
+                <div><button className="submit" type="button" onClick={ event => onPinSubmit(pin) }>Enter PIN</button></div>
+                <p>Not sure how PIN works? <a className="green" href="http://doc.satoshilabs.com/trezor-user/enteringyourpin.html" target="_blank" rel="noreferrer noopener">Learn more</a></p>
             </div>
         );
     }

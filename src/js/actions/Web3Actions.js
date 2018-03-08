@@ -15,6 +15,41 @@ import { httpRequest } from '../utils/networkUtils';
 
 type ActionMethod = (dispatch: any, getState: any) => Promise<any>;
 
+type Web3Payload = 
+| {
+    name: string;
+    instance: Web3;
+    chainId: number;
+    erc20abi: any;
+}
+| {
+    network: string;
+    blockHash: string;
+}
+| {
+    network: string;
+    gasPrice: string;
+}
+| {
+    network: string;
+    address: string;
+    balance: string;
+}
+| {
+    network: string;
+    address: string;
+    nonce: string;
+}
+| {
+    network: string;
+    blockHash: string;
+};
+
+type Web3Action = {
+    type: string,
+    payload?: Web3Payload 
+};
+
 
 export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
     return async (dispatch, getState) => {
@@ -30,7 +65,7 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
             return;
         }
 
-        const coinName = coin.shortcut;
+        const coinName = coin.network;
         const urls = coin.backends[0].urls;
 
         let web3host: string = urls[0];
@@ -106,36 +141,42 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
                 //const shh = instance.shh.newIdentity();
 
                 const latestBlockFilter = instance.eth.filter('latest');
-                latestBlockFilter.watch(async (error, blockHash) => {
 
+                const onBlockMined = async (error, blockHash) => {
                     if (error) {
-                        console.warn("ERROR!", error);
 
-                        // setInterval(() => {
-                        //     dispatch( getGasPrice(coinName) );
-                        // }, 5000);
+                        window.setTimeout(() => {
+                            // try again
+                            onBlockMined("manually_triggered_error", undefined);
+                        }, 30000);
                     }
-                    
-                    dispatch({
-                        type: WEB3.BLOCK_UPDATED,
-                        name: coinName,
-                        blockHash
-                    });
+
+                    if (blockHash) {
+                        dispatch({
+                            type: WEB3.BLOCK_UPDATED,
+                            name: coinName,
+                            blockHash
+                        });
+                    }
 
                     // TODO: filter only current device
                     const accounts = getState().accounts.filter(a => a.coin === coinName);
                     for (const addr of accounts) {
                         dispatch( getBalance(addr) );
+                        dispatch( getNonce(addr) );
                     }
 
                     dispatch( getGasPrice(coinName) );
 
-                    // if (pendingTxs.length > 0) {
-                    //     for (const tx of pendingTxs) {
-                    //         dispatch( getTransactionReceipt(tx) );
-                    //     }
-                    // }
-                });
+                    const pending = getState().pending.filter(p => p.coin === coinName);
+                    for (const tx of pending) {
+                        dispatch( getTransactionReceipt(tx) );
+                    }
+
+                }
+
+                latestBlockFilter.watch(onBlockMined);
+
 
                 // init next coin
                 dispatch( init(instance, coinIndex + 1) );
@@ -238,18 +279,46 @@ export function getBalance(addr: Address): ActionMethod {
     }
 }
 
-export function getTransactionReceipt(txid: string): any {
+export function getNonce(addr: Address) {
+
     return async (dispatch, getState) => {
-        const { web3 } = getState().web3;
-        //web3.eth.getTransactionReceipt(txid, (error, tx) => {
-        web3.eth.getTransaction(txid, (error, tx) => {
-            if (tx && tx.blockNumber) {
-                web3.eth.getBlock(tx.blockHash, (error, block) => {
-                    console.log("---MAMM BLOCK", error, block, tx, tx.blockHash)
+
+        const web3instance = getState().web3.filter(w3 => w3.coin === addr.coin)[0];
+        const web3 = web3instance.web3;
+
+        web3.eth.getTransactionCount(addr.address, (error, result) => {
+            if (!error) {
+                if (addr.nonce !== result) {
                     dispatch({
-                        type: ACTIONS.TX_CONFIRMED,
-                        txid,
+                        type: ADDRESS.SET_NONCE,
+                        address: addr.address,
+                        nonce: result
+                    });
+                }
+
+                
+            }
+        });
+    }
+}
+
+export function getTransactionReceipt(tx: any): any {
+    return async (dispatch, getState) => {
+
+        const web3instance = getState().web3.filter(w3 => w3.coin === tx.coin)[0];
+        const web3 = web3instance.web3;
+
+        //web3.eth.getTransactionReceipt(txid, (error, tx) => {
+        web3.eth.getTransaction(tx.id, (error, receipt) => {
+            console.log("RECEIP", receipt)
+            if (receipt && receipt.blockNumber) {
+                web3.eth.getBlock(receipt.blockHash, (error, block) => {
+                    console.log("---MAMM BLOCK", error, block, receipt, receipt.blockHash)
+                    dispatch({
+                        //type: ACTIONS.TX_CONFIRMED,
+                        type: WEB3.PENDING_TX_RESOLVED,
                         tx,
+                        receipt,
                         block
                     })
                 });
@@ -306,7 +375,7 @@ export const getTokenBalanceAsync = (erc20: any, token: any, address: any): Prom
     });
 }
 
-export function getNonce(web3, address) {
+export function getNonceAsync(web3, address) {
     return new Promise((resolve, reject) => {
         web3.eth.getTransactionCount(address, (error, result) => {
             if (error) {
@@ -388,81 +457,6 @@ export function pushTx(web3, tx) {
         });
     })
 }
-
-export function composeTransaction() {
-    return async function (dispatch, getState) {
-        const { web3 } = getState().web3;
-        const { address, amount } = getState().sendForm;
-
-        const resp = await TrezorConnect.getPublicKey({ path: "m/44'/60'/0'/0", confirmation: false });
-        
-        const hdk = new HDKey();
-        hdk.publicKey = new Buffer(resp.data.publicKey, 'hex');
-        hdk.chainCode = new Buffer(resp.data.chainCode, 'hex');
-
-        const derivedKey = hdk.derive("m/0");
-        const myAddress = EthereumjsUtil.publicToAddress(derivedKey.publicKey, true);
-
-        const txData = {
-            address_n: [
-                (44 | 0x80000000) >>> 0,
-                (60 | 0x80000000) >>> 0,
-                (0  | 0x80000000) >>> 0,
-                0, 0
-            ],
-            to: address,
-            value: web3.toHex(web3.toWei(amount, 'ether')),
-            data,
-            chainId: 3
-        }
-
-        console.log("NONCE", myAddress)
-        const nonce = await getNonce(web3, '0x' + myAddress.toString('hex') );
-        console.log("NONCE", nonce)
-
-        const gasOptions = {
-            to: txData.to,
-            data: txData.data
-        }
-        const gasLimit = await estimateGas(web3, gasOptions);
-        const gasPrice = await getGasPrice(web3);
-
-        txData.nonce = web3.toHex(nonce);
-        txData.gasLimit = web3.toHex(gasLimit);
-        txData.gasPrice = web3.toHex(gasPrice);
-
-        console.log("NONCE", nonce, gasLimit, gasPrice)
-
-        let signedTransaction = await TrezorConnect.ethereumSignTransaction({
-            //path: "m/44'/60'/0'/0/0",
-            address_n: txData.address_n,
-            nonce: strip(txData.nonce),
-            gas_price: strip(txData.gasPrice),
-            gas_limit: strip(txData.gasLimit),
-            to: strip(txData.to),
-            value: strip(txData.value),
-            data: txData.data,
-            chain_id: txData.chainId
-        });
-
-        txData.r = '0x' + signedTransaction.data.r;
-        txData.s = '0x' + signedTransaction.data.s;
-        txData.v = web3.toHex(signedTransaction.data.v);
-
-        const tx = new EthereumjsTx(txData);
-        const serializedTx = '0x' + tx.serialize().toString('hex');
-
-        const txid = await pushTx(web3, serializedTx);
-
-        dispatch({
-            type: 'tx_complete',
-            txid
-        })
-
-        console.log("TXID", txid);
-    }
-}
-
 
 
 

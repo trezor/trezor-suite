@@ -7,3 +7,4 @@ export const CREATE: string = 'web3__create';
 export const READY: string = 'web3__ready';
 export const BLOCK_UPDATED: string = 'web3__block_updated';
 export const GAS_PRICE_UPDATED: string = 'web3__gas_price_updated';
+export const PENDING_TX_RESOLVED: string = 'web3__pending_tx_resolved';

@@ -8,6 +8,7 @@ import LocalStorageError from './LocalStorageError';
 import TrezorConnectError from './TrezorConnectError';
 import Header from '../common/Header';
 import Footer from '../common/Footer';
+import Log from '../common/Log';
 import { Notification } from '../common/Notification';
 
 export default (props: any): any => {
@@ -40,6 +41,7 @@ export default (props: any): any => {
             <div className="app connect-device">
                 <Header />
                 { notification }
+                <Log />
                 <main>
                     <h2 className="claim">The private bank in your hands.</h2>
                     <p>TREZOR Wallet is an easy-to-use interface for your TREZOR.</p>
@@ -59,10 +61,11 @@ export default (props: any): any => {
                             </span>
                         </p>
                         {/* <button>Add new device</button> */}
-                        {/* <p>Don't have TREZOR? <a href="https://trezor.io/" target="_blank">Get one</a></p> */}
+                        {/* <p>Don't have TREZOR? <a href="https://trezor.io/" target="_blank" rel="noreferrer noopener">Get one</a></p> */}
                     </div>
-                    <div className="image"></div>
-                    <p>Don't have TREZOR? <a href="https://trezor.io/" className="green" target="_blank">Get one</a></p>
+                    <div className="image">
+                        <p>Don't have TREZOR? <a href="https://trezor.io/" className="green" target="_blank" rel="noreferrer noopener">Get one</a></p>
+                    </div>
                 </main>
                 <Footer />
             </div>

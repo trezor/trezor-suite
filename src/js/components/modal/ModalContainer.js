@@ -103,6 +103,7 @@ const mapStateToProps = (state: any, own: any): any => {
         devices: state.connect.devices,
         sendForm: state.sendForm,
         receive: state.receive,
+        localStorage: state.localStorage
     };
 }
 

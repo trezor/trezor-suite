@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import AdvancedForm from './AdvancedForm';
+import PendingTransactions from './PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './FeeSelect';
 import { Notification } from '../../common/Notification';
 import AbstractAccount from '../account/AbstractAccount';
@@ -27,6 +28,7 @@ const _render = (props: any): any => {
         amount,
         setMax,
         coin,
+        coinSymbol,
         token,
         feeLevels,
         fee,
@@ -38,7 +40,6 @@ const _render = (props: any): any => {
         infos,
         advanced,
         sending,
-        sendingStatus
     } = props.sendForm;
 
     const {
@@ -51,11 +52,14 @@ const _render = (props: any): any => {
         onSend,
     } = props.sendFormActions;
 
-    //const addressTokens = props.tokens.filter(t => t.ethAddress === currentAccount.address);
+    const { config } = props.localStorage;
+    const selectedCoin = config.coins.find(c => c.network === coin);
+    const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
+
     const tokens = addressTokens.map(t => {
         return { value: t.symbol, label: t.symbol };
     });
-    tokens.unshift({ value: coin, label: coin.toUpperCase() });
+    tokens.unshift({ value: selectedCoin.network, label: selectedCoin.symbol });
 
     const setMaxClassName: string = setMax ? 'set-max enabled' : 'set-max';
 
@@ -75,12 +79,12 @@ const _render = (props: any): any => {
         addressClassName = 'valid';
     }
 
-    let buttonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || address.length === 0 || sending;
+    let buttonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
     let buttonLabel: string = 'Send';
     if (coin !== token && amount.length > 0 && !errors.amount) {
         buttonLabel += ` ${amount} ${ token.toUpperCase() }`
     } else if (coin === token && total !== '0') {
-        buttonLabel += ` ${total} ${ token.toUpperCase() }`;
+        buttonLabel += ` ${total} ${ selectedCoin.symbol }`;
     }
 
     //const device = props.devices.find(d => d.checksum === currentAccount.checksum);
@@ -90,13 +94,6 @@ const _render = (props: any): any => {
     }
 
     let notification = null;
-    // if (sendingStatus) {
-    //     if (sendingStatus.success) {
-    //         notification = (<Notification className="success" title="Transaction sent" message={ sendingStatus.message } />);
-    //     } else {
-    //         notification = (<Notification className="error" title="Transaction error" message={ sendingStatus.message } />);
-    //     }
-    // }
 
     return (
         <section className="send-form">
@@ -171,6 +168,8 @@ const _render = (props: any): any => {
             <AdvancedForm { ...props}>
                 <button disabled={ buttonDisabled } onClick={ event => onSend() }>{ buttonLabel }</button>
             </AdvancedForm>
+
+            <PendingTransactions {...props} selectedCoin={selectedCoin} />
     
         </section>
     );

@@ -47,12 +47,21 @@ const forget = (state: Array<Token>, action: any): Array<Token> => {
     return state.filter(t => t.checksum !== action.device.checksum);
 }
 
+const remove = (state: Array<Token>, action: any): Array<Token> => {
+    return state.filter(t => {
+        return !(t.ethAddress === action.token.ethAddress && t.address === action.token.address);
+    });
+}
+
 export default (state: Array<Token> = initialState, action: any): Array<Token> => {
 
     switch (action.type) {
 
         case TOKEN.ADD :
             return create(state, action.payload);
+
+        case TOKEN.REMOVE :
+            return remove(state, action);
 
         case TOKEN.SET_BALANCE :
             return setBalance(state, action.payload);

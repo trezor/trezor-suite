@@ -46,7 +46,7 @@ const AdvancedForm = (props: any): any => {
             Gas Price is the amount you pay per unit of gas.<br/>
             <span>TX fee = gas price * gas limit</span> &amp; is paid to miners for including your TX in a block.<br/>
             Higher the gas price = faster transaction, but more expensive. Default is <span>{ gasPrice } GWEI.</span><br/>
-            <a className="green" href="https://myetherwallet.github.io/knowledge-base/gas/what-is-gas-ethereum.html" target="_blank">Read more</a>
+            <a className="green" href="https://myetherwallet.github.io/knowledge-base/gas/what-is-gas-ethereum.html" target="_blank" rel="noreferrer noopener">Read more</a>
         </div>
     );
 
@@ -122,8 +122,6 @@ const AdvancedForm = (props: any): any => {
             <div className="row">
                 { props.children }
             </div>
-
-            <ReactTooltip html={true} effect="solid" place="right" offset={{ bottom: 6, right: 24 }} />
 
         </div>
     )

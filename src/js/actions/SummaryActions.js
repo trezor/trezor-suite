@@ -106,11 +106,12 @@ export const onDetailsToggle = (): any => {
 
 
 
-export const loadTokens = (input: string): any => {
+export const loadTokens = (input: string, account: any): any => {
     return async (dispatch, getState): Promise<any> => {
 
         if (input.length < 1) return null;
 
+        // TODO (eth tokens, etc tokens, ropsten tokens ...)
         const { ethTokens } = getState().localStorage;
 
         const value = input.toLowerCase();
@@ -121,17 +122,13 @@ export const loadTokens = (input: string): any => {
         );
         //const result = ethTokens.filter(t => t.symbol.toLowerCase().indexOf(lower) >= 0);
 
-        console.log("RESULT!", result.length, result)
-
         if (result.length > 0) {
             return { options: result };
         } else {
-            const web3instance = getState().web3.find(w3 => w3.coin === 'eth');
+            const web3instance = getState().web3.find(w3 => w3.coin === account.coin);
 
             const info = await getTokenInfoAsync(web3instance.erc20, input);
             info.address = input;
-
-            console.log("FETCH", info)
 
             if (info) {
                 return {
@@ -143,13 +140,9 @@ export const loadTokens = (input: string): any => {
                 }
             }
 
-
             //await resolveAfter(300000);
             //await resolveAfter(3000);
 
-            
-
-            
         }
 
     }
@@ -158,10 +151,7 @@ export const loadTokens = (input: string): any => {
 export const selectToken = (token: any, account: any): any => {
     return async (dispatch, getState): Promise<any> => {
 
-        console.warn("ADD", token, account)
-
         const web3instance = getState().web3.find(w3 => w3.coin === account.coin);
-
         dispatch({
             type: TOKEN.ADD,
             payload: {
@@ -171,7 +161,6 @@ export const selectToken = (token: any, account: any): any => {
             }
         });
 
-        // TODO: load token balance
         const tokenBalance = await getTokenBalanceAsync(web3instance.erc20, token.address, account.address);
         dispatch({
             type: TOKEN.SET_BALANCE,
@@ -182,6 +171,13 @@ export const selectToken = (token: any, account: any): any => {
             }
         })
 
+    }
+}
+
+export const removeToken = (token: any): any => {
+    return {
+        type: TOKEN.REMOVE,
+        token
     }
 }
 

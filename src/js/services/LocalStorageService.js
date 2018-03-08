@@ -10,6 +10,8 @@ import * as MODAL from '../actions/constants/Modal';
 import * as TOKEN from '../actions/constants/Token';
 import * as ADDRESS from '../actions/constants/Address';
 import * as DISCOVERY from '../actions/constants/Discovery';
+import * as SEND from '../actions/constants/SendForm';
+import * as WEB3 from '../actions/constants/Web3';
 
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js
@@ -34,10 +36,17 @@ const findDiscovery = (devices, discovery) => {
     }, []);
 }
 
+const findPendingTxs = (accounts, pending) => {
+    return accounts.reduce((arr, account) => {
+        return arr.concat(pending.filter(a => a.address === account.address));
+    }, []);
+}
+
 const save = (dispatch, getState) => {
     const devices = getState().connect.devices.filter(d => d.remember === true && !d.unacquired);
     const accounts = findAccounts(devices, getState().accounts);
     const tokens = findTokens(accounts, getState().tokens);
+    const pending = findPendingTxs(accounts, getState().pending);
     const discovery = findDiscovery(devices, getState().discovery);
 
     // save devices
@@ -51,6 +60,9 @@ const save = (dispatch, getState) => {
 
     // tokens
     dispatch( LocalStorageActions.save('tokens', JSON.stringify( tokens ) ) );
+
+    // pending transactions
+    dispatch( LocalStorageActions.save('pending', JSON.stringify( pending ) ) );
 }
 
 
@@ -74,6 +86,7 @@ const LocalStorageService = (store: any) => (next: any) => (action: any) => {
         break;
 
         case TOKEN.ADD :
+        case TOKEN.REMOVE :
         case TOKEN.SET_BALANCE :
             save(store.dispatch, store.getState);
             // store.dispatch( LocalStorageActions.save('tokens', JSON.stringify( tokens ) ) );
@@ -101,6 +114,11 @@ const LocalStorageService = (store: any) => (next: any) => (action: any) => {
             save(store.dispatch, store.getState);
             //store.dispatch( LocalStorageActions.save('devices', JSON.stringify( store.getState().connect.devices.filter(d => d.remember === true && !d.unacquired) ) ) );
             // store.dispatch( LocalStorageActions.save('selectedDevice', JSON.stringify( store.getState().connect.selectedDevice ) ) );
+        break;
+
+        case SEND.TX_COMPLETE :
+        case WEB3.PENDING_TX_RESOLVED :
+            save(store.dispatch, store.getState);
         break;
 
     }

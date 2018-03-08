@@ -1,8 +1,27 @@
 .summary {
 
-    h2 {
-        //padding: 35px 50px 0px 50px;
-        color: red;
+    .summary-header {
+        display: flex;
+        align-items: center;
+        &:before {
+            content: '';
+            display: inline-block;
+            width: 32px;
+            height: 22px;
+            background-repeat: no-repeat;
+            background-size: 20px 20px;
+        }
+
+        &.ropsten:before,
+        &.eth:before {
+            background-image: url('../images/eth-logo.png');
+            background-size: auto 20px;
+        }
+        &.rinkeby:before,
+        &.etc:before {
+            background-image: url('../images/etc-logo.png');
+            background-size: auto 20px;
+        }
     }
 
     .token-select {
@@ -36,25 +55,26 @@
 
     .summary-details {
         position: relative;
-        padding: 35px 50px 0px 50px;
+        padding: 0px 48px;
         border-bottom: 1px solid @color_divider;
 
         .content {
+            display: flex;
+            padding-bottom: 32px;
+
             .column {
-                display: inline-block;
-                width: 25%;
-                padding-bottom: 30px;
+                margin-right: 48px;
                 
-                .label {
-                    color: #A9A9A9;
-                    font-weight: 600;
+                .label, .value {
+                    color: @color_text_secondary;
+                    font-size: 12px;
                 }
 
                 .fiat-value {
-                    font-weight: bold;
-                    font-size: 1.2em;
+                    font-weight: 500;
+                    font-size: 18px;
                     margin: 7px 0 6px 0;
-                    color: #494949;
+                    color: @color_text_primary;
                 }
             }
         }
@@ -69,45 +89,38 @@
             height: 40px;
             //line-height: 30px;
             background: @color_white;
-            color: #B3B3B3;
+            color: @color_text_secondary;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.3s;
 
             &:hover {
-                background: #F2F2F2;
-                &:before {
-                    color: #494949;
-                }
+                background: @color_divider;
+                color: @color_text_primary;
             }
 
             &:before {
-                .glyphicon-up;
-                color: #B3B3B3;
+                .icomoon-arrow-down;
+                transition: transform 0.3s;
+                transform-origin: 50% 50%;
                 position: absolute;
-                left: 14px;
-                top: 16px;
-                transition: all 0.2s ease-in-out;
+                left: 8px;
+                top: 10px;
             }
         }
 
-        &.closed {
-            .content {
-                display: none;
-            }
-            .toggle {
-                &:before {
-                    .glyphicon-down;
-                    top: 18px;
-                }
+        &.opened {
+            .toggle:before {
+                transform: rotate(180deg);
+                top: 8px;
             }
         }
     }
 
     .filter {
-        background: @color_main;
-        padding: 30px 48px 10px 48px;
+        //background: @color_main;
+        padding: 0px 48px 32px 48px;
         // text-align: right;
 
         // input {
@@ -115,78 +128,30 @@
         // }
     }
 
-    .add-token-form {
-        position: relative;
-        .toggle {
-            cursor: pointer;
-            padding: 15px 50px;
+    .token-select {
+        .Select-control {
+            cursor: text;
         }
 
-        .content {
-            display: flex;
-            flex-direction: row;
-            padding: 15px 50px;
-        }
-        
-
-        .column {
-            padding-right: 10px;
-            label {
-                display: block;
-                color: #A9A9A9;
-                font-weight: 600;
+        .Select-option {
+            .hover();
+            &.is-focused {
+                background: @color_gray_light;
             }
-
-            input {
-                &.token-address {
-                    width: 230px;
-                }
-
-                &.token-name {
-                    width: 160px;
-                }
-
-                &.token-shortcut {
-                    width: 80px;
-                }
-
-                &.token-decimal {
-                    width: 80px;
-                }
-            }
-
-            button {
-
-            }
-        }
-
-        &:after {
-            .glyphicon-up;
-            color: #B3B3B3;
-            position: absolute;
-            right: 50px;
-            top: 21px;
-            transition: all 0.2s ease-in-out;
-        }
-
-        &:hover {
-            &:after {
-                color: #494949;
-            }
-        }
-
-        &.closed {
-            &:after {
-                .glyphicon-down;
+    
+            &.is-selected { 
+                background: @color_divider;
             }
         }
     }
 
     .token {
         border-top: 1px solid @color_divider;
-        padding: 15px 50px;
+        padding: 14px 48px;
         display: flex;
         flex-direction: row;
+        align-items: center;
+        position: relative;
 
         .icon {
             width: 36px;
@@ -208,24 +173,27 @@
 
         .name {
             flex: 1;
-            line-height: 30px;
+            color: @color_text_secondary;
         }
 
-        .balance {
-            color: red;
-            line-height: 30px;
+        button {
+            position: absolute;
+            right: 12px;
+            padding: 0px;
+            padding-top: 3px;
+            &:after {
+                .icomoon-close;
+            }
         }
+
+       
 
         &:last-child {
             // border-bottom: 1px solid @color_divider;
         }
     }
 
-    .token-select {
-        .Select-control {
-            cursor: text;
-        }
-    }
+    
 }
 
 

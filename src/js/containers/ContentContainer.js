@@ -13,6 +13,7 @@ import Footer from '../components/common/Footer';
 import AccountTabs from '../components/wallet/account/AccountTabs';
 
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
+import * as LogActions from '../actions/LogActions';
 
 const Article = (props) => {
     return (
@@ -20,8 +21,8 @@ const Article = (props) => {
             <nav>
                 <Route path="/device/:device/coin/:coin/address/:address" component={ AccountTabs } />
             </nav>
-            {/* <Log /> */}
             <Notifications />
+            <Log />
             { props.children }
             <Footer />
         </article>
@@ -30,13 +31,13 @@ const Article = (props) => {
 
 function mapStateToProps(state, own) {
     return {
-
+   
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-
+        
     };
 }
 

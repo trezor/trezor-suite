@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import LandingPage from '../components/landing/LandingPage';
+import * as LogActions from '../actions/LogActions';
 
 function mapStateToProps(state, own) {
     return {
@@ -19,6 +20,7 @@ function mapStateToProps(state, own) {
 
 function mapDispatchToProps(dispatch) {
     return { 
+   
     };
 }
 

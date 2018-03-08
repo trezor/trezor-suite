@@ -15,7 +15,7 @@ function mapStateToProps(state, own) {
         accounts: state.accounts,
         router: state.router,
         deviceDropdownOpened: state.DOM.deviceDropdownOpened,
-        fiatRate: state.web3.fiatRate,
+        fiat: state.fiat,
         localStorage: state.localStorage,
         discovery: state.discovery
     };

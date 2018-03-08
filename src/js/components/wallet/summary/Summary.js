@@ -31,42 +31,45 @@ const _render = (props: any): any => {
                 <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />
             ) : null }
 
-            <h2 className={ props.summary.coin }>Address #{ parseInt(props.match.params.address) + 1 }</h2>
+            <h2 className={ `summary-header ${props.summary.coin}` }>Address #{ parseInt(props.match.params.address) + 1 }</h2>
 
             <SummaryDetails 
                 summary={ props.summary } 
                 balance={ account.balance }
                 coin={ props.summary.coin }
-                fiatRate={ props.fiatRate }
+                fiat={ props.fiat }
+                localStorage={ props.localStorage }
                 onToggle={ props.summaryActions.onDetailsToggle } />
-    
+
+            <h2>Tokens</h2>
+            {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 */}
             <div className="filter">
-                0x58cda554935e4a1f2acbe15f8757400af275e084
                 <Async 
                     className="token-select"
                     multi={ false }
                     autoload={ false }
-                    
                     ignoreCase={ true }
                     filterOptions= { 
-                        (opt, str, values) => {
-                            console.log("TODO: filter already added", opt, str, values);
-                            return opt;
+                        (options, search, values) => {
+                            return options.filter(o => {
+                                return !tokens.find(t => t.symbol === o.symbol);
+                            });
                         }
                     }
-
 
                     value={ props.summary.selectedToken } 
                     onChange={ token => props.summaryActions.selectToken(token, account) } 
                     valueKey="symbol" 
                     labelKey="symbol" 
                     placeholder="Search for token"
-                    loadOptions={ props.summaryActions.loadTokens } 
+                    searchPromptText="Type token name or address"
+                    noResultsText="Token not found"
+                    loadOptions={ input => props.summaryActions.loadTokens(input, account) } 
                     backspaceRemoves={true} />
 
             </div>
 
-            <SummaryTokens tokens={ tokens } />
+            <SummaryTokens tokens={ tokens } removeToken={ props.summaryActions.removeToken } />
 
         </section>
 

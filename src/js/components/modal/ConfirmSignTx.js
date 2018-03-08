@@ -8,6 +8,7 @@ const Confirmation = (props): any => {
         amount,
         address,
         coin,
+        coinSymbol,
         token,
         total,
         selectedFeeLevel
@@ -21,7 +22,7 @@ const Confirmation = (props): any => {
             </div>
             <div className="content">
                 <label>Send </label>
-                <p>{ `${amount} ${token.toUpperCase() }` }</p>
+                <p>{ `${amount} ${ coinSymbol }` }</p>
                 <label>To</label>
                 <p>{ address }</p>
                 <label>Fee</label>

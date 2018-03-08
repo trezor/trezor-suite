@@ -24,7 +24,7 @@ export default class PinModal extends Component {
     constructor(props: any) {
         super(props);
 
-        console.warn("PROPZ", props)
+        // check if this device is already known
         const isSavedDevice = props.devices.find(d => d.path === props.modal.device.path && d.remember);
 
         this.state = {

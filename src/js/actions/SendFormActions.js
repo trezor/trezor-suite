@@ -4,7 +4,7 @@
 import * as SEND from './constants/SendForm';
 import * as NOTIFICATION from './constants/notification';
 
-import { getNonce, estimateGas, getGasPrice, pushTx } from './Web3Actions';
+import { estimateGas, getGasPrice, pushTx } from './Web3Actions';
 
 import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsUnits from 'ethereumjs-units';
@@ -18,7 +18,8 @@ import { initialState } from '../reducers/SendFormReducer';
 import type { State, FeeLevel } from '../reducers/SendFormReducer';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
-const numberRegExp = new RegExp('^([0-9]{0,10}\\.)?[0-9]{1,18}$');
+//const numberRegExp = new RegExp('^([0-9]{0,10}\\.)?[0-9]{1,18}$');
+const numberRegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9]+\\.?([0-9]+)?|\\.[0-9]+)$');
 
 const calculateFee = (gasPrice: string, gasLimit: string): string => {
     return EthereumjsUnits.convert( new BigNumber(gasPrice).times(gasLimit), 'gwei', 'ether');
@@ -50,7 +51,6 @@ export const getFeeLevels = (coin: string, gasPrice: BigNumber | string, gasLimi
     const quarter: BigNumber = gasPrice.dividedBy(4);
     const high: string = gasPrice.plus(quarter.times(2)).toString();
     const low: string = gasPrice.minus(quarter.times(2)).toString();
-    coin = coin.toUpperCase();
 
     return [
         { 
@@ -106,11 +106,11 @@ export const init = (): any => {
 
         // TODO: check if there are some unfinished tx in localStorage
         const { config } = getState().localStorage;
-        const coin = config.coins.find(c => c.symbol === urlParams.coin);
+        const coin = config.coins.find(c => c.network === urlParams.coin);
 
         const gasPrice: BigNumber = new BigNumber( EthereumjsUnits.convert(web3instance.gasPrice, 'wei', 'gwei') ) || new BigNumber(coin.defaultGasPrice);
         const gasLimit: string = coin.defaultGasLimit.toString();
-        const feeLevels: Array<FeeLevel> = getFeeLevels(urlParams.coin, gasPrice, gasLimit);
+        const feeLevels: Array<FeeLevel> = getFeeLevels(coin.symbol, gasPrice, gasLimit);
 
         // TODO: get nonce
 
@@ -119,6 +119,7 @@ export const init = (): any => {
             checksum: selected.checksum,
             accountIndex: parseInt(urlParams.address),
             coin: urlParams.coin,
+            coinSymbol: coin.symbol,
             token: urlParams.coin,
             location: location.pathname,
 
@@ -204,15 +205,32 @@ export const validation = (): any => {
                     errors.amount = 'Amount is not a number';
                 } else {
                     const account = getState().accounts.find(a => a.checksum === state.checksum && a.index === state.accountIndex && a.coin === state.coin);
+                    let decimalRegExp;
+
                     if (state.token !== state.coin) {
-                        const tokenBalance: string = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === state.token).balance;
-                        if (new BigNumber(state.total).greaterThan(account.balance)) {
-                            errors.amount = `Not enough ${ state.coin.toUpperCase() } to cover transaction fee`;
-                        } else if (new BigNumber(state.amount).greaterThan(tokenBalance)) {
+                        const token: any = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === state.token);
+                        
+                        if (parseInt(token.decimals) > 0) {
+                            decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
+                        } else {
+                            // decimalRegExp = new RegExp('^(0|0\\.?|[1-9]+\\.?)$');
+                            decimalRegExp = new RegExp('^[0-9]+$');
+                        }
+
+                        if (!state.amount.match(decimalRegExp)) {
+                            errors.amount = `Maximum ${ token.decimals} decimals allowed`;
+                        } else if (new BigNumber(state.total).greaterThan(account.balance)) {
+                            errors.amount = `Not enough ${ state.coinSymbol.toUpperCase() } to cover transaction fee`;
+                        } else if (new BigNumber(state.amount).greaterThan(token.balance)) {
                             errors.amount = 'Not enough funds';
+                        } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
+                            errors.amount = 'Amount is too low';
                         }
                     } else {
-                        if (new BigNumber(state.total).greaterThan(account.balance)) {
+                        decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9]+\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
+                        if (!state.amount.match(decimalRegExp)) {
+                            errors.amount = `Maximum 18 decimals allowed`;
+                        } else if (new BigNumber(state.total).greaterThan(account.balance)) {
                             errors.amount = 'Not enough funds';
                         }
                     }
@@ -245,7 +263,7 @@ export const validation = (): any => {
                     const gp: BigNumber = new BigNumber(state.gasPrice);
                     if (gp.greaterThan(100)) {
                         errors.gasPrice = 'Gas price is too high';
-                    } else if (gp.lessThan(1)) {
+                    } else if (gp.lessThanOrEqualTo('0')) {
                         errors.gasPrice = 'Gas price is too low';
                     }
                 }
@@ -334,7 +352,7 @@ export const onCurrencyChange = (currency: any): any => {
         }
 
         const { config } = getState().localStorage;
-        const coin = config.coins.find(c => c.symbol === currentState.coin);
+        const coin = config.coins.find(c => c.network === currentState.coin);
 
         let gasLimit: string = '';
         let amount: string = currentState.amount;
@@ -355,7 +373,7 @@ export const onCurrencyChange = (currency: any): any => {
             total = calculateTotal(amount, currentState.gasPrice, currentState.gasLimit);
         }
 
-        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coin, currentState.gasPrice, gasLimit);
+        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coinSymbol, currentState.gasPrice, gasLimit);
 
         const state: State = {
             ...currentState,
@@ -433,7 +451,7 @@ export const onFeeLevelChange = (feeLevel: any): any => {
             // TODO: update value for custom fee
             state.advanced = true;
             feeLevel.gasPrice = state.gasPrice;
-            feeLevel.label = `${ calculateFee(state.gasPrice, state.gasLimit) } ${ state.coin.toUpperCase() }`;
+            feeLevel.label = `${ calculateFee(state.gasPrice, state.gasLimit) } ${ state.coinSymbol }`;
         } else {
             const customLevel = state.feeLevels.find(f => f.value === 'Custom');
             customLevel.label = '';
@@ -462,12 +480,14 @@ export const onFeeLevelChange = (feeLevel: any): any => {
 export const updateFeeLevels = (): any => {
     return (dispatch, getState): void => {
         const currentState = getState().sendForm;
-        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coin, currentState.recommendedGasPrice, currentState.gasLimit);
+        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coinSymbol, currentState.recommendedGasPrice, currentState.gasLimit);
+        const selectedFeeLevel: ?FeeLevel = feeLevels.find(f => f.value === currentState.selectedFeeLevel.value)
         const state: State = {
             ...currentState,
             feeLevels,
-            selectedFeeLevel: feeLevels.find(f => f.value === currentState.selectedFeeLevel.value),
-            gasPrice: currentState.recommendedGasPrice,
+            selectedFeeLevel,
+            //gasPrice: currentState.recommendedGasPrice, // TODO HERE!
+            gasPrice: selectedFeeLevel.gasPrice, // TODO HERE!
             gasPriceNeedsUpdate: false,
         };
 
@@ -507,7 +527,7 @@ export const onGasPriceChange = (gasPrice: string): any => {
         if (gasPrice.match(numberRegExp) && state.gasLimit.match(numberRegExp)) {
             const customLevel = currentState.feeLevels.find(f => f.value === 'Custom');
             customLevel.gasPrice = gasPrice;
-            customLevel.label = `${ calculateFee(gasPrice, state.gasLimit) } ${ state.coin.toUpperCase() }`;
+            customLevel.label = `${ calculateFee(gasPrice, state.gasLimit) } ${ state.coinSymbol }`;
 
             state.selectedFeeLevel = customLevel;
 
@@ -547,7 +567,7 @@ export const onGasLimitChange = (gasLimit: string): any => {
 
         if (gasLimit.match(numberRegExp) && state.gasPrice.match(numberRegExp)) {
             const customLevel = currentState.feeLevels.find(f => f.value === 'Custom');
-            customLevel.label = `${ calculateFee(state.gasPrice, gasLimit) } ${ state.coin.toUpperCase() }`;
+            customLevel.label = `${ calculateFee(state.gasPrice, gasLimit) } ${ state.coinSymbol }`;
 
             state.selectedFeeLevel = customLevel;
 
@@ -640,9 +660,6 @@ export const onSend = (): any => {
             v: ''
         }
 
-        //const nonce = await getNonce(web3, currentAddress.address);
-        //txData.nonce = web3.toHex(nonce);
-
         
         // const gasOptions = {
         //     to: txData.to,
@@ -660,6 +677,7 @@ export const onSend = (): any => {
         // console.log("---->GASSS", txData, gasLimit, gasPrice, EthereumjsUnits.convert(gasPrice, 'gwei', 'wei'));
 
         const selected = findSelectedDevice(getState().connect);
+        if (!selected) return;
 
         let signedTransaction = await TrezorConnect.ethereumSignTransaction({
             device: {
@@ -697,8 +715,11 @@ export const onSend = (): any => {
         txData.s = '0x' + signedTransaction.data.s;
         txData.v = web3.toHex(signedTransaction.data.v);
 
-        const gasLimit2 = await estimateGas(web3, txData);
-        console.log("---->GASSS", txData, gasLimit2.toString() );
+        // const gasLimit2 = await estimateGas(web3, txData);
+        // console.log("---->GASSS", txData, gasLimit2.toString() );
+
+        const { config } = getState().localStorage;
+        const selectedCoin = config.coins.find(c => c.network === state.coin);
 
         try {
             const tx = new EthereumjsTx(txData);
@@ -708,6 +729,8 @@ export const onSend = (): any => {
             dispatch({
                 type: SEND.TX_COMPLETE,
                 address: account,
+                token: state.token,
+                amount: state.amount,
                 txid,
                 txData,
             });
@@ -717,7 +740,7 @@ export const onSend = (): any => {
                 payload: {
                     type: 'success',
                     title: 'Transaction success',
-                    message: `<a href="https://ropsten.etherscan.io/tx/${txid}">detail</a>`,
+                    message: `<a href="${ selectedCoin.explorer }/tx/${txid}" class="green" target="_blank" rel="noreferrer noopener">See transaction detail</a>`,
                     cancelable: true,
                     actions: []
                 }
@@ -736,23 +759,5 @@ export const onSend = (): any => {
                 }
             });
         }
-
-        // const tx = new EthereumjsTx(txData);
-        // console.log("2222", tx, tx.toJSON(), tx.from, tx.to);
-        // const serializedTx = '0x' + tx.serialize().toString('hex');
-
-        // console.log("----> PUSZ TX", web3, currentAddress, serializedTx)
-        // const txid = await pushTx(web3, serializedTx);
-        // console.log("----> PUSZ TX2", web3, serializedTx)
-        
-        // dispatch({
-        //     type: SEND.TX_COMPLETE,
-        //     address: currentAddress,
-        //     txid,
-        //     txData,
-        // })
-
-        // const [ url ] = getState().router.location.pathname.split('/send');
-        // dispatch( push(url) );
     }
 }

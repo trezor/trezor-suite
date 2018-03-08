@@ -25,10 +25,10 @@ export default (props: any): any => {
                         </svg>
                         <span>Connect TREZOR to continue</span>
                     </p>
-                    {/* <p>Don't have TREZOR? <a href="https://trezor.io/" target="_blank">Get one</a></p> */}
+                    {/* <p>Don't have TREZOR? <a href="https://trezor.io/" target="_blank" rel="noreferrer noopener">Get one</a></p> */}
                 </div>
                 <div className="image"></div>
-                <p>Don't have TREZOR? <a href="https://trezor.io/" className="green" target="_blank">Get one</a></p>
+                <p>Don't have TREZOR? <a href="https://trezor.io/" className="green" target="_blank" rel="noreferrer noopener">Get one</a></p>
             </main>
             <Footer />
         </div>

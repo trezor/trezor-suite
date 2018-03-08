@@ -41,7 +41,7 @@ const Aside = (props: any): any => {
     //     return (
     //         <aside>
     //             <div className="transition-container"></div>
-    //             <a className="help" href="https://trezor.io/support/" target="_blank">
+    //             <a className="help" href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">
     //                 Need help?
     //             </a>
     //         </aside>
@@ -66,14 +66,12 @@ const Aside = (props: any): any => {
         );
     }
 
-    console.warn("ASIDEE", props)
-
     return (
         <StickyContainer location={ location } devices={ props.deviceDropdownOpened.toString() }>
             <DeviceSelect {...props} />
             { menu }
             <div className="help">
-                <a href="https://trezor.io/support/" target="_blank">Need help?</a>
+                <a href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Need help?</a>
             </div>
         </StickyContainer>
     )

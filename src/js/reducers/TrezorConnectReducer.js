@@ -5,7 +5,6 @@ import { TRANSPORT, DEVICE } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
 export type TrezorDevice = {
-    initialized: boolean;
     remember: boolean;
     connected: boolean;
     path: string;
@@ -22,7 +21,7 @@ export type TrezorDevice = {
 }
 
 export type SelectedDevice = {
-    id: string;
+    id: string; // could be device path if unacquired or features.device_id
     instance: ?number;
 }
 
@@ -74,7 +73,6 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
         // ...current,
         ...upcoming,
         // make sure that instance specific variables will not be overridden
-        initialized: current.initialized,
         connected: typeof upcoming.connected === 'boolean' ? upcoming.connected : current.connected,
         remember: typeof upcoming.remember === 'boolean' ? upcoming.remember : current.remember,
         instance: current.instance,
@@ -106,12 +104,11 @@ const addDevice = (state: State, device: Object): State => {
     let affectedDevices: Array<TrezorDevice> = [];
     let otherDevices: Array<TrezorDevice> = [];
     if (device.unacquired) {
-        // connected device is unacquired, but it was already merged with saved devices
-        // when DEVICE.CHANGE event occurs
-        // ignore this event
+        // check if connected device is unacquired, but it was already merged with saved device(s) after DEVICE.CHANGE action
         affectedDevices = newState.devices.filter(d => d.path === device.path);
         const diff = newState.devices.filter(d => affectedDevices.indexOf(d) === -1);
 
+        // if so, ignore this action
         if (affectedDevices.length > 0) {
             return state;
         }
@@ -129,13 +126,11 @@ const addDevice = (state: State, device: Object): State => {
 
         const newDevice: TrezorDevice = {
             ...device,
-            initialized: false,
             acquiring: false,
             remember: false,
             connected: true,
             path: device.path,
             label: device.label,
-            id: 'ABCD',
             checksum: null,
             // instance: 0,
             instanceLabel: device.label,
@@ -158,7 +153,6 @@ const setDeviceState = (state: State, action: any): State => {
     if (index > -1) {
         const changedDevice: TrezorDevice = { 
             ...newState.devices[index],
-            initialized: true,
             checksum: action.checksum
         };
         newState.devices[index] = changedDevice;
@@ -251,7 +245,8 @@ const forgetDevice = (state: State, action: any): State => {
         newState.devices.splice(newState.devices.indexOf(action.device), 1);
     } else {
         // remove all instances after disconnect (remember request declined)
-        newState.devices = state.devices.filter(d => d.path !== action.device.path);
+        //newState.devices = state.devices.filter(d => d.path !== action.device.path);
+        newState.devices = state.devices.filter(d => (d.features && d.features.device_id !== action.device.features.device_id) || (!d.features && d.path !== action.device.path));
     }
 
     return newState;
@@ -277,13 +272,11 @@ const duplicate = (state: State, device: any): State => {
     // if (affectedDevices.length > 0) {
         const newDevice: TrezorDevice = {
             ...device,
-            initialized: false,
             checksum: null,
             remember: device.remember,
             connected: device.connected,
             path: device.path,
             label: device.label,
-            id: 'ABCD',
             instance: new Date().getTime(),
             instanceLabel: device.instanceLabel,
             ts: 0,

@@ -13,10 +13,6 @@ const SummaryTokens = (props: any): any => {
     const textColor = new ColorHash();
 
     const tokens = props.tokens.map((t, i) => {
-
-        // if (search.length > 0) {
-        //     if (t.name.toLowerCase().indexOf(search) < 0 && t.shortcut.toLowerCase().indexOf(search) < 0) return null;
-        // }
         let iconColor = {
             color: textColor.hex(t.name),
             background: bgColor.hex(t.name),
@@ -30,7 +26,8 @@ const SummaryTokens = (props: any): any => {
                     </div>
                 </div>
                 <div className="name">{ t.name }</div>
-                <div className="balance">{ t.balance }</div>
+                <div className="balance">{ t.balance } { t.symbol }</div>
+                <button className="transparent" onClick={ event => props.removeToken(t) }></button>
             </div>
         )
     });

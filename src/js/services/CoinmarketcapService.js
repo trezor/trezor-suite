@@ -7,13 +7,17 @@ import { resolveAfter } from '../utils/promiseUtils';
 
 const loadRateAction = (): any => {
     return async (dispatch, getState) => {
+        const config = getState().localStorage.config;
         try {
-            const rate = await httpRequest('https://api.coinmarketcap.com/v1/ticker/ethereum/?convert=USD', 'json');
 
-            dispatch({
-                type: 'rate__update',
-                rate: rate[0]
-            })
+            for (let i = 0; i < config.fiatValueTickers.length; i++) {
+                const rate = await httpRequest(`${config.fiatValueTickers[i].url}?convert=USD`, 'json');
+                dispatch({
+                    type: 'rate__update',
+                    network: config.fiatValueTickers[i].network,
+                    rate: rate[0]
+                });
+            }
 
         } catch(error) {
             
@@ -29,11 +33,12 @@ const loadRateAction = (): any => {
  */
 const LocalStorageService = (store: any) => (next: any) => (action: any) => {
 
-    if (action.type === LOCATION_CHANGE && !store.getState().router.location) {
+    next(action);
+
+    //if (action.type === LOCATION_CHANGE && !store.getState().router.location) {
+    if (action.type === 'storage__ready') {
         store.dispatch(loadRateAction());
     }
-
-    next(action);
 };
 
 export default LocalStorageService;

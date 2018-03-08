@@ -7,6 +7,8 @@ import { findSelectedDevice } from '../../reducers/TrezorConnectReducer';
 const ConfirmAddress = (props: any): any => {
     
     const account = props.accounts.find(a => a.checksum === props.receive.checksum && a.index === props.receive.accountIndex && a.coin === props.receive.coin);
+    const { config } = props.localStorage;
+    const selectedCoin = config.coins.find(c => c.network === account.coin);
 
     return (
         <div className="confirm-address">
@@ -16,7 +18,7 @@ const ConfirmAddress = (props: any): any => {
             </div>
             <div className="content">
                 <p>{ account.address }</p>
-                <label>{ account.coin.toUpperCase() } account #{ (account.index + 1) }</label>
+                <label>{ selectedCoin.symbol } account #{ (account.index + 1) }</label>
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { TREZOR_CONNECT_FILES, SRC, PORT } from './constants';
+import { TREZOR_CONNECT_FILES, TREZOR_CONNECT_HTML, SRC, PORT } from './constants';
 import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
@@ -88,10 +88,10 @@ module.exports = {
             inject: true
         }),
         new CopyWebpackPlugin([
-            { from: `${TREZOR_CONNECT_FILES}coins.json` },
-            { from: `${TREZOR_CONNECT_FILES}releases.json` },
-            { from: `${TREZOR_CONNECT_FILES}latest.txt` },
-            { from: `${TREZOR_CONNECT_FILES}config_signed.bin` },
+            { from: `${TREZOR_CONNECT_FILES}coins.json`, to: './data/coins.json' },
+            { from: `${TREZOR_CONNECT_FILES}releases-1.json`, to: './data/releases-1.json' },
+            { from: `${TREZOR_CONNECT_FILES}latest.txt`, to: './data/latest.txt' },
+            { from: `${TREZOR_CONNECT_FILES}config_signed.bin`, to: './data/config_signed.bin' },
             // { from: `${SRC}images/favicon.png` },
             // { from: `${SRC}images` },
         ]),

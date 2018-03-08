@@ -5,6 +5,7 @@ import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 
 import DOM from './AppReducer.js';
+import log from './LogReducer.js';
 import localStorage from './LocalStorageReducer.js';
 import connect from './TrezorConnectReducer.js';
 import notifications from './NotificationReducer.js';
@@ -17,10 +18,13 @@ import receive from './ReceiveReducer.js';
 import summary from './SummaryReducer.js';
 import tokens from './TokensReducer.js';
 import discovery from './DiscoveryReducer.js';
+import pending from './PendingTxReducer.js';
+import fiat from './FiatRateReducer.js';
 
 export default combineReducers({
     router: routerReducer,
     DOM,
+    log,
     localStorage,
     connect,
     notifications,
@@ -32,5 +36,7 @@ export default combineReducers({
     receive,
     summary,
     tokens,
-    discovery
+    discovery,
+    pending,
+    fiat
 });

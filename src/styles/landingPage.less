@@ -9,6 +9,7 @@
             text-align: center;
             padding-top: 65px;
             margin-top: 0px;
+            background: @color_landing;
 
             h2.claim {
                 font-size: 36px;
@@ -67,6 +68,7 @@
             }
 
             .image {
+                position: relative;
                 width: 100%;
                 height: calc(100vh - 143px);
                 min-height: 500px;
@@ -75,6 +77,13 @@
                 background-repeat: no-repeat;
                 background-position: center 0px;
                 background-size: contain;
+                p {
+                    position: absolute;
+                    bottom: 32px;
+                    left: 0;
+                    right: 0;
+                    margin: 0px auto;
+                }
             }
 
             img {

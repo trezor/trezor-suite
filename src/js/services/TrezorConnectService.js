@@ -16,7 +16,7 @@ import * as ACTIONS from '../actions';
 const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
 
     const prevState = store.getState().connect;
-    const prevModalState = store.getState().connect;
+    const prevModalState = store.getState().modal;
 
     next(action);
 
@@ -31,6 +31,22 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
 
     } else if (action.type === DEVICE.DISCONNECT) {
         store.dispatch( TrezorConnectActions.deviceDisconnect(action.device) );
+
+    } else if (action.type === CONNECT.REMEMBER_REQUEST) {
+       // TODO:
+        if (prevModalState.opened && prevModalState.windowType === CONNECT.REMEMBER_REQUEST) {
+            
+
+            store.dispatch({
+                type: CONNECT.FORGET,
+                device: store.getState().modal.device
+            });
+
+            store.dispatch({
+                type: CONNECT.FORGET,
+                device: prevModalState.device
+            });
+        }
 
     } else if (action.type === CONNECT.FORGET) {
         //store.dispatch( TrezorConnectActions.forgetDevice(action.device) );
@@ -62,6 +78,7 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
 
         // interrupt process of remembering device (force forget)
         // TODO: the same for disconnect more than 1 device at once
+        // TODO: move it to modal actions
         const { modal } = store.getState();
         if (modal.opened && modal.windowType === CONNECT.REMEMBER_REQUEST) {
             if (action.device.features && modal.device.features.device_id === action.device.features.device_id) {
