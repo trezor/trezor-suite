@@ -165,26 +165,10 @@ export default class WebUsbPlugin {
     await device.open();
 
     await device.selectConfiguration(this.configurationId);
-    try {
-      // always resetting -> I don't want to fail when other tab quits before release
-      await device.reset();
-    } catch (e) {
-      // write reset error to console, but otherwise ignore
-      // some linux devices (including android)
-      // crash on device.reset or claimInterface
-      // because system auto-claims
-      console.error(e);
-    }
+    // always resetting -> I don't want to fail when other tab quits before release
+    await device.reset();
 
-    try {
-      await device.claimInterface(this.interfaceId);
-    } catch (e) {
-      // write reset error to console, but otherwise ignore
-      // some linux devices (including android)
-      // crash on device.reset or claimInterface
-      // because system auto-claims
-      console.error(e);
-    }
+    await device.claimInterface(this.interfaceId);
   }
 
   @debugInOut
@@ -192,13 +176,7 @@ export default class WebUsbPlugin {
     const device: USBDevice = await this._findDevice(path);
 
     await device.releaseInterface(this.interfaceId);
-    try {
-      await device.reset();
-    } catch (e) {
-      // write reset error to console, but otherwise ignore
-      // some linux devices (incl. android) crash on device.reset
-      console.error(e);
-    }
+    await device.reset();
     await device.close();
   }
 
