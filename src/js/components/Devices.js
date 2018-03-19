@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 export default class Devices extends Component {
     render() {
         const { devices, selectedDevice } = this.props.connect;
-        const singleDevice: boolean = !selectedDevice && devices.length === 1;
         const deviceList: Array<any> = devices.map((dev, index) => {
             let css: string = "";
             if (dev.unacquired) {
@@ -18,7 +17,7 @@ export default class Devices extends Component {
             if (dev.featuresNeedsReload) {
                 css += " reload-features";
             }
-            if (dev.path === selectedDevice || singleDevice) {
+            if (dev.path === selectedDevice) {
                 css += " active";
             }
             return (<li key={index} className={css} onClick={ event => this.props.onSelectDevice(dev.path) } >{ dev.label }</li>);

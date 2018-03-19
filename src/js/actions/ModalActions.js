@@ -18,7 +18,7 @@ export function onPinBackspace(): any {
 }
 
 export function onPinSubmit(value: string): void {
-    TrezorConnect.uiMessage({ type: UI.RECEIVE_PIN, data: value });
+    TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, data: value });
     return {
         type: ACTIONS.CLOSE_MODAL
     }

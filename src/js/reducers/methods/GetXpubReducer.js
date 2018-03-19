@@ -25,13 +25,14 @@ const getCode = (params): string => {
 }
 
 const getParams = (state: MethodState): Object => {
-    var params = {
-        //selectedDevice: window.selectedDevice,
+    let params: Object = {
+        //selectedDevice: window.selectedDevice, // from other reducer
         coin: state.coin,
     };
 
     if (state.type === 'path') {
         params.path = state.path;
+        delete params.coin;
     } else if (state.type === 'account') {
         params.account = state.accountID;
         if (state.accountLegacy)
@@ -101,7 +102,7 @@ export default function method(state: MethodState = initialState, action: any): 
         case GetXpubActions.TYPE_CHANGE :
             return updateState({
                 ...state,
-                type: action.getxpub_type
+                type: action.getxpubType
             });
 
         case GetXpubActions.PATH_CHANGE :

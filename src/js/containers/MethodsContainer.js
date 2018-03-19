@@ -10,6 +10,7 @@ import * as GetXpubActions from '../actions/methods/GetXpubActions';
 
 function mapStateToProps(state, own) {
     return {
+        connect: state.connect,
         composeTx: state.composeTx,
         getXpub: state.getXpub,
     };
