@@ -4,16 +4,16 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import * as ACTIONS from './index';
 
-export function onSelectDevice2(path: string): any {
+export function onSelectDevice(path: string): any {
     return {
-        type: 'select_device',
+        type: ACTIONS.ON_SELECT_DEVICE,
         path
     }
 }
 
 
 //export function getPublicKey(): any {
-export function onSelectDevice(): any {
+export function onSelectDevice2(): any {
     return async function (dispatch) {
         let resp = await TrezorConnect.getPublicKey({ account: 0, confirmation: true, coin: 'btc' });
         dispatch({

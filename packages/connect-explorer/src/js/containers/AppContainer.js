@@ -20,8 +20,6 @@ export default class AppContainer extends Component {
                 <Devices />
                 <Main>
                     { this.props.children }
-                    {/* <Link to="/">Init</Link>
-                    <Link to="/about">about</Link> */}
                 </Main>
                 <Footer />
                 <Modal />

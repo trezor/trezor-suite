@@ -16,8 +16,7 @@
         "dev:library": "babel-node ./webpack/server.js --library",
         "dev:connect": "babel-node ./webpack/server.js --connect",
         "build": "rm -rf build && webpack --config ./webpack/webpack.config.prod.babel.js",
-        "flow": "cd app/scripts && flow check",
-        "test": ""
+        "flow": "cd app/scripts && flow check"
     },
     "dependencies": {
         "babel-preset-react": "^6.24.1",
@@ -31,7 +30,9 @@
         "react-transition-group": "^2.2.1",
         "redux": "^3.7.2",
         "redux-logger": "^3.0.6",
-        "redux-thunk": "^2.2.0"
+        "redux-thunk": "^2.2.0",
+        "webpack-cli": "^2.0.12",
+        "webpack-dev-server": "^3.1.1"
     },
     "devDependencies": {
         "babel-cli": "^6.24.1",

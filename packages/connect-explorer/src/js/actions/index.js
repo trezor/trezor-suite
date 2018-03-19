@@ -16,7 +16,8 @@ export const ON_PASSPHRASE_FOCUS: string = 'action__on_passphrase_focus';
 export const ON_PASSPHRASE_BLUR: string = 'action__on_passphrase_blur';
 export const ON_PASSPHRASE_SUBMIT: string = 'action__on_passphrase_submit';
 
-
 export const ON_CHANGE_ACCOUNT: string = 'action__on_change_account';
 export const ON_CUSTOM_FEE_OPEN: string = 'action__on_custom_fee_open';
 export const ON_CUSTOM_FEE_CHANGE: string = 'action__on_custom_fee_change';
+
+export const ON_SELECT_DEVICE: string = 'action__on_select_device';

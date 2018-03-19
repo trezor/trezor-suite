@@ -13,7 +13,7 @@ const extractLess = new ExtractTextPlugin({
 module.exports = {
     devtool: 'inline-source-map',
     entry: {
-        'index': [ `${SRC}js/index.js`, `webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true&__webpack_public_path=http://webpack:${PORT}`]
+        'index': ['babel-polyfill', `${SRC}js/index.js`, `webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true&__webpack_public_path=http://webpack:${PORT}`]
     },
     output: {
         filename: '[name].[hash].js',
@@ -49,7 +49,7 @@ module.exports = {
                 },
             },
             {
-                test: /\.json$/,
+                test: /\.json($|\?)/,
                 loader: 'json-loader'
             },
             {
@@ -77,10 +77,12 @@ module.exports = {
             inject: true
         }),
         new CopyWebpackPlugin([
-            { from: `${TREZOR_CONNECT_FILES}coins.json` },
-            { from: `${TREZOR_CONNECT_FILES}releases.json` },
-            { from: `${TREZOR_CONNECT_FILES}latest.txt` },
-            { from: `${TREZOR_CONNECT_FILES}config_signed.bin` },
+            { from: `${TREZOR_CONNECT_FILES}config.json`, to: 'data/config.json' },
+            { from: `${TREZOR_CONNECT_FILES}coins.json`, to: 'data/coins.json' },
+            { from: `${TREZOR_CONNECT_FILES}releases-1.json`, to: 'data/releases-1.json' },
+            { from: `${TREZOR_CONNECT_FILES}releases-2.json`, to: 'data/releases-2.json' },
+            { from: `${TREZOR_CONNECT_FILES}latest.txt`, to: 'data/latest.txt' },
+            { from: `${TREZOR_CONNECT_FILES}config_signed.bin`, to: 'data/config_signed.bin' },
             // { from: `${SRC}images/favicon.png` },
             // { from: `${SRC}images` },
         ]),

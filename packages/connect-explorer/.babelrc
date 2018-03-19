@@ -15,6 +15,7 @@
       "regenerator": true
     }]
   ],
+  
   "env": {
     "development-connect": {
       "plugins": [

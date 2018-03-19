@@ -1,4 +1,4 @@
-import { SRC, BUILD } from './constants';
+import { SRC, BUILD, TREZOR_CONNECT } from './constants';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
@@ -36,6 +36,10 @@ module.exports = {
                 })
             },
             {
+                test: /\.json($|\?)/,
+                loader: 'json-loader'
+            },
+            {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader?publicPath=../&name=fonts/[name].[ext]',
             },
@@ -46,7 +50,10 @@ module.exports = {
         ]
     },
     resolve: {
-        modules: [SRC, 'node_modules']
+        modules: [SRC, 'node_modules'],
+        alias: {
+            'trezor-connect': `${TREZOR_CONNECT}`,
+        }
     },
     performance: {
         hints: false
@@ -62,11 +69,10 @@ module.exports = {
         
         new CopyWebpackPlugin([
             //{from: `${SRC}/app/robots.txt`},
-            { from: `${SRC}js/vendor`, to: `${BUILD}js/vendor` },
-            { from: `${SRC}images/favicon.ico` },
-            { from: `${SRC}images/favicon.png` },
-            //{ from: `${SRC}config.json` },
-            { from: `${SRC}images`, to: `${BUILD}images` },
+            // { from: `${SRC}images/favicon.ico` },
+            // { from: `${SRC}images/favicon.png` },
+            // //{ from: `${SRC}config.json` },
+            // { from: `${SRC}images`, to: `${BUILD}images` },
         ]),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),

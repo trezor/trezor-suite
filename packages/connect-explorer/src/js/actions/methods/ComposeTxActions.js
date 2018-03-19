@@ -120,8 +120,11 @@ export function onResponseTabChange(tab: string): any {
 }
 
 export function onComposeTx(params: any): any {
-    return async function (dispatch) {
-        const response = await TrezorConnect.composeTransaction(params);
+    return async function (dispatch, getState) {
+        const response = await TrezorConnect.composeTransaction({
+            ...params,
+            selectedDevice: getState().connect.selectedDevice
+        });
         dispatch({
             type: COMPOSETX_RESPONSE,
             response

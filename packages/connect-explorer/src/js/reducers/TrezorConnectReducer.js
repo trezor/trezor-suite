@@ -2,6 +2,7 @@
 'use strict';
 
 import { DEVICE } from 'trezor-connect';
+import * as ACTIONS from '../actions/index';
 
 type ConnectState = {
     devices: Array<Object>,
@@ -31,6 +32,10 @@ const addDevice = (state: ConnectState, device: Object): ConnectState => {
     } else {
         state.devices.push(device);
     }
+    
+    if (state.devices.length === 1) {
+        state.selectedDevice = state.devices[0].path;
+    }
     return state;
 }
 
@@ -40,8 +45,10 @@ const removeDevice = (state: ConnectState, device: Object): ConnectState => {
     }
     let index: number = findDeviceIndexByPath(state.devices, device.path);
     if (index > -1) {
-        
         state.devices.splice(index, 1);
+    }
+    if (state.devices.length === 1) {
+        state.selectedDevice = state.devices[0].path;
     }
     return state;
 }
@@ -70,7 +77,7 @@ export default function connect(state: ConnectState = initialState, action: any)
             };
         break;
 
-        case 'select_device' :
+        case ACTIONS.ON_SELECT_DEVICE :
             return {
                 ...state,
                 selectedDevice: action.path,
