@@ -10,6 +10,7 @@ import { init as initWeb3 } from '../actions/Web3Actions';
 import * as WEB3 from '../actions/constants/Web3';
 import * as STORAGE from '../actions/constants/LocalStorage';
 import * as CONNECT from '../actions/constants/TrezorConnect';
+import * as NOTIFICATION from '../actions/constants/notification';
 import * as ACTIONS from '../actions';
 
 
@@ -25,6 +26,16 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
 
     } else if (action.type === TRANSPORT.ERROR) {
         store.dispatch( push('/') );
+    } else if (action.type === TRANSPORT.UNREADABLE) {
+        store.dispatch({
+            type: NOTIFICATION.ADD,
+            payload: {
+                type: 'error',
+                title: 'Unreadable HID device',
+                message: 'What to do?',
+                cancelable: true,
+            }
+        })
 
     } else if (action.type === WEB3.READY) {
         store.dispatch( TrezorConnectActions.postInit() );

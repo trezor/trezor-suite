@@ -12,7 +12,7 @@
     },
     "license": "LGPL-3.0+",
     "scripts": {
-        "dev": "babel-node ./webpack/server.js --library",
+        "dev": "babel-node ./webpack/server.js --connect",
         "dev:library": "babel-node ./webpack/server.js --library",
         "dev:connect": "babel-node ./webpack/server.js --connect",
         "build": "rm -rf build && webpack --config ./webpack/webpack.config.prod.babel.js",

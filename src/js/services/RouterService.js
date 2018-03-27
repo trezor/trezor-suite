@@ -103,7 +103,7 @@ const RouterService = (store: any) => (next: any) => (action: any) => {
             console.warn("Modal still opened");
         } else if (landingPage) {
             // keep route on landing page
-            if (action.payload.pathname !== '/'){
+            if (action.payload.pathname !== '/' && action.payload.pathname !== '/bridge'){
                 redirectPath = '/';
             }
         } else {

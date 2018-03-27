@@ -88,6 +88,7 @@ module.exports = {
             inject: true
         }),
         new CopyWebpackPlugin([
+            { from: `${TREZOR_CONNECT_FILES}config.json`, to: './data/config.json' },
             { from: `${TREZOR_CONNECT_FILES}coins.json`, to: './data/coins.json' },
             { from: `${TREZOR_CONNECT_FILES}releases-1.json`, to: './data/releases-1.json' },
             { from: `${TREZOR_CONNECT_FILES}latest.txt`, to: './data/latest.txt' },

@@ -30,6 +30,7 @@ export default (
         <ConnectedRouter history={ history }>
             <Switch>
                 <Route exact path="/" component={ LandingPageContainer } />
+                <Route exact path="/bridge" component={ LandingPageContainer } />
                 <Route exact path="/import" component={ LandingPageContainer } />
                 <Route>
                     <WalletContainer>
