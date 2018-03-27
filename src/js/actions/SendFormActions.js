@@ -686,14 +686,14 @@ export const onSend = (): any => {
                 state: selected.checksum
             },
             //path: "m/44'/60'/0'/0/0",
-            address_n: txData.address_n,
+            path: txData.address_n,
             nonce: strip(txData.nonce),
-            gas_price: strip(txData.gasPrice),
-            gas_limit: strip(txData.gasLimit),
+            gasPrice: strip(txData.gasPrice),
+            gasLimit: strip(txData.gasLimit),
             to: strip(txData.to),
             value: strip(txData.value),
             data: strip(txData.data),
-            chain_id: txData.chainId
+            chainId: txData.chainId
         });
 
         if (!signedTransaction || !signedTransaction.success) {
@@ -703,7 +703,7 @@ export const onSend = (): any => {
                 payload: {
                     type: 'error',
                     title: 'Transaction error',
-                    message: signedTransaction.data.error,
+                    message: signedTransaction.payload.error,
                     cancelable: true,
                     actions: [ ]
                 }
@@ -711,9 +711,9 @@ export const onSend = (): any => {
             return;
         }
 
-        txData.r = '0x' + signedTransaction.data.r;
-        txData.s = '0x' + signedTransaction.data.s;
-        txData.v = web3.toHex(signedTransaction.data.v);
+        txData.r = '0x' + signedTransaction.payload.r;
+        txData.s = '0x' + signedTransaction.payload.s;
+        txData.v = web3.toHex(signedTransaction.payload.v);
 
         // const gasLimit2 = await estimateGas(web3, txData);
         // console.log("---->GASSS", txData, gasLimit2.toString() );

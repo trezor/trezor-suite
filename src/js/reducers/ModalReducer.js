@@ -79,7 +79,7 @@ export default function modal(state: ModalState = initialState, action: any): an
         case UI.REQUEST_PASSPHRASE :
             return {
                 ...state,
-                device: action.data.device,
+                device: action.payload.device,
                 opened: true,
                 windowType: action.type
             };
@@ -88,7 +88,7 @@ export default function modal(state: ModalState = initialState, action: any): an
             return {
                 ...state,
                 opened: true,
-                windowType: action.data.code
+                windowType: action.payload.code
             }
         
         case UI.CLOSE_UI_WINDOW :

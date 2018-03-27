@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import TrezorConnect, { UI, DEVICE, DEVICE_EVENT, UI_EVENT } from 'trezor-connect';
+import TrezorConnect, { UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT } from 'trezor-connect';
 import * as ACTIONS from './index';
 import * as ADDRESS from './constants/Address';
 import * as TOKEN from './constants/Token';
@@ -26,37 +26,46 @@ import { resolveAfter } from '../utils/promiseUtils';
 import { getAccounts } from '../utils/reducerUtils';
 import { findSelectedDevice, isSavedDevice } from '../reducers/TrezorConnectReducer';
 
-
-
 export const init = (): any => {
     return async (dispatch, getState): Promise<void> => {
         // set listeners 
         TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
             dispatch({
                 type: event.type,
-                device: event.data
+                device: event.payload
             });
         });
 
         const version: Object = TrezorConnect.getVersion();
-        if (version.type === 'library') {
-            // handle UI events only if TrezorConnect isn't using popup
-            TrezorConnect.on(UI_EVENT, (type: string, data: any): void => {
-                // post event to reducers
-                dispatch({
-                    type,
-                    data
-                });
+        TrezorConnect.on(UI_EVENT, (event: UiMessage): void => {
+            // post event to reducers
+            dispatch({
+                type: event.type,
+                payload: event.payload
             });
-        }
+        });
+
+        TrezorConnect.on(TRANSPORT_EVENT, (event: UiMessage): void => {
+            // post event to reducers
+            dispatch({
+                type: event.type,
+                payload: event.payload
+            });
+        });
 
         try {
             await TrezorConnect.init({
-                transport_reconnect: true,
-                coins_src: './data/coins.json',
-                firmware_releases_src: './data/releases-1.json',
-                transport_config_src: './data/config_signed.bin',
-                latest_bridge_src: './data/latest.txt'
+                // transportReconnect: true,
+                coinsSrc: './data/coins.json',
+                firmwareReleasesSrc: './data/releases-1.json',
+                transportConfigSrc: './data/config_signed.bin',
+                transportReconnect: false,
+                latestBridgeSrc: './data/latest.txt',
+                connectSrc: 'https://localhost:8088/',
+                // connectSrc: 'https://sisyfos.trezor.io/',
+                debug: true,
+                popup: false,
+                // webusb: false
             });
 
             setTimeout(() => {
@@ -218,7 +227,7 @@ export const getSelectedDeviceState = (): any => {
                 dispatch({
                     type: CONNECT.AUTH_DEVICE,
                     device: selected,
-                    checksum: response.data.xpub
+                    checksum: response.payload.xpub
                 });
             } else {
                 dispatch({
@@ -226,7 +235,7 @@ export const getSelectedDeviceState = (): any => {
                     payload: {
                         type: 'error',
                         title: 'Authentification error',
-                        message: response.data.error,
+                        message: response.payload.error,
                         cancelable: true,
                         actions: [
                             {
@@ -331,7 +340,7 @@ export function acquire(): any {
                 payload: {
                     type: 'error',
                     title: 'Acquire device error',
-                    message: response.data.error,
+                    message: response.payload.error,
                     cancelable: true,
                     actions: [
                         {
@@ -393,13 +402,12 @@ export const beginDiscoveryProcess = (device: any, coin: string): any => {
         // TODO: validate device checksum
         // const checksum = await __acquire(device.path, device.instance);
         // if (checksum && checksum.success) {
-        //     if (checksum.data.xpub !== device.checksum) {
+        //     if (checksum.payload.xpub !== device.checksum) {
         //         console.error("Incorrect checksum!");
         //         return;
         //     }
         // }
 
-        // acquire and hold session
         // get xpub from TREZOR
         const response = await TrezorConnect.getPublicKey({ 
             device: {
@@ -409,7 +417,7 @@ export const beginDiscoveryProcess = (device: any, coin: string): any => {
             }, 
             path: coinToDiscover.bip44, 
             confirmation: false,
-            keepSession: true
+            keepSession: true // acquire and hold session
         });
 
         if (!response.success) {
@@ -420,7 +428,7 @@ export const beginDiscoveryProcess = (device: any, coin: string): any => {
                 payload: {
                     type: 'error',
                     title: 'Discovery error',
-                    message: response.data.error,
+                    message: response.payload.error,
                     cancelable: true,
                     actions: [
                         {
@@ -438,17 +446,17 @@ export const beginDiscoveryProcess = (device: any, coin: string): any => {
         // TODO: check for interruption
         
         // TODO: handle response error
-        const basePath: Array<number> = response.data.path;
+        const basePath: Array<number> = response.payload.path;
         const hdKey = new HDKey();
-        hdKey.publicKey = new Buffer(response.data.publicKey, 'hex');
-        hdKey.chainCode = new Buffer(response.data.chainCode, 'hex');
+        hdKey.publicKey = new Buffer(response.payload.publicKey, 'hex');
+        hdKey.chainCode = new Buffer(response.payload.chainCode, 'hex');
 
         // send data to reducer
         dispatch({
             type: DISCOVERY.START,
             coin: coinToDiscover.network,
             device,
-            xpub: response.data.publicKey,
+            xpub: response.payload.publicKey,
             basePath,
             hdKey,
         });
@@ -484,14 +492,14 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
                 instance: device.instance,
                 state: device.checksum
             },
-            address_n: path,
+            path,
             showOnTrezor: false
         });
         if (discoveryProcess.interrupted) return;
 
         if (verifyAddress && verifyAddress.success) {
-            //const trezorAddress: string = '0x' + verifyAddress.data.message.address;
-            const trezorAddress: string = EthereumjsUtil.toChecksumAddress(verifyAddress.data.message.address);
+            //const trezorAddress: string = '0x' + verifyAddress.payload.address;
+            const trezorAddress: string = EthereumjsUtil.toChecksumAddress(verifyAddress.payload.address);
             if (trezorAddress !== ethAddress) {
                 // throw inconsistent state error
                 console.warn("Inconsistent state", trezorAddress, ethAddress);
@@ -522,7 +530,7 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
                 payload: {
                     type: 'error',
                     title: 'Address validation error',
-                    message: verifyAddress.data.error,
+                    message: verifyAddress.payload.error,
                     cancelable: true,
                     actions: [
                         {

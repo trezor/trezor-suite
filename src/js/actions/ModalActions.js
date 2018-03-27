@@ -8,7 +8,7 @@ import * as CONNECT from './constants/TrezorConnect';
 
 
 export function onPinSubmit(value: string): any {
-    TrezorConnect.uiMessage({ type: UI.RECEIVE_PIN, data: value });
+    TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: value });
     return {
         type: ACTIONS.CLOSE_MODAL
     }
@@ -16,9 +16,9 @@ export function onPinSubmit(value: string): any {
 
 export function onPassphraseSubmit(passphrase: string): any {
     return async (dispatch, getState): Promise<void> => {
-        const resp = await TrezorConnect.uiMessage({ 
+        const resp = await TrezorConnect.uiResponse({ 
             type: UI.RECEIVE_PASSPHRASE, 
-            data: {
+            payload: {
                 value: passphrase,
                 save: true
             } 

@@ -30,6 +30,8 @@ type State = {
     selectedDevice: ?SelectedDevice;
     discoveryComplete: boolean;
     error: any;
+    transport: ?string;
+    browserState: any;
 }
 
 
@@ -38,6 +40,8 @@ const initialState: State = {
     selectedDevice: null,
     discoveryComplete: false,
     error: null,
+    transport: null,
+    browserState: {}
 };
 
 export const findSelectedDevice = (state: State): ?TrezorDevice => {
@@ -297,6 +301,13 @@ export default function connect(state: State = initialState, action: any): any {
 
     switch (action.type) {
 
+        case 'iframe_handshake' : 
+            return {
+                ...state,
+                browserState: action.payload.browserState
+            }
+        
+
         case CONNECT.DUPLICATE :
             return duplicate(state, action.device);
 
@@ -313,10 +324,18 @@ export default function connect(state: State = initialState, action: any): any {
                 error: action.error
             };
 
+        case TRANSPORT.START :
+            return {
+                ...state,
+                transport: action.payload
+            }
+
         case TRANSPORT.ERROR :
             return {
                 ...state,
-                error: action.device // message is wrapped in "device" field. It's dispatched from TrezorConnect.on(DEVICE_EVENT...) in TrezorConnectService
+                // error: action.payload, // message is wrapped in "device" field. It's dispatched from TrezorConnect.on(DEVICE_EVENT...) in TrezorConnectService
+                error: "Transport is missing",
+                transport: null,
             };
 
         case CONNECT.DEVICE_FROM_STORAGE :

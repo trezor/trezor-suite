@@ -80,7 +80,7 @@ export const showAddress = (address_n: string): any => {
                 instance: selected.instance,
                 state: selected.checksum
             },
-            address_n
+            path: address_n,
         });
 
         if (response && response.success) {
@@ -94,7 +94,7 @@ export const showAddress = (address_n: string): any => {
                 payload: {
                     type: 'error',
                     title: 'Veryfying address error',
-                    message: response.data.error,
+                    message: response.payload.error,
                     cancelable: true,
                     actions: [
                         {
