@@ -22,7 +22,27 @@
         }
     ],
 
+    "eth": {
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "network": "ethereum",
+        "bip44": "m/44'/60'/0'/0",
+        "defaultGasPrice": 64,
+        "defaultGasLimit": 21000,
+        "defaultGasLimitTokens": 200000,
+        "backends": [
+            {
+                "name": "TREZOR Wallet - Ethereum",
+                "urls": [
+                    "http://88.208.115.69"
+                ]
+            }
+        ],
+        "explorer": "https://etherscan.io"
+    },
+
     "coins": [
+        
         { 
             "name": "Ethereum Ropsten",
             "symbol": "tETH",

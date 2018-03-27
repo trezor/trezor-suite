@@ -43,7 +43,7 @@ const initSelectedDevice = async (store: any, device: any): void => {
                 //     });
 
                 //     if (response && response.success) {
-                //         const xpub = response.data.xpub;
+                //         const xpub = response.payload.xpub;
                 //         store.dispatch({
                 //             type: CONNECT.AUTH_DEVICE,
                 //             device: selectedDevice,
@@ -150,7 +150,7 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
             // post event to TrezorConnectReducer
             store.dispatch({
                 type: event.type,
-                device: event.data
+                device: event.payload
             });
         });
 
