@@ -56,13 +56,13 @@ export const init = (): any => {
         try {
             await TrezorConnect.init({
                 // transportReconnect: true,
-                coinsSrc: './data/coins.json',
-                firmwareReleasesSrc: './data/releases-1.json',
-                transportConfigSrc: './data/config_signed.bin',
+                // coinsSrc: './data/coins.json',
+                // firmwareReleasesSrc: './data/releases-1.json',
+                // transportConfigSrc: './data/config_signed.bin',
                 transportReconnect: false,
-                latestBridgeSrc: './data/latest.txt',
-                connectSrc: 'https://localhost:8088/',
-                // connectSrc: 'https://sisyfos.trezor.io/',
+                // latestBridgeSrc: './data/latest.txt',
+                // connectSrc: 'https://localhost:8088/',
+                connectSrc: 'https://sisyfos.trezor.io/',
                 debug: true,
                 popup: false,
                 // webusb: false
@@ -552,6 +552,7 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
         dispatch({
             type: ADDRESS.SET_BALANCE,
             address: ethAddress,
+            coin,
             balance: web3instance.web3.fromWei(balance.toString(), 'ether')
         });
 
@@ -578,6 +579,7 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
         dispatch({
             type: ADDRESS.SET_NONCE,
             address: ethAddress,
+            coin,
             nonce: nonce
         });
 
