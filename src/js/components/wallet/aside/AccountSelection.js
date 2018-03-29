@@ -71,7 +71,7 @@ const AccountSelection = (props: any): any => {
             // TODO: add only if last one is not empty
             //if (selectedAccounts.length > 0 && selectedAccounts[selectedAccounts.length - 1])
             const lastAccount = deviceAddresses[deviceAddresses.length - 1];
-            if (lastAccount && new BigNumber(lastAccount.balance).greaterThan(0) || lastAccount.nonce > 0) {
+            if (lastAccount && (new BigNumber(lastAccount.balance).greaterThan(0) || lastAccount.nonce > 0)) {
                 discoveryStatus = (
                     <div className="add-address" onClick={ props.addAddress }>
                         Add address
