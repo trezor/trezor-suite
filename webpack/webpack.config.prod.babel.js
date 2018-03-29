@@ -1,4 +1,4 @@
-import { SRC, BUILD, TREZOR_LIBRARY, TREZOR_CONNECT_FILES, TREZOR_CONNECT_HTML } from './constants';
+import { SRC, BUILD, TREZOR_CONNECT, TREZOR_CONNECT_FILES, TREZOR_CONNECT_HTML } from './constants';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
@@ -11,8 +11,7 @@ const extractLess = new ExtractTextPlugin({
 
 module.exports = {
     entry: {
-        index: ['whatwg-fetch', `${SRC}js/index.js`],
-        //'trezor-library': `${TREZOR_LIBRARY}.js`
+        index: ['whatwg-fetch', `${SRC}js/index.js`]
     },
     output: {
         filename: 'js/[name].[hash].js',
@@ -78,7 +77,7 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         alias: {
-            'trezor-connect': `${TREZOR_LIBRARY}`,
+            'trezor-connect': `${TREZOR_CONNECT}`,
         }
     },
     performance: {
@@ -111,7 +110,8 @@ module.exports = {
         //     }
         // }),
         new CopyWebpackPlugin([
-            { from: `${TREZOR_CONNECT_FILES}coins.json`, to: `${BUILD}/data/coins.json`  },
+            { from: `${TREZOR_CONNECT_FILES}config.json`, to: `${BUILD}/data/config.json` },
+            { from: `${TREZOR_CONNECT_FILES}coins.json`, to: `${BUILD}/data/coins.json` },
             { from: `${TREZOR_CONNECT_FILES}releases-1.json`, to: `${BUILD}/data/releases-1.json` },
             { from: `${TREZOR_CONNECT_FILES}releases-2.json`, to: `${BUILD}/data/releases-2.json` },
             { from: `${TREZOR_CONNECT_FILES}latest.txt`, to: `${BUILD}/data/latest.txt` },
