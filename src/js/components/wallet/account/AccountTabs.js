@@ -22,10 +22,21 @@ class Indicator extends Component {
                 left: 0
             },
         }
+
+        this.reposition = this.reposition.bind(this);
+    }
+
+    handleResize() {
+        this.reposition();
     }
 
     componentDidMount() {
         this.reposition();
+        window.addEventListener('resize', this.reposition, false);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.reposition, false);
     }
 
     componentDidUpdate(newProps: any) {
@@ -47,7 +58,6 @@ class Indicator extends Component {
                 }
             })
         }
-
     }
 
     render() {
