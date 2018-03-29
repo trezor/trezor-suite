@@ -258,55 +258,7 @@
             animation: connect 1.3s ease-out infinite;
         }
         
-        // a copy of webusb.less from trezor-connect
-        .trezor-webusb-button {
-            position: relative;
-            padding: 12px 24px 12px 40px;
-            background: transparent;
-            color: @color_green_primary;
-            border: 1px solid @color_green_primary;
-            .hover();
-
-            &:before,
-            &:after {
-                content: '';
-                position: absolute;
-                background: @color_green_primary;
-                top: 0;
-                bottom: 0;
-                margin: auto;
-                .hover();
-            }
-
-            &:before {
-                width: 12px;
-                height: 2px;
-                left: 18px;
-            }
-
-            &:after {
-                width: 2px;
-                height: 12px;
-                left: 23px;
-            }
-
-            &:hover {
-                background: @color_green_primary;
-                color: @color_white;
-        
-                &:before,
-                &:after {
-                    background: @color_white;
-                }
-            }
-
-            iframe {
-                position: absolute;
-                top: 0;
-                left: 0;
-                z-index: 1;
-            }
-        }
+       
     }
 }
 

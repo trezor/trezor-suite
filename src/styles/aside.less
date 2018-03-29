@@ -57,6 +57,8 @@ aside {
         }
     }
 
+    
+
     .sticky-container {
         position: relative;
         top: 0;
@@ -89,10 +91,57 @@ aside {
         }
     }
 
+    .trezor-webusb-button {
+        margin: 12px 0px 12px 80px;
+    }
+
+    .device-select {
+        background: @color_white;
+        border-bottom: 1px solid @color_divider;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+        cursor: pointer;
+
+        .arrow {
+            width: 24px;
+            height: 24px;
+            margin-right: 28px;
+            &:after {
+                .icomoon-arrow-down;
+                transition: transform 0.3s, color 0.3s;
+                color: @color_text_secondary;
+                transform-origin: 50% 50%;
+                font-size: 24px;
+            }
+        }
+
+        &:hover {
+            .arrow:after {
+                color: @color_text_primary;
+            }
+        }
+
+        &.opened {
+            .arrow:after {
+                transform: rotate(180deg);
+            }
+        }
+
+        &.disabled {
+            cursor: initial;
+            .arrow {
+                display: none;
+            }
+
+            .device-menu {
+                padding-right: 26px;
+            }
+        }
+    }
+
     .device {
         position: relative;
-        height: 63px;
-        width: 319px;
+        height: 64px;
+        width: 320px;
         display: flex;
         align-items: center;
         padding-left: 80px;
@@ -118,7 +167,16 @@ aside {
             background-repeat: no-repeat;
             background-position: center;
             background-size: 13px 25px;
-            background-image: url('../images/icontrezor.png');
+            background-image: url('../images/trezor-1.png');
+        }
+
+        &.trezor-t {
+            &:before {
+                width: 17px;
+                left: 31px;
+                background-size: 17px 25px;
+                background-image: url('../images/trezor-T.png');
+            }
         }
 
         .label-container {
@@ -146,7 +204,7 @@ aside {
         .device-menu {
             display: flex;
             justify-content: flex-end;
-            padding-right: 48px;
+            padding-right: 4px;
             padding-left: 4px;
 
             div {

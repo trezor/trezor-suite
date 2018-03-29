@@ -304,7 +304,7 @@ export default function connect(state: State = initialState, action: any): any {
         case 'iframe_handshake' : 
             return {
                 ...state,
-                browserState: action.payload.browserState
+                browserState: action.payload.browser
             }
         
 
