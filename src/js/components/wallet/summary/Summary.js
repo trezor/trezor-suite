@@ -19,9 +19,9 @@ export default class Summary extends AbstractAccount {
 
 const _render = (props: any): any => {
 
-    const device = props.devices.find(d => d.checksum === props.summary.checksum);
-    const discovery = props.discovery.find(d => d.checksum === device.checksum && d.coin === props.summary.coin);
-    const account = props.accounts.find(a => a.checksum === props.summary.checksum && a.index === props.summary.accountIndex && a.coin === props.summary.coin);
+    const device = props.devices.find(d => d.state === props.summary.deviceState);
+    const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === props.summary.network);
+    const account = props.accounts.find(a => a.deviceState === props.summary.deviceState && a.index === props.summary.accountIndex && a.network === props.summary.network);
     const tokens = props.tokens.filter(t => t.ethAddress === account.address);
 
     return (
@@ -31,12 +31,12 @@ const _render = (props: any): any => {
                 <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />
             ) : null }
 
-            <h2 className={ `summary-header ${props.summary.coin}` }>Address #{ parseInt(props.match.params.address) + 1 }</h2>
+            <h2 className={ `summary-header ${props.summary.network}` }>Address #{ parseInt(props.match.params.address) + 1 }</h2>
 
             <SummaryDetails 
                 summary={ props.summary } 
                 balance={ account.balance }
-                coin={ props.summary.coin }
+                network={ props.summary.network }
                 fiat={ props.fiat }
                 localStorage={ props.localStorage }
                 onToggle={ props.summaryActions.onDetailsToggle } />

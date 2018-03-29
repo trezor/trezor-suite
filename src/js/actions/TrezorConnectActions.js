@@ -55,15 +55,10 @@ export const init = (): any => {
 
         try {
             await TrezorConnect.init({
-                // transportReconnect: true,
-                // coinsSrc: './data/coins.json',
-                // firmwareReleasesSrc: './data/releases-1.json',
-                // transportConfigSrc: './data/config_signed.bin',
                 transportReconnect: false,
-                // latestBridgeSrc: './data/latest.txt',
                 // connectSrc: 'https://localhost:8088/',
                 connectSrc: 'https://sisyfos.trezor.io/',
-                debug: true,
+                debug: false,
                 popup: false,
                 // webusb: false
             });
@@ -132,7 +127,7 @@ export const initConnectedDevice = (device: any): any => {
         //dispatch( onSelectDevice(device) );
 
         const selected = findSelectedDevice(getState().connect);
-        if (selected && selected.checksum) {
+        if (selected && selected.state) {
             dispatch( onSelectDevice(device) );
         } else if (!selected) {
             dispatch( onSelectDevice(device) );
@@ -157,7 +152,7 @@ export function onSelectDevice(device: any): any {
         } else if (device.instance) {
             dispatch( push(`/device/${ device.features.device_id }:${ device.instance }`) );
         } else {
-            //dispatch( push(`/device/${ device.features.device_id }/coin/etc/address/0`) );
+            //dispatch( push(`/device/${ device.features.device_id }/network/etc/address/0`) );
             dispatch( push(`/device/${ device.features.device_id }`) );
         }
     }
@@ -219,7 +214,7 @@ export const getSelectedDeviceState = (): any => {
             && selected.connected
             && !selected.unacquired 
             && !selected.acquiring 
-            && !selected.checksum) {
+            && !selected.state) {
 
             const response = await __getDeviceState(selected.path, selected.instance);
 
@@ -227,7 +222,7 @@ export const getSelectedDeviceState = (): any => {
                 dispatch({
                     type: CONNECT.AUTH_DEVICE,
                     device: selected,
-                    checksum: response.payload.xpub
+                    state: response.payload.xpub
                 });
             } else {
                 dispatch({
@@ -262,7 +257,7 @@ export const deviceDisconnect = (device: any): any => {
                 stopDiscoveryProcess(selected);
             }
 
-            const affected = getState().connect.devices.filter(d => d.features && d.checksum && !d.remember && d.features.device_id === device.features.device_id);
+            const affected = getState().connect.devices.filter(d => d.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
             if (affected.length > 0) {
                 dispatch({
                     type: CONNECT.REMEMBER_REQUEST,
@@ -279,13 +274,13 @@ export const deviceDisconnect = (device: any): any => {
     }
 }
 
-export const coinChanged = (coin: ?string): any => {
+export const coinChanged = (network: ?string): any => {
     return (dispatch, getState): void => {
         const selected = findSelectedDevice(getState().connect);
         dispatch( stopDiscoveryProcess(selected) );
 
-        if (coin) {
-            dispatch( startDiscoveryProcess(selected, coin) );
+        if (network) {
+            dispatch( startDiscoveryProcess(selected, network) );
         }
     }
 }
@@ -297,10 +292,10 @@ export function acquire(): any {
         const selected = findSelectedDevice(getState().connect);
 
         const saved = getState().connect.devices.map(d => {
-            if (d.checksum) {
+            if (d.state) {
                 return {
                     instance: d.instance,
-                    checksum: d.checksum
+                    state: d.state
                 }
             } else {
                 return null;
@@ -329,7 +324,6 @@ export function acquire(): any {
         if (response && response.success) {
             dispatch({
                 type: DEVICE.ACQUIRED,
-                // checksum: response
             })
         } else {
             // TODO: handle invalid pin?
@@ -360,11 +354,11 @@ export const forgetDevice = (device: any) => {
     return (dispatch: any, getState: any): any => {
         
         // find accounts associated with this device
-        const accounts: Array<any> = getState().accounts.find(a => a.checksum === device.checksum);
+        const accounts: Array<any> = getState().accounts.find(a => a.deviceState === device.state);
 
 
         // find discovery processes associated with this device
-        const discovery: Array<any> = getState().discovery.find(d => d.checksum === device.checksum);
+        const discovery: Array<any> = getState().discovery.find(d => d.deviceState === device.state);
 
     }
 }
@@ -393,17 +387,17 @@ export const onDuplicateDevice = () => {
     }
 }
 
-export const beginDiscoveryProcess = (device: any, coin: string): any => {
+export const beginDiscoveryProcess = (device: any, network: string): any => {
     return async (dispatch, getState) => {
 
         const { config } = getState().localStorage;
-        const coinToDiscover = config.coins.find(c => c.network === coin);
+        const coinToDiscover = config.coins.find(c => c.network === network);
 
-        // TODO: validate device checksum
-        // const checksum = await __acquire(device.path, device.instance);
-        // if (checksum && checksum.success) {
-        //     if (checksum.payload.xpub !== device.checksum) {
-        //         console.error("Incorrect checksum!");
+        // TODO: validate device deviceState
+        // const deviceState = await __acquire(device.path, device.instance);
+        // if (deviceState && deviceState.success) {
+        //     if (deviceState.payload.xpub !== device.state) {
+        //         console.error("Incorrect deviceState!");
         //         return;
         //     }
         // }
@@ -413,7 +407,7 @@ export const beginDiscoveryProcess = (device: any, coin: string): any => {
             device: {
                 path: device.path,
                 instance: device.instance,
-                state: device.checksum
+                state: device.state
             }, 
             path: coinToDiscover.bip44, 
             confirmation: false,
@@ -434,7 +428,7 @@ export const beginDiscoveryProcess = (device: any, coin: string): any => {
                         {
                             label: 'Try again',
                             callback: () => {
-                                dispatch(startDiscoveryProcess(device, coin))
+                                dispatch(startDiscoveryProcess(device, network))
                             }
                         }
                     ]
@@ -454,14 +448,14 @@ export const beginDiscoveryProcess = (device: any, coin: string): any => {
         // send data to reducer
         dispatch({
             type: DISCOVERY.START,
-            coin: coinToDiscover.network,
+            network: coinToDiscover.network,
             device,
             xpub: response.payload.publicKey,
             basePath,
             hdKey,
         });
 
-        dispatch( startDiscoveryProcess(device, coin) );
+        dispatch( startDiscoveryProcess(device, network) );
     }
 }
 
@@ -472,12 +466,12 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
         const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
         const publicAddress: string = EthereumjsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex');
         const ethAddress: string = EthereumjsUtil.toChecksumAddress(publicAddress);
-        const coin = discoveryProcess.coin;
+        const network = discoveryProcess.network;
 
         dispatch({
             type: ADDRESS.CREATE,
             device,
-            coin,
+            network,
             index: discoveryProcess.accountIndex,
             path,
             address: ethAddress 
@@ -490,7 +484,7 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
             device: {
                 path: device.path,
                 instance: device.instance,
-                state: device.checksum
+                state: device.state
             },
             path,
             showOnTrezor: false
@@ -515,7 +509,7 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
                             {
                                 label: 'Try again',
                                 callback: () => {
-                                    dispatch(startDiscoveryProcess(device, discoveryProcess.coin))
+                                    dispatch(startDiscoveryProcess(device, discoveryProcess.network))
                                 }
                             }
                         ]
@@ -536,7 +530,7 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
                         {
                             label: 'Try again',
                             callback: () => {
-                                dispatch(startDiscoveryProcess(device, discoveryProcess.coin))
+                                dispatch(startDiscoveryProcess(device, discoveryProcess.network))
                             }
                         }
                     ]
@@ -545,14 +539,14 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
             return;
         }
 
-        const web3instance = getState().web3.find(w3 => w3.coin === coin);
+        const web3instance = getState().web3.find(w3 => w3.network === network);
         
         const balance = await getBalanceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
         dispatch({
             type: ADDRESS.SET_BALANCE,
             address: ethAddress,
-            coin,
+            network,
             balance: web3instance.web3.fromWei(balance.toString(), 'ether')
         });
 
@@ -579,14 +573,14 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
         dispatch({
             type: ADDRESS.SET_NONCE,
             address: ethAddress,
-            coin,
+            network,
             nonce: nonce
         });
 
         const addressIsEmpty = nonce < 1 && !balance.greaterThan(0);
 
         if (!addressIsEmpty) {
-            //dispatch( startDiscoveryProcess(device, discoveryProcess.coin) );
+            //dispatch( startDiscoveryProcess(device, discoveryProcess.network) );
             dispatch( discoverAddress(device, discoveryProcess) );
         } else {
             // release acquired sesssion
@@ -594,7 +588,7 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
                 device: {
                     path: device.path,
                     instance: device.instance,
-                    state: device.checksum
+                    state: device.state
                 }, 
                 path: "m/44'/60'/0'/0",
                 confirmation: false,
@@ -605,13 +599,13 @@ export const discoverAddress = (device: any, discoveryProcess: Discovery): any =
             dispatch({
                 type: DISCOVERY.COMPLETE,
                 device,
-                coin
+                network
             });
         }
     }
 }
 
-export function startDiscoveryProcess(device: any, coin: string, ignoreCompleted?: boolean): any {
+export function startDiscoveryProcess(device: any, network: string, ignoreCompleted?: boolean): any {
     return (dispatch, getState) => {
 
         const selected = findSelectedDevice(getState().connect);
@@ -622,37 +616,37 @@ export function startDiscoveryProcess(device: any, coin: string, ignoreCompleted
         } else if (selected.path !== device.path) {
             console.error("Start discovery: requested device is not selected", device, selected)
             return;
-        } else if (!selected.checksum) {
+        } else if (!selected.state) {
             console.warn("Start discovery: Selected device wasn't authenticated yet...")
             return;
         }
 
         const discovery = getState().discovery;
-        let discoveryProcess: ?Discovery = discovery.find(d => d.checksum === device.checksum && d.coin === coin);
+        let discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
 
         if (!selected.connected && (!discoveryProcess || !discoveryProcess.completed)) {
             dispatch({
                 type: DISCOVERY.WAITING,
                 device,
-                coin
+                network
             });
             return;
         }
 
         if (!discoveryProcess) {
-            dispatch( beginDiscoveryProcess(device, coin) );
+            dispatch( beginDiscoveryProcess(device, network) );
             return;
         } else {
             if (discoveryProcess.completed && !ignoreCompleted) {
                 dispatch({
                     type: DISCOVERY.COMPLETE,
                     device,
-                    coin
+                    network
                 });
             } else if (discoveryProcess.interrupted || discoveryProcess.waitingForDevice) {
                 // discovery cycle was interrupted
                 // start from beginning 
-                dispatch( beginDiscoveryProcess(device, coin) );
+                dispatch( beginDiscoveryProcess(device, network) );
             } else {
                 dispatch( discoverAddress(device, discoveryProcess) );
             }
@@ -665,16 +659,16 @@ export const restoreDiscovery = (): any => {
         const selected = findSelectedDevice(getState().connect);
 
         if (selected && selected.connected && !selected.unacquired) {
-            const discoveryProcess: ?Discovery = getState().discovery.find(d => d.checksum === selected.checksum && d.waitingForDevice);
+            const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && d.waitingForDevice);
             if (discoveryProcess) {
-                dispatch( startDiscoveryProcess(selected, discoveryProcess.coin) );
+                dispatch( startDiscoveryProcess(selected, discoveryProcess.network) );
             }
         }
     }
 }
 
 // there is no discovery process but it should be
-// this is possible race condition when coin was changed in url but device wasn't authenticated yet
+// this is possible race condition when "network" was changed in url but device wasn't authenticated yet
 // try to discovery after CONNECT.AUTH_DEVICE action
 export const checkDiscoveryStatus = (): any => {
     return (dispatch, getState): void => {
@@ -682,10 +676,10 @@ export const checkDiscoveryStatus = (): any => {
         if (!selected) return;
 
         const urlParams = getState().router.location.params;
-        if (urlParams.coin) {
-            const discoveryProcess: ?Discovery = getState().discovery.find(d => d.checksum === selected.checksum && d.coin === urlParams.coin);
+        if (urlParams.network) {
+            const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && d.network === urlParams.network);
             if (!discoveryProcess) {
-                dispatch( startDiscoveryProcess(selected, urlParams.coin) );
+                dispatch( startDiscoveryProcess(selected, urlParams.network) );
             }
         }
     }
@@ -706,6 +700,6 @@ export function stopDiscoveryProcess(device: any): any {
 export function addAddress(): any {
     return (dispatch, getState) => {
         const selected = findSelectedDevice(getState().connect);
-        dispatch( startDiscoveryProcess(selected, getState().router.location.params.coin, true) ); // TODO: coin nicer
+        dispatch( startDiscoveryProcess(selected, getState().router.location.params.network, true) ); // TODO: network nicer
     }
 }

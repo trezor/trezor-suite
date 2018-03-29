@@ -22,13 +22,13 @@ export default class AbstractAccount extends Component {
 
         const props = this.props;
 
-        if (!state.checksum) {
+        if (!state.deviceState) {
             return (<section></section>);
         }
     
-        const device = this.props.devices.find(d => d.checksum === state.checksum);
-        const discovery = props.discovery.find(d => d.checksum === device.checksum && d.coin === state.coin);
-        const account = props.accounts.find(a => a.checksum === state.checksum && a.index === state.accountIndex && a.coin === state.coin);
+        const device = this.props.devices.find(d => d.state === state.deviceState);
+        const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === state.network);
+        const account = props.accounts.find(a => a.deviceState === state.deviceState && a.index === state.accountIndex && a.network === state.network);
 
         if (!account) {
             if (!discovery || discovery.waitingForDevice) {

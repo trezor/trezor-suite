@@ -4,9 +4,9 @@
 import * as SUMMARY from '../actions/constants/summary';
 
 export type State = {
-    +checksum: ?string;
+    +deviceState: ?string;
     +accountIndex: ?number;
-    +coin: ?string;
+    +network: ?string;
     location: string;
 
     details: boolean;
@@ -14,9 +14,9 @@ export type State = {
 }
 
 export const initialState: State = {
-    checksum: null,
+    deviceState: null,
     accountIndex: null,
-    coin: null,
+    network: null,
     location: '',
 
     details: true,

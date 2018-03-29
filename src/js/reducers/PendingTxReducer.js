@@ -6,7 +6,7 @@ import * as WEB3 from '../actions/constants/Web3';
 
 export type PendingTx = {
     +id: string;
-    +coin: string;
+    +network: string;
     +token: string;
     +amount: string;
     +address: string;
@@ -18,7 +18,7 @@ const add = (state: Array<PendingTx>, action: any) => {
     const newState = [ ...state ];
     newState.push({
         id: action.txid,
-        coin: action.address.coin,
+        network: action.address.network,
         token: action.token,
         amount: action.amount,
         address: action.address.address,

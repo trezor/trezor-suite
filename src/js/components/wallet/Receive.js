@@ -16,15 +16,14 @@ export default class Receive extends AbstractAccount {
 const _render = (props: any): any => {
 
     const {
-        checksum,
+        deviceState,
         accountIndex,
-        coin,
         addressVerified,
         addressUnverified,
     } = props.receive;
 
-    const device = props.devices.find(d => d.checksum === checksum);
-    const account = props.accounts.find(a => a.checksum === checksum && a.index === accountIndex && a.coin === coin);
+    const device = props.devices.find(d => d.state === deviceState);
+    const account = props.accounts.find(a => a.deviceState === deviceState && a.index === accountIndex && a.network === network);
 
     let qrCode = null;
     let address = `${account.address.substring(0, 20)}...`;

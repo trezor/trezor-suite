@@ -7,7 +7,7 @@ import Tooltip from 'rc-tooltip';
 const AdvancedForm = (props: any): any => {
 
     const { 
-        coin,
+        network,
         token,
         gasPrice,
         gasLimit,
@@ -115,7 +115,7 @@ const AdvancedForm = (props: any): any => {
                         <span className="what-is-it"></span>
                     </Tooltip>
                 </label>
-                <textarea disabled={ coin !== token } value={ coin !== token ? '' : data } onChange={ event => onDataChange(event.target.value) }></textarea>
+                <textarea disabled={ network !== token } value={ network !== token ? '' : data } onChange={ event => onDataChange(event.target.value) }></textarea>
                 { errors.data ? (<span className="error">{ errors.data }</span>) : null }
             </div>
 

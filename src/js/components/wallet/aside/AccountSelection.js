@@ -21,15 +21,15 @@ const AccountSelection = (props: any): any => {
     const baseUrl: string = `/device/${location.params.device}`;
 
     const { config } = props.localStorage;
-    const selectedCoin = config.coins.find(c => c.network === location.params.coin);
+    const selectedCoin = config.coins.find(c => c.network === location.params.network);
 
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
     // console.warn("AccountSelectionRender", selected, props);
 
-    const deviceAddresses: Array<any> = getAccounts(accounts, selected, location.params.coin);
+    const deviceAddresses: Array<any> = getAccounts(accounts, selected, location.params.network);
     let selectedAccounts = deviceAddresses.map((address, i) => {
-        // const url: string = `${baseUrl}/coin/${location.params.coin}/address/${i}`;
+        // const url: string = `${baseUrl}/network/${location.params.network}/address/${i}`;
         const url: string = location.pathname.replace(/address+\/([0-9]*)/, `address/${i}`);
         
         let balance: string = 'Loading...';
@@ -64,7 +64,7 @@ const AccountSelection = (props: any): any => {
     }
 
     let discoveryStatus = null;
-    const discovery = props.discovery.find(d => d.checksum === selected.checksum && d.coin === location.params.coin);
+    const discovery = props.discovery.find(d => d.deviceState === selected.state && d.network === location.params.network);
    
     if (discovery) {
         if (discovery.completed) {

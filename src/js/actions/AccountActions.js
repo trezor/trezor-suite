@@ -21,8 +21,8 @@ export const init = (): any => {
 
         const state: State = {
             index: parseInt(urlParams.address),
-            checksum: selected.checksum,
-            coin: urlParams.coin,
+            deviceState: selected.state,
+            network: urlParams.network,
             location: location.pathname
         };
 
@@ -30,26 +30,6 @@ export const init = (): any => {
             type: ACCOUNT.INIT,
             state: state
         });
-
-
-        // let discoveryProcess: ?Discovery = getState().discovery.find(d => d.checksum === selected.checksum && d.coin === currentAccount.coin);
-        // const discovering: boolean = (!discoveryProcess || !discoveryProcess.completed);
-
-        // const state: State = {
-        //     ...initialState,
-        //     loaded: true,
-        //     checksum: currentAccount.checksum,
-        //     address: currentAccount.address,
-        //     coin: urlParams.coin,
-        //     balance: currentAccount.balance,
-
-        //     discovering
-        // };
-
-        // dispatch({
-        //     type: ACCOUNT.INIT,
-        //     state
-        // });
     }
 }
 
@@ -76,24 +56,6 @@ export const update = (newProps: any): any => {
             });
             return;
         }
-
-        // update comes from device
-        // const device = connect.devices.find(d => d.checksum === accountDetail.checksum);
-        // if (accountDetail.detail !== device) {
-        //     console.warn("DEV UPDATE!!!!")
-        // }
-
-        // const discoveryProcess = discovery.find(d => d.checksum === device.checksum && d.coin === accountDetail.coin);
-
-        // const account = accounts.find(a => a.checksum === accountDetail.checksum && a.index === accountDetail.addressIndex && a.coin === accountDetail.coin);
-        // if (account && !accountDetail.address) {
-        //     // update current address
-        //     console.warn("ACC UPDATE!!!!")
-        // }
-
-
-        // isDeviceChanged
-        // isDiscoveryChanged
     }
 }
 

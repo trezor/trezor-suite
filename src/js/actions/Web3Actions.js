@@ -65,7 +65,7 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
             return;
         }
 
-        const coinName = coin.network;
+        const network = coin.network;
         const urls = coin.backends[0].urls;
 
         let web3host: string = urls[0];
@@ -77,7 +77,7 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
             if (currentHostIndex + 1 < urls.length) {
                 web3host = urls[currentHostIndex + 1];
             } else {
-                console.error("TODO: Backend " + coinName + " not working");
+                console.error("TODO: Backend " + network + " not working");
                 // try next coin
                 dispatch( init(web3, coinIndex + 1) );
                 return;
@@ -111,7 +111,7 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
 
                 dispatch({
                     type: WEB3.CREATE,
-                    name: coinName,
+                    network,
                     web3: instance,
                     erc20,
                     chainId: instance.version.network
@@ -119,7 +119,7 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
 
                 dispatch({
                     type: WEB3.GAS_PRICE_UPDATED,
-                    coin: coinName,
+                    network,
                     gasPrice
                 });
 
@@ -154,21 +154,21 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
                     if (blockHash) {
                         dispatch({
                             type: WEB3.BLOCK_UPDATED,
-                            name: coinName,
+                            network,
                             blockHash
                         });
                     }
 
                     // TODO: filter only current device
-                    const accounts = getState().accounts.filter(a => a.coin === coinName);
+                    const accounts = getState().accounts.filter(a => a.network === network);
                     for (const addr of accounts) {
                         dispatch( getBalance(addr) );
                         dispatch( getNonce(addr) );
                     }
 
-                    dispatch( getGasPrice(coinName) );
+                    dispatch( getGasPrice(network) );
 
-                    const pending = getState().pending.filter(p => p.coin === coinName);
+                    const pending = getState().pending.filter(p => p.network === network);
                     for (const tx of pending) {
                         dispatch( getTransactionReceipt(tx) );
                     }
@@ -236,19 +236,17 @@ export function initContracts(): ActionMethod {
 }
 
 
-export function getGasPrice(coinName: string): ActionMethod {
+export function getGasPrice(network: string): ActionMethod {
     return async (dispatch, getState) => {
 
-        const index: number = getState().web3.findIndex(w3 => {
-            return w3.coin === coinName;
-        });
+        const index: number = getState().web3.findIndex(w3 => w3.network === network);
 
         const web3 = getState().web3[ index ].web3;
         web3.eth.getGasPrice((error, gasPrice) => {
             if (!error) {
                 dispatch({
                     type: WEB3.GAS_PRICE_UPDATED,
-                    coin: coinName,
+                    network: network,
                     gasPrice
                 });
             }
@@ -259,7 +257,7 @@ export function getGasPrice(coinName: string): ActionMethod {
 export function getBalance(addr: Address): ActionMethod {
     return async (dispatch, getState) => {
 
-        const web3instance = getState().web3.filter(w3 => w3.coin === addr.coin)[0];
+        const web3instance = getState().web3.filter(w3 => w3.network === addr.network)[0];
         const web3 = web3instance.web3;
 
         web3.eth.getBalance(addr.address, (error, balance) => {
@@ -269,7 +267,7 @@ export function getBalance(addr: Address): ActionMethod {
                     dispatch({
                         type: ADDRESS.SET_BALANCE,
                         address: addr.address,
-                        coin: addr.coin,
+                        network: addr.network,
                         balance: newBalance
                     });
 
@@ -284,7 +282,7 @@ export function getNonce(addr: Address) {
 
     return async (dispatch, getState) => {
 
-        const web3instance = getState().web3.filter(w3 => w3.coin === addr.coin)[0];
+        const web3instance = getState().web3.filter(w3 => w3.network === addr.network)[0];
         const web3 = web3instance.web3;
 
         web3.eth.getTransactionCount(addr.address, (error, result) => {
@@ -293,7 +291,7 @@ export function getNonce(addr: Address) {
                     dispatch({
                         type: ADDRESS.SET_NONCE,
                         address: addr.address,
-                        coin: addr.coin,
+                        network: addr.network,
                         nonce: result
                     });
                 }
@@ -305,7 +303,7 @@ export function getNonce(addr: Address) {
 export function getTransactionReceipt(tx: any): any {
     return async (dispatch, getState) => {
 
-        const web3instance = getState().web3.filter(w3 => w3.coin === tx.coin)[0];
+        const web3instance = getState().web3.filter(w3 => w3.network === tx.network)[0];
         const web3 = web3instance.web3;
 
         //web3.eth.getTransactionReceipt(txid, (error, tx) => {

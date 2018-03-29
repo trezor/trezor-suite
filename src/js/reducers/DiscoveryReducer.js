@@ -6,8 +6,8 @@ import * as ADDRESS from '../actions/constants/Address';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
 export type Discovery = {
-    coin: string;
-    checksum: string;
+    network: string;
+    deviceState: string;
     xpub: string;
     accountIndex: number;
     interrupted: boolean;
@@ -18,14 +18,18 @@ export type Discovery = {
 
 const initialState: Array<Discovery> = [];
 
+const findIndex = (state: Array<Discovery>, network: string, deviceState: string): number => {
+    return state.findIndex(d => d.network === network && d.deviceState === deviceState);
+}
+
 const start = (state: Array<Discovery>, action: any): Array<Discovery> => {
 
     const instance: Discovery = {
-        coin: action.coin,
+        network: action.network,
         xpub: action.xpub,
         hdKey: action.hdKey,
         basePath: action.basePath,
-        checksum: action.device.checksum,
+        deviceState: action.device.state,
         accountIndex: 0,
         interrupted: false,
         completed: false,
@@ -33,12 +37,7 @@ const start = (state: Array<Discovery>, action: any): Array<Discovery> => {
     }
 
     const newState: Array<Discovery> = [ ...state ];
-    const index: number = state.findIndex(d => {
-        return d.coin === action.coin && d.checksum === action.device.checksum;
-    });
-
-    console.warn("START DISCO", index);
-
+    const index: number = findIndex(state, action.network, action.device.state);
     if (index >= 0) {
         newState[index] = instance;
     } else {
@@ -48,31 +47,27 @@ const start = (state: Array<Discovery>, action: any): Array<Discovery> => {
 }
 
 const complete = (state: Array<Discovery>, action: any): Array<Discovery> => {
-    const index: number = state.findIndex(d => {
-        return d.coin === action.coin && d.checksum === action.device.checksum;
-    });
+    const index: number = findIndex(state, action.network, action.device.state);
     const newState: Array<Discovery> = [ ...state ];
     newState[index].completed = true;
     return newState;
 }
 
 const addressCreate = (state: Array<Discovery>, action: any): Array<Discovery> => {
-    const index: number = state.findIndex(d => {
-        return d.coin === action.coin && d.checksum === action.device.checksum;
-    });
+    const index: number = findIndex(state, action.network, action.device.state);
     const newState: Array<Discovery> = [ ...state ];
     newState[index].accountIndex++;
     return newState;
 }
 
 const forgetDiscovery = (state: Array<Discovery>, action: any): Array<Discovery> => {
-    return state.filter(d => d.checksum !== action.device.checksum);
+    return state.filter(d => d.deviceState !== action.device.state);
 }
 
 const stop = (state: Array<Discovery>, action: any): Array<Discovery> => {
     const newState: Array<Discovery> = [ ...state ];
     return newState.map( (d: Discovery) => {
-        if (d.checksum === action.device.checksum && !d.completed) {
+        if (d.deviceState === action.device.state && !d.completed) {
             d.interrupted = true;
             d.waitingForDevice = false;
         }
@@ -83,8 +78,8 @@ const stop = (state: Array<Discovery>, action: any): Array<Discovery> => {
 const waiting = (state: Array<Discovery>, action: any): Array<Discovery> => {
 
     const instance: Discovery = {
-        coin: action.coin,
-        checksum: action.device.checksum,
+        network: action.network,
+        deviceState: action.device.state,
         xpub: '',
         accountIndex: 0,
         interrupted: false,
@@ -92,10 +87,7 @@ const waiting = (state: Array<Discovery>, action: any): Array<Discovery> => {
         waitingForDevice: true
     }
 
-    const index: number = state.findIndex(d => {
-        return d.coin === action.coin && d.checksum === action.device.checksum;
-    });
-
+    const index: number = findIndex(state, action.network, action.device.state);
     const newState: Array<Discovery> = [ ...state ];
     if (index >= 0) {
         newState[index] = instance;

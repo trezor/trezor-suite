@@ -34,8 +34,8 @@ export function loadTokensFromJSON(): any {
             const ERC20Abi = await httpRequest('data/ERC20Abi.json', 'json');
 
             // load tokens
-            const tokens = await config.coins.reduce(async (previousPromise: Promise<any>, coin: any): Promise<any> => {
-                const collection = await previousPromise;
+            const tokens = await config.coins.reduce(async (promise: Promise<any>, coin: any): Promise<any> => {
+                const collection = await promise;
                 const json: JSON = await httpRequest(coin.tokens, 'json');
                 collection[ coin.network ] = json;
                 return collection;

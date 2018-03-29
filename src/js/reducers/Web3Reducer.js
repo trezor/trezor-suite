@@ -7,7 +7,7 @@ import * as STORAGE from '../actions/constants/LocalStorage';
 import * as WEB3 from '../actions/constants/Web3';
 
 type Web3Instance = {
-    coin: string;
+    network: string;
     web3: Web3;
     chainId: number;
     latestBlock: any;
@@ -19,7 +19,7 @@ const initialState: Array<Web3Instance> = [];
 
 const createWeb3 = (state: Array<Web3Instance>, action: any): Array<Web3Instance> => {
     const instance: Web3Instance = {
-        coin: action.name,
+        network: action.network,
         web3: action.web3,
         chainId: parseInt(action.chainId),
         latestBlock: '0',
@@ -32,18 +32,14 @@ const createWeb3 = (state: Array<Web3Instance>, action: any): Array<Web3Instance
 }
 
 const updateLatestBlock = (state: Array<Web3Instance>, action: any): Array<Web3Instance> => {
-    const index: number = state.findIndex(w3 => {
-        return w3.coin === action.name;
-    });
+    const index: number = state.findIndex(w3 => w3.network === action.network);
     const newState: Array<Web3Instance> = [ ...state ];
     newState[index].latestBlock = action.blockHash;
     return newState;
 }
 
 const updateGasPrice = (state: Array<Web3Instance>, action: any): Array<Web3Instance> => {
-    const index: number = state.findIndex(w3 => {
-        return w3.coin === action.coin;
-    });
+    const index: number = state.findIndex(w3 => w3.network === action.network);
     const newState: Array<Web3Instance> = [ ...state ];
     newState[index].gasPrice = action.gasPrice;
     return newState;

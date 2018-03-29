@@ -13,7 +13,7 @@ const SummaryDetails = (props: any): any => {
     );
 
     const { config } = props.localStorage;
-    const selectedCoin = config.coins.find(c => c.network === props.coin);
+    const selectedCoin = config.coins.find(c => c.network === props.network);
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
     let balanceColumn = null;

@@ -6,7 +6,7 @@ import * as TOKEN from '../actions/constants/Token';
 
 export type Token = {
     loaded: boolean;
-    +checksum: string;
+    +deviceState: string;
     +name: string;
     +symbol: string;
     +address: string;
@@ -31,7 +31,7 @@ const create = (state: Array<Token>, payload: any): Array<Token> => {
     const newState: Array<Token> = [ ...state ];
     const token: Token = {
         loaded: false,
-        checksum: payload.checksum,
+        deviceState: payload.deviceState,
         name: payload.name,
         symbol: payload.symbol,
         address: payload.address,
@@ -44,7 +44,7 @@ const create = (state: Array<Token>, payload: any): Array<Token> => {
 }
 
 const forget = (state: Array<Token>, action: any): Array<Token> => {
-    return state.filter(t => t.checksum !== action.device.checksum);
+    return state.filter(t => t.deviceState !== action.device.deviceState);
 }
 
 const remove = (state: Array<Token>, action: any): Array<Token> => {

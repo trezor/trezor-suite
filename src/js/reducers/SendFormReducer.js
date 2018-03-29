@@ -10,9 +10,9 @@ import BigNumber from 'bignumber.js';
 import { getFeeLevels } from '../actions/SendFormActions';
 
 export type State = {
-    +checksum: ?string;
+    +deviceState: ?string;
     +accountIndex: number;
-    +coin: string;
+    +network: string;
     +coinSymbol: string;
     token: string;
     location: string;
@@ -50,9 +50,9 @@ export type FeeLevel = {
 
 
 export const initialState: State = {
-    checksum: null,
+    deviceState: null,
     accountIndex: 0,
-    coin: '',
+    network: '',
     coinSymbol: '',
     token: '',
     location: '',
@@ -88,13 +88,13 @@ const onGasPriceUpdated = (state: State, action: any): State => {
     }
     const newPrice = getRandomInt(10, 50).toString();
     //const newPrice = EthereumjsUnits.convert(action.gasPrice, 'wei', 'gwei');
-    if (action.coin === state.coin && newPrice !== state.recommendedGasPrice) {
+    if (action.network === state.network && newPrice !== state.recommendedGasPrice) {
         const newState: State = { ...state };
         if (!state.untouched) {
             newState.gasPriceNeedsUpdate = true;
             newState.recommendedGasPrice = newPrice;
         } else {
-            const newFeeLevels = getFeeLevels(state.coin, newPrice, state.gasLimit);
+            const newFeeLevels = getFeeLevels(state.network, newPrice, state.gasLimit);
             const selectedFeeLevel = newFeeLevels.find(f => f.value === 'Normal');
             newState.recommendedGasPrice = newPrice;
             newState.feeLevels = newFeeLevels;

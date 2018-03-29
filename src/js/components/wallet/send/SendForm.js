@@ -18,16 +18,16 @@ export default class Send extends AbstractAccount {
 
 const _render = (props: any): any => {
 
-    const device = props.devices.find(d => d.checksum === props.sendForm.checksum);
-    const discovery = props.discovery.find(d => d.checksum === device.checksum && d.coin === props.sendForm.coin);
-    const account = props.accounts.find(a => a.checksum === props.sendForm.checksum && a.index === props.sendForm.accountIndex && a.coin === props.sendForm.coin);
+    const device = props.devices.find(device => device.state === props.sendForm.deviceState);
+    const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === props.sendForm.network);
+    const account = props.accounts.find(a => a.deviceState === props.sendForm.deviceState && a.index === props.sendForm.accountIndex && a.network === props.sendForm.network);
     const addressTokens = props.tokens.filter(t => t.ethAddress === account.address);
 
     const { 
         address,
         amount,
         setMax,
-        coin,
+        network,
         coinSymbol,
         token,
         feeLevels,
@@ -53,7 +53,7 @@ const _render = (props: any): any => {
     } = props.sendFormActions;
 
     const { config } = props.localStorage;
-    const selectedCoin = config.coins.find(c => c.network === coin);
+    const selectedCoin = config.coins.find(c => c.network === network);
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
     const tokens = addressTokens.map(t => {
@@ -81,13 +81,12 @@ const _render = (props: any): any => {
 
     let buttonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
     let buttonLabel: string = 'Send';
-    if (coin !== token && amount.length > 0 && !errors.amount) {
+    if (network !== token && amount.length > 0 && !errors.amount) {
         buttonLabel += ` ${amount} ${ token.toUpperCase() }`
-    } else if (coin === token && total !== '0') {
+    } else if (network === token && total !== '0') {
         buttonLabel += ` ${total} ${ selectedCoin.symbol }`;
     }
-
-    //const device = props.devices.find(d => d.checksum === currentAccount.checksum);
+    
     if (device && !device.connected) {
         buttonLabel = 'Device is not connected';
         buttonDisabled = true;

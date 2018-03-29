@@ -20,9 +20,9 @@ export const init = (): any => {
 
         const state: State = {
             ...initialState,
-            checksum: selected.checksum,
+            deviceState: selected.state,
             accountIndex: parseInt(urlParams.address),
-            coin: urlParams.coin,
+            network: urlParams.network,
             location: location.pathname,
         };
 
@@ -78,7 +78,7 @@ export const showAddress = (address_n: string): any => {
             device: {
                 path: selected.path,
                 instance: selected.instance,
-                state: selected.checksum
+                state: selected.state
             },
             path: address_n,
         });

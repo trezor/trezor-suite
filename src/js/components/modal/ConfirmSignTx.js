@@ -7,7 +7,7 @@ const Confirmation = (props): any => {
     const {
         amount,
         address,
-        coin,
+        network,
         coinSymbol,
         token,
         total,

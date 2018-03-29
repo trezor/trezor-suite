@@ -9,7 +9,7 @@ const CoinSelection = (props: any): any => {
     const { config } = props.localStorage;
 
     const walletCoins = config.coins.map(item => {
-        const url = `${ location.pathname }/coin/${ item.network }/address/0`;
+        const url = `${ location.pathname }/network/${ item.network }/address/0`;
         const className = `coin ${ item.network }`
         return (
             <NavLink key={ item.network } to={ url } className={ className }>

@@ -6,9 +6,9 @@ import { findSelectedDevice } from '../../reducers/TrezorConnectReducer';
 
 const ConfirmAddress = (props: any): any => {
     
-    const account = props.accounts.find(a => a.checksum === props.receive.checksum && a.index === props.receive.accountIndex && a.coin === props.receive.coin);
+    const account = props.accounts.find(a => a.deviceState === props.receive.deviceState && a.index === props.receive.accountIndex && a.network === props.receive.network);
     const { config } = props.localStorage;
-    const selectedCoin = config.coins.find(c => c.network === account.coin);
+    const selectedCoin = config.coins.find(c => c.network === account.network);
 
     return (
         <div className="confirm-address">
@@ -27,7 +27,7 @@ export default ConfirmAddress;
 
 export const ConfirmUnverifiedAddress = (props: any): any => {
 
-    const account = props.accounts.find(a => a.checksum === props.receive.checksum && a.index === props.receive.accountIndex && a.coin === props.receive.coin);
+    const account = props.accounts.find(a => a.deviceState === props.receive.deviceState && a.index === props.receive.accountIndex && a.network === props.receive.network);
 
     const {
         onCancel 

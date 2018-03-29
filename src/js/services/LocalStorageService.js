@@ -20,7 +20,7 @@ import * as WEB3 from '../actions/constants/Web3';
 
 const findAccounts = (devices, accounts) => {
     return devices.reduce((arr, dev) => {
-        return arr.concat(accounts.filter(a => a.checksum === dev.checksum));
+        return arr.concat(accounts.filter(a => a.deviceState === dev.state));
     }, []);
 }
 
@@ -32,7 +32,7 @@ const findTokens = (accounts, tokens) => {
 
 const findDiscovery = (devices, discovery) => {
     return devices.reduce((arr, dev) => {
-        return arr.concat(discovery.filter(a => a.checksum === dev.checksum));
+        return arr.concat(discovery.filter(a => a.deviceState === dev.state));
     }, []);
 }
 

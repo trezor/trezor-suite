@@ -35,14 +35,14 @@ export default (
                 <Route>
                     <WalletContainer>
                         <Route exact path="/device/:device/" component={ DashboardContainer } />
-                        <Route exact path="/device/:device/coin/:coin" component={ DashboardContainer } />
+                        <Route exact path="/device/:device/network/:network" component={ DashboardContainer } />
                         <Route exact path="/device/:device/acquire" component={ AcquireContainer } />
                         <Route exact path="/device/:device/bootloader" component={ BootloaderContainer } />
-                        <Route exact path="/device/:device/coin/:coin/address/:address" component={ SummaryContainer } />
-                        <Route path="/device/:device/coin/:coin/address/:address/send" component={ SendFormContainer } />
-                        <Route path="/device/:device/coin/:coin/address/:address/send/override" component={ SendFormContainer } />
-                        <Route path="/device/:device/coin/:coin/address/:address/receive" component={ ReceiveContainer } />
-                        <Route path="/device/:device/coin/:coin/address/:address/signverify" component={ SignVerifyContainer } />
+                        <Route exact path="/device/:device/network/:network/address/:address" component={ SummaryContainer } />
+                        <Route path="/device/:device/network/:network/address/:address/send" component={ SendFormContainer } />
+                        <Route path="/device/:device/network/:network/address/:address/send/override" component={ SendFormContainer } />
+                        <Route path="/device/:device/network/:network/address/:address/receive" component={ ReceiveContainer } />
+                        <Route path="/device/:device/network/:network/address/:address/signverify" component={ SignVerifyContainer } />
                         {/* <Route path="/device/:device/address/:address/history" component={ HistoryContainer } /> */}
                         
                     </WalletContainer>

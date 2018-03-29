@@ -114,7 +114,7 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
         store.dispatch( TrezorConnectActions.getSelectedDeviceState() );
 
     } else if (action.type === CONNECT.COIN_CHANGED) {
-        store.dispatch( TrezorConnectActions.coinChanged( action.payload.coin ) );
+        store.dispatch( TrezorConnectActions.coinChanged( action.payload.network ) );
     }
 }
 

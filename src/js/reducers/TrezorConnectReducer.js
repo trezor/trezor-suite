@@ -9,7 +9,7 @@ export type TrezorDevice = {
     connected: boolean;
     path: string;
     +label: string;
-    +checksum: string;
+    +state: string;
     +instance?: number;
     instanceLabel: string;
     features?: Object;
@@ -81,12 +81,12 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
         remember: typeof upcoming.remember === 'boolean' ? upcoming.remember : current.remember,
         instance: current.instance,
         instanceLabel: current.instanceLabel,
-        checksum: current.checksum,
+        state: current.state,
         acquiring: typeof upcoming.acquiring === 'boolean' ? upcoming.acquiring : current.acquiring,
         ts: new Date().getTime(),
     }
 
-    if (upcoming.unacquired && current.checksum) {
+    if (upcoming.unacquired && current.state) {
         dev.instanceLabel = current.instanceLabel;
         dev.features = current.features;
         dev.label = current.label;
@@ -135,7 +135,7 @@ const addDevice = (state: State, device: Object): State => {
             connected: true,
             path: device.path,
             label: device.label,
-            checksum: null,
+            state: null,
             // instance: 0,
             instanceLabel: device.label,
             ts: 0,
@@ -157,7 +157,7 @@ const setDeviceState = (state: State, action: any): State => {
     if (index > -1) {
         const changedDevice: TrezorDevice = { 
             ...newState.devices[index],
-            checksum: action.checksum
+            state: action.state
         };
         newState.devices[index] = changedDevice;
         //newState.selectedDevice = changedDevice;
@@ -219,7 +219,7 @@ const disconnectDevice = (state: State, device: Object): State => {
     const otherDevices: Array<TrezorDevice> = state.devices.filter(d => affectedDevices.indexOf(d) === -1);
 
     if (affectedDevices.length > 0) {
-        const acquiredDevices = affectedDevices.filter(d => !d.unacquired && d.checksum);
+        const acquiredDevices = affectedDevices.filter(d => !d.unacquired && d.state);
         newState.devices = otherDevices.concat( acquiredDevices.map(d => {
             d.connected = false;
             d.isUsedElsewhere = false;
@@ -276,7 +276,7 @@ const duplicate = (state: State, device: any): State => {
     // if (affectedDevices.length > 0) {
         const newDevice: TrezorDevice = {
             ...device,
-            checksum: null,
+            state: null,
             remember: device.remember,
             connected: device.connected,
             path: device.path,

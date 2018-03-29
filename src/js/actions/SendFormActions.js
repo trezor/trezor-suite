@@ -46,7 +46,7 @@ export const calculateMaxAmount = (balance: string, gasPrice: string, gasLimit: 
     
 }
 
-export const getFeeLevels = (coin: string, gasPrice: BigNumber | string, gasLimit: string): Array<FeeLevel> => {
+export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLimit: string): Array<FeeLevel> => {
     if (typeof gasPrice === 'string') gasPrice = new BigNumber(gasPrice);
     const quarter: BigNumber = gasPrice.dividedBy(4);
     const high: string = gasPrice.plus(quarter.times(2)).toString();
@@ -56,17 +56,17 @@ export const getFeeLevels = (coin: string, gasPrice: BigNumber | string, gasLimi
         { 
             value: 'High',
             gasPrice: high,
-            label: `${ calculateFee(high, gasLimit) } ${ coin }`
+            label: `${ calculateFee(high, gasLimit) } ${ symbol }`
         },
         { 
             value: 'Normal',
             gasPrice: gasPrice.toString(),
-            label: `${ calculateFee(gasPrice.toString(), gasLimit) } ${ coin }`
+            label: `${ calculateFee(gasPrice.toString(), gasLimit) } ${ symbol }`
         },
         { 
             value: 'Low',
             gasPrice: low,
-            label: `${ calculateFee(low, gasLimit) } ${ coin }`
+            label: `${ calculateFee(low, gasLimit) } ${ symbol }`
         },
         { 
             value: 'Custom',
@@ -77,10 +77,10 @@ export const getFeeLevels = (coin: string, gasPrice: BigNumber | string, gasLimi
 }
 
 export const findBalance = (getState: any): string => {
-    const state = getState().sendForm;    
-    const account = getState().accounts.find(a => a.checksum === state.checksum && a.index === state.accountIndex && a.coin === state.coin);
+    const state = getState().sendForm;
+    const account = getState().accounts.find(a => a.deviceState === state.deviceState && a.index === state.accountIndex && a.network === state.network);
 
-    if (state.token !== state.coin) {
+    if (state.token !== state.network) {
         return getState().tokens.find(t => t.ethAddress === account.address && t.symbol === state.token).balance;
     } else {
         return account.balance;
@@ -98,15 +98,15 @@ export const init = (): any => {
         const selected = findSelectedDevice( getState().connect );
         if (!selected) return;
 
-        const web3instance = getState().web3.find(w3 => w3.coin === urlParams.coin);
+        const web3instance = getState().web3.find(w3 => w3.network === urlParams.network);
         if (!web3instance) {
-            // no backend for this coin
+            // no backend for this network
             //return;
         }
 
         // TODO: check if there are some unfinished tx in localStorage
         const { config } = getState().localStorage;
-        const coin = config.coins.find(c => c.network === urlParams.coin);
+        const coin = config.coins.find(c => c.network === urlParams.network);
 
         const gasPrice: BigNumber = new BigNumber( EthereumjsUnits.convert(web3instance.gasPrice, 'wei', 'gwei') ) || new BigNumber(coin.defaultGasPrice);
         const gasLimit: string = coin.defaultGasLimit.toString();
@@ -116,11 +116,11 @@ export const init = (): any => {
 
         const state: State = {
             ...initialState,
-            checksum: selected.checksum,
+            deviceState: selected.state,
             accountIndex: parseInt(urlParams.address),
-            coin: urlParams.coin,
+            network: urlParams.network,
             coinSymbol: coin.symbol,
-            token: urlParams.coin,
+            token: urlParams.network,
             location: location.pathname,
 
             feeLevels,
@@ -186,11 +186,11 @@ export const validation = (): any => {
                 } else if (!EthereumjsUtil.isValidAddress(state.address)) {
                     errors.address = 'Address is not valid';
                 } else if (myAccount) {
-                    if (myAccount.coin === state.coin) {
+                    if (myAccount.network === state.network) {
                         infos.address = `TREZOR Address #${ (myAccount.index + 1) }`;
                     } else {
                         // TODO: load coins from config
-                        warnings.address = `Looks like it's TREZOR address in Account #${ (myAccount.index + 1) } of ${ myAccount.coin.toUpperCase() }`;
+                        warnings.address = `Looks like it's TREZOR address in Account #${ (myAccount.index + 1) } of ${ myAccount.network.toUpperCase() } network`;
                     }
                 }
             }
@@ -204,10 +204,10 @@ export const validation = (): any => {
                 } else if (state.amount.length > 0 && !state.amount.match(numberRegExp)) {
                     errors.amount = 'Amount is not a number';
                 } else {
-                    const account = getState().accounts.find(a => a.checksum === state.checksum && a.index === state.accountIndex && a.coin === state.coin);
+                    const account = getState().accounts.find(a => a.deviceState === state.deviceState && a.index === state.accountIndex && a.network === state.network);
                     let decimalRegExp;
 
-                    if (state.token !== state.coin) {
+                    if (state.token !== state.network) {
                         const token: any = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === state.token);
                         
                         if (parseInt(token.decimals) > 0) {
@@ -270,7 +270,7 @@ export const validation = (): any => {
             }
 
             // valid data
-            if (state.touched.data && state.coin === state.token && state.data.length > 0) {
+            if (state.touched.data && state.network === state.token && state.data.length > 0) {
                 const re = /^[0-9A-Fa-f]+$/g;
                 //const re = /^[0-9A-Fa-f]{6}$/g;
                 if (!re.test(state.data)) {
@@ -320,7 +320,7 @@ export const onAmountChange = (amount: string): any => {
         const currentState: State = getState().sendForm;
         const touched = { ...currentState.touched };
         touched.amount = true;
-        const total: string = calculateTotal(currentState.token !== currentState.coin ? '0' : amount, currentState.gasPrice, currentState.gasLimit);
+        const total: string = calculateTotal(currentState.token !== currentState.network ? '0' : amount, currentState.gasPrice, currentState.gasLimit);
 
         const state: State = {
             ...currentState,
@@ -345,20 +345,20 @@ export const onCurrencyChange = (currency: any): any => {
 
         const currentState = getState().sendForm;
 
-        const account = getState().accounts.find(a => a.checksum === currentState.checksum && a.index === currentState.accountIndex && a.coin === currentState.coin);
+        const account = getState().accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.accountIndex && a.network === currentState.network);
         if (!account) {
             // account not found
             return;
         }
 
         const { config } = getState().localStorage;
-        const coin = config.coins.find(c => c.network === currentState.coin);
+        const coin = config.coins.find(c => c.network === currentState.network);
 
         let gasLimit: string = '';
         let amount: string = currentState.amount;
         let total: string;
 
-        if (currentState.coin !== currency.value) {
+        if (currentState.network !== currency.value) {
             gasLimit = coin.defaultGasLimitTokens.toString();
             if (currentState.setMax) {
                 const tokenBalance: string = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === currency.value).balance;
@@ -401,7 +401,7 @@ export const onSetMax = (): any => {
         const touched = { ...currentState.touched };
         touched.amount = true;
 
-        const account = getState().accounts.find(a => a.checksum === currentState.checksum && a.index === currentState.accountIndex && a.coin === currentState.coin);
+        const account = getState().accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.accountIndex && a.network === currentState.network);
         if (!account) {
             // account not found
             return;
@@ -410,7 +410,7 @@ export const onSetMax = (): any => {
         let amount: string = currentState.amount;
         let total: string = currentState.total;
         if (!currentState.setMax) {
-            if (currentState.token !== currentState.coin) {
+            if (currentState.token !== currentState.network) {
                 const tokenBalance: string = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === currentState.token).balance;
                 amount = tokenBalance;
                 total = calculateTotal('0', currentState.gasPrice, currentState.gasLimit);
@@ -459,15 +459,15 @@ export const onFeeLevelChange = (feeLevel: any): any => {
         }
 
         if (currentState.setMax) {
-            const account = getState().accounts.find(a => a.checksum === currentState.checksum && a.index === currentState.accountIndex && a.coin === currentState.coin);
-            if (state.token !== state.coin) {
+            const account = getState().accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.accountIndex && a.network === currentState.network);
+            if (state.token !== state.network) {
                 const tokenBalance: string = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === currentState.token).balance;
                 state.amount = tokenBalance;
             } else {
                 state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
             }
         }
-        state.total = calculateTotal(state.token !== state.coin ? '0' : state.amount, state.gasPrice, state.gasLimit);
+        state.total = calculateTotal(state.token !== state.network ? '0' : state.amount, state.gasPrice, state.gasLimit);
 
         dispatch({
             type: SEND.FEE_LEVEL_CHANGE,
@@ -492,15 +492,15 @@ export const updateFeeLevels = (): any => {
         };
 
         if (currentState.setMax) {
-            const account = getState().accounts.find(a => a.checksum === currentState.checksum && a.index === currentState.accountIndex && a.coin === currentState.coin);
-            if (state.token !== state.coin) {
+            const account = getState().accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.accountIndex && a.network === currentState.network);
+            if (state.token !== state.network) {
                 const tokenBalance: string = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === currentState.token).balance;
                 state.amount = tokenBalance;
             } else {
                 state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
             }
         }
-        state.total = calculateTotal(state.token !== state.coin ? '0' : state.amount, state.gasPrice, state.gasLimit);
+        state.total = calculateTotal(state.token !== state.network ? '0' : state.amount, state.gasPrice, state.gasLimit);
 
         dispatch({
             type: SEND.UPDATE_FEE_LEVELS,
@@ -532,8 +532,8 @@ export const onGasPriceChange = (gasPrice: string): any => {
             state.selectedFeeLevel = customLevel;
 
             if (currentState.setMax) {
-                const account = getState().accounts.find(a => a.checksum === currentState.checksum && a.index === currentState.accountIndex && a.coin === currentState.coin);
-                if (state.token !== state.coin) {
+                const account = getState().accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.accountIndex && a.network === currentState.network);
+                if (state.token !== state.network) {
                     const tokenBalance: string = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === currentState.token).balance;
                     state.amount = tokenBalance;
                 } else {
@@ -542,7 +542,7 @@ export const onGasPriceChange = (gasPrice: string): any => {
             }
         }
         
-        state.total = calculateTotal(state.token !== state.coin ? '0' : state.amount, state.gasPrice, state.gasLimit);
+        state.total = calculateTotal(state.token !== state.network ? '0' : state.amount, state.gasPrice, state.gasLimit);
 
         dispatch({
             type: SEND.GAS_PRICE_CHANGE,
@@ -572,8 +572,8 @@ export const onGasLimitChange = (gasLimit: string): any => {
             state.selectedFeeLevel = customLevel;
 
             if (currentState.setMax) {
-                const account = getState().accounts.find(a => a.checksum === currentState.checksum && a.index === currentState.accountIndex && a.coin === currentState.coin);
-                if (state.token !== state.coin) {
+                const account = getState().accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.accountIndex && a.network === currentState.network);
+                if (state.token !== state.network) {
                     const tokenBalance: string = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === currentState.token).balance;
                     state.amount = tokenBalance;
                 } else {
@@ -582,7 +582,7 @@ export const onGasLimitChange = (gasLimit: string): any => {
             }
         }
 
-        state.total = calculateTotal(state.token !== state.coin ? '0' : state.amount, state.gasPrice, state.gasLimit);
+        state.total = calculateTotal(state.token !== state.network ? '0' : state.amount, state.gasPrice, state.gasLimit);
 
         dispatch({
             type: SEND.GAS_LIMIT_CHANGE,
@@ -619,17 +619,17 @@ export const onSend = (): any => {
     return async (dispatch, getState): Promise<any> => {
 
         const state: State = getState().sendForm;
-        const web3instance = getState().web3.filter(w3 => w3.coin === state.coin)[0];
+        const web3instance = getState().web3.filter(w3 => w3.network === state.network)[0];
         const web3 = web3instance.web3;
         
-        const account = getState().accounts.find(a => a.checksum === state.checksum && a.index === state.accountIndex && a.coin === state.coin);
+        const account = getState().accounts.find(a => a.deviceState === state.deviceState && a.index === state.accountIndex && a.network === state.network);
                 
         const address_n = account.addressPath;
 
         let data: string = '';
         let txAmount = web3.toHex(web3.toWei(state.amount, 'ether'));
         let txAddress = state.address;
-        if (state.coin !== state.token) {
+        if (state.network !== state.token) {
             const tokens = getState().tokens
             const t = tokens.find(t => t.ethAddress === account.address && t.symbol === state.token);
             const contract = web3instance.erc20.at(t.address);
@@ -683,7 +683,7 @@ export const onSend = (): any => {
             device: {
                 path: selected.path,
                 instance: selected.instance,
-                state: selected.checksum
+                state: selected.state
             },
             //path: "m/44'/60'/0'/0/0",
             path: txData.address_n,
@@ -719,7 +719,7 @@ export const onSend = (): any => {
         // console.log("---->GASSS", txData, gasLimit2.toString() );
 
         const { config } = getState().localStorage;
-        const selectedCoin = config.coins.find(c => c.network === state.coin);
+        const selectedCoin = config.coins.find(c => c.network === state.network);
 
         try {
             const tx = new EthereumjsTx(txData);

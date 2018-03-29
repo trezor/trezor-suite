@@ -19,7 +19,7 @@ const Article = (props) => {
     return (
         <article>
             <nav>
-                <Route path="/device/:device/coin/:coin/address/:address" component={ AccountTabs } />
+                <Route path="/device/:device/network/:network/address/:address" component={ AccountTabs } />
             </nav>
             <Notifications />
             <Log />

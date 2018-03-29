@@ -8,7 +8,7 @@ const WIDTH: number = 1080;
 const HEIGHT: number = 1920;
 
 type State = {
-    coin: string;
+    network: string;
     device: string;
 
 }

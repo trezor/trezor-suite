@@ -52,7 +52,7 @@ const Aside = (props: any): any => {
     
     if (props.deviceDropdownOpened) {
         menu = <DeviceDropdown {...props} />;
-    } else if (location.params.coin) {
+    } else if (location.params.network) {
         menu = (
             <TransitionMenu animationType={"slide-left"}>
                 <AccountSelection { ...props} />

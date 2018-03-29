@@ -4,18 +4,18 @@
 import * as RECEIVE from '../actions/constants/receive';
 
 export type State = {
-    +checksum: ?string;
+    +deviceState: ?string;
     +accountIndex: ?number;
-    +coin: ?string;
+    +network: ?string;
     location: string;
     addressVerified: boolean;
     adressUnverified: boolean;
 }
 
 export const initialState: State = {
-    checksum: null,
+    deviceState: null,
     accountIndex: null,
-    coin: null,
+    network: null,
     location: '',
     addressVerified: false,
     addressUnverified: false,

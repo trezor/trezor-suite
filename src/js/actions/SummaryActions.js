@@ -24,9 +24,9 @@ export const init = (): any => {
 
         const state: State = {
             ...initialState,
-            checksum: selected.checksum,
+            deviceState: selected.state,
             accountIndex: parseInt(urlParams.address),
-            coin: urlParams.coin,
+            network: urlParams.network,
             location: location.pathname,
         };
 
@@ -65,53 +65,13 @@ export const onDetailsToggle = (): any => {
     }
 }
 
-// export const init = (address: string): any => {
-//     return (dispatch, getState): void => {
-//         const { location } = getState().router;
-//         const urlParams = location.params;
-
-//         const selected = findSelectedDevice(getState().connect);
-//         const accounts = getState().accounts;
-//         // const currentAccount = accounts.find(a => a.index === parseInt(urlParams.address) && a.coin === urlParams.coin && a.deviceId === urlParams.device && a.loaded);
-//         const currentAccount = accounts.find(a => a.index === parseInt(urlParams.address) && a.coin === urlParams.coin && a.checksum === selected.checksum);
-//         if (!currentAccount) {
-//             console.log("STATER", getState())
-//             // account not found
-//             return;
-//         }
-
-//         const web3instance = getState().web3.find(w3 => w3.coin === urlParams.coin);
-//         if (!web3instance) {
-//             // no backend for this coin
-//             return;
-//         }
-
-//         const state: State = {
-//             ...initialState,
-//             loaded: true,
-//             address: currentAccount.address,
-//             coin: urlParams.coin,
-//             balance: currentAccount.balance,
-//         };
-
-
-//         dispatch({
-//             type: SUMMARY.INIT,
-//             state
-//         });
-
-//     }
-// }
-
-
-
 
 export const loadTokens = (input: string, account: any): any => {
     return async (dispatch, getState): Promise<any> => {
 
         if (input.length < 1) return null;
 
-        const tokens = getState().localStorage.tokens[ account.coin ];
+        const tokens = getState().localStorage.tokens[ account.network ];
         const value = input.toLowerCase();
         const result = tokens.filter(t => 
             t.symbol.toLowerCase().indexOf(value) >= 0 || 
@@ -122,7 +82,7 @@ export const loadTokens = (input: string, account: any): any => {
         if (result.length > 0) {
             return { options: result };
         } else {
-            const web3instance = getState().web3.find(w3 => w3.coin === account.coin);
+            const web3instance = getState().web3.find(w3 => w3.network === account.network);
 
             const info = await getTokenInfoAsync(web3instance.erc20, input);
             info.address = input;
@@ -148,13 +108,13 @@ export const loadTokens = (input: string, account: any): any => {
 export const selectToken = (token: any, account: any): any => {
     return async (dispatch, getState): Promise<any> => {
 
-        const web3instance = getState().web3.find(w3 => w3.coin === account.coin);
+        const web3instance = getState().web3.find(w3 => w3.network === account.network);
         dispatch({
             type: TOKEN.ADD,
             payload: {
                 ...token,
                 ethAddress: account.address,
-                checksum: account.checksum
+                deviceState: account.deviceState
             }
         });
 
@@ -195,9 +155,8 @@ export const onCustomTokenToggle = (): any => {
 
 export const onCustomTokenAddressChange = (value: string): any => {
     // todo:
-    // -validate addres
-    // - if adress is ok, try to fetch token info
-    // - check if addres does not exist in predefined coins
+    // -validate address
+    // - if adresss is ok, try to fetch token info
     // return {
     //     type: ACTIONS.TOKENS_CUSTOM_ADDRESS_CHANGE,
     //     value

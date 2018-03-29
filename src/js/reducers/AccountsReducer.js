@@ -6,8 +6,9 @@ import * as ADDRESS from '../actions/constants/Address';
 
 export type Account = {
     loaded: boolean;
-    +checksum: string;
-    +coin: string;
+    +network: string;
+    +deviceID: string;
+    +deviceState: ?string;
     +index: number;
     +addressPath: Array<number>;
     +address: string;
@@ -21,15 +22,17 @@ const createAccount = (state: Array<Account>, action: any): Array<Account> => {
 
     // TODO check with device_id
     // check if account was created before
-    const exist: ?Account = state.find(addr => addr.address === action.address && addr.coin === action.coin);
+    const exist: ?Account = state.find((account: Account) => account.address === action.address && account.network === action.network && account.deviceID === action.device.features.device_id);
+    console.warn("MAM?", exist, action)
     if (exist) {
         return state;
     }
 
     const address: Account = {
         loaded: false,
-        checksum: action.device.checksum,
-        coin: action.coin,
+        network: action.network,
+        deviceID: action.device.features.device_id,
+        deviceState: action.device.state,
         index: action.index,
         addressPath: action.path,
         address: action.address,
@@ -43,16 +46,15 @@ const createAccount = (state: Array<Account>, action: any): Array<Account> => {
 }
 
 const removeAccounts = (state: Array<Account>, action: any): Array<Account> => {
-    // TODO: all instances od device (multiple checksums)
-    return state.filter(addr => addr.checksum !== action.device.checksum);
+    return state.filter(account => account.deviceID !== action.device.features.device_id);
 }
 
 const forgetAccounts = (state: Array<Account>, action: any): Array<Account> => {
-    return state.filter(addr => action.accounts.indexOf(addr) === -1);
+    return state.filter(account => action.accounts.indexOf(account) === -1);
 }
 
 const setBalance = (state: Array<Account>, action: any): Array<Account> => {
-    const index: number = state.findIndex(addr => addr.address === action.address && addr.coin === action.coin);
+    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network);
     const newState: Array<Account> = [ ...state ];
     newState[index].loaded = true;
     newState[index].balance = action.balance;
@@ -60,7 +62,7 @@ const setBalance = (state: Array<Account>, action: any): Array<Account> => {
 }
 
 const setNonce = (state: Array<Account>, action: any): Array<Account> => {
-    const index: number = state.findIndex(addr => addr.address === action.address && addr.coin === action.coin);
+    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network);
     const newState: Array<Account> = [ ...state ];
     newState[index].loaded = true;
     newState[index].nonce = action.nonce;

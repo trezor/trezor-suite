@@ -7,8 +7,8 @@ import ScaleText from 'react-scale-text';
 
 const PendingTransactions = (props: any): any => {
 
-    const account = props.accounts.find(a => a.checksum === props.sendForm.checksum && a.index === props.sendForm.accountIndex && a.coin === props.sendForm.coin);
-    const pending = props.pending.filter(p => p.coin === account.coin && p.address === account.address);
+    const account = props.accounts.find(a => a.deviceState === props.sendForm.deviceState && a.index === props.sendForm.accountIndex && a.network === props.sendForm.network);
+    const pending = props.pending.filter(p => p.network === account.network && p.address === account.address);
 
     if (pending.length < 1) return null;
 
@@ -21,7 +21,7 @@ const PendingTransactions = (props: any): any => {
 
         let iconColor, symbol, name;
 
-        if (tx.token !== tx.coin) {
+        if (tx.token !== tx.network) {
             const token = tokens.find(t => t.symbol === tx.token);
             iconColor = {
                 color: textColor.hex(token.name),
@@ -32,9 +32,9 @@ const PendingTransactions = (props: any): any => {
             name = token.name;
         } else {
             iconColor = {
-                color: textColor.hex(tx.coin),
-                background: bgColor.hex(tx.coin),
-                borderColor: bgColor.hex(tx.coin)
+                color: textColor.hex(tx.network),
+                background: bgColor.hex(tx.network),
+                borderColor: bgColor.hex(tx.network)
             }
             symbol = props.selectedCoin.symbol;
             name = props.selectedCoin.name;

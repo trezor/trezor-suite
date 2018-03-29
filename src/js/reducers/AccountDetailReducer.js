@@ -6,15 +6,15 @@ import * as CONNECT from '../actions/constants/TrezorConnect';
 
 export type State = {
     +index: number;
-    +checksum: ?string;
-    +coin: string;
+    +ch: ?string;
+    +network: string;
     location: string;
 }
 
 export const initialState: State = {
     index: 0,
-    checksum: null,
-    coin: '',
+    deviceState: null,
+    network: '',
 };
 
 

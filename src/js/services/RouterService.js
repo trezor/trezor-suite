@@ -48,9 +48,9 @@ const validation = (store: any, params: UrlParams): boolean => {
         if (!device) return false;
     }
 
-    if (params.hasOwnProperty('coin')) {
+    if (params.hasOwnProperty('network')) {
         const { config } = store.getState().localStorage;
-        const coin = config.coins.find(c => c.network === params.coin);
+        const coin = config.coins.find(coin => coin.network === params.network);
         if (!coin) return false;
         if (!params.address) return false;
     }
@@ -84,7 +84,7 @@ const RouterService = (store: any) => (next: any) => (action: any) => {
                 initSearch: action.payload.search
             }
 
-            // check if there are initial parameters in url (coin)
+            // check if there are initial parameters in url (network/ device / account)
             if (action.payload.search.length > 0) {
                 // save it in WalletReducer, after device detection will redirect to this request
                 redirectPath = '/';
@@ -125,11 +125,11 @@ const RouterService = (store: any) => (next: any) => (action: any) => {
                     });
                 }
 
-                if (requestedParams.coin !== currentParams.coin) {
+                if (requestedParams.network !== currentParams.network) {
                     store.dispatch({
                         type: CONNECT.COIN_CHANGED,
                         payload: {
-                            coin: requestedParams.coin
+                            network: requestedParams.network
                         }
                     });
                 }
