@@ -36,8 +36,8 @@ export default class AbstractAccount extends Component {
                     <section>
                         <Notification 
                             className="info" 
-                            title="Account is not loaded yet" 
-                            message={ `Connect ${ device.instanceLabel } device to continue` }
+                            title="Loading account" 
+                            message=""
                              />
                     </section>
                 );
