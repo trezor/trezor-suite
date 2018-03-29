@@ -16,6 +16,7 @@ import * as ReceiveActions from '../../actions/ReceiveActions';
 import Pin from './Pin';
 import InvalidPin from './InvalidPin';
 import Passphrase from './Passphrase';
+import PassphraseType from './PassphraseType';
 import ConfirmSignTx from './ConfirmSignTx';
 import ConfirmAddress, { ConfirmUnverifiedAddress } from './ConfirmAddress';
 import RememberDevice, { ForgetDevice, DisconnectDevice } from './RememberDevice';
@@ -57,6 +58,9 @@ class Modal extends Component {
             break;
             case "ButtonRequest_Address" :
                 component = (<ConfirmAddress { ...this.props } />)
+            break;
+            case "ButtonRequest_PassphraseType" :
+                component = (<PassphraseType { ...this.props } />)
             break;
             case RECEIVE.REQUEST_UNVERIFIED :
                 component = (<ConfirmUnverifiedAddress { ...this.props } />)
