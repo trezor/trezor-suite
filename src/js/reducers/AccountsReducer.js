@@ -19,9 +19,9 @@ const initialState: Array<Account> = [];
 
 const createAccount = (state: Array<Account>, action: any): Array<Account> => {
 
-    // TODO check witch checksum
+    // TODO check with device_id
     // check if account was created before
-    const exist: ?Account = state.find(addr => addr.address === action.address);
+    const exist: ?Account = state.find(addr => addr.address === action.address && addr.coin === action.coin);
     if (exist) {
         return state;
     }
@@ -52,7 +52,7 @@ const forgetAccounts = (state: Array<Account>, action: any): Array<Account> => {
 }
 
 const setBalance = (state: Array<Account>, action: any): Array<Account> => {
-    const index: number = state.findIndex(addr => addr.address === action.address);
+    const index: number = state.findIndex(addr => addr.address === action.address && addr.coin === action.coin);
     const newState: Array<Account> = [ ...state ];
     newState[index].loaded = true;
     newState[index].balance = action.balance;
@@ -60,7 +60,7 @@ const setBalance = (state: Array<Account>, action: any): Array<Account> => {
 }
 
 const setNonce = (state: Array<Account>, action: any): Array<Account> => {
-    const index: number = state.findIndex(addr => addr.address === action.address);
+    const index: number = state.findIndex(addr => addr.address === action.address && addr.coin === action.coin);
     const newState: Array<Account> = [ ...state ];
     newState[index].loaded = true;
     newState[index].nonce = action.nonce;

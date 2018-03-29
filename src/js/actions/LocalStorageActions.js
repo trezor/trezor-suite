@@ -30,9 +30,19 @@ export function loadData(): any {
 export function loadTokensFromJSON(): any {
     return async (dispatch, getState) => {
         try {
-            const appConfig = await httpRequest('data/appConfig.json', 'json');
-            const ethTokens = await httpRequest('data/ethTokens.json', 'json');
-            const ethERC20 = await httpRequest('data/ethERC20.json', 'json');
+            const config = await httpRequest('data/appConfig.json', 'json');
+            const ERC20Abi = await httpRequest('data/ERC20Abi.json', 'json');
+
+            // load tokens
+            const tokens = await config.coins.reduce(async (previousPromise: Promise<any>, coin: any): Promise<any> => {
+                const collection = await previousPromise;
+                const json: JSON = await httpRequest(coin.tokens, 'json');
+                collection[ coin.network ] = json;
+                return collection;
+            }, Promise.resolve({}));
+
+            console.log("JADE DAL")
+
 
             const devices: ?string = get('devices');
             if (devices) {
@@ -50,11 +60,11 @@ export function loadTokensFromJSON(): any {
                 })
             }
 
-            const tokens: ?string = get('tokens');
-            if (tokens) {
+            const userTokens: ?string = get('tokens');
+            if (userTokens) {
                 dispatch({
                     type: TOKEN.FROM_STORAGE,
-                    payload: JSON.parse(tokens)
+                    payload: JSON.parse(userTokens)
                 })
             }
 
@@ -77,9 +87,9 @@ export function loadTokensFromJSON(): any {
             
             dispatch({
                 type: STORAGE.READY,
-                appConfig,
-                ethTokens,
-                ethERC20
+                config,
+                tokens,
+                ERC20Abi
             })
 
         } catch(error) {

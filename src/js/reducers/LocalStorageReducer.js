@@ -7,16 +7,16 @@ type State = {
     initialized: boolean;
     error: any;
     config: any;
-    ethERC20: any;
-    ethTokens: any;
+    ERC20Abi: any;
+    tokens: any;
 }
 
 const initialState: State = {
     initialized: false,
     error: null,
     config: null,
-    ethERC20: null,
-    ethTokens: null,
+    ERC20Abi: null,
+    tokens: null,
 };
 
 export default function localStorage(state: State = initialState, action: any): any {
@@ -27,9 +27,9 @@ export default function localStorage(state: State = initialState, action: any): 
             return {
                 ...state,
                 initialized: true,
-                config: action.appConfig,
-                ethERC20: action.ethERC20,
-                ethTokens: action.ethTokens,
+                config: action.config,
+                ERC20Abi: action.ERC20Abi,
+                tokens: action.tokens,
                 error: null
             }
 

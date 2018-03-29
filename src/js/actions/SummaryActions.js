@@ -111,16 +111,13 @@ export const loadTokens = (input: string, account: any): any => {
 
         if (input.length < 1) return null;
 
-        // TODO (eth tokens, etc tokens, ropsten tokens ...)
-        const { ethTokens } = getState().localStorage;
-
+        const tokens = getState().localStorage.tokens[ account.coin ];
         const value = input.toLowerCase();
-        const result = ethTokens.filter(t => 
+        const result = tokens.filter(t => 
             t.symbol.toLowerCase().indexOf(value) >= 0 || 
             t.address.toLowerCase().indexOf(value) >= 0 ||
             t.name.toLowerCase().indexOf(value) >= 0
         );
-        //const result = ethTokens.filter(t => t.symbol.toLowerCase().indexOf(lower) >= 0);
 
         if (result.length > 0) {
             return { options: result };

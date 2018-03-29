@@ -54,7 +54,7 @@ type Web3Action = {
 export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
     return async (dispatch, getState) => {
 
-        const { config, ethERC20 } = getState().localStorage;
+        const { config, ERC20Abi } = getState().localStorage;
 
         const coin = config.coins[ coinIndex ];
         if (!coin) {
@@ -107,7 +107,7 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
                 dispatch( init(instance, coinIndex) );
             } else {
 
-                const erc20 = instance.eth.contract(ethERC20);
+                const erc20 = instance.eth.contract(ERC20Abi);
 
                 dispatch({
                     type: WEB3.CREATE,
@@ -269,6 +269,7 @@ export function getBalance(addr: Address): ActionMethod {
                     dispatch({
                         type: ADDRESS.SET_BALANCE,
                         address: addr.address,
+                        coin: addr.coin,
                         balance: newBalance
                     });
 
@@ -292,11 +293,10 @@ export function getNonce(addr: Address) {
                     dispatch({
                         type: ADDRESS.SET_NONCE,
                         address: addr.address,
+                        coin: addr.coin,
                         nonce: result
                     });
                 }
-
-                
             }
         });
     }

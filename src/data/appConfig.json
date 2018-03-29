@@ -22,27 +22,49 @@
         }
     ],
 
-    "eth": {
-        "name": "Ethereum",
-        "symbol": "ETH",
-        "network": "ethereum",
-        "bip44": "m/44'/60'/0'/0",
-        "defaultGasPrice": 64,
-        "defaultGasLimit": 21000,
-        "defaultGasLimitTokens": 200000,
-        "backends": [
-            {
-                "name": "TREZOR Wallet - Ethereum",
-                "urls": [
-                    "http://88.208.115.69"
-                ]
-            }
-        ],
-        "explorer": "https://etherscan.io"
-    },
-
     "coins": [
-        
+        {
+            "name": "Ethereum",
+            "symbol": "ETH",
+            "network": "ethereum",
+            "bip44": "m/44'/60'/0'/0",
+            "defaultGasPrice": 64,
+            "defaultGasLimit": 21000,
+            "defaultGasLimitTokens": 200000,
+            "tokens": "./data/ethereumTokens.json",
+            "backends": [
+                {
+                    "name": "TREZOR Wallet - Ethereum",
+                    "urls": [
+                        "https://mainnet.infura.io/QGyVKozSUEh2YhL4s2G4",
+                        "http://88.208.115.69"
+                    ]
+                }
+            ],
+            "explorer": "https://etherscan.io"
+        },
+        {
+            "name": "Ethereum Classic",
+            "symbol": "ETC",
+            "network": "ethereumclassic",
+            "bip44": "m/44'/61'/0'/0",
+            "defaultGasPrice": 64,
+            "defaultGasLimit": 21000,
+            "defaultGasLimitTokens": 200000,
+            "tokens": "./data/ethereumClassicTokens.json",
+            "backends": [
+                {
+                    "name": "TREZOR Wallet - Ethereum",
+                    "urls": [
+                        "https://kovan.infura.io/QGyVKozSUEh2YhL4s2G4",
+                        "http://88.208.115.69",
+                        "https://etc-geth.0xinfra.com/",
+                        "https://mew.epool.io/"
+                    ]
+                }
+            ],
+            "explorer": "https://etherscan.io"
+        },
         { 
             "name": "Ethereum Ropsten",
             "symbol": "tETH",
@@ -51,6 +73,7 @@
             "defaultGasPrice": 64,
             "defaultGasLimit": 21000,
             "defaultGasLimitTokens": 200000,
+            "tokens": "./data/ropstenTokens.json",
             "backends": [
                 {
                     "name": "TREZOR Wallet - Ethereum",
@@ -70,6 +93,7 @@
             "defaultGasPrice": 64,
             "defaultGasLimit": 21000,
             "defaultGasLimitTokens": 200000,
+            "tokens": "./data/rinkebyTokens.json",
             "backends": [
                 {
                     "name": "TREZOR Wallet - Ethereum",
