@@ -26,6 +26,8 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
 
     } else if (action.type === TRANSPORT.ERROR) {
         store.dispatch( push('/') );
+    } else if (action.type === TRANSPORT.START && store.getState().web3.length > 0 && prevState.devices.length > 0) {
+        store.dispatch( TrezorConnectActions.postInit() );
     } else if (action.type === TRANSPORT.UNREADABLE) {
         store.dispatch({
             type: NOTIFICATION.ADD,

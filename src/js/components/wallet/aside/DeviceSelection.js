@@ -144,12 +144,13 @@ export const DeviceSelect = (props: any): any => {
     }
 
     console.log("DEVSEL", props)
+    const disabled: boolean = (devices && devices.length <= 1 && transport && transport.type.indexOf('webusb') < 0);
 
     return (
         <Value 
                 className="device-select"
                 onClick={ handleMenuClick }
-                disabled={ (devices && devices.length <= 1 && transport.indexOf('webusb') < 0) }
+                disabled={ disabled }
                 value={ selected }
                 opened={ props.deviceDropdownOpened }
                 onOpen={ () => props.toggleDeviceDropdown(true) }
@@ -167,10 +168,9 @@ export class DeviceDropdown extends Component {
     }
 
     componentDidUpdate() {
-        if (this.props.connect.transport.indexOf('webusb') >= 0)
+        const transport: any = this.props.connect.transport;
+        if (transport && transport.type.indexOf('webusb') >= 0)
             TrezorConnect.renderWebUSBButton();
-
-        console.log("RENDER USB BUTTON")
     }
 
     mouseDownHandler(event: MouseEvent): void {
@@ -198,8 +198,8 @@ export class DeviceDropdown extends Component {
     componentDidMount(): void {
         window.addEventListener('mousedown', this.mouseDownHandler, false);
         // window.addEventListener('blur', this.blurHandler, false);
-
-        if (this.props.connect.transport.indexOf('webusb') >= 0)
+        const transport: any = this.props.connect.transport;
+        if (transport && transport.type.indexOf('webusb') >= 0)
             TrezorConnect.renderWebUSBButton();
     }
 
@@ -214,7 +214,7 @@ export class DeviceDropdown extends Component {
         const selected = findSelectedDevice(this.props.connect);
 
         let webUsbButton = null;
-        if (transport.indexOf('webusb') >= 0) {
+        if (transport && transport.type.indexOf('webusb') >= 0) {
             webUsbButton = <button className="trezor-webusb-button">Check for devices</button>;
         }
 

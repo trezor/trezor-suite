@@ -55,12 +55,12 @@ export const init = (): any => {
 
         try {
             await TrezorConnect.init({
-                transportReconnect: false,
-                // connectSrc: 'https://localhost:8088/',
-                connectSrc: 'https://sisyfos.trezor.io/',
-                debug: false,
+                transportReconnect: true,
+                connectSrc: 'https://localhost:8088/',
+                // connectSrc: 'https://sisyfos.trezor.io/',
+                debug: true,
                 popup: false,
-                // webusb: false
+                webusb: false
             });
 
             setTimeout(() => {
@@ -88,6 +88,9 @@ export const postInit = (): any => {
         //     // remove addresses and discovery from state
         //     // dispatch( remove(device) );
         // }
+
+        TrezorConnect.off(DEVICE.CONNECT, handleDeviceConnect);
+        TrezorConnect.off(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
 
         TrezorConnect.on(DEVICE.CONNECT, handleDeviceConnect);
         TrezorConnect.on(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
@@ -159,14 +162,22 @@ export function onSelectDevice(device: any): any {
 }
 
 // TODO: as TrezorConnect method
-const __getDeviceState = async (path, instance): Promise<any> => {
-    return await TrezorConnect.getPublicKey({ 
+const __getDeviceState = async (path, instance, state): Promise<any> => {
+    // return await TrezorConnect.getPublicKey({ 
+    //     device: {
+    //         path,
+    //         instance
+    //     },
+    //     path: "m/1'/0'/0'", 
+    //     confirmation: false 
+    // });
+
+    return await TrezorConnect.getDeviceState({ 
         device: {
             path,
-            instance
+            instance,
+            state
         },
-        // selectedDevice: path, 
-        instance: instance, 
         path: "m/1'/0'/0'", 
         confirmation: false 
     });
@@ -216,13 +227,13 @@ export const getSelectedDeviceState = (): any => {
             && !selected.acquiring 
             && !selected.state) {
 
-            const response = await __getDeviceState(selected.path, selected.instance);
+            const response = await __getDeviceState(selected.path, selected.instance, selected.state);
 
             if (response && response.success) {
                 dispatch({
                     type: CONNECT.AUTH_DEVICE,
                     device: selected,
-                    state: response.payload.xpub
+                    state: response.payload.state
                 });
             } else {
                 dispatch({

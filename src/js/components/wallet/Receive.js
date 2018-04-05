@@ -16,6 +16,7 @@ export default class Receive extends AbstractAccount {
 const _render = (props: any): any => {
 
     const {
+        network,
         deviceState,
         accountIndex,
         addressVerified,

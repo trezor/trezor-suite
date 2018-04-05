@@ -98,6 +98,15 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
         }
     }
 
+    if (upcoming.features && current.features) {
+        console.log("CZEKIN PASS PROT");
+        if (upcoming.features.passphrase_protection !== current.features.passphrase_protection) {
+            // device settings has been changed, reset state
+            dev.state = null;
+            console.log("RESTETTTT STATE!");
+        }
+    }
+
     return dev;
 }
 
@@ -155,14 +164,16 @@ const setDeviceState = (state: State, action: any): State => {
     //const affectedDevice: ?TrezorDevice = state.devices.find(d => d.path === action.device.path && d.instance === action.device.instance);
     const index: number = state.devices.findIndex(d => d.path === action.device.path && d.instance === action.device.instance);
     if (index > -1) {
-        const changedDevice: TrezorDevice = { 
-            ...newState.devices[index],
-            state: action.state
-        };
-        newState.devices[index] = changedDevice;
-        //newState.selectedDevice = changedDevice;
+        console.warn("APGREDJS", newState.devices[index].state)
+        // device could already have own state from firmware, do not override it
+        if (!newState.devices[index].state) {
+            const changedDevice: TrezorDevice = { 
+                ...newState.devices[index],
+                state: action.state
+            };
+            newState.devices[index] = changedDevice;
+        }
     }
-
     return newState;
 }
 
@@ -307,7 +318,6 @@ export default function connect(state: State = initialState, action: any): any {
                 browserState: action.payload.browser
             }
         
-
         case CONNECT.DUPLICATE :
             return duplicate(state, action.device);
 
@@ -327,7 +337,8 @@ export default function connect(state: State = initialState, action: any): any {
         case TRANSPORT.START :
             return {
                 ...state,
-                transport: action.payload
+                transport: action.payload,
+                error: null
             }
 
         case TRANSPORT.ERROR :

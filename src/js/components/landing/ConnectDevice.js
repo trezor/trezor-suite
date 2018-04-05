@@ -7,7 +7,8 @@ import TrezorConnect from 'trezor-connect';
 export default class InstallBridge extends Component {
 
     componentDidUpdate() {
-        if (this.props.transport.indexOf('webusb') >= 0)
+        const transport = this.props.transport;
+        if (transport && transport.type.indexOf('webusb') >= 0)
             TrezorConnect.renderWebUSBButton();
     }
 
@@ -16,7 +17,8 @@ export default class InstallBridge extends Component {
         let connectClaim = 'Connect TREZOR to continue';
         let and = null;
         let bridgeClaim = null;
-        if (this.props.transport.indexOf('webusb') >= 0) {
+        const transport = this.props.transport;
+        if (transport && transport.type.indexOf('webusb') >= 0) {
             webusb = <button className="trezor-webusb-button">Check for devices</button>;
             connectClaim = 'Connect TREZOR';
             and = <p>and</p>;

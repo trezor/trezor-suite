@@ -27,6 +27,9 @@ export default class AbstractAccount extends Component {
         }
     
         const device = this.props.devices.find(d => d.state === state.deviceState);
+        if (!device) {
+            return (<section>Device with state {state.deviceState} not found</section>);
+        }
         const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === state.network);
         const account = props.accounts.find(a => a.deviceState === state.deviceState && a.index === state.accountIndex && a.network === state.network);
 

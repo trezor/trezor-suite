@@ -52,18 +52,18 @@ export default (props: any): any => {
             className="error"
         />);
         css += ' config-error';
-    } else if (!browserState.supported) {
+    } else if (browserState.supported === false) {
         css += ' browser-not-supported'
         body = <BrowserNotSupported />;
     } else if (connectError || bridgeRoute) {
         css += ' install-bridge';
         body = <InstallBridge browserState={ props.connect.browserState } />;
-    } else {
+    } else if (web3.length > 0 && devices.length < 1) {
         css += ' connect-device';
         body = <ConnectDevice transport={ transport } />;
     }
 
-    if (notification || (web3.length > 0 && devices.length < 1)) {
+    if (notification || body) {
         return (
             <div className={ css }>
                 <Header />
