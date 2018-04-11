@@ -2,9 +2,9 @@
 'use strict';
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import * as SEND from '../actions/constants/SendForm';
-import * as WEB3 from '../actions/constants/Web3';
-import * as ADDRESS from '../actions/constants/Address';
+import * as SEND from '../actions/constants/send';
+import * as WEB3 from '../actions/constants/web3';
+import * as ADDRESS from '../actions/constants/address';
 import EthereumjsUnits from 'ethereumjs-units';
 import BigNumber from 'bignumber.js';
 import { getFeeLevels } from '../actions/SendFormActions';

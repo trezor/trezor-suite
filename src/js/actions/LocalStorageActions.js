@@ -2,10 +2,10 @@
 'use strict';
 
 import * as CONNECT from './constants/TrezorConnect';
-import * as ADDRESS from './constants/Address';
-import * as TOKEN from './constants/Token';
-import * as DISCOVERY from './constants/Discovery';
-import * as STORAGE from './constants/LocalStorage';
+import * as ADDRESS from './constants/address';
+import * as TOKEN from './constants/token';
+import * as DISCOVERY from './constants/discovery';
+import * as STORAGE from './constants/localStorage';
 import { httpRequest } from '../utils/networkUtils';
 
 export function loadData(): any {

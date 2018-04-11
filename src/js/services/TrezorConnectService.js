@@ -7,8 +7,8 @@ import TrezorConnect, { TRANSPORT, DEVICE_EVENT, UI_EVENT, UI, DEVICE } from 'tr
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
 import * as ModalActions from '../actions/ModalActions';
 import { init as initWeb3 } from '../actions/Web3Actions';
-import * as WEB3 from '../actions/constants/Web3';
-import * as STORAGE from '../actions/constants/LocalStorage';
+import * as WEB3 from '../actions/constants/web3';
+import * as STORAGE from '../actions/constants/localStorage';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as NOTIFICATION from '../actions/constants/notification';
 import * as MODAL from '../actions/constants/Modal';

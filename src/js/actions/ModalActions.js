@@ -2,7 +2,7 @@
 'use strict';
 
 import TrezorConnect, { UI, UI_EVENT } from 'trezor-connect';
-import * as MODAL from './constants/Modal';
+import * as MODAL from './constants/modal';
 import * as CONNECT from './constants/TrezorConnect';
 
 

@@ -23,7 +23,7 @@ import RememberDevice, { ForgetDevice, DisconnectDevice } from './RememberDevice
 import DuplicateDevice from './DuplicateDevice';
 
 import * as RECEIVE from '../../actions/constants/receive';
-import * as MODAL from '../../actions/constants/Modal';
+import * as MODAL from '../../actions/constants/modal';
 import * as CONNECT from '../../actions/constants/TrezorConnect';
 
 const duration = 300;

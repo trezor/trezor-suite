@@ -3,8 +3,8 @@
 
 import EthereumjsUtil from 'ethereumjs-util';
 import * as SUMMARY from './constants/summary';
-import * as TOKEN from './constants/Token';
-import * as ADDRESS from './constants/Address';
+import * as TOKEN from './constants/token';
+import * as ADDRESS from './constants/address';
 import { resolveAfter } from '../utils/promiseUtils';
 import { getTokenInfoAsync, getTokenBalanceAsync } from './Web3Actions';
 

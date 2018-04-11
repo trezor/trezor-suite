@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import * as SEND from './constants/SendForm';
+import * as SEND from './constants/send';
 import * as NOTIFICATION from './constants/notification';
 
 import { estimateGas, getGasPrice, pushTx } from './Web3Actions';

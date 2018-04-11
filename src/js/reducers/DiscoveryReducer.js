@@ -1,8 +1,8 @@
 /* @flow */
 'use strict';
 
-import * as DISCOVERY from '../actions/constants/Discovery';
-import * as ADDRESS from '../actions/constants/Address';
+import * as DISCOVERY from '../actions/constants/discovery';
+import * as ADDRESS from '../actions/constants/address';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
 export type Discovery = {

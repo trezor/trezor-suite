@@ -7,8 +7,8 @@ import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsTx from 'ethereumjs-tx';
 import TrezorConnect from 'trezor-connect';
 import { strip } from '../utils/ethUtils';
-import * as ADDRESS from './constants/Address';
-import * as WEB3 from './constants/Web3';
+import * as ADDRESS from './constants/address';
+import * as WEB3 from './constants/web3';
 import { httpRequest } from '../utils/networkUtils';
 
 type ActionMethod = (dispatch: any, getState: any) => Promise<any>;

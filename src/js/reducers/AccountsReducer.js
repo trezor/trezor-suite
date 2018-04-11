@@ -2,7 +2,7 @@
 'use strict';
 
 import * as CONNECT from '../actions/constants/TrezorConnect';
-import * as ADDRESS from '../actions/constants/Address';
+import * as ADDRESS from '../actions/constants/address';
 
 export type Account = {
     loaded: boolean;

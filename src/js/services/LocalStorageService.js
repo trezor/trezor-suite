@@ -6,12 +6,12 @@ import * as LocalStorageActions from '../actions/LocalStorageActions';
 
 import { DEVICE } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
-import * as MODAL from '../actions/constants/Modal';
-import * as TOKEN from '../actions/constants/Token';
-import * as ADDRESS from '../actions/constants/Address';
-import * as DISCOVERY from '../actions/constants/Discovery';
-import * as SEND from '../actions/constants/SendForm';
-import * as WEB3 from '../actions/constants/Web3';
+import * as MODAL from '../actions/constants/modal';
+import * as TOKEN from '../actions/constants/token';
+import * as ADDRESS from '../actions/constants/address';
+import * as DISCOVERY from '../actions/constants/discovery';
+import * as SEND from '../actions/constants/send';
+import * as WEB3 from '../actions/constants/web3';
 
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js

@@ -2,7 +2,7 @@
 'use strict';
 
 import * as CONNECT from '../actions/constants/TrezorConnect';
-import * as TOKEN from '../actions/constants/Token';
+import * as TOKEN from '../actions/constants/token';
 
 export type Token = {
     loaded: boolean;

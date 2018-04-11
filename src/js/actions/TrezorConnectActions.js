@@ -2,10 +2,10 @@
 'use strict';
 
 import TrezorConnect, { UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT } from 'trezor-connect';
-import * as ADDRESS from './constants/Address';
-import * as TOKEN from './constants/Token';
+import * as ADDRESS from './constants/address';
+import * as TOKEN from './constants/token';
 import * as CONNECT from './constants/TrezorConnect';
-import * as DISCOVERY from './constants/Discovery';
+import * as DISCOVERY from './constants/discovery';
 import * as NOTIFICATION from './constants/notification';
 import * as WALLET from './constants/wallet';
 

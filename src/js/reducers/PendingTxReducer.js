@@ -1,8 +1,8 @@
 /* @flow */
 'use strict';
 
-import * as SEND from '../actions/constants/SendForm';
-import * as WEB3 from '../actions/constants/Web3';
+import * as SEND from '../actions/constants/send';
+import * as WEB3 from '../actions/constants/web3';
 
 export type PendingTx = {
     +id: string;

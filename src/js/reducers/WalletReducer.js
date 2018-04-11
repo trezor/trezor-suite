@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import * as WEB3 from '../actions/constants/Web3';
+import * as WEB3 from '../actions/constants/web3';
 import * as WALLET from '../actions/constants/wallet';
 
 type State = {

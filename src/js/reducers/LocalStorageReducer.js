@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import * as STORAGE from '../actions/constants/LocalStorage';
+import * as STORAGE from '../actions/constants/localStorage';
 
 type State = {
     initialized: boolean;
