@@ -2,7 +2,10 @@
 'use strict';
 
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { Notification } from '../common/Notification';
+import * as TrezorConnectActions from '../../actions/TrezorConnectActions';
 
 const Acquire = (props: any): any => {
 
@@ -21,19 +24,24 @@ const Acquire = (props: any): any => {
                 title="Device is used in other window"
                 message="Do you want to use your device in this window?"
                 className="info"
-                cancelable={false}
-                actions={actions}
+                cancelable={ false }
+                actions={ actions }
                 close={ () => {} }
             />
-            {/* <div className="warning">
-                <div>
-                    <h2></h2>
-                    <p></p>
-                </div>
-                <button onClick={ event => props.acquireDevice() }>Acquire device</button>
-            </div> */}
         </section>
     );
 }
 
-export default Acquire;
+const mapStateToProps = (state, own) => {
+    return {
+        connect: state.connect
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return { 
+        acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Acquire);

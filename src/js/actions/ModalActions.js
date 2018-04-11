@@ -2,7 +2,6 @@
 'use strict';
 
 import TrezorConnect, { UI, UI_EVENT } from 'trezor-connect';
-import * as ACTIONS from './index';
 import * as MODAL from './constants/Modal';
 import * as CONNECT from './constants/TrezorConnect';
 
@@ -10,7 +9,7 @@ import * as CONNECT from './constants/TrezorConnect';
 export function onPinSubmit(value: string): any {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: value });
     return {
-        type: ACTIONS.CLOSE_MODAL
+        type: MODAL.CLOSE
     }
 }
 
@@ -25,7 +24,7 @@ export function onPassphraseSubmit(passphrase: string): any {
         });
 
         dispatch({
-            type: ACTIONS.CLOSE_MODAL
+            type: MODAL.CLOSE
         });
     }
 }
@@ -60,7 +59,7 @@ export const onForgetSingleDevice = (device: any) => {
 
 export const onCancel = () => {
     return {
-        type: ACTIONS.CLOSE_MODAL
+        type: MODAL.CLOSE
     }
 }
 

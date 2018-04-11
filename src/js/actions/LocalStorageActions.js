@@ -41,9 +41,6 @@ export function loadTokensFromJSON(): any {
                 return collection;
             }, Promise.resolve({}));
 
-            console.log("JADE DAL")
-
-
             const devices: ?string = get('devices');
             if (devices) {
                 dispatch({

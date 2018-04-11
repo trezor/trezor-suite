@@ -5,10 +5,10 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import SendForm from '../components/wallet/send/SendForm';
-import * as SendFormActions from '../actions/SendFormActions';
+import * as SendFormActions from '../../../actions/SendFormActions';
+import SendForm from './SendForm';
 
-function mapStateToProps(state, own) {
+const mapStateToProps = (state, own) => {
     return {
         location: state.router.location,
         devices: state.connect.devices,
@@ -22,13 +22,13 @@ function mapStateToProps(state, own) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return { 
+const mapDispatchToProps = (dispatch) => {
+    return {
         sendFormActions: bindActionCreators(SendFormActions, dispatch),
         initAccount: bindActionCreators(SendFormActions.init, dispatch), 
         updateAccount: bindActionCreators(SendFormActions.update, dispatch), 
-        disposeAccount: bindActionCreators(SendFormActions.dispose, dispatch),  
+        disposeAccount: bindActionCreators(SendFormActions.dispose, dispatch),
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SendForm)

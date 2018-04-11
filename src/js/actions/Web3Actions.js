@@ -7,10 +7,8 @@ import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsTx from 'ethereumjs-tx';
 import TrezorConnect from 'trezor-connect';
 import { strip } from '../utils/ethUtils';
-import * as ACTIONS from './index';
 import * as ADDRESS from './constants/Address';
 import * as WEB3 from './constants/Web3';
-import { loadHistory } from '../services/EtherscanService';
 import { httpRequest } from '../utils/networkUtils';
 
 type ActionMethod = (dispatch: any, getState: any) => Promise<any>;
@@ -192,9 +190,6 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
     }
 }
 
-function initBlockTicker() {
-
-}
 
 export function initContracts(): ActionMethod {
     return async (dispatch, getState) => {
@@ -241,14 +236,17 @@ export function getGasPrice(network: string): ActionMethod {
 
         const index: number = getState().web3.findIndex(w3 => w3.network === network);
 
-        const web3 = getState().web3[ index ].web3;
+        const web3instance = getState().web3[ index ];
+        const web3 = web3instance.web3;
         web3.eth.getGasPrice((error, gasPrice) => {
             if (!error) {
-                dispatch({
-                    type: WEB3.GAS_PRICE_UPDATED,
-                    network: network,
-                    gasPrice
-                });
+                if (web3instance.gasPrice && web3instance.gasPrice.toString() !== gasPrice.toString()) {
+                    dispatch({
+                        type: WEB3.GAS_PRICE_UPDATED,
+                        network: network,
+                        gasPrice
+                    });
+                }
             }
         });
     }
@@ -313,7 +311,6 @@ export function getTransactionReceipt(tx: any): any {
                 web3.eth.getBlock(receipt.blockHash, (error, block) => {
                     console.log("---MAMM BLOCK", error, block, receipt, receipt.blockHash)
                     dispatch({
-                        //type: ACTIONS.TX_CONFIRMED,
                         type: WEB3.PENDING_TX_RESOLVED,
                         tx,
                         receipt,

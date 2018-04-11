@@ -9,27 +9,28 @@ import AbstractAccount from '../account/AbstractAccount';
 import { Notification } from '../../common/Notification';
 import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
+import { findDevice } from '../../../utils/reducerUtils';
 
 
 export default class Summary extends AbstractAccount {
     render() {
-        return super.render(this.props.summary) || _render(this.props);
+        console.warn("RENDER SUMMARY!", this.device, this.discovery, this)
+        return super.render(this.props.summary) || _render(this.props, this.device, this.discovery, this.account, this.deviceStatusNotification);
     }
 }
 
-const _render = (props: any): any => {
+const _render = (props: any, device, discovery, account, deviceStatusNotification): any => {
 
-    const device = props.devices.find(d => d.state === props.summary.deviceState);
-    const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === props.summary.network);
-    const account = props.accounts.find(a => a.deviceState === props.summary.deviceState && a.index === props.summary.accountIndex && a.network === props.summary.network);
+    //const device = props.devices.find(d => d.state === props.summary.deviceState && d.features.device_id === props.summary.deviceId);
+    // const device = findDevice(props.devices, props.summary.deviceState, props.summary.deviceId);
+    // const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === props.summary.network);
+    //const account = props.accounts.find(a => a.deviceState === props.summary.deviceState && a.index === props.summary.accountIndex && a.network === props.summary.network);
     const tokens = props.tokens.filter(t => t.ethAddress === account.address);
 
     return (
 
         <section className="summary">
-            { !device.connected ? (
-                <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />
-            ) : null }
+            { deviceStatusNotification }
 
             <h2 className={ `summary-header ${props.summary.network}` }>Address #{ parseInt(props.match.params.address) + 1 }</h2>
 

@@ -5,10 +5,10 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-const Bootloader = (props: any): any => {
+export const WalletSettings = (props: any): any => {
     return (
-        <section className="acquire">
-            <h3>Bootloader mode</h3>
+        <section className="settings">
+            Wallet settings
         </section>
     );
 }
@@ -24,4 +24,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Bootloader);
+export default connect(mapStateToProps, mapDispatchToProps)(WalletSettings);

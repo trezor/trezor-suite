@@ -4,8 +4,9 @@
 import pathToRegexp from 'path-to-regexp';
 import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE, push, replace } from 'react-router-redux';
-import { ON_BEFORE_UNLOAD } from '../actions/AppActions';
 import * as CONNECT from '../actions/constants/TrezorConnect';
+import * as WALLET from '../actions/constants/wallet';
+import * as NotificationActions from '../actions/NotificationActions';
 
 /**
  * Middleware used for init application and managing router path.
@@ -66,25 +67,25 @@ let __unloading: boolean = false;
 
 const RouterService = (store: any) => (next: any) => (action: any) => {
 
-    if (action.type === ON_BEFORE_UNLOAD) {
+    if (action.type === WALLET.ON_BEFORE_UNLOAD) {
         __unloading = true;
     } else if (action.type === LOCATION_CHANGE && !__unloading) {
 
         const { location } = store.getState().router;
         const web3 = store.getState().web3;
         const { devices, error } = store.getState().connect;
-        const { opened } = store.getState().modal;
+        const isModalOpened: boolean = store.getState().modal.opened;
 
         let redirectPath: ?string;
-        // first (initial) event after app loads
+        // first event after application loads
         if (!location) {
 
-            action.payload.state = {
-                initURL: action.payload.pathname,
-                initSearch: action.payload.search
-            }
-
-            // check if there are initial parameters in url (network/ device / account)
+            store.dispatch({
+                type: WALLET.SET_INITIAL_URL,
+                pathname: action.payload.pathname, 
+                params: pathToParams(action.payload.pathname)
+            });
+            
             if (action.payload.search.length > 0) {
                 // save it in WalletReducer, after device detection will redirect to this request
                 redirectPath = '/';
@@ -98,7 +99,7 @@ const RouterService = (store: any) => (next: any) => (action: any) => {
         // if web3 wasn't initialized yet or there are no devices attached or initialization error occurs
         const landingPage: boolean = web3.length < 1 || devices.length < 1 || error;
 
-        if (opened && action.payload.pathname !== location.pathname) {
+        if (isModalOpened && action.payload.pathname !== location.pathname) {
             redirectPath = location.pathname;
             console.warn("Modal still opened");
         } else if (landingPage) {
@@ -113,7 +114,7 @@ const RouterService = (store: any) => (next: any) => (action: any) => {
                 // TODO: switch to first device?
                 // redirectPath = `/device/${ devices[0].path }`;
                 redirectPath = location.pathname;
-            } else {
+            } else if (requestedParams.device) {
 
                 if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
                     store.dispatch({
@@ -146,7 +147,8 @@ const RouterService = (store: any) => (next: any) => (action: any) => {
         } else {
             action.payload.params = requestedParams;
         }
-        
+
+        store.dispatch( NotificationActions.clear(currentParams, requestedParams) );
     }
 
     // Pass all actions through by default

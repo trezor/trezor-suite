@@ -10,3 +10,8 @@ export const getAccounts = (accounts: Array<any>, device: any, network: ?string)
     }
     
 }
+
+// Public method used in components to find device by state and device_id
+export const findDevice = (devices: Array<TrezorDevice>, state: ?string, deviceId: ?string, instance: ?string): ?TrezorDevice => {
+    return devices.find(d => d.state === state && d.features && d.features.device_id === deviceId && d.instance === instance);
+}

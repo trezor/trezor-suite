@@ -34,6 +34,10 @@ const Value = (props: any): any => {
 
     const deviceMenuItems: Array<any> = [];
 
+    if (device.features && device.features.passphrase_protection) {
+        deviceMenuItems.push("settings"); // TODO: clone
+    }
+
     if (device.unacquired) {
         css += " unacquired";
         deviceStatus = "Used in other window";
@@ -49,6 +53,9 @@ const Value = (props: any): any => {
     if (!device.connected) {
         css += " reload-features";
         deviceStatus = "Disconnected";
+    } else if (!device.available) {
+        css += " unavailable";
+        deviceStatus = "Unavailable";
     }
 
     if (device.remember) {
@@ -58,6 +65,8 @@ const Value = (props: any): any => {
     if (device.features && device.features.major_version > 1) {
         css += " trezor-t";
     }
+
+    
 
     const deviceMenuButtons = deviceMenuItems.map((item, index) => {
         return (
@@ -80,9 +89,6 @@ const Value = (props: any): any => {
             <div className="label-container">
                 <span className="label">{ device.instanceLabel }</span>
                 <span className="status">{ deviceStatus }</span>
-            </div>
-            <div className="device-menu">
-                { deviceMenuButtons }
             </div>
             <div className="arrow">
             </div>
@@ -143,8 +149,7 @@ export const DeviceSelect = (props: any): any => {
         }
     }
 
-    console.log("DEVSEL", props)
-    const disabled: boolean = (devices && devices.length <= 1 && transport && transport.type.indexOf('webusb') < 0);
+    const disabled: boolean = (devices.length < 1 && transport && transport.version.indexOf('webusb') < 0);
 
     return (
         <Value 
@@ -169,17 +174,16 @@ export class DeviceDropdown extends Component {
 
     componentDidUpdate() {
         const transport: any = this.props.connect.transport;
-        if (transport && transport.type.indexOf('webusb') >= 0)
+        if (transport && transport.version.indexOf('webusb') >= 0)
             TrezorConnect.renderWebUSBButton();
     }
 
     mouseDownHandler(event: MouseEvent): void {
-        console.log("HANDLE DOWN!!!!", event)
         let elem = event.target;
         let block: boolean = false;
         while (elem.parentElement) {
             // if (elem.className.indexOf('aside-button') >= 0) {
-            if (elem.tagName.toLowerCase() === 'aside') {
+            if (elem.tagName.toLowerCase() === 'aside' || (elem.className && elem.className.indexOf('modal-container') >= 0)) {
                 block = true;
                 break;
             }
@@ -199,7 +203,7 @@ export class DeviceDropdown extends Component {
         window.addEventListener('mousedown', this.mouseDownHandler, false);
         // window.addEventListener('blur', this.blurHandler, false);
         const transport: any = this.props.connect.transport;
-        if (transport && transport.type.indexOf('webusb') >= 0)
+        if (transport && transport.version.indexOf('webusb') >= 0)
             TrezorConnect.renderWebUSBButton();
     }
 
@@ -208,15 +212,68 @@ export class DeviceDropdown extends Component {
         // window.removeEventListener('blur', this.blurHandler, false);
     }
 
+    onDeviceMenuClick(item, device): void {
+        if (item.type === 'reload') {
+            this.props.acquireDevice(device);
+        } else if (item.type === 'forget') {
+            // this.props.toggleDeviceDropdown(false);
+            this.props.forgetDevice(device);
+        } else if (item.type === 'clone') {
+            this.props.duplicateDevice(device);
+        } else if (item.type === 'settings') {
+            this.props.toggleDeviceDropdown(false);
+            this.props.gotoDeviceSettings(device);
+        }
+    }
+
     render() {
 
         const { devices, transport } = this.props.connect;
         const selected = findSelectedDevice(this.props.connect);
 
         let webUsbButton = null;
-        if (transport && transport.type.indexOf('webusb') >= 0) {
+        if (transport && transport.version.indexOf('webusb') >= 0) {
             webUsbButton = <button className="trezor-webusb-button">Check for devices</button>;
         }
+
+        let currentDeviceMenu = null;
+        if (selected.features) {
+            const deviceMenuItems: Array<any> = [];
+
+            if (selected.isUsedElsewhere) {
+                deviceMenuItems.push({ type: "reload", label: "Renew session" });
+            } else if (selected.featuresNeedsReload) {
+                deviceMenuItems.push({ type: "reload", label: "Reload device" });
+            }
+
+            deviceMenuItems.push({ type: "settings", label: "Device settings" });
+            if (selected.features.passphrase_protection && selected.connected && selected.available) {
+                deviceMenuItems.push({ type: "clone", label: "Clone device" });
+            }
+            if (selected.remember) {
+                deviceMenuItems.push({ type: "forget", label: "Forget device" });
+            }
+
+
+            const deviceMenuButtons = deviceMenuItems.map((item, index) => {
+                return (
+                    <div key={ item.type } className={ item.type } onClick={ event => this.onDeviceMenuClick(item, selected) }>{ item.label}</div>
+                )
+            });
+            currentDeviceMenu = deviceMenuButtons.length < 1 ? null : (
+                <div className="device-menu">
+                    { deviceMenuButtons }
+                </div>
+            );
+        }
+
+        // const currentDeviceMenu = (
+        //     <div className="device-menu">
+        //         <div className="settings">Device settings</div>
+        //         <div className="clone">Clone device</div>
+        //         <div className="forget">Forget device</div>
+        //     </div>
+        // );
 
         const deviceList: Array<any> = devices.map((dev, index) => {
             if (dev === selected) return null;
@@ -227,6 +284,8 @@ export class DeviceDropdown extends Component {
                 deviceStatus = "Used in other window";
             } else if (!dev.connected) {
                 deviceStatus = "Disconnected";
+            } else if (!dev.available) {
+                deviceStatus = "Unavailable";
             }
 
             if (dev.features && dev.features.major_version > 1) {
@@ -245,6 +304,7 @@ export class DeviceDropdown extends Component {
 
         return (
             <section>
+                { currentDeviceMenu }
                 { webUsbButton }
                 { deviceList }
             </section>

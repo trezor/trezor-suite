@@ -11,16 +11,16 @@ import AbstractAccount from '../account/AbstractAccount';
 
 export default class Send extends AbstractAccount {
     render() {
-        return super.render(this.props.sendForm) || _render(this.props);
+        return super.render(this.props.sendForm) || _render(this.props, this.device, this.discovery, this.account, this.deviceStatusNotification);
     }
 }
 
 
-const _render = (props: any): any => {
+const _render = (props: any, device, discovery, account, deviceStatusNotification): any => {
 
-    const device = props.devices.find(device => device.state === props.sendForm.deviceState);
-    const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === props.sendForm.network);
-    const account = props.accounts.find(a => a.deviceState === props.sendForm.deviceState && a.index === props.sendForm.accountIndex && a.network === props.sendForm.network);
+    // const device = props.devices.find(device => device.state === props.sendForm.deviceState);
+    // const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === props.sendForm.network);
+    // const account = props.accounts.find(a => a.deviceState === props.sendForm.deviceState && a.index === props.sendForm.accountIndex && a.network === props.sendForm.network);
     const addressTokens = props.tokens.filter(t => t.ethAddress === account.address);
 
     const { 
@@ -87,9 +87,16 @@ const _render = (props: any): any => {
         buttonLabel += ` ${total} ${ selectedCoin.symbol }`;
     }
     
-    if (device && !device.connected) {
-        buttonLabel = 'Device is not connected';
-        buttonDisabled = true;
+    if (device) {
+
+        if (!device.connected){
+            buttonLabel = 'Device is not connected';
+            buttonDisabled = true;
+        } else if (!device.available) {
+            buttonLabel = 'Device is unavailable';
+            buttonDisabled = true;
+        }
+        
     }
 
     let notification = null;
@@ -97,9 +104,7 @@ const _render = (props: any): any => {
     return (
         <section className="send-form">
 
-            { !device.connected ? (
-                <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />
-            ) : null }
+            { deviceStatusNotification }
 
             <h2>Send Ethereum or tokens</h2>
             <div className="row address-input">

@@ -26,7 +26,7 @@ export const Notification = (props: any) => {
             ) : null }
             <div className="notification-body">
                 <h2>{ props.title }</h2>
-                <p dangerouslySetInnerHTML={{__html: props.message }}></p>
+                { props.message ? (<p dangerouslySetInnerHTML={{__html: props.message }}></p>) : null }
             </div>
             { props.actions && props.actions.length > 0 ? (
                 <div className="notification-action">

@@ -190,20 +190,23 @@
 
     .advanced-container {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         padding: 0px 48px;
 
         padding-bottom: 24px;
         button {
-            width: 50%;
+            min-width: 50%;
+            white-space: nowrap;
         }
         &.opened {
             flex-direction: column;
             padding: 0px;
             button {
                 position: relative;
-                left: 50%;
-                width: 50%;
+                // left: 50%;
+                // width: 50%;
+                float: right; // TODO: better
             }
             .advanced {
                 display: inline-block;
@@ -231,6 +234,12 @@
                 }
             }
         }
+
+        // @media screen and (max-width: 900px) {
+        //     :not(.opened) {
+        //         border: 1px solid red;
+        //     }
+        // }
         
     }
 

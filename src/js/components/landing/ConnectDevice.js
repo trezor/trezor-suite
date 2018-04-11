@@ -6,19 +6,28 @@ import TrezorConnect from 'trezor-connect';
 
 export default class InstallBridge extends Component {
 
+
+    componentDidMount(): void {
+        const transport: any = this.props.transport;
+        if (transport && transport.version.indexOf('webusb') >= 0)
+            TrezorConnect.renderWebUSBButton();
+    }
+
     componentDidUpdate() {
         const transport = this.props.transport;
-        if (transport && transport.type.indexOf('webusb') >= 0)
+        if (transport && transport.version.indexOf('webusb') >= 0)
             TrezorConnect.renderWebUSBButton();
     }
 
     render() {
+        let css = 'row';
         let webusb = null;
         let connectClaim = 'Connect TREZOR to continue';
         let and = null;
         let bridgeClaim = null;
         const transport = this.props.transport;
-        if (transport && transport.type.indexOf('webusb') >= 0) {
+        if (transport && transport.version.indexOf('webusb') >= 0) {
+            css = 'row webusb'
             webusb = <button className="trezor-webusb-button">Check for devices</button>;
             connectClaim = 'Connect TREZOR';
             and = <p>and</p>;
@@ -30,7 +39,7 @@ export default class InstallBridge extends Component {
                 <h2 className="claim">The private bank in your hands.</h2>
                 <p>TREZOR Wallet is an easy-to-use interface for your TREZOR.</p>
                 <p>TREZOR Wallet allows you to easily control your funds, manage your balance and initiate transfers.</p>
-                <div className="row">
+                <div className={ css }>
                     <p className="connect">
                         <span>
                             <svg width="12px" height="35px" viewBox="0 0 20 57">
@@ -44,8 +53,8 @@ export default class InstallBridge extends Component {
                             { connectClaim }
                         </span>
                     </p>
-                    { and }
-                    { webusb }
+                    <p className="webusb-and">and</p>
+                    <button className="trezor-webusb-button">Check for devices</button>
                 </div>
                 <div className="image">
                     <p>

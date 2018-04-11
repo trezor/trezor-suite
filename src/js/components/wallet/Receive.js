@@ -2,18 +2,23 @@
 'use strict';
 
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
+
 import AbstractAccount from './account/AbstractAccount';
 import { Notification } from '../common/Notification';
-import Tooltip from 'rc-tooltip';
+import * as ReceiveActions from '../../actions/ReceiveActions';
 
-export default class Receive extends AbstractAccount {
+class Receive extends AbstractAccount {
     render() {
-        return super.render(this.props.receive) || _render(this.props);
+        return super.render(this.props.receive) || _render(this.props, this.device, this.account, this.deviceStatusNotification);
     }
 }
 
-const _render = (props: any): any => {
+const _render = (props: any, device, account, deviceStatusNotification): any => {
 
     const {
         network,
@@ -23,8 +28,8 @@ const _render = (props: any): any => {
         addressUnverified,
     } = props.receive;
 
-    const device = props.devices.find(d => d.state === deviceState);
-    const account = props.accounts.find(a => a.deviceState === deviceState && a.index === accountIndex && a.network === network);
+    // const device = props.devices.find(d => d.state === deviceState);
+    // const account = props.accounts.find(a => a.deviceState === deviceState && a.index === accountIndex && a.network === network);
 
     let qrCode = null;
     let address = `${account.address.substring(0, 20)}...`;
@@ -50,7 +55,7 @@ const _render = (props: any): any => {
         className = addressUnverified ? 'address unverified' : 'address';
 
         const tooltip = addressUnverified ?
-            (<div>Unverified address.<br/>{ device.connected ? 'Show on TREZOR' : 'Connect your TREZOR to verify it.' }</div>)
+            (<div>Unverified address.<br/>{ device.connected && device.available ? 'Show on TREZOR' : 'Connect your TREZOR to verify it.' }</div>)
             :
             (<div>{ device.connected ? 'Show on TREZOR' : 'Connect your TREZOR to verify address.' }</div>);
 
@@ -68,9 +73,7 @@ const _render = (props: any): any => {
     
     return (
         <section className="receive">
-            { !device.connected ? (
-                <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />
-            ) : null }
+            { deviceStatusNotification }
             <h2>Receive Ethereum or tokens</h2>
             
             <div className={ className }>
@@ -86,3 +89,23 @@ const _render = (props: any): any => {
 
 }
 
+const mapStateToProps = (state, own) => {
+    return {
+        location: state.router.location,
+        devices: state.connect.devices,
+        accounts: state.accounts,
+        discovery: state.discovery,
+        receive: state.receive
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return { 
+        initAccount: bindActionCreators(ReceiveActions.init, dispatch), 
+        updateAccount: bindActionCreators(ReceiveActions.update, dispatch),
+        disposeAccount: bindActionCreators(ReceiveActions.dispose, dispatch),
+        showAddress: bindActionCreators(ReceiveActions.showAddress, dispatch),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Receive);

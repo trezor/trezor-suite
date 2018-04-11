@@ -11,6 +11,8 @@ import { getFeeLevels } from '../actions/SendFormActions';
 
 export type State = {
     +deviceState: ?string;
+    +deviceId: ?string;
+    +deviceInstance: ?string;
     +accountIndex: number;
     +network: string;
     +coinSymbol: string;
@@ -51,6 +53,8 @@ export type FeeLevel = {
 
 export const initialState: State = {
     deviceState: null,
+    deviceId: null,
+    deviceInstance: null,
     accountIndex: 0,
     network: '',
     coinSymbol: '',
@@ -83,11 +87,11 @@ export const initialState: State = {
 
 const onGasPriceUpdated = (state: State, action: any): State => {
 
-    function getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    const newPrice = getRandomInt(10, 50).toString();
-    //const newPrice = EthereumjsUnits.convert(action.gasPrice, 'wei', 'gwei');
+    // function getRandomInt(min, max) {
+    //     return Math.floor(Math.random() * (max - min + 1)) + min;
+    // }
+    // const newPrice = getRandomInt(10, 50).toString();
+    const newPrice = EthereumjsUnits.convert(action.gasPrice, 'wei', 'gwei');
     if (action.network === state.network && newPrice !== state.recommendedGasPrice) {
         const newState: State = { ...state };
         if (!state.untouched) {

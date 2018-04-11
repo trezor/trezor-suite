@@ -7,6 +7,7 @@ import * as CONNECT from '../actions/constants/TrezorConnect';
 export type TrezorDevice = {
     remember: boolean;
     connected: boolean;
+    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected (saved)
     path: string;
     +label: string;
     +state: string;
@@ -58,6 +59,8 @@ export const findSelectedDevice = (state: State): ?TrezorDevice => {
     });
 }
 
+
+
 export const isSavedDevice = (state: State, device: any): ?Array<TrezorDevice> => {
     const selected: ?SelectedDevice = state.selectedDevice;
     if (!selected) return null;
@@ -73,17 +76,36 @@ export const isSavedDevice = (state: State, device: any): ?Array<TrezorDevice> =
 }
 
 const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => {
+
+    // do not merge if passphrase protection was changed
+    // if (upcoming.features && current.features) {
+    //     if (upcoming.features.passphrase_protection !== current.features.passphrase_protection) {
+    //         // device settings has been changed, reset state
+    //         // dev.state = null;
+    //         // console.log("RESTETTTT STATE!");
+    //     }
+    // }
+
+    let instanceLabel = current.instanceLabel;
+    if (upcoming.label !== current.label) {
+        instanceLabel = upcoming.label
+        if (typeof current.instance === 'number') {
+            instanceLabel += ` (${current.instance})`;
+        }
+    }
+
     const dev: TrezorDevice = {
         // ...current,
         ...upcoming,
         // make sure that instance specific variables will not be overridden
         connected: typeof upcoming.connected === 'boolean' ? upcoming.connected : current.connected,
+        available: typeof upcoming.available === 'boolean' ? upcoming.available : current.available,
         remember: typeof upcoming.remember === 'boolean' ? upcoming.remember : current.remember,
         instance: current.instance,
-        instanceLabel: current.instanceLabel,
+        instanceLabel,
         state: current.state,
         acquiring: typeof upcoming.acquiring === 'boolean' ? upcoming.acquiring : current.acquiring,
-        ts: new Date().getTime(),
+        ts: typeof upcoming.ts === 'number' ? upcoming.ts : current.ts,
     }
 
     if (upcoming.unacquired && current.state) {
@@ -94,18 +116,11 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
     } else if (!upcoming.unacquired && current.unacquired) {
         dev.instanceLabel = upcoming.label;
         if (typeof dev.instance === 'number') {
-            dev.instanceLabel = `${upcoming.label} #${dev.instance}`;
+            dev.instanceLabel = `${upcoming.label} TODO:(${dev.instance})`;
         }
     }
 
-    if (upcoming.features && current.features) {
-        console.log("CZEKIN PASS PROT");
-        if (upcoming.features.passphrase_protection !== current.features.passphrase_protection) {
-            // device settings has been changed, reset state
-            dev.state = null;
-            console.log("RESTETTTT STATE!");
-        }
-    }
+    
 
     return dev;
 }
@@ -132,7 +147,40 @@ const addDevice = (state: State, device: Object): State => {
 
     if (affectedDevices.length > 0 ) {
         // replace existing values
-        const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => mergeDevices(d, { ...device, connected: true} ));
+        // const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => mergeDevices(d, { ...device, connected: true} ));
+        let cloneInstance: number = 1;
+        const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => {
+            if (d.features.passphrase_protection === device.features.passphrase_protection) {
+                cloneInstance = 0;
+                return mergeDevices(d, { ...device, connected: true, available: true } );
+            } else {
+                if (d.instance && cloneInstance > 0) {
+                    cloneInstance = d.instance + 1;
+                }
+                return mergeDevices(d, { ...d, connected: true, available: false } );
+                // return d;
+            }
+        });
+
+        if (cloneInstance > 0) {
+            // TODO: instance should be calculated form affectedDevice
+            const instance = cloneInstance; //new Date().getTime();
+
+            const newDevice: TrezorDevice = {
+                ...device,
+                acquiring: false,
+                remember: false,
+                connected: true,
+                available: true,
+                path: device.path,
+                label: device.label,
+                state: null,
+                instance,
+                instanceLabel: `${device.label} (${instance})`,
+                ts: new Date().getTime(),
+            }
+            changedDevices.push(newDevice);
+        }
         newState.devices = otherDevices.concat(changedDevices);
 
     } else {
@@ -142,12 +190,13 @@ const addDevice = (state: State, device: Object): State => {
             acquiring: false,
             remember: false,
             connected: true,
+            available: true,
             path: device.path,
             label: device.label,
             state: null,
             // instance: 0,
             instanceLabel: device.label,
-            ts: 0,
+            ts: new Date().getTime(),
         }
         newState.devices.push(newDevice);
 
@@ -184,11 +233,15 @@ const changeDevice = (state: State, device: Object): State => {
     let affectedDevices: Array<TrezorDevice> = [];
     let otherDevices: Array<TrezorDevice> = [];
     if (device.features) {
-        affectedDevices = state.devices.filter(d => (d.features && d.features.device_id === device.features.device_id) || (d.path.length > 0  && d.path === device.path) );
+        affectedDevices = state.devices.filter(d => 
+            (d.features && d.features.device_id === device.features.device_id && d.features.passphrase_protection === device.features.passphrase_protection) || 
+            (d.path.length > 0 && d.path === device.path) 
+        );
         otherDevices = state.devices.filter(d => affectedDevices.indexOf(d) === -1);
     } else {
-        affectedDevices = state.devices.filter(d => d.path === device.path);
-        otherDevices = state.devices.filter(d => d.path !== device.path);
+        affectedDevices = state.devices.filter(d => !d.features && d.path === device.path);
+        otherDevices = state.devices.filter(d => affectedDevices.indexOf(d) === -1);
+        // otherDevices = state.devices.filter(d => d.path !== device.path);
     }
 
     if (affectedDevices.length > 0) {
@@ -226,13 +279,14 @@ const changeDevice = (state: State, device: Object): State => {
 const disconnectDevice = (state: State, device: Object): State => {
 
     const newState: State = { ...state };
-    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.path === device.path);
+    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.path === device.path || (d.features && device.features && d.features.device_id === device.features.device_id));
     const otherDevices: Array<TrezorDevice> = state.devices.filter(d => affectedDevices.indexOf(d) === -1);
 
     if (affectedDevices.length > 0) {
         const acquiredDevices = affectedDevices.filter(d => !d.unacquired && d.state);
         newState.devices = otherDevices.concat( acquiredDevices.map(d => {
             d.connected = false;
+            d.available = false;
             d.isUsedElsewhere = false;
             d.featuresNeedsReload = false;
             d.acquiring = false;
@@ -261,7 +315,7 @@ const forgetDevice = (state: State, action: any): State => {
     } else {
         // remove all instances after disconnect (remember request declined)
         //newState.devices = state.devices.filter(d => d.path !== action.device.path);
-        newState.devices = state.devices.filter(d => (d.features && d.features.device_id !== action.device.features.device_id) || (!d.features && d.path !== action.device.path));
+        newState.devices = state.devices.filter(d => d.remember || (d.features && d.features.device_id !== action.device.features.device_id) || (!d.features && d.path !== action.device.path));
     }
 
     return newState;
@@ -272,6 +326,7 @@ const devicesFromLocalStorage = (devices: Array<any>): Array<TrezorDevice> => {
         return {
             ...d,
             connected: false,
+            available: false,
             path: '',
             acquiring: false,
             featuresNeedsReload: false,
@@ -282,30 +337,52 @@ const devicesFromLocalStorage = (devices: Array<any>): Array<TrezorDevice> => {
 
 const duplicate = (state: State, device: any): State => {
     const newState: State = { ...state };
-    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.path === device.path);
+    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.features.device_id === device.features.device_id);
+    const instance = affectedDevices.reduce((inst, dev) => {
+        console.warn("REDUC", inst, dev);
+        return dev.instance ? dev.instance + 1 : inst;
+    }, 1);
+
+    console.warn("NEEEW INST", instance);
 
     // if (affectedDevices.length > 0) {
+
         const newDevice: TrezorDevice = {
             ...device,
-            state: null,
-            remember: device.remember,
+            acquiring: false,
+            remember: false,
             connected: device.connected,
+            available: device.available,
             path: device.path,
             label: device.label,
-            instance: new Date().getTime(),
-            instanceLabel: device.instanceLabel,
-            ts: 0,
+            state: null,
+            instance,
+            instanceLabel: `${device.label} (${instance})`,
+            ts: new Date().getTime(),
         }
         newState.devices.push(newDevice);
         newState.selectedDevice = {
             id: newDevice.features.device_id,
-            instance: newDevice.instance
+            instance
         }
     //}
 
     return newState;
 }
 
+
+const onSelectDevice = (state: State, action: any): State => {
+    const newState: State = { ...state };
+    newState.selectedDevice = action.payload;
+
+    const selected = findSelectedDevice(newState);
+    if (selected) {
+        selected.ts = new Date().getTime();
+        console.warn("APDEJT SELECTED!", selected.instanceLabel, selected.ts)
+    }
+
+    return newState;
+}
 
 
 export default function connect(state: State = initialState, action: any): any {
@@ -323,10 +400,11 @@ export default function connect(state: State = initialState, action: any): any {
 
 
         case CONNECT.SELECT_DEVICE : 
-            return {
-                ...state,
-                selectedDevice: action.payload
-            }
+            return onSelectDevice(state, action);
+            // return {
+            //     ...state,
+            //     selectedDevice: action.payload
+            // }
 
         case CONNECT.INITIALIZATION_ERROR :
             return {
@@ -378,7 +456,7 @@ export default function connect(state: State = initialState, action: any): any {
             return disconnectDevice(state, action.device);
 
         case DEVICE.CHANGED :
-            return changeDevice(state, { ...action.device, connected: true });
+            return changeDevice(state, { ...action.device, connected: true, available: true });
 
         default:
             return state;

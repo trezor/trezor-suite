@@ -3,8 +3,10 @@
 
 import React, { Component } from 'react';
 import raf from 'raf';
+import { findSelectedDevice } from '../../reducers/TrezorConnectReducer';
 
 type State = {
+    deviceLabel: string;
     singleInput: boolean;
     passphrase: string;
     passphraseRevision: string;
@@ -25,10 +27,20 @@ export default class PinModal extends Component {
         super(props);
 
         // check if this device is already known
-        const isSavedDevice = props.devices.find(d => d.path === props.modal.device.path && d.remember);
+        // const isSavedDevice = props.devices.find(d => d.path === props.modal.device.path && d.remember);
+        const selected = findSelectedDevice(props.connect);
+        let deviceLabel = props.modal.device.label;
+        let singleInput = false;
+        if (selected && selected.path === props.modal.device.path) {
+            deviceLabel = selected.instanceLabel;
+            singleInput = selected.remember;
+        }
+
+        console.warn("-----PASSS", selected)
 
         this.state = {
-            singleInput: isSavedDevice ? true : false,
+            deviceLabel,
+            singleInput,
             passphrase: '',
             passphraseRevision: '',
             passphraseFocused: false,
@@ -220,6 +232,7 @@ export default class PinModal extends Component {
         } = this.props.modal;
 
         const { 
+            deviceLabel,
             singleInput,
             passphrase,
             passphraseRevision,
@@ -242,7 +255,7 @@ export default class PinModal extends Component {
         return (
             <div className="passphrase">
                 {/* <button className="close-modal transparent" onClick={ event => this.submit(true) }></button> */}
-                <h3>Enter { device.label } passphrase</h3>
+                <h3>Enter { deviceLabel } passphrase</h3>
                 <p>Note that passphrase is case-sensitive.</p>
                 <div className="row">
                     <label>Passphrase</label>

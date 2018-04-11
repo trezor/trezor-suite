@@ -5,7 +5,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import store from './store';
 import router from './router';
-import { onResize, onBeforeUnload } from './actions/AppActions';
+import { onBeforeUnload } from './actions/WalletActions';
 
 import Raven from 'raven-js';
 

@@ -58,7 +58,7 @@ export default (props: any): any => {
     } else if (connectError || bridgeRoute) {
         css += ' install-bridge';
         body = <InstallBridge browserState={ props.connect.browserState } />;
-    } else if (web3.length > 0 && devices.length < 1) {
+    } else if (props.wallet.ready && devices.length < 1) {
         css += ' connect-device';
         body = <ConnectDevice transport={ transport } />;
     }

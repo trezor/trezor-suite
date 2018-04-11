@@ -2,8 +2,10 @@
 'use strict';
 
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-export default (props: any): any => {
+const SignVerify = (props: any): any => {
     return (
         <section className="signverify">
             <div className="sign">
@@ -27,3 +29,16 @@ export default (props: any): any => {
         </section>
     );
 }
+
+const mapStateToProps = (state, own) => {
+    return {
+    
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return { 
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignVerify);

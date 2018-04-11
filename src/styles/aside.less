@@ -95,6 +95,8 @@ aside {
         margin: 12px 0px 12px 80px;
     }
 
+    
+
     .device-select {
         background: @color_white;
         border-bottom: 1px solid @color_divider;
@@ -246,6 +248,56 @@ aside {
 
     }
 
+    .device-menu {
+        padding: 8px 0px;
+        // padding-left: 80px;
+        padding-left: 74px;
+        border-bottom: 1px solid @color_divider;
+
+        div {
+            display: flex;
+            align-items: center;
+            line-height: 24px;
+            cursor: pointer;
+            color: @color_text_secondary;
+            .hover();
+
+            &:before {
+                .icomoon-refresh;
+                // color: @color_text_secondary;
+                position: relative;
+                font-size: 24px;
+                margin-right: 12px;
+                .hover();
+            }
+
+            &:hover {
+                color: @color_text_primary;
+                // &:before {
+                //     color: @color_text_primary;
+                // }
+            }
+
+            &.forget {
+                &:before {
+                    .icomoon-eject;
+                }
+            }
+
+            &.clone {
+                &:before {
+                    .icomoon-settings;
+                }
+            }
+
+            &.settings {
+                &:before {
+                    .icomoon-settings;
+                }
+            }
+        }
+    }
+
     a {
         position: relative;
         display: block;
@@ -391,12 +443,12 @@ aside {
         }
 
         &.ropsten:before,
-        &.eth:before {
+        &.ethereum:before {
             background-image: url('../images/eth-logo.png');
             background-size: auto 20px;
         }
         &.rinkeby:before,
-        &.etc:before {
+        &.ethereum-classic:before {
             background-image: url('../images/etc-logo.png');
             background-size: auto 20px;
         }

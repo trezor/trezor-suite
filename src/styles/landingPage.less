@@ -180,7 +180,7 @@
                 justify-content: space-between;
                 padding: 36px 0px;
                 margin: 0 auto;
-                width: 420px;
+                // width: 420px;
 
                 p {
                     // flex: 1;
@@ -197,6 +197,18 @@
                 //         color: @color_green_secondary;
                 //     }
                 // }
+                .webusb-and,
+                .trezor-webusb-button {
+                    display: none;
+                }
+
+                &.webusb {
+                    width: 400px;
+                    .webusb-and,
+                    .trezor-webusb-button {
+                        display: block;
+                    }
+                }
             }
 
             p {

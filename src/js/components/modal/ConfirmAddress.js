@@ -38,20 +38,42 @@ export const ConfirmUnverifiedAddress = (props: any): any => {
         showAddress
     } = props.receiveActions;
 
+    const {
+        device
+    } = props.modal;
 
-    return (
-        <div className="confirm-address-unverified">
-            <button className="close-modal transparent" onClick={ onCancel }></button>
-            <h3>Your TREZOR is not connected</h3>
-            <p>To prevent phishing attacks, you should verify the address on your TREZOR first. Please reconnect your device to continue with the verification process.</p>
-            <button onClick={ event => {
-                onCancel();
-                showAddress(account.addressPath);
-            } }>Try again</button>
-            <button className="white" onClick={ event => {
-                onCancel();
-                showUnverifiedAddress();
-            } }>Show unverified address</button>
-        </div>
-    );
+    if (!device.connected) {
+        return (
+            <div className="confirm-address-unverified">
+                <button className="close-modal transparent" onClick={ onCancel }></button>
+                <h3>{ device.instanceLabel } is not connected</h3>
+                <p>To prevent phishing attacks, you should verify the address on your TREZOR first. Please reconnect your device to continue with the verification process.</p>
+                <button onClick={ event => {
+                    onCancel();
+                    showAddress(account.addressPath);
+                } }>Try again</button>
+                <button className="white" onClick={ event => {
+                    onCancel();
+                    showUnverifiedAddress();
+                } }>Show unverified address</button>
+            </div>
+        );
+    } else {
+        const enable: string = device.features.passphrase_protection ? 'Enable' : 'Disable';
+        return (
+            <div className="confirm-address-unverified">
+                <button className="close-modal transparent" onClick={ onCancel }></button>
+                <h3>{ device.instanceLabel } is unavailable</h3>
+                <p>To prevent phishing attacks, you should verify the address on your TREZOR first. { enable } passphrase settings to continue with the verification process.</p>
+                <button onClick={ event => {
+                    onCancel();
+                    showAddress(account.addressPath);
+                } }>Try again</button>
+                <button className="white" onClick={ event => {
+                    onCancel();
+                    showUnverifiedAddress();
+                } }>Show unverified address</button>
+            </div>
+        );
+    }
 }

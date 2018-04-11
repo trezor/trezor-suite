@@ -2,6 +2,8 @@
 'use strict';
 
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 const Dashboard = (props: any): any => {
     return (
@@ -16,4 +18,15 @@ const Dashboard = (props: any): any => {
     );
 }
 
-export default Dashboard;
+const mapStateToProps = (state, own) => {
+    return {
+    
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return { 
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

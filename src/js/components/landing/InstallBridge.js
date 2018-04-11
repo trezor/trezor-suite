@@ -2,6 +2,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Preloader from './Preloader';
 import Select from 'react-select';
 
 type State = {
@@ -28,9 +29,9 @@ export default class InstallBridge extends Component {
 
         const currentTarget = installers.find(i => i.id === props.browserState.osname);
         this.state = {
-            version: '2.0.11',
-            target: currentTarget,
-            url: 'https://wallet.trezor.io/data/bridge/2.0.11/'
+            version: '2.0.12',
+            url: 'https://wallet.trezor.io/data/bridge/2.0.12/',
+            target: null,
         };
     }
 
@@ -40,11 +41,25 @@ export default class InstallBridge extends Component {
         });
     }
 
+
+    componentWillUpdate() {
+        if (this.props.browserState.osname && !this.state.target) {
+            const currentTarget = installers.find(i => i.id === this.props.browserState.osname);
+            this.setState({
+                target: currentTarget
+            })
+        }
+    }
+
     render() {
+        if (!this.state.target) {
+            return <Preloader />;
+        }
+
         const url = `${ this.state.url }${ this.state.target.value }`;
         return (
             <main>
-                <h3 className="claim">TREZOR Bridge. <span>Version 2.0.11</span></h3>
+                <h3 className="claim">TREZOR Bridge. <span>Version 2.0.12</span></h3>
                 <p>New communication tool to facilitate the connection between your TREZOR and your internet browser.</p>
                 <div className="row">
                     <Select

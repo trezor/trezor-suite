@@ -2,7 +2,6 @@
 'use strict';
 
 import { UI, DEVICE } from 'trezor-connect';
-import * as ACTIONS from '../actions';
 import * as RECEIVE from '../actions/constants/receive';
 import * as MODAL from '../actions/constants/Modal';
 import * as CONNECT from '../actions/constants/TrezorConnect';
@@ -10,12 +9,14 @@ import * as CONNECT from '../actions/constants/TrezorConnect';
 type ModalState = {
     opened: boolean;
     device: any;
+    instances: Array<any>;
     windowType: ?string;
 }
 
 const initialState: ModalState = {
     opened: false,
     device: null,
+    instances: null,
     windowType: null
 };
 
@@ -26,6 +27,7 @@ export default function modal(state: ModalState = initialState, action: any): an
         case RECEIVE.REQUEST_UNVERIFIED :
             return {
                 ...state,
+                device: action.device,
                 opened: true,
                 windowType: action.type
             }
@@ -36,6 +38,7 @@ export default function modal(state: ModalState = initialState, action: any): an
             return {
                 ...state,
                 device: action.device,
+                instances: action.instances,
                 opened: true,
                 windowType: action.type
             };
@@ -92,7 +95,7 @@ export default function modal(state: ModalState = initialState, action: any): an
             }
         
         case UI.CLOSE_UI_WINDOW :
-        case ACTIONS.CLOSE_MODAL :
+        case MODAL.CLOSE :
         
         case CONNECT.FORGET :
         case CONNECT.FORGET_SINGLE :

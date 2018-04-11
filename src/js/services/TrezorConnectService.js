@@ -11,13 +11,14 @@ import * as WEB3 from '../actions/constants/Web3';
 import * as STORAGE from '../actions/constants/LocalStorage';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as NOTIFICATION from '../actions/constants/notification';
-import * as ACTIONS from '../actions';
+import * as MODAL from '../actions/constants/Modal';
 
 
 const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
 
     const prevState = store.getState().connect;
     const prevModalState = store.getState().modal;
+    const prevRouterState = store.getState().router;
 
     next(action);
 
@@ -25,8 +26,14 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
         store.dispatch( TrezorConnectActions.init() );
 
     } else if (action.type === TRANSPORT.ERROR) {
-        store.dispatch( push('/') );
-    } else if (action.type === TRANSPORT.START && store.getState().web3.length > 0 && prevState.devices.length > 0) {
+        // TODO: check if modal is open
+        // store.dispatch( push('/') );
+    // } else if (action.type === TRANSPORT.START && store.getState().web3.length > 0 && prevState.devices.length > 0) {
+    //     store.dispatch( TrezorConnectActions.postInit() );
+    } else if (action.type === TRANSPORT.START && store.getState().web3.length < 1) {
+        //store.dispatch( TrezorConnectActions.postInit() );
+        store.dispatch( initWeb3() );
+    } else if (action.type === WEB3.READY) {
         store.dispatch( TrezorConnectActions.postInit() );
     } else if (action.type === TRANSPORT.UNREADABLE) {
         store.dispatch({
@@ -34,22 +41,16 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
             payload: {
                 type: 'error',
                 title: 'Unreadable HID device',
-                message: 'What to do?',
+                message: '',
                 cancelable: true,
             }
-        })
-
-    } else if (action.type === WEB3.READY) {
-        store.dispatch( TrezorConnectActions.postInit() );
-
+        });
     } else if (action.type === DEVICE.DISCONNECT) {
         store.dispatch( TrezorConnectActions.deviceDisconnect(action.device) );
 
     } else if (action.type === CONNECT.REMEMBER_REQUEST) {
-       // TODO:
+       // TODO: 2 modals at once
         if (prevModalState.opened && prevModalState.windowType === CONNECT.REMEMBER_REQUEST) {
-            
-
             store.dispatch({
                 type: CONNECT.FORGET,
                 device: store.getState().modal.device
@@ -82,6 +83,7 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
         // we need to change route 
         if (prevState.selectedDevice) {
             if (!action.device.unacquired && action.device.path === prevState.selectedDevice.id) {
+                console.warn("TODO: here! better")
                 store.dispatch( TrezorConnectActions.onSelectDevice(action.device) );
             }
         }
@@ -96,7 +98,7 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
         if (modal.opened && modal.windowType === CONNECT.REMEMBER_REQUEST) {
             if (action.device.features && modal.device.features.device_id === action.device.features.device_id) {
                 store.dispatch({
-                    type: ACTIONS.CLOSE_MODAL,
+                    type: MODAL.CLOSE,
                 });
             } else {
                 store.dispatch({
@@ -113,6 +115,7 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
         store.dispatch( TrezorConnectActions.onDuplicateDevice() );
 
     } else if (action.type === DEVICE.ACQUIRED || action.type === CONNECT.SELECT_DEVICE) {
+        console.warn("here!!!!!", action.type)
         store.dispatch( TrezorConnectActions.getSelectedDeviceState() );
 
     } else if (action.type === CONNECT.COIN_CHANGED) {

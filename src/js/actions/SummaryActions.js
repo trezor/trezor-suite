@@ -2,7 +2,6 @@
 'use strict';
 
 import EthereumjsUtil from 'ethereumjs-util';
-import * as ACTIONS from './index';
 import * as SUMMARY from './constants/summary';
 import * as TOKEN from './constants/Token';
 import * as ADDRESS from './constants/Address';
@@ -20,11 +19,13 @@ export const init = (): any => {
         const urlParams = location.params;
 
         const selected = findSelectedDevice( getState().connect );
-        if (!selected) return;
+        if (!selected || !selected.state) return;
 
         const state: State = {
             ...initialState,
             deviceState: selected.state,
+            deviceId: selected.features.device_id,
+            deviceInstance: selected.instance,
             accountIndex: parseInt(urlParams.address),
             network: urlParams.network,
             location: location.pathname,
@@ -46,7 +47,7 @@ export const update = (newProps: any): any => {
         } = getState();
 
         const isLocationChanged: boolean = router.location.pathname !== summary.location;
-        if (isLocationChanged) {
+        if (isLocationChanged || !summary.deviceState) {
             dispatch( init() );
             return;
         }
@@ -135,100 +136,5 @@ export const removeToken = (token: any): any => {
     return {
         type: TOKEN.REMOVE,
         token
-    }
-}
-
-
-
-export const onTokenSearch = (search: string): any => {
-    return {
-        type: ACTIONS.TOKENS_SEARCH,
-        search
-    }
-}
-
-export const onCustomTokenToggle = (): any => {
-    return {
-        type: ACTIONS.TOKENS_CUSTOM_TOGGLE
-    }
-}
-
-export const onCustomTokenAddressChange = (value: string): any => {
-    // todo:
-    // -validate address
-    // - if adresss is ok, try to fetch token info
-    // return {
-    //     type: ACTIONS.TOKENS_CUSTOM_ADDRESS_CHANGE,
-    //     value
-    // }
-
-    return async (dispatch, getState) => {
-
-        const valid: boolean = EthereumjsUtil.isValidAddress(value);
-        if (valid) {
-            
-            dispatch({
-                type: ACTIONS.TOKENS_CUSTOM_ADDRESS_CHANGE,
-                value,
-                valid,
-                fetching: true
-            });
-
-            const { web3, abi } = getState().web3;
-            const contract = web3.eth.contract(abi).at(value);
-
-            contract.name.call((error, name) => {
-                if (error) {
-                    // TODO: skip
-                }
-                contract.symbol.call((error, symbol) => {
-                    if (error) {
-                        // TODO: skip
-                    }
-    
-                    contract.decimals.call((error, decimals) => {
-                        console.log("fetched!", name, symbol, decimals)
-                    })
-                });
-                
-                
-            })
-
-        } else {
-            dispatch({
-                type: ACTIONS.TOKENS_CUSTOM_ADDRESS_CHANGE,
-                value,
-                valid
-            });
-        }
-
-        console.log("VALID!!!", valid);
-    }
-}
-
-export const onCustomTokenNameChange = (value: string): any => {
-    return {
-        type: ACTIONS.TOKENS_CUSTOM_NAME_CHANGE,
-        value
-    }
-}
-
-export const onCustomTokenShortcutChange = (value: string): any => {
-    return {
-        type: ACTIONS.TOKENS_CUSTOM_SHORTCUT_CHANGE,
-        value
-    }
-}
-
-export const onCustomTokenDecimalChange = (value: string): any => {
-    return {
-        type: ACTIONS.TOKENS_CUSTOM_DECIMAL_CHANGE,
-        value
-    }
-}
-
-export const onCustomTokenAdd = (): any => {
-    return {
-        type: ACTIONS.TOKENS_CUSTOM_ADD
     }
 }

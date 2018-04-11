@@ -111,6 +111,7 @@ const LocalStorageService = (store: any) => (next: any) => (action: any) => {
         case DEVICE.CHANGED :
         case DEVICE.DISCONNECT :
         case CONNECT.AUTH_DEVICE :
+        case CONNECT.SELECT_DEVICE :
             save(store.dispatch, store.getState);
             //store.dispatch( LocalStorageActions.save('devices', JSON.stringify( store.getState().connect.devices.filter(d => d.remember === true && !d.unacquired) ) ) );
             // store.dispatch( LocalStorageActions.save('selectedDevice', JSON.stringify( store.getState().connect.selectedDevice ) ) );

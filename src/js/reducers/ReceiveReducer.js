@@ -5,6 +5,8 @@ import * as RECEIVE from '../actions/constants/receive';
 
 export type State = {
     +deviceState: ?string;
+    +deviceId: ?string;
+    +deviceInstance: ?string;
     +accountIndex: ?number;
     +network: ?string;
     location: string;
@@ -14,6 +16,8 @@ export type State = {
 
 export const initialState: State = {
     deviceState: null,
+    deviceId: null,
+    deviceInstance: null,
     accountIndex: null,
     network: null,
     location: '',

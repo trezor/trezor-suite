@@ -5,23 +5,25 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import Aside from '../components/wallet/aside/Aside';
-import * as TrezorConnectActions from '../actions/TrezorConnectActions';
-import { toggleDeviceDropdown } from '../actions/AppActions';
 
-function mapStateToProps(state, own) {
+import * as TrezorConnectActions from '../../../actions/TrezorConnectActions';
+import { toggleDeviceDropdown } from '../../../actions/WalletActions';
+
+import Aside from './Aside';
+
+const mapStateToProps = (state, own) => {
     return {
         connect: state.connect,
         accounts: state.accounts,
         router: state.router,
-        deviceDropdownOpened: state.DOM.deviceDropdownOpened,
+        deviceDropdownOpened: state.wallet.dropdownOpened,
         fiat: state.fiat,
         localStorage: state.localStorage,
         discovery: state.discovery
     };
 }
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
     return {
         //onAccountSelect: bindActionCreators(AccountActions.onAccountSelect, dispatch),
         toggleDeviceDropdown: bindActionCreators(toggleDeviceDropdown, dispatch),
@@ -29,6 +31,7 @@ function mapDispatchToProps(dispatch) {
         acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
         forgetDevice: bindActionCreators(TrezorConnectActions.forget, dispatch),
         duplicateDevice: bindActionCreators(TrezorConnectActions.duplicateDevice, dispatch),
+        gotoDeviceSettings: bindActionCreators(TrezorConnectActions.gotoDeviceSettings, dispatch),
         onSelectDevice: bindActionCreators(TrezorConnectActions.onSelectDevice, dispatch),
     };
 }

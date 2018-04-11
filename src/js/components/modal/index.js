@@ -105,6 +105,7 @@ const mapStateToProps = (state: any, own: any): any => {
         modal: state.modal,
         accounts: state.accounts,
         devices: state.connect.devices,
+        connect: state.connect,
         sendForm: state.sendForm,
         receive: state.receive,
         localStorage: state.localStorage

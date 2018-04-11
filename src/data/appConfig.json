@@ -46,7 +46,7 @@
         {
             "name": "Ethereum Classic",
             "symbol": "ETC",
-            "network": "ethereumclassic",
+            "network": "ethereum-classic",
             "bip44": "m/44'/61'/0'/0",
             "defaultGasPrice": 64,
             "defaultGasLimit": 21000,

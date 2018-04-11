@@ -11,3 +11,4 @@ export const FORGET: string = 'modal__forget';
 export const REMEMBER: string = 'modal__remember';
 export const ON_FORGET: string = 'modal__on_forget';
 export const ON_REMEMBER: string = 'modal__on_remember';
+export const CLOSE: string = 'modal__close';

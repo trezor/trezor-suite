@@ -3,6 +3,7 @@
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as NOTIFICATION from '../actions/constants/notification';
+import { DEVICE } from 'trezor-connect';
 
 type NotificationAction = {
     label: string;
@@ -11,6 +12,7 @@ type NotificationAction = {
 
 type NotificationEntry = {
     +id: ?string;
+    +devicePath: ?string;
     +type: string;
     +title: string;
     +message: string;
@@ -33,6 +35,7 @@ const addNotification = (state: Array<NotificationEntry>, payload: any): Array<N
     const newState: Array<NotificationEntry> = state.filter(e => !e.cancelable);
     newState.push({
         id: payload.id,
+        devicePath: payload.devicePath,
         type: payload.type,
         title: payload.title.toString(),
         message: payload.message.toString(),
@@ -46,9 +49,11 @@ const addNotification = (state: Array<NotificationEntry>, payload: any): Array<N
 
 const closeNotification = (state: Array<NotificationEntry>, payload: any): Array<NotificationEntry> => {
     if (payload && typeof payload.id === 'string') {
-        return state.filter(e => e.id !== payload.id);
+        return state.filter(entry => entry.id !== payload.id);
+    } else if (payload && typeof payload.devicePath === 'string') {
+        return state.filter(entry => entry.devicePath !== payload.devicePath);
     } else {
-        return state.filter(e => !e.cancelable);
+        return state.filter(entry => !entry.cancelable);
     }
 }
 
@@ -61,6 +66,9 @@ export default function notification(state: Array<NotificationEntry> = initialSt
         case LOCATION_CHANGE :
         case NOTIFICATION.CLOSE :
             return closeNotification(state, action.payload);
+
+        case DEVICE.DISCONNECT :
+            return state.filter(entry => entry.devicePath !== action.device.path);
         
         default:
             return state;

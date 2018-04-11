@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import Summary from './Summary';
 import * as SummaryActions from '../../../actions/SummaryActions';
 
-function mapStateToProps(state, own) {
+const mapStateToProps = (state, own) => {
     return {
         location: state.router.location,
         devices: state.connect.devices,
@@ -21,7 +21,7 @@ function mapStateToProps(state, own) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
     return {
         summaryActions: bindActionCreators(SummaryActions, dispatch), 
         initAccount: bindActionCreators(SummaryActions.init, dispatch), 

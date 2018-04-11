@@ -17,8 +17,9 @@ const AccountSelection = (props: any): any => {
     if (!selected) return null;
 
     const { location } = props.router;
+    const urlParams = location.params;
     const accounts = props.accounts;
-    const baseUrl: string = `/device/${location.params.device}`;
+    const baseUrl: string = urlParams.deviceInstance ? `/device/${urlParams.device}:${urlParams.deviceInstance}` : `/device/${urlParams.device}`;
 
     const { config } = props.localStorage;
     const selectedCoin = config.coins.find(c => c.network === location.params.network);

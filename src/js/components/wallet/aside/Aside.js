@@ -48,7 +48,7 @@ const Aside = (props: any): any => {
     //     );
     // }
 
-    let menu = null;
+    let menu = <section></section>;
     
     if (props.deviceDropdownOpened) {
         menu = <DeviceDropdown {...props} />;

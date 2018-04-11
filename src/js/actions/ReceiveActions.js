@@ -21,6 +21,8 @@ export const init = (): any => {
         const state: State = {
             ...initialState,
             deviceState: selected.state,
+            deviceId: selected.features.device_id,
+            deviceInstance: selected.instance,
             accountIndex: parseInt(urlParams.address),
             network: urlParams.network,
             location: location.pathname,
@@ -67,9 +69,10 @@ export const showAddress = (address_n: string): any => {
         const selected = findSelectedDevice(getState().connect);
         if (!selected) return;
 
-        if (selected && !selected.connected) {
+        if (selected && (!selected.connected || !selected.available)) {
             dispatch({
                 type: RECEIVE.REQUEST_UNVERIFIED,
+                device: selected
             });
             return;
         }

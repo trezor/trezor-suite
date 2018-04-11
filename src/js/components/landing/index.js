@@ -1,24 +1,24 @@
 /* @flow */
 'use strict';
 
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import LandingPage from '../components/landing/LandingPage';
-import * as LogActions from '../actions/LogActions';
+import LandingPage from './LandingPage';
 
-function mapStateToProps(state, own) {
+const mapStateToProps = (state, own) => {
     return {
         localStorage: state.localStorage,
         modal: state.modal,
         web3: state.web3,
+        wallet: state.wallet,
         connect: state.connect,
         router: state.router
     };
 }
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
     return { 
    
     };

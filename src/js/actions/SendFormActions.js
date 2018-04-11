@@ -117,6 +117,8 @@ export const init = (): any => {
         const state: State = {
             ...initialState,
             deviceState: selected.state,
+            deviceId: selected.features.device_id,
+            deviceInstance: selected.instance,
             accountIndex: parseInt(urlParams.address),
             network: urlParams.network,
             coinSymbol: coin.symbol,

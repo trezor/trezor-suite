@@ -63,11 +63,20 @@ export default class RememberDevice extends Component {
     }
 
     render(): any {
-        const { device } = this.props.modal;
+        const { device, instances } = this.props.modal;
         const { onForgetDevice, onRememberDevice } = this.props.modalActions;
+
+        let label = device.label;
+        let devicePlural = false;
+        if (instances && instances.length > 0) {
+            label = instances.map(i => {
+                return (<span>{i.instanceLabel}</span>);
+            })
+            devicePlural = instances.length > 1;
+        }
         return (
             <div className="remember">
-                <h3>Forget { device.label } ?</h3>
+                <h3>Forget {label}?</h3>
                 <p>Would you like TREZOR Wallet to forget your device or to remember it, so that it is still visible even while disconnected?</p>
                 <button onClick={ event => onForgetDevice(device) }>Forget</button>
                 <button className="white" onClick={ event => onRememberDevice(device) }><span>Remember <Loader size={ 28 } label={  this.state.countdown } /></span></button>
@@ -81,7 +90,7 @@ export const ForgetDevice = (props: any): any => {
     const { onForgetSingleDevice, onCancel } = props.modalActions;
     return (
         <div className="remember">
-            <h3>Forget { device.label } ?</h3>
+            <h3>Forget { device.instanceLabel } ?</h3>
             <p>Forgetting only removes the device from the list on the left, your bitcoins are still safe and you can access them by reconnecting your TREZOR again.</p>
             <button onClick={ event => onForgetSingleDevice(device) }>Forget</button>
             <button className="white" onClick={ onCancel }>Don't forget</button>
@@ -94,7 +103,7 @@ export const DisconnectDevice = (props: any): any => {
     const { onForgetSingleDevice, onCancel } = props.modalActions;
     return (
         <div className="remember">
-            <h3>Unplug { device.label }</h3>
+            <h3>Unplug { device.instanceLabel }</h3>
             <p>TREZOR Wallet will forget your TREZOR right after you disconnect it.</p>
             <b>TODO: its not true, actually i've already forget those data!!!</b>
         </div>
