@@ -6,8 +6,8 @@ import Tooltip from 'rc-tooltip';
 
 const AdvancedForm = (props: any): any => {
 
+    const { network } = props.abstractAccount;
     const { 
-        network,
         token,
         gasPrice,
         gasLimit,

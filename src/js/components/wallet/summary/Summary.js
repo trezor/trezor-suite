@@ -14,17 +14,13 @@ import { findDevice } from '../../../utils/reducerUtils';
 
 export default class Summary extends AbstractAccount {
     render() {
-        console.warn("RENDER SUMMARY!", this.device, this.discovery, this)
-        return super.render(this.props.summary) || _render(this.props, this.device, this.discovery, this.account, this.deviceStatusNotification);
+        return super.render() || _render(this.props, this.device, this.discovery, this.account, this.deviceStatusNotification);
     }
 }
 
 const _render = (props: any, device, discovery, account, deviceStatusNotification): any => {
 
-    //const device = props.devices.find(d => d.state === props.summary.deviceState && d.features.device_id === props.summary.deviceId);
-    // const device = findDevice(props.devices, props.summary.deviceState, props.summary.deviceId);
-    // const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === props.summary.network);
-    //const account = props.accounts.find(a => a.deviceState === props.summary.deviceState && a.index === props.summary.accountIndex && a.network === props.summary.network);
+    const abstractAccount = props.abstractAccount;
     const tokens = props.tokens.filter(t => t.ethAddress === account.address);
 
     return (
@@ -32,12 +28,12 @@ const _render = (props: any, device, discovery, account, deviceStatusNotificatio
         <section className="summary">
             { deviceStatusNotification }
 
-            <h2 className={ `summary-header ${props.summary.network}` }>Address #{ parseInt(props.match.params.address) + 1 }</h2>
+            <h2 className={ `summary-header ${abstractAccount.network}` }>Address #{ parseInt(abstractAccount.index) + 1 }</h2>
 
             <SummaryDetails 
                 summary={ props.summary } 
                 balance={ account.balance }
-                network={ props.summary.network }
+                network={ abstractAccount.network }
                 fiat={ props.fiat }
                 localStorage={ props.localStorage }
                 onToggle={ props.summaryActions.onDetailsToggle } />

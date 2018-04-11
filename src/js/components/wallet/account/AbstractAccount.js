@@ -32,6 +32,7 @@ export default class AbstractAccount extends Component {
     }
 
     componentDidMount() {
+        this.props.abstractAccountActions.init();
         this.props.initAccount();
     }
 
@@ -41,10 +42,12 @@ export default class AbstractAccount extends Component {
         this.account = null;
         this.deviceStatusNotification = null;
 
+        this.props.abstractAccountActions.update();
         this.props.updateAccount();
     }
 
     componentWillUnmount() {
+        this.props.abstractAccountActions.dispose();
         this.props.disposeAccount();
 
         this.device = null;
@@ -53,21 +56,22 @@ export default class AbstractAccount extends Component {
         this.deviceStatusNotification = null;
     }
 
-    render(state: any): any {
+    render(): any {
 
         const props = this.props;
+        const state = props.abstractAccount;
 
         if (!state.deviceState) {
             return (<section><Notification className="info" title="Loading device" /></section>);
         }
         
-        const device = findDevice(this.props.devices, state.deviceState, state.deviceId, state.deviceInstance);
+        const device = findDevice(props.devices, state.deviceState, state.deviceId, state.deviceInstance);
 
         if (!device) {
             return (<section>Device with state {state.deviceState} not found</section>);
         }
         const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === state.network);
-        const account = props.accounts.find(a => a.deviceState === state.deviceState && a.index === state.accountIndex && a.network === state.network);
+        const account = props.accounts.find(a => a.deviceState === state.deviceState && a.index === state.index && a.network === state.network);
         let deviceStatusNotification = null;
 
         if (!account) {

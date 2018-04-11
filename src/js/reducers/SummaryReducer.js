@@ -4,25 +4,11 @@
 import * as SUMMARY from '../actions/constants/summary';
 
 export type State = {
-    +deviceState: ?string;
-    +deviceId: ?string;
-    +deviceInstance: ?string;
-    +accountIndex: ?number;
-    +network: ?string;
-    location: string;
-
     details: boolean;
     selectedToken: any;
 }
 
 export const initialState: State = {
-    deviceState: null,
-    deviceId: null,
-    deviceInstance: null,
-    accountIndex: null,
-    network: null,
-    location: '',
-
     details: true,
     selectedToken: null
 };

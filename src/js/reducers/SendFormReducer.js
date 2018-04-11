@@ -10,18 +10,10 @@ import BigNumber from 'bignumber.js';
 import { getFeeLevels } from '../actions/SendFormActions';
 
 export type State = {
-    +deviceState: ?string;
-    +deviceId: ?string;
-    +deviceInstance: ?string;
-    +accountIndex: number;
-    +network: string;
     +coinSymbol: string;
     token: string;
-    location: string;
-    
     balanceNeedUpdate: boolean;
     
-
     // form fields
     advanced: boolean;
     untouched: boolean; // set to true when user made any changes in form
@@ -52,14 +44,8 @@ export type FeeLevel = {
 
 
 export const initialState: State = {
-    deviceState: null,
-    deviceId: null,
-    deviceInstance: null,
-    accountIndex: 0,
-    network: '',
     coinSymbol: '',
     token: '',
-    location: '',
 
     advanced: false,
     untouched: true,

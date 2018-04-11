@@ -11,25 +11,20 @@ import { QRCode } from 'react-qr-svg';
 import AbstractAccount from './account/AbstractAccount';
 import { Notification } from '../common/Notification';
 import * as ReceiveActions from '../../actions/ReceiveActions';
+import * as AbstractAccountActions from '../../actions/AbstractAccountActions';
 
 class Receive extends AbstractAccount {
     render() {
-        return super.render(this.props.receive) || _render(this.props, this.device, this.account, this.deviceStatusNotification);
+        return super.render() || _render(this.props, this.device, this.account, this.deviceStatusNotification);
     }
 }
 
 const _render = (props: any, device, account, deviceStatusNotification): any => {
 
     const {
-        network,
-        deviceState,
-        accountIndex,
         addressVerified,
         addressUnverified,
     } = props.receive;
-
-    // const device = props.devices.find(d => d.state === deviceState);
-    // const account = props.accounts.find(a => a.deviceState === deviceState && a.index === accountIndex && a.network === network);
 
     let qrCode = null;
     let address = `${account.address.substring(0, 20)}...`;
@@ -91,6 +86,7 @@ const _render = (props: any, device, account, deviceStatusNotification): any => 
 
 const mapStateToProps = (state, own) => {
     return {
+        abstractAccount: state.abstractAccount,
         location: state.router.location,
         devices: state.connect.devices,
         accounts: state.accounts,
@@ -101,6 +97,7 @@ const mapStateToProps = (state, own) => {
 
 const mapDispatchToProps = (dispatch) => {
     return { 
+        abstractAccountActions: bindActionCreators(AbstractAccountActions, dispatch),
         initAccount: bindActionCreators(ReceiveActions.init, dispatch), 
         updateAccount: bindActionCreators(ReceiveActions.update, dispatch),
         disposeAccount: bindActionCreators(ReceiveActions.dispose, dispatch),

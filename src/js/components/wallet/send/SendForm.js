@@ -11,23 +11,20 @@ import AbstractAccount from '../account/AbstractAccount';
 
 export default class Send extends AbstractAccount {
     render() {
-        return super.render(this.props.sendForm) || _render(this.props, this.device, this.discovery, this.account, this.deviceStatusNotification);
+        return super.render() || _render(this.props, this.device, this.discovery, this.account, this.deviceStatusNotification);
     }
 }
 
 
 const _render = (props: any, device, discovery, account, deviceStatusNotification): any => {
 
-    // const device = props.devices.find(device => device.state === props.sendForm.deviceState);
-    // const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === props.sendForm.network);
-    // const account = props.accounts.find(a => a.deviceState === props.sendForm.deviceState && a.index === props.sendForm.accountIndex && a.network === props.sendForm.network);
     const addressTokens = props.tokens.filter(t => t.ethAddress === account.address);
+    const { network } = props.abstractAccount;
 
     const { 
         address,
         amount,
         setMax,
-        network,
         coinSymbol,
         token,
         feeLevels,
@@ -54,7 +51,7 @@ const _render = (props: any, device, discovery, account, deviceStatusNotificatio
 
     const { config } = props.localStorage;
     const selectedCoin = config.coins.find(c => c.network === network);
-    const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
+    const fiatRate = props.fiat.find(f => f.network === network);
 
     const tokens = addressTokens.map(t => {
         return { value: t.symbol, label: t.symbol };

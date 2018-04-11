@@ -15,20 +15,9 @@ import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
 export const init = (): any => {
     return (dispatch, getState): void => {
-        const { location } = getState().router;
-        const urlParams = location.params;
-
-        const selected = findSelectedDevice( getState().connect );
-        if (!selected || !selected.state) return;
-
+    
         const state: State = {
             ...initialState,
-            deviceState: selected.state,
-            deviceId: selected.features.device_id,
-            deviceInstance: selected.instance,
-            accountIndex: parseInt(urlParams.address),
-            network: urlParams.network,
-            location: location.pathname,
         };
 
         dispatch({
@@ -42,12 +31,12 @@ export const init = (): any => {
 export const update = (newProps: any): any => {
     return (dispatch, getState): void => {
         const {
-            summary,
+            abstractAccount,
             router
         } = getState();
 
-        const isLocationChanged: boolean = router.location.pathname !== summary.location;
-        if (isLocationChanged || !summary.deviceState) {
+        const isLocationChanged: boolean = router.location.pathname !== abstractAccount.location;
+        if (isLocationChanged) {
             dispatch( init() );
             return;
         }

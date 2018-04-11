@@ -18,6 +18,10 @@ export type Account = {
 
 const initialState: Array<Account> = [];
 
+export const findAccount = (state: Array<Account>, index: number, deviceState: string, network: string): ?Account => {
+    return state.find(a => a.deviceState === deviceState && a.index === index && a.network === network);
+}
+
 const createAccount = (state: Array<Account>, action: any): Array<Account> => {
 
     // TODO check with device_id

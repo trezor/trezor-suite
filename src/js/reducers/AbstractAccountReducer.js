@@ -6,7 +6,9 @@ import * as CONNECT from '../actions/constants/TrezorConnect';
 
 export type State = {
     +index: number;
-    +ch: ?string;
+    +deviceState: ?string;
+    +deviceId: ?string;
+    +deviceInstance: ?string;
     +network: string;
     location: string;
 }
@@ -14,7 +16,10 @@ export type State = {
 export const initialState: State = {
     index: 0,
     deviceState: null,
+    deviceId: null,
+    deviceInstance: null,
     network: '',
+    location: '',
 };
 
 
@@ -24,12 +29,6 @@ export default (state: State = initialState, action: any): State => {
 
         case ACCOUNT.INIT :
             return action.state;
-
-        case CONNECT.DEVICE_STATE_EXCEPTION :
-            return {
-                ...state,
-                deviceStateError: true
-            }
 
         case ACCOUNT.DISPOSE :
             return initialState;
