@@ -5,13 +5,14 @@ import { LOCATION_CHANGE, push } from 'react-router-redux';
 
 import TrezorConnect, { TRANSPORT, DEVICE_EVENT, UI_EVENT, UI, DEVICE } from 'trezor-connect';
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
+import * as DiscoveryActions from '../actions/DiscoveryActions';
 import * as ModalActions from '../actions/ModalActions';
 import { init as initWeb3 } from '../actions/Web3Actions';
 import * as WEB3 from '../actions/constants/web3';
 import * as STORAGE from '../actions/constants/localStorage';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as NOTIFICATION from '../actions/constants/notification';
-import * as MODAL from '../actions/constants/Modal';
+import * as MODAL from '../actions/constants/modal';
 
 
 const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
@@ -89,7 +90,7 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
         }
     } else if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
 
-        store.dispatch( TrezorConnectActions.restoreDiscovery() );
+        store.dispatch( DiscoveryActions.restore() );
 
         // interrupt process of remembering device (force forget)
         // TODO: the same for disconnect more than 1 device at once
@@ -109,7 +110,7 @@ const TrezorConnectService = (store: any) => (next: any) => (action: any) => {
         }
 
     } else if (action.type === CONNECT.AUTH_DEVICE) {
-        store.dispatch( TrezorConnectActions.checkDiscoveryStatus() );
+        store.dispatch( DiscoveryActions.check() );
 
     } else if (action.type === CONNECT.DUPLICATE) {
         store.dispatch( TrezorConnectActions.onDuplicateDevice() );
