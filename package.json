@@ -16,7 +16,7 @@
         "dev:library": "babel-node ./webpack/server.js --library",
         "dev:connect": "babel-node ./webpack/server.js --connect",
         "build": "rm -rf build && webpack --config ./webpack/webpack.config.prod.babel.js",
-        "flow": "cd app/scripts && flow check",
+        "flow": "flow check src/js",
         "test": ""
     },
     "dependencies": {
@@ -64,6 +64,7 @@
         "express": "^4.15.3",
         "extract-text-webpack-plugin": "^3.0.0",
         "file-loader": "^1.1.9",
+        "flow-bin": "^0.69.0",
         "html-webpack-plugin": "^2.29.0",
         "json-loader": "^0.5.7",
         "less": "^3.0.1",

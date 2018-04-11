@@ -4,10 +4,12 @@
 .*/node_modules/hd-wallet/.*
 .*/node_modules/protobufjs-old-fixed-webpack/src/bower.json
 .*/node_modules/trezor-link/lib/.*
+.*/node_modules/rc-util/lib/.*
 .*/_old/.*
+.*/src/solidity/.*
 
 [libs]
-
+./src/js/flowtype/css.js
 
 
 [options]
