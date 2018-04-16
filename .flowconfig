@@ -1,3 +1,5 @@
+[include]
+
 [ignore]
 .*/node_modules/bitcoinjs-lib-zcash/.*
 .*/node_modules/bitcoinjs-lib/.*
@@ -9,7 +11,13 @@
 .*/src/solidity/.*
 
 [libs]
+./src/js/flowtype/redux_v3.x.x.js
+./src/js/flowtype/react-redux_v5.x.x.js
+./src/js/flowtype/react-router_v4.x.x.js
+./src/js/flowtype/react-router-dom_v4.x.x.js
+./src/js/flowtype/react-router-redux.js
 ./src/js/flowtype/css.js
+./src/js/flowtype/trezor-connect.js
 
 
 [options]

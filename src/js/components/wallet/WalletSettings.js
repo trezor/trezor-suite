@@ -5,7 +5,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-export const WalletSettings = (props: any): any => {
+export const WalletSettings = () => {
     return (
         <section className="settings">
             Wallet settings
@@ -13,15 +13,4 @@ export const WalletSettings = (props: any): any => {
     );
 }
 
-const mapStateToProps = (state, own) => {
-    return {
-    
-    };
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return { 
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(WalletSettings);
+export default connect(null, null)(WalletSettings);

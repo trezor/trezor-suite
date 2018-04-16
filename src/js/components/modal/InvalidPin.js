@@ -2,8 +2,9 @@
 'use strict';
 
 import React from 'react';
+import type { Props } from './index';
 
-const InvalidPin = (props): any => {
+const InvalidPin = (props: Props) => {
     const { device } = props.modal;
     return (
         <div className="pin">

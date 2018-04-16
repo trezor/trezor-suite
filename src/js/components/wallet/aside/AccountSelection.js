@@ -10,27 +10,30 @@ import { findSelectedDevice } from '../../../reducers/TrezorConnectReducer';
 import Loader from '../../common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
+import type { Props } from './index';
+import type { TrezorDevice } from '../../../flowtype';
 
-const AccountSelection = (props: any): any => {
+const AccountSelection = (props: Props): ?React$Element<string> => {
 
     const selected = findSelectedDevice(props.connect);
     if (!selected) return null;
 
     const { location } = props.router;
-    const urlParams = location.params;
+    const urlParams = location.state;
     const accounts = props.accounts;
     const baseUrl: string = urlParams.deviceInstance ? `/device/${urlParams.device}:${urlParams.deviceInstance}` : `/device/${urlParams.device}`;
 
     const { config } = props.localStorage;
-    const selectedCoin = config.coins.find(c => c.network === location.params.network);
+    const selectedCoin = config.coins.find(c => c.network === location.state.network);
+    if (!selectedCoin) return;
 
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
     // console.warn("AccountSelectionRender", selected, props);
 
-    const deviceAddresses: Array<any> = getAccounts(accounts, selected, location.params.network);
+    const deviceAddresses: Array<any> = getAccounts(accounts, selected, location.state.network);
     let selectedAccounts = deviceAddresses.map((address, i) => {
-        // const url: string = `${baseUrl}/network/${location.params.network}/address/${i}`;
+        // const url: string = `${baseUrl}/network/${location.state.network}/address/${i}`;
         const url: string = location.pathname.replace(/address+\/([0-9]*)/, `address/${i}`);
         
         let balance: string = 'Loading...';
@@ -65,7 +68,7 @@ const AccountSelection = (props: any): any => {
     }
 
     let discoveryStatus = null;
-    const discovery = props.discovery.find(d => d.deviceState === selected.state && d.network === location.params.network);
+    const discovery = props.discovery.find(d => d.deviceState === selected.state && d.network === location.state.network);
    
     if (discovery) {
         if (discovery.completed) {

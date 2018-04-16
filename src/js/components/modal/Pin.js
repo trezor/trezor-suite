@@ -1,17 +1,19 @@
 /* @flow */
 'use strict';
 
-import React, { Component, KeyboardEvent } from 'react';
+import React, { Component } from 'react';
 
+import type { Props } from './index';
 type State = {
     pin: string;
 }
 
-export default class Pin extends Component {
+export default class Pin extends Component<Props, State> {
 
+    keyboardHandler: (event: KeyboardEvent) => void;
     state: State;
 
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -36,7 +38,7 @@ export default class Pin extends Component {
     }
 
     keyboardHandler(event: KeyboardEvent): void {
-        const { onPinAdd, onPinBackspace, onPinSubmit } = this.props.modalActions;
+        const { onPinSubmit } = this.props.modalActions;
         const { pin } = this.state;
 
         event.preventDefault();

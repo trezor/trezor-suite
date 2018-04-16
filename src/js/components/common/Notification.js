@@ -6,23 +6,37 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as NOTIFICATION from '../../actions/constants/notification';
+import type { Action, State, Dispatch } from '../../flowtype';
 
+type Props = {
+    notifications: $ElementType<State, 'notifications'>,
+    close: (notif?: any) => Action
+}
 
-export const Notification = (props: any) => {
+type NProps = {
+    key?: number;
+    className: string;
+    cancelable?: boolean;
+    title: string;
+    message?: string;
+    actions?: Array<any>;
+    close?: (notif?: any) => Action
+}
+
+export const Notification = (props: NProps): React$Element<string>  => {
     const className = `notification ${ props.className }`;
-
-
-    const actionButtons = !props.actions ? null : props.actions.map((a, i) => {
+    const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
+    const actionButtons = props.actions ? props.actions.map((a, i) => {
         return (
-            <button key={ i } onClick={ event => { props.close(); a.callback(); } } className="transparent">{ a.label }</button>
+            <button key={ i } onClick={ event => { close(); a.callback(); } } className="transparent">{ a.label }</button>
         )
-    });
+    }) : null;
 
     return (
         <div className={ className }>
             { props.cancelable ? (
                 <button className="notification-close transparent" 
-                    onClick={ event => props.close() }></button>
+                    onClick={ event => close() }></button>
             ) : null }
             <div className="notification-body">
                 <h2>{ props.title }</h2>
@@ -38,7 +52,7 @@ export const Notification = (props: any) => {
     )
 }
 
-export const NotificationGroup = (props: any) => {
+export const NotificationGroup = (props: Props) => {
     const { notifications, close } = props;
     return notifications.map((n, i) => {
         return (
@@ -56,14 +70,14 @@ export const NotificationGroup = (props: any) => {
 }
 
 export default connect( 
-    (state) => {
+    (state: State) => {
         return {
             notifications: state.notifications
         };
     },
-    (dispatch) => {
+    (dispatch: Dispatch) => {
         return { 
-            close: bindActionCreators((notif) => {
+            close: bindActionCreators((notif?: any): Action => {
                 return {
                     type: NOTIFICATION.CLOSE,
                     payload: notif

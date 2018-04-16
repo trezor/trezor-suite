@@ -1,7 +1,6 @@
 /* @flow */
 'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
 import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
 import * as ADDRESS from '../actions/constants/address';
@@ -9,7 +8,14 @@ import EthereumjsUnits from 'ethereumjs-units';
 import BigNumber from 'bignumber.js';
 import { getFeeLevels } from '../actions/SendFormActions';
 
+import type { 
+    Web3CreateAction,
+    Web3UpdateBlockAction,
+    Web3UpdateGasPriceAction 
+} from '../actions/Web3Actions';
+
 export type State = {
+    +network: string;
     +coinSymbol: string;
     token: string;
     balanceNeedUpdate: boolean;
@@ -22,7 +28,7 @@ export type State = {
     amount: string;
     setMax: boolean;
     feeLevels: Array<FeeLevel>;
-    selectedFeeLevel: ?FeeLevel;
+    selectedFeeLevel: FeeLevel;
     recommendedGasPrice: string;
     gasPriceNeedsUpdate: boolean;
     gasLimit: string;
@@ -44,6 +50,7 @@ export type FeeLevel = {
 
 
 export const initialState: State = {
+    network: '',
     coinSymbol: '',
     token: '',
 
@@ -56,7 +63,11 @@ export const initialState: State = {
     amount: '',
     setMax: false,
     feeLevels: [],
-    selectedFeeLevel: null,
+    selectedFeeLevel: {
+        label: 'Normal',
+        gasPrice: '0',
+        value: 'Normal'
+    },
     recommendedGasPrice: '0',
     gasPriceNeedsUpdate: false,
     gasLimit: '0',
@@ -71,13 +82,13 @@ export const initialState: State = {
 }
 
 
-const onGasPriceUpdated = (state: State, action: any): State => {
+const onGasPriceUpdated = (state: State, action: Web3UpdateGasPriceAction): State => {
 
     // function getRandomInt(min, max) {
     //     return Math.floor(Math.random() * (max - min + 1)) + min;
     // }
     // const newPrice = getRandomInt(10, 50).toString();
-    const newPrice = EthereumjsUnits.convert(action.gasPrice, 'wei', 'gwei');
+    const newPrice: string = EthereumjsUnits.convert(action.gasPrice, 'wei', 'gwei');
     if (action.network === state.network && newPrice !== state.recommendedGasPrice) {
         const newState: State = { ...state };
         if (!state.untouched) {
@@ -85,7 +96,8 @@ const onGasPriceUpdated = (state: State, action: any): State => {
             newState.recommendedGasPrice = newPrice;
         } else {
             const newFeeLevels = getFeeLevels(state.network, newPrice, state.gasLimit);
-            const selectedFeeLevel = newFeeLevels.find(f => f.value === 'Normal');
+            const selectedFeeLevel: ?FeeLevel = newFeeLevels.find(f => f.value === 'Normal');
+            if (!selectedFeeLevel) return state;
             newState.recommendedGasPrice = newPrice;
             newState.feeLevels = newFeeLevels;
             newState.selectedFeeLevel = selectedFeeLevel;

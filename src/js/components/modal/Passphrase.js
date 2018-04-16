@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import raf from 'raf';
 import { findSelectedDevice } from '../../reducers/TrezorConnectReducer';
 
+import type { Props } from './index';
 type State = {
     deviceLabel: string;
     singleInput: boolean;
@@ -17,13 +18,14 @@ type State = {
     visible: boolean;
 }
 
-export default class PinModal extends Component {
+export default class PinModal extends Component<Props, State> {
 
+    keyboardHandler: (event: KeyboardEvent) => void;
     state: State;
-    passphraseInput: HTMLInputElement;
-    passphraseRevisionInput: HTMLInputElement;
+    passphraseInput: ?HTMLInputElement;
+    passphraseRevisionInput: ?HTMLInputElement;
 
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
 
         // check if this device is already known
@@ -35,8 +37,6 @@ export default class PinModal extends Component {
             deviceLabel = selected.instanceLabel;
             singleInput = selected.remember;
         }
-
-        console.warn("-----PASSS", selected)
 
         this.state = {
             deviceLabel,
@@ -72,7 +72,8 @@ export default class PinModal extends Component {
 
     componentDidMount(): void {
         // one time autofocus
-        this.passphraseInput.focus();
+        if (this.passphraseInput)
+            this.passphraseInput.focus();
         this.keyboardHandler = this.keyboardHandler.bind(this);
         window.addEventListener('keydown', this.keyboardHandler, false);
 
@@ -117,9 +118,10 @@ export default class PinModal extends Component {
             passphraseRevisionInputValue = passphraseRevision.replace(/./g, '•');
         }
 
-        this.passphraseInput.value = passphraseInputValue;
-        this.passphraseInput.setAttribute("type", visible ? "text" : "password");
-
+        if (this.passphraseInput) {
+            this.passphraseInput.value = passphraseInputValue;
+            this.passphraseInput.setAttribute("type", visible ? "text" : "password");
+        }
         if (this.passphraseRevisionInput) {
             this.passphraseRevisionInput.value = passphraseRevisionInputValue;
             this.passphraseRevisionInput.setAttribute("type", visible ? "text" : "password");
@@ -208,27 +210,7 @@ export default class PinModal extends Component {
     render(): any {
 
         const { 
-            //onPassphraseChange,
-            //onPassphraseSubmit,
-            //onPassphraseSubmitEmpty,
-            //onPassphraseForget,
-            //onPassphraseFocus,
-            //onPassphraseBlur,
-            //onPassphraseSave,
-            //onPassphraseShow,
-            //onPassphraseHide 
-        } = this.props.modalActions;
-
-        const { 
             device,
-            //passphrase,
-            //passphraseRevision,
-            //passphraseFocused,
-            //passphraseRevisionFocused,
-            //passphraseVisible,
-            //passphraseMatch,
-            //passphraseRevisionTouched,
-            passphraseCached 
         } = this.props.modal;
 
         const { 

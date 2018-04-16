@@ -5,7 +5,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-const SignVerify = (props: any): any => {
+const SignVerify = () => {
     return (
         <section className="signverify">
             <div className="sign">
@@ -30,15 +30,4 @@ const SignVerify = (props: any): any => {
     );
 }
 
-const mapStateToProps = (state, own) => {
-    return {
-    
-    };
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return { 
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignVerify);
+export default connect(null, null)(SignVerify);

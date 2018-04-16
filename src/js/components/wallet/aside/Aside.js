@@ -1,7 +1,8 @@
 /* @flow */
 'use strict';
 
-import React from 'react';
+//import React, { Node } from 'react';
+import * as React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
@@ -11,7 +12,16 @@ import CoinSelection from './CoinSelection';
 import StickyContainer from './StickyContainer';
 import { findSelectedDevice } from '../../../reducers/TrezorConnectReducer';
 
-const TransitionMenu = (props: any) => {
+import type { Props } from './index';
+import type { TrezorDevice } from '../../../flowtype';
+
+
+type TransitionMenuProps = {
+    animationType: string;
+    children?: React.Node;
+}
+
+const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => {
     return (
         <TransitionGroup component="div" className="transition-container">
             <CSSTransition 
@@ -29,9 +39,9 @@ const TransitionMenu = (props: any) => {
     )
 }
 
-const Aside = (props: any): any => {
+const Aside = (props: Props): React$Element<typeof StickyContainer | string> => {
 
-    const selected = findSelectedDevice(props.connect);
+    const selected: ?TrezorDevice = findSelectedDevice(props.connect);
     const { location } = props.router;
 
     if (location.pathname === '/' || !selected) return (<aside></aside>);
@@ -52,15 +62,15 @@ const Aside = (props: any): any => {
     
     if (props.deviceDropdownOpened) {
         menu = <DeviceDropdown {...props} />;
-    } else if (location.params.network) {
+    } else if (location.state.network) {
         menu = (
-            <TransitionMenu animationType={"slide-left"}>
+            <TransitionMenu animationType={ "slide-left" }>
                 <AccountSelection { ...props} />
             </TransitionMenu>
         );
     } else if (!selected.unacquired) {
         menu = (
-            <TransitionMenu animationType={"slide-right"}>
+            <TransitionMenu animationType={ "slide-right" }>
                 <CoinSelection { ...props} />
             </TransitionMenu>
         );

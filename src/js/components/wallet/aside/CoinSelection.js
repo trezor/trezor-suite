@@ -4,7 +4,10 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-const CoinSelection = (props: any): any => {
+import type { Props } from './index';
+import type { TrezorDevice } from '../../../flowtype';
+
+const CoinSelection = (props: Props): React$Element<string> => {
     const { location } = props.router;
     const { config } = props.localStorage;
 

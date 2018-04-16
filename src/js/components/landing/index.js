@@ -7,7 +7,27 @@ import { connect } from 'react-redux';
 
 import LandingPage from './LandingPage';
 
-const mapStateToProps = (state, own) => {
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import type { State, Dispatch } from '../../flowtype';
+
+export type Props = {
+    localStorage: any,
+    modal: any,
+    web3: any,
+    wallet: any,
+    connect: any,
+    router: any
+}
+
+type DispatchProps = {
+    foo: () => string
+}
+
+type OwnProps = {
+    
+}
+
+const mapStateToProps: MapStateToProps<State, OwnProps, Props> = (state: State): Props => {
     return {
         localStorage: state.localStorage,
         modal: state.modal,
@@ -18,10 +38,10 @@ const mapStateToProps = (state, own) => {
     };
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch) => {
     return { 
-   
+        foo: ():string => { return "A"; }
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
+export default connect(mapStateToProps, null)(LandingPage);

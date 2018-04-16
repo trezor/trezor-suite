@@ -117,19 +117,6 @@
         }
     ],
 
-
-    
-
-    "bridge": {
-        "url": "https://localback.net:21324",
-        "configUrl": "data/config_signed.bin",
-        "latestUrl": "data/bridge/latest.txt"
-    },
-    "extensionId": "jcjjhjgimijdkoamemaghajlhegmoclj",
-    "storageVersion": "1.1.0",
-    "metadataVersion": "1.0.0",
-
-
     "supportedBrowsers": {
         "chrome": {
             "version": 59,

@@ -8,17 +8,17 @@ export const decimalToHex = (dec: number): string => {
 }
 
 export const hexToDecimal = (hex: number): string => {
-    return new BigNumber(this.sanitizeHex(hex)).toString();
+    return new BigNumber(sanitizeHex(hex)).toString();
 }
 
-export const sanitizeHex = (hex: ?string): string => {
+export const sanitizeHex = (hex: number): ?string => {
     if (typeof hex !== 'string') return null;
     hex = hex.substring(0, 2) === '0x' ? hex.substring(2) : hex;
     if (hex === '') return '';
     return '0x' + padLeftEven(hex);
 }
 
-export const padLeftEven = (hex) => {
+export const padLeftEven = (hex: string): string => {
     hex = hex.length % 2 != 0 ? '0' + hex : hex;
     return hex;
 }
@@ -30,6 +30,6 @@ export const strip = (str: string): string => {
     return padLeftEven(str);
 }
 
-export const calcGasPrice = (price: BigNumber, limit): string => {
+export const calcGasPrice = (price: BigNumber, limit: string): string => {
     return price.times(limit);
 }

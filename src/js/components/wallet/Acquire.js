@@ -7,7 +7,13 @@ import { connect } from 'react-redux';
 import { Notification } from '../common/Notification';
 import * as TrezorConnectActions from '../../actions/TrezorConnectActions';
 
-const Acquire = (props: any): any => {
+import type { State, Dispatch } from '../../flowtype';
+type Props = {
+    connect: $ElementType<State, 'connect'>,
+    acquireDevice: typeof TrezorConnectActions.acquire
+}
+
+const Acquire = (props: Props) => {
 
     const actions = [
         {
@@ -26,22 +32,20 @@ const Acquire = (props: any): any => {
                 className="info"
                 cancelable={ false }
                 actions={ actions }
-                close={ () => {} }
             />
         </section>
     );
 }
 
-const mapStateToProps = (state, own) => {
-    return {
-        connect: state.connect
-    };
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return { 
-        acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Acquire);
+export default connect( 
+    (state: State) => {
+        return {
+            log: state.log
+        };
+    },
+    (dispatch: Dispatch) => {
+        return { 
+            toggle: bindActionCreators(TrezorConnectActions.acquire, dispatch),
+        };
+    }
+)(Acquire);

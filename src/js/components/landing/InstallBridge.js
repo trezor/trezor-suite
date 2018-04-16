@@ -7,27 +7,39 @@ import Select from 'react-select';
 
 type State = {
     version: string;
-    target: string;
+    target: ?InstallTarget;
     url: string;
 }
 
-const installers = [
+type InstallTarget = {
+    id: string;
+    value: string;
+    label: string;
+}
+
+const installers: Array<InstallTarget> = [
     { id: 'Windows', value: 'trezor-bridge-2.0.11-win32-install.exe', label: 'Windows' },
     { id: 'macOS', value: 'trezor-bridge-2.0.11.pkg', label: 'Mac OS X' },
     { id: 'Linux', value: 'trezor-bridge_2.0.11_amd64.deb', label: 'Linux 64-bit (deb)' },
     { id: 'Linux-rpm', value: 'trezor-bridge_2.0.11_amd64.rpm', label: 'Linux 64-bit (rpm)' },
-    { value: 'trezor-bridge_2.0.11_amd32.deb', label: 'Linux 32-bit (deb)' },
-    { value: 'trezor-bridge_2.0.11_amd32.rpm', label: 'Linux 32-bit (rpm)' },
+    { id: '01', value: 'trezor-bridge_2.0.11_amd32.deb', label: 'Linux 32-bit (deb)' },
+    { id: '02', value: 'trezor-bridge_2.0.11_amd32.rpm', label: 'Linux 32-bit (rpm)' },
 ];
 
-export default class InstallBridge extends Component {
+// import type { Props } from './index';
 
-    state: State;
+type Props = {
+    browserState: {
+        osname: string,
+    };
+}
 
-    constructor(props) {
+export default class InstallBridge extends Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
 
-        const currentTarget = installers.find(i => i.id === props.browserState.osname);
+        const currentTarget: ?InstallTarget = installers.find(i => i.id === props.browserState.osname);
         this.state = {
             version: '2.0.12',
             url: 'https://wallet.trezor.io/data/bridge/2.0.12/',
@@ -35,7 +47,7 @@ export default class InstallBridge extends Component {
         };
     }
 
-    onChange(value) {
+    onChange(value: InstallTarget) {
         this.setState({
             target: value
         });
@@ -44,7 +56,7 @@ export default class InstallBridge extends Component {
 
     componentWillUpdate() {
         if (this.props.browserState.osname && !this.state.target) {
-            const currentTarget = installers.find(i => i.id === this.props.browserState.osname);
+            const currentTarget: ?InstallTarget = installers.find(i => i.id === this.props.browserState.osname);
             this.setState({
                 target: currentTarget
             })
@@ -55,8 +67,9 @@ export default class InstallBridge extends Component {
         if (!this.state.target) {
             return <Preloader />;
         }
-
+        const label: string = this.state.target.label;
         const url = `${ this.state.url }${ this.state.target.value }`;
+        
         return (
             <main>
                 <h3 className="claim">TREZOR Bridge. <span>Version 2.0.12</span></h3>
@@ -70,7 +83,7 @@ export default class InstallBridge extends Component {
                         value={ this.state.target }
                         onChange={ this.onChange.bind(this) }
                         options={ installers } />
-                    <a href={ url } className="button">Download for { this.state.target.label }</a>
+                    <a href={ url } className="button">Download for { label }</a>
                 </div>
                 <p>Learn more about latest version in <a href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md" className="green" target="_blank" rel="noreferrer noopener">Changelog</a></p>
             </main>

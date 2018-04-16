@@ -5,9 +5,19 @@ import React from 'react';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
 
-const PendingTransactions = (props: any): any => {
+import type { Props as ParentProps } from './index';
+import type { Coin } from '../../../reducers/LocalStorageReducer';
+import type { Account } from '../../../reducers/AccountsReducer';
 
-    const account = props.accounts.find(a => a.deviceState === props.sendForm.deviceState && a.index === props.sendForm.accountIndex && a.network === props.sendForm.network);
+type Props = ParentProps & {
+    account: Account,
+    selectedCoin: Coin
+    // account: any
+}
+
+const PendingTransactions = (props: Props) => {
+
+    const account = props.account; //props.accounts.find(a => a.deviceState === props.sendForm.deviceState && a.index === props.sendForm.accountIndex && a.network === props.sendForm.network);
     const pending = props.pending.filter(p => p.network === account.network && p.address === account.address);
 
     if (pending.length < 1) return null;

@@ -4,7 +4,9 @@
 import React from 'react';
 import Tooltip from 'rc-tooltip';
 
-const AdvancedForm = (props: any): any => {
+import type { Props } from './index';
+
+const AdvancedForm = (props: Props) => {
 
     const { network } = props.abstractAccount;
     const { 

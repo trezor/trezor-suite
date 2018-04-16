@@ -6,32 +6,62 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import Summary from './Summary';
-import * as AbstractAccountActions from '../../../actions/AbstractAccountActions';
+import { default as AbstractAccountActions } from '../../../actions/AbstractAccountActions';
 import * as SummaryActions from '../../../actions/SummaryActions';
+import * as TokenActions from '../../../actions/TokenActions';
 
-const mapStateToProps = (state, own) => {
+import type { ActionCreators } from 'redux';
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import type { State, Dispatch } from '../../../flowtype';
+import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps, Props as BaseProps} from '../account/AbstractAccount';
+
+type OwnProps = { }
+
+type StateProps = StateProps & {
+    tokens: $ElementType<State, 'tokens'>,
+    summary: $ElementType<State, 'summary'>,
+    fiat: $ElementType<State, 'fiat'>,
+    localStorage: $ElementType<State, 'localStorage'>,
+}
+
+type DispatchProps = BaseDispatchProps & {
+    initAccount: typeof SummaryActions.init,
+    updateAccount: typeof SummaryActions.update,
+    disposeAccount: typeof SummaryActions.dispose,
+    onDetailsToggle: typeof SummaryActions.onDetailsToggle,
+    addToken: typeof TokenActions.add,
+    loadTokens: typeof TokenActions.load,
+    removeToken: typeof TokenActions.remove,
+}
+
+export type Props = BaseProps & StateProps & DispatchProps;
+
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
         abstractAccount: state.abstractAccount,
-        
-        location: state.router.location,
         devices: state.connect.devices,
         accounts: state.accounts,
         discovery: state.discovery,
+
         tokens: state.tokens,
-        
         summary: state.summary,
         fiat: state.fiat,
-        localStorage: state.localStorage
+        localStorage: state.localStorage,
     };
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
     return {
-        abstractAccountActions: bindActionCreators(AbstractAccountActions, dispatch),
-        summaryActions: bindActionCreators(SummaryActions, dispatch), 
+        abstractAccountActions: bindActionCreators(AbstractAccountActions, dispatch), 
+
         initAccount: bindActionCreators(SummaryActions.init, dispatch), 
         updateAccount: bindActionCreators(SummaryActions.update, dispatch), 
         disposeAccount: bindActionCreators(SummaryActions.dispose, dispatch), 
+
+        onDetailsToggle: bindActionCreators(SummaryActions.onDetailsToggle, dispatch),
+        addToken: bindActionCreators(TokenActions.add, dispatch),
+        loadTokens: bindActionCreators(TokenActions.load, dispatch),
+        removeToken: bindActionCreators(TokenActions.remove, dispatch),
     };
 }
 

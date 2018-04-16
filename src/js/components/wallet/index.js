@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import React from 'react';
+import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
@@ -14,7 +14,13 @@ import ModalContainer from '../modal';
 import Notifications from '../common/Notification';
 import Log from '../common/Log';
 
-const Content = (props) => {
+import type { State, Dispatch } from '../../flowtype';
+
+type Props = {
+    children: React.Node
+}
+
+const Content = (props: Props) => {
     return (
         <article>
             <nav>
@@ -28,7 +34,7 @@ const Content = (props) => {
     );
 }
 
-const Wallet = (props: any): any => {
+const Wallet = (props: Props) => {
     return (
         <div className="app">
             <Header />
@@ -43,16 +49,6 @@ const Wallet = (props: any): any => {
     );
 }
 
-const mapStateToProps = (state, own) => {
-    return { 
-        
-    };
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return { };
-}
-
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(Wallet)
+    connect(null, null)(Wallet)
 );

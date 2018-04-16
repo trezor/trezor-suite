@@ -4,34 +4,20 @@
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
-export type TrezorDevice = {
-    remember: boolean;
-    connected: boolean;
-    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected (saved)
-    path: string;
-    +label: string;
-    +state: string;
-    +instance?: number;
-    instanceLabel: string;
-    features?: Object;
-    unacquired?: boolean;
-    acquiring: boolean;
-    isUsedElsewhere?: boolean;
-    featuresNeedsReload?: boolean;
-    ts: number;
-}
+import type { Action, TrezorDevice } from '../flowtype';
+import type { Device } from 'trezor-connect';
 
 export type SelectedDevice = {
     id: string; // could be device path if unacquired or features.device_id
     instance: ?number;
 }
 
-type State = {
+export type State = {
     devices: Array<TrezorDevice>;
     selectedDevice: ?SelectedDevice;
     discoveryComplete: boolean;
-    error: any;
-    transport: ?string;
+    error: ?string;
+    transport: any;
     browserState: any;
 }
 
@@ -125,7 +111,7 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
     return dev;
 }
 
-const addDevice = (state: State, device: Object): State => {
+const addDevice = (state: State, device: Device): State => {
 
     const newState: State = { ...state };
 
@@ -134,7 +120,7 @@ const addDevice = (state: State, device: Object): State => {
     if (device.unacquired) {
         // check if connected device is unacquired, but it was already merged with saved device(s) after DEVICE.CHANGE action
         affectedDevices = newState.devices.filter(d => d.path === device.path);
-        const diff = newState.devices.filter(d => affectedDevices.indexOf(d) === -1);
+        const diff: Array<TrezorDevice> = newState.devices.filter(d => affectedDevices.indexOf(d) === -1);
 
         // if so, ignore this action
         if (affectedDevices.length > 0) {
@@ -150,7 +136,7 @@ const addDevice = (state: State, device: Object): State => {
         // const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => mergeDevices(d, { ...device, connected: true} ));
         let cloneInstance: number = 1;
         const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => {
-            if (d.features.passphrase_protection === device.features.passphrase_protection) {
+            if (d.features && d.features.passphrase_protection === device.features.passphrase_protection) {
                 cloneInstance = 0;
                 return mergeDevices(d, { ...device, connected: true, available: true } );
             } else {
@@ -276,7 +262,7 @@ const changeDevice = (state: State, device: Object): State => {
 }
 
 
-const disconnectDevice = (state: State, device: Object): State => {
+const disconnectDevice = (state: State, device: Device): State => {
 
     const newState: State = { ...state };
     const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.path === device.path || (d.features && device.features && d.features.device_id === device.features.device_id));
@@ -335,37 +321,31 @@ const devicesFromLocalStorage = (devices: Array<any>): Array<TrezorDevice> => {
     });
 }
 
-const duplicate = (state: State, device: any): State => {
+const duplicate = (state: State, device: TrezorDevice): State => {
     const newState: State = { ...state };
-    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.features.device_id === device.features.device_id);
-    const instance = affectedDevices.reduce((inst, dev) => {
-        console.warn("REDUC", inst, dev);
+    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id);
+    const instance: number = affectedDevices.reduce((inst, dev) => {
         return dev.instance ? dev.instance + 1 : inst;
     }, 1);
 
-    console.warn("NEEEW INST", instance);
-
-    // if (affectedDevices.length > 0) {
-
-        const newDevice: TrezorDevice = {
-            ...device,
-            acquiring: false,
-            remember: false,
-            connected: device.connected,
-            available: device.available,
-            path: device.path,
-            label: device.label,
-            state: null,
-            instance,
-            instanceLabel: `${device.label} (${instance})`,
-            ts: new Date().getTime(),
-        }
-        newState.devices.push(newDevice);
-        newState.selectedDevice = {
-            id: newDevice.features.device_id,
-            instance
-        }
-    //}
+    const newDevice: TrezorDevice = {
+        ...device,
+        acquiring: false,
+        remember: false,
+        connected: device.connected,
+        available: device.available,
+        path: device.path,
+        label: device.label,
+        state: null,
+        instance,
+        instanceLabel: `${device.label} (${instance})`,
+        ts: new Date().getTime(),
+    }
+    newState.devices.push(newDevice);
+    newState.selectedDevice = {
+        id: newDevice.features ? newDevice.features.device_id : '-empty-',
+        instance
+    }
 
     return newState;
 }
@@ -385,10 +365,11 @@ const onSelectDevice = (state: State, action: any): State => {
 }
 
 
-export default function connect(state: State = initialState, action: any): any {
+export default function connect(state: State = initialState, action: Action): State {
 
     switch (action.type) {
 
+        // TODO: change it to UiMessgae from trezor-connect
         case 'iframe_handshake' : 
             return {
                 ...state,
@@ -435,28 +416,32 @@ export default function connect(state: State = initialState, action: any): any {
 
         case CONNECT.AUTH_DEVICE :
             return setDeviceState(state, action);
-
-        case DEVICE.CONNECT :
-        case DEVICE.CONNECT_UNACQUIRED :
-            return addDevice(state, action.device);
-
+        case CONNECT.START_ACQUIRING :
+        case CONNECT.STOP_ACQUIRING :
+            return changeDevice(state, { ...action.device, acquiring: action.type === CONNECT.START_ACQUIRING } );
         case CONNECT.REMEMBER :
             return changeDevice(state, { ...action.device, path: '', remember: true } );
-
+    
         case CONNECT.FORGET :
         case CONNECT.FORGET_SINGLE :
             return forgetDevice(state, action);
 
-        case CONNECT.START_ACQUIRING :
-        case CONNECT.STOP_ACQUIRING :
-            return changeDevice(state, { ...action.device, acquiring: action.type === CONNECT.START_ACQUIRING } );
-
+        case DEVICE.CONNECT :
+        case DEVICE.CONNECT_UNACQUIRED :
+            return addDevice(state, action.device);
+        case DEVICE.CHANGED :
+            return changeDevice(state, { ...action.device, connected: true, available: true });
         case DEVICE.DISCONNECT :
         case DEVICE.DISCONNECT_UNACQUIRED :
             return disconnectDevice(state, action.device);
 
-        case DEVICE.CHANGED :
-            return changeDevice(state, { ...action.device, connected: true, available: true });
+        
+
+        
+
+        
+
+        
 
         default:
             return state;

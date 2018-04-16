@@ -5,7 +5,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-export const DeviceSettings = (props: any): any => {
+export const DeviceSettings = () => {
     return (
         <section className="settings">
             Device settings
@@ -13,15 +13,4 @@ export const DeviceSettings = (props: any): any => {
     );
 }
 
-const mapStateToProps = (state, own) => {
-    return {
-    
-    };
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return { 
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DeviceSettings);
+export default connect(null, null)(DeviceSettings);

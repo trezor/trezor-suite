@@ -2,8 +2,9 @@
 'use strict';
 
 import React from 'react';
+import type { Props } from './index';
 
-const Confirmation = (props): any => {
+const Confirmation = (props: Props) => {
     const {
         amount,
         address,

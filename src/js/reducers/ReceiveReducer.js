@@ -5,7 +5,7 @@ import * as RECEIVE from '../actions/constants/receive';
 
 export type State = {
     addressVerified: boolean;
-    adressUnverified: boolean;
+    addressUnverified: boolean;
 }
 
 export const initialState: State = {

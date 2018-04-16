@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-export const INIT: string = 'summary__init';
-export const DISPOSE: string = 'summary__dispose';
-export const ADD_TOKEN: string = 'summary__add_token';
-export const DETAILS_TOGGLE: string = 'summary__details_toggle';
+export const INIT: 'summary__init' = 'summary__init';
+export const DISPOSE: 'summary__dispose' = 'summary__dispose';
+export const ADD_TOKEN: 'summary__add_token' = 'summary__add_token';
+export const DETAILS_TOGGLE: 'summary__details_toggle' = 'summary__details_toggle';

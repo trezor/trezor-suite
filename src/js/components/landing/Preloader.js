@@ -4,7 +4,7 @@
 import React from 'react';
 import Loader from '../common/LoaderCircle';
 
-export default (props: any): any => {
+export default (props: {}): React$Element<string> => {
     return (
         <section className="landing">
             <Loader label="Loading" size="100" />

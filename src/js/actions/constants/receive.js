@@ -1,8 +1,8 @@
 /* @flow */
 'use strict';
 
-export const INIT: string = 'receive__init';
-export const DISPOSE: string = 'receive__dispose';
-export const REQUEST_UNVERIFIED: string = 'receive__request_unverified';
-export const SHOW_ADDRESS: string = 'receive__show_address';
-export const SHOW_UNVERIFIED_ADDRESS: string = 'receive__show_unverified';
+export const INIT: 'receive__init' = 'receive__init';
+export const DISPOSE: 'receive__dispose' = 'receive__dispose';
+export const REQUEST_UNVERIFIED: 'receive__request_unverified' = 'receive__request_unverified';
+export const SHOW_ADDRESS: 'receive__show_address' = 'receive__show_address';
+export const SHOW_UNVERIFIED_ADDRESS: 'receive__show_unverified' = 'receive__show_unverified';

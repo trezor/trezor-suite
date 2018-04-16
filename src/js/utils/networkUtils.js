@@ -27,3 +27,13 @@ export const httpRequest = async (url: string, type: string = 'text'): any => {
     //     }
     // })
 };
+
+export const JSONRequest = async (url: string): Promise<JSON> => {
+    const response: Response = await fetch(url, { credentials: 'same-origin' });
+    if (response.ok) {
+        const txt: string = await response.text();
+        return JSON.parse(txt);
+    } else {
+        throw new Error('jsonRequest error: ' + response.toString() );
+    }
+};

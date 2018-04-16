@@ -5,7 +5,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-const Bootloader = (props: any): any => {
+const Bootloader = () => {
     return (
         <section className="acquire">
             <h3>Bootloader mode</h3>
@@ -13,15 +13,4 @@ const Bootloader = (props: any): any => {
     );
 }
 
-const mapStateToProps = (state, own) => {
-    return {
-    
-    };
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return { 
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Bootloader);
+export default connect(null, null)(Bootloader);

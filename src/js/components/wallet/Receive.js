@@ -10,16 +10,43 @@ import { QRCode } from 'react-qr-svg';
 
 import AbstractAccount from './account/AbstractAccount';
 import { Notification } from '../common/Notification';
-import * as ReceiveActions from '../../actions/ReceiveActions';
-import * as AbstractAccountActions from '../../actions/AbstractAccountActions';
+import { default as ReceiveActions } from '../../actions/ReceiveActions';
+import { default as AbstractAccountActions } from '../../actions/AbstractAccountActions';
 
-class Receive extends AbstractAccount {
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import type { State, Dispatch } from '../../flowtype';
+import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps, Props as BaseProps} from './account/AbstractAccount';
+
+import type { AccountState } from './account/AbstractAccount';
+
+type OwnProps = { }
+
+type StateProps = StateProps & {
+    receive: $ElementType<State, 'receive'>,
+}
+
+type DispatchProps = BaseDispatchProps & {
+    showAddress: typeof ReceiveActions.showAddress
+}
+
+type Props = BaseProps & StateProps & DispatchProps;
+
+
+class Receive extends AbstractAccount<Props> {
     render() {
-        return super.render() || _render(this.props, this.device, this.account, this.deviceStatusNotification);
+        return super.render() || _render(this.props, this.state);
     }
 }
 
-const _render = (props: any, device, account, deviceStatusNotification): any => {
+const _render = (props: Props, state: AccountState): React$Element<string> => {
+
+    const {
+        device,
+        account,
+        deviceStatusNotification
+    } = state;
+
+    if (!device || !account) return <section></section>;
 
     const {
         addressVerified,
@@ -84,10 +111,9 @@ const _render = (props: any, device, account, deviceStatusNotification): any => 
 
 }
 
-const mapStateToProps = (state, own) => {
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
         abstractAccount: state.abstractAccount,
-        location: state.router.location,
         devices: state.connect.devices,
         accounts: state.accounts,
         discovery: state.discovery,
@@ -95,8 +121,8 @@ const mapStateToProps = (state, own) => {
     };
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return { 
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
+    return {
         abstractAccountActions: bindActionCreators(AbstractAccountActions, dispatch),
         initAccount: bindActionCreators(ReceiveActions.init, dispatch), 
         updateAccount: bindActionCreators(ReceiveActions.update, dispatch),

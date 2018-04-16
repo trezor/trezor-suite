@@ -2,10 +2,12 @@
 'use strict';
 
 import * as SUMMARY from '../actions/constants/summary';
+import type { Action } from '../flowtype';
+import type { NetworkToken } from './LocalStorageReducer';
 
 export type State = {
     details: boolean;
-    selectedToken: any;
+    selectedToken: ?NetworkToken;
 }
 
 export const initialState: State = {
@@ -14,7 +16,7 @@ export const initialState: State = {
 };
 
 
-export default (state: State = initialState, action: any): State => {
+export default (state: State = initialState, action: Action): State => {
 
     switch (action.type) {
 

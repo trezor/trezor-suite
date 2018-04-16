@@ -1,7 +1,6 @@
 /* @flow */
 'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
 import * as LocalStorageActions from '../actions/LocalStorageActions';
 
 import { DEVICE } from 'trezor-connect';
@@ -12,42 +11,60 @@ import * as ADDRESS from '../actions/constants/address';
 import * as DISCOVERY from '../actions/constants/discovery';
 import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
+import { LOCATION_CHANGE } from 'react-router-redux';
+
+import type { 
+    Middleware,
+    MiddlewareAPI,
+    MiddlewareDispatch,
+    State,
+    Dispatch,
+    Action,
+    AsyncAction,
+    GetState 
+} from '../flowtype';
+
+import type { TrezorDevice } from '../flowtype';
+import type { Account } from '../reducers/AccountsReducer';
+import type { Token } from '../reducers/TokensReducer';
+import type { PendingTx } from '../reducers/PendingTxReducer';
+import type { Discovery } from '../reducers/DiscoveryReducer';
 
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js
 // or
 // https://www.npmjs.com/package/redux-react-session
 
-const findAccounts = (devices, accounts) => {
+const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): Array<Account> => {
     return devices.reduce((arr, dev) => {
         return arr.concat(accounts.filter(a => a.deviceState === dev.state));
     }, []);
 }
 
-const findTokens = (accounts, tokens) => {
+const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => {
     return accounts.reduce((arr, account) => {
         return arr.concat(tokens.filter(a => a.ethAddress === account.address));
     }, []);
 }
 
-const findDiscovery = (devices, discovery) => {
+const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => {
     return devices.reduce((arr, dev) => {
         return arr.concat(discovery.filter(a => a.deviceState === dev.state));
     }, []);
 }
 
-const findPendingTxs = (accounts, pending) => {
+const findPendingTxs = (accounts: Array<Account>, pending: Array<PendingTx>): Array<PendingTx> => {
     return accounts.reduce((arr, account) => {
         return arr.concat(pending.filter(a => a.address === account.address));
     }, []);
 }
 
-const save = (dispatch, getState) => {
-    const devices = getState().connect.devices.filter(d => d.remember === true && !d.unacquired);
-    const accounts = findAccounts(devices, getState().accounts);
-    const tokens = findTokens(accounts, getState().tokens);
-    const pending = findPendingTxs(accounts, getState().pending);
-    const discovery = findDiscovery(devices, getState().discovery);
+const save = (dispatch: Dispatch, getState: GetState): void => {
+    const devices: Array<TrezorDevice> = getState().connect.devices.filter(d => d.features && d.remember === true);
+    const accounts: Array<Account> = findAccounts(devices, getState().accounts);
+    const tokens: Array<Token> = findTokens(accounts, getState().tokens);
+    const pending: Array<PendingTx> = findPendingTxs(accounts, getState().pending);
+    const discovery: Array<Discovery> = findDiscovery(devices, getState().discovery);
 
     // save devices
     dispatch( LocalStorageActions.save('devices', JSON.stringify(devices) ) );
@@ -66,13 +83,13 @@ const save = (dispatch, getState) => {
 }
 
 
-const LocalStorageService = (store: any) => (next: any) => (action: any) => {
+const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
 
     if (action.type === LOCATION_CHANGE) {
-        const { location } = store.getState().router;
+        const { location } = api.getState().router;
         if (!location) {
             // load data from config.json and local storage
-            store.dispatch( LocalStorageActions.loadData() );
+            api.dispatch( LocalStorageActions.loadData() );
         }
     }
 
@@ -82,28 +99,26 @@ const LocalStorageService = (store: any) => (next: any) => (action: any) => {
 
         // first time saving
         case CONNECT.REMEMBER :
-            save(store.dispatch, store.getState);
+            save(api.dispatch, api.getState);
         break;
 
         case TOKEN.ADD :
         case TOKEN.REMOVE :
         case TOKEN.SET_BALANCE :
-            save(store.dispatch, store.getState);
-            // store.dispatch( LocalStorageActions.save('tokens', JSON.stringify( tokens ) ) );
+            save(api.dispatch, api.getState);
         break;
 
         case ADDRESS.CREATE :
         case ADDRESS.SET_BALANCE :
         case ADDRESS.SET_NONCE :
-            save(store.dispatch, store.getState);
-            //store.dispatch( LocalStorageActions.save('accounts', JSON.stringify( accounts ) ) );
+            save(api.dispatch, api.getState);
         break;
 
         case DISCOVERY.START :
         case DISCOVERY.STOP :
         case DISCOVERY.COMPLETE :
         // case DISCOVERY.WAITING :
-            save(store.dispatch, store.getState);
+            save(api.dispatch, api.getState);
         break;
 
         case CONNECT.FORGET :
@@ -112,19 +127,17 @@ const LocalStorageService = (store: any) => (next: any) => (action: any) => {
         case DEVICE.DISCONNECT :
         case CONNECT.AUTH_DEVICE :
         case CONNECT.SELECT_DEVICE :
-            save(store.dispatch, store.getState);
-            //store.dispatch( LocalStorageActions.save('devices', JSON.stringify( store.getState().connect.devices.filter(d => d.remember === true && !d.unacquired) ) ) );
-            // store.dispatch( LocalStorageActions.save('selectedDevice', JSON.stringify( store.getState().connect.selectedDevice ) ) );
+            save(api.dispatch, api.getState);
         break;
 
         case SEND.TX_COMPLETE :
         case WEB3.PENDING_TX_RESOLVED :
-            save(store.dispatch, store.getState);
+            save(api.dispatch, api.getState);
         break;
 
     }
 
-    
+    return action;
 };
 
 export default LocalStorageService;

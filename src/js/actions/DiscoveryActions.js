@@ -13,6 +13,16 @@ import HDKey from 'hdkey';
 import EthereumjsUtil from 'ethereumjs-util';
 import { getNonceAsync, getBalanceAsync, getTokenBalanceAsync } from './Web3Actions';
 
+
+
+export type DiscoveryAction = {
+    type: typeof DISCOVERY.START,
+} | {
+    type: typeof DISCOVERY.STOP,
+} | {
+    type: typeof DISCOVERY.COMPLETE,
+};
+
 export const start = (device: any, network: string, ignoreCompleted?: boolean): any => {
     return (dispatch, getState) => {
 
@@ -310,7 +320,7 @@ export const check = (): any => {
         const selected = findSelectedDevice(getState().connect);
         if (!selected) return;
 
-        const urlParams = getState().router.location.params;
+        const urlParams = getState().router.location.state;
         if (urlParams.network) {
             const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && d.network === urlParams.network);
             if (!discoveryProcess) {

@@ -2,9 +2,8 @@
 'use strict';
 
 export const getViewportHeight = (): number => (
-    window.innerHeight
-      || document.documentElement.clientHeight
-      || document.body.clientHeight
+    // $FlowIssue
+    window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight // $FlowIssue
 )
 
 export const getScrollY = (): number => {
@@ -13,6 +12,7 @@ export const getScrollY = (): number => {
     } else if (window.scrollTop !== undefined) {
         return window.scrollTop;
     } else {
-        return (document.documentElement || document.body.parentNode || document.body).scrollTop;
+        // $FlowIssue
+        return (document.documentElement || document.body.parentNode || document.body).scrollTop; // $FlowIssue
     }
 }

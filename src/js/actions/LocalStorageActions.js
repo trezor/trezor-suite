@@ -6,10 +6,26 @@ import * as ADDRESS from './constants/address';
 import * as TOKEN from './constants/token';
 import * as DISCOVERY from './constants/discovery';
 import * as STORAGE from './constants/localStorage';
-import { httpRequest } from '../utils/networkUtils';
+import { JSONRequest, httpRequest } from '../utils/networkUtils';
 
-export function loadData(): any {
-    return async (dispatch, getState) => {
+import type { AsyncAction, GetState, Dispatch } from '../flowtype';
+import type { Config, Coin, TokensCollection } from '../reducers/LocalStorageReducer';
+
+export type StorageAction = {
+    type: typeof STORAGE.READY,
+    config: any,
+    tokens: any,
+    ERC20Abi: any
+} | {
+    type: typeof STORAGE.SAVE,
+    network: string,
+} | {
+    type: typeof STORAGE.ERROR,
+    error: string,
+};
+
+export const loadData = (): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
 
         // check if local storage is available
         // let available: boolean = true;
@@ -27,16 +43,51 @@ export function loadData(): any {
     }
 }
 
-export function loadTokensFromJSON(): any {
-    return async (dispatch, getState) => {
+// const parseConfig = (json: JSON): Config => {
+
+//     if (json['coins']) {
+
+//     }
+
+//     for (let key in json) {
+//         if (key === 'coins') {
+
+//         }
+//     }
+
+//     const coins: Array<Object> = json.coins || [];
+
+//     if ("coins" in json){
+//         json.coins
+//     }
+//     if (!json.hasOwnProperty("fiatValueTickers")) throw new Error(`Property "fiatValueTickers" is missing in appConfig.json`);
+//     if (json.config && json.hasOwnProperty('coins') && Array.isArray(json.coins)) {
+//         json.coins.map(c => {
+//             return {
+    
+//             }
+//         })
+//     } else {
+//         throw new Error(`Property "coins" is missing in appConfig.json`);
+//     }
+    
+
+//     return {
+//         coins: [],
+//         fiatValueTickers: []
+//     }
+// }
+
+export function loadTokensFromJSON(): AsyncAction {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         try {
-            const config = await httpRequest('data/appConfig.json', 'json');
+            const config: Config = await httpRequest('data/appConfig.json', 'json');
             const ERC20Abi = await httpRequest('data/ERC20Abi.json', 'json');
 
             // load tokens
-            const tokens = await config.coins.reduce(async (promise: Promise<any>, coin: any): Promise<any> => {
-                const collection = await promise;
-                const json: JSON = await httpRequest(coin.tokens, 'json');
+            const tokens = await config.coins.reduce(async (promise: Promise<TokensCollection>, coin: Coin): Promise<TokensCollection> => {
+                const collection: TokensCollection = await promise;
+                const json = await httpRequest(coin.tokens, 'json');
                 collection[ coin.network ] = json;
                 return collection;
             }, Promise.resolve({}));
@@ -99,8 +150,8 @@ export function loadTokensFromJSON(): any {
 }
 
 
-export const save = (key: string, value: string): any => {
-    return (dispatch, getState) => {
+export const save = (key: string, value: string): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState) => {
         if (typeof window.localStorage !== 'undefined') {
             try {
                 window.localStorage.setItem(key, value);

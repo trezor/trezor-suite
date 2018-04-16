@@ -34,7 +34,7 @@ const fromStorage = (state: Array<PendingTx>, action: any) => {
     return state.filter(tx => tx.id !== action.tx.id);
 }
 
-export default function pending(state: Array<PendingTx> = initialState, action: any): any {
+export default function pending(state: Array<PendingTx> = initialState, action: any): Array<PendingTx> {
 
     switch (action.type) {
 

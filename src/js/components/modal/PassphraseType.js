@@ -3,9 +3,7 @@
 
 import React from 'react';
 
-const Confirmation = (props): any => {
-    
-
+const Confirmation = () => {
     return (
         <div className="confirm-tx">
             <div className="header">

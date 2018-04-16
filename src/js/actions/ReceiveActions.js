@@ -9,9 +9,24 @@ import { initialState } from '../reducers/ReceiveReducer';
 import type { State } from '../reducers/ReceiveReducer';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
+import type { TrezorDevice, AsyncAction, Action, GetState, Dispatch } from '../flowtype';
 
-export const init = (): any => {
-    return (dispatch, getState): void => {
+export type ReceiveAction = {
+    type: typeof RECEIVE.INIT,
+    state: State
+} | {
+    type: typeof RECEIVE.DISPOSE,
+} | {
+    type: typeof RECEIVE.REQUEST_UNVERIFIED,
+    device: TrezorDevice
+} | {
+    type: typeof RECEIVE.SHOW_ADDRESS
+} | {
+    type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS
+}
+
+export const init = (): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
     
         const state: State = {
             ...initialState,
@@ -25,8 +40,8 @@ export const init = (): any => {
 }
 
 
-export const update = (newProps: any): any => {
-    return (dispatch, getState): void => {
+export const update = (): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
         const {
             abstractAccount,
             router
@@ -39,20 +54,20 @@ export const update = (newProps: any): any => {
     }
 }
 
-export const dispose = (address: string): any => {
+export const dispose = (): Action  => {
     return {
         type: RECEIVE.DISPOSE
     }
 }
 
-export const showUnverifiedAddress = () => {
+export const showUnverifiedAddress = (): Action => {
     return {
         type: RECEIVE.SHOW_UNVERIFIED_ADDRESS
     }
 }
 
-export const showAddress = (address_n: string): any => {
-    return async (dispatch, getState) => {
+export const showAddress = (address_n: string): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const selected = findSelectedDevice(getState().connect);
         if (!selected) return;
@@ -99,4 +114,12 @@ export const showAddress = (address_n: string): any => {
             })
         }
     }
+}
+
+export default {
+    init,
+    update,
+    dispose,
+    showAddress,
+    showUnverifiedAddress
 }

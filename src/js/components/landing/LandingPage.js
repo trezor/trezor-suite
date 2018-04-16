@@ -13,8 +13,9 @@ import Log from '../common/Log';
 // import { Notification } from '../common/Notification';
 import Notifications, { Notification } from '../common/Notification';
 
+import type { Props } from './index';
 
-const BrowserNotSupported = (props: any) => {
+const BrowserNotSupported = (props: {}): React$Element<string> => {
     return (
         <main>
             <h2>Your browser is not supported</h2>
@@ -33,7 +34,9 @@ const BrowserNotSupported = (props: any) => {
     )
 }
 
-export default (props: any): any => {
+
+
+export default (props: Props) => {
 
     const web3 = props.web3;
     const { devices, browserState, transport } = props.connect;
@@ -43,7 +46,7 @@ export default (props: any): any => {
     let notification = null;
     let body = null;
     let css: string = 'app landing';
-    const bridgeRoute: boolean = props.router.location.params.hasOwnProperty('bridge');
+    const bridgeRoute: boolean = props.router.location.state.hasOwnProperty('bridge');
 
     if (localStorageError) {
         notification = (<Notification 

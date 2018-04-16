@@ -14,29 +14,107 @@ import { resolveAfter } from '../utils/promiseUtils';
 import { getAccounts } from '../utils/reducerUtils';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
-export const init = (): any => {
-    return async (dispatch, getState): Promise<void> => {
+
+import type {
+    Device,
+    ResponseMessage,
+    DeviceMessage,
+    UiMessage,
+    TransportMessage,
+    DeviceMessageType,
+    TransportMessageType,
+    UiMessageType
+} from 'trezor-connect';
+
+import type { 
+    Dispatch,
+    GetState,
+    Action,
+    AsyncAction,
+    TrezorDevice,
+    RouterLocationState
+} from '../flowtype';
+
+
+export type TrezorConnectAction = {
+    type: typeof CONNECT.INITIALIZATION_ERROR,
+    error: any
+} | {
+    type: typeof CONNECT.SELECT_DEVICE,
+    payload: ?{
+        id: string,
+        instance: string
+    }
+} | {
+    type: typeof CONNECT.COIN_CHANGED,
+    payload: {
+        network: string
+    }
+} | {
+    type: typeof CONNECT.AUTH_DEVICE,
+    device: any
+} | {
+    type: typeof CONNECT.DUPLICATE,
+    device: any
+} | {
+    type: typeof CONNECT.REMEMBER_REQUEST,
+    device: any
+} | {
+    type: typeof CONNECT.DISCONNECT_REQUEST,
+    device: any
+} | {
+    type: typeof CONNECT.FORGET_REQUEST,
+    device: any
+} | {
+    type: typeof CONNECT.FORGET,
+    device: any
+} | {
+    type: typeof CONNECT.FORGET_SINGLE,
+    device: any
+} | {
+    type: typeof CONNECT.REMEMBER,
+    device: any
+} | {
+    type: typeof CONNECT.TRY_TO_DUPLICATE,
+    device: any
+} | {
+    type: typeof CONNECT.DEVICE_FROM_STORAGE,
+    payload: Array<any>
+} | {
+    type: typeof CONNECT.START_ACQUIRING,
+    device: any
+} | {
+    type: typeof CONNECT.STOP_ACQUIRING,
+    device: any
+};
+
+
+export const init = (): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         // set listeners 
         TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
+            // post event to reducers
+            const type: DeviceMessageType = event.type; // assert flow type
             dispatch({
-                type: event.type,
+                type,
                 device: event.payload
             });
         });
 
-        const version: Object = TrezorConnect.getVersion();
         TrezorConnect.on(UI_EVENT, (event: UiMessage): void => {
             // post event to reducers
+            const type: UiMessageType = event.type; // assert flow type
             dispatch({
-                type: event.type,
+                type,
                 payload: event.payload
             });
         });
 
-        TrezorConnect.on(TRANSPORT_EVENT, (event: UiMessage): void => {
+        TrezorConnect.on(TRANSPORT_EVENT, (event: TransportMessage): void => {
             // post event to reducers
+            const type: TransportMessageType = event.type; // assert flow type
             dispatch({
-                type: event.type,
+                type,
                 payload: event.payload
             });
         });
@@ -47,7 +125,7 @@ export const init = (): any => {
                 connectSrc: 'https://localhost:8088/',
                 // connectSrc: 'https://connect.trezor.io/tpm/',
                 // connectSrc: 'https://sisyfos.trezor.io/',
-                debug: true,
+                debug: false,
                 popup: false,
                 webusb: true
             });
@@ -62,10 +140,10 @@ export const init = (): any => {
 
 // called after backend was initialized
 // set listeners for connect/disconnect
-export const postInit = (): any => {
-    return (dispatch, getState): void => {
+export const postInit = (): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
 
-        const handleDeviceConnect = (device) => {
+        const handleDeviceConnect = (device: Device) => {
             dispatch( initConnectedDevice(device) );
         }
 
@@ -75,9 +153,11 @@ export const postInit = (): any => {
         TrezorConnect.on(DEVICE.CONNECT, handleDeviceConnect);
         TrezorConnect.on(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
 
-        const { devices } = getState().connect;
+        // const devices: Array<TrezorDevice> = getState().connect.devices;
+        const devices: Array<TrezorDevice> = getState().connect.devices;
 
-        const { initialPathname, initialParams } = getState().wallet
+        const { initialPathname, initialParams } = getState().wallet;
+
         if (initialPathname) {
             dispatch({
                 type: WALLET.SET_INITIAL_URL,
@@ -87,7 +167,7 @@ export const postInit = (): any => {
         }
 
         if (devices.length > 0) {
-            const unacquired = devices.find(d => d.unacquired);
+            const unacquired: ?TrezorDevice = devices.find(d => d.unacquired);
             if (unacquired) {
                 dispatch( onSelectDevice(unacquired) );
             } else {
@@ -118,8 +198,8 @@ const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => {
     });
 }
 
-export const initConnectedDevice = (device: any, force): any => {
-    return (dispatch, getState): void => {
+export const initConnectedDevice = (device: any): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
 
         const selected = findSelectedDevice(getState().connect);
         if (!selected || (selected && selected.state)) {
@@ -137,27 +217,26 @@ export const initConnectedDevice = (device: any, force): any => {
 // after device_connect event
 // or after acquiring device
 // device type could be local TrezorDevice or Device (from trezor-connect device_connect event)
-export const onSelectDevice = (device: any): any => {
-    return (dispatch, getState): void => {
+export const onSelectDevice = (device: TrezorDevice | Device): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
         // || device.isUsedElsewhere
-
-        console.log("------> REDITTO", device, getState().wallet.initialUrl);
 
         // switch to initial url and reset this value
         
 
-        if (device.unacquired) {
+        if (!device.features) {
             dispatch( push(`/device/${ device.path }/acquire`) );
         } else if (device.features.bootloader_mode) {
             dispatch( push(`/device/${ device.path }/bootloader`) );
-        } else if (device.instance) {
+        } else if (typeof device.instance === 'number') {
             dispatch( push(`/device/${ device.features.device_id }:${ device.instance }`) );
         } else {
 
-            const urlParams: any = getState().router.location.params;
+            const deviceId: string = device.features.device_id;
+            const urlParams: RouterLocationState = getState().router.location.state;
             // let url: string = `/device/${ device.features.device_id }/network/ethereum/address/0`;
-            let url: string = `/device/${ device.features.device_id }`;
-            let instance: ?string;
+            let url: string = `/device/${ deviceId }`;
+            let instance: ?number;
             // check if device is not TrezorDevice type
             if (!device.hasOwnProperty('ts')) {
                 // its device from trezor-connect (called in initConnectedDevice triggered by device_connect event)
@@ -173,15 +252,15 @@ export const onSelectDevice = (device: any): any => {
             // check if current location is not set to this device
             //dispatch( push(`/device/${ device.features.device_id }/network/etc/address/0`) );
             
-            if (urlParams.deviceInstance !== instance || urlParams.device !== device.features.device_id) {
+            if (urlParams.deviceInstance !== instance || urlParams.device !== deviceId) {
                 dispatch( push(url) );
             }
         }
     }
 }
 
-export const switchToFirstAvailableDevice = (): any => {
-    return async (dispatch, getState): Promise<void> => {
+export const switchToFirstAvailableDevice = (): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const { devices } = getState().connect;
         if (devices.length > 0) {
@@ -208,8 +287,8 @@ export const switchToFirstAvailableDevice = (): any => {
 }
 
 
-export const getSelectedDeviceState = (): any => {
-    return async (dispatch, getState): Promise<void> => {
+export const getSelectedDeviceState = (): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         const selected = findSelectedDevice(getState().connect);
         console.warn("init selected", selected)
         if (selected 
@@ -260,13 +339,13 @@ export const getSelectedDeviceState = (): any => {
     }
 }
 
-export const deviceDisconnect = (device: any): any => {
-    return async (dispatch, getState): Promise<void> => {
+export const deviceDisconnect = (device: Device): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const selected = findSelectedDevice(getState().connect);
+        const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
 
         if (device && device.features) {
-            if (selected && selected.features.device_id === device.features.device_id) {
+            if (selected && selected.features && selected.features.device_id === device.features.device_id) {
                 dispatch( DiscoveryActions.stop(selected) );
             }
 
@@ -287,9 +366,11 @@ export const deviceDisconnect = (device: any): any => {
     }
 }
 
-export const coinChanged = (network: ?string): any => {
-    return (dispatch, getState): void => {
-        const selected = findSelectedDevice(getState().connect);
+export const coinChanged = (network: ?string): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
+        const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
+        if (!selected) return;
+
         dispatch( DiscoveryActions.stop(selected) );
 
         if (network) {
@@ -298,15 +379,16 @@ export const coinChanged = (network: ?string): any => {
     }
 }
 
-export function reload(): any {
-    return async (dispatch, getState) => {
+export function reload(): AsyncAction {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     }
 }
 
-export function acquire(): any {
-    return async (dispatch, getState) => {
+export function acquire(): AsyncAction {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const selected = findSelectedDevice(getState().connect);
+        const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
+        if (!selected) return;
 
         // const saved = getState().connect.devices.map(d => {
         //     if (d.state) {
@@ -341,10 +423,11 @@ export function acquire(): any {
         if (response && response.success) {
             dispatch({
                 type: DEVICE.ACQUIRED,
+                device: null
             })
         } else {
             // TODO: handle invalid pin?
-            console.log("-errror ack", response)
+            console.log("-error ack", response)
 
             dispatch({
                 type: NOTIFICATION.ADD,
@@ -367,35 +450,34 @@ export function acquire(): any {
     }
 }
 
-export const forgetDevice = (device: any) => {
-    return (dispatch: any, getState: any): any => {
-        
+export const forgetDevice = (device: any): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
         // find accounts associated with this device
-        const accounts: Array<any> = getState().accounts.find(a => a.deviceState === device.state);
+        // const accounts: Array<any> = getState().accounts.find(a => a.deviceState === device.state);
 
 
         // find discovery processes associated with this device
-        const discovery: Array<any> = getState().discovery.find(d => d.deviceState === device.state);
+        // const discovery: Array<any> = getState().discovery.find(d => d.deviceState === device.state);
 
     }
 }
 
-export const gotoDeviceSettings = (device: any) => {
-    return (dispatch: any, getState: any): any => {
+export const gotoDeviceSettings = (device: any): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
         dispatch( push(`/device/${ device.features.device_id }/settings`) );
     }
 }
 
 // called from Aside - device menu (forget single instance)
-export const forget = (device: any) => {
+export const forget = (device: any): Action => {
     return {
         type: CONNECT.FORGET_REQUEST,
         device
     };
 }
 
-export const duplicateDevice = (device: any) => {
-    return async (dispatch: any, getState: any): Promise<void> => {
+export const duplicateDevice = (device: any): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         dispatch({
             type: CONNECT.TRY_TO_DUPLICATE,
             device
@@ -403,17 +485,18 @@ export const duplicateDevice = (device: any) => {
     }
 }
 
-export const onDuplicateDevice = () => {
-    return async (dispatch: any, getState: any): Promise<void> => {
-        const selected = findSelectedDevice(getState().connect);
-        dispatch(onSelectDevice(selected));
+export const onDuplicateDevice = (): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+        const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
+        if (selected)
+            dispatch(onSelectDevice(selected));
     }
 }
 
 
-export function addAddress(): any {
-    return (dispatch, getState) => {
+export function addAddress(): AsyncAction {
+    return (dispatch: Dispatch, getState: GetState): void => {
         const selected = findSelectedDevice(getState().connect);
-        dispatch( DiscoveryActions.start(selected, getState().router.location.params.network, true) ); // TODO: network nicer
+        dispatch( DiscoveryActions.start(selected, getState().router.location.state.network, true) ); // TODO: network nicer
     }
 }

@@ -11,14 +11,29 @@ import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
 import { findDevice } from '../../../utils/reducerUtils';
 
+import type { Props } from './index';
+import type { AccountState } from '../account/AbstractAccount';
 
-export default class Summary extends AbstractAccount {
+import type { TrezorDevice } from '../../../flowtype';
+import type { NetworkToken } from '../../../reducers/LocalStorageReducer';
+import type { Account } from '../../../reducers/AccountsReducer';
+import type { Discovery } from '../../../reducers/DiscoveryReducer';
+
+export default class Summary extends AbstractAccount<Props> {
     render() {
-        return super.render() || _render(this.props, this.device, this.discovery, this.account, this.deviceStatusNotification);
+        return super.render() || _render(this.props, this.state);
     }
 }
 
-const _render = (props: any, device, discovery, account, deviceStatusNotification): any => {
+const _render = (props: Props, state: AccountState): React$Element<string> => {
+
+    const {
+        device,
+        account,
+        deviceStatusNotification
+    } = state;
+
+    if (!device || !account) return <section></section>;
 
     const abstractAccount = props.abstractAccount;
     const tokens = props.tokens.filter(t => t.ethAddress === account.address);
@@ -36,7 +51,7 @@ const _render = (props: any, device, discovery, account, deviceStatusNotificatio
                 network={ abstractAccount.network }
                 fiat={ props.fiat }
                 localStorage={ props.localStorage }
-                onToggle={ props.summaryActions.onDetailsToggle } />
+                onToggle={ props.onDetailsToggle } />
 
             <h2>Tokens</h2>
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 */}
@@ -46,27 +61,28 @@ const _render = (props: any, device, discovery, account, deviceStatusNotificatio
                     multi={ false }
                     autoload={ false }
                     ignoreCase={ true }
+                    backspaceRemoves={ true }
+                    value={ null }
+                    onChange={ token => props.addToken(token, account) } 
+                    loadOptions={ input => props.loadTokens(input, account.network) } 
                     filterOptions= { 
-                        (options, search, values) => {
+                        (options: Array<NetworkToken>, search: string, values) => {
                             return options.filter(o => {
                                 return !tokens.find(t => t.symbol === o.symbol);
                             });
                         }
                     }
-
-                    value={ props.summary.selectedToken } 
-                    onChange={ token => props.summaryActions.selectToken(token, account) } 
                     valueKey="symbol" 
                     labelKey="symbol" 
                     placeholder="Search for token"
                     searchPromptText="Type token name or address"
                     noResultsText="Token not found"
-                    loadOptions={ input => props.summaryActions.loadTokens(input, account) } 
-                    backspaceRemoves={true} />
+                    
+                     />
 
             </div>
 
-            <SummaryTokens tokens={ tokens } removeToken={ props.summaryActions.removeToken } />
+            <SummaryTokens tokens={ tokens } removeToken={ props.removeToken } />
 
         </section>
 

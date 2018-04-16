@@ -4,13 +4,20 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 
-type State = {
-    style: any;
 
+type Props = {
+    pathname: string;
+}
+type State = {
+    style: {
+        width: number,
+        left: number
+    };
 }
 
-class Indicator extends Component {
+class Indicator extends Component<Props, State> {
 
+    reposition: () => void;
     state: State;
 
     constructor(props: any) {
@@ -45,7 +52,9 @@ class Indicator extends Component {
 
     reposition() {
         const tabs = document.querySelector('.account-tabs');
+        if (!tabs) return;
         const active = tabs.querySelector('.active');
+        if (!active) return;
         const bounds = active.getBoundingClientRect();
 
         const left = bounds.left - tabs.getBoundingClientRect().left;

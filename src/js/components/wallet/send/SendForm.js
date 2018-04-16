@@ -9,14 +9,25 @@ import { FeeSelectValue, FeeSelectOption } from './FeeSelect';
 import { Notification } from '../../common/Notification';
 import AbstractAccount from '../account/AbstractAccount';
 
-export default class Send extends AbstractAccount {
+import type { Props } from './index';
+import type { AccountState } from '../account/AbstractAccount';
+
+export default class Send extends AbstractAccount<Props> {
     render() {
-        return super.render() || _render(this.props, this.device, this.discovery, this.account, this.deviceStatusNotification);
+        return super.render() || _render(this.props, this.state);
     }
 }
 
 
-const _render = (props: any, device, discovery, account, deviceStatusNotification): any => {
+const _render = (props: Props, state: AccountState): React$Element<string> => {
+
+    const {
+        device,
+        account,
+        deviceStatusNotification
+    } = state;
+
+    if (!device || !account) return <section></section>;
 
     const addressTokens = props.tokens.filter(t => t.ethAddress === account.address);
     const { network } = props.abstractAccount;
@@ -170,7 +181,10 @@ const _render = (props: any, device, discovery, account, deviceStatusNotificatio
                 <button disabled={ buttonDisabled } onClick={ event => onSend() }>{ buttonLabel }</button>
             </AdvancedForm>
 
-            <PendingTransactions {...props} selectedCoin={selectedCoin} />
+            <PendingTransactions 
+                { ...props } 
+                account={ account }
+                selectedCoin={ selectedCoin } />
     
         </section>
     );

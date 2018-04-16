@@ -10,8 +10,8 @@ import { CSSTransition, Transition } from 'react-transition-group';
 
 import { UI } from 'trezor-connect';
 
-import * as ModalActions from '../../actions/ModalActions';
-import * as ReceiveActions from '../../actions/ReceiveActions';
+import { default as ModalActions } from '../../actions/ModalActions';
+import { default as ReceiveActions } from '../../actions/ReceiveActions';
 
 import Pin from './Pin';
 import InvalidPin from './InvalidPin';
@@ -26,6 +26,28 @@ import * as RECEIVE from '../../actions/constants/receive';
 import * as MODAL from '../../actions/constants/modal';
 import * as CONNECT from '../../actions/constants/TrezorConnect';
 
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import type { State, Dispatch } from '../../flowtype';
+
+type OwnProps = { }
+
+type StateProps = {
+    modal: $ElementType<State, 'modal'>,
+    accounts: $ElementType<State, 'accounts'>,
+    devices: $PropertyType<$ElementType<State, 'connect'>, 'devices'>,
+    connect: $ElementType<State, 'connect'>,
+    sendForm: $ElementType<State, 'sendForm'>,
+    receive: $ElementType<State, 'receive'>,
+    localStorage: $ElementType<State, 'localStorage'>,
+}
+
+type DispatchProps = {
+    modalActions: typeof ModalActions,
+    receiveActions: typeof ReceiveActions,
+}
+
+export type Props = StateProps & DispatchProps;
+
 const duration = 300;
 
 
@@ -38,7 +60,7 @@ const Fade = ({ children, ...props }) => (
     </CSSTransition>
 );
 
-class Modal extends Component {
+class Modal extends Component<Props> {
     render() {
         const { opened, windowType } = this.props.modal;
 
@@ -100,7 +122,7 @@ class Modal extends Component {
     }
 }
 
-const mapStateToProps = (state: any, own: any): any => {
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
         modal: state.modal,
         accounts: state.accounts,
@@ -112,7 +134,7 @@ const mapStateToProps = (state: any, own: any): any => {
     };
 }
 
-const mapDispatchToProps = (dispatch: any): any => {
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
     return {
         modalActions: bindActionCreators(ModalActions, dispatch),
         receiveActions: bindActionCreators(ReceiveActions, dispatch),

@@ -8,7 +8,13 @@ import raf from 'raf';
 import { DeviceSelect } from './DeviceSelection';
 import { getViewportHeight, getScrollY } from '../../../utils/windowUtils';
 
-export default class StickyContainer extends PureComponent {
+type Props = {
+    location: any,
+    devices: any,
+    children: any,
+}
+
+export default class StickyContainer extends PureComponent<Props> {
 
     // Class variables.
     currentScrollY: number = 0;
@@ -18,15 +24,15 @@ export default class StickyContainer extends PureComponent {
     framePending: boolean = false;
     stickToBottom: boolean = false;
     top: number = 0;
-    aside;
-    wrapper;
+    aside: ?HTMLElement;
+    wrapper: ?HTMLElement;
     subscribers = [];
 
-    handleResize = event => {
+    handleResize = (event: Event) => {
 
     }
 
-    handleScroll = event => {
+    handleScroll = (event: ?Event) => {
         if (!this.framePending) {
             this.framePending = true;
             raf(this.update);
@@ -34,24 +40,27 @@ export default class StickyContainer extends PureComponent {
     }
 
     shouldUpdate = () => {
-        if (!this.wrapper) return;
+        const wrapper: ?HTMLElement = this.wrapper;
+        const aside: ?HTMLElement = this.aside;
+        if (!wrapper || !aside) return;
+        const helpButton: ?HTMLElement = wrapper.querySelector('.help');
+        if (!helpButton) return;
+
         
-        const viewportHeight = getViewportHeight();
-        const helpButton = this.wrapper.querySelector('.help');
+        const viewportHeight: number = getViewportHeight();
         const helpButtonBounds = helpButton.getBoundingClientRect();
-        const asideBounds = this.aside.getBoundingClientRect();
-        const wrapperBounds = this.wrapper.getBoundingClientRect();
+        const asideBounds = aside.getBoundingClientRect();
+        const wrapperBounds = wrapper.getBoundingClientRect();
 
         const scrollDirection = this.currentScrollY >= this.lastKnownScrollY ? 'down' : 'up';
         const distanceScrolled = Math.abs(this.currentScrollY - this.lastKnownScrollY);
 
-
         if (asideBounds.top < 0) {
-            this.wrapper.classList.add('fixed');
-            let maxTop = 1;
+            wrapper.classList.add('fixed');
+            let maxTop : number= 1;
             if (wrapperBounds.height > viewportHeight) {
-                const bottomOutOfBounds = (helpButtonBounds.bottom <= viewportHeight && scrollDirection === 'down');
-                const topOutOfBounds = (wrapperBounds.top > 0 && scrollDirection === 'up');
+                const bottomOutOfBounds: boolean = (helpButtonBounds.bottom <= viewportHeight && scrollDirection === 'down');
+                const topOutOfBounds: boolean = (wrapperBounds.top > 0 && scrollDirection === 'up');
                 if (!bottomOutOfBounds && !topOutOfBounds) {
                     this.topOffset += scrollDirection === 'down' ? - distanceScrolled : distanceScrolled;
                 }
@@ -60,27 +69,27 @@ export default class StickyContainer extends PureComponent {
 
             if (this.topOffset > 0) this.topOffset = 0;
             if (maxTop < 0 && this.topOffset < maxTop) this.topOffset = maxTop;
-            this.wrapper.style.top = `${this.topOffset}px`;
+            wrapper.style.top = `${this.topOffset}px`;
 
         } else {
-            this.wrapper.classList.remove('fixed');
-            this.wrapper.style.top = `0px`;
+            wrapper.classList.remove('fixed');
+            wrapper.style.top = `0px`;
             this.topOffset = 0;
         }
 
         if (wrapperBounds.height > viewportHeight) {
-            this.wrapper.classList.remove('fixed-bottom');
+            wrapper.classList.remove('fixed-bottom');
         } else {
-            if (this.wrapper.classList.contains('fixed-bottom')) {
+            if (wrapper.classList.contains('fixed-bottom')) {
                 if (helpButtonBounds.top < wrapperBounds.bottom - helpButtonBounds.height) {
-                    this.wrapper.classList.remove('fixed-bottom');
+                    wrapper.classList.remove('fixed-bottom');
                 }
-            } else if(helpButtonBounds.bottom < viewportHeight) {
-                this.wrapper.classList.add('fixed-bottom');
+            } else if (helpButtonBounds.bottom < viewportHeight) {
+                wrapper.classList.add('fixed-bottom');
             }
         }
         
-        this.aside.style.minHeight = `${ wrapperBounds.height }px`;
+        aside.style.minHeight = `${ wrapperBounds.height }px`;
     }
 
     update = () => {
@@ -101,8 +110,8 @@ export default class StickyContainer extends PureComponent {
         window.removeEventListener('resize', this.handleScroll);
     }
 
-    componentDidUpdate(prevProps) {
-        if (this.props.location !== prevProps.location) {
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.location !== prevProps.location && this.aside) {
             const asideBounds = this.aside.getBoundingClientRect();
             if (asideBounds.top < 0) {
                 window.scrollTo(0, getScrollY() + asideBounds.top);

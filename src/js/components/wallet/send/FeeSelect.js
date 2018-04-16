@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import React, { Component } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 
 
@@ -16,22 +16,33 @@ export const FeeSelectValue = (props: any): any => {
     );
 }
 
-export class FeeSelectOption extends Component {
-    constructor(props) {
+type Props = {
+    children: React.Node,
+    className: string,
+    isDisabled: boolean,
+    isFocused: boolean,
+    isSelected: boolean,
+    onFocus: Function,
+    onSelect: Function,
+    option: any,
+}
+
+export class FeeSelectOption extends React.Component<Props> {
+    constructor(props: Props) {
         super(props);
     }
 
-    handleMouseDown(event) {
+    handleMouseDown(event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
         this.props.onSelect(this.props.option, event);
     }
 
-    handleMouseEnter(event) {
+    handleMouseEnter(event: MouseEvent) {
         this.props.onFocus(this.props.option, event);
     }
 
-    handleMouseMove(event) {
+    handleMouseMove(event: MouseEvent) {
         if (this.props.isFocused) return;
         this.props.onFocus(this.props.option, event);
     }
@@ -48,16 +59,3 @@ export class FeeSelectOption extends Component {
         );
     }
 }
-
-FeeSelectOption.propTypes = {
-    children: PropTypes.node,
-    className: PropTypes.string,
-    isDisabled: PropTypes.bool,
-    isFocused: PropTypes.bool,
-    isSelected: PropTypes.bool,
-    onFocus: PropTypes.func,
-    onSelect: PropTypes.func,
-    option: PropTypes.object.isRequired,
-};
-
-

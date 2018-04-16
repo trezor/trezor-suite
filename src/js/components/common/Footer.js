@@ -6,8 +6,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as LogActions from '../../actions/LogActions';
+import type { State, Dispatch } from '../../flowtype';
 
-const Footer = (props: any): any => {
+type Props = {
+    toggle: typeof LogActions.toggle
+}
+
+const Footer = (props: Props): React$Element<string> => {
     return (
         <footer>
             <span>© 2018</span>
@@ -19,12 +24,12 @@ const Footer = (props: any): any => {
 }
 
 export default connect( 
-    (state) => {
+    (state: State) => {
         return {
             
         }
     },
-    (dispatch) => {
+    (dispatch: Dispatch) => {
         return { 
             toggle: bindActionCreators(LogActions.toggle, dispatch),
         };

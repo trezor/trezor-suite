@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import Web3 from 'web3';
+import Web3, { ContractFactory, Contract } from 'web3';
 import HDKey from 'hdkey';
 import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsTx from 'ethereumjs-tx';
@@ -9,48 +9,47 @@ import TrezorConnect from 'trezor-connect';
 import { strip } from '../utils/ethUtils';
 import * as ADDRESS from './constants/address';
 import * as WEB3 from './constants/web3';
-import { httpRequest } from '../utils/networkUtils';
 
-type ActionMethod = (dispatch: any, getState: any) => Promise<any>;
+import type { 
+    Dispatch,
+    GetState,
+    Action,
+    AsyncAction,
+} from '../flowtype';
 
-type Web3Payload = 
-| {
-    name: string;
-    instance: Web3;
-    chainId: number;
-    erc20abi: any;
-}
-| {
-    network: string;
-    blockHash: string;
-}
-| {
-    network: string;
-    gasPrice: string;
-}
-| {
-    network: string;
-    address: string;
-    balance: string;
-}
-| {
-    network: string;
-    address: string;
-    nonce: string;
-}
-| {
-    network: string;
-    blockHash: string;
+import type { Account } from '../reducers/AccountsReducer';
+
+export type Web3Action = {
+    type: typeof WEB3.READY,
+} | {
+    type: typeof WEB3.PENDING_TX_RESOLVED
+} | Web3CreateAction 
+  | Web3UpdateBlockAction 
+  | Web3UpdateGasPriceAction;
+
+export type Web3CreateAction = {
+    type: typeof WEB3.CREATE,
+    network: string,
+    web3: any, //(web3instance)
+    erc20: any,
+    chainId: string;
 };
 
-type Web3Action = {
-    type: string,
-    payload?: Web3Payload 
+export type Web3UpdateBlockAction = {
+    type: typeof WEB3.BLOCK_UPDATED,
+    network: string,
+    blockHash: any
+};
+
+export type Web3UpdateGasPriceAction = {
+    type: typeof WEB3.GAS_PRICE_UPDATED,
+    network: string,
+    gasPrice: any
 };
 
 
-export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
-    return async (dispatch, getState) => {
+export function init(web3: ?Web3, coinIndex: number = 0): AsyncAction {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const { config, ERC20Abi } = getState().localStorage;
 
@@ -191,48 +190,48 @@ export function init(web3: ?Web3, coinIndex: number = 0): ActionMethod {
 }
 
 
-export function initContracts(): ActionMethod {
-    return async (dispatch, getState) => {
-        const { web3, abi, tokens } = getState().web3;
+// export function initContracts(): AsyncAction {
+//     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+//         const { web3, abi, tokens } = getState().web3;
 
-        const contracts = [];
-        for (let token of tokens) {
-            contracts.push({
-                contract: web3.eth.contract(abi).at(token.address),
-                name: token.name,
-                symbol: token.symbol,
-                decimal: token.decimal
-            });
+//         const contracts = [];
+//         for (let token of tokens) {
+//             contracts.push({
+//                 contract: web3.eth.contract(abi).at(token.address),
+//                 name: token.name,
+//                 symbol: token.symbol,
+//                 decimal: token.decimal
+//             });
 
-            // web3.eth.contract(abi).at(token.address).balanceOf('0x98ead4bd2fbbb0cf0b49459aa0510ef53faa6cad', (e, r) => {
-            //     console.warn('contrR', e, r.toString(10));
-            // });
-        }
+//             // web3.eth.contract(abi).at(token.address).balanceOf('0x98ead4bd2fbbb0cf0b49459aa0510ef53faa6cad', (e, r) => {
+//             //     console.warn('contrR', e, r.toString(10));
+//             // });
+//         }
 
-        const contract = web3.eth.contract(abi).at('0x58cda554935e4a1f2acbe15f8757400af275e084');
+//         const contract = web3.eth.contract(abi).at('0x58cda554935e4a1f2acbe15f8757400af275e084');
 
-        contract.name.call((error, name) => {
-            if (error) {
-                // TODO: skip
-            }
-            contract.symbol.call((error, symbol) => {
-                if (error) {
-                    // TODO: skip
-                }
+//         contract.name.call((error, name) => {
+//             if (error) {
+//                 // TODO: skip
+//             }
+//             contract.symbol.call((error, symbol) => {
+//                 if (error) {
+//                     // TODO: skip
+//                 }
 
-                contract.decimals.call((error, decimals) => {
-                    console.log("nameeeee", name, symbol, decimals)
-                })
-            });
+//                 contract.decimals.call((error, decimals) => {
+//                     console.log("nameeeee", name, symbol, decimals)
+//                 })
+//             });
             
             
-        })
-    }
-}
+//         })
+//     }
+// }
 
 
-export function getGasPrice(network: string): ActionMethod {
-    return async (dispatch, getState) => {
+export function getGasPrice(network: string): AsyncAction {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const index: number = getState().web3.findIndex(w3 => w3.network === network);
 
@@ -252,20 +251,20 @@ export function getGasPrice(network: string): ActionMethod {
     }
 }
 
-export function getBalance(addr: Address): ActionMethod {
-    return async (dispatch, getState) => {
+export function getBalance(account: Account): AsyncAction {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const web3instance = getState().web3.filter(w3 => w3.network === addr.network)[0];
-        const web3 = web3instance.web3;
+        const web3instance = getState().web3.filter(w3 => w3.network === account.network)[0];
+        const web3: Web3 = web3instance.web3;
 
-        web3.eth.getBalance(addr.address, (error, balance) => {
+        web3.eth.getBalance(account.address, (error, balance) => {
             if (!error) {
                 const newBalance: string = web3.fromWei(balance.toString(), 'ether');
-                if (addr.balance !== newBalance) {
+                if (account.balance !== newBalance) {
                     dispatch({
                         type: ADDRESS.SET_BALANCE,
-                        address: addr.address,
-                        network: addr.network,
+                        address: account.address,
+                        network: account.network,
                         balance: newBalance
                     });
 
@@ -276,20 +275,20 @@ export function getBalance(addr: Address): ActionMethod {
     }
 }
 
-export function getNonce(addr: Address) {
+export function getNonce(account: Account): AsyncAction {
 
-    return async (dispatch, getState) => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const web3instance = getState().web3.filter(w3 => w3.network === addr.network)[0];
+        const web3instance = getState().web3.filter(w3 => w3.network === account.network)[0];
         const web3 = web3instance.web3;
 
-        web3.eth.getTransactionCount(addr.address, (error, result) => {
+        web3.eth.getTransactionCount(account.address, (error, result) => {
             if (!error) {
-                if (addr.nonce !== result) {
+                if (account.nonce !== result) {
                     dispatch({
                         type: ADDRESS.SET_NONCE,
-                        address: addr.address,
-                        network: addr.network,
+                        address: account.address,
+                        network: account.network,
                         nonce: result
                     });
                 }
@@ -298,8 +297,8 @@ export function getNonce(addr: Address) {
     }
 }
 
-export function getTransactionReceipt(tx: any): any {
-    return async (dispatch, getState) => {
+export function getTransactionReceipt(tx: any): AsyncAction {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const web3instance = getState().web3.filter(w3 => w3.network === tx.network)[0];
         const web3 = web3instance.web3;
@@ -323,14 +322,14 @@ export function getTransactionReceipt(tx: any): any {
 }
 
 
-export function updateLastBlock(hash: string) {
-    return {
-        type: 'web3__update_last_block',
-        hash
-    }
-}
+// export function updateLastBlock(hash: string): Action {
+//     return {
+//         type: 'web3__update_last_block',
+//         hash
+//     }
+// }
 
-export function getTransaction(web3, txid) {
+export const getTransaction = (web3: Web3, txid: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         web3.eth.getTransaction(txid, (error, result) => {
             if (error) {
@@ -344,7 +343,7 @@ export function getTransaction(web3, txid) {
 
 
 
-export function getBalanceAsync(web3, address) {
+export const getBalanceAsync = (web3: Web3, address: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         web3.eth.getBalance(address, (error, result) => {
             if (error) {
@@ -356,7 +355,7 @@ export function getBalanceAsync(web3, address) {
     });
 }
 
-export const getTokenBalanceAsync = (erc20: any, token: any, address: any): Promise<any> => {
+export const getTokenBalanceAsync = (erc20: any, token: string, address: string): Promise<any> => {
     return new Promise((resolve, reject) => {
 
         const contr = erc20.at(token);
@@ -370,7 +369,7 @@ export const getTokenBalanceAsync = (erc20: any, token: any, address: any): Prom
     });
 }
 
-export function getNonceAsync(web3, address) {
+export const getNonceAsync = (web3: Web3, address: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         web3.eth.getTransactionCount(address, (error, result) => {
             if (error) {
@@ -383,7 +382,7 @@ export function getNonceAsync(web3, address) {
 }
 
 
-export function getTokenInfoAsync(erc20: any, address: string): Promise<any> {
+export const getTokenInfoAsync = (erc20: any, address: string): Promise<any> => {
     return new Promise((resolve, reject) => {
 
         const contract = erc20.at(address);
@@ -417,7 +416,7 @@ export function getTokenInfoAsync(erc20: any, address: string): Promise<any> {
     });
 }
 
-export function estimateGas(web3, gasOptions) {
+export const estimateGas = (web3: Web3, gasOptions: any): Promise<any> => {
     return new Promise((resolve, reject) => {
         web3.eth.estimateGas(gasOptions, (error, result) => {
             if (error) {
@@ -429,7 +428,7 @@ export function estimateGas(web3, gasOptions) {
     })
 }
 
-export function getGasPrice2(web3) {
+export const getGasPrice2 = (web3: Web3): Promise<any> => {
     return new Promise((resolve, reject) => {
         web3.eth.getGasPrice((error, result) => {
             if (error) {
@@ -441,7 +440,7 @@ export function getGasPrice2(web3) {
     })
 }
 
-export function pushTx(web3, tx) {
+export const pushTx = (web3: Web3, tx: any): Promise<any> => {
     return new Promise((resolve, reject) => {
         web3.eth.sendRawTransaction(tx, (error, result) => {
             if (error) {
@@ -452,7 +451,3 @@ export function pushTx(web3, tx) {
         });
     })
 }
-
-
-
-

@@ -4,75 +4,103 @@
 import React, { Component } from 'react';
 import { Notification } from '../../common/Notification';
 import { findDevice } from '../../../utils/reducerUtils';
-import type { TrezorDevice } from '../../../reducers/TrezorConnectReducer';
 
-export type AccountState = {
-    device: TrezorDevice;
-    discovery: any;
-    account: any;
+// import * as AbstractAccountActions from '../../actions/AbstractAccountActions';
+import { default as AbstractAccountActions } from '../../../actions/AbstractAccountActions';
+
+import type { State, TrezorDevice } from '../../../flowtype';
+import type { Account } from '../../../reducers/AccountsReducer';
+import type { Discovery } from '../../../reducers/DiscoveryReducer';
+
+export type StateProps = {
+    abstractAccount: $ElementType<State, 'abstractAccount'>,
+    devices: $PropertyType<$ElementType<State, 'connect'>, 'devices'>,
+    discovery: $ElementType<State, 'discovery'>,
+    accounts: $ElementType<State, 'accounts'>,
 }
 
-export default class AbstractAccount extends Component {
+export type DispatchProps = {
+    abstractAccountActions: typeof AbstractAccountActions,
+    initAccount: typeof AbstractAccountActions.init,
+    updateAccount: typeof AbstractAccountActions.update,
+    disposeAccount: typeof AbstractAccountActions.dispose,
+}
 
-    device: TrezorDevice;
-    discovery: any;
-    account: any;
-    deviceStatusNotification: any;
+export type Props = StateProps & DispatchProps;
 
-    constructor(props: any) {
-        super(props);
-        this.state = {
+export type AccountState = {
+    device: ?TrezorDevice;
+    account: ?Account;
+    discovery: ?Discovery;
+    deviceStatusNotification: ?React$Element<typeof Notification>;
+}
 
-        }
-    }
+export default class AbstractAccount<P> extends Component<Props & P, AccountState> {
 
-    setLocalVars(vars: any) {
-        this.device = vars.device;
-        this.discovery = vars.discovery;
-    }
+    state: AccountState = {
+        device: null,
+        account: null,
+        discovery: null,
+        deviceStatusNotification: null
+    };
 
     componentDidMount() {
         this.props.abstractAccountActions.init();
         this.props.initAccount();
     }
 
-    componentWillUpdate(newProps: any) {
-        this.device = null;
-        this.discovery = null;
-        this.account = null;
-        this.deviceStatusNotification = null;
-
+    componentWillReceiveProps(props: Props & P) {
         this.props.abstractAccountActions.update();
         this.props.updateAccount();
+
+        const currentState = props.abstractAccount;
+
+        const device = findDevice(props.devices, currentState.deviceState, currentState.deviceId, currentState.deviceInstance);
+        if (!device) return;
+        const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === currentState.network);
+        const account = props.accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.index && a.network === currentState.network);
+
+        let deviceStatusNotification: ?React$Element<typeof Notification> = null;
+        if (account) {
+            if (!device.connected) {
+                deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />;
+            } else if (!device.available) {
+                deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is unavailable` } message="Change passphrase settings to use this device" />;
+            }
+        }
+        this.setState({
+            device,
+            discovery,
+            account,
+            deviceStatusNotification
+        })
     }
 
     componentWillUnmount() {
         this.props.abstractAccountActions.dispose();
         this.props.disposeAccount();
-
-        this.device = null;
-        this.discovery = null;
-        this.account = null;
-        this.deviceStatusNotification = null;
     }
 
-    render(): any {
+    render(): ?React$Element<string> {
 
         const props = this.props;
-        const state = props.abstractAccount;
+        const currentState = props.abstractAccount;
 
-        if (!state.deviceState) {
+        if (!currentState.deviceState) {
             return (<section><Notification className="info" title="Loading device" /></section>);
         }
+
+        const {
+            device,
+            account,
+            discovery
+        } = this.state;
         
-        const device = findDevice(props.devices, state.deviceState, state.deviceId, state.deviceInstance);
+        // const device = findDevice(props.devices, accountState.deviceState, accountState.deviceId, accountState.deviceInstance);
 
         if (!device) {
-            return (<section>Device with state {state.deviceState} not found</section>);
+            return (<section>Device with state {currentState.deviceState} not found</section>);
         }
-        const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === state.network);
-        const account = props.accounts.find(a => a.deviceState === state.deviceState && a.index === state.index && a.network === state.network);
-        let deviceStatusNotification = null;
 
         if (!account) {
             if (!discovery || discovery.waitingForDevice) {
@@ -97,7 +125,11 @@ export default class AbstractAccount extends Component {
                 } else {
                     return (
                         <section>
-                            <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />
+                            <Notification 
+                                className="info" 
+                                title={ `Device ${ device.instanceLabel } is disconnected` } 
+                                message="Connect to load accounts"
+                                />
                         </section>
                     );
                 }
@@ -114,19 +146,7 @@ export default class AbstractAccount extends Component {
                     </section>
                 );
             }
-        } else {
-            if (!device.connected) {
-                deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />;
-            } else if (!device.available) {
-                deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is unavailable` } message="Change passphrase settings to use this device" />;
-            }
         }
-
-        // Set class variables for extender classes
-        this.device = device;
-        this.discovery = discovery;
-        this.account = account;
-        this.deviceStatusNotification = deviceStatusNotification;
 
         return null;
     }

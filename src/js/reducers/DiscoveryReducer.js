@@ -7,8 +7,10 @@ import * as CONNECT from '../actions/constants/TrezorConnect';
 
 export type Discovery = {
     network: string;
-    deviceState: string;
     xpub: string;
+    hdKey: any;
+    basePath: any;
+    deviceState: string;
     accountIndex: number;
     interrupted: boolean;
     completed: boolean;
@@ -81,6 +83,8 @@ const waiting = (state: Array<Discovery>, action: any): Array<Discovery> => {
         network: action.network,
         deviceState: action.device.state,
         xpub: '',
+        hdKey: null,
+        basePath: null,
         accountIndex: 0,
         interrupted: false,
         completed: false,
@@ -98,7 +102,7 @@ const waiting = (state: Array<Discovery>, action: any): Array<Discovery> => {
     return newState;
 }
 
-export default function discovery(state: Array<Discovery> = initialState, action: any): any {
+export default function discovery(state: Array<Discovery> = initialState, action: any): Array<Discovery> {
 
     switch (action.type) {
         case DISCOVERY.START :

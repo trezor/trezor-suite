@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-export default (props: any): any => {
+export default (props: {}): React$Element<string> => {
     return (
         <section className="landing">
             connect ERROR

@@ -4,20 +4,18 @@
 import React, { Component } from 'react';
 import Loader from '../common/LoaderCircle';
 
-type Props = {
-    modal: any;
-}
+import type { Props } from './index';
 
 type State = {
-    +countdown: number;
+    countdown: number;
     ticker?: number;
 }
 
-export default class RememberDevice extends Component {
+export default class RememberDevice extends Component<Props, State> {
 
     state: State;
 
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -79,7 +77,7 @@ export default class RememberDevice extends Component {
                 <h3>Forget {label}?</h3>
                 <p>Would you like TREZOR Wallet to forget your device or to remember it, so that it is still visible even while disconnected?</p>
                 <button onClick={ event => onForgetDevice(device) }>Forget</button>
-                <button className="white" onClick={ event => onRememberDevice(device) }><span>Remember <Loader size={ 28 } label={  this.state.countdown } /></span></button>
+                <button className="white" onClick={ event => onRememberDevice(device) }><span>Remember <Loader size="28" label={  this.state.countdown.toString() } /></span></button>
             </div>
         );
     }

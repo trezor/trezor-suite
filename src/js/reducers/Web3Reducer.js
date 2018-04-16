@@ -6,18 +6,27 @@ import Web3 from 'web3';
 import * as STORAGE from '../actions/constants/localStorage';
 import * as WEB3 from '../actions/constants/web3';
 
-type Web3Instance = {
+import type { Action } from '../flowtype';
+import type { 
+    Web3CreateAction,
+    Web3UpdateBlockAction,
+    Web3UpdateGasPriceAction 
+} from '../actions/Web3Actions';
+
+export type Web3Instance = {
     network: string;
     web3: Web3;
     chainId: number;
     latestBlock: any;
-    gasPrice: any;
-    erc20: any;
+    gasPrice: string; //BigNumber
+    erc20: any; //ContractFactory
 }
 
-const initialState: Array<Web3Instance> = [];
+export type State = Array<Web3Instance>;
 
-const createWeb3 = (state: Array<Web3Instance>, action: any): Array<Web3Instance> => {
+const initialState: State = [];
+
+const createWeb3 = (state: State, action: Web3CreateAction): State => {
     const instance: Web3Instance = {
         network: action.network,
         web3: action.web3,
@@ -31,21 +40,21 @@ const createWeb3 = (state: Array<Web3Instance>, action: any): Array<Web3Instance
     return newState;
 }
 
-const updateLatestBlock = (state: Array<Web3Instance>, action: any): Array<Web3Instance> => {
+const updateLatestBlock = (state: State, action: Web3UpdateBlockAction): State => {
     const index: number = state.findIndex(w3 => w3.network === action.network);
     const newState: Array<Web3Instance> = [ ...state ];
     newState[index].latestBlock = action.blockHash;
     return newState;
 }
 
-const updateGasPrice = (state: Array<Web3Instance>, action: any): Array<Web3Instance> => {
+const updateGasPrice = (state: State, action: Web3UpdateGasPriceAction): State => {
     const index: number = state.findIndex(w3 => w3.network === action.network);
-    const newState: Array<Web3Instance> = [ ...state ];
+    const newState: State = [ ...state ];
     newState[index].gasPrice = action.gasPrice;
     return newState;
 }
 
-export default function web3(state: Array<Web3Instance> = initialState, action: any): any {
+export default function web3(state: State = initialState, action: Action): State {
 
     switch (action.type) {
         

@@ -4,26 +4,29 @@
 import * as WEB3 from '../actions/constants/web3';
 import * as WALLET from '../actions/constants/wallet';
 
+import type { Action, RouterLocationState } from '../flowtype';
+
 type State = {
     ready: boolean;
     dropdownOpened: boolean;
-    initialUrl: boolean;
+    initialParams: ?RouterLocationState;
+    initialPathname: ?string;
 }
 
-const initialState: Object = {
+const initialState: State = {
     ready: false,
     dropdownOpened: false,
     initialParams: null,
     initialPathname: null,
 };
 
-export default function wallet(state: Object = initialState, action: Object): any {
+export default function wallet(state: State = initialState, action: Action): State {
     switch(action.type) {
 
         case WALLET.SET_INITIAL_URL :
             return {
                 ...state,
-                initialParams: action.params,
+                initialParams: action.state,
                 initialPathname: action.pathname
             }
 

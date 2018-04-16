@@ -6,21 +6,21 @@ import * as RECEIVE from '../actions/constants/receive';
 import * as MODAL from '../actions/constants/modal';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
-type ModalState = {
+export type State = {
     opened: boolean;
     device: any;
-    instances: Array<any>;
+    instances: ?Array<any>;
     windowType: ?string;
 }
 
-const initialState: ModalState = {
+const initialState: State = {
     opened: false,
     device: null,
     instances: null,
     windowType: null
 };
 
-export default function modal(state: ModalState = initialState, action: any): any {
+export default function modal(state: State = initialState, action: any): State {
 
     switch (action.type) {
 

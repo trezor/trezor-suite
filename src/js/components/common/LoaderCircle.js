@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-export default (props: any): any => {
+export default (props: { size: string, label?: string }): React$Element<string> => {
 
     const style = {
         width: `${props.size}px`, 

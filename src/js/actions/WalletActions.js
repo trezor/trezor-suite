@@ -1,23 +1,28 @@
 /* @flow */
 'use strict';
 
-export const ON_RESIZE: string = 'ON_RESIZE';
-export const TOGGLE_DEVICE_DROPDOWN: string = 'TOGGLE_DEVICE_DROPDOWN';
 import * as WALLET from './constants/wallet';
 
-export const onResize = (): any => {
-    return {
-        type: ON_RESIZE
-    }
+import type { RouterLocationState } from '../flowtype';
+
+export type WalletAction = {
+    type: typeof WALLET.SET_INITIAL_URL,
+    state?: RouterLocationState,
+    pathname?: string
+} | {
+    type: typeof WALLET.TOGGLE_DEVICE_DROPDOWN,
+    opened: boolean
+} | {
+    type: typeof WALLET.ON_BEFORE_UNLOAD
 }
 
-export const onBeforeUnload = (): any => {
+export const onBeforeUnload = (): WalletAction => {
     return {
         type: WALLET.ON_BEFORE_UNLOAD
     }
 }
 
-export const toggleDeviceDropdown = (opened: boolean): any => {
+export const toggleDeviceDropdown = (opened: boolean): WalletAction => {
     return {
         type: WALLET.TOGGLE_DEVICE_DROPDOWN,
         opened

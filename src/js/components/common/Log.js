@@ -6,9 +6,14 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as LogActions from '../../actions/LogActions';
+import type { State, Dispatch } from '../../flowtype';
 
-const Log = (props: any) => {
+type Props = {
+    log: $ElementType<State, 'log'>,
+    toggle: typeof LogActions.toggle
+}
 
+const Log = (props: Props): ?React$Element<string> => {
     if (!props.log.opened)
         return null;
     
@@ -23,12 +28,12 @@ const Log = (props: any) => {
 }
 
 export default connect( 
-    (state) => {
+    (state: State) => {
         return {
             log: state.log
         };
     },
-    (dispatch) => {
+    (dispatch: Dispatch) => {
         return { 
             toggle: bindActionCreators(LogActions.toggle, dispatch),
         };

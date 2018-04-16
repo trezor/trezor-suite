@@ -27,7 +27,6 @@ const createAccount = (state: Array<Account>, action: any): Array<Account> => {
     // TODO check with device_id
     // check if account was created before
     const exist: ?Account = state.find((account: Account) => account.address === action.address && account.network === action.network && account.deviceID === action.device.features.device_id);
-    console.warn("MAM?", exist, action)
     if (exist) {
         return state;
     }

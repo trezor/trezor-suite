@@ -1,6 +1,9 @@
 /* @flow */
 'use strict';
 
+import * as LOG from '../actions/constants/log';
+import type { Action } from '../flowtype';
+
 type LogEntry = {
     time: number;
     type: string;
@@ -18,26 +21,26 @@ export const initialState: State = {
 };
 
 
-export default (state: State = initialState, action: any): State => {
+export default (state: State = initialState, action: Action): State => {
 
     switch (action.type) {
 
-        case 'log__open': 
+        case LOG.OPEN: 
             return {
                 ...state,
                 opened: true
             }
 
-        case 'log__close': 
+        case LOG.CLOSE: 
             return {
                 ...state,
                 opened: false
             }
 
-        case 'log__add': 
-            return {
-                ...state,
-            }
+        // case 'log__add': 
+        //     return {
+        //         ...state,
+        //     }
 
         default:
             return state;

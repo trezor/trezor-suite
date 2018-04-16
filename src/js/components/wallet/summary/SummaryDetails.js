@@ -4,7 +4,18 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 
-const SummaryDetails = (props: any): any => {
+import type { Props as BaseProps } from './index';
+
+type Props = {
+    summary: $ElementType<BaseProps, 'summary'>,
+    balance: string,
+    network: string,
+    fiat: $ElementType<BaseProps, 'fiat'>,
+    localStorage: $ElementType<BaseProps, 'localStorage'>,
+    onToggle: $ElementType<BaseProps, 'onDetailsToggle'>
+}
+
+const SummaryDetails = (props: Props): ?React$Element<string> => {
 
     if (!props.summary.details) return (
         <div className="summary-details">

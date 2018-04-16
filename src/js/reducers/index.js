@@ -21,7 +21,7 @@ import pending from './PendingTxReducer.js';
 import fiat from './FiatRateReducer.js';
 import wallet from './WalletReducer.js';
 
-export default combineReducers({
+const reducers = {
     router: routerReducer,
     log,
     localStorage,
@@ -39,4 +39,26 @@ export default combineReducers({
     pending,
     fiat,
     wallet
-});
+}
+
+
+export type Reducers = typeof reducers;
+type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;
+export type ReducersState = $ObjMap<Reducers, $ExtractFunctionReturn>;
+
+
+
+
+export default combineReducers(reducers);
+
+// export type Reducers = {
+//     router: any;
+//     log: any;
+
+//     connect: TrezorConnectState;
+//     accounts: Array<Account>;
+//     tokens: Array<Token>;
+//     pending: Array<PendingTx>;
+//     discovery: Array<Discovery>;
+//     localStorage: LocalStorageState;
+// }

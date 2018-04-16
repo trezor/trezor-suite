@@ -4,8 +4,11 @@
 import React, { Component } from 'react';
 import TrezorConnect from 'trezor-connect';
 
-export default class InstallBridge extends Component {
+type Props = {
+    transport: any;
+}
 
+export default class InstallBridge extends Component<Props> {
 
     componentDidMount(): void {
         const transport: any = this.props.transport;

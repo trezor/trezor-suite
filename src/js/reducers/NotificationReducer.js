@@ -7,7 +7,7 @@ import { DEVICE } from 'trezor-connect';
 
 type NotificationAction = {
     label: string;
-    callback: any;
+    callback: Function;
 }
 
 type NotificationEntry = {

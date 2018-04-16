@@ -40,6 +40,7 @@ export const btckb2satoshib = (n: number): number => {
 
 export const stringToHex = (str: string): string => {
     let result: string = '';
+    let hex: string;
     for (let i = 0; i < str.length; i++) {
         hex = str.charCodeAt(i).toString(16);
         result += ('000' + hex).slice(-4);

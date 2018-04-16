@@ -11,7 +11,36 @@ import { toggleDeviceDropdown } from '../../../actions/WalletActions';
 
 import Aside from './Aside';
 
-const mapStateToProps = (state, own) => {
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import type { State, Dispatch } from '../../../flowtype';
+
+type OwnProps = {
+    
+}
+
+type StateProps = {
+    connect: $ElementType<State, 'connect'>,
+    accounts: $ElementType<State, 'accounts'>,
+    router: $ElementType<State, 'router'>,
+    deviceDropdownOpened: boolean,
+    fiat: $ElementType<State, 'fiat'>,
+    localStorage: $ElementType<State, 'localStorage'>,
+    discovery: $ElementType<State, 'discovery'>,
+}
+
+type DispatchProps = {
+    toggleDeviceDropdown: typeof toggleDeviceDropdown,
+    addAddress: typeof TrezorConnectActions.addAddress,
+    acquireDevice: typeof TrezorConnectActions.acquire,
+    forgetDevice: typeof TrezorConnectActions.forget,
+    duplicateDevice: typeof TrezorConnectActions.duplicateDevice,
+    gotoDeviceSettings: typeof TrezorConnectActions.gotoDeviceSettings,
+    onSelectDevice: typeof TrezorConnectActions.onSelectDevice,
+}
+
+export type Props = StateProps & DispatchProps;
+
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
         connect: state.connect,
         accounts: state.accounts,
@@ -23,7 +52,7 @@ const mapStateToProps = (state, own) => {
     };
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
     return {
         //onAccountSelect: bindActionCreators(AccountActions.onAccountSelect, dispatch),
         toggleDeviceDropdown: bindActionCreators(toggleDeviceDropdown, dispatch),
@@ -36,7 +65,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 }
 
-//export default connect(mapStateToProps, mapDispatchToProps)(AddressMenu);
+// export default connect(mapStateToProps, mapDispatchToProps)(Aside);
 export default withRouter(
     connect(mapStateToProps, mapDispatchToProps)(Aside)
 );
