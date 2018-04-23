@@ -2,6 +2,7 @@
 'use strict';
 
 import * as RECEIVE from '../actions/constants/receive';
+import type { Action } from '../flowtype';
 
 export type State = {
     addressVerified: boolean;
@@ -13,7 +14,7 @@ export const initialState: State = {
     addressUnverified: false,
 };
 
-export default (state: State = initialState, action: any): State => {
+export default (state: State = initialState, action: Action): State => {
 
     switch (action.type) {
 

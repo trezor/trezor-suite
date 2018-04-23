@@ -38,7 +38,7 @@ import type {
 
 export type TrezorConnectAction = {
     type: typeof CONNECT.INITIALIZATION_ERROR,
-    error: any
+    error: string
 } | {
     type: typeof CONNECT.SELECT_DEVICE,
     payload: ?{
@@ -52,40 +52,41 @@ export type TrezorConnectAction = {
     }
 } | {
     type: typeof CONNECT.AUTH_DEVICE,
-    device: any
+    device: TrezorDevice
 } | {
     type: typeof CONNECT.DUPLICATE,
-    device: any
+    device: TrezorDevice
 } | {
     type: typeof CONNECT.REMEMBER_REQUEST,
-    device: any
+    device: TrezorDevice,
+    instances: Array<TrezorDevice>
 } | {
     type: typeof CONNECT.DISCONNECT_REQUEST,
-    device: any
+    device: TrezorDevice
 } | {
     type: typeof CONNECT.FORGET_REQUEST,
-    device: any
+    device: TrezorDevice
 } | {
     type: typeof CONNECT.FORGET,
-    device: any
+    device: TrezorDevice
 } | {
     type: typeof CONNECT.FORGET_SINGLE,
-    device: any
+    device: TrezorDevice
 } | {
     type: typeof CONNECT.REMEMBER,
-    device: any
+    device: TrezorDevice
 } | {
     type: typeof CONNECT.TRY_TO_DUPLICATE,
-    device: any
+    device: TrezorDevice
 } | {
     type: typeof CONNECT.DEVICE_FROM_STORAGE,
-    payload: Array<any>
+    payload: Array<TrezorDevice>
 } | {
     type: typeof CONNECT.START_ACQUIRING,
-    device: any
+    device: TrezorDevice
 } | {
     type: typeof CONNECT.STOP_ACQUIRING,
-    device: any
+    device: TrezorDevice
 };
 
 
@@ -349,12 +350,12 @@ export const deviceDisconnect = (device: Device): AsyncAction => {
                 dispatch( DiscoveryActions.stop(selected) );
             }
 
-            const affected = getState().connect.devices.filter(d => d.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
-            if (affected.length > 0) {
+            const instances = getState().connect.devices.filter(d => d.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
+            if (instances.length > 0) {
                 dispatch({
                     type: CONNECT.REMEMBER_REQUEST,
                     device,
-                    instances: affected
+                    instances,
                 });
             }
         }
@@ -469,7 +470,7 @@ export const gotoDeviceSettings = (device: any): AsyncAction => {
 }
 
 // called from Aside - device menu (forget single instance)
-export const forget = (device: any): Action => {
+export const forget = (device: TrezorDevice): Action => {
     return {
         type: CONNECT.FORGET_REQUEST,
         device
@@ -497,6 +498,7 @@ export const onDuplicateDevice = (): AsyncAction => {
 export function addAddress(): AsyncAction {
     return (dispatch: Dispatch, getState: GetState): void => {
         const selected = findSelectedDevice(getState().connect);
+        if (!selected) return;
         dispatch( DiscoveryActions.start(selected, getState().router.location.state.network, true) ); // TODO: network nicer
     }
 }

@@ -11,6 +11,7 @@ import * as ADDRESS from '../actions/constants/address';
 import * as DISCOVERY from '../actions/constants/discovery';
 import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
+import * as PENDING from '../actions/constants/pendingTx';
 import { LOCATION_CHANGE } from 'react-router-redux';
 
 import type { 
@@ -131,7 +132,7 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
         break;
 
         case SEND.TX_COMPLETE :
-        case WEB3.PENDING_TX_RESOLVED :
+        case PENDING.TX_RESOLVED :
             save(api.dispatch, api.getState);
         break;
 

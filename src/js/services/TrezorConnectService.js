@@ -105,7 +105,7 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         // TODO: move it to modal actions
         const { modal } = api.getState();
         if (modal.opened && modal.windowType === CONNECT.REMEMBER_REQUEST) {
-            if (action.device.features && modal.device.features.device_id === action.device.features.device_id) {
+            if (action.device.features && modal.device && modal.device.features && modal.device.features.device_id === action.device.features.device_id) {
                 api.dispatch({
                     type: MODAL.CLOSE,
                 });

@@ -78,6 +78,10 @@ export type SendFormAction = {
 } | {
     type: typeof SEND.DATA_CHANGE,
     state: State
+} | {
+    type: typeof SEND.SEND,
+} | {
+    type: typeof SEND.TX_ERROR,
 };
 
 //const numberRegExp = new RegExp('^([0-9]{0,10}\\.)?[0-9]{1,18}$');

@@ -4,6 +4,13 @@
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as ADDRESS from '../actions/constants/address';
 
+import type { Action, TrezorDevice } from '../flowtype';
+import type { 
+    AddressCreateAction,
+    AddressSetBalanceAction,
+    AddressSetNonceAction
+} from '../actions/AddressActions';
+
 export type Account = {
     loaded: boolean;
     +network: string;
@@ -16,17 +23,19 @@ export type Account = {
     nonce: number;
 }
 
-const initialState: Array<Account> = [];
+export type State = Array<Account>;
 
-export const findAccount = (state: Array<Account>, index: number, deviceState: string, network: string): ?Account => {
+const initialState: State = [];
+
+export const findAccount = (state: State, index: number, deviceState: string, network: string): ?Account => {
     return state.find(a => a.deviceState === deviceState && a.index === index && a.network === network);
 }
 
-const createAccount = (state: Array<Account>, action: any): Array<Account> => {
+const createAccount = (state: State, action: AddressCreateAction): State => {
 
     // TODO check with device_id
     // check if account was created before
-    const exist: ?Account = state.find((account: Account) => account.address === action.address && account.network === action.network && account.deviceID === action.device.features.device_id);
+    const exist: ?Account = state.find((account: Account) => account.address === action.address && account.network === action.network && action.device.features && account.deviceID === action.device.features.device_id);
     if (exist) {
         return state;
     }
@@ -34,7 +43,7 @@ const createAccount = (state: Array<Account>, action: any): Array<Account> => {
     const address: Account = {
         loaded: false,
         network: action.network,
-        deviceID: action.device.features.device_id,
+        deviceID: action.device.features ? action.device.features.device_id : '0',
         deviceState: action.device.state,
         index: action.index,
         addressPath: action.path,
@@ -43,36 +52,36 @@ const createAccount = (state: Array<Account>, action: any): Array<Account> => {
         nonce: 0,
     }
 
-    const newState: Array<Account> = [ ...state ];
+    const newState: State = [ ...state ];
     newState.push(address);
     return newState;
 }
 
-const removeAccounts = (state: Array<Account>, action: any): Array<Account> => {
-    return state.filter(account => account.deviceID !== action.device.features.device_id);
+const removeAccounts = (state: State, device: TrezorDevice): State => {
+    return state.filter(account => device.features && account.deviceID !== device.features.device_id);
 }
 
-const forgetAccounts = (state: Array<Account>, action: any): Array<Account> => {
-    return state.filter(account => action.accounts.indexOf(account) === -1);
-}
+// const forgetAccounts = (state: State, action: any): State => {
+//     return state.filter(account => action.accounts.indexOf(account) === -1);
+// }
 
-const setBalance = (state: Array<Account>, action: any): Array<Account> => {
+const setBalance = (state: State, action: AddressSetBalanceAction): State => {
     const index: number = state.findIndex(account => account.address === action.address && account.network === action.network);
-    const newState: Array<Account> = [ ...state ];
+    const newState: State = [ ...state ];
     newState[index].loaded = true;
     newState[index].balance = action.balance;
     return newState;
 }
 
-const setNonce = (state: Array<Account>, action: any): Array<Account> => {
+const setNonce = (state: State, action: AddressSetNonceAction): State => {
     const index: number = state.findIndex(account => account.address === action.address && account.network === action.network);
-    const newState: Array<Account> = [ ...state ];
+    const newState: State = [ ...state ];
     newState[index].loaded = true;
     newState[index].nonce = action.nonce;
     return newState;
 }
 
-export default (state: Array<Account> = initialState, action: any): Array<Account> => {
+export default (state: State = initialState, action: Action): State => {
 
     switch (action.type) {
 
@@ -81,7 +90,7 @@ export default (state: Array<Account> = initialState, action: any): Array<Accoun
 
         case CONNECT.FORGET :
         case CONNECT.FORGET_SINGLE :
-            return removeAccounts(state, action);
+            return removeAccounts(state, action.device);
 
         //case CONNECT.FORGET_SINGLE :
         //    return forgetAccounts(state, action);

@@ -20,15 +20,7 @@ export type TokenAction = {
     token: Token
 } | {
     type: typeof TOKEN.SET_BALANCE,
-    payload: {
-        ethAddress: string,
-        address: string,
-    }
-}
-
-export const setBalance = (web3: any, coinIndex: number = 0): AsyncAction => {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    }
+    payload: State
 }
 
 type SelectOptions = {
@@ -93,15 +85,23 @@ export const add = (token: NetworkToken, account: Account): AsyncAction => {
         });
 
         const tokenBalance = await getTokenBalanceAsync(web3instance.erc20, token.address, account.address);
+        dispatch( setBalance(token.address, account.address, tokenBalance.toString()) )
+    }
+}
+
+export const setBalance = (tokenAddress: string, ethAddress: string, balance: string): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+        const newState: Array<Token> = [ ...getState().tokens ];
+        let token: ?Token = newState.find(t => t.address === tokenAddress && t.ethAddress === ethAddress);
+        if (token) {
+            token.loaded = true;
+            token.balance = balance;
+        }
+
         dispatch({
             type: TOKEN.SET_BALANCE,
-            payload: {
-                ethAddress: account.address,
-                address: token.address,
-                balance: tokenBalance.toString()
-            }
+            payload: newState
         })
-
     }
 }
 

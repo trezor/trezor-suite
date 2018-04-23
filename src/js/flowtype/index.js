@@ -3,10 +3,9 @@
 
 import type {
     Store as ReduxStore,
-    StoreEnhancer as ReduxStoreEnhancer,
     Dispatch as ReduxDispatch,
-    Middleware as ReduxMiddleware,
     MiddlewareAPI as ReduxMiddlewareAPI,
+    Middleware as ReduxMiddleware,
     ThunkAction as ReduxThunkAction,
     ThunkDispatch as ReduxThunkDispatch,
     PlainDispatch as ReduxPlainDispatch
@@ -22,6 +21,7 @@ import type { StorageAction } from '../actions/LocalStorageActions';
 import type { LogAction } from '../actions/LogActions';
 import type { ModalAction } from '../actions/ModalActions';
 import type { NotificationAction } from '../actions/NotificationActions';
+import type { PendingTxAction } from '../actions/PendingTxActions';
 import type { ReceiveAction } from '../actions/ReceiveActions';
 import type { SendFormAction } from '../actions/SendFormActions';
 import type { SummaryAction } from '../actions/SummaryActions';
@@ -52,6 +52,22 @@ export type TrezorDevice = {
     instanceLabel: string;
     features?: Features;
     unacquired?: boolean;
+    acquiring: boolean;
+    isUsedElsewhere?: boolean;
+    featuresNeedsReload?: boolean;
+    ts: number;
+}
+
+export type AcquiredDevice = {
+    remember: boolean;
+    connected: boolean;
+    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected (saved)
+    path: string;
+    label: string;
+    state: string;
+    instance: ?number;
+    instanceLabel: string;
+    features: Features;
     acquiring: boolean;
     isUsedElsewhere?: boolean;
     featuresNeedsReload?: boolean;
@@ -96,6 +112,7 @@ export type Action =
     | LogAction 
     | ModalAction 
     | NotificationAction
+    | PendingTxAction
     | ReceiveAction
     | SendFormAction
     | SummaryAction
@@ -111,7 +128,6 @@ export type Accounts = $ElementType<State, 'accounts'>;
 export type LocalStorage = $ElementType<State, 'localStorage'>;
 export type Config = $PropertyType<$ElementType<State, 'localStorage'>, 'config'>;
 
-
 export type Dispatch = ReduxDispatch<State, Action>;
 export type MiddlewareDispatch = ReduxPlainDispatch<Action>;
 
@@ -119,8 +135,5 @@ export type MiddlewareAPI = ReduxMiddlewareAPI<State, Action>;
 export type Middleware = ReduxMiddleware<State, Action>;
 
 export type Store = ReduxStore<State, Action>;
-export type StoreEnhancer = ReduxStoreEnhancer<State, Action>;
-
 export type GetState = () => State;
-
 export type AsyncAction = ReduxThunkAction<State, Action>;

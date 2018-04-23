@@ -41,24 +41,8 @@ const reducers = {
     wallet
 }
 
-
 export type Reducers = typeof reducers;
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;
 export type ReducersState = $ObjMap<Reducers, $ExtractFunctionReturn>;
 
-
-
-
 export default combineReducers(reducers);
-
-// export type Reducers = {
-//     router: any;
-//     log: any;
-
-//     connect: TrezorConnectState;
-//     accounts: Array<Account>;
-//     tokens: Array<Token>;
-//     pending: Array<PendingTx>;
-//     discovery: Array<Discovery>;
-//     localStorage: LocalStorageState;
-// }

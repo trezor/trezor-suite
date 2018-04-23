@@ -3,7 +3,8 @@
 
 import * as NOTIFICATION from './constants/notification';
 
-import type { AsyncAction, GetState, Dispatch, RouterLocationState } from '../flowtype';
+import type { Action, AsyncAction, GetState, Dispatch, RouterLocationState } from '../flowtype';
+import type { CallbackAction } from '../reducers/NotificationReducer';
 
 export type NotificationAction = {
     type: typeof NOTIFICATION.ADD,
@@ -12,7 +13,7 @@ export type NotificationAction = {
         +title: string,
         +message?: string,
         +cancelable: boolean,
-        actions?: Array<any>
+        actions?: Array<CallbackAction>
     }
 } | {
     type: typeof NOTIFICATION.CLOSE,
@@ -22,8 +23,11 @@ export type NotificationAction = {
     }
 }
 
-export const close = () => {
-    
+export const close = (payload: any = {}): Action => {
+    return {
+        type: NOTIFICATION.CLOSE,
+        payload
+    }
 }
 
 

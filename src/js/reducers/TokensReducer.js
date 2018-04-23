@@ -26,28 +26,18 @@ export const findToken = (state: Array<Token>, address: string, symbol: string, 
     return state.find(t => t.ethAddress === address && t.symbol === symbol && t.deviceState === deviceState);
 }
 
-const setBalance = (state: State, payload: any): State => {
-    const newState: Array<Token> = [ ...state ];
-    let index: number = state.findIndex(t => t.address === payload.address && t.ethAddress === payload.ethAddress);
-    if (index >= 0) {
-        newState[index].loaded = true;
-        newState[index].balance = payload.balance;
-    }
-    return newState;
-}
+// const setBalance = (state: State, payload: any): State => {
+//     const newState: Array<Token> = [ ...state ];
+//     let index: number = state.findIndex(t => t.address === payload.address && t.ethAddress === payload.ethAddress);
+//     if (index >= 0) {
+//         newState[index].loaded = true;
+//         newState[index].balance = payload.balance;
+//     }
+//     return newState;
+// }
 
-const create = (state: State, payload: any): State => {
+const create = (state: State, token: Token): State => {
     const newState: Array<Token> = [ ...state ];
-    const token: Token = {
-        loaded: false,
-        deviceState: payload.deviceState,
-        name: payload.name,
-        symbol: payload.symbol,
-        address: payload.address,
-        ethAddress: payload.ethAddress,
-        decimals: payload.decimals,
-        balance: '0'
-    }
     newState.push(token);
     return newState;
 }
@@ -74,7 +64,7 @@ export default (state: State = initialState, action: Action): State => {
         case TOKEN.REMOVE :
             return remove(state, action.token);
         case TOKEN.SET_BALANCE :
-            return setBalance(state, action.payload);
+            return action.payload;
 
         case CONNECT.FORGET :
         case CONNECT.FORGET_SINGLE :

@@ -8,6 +8,7 @@ import EthereumjsUnits from 'ethereumjs-units';
 import BigNumber from 'bignumber.js';
 import { getFeeLevels } from '../actions/SendFormActions';
 
+import type { Action } from '../flowtype';
 import type { 
     Web3CreateAction,
     Web3UpdateBlockAction,
@@ -122,7 +123,7 @@ const onBalanceUpdated = (state: State, action: any): State => {
 }
 
 
-export default (state: State = initialState, action: any): State => {
+export default (state: State = initialState, action: Action): State => {
 
     switch (action.type) {
 

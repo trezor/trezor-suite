@@ -7,24 +7,52 @@ import * as DISCOVERY from './constants/discovery';
 import * as ADDRESS from './constants/address';
 import * as TOKEN from './constants/token';
 import * as NOTIFICATION from './constants/notification';
-import type { Discovery } from '../reducers/DiscoveryReducer';
+import * as AddressActions from '../actions/AddressActions';
 
 import HDKey from 'hdkey';
 import EthereumjsUtil from 'ethereumjs-util';
 import { getNonceAsync, getBalanceAsync, getTokenBalanceAsync } from './Web3Actions';
+import { setBalance as setTokenBalance } from './TokenActions';
 
-
+import type { AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
+import type { Discovery, State } from '../reducers/DiscoveryReducer';
 
 export type DiscoveryAction = {
-    type: typeof DISCOVERY.START,
-} | {
-    type: typeof DISCOVERY.STOP,
-} | {
-    type: typeof DISCOVERY.COMPLETE,
-};
+    type: typeof DISCOVERY.FROM_STORAGE,
+    payload: State
+} | DiscoveryStartAction
+  | DiscoveryWaitingAction
+  | DiscoveryStopAction
+  | DiscoveryCompleteAction;
 
-export const start = (device: any, network: string, ignoreCompleted?: boolean): any => {
-    return (dispatch, getState) => {
+export type DiscoveryStartAction = {
+    type: typeof DISCOVERY.START,
+    device: TrezorDevice,
+    network: string,
+    xpub: string,
+    basePath: Array<number>,
+    hdKey: HDKey
+}
+
+export type DiscoveryWaitingAction = {
+    type: typeof DISCOVERY.WAITING,
+    device: TrezorDevice,
+    network: string
+}
+
+export type DiscoveryStopAction = {
+    type: typeof DISCOVERY.STOP,
+    device: TrezorDevice
+}
+
+export type DiscoveryCompleteAction = {
+    type: typeof DISCOVERY.COMPLETE,
+    device: TrezorDevice,
+    network: string
+}
+
+export const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
 
         const selected = findSelectedDevice(getState().connect);
         if (!selected) {
@@ -42,9 +70,11 @@ export const start = (device: any, network: string, ignoreCompleted?: boolean): 
             return;
         }
 
-        const discovery = getState().discovery;
-        let discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
+        
 
+        const discovery: State = getState().discovery;
+        let discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
+        
         if (!selected.connected && (!discoveryProcess || !discoveryProcess.completed)) {
             dispatch({
                 type: DISCOVERY.WAITING,
@@ -75,11 +105,12 @@ export const start = (device: any, network: string, ignoreCompleted?: boolean): 
     }
 }
 
-const begin = (device: any, network: string) => {
-    return async (dispatch, getState) => {
+const begin = (device: TrezorDevice, network: string): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const { config } = getState().localStorage;
         const coinToDiscover = config.coins.find(c => c.network === network);
+        if (!coinToDiscover) return;
 
         dispatch({
             type: DISCOVERY.WAITING,
@@ -88,7 +119,7 @@ const begin = (device: any, network: string) => {
         });
 
         // get xpub from TREZOR
-        const response = await TrezorConnect.getPublicKey({ 
+        const response: Object = await TrezorConnect.getPublicKey({ 
             device: {
                 path: device.path,
                 instance: device.instance,
@@ -145,8 +176,8 @@ const begin = (device: any, network: string) => {
     }
 }
 
-const discoverAddress = (device: any, discoveryProcess: Discovery): any => {
-    return async (dispatch, getState) => {
+const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
         const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
@@ -236,15 +267,13 @@ const discoverAddress = (device: any, discoveryProcess: Discovery): any => {
         }
 
         const web3instance = getState().web3.find(w3 => w3.network === network);
+        if (!web3instance) return;
         
         const balance = await getBalanceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
-        dispatch({
-            type: ADDRESS.SET_BALANCE,
-            address: ethAddress,
-            network,
-            balance: web3instance.web3.fromWei(balance.toString(), 'ether')
-        });
+        dispatch(
+            AddressActions.setBalance(ethAddress, network, web3instance.web3.fromWei(balance.toString(), 'ether'))
+        );
 
         const userTokens = [];
         // const userTokens = [
@@ -255,16 +284,10 @@ const discoverAddress = (device: any, discoveryProcess: Discovery): any => {
         for (let i = 0; i < userTokens.length; i++) {
             const tokenBalance = await getTokenBalanceAsync(web3instance.erc20, userTokens[i].address, ethAddress);
             if (discoveryProcess.interrupted) return;
-            dispatch({
-                type: TOKEN.SET_BALANCE,
-                tokenName: userTokens[i].symbol,
-                ethAddress: ethAddress,
-                tokenAddress: userTokens[i].address,
-                balance: tokenBalance.toString()
-            })
+            dispatch( setTokenBalance(userTokens[i].address, ethAddress, tokenBalance.toString()) )
         }
 
-        const nonce = await getNonceAsync(web3instance.web3, ethAddress);
+        const nonce: number = await getNonceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
         dispatch({
             type: ADDRESS.SET_NONCE,
@@ -298,8 +321,8 @@ const discoverAddress = (device: any, discoveryProcess: Discovery): any => {
     }
 }
 
-export const restore = (): any => {
-    return (dispatch, getState): void => {
+export const restore = (): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
         const selected = findSelectedDevice(getState().connect);
 
         if (selected && selected.connected && !selected.unacquired) {
@@ -315,8 +338,8 @@ export const restore = (): any => {
 // there is no discovery process but it should be
 // this is possible race condition when "network" was changed in url but device was not authenticated yet
 // try to start discovery after CONNECT.AUTH_DEVICE action
-export const check = (): any => {
-    return (dispatch, getState): void => {
+export const check = (): AsyncAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
         const selected = findSelectedDevice(getState().connect);
         if (!selected) return;
 
@@ -330,7 +353,7 @@ export const check = (): any => {
     }
 }
 
-export const stop = (device: any): any => {
+export const stop = (device: TrezorDevice): Action => {
     // TODO: release devices session
     // corner case switch /eth to /etc (discovery start stop - should not be async)
     return {

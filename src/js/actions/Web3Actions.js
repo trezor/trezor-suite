@@ -9,6 +9,8 @@ import TrezorConnect from 'trezor-connect';
 import { strip } from '../utils/ethUtils';
 import * as ADDRESS from './constants/address';
 import * as WEB3 from './constants/web3';
+import * as PENDING from './constants/pendingTx';
+import * as AddressActions from '../actions/AddressActions';
 
 import type { 
     Dispatch,
@@ -18,13 +20,12 @@ import type {
 } from '../flowtype';
 
 import type { Account } from '../reducers/AccountsReducer';
+import type { PendingTx } from '../reducers/PendingTxReducer';
 
 export type Web3Action = {
     type: typeof WEB3.READY,
-} | {
-    type: typeof WEB3.PENDING_TX_RESOLVED
-} | Web3CreateAction 
-  | Web3UpdateBlockAction 
+} | Web3CreateAction
+  | Web3UpdateBlockAction
   | Web3UpdateGasPriceAction;
 
 export type Web3CreateAction = {
@@ -261,12 +262,11 @@ export function getBalance(account: Account): AsyncAction {
             if (!error) {
                 const newBalance: string = web3.fromWei(balance.toString(), 'ether');
                 if (account.balance !== newBalance) {
-                    dispatch({
-                        type: ADDRESS.SET_BALANCE,
-                        address: account.address,
-                        network: account.network,
-                        balance: newBalance
-                    });
+                    dispatch(AddressActions.setBalance(
+                        account.address,
+                        account.network,
+                        newBalance
+                    ));
 
                     // dispatch( loadHistory(addr) );
                 }
@@ -282,7 +282,7 @@ export function getNonce(account: Account): AsyncAction {
         const web3instance = getState().web3.filter(w3 => w3.network === account.network)[0];
         const web3 = web3instance.web3;
 
-        web3.eth.getTransactionCount(account.address, (error, result) => {
+        web3.eth.getTransactionCount(account.address, (error: Error, result: number) => {
             if (!error) {
                 if (account.nonce !== result) {
                     dispatch({
@@ -297,7 +297,7 @@ export function getNonce(account: Account): AsyncAction {
     }
 }
 
-export function getTransactionReceipt(tx: any): AsyncAction {
+export const getTransactionReceipt = (tx: PendingTx): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const web3instance = getState().web3.filter(w3 => w3.network === tx.network)[0];
@@ -305,12 +305,10 @@ export function getTransactionReceipt(tx: any): AsyncAction {
 
         //web3.eth.getTransactionReceipt(txid, (error, tx) => {
         web3.eth.getTransaction(tx.id, (error, receipt) => {
-            console.log("RECEIP", receipt)
             if (receipt && receipt.blockNumber) {
                 web3.eth.getBlock(receipt.blockHash, (error, block) => {
-                    console.log("---MAMM BLOCK", error, block, receipt, receipt.blockHash)
                     dispatch({
-                        type: WEB3.PENDING_TX_RESOLVED,
+                        type: PENDING.TX_RESOLVED,
                         tx,
                         receipt,
                         block
@@ -359,7 +357,7 @@ export const getTokenBalanceAsync = (erc20: any, token: string, address: string)
     return new Promise((resolve, reject) => {
 
         const contr = erc20.at(token);
-        contr.balanceOf(address, (error, result) => {
+        contr.balanceOf(address, (error: Error, result) => {
             if (error) {
                 reject(error);
             } else {
@@ -369,9 +367,9 @@ export const getTokenBalanceAsync = (erc20: any, token: string, address: string)
     });
 }
 
-export const getNonceAsync = (web3: Web3, address: string): Promise<any> => {
+export const getNonceAsync = (web3: Web3, address: string): Promise<number> => {
     return new Promise((resolve, reject) => {
-        web3.eth.getTransactionCount(address, (error, result) => {
+        web3.eth.getTransactionCount(address, (error: Error, result: number) => {
             if (error) {
                 reject(error);
             } else {

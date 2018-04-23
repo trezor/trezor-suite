@@ -5,7 +5,7 @@ import TrezorConnect, { UI, UI_EVENT } from 'trezor-connect';
 import * as MODAL from './constants/modal';
 import * as CONNECT from './constants/TrezorConnect';
 
-import type { AsyncAction, Action, GetState, Dispatch } from '../flowtype';
+import type { AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
 
 export type ModalAction = {
     type: typeof MODAL.CLOSE
@@ -37,28 +37,28 @@ export const onPassphraseSubmit = (passphrase: string): AsyncAction => {
     }
 }
 
-export const askForRemember = (device: any): Action => {
-    return {
-        type: MODAL.REMEMBER,
-        device
-    }
-}
+// export const askForRemember = (device: TrezorDevice): Action => {
+//     return {
+//         type: MODAL.REMEMBER,
+//         device
+//     }
+// }
 
-export const onRememberDevice = (device: any): Action => {
+export const onRememberDevice = (device: TrezorDevice): Action => {
     return {
         type: CONNECT.REMEMBER,
         device
     }
 }
 
-export const onForgetDevice = (device: any): Action => {
+export const onForgetDevice = (device: TrezorDevice): Action => {
     return {
         type: CONNECT.FORGET,
         device,
     }
 }
 
-export const onForgetSingleDevice = (device: any): Action => {
+export const onForgetSingleDevice = (device: TrezorDevice): Action => {
     return {
         type: CONNECT.FORGET_SINGLE,
         device,
@@ -71,7 +71,7 @@ export const onCancel = (): Action => {
     }
 }
 
-export const onDuplicateDevice = (device: any): AsyncAction => {
+export const onDuplicateDevice = (device: TrezorDevice): AsyncAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         dispatch( onCancel() );
@@ -86,7 +86,7 @@ export const onDuplicateDevice = (device: any): AsyncAction => {
 export default {
     onPinSubmit,
     onPassphraseSubmit,
-    askForRemember,
+    // askForRemember,
     onRememberDevice,
     onForgetDevice,
     onForgetSingleDevice,

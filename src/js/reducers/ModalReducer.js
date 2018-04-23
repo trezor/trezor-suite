@@ -6,10 +6,12 @@ import * as RECEIVE from '../actions/constants/receive';
 import * as MODAL from '../actions/constants/modal';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
+import type { Action, TrezorDevice } from '../flowtype';
+
 export type State = {
     opened: boolean;
-    device: any;
-    instances: ?Array<any>;
+    device: ?TrezorDevice;
+    instances: ?Array<TrezorDevice>;
     windowType: ?string;
 }
 
@@ -20,7 +22,7 @@ const initialState: State = {
     windowType: null
 };
 
-export default function modal(state: State = initialState, action: any): State {
+export default function modal(state: State = initialState, action: Action): State {
 
     switch (action.type) {
 
@@ -33,12 +35,18 @@ export default function modal(state: State = initialState, action: any): State {
             }
 
         case CONNECT.REMEMBER_REQUEST :
+            return {
+                ...state,
+                device: action.device,
+                instances: action.instances,
+                opened: true,
+                windowType: action.type
+            };
         case CONNECT.FORGET_REQUEST :
         case CONNECT.DISCONNECT_REQUEST :
             return {
                 ...state,
                 device: action.device,
-                instances: action.instances,
                 opened: true,
                 windowType: action.type
             };
@@ -103,8 +111,6 @@ export default function modal(state: State = initialState, action: any): State {
             return {
                 ...initialState,
             };
-
-            
 
         default:
             return state;

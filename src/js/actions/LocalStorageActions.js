@@ -6,6 +6,7 @@ import * as ADDRESS from './constants/address';
 import * as TOKEN from './constants/token';
 import * as DISCOVERY from './constants/discovery';
 import * as STORAGE from './constants/localStorage';
+import * as PENDING from '../actions/constants/pendingTx';
 import { JSONRequest, httpRequest } from '../utils/networkUtils';
 
 import type { AsyncAction, GetState, Dispatch } from '../flowtype';
@@ -13,9 +14,9 @@ import type { Config, Coin, TokensCollection } from '../reducers/LocalStorageRed
 
 export type StorageAction = {
     type: typeof STORAGE.READY,
-    config: any,
-    tokens: any,
-    ERC20Abi: any
+    config: Config,
+    tokens: TokensCollection,
+    ERC20Abi: Array<Object>
 } | {
     type: typeof STORAGE.SAVE,
     network: string,
@@ -119,7 +120,7 @@ export function loadTokensFromJSON(): AsyncAction {
             const pending: ?string = get('pending');
             if (pending) {
                 dispatch({
-                    type: 'PENDING.FROM_STORAGE',
+                    type: PENDING.FROM_STORAGE,
                     payload: JSON.parse(pending)
                 })
             }

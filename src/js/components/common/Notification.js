@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as NOTIFICATION from '../../actions/constants/notification';
+import * as NotificationActions from '../../actions/NotificationActions';
 import type { Action, State, Dispatch } from '../../flowtype';
 
 type Props = {
@@ -20,7 +21,7 @@ type NProps = {
     title: string;
     message?: string;
     actions?: Array<any>;
-    close?: (notif?: any) => Action
+    close?: typeof NotificationActions.close
 }
 
 export const Notification = (props: NProps): React$Element<string>  => {
@@ -77,12 +78,7 @@ export default connect(
     },
     (dispatch: Dispatch) => {
         return { 
-            close: bindActionCreators((notif?: any): Action => {
-                return {
-                    type: NOTIFICATION.CLOSE,
-                    payload: notif
-                }
-            }, dispatch),
+            close: bindActionCreators(NotificationActions.close, dispatch),
         };
     }
 )(NotificationGroup);

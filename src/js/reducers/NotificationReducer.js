@@ -5,22 +5,26 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 import * as NOTIFICATION from '../actions/constants/notification';
 import { DEVICE } from 'trezor-connect';
 
-type NotificationAction = {
+import type { Action } from '../flowtype';
+
+export type CallbackAction = {
     label: string;
     callback: Function;
 }
 
-type NotificationEntry = {
+export type NotificationEntry = {
     +id: ?string;
     +devicePath: ?string;
     +type: string;
     +title: string;
     +message: string;
     +cancelable: boolean;
-    +actions: Array<NotificationAction>;
+    +actions: Array<CallbackAction>;
 }
 
-const initialState: Array<NotificationEntry> = [
+export type State = Array<NotificationEntry>;
+
+const initialState: State = [
     // {
     //     id: undefined,
     //     type: "info",
@@ -31,8 +35,8 @@ const initialState: Array<NotificationEntry> = [
     // }
 ];
 
-const addNotification = (state: Array<NotificationEntry>, payload: any): Array<NotificationEntry> => {
-    const newState: Array<NotificationEntry> = state.filter(e => !e.cancelable);
+const addNotification = (state: State, payload: any): State => {
+    const newState: State = state.filter(e => !e.cancelable);
     newState.push({
         id: payload.id,
         devicePath: payload.devicePath,
@@ -47,7 +51,7 @@ const addNotification = (state: Array<NotificationEntry>, payload: any): Array<N
     return newState;
 }
 
-const closeNotification = (state: Array<NotificationEntry>, payload: any): Array<NotificationEntry> => {
+const closeNotification = (state: State, payload: any): State => {
     if (payload && typeof payload.id === 'string') {
         return state.filter(entry => entry.id !== payload.id);
     } else if (payload && typeof payload.devicePath === 'string') {
@@ -57,8 +61,12 @@ const closeNotification = (state: Array<NotificationEntry>, payload: any): Array
     }
 }
 
-export default function notification(state: Array<NotificationEntry> = initialState, action: Object): Array<NotificationEntry> {
+export default function notification(state: State = initialState, action: Action): State {
     switch(action.type) {
+
+        case DEVICE.DISCONNECT :
+            const path: string = action.device.path; // Flow warning
+            return state.filter(entry => entry.devicePath !== path);
 
         case NOTIFICATION.ADD :
             return addNotification(state, action.payload);
@@ -67,9 +75,6 @@ export default function notification(state: Array<NotificationEntry> = initialSt
         case NOTIFICATION.CLOSE :
             return closeNotification(state, action.payload);
 
-        case DEVICE.DISCONNECT :
-            return state.filter(entry => entry.devicePath !== action.device.path);
-        
         default:
             return state;
     }
