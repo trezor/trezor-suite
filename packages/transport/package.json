@@ -18,6 +18,15 @@
       "env"
     ],
     "plugins": [
+      [
+        "transform-runtime",
+        {
+          "helpers": false,
+          "polyfill": false,
+          "regenerator": true,
+          "moduleName": "babel-runtime"
+        }
+      ],
       "transform-es2015-template-literals",
       "transform-flow-strip-types",
       "transform-decorators-legacy",
@@ -42,6 +51,7 @@
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "bump-version": "^0.5.0",
     "eslint": "^4.16.0",
