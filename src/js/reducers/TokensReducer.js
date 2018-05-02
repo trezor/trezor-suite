@@ -13,7 +13,7 @@ export type Token = {
     +symbol: string;
     +address: string;
     +ethAddress: string; // foreign key
-    +decimals: string;
+    +decimals: number;
     balance: string;
 }
 

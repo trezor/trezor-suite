@@ -20,7 +20,6 @@ declare module "react-router-redux" {
 
     declare export type RouterAction = {
         type: typeof LOCATION_CHANGE,
-        // type: "@@router/LOCATION_CHANGE",
         payload: Location;
     }
 
@@ -28,11 +27,11 @@ declare module "react-router-redux" {
         location: Location; // should be ?Location
     }
 
-    declare export function push(a: string): void;
-    declare export function replace(a: string): void;
-    declare export function go(a: string): void;
-    declare export function goBack(): void;
-    declare export function goForward(): void;
+    declare export function push(a: string): RouterAction;
+    declare export function replace(a: string): RouterAction;
+    declare export function go(a: string): RouterAction;
+    declare export function goBack(): RouterAction;
+    declare export function goForward(): RouterAction;
     
     //declare export function routerReducer<S, A>(state?: S, action: A): S;
     declare export function routerReducer(state?: State, action: any): State;

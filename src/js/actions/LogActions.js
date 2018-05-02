@@ -3,7 +3,7 @@
 
 import * as LOG from './constants/log';
 
-import type { AsyncAction, GetState, Dispatch } from '../flowtype';
+import type { ThunkAction, GetState, Dispatch } from '../flowtype';
 
 export type LogAction = {
     type: typeof LOG.OPEN,
@@ -11,15 +11,19 @@ export type LogAction = {
     type: typeof LOG.CLOSE,
 };
 
-export const toggle = (): AsyncAction => {
+export const toggle = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         if (!getState().log.opened) {
             window.scrollTo(0, 0);
-        }
 
-        dispatch({
-            type: getState().log.opened ? LOG.CLOSE : LOG.OPEN
-        });
+            dispatch({
+                type: LOG.CLOSE
+            });
+        } else {
+            dispatch({
+                type: LOG.OPEN
+            });
+        }
     }
 }

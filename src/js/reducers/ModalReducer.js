@@ -9,17 +9,18 @@ import * as CONNECT from '../actions/constants/TrezorConnect';
 import type { Action, TrezorDevice } from '../flowtype';
 
 export type State = {
-    opened: boolean;
-    device: ?TrezorDevice;
-    instances: ?Array<TrezorDevice>;
-    windowType: ?string;
+    opened: false;
+} | {
+    opened: true;
+    device: TrezorDevice;
+    instances?: Array<TrezorDevice>;
+    windowType?: string;
 }
 
 const initialState: State = {
-    opened: false,
-    device: null,
-    instances: null,
-    windowType: null
+    opened: false
+    // instances: null,
+    // windowType: null
 };
 
 export default function modal(state: State = initialState, action: Action): State {
@@ -28,50 +29,42 @@ export default function modal(state: State = initialState, action: Action): Stat
 
         case RECEIVE.REQUEST_UNVERIFIED :
             return {
-                ...state,
-                device: action.device,
                 opened: true,
+                device: action.device,
                 windowType: action.type
             }
 
         case CONNECT.REMEMBER_REQUEST :
             return {
-                ...state,
+                opened: true,
                 device: action.device,
                 instances: action.instances,
-                opened: true,
                 windowType: action.type
             };
         case CONNECT.FORGET_REQUEST :
         case CONNECT.DISCONNECT_REQUEST :
             return {
-                ...state,
-                device: action.device,
                 opened: true,
+                device: action.device,
                 windowType: action.type
             };
 
         case CONNECT.TRY_TO_DUPLICATE :
             return {
-                ...state,
-                device: action.device,
                 opened: true,
+                device: action.device,
                 windowType: action.type
             };
 
         case DEVICE.CHANGED :
-            if (state.opened && state.device && action.device.path === state.device.path && action.device.isUsedElsewhere) {
-                return {
-                    ...initialState,
-                };
+            if (state.opened && action.device.path === state.device.path && action.device.isUsedElsewhere) {
+                return initialState
             }
             return state;
 
         case DEVICE.DISCONNECT :
-            if (state.device && action.device.path === state.device.path) {
-                return {
-                    ...initialState,
-                }
+            if (state.opened && action.device.path === state.device.path) {
+                return initialState
             }
             return state;
 
@@ -89,16 +82,16 @@ export default function modal(state: State = initialState, action: Action): Stat
         case UI.INVALID_PIN :
         case UI.REQUEST_PASSPHRASE :
             return {
-                ...state,
-                device: action.payload.device,
                 opened: true,
+                device: action.payload.device,
                 windowType: action.type
             };
 
         case UI.REQUEST_BUTTON :
+            console.log("REQBUT", action)
             return {
-                ...state,
                 opened: true,
+                device: action.payload.device,
                 windowType: action.payload.code
             }
         
@@ -108,9 +101,7 @@ export default function modal(state: State = initialState, action: Action): Stat
         case CONNECT.FORGET :
         case CONNECT.FORGET_SINGLE :
         case CONNECT.REMEMBER :
-            return {
-                ...initialState,
-            };
+            return initialState;
 
         default:
             return state;

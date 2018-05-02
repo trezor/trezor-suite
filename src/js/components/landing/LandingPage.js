@@ -60,7 +60,7 @@ export default (props: Props) => {
         body = <BrowserNotSupported />;
     } else if (connectError || bridgeRoute) {
         css += ' install-bridge';
-        body = <InstallBridge browserState={ props.connect.browserState } />;
+        body = <InstallBridge browserState={ browserState } />;
     } else if (props.wallet.ready && devices.length < 1) {
         css += ' connect-device';
         body = <ConnectDevice transport={ transport } />;

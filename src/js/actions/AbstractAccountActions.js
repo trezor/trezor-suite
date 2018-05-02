@@ -6,7 +6,7 @@ import * as ACCOUNT from './constants/account';
 import { initialState } from '../reducers/AbstractAccountReducer';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
-import type { AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
+import type { AsyncAction, ThunkAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
 import type { State } from '../reducers/AbstractAccountReducer';
 import type { Coin } from '../reducers/LocalStorageReducer';
 
@@ -17,7 +17,7 @@ export type AbstractAccountAction = {
     type: typeof ACCOUNT.DISPOSE,
 };
 
-export const init = (): AsyncAction => {
+export const init = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         const { location } = getState().router;
@@ -48,7 +48,7 @@ export const init = (): AsyncAction => {
     }
 }
 
-export const update = (): AsyncAction => {
+export const update = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const {
             abstractAccount,

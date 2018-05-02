@@ -15,6 +15,7 @@ import type {
     State,
     Dispatch,
     Action,
+    ThunkAction,
     AsyncAction,
     GetState,
     RouterLocationState,
@@ -155,10 +156,11 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         if (redirectPath) {
             console.warn("Redirecting...")
             // override action to keep routerReducer sync
-            action.payload.state = pathToParams(redirectPath);
-            action.payload.pathname = redirectPath;
+            const url: string = redirectPath;
+            action.payload.state = pathToParams(url);
+            action.payload.pathname = url;
             // change url
-            api.dispatch( replace(redirectPath) );
+            api.dispatch( replace(url) );
         } else {
             action.payload.state = requestedParams;
         }

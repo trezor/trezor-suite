@@ -39,12 +39,14 @@ export const clear = (currentParams: RouterLocationState, requestedParams: Route
         if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
             const entries = getState().notifications.filter(entry => typeof entry.devicePath === 'string');
             entries.forEach(entry => {
-                dispatch({
-                    type: NOTIFICATION.CLOSE,
-                    payload: {
-                        devicePath: entry.devicePath
-                    }
-                })
+                if (typeof entry.devicePath === 'string') {
+                    dispatch({
+                        type: NOTIFICATION.CLOSE,
+                        payload: {
+                            devicePath: entry.devicePath
+                        }
+                    })
+                }
             });
         }
     }

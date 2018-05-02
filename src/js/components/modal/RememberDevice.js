@@ -33,8 +33,9 @@ export default class RememberDevice extends Component<Props, State> {
                 // TODO: possible race condition, 
                 // device could be already connected but it didn't emit Device.CONNECT event yet
                 window.clearInterval(this.state.ticker);
-                const { device } = this.props.modal;
-                this.props.modalActions.onForgetDevice(device);
+                if (this.props.modal.opened) {
+                    this.props.modalActions.onForgetDevice(this.props.modal.device);
+                }
             } else {
                 this.setState({
                     countdown: this.state.countdown - 1
@@ -61,6 +62,7 @@ export default class RememberDevice extends Component<Props, State> {
     }
 
     render(): any {
+        if (!this.props.modal.opened) return null;
         const { device, instances } = this.props.modal;
         const { onForgetDevice, onRememberDevice } = this.props.modalActions;
 

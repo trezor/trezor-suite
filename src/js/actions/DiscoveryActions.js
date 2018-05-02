@@ -14,7 +14,7 @@ import EthereumjsUtil from 'ethereumjs-util';
 import { getNonceAsync, getBalanceAsync, getTokenBalanceAsync } from './Web3Actions';
 import { setBalance as setTokenBalance } from './TokenActions';
 
-import type { AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
+import type { ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
 import type { Discovery, State } from '../reducers/DiscoveryReducer';
 
 export type DiscoveryAction = {
@@ -51,7 +51,7 @@ export type DiscoveryCompleteAction = {
     network: string
 }
 
-export const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean): AsyncAction => {
+export const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         const selected = findSelectedDevice(getState().connect);
@@ -321,7 +321,7 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
     }
 }
 
-export const restore = (): AsyncAction => {
+export const restore = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const selected = findSelectedDevice(getState().connect);
 
@@ -338,7 +338,7 @@ export const restore = (): AsyncAction => {
 // there is no discovery process but it should be
 // this is possible race condition when "network" was changed in url but device was not authenticated yet
 // try to start discovery after CONNECT.AUTH_DEVICE action
-export const check = (): AsyncAction => {
+export const check = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const selected = findSelectedDevice(getState().connect);
         if (!selected) return;

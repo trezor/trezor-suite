@@ -15,7 +15,7 @@ export type Account = {
     loaded: boolean;
     +network: string;
     +deviceID: string;
-    +deviceState: ?string;
+    +deviceState: string;
     +index: number;
     +addressPath: Array<number>;
     +address: string;
@@ -44,7 +44,7 @@ const createAccount = (state: State, action: AddressCreateAction): State => {
         loaded: false,
         network: action.network,
         deviceID: action.device.features ? action.device.features.device_id : '0',
-        deviceState: action.device.state,
+        deviceState: action.device.state || 'undefined',
         index: action.index,
         addressPath: action.path,
         address: action.address,

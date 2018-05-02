@@ -104,6 +104,9 @@ export default class Pin extends Component<Props, State> {
     }
 
     render(): any {
+
+        if (!this.props.modal.opened) return null;
+
         const { onPinSubmit } = this.props.modalActions;
         const { device } = this.props.modal;
         const { pin } = this.state;

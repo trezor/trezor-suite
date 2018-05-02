@@ -28,12 +28,15 @@ export default class PinModal extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const device = props.modal.opened ? props.modal.device : null;
+        if (!device) return;
+
         // check if this device is already known
         // const isSavedDevice = props.devices.find(d => d.path === props.modal.device.path && d.remember);
         const selected = findSelectedDevice(props.connect);
-        let deviceLabel = props.modal.device.label;
+        let deviceLabel =device.label;
         let singleInput = false;
-        if (selected && selected.path === props.modal.device.path) {
+        if (selected && selected.path === device.path) {
             deviceLabel = selected.instanceLabel;
             singleInput = selected.remember;
         }
@@ -208,6 +211,8 @@ export default class PinModal extends Component<Props, State> {
     }
 
     render(): any {
+
+        if (!this.props.modal.opened) return null;
 
         const { 
             device,

@@ -9,7 +9,7 @@ import * as STORAGE from './constants/localStorage';
 import * as PENDING from '../actions/constants/pendingTx';
 import { JSONRequest, httpRequest } from '../utils/networkUtils';
 
-import type { AsyncAction, GetState, Dispatch } from '../flowtype';
+import type { ThunkAction, AsyncAction, GetState, Dispatch } from '../flowtype';
 import type { Config, Coin, TokensCollection } from '../reducers/LocalStorageReducer';
 
 export type StorageAction = {
@@ -25,7 +25,7 @@ export type StorageAction = {
     error: string,
 };
 
-export const loadData = (): AsyncAction => {
+export const loadData = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         // check if local storage is available
@@ -151,8 +151,8 @@ export function loadTokensFromJSON(): AsyncAction {
 }
 
 
-export const save = (key: string, value: string): AsyncAction => {
-    return (dispatch: Dispatch, getState: GetState) => {
+export const save = (key: string, value: string): ThunkAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
         if (typeof window.localStorage !== 'undefined') {
             try {
                 window.localStorage.setItem(key, value);

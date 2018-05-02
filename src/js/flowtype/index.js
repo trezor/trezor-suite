@@ -3,10 +3,11 @@
 
 import type {
     Store as ReduxStore,
-    Dispatch as ReduxDispatch,
+    ReduxDispatch,
     MiddlewareAPI as ReduxMiddlewareAPI,
     Middleware as ReduxMiddleware,
     ThunkAction as ReduxThunkAction,
+    AsyncAction as ReduxAsyncAction,
     ThunkDispatch as ReduxThunkDispatch,
     PlainDispatch as ReduxPlainDispatch
 } from 'redux';
@@ -90,6 +91,10 @@ type TransportEventAction = {
 type UiEventAction = {
     type: UiMessageType,
     payload: any,
+    // payload: {
+    //     device: Device;
+    //     code?: string;
+    // },
 }
 
 // TODO: join this message with uiMessage
@@ -134,6 +139,8 @@ export type MiddlewareDispatch = ReduxPlainDispatch<Action>;
 export type MiddlewareAPI = ReduxMiddlewareAPI<State, Action>;
 export type Middleware = ReduxMiddleware<State, Action>;
 
+export type ThunkAction = ReduxThunkAction<State, Action>;
+export type AsyncAction = ReduxAsyncAction<State, Action>;
+
 export type Store = ReduxStore<State, Action>;
 export type GetState = () => State;
-export type AsyncAction = ReduxThunkAction<State, Action>;

@@ -10,7 +10,7 @@ import { getTokenInfoAsync, getTokenBalanceAsync } from './Web3Actions';
 import { initialState } from '../reducers/SummaryReducer';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
-import type { AsyncAction, Action, GetState, Dispatch } from '../flowtype';
+import type { ThunkAction, AsyncAction, Action, GetState, Dispatch } from '../flowtype';
 import type { State } from '../reducers/SummaryReducer';
 import type { Token } from '../reducers/TokensReducer';
 
@@ -23,7 +23,7 @@ export type SummaryAction = {
     type: typeof SUMMARY.DETAILS_TOGGLE
 }
 
-export const init = (): AsyncAction => {
+export const init = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
     
         const state: State = {
@@ -38,7 +38,7 @@ export const init = (): AsyncAction => {
 }
 
 
-export const update = (): AsyncAction => {
+export const update = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const {
             abstractAccount,

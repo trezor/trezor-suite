@@ -62,6 +62,9 @@ const Fade = ({ children, ...props }) => (
 
 class Modal extends Component<Props> {
     render() {
+
+        if (!this.props.modal.opened) return null;
+        
         const { opened, windowType } = this.props.modal;
 
         let component = null;

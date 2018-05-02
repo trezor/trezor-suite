@@ -58,18 +58,8 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         api.dispatch( TrezorConnectActions.deviceDisconnect(action.device) );
 
     } else if (action.type === CONNECT.REMEMBER_REQUEST) {
-       // TODO: 2 modals at once
-        if (prevModalState.opened && prevModalState.windowType === CONNECT.REMEMBER_REQUEST) {
-            api.dispatch({
-                type: CONNECT.FORGET,
-                device: api.getState().modal.device
-            });
 
-            api.dispatch({
-                type: CONNECT.FORGET,
-                device: prevModalState.device
-            });
-        }
+        api.dispatch(ModalActions.onRememberRequest(prevModalState));
 
     } else if (action.type === CONNECT.FORGET) {
         //api.dispatch( TrezorConnectActions.forgetDevice(action.device) );
@@ -121,7 +111,7 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         api.dispatch( DiscoveryActions.check() );
     } else if (action.type === CONNECT.DUPLICATE) {
         api.dispatch( TrezorConnectActions.onDuplicateDevice() );
-    } else if (action.type === DEVICE.ACQUIRED || action.type === CONNECT.SELECT_DEVICE) {
+    } else if (action.type === CONNECT.ACQUIRED || action.type === CONNECT.SELECT_DEVICE) {
         api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
     } else if (action.type === CONNECT.COIN_CHANGED) {
         api.dispatch( TrezorConnectActions.coinChanged( action.payload.network ) );

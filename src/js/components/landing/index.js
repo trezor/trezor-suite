@@ -10,24 +10,26 @@ import LandingPage from './LandingPage';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from '../../flowtype';
 
-export type Props = {
-    localStorage: any,
-    modal: any,
-    web3: any,
-    wallet: any,
-    connect: any,
-    router: any
+export type StateProps = {
+    localStorage: $ElementType<State, 'localStorage'>,
+    modal: $ElementType<State, 'modal'>,
+    web3: $ElementType<State, 'web3'>,
+    wallet: $ElementType<State, 'wallet'>,
+    connect: $ElementType<State, 'connect'>,
+    router: $ElementType<State, 'router'>
 }
 
 type DispatchProps = {
-    foo: () => string
+
 }
 
 type OwnProps = {
     
 }
 
-const mapStateToProps: MapStateToProps<State, OwnProps, Props> = (state: State): Props => {
+export type Props = StateProps & DispatchProps;
+
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => {
     return {
         localStorage: state.localStorage,
         modal: state.modal,
@@ -38,10 +40,10 @@ const mapStateToProps: MapStateToProps<State, OwnProps, Props> = (state: State):
     };
 }
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch) => {
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
     return { 
-        foo: ():string => { return "A"; }
+        
     };
 }
 
-export default connect(mapStateToProps, null)(LandingPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);

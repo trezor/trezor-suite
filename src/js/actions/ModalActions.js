@@ -5,13 +5,14 @@ import TrezorConnect, { UI, UI_EVENT } from 'trezor-connect';
 import * as MODAL from './constants/modal';
 import * as CONNECT from './constants/TrezorConnect';
 
-import type { AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
+import type { ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
+import type { State } from '../reducers/ModalReducer';
 
 export type ModalAction = {
     type: typeof MODAL.CLOSE
 } | {
     type: typeof MODAL.REMEMBER,
-    device: any
+    device: TrezorDevice
 };
 
 export const onPinSubmit = (value: string): Action => {
@@ -71,7 +72,7 @@ export const onCancel = (): Action => {
     }
 }
 
-export const onDuplicateDevice = (device: TrezorDevice): AsyncAction => {
+export const onDuplicateDevice = (device: TrezorDevice): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         dispatch( onCancel() );
@@ -80,6 +81,29 @@ export const onDuplicateDevice = (device: TrezorDevice): AsyncAction => {
             type: CONNECT.DUPLICATE,
             device
         });
+    }
+}
+
+export const onRememberRequest = (prevState: State): ThunkAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
+        const state: State = getState().modal;
+        // handle case where forget modal is already opened
+        // TODO: 2 modals at once (two devices disconnected in the same time)
+        if (prevState.opened && prevState.windowType === CONNECT.REMEMBER_REQUEST) {
+            // forget current (new)
+            if (state.opened) {
+                dispatch({
+                    type: CONNECT.FORGET,
+                    device: state.device
+                });
+            }
+            
+            // forget previous (old)
+            dispatch({
+                type: CONNECT.FORGET,
+                device: prevState.device
+            });
+        }
     }
 }
 

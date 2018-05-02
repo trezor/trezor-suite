@@ -23,6 +23,7 @@ import type {
     Dispatch,
     GetState,
     Action,
+    ThunkAction,
     AsyncAction,
     RouterLocationState,
     TrezorDevice
@@ -160,7 +161,7 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
 
 
 // initialize component
-export const init = (): AsyncAction => {
+export const init = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         const accountState: AccountState = getState().abstractAccount;
@@ -210,7 +211,7 @@ export const init = (): AsyncAction => {
     }
 }
 
-export const update = (): AsyncAction => {
+export const update = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const {
             abstractAccount,
@@ -237,7 +238,7 @@ export const toggleAdvanced = (address: string): Action => {
     }
 }
 
-export const validation = (): AsyncAction => {
+export const validation = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         
         const accountState: AccountState = getState().abstractAccount;
@@ -368,7 +369,7 @@ export const validation = (): AsyncAction => {
 }
 
 
-export const onAddressChange = (address: string): AsyncAction => {
+export const onAddressChange = (address: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         const currentState: State = getState().sendForm;
@@ -390,7 +391,7 @@ export const onAddressChange = (address: string): AsyncAction => {
     }
 }
 
-export const onAmountChange = (amount: string): AsyncAction => {
+export const onAmountChange = (amount: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         const accountState: AccountState = getState().abstractAccount;
@@ -417,7 +418,7 @@ export const onAmountChange = (amount: string): AsyncAction => {
     }
 }
 
-export const onCurrencyChange = (currency: any): AsyncAction => {
+export const onCurrencyChange = (currency: any): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
@@ -478,7 +479,7 @@ export const onCurrencyChange = (currency: any): AsyncAction => {
 
 
 
-export const onSetMax = (): AsyncAction => {
+export const onSetMax = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
@@ -523,7 +524,7 @@ export const onSetMax = (): AsyncAction => {
     }
 }
 
-export const onFeeLevelChange = (feeLevel: FeeLevel): AsyncAction => {
+export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
@@ -576,7 +577,7 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): AsyncAction => {
     }
 }
 
-export const updateFeeLevels = (): AsyncAction => {
+export const updateFeeLevels = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
@@ -617,7 +618,7 @@ export const updateFeeLevels = (): AsyncAction => {
     }
 }
 
-export const onGasPriceChange = (gasPrice: string): AsyncAction => {
+export const onGasPriceChange = (gasPrice: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
@@ -665,7 +666,7 @@ export const onGasPriceChange = (gasPrice: string): AsyncAction => {
     }
 }
 
-export const onGasLimitChange = (gasLimit: string): AsyncAction => {
+export const onGasLimitChange = (gasLimit: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
@@ -713,7 +714,7 @@ export const onGasLimitChange = (gasLimit: string): AsyncAction => {
     }
 }
 
-export const onDataChange = (data: string): AsyncAction => {
+export const onDataChange = (data: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const currentState: State = getState().sendForm;
         const touched = { ...currentState.touched };

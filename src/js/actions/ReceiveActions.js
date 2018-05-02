@@ -9,7 +9,7 @@ import { initialState } from '../reducers/ReceiveReducer';
 import type { State } from '../reducers/ReceiveReducer';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
-import type { TrezorDevice, AsyncAction, Action, GetState, Dispatch } from '../flowtype';
+import type { TrezorDevice, ThunkAction, AsyncAction, Action, GetState, Dispatch } from '../flowtype';
 
 export type ReceiveAction = {
     type: typeof RECEIVE.INIT,
@@ -25,7 +25,7 @@ export type ReceiveAction = {
     type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS
 }
 
-export const init = (): AsyncAction => {
+export const init = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
     
         const state: State = {
@@ -40,7 +40,7 @@ export const init = (): AsyncAction => {
 }
 
 
-export const update = (): AsyncAction => {
+export const update = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const {
             abstractAccount,
