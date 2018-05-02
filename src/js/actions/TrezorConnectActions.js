@@ -44,7 +44,7 @@ export type TrezorConnectAction = {
     type: typeof CONNECT.SELECT_DEVICE,
     payload: ?{
         id: string,
-        instance: string
+        instance: ?number
     }
 } | {
     type: typeof CONNECT.COIN_CHANGED,
@@ -127,9 +127,9 @@ export const init = (): AsyncAction => {
         try {
             await TrezorConnect.init({
                 transportReconnect: true,
-                connectSrc: 'https://localhost:8088/',
+                // connectSrc: 'https://localhost:8088/',
                 // connectSrc: 'https://connect.trezor.io/tpm/',
-                // connectSrc: 'https://sisyfos.trezor.io/',
+                connectSrc: 'https://sisyfos.trezor.io/',
                 debug: false,
                 popup: false,
                 webusb: true
@@ -256,7 +256,7 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => {
             }
             // check if current location is not set to this device
             //dispatch( push(`/device/${ device.features.device_id }/network/etc/address/0`) );
-            
+
             if (urlParams.deviceInstance !== instance || urlParams.device !== deviceId) {
                 dispatch( push(url) );
             }
@@ -485,7 +485,7 @@ export const forget = (device: TrezorDevice): Action => {
     };
 }
 
-export const duplicateDevice = (device: any): AsyncAction => {
+export const duplicateDevice = (device: TrezorDevice): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         dispatch({
             type: CONNECT.TRY_TO_DUPLICATE,

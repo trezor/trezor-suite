@@ -70,8 +70,6 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
             return;
         }
 
-        
-
         const discovery: State = getState().discovery;
         let discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
         

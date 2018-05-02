@@ -159,8 +159,7 @@ export class DeviceDropdown extends Component<Props> {
         let elem: any = (event.target : any);
         let block: boolean = false;
         while (elem.parentElement) {
-            // if (elem.className.indexOf('aside-button') >= 0) {
-            if (elem.tagName.toLowerCase() === 'aside' || (elem.className && elem.className.indexOf('modal-container') >= 0)) {
+            if (elem.tagName.toLowerCase() === 'aside' || (elem.className && elem.className.indexOf && elem.className.indexOf('modal-container') >= 0)) {
                 block = true;
                 break;
             }

@@ -53,7 +53,7 @@ const validation = (api: MiddlewareAPI, params: RouterLocationState): boolean =>
 
         let device: ?TrezorDevice;
         if (params.hasOwnProperty('deviceInstance')) {
-            device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === params.deviceInstance );
+            device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === parseInt(params.deviceInstance ) );
         } else {
             device = devices.find(d => d.path === params.device || (d.features && d.features.device_id === params.device));
         }
@@ -136,7 +136,7 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                             type: CONNECT.SELECT_DEVICE,
                             payload: {
                                 id: requestedParams.device,
-                                instance: requestedParams.deviceInstance
+                                instance: requestedParams.deviceInstance ? parseInt(requestedParams.deviceInstance) : undefined
                             }
                         });
                     }

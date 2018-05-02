@@ -61,7 +61,7 @@ export default class RememberDevice extends Component<Props, State> {
         }
     }
 
-    render(): any {
+    render() {
         if (!this.props.modal.opened) return null;
         const { device, instances } = this.props.modal;
         const { onForgetDevice, onRememberDevice } = this.props.modalActions;
@@ -69,8 +69,8 @@ export default class RememberDevice extends Component<Props, State> {
         let label = device.label;
         let devicePlural = false;
         if (instances && instances.length > 0) {
-            label = instances.map(i => {
-                return (<span>{i.instanceLabel}</span>);
+            label = instances.map((instance, index) => {
+                return (<span key={index}>{instance.instanceLabel}</span>);
             })
             devicePlural = instances.length > 1;
         }
@@ -85,7 +85,8 @@ export default class RememberDevice extends Component<Props, State> {
     }
 }
 
-export const ForgetDevice = (props: any): any => {
+export const ForgetDevice = (props: Props) => {
+    if (!props.modal.opened) return null;
     const { device } = props.modal;
     const { onForgetSingleDevice, onCancel } = props.modalActions;
     return (
@@ -98,7 +99,8 @@ export const ForgetDevice = (props: any): any => {
     );
 }
 
-export const DisconnectDevice = (props: any): any => {
+export const DisconnectDevice = (props: Props) => {
+    if (!props.modal.opened) return null;
     const { device } = props.modal;
     const { onForgetSingleDevice, onCancel } = props.modalActions;
     return (

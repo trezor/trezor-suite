@@ -1,6 +1,7 @@
 /* @flow */
 'use strict';
 
+import * as MODAL from '../actions/constants/modal';
 import * as WEB3 from '../actions/constants/web3';
 import * as WALLET from '../actions/constants/wallet';
 
@@ -40,6 +41,12 @@ export default function wallet(state: State = initialState, action: Action): Sta
             return {
                 ...state,
                 dropdownOpened: action.opened
+            }
+
+        case MODAL.CLOSE : 
+            return {
+                ...state,
+                dropdownOpened: false
             }
 
         default:
