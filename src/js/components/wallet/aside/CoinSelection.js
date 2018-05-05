@@ -10,9 +10,15 @@ import type { TrezorDevice } from '../../../flowtype';
 const CoinSelection = (props: Props): React$Element<string> => {
     const { location } = props.router;
     const { config } = props.localStorage;
+    const selectedDevice = props.connect.selectedDevice;
 
-    const urlParams = location.state;
-    const baseUrl: string = urlParams.deviceInstance ? `/device/${urlParams.device}:${urlParams.deviceInstance}` : `/device/${urlParams.device}`;
+    let baseUrl: string = '';
+    if (selectedDevice) {
+        baseUrl = `/device/${selectedDevice.id}`;
+        if (selectedDevice.instance) {
+            baseUrl += `:${selectedDevice.instance}`;
+        }
+    }
 
     const walletCoins = config.coins.map(item => {
         const url = `${ baseUrl }/network/${ item.network }/address/0`;
