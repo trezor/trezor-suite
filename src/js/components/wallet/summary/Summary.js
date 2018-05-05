@@ -44,8 +44,11 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
             { deviceStatusNotification }
 
             <h2 className={ `summary-header ${abstractAccount.network}` }>Address #{ parseInt(abstractAccount.index) + 1 }</h2>
+            
 
             <SummaryDetails 
+                explorer={ `${abstractAccount.coin.explorer.address}${account.address}` }
+                coin={ abstractAccount.coin }
                 summary={ props.summary } 
                 balance={ account.balance }
                 network={ abstractAccount.network }
@@ -54,7 +57,8 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
                 onToggle={ props.onDetailsToggle } />
 
             <h2>Tokens</h2>
-            {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 */}
+            {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
+            {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 T01 */}
             <div className="filter">
                 <Async 
                     className="token-select"
@@ -81,7 +85,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
                      />
 
             </div>
-
+                    
             <SummaryTokens tokens={ tokens } removeToken={ props.removeToken } />
 
         </section>

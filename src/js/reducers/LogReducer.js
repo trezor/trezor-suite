@@ -4,10 +4,11 @@
 import * as LOG from '../actions/constants/log';
 import type { Action } from '../flowtype';
 
-type LogEntry = {
+export type LogEntry = {
     time: number;
     type: string;
-    messgage: string;
+    // message: string;
+    message: any;
 }
 
 export type State = {
@@ -25,22 +26,23 @@ export default (state: State = initialState, action: Action): State => {
 
     switch (action.type) {
 
-        case LOG.OPEN: 
+        case LOG.OPEN : 
             return {
                 ...state,
                 opened: true
             }
 
-        case LOG.CLOSE: 
+        case LOG.CLOSE : 
             return {
                 ...state,
                 opened: false
             }
 
-        // case 'log__add': 
-        //     return {
-        //         ...state,
-        //     }
+        case LOG.ADD : 
+            return {
+                ...state,
+                entries: state.entries.concat([ action.payload ])
+            }
 
         default:
             return state;

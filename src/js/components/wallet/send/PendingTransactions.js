@@ -58,7 +58,7 @@ const PendingTransactions = (props: Props) => {
                     </div>
                 </div>
                 <div className="name">
-                    <a href={ `${props.selectedCoin.explorer}/tx/${tx.id}`} target="_blank" rel="noreferrer noopener">{ name }</a>
+                    <a href={ `${props.selectedCoin.explorer.tx}${tx.id}`} target="_blank" rel="noreferrer noopener">{ name }</a>
                 </div>
                 <div className="amount">{ tx.amount } { symbol }</div>
             </div>

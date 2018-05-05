@@ -3,12 +3,16 @@
 
 import * as LOG from './constants/log';
 
-import type { ThunkAction, GetState, Dispatch } from '../flowtype';
+import type { Action, ThunkAction, GetState, Dispatch } from '../flowtype';
+import type { LogEntry } from '../reducers/LogReducer';
 
 export type LogAction = {
     type: typeof LOG.OPEN,
 } | {
     type: typeof LOG.CLOSE,
+} | {
+    type: typeof LOG.ADD,
+    payload: LogEntry
 };
 
 export const toggle = (): ThunkAction => {
@@ -18,12 +22,24 @@ export const toggle = (): ThunkAction => {
             window.scrollTo(0, 0);
 
             dispatch({
-                type: LOG.CLOSE
+                type: LOG.OPEN
             });
         } else {
             dispatch({
-                type: LOG.OPEN
+                type: LOG.CLOSE
             });
+        }
+    }
+}
+
+// export const add = (type: string, message: string): Action => {
+export const add = (type: string, message: any): Action => {
+    return {
+        type: LOG.ADD,
+        payload: {
+            time: new Date().getTime(),
+            type,
+            message
         }
     }
 }

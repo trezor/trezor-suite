@@ -12,9 +12,9 @@ import reducers from '../reducers';
 import services from '../services';
 import RavenMiddleware from 'redux-raven-middleware';
 
-import type { Store } from '../flowtype';
+import type { Action, GetState, Store } from '../flowtype';
 
-export const history = createHistory( { queryKey: false } );
+export const history: History = createHistory( { queryKey: false } );
 
 const initialState: any = {};
 const enhancers = [];
@@ -24,33 +24,40 @@ const middleware = [
     routerMiddleware(history)
 ];
 
-const excludeLogger = (getState: any, action: any): boolean => {
-    //'@@router/LOCATION_CHANGE'
-    const excluded: Array<string> = ['LOG_TO_EXCLUDE'];
-    const pass: Array<string> = excluded.filter((act) => {
-        return action.type === act;
-    });
-    return pass.length === 0;
-}
 
-const logger = createLogger({
-    level: 'info',
-    // predicate: excludeLogger,
-    collapsed: true
-});
-
+let composedEnhancers: any;
 if (process.env.NODE_ENV === 'development') {
+
+    const excludeLogger = (getState: GetState, action: Action): boolean => {
+        //'@@router/LOCATION_CHANGE'
+        const excluded: Array<string> = ['LOG_TO_EXCLUDE', 'log__add'];
+        const pass: Array<string> = excluded.filter((act) => {
+            return action.type === act;
+        });
+        return pass.length === 0;
+    }
+    
+    const logger = createLogger({
+        level: 'info',
+        predicate: excludeLogger,
+        collapsed: true
+    });
+
     const devToolsExtension: ?Function = window.devToolsExtension;
     if (typeof devToolsExtension === 'function') {
         enhancers.push(devToolsExtension());
     }
-}
 
-const composedEnhancers = compose(
-    // applyMiddleware(...middleware, logger, ...services),
-    applyMiddleware(...middleware, logger, ...services),
-    ...enhancers
-);
+    composedEnhancers = compose(
+        applyMiddleware(...middleware, logger, ...services),
+        ...enhancers
+    );
+} else {
+    composedEnhancers = compose(
+        applyMiddleware(...middleware, ...services),
+        ...enhancers
+    );
+}
 
 export default createStore(
     reducers,

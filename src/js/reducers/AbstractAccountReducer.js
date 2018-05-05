@@ -31,7 +31,10 @@ export const initialState: State = {
         defaultGasLimit: 0,
         defaultGasLimitTokens: 0,
         defaultGasPrice: 0,
-        explorer: '',
+        explorer: {
+            tx: '',
+            address: ''
+        },
         tokens: '',
         backends: []
     },

@@ -29,8 +29,6 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
 
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
-    // console.warn("AccountSelectionRender", selected, props);
-
     const deviceAddresses: Array<any> = getAccounts(accounts, selected, location.state.network);
     let selectedAccounts = deviceAddresses.map((address, i) => {
         // const url: string = `${baseUrl}/network/${location.state.network}/address/${i}`;

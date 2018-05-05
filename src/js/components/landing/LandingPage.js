@@ -10,7 +10,6 @@ import TrezorConnectError from './TrezorConnectError';
 import Header from '../common/Header';
 import Footer from '../common/Footer';
 import Log from '../common/Log';
-// import { Notification } from '../common/Notification';
 import Notifications, { Notification } from '../common/Notification';
 
 import type { Props } from './index';
@@ -63,7 +62,7 @@ export default (props: Props) => {
         body = <InstallBridge browserState={ browserState } />;
     } else if (props.wallet.ready && devices.length < 1) {
         css += ' connect-device';
-        body = <ConnectDevice transport={ transport } />;
+        body = <ConnectDevice transport={ transport } disconnectRequest={ props.wallet.disconnectRequest } />;
     }
 
     if (notification || body) {

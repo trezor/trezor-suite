@@ -65,15 +65,13 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         //api.dispatch( TrezorConnectActions.forgetDevice(action.device) );
         api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
     } else if (action.type === CONNECT.FORGET_SINGLE) {
-
-        //api.dispatch( TrezorConnectActions.forgetDevice(action.device) );
-
         if (api.getState().connect.devices.length < 1 && action.device.connected) {
-            // prompt disconnect device modal
+            // prompt disconnect device info in LandingPage
             api.dispatch({
                 type: CONNECT.DISCONNECT_REQUEST,
                 device: action.device
             });
+            api.dispatch( push('/') );
         } else {
             api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
         }
@@ -82,7 +80,6 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         // we need to change route 
         if (prevState.selectedDevice) {
             if (!action.device.unacquired && action.device.path === prevState.selectedDevice.id) {
-                console.warn("TODO: here! better")
                 api.dispatch( TrezorConnectActions.onSelectDevice(action.device) );
             }
         }

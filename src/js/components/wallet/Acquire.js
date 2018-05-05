@@ -45,7 +45,7 @@ export default connect(
     },
     (dispatch: Dispatch) => {
         return { 
-            toggle: bindActionCreators(TrezorConnectActions.acquire, dispatch),
+            acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
         };
     }
 )(Acquire);

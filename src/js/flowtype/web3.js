@@ -1,4 +1,81 @@
+import type BigNumber from 'bignumber.js';
+import type { EthereumUnitT, EthereumAddressT } from 'ethereum-types';
+
 declare module 'web3' {
+    declare type ProviderT = Object;
+
+    declare class Web3T {
+        static providers: {
+            HttpProvider: (url: string) => ProviderT;
+        };
+
+        constructor(ProviderT): Web3T;
+        currentProvider: ProviderT;
+        eth: Eth;
+
+        toHex: (str: string | number) => string;
+        isAddress: (address: string) => boolean;
+        toWei: (number: BigNumber, unit?: EthereumUnitT) => BigNumber;
+        toWei: (number: string, unit?: EthereumUnitT) => string;
+        toDecimal: (number: BigNumber) => number;
+        toDecimal: (number: string) => number;
+        soliditySha3: (payload: string | number | BigNumber | Object) => String;
+
+        fromWei: (number: string, unit?: EthereumUnitT) => string;
+        version: {
+            api: string;
+            network: string;
+            // and many more
+        }
+        
+    }
+
+    declare class Eth {
+        getGasPrice: (callback: (error: Error, gasPrice: string) => void) => void,
+        getBalance: (address: string, callback: (error: Error, balance: BigNumber) => void) => void,
+        getTransactionCount: (address: string, callback: (error: Error, result: number) => void) => void,
+        getTransaction: (txid: string, callback: (error: Error, result: any) => void) => void,
+        getBlockNumber: (callback: (error: Error, blockNumber: number) => void) => void,
+        getBlock: (hash: string, callback: (error: Error, result: any) => void) => void,
+        getAccounts: (callback: (error: Error, accounts: Array<EthereumAddressT>) => void) => void,
+        sign: (payload: string, signer: EthereumAddressT) => Promise<string>,
+        contract: (abi: Array<Object>) => ContractFactory,
+        estimateGas: (options: any, callback: (error: Error, result: any) => void) => void,
+        sendRawTransaction: (tx: any, callback: (error: Error, result: any) => void) => void,
+        filter: (type: string) => Filter; // return intance with "watch"
+    }
+
+    declare export class Filter {
+        watch: (callback: (error: ?Error, blockHash: ?string) => void | Promise<void>) => void,
+        stopWatching: (callback: any) => void,
+    }
+
+    declare export class ContractFactory {
+        // constructor(abi: Array<Object>);
+        eth: Eth;
+        abi: Array<Object>;
+        at: (address: string, callback: (error: Error, contract: Contract) => void) => Contract;
+    }
+
+    declare export class Contract {
+        name: (callback: (error: Error, name: string) => void) => void;
+        symbol: (callback: (error: Error, symbol: string) => void) => void;
+        decimals: (callback: (error: Error, decimals: BigNumber) => void) => void;
+        balanceOf: (address: string, callback: (error: Error, balance: BigNumber) => void) => void;
+        transfer: any;
+    }
+
+    declare export default typeof Web3T;
+}
+
+
+
+// 
+// 
+
+
+
+/*declare module 'web3' {
 
     module.exports = {
         eth:  {
@@ -73,3 +150,4 @@ declare module 'web3' {
         }
     }
 }
+*/

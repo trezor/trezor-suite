@@ -5,11 +5,11 @@ import React from 'react';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
 
-import type { Token } from '../../../reducers/TokensReducer';
+import type { Props as BaseProps } from './index';
 
 type Props = {
-    tokens: Array<Token>,
-    removeToken: (token: Token) => void
+    tokens: $ElementType<BaseProps, 'tokens'>,
+    removeToken: $ElementType<BaseProps, 'removeToken'>
 }
 
 const SummaryTokens = (props: Props) => {

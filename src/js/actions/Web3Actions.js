@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import Web3, { ContractFactory, Contract } from 'web3';
+import Web3 from 'web3';
 import HDKey from 'hdkey';
 import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsTx from 'ethereumjs-tx';
@@ -21,6 +21,7 @@ import type {
 
 import type { Account } from '../reducers/AccountsReducer';
 import type { PendingTx } from '../reducers/PendingTxReducer';
+import type { Web3Instance } from '../reducers/Web3Reducer';
 
 export type Web3Action = {
     type: typeof WEB3.READY,
@@ -31,7 +32,7 @@ export type Web3Action = {
 export type Web3CreateAction = {
     type: typeof WEB3.CREATE,
     network: string,
-    web3: any, //(web3instance)
+    web3: Web3, //(web3instance)
     erc20: any,
     chainId: string;
 };
@@ -45,7 +46,7 @@ export type Web3UpdateBlockAction = {
 export type Web3UpdateGasPriceAction = {
     type: typeof WEB3.GAS_PRICE_UPDATED,
     network: string,
-    gasPrice: any
+    gasPrice: string
 };
 
 
@@ -94,12 +95,8 @@ export function init(web3: ?Web3, coinIndex: number = 0): AsyncAction {
         //web3 = new Web3( new Web3.providers.HttpProvider("ws://34.230.234.51:30303") );
 
         // initial check if backend is running
-        // instance.version.getNetwork(function(error, chainId){
-        //     if (!error) {
-
         
-        
-        instance.eth.getGasPrice((error, gasPrice) => {
+        instance.eth.getGasPrice((error: Error, gasPrice: string) => {
             if (error) {
                 // try different url
                 dispatch( init(instance, coinIndex) );
@@ -140,12 +137,12 @@ export function init(web3: ?Web3, coinIndex: number = 0): AsyncAction {
 
                 const latestBlockFilter = instance.eth.filter('latest');
 
-                const onBlockMined = async (error, blockHash) => {
+                const onBlockMined = async (error: ?Error, blockHash: ?string) => {
                     if (error) {
 
                         window.setTimeout(() => {
                             // try again
-                            onBlockMined("manually_triggered_error", undefined);
+                            onBlockMined(new Error("manually_triggered_error"), undefined);
                         }, 30000);
                     }
 
@@ -221,7 +218,6 @@ export function init(web3: ?Web3, coinIndex: number = 0): AsyncAction {
 //                 }
 
 //                 contract.decimals.call((error, decimals) => {
-//                     console.log("nameeeee", name, symbol, decimals)
 //                 })
 //             });
             
@@ -353,7 +349,7 @@ export const getBalanceAsync = (web3: Web3, address: string): Promise<any> => {
     });
 }
 
-export const getTokenBalanceAsync = (erc20: any, token: string, address: string): Promise<any> => {
+export const getTokenBalanceAsync = (erc20: any, token: string, address: string): Promise<string> => {
     return new Promise((resolve, reject) => {
 
         const contr = erc20.at(token);
@@ -383,26 +379,27 @@ export const getNonceAsync = (web3: Web3, address: string): Promise<number> => {
 export const getTokenInfoAsync = (erc20: any, address: string): Promise<any> => {
     return new Promise((resolve, reject) => {
 
-        const contract = erc20.at(address);
+        const contract = erc20.at(address, (error, res) => {
+            console.warn("callack", error, res)
+        });
+
+        console.warn("AT", contract)
         const info = {};
         // TODO: handle errors
         contract.name.call((e, name) => {
             if (e) {
-                //console.log("1", address, e)
                 //resolve(null);
                 //return;
             }
             info.name = name;
             contract.symbol.call((e, symbol) => {
                 if (e) {
-                    console.log("2", e)
                     resolve(null);
                     return;
                 }
                 info.symbol = symbol;
                 contract.decimals.call((e, decimals) => {
                     if (e) {
-                        console.log("3", e)
                         resolve(null);
                         return;
                     }

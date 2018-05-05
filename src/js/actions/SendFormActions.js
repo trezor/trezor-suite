@@ -118,10 +118,10 @@ const getMaxAmount = () => {
 }
 
 export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLimit: string): Array<FeeLevel> => {
-    if (typeof gasPrice === 'string') gasPrice = new BigNumber(gasPrice);
-    const quarter: BigNumber = gasPrice.dividedBy(4);
-    const high: string = gasPrice.plus(quarter.times(2)).toString();
-    const low: string = gasPrice.minus(quarter.times(2)).toString();
+    const price: BigNumber = typeof gasPrice === 'string' ? new BigNumber(gasPrice) : gasPrice
+    const quarter: BigNumber = price.dividedBy(4);
+    const high: string = price.plus(quarter.times(2)).toString();
+    const low: string = price.minus(quarter.times(2)).toString();
 
     return [
         { 
@@ -132,7 +132,7 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
         { 
             value: 'Normal',
             gasPrice: gasPrice.toString(),
-            label: `${ calculateFee(gasPrice.toString(), gasLimit) } ${ symbol }`
+            label: `${ calculateFee(price.toString(), gasLimit) } ${ symbol }`
         },
         { 
             value: 'Low',
@@ -798,8 +798,6 @@ export const onSend = (): AsyncAction => {
         // txData.gasLimit = web3.toHex(gasLimit);
         // txData.gasPrice = web3.toHex( EthereumjsUnits.convert(gasPrice, 'gwei', 'wei') );
 
-        // console.log("---->GASSS", txData, gasLimit, gasPrice, EthereumjsUnits.convert(gasPrice, 'gwei', 'wei'));
-
         const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
         if (!selected) return;
 
@@ -840,7 +838,6 @@ export const onSend = (): AsyncAction => {
         txData.v = web3.toHex(signedTransaction.payload.v);
 
         // const gasLimit2 = await estimateGas(web3, txData);
-        // console.log("---->GASSS", txData, gasLimit2.toString() );
 
         const { config } = getState().localStorage;
         if (!config) return;
@@ -866,7 +863,7 @@ export const onSend = (): AsyncAction => {
                 payload: {
                     type: 'success',
                     title: 'Transaction success',
-                    message: `<a href="${ selectedCoin.explorer }/tx/${txid}" class="green" target="_blank" rel="noreferrer noopener">See transaction detail</a>`,
+                    message: `<a href="${selectedCoin.explorer.tx}${txid}" class="green" target="_blank" rel="noreferrer noopener">See transaction detail</a>`,
                     cancelable: true,
                     actions: []
                 }

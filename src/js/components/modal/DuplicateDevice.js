@@ -2,8 +2,10 @@
 'use strict';
 
 import React from 'react';
+import type { Props } from './index';
 
-const RememberDevice = (props: any): any => {
+const RememberDevice = (props: Props) => {
+    if (!props.modal.opened) return null;
     const { device } = props.modal;
     const { onCancel, onDuplicateDevice } = props.modalActions;
     return (

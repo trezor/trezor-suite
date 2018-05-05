@@ -2,13 +2,16 @@
 'use strict';
 
 import React from 'react';
+import { findAccount } from '../../reducers/AccountsReducer';
 import { findSelectedDevice } from '../../reducers/TrezorConnectReducer';
 
-const ConfirmAddress = (props: any): any => {
-    
-    const account = props.accounts.find(a => a.deviceState === props.receive.deviceState && a.index === props.receive.accountIndex && a.network === props.receive.network);
-    const { config } = props.localStorage;
-    const selectedCoin = config.coins.find(c => c.network === account.network);
+import type { Props } from './index';
+
+const ConfirmAddress = (props: Props) => {
+
+    const { accounts, abstractAccount } = props;
+    const account = findAccount(accounts, abstractAccount.index, abstractAccount.deviceState, abstractAccount.network);
+    if (!account) return null;
 
     return (
         <div className="confirm-address">
@@ -18,16 +21,21 @@ const ConfirmAddress = (props: any): any => {
             </div>
             <div className="content">
                 <p>{ account.address }</p>
-                <label>{ selectedCoin.symbol } account #{ (account.index + 1) }</label>
+                <label>{ abstractAccount.coin.symbol } account #{ (account.index + 1) }</label>
             </div>
         </div>
     );
 }
 export default ConfirmAddress;
 
-export const ConfirmUnverifiedAddress = (props: any): any => {
+export const ConfirmUnverifiedAddress = (props: Props): any => {
 
-    const account = props.accounts.find(a => a.deviceState === props.receive.deviceState && a.index === props.receive.accountIndex && a.network === props.receive.network);
+    if (!props.modal.opened) return null;
+    const {
+        device
+    } = props.modal;
+
+    const { accounts, abstractAccount } = props;
 
     const {
         onCancel 
@@ -38,10 +46,9 @@ export const ConfirmUnverifiedAddress = (props: any): any => {
         showAddress
     } = props.receiveActions;
 
-    const {
-        device
-    } = props.modal;
-
+    const account = findAccount(accounts, abstractAccount.index, abstractAccount.deviceState, abstractAccount.network);
+    if (!account) return null;
+    
     if (!device.connected) {
         return (
             <div className="confirm-address-unverified">
@@ -59,7 +66,8 @@ export const ConfirmUnverifiedAddress = (props: any): any => {
             </div>
         );
     } else {
-        const enable: string = device.features.passphrase_protection ? 'Enable' : 'Disable';
+        // corner-case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
+        const enable: string = device.features && device.features.passphrase_protection ? 'Enable' : 'Disable';
         return (
             <div className="confirm-address-unverified">
                 <button className="close-modal transparent" onClick={ onCancel }></button>

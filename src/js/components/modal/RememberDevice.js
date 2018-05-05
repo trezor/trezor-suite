@@ -67,17 +67,21 @@ export default class RememberDevice extends Component<Props, State> {
         const { onForgetDevice, onRememberDevice } = this.props.modalActions;
 
         let label = device.label;
-        let devicePlural = false;
-        if (instances && instances.length > 0) {
+        let devicePlural: string = "device or to remember it";
+        if (instances && instances.length > 1) {
             label = instances.map((instance, index) => {
-                return (<span key={index}>{instance.instanceLabel}</span>);
+                let comma: string = '';
+                if (index > 0) comma = ', ';
+                return (
+                    <span key={ index }>{ comma }{ instance.instanceLabel }</span>
+                );
             })
-            devicePlural = instances.length > 1;
+            devicePlural = "devices or to remember them";
         }
         return (
             <div className="remember">
                 <h3>Forget {label}?</h3>
-                <p>Would you like TREZOR Wallet to forget your device or to remember it, so that it is still visible even while disconnected?</p>
+                <p>Would you like TREZOR Wallet to forget your { devicePlural }, so that it is still visible even while disconnected?</p>
                 <button onClick={ event => onForgetDevice(device) }>Forget</button>
                 <button className="white" onClick={ event => onRememberDevice(device) }><span>Remember <Loader size="28" label={  this.state.countdown.toString() } /></span></button>
             </div>
@@ -92,22 +96,9 @@ export const ForgetDevice = (props: Props) => {
     return (
         <div className="remember">
             <h3>Forget { device.instanceLabel } ?</h3>
-            <p>Forgetting only removes the device from the list on the left, your bitcoins are still safe and you can access them by reconnecting your TREZOR again.</p>
-            <button onClick={ event => onForgetSingleDevice(device) }>Forget</button>
+            <p>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your TREZOR again.</p>
+            <button onClick={ (event) => onForgetSingleDevice(device) }>Forget</button>
             <button className="white" onClick={ onCancel }>Don't forget</button>
-        </div>
-    );
-}
-
-export const DisconnectDevice = (props: Props) => {
-    if (!props.modal.opened) return null;
-    const { device } = props.modal;
-    const { onForgetSingleDevice, onCancel } = props.modalActions;
-    return (
-        <div className="remember">
-            <h3>Unplug { device.instanceLabel }</h3>
-            <p>TREZOR Wallet will forget your TREZOR right after you disconnect it.</p>
-            <b>TODO: its not true, actually i've already forget those data!!!</b>
         </div>
     );
 }

@@ -1,27 +1,4 @@
 {
-    "coins1": [
-        { 
-            "name": "Ethereum Ropsten",
-            "symbol": "eth",
-            "network": "ropsten-eth",
-            "shortcut": "eth",
-            "bip44": "m/44'/60'/0'/0",
-            "defaultGasPrice": 64,
-            "defaultGasLimit": 21000,
-            "defaultGasLimitTokens": 200000,
-            "backends": [
-                {
-                    "name": "TREZOR Wallet - Ethereum",
-                    "urls": [
-                        "https://ropsten.infura.io/QGyVKozSUEh2YhL4s2G4",
-                        "http://10.34.2.5:8545"
-                    ],
-                    "explorer": "https://blockexplorer.com"
-                }
-            ]
-        }
-    ],
-
     "coins": [
         {
             "name": "Ethereum",
@@ -41,7 +18,10 @@
                     ]
                 }
             ],
-            "explorer": "https://etherscan.io"
+            "explorer": {
+                "tx": "https://etherscan.io/tx/",
+                "address": "https://etherscan.io/address/"
+            }
         },
         {
             "name": "Ethereum Classic",
@@ -63,7 +43,10 @@
                     ]
                 }
             ],
-            "explorer": "https://etherscan.io"
+            "explorer": {
+                "tx": "https://gastracker.io/tx/",
+                "address": "https://gastracker.io/addr/"
+            }
         },
         { 
             "name": "Ethereum Ropsten",
@@ -83,7 +66,10 @@
                     ]
                 }
             ],
-            "explorer": "https://ropsten.etherscan.io"
+            "explorer": {
+                "tx": "https://ropsten.etherscan.io/tx/",
+                "address": "https://ropsten.etherscan.io/tx/"
+            }
         },
         { 
             "name": "Ethereum Rinkeby",
@@ -102,7 +88,10 @@
                     ]
                 }
             ],
-            "explorer": "https://rinkeby.etherscan.io"
+            "explorer": {
+                "tx": "https://rinkeby.etherscan.io/tx/",
+                "tx": "https://rinkeby.etherscan.io/address/"
+            }
         }
     ],
 

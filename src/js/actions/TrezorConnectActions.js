@@ -135,10 +135,10 @@ export const init = (): AsyncAction => {
                 webusb: true
             });
         } catch (error) {
-            dispatch({
-                type: CONNECT.INITIALIZATION_ERROR,
-                error
-            })
+            // dispatch({
+            //     type: CONNECT.INITIALIZATION_ERROR,
+            //     error
+            // })
         }
     }
 }
@@ -227,7 +227,6 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => {
         // || device.isUsedElsewhere
 
         // switch to initial url and reset this value
-        console.warn("ON SELECT DEV d", device);
 
         if (!device.features) {
             dispatch( push(`/device/${ device.path }/acquire`) );
@@ -295,7 +294,6 @@ export const switchToFirstAvailableDevice = (): AsyncAction => {
 export const getSelectedDeviceState = (): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         const selected = findSelectedDevice(getState().connect);
-        console.warn("init selected", selected)
         if (selected 
             && selected.connected
             && selected.features

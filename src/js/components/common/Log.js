@@ -16,13 +16,19 @@ type Props = {
 const Log = (props: Props): ?React$Element<string> => {
     if (!props.log.opened)
         return null;
+
+    // const entries = props.log.entries.map(entry => {
+    //     return (
+
+    //     )
+    // })
     
     return (
         <div className="log">
             <button className="log-close transparent" onClick={ props.toggle }></button>
             <h2>Log</h2>
             <p>Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.</p>
-            <textarea></textarea>
+            <textarea value={ JSON.stringify(props.log.entries) } readOnly></textarea>
         </div>
     )
 }

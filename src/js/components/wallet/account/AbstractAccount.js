@@ -58,7 +58,9 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
         const device = findDevice(props.devices, currentState.deviceState, currentState.deviceId, currentState.deviceInstance);
         if (!device) return;
         const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === currentState.network);
+        if (!discovery) return;
         const account = props.accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.index && a.network === currentState.network);
+        
 
         let deviceStatusNotification: ?React$Element<typeof Notification> = null;
         if (account) {
@@ -66,6 +68,8 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
                 deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />;
             } else if (!device.available) {
                 deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is unavailable` } message="Change passphrase settings to use this device" />;
+            } else if (!discovery.completed) {
+                deviceStatusNotification = <Notification className="info" title="Loading accounts" />;
             }
         }
         this.setState({
@@ -108,7 +112,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
                     if (device.available) {
                         return (
                             <section>
-                                <Notification className="info" title="Loading account" />
+                                <Notification className="info" title="Loading accounts" />
                             </section>
                         );
                     } else {
@@ -128,7 +132,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
                             <Notification 
                                 className="info" 
                                 title={ `Device ${ device.instanceLabel } is disconnected` } 
-                                message="Connect to load accounts"
+                                message="Connect device to load accounts"
                                 />
                         </section>
                     );

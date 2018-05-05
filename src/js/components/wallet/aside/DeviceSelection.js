@@ -104,11 +104,11 @@ const Value = (props: any): any => {
 export const DeviceSelect = (props: Props) => {
 
     const { devices, transport } = props.connect;
+
     const selected: ?TrezorDevice = findSelectedDevice(props.connect);
     if (!selected) return null;
 
-    const handleMenuClick = (type, device) => {
-        console.log("handleMenuClick", type, device)
+    const handleMenuClick = (type: string, device: TrezorDevice) => {
         if (type === 'acquire') {
             props.acquireDevice();
         } else if (type === 'forget') {
@@ -118,7 +118,8 @@ export const DeviceSelect = (props: Props) => {
         }
     }
 
-    const disabled: boolean = (devices.length < 1 && transport && transport.version.indexOf('webusb') < 0);
+    const webusb: boolean = (transport && transport.version.indexOf('webusb') >= 0) ? true : false;
+    const disabled: boolean = (devices.length < 1 && !webusb);
 
     return (
         <Value 
@@ -150,7 +151,7 @@ export class DeviceDropdown extends Component<Props> {
     }
 
     componentDidUpdate() {
-        const transport: any = this.props.connect.transport;
+        const { transport } = this.props.connect;
         if (transport && transport.version.indexOf('webusb') >= 0)
             TrezorConnect.renderWebUSBButton();
     }
@@ -163,6 +164,7 @@ export class DeviceDropdown extends Component<Props> {
                 block = true;
                 break;
             }
+
             elem = elem.parentElement;
         }
 
@@ -178,7 +180,7 @@ export class DeviceDropdown extends Component<Props> {
     componentDidMount(): void {
         window.addEventListener('mousedown', this.mouseDownHandler, false);
         // window.addEventListener('blur', this.blurHandler, false);
-        const transport: any = this.props.connect.transport;
+        const { transport } = this.props.connect;
         if (transport && transport.version.indexOf('webusb') >= 0)
             TrezorConnect.renderWebUSBButton();
     }
@@ -192,7 +194,6 @@ export class DeviceDropdown extends Component<Props> {
         if (item.type === 'reload') {
             this.props.acquireDevice();
         } else if (item.type === 'forget') {
-            // this.props.toggleDeviceDropdown(false);
             this.props.forgetDevice(device);
         } else if (item.type === 'clone') {
             this.props.duplicateDevice(device);
@@ -243,14 +244,6 @@ export class DeviceDropdown extends Component<Props> {
                 </div>
             );
         }
-
-        // const currentDeviceMenu = (
-        //     <div className="device-menu">
-        //         <div className="settings">Device settings</div>
-        //         <div className="clone">Clone device</div>
-        //         <div className="forget">Forget device</div>
-        //     </div>
-        // );
 
         const deviceList: Array<any> = devices.map((dev, index) => {
             if (dev === selected) return null;

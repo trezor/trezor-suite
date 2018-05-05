@@ -13,9 +13,15 @@ export type Coin = {
     defaultGasLimit: number;
     defaultGasLimitTokens: number;
     defaultGasPrice: number;
-    explorer: string;
+    explorer: {
+        tx: string;
+        address: string;
+    };
     tokens: string;
-    backends: Array<any>
+    backends: Array<{
+        name: string;
+        urls: Array<string>;
+    }>
 }
 
 export type NetworkToken = {

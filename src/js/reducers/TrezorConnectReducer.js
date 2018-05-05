@@ -17,7 +17,17 @@ export type State = {
     selectedDevice: ?SelectedDevice;
     discoveryComplete: boolean;
     error: ?string;
-    transport: any;
+    transport: ?{
+        type: string;
+        version: string;
+    };
+    // browserState: {
+    //     name: string;
+    //     osname: string;
+    //     supported: boolean;
+    //     outdated: boolean;
+    //     mobile: boolean;
+    // } | {};
     browserState: any;
 }
 
@@ -68,7 +78,6 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
     //     if (upcoming.features.passphrase_protection !== current.features.passphrase_protection) {
     //         // device settings has been changed, reset state
     //         // dev.state = null;
-    //         // console.log("RESTETTTT STATE!");
     //     }
     // }
 
@@ -199,7 +208,6 @@ const setDeviceState = (state: State, action: any): State => {
     //const affectedDevice: ?TrezorDevice = state.devices.find(d => d.path === action.device.path && d.instance === action.device.instance);
     const index: number = state.devices.findIndex(d => d.path === action.device.path && d.instance === action.device.instance);
     if (index > -1) {
-        console.warn("APGREDJS", newState.devices[index].state)
         // device could already have own state from firmware, do not override it
         if (!newState.devices[index].state) {
             const changedDevice: TrezorDevice = { 
@@ -239,15 +247,10 @@ const changeDevice = (state: State, device: Object): State => {
         
         // else if (isAffectedUnacquired >= 0 && !device.unacquired && affectedDevices.length > 1) {
         //     affectedDevices.splice(isAffectedUnacquired, 1);
-        //     console.warn("CLEARRRR", isAffectedUnacquired);
         // }
-        console.warn("AFFEEE", isAffectedUnacquired, affectedDevices, otherDevices)
-
-
         // acquiring selected device. remove unnecessary (not acquired) device from list
         // after this action selectedDevice needs to be updated (in TrezorConnectService)
         if (state.selectedDevice && device.path === state.selectedDevice.id && affectedDevices.length > 1) {
-            console.warn("clear dupli", affectedDevices, otherDevices)
             // affectedDevices = affectedDevices.filter(d => d.path !== state.selectedDevice.id && d.features);
         }
 
@@ -358,7 +361,6 @@ const onSelectDevice = (state: State, action: any): State => {
     const selected = findSelectedDevice(newState);
     if (selected) {
         selected.ts = new Date().getTime();
-        console.warn("APDEJT SELECTED!", selected.instanceLabel, selected.ts)
     }
 
     return newState;
@@ -435,13 +437,7 @@ export default function connect(state: State = initialState, action: Action): St
         case DEVICE.DISCONNECT_UNACQUIRED :
             return disconnectDevice(state, action.device);
 
-        
 
-        
-
-        
-
-        
 
         default:
             return state;

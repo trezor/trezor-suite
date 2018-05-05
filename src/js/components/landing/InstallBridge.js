@@ -43,7 +43,7 @@ export default class InstallBridge extends Component<Props, State> {
         this.state = {
             version: '2.0.12',
             url: 'https://wallet.trezor.io/data/bridge/2.0.12/',
-            target: null,
+            target: currentTarget,
         };
     }
 
@@ -52,7 +52,6 @@ export default class InstallBridge extends Component<Props, State> {
             target: value
         });
     }
-
 
     componentWillUpdate() {
         if (this.props.browserState.osname && !this.state.target) {

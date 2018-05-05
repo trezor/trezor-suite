@@ -7,11 +7,12 @@ import BigNumber from 'bignumber.js';
 import type { Props as BaseProps } from './index';
 
 type Props = {
+    explorer: string,
+    coin: $PropertyType<$ElementType<BaseProps, 'abstractAccount'>, 'coin'>,
     summary: $ElementType<BaseProps, 'summary'>,
     balance: string,
     network: string,
     fiat: $ElementType<BaseProps, 'fiat'>,
-    localStorage: $ElementType<BaseProps, 'localStorage'>,
     onToggle: $ElementType<BaseProps, 'onDetailsToggle'>
 }
 
@@ -23,8 +24,7 @@ const SummaryDetails = (props: Props): ?React$Element<string> => {
         </div>
     );
 
-    const { config } = props.localStorage;
-    const selectedCoin = config.coins.find(c => c.network === props.network);
+    const selectedCoin = props.coin;
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
     let balanceColumn = null;
@@ -63,6 +63,7 @@ const SummaryDetails = (props: Props): ?React$Element<string> => {
     return (
         <div className="summary-details opened">
             <div className="toggle" onClick={ props.onToggle }></div>
+            <a href={ props.explorer } className="green" target="_blank" rel="noreferrer noopener">See full transaction history</a>
             <div className="content">
                 { balanceColumn }
                 { rateColumn }

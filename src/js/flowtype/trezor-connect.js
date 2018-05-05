@@ -92,7 +92,11 @@ declare module 'trezor-connect' {
     declare export type UiMessage = {
         event: string;
         type: UiMessageType;
-        payload: Object;
+        // payload: Object;
+        payload: {
+            device: Device;
+            code?: string;
+        }
     }
     
     declare export type DeviceMessageType = $Values<T_DEVICE>;

@@ -15,13 +15,13 @@ import { default as AbstractAccountActions } from '../../actions/AbstractAccount
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from '../../flowtype';
-import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps, Props as BaseProps} from './account/AbstractAccount';
+import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from './account/AbstractAccount';
 
 import type { AccountState } from './account/AbstractAccount';
 
 type OwnProps = { }
 
-type StateProps = StateProps & {
+type StateProps = BaseStateProps & {
     receive: $ElementType<State, 'receive'>,
 }
 
@@ -29,7 +29,7 @@ type DispatchProps = BaseDispatchProps & {
     showAddress: typeof ReceiveActions.showAddress
 }
 
-type Props = BaseProps & StateProps & DispatchProps;
+type Props = StateProps & DispatchProps;
 
 
 class Receive extends AbstractAccount<Props> {
@@ -43,21 +43,22 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     const {
         device,
         account,
+        discovery,
         deviceStatusNotification
     } = state;
-
-    if (!device || !account) return <section></section>;
 
     const {
         addressVerified,
         addressUnverified,
     } = props.receive;
 
+    if (!device || !account || !discovery) return <section></section>;
+
     let qrCode = null;
     let address = `${account.address.substring(0, 20)}...`;
     let className = 'address hidden';
     let button = (
-        <button onClick={ event => props.showAddress(account.addressPath) }>
+        <button disabled={ !discovery.completed } onClick={ event => props.showAddress(account.addressPath) }>
             <span>Show full address</span>
         </button>
     );

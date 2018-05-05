@@ -11,8 +11,11 @@ const CoinSelection = (props: Props): React$Element<string> => {
     const { location } = props.router;
     const { config } = props.localStorage;
 
+    const urlParams = location.state;
+    const baseUrl: string = urlParams.deviceInstance ? `/device/${urlParams.device}:${urlParams.deviceInstance}` : `/device/${urlParams.device}`;
+
     const walletCoins = config.coins.map(item => {
-        const url = `${ location.pathname }/network/${ item.network }/address/0`;
+        const url = `${ baseUrl }/network/${ item.network }/address/0`;
         const className = `coin ${ item.network }`
         return (
             <NavLink key={ item.network } to={ url } className={ className }>

@@ -66,7 +66,8 @@ export const showUnverifiedAddress = (): Action => {
     }
 }
 
-export const showAddress = (address_n: string): AsyncAction => {
+//export const showAddress = (address_n: string): AsyncAction => {
+export const showAddress = (address_n: Array<number>): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const selected = findSelectedDevice(getState().connect);

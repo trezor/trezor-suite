@@ -18,6 +18,9 @@
 ./src/js/flowtype/react-router-redux.js
 ./src/js/flowtype/css.js
 ./src/js/flowtype/trezor-connect.js
+./src/js/flowtype/bignumber.js
+./src/js/flowtype/ethereum-types.js
+./src/js/flowtype/web3.js
 
 
 [options]

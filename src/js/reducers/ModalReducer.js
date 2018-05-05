@@ -42,7 +42,6 @@ export default function modal(state: State = initialState, action: Action): Stat
                 windowType: action.type
             };
         case CONNECT.FORGET_REQUEST :
-        case CONNECT.DISCONNECT_REQUEST :
             return {
                 opened: true,
                 device: action.device,
@@ -88,7 +87,6 @@ export default function modal(state: State = initialState, action: Action): Stat
             };
 
         case UI.REQUEST_BUTTON :
-            console.log("REQBUT", action)
             return {
                 opened: true,
                 device: action.payload.device,

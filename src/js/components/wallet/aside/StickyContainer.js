@@ -5,7 +5,6 @@
 
 import React, { PureComponent } from 'react';
 import raf from 'raf';
-import { DeviceSelect } from './DeviceSelection';
 import { getViewportHeight, getScrollY } from '../../../utils/windowUtils';
 
 type Props = {

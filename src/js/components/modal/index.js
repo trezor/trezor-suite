@@ -19,7 +19,7 @@ import Passphrase from './Passphrase';
 import PassphraseType from './PassphraseType';
 import ConfirmSignTx from './ConfirmSignTx';
 import ConfirmAddress, { ConfirmUnverifiedAddress } from './ConfirmAddress';
-import RememberDevice, { ForgetDevice, DisconnectDevice } from './RememberDevice';
+import RememberDevice, { ForgetDevice } from './RememberDevice';
 import DuplicateDevice from './DuplicateDevice';
 
 import * as RECEIVE from '../../actions/constants/receive';
@@ -36,6 +36,7 @@ type StateProps = {
     accounts: $ElementType<State, 'accounts'>,
     devices: $PropertyType<$ElementType<State, 'connect'>, 'devices'>,
     connect: $ElementType<State, 'connect'>,
+    abstractAccount: $ElementType<State, 'abstractAccount'>,
     sendForm: $ElementType<State, 'sendForm'>,
     receive: $ElementType<State, 'receive'>,
     localStorage: $ElementType<State, 'localStorage'>,
@@ -99,10 +100,6 @@ class Modal extends Component<Props> {
                 component = (<ForgetDevice { ...this.props } />)
             break;
 
-            case CONNECT.DISCONNECT_REQUEST :
-                component = (<DisconnectDevice { ...this.props } />)
-            break;
-
             case CONNECT.TRY_TO_DUPLICATE :
                 component = (<DuplicateDevice { ...this.props } />)
             break;
@@ -131,6 +128,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         accounts: state.accounts,
         devices: state.connect.devices,
         connect: state.connect,
+        abstractAccount: state.abstractAccount,
         sendForm: state.sendForm,
         receive: state.receive,
         localStorage: state.localStorage

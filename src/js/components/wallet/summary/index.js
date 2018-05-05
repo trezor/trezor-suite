@@ -13,11 +13,11 @@ import * as TokenActions from '../../../actions/TokenActions';
 import type { ActionCreators } from 'redux';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from '../../../flowtype';
-import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps, Props as BaseProps} from '../account/AbstractAccount';
+import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../account/AbstractAccount';
 
 type OwnProps = { }
 
-type StateProps = StateProps & {
+type StateProps = BaseStateProps & {
     tokens: $ElementType<State, 'tokens'>,
     summary: $ElementType<State, 'summary'>,
     fiat: $ElementType<State, 'fiat'>,
@@ -34,7 +34,7 @@ type DispatchProps = BaseDispatchProps & {
     removeToken: typeof TokenActions.remove,
 }
 
-export type Props = BaseProps & StateProps & DispatchProps;
+export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {

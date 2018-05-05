@@ -24,10 +24,11 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     const {
         device,
         account,
+        discovery,
         deviceStatusNotification
     } = state;
 
-    if (!device || !account) return <section></section>;
+    if (!device || !account || !discovery) return <section></section>;
 
     const addressTokens = props.tokens.filter(t => t.ethAddress === account.address);
     const { network } = props.abstractAccount;
@@ -95,7 +96,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         buttonLabel += ` ${total} ${ selectedCoin.symbol }`;
     }
     
-    if (device) {
+    //if (device) {
 
         if (!device.connected){
             buttonLabel = 'Device is not connected';
@@ -103,9 +104,12 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         } else if (!device.available) {
             buttonLabel = 'Device is unavailable';
             buttonDisabled = true;
+        } else if (!discovery.completed) {
+            buttonLabel = 'Loading accounts';
+            buttonDisabled = true;
         }
         
-    }
+    //}
 
     let notification = null;
 
