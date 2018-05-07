@@ -29,9 +29,9 @@ export type DiscoveryStartAction = {
     type: typeof DISCOVERY.START,
     device: TrezorDevice,
     network: string,
-    xpub: string,
+    publicKey: string,
+    chainCode: string,
     basePath: Array<number>,
-    hdKey: HDKey
 }
 
 export type DiscoveryWaitingAction = {
@@ -174,18 +174,15 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => {
         if (discoveryProcess && discoveryProcess.interrupted) return;
         
         const basePath: Array<number> = response.payload.path;
-        const hdKey = new HDKey();
-        hdKey.publicKey = new Buffer(response.payload.publicKey, 'hex');
-        hdKey.chainCode = new Buffer(response.payload.chainCode, 'hex');
 
         // send data to reducer
         dispatch({
             type: DISCOVERY.START,
             network: coinToDiscover.network,
             device,
-            xpub: response.payload.publicKey,
+            publicKey: response.payload.publicKey,
+            chainCode: response.payload.chainCode,
             basePath,
-            hdKey,
         });
 
         dispatch( start(device, network) );
@@ -194,6 +191,11 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => {
 
 const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+
+        //const hdKey = discoveryProcess.hdKey
+        console.log("TYPEOF", typeof discoveryProcess.hdKey.derive, discoveryProcess.hdKey)
+        console.log("TYPEOF", typeof discoveryProcess.hdKey.derive === typeof HDKey);
+       
 
         const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
         const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);

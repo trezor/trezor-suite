@@ -21,7 +21,8 @@ import type {
 
 export type Discovery = {
     network: string;
-    xpub: string;
+    publicKey: string;
+    chainCode: string;
     hdKey: HDKey;
     basePath: Array<number>;
     deviceState: string;
@@ -41,10 +42,14 @@ const findIndex = (state: State, network: string, deviceState: string): number =
 
 const start = (state: State, action: DiscoveryStartAction): State => {
     const deviceState: string = action.device.state || '0';
+    const hdKey: HDKey =  new HDKey();
+    hdKey.publicKey = new Buffer(action.publicKey, 'hex');
+    hdKey.chainCode = new Buffer(action.chainCode, 'hex');
     const instance: Discovery = {
         network: action.network,
-        xpub: action.xpub,
-        hdKey: action.hdKey,
+        publicKey: action.publicKey,
+        chainCode: action.chainCode,
+        hdKey,
         basePath: action.basePath,
         deviceState,
         accountIndex: 0,
@@ -99,7 +104,8 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
     const instance: Discovery = {
         network: action.network,
         deviceState,
-        xpub: '',
+        publicKey: '',
+        chainCode: '',
         hdKey: null,
         basePath: [],
         accountIndex: 0,
@@ -125,7 +131,8 @@ const waitingForBackend = (state: State, action: DiscoveryWaitingAction): State 
     const instance: Discovery = {
         network: action.network,
         deviceState,
-        xpub: '',
+        publicKey: '',
+        chainCode: '',
         hdKey: null,
         basePath: [],
         accountIndex: 0,
@@ -163,8 +170,12 @@ export default function discovery(state: State = initialState, action: Action): 
             return waitingForBackend(state, action);
         case DISCOVERY.FROM_STORAGE :
             return action.payload.map(d => {
+                const hdKey: HDKey =  new HDKey();
+                hdKey.publicKey = new Buffer(d.publicKey, 'hex');
+                hdKey.chainCode = new Buffer(d.chainCode, 'hex');
                 return {
                     ...d,
+                    hdKey,
                     interrupted: false,
                     waitingForDevice: false,
                     waitingForBackend: false,
