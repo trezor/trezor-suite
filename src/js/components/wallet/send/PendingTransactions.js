@@ -22,7 +22,7 @@ const PendingTransactions = (props: Props) => {
 
     if (pending.length < 1) return null;
 
-    const tokens = props.tokens.filter(t => t.ethAddress === account.address);
+    const tokens = props.tokens.filter(t => t.ethAddress === account.address && t.network === account.network);
 
     const bgColor = new ColorHash({lightness: 0.7});
     const textColor = new ColorHash();
@@ -33,13 +33,15 @@ const PendingTransactions = (props: Props) => {
 
         if (tx.token !== tx.network) {
             const token = tokens.find(t => t.symbol === tx.token);
-            iconColor = {
-                color: textColor.hex(token.name),
-                background: bgColor.hex(token.name),
-                borderColor: bgColor.hex(token.name)
+            if (token) {
+                iconColor = {
+                    color: textColor.hex(token.name),
+                    background: bgColor.hex(token.name),
+                    borderColor: bgColor.hex(token.name)
+                }
+                symbol = token.symbol.toUpperCase();
+                name = token.name;
             }
-            symbol = token.symbol.toUpperCase();
-            name = token.name;
         } else {
             iconColor = {
                 color: textColor.hex(tx.network),

@@ -59,6 +59,11 @@ export type Config = {
     fiatValueTickers: Array<FiatValueTicker>;
 }
 
+export type CustomBackend = {
+    name: string;
+    url: string;
+}
+
 
 export type State = {
     initialized: boolean;
@@ -66,6 +71,7 @@ export type State = {
     config: Config;
     ERC20Abi: Array<Object>;
     tokens: TokensCollection;
+    customBackend: Array<CustomBackend>;
 }
 
 const initialState: State = {
@@ -77,6 +83,13 @@ const initialState: State = {
     },
     ERC20Abi: [],
     tokens: {},
+    customBackend: [
+        {
+            name: "Custom1",
+            slug: "custom1",
+            url: "http://google.com"
+        }
+    ]
 };
 
 export default function localStorage(state: State = initialState, action: Action): State {

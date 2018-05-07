@@ -36,7 +36,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     if (!device || !account) return <section></section>;
 
     const abstractAccount = props.abstractAccount;
-    const tokens = props.tokens.filter(t => t.ethAddress === account.address);
+    const tokens = props.tokens.filter(t => t.ethAddress === account.address && t.network === account.network);
 
     return (
 

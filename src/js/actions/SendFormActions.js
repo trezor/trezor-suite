@@ -285,24 +285,27 @@ export const validation = (): ThunkAction => {
                     let decimalRegExp: RegExp;
 
                     if (state.token !== accountState.network) {
-                        const token: any = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === state.token);
+                        const token = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === state.token);
+                        if (token) {
+                            if (parseInt(token.decimals) > 0) {
+                                //decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
+                                decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
+                            } else {
+                                // decimalRegExp = new RegExp('^(0|0\\.?|[1-9]+\\.?)$');
+                                decimalRegExp = new RegExp('^[0-9]+$');
+                            }
+    
+                            if (!state.amount.match(decimalRegExp)) {
+                                errors.amount = `Maximum ${ token.decimals} decimals allowed`;
+                            } else if (new BigNumber(state.total).greaterThan(account.balance)) {
+                                errors.amount = `Not enough ${ state.coinSymbol.toUpperCase() } to cover transaction fee`;
+                            } else if (new BigNumber(state.amount).greaterThan(token.balance)) {
+                                errors.amount = 'Not enough funds';
+                            } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
+                                errors.amount = 'Amount is too low';
+                            }
+                        }
                         
-                        if (parseInt(token.decimals) > 0) {
-                            decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
-                        } else {
-                            // decimalRegExp = new RegExp('^(0|0\\.?|[1-9]+\\.?)$');
-                            decimalRegExp = new RegExp('^[0-9]+$');
-                        }
-
-                        if (!state.amount.match(decimalRegExp)) {
-                            errors.amount = `Maximum ${ token.decimals} decimals allowed`;
-                        } else if (new BigNumber(state.total).greaterThan(account.balance)) {
-                            errors.amount = `Not enough ${ state.coinSymbol.toUpperCase() } to cover transaction fee`;
-                        } else if (new BigNumber(state.amount).greaterThan(token.balance)) {
-                            errors.amount = 'Not enough funds';
-                        } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
-                            errors.amount = 'Amount is too low';
-                        }
                     } else {
                         decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9]+\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
                         if (!state.amount.match(decimalRegExp)) {

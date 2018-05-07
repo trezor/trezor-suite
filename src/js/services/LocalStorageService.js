@@ -44,7 +44,7 @@ const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): A
 
 const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => {
     return accounts.reduce((arr, account) => {
-        return arr.concat(tokens.filter(a => a.ethAddress === account.address));
+        return arr.concat(tokens.filter(token => token.ethAddress === account.address && token.network === account.network));
     }, []);
 }
 

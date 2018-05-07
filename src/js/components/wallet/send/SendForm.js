@@ -40,7 +40,6 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         coinSymbol,
         token,
         feeLevels,
-        fee,
         selectedFeeLevel,
         gasPriceNeedsUpdate,
         total,
@@ -61,8 +60,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         onSend,
     } = props.sendFormActions;
 
-    const { config } = props.localStorage;
-    const selectedCoin = config.coins.find(c => c.network === network);
+    const selectedCoin = props.abstractAccount.coin;
     const fiatRate = props.fiat.find(f => f.network === network);
 
     const tokens = addressTokens.map(t => {

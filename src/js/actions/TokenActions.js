@@ -75,6 +75,7 @@ export const add = (token: NetworkToken, account: Account): AsyncAction => {
             payload: {
                 loaded: false,
                 deviceState: account.deviceState,
+                network: account.network,
                 name: token.name,
                 symbol: token.symbol,
                 address: token.address,

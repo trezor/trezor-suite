@@ -9,6 +9,7 @@ import type { Action, TrezorDevice } from '../flowtype';
 export type Token = {
     loaded: boolean;
     +deviceState: string;
+    +network: string;
     +name: string;
     +symbol: string;
     +address: string;
