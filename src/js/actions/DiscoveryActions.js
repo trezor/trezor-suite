@@ -192,11 +192,6 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => {
 const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        //const hdKey = discoveryProcess.hdKey
-        console.log("TYPEOF", typeof discoveryProcess.hdKey.derive, discoveryProcess.hdKey)
-        console.log("TYPEOF", typeof discoveryProcess.hdKey.derive === typeof HDKey);
-       
-
         const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
         const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
         const publicAddress: string = EthereumjsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex');
@@ -300,9 +295,9 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
         // ];
 
         for (let i = 0; i < userTokens.length; i++) {
-            const tokenBalance = await getTokenBalanceAsync(web3instance.erc20, userTokens[i].address, ethAddress);
+            const tokenBalance: string = await getTokenBalanceAsync(web3instance.erc20, userTokens[i]);
             if (discoveryProcess.interrupted) return;
-            dispatch( setTokenBalance(userTokens[i].address, ethAddress, tokenBalance.toString()) )
+            dispatch( setTokenBalance(userTokens[i].address, ethAddress, tokenBalance) )
         }
 
         const nonce: number = await getNonceAsync(web3instance.web3, ethAddress);

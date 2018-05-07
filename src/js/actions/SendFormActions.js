@@ -86,7 +86,7 @@ export type SendFormAction = {
 };
 
 //const numberRegExp = new RegExp('^([0-9]{0,10}\\.)?[0-9]{1,18}$');
-const numberRegExp: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9]+\\.?([0-9]+)?|\\.[0-9]+)$');
+const numberRegExp: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
 
 const calculateFee = (gasPrice: string, gasLimit: string): string => {
     return EthereumjsUnits.convert( new BigNumber(gasPrice).times(gasLimit), 'gwei', 'ether');
@@ -289,7 +289,7 @@ export const validation = (): ThunkAction => {
                         if (token) {
                             if (parseInt(token.decimals) > 0) {
                                 //decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
-                                decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
+                                decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9][0-9]*\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
                             } else {
                                 // decimalRegExp = new RegExp('^(0|0\\.?|[1-9]+\\.?)$');
                                 decimalRegExp = new RegExp('^[0-9]+$');
@@ -307,7 +307,7 @@ export const validation = (): ThunkAction => {
                         }
                         
                     } else {
-                        decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9]+\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
+                        decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
                         if (!state.amount.match(decimalRegExp)) {
                             errors.amount = `Maximum 18 decimals allowed`;
                         } else if (new BigNumber(state.total).greaterThan(account.balance)) {

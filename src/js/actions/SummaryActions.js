@@ -6,7 +6,6 @@ import * as SUMMARY from './constants/summary';
 import * as TOKEN from './constants/token';
 import * as ADDRESS from './constants/address';
 import { resolveAfter } from '../utils/promiseUtils';
-import { getTokenInfoAsync, getTokenBalanceAsync } from './Web3Actions';
 import { initialState } from '../reducers/SummaryReducer';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 

@@ -70,23 +70,25 @@ export const add = (token: NetworkToken, account: Account): AsyncAction => {
         const web3instance = getState().web3.find(w3 => w3.network === account.network);
         if (!web3instance) return;
 
+        const tkn: Token = {
+            loaded: false,
+            deviceState: account.deviceState,
+            network: account.network,
+            name: token.name,
+            symbol: token.symbol,
+            address: token.address,
+            ethAddress: account.address,
+            decimals: token.decimals,
+            balance: '0'
+        }
+
         dispatch({
             type: TOKEN.ADD,
-            payload: {
-                loaded: false,
-                deviceState: account.deviceState,
-                network: account.network,
-                name: token.name,
-                symbol: token.symbol,
-                address: token.address,
-                ethAddress: account.address,
-                decimals: token.decimals,
-                balance: '0'
-            }
+            payload: tkn
         });
 
-        const tokenBalance = await getTokenBalanceAsync(web3instance.erc20, token.address, account.address);
-        dispatch( setBalance(token.address, account.address, tokenBalance.toString()) )
+        const tokenBalance = await getTokenBalanceAsync(web3instance.erc20, tkn);
+        dispatch( setBalance(token.address, account.address, tokenBalance) )
     }
 }
 

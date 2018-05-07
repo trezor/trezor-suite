@@ -11,6 +11,7 @@ import * as ADDRESS from './constants/address';
 import * as WEB3 from './constants/web3';
 import * as PENDING from './constants/pendingTx';
 import * as AddressActions from '../actions/AddressActions';
+import * as TokenActions from '../actions/TokenActions';
 
 import type { 
     Dispatch,
@@ -23,6 +24,7 @@ import type { ContractFactory } from 'web3';
 import type { Account } from '../reducers/AccountsReducer';
 import type { PendingTx } from '../reducers/PendingTxReducer';
 import type { Web3Instance } from '../reducers/Web3Reducer';
+import type { Token } from '../reducers/TokensReducer';
 
 export type Web3Action = {
     type: typeof WEB3.READY,
@@ -171,6 +173,11 @@ export function init(web3: ?Web3, coinIndex: number = 0): AsyncAction {
                         dispatch( getNonce(addr) );
                     }
 
+                    const tokens = getState().tokens.filter(t => t.network === network);
+                    for (const token of tokens) {
+                        dispatch( getTokenBalance(token) );
+                    }
+
                     dispatch( getGasPrice(network) );
 
                     const pending = getState().pending.filter(p => p.network === network);
@@ -281,6 +288,32 @@ export function getBalance(account: Account): AsyncAction {
     }
 }
 
+export function getTokenBalance(token: Token): AsyncAction {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+
+        const web3instance = getState().web3.filter(w3 => w3.network === token.network)[0];
+        const web3 = web3instance.web3;
+        const contract = web3instance.erc20.at(token.address);
+
+        console.warn("Get bal", token)
+
+        contract.balanceOf(token.ethAddress, (error: ?Error, balance: ?BigNumber) => {
+            if (balance) {
+                const newBalance: string = balance.dividedBy( Math.pow(10, token.decimals) ).toString();
+                if (newBalance !== token.balance) {
+                    dispatch(TokenActions.setBalance(
+                        token.address,
+                        token.ethAddress,
+                        newBalance
+                    ));
+                }
+                console.log("BALANCE!", balance, newBalance);
+                
+            }
+        });
+    }
+}
+
 export function getNonce(account: Account): AsyncAction {
 
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -359,15 +392,18 @@ export const getBalanceAsync = (web3: Web3, address: string): Promise<any> => {
     });
 }
 
-export const getTokenBalanceAsync = (erc20: any, token: string, address: string): Promise<string> => {
+
+
+export const getTokenBalanceAsync = (erc20: ContractFactory, token: Token): Promise<string> => {
     return new Promise((resolve, reject) => {
 
-        const contr = erc20.at(token);
-        contr.balanceOf(address, (error: Error, result) => {
+        const contract = erc20.at(token.address);
+        contract.balanceOf(token.ethAddress, (error: ?Error, balance: ?BigNumber) => {
             if (error) {
                 reject(error);
-            } else {
-                resolve(result);
+            } else if (balance) {
+                const newBalance: string = balance.dividedBy( Math.pow(10, token.decimals) ).toString();
+                resolve(newBalance);
             }
         });
     });
