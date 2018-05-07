@@ -12,14 +12,15 @@ import type {
     Web3UpdateBlockAction,
     Web3UpdateGasPriceAction 
 } from '../actions/Web3Actions';
+import type { ContractFactory } from 'web3';
 
 export type Web3Instance = {
     network: string;
     web3: Web3;
     chainId: number;
     latestBlock: any;
-    gasPrice: string; //BigNumber
-    erc20: any; //ContractFactory
+    gasPrice: string;
+    erc20: ContractFactory;
 }
 
 export type State = Array<Web3Instance>;

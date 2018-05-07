@@ -118,7 +118,6 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
         case DISCOVERY.START :
         case DISCOVERY.STOP :
         case DISCOVERY.COMPLETE :
-        // case DISCOVERY.WAITING :
             save(api.dispatch, api.getState);
         break;
 

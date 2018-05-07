@@ -58,7 +58,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
         const device = findDevice(props.devices, currentState.deviceState, currentState.deviceId, currentState.deviceInstance);
         if (!device) return;
         const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === currentState.network);
-        if (!discovery) return;
+        // if (!discovery) return;
         const account = props.accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.index && a.network === currentState.network);
         
 
@@ -68,10 +68,13 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
                 deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />;
             } else if (!device.available) {
                 deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is unavailable` } message="Change passphrase settings to use this device" />;
-            } else if (!discovery.completed) {
-                deviceStatusNotification = <Notification className="info" title="Loading accounts" />;
             }
         }
+
+        if (discovery && !discovery.completed && !deviceStatusNotification) {
+            deviceStatusNotification = <Notification className="info" title="Loading accounts" />;
+        }
+
         this.setState({
             device,
             discovery,
@@ -112,7 +115,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
                     if (device.available) {
                         return (
                             <section>
-                                <Notification className="info" title="Loading accounts" />
+                                <Notification className="info" title="Loading accounts..." />
                             </section>
                         );
                     } else {
@@ -137,6 +140,12 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
                         </section>
                     );
                 }
+            } else if (discovery.waitingForBackend) {
+                return (
+                    <section>
+                        <Notification className="warning" title="Backend not working" />
+                    </section>
+                );
             } else if (discovery.completed) {
                 return (
                     <section>

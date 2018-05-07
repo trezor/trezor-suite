@@ -18,6 +18,7 @@ import type {
     Action,
     AsyncAction,
 } from '../flowtype';
+import type { ContractFactory } from 'web3';
 
 import type { Account } from '../reducers/AccountsReducer';
 import type { PendingTx } from '../reducers/PendingTxReducer';
@@ -32,15 +33,15 @@ export type Web3Action = {
 export type Web3CreateAction = {
     type: typeof WEB3.CREATE,
     network: string,
-    web3: Web3, //(web3instance)
-    erc20: any,
+    web3: Web3,
+    erc20: ContractFactory,
     chainId: string;
 };
 
 export type Web3UpdateBlockAction = {
     type: typeof WEB3.BLOCK_UPDATED,
     network: string,
-    blockHash: any
+    blockHash: string
 };
 
 export type Web3UpdateGasPriceAction = {
@@ -76,9 +77,18 @@ export function init(web3: ?Web3, coinIndex: number = 0): AsyncAction {
             if (currentHostIndex + 1 < urls.length) {
                 web3host = urls[currentHostIndex + 1];
             } else {
-                console.error("TODO: Backend " + network + " not working");
+                console.error("TODO: Backend " + network + " not working", web3.currentProvider );
+
+                dispatch({
+                    type: WEB3.CREATE,
+                    network,
+                    web3,
+                    erc20: web3.eth.contract(ERC20Abi),
+                    chainId: '0'
+                });
+
                 // try next coin
-                dispatch( init(web3, coinIndex + 1) );
+                dispatch( init(null, coinIndex + 1) );
                 return;
             }
         }

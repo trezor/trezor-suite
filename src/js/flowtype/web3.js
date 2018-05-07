@@ -2,11 +2,17 @@ import type BigNumber from 'bignumber.js';
 import type { EthereumUnitT, EthereumAddressT } from 'ethereum-types';
 
 declare module 'web3' {
-    declare type ProviderT = Object;
+    declare type ProviderT = {
+        host: string;
+        timeout: number;
+        isConnected: () => boolean;
+        send: (payload: any) => any;
+        sendAsync: (payload: any, callback: (error: Error, result: any) => void) => any;
+    };
 
     declare class Web3T {
         static providers: {
-            HttpProvider: (url: string) => ProviderT;
+            HttpProvider: (host: string, timeout?: number) => ProviderT;
         };
 
         constructor(ProviderT): Web3T;
@@ -54,7 +60,7 @@ declare module 'web3' {
         // constructor(abi: Array<Object>);
         eth: Eth;
         abi: Array<Object>;
-        at: (address: string, callback: (error: Error, contract: Contract) => void) => Contract;
+        at: (address: string, callback: ?(error: Error, contract: Contract) => void) => Contract; // TODO
     }
 
     declare export class Contract {

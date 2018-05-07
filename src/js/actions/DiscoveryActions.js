@@ -35,7 +35,7 @@ export type DiscoveryStartAction = {
 }
 
 export type DiscoveryWaitingAction = {
-    type: typeof DISCOVERY.WAITING,
+    type: typeof DISCOVERY.WAITING_FOR_DEVICE | typeof DISCOVERY.WAITING_FOR_BACKEND,
     device: TrezorDevice,
     network: string
 }
@@ -69,13 +69,31 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
             console.warn("Start discovery: Selected device is unavailable...")
             return;
         }
+        
+        const web3 = getState().web3.find(w3 => w3.network === network);
+        if (!web3) {
+            console.error("Start discovery: Web3 does not exist", network)
+            return;
+        }
 
+        if (!web3.web3.currentProvider.isConnected()) {
+            console.error("Start discovery: Web3 is not connected", network)
+            dispatch({
+                type: DISCOVERY.WAITING_FOR_BACKEND,
+                device,
+                network
+            });
+            return;
+        }
+        
         const discovery: State = getState().discovery;
         let discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
+
+        
         
         if (!selected.connected && (!discoveryProcess || !discoveryProcess.completed)) {
             dispatch({
-                type: DISCOVERY.WAITING,
+                type: DISCOVERY.WAITING_FOR_DEVICE,
                 device,
                 network
             });
@@ -111,7 +129,7 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => {
         if (!coinToDiscover) return;
 
         dispatch({
-            type: DISCOVERY.WAITING,
+            type: DISCOVERY.WAITING_FOR_DEVICE,
             device,
             network
         });

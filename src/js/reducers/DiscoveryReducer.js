@@ -29,7 +29,7 @@ export type Discovery = {
     interrupted: boolean;
     completed: boolean;
     waitingForDevice: boolean;
-    waitingForAuth?: boolean;
+    waitingForBackend: boolean;
 }
 
 export type State = Array<Discovery>;
@@ -50,7 +50,8 @@ const start = (state: State, action: DiscoveryStartAction): State => {
         accountIndex: 0,
         interrupted: false,
         completed: false,
-        waitingForDevice: false
+        waitingForDevice: false,
+        waitingForBackend: false,
     }
 
     const newState: State = [ ...state ];
@@ -92,7 +93,7 @@ const stop = (state: State, action: DiscoveryStopAction): State => {
     });
 }
 
-const waiting = (state: State, action: DiscoveryWaitingAction): State => {
+const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State => {
 
     const deviceState: string = action.device.state || '0';
     const instance: Discovery = {
@@ -104,7 +105,34 @@ const waiting = (state: State, action: DiscoveryWaitingAction): State => {
         accountIndex: 0,
         interrupted: false,
         completed: false,
-        waitingForDevice: true
+        waitingForDevice: true,
+        waitingForBackend: false,
+    }
+
+    const index: number = findIndex(state, action.network, deviceState);
+    const newState: State = [ ...state ];
+    if (index >= 0) {
+        newState[index] = instance;
+    } else {
+        newState.push(instance);
+    }
+
+    return newState;
+}
+
+const waitingForBackend = (state: State, action: DiscoveryWaitingAction): State => {
+    const deviceState: string = action.device.state || '0';
+    const instance: Discovery = {
+        network: action.network,
+        deviceState,
+        xpub: '',
+        hdKey: null,
+        basePath: [],
+        accountIndex: 0,
+        interrupted: false,
+        completed: false,
+        waitingForDevice: false,
+        waitingForBackend: true
     }
 
     const index: number = findIndex(state, action.network, deviceState);
@@ -129,14 +157,17 @@ export default function discovery(state: State = initialState, action: Action): 
             return stop(state, action);
         case DISCOVERY.COMPLETE :
             return complete(state, action);
-        case DISCOVERY.WAITING :
-            return waiting(state, action)
+        case DISCOVERY.WAITING_FOR_DEVICE :
+            return waitingForDevice(state, action);
+        case DISCOVERY.WAITING_FOR_BACKEND :
+            return waitingForBackend(state, action);
         case DISCOVERY.FROM_STORAGE :
             return action.payload.map(d => {
                 return {
                     ...d,
                     interrupted: false,
-                    waitingForDevice: false
+                    waitingForDevice: false,
+                    waitingForBackend: false,
                 }
             })
         case CONNECT.FORGET :
