@@ -153,10 +153,10 @@ export function init(instance: ?Web3, coinIndex: number = 0): AsyncAction {
         const onBlockMined = async (error: ?Error, blockHash: ?string) => {
             if (error) {
 
-                // window.setTimeout(() => {
-                //     // try again
-                //     onBlockMined(new Error("manually_triggered_error"), undefined);
-                // }, 30000);
+                window.setTimeout(() => {
+                    // try again
+                    onBlockMined(new Error("manually_triggered_error"), undefined);
+                }, 30000);
             }
 
             if (blockHash) {
@@ -315,7 +315,7 @@ export const getTransactionReceipt = (tx: PendingTx): AsyncAction => {
         const web3 = web3instance.web3;
 
         //web3.eth.getTransactionReceipt(txid, (error, tx) => {
-        web3.eth.getTransaction(tx.id, (error, receipt) => {
+        web3.eth.getTransaction(tx.id, (error: Error, receipt: any) => {
             if (receipt && receipt.blockNumber) {
                 web3.eth.getBlock(receipt.blockHash, (error, block) => {
                     dispatch({
