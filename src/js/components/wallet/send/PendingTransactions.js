@@ -17,6 +17,7 @@ type Props = ParentProps & {
 
 const PendingTransactions = (props: Props) => {
 
+
     const account = props.account; //props.accounts.find(a => a.deviceState === props.sendForm.deviceState && a.index === props.sendForm.accountIndex && a.network === props.sendForm.network);
     const pending = props.pending.filter(p => p.network === account.network && p.address === account.address);
 
@@ -31,7 +32,7 @@ const PendingTransactions = (props: Props) => {
 
         let iconColor, symbol, name;
 
-        if (tx.token !== tx.network) {
+        if (tx.token !== props.selectedCoin.symbol) {
             const token = tokens.find(t => t.symbol === tx.token);
             if (token) {
                 iconColor = {
@@ -41,6 +42,14 @@ const PendingTransactions = (props: Props) => {
                 }
                 symbol = token.symbol.toUpperCase();
                 name = token.name;
+            } else {
+                iconColor = {
+                    color: '#ffffff',
+                    background: '#000000',
+                    borderColor: '#000000'
+                }
+                symbol = "Unknown";
+                name = "Unknown";
             }
         } else {
             iconColor = {

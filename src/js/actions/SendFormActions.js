@@ -37,6 +37,11 @@ import type { Account } from '../reducers/AccountsReducer';
 
 export type SendFormAction = {
     type: typeof SEND.TX_COMPLETE,
+    account: Account,
+    token: string,
+    amount: string,
+    txid: string,
+    txData: any,
 } | {
     type: typeof SEND.INIT,
     state: State
@@ -832,11 +837,11 @@ export const onSend = (): AsyncAction => {
         try {
             const tx = new EthereumjsTx(txData);
             const serializedTx = '0x' + tx.serialize().toString('hex');
-            const txid = await pushTx(web3, serializedTx);
+            const txid: string = await pushTx(web3, serializedTx);
 
             dispatch({
                 type: SEND.TX_COMPLETE,
-                address: account,
+                account: account,
                 token: currentState.token,
                 amount: currentState.amount,
                 txid,

@@ -23,10 +23,10 @@ const add = (state: State, action: any) => {
     const newState = [ ...state ];
     newState.push({
         id: action.txid,
-        network: action.address.network,
+        network: action.account.network,
+        address: action.account.address,
         token: action.token,
         amount: action.amount,
-        address: action.address.address,
     });
     return newState;
 }

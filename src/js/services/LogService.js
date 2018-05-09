@@ -3,6 +3,7 @@
 
 import * as LogActions from '../actions/LogActions';
 import * as STORAGE from '../actions/constants/localStorage';
+import * as SEND from '../actions/constants/send';
 import { OPEN, CLOSE, ADD } from '../actions/constants/log';
 
 import type { 
@@ -19,6 +20,7 @@ import type {
 const exclude: Array<string> = [
     ADD, OPEN, CLOSE,
     STORAGE.READY,
+    SEND.TX_COMPLETE,
     "web3__create"
 ];
 
