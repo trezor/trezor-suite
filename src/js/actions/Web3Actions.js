@@ -179,13 +179,13 @@ export function init(instance: ?Web3, coinIndex: number = 0): AsyncAction {
                         nonce
                     });
 
-                    dispatch( getBalance(account) );
+                    // dispatch( getBalance(account) );
                     // TODO: check if nonce was updated,
                     // update tokens balance, 
                     // update account balance,
                     // update pending transactions
                 }
-                
+                dispatch( getBalance(account) );
                 // dispatch( getNonce(account) );
                 
             }
