@@ -66,7 +66,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     const tokens = addressTokens.map(t => {
         return { value: t.symbol, label: t.symbol };
     });
-    tokens.unshift({ value: selectedCoin.network, label: selectedCoin.symbol });
+    tokens.unshift({ value: selectedCoin.symbol, label: selectedCoin.symbol });
 
     const setMaxClassName: string = setMax ? 'set-max enabled' : 'set-max';
 

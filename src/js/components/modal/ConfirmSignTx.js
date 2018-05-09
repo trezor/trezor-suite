@@ -23,7 +23,7 @@ const Confirmation = (props: Props) => {
             </div>
             <div className="content">
                 <label>Send </label>
-                <p>{ `${amount} ${ coinSymbol }` }</p>
+                <p>{ `${amount} ${ token }` }</p>
                 <label>To</label>
                 <p>{ address }</p>
                 <label>Fee</label>
