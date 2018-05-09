@@ -57,7 +57,6 @@ aside {
         }
     }
 
-    
 
     .sticky-container {
         position: relative;
@@ -92,10 +91,10 @@ aside {
     }
 
     .trezor-webusb-button {
-        margin: 12px 0px 12px 80px;
+        margin: 12px 0px 12px 30px;
+        padding: 6px 24px 6px 40px;
+        width: 256px;
     }
-
-    
 
     .device-select {
         background: @color_white;
@@ -123,6 +122,8 @@ aside {
         }
 
         &.opened {
+            border-bottom: 0px;
+            box-shadow: none;
             .arrow:after {
                 transform: rotate(180deg);
             }
@@ -250,11 +251,13 @@ aside {
 
     .device-menu {
         padding: 8px 0px;
-        // padding-left: 80px;
-        padding-left: 74px;
+        padding-left: 28px;
+        // padding-left: 74px;
         border-bottom: 1px solid @color_divider;
+        background: @color_white;
 
         div {
+            padding: 4px 0px;
             display: flex;
             align-items: center;
             line-height: 24px;
@@ -267,7 +270,8 @@ aside {
                 // color: @color_text_secondary;
                 position: relative;
                 font-size: 24px;
-                margin-right: 12px;
+                // margin-right: 12px;
+                margin-right: 28px;
                 .hover();
             }
 
@@ -286,7 +290,10 @@ aside {
 
             &.clone {
                 &:before {
-                    .icomoon-settings;
+                    .icomoon-T1;
+                    font-size: 32px;
+                    transform: translateX(-4px);
+                    margin-right: 20px;
                 }
             }
 
@@ -491,6 +498,16 @@ aside {
             display: flex;
             justify-content: flex-end;
         }
+    }
+
+    .device-divider {
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        color: @color_text_secondary;
+        background: @color_gray_light;
+        padding: 8px 30px 8px 31px;
+        border-bottom: 1px solid @color_divider;
     }
 
     .help {

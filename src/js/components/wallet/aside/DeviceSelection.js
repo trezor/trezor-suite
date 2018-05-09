@@ -245,7 +245,7 @@ export class DeviceDropdown extends Component<Props> {
             );
         }
 
-        const deviceList: Array<any> = devices.map((dev, index) => {
+        const deviceList = devices.map((dev, index) => {
             if (dev === selected) return null;
 
             let deviceStatus: string = "Connected";
@@ -272,11 +272,14 @@ export class DeviceDropdown extends Component<Props> {
             );
         });
 
+
+
         return (
             <section>
                 { currentDeviceMenu }
-                { webUsbButton }
+                { deviceList.length > 1 ? <div className="device-divider">Other devices</div> : null }
                 { deviceList }
+                { webUsbButton }
             </section>
         );
     }
