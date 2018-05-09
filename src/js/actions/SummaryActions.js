@@ -36,22 +36,6 @@ export const init = (): ThunkAction => {
     }
 }
 
-
-export const update = (): ThunkAction => {
-    return (dispatch: Dispatch, getState: GetState): void => {
-        const {
-            abstractAccount,
-            router
-        } = getState();
-
-        const isLocationChanged: boolean = router.location.pathname !== abstractAccount.location;
-        if (isLocationChanged) {
-            dispatch( init() );
-            return;
-        }
-    }
-}
-
 export const dispose = (): Action => {
     return {
         type: SUMMARY.DISPOSE

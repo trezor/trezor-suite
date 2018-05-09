@@ -8,7 +8,7 @@ import { findDevice } from '../../../utils/reducerUtils';
 // import * as AbstractAccountActions from '../../actions/AbstractAccountActions';
 import { default as AbstractAccountActions } from '../../../actions/AbstractAccountActions';
 
-import type { State, TrezorDevice } from '../../../flowtype';
+import type { State, TrezorDevice, Action, ThunkAction } from '../../../flowtype';
 import type { Account } from '../../../reducers/AccountsReducer';
 import type { Discovery } from '../../../reducers/DiscoveryReducer';
 
@@ -21,9 +21,8 @@ export type StateProps = {
 
 export type DispatchProps = {
     abstractAccountActions: typeof AbstractAccountActions,
-    initAccount: typeof AbstractAccountActions.init,
-    updateAccount: typeof AbstractAccountActions.update,
-    disposeAccount: typeof AbstractAccountActions.dispose,
+    initAccount: () => ThunkAction,
+    disposeAccount: () => Action,
 }
 
 export type Props = StateProps & DispatchProps;
@@ -50,8 +49,8 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
     }
 
     componentWillReceiveProps(props: Props & P) {
-        this.props.abstractAccountActions.update();
-        this.props.updateAccount();
+        
+        this.props.abstractAccountActions.update( this.props.initAccount );
 
         const currentState = props.abstractAccount;
 

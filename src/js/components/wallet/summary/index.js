@@ -25,9 +25,6 @@ type StateProps = BaseStateProps & {
 }
 
 type DispatchProps = BaseDispatchProps & {
-    initAccount: typeof SummaryActions.init,
-    updateAccount: typeof SummaryActions.update,
-    disposeAccount: typeof SummaryActions.dispose,
     onDetailsToggle: typeof SummaryActions.onDetailsToggle,
     addToken: typeof TokenActions.add,
     loadTokens: typeof TokenActions.load,
@@ -54,8 +51,7 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     return {
         abstractAccountActions: bindActionCreators(AbstractAccountActions, dispatch), 
 
-        initAccount: bindActionCreators(SummaryActions.init, dispatch), 
-        updateAccount: bindActionCreators(SummaryActions.update, dispatch), 
+        initAccount: bindActionCreators(SummaryActions.init, dispatch),
         disposeAccount: bindActionCreators(SummaryActions.dispose, dispatch), 
 
         onDetailsToggle: bindActionCreators(SummaryActions.onDetailsToggle, dispatch),

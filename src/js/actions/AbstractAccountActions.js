@@ -48,7 +48,7 @@ export const init = (): ThunkAction => {
     }
 }
 
-export const update = (): ThunkAction => {
+export const update = (initAccountAction: () => ThunkAction): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const {
             abstractAccount,
@@ -57,7 +57,7 @@ export const update = (): ThunkAction => {
         const isLocationChanged: boolean = router.location.pathname !== abstractAccount.location;
         if (isLocationChanged) {
             dispatch( init() );
-            return;
+            initAccountAction();
         }
     }
 }

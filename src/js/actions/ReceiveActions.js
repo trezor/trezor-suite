@@ -39,21 +39,6 @@ export const init = (): ThunkAction => {
     }
 }
 
-
-export const update = (): ThunkAction => {
-    return (dispatch: Dispatch, getState: GetState): void => {
-        const {
-            abstractAccount,
-            router
-        } = getState();
-
-        const isLocationChanged: boolean = router.location.pathname !== abstractAccount.location;
-        if (isLocationChanged) {
-            dispatch( init() );
-        }
-    }
-}
-
 export const dispose = (): Action  => {
     return {
         type: RECEIVE.DISPOSE
@@ -119,7 +104,6 @@ export const showAddress = (address_n: Array<number>): AsyncAction => {
 
 export default {
     init,
-    update,
     dispose,
     showAddress,
     showUnverifiedAddress

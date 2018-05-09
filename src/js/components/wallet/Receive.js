@@ -58,7 +58,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     let address = `${account.address.substring(0, 20)}...`;
     let className = 'address hidden';
     let button = (
-        <button disabled={ !discovery.completed } onClick={ event => props.showAddress(account.addressPath) }>
+        <button disabled={ device.connected && !discovery.completed } onClick={ event => props.showAddress(account.addressPath) }>
             <span>Show full address</span>
         </button>
     );
@@ -126,7 +126,6 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     return {
         abstractAccountActions: bindActionCreators(AbstractAccountActions, dispatch),
         initAccount: bindActionCreators(ReceiveActions.init, dispatch), 
-        updateAccount: bindActionCreators(ReceiveActions.update, dispatch),
         disposeAccount: bindActionCreators(ReceiveActions.dispose, dispatch),
         showAddress: bindActionCreators(ReceiveActions.showAddress, dispatch),
     };

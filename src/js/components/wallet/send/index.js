@@ -25,9 +25,6 @@ type StateProps = BaseStateProps & {
 }
 
 type DispatchProps = BaseDispatchProps & {
-    initAccount: typeof SendFormActions.init,
-    updateAccount: typeof SendFormActions.update,
-    disposeAccount: typeof SendFormActions.dispose,
     sendFormActions: typeof SendFormActions
 }
 
@@ -51,8 +48,7 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     return {
         abstractAccountActions: bindActionCreators(AbstractAccountActions, dispatch), 
         sendFormActions: bindActionCreators(SendFormActions, dispatch),
-        initAccount: bindActionCreators(SendFormActions.init, dispatch), 
-        updateAccount: bindActionCreators(SendFormActions.update, dispatch), 
+        initAccount: bindActionCreators(SendFormActions.init, dispatch),  
         disposeAccount: bindActionCreators(SendFormActions.dispose, dispatch),
     };
 }
