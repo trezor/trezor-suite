@@ -64,11 +64,17 @@ declare module 'web3' {
     }
 
     declare export class Contract {
-        name: (callback: (error: Error, name: string) => void) => void;
-        symbol: (callback: (error: Error, symbol: string) => void) => void;
-        decimals: (callback: (error: Error, decimals: BigNumber) => void) => void;
-        balanceOf: (address: string, callback: (error: Error, balance: BigNumber) => void) => void;
-        transfer: any;
+        name: {
+            call: (callback: (error: Error, name: string) => void) => void;
+        },
+        symbol: {
+            call: (callback: (error: Error, symbol: string) => void) => void;
+        },
+        decimals: {
+            call: (callback: (error: Error, decimals: BigNumber) => void) => void;
+        },
+        balanceOf: (address: string, callback: (error: Error, balance: BigNumber) => void) => void,
+        transfer: any,
     }
 
     declare export default typeof Web3T;
