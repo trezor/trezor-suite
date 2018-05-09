@@ -68,7 +68,7 @@
             ],
             "explorer": {
                 "tx": "https://ropsten.etherscan.io/tx/",
-                "address": "https://ropsten.etherscan.io/tx/"
+                "address": "https://ropsten.etherscan.io/address/"
             }
         },
         { 
