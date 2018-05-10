@@ -18,6 +18,7 @@ import type { TrezorDevice } from '../../../flowtype';
 import type { NetworkToken } from '../../../reducers/LocalStorageReducer';
 import type { Account } from '../../../reducers/AccountsReducer';
 import type { Discovery } from '../../../reducers/DiscoveryReducer';
+import { findAccountTokens } from '../../../reducers/TokensReducer';
 
 export default class Summary extends AbstractAccount<Props> {
     render() {
@@ -36,7 +37,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     if (!device || !account) return <section></section>;
 
     const abstractAccount = props.abstractAccount;
-    const tokens = props.tokens.filter(t => t.ethAddress === account.address && t.network === account.network && t.deviceState === abstractAccount.deviceState);
+    const tokens = findAccountTokens(props.tokens, account);
 
     return (
 

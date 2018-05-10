@@ -35,14 +35,16 @@ import type { Token } from '../reducers/TokensReducer';
 import type { State, FeeLevel } from '../reducers/SendFormReducer';
 import type { Account } from '../reducers/AccountsReducer';
 
-export type SendFormAction = {
+export type SendTxAction = {
     type: typeof SEND.TX_COMPLETE,
     account: Account,
-    token: string,
+    selectedCurrency: string,
     amount: string,
     txid: string,
     txData: any,
-} | {
+};
+
+export type SendFormAction = SendTxAction | {
     type: typeof SEND.INIT,
     state: State
 } | {
@@ -152,18 +154,6 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
     ]
 }
 
-// export const findBalance = (getState: GetState): string => {
-//     const accountState = getState().abstractAccount;
-//     const { token } = getState().sendForm;
-//     const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-
-//     if (token !== state.network) {
-//         return getState().tokens.find(t => t.ethAddress === account.address && t.symbol === token).balance;
-//     } else {
-//         return account.balance;
-//     }
-// }
-
 
 // initialize component
 export const init = (): ThunkAction => {
@@ -200,7 +190,7 @@ export const init = (): ThunkAction => {
             ...initialState,
             network: coin.network,
             coinSymbol: coin.symbol,
-            token: coin.symbol,
+            selectedCurrency: coin.symbol,
             feeLevels,
             selectedFeeLevel: feeLevels.find(f => f.value === 'Normal'),
             recommendedGasPrice: gasPrice.toString(),
@@ -274,8 +264,8 @@ export const validation = (): ThunkAction => {
 
                     let decimalRegExp: RegExp;
 
-                    if (state.token !== accountState.network) {
-                        const token = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === state.token);
+                    if (state.selectedCurrency !== state.coinSymbol) {
+                        const token = findToken(getState().tokens, account.address, state.selectedCurrency, account.deviceState);
                         if (token) {
                             if (parseInt(token.decimals) > 0) {
                                 //decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
@@ -288,7 +278,7 @@ export const validation = (): ThunkAction => {
                             if (!state.amount.match(decimalRegExp)) {
                                 errors.amount = `Maximum ${ token.decimals} decimals allowed`;
                             } else if (new BigNumber(state.total).greaterThan(account.balance)) {
-                                errors.amount = `Not enough ${ state.coinSymbol.toUpperCase() } to cover transaction fee`;
+                                errors.amount = `Not enough ${ state.coinSymbol } to cover transaction fee`;
                             } else if (new BigNumber(state.amount).greaterThan(token.balance)) {
                                 errors.amount = 'Not enough funds';
                             } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
@@ -340,7 +330,7 @@ export const validation = (): ThunkAction => {
             }
 
             // valid data
-            if (state.touched.data && accountState.network === state.token && state.data.length > 0) {
+            if (state.touched.data && state.data.length > 0) {
                 const re = /^[0-9A-Fa-f]+$/g;
                 //const re = /^[0-9A-Fa-f]{6}$/g;
                 if (!re.test(state.data)) {
@@ -389,7 +379,7 @@ export const onAmountChange = (amount: string): ThunkAction => {
 
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.token !== currentState.coinSymbol;
+        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
         const touched = { ...currentState.touched };
         touched.amount = true;
         const total: string = calculateTotal(isToken ? '0' : amount, currentState.gasPrice, currentState.gasLimit);
@@ -428,11 +418,12 @@ export const onCurrencyChange = (currency: any): ThunkAction => {
         let gasLimit: string = '';
         let amount: string = currentState.amount;
         let total: string;
-
+        console.warn("SEL", currency, currentState.coinSymbol)
         if (isToken) {
             gasLimit = coin.defaultGasLimitTokens.toString();
             if (currentState.setMax) {
                 const token: ?Token = findToken(getState().tokens, account.address, currency.value, accountState.deviceState);
+                console.warn("SEL", token, currency.value)
                 if (!token) return;
                 amount = token.balance;
             }
@@ -451,7 +442,7 @@ export const onCurrencyChange = (currency: any): ThunkAction => {
 
         const state: State = {
             ...currentState,
-            token: currency.value,
+            selectedCurrency: currency.value,
             amount,
             total,
             feeLevels,
@@ -473,7 +464,7 @@ export const onSetMax = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.token !== currentState.coinSymbol;
+        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
         const touched = { ...currentState.touched };
         touched.amount = true;
 
@@ -487,7 +478,7 @@ export const onSetMax = (): ThunkAction => {
         let total: string = currentState.total;
         if (!currentState.setMax) {
             if (isToken) {
-                const token: ?Token = findToken(getState().tokens, account.address, currentState.token, accountState.deviceState);
+                const token: ?Token = findToken(getState().tokens, account.address, currentState.selectedCurrency, accountState.deviceState);
                 if (!token) return;
                 amount = token.balance;
                 total = calculateTotal('0', currentState.gasPrice, currentState.gasLimit);
@@ -518,7 +509,7 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.token !== currentState.coinSymbol;
+        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
 
         const { config } = getState().localStorage;
         if (!config) return;
@@ -550,7 +541,7 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
             if (!account) return;
 
             if (isToken) {
-                const token: ?Token = findToken(getState().tokens, account.address, currentState.token, accountState.deviceState);
+                const token: ?Token = findToken(getState().tokens, account.address, currentState.selectedCurrency, accountState.deviceState);
                 if (!token) return;
                 state.amount = token.balance;
             } else {
@@ -571,7 +562,7 @@ export const updateFeeLevels = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.token !== currentState.coinSymbol;
+        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
 
         const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coinSymbol, currentState.recommendedGasPrice, currentState.gasLimit);
         const selectedFeeLevel: ?FeeLevel = feeLevels.find(f => f.value === currentState.selectedFeeLevel.value);
@@ -590,7 +581,7 @@ export const updateFeeLevels = (): ThunkAction => {
             const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
             if (!account) return;
             if (isToken) {
-                const token: ?Token = findToken(getState().tokens, account.address, state.token, accountState.deviceState);
+                const token: ?Token = findToken(getState().tokens, account.address, state.selectedCurrency, accountState.deviceState);
                 if (!token) return;
                 const tokenBalance: string = token.balance;
                 state.amount = tokenBalance;
@@ -612,7 +603,7 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.token !== accountState.network;
+        const isToken: boolean = currentState.selectedCurrency !== accountState.network;
 
         const touched = { ...currentState.touched };
         touched.gasPrice = true;
@@ -636,7 +627,7 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => {
                 const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
                 if (!account) return;
                 if (isToken) {
-                    const token: ?Token = findToken(getState().tokens, account.address, state.token, accountState.deviceState);
+                    const token: ?Token = findToken(getState().tokens, account.address, state.selectedCurrency, accountState.deviceState);
                     if (!token) return;
                     const tokenBalance: string = token.balance;
                     state.amount = tokenBalance;
@@ -660,7 +651,7 @@ export const onGasLimitChange = (gasLimit: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.token !== currentState.coinSymbol;
+        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
 
         const touched = { ...currentState.touched };
         touched.gasLimit = true;
@@ -684,7 +675,7 @@ export const onGasLimitChange = (gasLimit: string): ThunkAction => {
                 if (!account) return;
 
                 if (isToken) {
-                    const token: ?Token = findToken(getState().tokens, account.address, state.token, accountState.deviceState);
+                    const token: ?Token = findToken(getState().tokens, account.address, state.selectedCurrency, accountState.deviceState);
                     if (!token) return;
                     const tokenBalance: string = token.balance;
                     state.amount = tokenBalance;
@@ -735,7 +726,7 @@ export const onSend = (): AsyncAction => {
         const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
         if (!account || !web3instance) return;
 
-        const isToken: boolean = currentState.token !== currentState.coinSymbol;
+        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
         const web3 = web3instance.web3;
                 
         const address_n = account.addressPath;
@@ -744,8 +735,7 @@ export const onSend = (): AsyncAction => {
         let txAmount: string = web3.toHex(web3.toWei(currentState.amount, 'ether'));
         let txAddress: string = currentState.address;
         if (isToken) {
-            // const t = getState().tokens.find(t => t.ethAddress === account.address && t.symbol === currentState.token);
-            const token: ?Token = findToken(getState().tokens, account.address, currentState.token, accountState.deviceState);
+            const token: ?Token = findToken(getState().tokens, account.address, currentState.selectedCurrency, accountState.deviceState);
             if (!token) return;
 
             const contract = web3instance.erc20.at(token.address);
@@ -842,7 +832,7 @@ export const onSend = (): AsyncAction => {
             dispatch({
                 type: SEND.TX_COMPLETE,
                 account: account,
-                token: currentState.token,
+                selectedCurrency: currentState.selectedCurrency,
                 amount: currentState.amount,
                 txid,
                 txData,

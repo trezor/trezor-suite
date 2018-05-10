@@ -5,44 +5,45 @@ import React from 'react';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
 
+import { findAccountTokens } from '../../../reducers/TokensReducer';
+
 import type { Props as ParentProps } from './index';
 import type { Coin } from '../../../reducers/LocalStorageReducer';
 import type { Account } from '../../../reducers/AccountsReducer';
+import type { Token } from '../../../reducers/TokensReducer';
 
 type Props = ParentProps & {
     account: Account,
     selectedCoin: Coin
-    // account: any
+}
+
+type Style = {
+    +color: string,
+    +background: string,
+    +borderColor: string
 }
 
 const PendingTransactions = (props: Props) => {
 
-
-    const account = props.account; //props.accounts.find(a => a.deviceState === props.sendForm.deviceState && a.index === props.sendForm.accountIndex && a.network === props.sendForm.network);
+    const account = props.account;
     const pending = props.pending.filter(p => p.network === account.network && p.address === account.address);
 
     if (pending.length < 1) return null;
 
-    const tokens = props.tokens.filter(t => t.ethAddress === account.address && t.network === account.network);
+    const tokens: Array<Token> = findAccountTokens(props.tokens, account);
 
-    const bgColor = new ColorHash({lightness: 0.7});
-    const textColor = new ColorHash();
+    const bgColorFactory = new ColorHash({lightness: 0.7});
+    const textColorFactory = new ColorHash();
 
-    const pendings = pending.map((tx, i) => {
+    const pendingTxs = pending.map((tx, i) => {
 
-        let iconColor, symbol, name;
-
-        if (tx.token !== props.selectedCoin.symbol) {
-            const token = tokens.find(t => t.symbol === tx.token);
-            if (token) {
-                iconColor = {
-                    color: textColor.hex(token.name),
-                    background: bgColor.hex(token.name),
-                    borderColor: bgColor.hex(token.name)
-                }
-                symbol = token.symbol.toUpperCase();
-                name = token.name;
-            } else {
+        let iconColor: Style;
+        let symbol: string;
+        let name: string;
+        const isSmartContractTx: boolean = tx.currency !== props.selectedCoin.symbol;
+        if (isSmartContractTx) {
+            const token: ?Token = tokens.find(t => t.symbol === tx.currency);
+            if (!token) {
                 iconColor = {
                     color: '#ffffff',
                     background: '#000000',
@@ -50,12 +51,21 @@ const PendingTransactions = (props: Props) => {
                 }
                 symbol = "Unknown";
                 name = "Unknown";
+            } else {
+                const bgColor: string = bgColorFactory.hex(token.name);
+                iconColor = {
+                    color: textColorFactory.hex(token.name),
+                    background: bgColor,
+                    borderColor: bgColor
+                }
+                symbol = token.symbol.toUpperCase();
+                name = token.name;
             }
         } else {
             iconColor = {
-                color: textColor.hex(tx.network),
-                background: bgColor.hex(tx.network),
-                borderColor: bgColor.hex(tx.network)
+                color: textColorFactory.hex(tx.network),
+                background: bgColorFactory.hex(tx.network),
+                borderColor: bgColorFactory.hex(tx.network)
             }
             symbol = props.selectedCoin.symbol;
             name = props.selectedCoin.name;
@@ -80,7 +90,7 @@ const PendingTransactions = (props: Props) => {
     return (
         <div className="pending-transactions">
             <h2>Pending transactions</h2>
-            { pendings }
+            { pendingTxs }
         </div>
     )
 }

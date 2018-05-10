@@ -10,7 +10,8 @@ const AdvancedForm = (props: Props) => {
 
     const { network } = props.abstractAccount;
     const { 
-        token,
+        coinSymbol,
+        selectedCurrency,
         gasPrice,
         gasLimit,
         data,
@@ -117,7 +118,8 @@ const AdvancedForm = (props: Props) => {
                         <span className="what-is-it"></span>
                     </Tooltip>
                 </label>
-                <textarea disabled={ network !== token } value={ network !== token ? '' : data } onChange={ event => onDataChange(event.target.value) }></textarea>
+                <textarea value={ data } onChange={ event => onDataChange(event.target.value) }></textarea>
+                {/* <textarea disabled={ coinSymbol !== selectedCurrency } value={ coinSymbol !== selectedCurrency ? '' : data } onChange={ event => onDataChange(event.target.value) }></textarea> */}
                 { errors.data ? (<span className="error">{ errors.data }</span>) : null }
             </div>
 

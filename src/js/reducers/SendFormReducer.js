@@ -18,7 +18,7 @@ import type {
 export type State = {
     +network: string;
     +coinSymbol: string;
-    token: string;
+    selectedCurrency: string;
     balanceNeedUpdate: boolean;
     
     // form fields
@@ -53,7 +53,7 @@ export type FeeLevel = {
 export const initialState: State = {
     network: '',
     coinSymbol: '',
-    token: '',
+    selectedCurrency: '',
 
     advanced: false,
     untouched: true,

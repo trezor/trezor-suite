@@ -8,6 +8,7 @@ import PendingTransactions from './PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './FeeSelect';
 import { Notification } from '../../common/Notification';
 import AbstractAccount from '../account/AbstractAccount';
+import { findAccountTokens } from '../../../reducers/TokensReducer';
 
 import type { Props } from './index';
 import type { AccountState } from '../account/AbstractAccount';
@@ -30,7 +31,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
 
     if (!device || !account || !discovery) return <section></section>;
 
-    const addressTokens = props.tokens.filter(t => t.ethAddress === account.address);
+    const tokens = findAccountTokens(props.tokens, account);
     const { network } = props.abstractAccount;
 
     const { 
@@ -38,7 +39,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         amount,
         setMax,
         coinSymbol,
-        token,
+        selectedCurrency,
         feeLevels,
         selectedFeeLevel,
         gasPriceNeedsUpdate,
@@ -63,10 +64,10 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     const selectedCoin = props.abstractAccount.coin;
     const fiatRate = props.fiat.find(f => f.network === network);
 
-    const tokens = addressTokens.map(t => {
+    const tokensSelectData = tokens.map(t => {
         return { value: t.symbol, label: t.symbol };
     });
-    tokens.unshift({ value: selectedCoin.symbol, label: selectedCoin.symbol });
+    tokensSelectData.unshift({ value: selectedCoin.symbol, label: selectedCoin.symbol });
 
     const setMaxClassName: string = setMax ? 'set-max enabled' : 'set-max';
 
@@ -88,9 +89,9 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
 
     let buttonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
     let buttonLabel: string = 'Send';
-    if (network !== token && amount.length > 0 && !errors.amount) {
-        buttonLabel += ` ${amount} ${ token.toUpperCase() }`
-    } else if (network === token && total !== '0') {
+    if (coinSymbol !== selectedCurrency && amount.length > 0 && !errors.amount) {
+        buttonLabel += ` ${amount} ${ selectedCurrency.toUpperCase() }`
+    } else if (coinSymbol === selectedCurrency && total !== '0') {
         buttonLabel += ` ${total} ${ selectedCoin.symbol }`;
     }
     
@@ -155,10 +156,10 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
                         searchable={ false }
                         clearable= { false }
                         multi={ false }
-                        value={ token }
-                        disabled={ tokens.length < 2 }
+                        value={ selectedCurrency }
+                        disabled={ tokensSelectData.length < 2 }
                         onChange={ onCurrencyChange }
-                        options={ tokens } />
+                        options={ tokensSelectData } />
                 </div>
                 { errors.amount ? (<span className="error">{ errors.amount }</span>) : null }
                 { warnings.amount ? (<span className="warning">{ warnings.amount }</span>) : null }

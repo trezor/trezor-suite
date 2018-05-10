@@ -13,6 +13,7 @@ import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
 import * as PENDING from '../actions/constants/pendingTx';
 import { LOCATION_CHANGE } from 'react-router-redux';
+import { findAccountTokens } from '../reducers/TokensReducer';
 
 import type { 
     Middleware,
@@ -44,7 +45,7 @@ const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): A
 
 const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => {
     return accounts.reduce((arr, account) => {
-        return arr.concat(tokens.filter(token => token.ethAddress === account.address && token.network === account.network));
+        return arr.concat(findAccountTokens(tokens, account));
     }, []);
 }
 
