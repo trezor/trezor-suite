@@ -73,14 +73,27 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
                     onChange={ token => props.addToken(token, account) } 
                     loadOptions={ input => props.loadTokens(input, account.network) } 
                     filterOptions= { 
-                        (options: Array<NetworkToken>, search: string, values) => {
-                            return options.filter(o => {
-                                return !tokens.find(t => t.symbol === o.symbol);
+                        (options: Array<NetworkToken>, search: string, values: Array<NetworkToken>) => {
+                            return options.map(o => {
+                                const added = tokens.find(t => t.symbol === o.symbol);
+                                if (added) {
+                                    return {
+                                        ...o,
+                                        name: `${o.name} (Already added)`,
+                                        disabled: true
+                                    };
+                                } else {
+                                    return o;
+                                }
                             });
+
+                            // return options.filter(o => {
+                            //     return !tokens.find(t => t.symbol === o.symbol);
+                            // });
                         }
                     }
                     valueKey="symbol" 
-                    labelKey="symbol" 
+                    labelKey="name" 
                     placeholder="Search for token"
                     searchPromptText="Type token name or address"
                     noResultsText="Token not found"
