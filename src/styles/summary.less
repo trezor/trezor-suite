@@ -9,25 +9,28 @@
             width: 32px;
             height: 22px;
             background-repeat: no-repeat;
-            background-size: 20px 20px;
+            background-size: auto 20px;
         }
 
-        &.ropsten:before {
-            background-image: url('../images/ropsten-logo.png');
-            background-size: auto 20px;
-        }
         &.ethereum:before {
             background-image: url('../images/eth-logo.png');
-            background-size: auto 20px;
-        }
-        &.rinkeby:before {
-            background-image: url('../images/rinkeby-logo.png');
-            background-size: auto 20px;
         }
         &.ethereum-classic:before {
             background-image: url('../images/etc-logo.png');
-            background-size: auto 20px;
         }
+        &.ropsten:before {
+            background-image: url('../images/ropsten-logo.png');
+        }
+        &.rinkeby:before {
+            background-image: url('../images/rinkeby-logo.png');
+        }
+
+        a {
+            font-size: 12px;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        
     }
 
     .token-select {
@@ -67,7 +70,6 @@
         .content {
             display: flex;
             padding-bottom: 32px;
-            padding-top: 24px;
 
             .column {
                 margin-right: 48px;

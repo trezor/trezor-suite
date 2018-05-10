@@ -38,17 +38,19 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
 
     const abstractAccount = props.abstractAccount;
     const tokens = findAccountTokens(props.tokens, account);
+    const explorerLink: string = `${abstractAccount.coin.explorer.address}${account.address}`;
 
     return (
 
         <section className="summary">
             { deviceStatusNotification }
 
-            <h2 className={ `summary-header ${abstractAccount.network}` }>Address #{ parseInt(abstractAccount.index) + 1 }</h2>
-            
+            <h2 className={ `summary-header ${abstractAccount.network}` }>
+                Address #{ parseInt(abstractAccount.index) + 1 }
+                <a href={ explorerLink } className="gray" target="_blank" rel="noreferrer noopener">See full transaction history</a>
+            </h2>
 
             <SummaryDetails 
-                explorer={ `${abstractAccount.coin.explorer.address}${account.address}` }
                 coin={ abstractAccount.coin }
                 summary={ props.summary } 
                 balance={ account.balance }

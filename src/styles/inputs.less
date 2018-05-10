@@ -272,3 +272,29 @@ a.green:visited {
         }
     }
 }
+
+a.gray, 
+a.gray:visited {
+    position: relative;
+    color: @color_text_secondary;
+    .hover();
+
+    &:after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        border-top: 1px solid @color_text_secondary;
+        line-height: 1px;
+        left: 0px;
+        bottom: -1px;
+        transition: border-color 0.3s;
+    }
+
+    &:hover,
+    &:active {
+        color: @color_text_primary;
+        &:after {
+            border-color: transparent;
+        }
+    }
+}

@@ -7,7 +7,6 @@ import BigNumber from 'bignumber.js';
 import type { Props as BaseProps } from './index';
 
 type Props = {
-    explorer: string,
     coin: $PropertyType<$ElementType<BaseProps, 'abstractAccount'>, 'coin'>,
     summary: $ElementType<BaseProps, 'summary'>,
     balance: string,
@@ -63,7 +62,6 @@ const SummaryDetails = (props: Props): ?React$Element<string> => {
     return (
         <div className="summary-details opened">
             <div className="toggle" onClick={ props.onToggle }></div>
-            <a href={ props.explorer } className="green" target="_blank" rel="noreferrer noopener">See full transaction history</a>
             <div className="content">
                 { balanceColumn }
                 { rateColumn }
