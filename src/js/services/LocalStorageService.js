@@ -7,7 +7,7 @@ import { DEVICE } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as MODAL from '../actions/constants/modal';
 import * as TOKEN from '../actions/constants/token';
-import * as ADDRESS from '../actions/constants/address';
+import * as ACCOUNT from '../actions/constants/account';
 import * as DISCOVERY from '../actions/constants/discovery';
 import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
@@ -110,9 +110,9 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
             save(api.dispatch, api.getState);
         break;
 
-        case ADDRESS.CREATE :
-        case ADDRESS.SET_BALANCE :
-        case ADDRESS.SET_NONCE :
+        case ACCOUNT.CREATE :
+        case ACCOUNT.SET_BALANCE :
+        case ACCOUNT.SET_NONCE :
             save(api.dispatch, api.getState);
         break;
 

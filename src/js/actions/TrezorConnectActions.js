@@ -2,7 +2,6 @@
 'use strict';
 
 import TrezorConnect, { UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT } from 'trezor-connect';
-import * as ADDRESS from './constants/address';
 import * as TOKEN from './constants/token';
 import * as CONNECT from './constants/TrezorConnect';
 import * as NOTIFICATION from './constants/notification';

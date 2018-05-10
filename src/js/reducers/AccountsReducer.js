@@ -2,14 +2,14 @@
 'use strict';
 
 import * as CONNECT from '../actions/constants/TrezorConnect';
-import * as ADDRESS from '../actions/constants/address';
+import * as ACCOUNT from '../actions/constants/account';
 
 import type { Action, TrezorDevice } from '../flowtype';
 import type { 
-    AddressCreateAction,
-    AddressSetBalanceAction,
-    AddressSetNonceAction
-} from '../actions/AddressActions';
+    AccountCreateAction,
+    AccountSetBalanceAction,
+    AccountSetNonceAction
+} from '../actions/AccountsActions';
 
 export type Account = {
     loaded: boolean;
@@ -31,7 +31,7 @@ export const findAccount = (state: State, index: number, deviceState: string, ne
     return state.find(a => a.deviceState === deviceState && a.index === index && a.network === network);
 }
 
-const createAccount = (state: State, action: AddressCreateAction): State => {
+const createAccount = (state: State, action: AccountCreateAction): State => {
 
     // TODO check with device_id
     // check if account was created before
@@ -65,7 +65,7 @@ const removeAccounts = (state: State, device: TrezorDevice): State => {
 //     return state.filter(account => action.accounts.indexOf(account) === -1);
 // }
 
-const setBalance = (state: State, action: AddressSetBalanceAction): State => {
+const setBalance = (state: State, action: AccountSetBalanceAction): State => {
     const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
     const newState: State = [ ...state ];
     newState[index].loaded = true;
@@ -73,7 +73,7 @@ const setBalance = (state: State, action: AddressSetBalanceAction): State => {
     return newState;
 }
 
-const setNonce = (state: State, action: AddressSetNonceAction): State => {
+const setNonce = (state: State, action: AccountSetNonceAction): State => {
     const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
     const newState: State = [ ...state ];
     newState[index].loaded = true;
@@ -85,7 +85,7 @@ export default (state: State = initialState, action: Action): State => {
 
     switch (action.type) {
 
-        case ADDRESS.CREATE :
+        case ACCOUNT.CREATE :
             return createAccount(state, action);
 
         case CONNECT.FORGET :
@@ -95,12 +95,12 @@ export default (state: State = initialState, action: Action): State => {
         //case CONNECT.FORGET_SINGLE :
         //    return forgetAccounts(state, action);
 
-        case ADDRESS.SET_BALANCE :
+        case ACCOUNT.SET_BALANCE :
             return setBalance(state, action);
-        case ADDRESS.SET_NONCE :
+        case ACCOUNT.SET_NONCE :
             return setNonce(state, action);
 
-        case ADDRESS.FROM_STORAGE :
+        case ACCOUNT.FROM_STORAGE :
             return action.payload;
 
         default:

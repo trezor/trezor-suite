@@ -16,7 +16,7 @@ import type { Reducers, ReducersState } from '../reducers';
 
 // Actions
 import type { AbstractAccountAction } from '../actions/AbstractAccountActions';
-import type { AddressAction } from '../actions/AddressActions';
+import type { AccountAction } from '../actions/AccountsActions';
 import type { DiscoveryAction } from '../actions/DiscoveryActions';
 import type { StorageAction } from '../actions/LocalStorageActions';
 import type { LogAction } from '../actions/LogActions';
@@ -111,7 +111,7 @@ export type Action =
     | UiEventAction
     
     | AbstractAccountAction
-    | AddressAction
+    | AccountAction
     | DiscoveryAction
     | StorageAction 
     | LogAction 

@@ -4,10 +4,10 @@
 import TrezorConnect from 'trezor-connect';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 import * as DISCOVERY from './constants/discovery';
-import * as ADDRESS from './constants/address';
+import * as ACCOUNT from './constants/account';
 import * as TOKEN from './constants/token';
 import * as NOTIFICATION from './constants/notification';
-import * as AddressActions from '../actions/AddressActions';
+import * as AccountsActions from '../actions/AccountsActions';
 
 import HDKey from 'hdkey';
 import EthereumjsUtil from 'ethereumjs-util';
@@ -199,7 +199,7 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
         const network = discoveryProcess.network;
 
         dispatch({
-            type: ADDRESS.CREATE,
+            type: ACCOUNT.CREATE,
             device,
             network,
             index: discoveryProcess.accountIndex,
@@ -285,7 +285,7 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
         const balance = await getBalanceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
         dispatch(
-            AddressActions.setBalance(ethAddress, network, device.state || 'undefined', web3instance.web3.fromWei(balance.toString(), 'ether'))
+            AccountsActions.setBalance(ethAddress, network, device.state || 'undefined', web3instance.web3.fromWei(balance.toString(), 'ether'))
         );
 
         const userTokens = [];
@@ -302,7 +302,7 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
 
         const nonce: number = await getNonceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
-        dispatch(AddressActions.setNonce(ethAddress, network, device.state || 'undefined', nonce));
+        dispatch(AccountsActions.setNonce(ethAddress, network, device.state || 'undefined', nonce));
 
         const addressIsEmpty = nonce < 1 && !balance.greaterThan(0);
 

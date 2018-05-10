@@ -2,7 +2,7 @@
 'use strict';
 
 import * as CONNECT from './constants/TrezorConnect';
-import * as ADDRESS from './constants/address';
+import * as ACCOUNT from './constants/account';
 import * as TOKEN from './constants/token';
 import * as DISCOVERY from './constants/discovery';
 import * as STORAGE from './constants/localStorage';
@@ -104,7 +104,7 @@ export function loadTokensFromJSON(): AsyncAction {
             const accounts: ?string = get('accounts');
             if (accounts) {
                 dispatch({
-                    type: ADDRESS.FROM_STORAGE,
+                    type: ACCOUNT.FROM_STORAGE,
                     payload: JSON.parse(accounts)
                 })
             }

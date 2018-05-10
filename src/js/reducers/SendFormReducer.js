@@ -3,7 +3,7 @@
 
 import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
-import * as ADDRESS from '../actions/constants/address';
+import * as ACCOUNT from '../actions/constants/account';
 import EthereumjsUnits from 'ethereumjs-units';
 import BigNumber from 'bignumber.js';
 import { getFeeLevels } from '../actions/SendFormActions';
@@ -138,8 +138,7 @@ export default (state: State = initialState, action: Action): State => {
         case WEB3.GAS_PRICE_UPDATED :
             return onGasPriceUpdated(state, action);
 
-        case ADDRESS.SET_BALANCE :
-        // case ADDRESS.SET_TOKEN_BALANCE :
+        case ACCOUNT.SET_BALANCE :
             return onBalanceUpdated(state, action);
 
         case SEND.TOGGLE_ADVANCED :

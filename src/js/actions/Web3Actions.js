@@ -7,10 +7,9 @@ import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsTx from 'ethereumjs-tx';
 import TrezorConnect from 'trezor-connect';
 import { strip } from '../utils/ethUtils';
-import * as ADDRESS from './constants/address';
 import * as WEB3 from './constants/web3';
 import * as PENDING from './constants/pendingTx';
-import * as AddressActions from '../actions/AddressActions';
+import * as AccountsActions from '../actions/AccountsActions';
 import * as TokenActions from '../actions/TokenActions';
 
 import type { 
@@ -172,7 +171,7 @@ export function init(instance: ?Web3, coinIndex: number = 0): AsyncAction {
             for (const account of accounts) {
                 const nonce = await getNonceAsync(web3, account.address);
                 if (nonce !== account.nonce) {
-                    dispatch(AddressActions.setNonce(account.address, account.network, account.deviceState, nonce));
+                    dispatch(AccountsActions.setNonce(account.address, account.network, account.deviceState, nonce));
 
                     // dispatch( getBalance(account) );
                     // TODO: check if nonce was updated,
@@ -246,7 +245,7 @@ export function getBalance(account: Account): AsyncAction {
             if (!error) {
                 const newBalance: string = web3.fromWei(balance.toString(), 'ether');
                 if (account.balance !== newBalance) {
-                    dispatch(AddressActions.setBalance(
+                    dispatch(AccountsActions.setBalance(
                         account.address,
                         account.network,
                         account.deviceState,
@@ -292,7 +291,7 @@ export function getNonce(account: Account): AsyncAction {
         web3.eth.getTransactionCount(account.address, (error: Error, result: number) => {
             if (!error) {
                 if (account.nonce !== result) {
-                    dispatch(AddressActions.setNonce(account.address, account.network, account.deviceState, result));
+                    dispatch(AccountsActions.setNonce(account.address, account.network, account.deviceState, result));
                 }
             }
         });

@@ -4,7 +4,7 @@
 import HDKey from 'hdkey';
 
 import * as DISCOVERY from '../actions/constants/discovery';
-import * as ADDRESS from '../actions/constants/address';
+import * as ACCOUNT from '../actions/constants/account';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
 import type { Action, TrezorDevice } from '../flowtype';
@@ -16,8 +16,8 @@ import type {
 } from '../actions/DiscoveryActions';
 
 import type {
-    AddressCreateAction
-} from '../actions/AddressActions'
+    AccountCreateAction
+} from '../actions/AccountsActions'
 
 export type Discovery = {
     network: string;
@@ -76,7 +76,7 @@ const complete = (state: State, action: DiscoveryCompleteAction): State => {
     return newState;
 }
 
-const addressCreate = (state: State, action: AddressCreateAction): State => {
+const addressCreate = (state: State, action: AccountCreateAction): State => {
     const index: number = findIndex(state, action.network, action.device.state || '0');
     const newState: State = [ ...state ];
     newState[index].accountIndex++;
@@ -158,7 +158,7 @@ export default function discovery(state: State = initialState, action: Action): 
     switch (action.type) {
         case DISCOVERY.START :
             return start(state, action);
-        case ADDRESS.CREATE :
+        case ACCOUNT.CREATE :
             return addressCreate(state, action);
         case DISCOVERY.STOP :
             return stop(state, action);

@@ -1,23 +1,23 @@
 /* @flow */
 'use strict';
 
-import * as ADDRESS from './constants/address';
+import * as ACCOUNT from './constants/account';
 import type { Action, TrezorDevice } from '../flowtype';
 import type { State } from '../reducers/AccountsReducer';
 
-export type AddressAction =
-    AddressFromStorageAction
-  | AddressCreateAction
-  | AddressSetBalanceAction
-  | AddressSetNonceAction;
+export type AccountAction =
+    AccountFromStorageAction
+  | AccountCreateAction
+  | AccountSetBalanceAction
+  | AccountSetNonceAction;
 
-export type AddressFromStorageAction = {
-    type: typeof ADDRESS.FROM_STORAGE,
+export type AccountFromStorageAction = {
+    type: typeof ACCOUNT.FROM_STORAGE,
     payload: State
 }
 
-export type AddressCreateAction = {
-    type: typeof ADDRESS.CREATE,
+export type AccountCreateAction = {
+    type: typeof ACCOUNT.CREATE,
     device: TrezorDevice,
     network: string,
     index: number,
@@ -25,16 +25,16 @@ export type AddressCreateAction = {
     address: string 
 }
 
-export type AddressSetBalanceAction = {
-    type: typeof ADDRESS.SET_BALANCE,
+export type AccountSetBalanceAction = {
+    type: typeof ACCOUNT.SET_BALANCE,
     address: string,
     network: string,
     deviceState: string,
     balance: string
 }
 
-export type AddressSetNonceAction = {
-    type: typeof ADDRESS.SET_NONCE,
+export type AccountSetNonceAction = {
+    type: typeof ACCOUNT.SET_NONCE,
     address: string,
     network: string,
     deviceState: string,
@@ -43,7 +43,7 @@ export type AddressSetNonceAction = {
 
 export const setBalance = (address: string, network: string, deviceState: string, balance: string): Action => {
     return {
-        type: ADDRESS.SET_BALANCE,
+        type: ACCOUNT.SET_BALANCE,
         address,
         network,
         deviceState,
@@ -53,7 +53,7 @@ export const setBalance = (address: string, network: string, deviceState: string
 
 export const setNonce = (address: string, network: string, deviceState: string, nonce: number): Action => {
     return {
-        type: ADDRESS.SET_NONCE,
+        type: ACCOUNT.SET_NONCE,
         address,
         network,
         deviceState,
