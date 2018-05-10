@@ -77,7 +77,7 @@ const Aside = (props: Props): React$Element<typeof StickyContainer | string> => 
     }
 
     return (
-        <StickyContainer location={ location } devices={ props.deviceDropdownOpened.toString() }>
+        <StickyContainer location={ location.pathname } deviceSelection={ props.deviceDropdownOpened }>
             <DeviceSelect {...props} />
             { menu }
             <div className="sticky-bottom">

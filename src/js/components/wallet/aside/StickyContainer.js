@@ -3,23 +3,24 @@
 
 // https://github.com/KyleAMathews/react-headroom/blob/master/src/shouldUpdate.js
 
-import React, { PureComponent } from 'react';
+import * as React from 'react';
 import raf from 'raf';
 import { getViewportHeight, getScrollY } from '../../../utils/windowUtils';
 
 type Props = {
-    location: any,
-    devices: any,
-    children: any,
+    location: string,
+    deviceSelection: boolean,
+    children?: React.Node,
 }
 
-export default class StickyContainer extends PureComponent<Props> {
+export default class StickyContainer extends React.PureComponent<Props> {
 
     // Class variables.
     currentScrollY: number = 0;
     lastKnownScrollY: number = 0;
     topOffset: number = 0;
 
+    firstRender: boolean = false;
     framePending: boolean = false;
     stickToBottom: boolean = false;
     top: number = 0;
@@ -49,7 +50,6 @@ export default class StickyContainer extends PureComponent<Props> {
         const bottomBounds = bottom.getBoundingClientRect();
         const asideBounds = aside.getBoundingClientRect();
         const wrapperBounds = wrapper.getBoundingClientRect();
-
         const scrollDirection = this.currentScrollY >= this.lastKnownScrollY ? 'down' : 'up';
         const distanceScrolled = Math.abs(this.currentScrollY - this.lastKnownScrollY);
 
@@ -100,7 +100,6 @@ export default class StickyContainer extends PureComponent<Props> {
     componentDidMount() {
         window.addEventListener('scroll', this.handleScroll);
         window.addEventListener('resize', this.handleScroll);
-        this.handleScroll(null);
     }
     
     componentWillUnmount() {
@@ -116,17 +115,17 @@ export default class StickyContainer extends PureComponent<Props> {
                 this.topOffset = 0;
                 raf(this.update);
             }
-        }
-
-        if (this.props.devices !== prevProps.devices) {
+        } else if (this.props.deviceSelection !== prevProps.deviceSelection) {
             raf(this.update);
+        } else if (!this.firstRender) {
+            raf(this.update);
+            this.firstRender = true;
         }
     }
 
     render() {
         return (
           <aside
-            { ...this.props }
             ref={ node => this.aside = node }
             onScroll={this.handleScroll}
             onTouchStart={this.handleScroll}
