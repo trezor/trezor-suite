@@ -122,7 +122,7 @@ aside {
         }
 
         &.opened {
-            border-bottom: 0px;
+            border-color: @color_white;
             box-shadow: none;
             .arrow:after {
                 transform: rotate(180deg);
@@ -202,6 +202,18 @@ aside {
                     color: @color_text_secondary;
                 }
             }
+        }
+
+        .counter {
+            border: 1px solid @color_divider;
+            border-radius: 50%;
+            color: @color_text_secondary;
+            width: 24px;
+            height: 24px;
+            line-height: 22px;
+            text-align: center;
+            font-size: 11px;
+            margin-right: 4px;
         }
 
         // .device-menu {
@@ -289,7 +301,7 @@ aside {
                     .icomoon-T1;
                     font-size: 32px;
                     transform: translateX(-4px);
-                    margin-right: 20px;
+                    margin-right: 8px;
                 }
             }
 

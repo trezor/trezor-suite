@@ -10,7 +10,17 @@ import { findSelectedDevice } from '../../../reducers/TrezorConnectReducer';
 import type { Props } from './index';
 import type { TrezorDevice } from '../../../flowtype';
 
-const Value = (props: any): any => {
+type ValueProps = {
+    onClick: (type: string, device: TrezorDevice) => void,
+    onOpen: () => any,
+    onClose: () => any,
+    value: TrezorDevice,
+    opened: boolean,
+    disabled: boolean,
+    deviceCount: number,
+}
+
+const Value = (props: ValueProps): any => {
     const device = props.value; // device is passed as value of selected item
 
     // prevent onMouseDown event
@@ -93,8 +103,8 @@ const Value = (props: any): any => {
                 <span className="label">{ device.instanceLabel }</span>
                 <span className="status">{ deviceStatus }</span>
             </div>
-            <div className="arrow">
-            </div>
+            { props.deviceCount > 1 ? <div className="counter">{ props.deviceCount }</div> : null }
+            <div className="arrow"></div>
         </div>
     );
 }
@@ -127,6 +137,7 @@ export const DeviceSelect = (props: Props) => {
                 onClick={ handleMenuClick }
                 disabled={ disabled }
                 value={ selected }
+                deviceCount={ devices.length }
                 opened={ props.deviceDropdownOpened }
                 onOpen={ () => props.toggleDeviceDropdown(true) }
                 onClose={ () => props.toggleDeviceDropdown(false) }
