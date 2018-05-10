@@ -80,8 +80,10 @@ const Aside = (props: Props): React$Element<typeof StickyContainer | string> => 
         <StickyContainer location={ location } devices={ props.deviceDropdownOpened.toString() }>
             <DeviceSelect {...props} />
             { menu }
-            <div className="help">
-                <a href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Need help?</a>
+            <div className="sticky-bottom">
+                <div className="help">
+                    <a href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Need help?</a>
+                </div>
             </div>
         </StickyContainer>
     )

@@ -42,12 +42,11 @@ export default class StickyContainer extends PureComponent<Props> {
         const wrapper: ?HTMLElement = this.wrapper;
         const aside: ?HTMLElement = this.aside;
         if (!wrapper || !aside) return;
-        const helpButton: ?HTMLElement = wrapper.querySelector('.help');
-        if (!helpButton) return;
-
+        const bottom: ?HTMLElement = wrapper.querySelector('.sticky-bottom');
+        if (!bottom) return;
         
         const viewportHeight: number = getViewportHeight();
-        const helpButtonBounds = helpButton.getBoundingClientRect();
+        const bottomBounds = bottom.getBoundingClientRect();
         const asideBounds = aside.getBoundingClientRect();
         const wrapperBounds = wrapper.getBoundingClientRect();
 
@@ -58,7 +57,7 @@ export default class StickyContainer extends PureComponent<Props> {
             wrapper.classList.add('fixed');
             let maxTop : number= 1;
             if (wrapperBounds.height > viewportHeight) {
-                const bottomOutOfBounds: boolean = (helpButtonBounds.bottom <= viewportHeight && scrollDirection === 'down');
+                const bottomOutOfBounds: boolean = (bottomBounds.bottom <= viewportHeight && scrollDirection === 'down');
                 const topOutOfBounds: boolean = (wrapperBounds.top > 0 && scrollDirection === 'up');
                 if (!bottomOutOfBounds && !topOutOfBounds) {
                     this.topOffset += scrollDirection === 'down' ? - distanceScrolled : distanceScrolled;
@@ -80,10 +79,10 @@ export default class StickyContainer extends PureComponent<Props> {
             wrapper.classList.remove('fixed-bottom');
         } else {
             if (wrapper.classList.contains('fixed-bottom')) {
-                if (helpButtonBounds.top < wrapperBounds.bottom - helpButtonBounds.height) {
+                if (bottomBounds.top < wrapperBounds.bottom - bottomBounds.height) {
                     wrapper.classList.remove('fixed-bottom');
                 }
-            } else if (helpButtonBounds.bottom < viewportHeight) {
+            } else if (bottomBounds.bottom < viewportHeight) {
                 wrapper.classList.add('fixed-bottom');
             }
         }

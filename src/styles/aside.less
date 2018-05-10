@@ -71,7 +71,7 @@ aside {
 
         &.fixed-bottom {
             padding-bottom: 60px; // height of .help
-            .help {
+            .sticky-bottom {
                 position: fixed;
                 bottom: 0;
                 background: @color_main;
@@ -105,7 +105,7 @@ aside {
         .arrow {
             width: 24px;
             height: 24px;
-            margin-right: 28px;
+            margin-right: 24px;
             &:after {
                 .icomoon-arrow-down;
                 transition: transform 0.3s, color 0.3s;
@@ -147,7 +147,7 @@ aside {
         width: 320px;
         display: flex;
         align-items: center;
-        padding-left: 80px;
+        padding-left: 60px;
 
         &.item {
             padding-right: 24px;
@@ -165,8 +165,8 @@ aside {
             width: 13px;
             height: 25px;
             z-index: 2;
-            left: 33px;
-            top: 17px;
+            left: 25px;
+            top: 19px;
             background-repeat: no-repeat;
             background-position: center;
             background-size: 13px 25px;
@@ -176,7 +176,7 @@ aside {
         &.trezor-t {
             &:before {
                 width: 17px;
-                left: 31px;
+                left: 23px;
                 background-size: 17px 25px;
                 background-image: url('../images/trezor-T.png');
             }
@@ -204,55 +204,53 @@ aside {
             }
         }
 
-        .device-menu {
-            display: flex;
-            justify-content: flex-end;
-            padding-right: 4px;
-            padding-left: 4px;
+        // .device-menu {
+        //     display: flex;
+        //     justify-content: flex-end;
+        //     padding-right: 4px;
+        //     padding-left: 4px;
 
-            div {
-                display: inline-block;
-            }
+        //     div {
+        //         display: inline-block;
+        //     }
 
-            .forget,
-            .settings,
-            .acquire {
-                cursor: pointer;
+        //     .forget,
+        //     .settings,
+        //     .acquire {
+        //         cursor: pointer;
 
-                &:before {
-                    .icomoon-refresh;
-                    color: @color_text_secondary;
-                    position: relative;
-                    font-size: 24px;
-                    .hover();
-                }
+        //         &:before {
+        //             .icomoon-refresh;
+        //             color: @color_text_secondary;
+        //             position: relative;
+        //             font-size: 24px;
+        //             .hover();
+        //         }
                 
-                &:hover {
-                    &:before {
-                        color: @color_text_primary;
-                    }
-                }
-            }
+        //         &:hover {
+        //             &:before {
+        //                 color: @color_text_primary;
+        //             }
+        //         }
+        //     }
 
-            .forget {
-                &:before {
-                    .icomoon-eject;
-                }
-            }
+        //     .forget {
+        //         &:before {
+        //             .icomoon-eject;
+        //         }
+        //     }
 
-            .settings {
-                &:before {
-                    .icomoon-settings;
-                }
-            }
-        }
+        //     .settings {
+        //         &:before {
+        //             .icomoon-settings;
+        //         }
+        //     }
+        // }
 
     }
 
     .device-menu {
-        padding: 8px 0px;
-        padding-left: 28px;
-        // padding-left: 74px;
+        padding: 0px 24px 8px 19px;
         border-bottom: 1px solid @color_divider;
         background: @color_white;
 
@@ -267,11 +265,9 @@ aside {
 
             &:before {
                 .icomoon-refresh;
-                // color: @color_text_secondary;
                 position: relative;
                 font-size: 24px;
-                // margin-right: 12px;
-                margin-right: 28px;
+                margin-right: 17px;
                 .hover();
             }
 
@@ -310,7 +306,7 @@ aside {
         display: block;
         cursor: pointer;
         font-size: 16px;
-        padding: 16px 0 16px 30px;
+        padding: 16px 0 16px 24px;
         white-space: nowrap;
         color: @color_text_primary;
         height: 50px;
@@ -378,14 +374,14 @@ aside {
        
 
         &.coin {
-            padding-left: 80px;
+            padding-left: 60px;
             &:before {
                 content: '';
                 position: absolute;
                 display: block;
                 width: 20px;
                 height: 20px;
-                left: 30px;
+                left: 24px;
                 top: 0px;
                 bottom: 0px;
                 margin: auto 0;
@@ -403,7 +399,7 @@ aside {
                 display: block;
                 width: 30px;
                 height: 30px;
-                right: 23px;
+                right: 20px;
                 top: 0px;
                 bottom: 0px;
                 margin: auto 0;
@@ -448,23 +444,29 @@ aside {
                 font-size: 20px;
             }
         }
-
-        &.ropsten:before {
-            background-image: url('../images/ropsten-logo.png');
+        
+        &.ethereum:before,
+        &.ethereum-classic:before,
+        &.ropsten:before,
+        &.rinkeby:before {
             background-size: auto 20px;
+            background-position: 2px 0px;
         }
+
+        
         &.ethereum:before {
             background-image: url('../images/eth-logo.png');
-            background-size: auto 20px;
-        }
-        &.rinkeby:before {
-            background-image: url('../images/rinkeby-logo.png');
-            background-size: auto 20px;
         }
         &.ethereum-classic:before {
             background-image: url('../images/etc-logo.png');
-            background-size: auto 20px;
         }
+        &.ropsten:before {
+            background-image: url('../images/ropsten-logo.png');
+        }
+        &.rinkeby:before {
+            background-image: url('../images/rinkeby-logo.png');
+        }
+
         &.btc:before {
             background-image: url('../images/btc-logo.png');
         }
@@ -491,7 +493,7 @@ aside {
         justify-content: space-between;
         color: @color_text_secondary;
         background: @color_gray_light;
-        padding: 8px 30px 8px 31px;
+        padding: 8px 28px 8px 24px;
         border-top: 1px solid @color_divider;
         border-bottom: 1px solid @color_divider;
         span {
@@ -506,7 +508,7 @@ aside {
         justify-content: space-between;
         color: @color_text_secondary;
         background: @color_gray_light;
-        padding: 8px 30px 8px 31px;
+        padding: 8px 28px 8px 24px;
         border-bottom: 1px solid @color_divider;
     }
 
@@ -541,7 +543,10 @@ aside {
                 color: @color_text_primary;
             }
         }
-        
+    }
+
+    .wallet-settings {
+
     }
 
 
