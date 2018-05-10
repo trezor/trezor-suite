@@ -97,11 +97,11 @@
 
     "fiatValueTickers": [
         { 
-            "network": "ropsten",
+            "network": "ethereum",
             "url": "https://api.coinmarketcap.com/v1/ticker/ethereum/"
         },
         { 
-            "network": "rinkeby",
+            "network": "ethereum-classic",
             "url": "https://api.coinmarketcap.com/v1/ticker/ethereum-classic/"
         }
     ],
