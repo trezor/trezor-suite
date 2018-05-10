@@ -233,18 +233,21 @@ export const validation = (): ThunkAction => {
             if (state.touched.address) {
 
                 const accounts = getState().accounts;
-                const myAccount = accounts.find(a => a.address.toLowerCase() === state.address.toLowerCase());
+                const savedAccounts = accounts.filter(a => a.address.toLowerCase() === state.address.toLowerCase());
 
                 if (state.address.length < 1) {
                     errors.address = 'Address is not set';
                 } else if (!EthereumjsUtil.isValidAddress(state.address)) {
                     errors.address = 'Address is not valid';
-                } else if (myAccount) {
-                    if (myAccount.network === accountState.network) {
-                        infos.address = `TREZOR Address #${ (myAccount.index + 1) }`;
+                } else if (savedAccounts.length > 0) {
+                    // check if founded account belongs to this network
+                    // corner-case: when same derivation path is used on different networks
+                    const currentNetworkAccount = savedAccounts.find(a => a.network === accountState.network);
+                    if (currentNetworkAccount) {
+                        infos.address = `TREZOR Address #${ (currentNetworkAccount.index + 1) }`;
                     } else {
                         // TODO: load coins from config
-                        warnings.address = `Looks like it's TREZOR address in Account #${ (myAccount.index + 1) } of ${ myAccount.network.toUpperCase() } network`;
+                        warnings.address = `Looks like it's TREZOR address in Account #${ (savedAccounts[0].index + 1) } of ${ savedAccounts[0].network.toUpperCase() } network`;
                     }
                 }
             }
