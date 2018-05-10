@@ -739,7 +739,9 @@ export const onSend = (): AsyncAction => {
             if (!token) return;
 
             const contract = web3instance.erc20.at(token.address);
-            data = contract.transfer.getData(currentState.address, currentState.amount, {
+            const amountValue: string = new BigNumber(currentState.amount).times( Math.pow(10, token.decimals) ).toString();
+            
+            data = contract.transfer.getData(currentState.address, amountValue, {
                 from: account.address,
                 gasLimit: currentState.gasLimit,
                 gasPrice: currentState.gasPrice
