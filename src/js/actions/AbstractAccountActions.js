@@ -25,6 +25,7 @@ export const init = (): ThunkAction => {
 
         const selected: ?TrezorDevice = findSelectedDevice( getState().connect );
         if (!selected) return;
+        if (!selected.state || !selected.features) return;
 
         const { config } = getState().localStorage;
         const coin: ?Coin = config.coins.find(c => c.network === urlParams.network);
@@ -54,10 +55,11 @@ export const update = (initAccountAction: () => ThunkAction): ThunkAction => {
             abstractAccount,
             router
         } = getState();
-        const isLocationChanged: boolean = router.location.pathname !== abstractAccount.location;
+        const isLocationChanged: boolean = (!abstractAccount || router.location.pathname !== abstractAccount.location);
         if (isLocationChanged) {
             dispatch( init() );
-            initAccountAction();
+            if (abstractAccount !== null)
+                initAccountAction();
         }
     }
 }

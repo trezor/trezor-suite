@@ -8,7 +8,10 @@ import type { Props } from './index';
 
 const AdvancedForm = (props: Props) => {
 
-    const { network } = props.abstractAccount;
+    const abstractAccount = props.abstractAccount;
+    if (!abstractAccount) return null;
+
+    const { network } = abstractAccount;
     const { 
         coinSymbol,
         selectedCurrency,

@@ -52,14 +52,14 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
         
         this.props.abstractAccountActions.update( this.props.initAccount );
 
-        const currentState = props.abstractAccount;
+        const accountState = props.abstractAccount;
+        if (!accountState) return;
 
-        const device = findDevice(props.devices, currentState.deviceState, currentState.deviceId, currentState.deviceInstance);
+        const device = findDevice(props.devices, accountState.deviceState, accountState.deviceId, accountState.deviceInstance);
         if (!device) return;
-        const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === currentState.network);
+        const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === accountState.network);
         // if (!discovery) return;
-        const account = props.accounts.find(a => a.deviceState === currentState.deviceState && a.index === currentState.index && a.network === currentState.network);
-        
+        const account = props.accounts.find(a => a.deviceState === accountState.deviceState && a.index === accountState.index && a.network === accountState.network);
 
         let deviceStatusNotification: ?React$Element<typeof Notification> = null;
         if (account) {
@@ -90,9 +90,9 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
     render(): ?React$Element<string> {
 
         const props = this.props;
-        const currentState = props.abstractAccount;
+        const accountState = props.abstractAccount;
 
-        if (!currentState.deviceState) {
+        if (!accountState) {
             return (<section><Notification className="info" title="Loading device" /></section>);
         }
 
@@ -105,7 +105,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
         // const device = findDevice(props.devices, accountState.deviceState, accountState.deviceId, accountState.deviceInstance);
 
         if (!device) {
-            return (<section>Device with state {currentState.deviceState} not found</section>);
+            return (<section>Device with state {accountState.deviceState} not found</section>);
         }
 
         if (!account) {

@@ -14,36 +14,12 @@ export type State = {
     +deviceInstance: ?number;
     +network: string;
     +coin: Coin;
-    location: string;
-}
-
-export const initialState: State = {
-    index: 0,
-    deviceState: '0',
-    deviceId: '0',
-    deviceInstance: null,
-    network: '',
-    coin: {
-        name: '',
-        network: '',
-        symbol: '',
-        bip44: '',
-        defaultGasLimit: 0,
-        defaultGasLimitTokens: 0,
-        defaultGasPrice: 0,
-        explorer: {
-            tx: '',
-            address: ''
-        },
-        tokens: '',
-        backends: []
-    },
-    location: '',
-    
+    +location: string;
 };
 
+export const initialState: ?State = null;
 
-export default (state: State = initialState, action: Action): State => {
+export default (state: ?State = initialState, action: Action): ?State => {
 
     switch (action.type) {
 

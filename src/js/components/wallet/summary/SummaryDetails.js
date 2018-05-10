@@ -5,9 +5,11 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 
 import type { Props as BaseProps } from './index';
+import type { Coin } from '../../../reducers/LocalStorageReducer';
 
 type Props = {
-    coin: $PropertyType<$ElementType<BaseProps, 'abstractAccount'>, 'coin'>,
+    // coin: $PropertyType<$ElementType<BaseProps, 'abstractAccount'>, 'coin'>,
+    coin: Coin,
     summary: $ElementType<BaseProps, 'summary'>,
     balance: string,
     network: string,

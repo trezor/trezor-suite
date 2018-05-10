@@ -33,10 +33,11 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         account,
         deviceStatusNotification
     } = state;
-
-    if (!device || !account) return <section></section>;
-
     const abstractAccount = props.abstractAccount;
+
+    if (!device || !account || !abstractAccount) return <section></section>;
+
+    
     const tokens = findAccountTokens(props.tokens, account);
     const explorerLink: string = `${abstractAccount.coin.explorer.address}${account.address}`;
 

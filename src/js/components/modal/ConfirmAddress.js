@@ -10,6 +10,7 @@ import type { Props } from './index';
 const ConfirmAddress = (props: Props) => {
 
     const { accounts, abstractAccount } = props;
+    if (!abstractAccount) return null;
     const account = findAccount(accounts, abstractAccount.index, abstractAccount.deviceState, abstractAccount.network);
     if (!account) return null;
 
@@ -45,6 +46,8 @@ export const ConfirmUnverifiedAddress = (props: Props): any => {
         showUnverifiedAddress,
         showAddress
     } = props.receiveActions;
+
+    if(!abstractAccount) return null;
 
     const account = findAccount(accounts, abstractAccount.index, abstractAccount.deviceState, abstractAccount.network);
     if (!account) return null;

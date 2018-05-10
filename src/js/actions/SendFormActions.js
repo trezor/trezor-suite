@@ -159,7 +159,7 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
 export const init = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
 
         const { location } = getState().router;
         const urlParams: RouterLocationState = location.state;
@@ -221,7 +221,9 @@ export const toggleAdvanced = (address: string): Action => {
 export const validation = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
+
         const state: State = getState().sendForm;
 
         const errors: {[k: string]: string} = {};
@@ -380,7 +382,7 @@ export const onAddressChange = (address: string): ThunkAction => {
 export const onAmountChange = (amount: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
         const touched = { ...currentState.touched };
@@ -406,7 +408,8 @@ export const onAmountChange = (amount: string): ThunkAction => {
 
 export const onCurrencyChange = (currency: any): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currency.value !== currentState.coinSymbol;
 
@@ -465,7 +468,8 @@ export const onCurrencyChange = (currency: any): ThunkAction => {
 
 export const onSetMax = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
         const touched = { ...currentState.touched };
@@ -510,14 +514,12 @@ export const onSetMax = (): ThunkAction => {
 
 export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
 
-        const { config } = getState().localStorage;
-        if (!config) return;
-        const coin: ?Coin = config.coins.find(c => c.network === accountState.network);
-        if (!coin) return;
+        const coin: Coin = accountState.coin;
 
         const state: State = {
             ...currentState,
@@ -563,7 +565,8 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
 
 export const updateFeeLevels = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
 
@@ -604,7 +607,8 @@ export const updateFeeLevels = (): ThunkAction => {
 
 export const onGasPriceChange = (gasPrice: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== accountState.network;
 
@@ -652,7 +656,8 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => {
 
 export const onGasLimitChange = (gasLimit: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
 
@@ -723,7 +728,9 @@ export const onSend = (): AsyncAction => {
     //return onSendERC20();
     return async (dispatch: Dispatch, getState: GetState): Promise<any> => {
 
-        const accountState: AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
+        
         const currentState: State = getState().sendForm;
         const web3instance: ?Web3Instance = getState().web3.filter(w3 => w3.network === accountState.network)[0];
         const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);

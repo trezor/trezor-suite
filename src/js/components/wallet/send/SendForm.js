@@ -28,11 +28,12 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         discovery,
         deviceStatusNotification
     } = state;
+    const abstractAccount = props.abstractAccount;
 
-    if (!device || !account || !discovery) return <section></section>;
+    if (!device || !account || !discovery || !abstractAccount) return <section></section>;
 
     const tokens = findAccountTokens(props.tokens, account);
-    const { network } = props.abstractAccount;
+    const { network } = abstractAccount;
 
     const { 
         address,
@@ -61,7 +62,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         onSend,
     } = props.sendFormActions;
 
-    const selectedCoin = props.abstractAccount.coin;
+    const selectedCoin = abstractAccount.coin;
     const fiatRate = props.fiat.find(f => f.network === network);
 
     const tokensSelectData = tokens.map(t => {
