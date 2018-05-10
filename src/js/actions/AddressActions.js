@@ -29,6 +29,7 @@ export type AddressSetBalanceAction = {
     type: typeof ADDRESS.SET_BALANCE,
     address: string,
     network: string,
+    deviceState: string,
     balance: string
 }
 
@@ -36,14 +37,26 @@ export type AddressSetNonceAction = {
     type: typeof ADDRESS.SET_NONCE,
     address: string,
     network: string,
+    deviceState: string,
     nonce: number
 }
 
-export const setBalance = (address: string, network: string, balance: string): Action => {
+export const setBalance = (address: string, network: string, deviceState: string, balance: string): Action => {
     return {
         type: ADDRESS.SET_BALANCE,
         address,
         network,
+        deviceState,
         balance
+    }
+}
+
+export const setNonce = (address: string, network: string, deviceState: string, nonce: number): Action => {
+    return {
+        type: ADDRESS.SET_NONCE,
+        address,
+        network,
+        deviceState,
+        nonce
     }
 }

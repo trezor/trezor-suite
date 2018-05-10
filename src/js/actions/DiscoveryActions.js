@@ -285,7 +285,7 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
         const balance = await getBalanceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
         dispatch(
-            AddressActions.setBalance(ethAddress, network, web3instance.web3.fromWei(balance.toString(), 'ether'))
+            AddressActions.setBalance(ethAddress, network, device.state || 'undefined', web3instance.web3.fromWei(balance.toString(), 'ether'))
         );
 
         const userTokens = [];
@@ -302,12 +302,7 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
 
         const nonce: number = await getNonceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
-        dispatch({
-            type: ADDRESS.SET_NONCE,
-            address: ethAddress,
-            network,
-            nonce: nonce
-        });
+        dispatch(AddressActions.setNonce(ethAddress, network, device.state || 'undefined', nonce));
 
         const addressIsEmpty = nonce < 1 && !balance.greaterThan(0);
 

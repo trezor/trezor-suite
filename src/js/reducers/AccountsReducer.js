@@ -66,7 +66,7 @@ const removeAccounts = (state: State, device: TrezorDevice): State => {
 // }
 
 const setBalance = (state: State, action: AddressSetBalanceAction): State => {
-    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network);
+    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
     const newState: State = [ ...state ];
     newState[index].loaded = true;
     newState[index].balance = action.balance;
@@ -74,7 +74,7 @@ const setBalance = (state: State, action: AddressSetBalanceAction): State => {
 }
 
 const setNonce = (state: State, action: AddressSetNonceAction): State => {
-    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network);
+    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
     const newState: State = [ ...state ];
     newState[index].loaded = true;
     newState[index].nonce = action.nonce;
