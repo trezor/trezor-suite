@@ -113,8 +113,8 @@ export default class StickyContainer extends React.PureComponent<Props> {
             if (asideBounds.top < 0) {
                 window.scrollTo(0, getScrollY() + asideBounds.top);
                 this.topOffset = 0;
-                raf(this.update);
             }
+            raf(this.update);
         } else if (this.props.deviceSelection !== prevProps.deviceSelection) {
             raf(this.update);
         } else if (!this.firstRender) {
