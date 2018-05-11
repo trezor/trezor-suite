@@ -17,6 +17,7 @@ const AdvancedForm = (props: Props) => {
         selectedCurrency,
         gasPrice,
         gasLimit,
+        nonce,
         data,
         errors,
         warnings,
@@ -28,6 +29,7 @@ const AdvancedForm = (props: Props) => {
         toggleAdvanced,
         onGasPriceChange,
         onGasLimitChange,
+        onNonceChange,
         onDataChange
     } = props.sendFormActions;
 
@@ -68,6 +70,27 @@ const AdvancedForm = (props: Props) => {
         <div className="advanced-container opened">
             <a className="advanced" onClick={ toggleAdvanced }>Advanced settings</a>
             <div className="row gas-row">
+                {/* <div className="column nonce">
+                    <label>
+                        Nonce
+                        <Tooltip
+                            arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
+                            overlay={ gasLimitTooltip }
+                            placement="top">
+                            <span className="what-is-it"></span>
+                        </Tooltip>
+                    </label>
+                    <input 
+                        type="text"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck="false"
+                        value={ nonce }
+                        onChange={ event => onNonceChange(event.target.value) } />
+                    { errors.nonce ? (<span className="error">{ errors.nonce }</span>) : null }
+                    { warnings.nonce ? (<span className="warning">{ warnings.nonce }</span>) : null }
+                </div> */}
                 <div className="column">
                     <label>
                         Gas limit 

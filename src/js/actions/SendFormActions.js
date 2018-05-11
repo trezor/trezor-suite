@@ -84,6 +84,9 @@ export type SendFormAction = SendTxAction | {
     type: typeof SEND.GAS_LIMIT_CHANGE,
     state: State
 } | {
+    type: typeof SEND.NONCE_CHANGE,
+    state: State
+} | {
     type: typeof SEND.DATA_CHANGE,
     state: State
 } | {
@@ -182,6 +185,7 @@ export const init = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
 
         const { location } = getState().router;
         const urlParams: RouterLocationState = location.state;
@@ -196,11 +200,8 @@ export const init = (): ThunkAction => {
         }
 
         // TODO: check if there are some unfinished tx in localStorage
-        const { config } = getState().localStorage;
-        if (!config) return;
 
-        const coin: ?Coin = config.coins.find(c => c.network === urlParams.network);
-        if (!coin) return;
+        const coin: Coin = accountState.coin;
 
         const gasPrice: BigNumber = new BigNumber( EthereumjsUnits.convert(web3instance.gasPrice, 'wei', 'gwei') ) || new BigNumber(coin.defaultGasPrice);
         const gasLimit: string = coin.defaultGasLimit.toString();
@@ -252,129 +253,134 @@ export const validation = (): ThunkAction => {
         const warnings: {[k: string]: string} = {};
         const infos: {[k: string]: string} = {};
 
-        if (!state.untouched) {
+        if (state.untouched) return;
             // valid address
-            if (state.touched.address) {
+        if (state.touched.address) {
 
-                const accounts = getState().accounts;
-                const savedAccounts = accounts.filter(a => a.address.toLowerCase() === state.address.toLowerCase());
+            const accounts = getState().accounts;
+            const savedAccounts = accounts.filter(a => a.address.toLowerCase() === state.address.toLowerCase());
 
-                if (state.address.length < 1) {
-                    errors.address = 'Address is not set';
-                } else if (!EthereumjsUtil.isValidAddress(state.address)) {
-                    errors.address = 'Address is not valid';
-                } else if (savedAccounts.length > 0) {
-                    // check if founded account belongs to this network
-                    // corner-case: when same derivation path is used on different networks
-                    const currentNetworkAccount = savedAccounts.find(a => a.network === accountState.network);
-                    if (currentNetworkAccount) {
-                        infos.address = `TREZOR Address #${ (currentNetworkAccount.index + 1) }`;
-                    } else {
-                        // TODO: load coins from config
-                        warnings.address = `Looks like it's TREZOR address in Account #${ (savedAccounts[0].index + 1) } of ${ savedAccounts[0].network.toUpperCase() } network`;
-                    }
-                }
-            }
-
-            // valid amount
-            // https://stackoverflow.com/a/42701461
-            //const regexp = new RegExp('^(?:[0-9]{0,10}\\.)?[0-9]{1,18}$');
-            if (state.touched.amount) {
-                if (state.amount.length < 1) {
-                    errors.amount = 'Amount is not set';
-                } else if (state.amount.length > 0 && !state.amount.match(numberRegExp)) {
-                    errors.amount = 'Amount is not a number';
+            if (state.address.length < 1) {
+                errors.address = 'Address is not set';
+            } else if (!EthereumjsUtil.isValidAddress(state.address)) {
+                errors.address = 'Address is not valid';
+            } else if (savedAccounts.length > 0) {
+                // check if founded account belongs to this network
+                // corner-case: when same derivation path is used on different networks
+                const currentNetworkAccount = savedAccounts.find(a => a.network === accountState.network);
+                if (currentNetworkAccount) {
+                    infos.address = `TREZOR Address #${ (currentNetworkAccount.index + 1) }`;
                 } else {
-
-                    const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-                    if (!account) return; // this should not happen
-
-                    let decimalRegExp: RegExp;
-
-                    if (state.selectedCurrency !== state.coinSymbol) {
-                        const token = findToken(getState().tokens, account.address, state.selectedCurrency, account.deviceState);
-                        if (token) {
-                            if (parseInt(token.decimals) > 0) {
-                                //decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
-                                decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9][0-9]*\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
-                            } else {
-                                // decimalRegExp = new RegExp('^(0|0\\.?|[1-9]+\\.?)$');
-                                decimalRegExp = new RegExp('^[0-9]+$');
-                            }
-    
-                            if (!state.amount.match(decimalRegExp)) {
-                                errors.amount = `Maximum ${ token.decimals} decimals allowed`;
-                            } else if (new BigNumber(state.total).greaterThan(account.balance)) {
-                                errors.amount = `Not enough ${ state.coinSymbol } to cover transaction fee`;
-                            } else if (new BigNumber(state.amount).greaterThan(token.balance)) {
-                                errors.amount = 'Not enough funds';
-                            } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
-                                errors.amount = 'Amount is too low';
-                            }
-                        }
-                        
-                    } else {
-                        decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
-                        if (!state.amount.match(decimalRegExp)) {
-                            errors.amount = `Maximum 18 decimals allowed`;
-                        } else if (new BigNumber(state.total).greaterThan(account.balance)) {
-                            errors.amount = 'Not enough funds';
-                        }
-                    }
+                    // TODO: load coins from config
+                    warnings.address = `Looks like it's TREZOR address in Account #${ (savedAccounts[0].index + 1) } of ${ savedAccounts[0].network.toUpperCase() } network`;
                 }
             }
-            
-            // valid gas limit
-            if (state.touched.gasLimit) {
-                if (state.gasLimit.length < 1) {
-                    errors.gasLimit = 'Gas limit is not set';
-                } else if (state.gasLimit.length > 0 && !state.gasLimit.match(numberRegExp)) {
-                    errors.gasLimit = 'Gas limit is not a number';
-                } else {
-                    const gl: BigNumber = new BigNumber(state.gasLimit);
-                    if (gl.lessThan(1)) {
-                        errors.gasLimit = 'Gas limit is too low';
-                    } else if (gl.lessThan(1000)) {
-                        warnings.gasLimit = 'Gas limit is below recommended';
-                    }
-                }
-            }
-
-            // valid gas price
-            if (state.touched.gasPrice) {
-                if (state.gasPrice.length < 1) {
-                    errors.gasPrice = 'Gas price is not set';
-                } else if (state.gasPrice.length > 0 && !state.gasPrice.match(numberRegExp)) {
-                    errors.gasPrice = 'Gas price is not a number';
-                } else {
-                    const gp: BigNumber = new BigNumber(state.gasPrice);
-                    if (gp.greaterThan(100)) {
-                        errors.gasPrice = 'Gas price is too high';
-                    } else if (gp.lessThanOrEqualTo('0')) {
-                        errors.gasPrice = 'Gas price is too low';
-                    }
-                }
-            }
-
-            // valid data
-            if (state.touched.data && state.data.length > 0) {
-                const re = /^[0-9A-Fa-f]+$/g;
-                //const re = /^[0-9A-Fa-f]{6}$/g;
-                if (!re.test(state.data)) {
-                    errors.data = 'Data is not valid hexadecimal';
-                }
-            }
-
-            // valid nonce?
-
-            dispatch({
-                type: SEND.VALIDATION,
-                errors,
-                warnings,
-                infos
-            });
-
         }
+
+        // valid amount
+        // https://stackoverflow.com/a/42701461
+        //const regexp = new RegExp('^(?:[0-9]{0,10}\\.)?[0-9]{1,18}$');
+        if (state.touched.amount) {
+            if (state.amount.length < 1) {
+                errors.amount = 'Amount is not set';
+            } else if (state.amount.length > 0 && !state.amount.match(numberRegExp)) {
+                errors.amount = 'Amount is not a number';
+            } else {
+
+                const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
+                if (!account) return; // this should not happen
+
+                let decimalRegExp: RegExp;
+
+                if (state.selectedCurrency !== state.coinSymbol) {
+                    const token = findToken(getState().tokens, account.address, state.selectedCurrency, account.deviceState);
+                    if (token) {
+                        if (parseInt(token.decimals) > 0) {
+                            //decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
+                            decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9][0-9]*\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
+                        } else {
+                            // decimalRegExp = new RegExp('^(0|0\\.?|[1-9]+\\.?)$');
+                            decimalRegExp = new RegExp('^[0-9]+$');
+                        }
+
+                        if (!state.amount.match(decimalRegExp)) {
+                            errors.amount = `Maximum ${ token.decimals} decimals allowed`;
+                        } else if (new BigNumber(state.total).greaterThan(account.balance)) {
+                            errors.amount = `Not enough ${ state.coinSymbol } to cover transaction fee`;
+                        } else if (new BigNumber(state.amount).greaterThan(token.balance)) {
+                            errors.amount = 'Not enough funds';
+                        } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
+                            errors.amount = 'Amount is too low';
+                        }
+                    }
+                    
+                } else {
+                    decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
+                    if (!state.amount.match(decimalRegExp)) {
+                        errors.amount = `Maximum 18 decimals allowed`;
+                    } else if (new BigNumber(state.total).greaterThan(account.balance)) {
+                        errors.amount = 'Not enough funds';
+                    }
+                }
+            }
+        }
+        
+        // valid gas limit
+        if (state.touched.gasLimit) {
+            if (state.gasLimit.length < 1) {
+                errors.gasLimit = 'Gas limit is not set';
+            } else if (state.gasLimit.length > 0 && !state.gasLimit.match(numberRegExp)) {
+                errors.gasLimit = 'Gas limit is not a number';
+            } else {
+                const gl: BigNumber = new BigNumber(state.gasLimit);
+                if (gl.lessThan(1)) {
+                    errors.gasLimit = 'Gas limit is too low';
+                } else if (gl.lessThan( state.selectedCurrency !== state.coinSymbol ? accountState.coin.defaultGasLimitTokens : accountState.coin.defaultGasLimit )) {
+                    warnings.gasLimit = 'Gas limit is below recommended';
+                }
+            }
+        }
+
+        // valid gas price
+        if (state.touched.gasPrice) {
+            if (state.gasPrice.length < 1) {
+                errors.gasPrice = 'Gas price is not set';
+            } else if (state.gasPrice.length > 0 && !state.gasPrice.match(numberRegExp)) {
+                errors.gasPrice = 'Gas price is not a number';
+            } else {
+                const gp: BigNumber = new BigNumber(state.gasPrice);
+                if (gp.greaterThan(1000)) {
+                    warnings.gasPrice = 'Gas price is too high';
+                } else if (gp.lessThanOrEqualTo('0')) {
+                    errors.gasPrice = 'Gas price is too low';
+                }
+            }
+        }
+
+        // valid nonce
+        if (state.touched.nonce) {
+            if (state.nonce.length < 1) {
+                errors.nonce = 'Nonce is not set';
+            }
+        }
+
+        // valid data
+        if (state.touched.data && state.data.length > 0) {
+            const re = /^[0-9A-Fa-f]+$/g;
+            //const re = /^[0-9A-Fa-f]{6}$/g;
+            if (!re.test(state.data)) {
+                errors.data = 'Data is not valid hexadecimal';
+            }
+        }
+
+        // valid nonce?
+
+        dispatch({
+            type: SEND.VALIDATION,
+            errors,
+            warnings,
+            infos
+        });
     }
 }
 
@@ -727,6 +733,27 @@ export const onGasLimitChange = (gasLimit: string): ThunkAction => {
     }
 }
 
+export const onNonceChange = (nonce: string): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+        const currentState: State = getState().sendForm;
+        const touched = { ...currentState.touched };
+        touched.nonce = true;
+
+        const state: State = {
+            ...currentState,
+            untouched: false,
+            touched,
+            nonce,
+        };
+
+        dispatch({
+            type: SEND.NONCE_CHANGE,
+            state
+        });
+        dispatch( validation() );
+    }
+}
+
 export const onDataChange = (data: string): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         const currentState: State = getState().sendForm;
@@ -948,6 +975,7 @@ export default {
     updateFeeLevels,
     onGasPriceChange,
     onGasLimitChange,
+    onNonceChange,
     onDataChange,
     onSend,
 }

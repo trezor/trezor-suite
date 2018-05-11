@@ -68,6 +68,7 @@
             bottom: 6px;
             font-size: 12px;
             color: @color_error_primary;
+            white-space: nowrap;
         }
 
         .error {
@@ -255,6 +256,11 @@
             flex: 1;
             padding-right: 20px;
 
+            &.nonce {
+                width: 100px;
+                flex: none;
+            }
+
             &:last-child {
                 padding-right: 0px;
             }
@@ -264,6 +270,7 @@
             .info {
                 left: 0;
                 bottom: -17px;
+                white-space: nowrap;
             }
         }
     }

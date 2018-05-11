@@ -157,6 +157,7 @@ export default (state: State = initialState, action: Action): State => {
         case SEND.UPDATE_FEE_LEVELS :
         case SEND.GAS_PRICE_CHANGE :
         case SEND.GAS_LIMIT_CHANGE :
+        case SEND.NONCE_CHANGE :
         case SEND.DATA_CHANGE :
             return action.state;
 

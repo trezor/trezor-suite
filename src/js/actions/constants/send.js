@@ -11,6 +11,7 @@ export const CURRENCY_CHANGE: 'send__currency_change' = 'send__currency_change';
 export const FEE_LEVEL_CHANGE: 'send__fee_level_change' = 'send__fee_level_change';
 export const GAS_PRICE_CHANGE: 'send__gas_price_change' = 'send__gas_price_change';
 export const GAS_LIMIT_CHANGE: 'send__gas_limit_change' = 'send__gas_limit_change';
+export const NONCE_CHANGE: 'send__nonce_change' = 'send__nonce_change';
 export const UPDATE_FEE_LEVELS: 'send__update_fee_levels' = 'send__update_fee_levels';
 export const DATA_CHANGE: 'send__data_change' = 'send__data_change';
 export const SEND: 'send__submit' = 'send__submit';
