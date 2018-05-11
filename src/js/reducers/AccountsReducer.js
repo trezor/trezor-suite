@@ -35,12 +35,12 @@ const createAccount = (state: State, action: AccountCreateAction): State => {
 
     // TODO check with device_id
     // check if account was created before
-    const exist: ?Account = state.find((account: Account) => account.address === action.address && account.network === action.network && action.device.features && account.deviceID === action.device.features.device_id);
+    const exist: ?Account = state.find(account => account.address === action.address && account.network === action.network && action.device.features && account.deviceID === action.device.features.device_id);
     if (exist) {
         return state;
     }
 
-    const address: Account = {
+    const account: Account = {
         loaded: false,
         network: action.network,
         deviceID: action.device.features ? action.device.features.device_id : '0',
@@ -53,12 +53,13 @@ const createAccount = (state: State, action: AccountCreateAction): State => {
     }
 
     const newState: State = [ ...state ];
-    newState.push(address);
+    newState.push(account);
     return newState;
 }
 
 const removeAccounts = (state: State, device: TrezorDevice): State => {
-    return state.filter(account => device.features && account.deviceID !== device.features.device_id);
+    //return state.filter(account => device.features && account.deviceID !== device.features.device_id);
+    return state.filter(account => account.deviceState !== device.state);
 }
 
 // const forgetAccounts = (state: State, action: any): State => {
