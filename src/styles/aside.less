@@ -3,60 +3,7 @@ aside {
     width: 320px;
     min-width: 320px;
     border-right: 1px solid @color_divider;
-    //display: flex;
-    //flex-direction: column;
     overflow-x: hidden;
-
-    .Select {
-        width: 320px;
-        height: 64px;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
-        background: @color_white;
-
-        .Select-control {
-            height: 63px;
-            border: 0px;
-            // border-radius: 4px 0px 0px 0px;
-            border-right: 1px solid @color_divider;
-            border-bottom: 1px solid @color_divider;
-            transition: color 0.3s ease-in-out;
-        }
-
-        .Select-arrow-zone {
-            right: 24px;
-        }
-
-        .Select-menu-outer {
-            visibility: hidden;
-        }
-
-        &.is-open {
-            .Select-control {
-                border-color: @color_divider;
-            }
-        }
-
-        &.is-disabled {
-            .Select-control {
-                background: @color_white;
-                cursor: default;
-            }
-
-            .Select-arrow {
-                visibility: hidden;
-                // &:after {
-                //     content: ''
-                // }
-            }
-
-            .device {
-                .device-menu {
-                    padding-right: 24px;
-                }
-            }
-        }
-    }
-
 
     .sticky-container {
         position: relative;
@@ -173,12 +120,46 @@ aside {
             background-image: url('../images/trezor-1.png');
         }
 
+        &:after {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 10px;
+            height: 10px;
+            top: 14px;
+            left: 32px;
+            background: @color_green_primary;
+            border: 2px solid @color_white;
+            border-radius: 50%;
+            z-index: 3;
+        }
+
+        &.disconnected,
+        &.unavailable, {
+            &:after {
+                background: @color_error_primary;
+            }
+        }
+
+        &.unacquired,
+        &.used-elsewhere,
+        &.reload-features, {
+            &:after {
+                background: @color_warning_primary;
+            }
+        }
+
         &.trezor-t {
             &:before {
                 width: 17px;
                 left: 23px;
                 background-size: 17px 25px;
                 background-image: url('../images/trezor-T.png');
+            }
+
+            &:after {
+                left: 34px;
+                top: 14px;
             }
         }
 
@@ -215,50 +196,6 @@ aside {
             font-size: 11px;
             margin-right: 8px;
         }
-
-        // .device-menu {
-        //     display: flex;
-        //     justify-content: flex-end;
-        //     padding-right: 4px;
-        //     padding-left: 4px;
-
-        //     div {
-        //         display: inline-block;
-        //     }
-
-        //     .forget,
-        //     .settings,
-        //     .acquire {
-        //         cursor: pointer;
-
-        //         &:before {
-        //             .icomoon-refresh;
-        //             color: @color_text_secondary;
-        //             position: relative;
-        //             font-size: 24px;
-        //             .hover();
-        //         }
-                
-        //         &:hover {
-        //             &:before {
-        //                 color: @color_text_primary;
-        //             }
-        //         }
-        //     }
-
-        //     .forget {
-        //         &:before {
-        //             .icomoon-eject;
-        //         }
-        //     }
-
-        //     .settings {
-        //         &:before {
-        //             .icomoon-settings;
-        //         }
-        //     }
-        // }
-
     }
 
     .device-menu {

@@ -10,107 +10,6 @@ import { findSelectedDevice } from '../../../reducers/TrezorConnectReducer';
 import type { Props } from './index';
 import type { TrezorDevice } from '../../../flowtype';
 
-type ValueProps = {
-    onClick: (type: string, device: TrezorDevice) => void,
-    onOpen: () => any,
-    onClose: () => any,
-    value: TrezorDevice,
-    opened: boolean,
-    disabled: boolean,
-    deviceCount: number,
-}
-
-const Value = (props: ValueProps): any => {
-    const device = props.value; // device is passed as value of selected item
-
-    // prevent onMouseDown event
-    const onMouseDown = event => {
-        if (props.onClick) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-    }
-
-    const onClick = (event, item, device) => {
-        if (props.onClick) {
-            event.preventDefault();
-            event.stopPropagation();
-            props.onClick(item, device);
-        }
-    }
-
-    let deviceStatus: string = "Connected";
-    let css: string = "device-select device";
-    if (props.opened) css += " opened";
-    if (props.disabled) css += " disabled";
-
-
-    const deviceMenuItems: Array<any> = [];
-
-    if (device.features && device.features.passphrase_protection) {
-        deviceMenuItems.push("settings"); // TODO: clone
-    }
-
-    if (device.unacquired) {
-        css += " unacquired";
-        deviceStatus = "Used in other window";
-    }
-    if (device.isUsedElsewhere) {
-        css += " used-elsewhere";
-        deviceStatus = "Used in other window";
-        deviceMenuItems.push("acquire");
-    } else if (device.featuresNeedsReload) {
-        css += " reload-features";
-        //deviceMenuItems.push("acquire");
-    }
-    if (!device.connected) {
-        css += " reload-features";
-        deviceStatus = "Disconnected";
-    } else if (!device.available) {
-        css += " unavailable";
-        deviceStatus = "Unavailable";
-    }
-
-    if (device.remember) {
-        deviceMenuItems.push("forget");
-    }
-
-    if (device.features && device.features.major_version > 1) {
-        css += " trezor-t";
-    }
-
-    
-
-    const deviceMenuButtons = deviceMenuItems.map((item, index) => {
-        return (
-            <div key={ item } className={ item } onClick={ event => onClick(event, item, device) }></div>
-        )
-    });
-    const deviceMenu = deviceMenuButtons.length < 1 ? null : (
-        <div className="device-menu">
-            { deviceMenuButtons }
-        </div>
-    );
-
-    const handleOpen = () => {
-        if (props.disabled) return;
-        props.opened ? props.onClose() : props.onOpen();
-    }
-
-    return (
-        <div className={ css } onClick={ handleOpen }>
-            <div className="label-container">
-                <span className="label">{ device.instanceLabel }</span>
-                <span className="status">{ deviceStatus }</span>
-            </div>
-            { props.deviceCount > 1 ? <div className="counter">{ props.deviceCount }</div> : null }
-            <div className="arrow"></div>
-        </div>
-    );
-}
-
-
-
 export const DeviceSelect = (props: Props) => {
 
     const { devices, transport } = props.connect;
@@ -118,30 +17,50 @@ export const DeviceSelect = (props: Props) => {
     const selected: ?TrezorDevice = findSelectedDevice(props.connect);
     if (!selected) return null;
 
-    const handleMenuClick = (type: string, device: TrezorDevice) => {
-        if (type === 'acquire') {
-            props.acquireDevice();
-        } else if (type === 'forget') {
-            props.forgetDevice(device);
-        }else if (type === 'settings') {
-            props.duplicateDevice(device);
+    let deviceStatus: string = "Connected";
+    let css: string = "device-select device";
+    if (props.deviceDropdownOpened) css += " opened";
+
+    if (!selected.connected) {
+        css += " disconnected";
+        deviceStatus = "Disconnected";
+    } else if (!selected.available) {
+        css += " unavailable";
+        deviceStatus = "Unavailable";
+    } else {
+        if (selected.unacquired) {
+            css += " unacquired";
+            deviceStatus = "Used in other window";
+        }
+        if (selected.isUsedElsewhere) {
+            css += " used-elsewhere";
+            deviceStatus = "Used in other window";
+        } else if (selected.featuresNeedsReload) {
+            css += " reload-features";
         }
     }
 
+    if (selected.features && selected.features.major_version > 1) {
+        css += " trezor-t";
+    }
+
+    const handleOpen = () => {
+        props.toggleDeviceDropdown(props.deviceDropdownOpened ? false : true);
+    }
+
+    const deviceCount = devices.length;
     const webusb: boolean = (transport && transport.version.indexOf('webusb') >= 0) ? true : false;
     const disabled: boolean = (devices.length < 1 && !webusb);
 
     return (
-        <Value 
-                className="device-select"
-                onClick={ handleMenuClick }
-                disabled={ disabled }
-                value={ selected }
-                deviceCount={ devices.length }
-                opened={ props.deviceDropdownOpened }
-                onOpen={ () => props.toggleDeviceDropdown(true) }
-                onClose={ () => props.toggleDeviceDropdown(false) }
-                />
+        <div className={ css } onClick={ handleOpen }>
+            <div className="label-container">
+                <span className="label">{ selected.instanceLabel }</span>
+                <span className="status">{ deviceStatus }</span>
+            </div>
+            { deviceCount > 1 ? <div className="counter">{ deviceCount }</div> : null }
+            <div className="arrow"></div>
+        </div>
     );
 }
 
@@ -263,10 +182,13 @@ export class DeviceDropdown extends Component<Props> {
             let css: string = "device item"
             if (dev.unacquired || dev.isUsedElsewhere) {
                 deviceStatus = "Used in other window";
+                css += " unacquired";
             } else if (!dev.connected) {
                 deviceStatus = "Disconnected";
+                css += " disconnected";
             } else if (!dev.available) {
                 deviceStatus = "Unavailable";
+                css += " unavailable";
             }
 
             if (dev.features && dev.features.major_version > 1) {
