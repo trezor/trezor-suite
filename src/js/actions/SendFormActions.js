@@ -120,15 +120,41 @@ const calculateMaxAmount = (balance: string, gasPrice: string, gasLimit: string)
     
 }
 
-const getMaxAmount = () => {
+const setAmountAndTotal = (state: State): State => {
 
+    // if (state.setMax) {
+    //     const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
+    //     if (!account) return;
+
+    //     if (isToken) {
+    //         const token: ?Token = findToken(getState().tokens, account.address, state.selectedCurrency, account.deviceState);
+    //         if (!token) return;
+    //         state.amount = token.balance;
+    //     } else {
+    //         state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
+    //     }
+    // }
+    // state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
+
+    return state;
 }
 
-export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLimit: string): Array<FeeLevel> => {
+export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLimit: string, selected?: FeeLevel): Array<FeeLevel> => {
     const price: BigNumber = typeof gasPrice === 'string' ? new BigNumber(gasPrice) : gasPrice
     const quarter: BigNumber = price.dividedBy(4);
     const high: string = price.plus(quarter.times(2)).toString();
     const low: string = price.minus(quarter.times(2)).toString();
+    
+    const customLevel: FeeLevel = selected && selected.value === 'Custom' ? {
+        value: 'Custom',
+        gasPrice: selected.gasPrice, 
+        // label: `${ calculateFee(gasPrice, gasLimit) } ${ symbol }`
+        label: `${ calculateFee(selected.gasPrice, gasLimit) } ${ symbol }`
+    } : {
+        value: 'Custom',
+        gasPrice: low,
+        label: ''
+    }
 
     return [
         { 
@@ -146,11 +172,7 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
             gasPrice: low,
             label: `${ calculateFee(low, gasLimit) } ${ symbol }`
         },
-        { 
-            value: 'Custom',
-            gasPrice: low, 
-            label: '',
-        },
+        customLevel
     ]
 }
 
@@ -424,12 +446,10 @@ export const onCurrencyChange = (currency: any): ThunkAction => {
         let gasLimit: string = '';
         let amount: string = currentState.amount;
         let total: string;
-        console.warn("SEL", currency, currentState.coinSymbol)
         if (isToken) {
             gasLimit = coin.defaultGasLimitTokens.toString();
             if (currentState.setMax) {
                 const token: ?Token = findToken(getState().tokens, account.address, currency.value, accountState.deviceState);
-                console.warn("SEL", token, currency.value)
                 if (!token) return;
                 amount = token.balance;
             }
@@ -442,7 +462,7 @@ export const onCurrencyChange = (currency: any): ThunkAction => {
             total = calculateTotal(amount, currentState.gasPrice, currentState.gasLimit);
         }
 
-        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coinSymbol, currentState.gasPrice, gasLimit);
+        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coinSymbol, currentState.gasPrice, gasLimit, currentState.selectedFeeLevel);
         const selectedFeeLevel: ?FeeLevel = feeLevels.find(f => f.value === currentState.selectedFeeLevel.value);
         if (!selectedFeeLevel) return;
 
@@ -528,7 +548,6 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
         };
 
         if (feeLevel.value === 'Custom') {
-            // TODO: update value for custom fee
             state.advanced = true;
             feeLevel.gasPrice = state.gasPrice;
             feeLevel.label = `${ calculateFee(state.gasPrice, state.gasLimit) } ${ state.coinSymbol }`;
@@ -538,7 +557,6 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
                 customLevel.label = '';
             state.gasPrice = feeLevel.gasPrice;
             state.gasLimit = isToken ? coin.defaultGasLimitTokens.toString() : coin.defaultGasLimit.toString();
-            // reset custom gasLimit
         }
 
         if (currentState.setMax) {
@@ -563,6 +581,9 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
     }
 }
 
+// Manually triggered from user
+// Update gasPrice to recommended value
+
 export const updateFeeLevels = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: ?AccountState = getState().abstractAccount;
@@ -570,7 +591,7 @@ export const updateFeeLevels = (): ThunkAction => {
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
 
-        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coinSymbol, currentState.recommendedGasPrice, currentState.gasLimit);
+        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coinSymbol, currentState.recommendedGasPrice, currentState.gasLimit, currentState.selectedFeeLevel);
         const selectedFeeLevel: ?FeeLevel = feeLevels.find(f => f.value === currentState.selectedFeeLevel.value);
         if (!selectedFeeLevel) return;
 
@@ -578,8 +599,7 @@ export const updateFeeLevels = (): ThunkAction => {
             ...currentState,
             feeLevels,
             selectedFeeLevel,
-            //gasPrice: currentState.recommendedGasPrice, // TODO HERE!
-            gasPrice: selectedFeeLevel.gasPrice, // TODO HERE!
+            gasPrice: selectedFeeLevel.gasPrice,
             gasPriceNeedsUpdate: false,
         };
 
@@ -642,9 +662,13 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => {
                     state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
                 }
             }
+
+            state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
+        } else {
+            // state.gasPrice = currentState.gasPrice;
         }
         
-        state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
+        
 
         dispatch({
             type: SEND.GAS_PRICE_CHANGE,
@@ -703,8 +727,8 @@ export const onGasLimitChange = (gasLimit: string): ThunkAction => {
     }
 }
 
-export const onDataChange = (data: string): ThunkAction => {
-    return (dispatch: Dispatch, getState: GetState): void => {
+export const onDataChange = (data: string): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         const currentState: State = getState().sendForm;
         const touched = { ...currentState.touched };
         touched.data = true;
@@ -721,12 +745,44 @@ export const onDataChange = (data: string): ThunkAction => {
             state
         });
         dispatch( validation() );
+
+        dispatch( estimateGasPrice() );
     }
+}
+
+const estimateGasPrice = (): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+
+        const accountState: ?AccountState = getState().abstractAccount;
+        if (!accountState) return;
+        const web3instance: ?Web3Instance = getState().web3.filter(w3 => w3.network === accountState.network)[0];
+        if (!web3instance) return;
+        const web3 = web3instance.web3;
+        const currentState: State = getState().sendForm;
+
+        const data: string = '0x' + (currentState.data.length % 2 === 0 ? currentState.data : '0' + currentState.data);
+        const gasLimit = await estimateGas(web3instance.web3, {
+            to: '0xdb6e09ddca62d0959dc4725697e66b8152222aee',
+            data,
+            value: web3.toHex(web3.toWei(currentState.amount, 'ether')),
+            gasPrice: web3.toHex( EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei') ),
+        });
+
+        dispatch({
+            type: SEND.GAS_LIMIT_CHANGE,
+            state: {
+                ...currentState,
+                gasLimit: gasLimit.toString()
+            }
+        });
+
+    }
+    
 }
 
 export const onSend = (): AsyncAction => {
     //return onSendERC20();
-    return async (dispatch: Dispatch, getState: GetState): Promise<any> => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const accountState: ?AccountState = getState().abstractAccount;
         if (!accountState) return;
@@ -741,7 +797,7 @@ export const onSend = (): AsyncAction => {
                 
         const address_n = account.addressPath;
 
-        let data: string = '';
+        let data: string = '0x' + currentState.data;
         let txAmount: string = web3.toHex(web3.toWei(currentState.amount, 'ether'));
         let txAddress: string = currentState.address;
         if (isToken) {

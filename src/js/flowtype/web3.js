@@ -36,6 +36,17 @@ declare module 'web3' {
         
     }
 
+    declare export type EstimateGasOptions = {
+        to: string;
+        data: string;
+        value?: string;
+        gasPrice?: string;
+    }
+
+    declare export type RawTransaction = {
+        id: string;
+    }
+
     declare class Eth {
         getGasPrice: (callback: (error: Error, gasPrice: string) => void) => void,
         getBalance: (address: string, callback: (error: Error, balance: BigNumber) => void) => void,
@@ -43,10 +54,10 @@ declare module 'web3' {
         getTransaction: (txid: string, callback: (error: Error, result: any) => void) => void,
         getBlockNumber: (callback: (error: Error, blockNumber: number) => void) => void,
         getBlock: (hash: string, callback: (error: Error, result: any) => void) => void,
-        getAccounts: (callback: (error: Error, accounts: Array<EthereumAddressT>) => void) => void,
-        sign: (payload: string, signer: EthereumAddressT) => Promise<string>,
+        // getAccounts: (callback: (error: Error, accounts: Array<EthereumAddressT>) => void) => void,
+        // sign: (payload: string, signer: EthereumAddressT) => Promise<string>,
         contract: (abi: Array<Object>) => ContractFactory,
-        estimateGas: (options: any, callback: (error: Error, result: any) => void) => void,
+        estimateGas: (options: EstimateGasOptions, callback: (error: ?Error, gas: ?number) => void) => void,
         sendRawTransaction: (tx: any, callback: (error: Error, result: any) => void) => void,
         filter: (type: string) => Filter; // return intance with "watch"
     }

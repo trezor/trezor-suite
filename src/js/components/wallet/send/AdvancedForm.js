@@ -85,6 +85,7 @@ const AdvancedForm = (props: Props) => {
                         autoCapitalize="off"
                         spellCheck="false"
                         value={ gasLimit }
+                        disabled={ coinSymbol === selectedCurrency && data.length > 0 }
                         onChange={ event => onGasLimitChange(event.target.value) } />
                     { errors.gasLimit ? (<span className="error">{ errors.gasLimit }</span>) : null }
                     { warnings.gasLimit ? (<span className="warning">{ warnings.gasLimit }</span>) : null }
@@ -121,8 +122,7 @@ const AdvancedForm = (props: Props) => {
                         <span className="what-is-it"></span>
                     </Tooltip>
                 </label>
-                <textarea value={ data } onChange={ event => onDataChange(event.target.value) }></textarea>
-                {/* <textarea disabled={ coinSymbol !== selectedCurrency } value={ coinSymbol !== selectedCurrency ? '' : data } onChange={ event => onDataChange(event.target.value) }></textarea> */}
+                <textarea disabled={ coinSymbol !== selectedCurrency } value={ coinSymbol !== selectedCurrency ? '' : data } onChange={ event => onDataChange(event.target.value) }></textarea>
                 { errors.data ? (<span className="error">{ errors.data }</span>) : null }
             </div>
 

@@ -49,8 +49,6 @@ export const load = (input: string, network: string): AsyncAction => {
             if (!web3instance) return;
 
             const info = await getTokenInfoAsync(web3instance.erc20, input);
-            info.address = input;
-
             if (info) {
                 return {
                     options: [ info ]

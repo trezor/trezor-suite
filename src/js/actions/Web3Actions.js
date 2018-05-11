@@ -18,13 +18,14 @@ import type {
     Action,
     AsyncAction,
 } from '../flowtype';
-import type { ContractFactory } from 'web3';
+import type { ContractFactory, EstimateGasOptions } from 'web3';
 
 import type { BigNumber } from 'bignumber.js';
 import type { Account } from '../reducers/AccountsReducer';
 import type { PendingTx } from '../reducers/PendingTxReducer';
 import type { Web3Instance } from '../reducers/Web3Reducer';
 import type { Token } from '../reducers/TokensReducer';
+import type { NetworkToken } from '../reducers/LocalStorageReducer';
 
 export type Web3Action = {
     type: typeof WEB3.READY,
@@ -384,30 +385,39 @@ export const getNonceAsync = (web3: Web3, address: string): Promise<number> => {
 }
 
 
-export const getTokenInfoAsync = (erc20: ContractFactory, address: string): Promise<any> => {
+export const getTokenInfoAsync = (erc20: ContractFactory, address: string): Promise<?NetworkToken> => {
     return new Promise((resolve, reject) => {
 
         const contract = erc20.at(address, (error, res) => {
-            console.warn("callback", error, res)
+            // console.warn("callback", error, res)
         });
 
-        const info = {};
-        // TODO: handle errors
+        const info: NetworkToken = {
+            address,
+            name: '',
+            symbol: '',
+            decimals: 0
+        };
+   
         contract.name.call((error: ?Error, name: ?string) => {
             if (error) {
-                //resolve(null);
-                //return;
+                resolve(null);
+                return;
+            } else if (name) {
+                info.name = name;
             }
-            info.name = name;
+            
             contract.symbol.call((error: ?Error, symbol: ?string) => {
                 if (error) {
                     resolve(null);
                     return;
+                } else if (symbol) {
+                    info.symbol = symbol;
                 }
-                info.symbol = symbol;
+                
                 contract.decimals.call((error: ?Error, decimals: ?BigNumber) => {
                     if (decimals) {
-                        info.decimals = decimals.toString();
+                        info.decimals = decimals.toNumber();
                         resolve(info);
                     } else {
                         resolve(null);
@@ -418,25 +428,13 @@ export const getTokenInfoAsync = (erc20: ContractFactory, address: string): Prom
     });
 }
 
-export const estimateGas = (web3: Web3, gasOptions: any): Promise<any> => {
+export const estimateGas = (web3: Web3, options: EstimateGasOptions): Promise<number> => {
     return new Promise((resolve, reject) => {
-        web3.eth.estimateGas(gasOptions, (error, result) => {
+        web3.eth.estimateGas(options, (error: ?Error, gas: ?number) => {
             if (error) {
                 reject(error);
-            } else {
-                resolve(result);
-            }
-        });
-    })
-}
-
-export const getGasPrice2 = (web3: Web3): Promise<any> => {
-    return new Promise((resolve, reject) => {
-        web3.eth.getGasPrice((error, result) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(result);
+            } else if (typeof gas === 'number'){
+                resolve(gas);
             }
         });
     })
