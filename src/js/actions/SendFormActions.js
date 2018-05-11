@@ -758,7 +758,7 @@ const estimateGasPrice = (): AsyncAction => {
         const web3instance: ?Web3Instance = getState().web3.filter(w3 => w3.network === accountState.network)[0];
         if (!web3instance) return;
         const web3 = web3instance.web3;
-        const currentState: State = getState().sendForm;
+        let currentState: State = getState().sendForm;
 
         const data: string = '0x' + (currentState.data.length % 2 === 0 ? currentState.data : '0' + currentState.data);
         const gasLimit = await estimateGas(web3instance.web3, {
@@ -767,6 +767,8 @@ const estimateGasPrice = (): AsyncAction => {
             value: web3.toHex(web3.toWei(currentState.amount, 'ether')),
             gasPrice: web3.toHex( EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei') ),
         });
+
+        currentState = getState().sendForm;
 
         dispatch({
             type: SEND.GAS_LIMIT_CHANGE,
