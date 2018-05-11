@@ -1,4 +1,4 @@
-import { SRC, BUILD, TREZOR_CONNECT, TREZOR_CONNECT_FILES, TREZOR_CONNECT_HTML } from './constants';
+import { SRC, BUILD } from './constants';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
@@ -6,7 +6,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const extractLess = new ExtractTextPlugin({
     filename: 'css/[name].[contenthash].css',
-    //disable: process.env.NODE_ENV === 'development'
+    // disable: process.env.NODE_ENV === 'development'
 });
 
 module.exports = {
@@ -39,7 +39,10 @@ module.exports = {
                 test: /\.css$/,
                 loader: extractLess.extract({
                     use: [
-                        { loader: 'css-loader' }
+                        { 
+                            loader: 'css-loader',
+                            options: { minimize: true } 
+                        }
                     ],
                     fallback: 'style-loader'
                 })
@@ -75,10 +78,7 @@ module.exports = {
         ]
     },
     resolve: {
-        modules: [SRC, 'node_modules'],
-        alias: {
-            'trezor-connect': `${TREZOR_CONNECT}`,
-        }
+        modules: [SRC, 'node_modules']
     },
     performance: {
         hints: false
@@ -96,7 +96,6 @@ module.exports = {
             //{from: `${SRC}/app/robots.txt`},
             //{ from: `${SRC}js/vendor`, to: `${BUILD}js/vendor` },
             //{ from: `${SRC}config.json` },
-            //{ from: `${SRC}images/favicon.png`, to: `${BUILD}favicon.png` },
             { from: `${SRC}images/favicon.ico`, to: `${BUILD}favicon.ico` },
             { from: `${SRC}images/favicon.png`, to: `${BUILD}favicon.png` },
             { from: `${SRC}images/dashboard.png`, to: `${BUILD}images/dashboard.png` },
@@ -109,14 +108,6 @@ module.exports = {
         //         warnings: false,
         //     }
         // }),
-        new CopyWebpackPlugin([
-            { from: `${TREZOR_CONNECT_FILES}config.json`, to: `${BUILD}/data/config.json` },
-            { from: `${TREZOR_CONNECT_FILES}coins.json`, to: `${BUILD}/data/coins.json` },
-            { from: `${TREZOR_CONNECT_FILES}releases-1.json`, to: `${BUILD}/data/releases-1.json` },
-            { from: `${TREZOR_CONNECT_FILES}releases-2.json`, to: `${BUILD}/data/releases-2.json` },
-            { from: `${TREZOR_CONNECT_FILES}latest.txt`, to: `${BUILD}/data/latest.txt` },
-            { from: `${TREZOR_CONNECT_FILES}config_signed.bin`, to: `${BUILD}/data/config_signed.bin` },
-        ]),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
             PRODUCTION: JSON.stringify(false)
