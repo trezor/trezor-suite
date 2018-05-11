@@ -196,6 +196,20 @@ aside {
             font-size: 11px;
             margin-right: 8px;
         }
+
+        .forget-button {
+            color: @color_text_secondary;
+            .hover();
+            &:before {
+                .icomoon-eject;
+                position: relative;
+                font-size: 24px;
+            }
+
+            &:hover {
+                color: @color_text_primary;
+            }
+        }
     }
 
     .device-menu {

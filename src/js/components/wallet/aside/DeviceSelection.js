@@ -201,10 +201,14 @@ export class DeviceDropdown extends Component<Props> {
                         <span className="label">{ dev.instanceLabel }</span>
                         <span className="status">{ deviceStatus }</span>
                     </div>
+                    <div className="forget-button" onMouseDown={ (event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        this.onDeviceMenuClick({ type: 'forget', label: ''}, dev);
+                    } }> </div>
                 </div>
             );
         });
-
 
 
         return (
