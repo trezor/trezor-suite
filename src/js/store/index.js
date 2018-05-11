@@ -10,17 +10,22 @@ import createHistory from 'history/createHashHistory';
 import { createLogger } from 'redux-logger';
 import reducers from '../reducers';
 import services from '../services';
+
+import Raven from 'raven-js';
 import RavenMiddleware from 'redux-raven-middleware';
 
 import type { Action, GetState, Store } from '../flowtype';
 
 export const history: History = createHistory( { queryKey: false } );
 
+const RAVEN_KEY: string = 'https://497392c3ff6e46dc9e54eef123979378@sentry.io/294339'
+Raven.config(RAVEN_KEY).install();
+
 const initialState: any = {};
 const enhancers = [];
 const middleware = [
     thunk,
-    RavenMiddleware('https://497392c3ff6e46dc9e54eef123979378@sentry.io/294339'),
+    RavenMiddleware(RAVEN_KEY),
     routerMiddleware(history)
 ];
 

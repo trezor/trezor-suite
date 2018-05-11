@@ -288,18 +288,6 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
             AccountsActions.setBalance(ethAddress, network, device.state || 'undefined', web3instance.web3.fromWei(balance.toString(), 'ether'))
         );
 
-        const userTokens = [];
-        // const userTokens = [
-        //     { symbol: 'T01', address: '0x58cda554935e4a1f2acbe15f8757400af275e084' },
-        //     { symbol: 'Lahod', address: '0x3360d0ee34a49d9ac34dce88b000a2903f2806ee' },
-        // ];
-
-        for (let i = 0; i < userTokens.length; i++) {
-            const tokenBalance: string = await getTokenBalanceAsync(web3instance.erc20, userTokens[i]);
-            if (discoveryProcess.interrupted) return;
-            dispatch( setTokenBalance(userTokens[i].address, ethAddress, tokenBalance) )
-        }
-
         const nonce: number = await getNonceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
         dispatch(AccountsActions.setNonce(ethAddress, network, device.state || 'undefined', nonce));
@@ -342,7 +330,7 @@ export const restore = (): ThunkAction => {
     }
 }
 
-
+// TODO: rename method to something intuitive
 // there is no discovery process but it should be
 // this is possible race condition when "network" was changed in url but device was not authenticated yet
 // try to start discovery after CONNECT.AUTH_DEVICE action
