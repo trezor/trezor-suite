@@ -55,9 +55,10 @@ export const findSelectedDevice = (state: State): ?TrezorDevice => {
     });
 }
 
-export const findDevice = (state: State, deviceId: string, deviceState: string): ?TrezorDevice => {
-    return state.devices.find(d => {
-        if (d.features && d.features.device_id === deviceId && d.state === deviceState){
+export const findDevice = (devices: Array<TrezorDevice>, deviceId: string, deviceState: string, instance: ?number): ?TrezorDevice => {
+    return devices.find(d => {
+        // TODO: && (instance && d.instance === instance)
+        if (d.features && d.features.device_id === deviceId && d.state === deviceState) {
             return true;
         }
         return false;

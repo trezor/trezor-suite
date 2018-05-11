@@ -10,7 +10,6 @@ import * as WALLET from './constants/wallet';
 import { push } from 'react-router-redux';
 import * as DiscoveryActions from './DiscoveryActions';
 import { resolveAfter } from '../utils/promiseUtils';
-import { getAccounts } from '../utils/reducerUtils';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
 

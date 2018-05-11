@@ -11,7 +11,6 @@ import AbstractAccount from '../account/AbstractAccount';
 import { Notification } from '../../common/Notification';
 import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
-import { findDevice } from '../../../utils/reducerUtils';
 
 import type { Props } from './index';
 import type { AccountState } from '../account/AbstractAccount';

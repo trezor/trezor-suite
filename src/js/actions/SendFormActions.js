@@ -194,10 +194,7 @@ export const init = (): ThunkAction => {
         if (!selected) return;
 
         const web3instance: ?Web3Instance = getState().web3.find(w3 => w3.network === urlParams.network);
-        if (!web3instance) {
-            // no backend for this network
-            return;
-        }
+        if (!web3instance) return;
 
         // TODO: check if there are some unfinished tx in localStorage
 
@@ -269,11 +266,11 @@ export const validation = (): ThunkAction => {
                 // corner-case: when same derivation path is used on different networks
                 const currentNetworkAccount = savedAccounts.find(a => a.network === accountState.network);
                 if (currentNetworkAccount) {
-                    const device: ?TrezorDevice = findDevice(getState().connect, currentNetworkAccount.deviceID, currentNetworkAccount.deviceState);
+                    const device: ?TrezorDevice = findDevice(getState().connect.devices, currentNetworkAccount.deviceID, currentNetworkAccount.deviceState);
                     if (!device) return;
                     infos.address = `${ device.instanceLabel } Account #${ (currentNetworkAccount.index + 1) }`;
                 } else {
-                    const device: ?TrezorDevice = findDevice(getState().connect, savedAccounts[0].deviceID, savedAccounts[0].deviceState);
+                    const device: ?TrezorDevice = findDevice(getState().connect.devices, savedAccounts[0].deviceID, savedAccounts[0].deviceState);
                     if (!device) return;
                     warnings.address = `Looks like it's ${ device.instanceLabel } Account #${ (savedAccounts[0].index + 1) } address of ${ savedAccounts[0].network.toUpperCase() } network`;
                 }

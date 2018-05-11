@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 
-import { getAccounts } from '../../../utils/reducerUtils';
+import { findDeviceAccounts } from '../../../reducers/AccountsReducer';
 import { findSelectedDevice } from '../../../reducers/TrezorConnectReducer';
 import Loader from '../../common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
@@ -29,7 +29,7 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
 
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
-    const deviceAddresses: Array<any> = getAccounts(accounts, selected, location.state.network);
+    const deviceAddresses: Array<any> = findDeviceAccounts(accounts, selected, location.state.network);
     let selectedAccounts = deviceAddresses.map((address, i) => {
         // const url: string = `${baseUrl}/network/${location.state.network}/address/${i}`;
         const url: string = location.pathname.replace(/address+\/([0-9]*)/, `address/${i}`);

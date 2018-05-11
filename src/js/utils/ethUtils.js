@@ -8,10 +8,11 @@ export const decimalToHex = (dec: number): string => {
 }
 
 export const hexToDecimal = (hex: number): string => {
-    return new BigNumber(sanitizeHex(hex)).toString();
+    const sanitized: ?string = sanitizeHex(hex);
+    return !sanitized ? 'null' : new BigNumber(sanitized).toString();
 }
 
-export const sanitizeHex = (hex: number): ?string => {
+export const sanitizeHex = (hex: number | string): ?string => {
     if (typeof hex !== 'string') return null;
     hex = hex.substring(0, 2) === '0x' ? hex.substring(2) : hex;
     if (hex === '') return '';
@@ -31,5 +32,5 @@ export const strip = (str: string): string => {
 }
 
 export const calcGasPrice = (price: BigNumber, limit: string): string => {
-    return price.times(limit);
+    return price.times(limit).toString();
 }

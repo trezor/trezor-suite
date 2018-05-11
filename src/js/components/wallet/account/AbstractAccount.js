@@ -3,7 +3,7 @@
 
 import React, { Component } from 'react';
 import { Notification } from '../../common/Notification';
-import { findDevice } from '../../../utils/reducerUtils';
+import { findDevice } from '../../../reducers/TrezorConnectReducer';
 
 // import * as AbstractAccountActions from '../../actions/AbstractAccountActions';
 import { default as AbstractAccountActions } from '../../../actions/AbstractAccountActions';
@@ -55,7 +55,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
         const accountState = props.abstractAccount;
         if (!accountState) return;
 
-        const device = findDevice(props.devices, accountState.deviceState, accountState.deviceId, accountState.deviceInstance);
+        const device = findDevice(props.devices, accountState.deviceId, accountState.deviceState, accountState.deviceInstance);
         if (!device) return;
         const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === accountState.network);
         // if (!discovery) return;
@@ -102,8 +102,6 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
             discovery
         } = this.state;
         
-        // const device = findDevice(props.devices, accountState.deviceState, accountState.deviceId, accountState.deviceInstance);
-
         if (!device) {
             return (<section>Device with state {accountState.deviceState} not found</section>);
         }

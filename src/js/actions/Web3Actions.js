@@ -3,6 +3,7 @@
 
 import Web3 from 'web3';
 import HDKey from 'hdkey';
+
 import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsTx from 'ethereumjs-tx';
 import TrezorConnect from 'trezor-connect';
@@ -19,8 +20,8 @@ import type {
     AsyncAction,
 } from '../flowtype';
 import type { ContractFactory, EstimateGasOptions } from 'web3';
+import type BigNumber from 'bignumber.js';
 
-import type { BigNumber } from 'bignumber.js';
 import type { Account } from '../reducers/AccountsReducer';
 import type { PendingTx } from '../reducers/PendingTxReducer';
 import type { Web3Instance } from '../reducers/Web3Reducer';
@@ -267,7 +268,7 @@ export function getTokenBalance(token: Token): AsyncAction {
         const web3 = web3instance.web3;
         const contract = web3instance.erc20.at(token.address);
 
-        contract.balanceOf(token.ethAddress, (error: ?Error, balance: ?BigNumber) => {
+        contract.balanceOf(token.ethAddress, (error: Error, balance: BigNumber) => {
             if (balance) {
                 const newBalance: string = balance.dividedBy( Math.pow(10, token.decimals) ).toString();
                 if (newBalance !== token.balance) {
@@ -343,9 +344,9 @@ export const getTransaction = (web3: Web3, txid: string): Promise<any> => {
 
 
 
-export const getBalanceAsync = (web3: Web3, address: string): Promise<any> => {
+export const getBalanceAsync = (web3: Web3, address: string): Promise<BigNumber> => {
     return new Promise((resolve, reject) => {
-        web3.eth.getBalance(address, (error, result) => {
+        web3.eth.getBalance(address, (error: Error, result: BigNumber) => {
             if (error) {
                 reject(error);
             } else {
@@ -361,10 +362,10 @@ export const getTokenBalanceAsync = (erc20: ContractFactory, token: Token): Prom
     return new Promise((resolve, reject) => {
 
         const contract = erc20.at(token.address);
-        contract.balanceOf(token.ethAddress, (error: ?Error, balance: ?BigNumber) => {
+        contract.balanceOf(token.ethAddress, (error: Error, balance: BigNumber) => {
             if (error) {
                 reject(error);
-            } else if (balance) {
+            } else {
                 const newBalance: string = balance.dividedBy( Math.pow(10, token.decimals) ).toString();
                 resolve(newBalance);
             }
@@ -399,23 +400,23 @@ export const getTokenInfoAsync = (erc20: ContractFactory, address: string): Prom
             decimals: 0
         };
    
-        contract.name.call((error: ?Error, name: ?string) => {
+        contract.name.call((error: Error, name: string) => {
             if (error) {
                 resolve(null);
                 return;
-            } else if (name) {
+            } else {
                 info.name = name;
             }
             
-            contract.symbol.call((error: ?Error, symbol: ?string) => {
+            contract.symbol.call((error: Error, symbol: string) => {
                 if (error) {
                     resolve(null);
                     return;
-                } else if (symbol) {
+                } else {
                     info.symbol = symbol;
                 }
                 
-                contract.decimals.call((error: ?Error, decimals: ?BigNumber) => {
+                contract.decimals.call((error: Error, decimals: BigNumber) => {
                     if (decimals) {
                         info.decimals = decimals.toNumber();
                         resolve(info);

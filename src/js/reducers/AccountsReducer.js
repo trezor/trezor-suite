@@ -31,6 +31,14 @@ export const findAccount = (state: State, index: number, deviceState: string, ne
     return state.find(a => a.deviceState === deviceState && a.index === index && a.network === network);
 }
 
+export const findDeviceAccounts = (state: State, device: TrezorDevice, network: string): Array<Account> => {
+    if (network) {
+        return state.filter((addr) => addr.deviceState === device.state && addr.network === network);
+    } else {
+        return state.filter((addr) => addr.deviceState === device.state);
+    }
+}
+
 const createAccount = (state: State, action: AccountCreateAction): State => {
 
     // TODO check with device_id
