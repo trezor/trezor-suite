@@ -196,12 +196,12 @@ export class DeviceDropdown extends Component<Props> {
             }
 
             return (
-                <div key={index} className={ css } onMouseDown={ () => this.props.onSelectDevice(dev) } onTouchStart={ () => this.props.onSelectDevice(dev) } >
+                <div key={index} className={ css } onClick={ () => this.props.onSelectDevice(dev) } >
                     <div className="label-container">
                         <span className="label">{ dev.instanceLabel }</span>
                         <span className="status">{ deviceStatus }</span>
                     </div>
-                    <div className="forget-button" onMouseDown={ (event) => {
+                    <div className="forget-button" onClick={ (event) => {
                         event.stopPropagation();
                         event.preventDefault();
                         this.onDeviceMenuClick({ type: 'forget', label: ''}, dev);
