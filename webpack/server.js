@@ -5,7 +5,7 @@ import { argv } from 'yargs';
 import { SRC, PORT, INDEX, ABSOLUTE_BASE, TREZOR_CONNECT } from './constants';
 //import config from './webpack.config.library';
 
-const config = argv.connect ? require('./webpack.config.connect') : require('./webpack.config.library');
+const config = argv.connect ? require('./webpack.config.connect') : require('./webpack.config.dev');
 
 const app = express();
 const compiler = webpack(config);
