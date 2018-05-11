@@ -79,10 +79,10 @@ declare module 'trezor-connect' {
     };
 
     
-
+    declare type T_RESPONSE_EVENT = 'RESPONSE_EVENT';
     declare export type ResponseMessage = {
-        event: string;
-        type: string;
+        event: T_RESPONSE_EVENT;
+        type: T_RESPONSE_EVENT;
         id: number;
         success: boolean;
         payload: Object;
@@ -163,7 +163,57 @@ declare module 'trezor-connect' {
     declare type TransportEventListener = (type: T_TRANSPORT_EVENT, handler: (event: TransportMessage) => void) => void;
 
     
-    
+    declare type ResponseUnsuccessful = {
+        success: false;
+        payload: {
+            error: string;
+        }
+    }
+
+    declare type ResponseEthereumSignTransaction = {
+        success: true;
+        payload: {
+            r: string;
+            s: string;
+            v: string;
+        }
+    } | ResponseUnsuccessful;
+
+    declare type ResponseEthereumGetAddress = {
+        success: true;
+        payload: {
+            address: string,
+            path: Array <number>
+        }
+    } | ResponseUnsuccessful;
+
+    declare type ResponseGetDeviceState = {
+        success: true;
+        payload: {
+            state: string;
+        }
+    } | ResponseUnsuccessful;
+
+    declare type ResponseGetFeatures = {
+        success: true;
+        payload: {
+            // TODO
+        }
+    } | ResponseUnsuccessful;
+
+    declare type ResponseGetPublicKey = {
+        success: true;
+        payload: {
+            chainCode: string,
+            childNum: number,
+            depth: number,
+            fingerprint: number,
+            path: Array <number>,
+            publicKey: string,
+            xpub: string,
+            xpubFormatted: string
+        }
+    } | ResponseUnsuccessful;
 
 
     declare module.exports: {
@@ -174,13 +224,13 @@ declare module 'trezor-connect' {
         getVersion: () => any;
         renderWebUSBButton: (className?: string) => void;
 
-        getDeviceState: (options: Object) => Promise<Object>;
-        getFeatures: (options: Object) => Promise<Object>;
-        getPublicKey: (options: Object) => Promise<Object>;
-        ethereumGetAddress: (options: Object) => Promise<Object>;
+        getDeviceState: (options: Object) => Promise<ResponseGetDeviceState>;
+        getFeatures: (options: Object) => Promise<ResponseGetFeatures>;
+        getPublicKey: (options: Object) => Promise<ResponseGetPublicKey>;
+        ethereumGetAddress: (options: Object) => Promise<ResponseEthereumGetAddress>;
         uiResponse: (options: Object) => Promise<Object>;
 
-        ethereumSignTransaction: (options: Object) => Promise<Object>;
+        ethereumSignTransaction: (options: Object) => Promise<ResponseEthereumSignTransaction>;
 
 
         // export const RESPONSE_EVENT: string = 'RESPONSE_EVENT';

@@ -135,7 +135,7 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => {
         });
 
         // get xpub from TREZOR
-        const response: Object = await TrezorConnect.getPublicKey({ 
+        const response = await TrezorConnect.getPublicKey({ 
             device: {
                 path: device.path,
                 instance: device.instance,

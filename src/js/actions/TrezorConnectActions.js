@@ -132,7 +132,7 @@ export const init = (): AsyncAction => {
                 popup: false,
                 webusb: true
             });
-        } catch (error) {
+        } catch (error) { 
             // dispatch({
             //     type: CONNECT.INITIALIZATION_ERROR,
             //     error
@@ -201,7 +201,7 @@ const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => {
     });
 }
 
-export const initConnectedDevice = (device: any): ThunkAction => {
+export const initConnectedDevice = (device: TrezorDevice | Device): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         const selected = findSelectedDevice(getState().connect);

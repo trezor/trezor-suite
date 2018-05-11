@@ -441,9 +441,9 @@ export const estimateGas = (web3: Web3, options: EstimateGasOptions): Promise<nu
     })
 }
 
-export const pushTx = (web3: Web3, tx: any): Promise<any> => {
+export const pushTx = (web3: Web3, tx: any): Promise<string> => {
     return new Promise((resolve, reject) => {
-        web3.eth.sendRawTransaction(tx, (error, result) => {
+        web3.eth.sendRawTransaction(tx, (error: Error, result: string) => {
             if (error) {
                 reject(error);
             } else {

@@ -434,7 +434,7 @@ export const onAmountChange = (amount: string): ThunkAction => {
     }
 }
 
-export const onCurrencyChange = (currency: any): ThunkAction => {
+export const onCurrencyChange = (currency: { value: string, label: string }): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: ?AccountState = getState().abstractAccount;
         if (!accountState) return;
@@ -789,7 +789,7 @@ const estimateGasPrice = (): AsyncAction => {
 
         const data: string = '0x' + (currentState.data.length % 2 === 0 ? currentState.data : '0' + currentState.data);
         const gasLimit = await estimateGas(web3instance.web3, {
-            to: '0xdb6e09ddca62d0959dc4725697e66b8152222aee',
+            to: '0xdb6e09ddca62d0959dc4725697e66b8152222aee', // TODO: real adress
             data,
             value: web3.toHex(web3.toWei(currentState.amount, 'ether')),
             gasPrice: web3.toHex( EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei') ),
@@ -861,20 +861,6 @@ export const onSend = (): AsyncAction => {
             v: ''
         }
 
-        
-        // const gasOptions = {
-        //     to: txData.to,
-        //     data: txData.data
-        // }
-        
-        // const gasPrice = await getGasPrice(web3);
-
-       
-
-        // txData.nonce = web3.toHex(nonce);
-        // txData.gasLimit = web3.toHex(gasLimit);
-        // txData.gasPrice = web3.toHex( EthereumjsUnits.convert(gasPrice, 'gwei', 'wei') );
-
         const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
         if (!selected) return;
 
@@ -914,17 +900,13 @@ export const onSend = (): AsyncAction => {
         txData.s = '0x' + signedTransaction.payload.s;
         txData.v = web3.toHex(signedTransaction.payload.v);
 
-        // const gasLimit2 = await estimateGas(web3, txData);
-
-        const { config } = getState().localStorage;
-        if (!config) return;
-        const selectedCoin: ?Coin = config.coins.find(c => c.network === currentState.network);
-        if (!selectedCoin) return;
+        
 
         try {
             const tx = new EthereumjsTx(txData);
             const serializedTx = '0x' + tx.serialize().toString('hex');
             const txid: string = await pushTx(web3, serializedTx);
+            const coin: Coin = accountState.coin;
 
             dispatch({
                 type: SEND.TX_COMPLETE,
@@ -940,13 +922,13 @@ export const onSend = (): AsyncAction => {
                 payload: {
                     type: 'success',
                     title: 'Transaction success',
-                    message: `<a href="${selectedCoin.explorer.tx}${txid}" class="green" target="_blank" rel="noreferrer noopener">See transaction detail</a>`,
+                    message: `<a href="${coin.explorer.tx}${txid}" class="green" target="_blank" rel="noreferrer noopener">See transaction detail</a>`,
                     cancelable: true,
                     actions: []
                 }
             });
 
-        } catch(error) {
+        } catch (error) {
 
             dispatch({
                 type: NOTIFICATION.ADD,

@@ -58,7 +58,7 @@ declare module 'web3' {
         // sign: (payload: string, signer: EthereumAddressT) => Promise<string>,
         contract: (abi: Array<Object>) => ContractFactory,
         estimateGas: (options: EstimateGasOptions, callback: (error: ?Error, gas: ?number) => void) => void,
-        sendRawTransaction: (tx: any, callback: (error: Error, result: any) => void) => void,
+        sendRawTransaction: (tx: any, callback: (error: Error, result: string) => void) => void,
         filter: (type: string) => Filter; // return intance with "watch"
     }
 
