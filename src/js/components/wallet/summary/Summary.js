@@ -4,6 +4,8 @@
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import { Async } from 'react-select';
+import Tooltip from 'rc-tooltip';
+
 import { resolveAfter } from '../../../utils/promiseUtils';
 import AbstractAccount from '../account/AbstractAccount';
 import { Notification } from '../../common/Notification';
@@ -41,6 +43,12 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     const tokens = findAccountTokens(props.tokens, account);
     const explorerLink: string = `${abstractAccount.coin.explorer.address}${account.address}`;
 
+    const tokensTooltip = (
+        <div className="tooltip-wrapper">
+            Insert token name, symbol or address to be able to send it.
+        </div>
+    );
+
     return (
 
         <section className="summary">
@@ -60,7 +68,15 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
                 localStorage={ props.localStorage }
                 onToggle={ props.onDetailsToggle } />
 
-            <h2>Tokens</h2>
+            <h2>
+                Tokens
+                <Tooltip
+                    arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
+                    overlay={ tokensTooltip }
+                    placement="top">
+                        <span className="what-is-it"></span>
+                </Tooltip>
+            </h2>
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 T01 */}
             <div className="filter">

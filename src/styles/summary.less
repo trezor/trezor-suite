@@ -127,6 +127,24 @@
         }
     }
 
+    .what-is-it {
+        &:before {
+            .icomoon-help;
+            .hover();
+            transform-origin: 50% 50%;
+            font-size: 24px;
+            position: relative;
+            top: 5px;
+            cursor: pointer;
+            color: @color_text_secondary;
+        }
+        &:hover {
+            &:before {
+                color: @color_text_primary;
+            }
+        }
+    }
+
     .filter {
         //background: @color_main;
         padding: 0px 48px 32px 48px;
