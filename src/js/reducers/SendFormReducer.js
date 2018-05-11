@@ -96,7 +96,7 @@ const onGasPriceUpdated = (state: State, action: Web3UpdateGasPriceAction): Stat
             newState.gasPriceNeedsUpdate = true;
             newState.recommendedGasPrice = newPrice;
         } else {
-            const newFeeLevels = getFeeLevels(state.network, newPrice, state.gasLimit);
+            const newFeeLevels = getFeeLevels(state.coinSymbol, newPrice, state.gasLimit);
             const selectedFeeLevel: ?FeeLevel = newFeeLevels.find(f => f.value === 'Normal');
             if (!selectedFeeLevel) return state;
             newState.recommendedGasPrice = newPrice;
