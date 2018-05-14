@@ -20,7 +20,7 @@ class Indicator extends Component<Props, State> {
     reposition: () => void;
     state: State;
 
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -46,7 +46,7 @@ class Indicator extends Component<Props, State> {
         window.removeEventListener('resize', this.reposition, false);
     }
 
-    componentDidUpdate(newProps: any) {
+    componentDidUpdate(newProps: Props) {
         this.reposition();
     }
 
@@ -76,7 +76,7 @@ class Indicator extends Component<Props, State> {
     }
 }
 
-const AccountTabs = (props: any): any => {
+const AccountTabs = (props: any) => {
 
     const urlParams = props.match.params;
     //const urlParams = props.match ? props.match.params : { address: '0' };

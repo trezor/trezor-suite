@@ -70,10 +70,6 @@ const removeAccounts = (state: State, device: TrezorDevice): State => {
     return state.filter(account => account.deviceState !== device.state);
 }
 
-// const forgetAccounts = (state: State, action: any): State => {
-//     return state.filter(account => action.accounts.indexOf(account) === -1);
-// }
-
 const setBalance = (state: State, action: AccountSetBalanceAction): State => {
     const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
     const newState: State = [ ...state ];

@@ -95,22 +95,18 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     } else if (coinSymbol === selectedCurrency && total !== '0') {
         buttonLabel += ` ${total} ${ selectedCoin.symbol }`;
     }
+
+    if (!device.connected){
+        buttonLabel = 'Device is not connected';
+        buttonDisabled = true;
+    } else if (!device.available) {
+        buttonLabel = 'Device is unavailable';
+        buttonDisabled = true;
+    } else if (!discovery.completed) {
+        buttonLabel = 'Loading accounts';
+        buttonDisabled = true;
+    }
     
-    //if (device) {
-
-        if (!device.connected){
-            buttonLabel = 'Device is not connected';
-            buttonDisabled = true;
-        } else if (!device.available) {
-            buttonLabel = 'Device is unavailable';
-            buttonDisabled = true;
-        } else if (!discovery.completed) {
-            buttonLabel = 'Loading accounts';
-            buttonDisabled = true;
-        }
-        
-    //}
-
     let notification = null;
 
     return (

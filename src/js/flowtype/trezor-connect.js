@@ -218,7 +218,6 @@ declare module 'trezor-connect' {
 
     declare module.exports: {
         init: (options: Object) => Promise<Object>;
-        // on: (type: string, handler: (event: any) => void) => void;
         on: DeviceEventListener & DeviceEventListenerByType & UiEventListener & TransportEventListener;
         off: (type: string, handler: (event: any) => void) => void;
         getVersion: () => any;
@@ -228,13 +227,9 @@ declare module 'trezor-connect' {
         getFeatures: (options: Object) => Promise<ResponseGetFeatures>;
         getPublicKey: (options: Object) => Promise<ResponseGetPublicKey>;
         ethereumGetAddress: (options: Object) => Promise<ResponseEthereumGetAddress>;
-        uiResponse: (options: Object) => Promise<Object>;
+        uiResponse: (options: Object) => void;
 
         ethereumSignTransaction: (options: Object) => Promise<ResponseEthereumSignTransaction>;
-
-
-        // export const RESPONSE_EVENT: string = 'RESPONSE_EVENT';
-        // export const ERROR_EVENT: string = 'ERROR_EVENT';
         
         DEVICE_EVENT: T_DEVICE_EVENT;
         DEVICE: T_DEVICE;

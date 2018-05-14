@@ -29,7 +29,7 @@ const ConfirmAddress = (props: Props) => {
 }
 export default ConfirmAddress;
 
-export const ConfirmUnverifiedAddress = (props: Props): any => {
+export const ConfirmUnverifiedAddress = (props: Props) => {
 
     if (!props.modal.opened) return null;
     const {

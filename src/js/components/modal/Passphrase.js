@@ -210,7 +210,7 @@ export default class PinModal extends Component<Props, State> {
         raf(() => onPassphraseSubmit(empty ? '' : passphrase));
     }
 
-    render(): any {
+    render() {
 
         if (!this.props.modal.opened) return null;
 

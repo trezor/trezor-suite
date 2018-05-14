@@ -322,14 +322,6 @@ export const getTransactionReceipt = (tx: PendingTx): AsyncAction => {
     }
 }
 
-
-// export function updateLastBlock(hash: string): Action {
-//     return {
-//         type: 'web3__update_last_block',
-//         hash
-//     }
-// }
-
 export const getTransaction = (web3: Web3, txid: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         web3.eth.getTransaction(txid, (error, result) => {
@@ -342,8 +334,6 @@ export const getTransaction = (web3: Web3, txid: string): Promise<any> => {
     });
 }
 
-
-
 export const getBalanceAsync = (web3: Web3, address: string): Promise<BigNumber> => {
     return new Promise((resolve, reject) => {
         web3.eth.getBalance(address, (error: Error, result: BigNumber) => {
@@ -355,8 +345,6 @@ export const getBalanceAsync = (web3: Web3, address: string): Promise<BigNumber>
         });
     });
 }
-
-
 
 export const getTokenBalanceAsync = (erc20: ContractFactory, token: Token): Promise<string> => {
     return new Promise((resolve, reject) => {

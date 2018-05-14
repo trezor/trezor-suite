@@ -103,7 +103,7 @@ export default class Pin extends Component<Props, State> {
         window.removeEventListener('keydown', this.keyboardHandler, false);
     }
 
-    render(): any {
+    render() {
 
         if (!this.props.modal.opened) return null;
 
