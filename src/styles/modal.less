@@ -102,6 +102,11 @@
     .confirm-address-unverified {
         width: 370px;
         padding: 24px 48px;
+
+        h3 {
+            word-break: break-all;
+        }
+        
         button:not(.close-modal) {
             width: 100%;
             margin-top: 12px;
@@ -113,8 +118,19 @@
         width: 360px;
         padding: 24px 48px;
 
+        h3 {
+            word-break: break-all;
+        }
+
         p {
             padding: 14px 0px;
+        }
+
+        label {
+            display: block;
+            padding-bottom: 6px;
+            text-align: left;
+            color: @color_text_secondary;
         }
 
         button {
@@ -138,7 +154,6 @@
             }
         }
     }
-    
 
     .close-modal {
         position: absolute;
@@ -217,6 +232,12 @@
 
     .passphrase {
         padding: 24px 48px;
+
+        h3 {
+            max-width: 260px;
+            word-break: break-all;
+        }
+
         .row {
             position: relative;
             text-align: left;

@@ -539,13 +539,15 @@ aside {
         flex-direction: column;
         justify-content: space-evenly;
         font-size: 14px;
-        padding: 16px 0 16px 30px;
+        padding: 16px 28px 16px 30px;
         white-space: nowrap;
         border-top: 1px solid @color_divider;
         span {
             display: block;
             font-size: 12px;
             color: @color_text_secondary;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 
