@@ -126,6 +126,7 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
         remember: typeof upcoming.remember === 'boolean' ? upcoming.remember : current.remember,
         instance: current.instance,
         instanceLabel,
+        instanceName: typeof upcoming.instanceName === 'string' ? upcoming.instanceName : current.instanceName,
         state: current.state,
         acquiring: typeof upcoming.acquiring === 'boolean' ? upcoming.acquiring : current.acquiring,
         ts: typeof upcoming.ts === 'number' ? upcoming.ts : current.ts,
