@@ -18,3 +18,5 @@ export const SEND: 'send__submit' = 'send__submit';
 export const TX_COMPLETE: 'send__tx_complete' = 'send__tx_complete';
 export const TX_ERROR: 'send__tx_error' = 'send__tx_error';
 export const TOGGLE_ADVANCED: 'send__toggle_advanced' = 'send__toggle_advanced';
+
+export const FROM_SESSION_STORAGE: 'send__from_session_storage' = 'send__from_session_storage';

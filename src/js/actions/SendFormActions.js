@@ -93,7 +93,20 @@ export type SendFormAction = SendTxAction | {
     type: typeof SEND.SEND,
 } | {
     type: typeof SEND.TX_ERROR,
-};
+} | {
+    type: typeof SEND.FROM_SESSION_STORAGE,
+    address: string,
+    amount: string,
+    setMax: boolean,
+    selectedCurrency: string,
+    selectedFeeLevel: any,
+    advanced: boolean,
+    gasLimit: string,
+    gasPrice: string,
+    data: string,
+    nonce: string,
+    touched: any,
+}
 
 //const numberRegExp = new RegExp('^([0-9]{0,10}\\.)?[0-9]{1,18}$');
 const numberRegExp: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');

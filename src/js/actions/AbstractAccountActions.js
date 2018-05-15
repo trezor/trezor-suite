@@ -55,8 +55,10 @@ export const update = (initAccountAction: () => ThunkAction): ThunkAction => {
             abstractAccount,
             router
         } = getState();
-        const isLocationChanged: boolean = (!abstractAccount || router.location.pathname !== abstractAccount.location);
-        if (isLocationChanged) {
+
+        const shouldReload: boolean = (!abstractAccount || router.location.pathname !== abstractAccount.location);
+        if (shouldReload) {
+            dispatch( dispose() );
             dispatch( init() );
             if (abstractAccount !== null)
                 initAccountAction();

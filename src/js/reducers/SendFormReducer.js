@@ -202,6 +202,25 @@ export default (state: State = initialState, action: Action): State => {
                 infos: action.infos,
             }
 
+        case SEND.FROM_SESSION_STORAGE : 
+            return {
+                ...state,
+                
+                address: action.address,
+                amount: action.amount,
+                setMax: action.setMax,
+                selectedCurrency: action.selectedCurrency,
+                selectedFeeLevel: action.selectedFeeLevel,
+                advanced: action.advanced,
+                gasLimit: action.gasLimit,
+                gasPrice: action.gasPrice,
+                data: action.data,
+                nonce: action.nonce,
+                untouched: false,
+                touched: action.touched,
+
+            }
+
         default:
             return state;
     }
