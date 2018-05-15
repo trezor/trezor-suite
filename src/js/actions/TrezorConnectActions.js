@@ -126,7 +126,6 @@ export const init = (): AsyncAction => {
             await TrezorConnect.init({
                 transportReconnect: true,
                 // connectSrc: 'https://localhost:8088/',
-                // connectSrc: 'https://connect.trezor.io/tpm/',
                 connectSrc: 'https://sisyfos.trezor.io/',
                 debug: false,
                 popup: false,
@@ -490,7 +489,7 @@ export const duplicateDevice = (device: TrezorDevice): AsyncAction => {
     }
 }
 
-export const onDuplicateDevice = (): AsyncAction => {
+export const selectDuplicatedDevice = (): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
         if (selected)
