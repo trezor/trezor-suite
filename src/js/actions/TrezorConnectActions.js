@@ -467,7 +467,8 @@ export const forgetDevice = (device: TrezorDevice): ThunkAction => {
 export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         if (device.features) {
-            dispatch( push(`/device/${ device.features.device_id }/settings`) );
+            const devUrl: string = `${device.features.device_id}${ device.instance ? `:${ device.instance}` : '' }`;
+            dispatch( push( `/device/${ devUrl}/settings` ) );
         }
     }
 }
