@@ -7,7 +7,7 @@ yarn run build
 printf "\n-- COPYING FILES ----------------------\n"
 
 # cd build
-# rsync -avz --delete -e ssh . admin@dev.sldev.cz:~/experiments/www
+# rsync -avz --delete -e ssh ./build/* admin@dev.sldev.cz:~/experiments/www
 rsync -avz --delete -e ssh ./build/* admin@dev.sldev.cz:~/mytrezor/www/ethereum
 # rsync -avz --delete -e ssh ./build/* admin@dev.sldev.cz:~/experiments/www
 cd ../

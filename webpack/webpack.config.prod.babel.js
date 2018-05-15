@@ -29,8 +29,14 @@ module.exports = {
                 include: `${SRC}styles`,
                 loader: extractLess.extract({
                     use: [
-                        { loader: 'css-loader' },
-                        { loader: 'less-loader' }
+                        { 
+                            loader: 'css-loader',
+                            options: { minimize: true } 
+                        },
+                        { 
+                            loader: 'less-loader',
+                            options: { minimize: true } 
+                        }
                     ],
                     fallback: 'style-loader'
                 })
@@ -103,11 +109,11 @@ module.exports = {
         ]),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false,
-        //     }
-        // }),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false,
+            }
+        }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
             PRODUCTION: JSON.stringify(false)
