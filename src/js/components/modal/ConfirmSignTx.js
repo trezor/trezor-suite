@@ -5,6 +5,10 @@ import React from 'react';
 import type { Props } from './index';
 
 const Confirmation = (props: Props) => {
+
+    if (!props.modal.opened) return null;
+    const { device } = props.modal;
+
     const {
         amount,
         address,
@@ -18,8 +22,8 @@ const Confirmation = (props: Props) => {
     return (
         <div className="confirm-tx">
             <div className="header">
-                <h3>Confirm transaction on your TREZOR</h3>
-                <p>Details are shown on device</p>
+                <h3>Confirm transaction on { device.label } device</h3>
+                <p>Details are shown on display</p>
             </div>
             <div className="content">
                 <label>Send </label>

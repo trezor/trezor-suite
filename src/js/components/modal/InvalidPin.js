@@ -10,7 +10,7 @@ const InvalidPin = (props: Props) => {
     const { device } = props.modal;
     return (
         <div className="pin">
-            <h3>Entered PIN for { device.label } is not correct.</h3>
+            <h3>Entered PIN for { device.label } is not correct</h3>
             <p>Retrying...</p>
         </div>
     );

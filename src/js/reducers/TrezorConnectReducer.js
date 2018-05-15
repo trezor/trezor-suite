@@ -81,6 +81,24 @@ export const isSavedDevice = (state: State, device: any): ?Array<TrezorDevice> =
     });
 }
 
+export const getNewInstance = (devices: Array<TrezorDevice>, device: Device | TrezorDevice): number => {
+
+    const affectedDevices: Array<TrezorDevice> = devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id)
+    .sort((a, b) => {
+        if (!a.instance) {
+            return -1;
+        } else {
+            return !b.instance || a.instance > b.instance ? 1 : -1;
+        }
+    });
+
+    const instance: number = affectedDevices.reduce((inst, dev) => {
+        return dev.instance ? dev.instance + 1 : inst + 1;
+    }, 0);
+
+    return instance;
+}
+
 const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => {
 
     // do not merge if passphrase protection was changed
@@ -95,7 +113,7 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
     if (upcoming.label !== current.label) {
         instanceLabel = upcoming.label
         if (typeof current.instance === 'number') {
-            instanceLabel += ` (${current.instance})`;
+            instanceLabel += ` (${current.instanceName || current.instance})`;
         }
     }
 
@@ -112,20 +130,13 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
         acquiring: typeof upcoming.acquiring === 'boolean' ? upcoming.acquiring : current.acquiring,
         ts: typeof upcoming.ts === 'number' ? upcoming.ts : current.ts,
     }
-
+    // corner-case: trying to merge unacquired device with acquired
+    // make sure that sensitive fields will not be changed and device will remain acquired
     if (upcoming.unacquired && current.state) {
-        dev.instanceLabel = current.instanceLabel;
+        dev.unacquired = false;
         dev.features = current.features;
         dev.label = current.label;
-        dev.unacquired = false;
-    } else if (!upcoming.unacquired && current.unacquired) {
-        // dev.instanceLabel = upcoming.label;
-        // if (typeof dev.instance === 'number') {
-        //     dev.instanceLabel = `${upcoming.label} TODO:(${dev.instance})`;
-        // }
     }
-
-    
 
     return dev;
 }
@@ -151,14 +162,17 @@ const addDevice = (state: State, device: Device): State => {
     }
 
     if (affectedDevices.length > 0 ) {
-        // replace existing values
-        // const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => mergeDevices(d, { ...device, connected: true} ));
+        // check if freshly added device has different "passphrase_protection" settings
         let cloneInstance: number = 1;
+        let hasDifferentPassphraseSettings: boolean = false;
+        let hasInstancesWithPassphraseSettings: boolean = false;
         const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => {
             if (d.features && d.features.passphrase_protection === device.features.passphrase_protection) {
                 cloneInstance = 0;
+                hasInstancesWithPassphraseSettings = true;
                 return mergeDevices(d, { ...device, connected: true, available: true } );
             } else {
+                hasDifferentPassphraseSettings = true;
                 if (d.instance && cloneInstance > 0) {
                     cloneInstance = d.instance + 1;
                 }
@@ -167,9 +181,12 @@ const addDevice = (state: State, device: Device): State => {
             }
         });
 
-        if (cloneInstance > 0) {
+        // edge case: freshly connected device has different "passphrase_protection" than saved instances
+        // need to automatically create another instance with default instance name
+        if (hasDifferentPassphraseSettings && !hasInstancesWithPassphraseSettings) {
             // TODO: instance should be calculated form affectedDevice
-            const instance = cloneInstance; //new Date().getTime();
+            // const instance = cloneInstance; //new Date().getTime();
+            const instance = getNewInstance(affectedDevices, device);
 
             const newDevice: TrezorDevice = {
                 ...device,
@@ -182,14 +199,15 @@ const addDevice = (state: State, device: Device): State => {
                 state: null,
                 instance,
                 instanceLabel: `${device.label} (${instance})`,
+                instanceName: null,
                 ts: new Date().getTime(),
             }
             changedDevices.push(newDevice);
         }
+
         newState.devices = otherDevices.concat(changedDevices);
 
     } else {
-
         const newDevice: TrezorDevice = {
             ...device,
             acquiring: false,
@@ -199,14 +217,11 @@ const addDevice = (state: State, device: Device): State => {
             path: device.path,
             label: device.label,
             state: null,
-            // instance: 0,
             instanceLabel: device.label,
+            instanceName: null,
             ts: new Date().getTime(),
         }
         newState.devices.push(newDevice);
-
-        // const clone = { ...newDevice, instance: 1, instanceLabel: device.label + '#1' };
-        // newState.devices.push(clone);
     }
 
     return newState;
@@ -251,9 +266,15 @@ const changeDevice = (state: State, device: Object): State => {
     if (affectedDevices.length > 0) {
 
         const isAffectedUnacquired: number = affectedDevices.findIndex(d => d.unacquired);
-        if (isAffectedUnacquired >= 0 && affectedDevices.length > 1){
-            affectedDevices.splice(isAffectedUnacquired, 1);
-        } 
+        // if (isAffectedUnacquired >= 0 && affectedDevices.length > 1){
+        if (isAffectedUnacquired >= 0){
+            // TODO: should unacquired device be removed? or merged?
+            //affectedDevices.splice(isAffectedUnacquired, 1);
+        } else {
+            // replace existing values
+            const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => mergeDevices(d, device));
+            newState.devices = otherDevices.concat(changedDevices);
+        }
         
         // else if (isAffectedUnacquired >= 0 && !device.unacquired && affectedDevices.length > 1) {
         //     affectedDevices.splice(isAffectedUnacquired, 1);
@@ -263,12 +284,6 @@ const changeDevice = (state: State, device: Object): State => {
         if (state.selectedDevice && device.path === state.selectedDevice.id && affectedDevices.length > 1) {
             // affectedDevices = affectedDevices.filter(d => d.path !== state.selectedDevice.id && d.features);
         }
-
-        
-
-        // replace existing values
-        const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => mergeDevices(d, device));
-        newState.devices = otherDevices.concat(changedDevices);
     }
 
     return newState;
@@ -336,30 +351,33 @@ const devicesFromLocalStorage = (devices: Array<any>): Array<TrezorDevice> => {
 
 const duplicate = (state: State, device: TrezorDevice): State => {
     const newState: State = { ...state };
-    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id)
-    .sort((a, b) => {
-        if (!a.instance) {
-            return -1;
-        } else {
-            return !b.instance || a.instance > b.instance ? 1 : -1;
-        }
-    });
+    // const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id)
+    // .sort((a, b) => {
+    //     if (!a.instance) {
+    //         return -1;
+    //     } else {
+    //         return !b.instance || a.instance > b.instance ? 1 : -1;
+    //     }
+    // });
 
-    const instance: number = affectedDevices.reduce((inst, dev) => {
-        return dev.instance ? dev.instance + 1 : inst + 1;
-    }, 0);
+    // const instance: number = affectedDevices.reduce((inst, dev) => {
+    //     return dev.instance ? dev.instance + 1 : inst + 1;
+    // }, 0);
+
+    const instance: number = getNewInstance(state.devices, device);
 
     const newDevice: TrezorDevice = {
         ...device,
-        acquiring: false,
+        // acquiring: false,
         remember: false,
-        connected: device.connected,
-        available: device.available,
-        path: device.path,
-        label: device.label,
+        // connected: device.connected,
+        // available: device.available,
+        // path: device.path,
+        // label: device.label,
         state: null,
         instance,
-        instanceLabel: `${device.label} (${instance})`,
+        // instanceLabel: `${device.label} (${instance})`,
+        instanceLabel: `${device.label} (${ device.instanceName || instance })`,
         ts: new Date().getTime(),
     }
     newState.devices.push(newDevice);
@@ -450,7 +468,7 @@ export default function connect(state: State = initialState, action: Action): St
         case DEVICE.CONNECT_UNACQUIRED :
             return addDevice(state, action.device);
         case DEVICE.CHANGED :
-            return changeDevice(state, { ...action.device, connected: true, available: true });
+            return changeDevice(state, { ...action.device, connected: true, available: true }); // TODO: check if available will propagate to unavailable
         case DEVICE.DISCONNECT :
         case DEVICE.DISCONNECT_UNACQUIRED :
             return disconnectDevice(state, action.device);

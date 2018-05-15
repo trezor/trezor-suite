@@ -51,6 +51,7 @@ export type TrezorDevice = {
     state: ?string;
     instance?: number;
     instanceLabel: string;
+    instanceName: ?string;
     features?: Features;
     unacquired?: boolean;
     acquiring: boolean;

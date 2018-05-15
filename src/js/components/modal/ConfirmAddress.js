@@ -56,7 +56,7 @@ export const ConfirmUnverifiedAddress = (props: Props) => {
         return (
             <div className="confirm-address-unverified">
                 <button className="close-modal transparent" onClick={ onCancel }></button>
-                <h3>{ device.instanceLabel } is not connected</h3>
+                <h3>{ device.label } is not connected</h3>
                 <p>To prevent phishing attacks, you should verify the address on your TREZOR first. Please reconnect your device to continue with the verification process.</p>
                 <button onClick={ event => {
                     onCancel();
@@ -74,7 +74,7 @@ export const ConfirmUnverifiedAddress = (props: Props) => {
         return (
             <div className="confirm-address-unverified">
                 <button className="close-modal transparent" onClick={ onCancel }></button>
-                <h3>{ device.instanceLabel } is unavailable</h3>
+                <h3>{ device.label } is unavailable</h3>
                 <p>To prevent phishing attacks, you should verify the address on your TREZOR first. { enable } passphrase settings to continue with the verification process.</p>
                 <button onClick={ event => {
                     onCancel();

@@ -67,16 +67,15 @@ export default class RememberDevice extends Component<Props, State> {
         const { onForgetDevice, onRememberDevice } = this.props.modalActions;
 
         let label = device.label;
-        let devicePlural: string = "device or to remember it";
-        if (instances && instances.length > 1) {
+        const devicePlural: string = instances && instances.length > 1 ? "devices or to remember them" : "device or to remember it";
+        if (instances && instances.length > 0) {
             label = instances.map((instance, index) => {
                 let comma: string = '';
                 if (index > 0) comma = ', ';
                 return (
                     <span key={ index }>{ comma }{ instance.instanceLabel }</span>
                 );
-            })
-            devicePlural = "devices or to remember them";
+            });
         }
         return (
             <div className="remember">
