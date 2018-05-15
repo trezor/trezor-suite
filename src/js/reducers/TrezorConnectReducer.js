@@ -119,10 +119,10 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
         dev.label = current.label;
         dev.unacquired = false;
     } else if (!upcoming.unacquired && current.unacquired) {
-        dev.instanceLabel = upcoming.label;
-        if (typeof dev.instance === 'number') {
-            dev.instanceLabel = `${upcoming.label} TODO:(${dev.instance})`;
-        }
+        // dev.instanceLabel = upcoming.label;
+        // if (typeof dev.instance === 'number') {
+        //     dev.instanceLabel = `${upcoming.label} TODO:(${dev.instance})`;
+        // }
     }
 
     
@@ -336,10 +336,18 @@ const devicesFromLocalStorage = (devices: Array<any>): Array<TrezorDevice> => {
 
 const duplicate = (state: State, device: TrezorDevice): State => {
     const newState: State = { ...state };
-    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id);
+    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id)
+    .sort((a, b) => {
+        if (!a.instance) {
+            return -1;
+        } else {
+            return !b.instance || a.instance > b.instance ? 1 : -1;
+        }
+    });
+
     const instance: number = affectedDevices.reduce((inst, dev) => {
-        return dev.instance ? dev.instance + 1 : inst;
-    }, 1);
+        return dev.instance ? dev.instance + 1 : inst + 1;
+    }, 0);
 
     const newDevice: TrezorDevice = {
         ...device,
