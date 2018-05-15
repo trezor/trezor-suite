@@ -106,7 +106,7 @@
         h3 {
             word-break: break-all;
         }
-        
+
         button:not(.close-modal) {
             width: 100%;
             margin-top: 12px;
@@ -126,14 +126,28 @@
             padding: 14px 0px;
         }
 
-        label {
-            display: block;
-            padding-bottom: 6px;
+        .row {
+            position: relative;
             text-align: left;
-            color: @color_text_secondary;
+            padding-bottom: 20px;
+
+            label {
+                display: block;
+                padding-bottom: 6px;
+                text-align: left;
+                color: @color_text_secondary;
+            }
+
+            .error {
+                position: absolute;
+                left: 0px;
+                bottom: 0px;
+                font-size: 12px;
+                color: @color_error_primary;
+            }
         }
 
-        button {
+        button:not(.close-modal) {
             width: 100%;
             margin-top: 12px;
             span {
@@ -256,20 +270,14 @@
                 color: @color_error_primary;
             }
         } 
-
-        // input[type="text"] {
-        //     font-family: 'fontello';
-        //     font-size: 6px;
-        //     line-height: 14px;
-        // }
     }
     
     input[type="text"],
     input[type="password"] {
         width: 260px;
-        box-shadow: none;
-        border-radius: 0px;
-        border: 1px solid @color_divider;
+        // box-shadow: none;
+        // border-radius: 0px;
+        // border: 1px solid @color_divider;
         height: auto;
 
         .placeholder({

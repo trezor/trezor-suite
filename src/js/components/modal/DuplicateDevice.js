@@ -8,12 +8,14 @@ import type { Props } from './index';
 type State = {
     defaultName: string;
     instanceName: ?string;
+    isUsed: boolean;
 }
 
 export default class DuplicateDevice extends Component<Props, State> {
 
     keyboardHandler: (event: KeyboardEvent) => void;
     state: State;
+    input: ?HTMLInputElement;
 
     constructor(props: Props) {
         super(props);
@@ -25,18 +27,22 @@ export default class DuplicateDevice extends Component<Props, State> {
 
         this.state = {
             defaultName: `${device.label} (${instance.toString()})`,
-            instanceName: null
+            instanceName: null,
+            isUsed: false,
         }
     }
 
     keyboardHandler(event: KeyboardEvent): void {
-        if (event.keyCode === 13) {
+        if (event.keyCode === 13 && !this.state.isUsed) {
             event.preventDefault();
             this.submit();
         }
     }
 
     componentDidMount(): void {
+        // one time autofocus
+        if (this.input)
+            this.input.focus();
         this.keyboardHandler = this.keyboardHandler.bind(this);
         window.addEventListener('keydown', this.keyboardHandler, false);
     }
@@ -46,15 +52,21 @@ export default class DuplicateDevice extends Component<Props, State> {
     }
 
     onNameChange = (value: string): void => {
+
+        let isUsed: boolean = false;
+        if (value.length > 0) {
+            isUsed = ( this.props.connect.devices.find(d => d.instanceName === value) !== undefined );
+        }
+        
         this.setState({
-            instanceName: value.length > 0 ? value : null
+            instanceName: value.length > 0 ? value : null,
+            isUsed
         });
     }
 
     submit() {
-        if (this.props.modal.opened) {
-            this.props.modalActions.onDuplicateDevice( { ...this.props.modal.device, instanceName: this.state.instanceName } );
-        }
+        if (!this.props.modal.opened) return;
+        this.props.modalActions.onDuplicateDevice( { ...this.props.modal.device, instanceName: this.state.instanceName } );
     }
 
     render() {
@@ -63,22 +75,33 @@ export default class DuplicateDevice extends Component<Props, State> {
 
         const { device } = this.props.modal;
         const { onCancel, onDuplicateDevice } = this.props.modalActions;
+        const {
+            defaultName,
+            instanceName,
+            isUsed
+        } = this.state;
 
         return (
             <div className="duplicate">
+                <button className="close-modal transparent" onClick={ onCancel }></button>
                 <h3>Clone { device.label }?</h3>
                 <p>This will create new instance of device which can be used with different passphrase</p>
-                <label>Instance name</label>
-                <input 
-                    type="text" 
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck="false"
-                    placeholder={ this.state.defaultName }
-                    onChange={ event => this.onNameChange(event.currentTarget.value) }
-                    defaultValue={ this.state.instanceName } />
-                <button onClick={ event => this.submit() }>Create new instance</button>
+                <div className="row">
+                    <label>Instance name</label>
+                    <input 
+                        type="text" 
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck="false"
+                        className={ isUsed ? 'not-valid' : null }
+                        placeholder={ defaultName }
+                        ref={ (element) => { this.input = element; } }
+                        onChange={ event => this.onNameChange(event.currentTarget.value) }
+                        defaultValue={ instanceName } />
+                    { isUsed ? <span className="error">Instance name is already in use</span> : null }
+                </div>
+                <button disabled={ isUsed } onClick={ event => this.submit() }>Create new instance</button>
                 <button className="white" onClick={ onCancel }>Cancel</button>
             </div>
         );
