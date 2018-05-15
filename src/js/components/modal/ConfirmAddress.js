@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import React from 'react';
+import React, { Component } from 'react';
 import { findAccount } from '../../reducers/AccountsReducer';
 import { findSelectedDevice } from '../../reducers/TrezorConnectReducer';
 
@@ -29,61 +29,80 @@ const ConfirmAddress = (props: Props) => {
 }
 export default ConfirmAddress;
 
-export const ConfirmUnverifiedAddress = (props: Props) => {
+export class ConfirmUnverifiedAddress extends Component<Props> {
 
-    if (!props.modal.opened) return null;
-    const {
-        device
-    } = props.modal;
+    keyboardHandler: (event: KeyboardEvent) => void;
 
-    const { accounts, abstractAccount } = props;
+    keyboardHandler(event: KeyboardEvent): void {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            this.verifyAddress();
+        }
+    }
 
-    const {
-        onCancel 
-    } = props.modalActions;
+    componentDidMount(): void {
+        this.keyboardHandler = this.keyboardHandler.bind(this);
+        window.addEventListener('keydown', this.keyboardHandler, false);
+    }
 
-    const { 
-        showUnverifiedAddress,
-        showAddress
-    } = props.receiveActions;
+    componentWillUnmount(): void {
+        window.removeEventListener('keydown', this.keyboardHandler, false);
+    }
 
-    if(!abstractAccount) return null;
+    verifyAddress() {
+        if (!this.props.modal.opened) return;
 
-    const account = findAccount(accounts, abstractAccount.index, abstractAccount.deviceState, abstractAccount.network);
-    if (!account) return null;
-    
-    if (!device.connected) {
+        const { 
+            accounts, 
+            abstractAccount 
+        } = this.props;
+
+        if(!abstractAccount) return null;
+        const account = findAccount(accounts, abstractAccount.index, abstractAccount.deviceState, abstractAccount.network);
+        if (!account) return null;
+
+        this.props.modalActions.onCancel();
+        this.props.receiveActions.showAddress(account.addressPath);
+        
+    }
+
+    showUnverifiedAddress() {
+        if (!this.props.modal.opened) return;
+        
+        this.props.modalActions.onCancel();
+        this.props.receiveActions.showUnverifiedAddress();
+    }
+
+    render() {
+        if (!this.props.modal.opened) return null;
+        const {
+            device
+        } = this.props.modal;
+
+        const {
+            onCancel 
+        } = this.props.modalActions;
+
+        let deviceStatus: string;
+        let claim: string;
+        
+        if (!device.connected) {
+            deviceStatus = `${ device.label } is not connected`;
+            claim = 'Please connect your device'
+        } else {
+            // corner-case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
+            const enable: string = device.features && device.features.passphrase_protection ? 'enable' : 'disable';
+            deviceStatus = `${ device.label } is unavailable`;
+            claim = `Please ${ enable } passphrase settings`;
+        }
+
         return (
             <div className="confirm-address-unverified">
                 <button className="close-modal transparent" onClick={ onCancel }></button>
-                <h3>{ device.label } is not connected</h3>
-                <p>To prevent phishing attacks, you should verify the address on your TREZOR first. Please reconnect your device to continue with the verification process.</p>
-                <button onClick={ event => {
-                    onCancel();
-                    showAddress(account.addressPath);
-                } }>Try again</button>
-                <button className="white" onClick={ event => {
-                    onCancel();
-                    showUnverifiedAddress();
-                } }>Show unverified address</button>
-            </div>
-        );
-    } else {
-        // corner-case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
-        const enable: string = device.features && device.features.passphrase_protection ? 'Enable' : 'Disable';
-        return (
-            <div className="confirm-address-unverified">
-                <button className="close-modal transparent" onClick={ onCancel }></button>
-                <h3>{ device.label } is unavailable</h3>
-                <p>To prevent phishing attacks, you should verify the address on your TREZOR first. { enable } passphrase settings to continue with the verification process.</p>
-                <button onClick={ event => {
-                    onCancel();
-                    showAddress(account.addressPath);
-                } }>Try again</button>
-                <button className="white" onClick={ event => {
-                    onCancel();
-                    showUnverifiedAddress();
-                } }>Show unverified address</button>
+                <h3>{ deviceStatus }</h3>
+                <p>To prevent phishing attacks, you should verify the address on your TREZOR first. { claim } to continue with the verification process.</p>
+                <button onClick={ event => this.verifyAddress() }>Try again</button>
+                <button className="white" onClick={ event => this.showUnverifiedAddress() }>Show unverified address</button>
             </div>
         );
     }
