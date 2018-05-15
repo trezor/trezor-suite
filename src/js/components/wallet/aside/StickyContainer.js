@@ -100,6 +100,7 @@ export default class StickyContainer extends React.PureComponent<Props> {
     componentDidMount() {
         window.addEventListener('scroll', this.handleScroll);
         window.addEventListener('resize', this.handleScroll);
+        raf(this.update);
     }
     
     componentWillUnmount() {
