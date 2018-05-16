@@ -94,20 +94,19 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
 
         const requestedParams: RouterLocationState = pathToParams(action.payload.pathname);
         const currentParams: RouterLocationState = pathToParams(location ? location.pathname : '/');
+        const postActions: Array<Action> = [];
 
         let redirectPath: ?string;
         // first event after application loads
         if (!location) {
 
-            api.dispatch({
+            postActions.push({
                 type: WALLET.SET_INITIAL_URL,
                 pathname: action.payload.pathname, 
                 state: requestedParams
             });
 
             redirectPath = '/';
-
-            //return next(action);
         } else {
 
             const isModalOpened: boolean = api.getState().modal.opened;
@@ -132,7 +131,7 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                 } else if (requestedParams.device) {
 
                     if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
-                        api.dispatch({
+                        postActions.push({
                             type: CONNECT.SELECT_DEVICE,
                             payload: {
                                 id: requestedParams.device,
@@ -142,7 +141,7 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                     }
 
                     if (requestedParams.network !== currentParams.network) {
-                        api.dispatch({
+                        postActions.push({
                             type: CONNECT.COIN_CHANGED,
                             payload: {
                                 network: requestedParams.network
@@ -165,7 +164,17 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             action.payload.state = requestedParams;
         }
 
+        // resolve LOCATION_CHANGE action
+        next(action);
+
+        // resolve post actions
+        postActions.forEach(a => {
+            api.dispatch(a);
+        });
+
         api.dispatch( NotificationActions.clear(currentParams, requestedParams) );
+
+        return action;
     }
 
     // Pass all actions through by default

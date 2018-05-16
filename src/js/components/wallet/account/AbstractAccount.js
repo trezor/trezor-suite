@@ -103,7 +103,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
         } = this.state;
         
         if (!device) {
-            return (<section>Device with state {accountState.deviceState} not found</section>);
+            return (<section><Notification className="warning" title={ `Device with state ${accountState.deviceState} not found` } /></section>);
         }
 
         // account not found. checking why...
