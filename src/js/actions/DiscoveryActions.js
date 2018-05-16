@@ -217,7 +217,8 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
                 state: device.state
             },
             path,
-            showOnTrezor: false
+            showOnTrezor: false,
+            keepSession: true
         });
         if (discoveryProcess.interrupted) return;
 
