@@ -50,10 +50,13 @@ export const DeviceSelect = (props: Props) => {
 
     const deviceCount = devices.length;
     const webusb: boolean = (transport && transport.version.indexOf('webusb') >= 0) ? true : false;
-    const disabled: boolean = (devices.length < 1 && !webusb);
+    const disabled: boolean = (devices.length < 1 && !webusb) || (devices.length === 1 && !selected.features);
+    if (disabled) {
+        css += " disabled";
+    }
 
     return (
-        <div className={ css } onClick={ handleOpen }>
+        <div className={ css } onClick={ !disabled ? handleOpen : null }>
             <div className="label-container">
                 <span className="label">{ selected.instanceLabel }</span>
                 <span className="status">{ deviceStatus }</span>
