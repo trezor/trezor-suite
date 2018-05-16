@@ -158,9 +158,9 @@ export class DeviceDropdown extends Component<Props> {
             if (selected.features && selected.features.passphrase_protection && selected.connected && selected.available) {
                 deviceMenuItems.push({ type: "clone", label: "Clone device" });
             }
-            if (selected.remember) {
+            //if (selected.remember) {
                 deviceMenuItems.push({ type: "forget", label: "Forget device" });
-            }
+            //}
 
 
             const deviceMenuButtons = deviceMenuItems.map((item, index) => {
