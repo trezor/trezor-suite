@@ -76,7 +76,7 @@ const complete = (state: State, action: DiscoveryCompleteAction): State => {
     return newState;
 }
 
-const addressCreate = (state: State, action: AccountCreateAction): State => {
+const accountCreate = (state: State, action: AccountCreateAction): State => {
     const index: number = findIndex(state, action.network, action.device.state || '0');
     const newState: State = [ ...state ];
     newState[index].accountIndex++;
@@ -159,7 +159,7 @@ export default function discovery(state: State = initialState, action: Action): 
         case DISCOVERY.START :
             return start(state, action);
         case ACCOUNT.CREATE :
-            return addressCreate(state, action);
+            return accountCreate(state, action);
         case DISCOVERY.STOP :
             return stop(state, action);
         case DISCOVERY.COMPLETE :

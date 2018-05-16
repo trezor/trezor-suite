@@ -30,7 +30,7 @@ type StateProps = {
 
 type DispatchProps = {
     toggleDeviceDropdown: typeof toggleDeviceDropdown,
-    addAddress: typeof TrezorConnectActions.addAddress,
+    addAccount: typeof TrezorConnectActions.addAccount,
     acquireDevice: typeof TrezorConnectActions.acquire,
     forgetDevice: typeof TrezorConnectActions.forget,
     duplicateDevice: typeof TrezorConnectActions.duplicateDevice,
@@ -56,7 +56,7 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     return {
         //onAccountSelect: bindActionCreators(AccountActions.onAccountSelect, dispatch),
         toggleDeviceDropdown: bindActionCreators(toggleDeviceDropdown, dispatch),
-        addAddress: bindActionCreators(TrezorConnectActions.addAddress, dispatch),
+        addAccount: bindActionCreators(TrezorConnectActions.addAccount, dispatch),
         acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
         forgetDevice: bindActionCreators(TrezorConnectActions.forget, dispatch),
         duplicateDevice: bindActionCreators(TrezorConnectActions.duplicateDevice, dispatch),

@@ -234,7 +234,7 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => {
 
             const deviceId: string = device.features.device_id;
             const urlParams: RouterLocationState = getState().router.location.state;
-            // let url: string = `/device/${ device.features.device_id }/network/ethereum/address/0`;
+            // let url: string = `/device/${ device.features.device_id }/network/ethereum/account/0`;
             let url: string = `/device/${ deviceId }`;
             let instance: ?number;
             // check if device is not TrezorDevice type
@@ -250,7 +250,7 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => {
                 }
             }
             // check if current location is not set to this device
-            //dispatch( push(`/device/${ device.features.device_id }/network/etc/address/0`) );
+            //dispatch( push(`/device/${ device.features.device_id }/network/etc/account/0`) );
 
             if (urlParams.deviceInstance !== instance || urlParams.device !== deviceId) {
                 dispatch( push(url) );
@@ -498,7 +498,7 @@ export const selectDuplicatedDevice = (): AsyncAction => {
 }
 
 
-export function addAddress(): ThunkAction {
+export function addAccount(): ThunkAction {
     return (dispatch: Dispatch, getState: GetState): void => {
         const selected = findSelectedDevice(getState().connect);
         if (!selected) return;

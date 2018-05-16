@@ -21,7 +21,7 @@ const CoinSelection = (props: Props): React$Element<string> => {
     }
 
     const walletCoins = config.coins.map(item => {
-        const url = `${ baseUrl }/network/${ item.network }/address/0`;
+        const url = `${ baseUrl }/network/${ item.network }/account/0`;
         const className = `coin ${ item.network }`
         return (
             <NavLink key={ item.network } to={ url } className={ className }>

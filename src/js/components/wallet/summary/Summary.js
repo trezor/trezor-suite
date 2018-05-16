@@ -54,7 +54,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
             { deviceStatusNotification }
 
             <h2 className={ `summary-header ${abstractAccount.network}` }>
-                Address #{ parseInt(abstractAccount.index) + 1 }
+                Account #{ parseInt(abstractAccount.index) + 1 }
                 <a href={ explorerLink } className="gray" target="_blank" rel="noreferrer noopener">See full transaction history</a>
             </h2>
 

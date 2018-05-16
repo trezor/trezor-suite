@@ -32,7 +32,7 @@ export const init = (): ThunkAction => {
         if (!coin) return;
 
         const state: State = {
-            index: parseInt(urlParams.address),
+            index: parseInt(urlParams.account),
             deviceState: selected.state || '0',
             deviceId: selected.features ? selected.features.device_id : '0',
             deviceInstance: selected.instance,

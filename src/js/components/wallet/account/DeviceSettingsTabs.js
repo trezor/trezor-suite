@@ -18,8 +18,7 @@ type State = {
 const AccountTabs = (props: any): any => {
 
     const urlParams = props.match.params;
-    //const urlParams = props.match ? props.match.params : { address: '0' };
-    const basePath = `/device/${urlParams.device}/network/${urlParams.network}/address/${urlParams.address}`;
+    const basePath = `/device/${urlParams.device}/network/${urlParams.network}/account/${urlParams.account}`;
 
     return (
         <div className="account-tabs">

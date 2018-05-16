@@ -71,7 +71,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
         }
 
         if (discovery && !discovery.completed && !deviceStatusNotification) {
-            deviceStatusNotification = <Notification className="info" title="Loading accounts" />;
+            deviceStatusNotification = <Notification className="info" title="Loading accounts..." />;
         }
 
         this.setState({
@@ -93,7 +93,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
         const accountState = props.abstractAccount;
 
         if (!accountState) {
-            return (<section><Notification className="info" title="Loading device" /></section>);
+            return (<section><Notification className="info" title="Loading device..." /></section>);
         }
 
         const {
@@ -106,9 +106,12 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
             return (<section>Device with state {accountState.deviceState} not found</section>);
         }
 
+        // account not found. checking why...
         if (!account) {
             if (!discovery || discovery.waitingForDevice) {
+                
                 if (device.connected) {
+                    // case 1: device is connected but discovery not started yet (probably waiting for auth)
                     if (device.available) {
                         return (
                             <section>
@@ -116,6 +119,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
                             </section>
                         );
                     } else {
+                        // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed 
                         return (
                             <section>
                                 <Notification 
@@ -127,6 +131,7 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
                         );
                     }
                 } else {
+                    // case 3: device is disconnected 
                     return (
                         <section>
                             <Notification 
@@ -138,18 +143,21 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
                     );
                 }
             } else if (discovery.waitingForBackend) {
+                // case 4: backend is not working
                 return (
                     <section>
                         <Notification className="warning" title="Backend not working" />
                     </section>
                 );
             } else if (discovery.completed) {
+                // case 5: account not found and discovery is completed
                 return (
                     <section>
                         <Notification className="warning" title="Account does not exist" />
                     </section>
                 );
             } else {
+                // case 6: discovery is not completed yet
                 return (
                     <section>
                         <Notification className="info" title="Account is loading..." />

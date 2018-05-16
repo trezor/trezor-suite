@@ -65,10 +65,10 @@ const validation = (api: MiddlewareAPI, params: RouterLocationState): boolean =>
         const { config } = api.getState().localStorage;
         const coin = config.coins.find(coin => coin.network === params.network);
         if (!coin) return false;
-        if (!params.address) return false;
+        if (!params.account) return false;
     }
 
-    if (params.address) {
+    if (params.account) {
 
     }
 

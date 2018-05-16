@@ -35,11 +35,11 @@ export default (
                         <Route exact path="/device/:device/acquire" component={ AcquireContainer } />
                         <Route exact path="/device/:device/bootloader" component={ BootloaderContainer } />
                         <Route exact path="/device/:device/settings" component={ DeviceSettingsContainer } />
-                        <Route exact path="/device/:device/network/:network/address/:address" component={ SummaryContainer } />
-                        <Route path="/device/:device/network/:network/address/:address/send" component={ SendFormContainer } />
-                        <Route path="/device/:device/network/:network/address/:address/send/override" component={ SendFormContainer } />
-                        <Route path="/device/:device/network/:network/address/:address/receive" component={ ReceiveContainer } />
-                        <Route path="/device/:device/network/:network/address/:address/signverify" component={ SignVerifyContainer } />
+                        <Route exact path="/device/:device/network/:network/account/:account" component={ SummaryContainer } />
+                        <Route path="/device/:device/network/:network/account/:account/send" component={ SendFormContainer } />
+                        <Route path="/device/:device/network/:network/account/:account/send/override" component={ SendFormContainer } />
+                        <Route path="/device/:device/network/:network/account/:account/receive" component={ ReceiveContainer } />
+                        <Route path="/device/:device/network/:network/account/:account/signverify" component={ SignVerifyContainer } />
                     </WalletContainer>
                 </Route>
             </Switch>

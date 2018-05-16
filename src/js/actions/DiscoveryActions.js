@@ -115,7 +115,7 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
                 // start from beginning 
                 dispatch( begin(device, network) );
             } else {
-                dispatch( discoverAddress(device, discoveryProcess) );
+                dispatch( discoverAccount(device, discoveryProcess) );
             }
         }
     }
@@ -189,7 +189,7 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => {
     }
 }
 
-const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => {
+const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
         const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
@@ -296,7 +296,7 @@ const discoverAddress = (device: TrezorDevice, discoveryProcess: Discovery): Asy
         const addressIsEmpty = nonce < 1 && !balance.greaterThan(0);
 
         if (!addressIsEmpty) {
-            dispatch( discoverAddress(device, discoveryProcess) );
+            dispatch( discoverAccount(device, discoveryProcess) );
         } else {
             // release acquired sesssion
             await TrezorConnect.getFeatures({ 

@@ -29,36 +29,36 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
 
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
-    const deviceAddresses: Array<any> = findDeviceAccounts(accounts, selected, location.state.network);
-    let selectedAccounts = deviceAddresses.map((address, i) => {
-        // const url: string = `${baseUrl}/network/${location.state.network}/address/${i}`;
-        const url: string = location.pathname.replace(/address+\/([0-9]*)/, `address/${i}`);
+    const deviceAccounts: Array<any> = findDeviceAccounts(accounts, selected, location.state.network);
+    let selectedAccounts = deviceAccounts.map((account, i) => {
+        // const url: string = `${baseUrl}/network/${location.state.network}/account/${i}`;
+        const url: string = location.pathname.replace(/account+\/([0-9]*)/, `account/${i}`);
         
         let balance: string = 'Loading...';
-        if (address.balance !== '') {
+        if (account.balance !== '') {
             if (fiatRate) {
-                const accountBalance = new BigNumber(address.balance);
+                const accountBalance = new BigNumber(account.balance);
                 const fiat = accountBalance.times(fiatRate.value).toFixed(2);
-                balance = `${ address.balance } ${ selectedCoin.symbol } / $${ fiat }`;
+                balance = `${ account.balance } ${ selectedCoin.symbol } / $${ fiat }`;
             } else {
-                balance = `${ address.balance } ${ selectedCoin.symbol }`;
+                balance = `${ account.balance } ${ selectedCoin.symbol }`;
             }
         }
 
         return (
             <NavLink key={i} activeClassName="selected" className="account" to={ url }>
-                { `Address #${(address.index + 1 )}` }
-                <span>{ address.loaded ? balance : "Loading..." }</span>
+                { `Account #${(account.index + 1 )}` }
+                <span>{ account.loaded ? balance : "Loading..." }</span>
             </NavLink>
         )
     });
 
     if (selectedAccounts.length < 1) {
         if (selected.connected) {
-            const url: string = location.pathname.replace(/address+\/([0-9]*)/, `address/0`);
+            const url: string = location.pathname.replace(/account+\/([0-9]*)/, `account/0`);
             selectedAccounts = (
                 <NavLink activeClassName="selected" className="account" to={ url }>
-                    Address #1
+                    Account #1
                     <span>Loading...</span>
                 </NavLink>
             )
@@ -72,17 +72,17 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
         if (discovery.completed) {
             // TODO: add only if last one is not empty
             //if (selectedAccounts.length > 0 && selectedAccounts[selectedAccounts.length - 1])
-            const lastAccount = deviceAddresses[deviceAddresses.length - 1];
+            const lastAccount = deviceAccounts[deviceAccounts.length - 1];
             if (lastAccount && (new BigNumber(lastAccount.balance).greaterThan(0) || lastAccount.nonce > 0)) {
                 discoveryStatus = (
-                    <div className="add-address" onClick={ props.addAddress }>
-                        Add address
+                    <div className="add-account" onClick={ props.addAccount }>
+                        Add account
                     </div>
                 );
             } else {
                 const tooltip = (
                     <div className="aside-tooltip-wrapper">
-                        To add a new address, last address must have some transactions.
+                        To add a new account, last account must have some transactions.
                     </div>
                 )
                 discoveryStatus = (
@@ -90,17 +90,17 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
                             arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
                             overlay={ tooltip }
                             placement="top">
-                            <div className="add-address disabled">
-                                Add address
+                            <div className="add-account disabled">
+                                Add account
                             </div>
                     </Tooltip>
                 );
             }
             
-        } else if (!selected.connected) {
+        } else if (!selected.connected || !selected.available) {
             discoveryStatus = (
                 <div className="discovery-status">
-                    Addresses could not be loaded
+                    Accounts could not be loaded
                     <span>{ `Connect ${ selected.instanceLabel } device` }</span>
                 </div>
             );

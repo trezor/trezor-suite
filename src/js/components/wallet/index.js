@@ -25,7 +25,7 @@ const Content = (props: Props) => {
     return (
         <article>
             <nav>
-                <Route path="/device/:device/network/:network/address/:address" component={ AccountTabs } />
+                <Route path="/device/:device/network/:network/account/:account" component={ AccountTabs } />
                 <Route path="/device/:device/device-settings" component={ DeviceSettingsTabs } />
             </nav>
             <Notifications />
