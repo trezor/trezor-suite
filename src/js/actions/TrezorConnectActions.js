@@ -202,11 +202,10 @@ const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => {
 
 export const initConnectedDevice = (device: TrezorDevice | Device): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-
         const selected = findSelectedDevice(getState().connect);
-        if (!selected || (selected && selected.state)) {
+        // if (!selected || (selected && selected.state)) {
             dispatch( onSelectDevice(device) );
-        }
+        // }
         // if (device.unacquired && selected && selected.path !== device.path && !selected.connected) {
         //     dispatch( onSelectDevice(device) );
         // } else if (!selected) {

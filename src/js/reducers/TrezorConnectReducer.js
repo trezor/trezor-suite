@@ -148,18 +148,18 @@ const addDevice = (state: State, device: Device): State => {
 
     let affectedDevices: Array<TrezorDevice> = [];
     let otherDevices: Array<TrezorDevice> = [];
-    if (device.unacquired) {
-        // check if connected device is unacquired, but it was already merged with saved device(s) after DEVICE.CHANGE action
+    if (!device.features) {
+        // check if connected device is unacquired, and it's already exists
         affectedDevices = newState.devices.filter(d => d.path === device.path);
-        const diff: Array<TrezorDevice> = newState.devices.filter(d => affectedDevices.indexOf(d) === -1);
-
         // if so, ignore this action
         if (affectedDevices.length > 0) {
             return state;
         }
+        otherDevices = newState.devices.filter(d => affectedDevices.indexOf(d) === -1);
     } else {
         affectedDevices = newState.devices.filter(d => d.features && d.features.device_id === device.features.device_id);
-        otherDevices = newState.devices.filter(d => d.features && d.features.device_id !== device.features.device_id);
+        const unacquiredDevices = newState.devices.filter(d => d.path.length > 0 && d.path === device.path);
+        otherDevices = newState.devices.filter(d => affectedDevices.indexOf(d) < 0 && unacquiredDevices.indexOf(d) < 0);
     }
 
     if (affectedDevices.length > 0 ) {
@@ -222,7 +222,8 @@ const addDevice = (state: State, device: Device): State => {
             instanceName: null,
             ts: new Date().getTime(),
         }
-        newState.devices.push(newDevice);
+        // newState.devices.push(newDevice);
+        newState.devices = otherDevices.concat([newDevice]);
     }
 
     return newState;
@@ -248,48 +249,24 @@ const setDeviceState = (state: State, action: any): State => {
 
 const changeDevice = (state: State, device: Object): State => {
 
-    const newState: State = { ...state };
+    // change only acquired devices
+    if (!device.features) return state;
 
-    let affectedDevices: Array<TrezorDevice> = [];
-    let otherDevices: Array<TrezorDevice> = [];
-    if (device.features) {
-        affectedDevices = state.devices.filter(d => 
-            (d.features && d.features.device_id === device.features.device_id && d.features.passphrase_protection === device.features.passphrase_protection) || 
-            (d.path.length > 0 && d.path === device.path) 
-        );
-        otherDevices = state.devices.filter(d => affectedDevices.indexOf(d) === -1);
-    } else {
-        affectedDevices = state.devices.filter(d => !d.features && d.path === device.path);
-        otherDevices = state.devices.filter(d => affectedDevices.indexOf(d) === -1);
-        // otherDevices = state.devices.filter(d => d.path !== device.path);
-    }
+    const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => 
+        (d.features && d.features.device_id === device.features.device_id && d.features.passphrase_protection === device.features.passphrase_protection) || 
+        (d.features && d.path.length > 0 && d.path === device.path) 
+    );
+    const otherDevices: Array<TrezorDevice> = state.devices.filter(d => affectedDevices.indexOf(d) === -1);
 
     if (affectedDevices.length > 0) {
-
-        const isAffectedUnacquired: number = affectedDevices.findIndex(d => d.unacquired);
-        // if (isAffectedUnacquired >= 0 && affectedDevices.length > 1){
-        if (isAffectedUnacquired >= 0){
-            // TODO: should unacquired device be removed? or merged?
-            //affectedDevices.splice(isAffectedUnacquired, 1);
-        } else {
-            // replace existing values
-            const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => mergeDevices(d, device));
-            newState.devices = otherDevices.concat(changedDevices);
-        }
-        
-        // else if (isAffectedUnacquired >= 0 && !device.unacquired && affectedDevices.length > 1) {
-        //     affectedDevices.splice(isAffectedUnacquired, 1);
-        // }
-        // acquiring selected device. remove unnecessary (not acquired) device from list
-        // after this action selectedDevice needs to be updated (in TrezorConnectService)
-        if (state.selectedDevice && device.path === state.selectedDevice.id && affectedDevices.length > 1) {
-            // affectedDevices = affectedDevices.filter(d => d.path !== state.selectedDevice.id && d.features);
-        }
+        const newState: State = { ...state };
+        const changedDevices = affectedDevices.map(d => mergeDevices(d, device));
+        newState.devices = otherDevices.concat(changedDevices);
+        return newState;
     }
 
-    return newState;
+    return state;
 }
-
 
 const disconnectDevice = (state: State, device: Device): State => {
 

@@ -43,7 +43,8 @@ const createAccount = (state: State, action: AccountCreateAction): State => {
 
     // TODO check with device_id
     // check if account was created before
-    const exist: ?Account = state.find(account => account.address === action.address && account.network === action.network && action.device.features && account.deviceID === action.device.features.device_id);
+    // const exist: ?Account = state.find(account => account.address === action.address && account.network === action.network && action.device.features && account.deviceID === action.device.features.device_id);
+    const exist: ?Account = state.find(account => account.address === action.address && account.network === action.network && account.deviceState === action.device.state);
     if (exist) {
         return state;
     }
