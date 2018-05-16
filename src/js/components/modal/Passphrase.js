@@ -188,7 +188,9 @@ export default class PinModal extends Component<Props, State> {
 
     submit = (empty: boolean = false): void => {
         const { onPassphraseSubmit } = this.props.modalActions;
-        const { passphrase } = this.state;
+        const { passphrase, match } = this.state;
+
+        if (!match) return;
 
         //this.passphraseInput.type = 'text';
         // this.passphraseInput.style.display = 'none';
