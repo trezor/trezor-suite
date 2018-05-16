@@ -154,7 +154,7 @@ export class DeviceDropdown extends Component<Props> {
             if (selected.isUsedElsewhere) {
                 deviceMenuItems.push({ type: "reload", label: "Renew session" });
             } else if (selected.featuresNeedsReload) {
-                deviceMenuItems.push({ type: "reload", label: "Reload device" });
+                deviceMenuItems.push({ type: "reload", label: "Renew session" });
             }
 
             deviceMenuItems.push({ type: "settings", label: "Device settings" });

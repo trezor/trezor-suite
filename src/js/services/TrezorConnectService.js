@@ -56,11 +56,8 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         });
     } else if (action.type === DEVICE.DISCONNECT) {
         api.dispatch( TrezorConnectActions.deviceDisconnect(action.device) );
-
     } else if (action.type === CONNECT.REMEMBER_REQUEST) {
-
         api.dispatch(ModalActions.onRememberRequest(prevModalState));
-
     } else if (action.type === CONNECT.FORGET) {
         //api.dispatch( TrezorConnectActions.forgetDevice(action.device) );
         api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
@@ -75,15 +72,6 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         } else {
             api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
         }
-    } else if (action.type === DEVICE.CHANGED) {
-        // selected device was previously unacquired, but now it's acquired
-        // we need to change route 
-        // if (prevState.selectedDevice) {
-        //     if (action.device.features && action.device.path === prevState.selectedDevice.id) {
-        //         //console.log("REDIR HERE!", action.device)
-        //         //api.dispatch( TrezorConnectActions.onSelectDevice(action.device) );
-        //     }
-        // }
     } else if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
 
         api.dispatch( DiscoveryActions.restore() );
@@ -109,7 +97,6 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         api.dispatch( DiscoveryActions.check() );
     } else if (action.type === CONNECT.DUPLICATE) {
         api.dispatch( TrezorConnectActions.selectDuplicatedDevice() );
-    // } else if (action.type === CONNECT.ACQUIRED || action.type === CONNECT.SELECT_DEVICE) {
     } else if (action.type === CONNECT.SELECT_DEVICE) {
         api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
     } else if (action.type === CONNECT.COIN_CHANGED) {

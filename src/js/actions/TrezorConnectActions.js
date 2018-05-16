@@ -80,15 +80,6 @@ export type TrezorConnectAction = {
 } | {
     type: typeof CONNECT.DEVICE_FROM_STORAGE,
     payload: Array<TrezorDevice>
-} | {
-    type: typeof CONNECT.START_ACQUIRING,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.STOP_ACQUIRING,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.ACQUIRED,
-    device: TrezorDevice
 };
 
 
@@ -293,7 +284,6 @@ export const getSelectedDeviceState = (): AsyncAction => {
         if (selected 
             && selected.connected
             && selected.features
-            && !selected.acquiring 
             && !selected.state) {
 
             const response = await TrezorConnect.getDeviceState({ 
@@ -389,47 +379,13 @@ export function acquire(): AsyncAction {
         const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
         if (!selected) return;
 
-        // const saved = getState().connect.devices.map(d => {
-        //     if (d.state) {
-        //         return {
-        //             instance: d.instance,
-        //             state: d.state
-        //         }
-        //     } else {
-        //         return null;
-        //     }
-        // });
-
-        //const response = await __acquire(selected.path, selected.instance);
-
-        dispatch({
-            type: CONNECT.START_ACQUIRING,
-            device: selected
-        });
-
         const response = await TrezorConnect.getFeatures({ 
             device: {
                 path: selected.path,
             }
         });
 
-        const selected2: ?TrezorDevice = findSelectedDevice(getState().connect);
-        if (!selected2) return;
-        const s: TrezorDevice = selected2;
-
-        dispatch({
-            type: CONNECT.STOP_ACQUIRING,
-            device: selected2
-        });
-
-        if (response && response.success) {
-            dispatch({
-                type: CONNECT.ACQUIRED,
-                device: selected2
-            });
-        } else {
-            // TODO: handle invalid pin?
-
+        if (!response.success) {
             dispatch({
                 type: NOTIFICATION.ADD,
                 payload: {
@@ -448,18 +404,6 @@ export function acquire(): AsyncAction {
                 }
             })
         }
-    }
-}
-
-export const forgetDevice = (device: TrezorDevice): ThunkAction => {
-    return (dispatch: Dispatch, getState: GetState): void => {
-        // find accounts associated with this device
-        // const accounts: Array<any> = getState().accounts.find(a => a.deviceState === device.state);
-
-
-        // find discovery processes associated with this device
-        // const discovery: Array<any> = getState().discovery.find(d => d.deviceState === device.state);
-
     }
 }
 

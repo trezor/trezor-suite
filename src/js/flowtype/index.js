@@ -43,9 +43,9 @@ import type {
 import type { RouterAction, LocationState } from 'react-router-redux';
 
 export type TrezorDevice = {
-    remember: boolean;
-    connected: boolean;
-    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected (saved)
+    remember: boolean;  // device should be remembered
+    connected: boolean; // device is connected
+    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     path: string;
     label: string;
     state: ?string;
@@ -54,23 +54,6 @@ export type TrezorDevice = {
     instanceName: ?string;
     features?: Features;
     unacquired?: boolean;
-    acquiring: boolean;
-    isUsedElsewhere?: boolean;
-    featuresNeedsReload?: boolean;
-    ts: number;
-}
-
-export type AcquiredDevice = {
-    remember: boolean;
-    connected: boolean;
-    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected (saved)
-    path: string;
-    label: string;
-    state: string;
-    instance: ?number;
-    instanceLabel: string;
-    features: Features;
-    acquiring: boolean;
     isUsedElsewhere?: boolean;
     featuresNeedsReload?: boolean;
     ts: number;

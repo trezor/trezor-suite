@@ -9,14 +9,14 @@ declare module 'trezor-connect' {
         DISCONNECT: 'device__disconnect',
         DISCONNECT_UNACQUIRED: 'device__disconnect_unacquired',
 
-        ACQUIRE: 'device__acquire', // remove? internal
-        RELEASE: 'device__release', // internal
-        ACQUIRED: 'device__acquired',
-        RELEASED: 'device__released', // internal
-        USED_ELSEWHERE: 'device__used_elsewhere', // internal
+        // ACQUIRE: 'device__acquire', // remove? internal
+        // RELEASE: 'device__release', // internal
+        // ACQUIRED: 'device__acquired',
+        // RELEASED: 'device__released', // internal
+        // USED_ELSEWHERE: 'device__used_elsewhere', // internal
         CHANGED: 'device__changed',
 
-        LOADING: 'device__loading', // internal
+        // LOADING: 'device__loading', // internal
 
         // trezor-link events
         BUTTON: 'button',

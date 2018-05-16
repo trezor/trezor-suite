@@ -20,10 +20,6 @@ export const FORGET_SINGLE: 'connect__forget_single' = 'connect__forget_single';
 export const DISCONNECT_REQUEST: 'connect__disconnect_request' = 'connect__disconnect_request';
 export const REMEMBER: 'connect__remember' = 'connect__remember';
 
-export const START_ACQUIRING: 'connect__start_acquiring' = 'connect__start_acquiring';
-export const STOP_ACQUIRING: 'connect__stop_acquiring' = 'connect__stop_acquiring';
-export const ACQUIRED: 'connect__device_acquired' = 'connect__device_acquired';
-
 export const TRY_TO_DUPLICATE: 'connect__try_to_duplicate' = 'connect__try_to_duplicate';
 export const DUPLICATE: 'connect__duplicate' = 'connect__duplicate';
 

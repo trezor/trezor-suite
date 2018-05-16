@@ -128,7 +128,6 @@ const mergeDevices = (current: TrezorDevice, upcoming: Object): TrezorDevice => 
         instanceLabel,
         instanceName: typeof upcoming.instanceName === 'string' ? upcoming.instanceName : current.instanceName,
         state: current.state,
-        acquiring: typeof upcoming.acquiring === 'boolean' ? upcoming.acquiring : current.acquiring,
         ts: typeof upcoming.ts === 'number' ? upcoming.ts : current.ts,
     }
     // corner-case: trying to merge unacquired device with acquired
@@ -281,8 +280,6 @@ const disconnectDevice = (state: State, device: Device): State => {
             d.available = false;
             d.isUsedElsewhere = false;
             d.featuresNeedsReload = false;
-            d.acquiring = false;
-            //if (d.remember)
             d.path = '';
             return d;
         }));
@@ -432,9 +429,6 @@ export default function connect(state: State = initialState, action: Action): St
 
         case CONNECT.AUTH_DEVICE :
             return setDeviceState(state, action);
-        case CONNECT.START_ACQUIRING :
-        case CONNECT.STOP_ACQUIRING :
-            return changeDevice(state, { ...action.device, acquiring: action.type === CONNECT.START_ACQUIRING } );
         case CONNECT.REMEMBER :
             return changeDevice(state, { ...action.device, path: '', remember: true } );
     

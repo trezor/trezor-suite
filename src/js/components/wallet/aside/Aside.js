@@ -46,18 +46,6 @@ const Aside = (props: Props): React$Element<typeof StickyContainer | string> => 
 
     if (location.pathname === '/' || !selected) return (<aside></aside>);
 
-    // TODO
-    // if (selectedDevice.unacquired) {
-    //     return (
-    //         <aside>
-    //             <div className="transition-container"></div>
-    //             <a className="help" href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">
-    //                 Need help?
-    //             </a>
-    //         </aside>
-    //     );
-    // }
-
     let menu = <section></section>;
     
     if (props.deviceDropdownOpened) {

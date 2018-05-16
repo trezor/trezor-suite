@@ -322,7 +322,7 @@ export const restore = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const selected = findSelectedDevice(getState().connect);
 
-        if (selected && selected.connected && !selected.unacquired) {
+        if (selected && selected.connected && selected.features) {
             const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && d.waitingForDevice);
             if (discoveryProcess) {
                 dispatch( start(selected, discoveryProcess.network) );
