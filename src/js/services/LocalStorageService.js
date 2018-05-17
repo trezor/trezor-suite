@@ -51,7 +51,7 @@ const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token
 
 const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => {
     return devices.reduce((arr, dev) => {
-        return arr.concat(discovery.filter(a => a.deviceState === dev.state));
+        return arr.concat(discovery.filter(a => a.deviceState === dev.state && a.publicKey.length > 0));
     }, []);
 }
 
