@@ -15,13 +15,20 @@ import ModalContainer from '../modal';
 import Notifications from '../common/Notification';
 import Log from '../common/Log';
 
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from '../../flowtype';
 
-type Props = {
-    children: React.Node
+type WalletContainerProps = {
+    wallet: $ElementType<State, 'wallet'>,
+    children?: React.Node
 }
 
-const Content = (props: Props) => {
+type ContentProps = {
+    children?: React.Node
+}
+
+
+const Content = (props: ContentProps) => {
     return (
         <article>
             <nav>
@@ -36,10 +43,11 @@ const Content = (props: Props) => {
     );
 }
 
-const Wallet = (props: Props) => {
+const Wallet = (props: WalletContainerProps) => {
     return (
         <div className="app">
             <Header />
+            {/* <div>{ props.wallet.online ? "ONLINE" : "OFFLINE" }</div> */}
             <main>
                 <AsideContainer />
                 <Content>
@@ -51,6 +59,12 @@ const Wallet = (props: Props) => {
     );
 }
 
+const mapStateToProps: MapStateToProps<State, {}, WalletContainerProps> = (state: State, own: {}): WalletContainerProps => {
+    return {
+        wallet: state.wallet
+    };
+}
+
 export default withRouter(
-    connect(null, null)(Wallet)
+    connect(mapStateToProps, null)(Wallet)
 );

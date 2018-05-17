@@ -2,6 +2,7 @@
 'use strict';
 
 import * as LocalStorageActions from '../actions/LocalStorageActions';
+import * as WalletActions from '../actions/WalletActions';
 
 import { DEVICE } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
@@ -90,6 +91,7 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
     if (action.type === LOCATION_CHANGE) {
         const { location } = api.getState().router;
         if (!location) {
+            api.dispatch( WalletActions.init() );
             // load data from config.json and local storage
             api.dispatch( LocalStorageActions.loadData() );
         }

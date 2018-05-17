@@ -13,6 +13,7 @@ import type { Action, RouterLocationState, TrezorDevice } from '../flowtype';
 
 type State = {
     ready: boolean;
+    online: boolean;
     dropdownOpened: boolean;
     initialParams: ?RouterLocationState;
     initialPathname: ?string;
@@ -21,6 +22,7 @@ type State = {
 
 const initialState: State = {
     ready: false,
+    online: navigator.onLine,
     dropdownOpened: false,
     initialParams: null,
     initialPathname: null,
@@ -41,6 +43,12 @@ export default function wallet(state: State = initialState, action: Action): Sta
             return {
                 ...state,
                 ready: true
+            }
+
+        case WALLET.ONLINE_STATUS :
+            return {
+                ...state,
+                online: action.online
             }
 
         case WALLET.TOGGLE_DEVICE_DROPDOWN :

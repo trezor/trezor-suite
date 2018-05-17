@@ -3,7 +3,7 @@
 
 import * as WALLET from './constants/wallet';
 
-import type { RouterLocationState } from '../flowtype';
+import type { RouterLocationState, ThunkAction, Dispatch, GetState } from '../flowtype';
 
 export type WalletAction = {
     type: typeof WALLET.SET_INITIAL_URL,
@@ -14,6 +14,23 @@ export type WalletAction = {
     opened: boolean
 } | {
     type: typeof WALLET.ON_BEFORE_UNLOAD
+} | {
+    type: typeof WALLET.ONLINE_STATUS,
+    online: boolean
+}
+
+export const init = (): ThunkAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
+
+        const updateOnlineStatus = (event) => {
+            dispatch({
+                type: WALLET.ONLINE_STATUS,
+                online: navigator.onLine
+            })
+        }
+        window.addEventListener('online',  updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+    }
 }
 
 export const onBeforeUnload = (): WalletAction => {
