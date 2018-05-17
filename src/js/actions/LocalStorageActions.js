@@ -9,7 +9,7 @@ import * as STORAGE from './constants/localStorage';
 import * as PENDING from '../actions/constants/pendingTx';
 import { JSONRequest, httpRequest } from '../utils/networkUtils';
 
-import type { ThunkAction, AsyncAction, GetState, Dispatch } from '../flowtype';
+import type { ThunkAction, AsyncAction, GetState, Dispatch, TrezorDevice } from '../flowtype';
 import type { Config, Coin, TokensCollection } from '../reducers/LocalStorageReducer';
 
 export type StorageAction = {
@@ -159,11 +159,51 @@ export function loadTokensFromJSON(): AsyncAction {
 
 export function update(event: StorageEvent): AsyncAction {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        if (event.key === 'tokens' && event.newValue) {
+
+        if (!event.newValue) return;
+
+        if (event.key === 'devices') {
+            // check if device was added/ removed
+            // const newDevices: Array<TrezorDevice> = JSON.parse(event.newValue);
+            // const myDevices: Array<TrezorDevice> = getState().connect.devices.filter(d => d.features);
+
+            // if (newDevices.length !== myDevices.length) {
+            //     const diff = myDevices.filter(d => newDevices.indexOf(d) < 0)
+            //     console.warn("DEV LIST CHANGED!", newDevices.length, myDevices.length, diff)
+            //     // check if difference is caused by local device which is not saved
+            //     // or device which was saved in other tab
+            // }
+
+            // const diff = oldDevices.filter(d => newDevices.indexOf())
+        }
+
+        if (event.key === 'accounts') {
+            dispatch({
+                type: ACCOUNT.FROM_STORAGE,
+                payload: JSON.parse(event.newValue)
+            });
+        }
+
+        if (event.key === 'tokens') {
             dispatch({
                 type: TOKEN.FROM_STORAGE,
                 payload: JSON.parse(event.newValue)
             });
+        }
+
+        if (event.key === 'pending') {
+            dispatch({
+                type: PENDING.FROM_STORAGE,
+                payload: JSON.parse(event.newValue)
+            });
+        }
+
+        if (event.key === 'discovery') {
+            // TODO: check if changed discovery is not running locally
+            // dispatch({
+            //     type: DISCOVERY.FROM_STORAGE,
+            //     payload: JSON.parse(event.newValue)
+            // });
         }
     }
 }
@@ -183,13 +223,10 @@ export const save = (key: string, value: string): ThunkAction => {
 }
 
 export const get = (key: string): ?string => {
-    
-
     try {
         return window.localStorage.getItem(key);
     } catch (error) {
         // available = false;
         return null;
     }
-
 }
