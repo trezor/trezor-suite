@@ -81,9 +81,16 @@ export const loadData = (): ThunkAction => {
 
 export function loadTokensFromJSON(): AsyncAction {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+
+        if (typeof window.localStorage === 'undefined') return;
+
         try {
             const config: Config = await httpRequest('data/appConfig.json', 'json');
             const ERC20Abi = await httpRequest('data/ERC20Abi.json', 'json');
+
+            window.addEventListener('storage', event => {
+                dispatch( update(event) );
+            })
 
             // load tokens
             const tokens = await config.coins.reduce(async (promise: Promise<TokensCollection>, coin: Coin): Promise<TokensCollection> => {
@@ -150,6 +157,17 @@ export function loadTokensFromJSON(): AsyncAction {
     }
 }
 
+export function update(event: StorageEvent): AsyncAction {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+        if (event.key === 'tokens' && event.newValue) {
+            dispatch({
+                type: TOKEN.FROM_STORAGE,
+                payload: JSON.parse(event.newValue)
+            });
+        }
+    }
+}
+
 
 export const save = (key: string, value: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
@@ -165,12 +183,13 @@ export const save = (key: string, value: string): ThunkAction => {
 }
 
 export const get = (key: string): ?string => {
-    if (typeof window.localStorage !== 'undefined') {
-        try {
-            return window.localStorage.getItem(key);
-        } catch (error) {
-            // available = false;
-            return null;
-        }
+    
+
+    try {
+        return window.localStorage.getItem(key);
+    } catch (error) {
+        // available = false;
+        return null;
     }
+
 }
