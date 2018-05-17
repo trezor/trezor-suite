@@ -19,3 +19,8 @@ window.onbeforeunload = () => {
 
 // workaround for web3
 // yarn add web3@^0.19.0
+//if (module && module.hot)
+if (typeof module !== undefined &&  module.hasOwnProperty('hot')) {
+    // $FlowIssue
+    module.hot.accept();
+}

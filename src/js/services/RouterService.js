@@ -1,7 +1,6 @@
 /* @flow */
 'use strict';
 
-import pathToRegexp from 'path-to-regexp';
 import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE, push, replace } from 'react-router-redux';
 import * as CONNECT from '../actions/constants/TrezorConnect';
