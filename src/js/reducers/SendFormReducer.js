@@ -172,6 +172,7 @@ export default (state: State = initialState, action: Action): State => {
                 ...state,
 
                 sending: false,
+                untouched: true,
                 touched: {},
                 address: '',
                 amount: '',
@@ -180,12 +181,11 @@ export default (state: State = initialState, action: Action): State => {
                 gasLimit: state.gasLimit,
                 gasPrice: state.recommendedGasPrice,
                 data: '',
-                nonce: '0',
+                nonce: new BigNumber(state.nonce).plus(1).toString(),
                 total: '0',
                 errors: {},
                 warnings: {},
                 infos: {},
-
             }
         case SEND.TX_ERROR :
             return {
@@ -218,7 +218,6 @@ export default (state: State = initialState, action: Action): State => {
                 nonce: action.nonce,
                 untouched: false,
                 touched: action.touched,
-
             }
 
         default:

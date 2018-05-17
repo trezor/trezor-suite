@@ -209,6 +209,9 @@ export const init = (): ThunkAction => {
         const web3instance: ?Web3Instance = getState().web3.find(w3 => w3.network === urlParams.network);
         if (!web3instance) return;
 
+        const account = getState().accounts.find(a => a.deviceState === accountState.deviceState && a.index === accountState.index && a.network === accountState.network);
+        if (!account) return;
+
         // TODO: check if there are some unfinished tx in localStorage
 
         const coin: Coin = accountState.coin;
@@ -229,7 +232,7 @@ export const init = (): ThunkAction => {
             recommendedGasPrice: gasPrice.toString(),
             gasLimit,
             gasPrice: gasPrice.toString(),
-            nonce: '', // TODO!!!
+            nonce: account.nonce.toString(), // TODO!!!
         };
 
         dispatch({
@@ -301,7 +304,7 @@ export const validation = (): ThunkAction => {
             } else {
 
                 const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-                if (!account) return; // this should not happen
+                if (!account) return;
 
                 let decimalRegExp: RegExp;
 
@@ -372,15 +375,27 @@ export const validation = (): ThunkAction => {
 
         // valid nonce
         if (state.touched.nonce) {
+            const re = new RegExp('^[0-9]+$');
             if (state.nonce.length < 1) {
                 errors.nonce = 'Nonce is not set';
+            } else if (!state.nonce.match(re)) {
+                errors.nonce = 'Nonce is not a valid number';
+            } else {
+                const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
+                if (!account) return;
+
+                const n: BigNumber = new BigNumber(state.nonce);
+                if (n.lessThan(account.nonce)) {
+                    warnings.nonce = 'Nonce is lower than recommended';
+                } else if (n.greaterThan(account.nonce)) {
+                    warnings.nonce = 'Nonce is greater than recommended';
+                }
             }
         }
 
         // valid data
         if (state.touched.data && state.data.length > 0) {
             const re = /^[0-9A-Fa-f]+$/g;
-            //const re = /^[0-9A-Fa-f]{6}$/g;
             if (!re.test(state.data)) {
                 errors.data = 'Data is not valid hexadecimal';
             }
@@ -649,7 +664,7 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => {
         const accountState: ?AccountState = getState().abstractAccount;
         if (!accountState) return;
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.selectedCurrency !== accountState.network;
+        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
 
         const touched = { ...currentState.touched };
         touched.gasPrice = true;

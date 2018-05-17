@@ -62,8 +62,6 @@ const save = (dispatch: Dispatch, getState: GetState): void => {
         }
         
     }
-
-    
 }
 
 const load = (dispatch: Dispatch, getState: GetState): void => {
@@ -108,7 +106,8 @@ const load = (dispatch: Dispatch, getState: GetState): void => {
                 if (json.setMax) {
                     dispatch(SendFormActions.onSetMax());
                 } else {
-                    dispatch(SendFormActions.validation());
+                    // dispatch(SendFormActions.validation());
+                    dispatch(SendFormActions.onAmountChange(json.amount));
                 }
 
                 
@@ -119,6 +118,16 @@ const load = (dispatch: Dispatch, getState: GetState): void => {
     }
 }
 
+
+const clear = (getState: GetState) => {
+    if (typeof window.localStorage === 'undefined') return;
+
+    const accountState = getState().abstractAccount;
+    if (accountState) {
+        const key: string = `SEND:${accountState.location}`;
+        window.sessionStorage.removeItem(key);
+    }
+}
 
 const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
 
@@ -136,6 +145,10 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
         // load fields after action
         case SEND.INIT :
             load(api.dispatch, api.getState);
+        break;
+
+        case SEND.TX_COMPLETE :
+            clear(api.getState);
         break;
     }
 

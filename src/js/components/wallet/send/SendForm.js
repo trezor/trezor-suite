@@ -106,7 +106,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         buttonLabel = 'Loading accounts';
         buttonDisabled = true;
     }
-    
+
     let notification = null;
 
     return (
