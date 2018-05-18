@@ -7,7 +7,7 @@ import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import AbstractAccount from '../AbstractAccount';
-import { Notification } from '~/js/common/Notification';
+import { Notification } from '~/js/components/common/Notification';
 
 import type { AccountState } from '../AbstractAccount';
 import type { Props } from './index';

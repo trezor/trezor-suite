@@ -2,7 +2,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Notification } from '~/js/common/Notification';
+import { Notification } from '~/js/components/common/Notification';
 import { findDevice } from '~/js/reducers/TrezorConnectReducer';
 
 // import * as AbstractAccountActions from '~/js/actions/AbstractAccountActions';

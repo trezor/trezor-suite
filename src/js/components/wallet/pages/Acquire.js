@@ -4,7 +4,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Notification } from '~/js/common/Notification';
+import { Notification } from '~/js/components/common/Notification';
 import * as TrezorConnectActions from '~/js/actions/TrezorConnectActions';
 
 import type { State, Dispatch } from '~/js/flowtype';

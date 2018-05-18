@@ -8,7 +8,7 @@ import Tooltip from 'rc-tooltip';
 
 import { resolveAfter } from '~/js/utils/promiseUtils';
 import AbstractAccount from '../AbstractAccount';
-import { Notification } from '~/js/common/Notification';
+import { Notification } from '~/js/components/common/Notification';
 import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
 

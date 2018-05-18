@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js';
 
 import { findDeviceAccounts } from '~/js/reducers/AccountsReducer';
 import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
-import Loader from '~/js/common/LoaderCircle';
+import Loader from '~/js/components/common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
 import type { Props } from './index';
