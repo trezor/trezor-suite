@@ -25,14 +25,21 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: { publicPath: '../' }
+                    },
                     { 
                         loader: 'css-loader',
-                        // options: { minimize: true } 
+                        options: { 
+                            minimize: false,
+                        } 
                     },
                     { 
                         loader: 'less-loader',
-                        // options: { minimize: true } 
+                        options: { 
+                            minimize: false,
+                        } 
                     }
                 ]
             },
@@ -41,16 +48,26 @@ module.exports = {
                 exclude: /(node_modules)/,
                 loader: 'file-loader',
                 query: {
-                    publicPath: '../',
-                    name: 'images/[name].[hash].[ext]'
+                    outputPath: './images',
+                    name: '[name].[hash].[ext]'
                 }
             },
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader',
                 query: {
-                    publicPath: '../',
-                    name: 'fonts/[name].[hash].[ext]',
+                    outputPath: './fonts',
+                    name: '[name].[hash].[ext]',
+                },
+            },
+            {
+                type: 'javascript/auto',
+                test: /\.json/,
+                exclude: /(node_modules)/,
+                loader: 'file-loader',
+                query: {
+                    outputPath: './data',
+                    name: '[name].[hash].[ext]',
                 },
             },
         ]

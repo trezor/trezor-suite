@@ -8,6 +8,7 @@ declare module "react-redux" {
 
     S = State
     A = Action
+    D = Dispatch
     OP = OwnProps
     SP = StateProps
     DP = DispatchProps
@@ -19,8 +20,8 @@ declare module "react-redux" {
     ownProps: OP
   ) => ((state: S, ownProps: OP) => SP) | SP;
 
-  declare type MapDispatchToProps<A, OP: Object, DP: Object> =
-    | ((dispatch: Dispatch<A>, ownProps: OP) => DP)
+  declare type MapDispatchToProps<D, OP: Object, DP: Object> =
+    | ((dispatch: D, ownProps: OP) => DP)
     | DP;
 
   declare type MergeProps<SP, DP: Object, OP: Object, P: Object> = (

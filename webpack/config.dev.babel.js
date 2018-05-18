@@ -14,7 +14,6 @@ module.exports = {
     output: {
         filename: '[name].[hash].js',
         path: BUILD,
-        publicPath: '/',
     },
     devServer: {
         contentBase: SRC,
@@ -34,20 +33,38 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: { publicPath: '../' }
+                    },
                     'css-loader',
                     'less-loader',
                 ]
             },
             {
                 test: /\.(png|gif|jpg)$/,
-                loader: 'file-loader?name=./images/[name].[ext]'
+                loader: 'file-loader?name=./images/[name].[ext]',
+                query: {
+                    outputPath: './images',
+                    name: '[name].[ext]',
+                }
             },
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader',
                 query: {
-                    name: './fonts/[name].[hash].[ext]',
+                    outputPath: './fonts',
+                    name: '[name].[ext]',
+                },
+            },
+            {
+                type: 'javascript/auto',
+                test: /\.json/,
+                exclude: /(node_modules)/,
+                loader: 'file-loader',
+                query: {
+                    outputPath: './data',
+                    name: '[name].[ext]',
                 },
             },
         ]

@@ -1,12 +1,11 @@
 [include]
 
 [ignore]
-.*/node_modules/bitcoinjs-lib-zcash/.*
-.*/node_modules/bitcoinjs-lib/.*
-.*/node_modules/hd-wallet/.*
-.*/node_modules/protobufjs-old-fixed-webpack/src/bower.json
-.*/node_modules/trezor-link/lib/.*
-.*/node_modules/rc-util/lib/.*
+.*/node_modules/rc-util/.*
+.*/node_modules/react-redux/.*
+.*/node_modules/redux/.*
+.*/node_modules/react-router/.*
+.*/node_modules/react-router-redux/.*
 .*/_old/.*
 .*/src/solidity/.*
 
@@ -30,4 +29,5 @@ esproposal.export_star_as=enable
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
 esproposal.decorators=ignore
 module.name_mapper='.*\(.less\)' -> 'CSSModule'
+module.name_mapper='^\(~/\)' -> '<PROJECT_ROOT>/src/'
 module.system=haste
