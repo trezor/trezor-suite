@@ -17,8 +17,6 @@ import type {
     DispatchProps as BaseDispatchProps 
 } from '../SelectedAccount';
 
-import type { AccountState } from '../SelectedAccount';
-
 type OwnProps = { }
 
 type StateProps = BaseStateProps & {

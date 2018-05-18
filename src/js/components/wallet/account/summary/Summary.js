@@ -13,7 +13,7 @@ import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
 
 import type { Props } from './index';
-import type { AccountState } from '../SelectedAccount';
+import type { ComponentState } from '../SelectedAccount';
 
 import type { TrezorDevice } from '~/flowtype';
 import type { NetworkToken } from '~/js/reducers/LocalStorageReducer';
@@ -27,7 +27,7 @@ export default class Summary extends SelectedAccount<Props> {
     }
 }
 
-const _render = (props: Props, state: AccountState): React$Element<string> => {
+const _render = (props: Props, state: ComponentState): React$Element<string> => {
 
     const {
         device,

@@ -11,7 +11,7 @@ import SelectedAccount from '../SelectedAccount';
 import { findAccountTokens } from '~/js/reducers/TokensReducer';
 
 import type { Props } from './index';
-import type { AccountState } from '../SelectedAccount';
+import type { ComponentState } from '../SelectedAccount';
 
 export default class Send extends SelectedAccount<Props> {
     render() {
@@ -19,7 +19,7 @@ export default class Send extends SelectedAccount<Props> {
     }
 }
 
-const _render = (props: Props, state: AccountState): React$Element<string> => {
+const _render = (props: Props, state: ComponentState): React$Element<string> => {
 
     const {
         device,

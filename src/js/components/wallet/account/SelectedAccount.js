@@ -27,16 +27,16 @@ export type DispatchProps = {
 
 export type Props = StateProps & DispatchProps;
 
-export type AccountState = {
+export type ComponentState = {
     device: ?TrezorDevice;
     account: ?Account;
     discovery: ?Discovery;
     deviceStatusNotification: ?React$Element<typeof Notification>;
 }
 
-export default class SelectedAccount<P> extends Component<Props & P, AccountState> {
+export default class SelectedAccount<P> extends Component<Props & P, ComponentState> {
 
-    state: AccountState = {
+    state: ComponentState = {
         device: null,
         account: null,
         discovery: null,
