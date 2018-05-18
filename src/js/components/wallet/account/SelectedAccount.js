@@ -5,22 +5,22 @@ import React, { Component } from 'react';
 import { Notification } from '~/js/components/common/Notification';
 import { findDevice } from '~/js/reducers/TrezorConnectReducer';
 
-// import * as AbstractAccountActions from '~/js/actions/AbstractAccountActions';
-import { default as AbstractAccountActions } from '~/js/actions/AbstractAccountActions';
+// import * as SelectedAccountActions from '~/js/actions/SelectedAccountActions';
+import { default as SelectedAccountActions } from '~/js/actions/SelectedAccountActions';
 
 import type { State, TrezorDevice, Action, ThunkAction } from '~/flowtype';
 import type { Account } from '~/js/reducers/AccountsReducer';
 import type { Discovery } from '~/js/reducers/DiscoveryReducer';
 
 export type StateProps = {
-    abstractAccount: $ElementType<State, 'abstractAccount'>,
+    selectedAccount: $ElementType<State, 'selectedAccount'>,
     devices: $PropertyType<$ElementType<State, 'connect'>, 'devices'>,
     discovery: $ElementType<State, 'discovery'>,
     accounts: $ElementType<State, 'accounts'>,
 }
 
 export type DispatchProps = {
-    abstractAccountActions: typeof AbstractAccountActions,
+    selectedAccountActions: typeof SelectedAccountActions,
     initAccount: () => ThunkAction,
     disposeAccount: () => Action,
 }
@@ -34,7 +34,7 @@ export type AccountState = {
     deviceStatusNotification: ?React$Element<typeof Notification>;
 }
 
-export default class AbstractAccount<P> extends Component<Props & P, AccountState> {
+export default class SelectedAccount<P> extends Component<Props & P, AccountState> {
 
     state: AccountState = {
         device: null,
@@ -44,15 +44,15 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
     };
 
     componentDidMount() {
-        this.props.abstractAccountActions.init();
+        this.props.selectedAccountActions.init();
         this.props.initAccount();
     }
 
     componentWillReceiveProps(props: Props & P) {
         
-        this.props.abstractAccountActions.update( this.props.initAccount );
+        this.props.selectedAccountActions.update( this.props.initAccount );
 
-        const accountState = props.abstractAccount;
+        const accountState = props.selectedAccount;
         if (!accountState) return;
 
         const device = findDevice(props.devices, accountState.deviceId, accountState.deviceState, accountState.deviceInstance);
@@ -83,14 +83,14 @@ export default class AbstractAccount<P> extends Component<Props & P, AccountStat
     }
 
     componentWillUnmount() {
-        this.props.abstractAccountActions.dispose();
+        this.props.selectedAccountActions.dispose();
         this.props.disposeAccount();
     }
 
     render(): ?React$Element<string> {
 
         const props = this.props;
-        const accountState = props.abstractAccount;
+        const accountState = props.selectedAccount;
 
         if (!accountState) {
             return (<section><Notification className="info" title="Loading device..." /></section>);

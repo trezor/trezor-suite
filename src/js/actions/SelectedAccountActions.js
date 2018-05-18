@@ -3,14 +3,14 @@
 
 import * as ACCOUNT from './constants/account';
 
-import { initialState } from '../reducers/AbstractAccountReducer';
+import { initialState } from '../reducers/SelectedAccountReducer';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
 import type { AsyncAction, ThunkAction, Action, GetState, Dispatch, TrezorDevice } from '~/flowtype';
-import type { State } from '../reducers/AbstractAccountReducer';
+import type { State } from '../reducers/SelectedAccountReducer';
 import type { Coin } from '../reducers/LocalStorageReducer';
 
-export type AbstractAccountAction = {
+export type SelectedAccountAction = {
     type: typeof ACCOUNT.INIT,
     state: State
 } | {
@@ -52,15 +52,15 @@ export const init = (): ThunkAction => {
 export const update = (initAccountAction: () => ThunkAction): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const {
-            abstractAccount,
+            selectedAccount,
             router
         } = getState();
 
-        const shouldReload: boolean = (!abstractAccount || router.location.pathname !== abstractAccount.location);
+        const shouldReload: boolean = (!selectedAccount || router.location.pathname !== selectedAccount.location);
         if (shouldReload) {
             dispatch( dispose() );
             dispatch( init() );
-            if (abstractAccount !== null)
+            if (selectedAccount !== null)
                 initAccountAction();
         }
     }

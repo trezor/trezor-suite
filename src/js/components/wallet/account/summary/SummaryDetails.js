@@ -8,7 +8,7 @@ import type { Props as BaseProps } from './index';
 import type { Coin } from '~/js/reducers/LocalStorageReducer';
 
 type Props = {
-    // coin: $PropertyType<$ElementType<BaseProps, 'abstractAccount'>, 'coin'>,
+    // coin: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'coin'>,
     coin: Coin,
     summary: $ElementType<BaseProps, 'summary'>,
     balance: string,

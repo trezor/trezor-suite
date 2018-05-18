@@ -28,7 +28,7 @@ import type {
     RouterLocationState,
     TrezorDevice
 } from '~/flowtype';
-import type { State as AccountState } from '../reducers/AbstractAccountReducer';
+import type { State as AccountState } from '../reducers/SelectedAccountReducer';
 import type { Web3Instance } from '../reducers/Web3Reducer';
 import type { Config, Coin } from '../reducers/LocalStorageReducer';
 import type { Token } from '../reducers/TokensReducer';
@@ -197,7 +197,7 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
 export const init = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
 
         const { location } = getState().router;
@@ -257,7 +257,7 @@ export const toggleAdvanced = (address: string): Action => {
 export const validation = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
 
         const state: State = getState().sendForm;
@@ -438,7 +438,7 @@ export const onAddressChange = (address: string): ThunkAction => {
 export const onAmountChange = (amount: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
         const touched = { ...currentState.touched };
@@ -464,7 +464,7 @@ export const onAmountChange = (amount: string): ThunkAction => {
 
 export const onCurrencyChange = (currency: { value: string, label: string }): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currency.value !== currentState.coinSymbol;
@@ -522,7 +522,7 @@ export const onCurrencyChange = (currency: { value: string, label: string }): Th
 
 export const onSetMax = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
@@ -568,7 +568,7 @@ export const onSetMax = (): ThunkAction => {
 
 export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
@@ -620,7 +620,7 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
 
 export const updateFeeLevels = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
@@ -661,7 +661,7 @@ export const updateFeeLevels = (): ThunkAction => {
 
 export const onGasPriceChange = (gasPrice: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
@@ -714,7 +714,7 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => {
 
 export const onGasLimitChange = (gasLimit: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
@@ -808,7 +808,7 @@ export const onDataChange = (data: string): AsyncAction => {
 const estimateGasPrice = (): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
         const web3instance: ?Web3Instance = getState().web3.filter(w3 => w3.network === accountState.network)[0];
         if (!web3instance) return;
@@ -841,7 +841,7 @@ export const onSend = (): AsyncAction => {
     //return onSendERC20();
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const accountState: ?AccountState = getState().abstractAccount;
+        const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
         
         const currentState: State = getState().sendForm;

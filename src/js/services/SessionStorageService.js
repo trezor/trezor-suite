@@ -38,7 +38,7 @@ const save = (dispatch: Dispatch, getState: GetState): void => {
 
     if (typeof window.sessionStorage === 'undefined') return;
 
-    const accountState = getState().abstractAccount;
+    const accountState = getState().selectedAccount;
     const sendState = getState().sendForm;
     if (accountState && !sendState.untouched) {
         const value = {
@@ -68,7 +68,7 @@ const load = (dispatch: Dispatch, getState: GetState): void => {
 
     if (typeof window.localStorage === 'undefined') return;
 
-    const accountState = getState().abstractAccount;
+    const accountState = getState().selectedAccount;
     const sendState = getState().sendForm;
 
     if (accountState) {
@@ -122,7 +122,7 @@ const load = (dispatch: Dispatch, getState: GetState): void => {
 const clear = (getState: GetState) => {
     if (typeof window.localStorage === 'undefined') return;
 
-    const accountState = getState().abstractAccount;
+    const accountState = getState().selectedAccount;
     if (accountState) {
         const key: string = `SEND:${accountState.location}`;
         window.sessionStorage.removeItem(key);

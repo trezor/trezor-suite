@@ -36,7 +36,7 @@ type StateProps = {
     accounts: $ElementType<State, 'accounts'>,
     devices: $PropertyType<$ElementType<State, 'connect'>, 'devices'>,
     connect: $ElementType<State, 'connect'>,
-    abstractAccount: $ElementType<State, 'abstractAccount'>,
+    selectedAccount: $ElementType<State, 'selectedAccount'>,
     sendForm: $ElementType<State, 'sendForm'>,
     receive: $ElementType<State, 'receive'>,
     localStorage: $ElementType<State, 'localStorage'>,
@@ -128,7 +128,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         accounts: state.accounts,
         devices: state.connect.devices,
         connect: state.connect,
-        abstractAccount: state.abstractAccount,
+        selectedAccount: state.selectedAccount,
         sendForm: state.sendForm,
         receive: state.receive,
         localStorage: state.localStorage

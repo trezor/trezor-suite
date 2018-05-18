@@ -6,13 +6,13 @@ import React, { Component } from 'react';
 import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
 
-import AbstractAccount from '../AbstractAccount';
+import selectedAccount from '../SelectedAccount';
 import { Notification } from '~/js/components/common/Notification';
 
-import type { AccountState } from '../AbstractAccount';
+import type { AccountState } from '../SelectedAccount';
 import type { Props } from './index';
 
-export default class Receive extends AbstractAccount<Props> {
+export default class Receive extends selectedAccount<Props> {
     render() {
         return super.render() || _render(this.props, this.state);
     }

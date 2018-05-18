@@ -6,7 +6,7 @@ import Tooltip from 'rc-tooltip';
 import type { Props as BaseProps } from './index';
 
 type Props = {
-    abstractAccount: $ElementType<BaseProps, 'abstractAccount'>,
+    selectedAccount: $ElementType<BaseProps, 'selectedAccount'>,
     sendForm: $ElementType<BaseProps, 'sendForm'>,
     sendFormActions: $ElementType<BaseProps, 'sendFormActions'>,
     children?: $ElementType<BaseProps, 'children'>,
@@ -14,10 +14,10 @@ type Props = {
 
 const AdvancedForm = (props: Props) => {
 
-    const abstractAccount = props.abstractAccount;
-    if (!abstractAccount) return null;
+    const selectedAccount = props.selectedAccount;
+    if (!selectedAccount) return null;
 
-    const { network } = abstractAccount;
+    const { network } = selectedAccount;
     const { 
         coinSymbol,
         selectedCurrency,

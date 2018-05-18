@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { default as ReceiveActions } from '~/js/actions/ReceiveActions';
-import { default as AbstractAccountActions } from '~/js/actions/AbstractAccountActions';
+import { default as SelectedAccountActions } from '~/js/actions/SelectedAccountActions';
 import * as TokenActions from '~/js/actions/TokenActions';
 import Receive from './Receive';
 
@@ -15,9 +15,9 @@ import type { State, Dispatch } from '~/flowtype';
 import type { 
     StateProps as BaseStateProps,
     DispatchProps as BaseDispatchProps 
-} from '../AbstractAccount';
+} from '../SelectedAccount';
 
-import type { AccountState } from '../AbstractAccount';
+import type { AccountState } from '../SelectedAccount';
 
 type OwnProps = { }
 
@@ -33,7 +33,7 @@ export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
-        abstractAccount: state.abstractAccount,
+        selectedAccount: state.selectedAccount,
         devices: state.connect.devices,
         accounts: state.accounts,
         discovery: state.discovery,
@@ -43,7 +43,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
     return {
-        abstractAccountActions: bindActionCreators(AbstractAccountActions, dispatch),
+        selectedAccountActions: bindActionCreators(SelectedAccountActions, dispatch),
 
         initAccount: bindActionCreators(ReceiveActions.init, dispatch), 
         disposeAccount: bindActionCreators(ReceiveActions.dispose, dispatch),

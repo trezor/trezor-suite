@@ -11,7 +11,7 @@ import notifications from './NotificationReducer.js';
 import modal from './ModalReducer.js';
 import web3 from './Web3Reducer.js';
 import accounts from './AccountsReducer.js';
-import abstractAccount from './AbstractAccountReducer.js';
+import selectedAccount from './SelectedAccountReducer.js';
 import sendForm from './SendFormReducer.js';
 import receive from './ReceiveReducer.js';
 import summary from './SummaryReducer.js';
@@ -30,7 +30,7 @@ const reducers = {
     modal,
     web3,
     accounts,
-    abstractAccount,
+    selectedAccount,
     sendForm,
     receive,
     summary,

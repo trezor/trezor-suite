@@ -7,13 +7,13 @@ import { Async } from 'react-select';
 import Tooltip from 'rc-tooltip';
 
 import { resolveAfter } from '~/js/utils/promiseUtils';
-import AbstractAccount from '../AbstractAccount';
+import SelectedAccount from '../SelectedAccount';
 import { Notification } from '~/js/components/common/Notification';
 import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
 
 import type { Props } from './index';
-import type { AccountState } from '../AbstractAccount';
+import type { AccountState } from '../SelectedAccount';
 
 import type { TrezorDevice } from '~/flowtype';
 import type { NetworkToken } from '~/js/reducers/LocalStorageReducer';
@@ -21,7 +21,7 @@ import type { Account } from '~/js/reducers/AccountsReducer';
 import type { Discovery } from '~/js/reducers/DiscoveryReducer';
 import { findAccountTokens } from '~/js/reducers/TokensReducer';
 
-export default class Summary extends AbstractAccount<Props> {
+export default class Summary extends SelectedAccount<Props> {
     render() {
         return super.render() || _render(this.props, this.state);
     }
@@ -34,13 +34,13 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         account,
         deviceStatusNotification
     } = state;
-    const abstractAccount = props.abstractAccount;
+    const selectedAccount = props.selectedAccount;
 
-    if (!device || !account || !abstractAccount) return <section></section>;
+    if (!device || !account || !selectedAccount) return <section></section>;
 
     
     const tokens = findAccountTokens(props.tokens, account);
-    const explorerLink: string = `${abstractAccount.coin.explorer.address}${account.address}`;
+    const explorerLink: string = `${selectedAccount.coin.explorer.address}${account.address}`;
 
     const tokensTooltip = (
         <div className="tooltip-wrapper">
@@ -53,16 +53,16 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         <section className="summary">
             { deviceStatusNotification }
 
-            <h2 className={ `summary-header ${abstractAccount.network}` }>
-                Account #{ parseInt(abstractAccount.index) + 1 }
+            <h2 className={ `summary-header ${selectedAccount.network}` }>
+                Account #{ parseInt(selectedAccount.index) + 1 }
                 <a href={ explorerLink } className="gray" target="_blank" rel="noreferrer noopener">See full transaction history</a>
             </h2>
 
             <SummaryDetails 
-                coin={ abstractAccount.coin }
+                coin={ selectedAccount.coin }
                 summary={ props.summary } 
                 balance={ account.balance }
-                network={ abstractAccount.network }
+                network={ selectedAccount.network }
                 fiat={ props.fiat }
                 localStorage={ props.localStorage }
                 onToggle={ props.onDetailsToggle } />

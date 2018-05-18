@@ -15,7 +15,7 @@ import type {
 import type { Reducers, ReducersState } from '~/js/reducers';
 
 // Actions
-import type { AbstractAccountAction } from '~/js/actions/AbstractAccountActions';
+import type { SelectedAccountAction } from '~/js/actions/SelectedAccountActions';
 import type { AccountAction } from '~/js/actions/AccountsActions';
 import type { DiscoveryAction } from '~/js/actions/DiscoveryActions';
 import type { StorageAction } from '~/js/actions/LocalStorageActions';
@@ -94,7 +94,7 @@ export type Action =
     | DeviceEventAction
     | UiEventAction
     
-    | AbstractAccountAction
+    | SelectedAccountAction
     | AccountAction
     | DiscoveryAction
     | StorageAction 

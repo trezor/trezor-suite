@@ -7,13 +7,13 @@ import AdvancedForm from './AdvancedForm';
 import PendingTransactions from './PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './FeeSelect';
 import { Notification } from '~/js/components/common/Notification';
-import AbstractAccount from '../AbstractAccount';
+import SelectedAccount from '../SelectedAccount';
 import { findAccountTokens } from '~/js/reducers/TokensReducer';
 
 import type { Props } from './index';
-import type { AccountState } from '../AbstractAccount';
+import type { AccountState } from '../SelectedAccount';
 
-export default class Send extends AbstractAccount<Props> {
+export default class Send extends SelectedAccount<Props> {
     render() {
         return super.render() || _render(this.props, this.state);
     }
@@ -27,12 +27,12 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         discovery,
         deviceStatusNotification
     } = state;
-    const abstractAccount = props.abstractAccount;
+    const selectedAccount = props.selectedAccount;
 
-    if (!device || !account || !discovery || !abstractAccount) return <section></section>;
+    if (!device || !account || !discovery || !selectedAccount) return <section></section>;
 
     const tokens = findAccountTokens(props.tokens, account);
-    const { network } = abstractAccount;
+    const { network } = selectedAccount;
 
     const { 
         address,
@@ -61,7 +61,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
         onSend,
     } = props.sendFormActions;
 
-    const selectedCoin = abstractAccount.coin;
+    const selectedCoin = selectedAccount.coin;
     const fiatRate = props.fiat.find(f => f.network === network);
 
     const tokensSelectData = tokens.map(t => {
@@ -177,7 +177,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
             </div>
 
             <AdvancedForm 
-                abstractAccount={ props.abstractAccount }
+                selectedAccount={ props.selectedAccount }
                 sendForm={ props.sendForm }
                 sendFormActions={ props.sendFormActions }>
                 <button disabled={ buttonDisabled } onClick={ event => onSend() }>{ buttonLabel }</button>
