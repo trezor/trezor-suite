@@ -17,7 +17,4 @@ logs
 *.log
 .yarnclean
 
-# Local config file
-webpack/constants.js
-
 _old
