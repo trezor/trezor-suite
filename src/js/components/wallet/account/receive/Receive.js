@@ -38,7 +38,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     let address = `${account.address.substring(0, 20)}...`;
     let className = 'address hidden';
     let button = (
-        <button disabled={ device.connected && !discovery.completed }>
+        <button disabled={ device.connected && !discovery.completed } onClick={ event => props.showAddress(account.addressPath) }>
             <span>Show full address</span>
         </button>
     );
@@ -67,7 +67,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
                 arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
                 overlay={ tooltip }
                 placement="bottomRight">
-                <button className="white">
+                <button className="white" onClick={ event => props.showAddress(account.addressPath) }>
                     <span></span>
                 </button>
             </Tooltip>
