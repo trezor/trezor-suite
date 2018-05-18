@@ -11,7 +11,7 @@ import * as TokenActions from '~/js/actions/TokenActions';
 import Receive from './Receive';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '~/js/flowtype';
+import type { State, Dispatch } from '~/flowtype';
 import type { 
     StateProps as BaseStateProps,
     DispatchProps as BaseDispatchProps 

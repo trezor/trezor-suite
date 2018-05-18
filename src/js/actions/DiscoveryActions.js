@@ -14,7 +14,7 @@ import EthereumjsUtil from 'ethereumjs-util';
 import { getNonceAsync, getBalanceAsync, getTokenBalanceAsync } from './Web3Actions';
 import { setBalance as setTokenBalance } from './TokenActions';
 
-import type { ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
+import type { ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '~/flowtype';
 import type { Discovery, State } from '../reducers/DiscoveryReducer';
 
 export type DiscoveryAction = {

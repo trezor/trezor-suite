@@ -10,7 +10,7 @@ import { default as AbstractAccountActions } from '~/js/actions/AbstractAccountA
 import SendForm from './SendForm';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '~/js/flowtype';
+import type { State, Dispatch } from '~/flowtype';
 import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../AbstractAccount';
 
 type OwnProps = { }

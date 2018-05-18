@@ -15,7 +15,7 @@ import type {
     Action,
     AsyncAction,
     GetState 
-} from '../flowtype';
+} from '~/flowtype';
 
 const exclude: Array<string> = [
     ADD, OPEN, CLOSE,

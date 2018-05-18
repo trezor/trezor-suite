@@ -8,7 +8,7 @@ import TrezorConnect from 'trezor-connect';
 import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '~/js/flowtype';
+import type { TrezorDevice } from '~/flowtype';
 
 export const DeviceSelect = (props: Props) => {
 

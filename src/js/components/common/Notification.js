@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import * as NOTIFICATION from '~/js/actions/constants/notification';
 import * as NotificationActions from '~/js/actions/NotificationActions';
-import type { Action, State, Dispatch } from '~/js/flowtype';
+import type { Action, State, Dispatch } from '~/flowtype';
 
 type Props = {
     notifications: $ElementType<State, 'notifications'>,

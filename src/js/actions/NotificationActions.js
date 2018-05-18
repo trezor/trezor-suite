@@ -3,7 +3,7 @@
 
 import * as NOTIFICATION from './constants/notification';
 
-import type { Action, AsyncAction, GetState, Dispatch, RouterLocationState } from '../flowtype';
+import type { Action, AsyncAction, GetState, Dispatch, RouterLocationState } from '~/flowtype';
 import type { CallbackAction } from '../reducers/NotificationReducer';
 
 export type NotificationAction = {

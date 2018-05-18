@@ -12,25 +12,25 @@ import type {
     PlainDispatch as ReduxPlainDispatch
 } from 'redux';
 
-import type { Reducers, ReducersState } from '../reducers';
+import type { Reducers, ReducersState } from '~/js/reducers';
 
 // Actions
-import type { AbstractAccountAction } from '../actions/AbstractAccountActions';
-import type { AccountAction } from '../actions/AccountsActions';
-import type { DiscoveryAction } from '../actions/DiscoveryActions';
-import type { StorageAction } from '../actions/LocalStorageActions';
-import type { LogAction } from '../actions/LogActions';
-import type { ModalAction } from '../actions/ModalActions';
-import type { NotificationAction } from '../actions/NotificationActions';
-import type { PendingTxAction } from '../actions/PendingTxActions';
-import type { ReceiveAction } from '../actions/ReceiveActions';
-import type { SendFormAction } from '../actions/SendFormActions';
-import type { SummaryAction } from '../actions/SummaryActions';
-import type { TokenAction } from '../actions/TokenActions';
-import type { TrezorConnectAction } from '../actions/TrezorConnectActions';
-import type { WalletAction } from '../actions/WalletActions';
-import type { Web3Action } from '../actions/Web3Actions';
-import type { FiatRateAction } from '../services/CoinmarketcapService'; // this service has no action file, all is written inside one file
+import type { AbstractAccountAction } from '~/js/actions/AbstractAccountActions';
+import type { AccountAction } from '~/js/actions/AccountsActions';
+import type { DiscoveryAction } from '~/js/actions/DiscoveryActions';
+import type { StorageAction } from '~/js/actions/LocalStorageActions';
+import type { LogAction } from '~/js/actions/LogActions';
+import type { ModalAction } from '~/js/actions/ModalActions';
+import type { NotificationAction } from '~/js/actions/NotificationActions';
+import type { PendingTxAction } from '~/js/actions/PendingTxActions';
+import type { ReceiveAction } from '~/js/actions/ReceiveActions';
+import type { SendFormAction } from '~/js/actions/SendFormActions';
+import type { SummaryAction } from '~/js/actions/SummaryActions';
+import type { TokenAction } from '~/js/actions/TokenActions';
+import type { TrezorConnectAction } from '~/js/actions/TrezorConnectActions';
+import type { WalletAction } from '~/js/actions/WalletActions';
+import type { Web3Action } from '~/js/actions/Web3Actions';
+import type { FiatRateAction } from '~/js/services/CoinmarketcapService'; // this service has no action file, all is written inside one file
 
 import type {
     Device,

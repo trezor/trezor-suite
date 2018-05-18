@@ -11,7 +11,7 @@ import Loader from '~/js/components/common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '~/js/flowtype';
+import type { TrezorDevice } from '~/flowtype';
 
 const AccountSelection = (props: Props): ?React$Element<string> => {
 

@@ -3,7 +3,7 @@
 
 import { RATE_UPDATE } from '../services/CoinmarketcapService';
 
-import type { Action } from '../flowtype';
+import type { Action } from '~/flowtype';
 import type { FiatRateAction } from '../services/CoinmarketcapService';
 
 export type Fiat = {

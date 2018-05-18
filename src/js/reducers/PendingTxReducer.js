@@ -5,7 +5,7 @@ import * as PENDING from '../actions/constants/pendingTx';
 import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
 
-import type { Action } from '../flowtype';
+import type { Action } from '~/flowtype';
 import type { SendTxAction } from '../actions/SendFormActions';
 
 export type PendingTx = {

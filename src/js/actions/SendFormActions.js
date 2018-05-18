@@ -27,7 +27,7 @@ import type {
     AsyncAction,
     RouterLocationState,
     TrezorDevice
-} from '../flowtype';
+} from '~/flowtype';
 import type { State as AccountState } from '../reducers/AbstractAccountReducer';
 import type { Web3Instance } from '../reducers/Web3Reducer';
 import type { Config, Coin } from '../reducers/LocalStorageReducer';

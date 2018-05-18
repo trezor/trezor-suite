@@ -3,7 +3,7 @@
 
 import * as LOG from './constants/log';
 
-import type { Action, ThunkAction, GetState, Dispatch } from '../flowtype';
+import type { Action, ThunkAction, GetState, Dispatch } from '~/flowtype';
 import type { LogEntry } from '../reducers/LogReducer';
 
 export type LogAction = {

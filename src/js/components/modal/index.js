@@ -27,7 +27,7 @@ import * as MODAL from '~/js/actions/constants/modal';
 import * as CONNECT from '~/js/actions/constants/TrezorConnect';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '~/js/flowtype';
+import type { State, Dispatch } from '~/flowtype';
 
 type OwnProps = { }
 

@@ -4,7 +4,7 @@
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
-import type { Action, TrezorDevice } from '../flowtype';
+import type { Action, TrezorDevice } from '~/flowtype';
 import type { Device } from 'trezor-connect';
 
 export type SelectedDevice = {

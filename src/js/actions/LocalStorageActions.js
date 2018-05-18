@@ -9,7 +9,7 @@ import * as STORAGE from './constants/localStorage';
 import * as PENDING from '../actions/constants/pendingTx';
 import { JSONRequest, httpRequest } from '../utils/networkUtils';
 
-import type { ThunkAction, AsyncAction, GetState, Dispatch, TrezorDevice } from '../flowtype';
+import type { ThunkAction, AsyncAction, GetState, Dispatch, TrezorDevice } from '~/flowtype';
 import type { Config, Coin, TokensCollection } from '../reducers/LocalStorageReducer';
 
 import AppConfigJSON from '~/data/appConfig.json';

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { Notification } from '~/js/components/common/Notification';
 import * as TrezorConnectActions from '~/js/actions/TrezorConnectActions';
 
-import type { State, Dispatch } from '~/js/flowtype';
+import type { State, Dispatch } from '~/flowtype';
 type Props = {
     connect: $ElementType<State, 'connect'>,
     acquireDevice: typeof TrezorConnectActions.acquire

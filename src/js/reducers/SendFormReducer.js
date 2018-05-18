@@ -8,7 +8,7 @@ import EthereumjsUnits from 'ethereumjs-units';
 import BigNumber from 'bignumber.js';
 import { getFeeLevels } from '../actions/SendFormActions';
 
-import type { Action } from '../flowtype';
+import type { Action } from '~/flowtype';
 import type { 
     Web3CreateAction,
     Web3UpdateBlockAction,

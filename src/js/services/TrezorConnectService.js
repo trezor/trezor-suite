@@ -24,7 +24,7 @@ import type {
     AsyncAction,
     GetState,
     RouterLocationState
-} from '../flowtype';
+} from '~/flowtype';
 
 const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
 

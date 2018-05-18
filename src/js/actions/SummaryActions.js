@@ -8,7 +8,7 @@ import { resolveAfter } from '../utils/promiseUtils';
 import { initialState } from '../reducers/SummaryReducer';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
-import type { ThunkAction, AsyncAction, Action, GetState, Dispatch } from '../flowtype';
+import type { ThunkAction, AsyncAction, Action, GetState, Dispatch } from '~/flowtype';
 import type { State } from '../reducers/SummaryReducer';
 import type { Token } from '../reducers/TokensReducer';
 

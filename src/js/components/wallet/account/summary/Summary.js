@@ -15,7 +15,7 @@ import SummaryTokens from './SummaryTokens.js';
 import type { Props } from './index';
 import type { AccountState } from '../AbstractAccount';
 
-import type { TrezorDevice } from '~/js/flowtype';
+import type { TrezorDevice } from '~/flowtype';
 import type { NetworkToken } from '~/js/reducers/LocalStorageReducer';
 import type { Account } from '~/js/reducers/AccountsReducer';
 import type { Discovery } from '~/js/reducers/DiscoveryReducer';

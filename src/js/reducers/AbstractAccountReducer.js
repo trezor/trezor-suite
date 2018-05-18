@@ -4,7 +4,7 @@
 import * as ACCOUNT from '../actions/constants/account';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
-import type { Action } from '../flowtype';
+import type { Action } from '~/flowtype';
 import type { Coin } from './LocalStorageReducer';
 
 export type State = {

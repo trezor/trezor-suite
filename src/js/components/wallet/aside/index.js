@@ -12,7 +12,7 @@ import { toggleDeviceDropdown } from '~/js/actions/WalletActions';
 import Aside from './Aside';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '~/js/flowtype';
+import type { State, Dispatch } from '~/flowtype';
 
 type OwnProps = {
     

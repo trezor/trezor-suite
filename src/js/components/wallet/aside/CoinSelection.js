@@ -5,7 +5,7 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '~/js/flowtype';
+import type { TrezorDevice } from '~/flowtype';
 
 const CoinSelection = (props: Props): React$Element<string> => {
     const { location } = props.router;

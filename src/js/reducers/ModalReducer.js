@@ -6,7 +6,7 @@ import * as RECEIVE from '../actions/constants/receive';
 import * as MODAL from '../actions/constants/modal';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
-import type { Action, TrezorDevice } from '../flowtype';
+import type { Action, TrezorDevice } from '~/flowtype';
 
 export type State = {
     opened: false;

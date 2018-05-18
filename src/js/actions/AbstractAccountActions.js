@@ -6,7 +6,7 @@ import * as ACCOUNT from './constants/account';
 import { initialState } from '../reducers/AbstractAccountReducer';
 import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
-import type { AsyncAction, ThunkAction, Action, GetState, Dispatch, TrezorDevice } from '../flowtype';
+import type { AsyncAction, ThunkAction, Action, GetState, Dispatch, TrezorDevice } from '~/flowtype';
 import type { State } from '../reducers/AbstractAccountReducer';
 import type { Coin } from '../reducers/LocalStorageReducer';
 

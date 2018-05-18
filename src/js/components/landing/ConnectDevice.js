@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import TrezorConnect from 'trezor-connect';
 
-import type { State, TrezorDevice } from '~/js/flowtype';
+import type { State, TrezorDevice } from '~/flowtype';
 
 type Props = {
     transport: $PropertyType<$ElementType<State, 'connect'>, 'transport'>;

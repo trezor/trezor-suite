@@ -11,7 +11,7 @@ import * as SummaryActions from '~/js/actions/SummaryActions';
 import * as TokenActions from '~/js/actions/TokenActions';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '~/js/flowtype';
+import type { State, Dispatch } from '~/flowtype';
 import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../AbstractAccount';
 
 type OwnProps = { }

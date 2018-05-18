@@ -25,9 +25,9 @@ import type {
     Action,
     AsyncAction,
     GetState 
-} from '../flowtype';
+} from '~/flowtype';
 
-import type { TrezorDevice } from '../flowtype';
+import type { TrezorDevice } from '~/flowtype';
 import type { Account } from '../reducers/AccountsReducer';
 import type { Token } from '../reducers/TokensReducer';
 import type { PendingTx } from '../reducers/PendingTxReducer';

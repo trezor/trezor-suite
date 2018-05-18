@@ -18,7 +18,7 @@ import type {
     GetState,
     Action,
     AsyncAction,
-} from '../flowtype';
+} from '~/flowtype';
 import type { ContractFactory, EstimateGasOptions } from 'web3';
 import type BigNumber from 'bignumber.js';
 

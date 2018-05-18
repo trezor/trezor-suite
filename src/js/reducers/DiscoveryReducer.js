@@ -7,7 +7,7 @@ import * as DISCOVERY from '../actions/constants/discovery';
 import * as ACCOUNT from '../actions/constants/account';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
-import type { Action, TrezorDevice } from '../flowtype';
+import type { Action, TrezorDevice } from '~/flowtype';
 import type { 
     DiscoveryStartAction,
     DiscoveryWaitingAction,

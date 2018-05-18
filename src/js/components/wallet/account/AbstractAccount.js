@@ -8,7 +8,7 @@ import { findDevice } from '~/js/reducers/TrezorConnectReducer';
 // import * as AbstractAccountActions from '~/js/actions/AbstractAccountActions';
 import { default as AbstractAccountActions } from '~/js/actions/AbstractAccountActions';
 
-import type { State, TrezorDevice, Action, ThunkAction } from '~/js/flowtype';
+import type { State, TrezorDevice, Action, ThunkAction } from '~/flowtype';
 import type { Account } from '~/js/reducers/AccountsReducer';
 import type { Discovery } from '~/js/reducers/DiscoveryReducer';
 

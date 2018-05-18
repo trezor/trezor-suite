@@ -13,7 +13,7 @@ import StickyContainer from './StickyContainer';
 import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '~/js/flowtype';
+import type { TrezorDevice } from '~/flowtype';
 
 
 type TransitionMenuProps = {

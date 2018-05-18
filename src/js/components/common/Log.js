@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as LogActions from '~/js/actions/LogActions';
-import type { State, Dispatch } from '~/js/flowtype';
+import type { State, Dispatch } from '~/flowtype';
 
 type Props = {
     log: $ElementType<State, 'log'>,

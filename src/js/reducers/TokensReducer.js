@@ -4,7 +4,7 @@
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as TOKEN from '../actions/constants/token';
 
-import type { Action, TrezorDevice } from '../flowtype';
+import type { Action, TrezorDevice } from '~/flowtype';
 import type { Account } from './AccountsReducer';
 
 export type Token = {

@@ -19,7 +19,7 @@ import type {
     GetState,
     RouterLocationState,
     TrezorDevice
-} from '../flowtype';
+} from '~/flowtype';
 
 /**
  * Middleware used for init application and managing router path.
