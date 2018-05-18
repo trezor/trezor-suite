@@ -6,7 +6,7 @@ import { render } from 'react-dom';
 import store from './store';
 import router from './router';
 import { onBeforeUnload } from './actions/WalletActions';
-import styles from '../styles/index.less';
+import styles from '~/styles/index.less';
 
 const root: ?HTMLElement = document.getElementById('root');
 if (root) {

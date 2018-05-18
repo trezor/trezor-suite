@@ -12,6 +12,9 @@ import { JSONRequest, httpRequest } from '../utils/networkUtils';
 import type { ThunkAction, AsyncAction, GetState, Dispatch, TrezorDevice } from '../flowtype';
 import type { Config, Coin, TokensCollection } from '../reducers/LocalStorageReducer';
 
+import AppConfigJSON from '~/data/appConfig.json';
+import Erc20AbiJSON from '~/data/ERC20Abi.json';
+
 export type StorageAction = {
     type: typeof STORAGE.READY,
     config: Config,
@@ -85,8 +88,8 @@ export function loadTokensFromJSON(): AsyncAction {
         if (typeof window.localStorage === 'undefined') return;
 
         try {
-            const config: Config = await httpRequest('data/appConfig.json', 'json');
-            const ERC20Abi = await httpRequest('data/ERC20Abi.json', 'json');
+            const config: Config = await httpRequest(AppConfigJSON, 'json');
+            const ERC20Abi = await httpRequest(Erc20AbiJSON, 'json');
 
             window.addEventListener('storage', event => {
                 dispatch( update(event) );

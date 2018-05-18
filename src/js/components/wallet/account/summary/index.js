@@ -6,14 +6,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import Summary from './Summary';
-import { default as AbstractAccountActions } from '../../../actions/AbstractAccountActions';
-import * as SummaryActions from '../../../actions/SummaryActions';
-import * as TokenActions from '../../../actions/TokenActions';
+import { default as AbstractAccountActions } from '../../../../actions/AbstractAccountActions';
+import * as SummaryActions from '../../../../actions/SummaryActions';
+import * as TokenActions from '../../../../actions/TokenActions';
 
-import type { ActionCreators } from 'redux';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '../../../flowtype';
-import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../account/AbstractAccount';
+import type { State, Dispatch } from '../../../../flowtype';
+import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../AbstractAccount';
 
 type OwnProps = { }
 

@@ -5,17 +5,17 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { default as SendFormActions } from '../../../actions/SendFormActions';
-import { default as AbstractAccountActions } from '../../../actions/AbstractAccountActions';
+import { default as SendFormActions } from '../../../../actions/SendFormActions';
+import { default as AbstractAccountActions } from '../../../../actions/AbstractAccountActions';
 import SendForm from './SendForm';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '../../../flowtype';
-import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../account/AbstractAccount';
+import type { State, Dispatch } from '../../../../flowtype';
+import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../AbstractAccount';
 
 type OwnProps = { }
 
-type StateProps = BaseStateProps & {
+export type StateProps = BaseStateProps & {
     tokens: $ElementType<State, 'tokens'>,
     pending: $ElementType<State, 'pending'>,
     sendForm: $ElementType<State, 'sendForm'>,
@@ -24,7 +24,7 @@ type StateProps = BaseStateProps & {
     children?: React.Node;
 }
 
-type DispatchProps = BaseDispatchProps & {
+export type DispatchProps = BaseDispatchProps & {
     sendFormActions: typeof SendFormActions
 }
 

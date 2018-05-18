@@ -2,37 +2,17 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
 import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
 
-import AbstractAccount from './account/AbstractAccount';
-import { Notification } from '../common/Notification';
-import { default as ReceiveActions } from '../../actions/ReceiveActions';
-import { default as AbstractAccountActions } from '../../actions/AbstractAccountActions';
+import AbstractAccount from '../AbstractAccount';
+import { Notification } from '../../../common/Notification';
 
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '../../flowtype';
-import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from './account/AbstractAccount';
+import type { AccountState } from '../AbstractAccount';
+import type { Props } from './index';
 
-import type { AccountState } from './account/AbstractAccount';
-
-type OwnProps = { }
-
-type StateProps = BaseStateProps & {
-    receive: $ElementType<State, 'receive'>,
-}
-
-type DispatchProps = BaseDispatchProps & {
-    showAddress: typeof ReceiveActions.showAddress
-}
-
-type Props = StateProps & DispatchProps;
-
-
-class Receive extends AbstractAccount<Props> {
+export default class Receive extends AbstractAccount<Props> {
     render() {
         return super.render() || _render(this.props, this.state);
     }
@@ -58,7 +38,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
     let address = `${account.address.substring(0, 20)}...`;
     let className = 'address hidden';
     let button = (
-        <button disabled={ device.connected && !discovery.completed } onClick={ event => props.showAddress(account.addressPath) }>
+        <button disabled={ device.connected && !discovery.completed }>
             <span>Show full address</span>
         </button>
     );
@@ -87,7 +67,7 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
                 arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
                 overlay={ tooltip }
                 placement="bottomRight">
-                <button className="white" onClick={ event => props.showAddress(account.addressPath) }>
+                <button className="white">
                     <span></span>
                 </button>
             </Tooltip>
@@ -108,27 +88,4 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
             { qrCode }
         </section>
     );
-
-
 }
-
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
-    return {
-        abstractAccount: state.abstractAccount,
-        devices: state.connect.devices,
-        accounts: state.accounts,
-        discovery: state.discovery,
-        receive: state.receive
-    };
-}
-
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
-    return {
-        abstractAccountActions: bindActionCreators(AbstractAccountActions, dispatch),
-        initAccount: bindActionCreators(ReceiveActions.init, dispatch), 
-        disposeAccount: bindActionCreators(ReceiveActions.dispose, dispatch),
-        showAddress: bindActionCreators(ReceiveActions.showAddress, dispatch),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Receive);

@@ -5,14 +5,16 @@ import React from 'react';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
 
-import { findAccountTokens } from '../../../reducers/TokensReducer';
+import { findAccountTokens } from '../../../../reducers/TokensReducer';
 
-import type { Props as ParentProps } from './index';
-import type { Coin } from '../../../reducers/LocalStorageReducer';
-import type { Account } from '../../../reducers/AccountsReducer';
-import type { Token } from '../../../reducers/TokensReducer';
+import type { Coin } from '../../../../reducers/LocalStorageReducer';
+import type { Account } from '../../../../reducers/AccountsReducer';
+import type { Token } from '../../../../reducers/TokensReducer';
+import type { Props as BaseProps } from './index';
 
-type Props = ParentProps & {
+type Props = {
+    pending: $ElementType<BaseProps, 'pending'>,
+    tokens: $ElementType<BaseProps, 'tokens'>,
     account: Account,
     selectedCoin: Coin
 }

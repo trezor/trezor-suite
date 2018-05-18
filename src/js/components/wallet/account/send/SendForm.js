@@ -6,19 +6,18 @@ import Select from 'react-select';
 import AdvancedForm from './AdvancedForm';
 import PendingTransactions from './PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './FeeSelect';
-import { Notification } from '../../common/Notification';
-import AbstractAccount from '../account/AbstractAccount';
-import { findAccountTokens } from '../../../reducers/TokensReducer';
+import { Notification } from '../../../common/Notification';
+import AbstractAccount from '../AbstractAccount';
+import { findAccountTokens } from '../../../../reducers/TokensReducer';
 
 import type { Props } from './index';
-import type { AccountState } from '../account/AbstractAccount';
+import type { AccountState } from '../AbstractAccount';
 
 export default class Send extends AbstractAccount<Props> {
     render() {
         return super.render() || _render(this.props, this.state);
     }
 }
-
 
 const _render = (props: Props, state: AccountState): React$Element<string> => {
 
@@ -177,12 +176,16 @@ const _render = (props: Props, state: AccountState): React$Element<string> => {
                     options={ feeLevels } />
             </div>
 
-            <AdvancedForm { ...props}>
+            <AdvancedForm 
+                abstractAccount={ props.abstractAccount }
+                sendForm={ props.sendForm }
+                sendFormActions={ props.sendFormActions }>
                 <button disabled={ buttonDisabled } onClick={ event => onSend() }>{ buttonLabel }</button>
             </AdvancedForm>
 
             <PendingTransactions 
-                { ...props } 
+                pending={ props.pending }
+                tokens={ props.tokens }
                 account={ account }
                 selectedCoin={ selectedCoin } />
     

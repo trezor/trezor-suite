@@ -3,7 +3,14 @@
 
 import React from 'react';
 import Tooltip from 'rc-tooltip';
-import type { Props } from './index';
+import type { Props as BaseProps } from './index';
+
+type Props = {
+    abstractAccount: $ElementType<BaseProps, 'abstractAccount'>,
+    sendForm: $ElementType<BaseProps, 'sendForm'>,
+    sendFormActions: $ElementType<BaseProps, 'sendFormActions'>,
+    children?: $ElementType<BaseProps, 'children'>,
+};
 
 const AdvancedForm = (props: Props) => {
 

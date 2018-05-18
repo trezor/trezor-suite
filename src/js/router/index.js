@@ -9,16 +9,16 @@ import store, { history } from '../store';
 
 import LandingPageContainer from '../components/landing';
 import WalletContainer from '../components/wallet';
-import BootloaderContainer from '../components/wallet/Bootloader';
-import AcquireContainer from '../components/wallet/Acquire';
+import BootloaderContainer from '../components/wallet/pages/Bootloader';
+import AcquireContainer from '../components/wallet/pages/Acquire';
 
-import DashboardContainer from '../components/wallet/Dashboard';
-import SummaryContainer from '../components/wallet/summary';
-import SendFormContainer from '../components/wallet/send';
-import ReceiveContainer from '../components/wallet/Receive';
-import SignVerifyContainer from '../components/wallet/SignVerify';
-import DeviceSettingsContainer from '../components/wallet/DeviceSettings';
-import WalletSettingsContainer from '../components/wallet/WalletSettings';
+import DashboardContainer from '../components/wallet/pages/Dashboard';
+import SummaryContainer from '../components/wallet/account/summary';
+import SendFormContainer from '../components/wallet/account/send';
+import ReceiveContainer from '../components/wallet/account/receive';
+import SignVerifyContainer from '../components/wallet/account/sign/SignVerify';
+import DeviceSettingsContainer from '../components/wallet/pages/DeviceSettings';
+import WalletSettingsContainer from '../components/wallet/pages/WalletSettings';
 
 export default (
     <Provider store={ store }>

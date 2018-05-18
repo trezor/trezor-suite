@@ -9,7 +9,7 @@ import { Route, withRouter } from 'react-router-dom';
 import Header from '../common/Header';
 import Footer from '../common/Footer';
 import AccountTabs from './account/AccountTabs';
-import DeviceSettingsTabs from './account/DeviceSettingsTabs';
+import DeviceSettingsTabs from './pages/DeviceSettingsTabs';
 import AsideContainer from './aside';
 import ModalContainer from '../modal';
 import Notifications from '../common/Notification';
