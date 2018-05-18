@@ -2,7 +2,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { getNewInstance } from '../../reducers/TrezorConnectReducer'
+import { getNewInstance } from '~/js/reducers/TrezorConnectReducer'
 import type { Props } from './index';
 
 type State = {

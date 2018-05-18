@@ -6,9 +6,9 @@ import Select from 'react-select';
 import AdvancedForm from './AdvancedForm';
 import PendingTransactions from './PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './FeeSelect';
-import { Notification } from '../../../common/Notification';
+import { Notification } from '~/js/common/Notification';
 import AbstractAccount from '../AbstractAccount';
-import { findAccountTokens } from '../../../../reducers/TokensReducer';
+import { findAccountTokens } from '~/js/reducers/TokensReducer';
 
 import type { Props } from './index';
 import type { AccountState } from '../AbstractAccount';

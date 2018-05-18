@@ -10,10 +10,10 @@ import { DeviceSelect, DeviceDropdown } from './DeviceSelection';
 import AccountSelection from './AccountSelection';
 import CoinSelection from './CoinSelection';
 import StickyContainer from './StickyContainer';
-import { findSelectedDevice } from '../../../reducers/TrezorConnectReducer';
+import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '../../../flowtype';
+import type { TrezorDevice } from '~/js/flowtype';
 
 
 type TransitionMenuProps = {

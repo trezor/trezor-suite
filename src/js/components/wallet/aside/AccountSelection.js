@@ -5,13 +5,13 @@ import React, { PureComponent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 
-import { findDeviceAccounts } from '../../../reducers/AccountsReducer';
-import { findSelectedDevice } from '../../../reducers/TrezorConnectReducer';
-import Loader from '../../common/LoaderCircle';
+import { findDeviceAccounts } from '~/js/reducers/AccountsReducer';
+import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
+import Loader from '~/js/common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '../../../flowtype';
+import type { TrezorDevice } from '~/js/flowtype';
 
 const AccountSelection = (props: Props): ?React$Element<string> => {
 

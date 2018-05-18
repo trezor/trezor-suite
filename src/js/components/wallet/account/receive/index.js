@@ -5,13 +5,13 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { default as ReceiveActions } from '../../../../actions/ReceiveActions';
-import { default as AbstractAccountActions } from '../../../../actions/AbstractAccountActions';
-import * as TokenActions from '../../../../actions/TokenActions';
+import { default as ReceiveActions } from '~/js/actions/ReceiveActions';
+import { default as AbstractAccountActions } from '~/js/actions/AbstractAccountActions';
+import * as TokenActions from '~/js/actions/TokenActions';
 import Receive from './Receive';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '../../../../flowtype';
+import type { State, Dispatch } from '~/js/flowtype';
 import type { 
     StateProps as BaseStateProps,
     DispatchProps as BaseDispatchProps 

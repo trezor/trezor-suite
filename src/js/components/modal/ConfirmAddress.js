@@ -2,8 +2,8 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { findAccount } from '../../reducers/AccountsReducer';
-import { findSelectedDevice } from '../../reducers/TrezorConnectReducer';
+import { findAccount } from '~/js/reducers/AccountsReducer';
+import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 
 import type { Props } from './index';
 

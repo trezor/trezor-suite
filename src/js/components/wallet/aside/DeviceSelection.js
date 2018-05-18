@@ -5,10 +5,10 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import TrezorConnect from 'trezor-connect';
 
-import { findSelectedDevice } from '../../../reducers/TrezorConnectReducer';
+import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '../../../flowtype';
+import type { TrezorDevice } from '~/js/flowtype';
 
 export const DeviceSelect = (props: Props) => {
 

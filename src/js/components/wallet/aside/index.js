@@ -6,13 +6,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import * as TrezorConnectActions from '../../../actions/TrezorConnectActions';
-import { toggleDeviceDropdown } from '../../../actions/WalletActions';
+import * as TrezorConnectActions from '~/js/actions/TrezorConnectActions';
+import { toggleDeviceDropdown } from '~/js/actions/WalletActions';
 
 import Aside from './Aside';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '../../../flowtype';
+import type { State, Dispatch } from '~/js/flowtype';
 
 type OwnProps = {
     

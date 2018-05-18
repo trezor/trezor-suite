@@ -2,15 +2,15 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Notification } from '../../common/Notification';
-import { findDevice } from '../../../reducers/TrezorConnectReducer';
+import { Notification } from '~/js/common/Notification';
+import { findDevice } from '~/js/reducers/TrezorConnectReducer';
 
-// import * as AbstractAccountActions from '../../actions/AbstractAccountActions';
-import { default as AbstractAccountActions } from '../../../actions/AbstractAccountActions';
+// import * as AbstractAccountActions from '~/js/actions/AbstractAccountActions';
+import { default as AbstractAccountActions } from '~/js/actions/AbstractAccountActions';
 
-import type { State, TrezorDevice, Action, ThunkAction } from '../../../flowtype';
-import type { Account } from '../../../reducers/AccountsReducer';
-import type { Discovery } from '../../../reducers/DiscoveryReducer';
+import type { State, TrezorDevice, Action, ThunkAction } from '~/js/flowtype';
+import type { Account } from '~/js/reducers/AccountsReducer';
+import type { Discovery } from '~/js/reducers/DiscoveryReducer';
 
 export type StateProps = {
     abstractAccount: $ElementType<State, 'abstractAccount'>,

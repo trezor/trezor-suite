@@ -6,20 +6,20 @@ import BigNumber from 'bignumber.js';
 import { Async } from 'react-select';
 import Tooltip from 'rc-tooltip';
 
-import { resolveAfter } from '../../../../utils/promiseUtils';
+import { resolveAfter } from '~/js/utils/promiseUtils';
 import AbstractAccount from '../AbstractAccount';
-import { Notification } from '../../../common/Notification';
+import { Notification } from '~/js/common/Notification';
 import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
 
 import type { Props } from './index';
 import type { AccountState } from '../AbstractAccount';
 
-import type { TrezorDevice } from '../../../../flowtype';
-import type { NetworkToken } from '../../../../reducers/LocalStorageReducer';
-import type { Account } from '../../../../reducers/AccountsReducer';
-import type { Discovery } from '../../../../reducers/DiscoveryReducer';
-import { findAccountTokens } from '../../../../reducers/TokensReducer';
+import type { TrezorDevice } from '~/js/flowtype';
+import type { NetworkToken } from '~/js/reducers/LocalStorageReducer';
+import type { Account } from '~/js/reducers/AccountsReducer';
+import type { Discovery } from '~/js/reducers/DiscoveryReducer';
+import { findAccountTokens } from '~/js/reducers/TokensReducer';
 
 export default class Summary extends AbstractAccount<Props> {
     render() {

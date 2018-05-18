@@ -5,11 +5,11 @@ import React from 'react';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
 
-import { findAccountTokens } from '../../../../reducers/TokensReducer';
+import { findAccountTokens } from '~/js/reducers/TokensReducer';
 
-import type { Coin } from '../../../../reducers/LocalStorageReducer';
-import type { Account } from '../../../../reducers/AccountsReducer';
-import type { Token } from '../../../../reducers/TokensReducer';
+import type { Coin } from '~/js/reducers/LocalStorageReducer';
+import type { Account } from '~/js/reducers/AccountsReducer';
+import type { Token } from '~/js/reducers/TokensReducer';
 import type { Props as BaseProps } from './index';
 
 type Props = {

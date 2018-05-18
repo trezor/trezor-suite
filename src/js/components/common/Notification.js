@@ -5,9 +5,9 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as NOTIFICATION from '../../actions/constants/notification';
-import * as NotificationActions from '../../actions/NotificationActions';
-import type { Action, State, Dispatch } from '../../flowtype';
+import * as NOTIFICATION from '~/js/actions/constants/notification';
+import * as NotificationActions from '~/js/actions/NotificationActions';
+import type { Action, State, Dispatch } from '~/js/flowtype';
 
 type Props = {
     notifications: $ElementType<State, 'notifications'>,

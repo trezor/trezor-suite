@@ -3,7 +3,7 @@
 
 import React, { Component } from 'react';
 import raf from 'raf';
-import { findSelectedDevice } from '../../reducers/TrezorConnectReducer';
+import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 
 import type { Props } from './index';
 type State = {

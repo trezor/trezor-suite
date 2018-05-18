@@ -5,8 +5,8 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as LogActions from '../../actions/LogActions';
-import type { State, Dispatch } from '../../flowtype';
+import * as LogActions from '~/js/actions/LogActions';
+import type { State, Dispatch } from '~/js/flowtype';
 
 type Props = {
     toggle: typeof LogActions.toggle
