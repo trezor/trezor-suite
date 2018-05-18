@@ -118,7 +118,7 @@ const onBalanceUpdated = (state: State, action: any): State => {
     //     }
     // }
 
-    // TODO: handle balance update during send form lifecycle
+    // TODO: handle balance update during send form life cycle
     return state;
 }
 

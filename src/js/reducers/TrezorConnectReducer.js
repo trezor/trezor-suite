@@ -382,7 +382,7 @@ export default function connect(state: State = initialState, action: Action): St
 
     switch (action.type) {
 
-        // TODO: change it to UiMessgae from trezor-connect
+        // TODO: change it to UiMessage from trezor-connect
         case 'iframe_handshake' : 
             return {
                 ...state,
