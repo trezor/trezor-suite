@@ -7,6 +7,7 @@ import * as CONNECT from './constants/TrezorConnect';
 
 import type { ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice } from '~/flowtype';
 import type { State } from '../reducers/ModalReducer';
+import type { Device } from 'trezor-connect';
 
 export type ModalAction = {
     type: typeof MODAL.CLOSE
@@ -104,6 +105,27 @@ export const onRememberRequest = (prevState: State): ThunkAction => {
                 device: prevState.device
             });
         }
+    }
+}
+
+export const onDeviceConnect = (device: Device): ThunkAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
+        // interrupt process of remembering device (force forget)
+        // TODO: the same for disconnect more than 1 device at once
+        const { modal } = getState();
+        if (modal.opened && modal.windowType === CONNECT.REMEMBER_REQUEST) {
+            if (device.features && modal.device && modal.device.features && modal.device.features.device_id === device.features.device_id) {
+                dispatch({
+                    type: MODAL.CLOSE,
+                });
+            } else {
+                dispatch({
+                    type: CONNECT.FORGET,
+                    device: modal.device
+                });
+            }
+        }
+
     }
 }
 
