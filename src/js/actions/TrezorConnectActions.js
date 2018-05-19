@@ -51,7 +51,8 @@ export type TrezorConnectAction = {
     }
 } | {
     type: typeof CONNECT.AUTH_DEVICE,
-    device: TrezorDevice
+    device: TrezorDevice,
+    state: string
 } | {
     type: typeof CONNECT.DUPLICATE,
     device: TrezorDevice
