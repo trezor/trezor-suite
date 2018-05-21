@@ -90,7 +90,7 @@
             ],
             "explorer": {
                 "tx": "https://rinkeby.etherscan.io/tx/",
-                "tx": "https://rinkeby.etherscan.io/address/"
+                "address": "https://rinkeby.etherscan.io/address/"
             }
         }
     ],
