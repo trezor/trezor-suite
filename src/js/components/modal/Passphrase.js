@@ -123,13 +123,12 @@ export default class PinModal extends Component<Props, State> {
 
         if (this.passphraseInput) {
             this.passphraseInput.value = passphraseInputValue;
-            this.passphraseInput.setAttribute("type", visible ? "text" : "password");
+            this.passphraseInput.setAttribute("type", visible || (!visible && !passphraseFocused) ? "text" : "password");
         }
         if (this.passphraseRevisionInput) {
             this.passphraseRevisionInput.value = passphraseRevisionInputValue;
-            this.passphraseRevisionInput.setAttribute("type", visible ? "text" : "password");
+            this.passphraseRevisionInput.setAttribute("type", visible || (!visible && !passphraseRevisionFocused) ? "text" : "password");
         }
-            
     }
 
     onPassphraseChange = (input: string, value: string): void => {
