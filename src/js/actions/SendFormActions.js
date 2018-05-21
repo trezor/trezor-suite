@@ -590,7 +590,11 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
             if (customLevel)
                 customLevel.label = '';
             state.gasPrice = feeLevel.gasPrice;
-            state.gasLimit = isToken ? coin.defaultGasLimitTokens.toString() : coin.defaultGasLimit.toString();
+            if (isToken) {
+                state.gasLimit = coin.defaultGasLimitTokens.toString()
+            } else {
+                state.gasLimit = state.data.length > 0 ? state.gasLimit : coin.defaultGasLimit.toString();
+            }
         }
 
         if (currentState.setMax) {
@@ -817,7 +821,7 @@ const estimateGasPrice = (): AsyncAction => {
 
         const data: string = '0x' + (currentState.data.length % 2 === 0 ? currentState.data : '0' + currentState.data);
         const gasLimit = await estimateGas(web3instance.web3, {
-            to: '0xdb6e09ddca62d0959dc4725697e66b8152222aee', // TODO: real adress
+            to: '0x0000000000000000000000000000000000000000',
             data,
             value: web3.toHex(web3.toWei(currentState.amount, 'ether')),
             gasPrice: web3.toHex( EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei') ),
