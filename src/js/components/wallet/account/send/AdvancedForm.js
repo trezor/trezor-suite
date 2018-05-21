@@ -82,7 +82,7 @@ const AdvancedForm = (props: Props) => {
         <div className="advanced-container opened">
             <a className="advanced" onClick={ toggleAdvanced }>Advanced settings</a>
             <div className="row gas-row">
-                <div className="column nonce">
+                {/* <div className="column nonce">
                     <label>
                         Nonce
                         <Tooltip
@@ -102,7 +102,7 @@ const AdvancedForm = (props: Props) => {
                         onChange={ event => onNonceChange(event.target.value) } />
                     { errors.nonce ? (<span className="error">{ errors.nonce }</span>) : null }
                     { warnings.nonce ? (<span className="warning">{ warnings.nonce }</span>) : null }
-                </div>
+                </div> */}
                 <div className="column">
                     <label>
                         Gas limit 
