@@ -292,7 +292,8 @@ export const getSelectedDeviceState = (): AsyncAction => {
                     path: selected.path,
                     instance: selected.instance,
                     state: selected.state
-                }
+                },
+                useEmptyPassphrase: !selected.instance,
             });
 
             if (response && response.success) {
@@ -383,7 +384,8 @@ export function acquire(): AsyncAction {
         const response = await TrezorConnect.getFeatures({ 
             device: {
                 path: selected.path,
-            }
+            },
+            useEmptyPassphrase: !selected.instance,
         });
 
         if (!response.success) {

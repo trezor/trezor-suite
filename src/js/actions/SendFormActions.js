@@ -902,7 +902,7 @@ export const onSend = (): AsyncAction => {
                 instance: selected.instance,
                 state: selected.state
             },
-            //path: "m/44'/60'/0'/0/0",
+            useEmptyPassphrase: !selected.instance,
             path: txData.address_n,
             nonce: strip(txData.nonce),
             gasPrice: strip(txData.gasPrice),

@@ -73,6 +73,7 @@ export const showAddress = (address_n: Array<number>): AsyncAction => {
                 state: selected.state
             },
             path: address_n,
+            useEmptyPassphrase: !selected.instance,
         });
 
         if (response && response.success) {

@@ -140,9 +140,10 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => {
                 path: device.path,
                 instance: device.instance,
                 state: device.state
-            }, 
+            },
             path: coinToDiscover.bip44, 
-            keepSession: true // acquire and hold session
+            keepSession: true, // acquire and hold session
+            useEmptyPassphrase: !device.instance,
         });
 
         // handle TREZOR response error
@@ -214,7 +215,8 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
             },
             path,
             showOnTrezor: false,
-            keepSession: true
+            keepSession: true,
+            useEmptyPassphrase: !device.instance,
         });
         if (discoveryProcess.interrupted) return;
 
@@ -312,7 +314,8 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
                     instance: device.instance,
                     state: device.state
                 },
-                keepSession: false
+                keepSession: false,
+                useEmptyPassphrase: !device.instance,
             });
             if (discoveryProcess.interrupted) return;
 
