@@ -10,6 +10,7 @@ import store, { history } from '../store';
 import LandingPageContainer from '../components/landing';
 import WalletContainer from '../components/wallet';
 import BootloaderContainer from '../components/wallet/pages/Bootloader';
+import InitializeContainer from '../components/wallet/pages/Initialize';
 import AcquireContainer from '../components/wallet/pages/Acquire';
 
 import DashboardContainer from '../components/wallet/pages/Dashboard';
@@ -34,6 +35,7 @@ export default (
                         <Route exact path="/device/:device/network/:network" component={ DashboardContainer } />
                         <Route exact path="/device/:device/acquire" component={ AcquireContainer } />
                         <Route exact path="/device/:device/bootloader" component={ BootloaderContainer } />
+                        <Route exact path="/device/:device/initialize" component={ InitializeContainer } />
                         <Route exact path="/device/:device/settings" component={ DeviceSettingsContainer } />
                         <Route exact path="/device/:device/network/:network/account/:account" component={ SummaryContainer } />
                         <Route path="/device/:device/network/:network/account/:account/send" component={ SendFormContainer } />

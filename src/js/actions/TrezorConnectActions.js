@@ -220,6 +220,8 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => {
             dispatch( push(`/device/${ device.path }/acquire`) );
         } else if (device.features.bootloader_mode) {
             dispatch( push(`/device/${ device.path }/bootloader`) );
+        } else if (!device.features.initialized) {
+            dispatch( push(`/device/${ device.features.device_id }/initialize`) );
         } else if (typeof device.instance === 'number') {
             dispatch( push(`/device/${ device.features.device_id }:${ device.instance }`) );
         } else {
@@ -284,7 +286,7 @@ export const getSelectedDeviceState = (): AsyncAction => {
         const selected = findSelectedDevice(getState().connect);
         if (selected 
             && selected.connected
-            && selected.features
+            && (selected.features && !selected.features.bootloader_mode && selected.features.initialized)
             && !selected.state) {
 
             const response = await TrezorConnect.getDeviceState({ 

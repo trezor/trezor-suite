@@ -56,7 +56,7 @@ const Aside = (props: Props): React$Element<typeof StickyContainer | string> => 
                 <AccountSelection { ...props} />
             </TransitionMenu>
         );
-    } else if (!selected.unacquired) {
+    } else if (selected.features && !selected.features.bootloader_mode && selected.features.initialized) {
         menu = (
             <TransitionMenu animationType={ "slide-right" }>
                 <CoinSelection { ...props} />

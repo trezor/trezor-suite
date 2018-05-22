@@ -48,7 +48,9 @@ export const findSelectedDevice = (state: State): ?TrezorDevice => {
     return state.devices.find(d => {
         if (d.unacquired && d.path === selected.id) {
             return true;
-        } else if (d.features && d.features.device_id === selected.id && d.instance === selected.instance){
+        } else if (d.features && d.features.bootloader_mode && d.path === selected.id) {
+            return true;
+        } else if (d.features && d.features.device_id === selected.id && d.instance === selected.instance) {
             return true;
         }
         return false;
