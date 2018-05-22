@@ -177,7 +177,6 @@ export class DeviceDropdown extends Component<Props> {
         }
 
         const deviceList = devices.map((dev, index) => {
-            console.warn("DEVEEE", dev, selected, dev === selected);
             if (dev === selected) return null;
 
             let deviceStatus: string = "Connected";

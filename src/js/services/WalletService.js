@@ -54,7 +54,6 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     if (locationChange || prevState.connect.devices !== state.connect.devices) {
         const device = getSelectedDevice(state);
         if (state.wallet.selectedDevice !== device) {
-            console.warn("UPDATE SELECTED DEVICE!", state.router.location.state)
             api.dispatch({
                 type: WALLET.SET_SELECTED_DEVICE,
                 device
