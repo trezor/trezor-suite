@@ -7,8 +7,11 @@ import { connect } from 'react-redux';
 
 const Bootloader = () => {
     return (
-        <section className="acquire">
-            <h3>Bootloader mode</h3>
+        <section className="device-settings">
+            <div className="row">
+                <h2>Your device is in firmware update mode</h2>
+                <p>Please re-connect it</p>
+            </div>
         </section>
     );
 }
