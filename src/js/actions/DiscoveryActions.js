@@ -192,20 +192,16 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => {
 const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
+        const completed: boolean = discoveryProcess.completed;
+        discoveryProcess.completed = false;
+
         const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
         const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
         const publicAddress: string = EthereumjsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex');
         const ethAddress: string = EthereumjsUtil.toChecksumAddress(publicAddress);
         const network = discoveryProcess.network;
 
-        dispatch({
-            type: ACCOUNT.CREATE,
-            device,
-            network,
-            index: discoveryProcess.accountIndex,
-            path,
-            address: ethAddress 
-        });
+        
 
         // TODO: check if address was created before
 
@@ -285,19 +281,30 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
         
         const balance = await getBalanceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
-        dispatch(
-            AccountsActions.setBalance(ethAddress, network, device.state || 'undefined', web3instance.web3.fromWei(balance.toString(), 'ether'))
-        );
-
         const nonce: number = await getNonceAsync(web3instance.web3, ethAddress);
         if (discoveryProcess.interrupted) return;
-        dispatch(AccountsActions.setNonce(ethAddress, network, device.state || 'undefined', nonce));
 
         const addressIsEmpty = nonce < 1 && !balance.greaterThan(0);
 
-        if (!addressIsEmpty) {
-            dispatch( discoverAccount(device, discoveryProcess) );
-        } else {
+        if (!addressIsEmpty || (addressIsEmpty && completed) || (addressIsEmpty && discoveryProcess.accountIndex === 0)) {
+            dispatch({
+                type: ACCOUNT.CREATE,
+                device,
+                network,
+                index: discoveryProcess.accountIndex,
+                path,
+                address: ethAddress 
+            });
+            dispatch(
+                AccountsActions.setBalance(ethAddress, network, device.state || 'undefined', web3instance.web3.fromWei(balance.toString(), 'ether'))
+            );
+            dispatch(AccountsActions.setNonce(ethAddress, network, device.state || 'undefined', nonce));
+
+            if (!completed)
+                dispatch( discoverAccount(device, discoveryProcess) );
+        }
+        
+        if (addressIsEmpty) {
             // release acquired sesssion
             await TrezorConnect.getFeatures({ 
                 device: {

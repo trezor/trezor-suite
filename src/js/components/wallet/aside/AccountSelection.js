@@ -11,7 +11,7 @@ import Loader from '~/js/components/common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '~/flowtype';
+import type { TrezorDevice, Accounts } from '~/flowtype';
 
 const AccountSelection = (props: Props): ?React$Element<string> => {
 
@@ -29,7 +29,8 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
 
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
-    const deviceAccounts: Array<any> = findDeviceAccounts(accounts, selected, location.state.network);
+    const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);
+    
     let selectedAccounts = deviceAccounts.map((account, i) => {
         // const url: string = `${baseUrl}/network/${location.state.network}/account/${i}`;
         const url: string = location.pathname.replace(/account+\/([0-9]*)/, `account/${i}`);
