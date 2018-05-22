@@ -112,7 +112,10 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             // if web3 wasn't initialized yet or there are no devices attached or initialization error occurs
             const landingPage: boolean = web3.length < 1 || devices.length < 1 || error !== null;
 
-            if (isModalOpened && action.payload.pathname !== location.pathname) {
+            // modal is still opened and currentPath is still valid
+            // example 1 (valid blocking): url changes while passphrase modal opened but device is still connected (we want user to finish this action)
+            // example 2 (invalid blocking): url changes while passphrase modal opened because device disconnect
+            if (isModalOpened && action.payload.pathname !== location.pathname && validation(api, currentParams)) {
                 redirectPath = location.pathname;
                 console.warn("Modal still opened");
             } else if (landingPage) {
@@ -152,7 +155,7 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         }
 
         if (redirectPath) {
-            console.warn("Redirecting...")
+            console.warn("Redirecting...", redirectPath)
             // override action to keep routerReducer sync
             const url: string = redirectPath;
             action.payload.state = pathToParams(url);
