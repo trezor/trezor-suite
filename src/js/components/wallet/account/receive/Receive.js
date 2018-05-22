@@ -73,6 +73,14 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
             </Tooltip>
         );
     }
+
+    let ver = null;
+    if (props.modal.opened && props.modal.windowType === 'ButtonRequest_Address') {
+        className = 'address verifying';
+        address = account.address;
+        // ver = (<div className="confirm">Confirm address on TREZOR</div>)
+        button = (<div className="confirm">{ account.network } account #{ (account.index + 1) }</div>);
+    }
     
     return (
         <section className="receive">
@@ -80,6 +88,7 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
             <h2>Receive Ethereum or tokens</h2>
             
             <div className={ className }>
+                { ver }
                 <div className="value">
                     { address }
                 </div>

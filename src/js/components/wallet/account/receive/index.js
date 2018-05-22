@@ -21,6 +21,7 @@ type OwnProps = { }
 
 type StateProps = BaseStateProps & {
     receive: $ElementType<State, 'receive'>,
+    modal: $ElementType<State, 'modal'>,
 }
 
 type DispatchProps = BaseDispatchProps & {
@@ -35,7 +36,8 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         devices: state.connect.devices,
         accounts: state.accounts,
         discovery: state.discovery,
-        receive: state.receive
+        receive: state.receive,
+        modal: state.modal,
     };
 }
 

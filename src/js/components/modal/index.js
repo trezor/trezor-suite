@@ -82,9 +82,9 @@ class Modal extends Component<Props> {
             case "ButtonRequest_SignTx" :
                 component = (<ConfirmSignTx { ...this.props } />)
             break;
-            case "ButtonRequest_Address" :
-                component = (<ConfirmAddress { ...this.props } />)
-            break;
+            // case "ButtonRequest_Address" :
+            //     component = (<ConfirmAddress { ...this.props } />)
+            // break;
             case "ButtonRequest_PassphraseType" :
                 component = (<PassphraseType { ...this.props } />)
             break;

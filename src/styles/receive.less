@@ -6,6 +6,17 @@
         display: flex;
         flex-wrap: wrap;
 
+        .verify {
+            position: absolute;
+            background: @color_white;
+            border: 2px solid @color_green_primary;
+            left: 0;
+            right: 0;
+            top: 0;
+            margin: 0px 48px;
+            z-index: 10001; // bigger than modal container
+        }
+
         .value {
             // same as input (inputs.less)
             font-size: 14px;
@@ -82,6 +93,27 @@
                 line-height: 14px;
                 padding-top: 0px;
                 padding-right: 4px;
+            }
+        }
+
+        &.verifying {
+            .value {
+                background: @color_white;
+                z-index: 10001; // bigger than modal container
+                border-color: @color_green_primary;
+                border-width: 2px;
+                transform: translate(-1px, -1px);
+            }
+
+            .confirm {
+                display: block;
+                position: relative;
+                background: @color_white;
+                z-index: 10001;
+                width: 100%;
+                padding: 6px 12px;
+                transform: translate(-1px, -1px);
+                margin: 0px 2px;
             }
         }
 
