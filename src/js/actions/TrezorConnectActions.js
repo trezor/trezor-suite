@@ -10,7 +10,6 @@ import * as WALLET from './constants/wallet';
 import { push } from 'react-router-redux';
 import * as DiscoveryActions from './DiscoveryActions';
 import { resolveAfter } from '../utils/promiseUtils';
-import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
 
 import type {
@@ -194,7 +193,7 @@ const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => {
 
 export const initConnectedDevice = (device: TrezorDevice | Device): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const selected = findSelectedDevice(getState().connect);
+        const selected = getState().wallet.selectedDevice;
         // if (!selected || (selected && selected.state)) {
             dispatch( onSelectDevice(device) );
         // }
@@ -283,7 +282,7 @@ export const switchToFirstAvailableDevice = (): AsyncAction => {
 
 export const getSelectedDeviceState = (): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        const selected = findSelectedDevice(getState().connect);
+        const selected = getState().wallet.selectedDevice;
         if (selected 
             && selected.connected
             && (selected.features && !selected.features.bootloader_mode && selected.features.initialized)
@@ -335,7 +334,7 @@ export const getSelectedDeviceState = (): AsyncAction => {
 export const deviceDisconnect = (device: Device): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
+        const selected: ?TrezorDevice = getState().wallet.selectedDevice;
 
         if (device && device.features) {
             if (selected && selected.features && selected.features.device_id === device.features.device_id) {
@@ -361,7 +360,7 @@ export const deviceDisconnect = (device: Device): AsyncAction => {
 
 export const coinChanged = (network: ?string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
+        const selected: ?TrezorDevice = getState().wallet.selectedDevice;
         if (!selected) return;
 
         dispatch( DiscoveryActions.stop(selected) );
@@ -380,7 +379,7 @@ export function reload(): AsyncAction {
 export function acquire(): AsyncAction {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
+        const selected: ?TrezorDevice = getState().wallet.selectedDevice;
         if (!selected) return;
 
         const response = await TrezorConnect.getFeatures({ 
@@ -416,7 +415,7 @@ export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         if (device.features) {
             const devUrl: string = `${device.features.device_id}${ device.instance ? `:${ device.instance}` : '' }`;
-            dispatch( push( `/device/${ devUrl}/settings` ) );
+            dispatch( push( `/device/${ devUrl }/settings` ) );
         }
     }
 }
@@ -438,18 +437,10 @@ export const duplicateDevice = (device: TrezorDevice): AsyncAction => {
     }
 }
 
-export const selectDuplicatedDevice = (): AsyncAction => {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
-        if (selected)
-            dispatch(onSelectDevice(selected));
-    }
-}
-
 
 export function addAccount(): ThunkAction {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const selected = findSelectedDevice(getState().connect);
+        const selected = getState().wallet.selectedDevice;
         if (!selected) return;
         dispatch( DiscoveryActions.start(selected, getState().router.location.state.network, true) ); // TODO: network nicer
     }

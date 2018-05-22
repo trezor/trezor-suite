@@ -80,9 +80,9 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     } else if (action.type === CONNECT.AUTH_DEVICE) {
         api.dispatch( DiscoveryActions.check() );
     } else if (action.type === CONNECT.DUPLICATE) {
-        api.dispatch( TrezorConnectActions.selectDuplicatedDevice() );
-    } else if (action.type === CONNECT.SELECT_DEVICE) {
-        api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
+        api.dispatch( TrezorConnectActions.onSelectDevice( action.device ) );
+    // } else if (action.type === CONNECT.SELECT_DEVICE) {
+        // api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
     } else if (action.type === CONNECT.COIN_CHANGED) {
         api.dispatch( TrezorConnectActions.coinChanged( action.payload.network ) );
     }

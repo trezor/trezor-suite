@@ -6,7 +6,6 @@ import * as SUMMARY from './constants/summary';
 import * as TOKEN from './constants/token';
 import { resolveAfter } from '../utils/promiseUtils';
 import { initialState } from '../reducers/SummaryReducer';
-import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
 import type { ThunkAction, AsyncAction, Action, GetState, Dispatch } from '~/flowtype';
 import type { State } from '../reducers/SummaryReducer';

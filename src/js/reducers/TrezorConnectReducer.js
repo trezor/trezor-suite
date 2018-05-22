@@ -323,18 +323,6 @@ const devicesFromLocalStorage = (devices: Array<TrezorDevice>): Array<TrezorDevi
 
 const duplicate = (state: State, device: TrezorDevice): State => {
     const newState: State = { ...state };
-    // const affectedDevices: Array<TrezorDevice> = state.devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id)
-    // .sort((a, b) => {
-    //     if (!a.instance) {
-    //         return -1;
-    //     } else {
-    //         return !b.instance || a.instance > b.instance ? 1 : -1;
-    //     }
-    // });
-
-    // const instance: number = affectedDevices.reduce((inst, dev) => {
-    //     return dev.instance ? dev.instance + 1 : inst + 1;
-    // }, 0);
 
     const instance: number = getNewInstance(state.devices, device);
 
@@ -347,7 +335,7 @@ const duplicate = (state: State, device: TrezorDevice): State => {
         // path: device.path,
         // label: device.label,
         state: null,
-        instance,
+        // instance,
         // instanceLabel: `${device.label} (${instance})`,
         instanceLabel: `${device.label} (${ device.instanceName || instance })`,
         ts: new Date().getTime(),

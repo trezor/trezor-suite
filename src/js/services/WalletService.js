@@ -6,6 +6,7 @@ import * as WALLET from '../actions/constants/wallet';
 
 import * as WalletActions from '../actions/WalletActions';
 import * as LocalStorageActions from '../actions/LocalStorageActions';
+import * as TrezorConnectActions from '../actions/TrezorConnectActions';
 
 import type { 
     Middleware,
@@ -62,11 +63,19 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     // listening devices state change
     if (locationChange || prevState.connect.devices !== state.connect.devices) {
         const device = getSelectedDevice(state);
+        const currentDevice = state.wallet.selectedDevice;
+
         if (state.wallet.selectedDevice !== device) {
             api.dispatch({
                 type: WALLET.SET_SELECTED_DEVICE,
                 device
             })
+
+            if (!locationChange && currentDevice && device && (currentDevice.path === device.path || currentDevice.instance === device.instance)) {
+                // console.warn("but ONLY UPDATE!")
+            } else {
+                api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
+            }
         }
     }
 

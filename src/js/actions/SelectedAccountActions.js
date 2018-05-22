@@ -4,7 +4,6 @@
 import * as ACCOUNT from './constants/account';
 
 import { initialState } from '../reducers/SelectedAccountReducer';
-import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
 import type { AsyncAction, ThunkAction, Action, GetState, Dispatch, TrezorDevice } from '~/flowtype';
 import type { State } from '../reducers/SelectedAccountReducer';
@@ -23,7 +22,7 @@ export const init = (): ThunkAction => {
         const { location } = getState().router;
         const urlParams = location.state;
 
-        const selected: ?TrezorDevice = findSelectedDevice( getState().connect );
+        const selected: ?TrezorDevice = getState().wallet.selectedDevice;;
         if (!selected) return;
         if (!selected.state || !selected.features) return;
 

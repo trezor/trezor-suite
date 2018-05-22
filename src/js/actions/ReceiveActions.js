@@ -7,7 +7,6 @@ import * as NOTIFICATION from './constants/notification';
 
 import { initialState } from '../reducers/ReceiveReducer';
 import type { State } from '../reducers/ReceiveReducer';
-import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 
 import type { TrezorDevice, ThunkAction, AsyncAction, Action, GetState, Dispatch } from '~/flowtype';
 
@@ -55,7 +54,7 @@ export const showUnverifiedAddress = (): Action => {
 export const showAddress = (address_n: Array<number>): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const selected = findSelectedDevice(getState().connect);
+        const selected = getState().wallet.selectedDevice;
         if (!selected) return;
 
         if (selected && (!selected.connected || !selected.available)) {

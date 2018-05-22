@@ -7,6 +7,7 @@ import type { Props } from './index';
 
 type State = {
     defaultName: string;
+    instance: number;
     instanceName: ?string;
     isUsed: boolean;
 }
@@ -27,6 +28,7 @@ export default class DuplicateDevice extends Component<Props, State> {
 
         this.state = {
             defaultName: `${device.label} (${instance.toString()})`,
+            instance,
             instanceName: null,
             isUsed: false,
         }
@@ -66,7 +68,7 @@ export default class DuplicateDevice extends Component<Props, State> {
 
     submit() {
         if (!this.props.modal.opened) return;
-        this.props.modalActions.onDuplicateDevice( { ...this.props.modal.device, instanceName: this.state.instanceName } );
+        this.props.modalActions.onDuplicateDevice( { ...this.props.modal.device, instanceName: this.state.instanceName, instance: this.state.instance } );
     }
 
     render() {

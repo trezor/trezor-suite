@@ -40,6 +40,7 @@ type StateProps = {
     sendForm: $ElementType<State, 'sendForm'>,
     receive: $ElementType<State, 'receive'>,
     localStorage: $ElementType<State, 'localStorage'>,
+    wallet: $ElementType<State, 'wallet'>,
 }
 
 type DispatchProps = {
@@ -131,7 +132,8 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         selectedAccount: state.selectedAccount,
         sendForm: state.sendForm,
         receive: state.receive,
-        localStorage: state.localStorage
+        localStorage: state.localStorage,
+        wallet: state.wallet
     };
 }
 

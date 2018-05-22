@@ -3,7 +3,6 @@
 
 import React, { Component } from 'react';
 import { findAccount } from '~/js/reducers/AccountsReducer';
-import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 
 import type { Props } from './index';
 

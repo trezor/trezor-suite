@@ -17,7 +17,7 @@ import BigNumber from 'bignumber.js';
 import { initialState } from '../reducers/SendFormReducer';
 import { findAccount } from '../reducers/AccountsReducer';
 import { findToken } from '../reducers/TokensReducer';
-import { findSelectedDevice, findDevice } from '../reducers/TrezorConnectReducer';
+import { findDevice } from '../reducers/TrezorConnectReducer';
 
 import type { 
     Dispatch,
@@ -203,7 +203,7 @@ export const init = (): ThunkAction => {
         const { location } = getState().router;
         const urlParams: RouterLocationState = location.state;
 
-        const selected: ?TrezorDevice = findSelectedDevice( getState().connect );
+        const selected: ?TrezorDevice = getState().wallet.selectedDevice;
         if (!selected) return;
 
         const web3instance: ?Web3Instance = getState().web3.find(w3 => w3.network === urlParams.network);
@@ -893,7 +893,7 @@ export const onSend = (): AsyncAction => {
             v: ''
         }
 
-        const selected: ?TrezorDevice = findSelectedDevice(getState().connect);
+        const selected: ?TrezorDevice = getState().wallet.selectedDevice;
         if (!selected) return;
 
         let signedTransaction = await TrezorConnect.ethereumSignTransaction({

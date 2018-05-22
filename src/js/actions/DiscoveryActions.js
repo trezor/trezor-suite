@@ -2,7 +2,6 @@
 'use strict';
 
 import TrezorConnect from 'trezor-connect';
-import { findSelectedDevice } from '../reducers/TrezorConnectReducer';
 import * as DISCOVERY from './constants/discovery';
 import * as ACCOUNT from './constants/account';
 import * as TOKEN from './constants/token';
@@ -54,7 +53,7 @@ export type DiscoveryCompleteAction = {
 export const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
-        const selected = findSelectedDevice(getState().connect);
+        const selected = getState().wallet.selectedDevice;
         if (!selected) {
             // TODO: throw error
             console.error("Start discovery: no selected device", device)
@@ -330,7 +329,7 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
 
 export const restore = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const selected = findSelectedDevice(getState().connect);
+        const selected = getState().wallet.selectedDevice;
 
         if (selected && selected.connected && selected.features) {
             const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && d.waitingForDevice);
@@ -347,7 +346,7 @@ export const restore = (): ThunkAction => {
 // try to start discovery after CONNECT.AUTH_DEVICE action
 export const check = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const selected = findSelectedDevice(getState().connect);
+        const selected = getState().wallet.selectedDevice;
         if (!selected) return;
 
         const urlParams = getState().router.location.state;

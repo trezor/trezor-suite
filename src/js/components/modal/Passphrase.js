@@ -3,7 +3,6 @@
 
 import React, { Component } from 'react';
 import raf from 'raf';
-import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 
 import type { Props } from './index';
 type State = {
@@ -33,7 +32,7 @@ export default class PinModal extends Component<Props, State> {
 
         // check if this device is already known
         // const isSavedDevice = props.devices.find(d => d.path === props.modal.device.path && d.remember);
-        const selected = findSelectedDevice(props.connect);
+        const selected = props.wallet.selectedDevice;
         let deviceLabel =device.label;
         let singleInput = false;
         if (selected && selected.path === device.path) {
