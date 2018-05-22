@@ -18,6 +18,8 @@ type State = {
     initialParams: ?RouterLocationState;
     initialPathname: ?string;
     disconnectRequest: ?TrezorDevice;
+
+    selectedDevice: ?TrezorDevice;
 }
 
 const initialState: State = {
@@ -26,7 +28,8 @@ const initialState: State = {
     dropdownOpened: false,
     initialParams: null,
     initialPathname: null,
-    disconnectRequest: null
+    disconnectRequest: null,
+    selectedDevice: null,
 };
 
 export default function wallet(state: State = initialState, action: Action): State {
@@ -78,6 +81,12 @@ export default function wallet(state: State = initialState, action: Action): Sta
                 }
             }
             return state;
+
+        case WALLET.SET_SELECTED_DEVICE :
+            return {
+                ...state,
+                selectedDevice: action.device
+            }
 
         default:
             return state;

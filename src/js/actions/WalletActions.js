@@ -3,7 +3,7 @@
 
 import * as WALLET from './constants/wallet';
 
-import type { RouterLocationState, ThunkAction, Dispatch, GetState } from '~/flowtype';
+import type { TrezorDevice, RouterLocationState, ThunkAction, Dispatch, GetState } from '~/flowtype';
 
 export type WalletAction = {
     type: typeof WALLET.SET_INITIAL_URL,
@@ -17,6 +17,9 @@ export type WalletAction = {
 } | {
     type: typeof WALLET.ONLINE_STATUS,
     online: boolean
+} | {
+    type: typeof WALLET.SET_SELECTED_DEVICE,
+    device: ?TrezorDevice
 }
 
 export const init = (): ThunkAction => {
