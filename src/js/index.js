@@ -22,4 +22,4 @@ if (typeof module !== undefined && module.hasOwnProperty('hot')) {
     module.hot.accept();
 }
 
-// Application life cycle starts in ./services/LocalStorageService.js
+// Application life cycle starts in ./services/WalletService.js

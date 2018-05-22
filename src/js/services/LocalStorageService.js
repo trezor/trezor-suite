@@ -89,14 +89,14 @@ const save = (dispatch: Dispatch, getState: GetState): void => {
 const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
 
     // Application live cycle starts here
-    if (action.type === LOCATION_CHANGE) {
-        const { location } = api.getState().router;
-        if (!location) {
-            api.dispatch( WalletActions.init() );
-            // load data from config.json and local storage
-            api.dispatch( LocalStorageActions.loadData() );
-        }
-    }
+    // if (action.type === LOCATION_CHANGE) {
+    //     const { location } = api.getState().router;
+    //     if (!location) {
+    //         api.dispatch( WalletActions.init() );
+    //         // load data from config.json and local storage
+    //         api.dispatch( LocalStorageActions.loadData() );
+    //     }
+    // }
 
     next(action);
 
