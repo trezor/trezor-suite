@@ -6,7 +6,6 @@ import { Link, NavLink } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 
 import { findDeviceAccounts } from '~/js/reducers/AccountsReducer';
-import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 import Loader from '~/js/components/common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
@@ -15,7 +14,7 @@ import type { TrezorDevice, Accounts } from '~/flowtype';
 
 const AccountSelection = (props: Props): ?React$Element<string> => {
 
-    const selected = findSelectedDevice(props.connect);
+    const selected = props.wallet.selectedDevice;
     if (!selected) return null;
 
     const { location } = props.router;

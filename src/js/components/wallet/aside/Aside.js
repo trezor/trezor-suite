@@ -10,7 +10,6 @@ import { DeviceSelect, DeviceDropdown } from './DeviceSelection';
 import AccountSelection from './AccountSelection';
 import CoinSelection from './CoinSelection';
 import StickyContainer from './StickyContainer';
-import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
 
 import type { Props } from './index';
 import type { TrezorDevice } from '~/flowtype';
@@ -41,7 +40,7 @@ const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGro
 
 const Aside = (props: Props): React$Element<typeof StickyContainer | string> => {
 
-    const selected: ?TrezorDevice = findSelectedDevice(props.connect);
+    const selected: ?TrezorDevice = props.wallet.selectedDevice;
     const { location } = props.router;
 
     if (location.pathname === '/' || !selected) return (<aside></aside>);

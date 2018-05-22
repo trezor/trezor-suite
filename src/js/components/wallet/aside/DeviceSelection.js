@@ -5,8 +5,6 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import TrezorConnect from 'trezor-connect';
 
-import { findSelectedDevice } from '~/js/reducers/TrezorConnectReducer';
-
 import type { Props } from './index';
 import type { TrezorDevice } from '~/flowtype';
 
@@ -14,7 +12,7 @@ export const DeviceSelect = (props: Props) => {
 
     const { devices, transport } = props.connect;
 
-    const selected: ?TrezorDevice = findSelectedDevice(props.connect);
+    const selected: ?TrezorDevice = props.wallet.selectedDevice;
     if (!selected) return null;
 
     let deviceStatus: string = "Connected";
@@ -139,7 +137,7 @@ export class DeviceDropdown extends Component<Props> {
     render() {
 
         const { devices, transport } = this.props.connect;
-        const selected: ?TrezorDevice = findSelectedDevice(this.props.connect);
+        const selected: ?TrezorDevice = this.props.wallet.selectedDevice;
         if (!selected) return;
 
         let webUsbButton = null;
@@ -179,6 +177,7 @@ export class DeviceDropdown extends Component<Props> {
         }
 
         const deviceList = devices.map((dev, index) => {
+            console.warn("DEVEEE", dev, selected, dev === selected);
             if (dev === selected) return null;
 
             let deviceStatus: string = "Connected";

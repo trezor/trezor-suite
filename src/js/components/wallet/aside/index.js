@@ -26,6 +26,7 @@ type StateProps = {
     fiat: $ElementType<State, 'fiat'>,
     localStorage: $ElementType<State, 'localStorage'>,
     discovery: $ElementType<State, 'discovery'>,
+    wallet: $ElementType<State, 'wallet'>,
 }
 
 type DispatchProps = {
@@ -48,7 +49,8 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         deviceDropdownOpened: state.wallet.dropdownOpened,
         fiat: state.fiat,
         localStorage: state.localStorage,
-        discovery: state.discovery
+        discovery: state.discovery,
+        wallet: state.wallet
     };
 }
 
