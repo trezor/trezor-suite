@@ -24,7 +24,16 @@ const getSelectedDevice = (state: State): ?TrezorDevice => {
     if (!locationState.device) return null;
 
     const instance: ?number = locationState.deviceInstance ? parseInt(locationState.deviceInstance) : undefined;
-    return state.connect.devices.find(d => d.features && d.features.device_id === locationState.device && d.instance === instance);
+    return state.connect.devices.find(d => {
+        if (d.unacquired && d.path === locationState.device) {
+            return true;
+        } else if (d.features && d.features.bootloader_mode && d.path === locationState.device) {
+            return true;
+        } else if (d.features && d.features.device_id === locationState.device && d.instance === instance) {
+            return true;
+        }
+        return false;
+    });
 }
 
 /**
