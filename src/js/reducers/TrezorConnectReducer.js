@@ -3,6 +3,7 @@
 
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
+import * as WALLET from '../actions/constants/wallet';
 
 import type { Action, TrezorDevice } from '~/flowtype';
 import type { Device } from 'trezor-connect';
@@ -230,25 +231,19 @@ const addDevice = (state: State, device: Device): State => {
     return newState;
 }
 
-const setDeviceState = (state: State, action: any): State => {
+const setDeviceState = (state: State, device: TrezorDevice, deviceState: string): State => {
     const newState: State = { ...state };
-
-    //const affectedDevice: ?TrezorDevice = state.devices.find(d => d.path === action.device.path && d.instance === action.device.instance);
-    const index: number = state.devices.findIndex(d => d.path === action.device.path && d.instance === action.device.instance);
-    if (index > -1) {
-        // device could already have own state from firmware, do not override it
-        if (!newState.devices[index].state) {
-            const changedDevice: TrezorDevice = { 
-                ...newState.devices[index],
-                state: action.state
-            };
-            newState.devices[index] = changedDevice;
-        }
+    const affectedDevice: ?TrezorDevice = state.devices.find(d => d.path === device.path && d.instance === device.instance);
+    // device could already have own state from firmware, do not override it
+    if (affectedDevice && !affectedDevice.state) {
+        const otherDevices: Array<TrezorDevice> = state.devices.filter(d => d !== affectedDevice);
+        affectedDevice.state = deviceState;
+        newState.devices = otherDevices.concat([affectedDevice]);
     }
     return newState;
 }
 
-const changeDevice = (state: State, device: Object): State => {
+const changeDevice = (state: State, device: Device): State => {
 
     // change only acquired devices
     if (!device.features) return state;
@@ -312,7 +307,7 @@ const forgetDevice = (state: State, action: any): State => {
     return newState;
 }
 
-const devicesFromLocalStorage = (devices: Array<any>): Array<TrezorDevice> => {
+const devicesFromLocalStorage = (devices: Array<TrezorDevice>): Array<TrezorDevice> => {
     return devices.map(d => {
         return {
             ...d,
@@ -430,7 +425,7 @@ export default function connect(state: State = initialState, action: Action): St
             }
 
         case CONNECT.AUTH_DEVICE :
-            return setDeviceState(state, action);
+            return setDeviceState(state, action.device, action.state);
         case CONNECT.REMEMBER :
             return changeDevice(state, { ...action.device, path: '', remember: true } );
     
