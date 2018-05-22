@@ -13,6 +13,7 @@ export type Coin = {
     defaultGasLimit: number;
     defaultGasLimitTokens: number;
     defaultGasPrice: number;
+    chainId: number;
     explorer: {
         tx: string;
         address: string;

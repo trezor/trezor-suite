@@ -8,7 +8,6 @@ import * as WEB3 from '../actions/constants/web3';
 
 import type { Action } from '~/flowtype';
 import type { 
-    Web3CreateAction,
     Web3UpdateBlockAction,
     Web3UpdateGasPriceAction 
 } from '../actions/Web3Actions';
@@ -27,15 +26,7 @@ export type State = Array<Web3Instance>;
 
 const initialState: State = [];
 
-const createWeb3 = (state: State, action: Web3CreateAction): State => {
-    const instance: Web3Instance = {
-        network: action.network,
-        web3: action.web3,
-        chainId: parseInt(action.chainId),
-        latestBlock: '0',
-        gasPrice: '0',
-        erc20: action.erc20
-    }
+const createWeb3 = (state: State, instance: Web3Instance): State => {
     const newState: Array<Web3Instance> = [ ...state ];
     newState.push(instance);
     return newState;
@@ -60,7 +51,7 @@ export default function web3(state: State = initialState, action: Action): State
     switch (action.type) {
         
         case WEB3.CREATE :
-            return createWeb3(state, action);
+            return createWeb3(state, action.instance);
         case WEB3.BLOCK_UPDATED :
             return updateLatestBlock(state, action);
         case WEB3.GAS_PRICE_UPDATED :

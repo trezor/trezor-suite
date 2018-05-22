@@ -30,17 +30,12 @@ import type { NetworkToken } from '../reducers/LocalStorageReducer';
 
 export type Web3Action = {
     type: typeof WEB3.READY,
-} | Web3CreateAction
+} | {
+    type: typeof WEB3.CREATE,
+    instance: Web3Instance
+}
   | Web3UpdateBlockAction
   | Web3UpdateGasPriceAction;
-
-export type Web3CreateAction = {
-    type: typeof WEB3.CREATE,
-    network: string,
-    web3: Web3,
-    erc20: ContractFactory,
-    chainId: string;
-};
 
 export type Web3UpdateBlockAction = {
     type: typeof WEB3.BLOCK_UPDATED,
@@ -85,10 +80,14 @@ export function init(instance: ?Web3, coinIndex: number = 0): AsyncAction {
 
                 dispatch({
                     type: WEB3.CREATE,
-                    network,
-                    web3: instance,
-                    erc20: instance.eth.contract(ERC20Abi),
-                    chainId: '0'
+                    instance: {
+                        network,
+                        web3: instance,
+                        chainId: coin.chainId,
+                        erc20: instance.eth.contract(ERC20Abi),
+                        latestBlock: '0',
+                        gasPrice: '0',
+                    }
                 });
 
                 // try next coin
@@ -120,10 +119,14 @@ export function init(instance: ?Web3, coinIndex: number = 0): AsyncAction {
 
         dispatch({
             type: WEB3.CREATE,
-            network,
-            web3: web3,
-            erc20,
-            chainId: web3.version.network
+            instance: {
+                network,
+                web3: web3,
+                chainId: coin.chainId,
+                erc20,
+                latestBlock: '0',
+                gasPrice: '0',
+            }
         });
 
         // dispatch({

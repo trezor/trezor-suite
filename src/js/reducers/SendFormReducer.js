@@ -10,8 +10,6 @@ import { getFeeLevels } from '../actions/SendFormActions';
 
 import type { Action } from '~/flowtype';
 import type { 
-    Web3CreateAction,
-    Web3UpdateBlockAction,
     Web3UpdateGasPriceAction 
 } from '../actions/Web3Actions';
 
