@@ -716,7 +716,7 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => {
     }
 }
 
-export const onGasLimitChange = (gasLimit: string): ThunkAction => {
+export const onGasLimitChange = (gasLimit: string, updateFeeLevels: boolean = false): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
         const accountState: ?AccountState = getState().selectedAccount;
         if (!accountState) return;
@@ -734,11 +734,22 @@ export const onGasLimitChange = (gasLimit: string): ThunkAction => {
         };
 
         if (gasLimit.match(numberRegExp) && state.gasPrice.match(numberRegExp)) {
-            const customLevel: ?FeeLevel = state.feeLevels.find(f => f.value === 'Custom');
-            if (!customLevel) return;
-            customLevel.label = `${ calculateFee(currentState.gasPrice, gasLimit) } ${ state.coinSymbol }`;
 
-            state.selectedFeeLevel = customLevel;
+            if (updateFeeLevels) {
+                const feeLevels: Array<FeeLevel> = getFeeLevels(state.coinSymbol, state.gasPrice, gasLimit, state.selectedFeeLevel);
+                const selectedFeeLevel: ?FeeLevel = feeLevels.find(f => f.value === state.selectedFeeLevel.value);
+                if (!selectedFeeLevel) return;
+                state.selectedFeeLevel = selectedFeeLevel;
+                state.feeLevels = feeLevels;
+
+            } else {
+                const customLevel: ?FeeLevel = state.feeLevels.find(f => f.value === 'Custom');
+                if (!customLevel) return;
+                customLevel.label = `${ calculateFee(currentState.gasPrice, gasLimit) } ${ state.coinSymbol }`;
+
+                state.selectedFeeLevel = customLevel;
+            }
+            
 
             if (state.setMax) {
                 const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
@@ -809,6 +820,7 @@ export const onDataChange = (data: string): AsyncAction => {
     }
 }
 
+
 const estimateGasPrice = (): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
@@ -817,7 +829,12 @@ const estimateGasPrice = (): AsyncAction => {
         const web3instance: ?Web3Instance = getState().web3.filter(w3 => w3.network === accountState.network)[0];
         if (!web3instance) return;
         const web3 = web3instance.web3;
-        let currentState: State = getState().sendForm;
+        const currentState: State = getState().sendForm;
+        const requestedData = currentState.data;
+
+        if (currentState.errors.data) {
+            return;
+        }
 
         const data: string = '0x' + (currentState.data.length % 2 === 0 ? currentState.data : '0' + currentState.data);
         const gasLimit = await estimateGas(web3instance.web3, {
@@ -827,16 +844,9 @@ const estimateGasPrice = (): AsyncAction => {
             gasPrice: web3.toHex( EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei') ),
         });
 
-        currentState = getState().sendForm;
-
-        dispatch({
-            type: SEND.GAS_LIMIT_CHANGE,
-            state: {
-                ...currentState,
-                gasLimit: gasLimit.toString()
-            }
-        });
-
+        if (getState().sendForm.data === requestedData) {
+            dispatch( onGasLimitChange(gasLimit.toString(), true) );
+        }
     }
     
 }
