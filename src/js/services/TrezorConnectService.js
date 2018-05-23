@@ -62,7 +62,7 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         //api.dispatch( TrezorConnectActions.forgetDevice(action.device) );
         api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
     } else if (action.type === CONNECT.FORGET_SINGLE) {
-        if (api.getState().connect.devices.length < 1 && action.device.connected) {
+        if (api.getState().devices.length < 1 && action.device.connected) {
             // prompt disconnect device info in LandingPage
             api.dispatch({
                 type: CONNECT.DISCONNECT_REQUEST,
@@ -81,8 +81,6 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         api.dispatch( DiscoveryActions.check() );
     } else if (action.type === CONNECT.DUPLICATE) {
         api.dispatch( TrezorConnectActions.onSelectDevice( action.device ) );
-    // } else if (action.type === CONNECT.SELECT_DEVICE) {
-        // api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
     } else if (action.type === CONNECT.COIN_CHANGED) {
         api.dispatch( TrezorConnectActions.coinChanged( action.payload.network ) );
     }

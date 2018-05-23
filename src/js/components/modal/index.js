@@ -34,7 +34,7 @@ type OwnProps = { }
 type StateProps = {
     modal: $ElementType<State, 'modal'>,
     accounts: $ElementType<State, 'accounts'>,
-    devices: $PropertyType<$ElementType<State, 'connect'>, 'devices'>,
+    devices: $ElementType<State, 'devices'>,
     connect: $ElementType<State, 'connect'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
     sendForm: $ElementType<State, 'sendForm'>,
@@ -127,7 +127,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     return {
         modal: state.modal,
         accounts: state.accounts,
-        devices: state.connect.devices,
+        devices: state.devices,
         connect: state.connect,
         selectedAccount: state.selectedAccount,
         sendForm: state.sendForm,

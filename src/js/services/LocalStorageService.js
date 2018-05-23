@@ -63,7 +63,7 @@ const findPendingTxs = (accounts: Array<Account>, pending: Array<PendingTx>): Ar
 }
 
 const save = (dispatch: Dispatch, getState: GetState): void => {
-    const devices: Array<TrezorDevice> = getState().connect.devices.filter(d => d.features && d.remember === true);
+    const devices: Array<TrezorDevice> = getState().devices.filter(d => d.features && d.remember === true);
     const accounts: Array<Account> = findAccounts(devices, getState().accounts);
     const tokens: Array<Token> = findTokens(accounts, getState().tokens);
     const pending: Array<PendingTx> = findPendingTxs(accounts, getState().pending);

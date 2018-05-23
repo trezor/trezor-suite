@@ -16,7 +16,9 @@ export type StateProps = {
     web3: $ElementType<State, 'web3'>,
     wallet: $ElementType<State, 'wallet'>,
     connect: $ElementType<State, 'connect'>,
-    router: $ElementType<State, 'router'>
+    router: $ElementType<State, 'router'>,
+    wallet: $ElementType<State, 'wallet'>,
+    devices: $ElementType<State, 'devices'>,
 }
 
 type DispatchProps = {
@@ -36,7 +38,9 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         web3: state.web3,
         wallet: state.wallet,
         connect: state.connect,
-        router: state.router
+        router: state.router,
+        wallet: state.wallet,
+        devices: state.devices,
     };
 }
 

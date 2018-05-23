@@ -35,7 +35,7 @@ export type Props = StateProps & DispatchProps;
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
         selectedAccount: state.selectedAccount,
-        devices: state.connect.devices,
+        devices: state.devices,
         accounts: state.accounts,
         discovery: state.discovery,
 

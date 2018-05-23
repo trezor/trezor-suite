@@ -10,7 +10,8 @@ import type { TrezorDevice } from '~/flowtype';
 
 export const DeviceSelect = (props: Props) => {
 
-    const { devices, transport } = props.connect;
+    const { devices } = props;
+    const { transport } = props.connect;
 
     const selected: ?TrezorDevice = props.wallet.selectedDevice;
     if (!selected) return null;
@@ -136,7 +137,8 @@ export class DeviceDropdown extends Component<Props> {
 
     render() {
 
-        const { devices, transport } = this.props.connect;
+        const { devices  } = this.props;
+        const { transport } = this.props.connect;
         const selected: ?TrezorDevice = this.props.wallet.selectedDevice;
         if (!selected) return;
 

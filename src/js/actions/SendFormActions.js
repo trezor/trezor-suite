@@ -17,7 +17,7 @@ import BigNumber from 'bignumber.js';
 import { initialState } from '../reducers/SendFormReducer';
 import { findAccount } from '../reducers/AccountsReducer';
 import { findToken } from '../reducers/TokensReducer';
-import { findDevice } from '../reducers/TrezorConnectReducer';
+import { findDevice } from '../reducers/DevicesReducer';
 
 import type { 
     Dispatch,
@@ -282,11 +282,11 @@ export const validation = (): ThunkAction => {
                 // corner-case: when same derivation path is used on different networks
                 const currentNetworkAccount = savedAccounts.find(a => a.network === accountState.network);
                 if (currentNetworkAccount) {
-                    const device: ?TrezorDevice = findDevice(getState().connect.devices, currentNetworkAccount.deviceID, currentNetworkAccount.deviceState);
+                    const device: ?TrezorDevice = findDevice(getState().devices, currentNetworkAccount.deviceID, currentNetworkAccount.deviceState);
                     if (!device) return;
                     infos.address = `${ device.instanceLabel } Account #${ (currentNetworkAccount.index + 1) }`;
                 } else {
-                    const device: ?TrezorDevice = findDevice(getState().connect.devices, savedAccounts[0].deviceID, savedAccounts[0].deviceState);
+                    const device: ?TrezorDevice = findDevice(getState().devices, savedAccounts[0].deviceID, savedAccounts[0].deviceState);
                     if (!device) return;
                     warnings.address = `Looks like it's ${ device.instanceLabel } Account #${ (savedAccounts[0].index + 1) } address of ${ savedAccounts[0].network.toUpperCase() } network`;
                 }

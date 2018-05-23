@@ -48,7 +48,7 @@ const pathToParams = (path: string): RouterLocationState => {
 const validation = (api: MiddlewareAPI, params: RouterLocationState): boolean => {
 
     if (params.hasOwnProperty('device')) {
-        const { devices } = api.getState().connect;
+        const { devices } = api.getState();
 
         let device: ?TrezorDevice;
         if (params.hasOwnProperty('deviceInstance')) {
@@ -89,7 +89,8 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
 
         const { location } = api.getState().router;
         const web3 = api.getState().web3;
-        const { devices, error } = api.getState().connect;
+        const { devices } = api.getState();
+        const { error } = api.getState().connect;
 
         const requestedParams: RouterLocationState = pathToParams(action.payload.pathname);
         const currentParams: RouterLocationState = pathToParams(location ? location.pathname : '/');

@@ -3,7 +3,7 @@
 
 import React, { Component } from 'react';
 import { Notification } from '~/js/components/common/Notification';
-import { findDevice } from '~/js/reducers/TrezorConnectReducer';
+import { findDevice } from '~/js/reducers/DevicesReducer';
 
 // import * as SelectedAccountActions from '~/js/actions/SelectedAccountActions';
 import { default as SelectedAccountActions } from '~/js/actions/SelectedAccountActions';
@@ -14,7 +14,7 @@ import type { Discovery } from '~/js/reducers/DiscoveryReducer';
 
 export type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-    devices: $PropertyType<$ElementType<State, 'connect'>, 'devices'>,
+    devices: $ElementType<State, 'devices'>,
     discovery: $ElementType<State, 'discovery'>,
     accounts: $ElementType<State, 'accounts'>,
 }

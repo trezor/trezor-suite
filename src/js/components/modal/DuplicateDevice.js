@@ -2,7 +2,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { getNewInstance } from '~/js/reducers/TrezorConnectReducer'
+import { getNewInstance } from '~/js/reducers/DevicesReducer'
 import type { Props } from './index';
 
 type State = {
@@ -24,7 +24,7 @@ export default class DuplicateDevice extends Component<Props, State> {
         const device = props.modal.opened ? props.modal.device : null;
         if (!device) return;
 
-        const instance = getNewInstance(props.connect.devices, device);
+        const instance = getNewInstance(props.devices, device);
 
         this.state = {
             defaultName: `${device.label} (${instance.toString()})`,
@@ -57,7 +57,7 @@ export default class DuplicateDevice extends Component<Props, State> {
 
         let isUsed: boolean = false;
         if (value.length > 0) {
-            isUsed = ( this.props.connect.devices.find(d => d.instanceName === value) !== undefined );
+            isUsed = ( this.props.devices.find(d => d.instanceName === value) !== undefined );
         }
         
         this.setState({

@@ -31,9 +31,8 @@ export default class PinModal extends Component<Props, State> {
         if (!device) return;
 
         // check if this device is already known
-        // const isSavedDevice = props.devices.find(d => d.path === props.modal.device.path && d.remember);
         const selected = props.wallet.selectedDevice;
-        let deviceLabel =device.label;
+        let deviceLabel = device.label;
         let singleInput = false;
         if (selected && selected.path === device.path) {
             deviceLabel = selected.instanceLabel;

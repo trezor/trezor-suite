@@ -25,7 +25,7 @@ const getSelectedDevice = (state: State): ?TrezorDevice => {
     if (!locationState.device) return undefined;
 
     const instance: ?number = locationState.deviceInstance ? parseInt(locationState.deviceInstance) : undefined;
-    return state.connect.devices.find(d => {
+    return state.devices.find(d => {
         if (d.unacquired && d.path === locationState.device) {
             return true;
         } else if (d.features && d.features.bootloader_mode && d.path === locationState.device) {
@@ -61,7 +61,7 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     const state = api.getState();
 
     // handle devices state change
-    if (locationChange || prevState.connect.devices !== state.connect.devices) {
+    if (locationChange || prevState.devices !== state.devices) {
         const device = getSelectedDevice(state);
         const currentDevice = state.wallet.selectedDevice;
 
@@ -76,7 +76,7 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                     type: WALLET.SET_SELECTED_DEVICE,
                     device
                 });
-                
+
                 if (device) {
                     api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
                 } else {

@@ -38,7 +38,8 @@ const BrowserNotSupported = (props: {}): React$Element<string> => {
 export default (props: Props) => {
 
     const web3 = props.web3;
-    const { devices, browserState, transport } = props.connect;
+    const { devices } = props;
+    const { browserState, transport } = props.connect;
     const localStorageError = props.localStorage.error;
     const connectError = props.connect.error;
 

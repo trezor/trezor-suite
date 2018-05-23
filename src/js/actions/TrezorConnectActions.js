@@ -140,8 +140,7 @@ export const postInit = (): ThunkAction => {
         TrezorConnect.on(DEVICE.CONNECT, handleDeviceConnect);
         TrezorConnect.on(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
 
-        // const devices: Array<TrezorDevice> = getState().connect.devices;
-        const devices: Array<TrezorDevice> = getState().connect.devices;
+        const { devices } = getState();
 
         const { initialPathname, initialParams } = getState().wallet;
 
@@ -228,7 +227,7 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => {
             if (!device.hasOwnProperty('ts')) {
                 // its device from trezor-connect (called in initConnectedDevice triggered by device_connect event)
                 // need to lookup if there are unavailable instances
-                const available: Array<TrezorDevice> = getState().connect.devices.filter(d => d.path === device.path);
+                const available: Array<TrezorDevice> = getState().devices.filter(d => d.path === device.path);
                 const latest: Array<TrezorDevice> = sortDevices(available);
 
                 if (latest.length > 0 && latest[0].instance) {
@@ -249,7 +248,7 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => {
 export const switchToFirstAvailableDevice = (): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const { devices } = getState().connect;
+        const { devices } = getState();
         if (devices.length > 0) {
             // TODO: Priority:
             // 1. First Unacquired
@@ -331,7 +330,7 @@ export const deviceDisconnect = (device: Device): AsyncAction => {
                 dispatch( DiscoveryActions.stop(selected) );
             }
 
-            const instances = getState().connect.devices.filter(d => d.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
+            const instances = getState().devices.filter(d => d.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
             if (instances.length > 0) {
                 dispatch({
                     type: CONNECT.REMEMBER_REQUEST,
