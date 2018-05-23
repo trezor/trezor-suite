@@ -135,6 +135,7 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
 
         case SEND.TX_COMPLETE :
         case PENDING.TX_RESOLVED :
+        case PENDING.TX_NOT_FOUND :
             save(api.dispatch, api.getState);
         break;
 

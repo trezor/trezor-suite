@@ -47,11 +47,43 @@ declare module 'web3' {
         id: string;
     }
 
+    declare export type TransactionStatus = {
+        blockHash: string,
+        blockNumber: ?number,
+        from: string,
+        gas: number,
+        gasPrice: BigNumber,
+        hash: string,
+        input: string,
+        nonce: number,
+        r: string,
+        s: string,
+        v: string,
+        to: string,
+        transactionIndex: number,
+        value: BigNumber
+    }
+
+    declare export type TransactionReceipt = {
+        blockHash: string,
+        blockNumber: number,
+        contractAddress: ?string,
+        cumulativeGasUsed: number,
+        from: string,
+        gasUsed: number,
+        logs: Array<any>,
+        status: string,
+        to: string,
+        transactionHash: string,
+        transactionIndex: number
+    }
+
     declare class Eth {
         getGasPrice: (callback: (error: Error, gasPrice: string) => void) => void,
         getBalance: (address: string, callback: (error: Error, balance: BigNumber) => void) => void,
         getTransactionCount: (address: string, callback: (error: Error, result: number) => void) => void,
-        getTransaction: (txid: string, callback: (error: Error, result: any) => void) => void,
+        getTransaction: (txid: string, callback: (error: Error, result: TransactionStatus) => void) => void,
+        getTransactionReceipt: (txid: string, callback: (error: Error, result: TransactionReceipt) => void) => void,
         getBlockNumber: (callback: (error: Error, blockNumber: number) => void) => void,
         getBlock: (hash: string, callback: (error: Error, result: any) => void) => void,
         // getAccounts: (callback: (error: Error, accounts: Array<EthereumAddressT>) => void) => void,

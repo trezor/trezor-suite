@@ -44,6 +44,7 @@ export default function pending(state: State = initialState, action: Action): St
             return add(state, action);
 
         case PENDING.TX_RESOLVED :
+        case PENDING.TX_NOT_FOUND :
             return remove(state, action.tx.id);
 
         case PENDING.FROM_STORAGE :

@@ -11,5 +11,10 @@ export type PendingTxAction = {
     type: typeof PENDING.TX_RESOLVED,
     tx: PendingTx,
     receipt: Object,
-    block: string
+} | {
+    type: typeof PENDING.TX_NOT_FOUND,
+    tx: PendingTx,
+} | {
+    type: typeof PENDING.TX_TOKEN_ERROR,
+    tx: PendingTx,
 }

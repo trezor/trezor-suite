@@ -27,6 +27,7 @@ import type { PendingTx } from '../reducers/PendingTxReducer';
 import type { Web3Instance } from '../reducers/Web3Reducer';
 import type { Token } from '../reducers/TokensReducer';
 import type { NetworkToken } from '../reducers/LocalStorageReducer';
+import type { TransactionStatus, TransactionReceipt } from 'web3';
 
 export type Web3Action = {
     type: typeof WEB3.READY,
@@ -309,16 +310,28 @@ export const getTransactionReceipt = (tx: PendingTx): AsyncAction => {
         const web3instance = getState().web3.filter(w3 => w3.network === tx.network)[0];
         const web3 = web3instance.web3;
 
-        //web3.eth.getTransactionReceipt(txid, (error, tx) => {
-        web3.eth.getTransaction(tx.id, (error: Error, receipt: any) => {
-            if (receipt && receipt.blockNumber) {
-                web3.eth.getBlock(receipt.blockHash, (error, block) => {
-                    dispatch({
-                        type: PENDING.TX_RESOLVED,
-                        tx,
-                        receipt,
-                        block
-                    })
+        web3.eth.getTransaction(tx.id, (error: Error, status: TransactionStatus) => {
+            if (!error && !status) {
+                dispatch({
+                    type: PENDING.TX_NOT_FOUND,
+                    tx,
+                })
+            } else if (status && status.blockNumber) {
+                web3.eth.getTransactionReceipt(tx.id, (error: Error, receipt: TransactionReceipt) => {
+                    if (receipt) {
+                        if (status.gas !== receipt.gasUsed) {
+                            dispatch({
+                                type: PENDING.TX_TOKEN_ERROR,
+                                tx
+                            })
+                        }
+                        dispatch({
+                            type: PENDING.TX_RESOLVED,
+                            tx,
+                            receipt
+                        })
+                    }
+                    
                 });
             }
         });
