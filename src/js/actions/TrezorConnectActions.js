@@ -271,10 +271,6 @@ export const switchToFirstAvailableDevice = (): AsyncAction => {
             }
         } else {
             dispatch( push('/') );
-            dispatch({
-                type: CONNECT.SELECT_DEVICE,
-                payload: null
-            })
         }
     }
 }
@@ -350,11 +346,6 @@ export const deviceDisconnect = (device: Device): AsyncAction => {
                 });
             }
         }
-
-        if (!selected) {
-            dispatch( switchToFirstAvailableDevice() );
-        }
-
     }
 }
 

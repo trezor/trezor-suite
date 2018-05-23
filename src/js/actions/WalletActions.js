@@ -20,6 +20,9 @@ export type WalletAction = {
 } | {
     type: typeof WALLET.SET_SELECTED_DEVICE,
     device: ?TrezorDevice
+} | {
+    type: typeof WALLET.UPDATE_SELECTED_DEVICE,
+    device: TrezorDevice
 }
 
 export const init = (): ThunkAction => {

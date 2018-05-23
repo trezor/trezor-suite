@@ -83,6 +83,7 @@ export default function wallet(state: State = initialState, action: Action): Sta
             return state;
 
         case WALLET.SET_SELECTED_DEVICE :
+        case WALLET.UPDATE_SELECTED_DEVICE :
             return {
                 ...state,
                 selectedDevice: action.device

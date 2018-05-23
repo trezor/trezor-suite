@@ -22,7 +22,7 @@ import type {
 
 const getSelectedDevice = (state: State): ?TrezorDevice => {
     const locationState = state.router.location.state;
-    if (!locationState.device) return null;
+    if (!locationState.device) return undefined;
 
     const instance: ?number = locationState.deviceInstance ? parseInt(locationState.deviceInstance) : undefined;
     return state.connect.devices.find(d => {
@@ -60,21 +60,29 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
 
     const state = api.getState();
 
-    // listening devices state change
+    // handle devices state change
     if (locationChange || prevState.connect.devices !== state.connect.devices) {
         const device = getSelectedDevice(state);
         const currentDevice = state.wallet.selectedDevice;
 
         if (state.wallet.selectedDevice !== device) {
-            api.dispatch({
-                type: WALLET.SET_SELECTED_DEVICE,
-                device
-            })
-
             if (!locationChange && currentDevice && device && (currentDevice.path === device.path || currentDevice.instance === device.instance)) {
-                // console.warn("but ONLY UPDATE!")
+                api.dispatch({
+                    type: WALLET.UPDATE_SELECTED_DEVICE,
+                    device
+                })
             } else {
-                api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
+                api.dispatch({
+                    type: WALLET.SET_SELECTED_DEVICE,
+                    device
+                });
+                
+                if (device) {
+                    api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
+                } else {
+                    api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
+                }
+                
             }
         }
     }

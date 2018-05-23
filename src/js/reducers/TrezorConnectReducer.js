@@ -350,15 +350,12 @@ const duplicate = (state: State, device: TrezorDevice): State => {
 }
 
 
-const onSelectDevice = (state: State, action: any): State => {
+const onSelectedDevice = (state: State, device: ?TrezorDevice): State => {
     const newState: State = { ...state };
-    newState.selectedDevice = action.payload;
-
-    const selected = findSelectedDevice(newState);
-    if (selected) {
-        selected.ts = new Date().getTime();
+    if (device) {
+        const otherDevices: Array<TrezorDevice> = state.devices.filter(d => d !== device);
+        newState.devices = otherDevices.concat([ { ...device, ts: new Date().getTime() } ]);
     }
-
     return newState;
 }
 
@@ -378,12 +375,8 @@ export default function connect(state: State = initialState, action: Action): St
             return duplicate(state, action.device);
 
 
-        case CONNECT.SELECT_DEVICE : 
-            return onSelectDevice(state, action);
-            // return {
-            //     ...state,
-            //     selectedDevice: action.payload
-            // }
+        case WALLET.SET_SELECTED_DEVICE : 
+           return onSelectedDevice(state, action.device);
 
         case CONNECT.INITIALIZATION_ERROR :
             return {
