@@ -118,7 +118,8 @@ export const init = (): AsyncAction => {
                 connectSrc: 'https://sisyfos.trezor.io/',
                 debug: false,
                 popup: false,
-                webusb: true
+                webusb: true,
+                pendingTransportEvent: (getState().devices.length < 1)
             });
         } catch (error) { 
             // dispatch({
