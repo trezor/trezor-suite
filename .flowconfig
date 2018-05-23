@@ -6,6 +6,7 @@
 .*/node_modules/redux/.*
 .*/node_modules/react-router/.*
 .*/node_modules/react-router-redux/.*
+.*/node_modules/trezor-connect/.*
 .*/_old/.*
 .*/src/solidity/.*
 

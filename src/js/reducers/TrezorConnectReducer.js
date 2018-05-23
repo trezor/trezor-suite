@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import { TRANSPORT, DEVICE } from 'trezor-connect';
+import { TRANSPORT, DEVICE, UI } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as WALLET from '../actions/constants/wallet';
 
@@ -50,8 +50,7 @@ export default function connect(state: State = initialState, action: Action): St
 
     switch (action.type) {
 
-        // TODO: change it to UiMessage from trezor-connect
-        case 'iframe_handshake' : 
+        case UI.IFRAME_HANDSHAKE : 
             return {
                 ...state,
                 browserState: action.payload.browser

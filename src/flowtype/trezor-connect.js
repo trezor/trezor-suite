@@ -32,6 +32,7 @@ declare module 'trezor-connect' {
 
     declare type T_UI_EVENT = 'UI_EVENT';
     declare type T_UI = {
+        IFRAME_HANDSHAKE: 'iframe_handshake',
         TRANSPORT: 'ui-no_transport',
         BOOTLOADER: 'ui-device_bootloader_mode',
         INITIALIZE: 'ui-device_not_initialized',
@@ -96,6 +97,7 @@ declare module 'trezor-connect' {
         payload: {
             device: Device;
             code?: string;
+            browser?: any;
         }
     }
     
