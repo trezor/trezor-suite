@@ -21,6 +21,8 @@ export type ReceiveAction = {
 } | {
     type: typeof RECEIVE.SHOW_ADDRESS
 } | {
+    type: typeof RECEIVE.HIDE_ADDRESS
+} | {
     type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS
 }
 
@@ -80,7 +82,10 @@ export const showAddress = (address_n: Array<number>): AsyncAction => {
                 type: RECEIVE.SHOW_ADDRESS
             })
         } else {
-            // TODO: handle invalid pin?
+            dispatch({
+                type: RECEIVE.HIDE_ADDRESS
+            })
+           
             dispatch({
                 type: NOTIFICATION.ADD,
                 payload: {

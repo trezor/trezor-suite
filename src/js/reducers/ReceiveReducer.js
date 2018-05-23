@@ -1,8 +1,10 @@
 /* @flow */
 'use strict';
 
+import { UI } from 'trezor-connect';
 import * as RECEIVE from '../actions/constants/receive';
 import type { Action } from '~/flowtype';
+
 
 export type State = {
     addressVerified: boolean;
@@ -30,12 +32,24 @@ export default (state: State = initialState, action: Action): State => {
                 addressVerified: true,
                 addressUnverified: false
             }
+        case RECEIVE.HIDE_ADDRESS :
+            return initialState;
+            
         case RECEIVE.SHOW_UNVERIFIED_ADDRESS :
             return {
                 ...state,
                 addressVerified: false,
                 addressUnverified: true
             }
+
+        case UI.REQUEST_BUTTON : 
+            if (action.payload.code === 'ButtonRequest_Address') {
+                return {
+                    ...state,
+                    addressVerified: true,
+                }
+            }
+            return state;
 
         default:
             return state;
