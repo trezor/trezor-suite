@@ -9,13 +9,13 @@ import * as TrezorConnectActions from '~/js/actions/TrezorConnectActions';
 
 import type { State, Dispatch } from '~/flowtype';
 type Props = {
-    connect: $ElementType<State, 'connect'>,
+    acquiring: boolean;
     acquireDevice: typeof TrezorConnectActions.acquire
 }
 
 const Acquire = (props: Props) => {
 
-    const actions = [
+    const actions = props.acquiring ? [] : [
         {
             label: 'Acquire device',
             callback: () => {
@@ -40,7 +40,7 @@ const Acquire = (props: Props) => {
 export default connect( 
     (state: State) => {
         return {
-            log: state.log
+            acquiring: state.connect.acquiring
         };
     },
     (dispatch: Dispatch) => {

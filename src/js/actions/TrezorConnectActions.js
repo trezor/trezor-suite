@@ -74,6 +74,10 @@ export type TrezorConnectAction = {
 } | {
     type: typeof CONNECT.DEVICE_FROM_STORAGE,
     payload: Array<TrezorDevice>
+} | {
+    type: typeof CONNECT.START_ACQUIRING,
+} | {
+    type: typeof CONNECT.STOP_ACQUIRING,
 };
 
 
@@ -366,6 +370,10 @@ export function acquire(): AsyncAction {
         const selected: ?TrezorDevice = getState().wallet.selectedDevice;
         if (!selected) return;
 
+        dispatch({
+            type: CONNECT.START_ACQUIRING,
+        })
+
         const response = await TrezorConnect.getFeatures({ 
             device: {
                 path: selected.path,
@@ -381,17 +389,21 @@ export function acquire(): AsyncAction {
                     title: 'Acquire device error',
                     message: response.payload.error,
                     cancelable: true,
-                    actions: [
-                        {
-                            label: 'Try again',
-                            callback: () => {
-                                dispatch(acquire())
-                            }
-                        }
-                    ]
+                    // actions: [
+                    //     {
+                    //         label: 'Try again',
+                    //         callback: () => {
+                    //             dispatch(acquire())
+                    //         }
+                    //     }
+                    // ]
                 }
             })
         }
+
+        dispatch({
+            type: CONNECT.STOP_ACQUIRING,
+        })
     }
 }
 

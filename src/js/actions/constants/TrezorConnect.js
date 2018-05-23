@@ -23,3 +23,6 @@ export const TRY_TO_DUPLICATE: 'connect__try_to_duplicate' = 'connect__try_to_du
 export const DUPLICATE: 'connect__duplicate' = 'connect__duplicate';
 
 export const DEVICE_STATE_EXCEPTION: 'connect__device_state_exception' = 'connect__device_state_exception';
+
+export const START_ACQUIRING: 'connect__start_acquiring' = 'connect__start_acquiring';
+export const STOP_ACQUIRING: 'connect__stop_acquiring' = 'connect__stop_acquiring';

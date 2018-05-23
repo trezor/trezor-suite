@@ -30,6 +30,7 @@ export type State = {
     //     mobile: boolean;
     // } | {};
     browserState: any;
+    acquiring: boolean;
 }
 
 
@@ -39,7 +40,8 @@ const initialState: State = {
     discoveryComplete: false,
     error: null,
     transport: null,
-    browserState: {}
+    browserState: {},
+    acquiring: false,
 };
 
 
@@ -55,6 +57,17 @@ export default function connect(state: State = initialState, action: Action): St
                 browserState: action.payload.browser
             }
         
+        case CONNECT.START_ACQUIRING :
+            return {
+                ...state,
+                acquiring: true
+            }
+
+        case CONNECT.STOP_ACQUIRING :
+            return {
+                ...state,
+                acquiring: false
+            }
 
         case CONNECT.INITIALIZATION_ERROR :
             return {
