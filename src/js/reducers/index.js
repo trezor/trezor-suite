@@ -20,6 +20,7 @@ import discovery from './DiscoveryReducer.js';
 import pending from './PendingTxReducer.js';
 import fiat from './FiatRateReducer.js';
 import wallet from './WalletReducer.js';
+import devices from './DevicesReducer.js';
 
 const reducers = {
     router: routerReducer,
@@ -38,7 +39,8 @@ const reducers = {
     discovery,
     pending,
     fiat,
-    wallet
+    wallet,
+    devices
 }
 
 export type Reducers = typeof reducers;
