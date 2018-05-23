@@ -6980,9 +6980,9 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-trezor-connect@^5.0.11:
-  version "5.0.11"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.11.tgz#2afa61f1ff208270f04659585ac8dc2923d0b80f"
+trezor-connect@5.0.12:
+  version "5.0.12"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.12.tgz#cf7745b18f950663bad88aaece19251a4e394426"
 
 trim-newlines@^1.0.0:
   version "1.0.0"
