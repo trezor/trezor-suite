@@ -130,7 +130,6 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
         case DEVICE.CHANGED :
         case DEVICE.DISCONNECT :
         case CONNECT.AUTH_DEVICE :
-        case CONNECT.SELECT_DEVICE :
             save(api.dispatch, api.getState);
         break;
 

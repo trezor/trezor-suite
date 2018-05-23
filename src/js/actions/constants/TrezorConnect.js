@@ -6,7 +6,6 @@
 
 export const READY: 'connect__ready' = 'connect__ready';
 export const INITIALIZATION_ERROR: 'connect__init_error' = 'connect__init_error';
-export const SELECT_DEVICE: 'connect__select_device' = 'connect__select_device';
 
 
 export const DEVICE_FROM_STORAGE: 'connect__device_from_storage' = 'connect__device_from_storage';

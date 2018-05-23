@@ -38,12 +38,6 @@ export type TrezorConnectAction = {
     type: typeof CONNECT.INITIALIZATION_ERROR,
     error: string
 } | {
-    type: typeof CONNECT.SELECT_DEVICE,
-    payload: ?{
-        id: string,
-        instance: ?number
-    }
-} | {
     type: typeof CONNECT.COIN_CHANGED,
     payload: {
         network: string

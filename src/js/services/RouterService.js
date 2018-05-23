@@ -131,17 +131,6 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                     // redirectPath = `/device/${ devices[0].path }`;
                     redirectPath = location.pathname;
                 } else if (requestedParams.device) {
-
-                    if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
-                        postActions.push({
-                            type: CONNECT.SELECT_DEVICE,
-                            payload: {
-                                id: requestedParams.device,
-                                instance: requestedParams.deviceInstance ? parseInt(requestedParams.deviceInstance) : undefined
-                            }
-                        });
-                    }
-
                     if (requestedParams.network !== currentParams.network) {
                         postActions.push({
                             type: CONNECT.COIN_CHANGED,
