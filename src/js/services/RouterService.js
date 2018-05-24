@@ -31,7 +31,7 @@ const pathToParams = (path: string): RouterLocationState => {
     if (urlParts.length < 1 || path === "/") return params;
     
     for (let i = 0, len = urlParts.length; i < len; i+=2) {
-        params[ urlParts[i] ] = urlParts[ i + 1 ];
+        params[ urlParts[i] ] = urlParts[ i + 1 ] || urlParts[i];
     }
 
     if (params.hasOwnProperty('device')) {
