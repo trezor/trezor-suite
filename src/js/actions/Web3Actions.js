@@ -204,7 +204,8 @@ export function init(instance: ?Web3, coinIndex: number = 0): AsyncAction {
 
         }
 
-        latestBlockFilter.watch(onBlockMined);
+        // latestBlockFilter.watch(onBlockMined);
+        onBlockMined(new Error("manually_triggered_error"), undefined);
 
 
         // init next coin
