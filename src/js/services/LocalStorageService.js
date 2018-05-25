@@ -57,8 +57,9 @@ const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>
 }
 
 const findPendingTxs = (accounts: Array<Account>, pending: Array<PendingTx>): Array<PendingTx> => {
-    return accounts.reduce((arr, account) => {
-        return arr.concat(pending.filter(a => a.address === account.address));
+
+    return accounts.reduce((result, account) => {
+        return result.concat(pending.filter(p => p.address === account.address && p.network === account.network));
     }, []);
 }
 
