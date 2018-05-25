@@ -119,6 +119,7 @@ export type { Account } from '~/js/reducers/AccountsReducer';
 export type { Discovery } from '~/js/reducers/DiscoveryReducer';
 export type { Token } from '~/js/reducers/TokensReducer';
 export type { Web3Instance } from '~/js/reducers/Web3Reducer';
+export type { PendingTx } from '~/js/reducers/PendingTxReducer';
 
 export type Accounts = $ElementType<State, 'accounts'>;
 export type LocalStorage = $ElementType<State, 'localStorage'>;
