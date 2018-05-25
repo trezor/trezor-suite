@@ -202,11 +202,10 @@ export function update(event: StorageEvent): AsyncAction {
         }
 
         if (event.key === 'discovery') {
-            // TODO: check if changed discovery is not running locally
-            // dispatch({
-            //     type: DISCOVERY.FROM_STORAGE,
-            //     payload: JSON.parse(event.newValue)
-            // });
+            dispatch({
+                type: DISCOVERY.FROM_STORAGE,
+                payload: JSON.parse(event.newValue)
+            });
         }
     }
 }
