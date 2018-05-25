@@ -151,6 +151,8 @@ export const calculate = (prevProps: Props, props: Props) => {
 
     const {
         account,
+        tokens,
+        pending,
     } = props.selectedAccount;
     if (!account) return;
 
@@ -171,13 +173,13 @@ export const calculate = (prevProps: Props, props: Props) => {
     
     if (state.setMax) {
 
-        const pendingAmount = props.pending.reduce((value, p) => {
+        const pendingAmount = pending.reduce((value, p) => {
             //if (p.tx.amount)
             console.warn("PENDING AMOUNT!", p, value);
         }, 0);
 
         if (isToken) {
-            const token: ?Token = findToken(props.tokens, account.address, state.currency, account.deviceState);
+            const token: ?Token = findToken(tokens, account.address, state.currency, account.deviceState);
             if (token) {
                 state.amount = token.balance;
             }

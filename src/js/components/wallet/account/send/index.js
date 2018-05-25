@@ -15,8 +15,6 @@ import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps }
 type OwnProps = { }
 
 export type StateProps = BaseStateProps & {
-    tokens: $ElementType<State, 'tokens'>,
-    pending: $ElementType<State, 'pending'>,
     sendForm: $ElementType<State, 'sendForm'>,
     fiat: $ElementType<State, 'fiat'>,
     localStorage: $ElementType<State, 'localStorage'>,
@@ -35,8 +33,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         selectedAccount: state.selectedAccount,
         wallet: state.wallet,
 
-        tokens: state.tokens,
-        pending: state.pending,
         sendForm: state.sendForm,
         fiat: state.fiat,
         localStorage: state.localStorage

@@ -8,15 +8,13 @@ import ScaleText from 'react-scale-text';
 import { findAccountTokens } from '~/js/reducers/TokensReducer';
 
 import type { Coin } from '~/js/reducers/LocalStorageReducer';
-import type { Account } from '~/js/reducers/AccountsReducer';
 import type { Token } from '~/js/reducers/TokensReducer';
 import type { Props as BaseProps } from './index';
 
 type Props = {
-    pending: $ElementType<BaseProps, 'pending'>,
-    tokens: $ElementType<BaseProps, 'tokens'>,
-    account: Account,
-    selectedCoin: Coin
+    pending: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'pending'>,
+    tokens: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'tokens'>,
+    network: Coin
 }
 
 type Style = {
@@ -27,12 +25,11 @@ type Style = {
 
 const PendingTransactions = (props: Props) => {
 
-    const account = props.account;
-    const pending = props.pending.filter(p => p.network === account.network && p.address === account.address);
+    const pending = props.pending;
 
     if (pending.length < 1) return null;
 
-    const tokens: Array<Token> = findAccountTokens(props.tokens, account);
+    const tokens: Array<Token> = props.tokens;
 
     const bgColorFactory = new ColorHash({lightness: 0.7});
     const textColorFactory = new ColorHash();
@@ -42,7 +39,7 @@ const PendingTransactions = (props: Props) => {
         let iconColor: Style;
         let symbol: string;
         let name: string;
-        const isSmartContractTx: boolean = tx.currency !== props.selectedCoin.symbol;
+        const isSmartContractTx: boolean = tx.currency !== props.network.symbol;
         if (isSmartContractTx) {
             const token: ?Token = tokens.find(t => t.symbol === tx.currency);
             if (!token) {
@@ -69,8 +66,8 @@ const PendingTransactions = (props: Props) => {
                 background: bgColorFactory.hex(tx.network),
                 borderColor: bgColorFactory.hex(tx.network)
             }
-            symbol = props.selectedCoin.symbol;
-            name = props.selectedCoin.name;
+            symbol = props.network.symbol;
+            name = props.network.name;
         }
 
         return (
@@ -81,7 +78,7 @@ const PendingTransactions = (props: Props) => {
                     </div>
                 </div>
                 <div className="name">
-                    <a href={ `${props.selectedCoin.explorer.tx}${tx.id}`} target="_blank" rel="noreferrer noopener">{ name }</a>
+                    <a href={ `${props.network.explorer.tx}${tx.id}`} target="_blank" rel="noreferrer noopener">{ name }</a>
                 </div>
                 <div className="amount">{ tx.amount } { symbol }</div>
             </div>

@@ -45,7 +45,6 @@ const Send = (props: Props) => {
 
     if (!device || !account || !discovery || !network) return null;
 
-
     const { 
         address,
         amount,
@@ -192,10 +191,9 @@ const Send = (props: Props) => {
             </AdvancedForm>
 
             <PendingTransactions 
-                pending={ props.pending }
-                tokens={ props.tokens }
-                account={ account }
-                selectedCoin={ network } />
+                pending={ props.selectedAccount.pending }
+                tokens={ props.selectedAccount.tokens }
+                network={ network } />
     
         </section>
     );
