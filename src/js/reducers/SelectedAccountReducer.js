@@ -8,6 +8,7 @@ import type {
     Account,
     Coin,
     Token,
+    PendingTx,
     Discovery,
     Web3Instance
 } from '~/flowtype';
@@ -18,6 +19,7 @@ export type State = {
     account: ?Account;
     network: ?Coin;
     tokens: Array<Token>,
+    pending: Array<PendingTx>,
     web3: ?Web3Instance,
     discovery: ?Discovery
 };
@@ -27,6 +29,7 @@ export const initialState: State = {
     account: null,
     network: null,
     tokens: [],
+    pending: [],
     web3: null,
     discovery: null
 };

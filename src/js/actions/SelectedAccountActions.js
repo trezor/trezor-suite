@@ -56,7 +56,8 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
             const account = stateUtils.getSelectedAccount(state);
             const network = stateUtils.getSelectedNetwork(state);
             const discovery = stateUtils.getDiscoveryProcess(state);
-            const tokens = stateUtils.getTokens(state, account);
+            const tokens = stateUtils.getAccountTokens(state, account);
+            const pending = stateUtils.getAccountPendingTx(state, account);
             const web3 = stateUtils.getWeb3(state);
 
             const payload: $ElementType<State, 'selectedAccount'> = {
@@ -65,6 +66,7 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
                 network,
                 discovery,
                 tokens,
+                pending,
                 web3
             }
 

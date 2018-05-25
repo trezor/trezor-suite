@@ -19,6 +19,7 @@ import type {
     Coin,
     Discovery,
     Token,
+    PendingTx,
     Web3Instance
 } from '~/flowtype';
 
@@ -83,9 +84,15 @@ export const getDiscoveryProcess = (state: State): ?Discovery => {
     return state.discovery.find(d => d.deviceState === device.state && d.network === locationState.network);
 }
 
-export const getTokens = (state: State, account: ?Account): Array<Token> => {
+export const getAccountPendingTx = (state: State, account: ?Account): Array<PendingTx> => {
     const a = account;
-    if (!a) return state.selectedAccount.tokens;
+    if (!a) return state.selectedAccount.pending.length > 0 ? [] : state.selectedAccount.pending;
+    return state.pending.filter(p => p.network === a.network && p.address === a.address);
+}
+
+export const getAccountTokens = (state: State, account: ?Account): Array<Token> => {
+    const a = account;
+    if (!a) return state.selectedAccount.tokens.length > 0 ? [] : state.selectedAccount.tokens;
     return state.tokens.filter(t => t.ethAddress === a.address && t.network === a.network && t.deviceState === a.deviceState);
 }
 
