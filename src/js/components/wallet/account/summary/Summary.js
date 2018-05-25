@@ -3,7 +3,7 @@
 
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
-import { Async } from 'react-select';
+import { Async as AsyncSelect } from 'react-select';
 import Tooltip from 'rc-tooltip';
 
 import { resolveAfter } from '~/js/utils/promiseUtils';
@@ -13,56 +13,38 @@ import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
 
 import type { Props } from './index';
-import type { ComponentState } from '../SelectedAccount';
-
-import type { TrezorDevice } from '~/flowtype';
 import type { NetworkToken } from '~/js/reducers/LocalStorageReducer';
-import type { Account } from '~/js/reducers/AccountsReducer';
-import type { Discovery } from '~/js/reducers/DiscoveryReducer';
-import { findAccountTokens } from '~/js/reducers/TokensReducer';
 
-export default class Summary extends SelectedAccount<Props> {
-    render() {
-        return super.render() || _render(this.props, this.state);
-    }
-}
-
-const _render = (props: Props, state: ComponentState): React$Element<string> => {
-
+const Summary = (props: Props) => {
+    const device = props.wallet.selectedDevice;
     const {
-        device,
         account,
-        deviceStatusNotification
-    } = state;
-    const selectedAccount = props.selectedAccount;
+        network,
+        tokens,
+    } = props.selectedAccount;
 
-    if (!device || !account || !selectedAccount) return <section></section>;
-
-    
-    const tokens = findAccountTokens(props.tokens, account);
-    const explorerLink: string = `${selectedAccount.coin.explorer.address}${account.address}`;
+    // flow
+    if (!device || !account || !network) return null;
 
     const tokensTooltip = (
         <div className="tooltip-wrapper">
             Insert token name, symbol or address to be able to send it.
         </div>
     );
+    const explorerLink: string = `${network.explorer.address}${account.address}`;
 
     return (
-
-        <section className="summary">
-            { deviceStatusNotification }
-
-            <h2 className={ `summary-header ${selectedAccount.network}` }>
-                Account #{ parseInt(selectedAccount.index) + 1 }
+        <div>
+            <h2 className={ `summary-header ${account.network}` }>
+                Account #{ parseInt(account.index) + 1 }
                 <a href={ explorerLink } className="gray" target="_blank" rel="noreferrer noopener">See full transaction history</a>
             </h2>
 
             <SummaryDetails 
-                coin={ selectedAccount.coin }
+                coin={ network }
                 summary={ props.summary } 
                 balance={ account.balance }
-                network={ selectedAccount.network }
+                network={ network.network }
                 fiat={ props.fiat }
                 localStorage={ props.localStorage }
                 onToggle={ props.onDetailsToggle } />
@@ -79,7 +61,7 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 T01 */}
             <div className="filter">
-                <Async 
+                <AsyncSelect 
                     className="token-select"
                     multi={ false }
                     autoload={ false }
@@ -102,25 +84,27 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
                                     return o;
                                 }
                             });
-
-                            // return options.filter(o => {
-                            //     return !tokens.find(t => t.symbol === o.symbol);
-                            // });
                         }
                     }
                     valueKey="symbol" 
                     labelKey="name" 
                     placeholder="Search for token"
                     searchPromptText="Type token name or address"
-                    noResultsText="Token not found"
-                    
-                     />
+                    noResultsText="Token not found" />
 
             </div>
-                    
+
             <SummaryTokens tokens={ tokens } removeToken={ props.removeToken } />
 
-        </section>
+        </div>
+    )
 
+}
+
+export default (props: Props) => {
+    return (
+        <SelectedAccount { ...props }>
+            <Summary { ...props} />
+        </SelectedAccount>
     );
 }

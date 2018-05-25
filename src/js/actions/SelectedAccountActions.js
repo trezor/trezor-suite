@@ -1,66 +1,98 @@
 /* @flow */
 'use strict';
 
+import { LOCATION_CHANGE } from 'react-router-redux';
 import * as ACCOUNT from './constants/account';
+import * as SEND from './constants/send';
+
+import * as SendFormActions from './SendFormActions';
+import * as SessionStorageActions from './SessionStorageActions';
+import * as stateUtils from '../reducers/utils';
 
 import { initialState } from '../reducers/SelectedAccountReducer';
 
-import type { AsyncAction, ThunkAction, Action, GetState, Dispatch, TrezorDevice } from '~/flowtype';
-import type { State } from '../reducers/SelectedAccountReducer';
-import type { Coin } from '../reducers/LocalStorageReducer';
+import type {
+    Coin,
+    TrezorDevice,
+    AsyncAction,
+    ThunkAction,
+    Action, 
+    GetState, 
+    Dispatch,
+    State,
+} from '~/flowtype';
+
 
 export type SelectedAccountAction = {
-    type: typeof ACCOUNT.INIT,
-    state: State
-} | {
     type: typeof ACCOUNT.DISPOSE,
+} | {
+    type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT,
+    payload: $ElementType<State, 'selectedAccount'>
 };
 
-export const init = (): ThunkAction => {
-    return (dispatch: Dispatch, getState: GetState): void => {
+export const updateSelectedValues = (prevState: State, action: Action): AsyncAction => {
+    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const { location } = getState().router;
-        const urlParams = location.state;
+        const locationChange: boolean = action.type === LOCATION_CHANGE;
+        const state: State = getState();
+        const location = state.router.location;
 
-        const selected: ?TrezorDevice = getState().wallet.selectedDevice;;
-        if (!selected) return;
-        if (!selected.state || !selected.features) return;
+        let needUpdate: boolean = false;
 
-        const { config } = getState().localStorage;
-        const coin: ?Coin = config.coins.find(c => c.network === urlParams.network);
-        if (!coin) return;
+        // reset form to default
+        if (action.type === SEND.TX_COMPLETE) {
+            dispatch( SendFormActions.init() );
+            // linear action
+            SessionStorageActions.clear(location.pathname);
+        }
 
-        const state: State = {
-            index: parseInt(urlParams.account),
-            deviceState: selected.state || '0',
-            deviceId: selected.features ? selected.features.device_id : '0',
-            deviceInstance: selected.instance,
-            network: urlParams.network,
-            coin,
-            location: location.pathname,
-        };
+        // handle devices state change (from trezor-connect events or location change)
+        if (locationChange
+            || prevState.accounts !== state.accounts
+            || prevState.discovery !== state.discovery
+            || prevState.tokens !== state.tokens
+            || prevState.web3 !== state.web3) {
+            
+            const account = stateUtils.getSelectedAccount(state);
+            const network = stateUtils.getSelectedNetwork(state);
+            const discovery = stateUtils.getDiscoveryProcess(state);
+            const tokens = stateUtils.getTokens(state, account);
+            const web3 = stateUtils.getWeb3(state);
 
-        dispatch({
-            type: ACCOUNT.INIT,
-            state: state
-        });
+            const payload: $ElementType<State, 'selectedAccount'> = {
+                // location: location.pathname,
+                account,
+                network,
+                discovery,
+                tokens,
+                web3
+            }
 
-    }
-}
+            let needUpdate: boolean = false;
+            Object.keys(payload).forEach((key) => {
+                if (payload[key] !== state.selectedAccount[key]) {
+                    needUpdate = true;
+                }
+            })
 
-export const update = (initAccountAction: () => ThunkAction): ThunkAction => {
-    return (dispatch: Dispatch, getState: GetState): void => {
-        const {
-            selectedAccount,
-            router
-        } = getState();
+            if (needUpdate) {
+                dispatch({
+                    type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
+                    payload,
+                })
+            }
 
-        const shouldReload: boolean = (!selectedAccount || router.location.pathname !== selectedAccount.location);
-        if (shouldReload) {
-            dispatch( dispose() );
-            dispatch( init() );
-            if (selectedAccount !== null)
-                initAccountAction();
+            if (locationChange) {
+
+                if (prevState.router.location && prevState.router.location.state.send) {
+                    SessionStorageActions.save(prevState.router.location.pathname, state.sendForm);
+                }
+
+                dispatch( dispose() );
+                if (location.state.send) {
+                    dispatch( SendFormActions.init( SessionStorageActions.load(location.pathname) ) );
+                }
+            }
         }
     }
 }
@@ -69,10 +101,4 @@ export const dispose = (): Action => {
     return {
         type: ACCOUNT.DISPOSE
     }
-}
-
-export default {
-    init,
-    update,
-    dispose
 }

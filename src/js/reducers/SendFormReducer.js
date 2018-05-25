@@ -4,6 +4,8 @@
 import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
 import * as ACCOUNT from '../actions/constants/account';
+import * as WALLET from '../actions/constants/wallet';
+
 import EthereumjsUnits from 'ethereumjs-units';
 import BigNumber from 'bignumber.js';
 import { getFeeLevels } from '../actions/SendFormActions';
@@ -14,10 +16,9 @@ import type {
 } from '../actions/Web3Actions';
 
 export type State = {
-    +network: string;
-    +coinSymbol: string;
-    selectedCurrency: string;
-    balanceNeedUpdate: boolean;
+    +networkName: string;
+    +networkSymbol: string;
+    currency: string;
     
     // form fields
     advanced: boolean;
@@ -31,14 +32,17 @@ export type State = {
     recommendedGasPrice: string;
     gasPriceNeedsUpdate: boolean;
     gasLimit: string;
+    calculatingGasLimit: boolean;
     gasPrice: string;
     data: string;
     nonce: string;
     total: string;
-    sending: boolean;
+    
     errors: {[k: string]: string};
     warnings: {[k: string]: string};
     infos: {[k: string]: string};
+
+    sending: boolean;
 }
 
 export type FeeLevel = {
@@ -49,14 +53,13 @@ export type FeeLevel = {
 
 
 export const initialState: State = {
-    network: '',
-    coinSymbol: '',
-    selectedCurrency: '',
+    networkName: '',
+    networkSymbol: '',
+    currency: '',
 
     advanced: false,
     untouched: true,
     touched: {},
-    balanceNeedUpdate: false,
     address: '',
     //address: '0x574BbB36871bA6b78E27f4B4dCFb76eA0091880B',
     amount: '',
@@ -70,6 +73,7 @@ export const initialState: State = {
     recommendedGasPrice: '0',
     gasPriceNeedsUpdate: false,
     gasLimit: '0',
+    calculatingGasLimit: false,
     gasPrice: '0',
     data: '',
     nonce: '0',
@@ -88,13 +92,13 @@ const onGasPriceUpdated = (state: State, action: Web3UpdateGasPriceAction): Stat
     // }
     // const newPrice = getRandomInt(10, 50).toString();
     const newPrice: string = EthereumjsUnits.convert(action.gasPrice, 'wei', 'gwei');
-    if (action.network === state.network && newPrice !== state.recommendedGasPrice) {
+    if (action.network === state.networkName && newPrice !== state.recommendedGasPrice) {
         const newState: State = { ...state };
         if (!state.untouched) {
             newState.gasPriceNeedsUpdate = true;
             newState.recommendedGasPrice = newPrice;
         } else {
-            const newFeeLevels = getFeeLevels(state.coinSymbol, newPrice, state.gasLimit);
+            const newFeeLevels = getFeeLevels(state.networkSymbol, newPrice, state.gasLimit);
             const selectedFeeLevel: ?FeeLevel = newFeeLevels.find(f => f.value === 'Normal');
             if (!selectedFeeLevel) return state;
             newState.recommendedGasPrice = newPrice;
@@ -107,19 +111,6 @@ const onGasPriceUpdated = (state: State, action: Web3UpdateGasPriceAction): Stat
     return state;
 }
 
-const onBalanceUpdated = (state: State, action: any): State => {
-    // balanceNeedUpdate
-    // if (state.senderAddress === action.address) {
-    //     return {
-    //         ...state,
-    //         balance: '1'
-    //     }
-    // }
-
-    // TODO: handle balance update during send form life cycle
-    return state;
-}
-
 
 export default (state: State = initialState, action: Action): State => {
 
@@ -128,7 +119,7 @@ export default (state: State = initialState, action: Action): State => {
         case SEND.INIT :
             return action.state;
 
-        case SEND.DISPOSE :
+        case ACCOUNT.DISPOSE :
             return initialState;
 
         // this will be called right after Web3 instance initialization before any view is shown
@@ -136,8 +127,6 @@ export default (state: State = initialState, action: Action): State => {
         case WEB3.GAS_PRICE_UPDATED :
             return onGasPriceUpdated(state, action);
 
-        case ACCOUNT.SET_BALANCE :
-            return onBalanceUpdated(state, action);
 
         case SEND.TOGGLE_ADVANCED :
             return {
@@ -148,6 +137,7 @@ export default (state: State = initialState, action: Action): State => {
 
         // user actions
         case SEND.ADDRESS_CHANGE :
+        case SEND.ADDRESS_VALIDATION :
         case SEND.AMOUNT_CHANGE :
         case SEND.SET_MAX :
         case SEND.CURRENCY_CHANGE :
@@ -165,32 +155,11 @@ export default (state: State = initialState, action: Action): State => {
                 sending: true,
             }
 
-        case SEND.TX_COMPLETE :
-            return {
-                ...state,
-
-                sending: false,
-                untouched: true,
-                touched: {},
-                address: '',
-                amount: '',
-                setMax: false,
-                gasPriceNeedsUpdate: false,
-                gasLimit: state.gasLimit,
-                gasPrice: state.recommendedGasPrice,
-                data: '',
-                nonce: new BigNumber(state.nonce).plus(1).toString(),
-                total: '0',
-                errors: {},
-                warnings: {},
-                infos: {},
-            }
         case SEND.TX_ERROR :
             return {
                 ...state,
                 sending: false,
             }
-
 
         case SEND.VALIDATION :
             return {

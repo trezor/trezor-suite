@@ -14,15 +14,17 @@ type Props = {
 
 const AdvancedForm = (props: Props) => {
 
-    const selectedAccount = props.selectedAccount;
-    if (!selectedAccount) return null;
-
-    const { network } = selectedAccount;
     const { 
-        coinSymbol,
-        selectedCurrency,
+        account,
+        network
+    } = props.selectedAccount;
+    
+    const { 
+        networkSymbol,
+        currency,
         gasPrice,
         gasLimit,
+        calculatingGasLimit,
         nonce,
         data,
         errors,
@@ -120,10 +122,11 @@ const AdvancedForm = (props: Props) => {
                         autoCapitalize="off"
                         spellCheck="false"
                         value={ gasLimit }
-                        disabled={ coinSymbol === selectedCurrency && data.length > 0 }
+                        disabled={ networkSymbol === currency && data.length > 0 }
                         onChange={ event => onGasLimitChange(event.target.value) } />
                     { errors.gasLimit ? (<span className="error">{ errors.gasLimit }</span>) : null }
                     { warnings.gasLimit ? (<span className="warning">{ warnings.gasLimit }</span>) : null }
+                    { calculatingGasLimit ? (<span className="info">Calculating...</span>) : null }
                 </div>
                 <div className="column">
                     <label>
@@ -157,7 +160,7 @@ const AdvancedForm = (props: Props) => {
                         <span className="what-is-it"></span>
                     </Tooltip>
                 </label>
-                <textarea disabled={ coinSymbol !== selectedCurrency } value={ coinSymbol !== selectedCurrency ? '' : data } onChange={ event => onDataChange(event.target.value) }></textarea>
+                <textarea disabled={ networkSymbol !== currency } value={ networkSymbol !== currency ? '' : data } onChange={ event => onDataChange(event.target.value) }></textarea>
                 { errors.data ? (<span className="error">{ errors.data }</span>) : null }
             </div>
 

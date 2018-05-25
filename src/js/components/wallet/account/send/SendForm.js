@@ -6,40 +6,52 @@ import Select from 'react-select';
 import AdvancedForm from './AdvancedForm';
 import PendingTransactions from './PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './FeeSelect';
-import { Notification } from '~/js/components/common/Notification';
 import SelectedAccount from '../SelectedAccount';
 import { findAccountTokens } from '~/js/reducers/TokensReducer';
+import { calculate, validation } from '~/js/actions/SendFormActions';
+
+import { findToken } from '~/js/reducers/TokensReducer';
 
 import type { Props } from './index';
-import type { ComponentState } from '../SelectedAccount';
+import type { Token } from '~/flowtype';
 
-export default class Send extends SelectedAccount<Props> {
+
+export default class SendContainer extends Component<Props> {
+
+    componentWillReceiveProps(newProps: Props) {
+        calculate(this.props, newProps);
+        validation(newProps);
+    }
+
     render() {
-        return super.render() || _render(this.props, this.state);
+        return (
+            <SelectedAccount { ...this.props }>
+                <Send { ...this.props} />
+            </SelectedAccount>
+        );
     }
 }
 
-const _render = (props: Props, state: ComponentState): React$Element<string> => {
 
+const Send = (props: Props) => {
+
+    const device = props.wallet.selectedDevice;
     const {
-        device,
         account,
+        network,
         discovery,
-        deviceStatusNotification
-    } = state;
-    const selectedAccount = props.selectedAccount;
+        tokens
+    } = props.selectedAccount;
 
-    if (!device || !account || !discovery || !selectedAccount) return <section></section>;
+    if (!device || !account || !discovery || !network) return null;
 
-    const tokens = findAccountTokens(props.tokens, account);
-    const { network } = selectedAccount;
 
     const { 
         address,
         amount,
         setMax,
-        coinSymbol,
-        selectedCurrency,
+        networkSymbol,
+        currency,
         feeLevels,
         selectedFeeLevel,
         gasPriceNeedsUpdate,
@@ -48,6 +60,7 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
         warnings,
         infos,
         advanced,
+        data,
         sending,
     } = props.sendForm;
 
@@ -61,13 +74,12 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
         onSend,
     } = props.sendFormActions;
 
-    const selectedCoin = selectedAccount.coin;
     const fiatRate = props.fiat.find(f => f.network === network);
 
     const tokensSelectData = tokens.map(t => {
         return { value: t.symbol, label: t.symbol };
     });
-    tokensSelectData.unshift({ value: selectedCoin.symbol, label: selectedCoin.symbol });
+    tokensSelectData.unshift({ value: network.symbol, label: network.symbol });
 
     const setMaxClassName: string = setMax ? 'set-max enabled' : 'set-max';
 
@@ -89,10 +101,10 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
 
     let buttonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
     let buttonLabel: string = 'Send';
-    if (coinSymbol !== selectedCurrency && amount.length > 0 && !errors.amount) {
-        buttonLabel += ` ${amount} ${ selectedCurrency.toUpperCase() }`
-    } else if (coinSymbol === selectedCurrency && total !== '0') {
-        buttonLabel += ` ${total} ${ selectedCoin.symbol }`;
+    if (networkSymbol !== currency && amount.length > 0 && !errors.amount) {
+        buttonLabel += ` ${amount} ${ currency.toUpperCase() }`
+    } else if (networkSymbol === currency && total !== '0') {
+        buttonLabel += ` ${total} ${ network.symbol }`;
     }
 
     if (!device.connected){
@@ -105,14 +117,9 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
         buttonLabel = 'Loading accounts';
         buttonDisabled = true;
     }
-
-    let notification = null;
-
+    
     return (
         <section className="send-form">
-
-            { deviceStatusNotification }
-
             <h2>Send Ethereum or tokens</h2>
             <div className="row address-input">
                 <label>Address</label>
@@ -152,7 +159,7 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
                         searchable={ false }
                         clearable= { false }
                         multi={ false }
-                        value={ selectedCurrency }
+                        value={ currency }
                         disabled={ tokensSelectData.length < 2 }
                         onChange={ onCurrencyChange }
                         options={ tokensSelectData } />
@@ -172,6 +179,7 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
                     onChange={ onFeeLevelChange }
                     valueComponent={ FeeSelectValue }
                     optionComponent={ FeeSelectOption }
+                    disabled={ networkSymbol === currency && data.length > 0 }
                     optionClassName="fee-option"
                     options={ feeLevels } />
             </div>
@@ -187,7 +195,7 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
                 pending={ props.pending }
                 tokens={ props.tokens }
                 account={ account }
-                selectedCoin={ selectedCoin } />
+                selectedCoin={ network } />
     
         </section>
     );

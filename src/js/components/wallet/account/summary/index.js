@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import Summary from './Summary';
-import { default as SelectedAccountActions } from '~/js/actions/SelectedAccountActions';
 import * as SummaryActions from '~/js/actions/SummaryActions';
 import * as TokenActions from '~/js/actions/TokenActions';
 
@@ -21,7 +20,7 @@ type StateProps = BaseStateProps & {
     summary: $ElementType<State, 'summary'>,
     fiat: $ElementType<State, 'fiat'>,
     localStorage: $ElementType<State, 'localStorage'>,
-}
+};
 
 type DispatchProps = BaseDispatchProps & {
     onDetailsToggle: typeof SummaryActions.onDetailsToggle,
@@ -30,14 +29,13 @@ type DispatchProps = BaseDispatchProps & {
     removeToken: typeof TokenActions.remove,
 }
 
-export type Props = StateProps & DispatchProps;
+export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
+        className: "summary",
         selectedAccount: state.selectedAccount,
-        devices: state.devices,
-        accounts: state.accounts,
-        discovery: state.discovery,
+        wallet: state.wallet,
 
         tokens: state.tokens,
         summary: state.summary,
@@ -48,11 +46,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
     return {
-        selectedAccountActions: bindActionCreators(SelectedAccountActions, dispatch), 
-
-        initAccount: bindActionCreators(SummaryActions.init, dispatch),
-        disposeAccount: bindActionCreators(SummaryActions.dispose, dispatch), 
-
         onDetailsToggle: bindActionCreators(SummaryActions.onDetailsToggle, dispatch),
         addToken: bindActionCreators(TokenActions.add, dispatch),
         loadTokens: bindActionCreators(TokenActions.load, dispatch),

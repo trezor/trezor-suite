@@ -12,9 +12,7 @@ const Confirmation = (props: Props) => {
     const {
         amount,
         address,
-        network,
-        coinSymbol,
-        selectedCurrency,
+        currency,
         total,
         selectedFeeLevel
     } = props.sendForm;
@@ -27,7 +25,7 @@ const Confirmation = (props: Props) => {
             </div>
             <div className="content">
                 <label>Send </label>
-                <p>{ `${amount} ${ selectedCurrency }` }</p>
+                <p>{ `${amount} ${ currency }` }</p>
                 <label>To</label>
                 <p>{ address }</p>
                 <label>Fee</label>

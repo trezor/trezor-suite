@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { default as ReceiveActions } from '~/js/actions/ReceiveActions';
-import { default as SelectedAccountActions } from '~/js/actions/SelectedAccountActions';
 import * as TokenActions from '~/js/actions/TokenActions';
 import Receive from './Receive';
 
@@ -28,14 +27,14 @@ type DispatchProps = BaseDispatchProps & {
     showAddress: typeof ReceiveActions.showAddress
 };
 
-export type Props = StateProps & DispatchProps;
+export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
+        className: "receive",
         selectedAccount: state.selectedAccount,
-        devices: state.devices,
-        accounts: state.accounts,
-        discovery: state.discovery,
+        wallet: state.wallet,
+
         receive: state.receive,
         modal: state.modal,
     };
@@ -43,10 +42,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
     return {
-        selectedAccountActions: bindActionCreators(SelectedAccountActions, dispatch),
-
-        initAccount: bindActionCreators(ReceiveActions.init, dispatch), 
-        disposeAccount: bindActionCreators(ReceiveActions.dispose, dispatch),
         showAddress: bindActionCreators(ReceiveActions.showAddress, dispatch),
     };
 }

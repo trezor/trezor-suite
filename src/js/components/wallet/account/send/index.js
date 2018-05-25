@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { default as SendFormActions } from '~/js/actions/SendFormActions';
-import { default as SelectedAccountActions } from '~/js/actions/SelectedAccountActions';
 import SendForm from './SendForm';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
@@ -28,14 +27,14 @@ export type DispatchProps = BaseDispatchProps & {
     sendFormActions: typeof SendFormActions
 }
 
-export type Props = StateProps & DispatchProps;
+export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
+        className: "send-from",
         selectedAccount: state.selectedAccount,
-        devices: state.devices,
-        accounts: state.accounts,
-        discovery: state.discovery,
+        wallet: state.wallet,
+
         tokens: state.tokens,
         pending: state.pending,
         sendForm: state.sendForm,
@@ -46,10 +45,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
     return {
-        selectedAccountActions: bindActionCreators(SelectedAccountActions, dispatch), 
         sendFormActions: bindActionCreators(SendFormActions, dispatch),
-        initAccount: bindActionCreators(SendFormActions.init, dispatch),  
-        disposeAccount: bindActionCreators(SendFormActions.dispose, dispatch),
     };
 }
 

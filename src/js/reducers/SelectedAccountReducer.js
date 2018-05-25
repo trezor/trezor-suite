@@ -2,32 +2,41 @@
 'use strict';
 
 import * as ACCOUNT from '../actions/constants/account';
-import * as CONNECT from '../actions/constants/TrezorConnect';
 
-import type { Action } from '~/flowtype';
-import type { Coin } from './LocalStorageReducer';
+import type { 
+    Action, 
+    Account,
+    Coin,
+    Token,
+    Discovery,
+    Web3Instance
+} from '~/flowtype';
 
 export type State = {
-    +index: number;
-    +deviceState: string;
-    +deviceId: string;
-    +deviceInstance: ?number;
-    +network: string;
-    +coin: Coin;
-    +location: string;
+    location?: string;
+
+    account: ?Account;
+    network: ?Coin;
+    tokens: Array<Token>,
+    web3: ?Web3Instance,
+    discovery: ?Discovery
 };
 
-export const initialState: ?State = null;
+export const initialState: State = {
+    location: '/',
+    account: null,
+    network: null,
+    tokens: [],
+    web3: null,
+    discovery: null
+};
 
-export default (state: ?State = initialState, action: Action): ?State => {
+export default (state: State = initialState, action: Action): State => {
 
     switch (action.type) {
 
-        case ACCOUNT.INIT :
-            return action.state;
-
-        case ACCOUNT.DISPOSE :
-            return initialState;
+        case ACCOUNT.UPDATE_SELECTED_ACCOUNT :
+            return action.payload;
 
         default:
             return state;

@@ -40,8 +40,20 @@ export const getSelectedDevice = (state: State): ?TrezorDevice => {
     });
 }
 
+// 
 export const isSelectedDevice = (current: ?TrezorDevice, device: ?TrezorDevice): boolean => {
-    return (current && device && (current.path === device.path || current.instance === device.instance)) ? true : false;
+    return (current && device && (current.path === device.path && current.instance === device.instance)) ? true : false;
+}
+
+// find device by id and state
+export const findDevice = (devices: Array<TrezorDevice>, deviceId: string, deviceState: string, instance: ?number): ?TrezorDevice => {
+    return devices.find(d => {
+        // TODO: && (instance && d.instance === instance)
+        if (d.features && d.features.device_id === deviceId && d.state === deviceState) {
+            return true;
+        }
+        return false;
+    });
 }
 
 export const getSelectedAccount = (state: State): ?Account => {
@@ -71,10 +83,10 @@ export const getDiscoveryProcess = (state: State): ?Discovery => {
     return state.discovery.find(d => d.deviceState === device.state && d.network === locationState.network);
 }
 
-export const getTokens = (state: State): Array<Token> => {
-    const account = state.selectedAccount.account;
-    if (!account) return state.selectedAccount.tokens;
-    return state.tokens.filter(t => t.ethAddress === account.address && t.network === account.network && t.deviceState === account.deviceState);
+export const getTokens = (state: State, account: ?Account): Array<Token> => {
+    const a = account;
+    if (!a) return state.selectedAccount.tokens;
+    return state.tokens.filter(t => t.ethAddress === a.address && t.network === a.network && t.deviceState === a.deviceState);
 }
 
 export const getWeb3 = (state: State): ?Web3Instance => {

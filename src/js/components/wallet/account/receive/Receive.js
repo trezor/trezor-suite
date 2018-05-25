@@ -9,30 +9,25 @@ import { QRCode } from 'react-qr-svg';
 import SelectedAccount from '../SelectedAccount';
 import { Notification } from '~/js/components/common/Notification';
 
-import type { ComponentState } from '../SelectedAccount';
 import type { Props } from './index';
 
-export default class Receive extends SelectedAccount<Props> {
-    render() {
-        return super.render() || _render(this.props, this.state);
-    }
-}
 
-const _render = (props: Props, state: ComponentState): React$Element<string> => {
 
+const Receive = (props: Props) => {
+
+    const device = props.wallet.selectedDevice;
     const {
-        device,
         account,
+        network,
         discovery,
-        deviceStatusNotification
-    } = state;
+    } = props.selectedAccount;
+
+    if (!device || !account || !discovery) return null;
 
     const {
         addressVerified,
         addressUnverified,
     } = props.receive;
-
-    if (!device || !account || !discovery) return <section></section>;
 
     let qrCode = null;
     let address = `${account.address.substring(0, 20)}...`;
@@ -83,8 +78,7 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
     }
     
     return (
-        <section className="receive">
-            { deviceStatusNotification }
+        <div>
             <h2>Receive Ethereum or tokens</h2>
             
             <div className={ className }>
@@ -95,6 +89,14 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
                 { button }
             </div>
             { qrCode }
-        </section>
+        </div>
+    );
+}
+
+export default (props: Props) => {
+    return (
+        <SelectedAccount { ...props }>
+            <Receive { ...props} />
+        </SelectedAccount>
     );
 }

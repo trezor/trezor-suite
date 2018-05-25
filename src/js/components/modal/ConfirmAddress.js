@@ -8,10 +8,11 @@ import type { Props } from './index';
 
 const ConfirmAddress = (props: Props) => {
 
-    const { accounts, selectedAccount } = props;
-    if (!selectedAccount) return null;
-    const account = findAccount(accounts, selectedAccount.index, selectedAccount.deviceState, selectedAccount.network);
-    if (!account) return null;
+    const {
+        account,
+        network
+    } = props.selectedAccount;
+    if (!account || !network) return null;
 
     return (
         <div className="confirm-address">
@@ -21,7 +22,7 @@ const ConfirmAddress = (props: Props) => {
             </div>
             <div className="content">
                 <p>{ account.address }</p>
-                <label>{ selectedAccount.coin.symbol } account #{ (account.index + 1) }</label>
+                <label>{ network.symbol } account #{ (account.index + 1) }</label>
             </div>
         </div>
     );
@@ -50,14 +51,9 @@ export class ConfirmUnverifiedAddress extends Component<Props> {
 
     verifyAddress() {
         if (!this.props.modal.opened) return;
-
-        const { 
-            accounts, 
-            selectedAccount 
-        } = this.props;
-
-        if(!selectedAccount) return null;
-        const account = findAccount(accounts, selectedAccount.index, selectedAccount.deviceState, selectedAccount.network);
+        const {
+            account
+        } = this.props.selectedAccount;
         if (!account) return null;
 
         this.props.modalActions.onCancel();

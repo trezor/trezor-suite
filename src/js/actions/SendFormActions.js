@@ -17,7 +17,7 @@ import BigNumber from 'bignumber.js';
 import { initialState } from '../reducers/SendFormReducer';
 import { findAccount } from '../reducers/AccountsReducer';
 import { findToken } from '../reducers/TokensReducer';
-import { findDevice } from '../reducers/DevicesReducer';
+import { findDevice } from '../reducers/utils';
 
 import type { 
     Dispatch,
@@ -34,6 +34,7 @@ import type { Config, Coin } from '../reducers/LocalStorageReducer';
 import type { Token } from '../reducers/TokensReducer';
 import type { State, FeeLevel } from '../reducers/SendFormReducer';
 import type { Account } from '../reducers/AccountsReducer';
+import type { Props } from '../components/wallet/account/send';
 
 export type SendTxAction = {
     type: typeof SEND.TX_COMPLETE,
@@ -56,6 +57,9 @@ export type SendFormAction = SendTxAction | {
     errors: {[k: string]: string},
     warnings: {[k: string]: string},
     infos: {[k: string]: string}
+} | {
+    type: typeof SEND.ADDRESS_VALIDATION,
+    state: State
 } | {
     type: typeof SEND.ADDRESS_CHANGE,
     state: State
@@ -111,21 +115,28 @@ export type SendFormAction = SendTxAction | {
 //const numberRegExp = new RegExp('^([0-9]{0,10}\\.)?[0-9]{1,18}$');
 const numberRegExp: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
 
-const calculateFee = (gasPrice: string, gasLimit: string): string => {
-    return EthereumjsUnits.convert( new BigNumber(gasPrice).times(gasLimit), 'gwei', 'ether');
-}
-
-const calculateTotal = (amount: string, gasPrice: string, gasLimit: string): string => {
+export const calculateFee = (gasPrice: string, gasLimit: string): string => {
     try {
-        return new BigNumber(amount).plus( calculateFee(gasPrice, gasLimit) ).toString();
+        return EthereumjsUnits.convert( new BigNumber(gasPrice).times(gasLimit), 'gwei', 'ether');
     } catch (error) {
         return '0';
     }
 }
 
-const calculateMaxAmount = (balance: string, gasPrice: string, gasLimit: string): string => {
+export const calculateTotal = (amount: string, gasPrice: string, gasLimit: string): string => {
     try {
-        const fee = EthereumjsUnits.convert( new BigNumber(gasPrice).times(gasLimit), 'gwei', 'ether');
+        // return new BigNumber(amount).plus( calculateFee(gasPrice, gasLimit) ).toString();
+        const fee = calculateFee(gasPrice, gasLimit);
+        return new BigNumber(amount).plus( calculateFee(gasPrice, gasLimit) ).toFixed(16);
+    } catch (error) {
+        return '0';
+    }
+}
+
+export const calculateMaxAmount = (balance: string, gasPrice: string, gasLimit: string): string => {
+    try {
+        // TODO - minus pendings
+        const fee = calculateFee(gasPrice, gasLimit);
         const b = new BigNumber(balance);
         const max = b.minus(fee);
         if (max.lessThan(0)) return '0';
@@ -136,24 +147,55 @@ const calculateMaxAmount = (balance: string, gasPrice: string, gasLimit: string)
     
 }
 
-const setAmountAndTotal = (state: State): State => {
+export const calculate = (prevProps: Props, props: Props) => {
 
-    // if (state.setMax) {
-    //     const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-    //     if (!account) return;
+    const {
+        account,
+    } = props.selectedAccount;
+    if (!account) return;
 
-    //     if (isToken) {
-    //         const token: ?Token = findToken(getState().tokens, account.address, state.selectedCurrency, account.deviceState);
-    //         if (!token) return;
-    //         state.amount = token.balance;
-    //     } else {
-    //         state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
-    //     }
-    // }
-    // state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
+    console.warn("CALCULATE!", props)
 
-    return state;
+    const prevState = prevProps.sendForm;
+    const state = props.sendForm;
+    const isToken: boolean = state.currency !== state.networkSymbol;
+
+    // account balance
+    // token balance
+    // gasLimit, gasPrice changed
+    
+    // const shouldRecalculateAmount = 
+    //     (prevProps.selectedAccount.account !== account)
+    //     || (prevProps.)
+    
+    
+    if (state.setMax) {
+
+        const pendingAmount = props.pending.reduce((value, p) => {
+            //if (p.tx.amount)
+            console.warn("PENDING AMOUNT!", p, value);
+        }, 0);
+
+        if (isToken) {
+            const token: ?Token = findToken(props.tokens, account.address, state.currency, account.deviceState);
+            if (token) {
+                state.amount = token.balance;
+            }
+        } else {
+            state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
+        }
+    }
+
+    // amount changed
+    // fee changed
+    state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
+
+    if (state.selectedFeeLevel.value === 'Custom') {
+        state.selectedFeeLevel.label = `${ calculateFee(state.gasPrice, state.gasLimit) } ${ state.networkSymbol }`;
+        state.selectedFeeLevel.gasPrice = state.gasPrice;
+    }
 }
+
 
 export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLimit: string, selected?: FeeLevel): Array<FeeLevel> => {
     const price: BigNumber = typeof gasPrice === 'string' ? new BigNumber(gasPrice) : gasPrice
@@ -194,45 +236,44 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
 
 
 // initialize component
-export const init = (): ThunkAction => {
+export const init = (stateFromStorage: ?State): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
+        const {
+            account,
+            network,
+            web3
+        } = getState().selectedAccount;
 
-        const { location } = getState().router;
-        const urlParams: RouterLocationState = location.state;
+        if (!account || !network || !web3) return;
 
-        const selected: ?TrezorDevice = getState().wallet.selectedDevice;
-        if (!selected) return;
-
-        const web3instance: ?Web3Instance = getState().web3.find(w3 => w3.network === urlParams.network);
-        if (!web3instance) return;
-
-        const account = getState().accounts.find(a => a.deviceState === accountState.deviceState && a.index === accountState.index && a.network === accountState.network);
-        if (!account) return;
+        if (stateFromStorage) {
+            dispatch({
+                type: SEND.INIT,
+                state: stateFromStorage
+            });
+            return;
+        }
 
         // TODO: check if there are some unfinished tx in localStorage
 
-        const coin: Coin = accountState.coin;
-
-        const gasPrice: BigNumber = new BigNumber( EthereumjsUnits.convert(web3instance.gasPrice, 'wei', 'gwei') ) || new BigNumber(coin.defaultGasPrice);
-        const gasLimit: string = coin.defaultGasLimit.toString();
-        const feeLevels: Array<FeeLevel> = getFeeLevels(coin.symbol, gasPrice, gasLimit);
+        const gasPrice: BigNumber = new BigNumber( EthereumjsUnits.convert(web3.gasPrice, 'wei', 'gwei') ) || new BigNumber(network.defaultGasPrice);
+        const gasLimit: string = network.defaultGasLimit.toString();
+        const feeLevels: Array<FeeLevel> = getFeeLevels(network.symbol, gasPrice, gasLimit);
 
         // TODO: get nonce
+        //  TODO: LOAD DATA FROM SESSION STORAGE
 
         const state: State = {
             ...initialState,
-            network: coin.network,
-            coinSymbol: coin.symbol,
-            selectedCurrency: coin.symbol,
+            networkName: network.network,
+            networkSymbol: network.symbol,
+            currency: network.symbol,
             feeLevels,
             selectedFeeLevel: feeLevels.find(f => f.value === 'Normal'),
             recommendedGasPrice: gasPrice.toString(),
             gasLimit,
             gasPrice: gasPrice.toString(),
-            nonce: account.nonce.toString(), // TODO!!!
         };
 
         dispatch({
@@ -242,269 +283,272 @@ export const init = (): ThunkAction => {
     }
 }
 
-export const dispose = (): Action => {
-    return {
-        type: SEND.DISPOSE
-    }
-}
-
 export const toggleAdvanced = (address: string): Action => {
     return {
         type: SEND.TOGGLE_ADVANCED
     }
 }
 
-export const validation = (): ThunkAction => {
+
+const addressValidation = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
+        const {
+            account,
+            network,
+            tokens,
+        } = getState().selectedAccount;
+        if (!account || !network) return;
 
         const state: State = getState().sendForm;
+        const infos = { ...state.infos };
+        const warnings = { ...state.warnings };
 
-        const errors: {[k: string]: string} = {};
-        const warnings: {[k: string]: string} = {};
-        const infos: {[k: string]: string} = {};
 
-        if (state.untouched) return;
-            // valid address
-        if (state.touched.address) {
+        if (state.untouched || !state.touched.address) return;
 
-            const accounts = getState().accounts;
-            const savedAccounts = accounts.filter(a => a.address.toLowerCase() === state.address.toLowerCase());
-
-            if (state.address.length < 1) {
-                errors.address = 'Address is not set';
-            } else if (!EthereumjsUtil.isValidAddress(state.address)) {
-                errors.address = 'Address is not valid';
-            } else if (savedAccounts.length > 0) {
-                // check if founded account belongs to this network
-                // corner-case: when same derivation path is used on different networks
-                const currentNetworkAccount = savedAccounts.find(a => a.network === accountState.network);
-                if (currentNetworkAccount) {
-                    const device: ?TrezorDevice = findDevice(getState().devices, currentNetworkAccount.deviceID, currentNetworkAccount.deviceState);
-                    if (!device) return;
+        const savedAccounts = getState().accounts.filter(a => a.address.toLowerCase() === state.address.toLowerCase());
+        if (savedAccounts.length > 0) {
+            // check if found account belongs to this network
+            // corner-case: when same derivation path is used on different networks
+            const currentNetworkAccount = savedAccounts.find(a => a.network === network.network);
+            if (currentNetworkAccount) {
+                const device: ?TrezorDevice = findDevice(getState().devices, currentNetworkAccount.deviceID, currentNetworkAccount.deviceState);
+                if (device) {
                     infos.address = `${ device.instanceLabel } Account #${ (currentNetworkAccount.index + 1) }`;
-                } else {
-                    const device: ?TrezorDevice = findDevice(getState().devices, savedAccounts[0].deviceID, savedAccounts[0].deviceState);
-                    if (!device) return;
-                    warnings.address = `Looks like it's ${ device.instanceLabel } Account #${ (savedAccounts[0].index + 1) } address of ${ savedAccounts[0].network.toUpperCase() } network`;
                 }
-            }
-        }
-
-        // valid amount
-        // https://stackoverflow.com/a/42701461
-        //const regexp = new RegExp('^(?:[0-9]{0,10}\\.)?[0-9]{1,18}$');
-        if (state.touched.amount) {
-            if (state.amount.length < 1) {
-                errors.amount = 'Amount is not set';
-            } else if (state.amount.length > 0 && !state.amount.match(numberRegExp)) {
-                errors.amount = 'Amount is not a number';
             } else {
-
-                const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-                if (!account) return;
-
-                let decimalRegExp: RegExp;
-
-                if (state.selectedCurrency !== state.coinSymbol) {
-                    const token = findToken(getState().tokens, account.address, state.selectedCurrency, account.deviceState);
-                    if (token) {
-                        if (parseInt(token.decimals) > 0) {
-                            //decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
-                            decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9][0-9]*\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
-                        } else {
-                            // decimalRegExp = new RegExp('^(0|0\\.?|[1-9]+\\.?)$');
-                            decimalRegExp = new RegExp('^[0-9]+$');
-                        }
-
-                        if (!state.amount.match(decimalRegExp)) {
-                            errors.amount = `Maximum ${ token.decimals} decimals allowed`;
-                        } else if (new BigNumber(state.total).greaterThan(account.balance)) {
-                            errors.amount = `Not enough ${ state.coinSymbol } to cover transaction fee`;
-                        } else if (new BigNumber(state.amount).greaterThan(token.balance)) {
-                            errors.amount = 'Not enough funds';
-                        } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
-                            errors.amount = 'Amount is too low';
-                        }
-                    }
-                    
-                } else {
-                    decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
-                    if (!state.amount.match(decimalRegExp)) {
-                        errors.amount = `Maximum 18 decimals allowed`;
-                    } else if (new BigNumber(state.total).greaterThan(account.balance)) {
-                        errors.amount = 'Not enough funds';
-                    }
+                const otherNetworkAccount = savedAccounts[0];
+                const device: ?TrezorDevice = findDevice(getState().devices, otherNetworkAccount.deviceID, otherNetworkAccount.deviceState);
+                const coins = getState().localStorage.config.coins;
+                const otherNetwork: ?Coin = coins.find(c => c.network === otherNetworkAccount.network)
+                if (device && otherNetwork) {
+                    warnings.address = `Looks like it's ${ device.instanceLabel } Account #${ (otherNetworkAccount.index + 1) } address of ${ otherNetwork.name } network`;
                 }
             }
+        } else {
+            delete warnings.address;
+            delete infos.address;
         }
-        
-        // valid gas limit
-        if (state.touched.gasLimit) {
-            if (state.gasLimit.length < 1) {
-                errors.gasLimit = 'Gas limit is not set';
-            } else if (state.gasLimit.length > 0 && !state.gasLimit.match(numberRegExp)) {
-                errors.gasLimit = 'Gas limit is not a number';
-            } else {
-                const gl: BigNumber = new BigNumber(state.gasLimit);
-                if (gl.lessThan(1)) {
-                    errors.gasLimit = 'Gas limit is too low';
-                } else if (gl.lessThan( state.selectedCurrency !== state.coinSymbol ? accountState.coin.defaultGasLimitTokens : accountState.coin.defaultGasLimit )) {
-                    warnings.gasLimit = 'Gas limit is below recommended';
-                }
-            }
-        }
-
-        // valid gas price
-        if (state.touched.gasPrice) {
-            if (state.gasPrice.length < 1) {
-                errors.gasPrice = 'Gas price is not set';
-            } else if (state.gasPrice.length > 0 && !state.gasPrice.match(numberRegExp)) {
-                errors.gasPrice = 'Gas price is not a number';
-            } else {
-                const gp: BigNumber = new BigNumber(state.gasPrice);
-                if (gp.greaterThan(1000)) {
-                    warnings.gasPrice = 'Gas price is too high';
-                } else if (gp.lessThanOrEqualTo('0')) {
-                    errors.gasPrice = 'Gas price is too low';
-                }
-            }
-        }
-
-        // valid nonce
-        if (state.touched.nonce) {
-            const re = new RegExp('^[0-9]+$');
-            if (state.nonce.length < 1) {
-                errors.nonce = 'Nonce is not set';
-            } else if (!state.nonce.match(re)) {
-                errors.nonce = 'Nonce is not a valid number';
-            } else {
-                const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-                if (!account) return;
-
-                const n: BigNumber = new BigNumber(state.nonce);
-                if (n.lessThan(account.nonce)) {
-                    warnings.nonce = 'Nonce is lower than recommended';
-                } else if (n.greaterThan(account.nonce)) {
-                    warnings.nonce = 'Nonce is greater than recommended';
-                }
-            }
-        }
-
-        // valid data
-        if (state.touched.data && state.data.length > 0) {
-            const re = /^[0-9A-Fa-f]+$/g;
-            if (!re.test(state.data)) {
-                errors.data = 'Data is not valid hexadecimal';
-            }
-        }
-
-        // valid nonce?
 
         dispatch({
-            type: SEND.VALIDATION,
-            errors,
-            warnings,
-            infos
-        });
+            type: SEND.ADDRESS_VALIDATION,
+            state: {
+                ...state,
+                infos,
+                warnings
+            }
+        })
     }
 }
 
 
+export const validation = (props: Props): void => {
+
+    const {
+        account,
+        network,
+        tokens,
+    } = props.selectedAccount;
+    if (!account || !network) return;
+
+
+    const state: State = props.sendForm;
+
+    const errors: {[k: string]: string} = {};
+    const warnings: {[k: string]: string} = {};
+    const infos: {[k: string]: string} = {};
+
+    if (state.untouched) return;
+    // valid address
+    if (state.touched.address) {
+        if (state.address.length < 1) {
+            errors.address = 'Address is not set';
+        } else if (!EthereumjsUtil.isValidAddress(state.address)) {
+            errors.address = 'Address is not valid';
+        } else {
+            // address warning or info are set in addressValidation ThunkAction
+            // do not override this
+            if (state.warnings.address) {
+                warnings.address = state.warnings.address;
+            } else if (state.infos.address) {
+                infos.address = state.infos.address;
+            }
+        }
+    }
+
+    // valid amount
+    // https://stackoverflow.com/a/42701461
+    //const regexp = new RegExp('^(?:[0-9]{0,10}\\.)?[0-9]{1,18}$');
+    if (state.touched.amount) {
+        if (state.amount.length < 1) {
+            errors.amount = 'Amount is not set';
+        } else if (state.amount.length > 0 && !state.amount.match(numberRegExp)) {
+            errors.amount = 'Amount is not a number';
+        } else {
+
+            let decimalRegExp: RegExp;
+
+            if (state.currency !== state.networkSymbol) {
+                const token = findToken(tokens, account.address, state.currency, account.deviceState);
+                if (token) {
+                    if (parseInt(token.decimals) > 0) {
+                        //decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9]+\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
+                        decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,' + token.decimals + '})?|[1-9][0-9]*\\.?([0-9]{0,' + token.decimals + '})?|\\.[0-9]{1,' + token.decimals + '})$');
+                    } else {
+                        // decimalRegExp = new RegExp('^(0|0\\.?|[1-9]+\\.?)$');
+                        decimalRegExp = new RegExp('^[0-9]+$');
+                    }
+
+                    if (!state.amount.match(decimalRegExp)) {
+                        errors.amount = `Maximum ${ token.decimals} decimals allowed`;
+                    } else if (new BigNumber(state.total).greaterThan(account.balance)) {
+                        errors.amount = `Not enough ${ state.networkSymbol } to cover transaction fee`;
+                    } else if (new BigNumber(state.amount).greaterThan(token.balance)) {
+                        errors.amount = 'Not enough funds';
+                    } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
+                        errors.amount = 'Amount is too low';
+                    }
+                }
+                
+            } else {
+                decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
+                if (!state.amount.match(decimalRegExp)) {
+                    errors.amount = `Maximum 18 decimals allowed`;
+                } else if (new BigNumber(state.total).greaterThan(account.balance)) {
+                    errors.amount = 'Not enough funds';
+                }
+            }
+        }
+    }
+        
+    // valid gas limit
+    if (state.touched.gasLimit) {
+        if (state.gasLimit.length < 1) {
+            errors.gasLimit = 'Gas limit is not set';
+        } else if (state.gasLimit.length > 0 && !state.gasLimit.match(numberRegExp)) {
+            errors.gasLimit = 'Gas limit is not a number';
+        } else {
+            const gl: BigNumber = new BigNumber(state.gasLimit);
+            if (gl.lessThan(1)) {
+                errors.gasLimit = 'Gas limit is too low';
+            } else if (gl.lessThan( state.currency !== state.networkSymbol ? network.defaultGasLimitTokens : network.defaultGasLimit )) {
+                warnings.gasLimit = 'Gas limit is below recommended';
+            }
+        }
+    }
+
+    // valid gas price
+    if (state.touched.gasPrice) {
+        if (state.gasPrice.length < 1) {
+            errors.gasPrice = 'Gas price is not set';
+        } else if (state.gasPrice.length > 0 && !state.gasPrice.match(numberRegExp)) {
+            errors.gasPrice = 'Gas price is not a number';
+        } else {
+            const gp: BigNumber = new BigNumber(state.gasPrice);
+            if (gp.greaterThan(1000)) {
+                warnings.gasPrice = 'Gas price is too high';
+            } else if (gp.lessThanOrEqualTo('0')) {
+                errors.gasPrice = 'Gas price is too low';
+            }
+        }
+    }
+
+    // valid nonce
+    if (state.touched.nonce) {
+        const re = new RegExp('^[0-9]+$');
+        if (state.nonce.length < 1) {
+            errors.nonce = 'Nonce is not set';
+        } else if (!state.nonce.match(re)) {
+            errors.nonce = 'Nonce is not a valid number';
+        } else {
+            const n: BigNumber = new BigNumber(state.nonce);
+            if (n.lessThan(account.nonce)) {
+                warnings.nonce = 'Nonce is lower than recommended';
+            } else if (n.greaterThan(account.nonce)) {
+                warnings.nonce = 'Nonce is greater than recommended';
+            }
+        }
+    }
+
+    // valid data
+    if (state.touched.data && state.data.length > 0) {
+        const re = /^[0-9A-Fa-f]+$/g;
+        if (!re.test(state.data)) {
+            errors.data = 'Data is not valid hexadecimal';
+        }
+    }
+
+    // valid nonce?
+
+    state.errors = errors;
+    state.warnings = warnings;
+    state.infos = infos;
+
+}
+
+
+
+
 export const onAddressChange = (address: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-
-        const currentState: State = getState().sendForm;
-        const touched = { ...currentState.touched };
+        const state: State = getState().sendForm;
+        const touched = { ...state.touched };
         touched.address = true;
-
-        const state: State = {
-            ...currentState,
-            untouched: false,
-            touched,
-            address
-        };
 
         dispatch({
             type: SEND.ADDRESS_CHANGE,
-            state
+            state: {
+                ...state,
+                untouched: false,
+                touched,
+                address
+            }
         });
-        dispatch( validation() );
+
+        dispatch( addressValidation() );
     }
 }
 
 export const onAmountChange = (amount: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-
-        const accountState: ?AccountState = getState().selectedAccount;
-        const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
-        const touched = { ...currentState.touched };
+        const state = getState().sendForm;
+        const touched = { ...state.touched };
         touched.amount = true;
-        const total: string = calculateTotal(isToken ? '0' : amount, currentState.gasPrice, currentState.gasLimit);
-
-        const state: State = {
-            ...currentState,
-            untouched: false,
-            touched,
-            setMax: false,
-            amount,
-            total
-        };
 
         dispatch({
             type: SEND.AMOUNT_CHANGE,
-            state
+            state: {
+                ...state,
+                untouched: false,
+                touched,
+                setMax: false,
+                amount,
+            }
         });
-        dispatch( validation() );
     }
 }
 
 export const onCurrencyChange = (currency: { value: string, label: string }): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
+        const {
+            account,
+            network
+        } = getState().selectedAccount;
+        if (!account || !network) return;
+
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currency.value !== currentState.coinSymbol;
+        const isToken: boolean = currency.value !== currentState.networkSymbol;
+        const gasLimit: string = isToken ? network.defaultGasLimitTokens.toString() : network.defaultGasLimit.toString();
 
-        const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-        if (!account) {
-            // account not found
-            return;
-        }
-
-        const coin: Coin = accountState.coin;
-
-        let gasLimit: string = '';
-        let amount: string = currentState.amount;
-        let total: string;
-        if (isToken) {
-            gasLimit = coin.defaultGasLimitTokens.toString();
-            if (currentState.setMax) {
-                const token: ?Token = findToken(getState().tokens, account.address, currency.value, accountState.deviceState);
-                if (!token) return;
-                amount = token.balance;
-            }
-            total = calculateTotal('0', currentState.gasPrice, currentState.gasLimit);
-        } else {
-            gasLimit = coin.defaultGasLimit.toString(); 
-            if (currentState.setMax) {
-                amount = calculateMaxAmount(account.balance, currentState.gasPrice, currentState.gasLimit);
-            }
-            total = calculateTotal(amount, currentState.gasPrice, currentState.gasLimit);
-        }
-
-        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coinSymbol, currentState.gasPrice, gasLimit, currentState.selectedFeeLevel);
+        const feeLevels: Array<FeeLevel> = getFeeLevels(network.symbol, currentState.recommendedGasPrice, gasLimit, currentState.selectedFeeLevel);
         const selectedFeeLevel: ?FeeLevel = feeLevels.find(f => f.value === currentState.selectedFeeLevel.value);
         if (!selectedFeeLevel) return;
 
         const state: State = {
             ...currentState,
-            selectedCurrency: currency.value,
-            amount,
-            total,
+            currency: currency.value,
+            // amount,
+            // total,
             feeLevels,
             selectedFeeLevel,
             gasLimit,
@@ -514,66 +558,36 @@ export const onCurrencyChange = (currency: { value: string, label: string }): Th
             type: SEND.CURRENCY_CHANGE,
             state
         });
-        dispatch( validation() );
     }
 }
 
-
-
 export const onSetMax = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
-        const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
-        const touched = { ...currentState.touched };
+        const state = getState().sendForm;
+        const touched = { ...state.touched };
         touched.amount = true;
-
-        const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-        if (!account) {
-            // account not found
-            return;
-        }
-
-        let amount: string = currentState.amount;
-        let total: string = currentState.total;
-        if (!currentState.setMax) {
-            if (isToken) {
-                const token: ?Token = findToken(getState().tokens, account.address, currentState.selectedCurrency, accountState.deviceState);
-                if (!token) return;
-                amount = token.balance;
-                total = calculateTotal('0', currentState.gasPrice, currentState.gasLimit);
-            } else {
-                amount = calculateMaxAmount(account.balance, currentState.gasPrice, currentState.gasLimit);
-                total = calculateTotal(amount, currentState.gasPrice, currentState.gasLimit);    
-            }
-        }
-
-        const state: State = {
-            ...currentState,
-            untouched: false,
-            touched,
-            setMax: !currentState.setMax,
-            amount,
-            total
-        };
 
         dispatch({
             type: SEND.SET_MAX,
-            state
+            state: {
+                ...state,
+                untouched: false,
+                touched,
+                setMax: !state.setMax,
+            }
         });
-        dispatch( validation() );
     }
 }
 
 export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
-        const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
+        const {
+            network
+        } = getState().selectedAccount;
+        if (!network) return;
 
-        const coin: Coin = accountState.coin;
+        const currentState: State = getState().sendForm;
+        const isToken: boolean = currentState.currency !== currentState.networkSymbol;
 
         const state: State = {
             ...currentState,
@@ -584,38 +598,23 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
         if (feeLevel.value === 'Custom') {
             state.advanced = true;
             feeLevel.gasPrice = state.gasPrice;
-            feeLevel.label = `${ calculateFee(state.gasPrice, state.gasLimit) } ${ state.coinSymbol }`;
+            feeLevel.label = `${ calculateFee(state.gasPrice, state.gasLimit) } ${ state.networkSymbol }`;
         } else {
             const customLevel: ?FeeLevel = state.feeLevels.find(f => f.value === 'Custom');
             if (customLevel)
                 customLevel.label = '';
             state.gasPrice = feeLevel.gasPrice;
             if (isToken) {
-                state.gasLimit = coin.defaultGasLimitTokens.toString()
+                state.gasLimit = network.defaultGasLimitTokens.toString()
             } else {
-                state.gasLimit = state.data.length > 0 ? state.gasLimit : coin.defaultGasLimit.toString();
+                state.gasLimit = state.data.length > 0 ? state.gasLimit : network.defaultGasLimit.toString();
             }
         }
-
-        if (currentState.setMax) {
-            const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-            if (!account) return;
-
-            if (isToken) {
-                const token: ?Token = findToken(getState().tokens, account.address, currentState.selectedCurrency, accountState.deviceState);
-                if (!token) return;
-                state.amount = token.balance;
-            } else {
-                state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
-            }
-        }
-        state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
 
         dispatch({
             type: SEND.FEE_LEVEL_CHANGE,
             state
         });
-        dispatch( validation() );
     }
 }
 
@@ -624,12 +623,25 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => {
 
 export const updateFeeLevels = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
-        const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
+        const {
+            account,
+            network
+        } = getState().selectedAccount;
+        if (!account || !network) return;
 
-        const feeLevels: Array<FeeLevel> = getFeeLevels(currentState.coinSymbol, currentState.recommendedGasPrice, currentState.gasLimit, currentState.selectedFeeLevel);
+        const currentState: State = getState().sendForm;
+        const isToken: boolean = currentState.currency !== currentState.networkSymbol;
+        let gasLimit: string = isToken ? network.defaultGasLimitTokens.toString() : network.defaultGasLimit.toString();
+
+        // override custom settings
+        if (currentState.selectedFeeLevel.value === 'Custom') {
+            // update only gasPrice
+            currentState.selectedFeeLevel.gasPrice = currentState.recommendedGasPrice;
+            // leave gas limit as it was
+            gasLimit = currentState.gasLimit;
+        }
+        
+        const feeLevels: Array<FeeLevel> = getFeeLevels(network.symbol, currentState.recommendedGasPrice, gasLimit, currentState.selectedFeeLevel);
         const selectedFeeLevel: ?FeeLevel = feeLevels.find(f => f.value === currentState.selectedFeeLevel.value);
         if (!selectedFeeLevel) return;
 
@@ -641,34 +653,18 @@ export const updateFeeLevels = (): ThunkAction => {
             gasPriceNeedsUpdate: false,
         };
 
-        if (currentState.setMax) {
-            const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-            if (!account) return;
-            if (isToken) {
-                const token: ?Token = findToken(getState().tokens, account.address, state.selectedCurrency, accountState.deviceState);
-                if (!token) return;
-                const tokenBalance: string = token.balance;
-                state.amount = tokenBalance;
-            } else {
-                state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
-            }
-        }
-        state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
-
         dispatch({
             type: SEND.UPDATE_FEE_LEVELS,
             state
         });
-        dispatch( validation() );
     }
 }
 
 export const onGasPriceChange = (gasPrice: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
+        
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
+        const isToken: boolean = currentState.currency !== currentState.networkSymbol;
 
         const touched = { ...currentState.touched };
         touched.gasPrice = true;
@@ -680,99 +676,46 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => {
             gasPrice: gasPrice,
         };
 
-        if (gasPrice.match(numberRegExp) && state.gasLimit.match(numberRegExp)) {
+        if (currentState.selectedFeeLevel.value !== 'Custom') {
             const customLevel = currentState.feeLevels.find(f => f.value === 'Custom');
             if (!customLevel) return;
-            customLevel.gasPrice = gasPrice;
-            customLevel.label = `${ calculateFee(gasPrice, state.gasLimit) } ${ state.coinSymbol }`;
-
             state.selectedFeeLevel = customLevel;
-
-            if (currentState.setMax) {
-                const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-                if (!account) return;
-                if (isToken) {
-                    const token: ?Token = findToken(getState().tokens, account.address, state.selectedCurrency, accountState.deviceState);
-                    if (!token) return;
-                    const tokenBalance: string = token.balance;
-                    state.amount = tokenBalance;
-                } else {
-                    state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
-                }
-            }
-
-            state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
-        } else {
-            // state.gasPrice = currentState.gasPrice;
         }
-        
-        
 
         dispatch({
             type: SEND.GAS_PRICE_CHANGE,
             state
         });
-        dispatch( validation() );
     }
 }
 
 export const onGasLimitChange = (gasLimit: string, updateFeeLevels: boolean = false): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
+ 
         const currentState: State = getState().sendForm;
-        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
+        const isToken: boolean = currentState.currency !== currentState.networkSymbol;
 
         const touched = { ...currentState.touched };
         touched.gasLimit = true;
 
         const state: State = {
             ...currentState,
+            calculatingGasLimit: false,
             untouched: false,
             touched,
             gasLimit,
         };
 
-        if (gasLimit.match(numberRegExp) && state.gasPrice.match(numberRegExp)) {
-
-            if (updateFeeLevels) {
-                const feeLevels: Array<FeeLevel> = getFeeLevels(state.coinSymbol, state.gasPrice, gasLimit, state.selectedFeeLevel);
-                const selectedFeeLevel: ?FeeLevel = feeLevels.find(f => f.value === state.selectedFeeLevel.value);
-                if (!selectedFeeLevel) return;
-                state.selectedFeeLevel = selectedFeeLevel;
-                state.feeLevels = feeLevels;
-
-            } else {
-                const customLevel: ?FeeLevel = state.feeLevels.find(f => f.value === 'Custom');
-                if (!customLevel) return;
-                customLevel.label = `${ calculateFee(currentState.gasPrice, gasLimit) } ${ state.coinSymbol }`;
-
-                state.selectedFeeLevel = customLevel;
-            }
-            
-
-            if (state.setMax) {
-                const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-                if (!account) return;
-
-                if (isToken) {
-                    const token: ?Token = findToken(getState().tokens, account.address, state.selectedCurrency, accountState.deviceState);
-                    if (!token) return;
-                    const tokenBalance: string = token.balance;
-                    state.amount = tokenBalance;
-                } else {
-                    state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
-                }
-            }
+        if (currentState.selectedFeeLevel.value !== 'Custom') {
+            const customLevel = currentState.feeLevels.find(f => f.value === 'Custom');
+            if (!customLevel) return;
+            state.selectedFeeLevel = customLevel;
         }
-
-        state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
 
         dispatch({
             type: SEND.GAS_LIMIT_CHANGE,
             state
         });
-        dispatch( validation() );
     }
 }
 
@@ -793,7 +736,6 @@ export const onNonceChange = (nonce: string): AsyncAction => {
             type: SEND.NONCE_CHANGE,
             state
         });
-        dispatch( validation() );
     }
 }
 
@@ -805,16 +747,22 @@ export const onDataChange = (data: string): AsyncAction => {
 
         const state: State = {
             ...currentState,
+            calculatingGasLimit: true,
             untouched: false,
             touched,
             data,
         };
 
+        if (currentState.selectedFeeLevel.value !== 'Custom') {
+            const customLevel = currentState.feeLevels.find(f => f.value === 'Custom');
+            if (!customLevel) return;
+            state.selectedFeeLevel = customLevel;
+        }
+
         dispatch({
             type: SEND.DATA_CHANGE,
             state
         });
-        dispatch( validation() );
 
         dispatch( estimateGasPrice() );
     }
@@ -824,58 +772,71 @@ export const onDataChange = (data: string): AsyncAction => {
 const estimateGasPrice = (): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
-        const web3instance: ?Web3Instance = getState().web3.filter(w3 => w3.network === accountState.network)[0];
-        if (!web3instance) return;
-        const web3 = web3instance.web3;
-        const currentState: State = getState().sendForm;
-        const requestedData = currentState.data;
+        const {
+            web3,
+            network
+        } = getState().selectedAccount;
+        if (!web3 || !network) return;
 
-        if (currentState.errors.data) {
+        const w3 = web3.web3;
+
+        const state: State = getState().sendForm;
+        const requestedData = state.data;
+
+        const re = /^[0-9A-Fa-f]+$/g;
+        if (!re.test(requestedData)) {
+            // to stop calculating
+            dispatch( onGasLimitChange(state.gasLimit) );
             return;
         }
 
-        const data: string = '0x' + (currentState.data.length % 2 === 0 ? currentState.data : '0' + currentState.data);
-        const gasLimit = await estimateGas(web3instance.web3, {
+        if (state.data.length < 1) {
+            // set default
+            dispatch( onGasLimitChange(network.defaultGasLimit.toString()) );
+            return;
+        }
+
+        // TODO: allow data starting with 0x ...
+        const data: string = '0x' + (state.data.length % 2 === 0 ? state.data : '0' + state.data);
+        const gasLimit = await estimateGas(w3, {
             to: '0x0000000000000000000000000000000000000000',
             data,
-            value: web3.toHex(web3.toWei(currentState.amount, 'ether')),
-            gasPrice: web3.toHex( EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei') ),
+            value: w3.toHex(w3.toWei(state.amount, 'ether')),
+            gasPrice: w3.toHex( EthereumjsUnits.convert(state.gasPrice, 'gwei', 'wei') ),
         });
 
         if (getState().sendForm.data === requestedData) {
-            dispatch( onGasLimitChange(gasLimit.toString(), true) );
+            dispatch( onGasLimitChange(gasLimit.toString()) );
         }
     }
     
 }
 
 export const onSend = (): AsyncAction => {
-    //return onSendERC20();
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-        const accountState: ?AccountState = getState().selectedAccount;
-        if (!accountState) return;
+        const {
+            account,
+            network,
+            web3
+        } = getState().selectedAccount;
+        if (!account || !web3 || !network) return;
         
         const currentState: State = getState().sendForm;
-        const web3instance: ?Web3Instance = getState().web3.filter(w3 => w3.network === accountState.network)[0];
-        const account: ?Account = findAccount(getState().accounts, accountState.index, accountState.deviceState, accountState.network);
-        if (!account || !web3instance) return;
 
-        const isToken: boolean = currentState.selectedCurrency !== currentState.coinSymbol;
-        const web3 = web3instance.web3;
+        const isToken: boolean = currentState.currency !== currentState.networkSymbol;
+        const w3 = web3.web3;
                 
         const address_n = account.addressPath;
 
         let data: string = '0x' + currentState.data;
-        let txAmount: string = web3.toHex(web3.toWei(currentState.amount, 'ether'));
+        let txAmount: string = w3.toHex(w3.toWei(currentState.amount, 'ether'));
         let txAddress: string = currentState.address;
         if (isToken) {
-            const token: ?Token = findToken(getState().tokens, account.address, currentState.selectedCurrency, accountState.deviceState);
+            const token: ?Token = findToken(getState().tokens, account.address, currentState.currency, account.deviceState);
             if (!token) return;
 
-            const contract = web3instance.erc20.at(token.address);
+            const contract = web3.erc20.at(token.address);
             const amountValue: string = new BigNumber(currentState.amount).times( Math.pow(10, token.decimals) ).toString();
             
             data = contract.transfer.getData(currentState.address, amountValue, {
@@ -893,11 +854,10 @@ export const onSend = (): AsyncAction => {
             to: txAddress,
             value: txAmount,
             data,
-            //chainId: 3 // ropsten
-            chainId: web3instance.chainId,
-            nonce: web3.toHex(account.nonce),
-            gasLimit: web3.toHex(currentState.gasLimit),
-            gasPrice: web3.toHex( EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei') ),
+            chainId: web3.chainId,
+            nonce: w3.toHex(account.nonce),
+            gasLimit: w3.toHex(currentState.gasLimit),
+            gasPrice: w3.toHex( EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei') ),
             r: '',
             s: '',
             v: ''
@@ -940,20 +900,19 @@ export const onSend = (): AsyncAction => {
 
         txData.r = '0x' + signedTransaction.payload.r;
         txData.s = '0x' + signedTransaction.payload.s;
-        txData.v = web3.toHex(signedTransaction.payload.v);
+        txData.v = w3.toHex(signedTransaction.payload.v);
 
         
 
         try {
             const tx = new EthereumjsTx(txData);
             const serializedTx = '0x' + tx.serialize().toString('hex');
-            const txid: string = await pushTx(web3, serializedTx);
-            const coin: Coin = accountState.coin;
+            const txid: string = await pushTx(w3, serializedTx);
 
             dispatch({
                 type: SEND.TX_COMPLETE,
                 account: account,
-                selectedCurrency: currentState.selectedCurrency,
+                selectedCurrency: currentState.currency,
                 amount: currentState.amount,
                 txid,
                 txData,
@@ -964,7 +923,7 @@ export const onSend = (): AsyncAction => {
                 payload: {
                     type: 'success',
                     title: 'Transaction success',
-                    message: `<a href="${coin.explorer.tx}${txid}" class="green" target="_blank" rel="noreferrer noopener">See transaction detail</a>`,
+                    message: `<a href="${network.explorer.tx}${txid}" class="green" target="_blank" rel="noreferrer noopener">See transaction detail</a>`,
                     cancelable: true,
                     actions: []
                 }
@@ -987,9 +946,6 @@ export const onSend = (): AsyncAction => {
 }
 
 export default {
-    init,
-    dispose,
-
     toggleAdvanced,
     onAddressChange,
     onAmountChange,

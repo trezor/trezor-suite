@@ -3,10 +3,12 @@
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as WALLET from '../actions/constants/wallet';
+import * as SEND from '../actions/constants/wallet';
 
 import * as WalletActions from '../actions/WalletActions';
 import * as LocalStorageActions from '../actions/LocalStorageActions';
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
+import * as SelectedAccountActions from '../actions/SelectedAccountActions';
 
 import type { 
     Middleware,
@@ -18,24 +20,6 @@ import type {
     GetState,
     TrezorDevice,
 } from '~/flowtype';
-
-
-const getSelectedDevice = (state: State): ?TrezorDevice => {
-    const locationState = state.router.location.state;
-    if (!locationState.device) return undefined;
-
-    const instance: ?number = locationState.deviceInstance ? parseInt(locationState.deviceInstance) : undefined;
-    return state.devices.find(d => {
-        if (d.unacquired && d.path === locationState.device) {
-            return true;
-        } else if (d.features && d.features.bootloader_mode && d.path === locationState.device) {
-            return true;
-        } else if (d.features && d.features.device_id === locationState.device && d.instance === instance) {
-            return true;
-        }
-        return false;
-    });
-}
 
 /**
  * Middleware 
@@ -58,38 +42,22 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     // pass action 
     next(action);
 
-    const state = api.getState();
+    // update common values in WallerReducer
+    api.dispatch( WalletActions.updateSelectedValues(prevState, action) );
 
-    // handle devices state change
-    if (locationChange || prevState.devices !== state.devices) {
-        const device = getSelectedDevice(state);
-        const currentDevice = state.wallet.selectedDevice;
+    // update common values in SelectedAccountReducer
+    api.dispatch( SelectedAccountActions.updateSelectedValues(prevState, action) );
 
-        if (state.wallet.selectedDevice !== device) {
-            if (!locationChange && currentDevice && device && (currentDevice.path === device.path || currentDevice.instance === device.instance)) {
-                api.dispatch({
-                    type: WALLET.UPDATE_SELECTED_DEVICE,
-                    device
-                })
-            } else {
-                api.dispatch({
-                    type: WALLET.SET_SELECTED_DEVICE,
-                    device
-                });
-
-                if (device) {
-                    api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
-                } else {
-                    api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
-                }
-                
-            }
+    // selected device changed
+    if (action.type === WALLET.SET_SELECTED_DEVICE) {
+        if (action.device) {
+            api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
+        } else {
+            api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
         }
     }
 
     return action;
 };
-
-
 
 export default WalletService;

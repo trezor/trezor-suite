@@ -4,6 +4,7 @@
 export const INIT: 'send__init' = 'send__init';
 export const DISPOSE: 'send__dispose' = 'send__dispose';
 export const VALIDATION: 'send__validation' = 'send__validation';
+export const ADDRESS_VALIDATION: 'send__address_validation' = 'send__address_validation';
 export const ADDRESS_CHANGE: 'send__address_change' = 'send__address_change';
 export const AMOUNT_CHANGE: 'send__amount_change' = 'send__amount_change';
 export const SET_MAX: 'send__set_max' = 'send__set_max';

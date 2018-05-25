@@ -3,6 +3,7 @@
 
 import { UI } from 'trezor-connect';
 import * as RECEIVE from '../actions/constants/receive';
+import * as ACCOUNT from '../actions/constants/account';
 import type { Action } from '~/flowtype';
 
 
@@ -23,7 +24,7 @@ export default (state: State = initialState, action: Action): State => {
         case RECEIVE.INIT :
             return action.state;
 
-        case RECEIVE.DISPOSE :
+        case ACCOUNT.DISPOSE :
             return initialState;
 
         case RECEIVE.SHOW_ADDRESS :

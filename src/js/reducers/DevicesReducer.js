@@ -298,13 +298,3 @@ export const getNewInstance = (devices: State, device: Device | TrezorDevice): n
 
     return instance;
 }
-
-export const findDevice = (devices: State, deviceId: string, deviceState: string, instance: ?number): ?TrezorDevice => {
-    return devices.find(d => {
-        // TODO: && (instance && d.instance === instance)
-        if (d.features && d.features.device_id === deviceId && d.state === deviceState) {
-            return true;
-        }
-        return false;
-    });
-}
