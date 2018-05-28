@@ -18,8 +18,10 @@ import { initialState } from '../reducers/SendFormReducer';
 import { findAccount } from '../reducers/AccountsReducer';
 import { findToken } from '../reducers/TokensReducer';
 import { findDevice } from '../reducers/utils';
+import * as stateUtils from '../reducers/utils';
 
 import type { 
+    PendingTx,
     Dispatch,
     GetState,
     Action,
@@ -41,6 +43,8 @@ export type SendTxAction = {
     account: Account,
     selectedCurrency: string,
     amount: string,
+    total: string,
+    tx: any,
     txid: string,
     txData: any,
 };
@@ -156,8 +160,6 @@ export const calculate = (prevProps: Props, props: Props) => {
     } = props.selectedAccount;
     if (!account) return;
 
-    console.warn("CALCULATE!", props)
-
     const prevState = prevProps.sendForm;
     const state = props.sendForm;
     const isToken: boolean = state.currency !== state.networkSymbol;
@@ -173,18 +175,16 @@ export const calculate = (prevProps: Props, props: Props) => {
     
     if (state.setMax) {
 
-        const pendingAmount = pending.reduce((value, p) => {
-            //if (p.tx.amount)
-            console.warn("PENDING AMOUNT!", p, value);
-        }, 0);
+        const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, state.currency);
 
         if (isToken) {
             const token: ?Token = findToken(tokens, account.address, state.currency, account.deviceState);
             if (token) {
-                state.amount = token.balance;
+                state.amount = new BigNumber(token.balance).minus(pendingAmount).toString();
             }
         } else {
-            state.amount = calculateMaxAmount(account.balance, state.gasPrice, state.gasLimit);
+            const b = new BigNumber(account.balance).minus(pendingAmount).toString();
+            state.amount = calculateMaxAmount(b, state.gasPrice, state.gasLimit);
         }
     }
 
@@ -350,6 +350,7 @@ export const validation = (props: Props): void => {
         account,
         network,
         tokens,
+        pending,
     } = props.selectedAccount;
     if (!account || !network) return;
 
@@ -389,6 +390,7 @@ export const validation = (props: Props): void => {
         } else {
 
             let decimalRegExp: RegExp;
+            const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, state.currency);
 
             if (state.currency !== state.networkSymbol) {
                 const token = findToken(tokens, account.address, state.currency, account.deviceState);
@@ -405,7 +407,7 @@ export const validation = (props: Props): void => {
                         errors.amount = `Maximum ${ token.decimals} decimals allowed`;
                     } else if (new BigNumber(state.total).greaterThan(account.balance)) {
                         errors.amount = `Not enough ${ state.networkSymbol } to cover transaction fee`;
-                    } else if (new BigNumber(state.amount).greaterThan(token.balance)) {
+                    } else if (new BigNumber(state.amount).greaterThan( new BigNumber(token.balance).minus(pendingAmount) )) {
                         errors.amount = 'Not enough funds';
                     } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
                         errors.amount = 'Amount is too low';
@@ -416,7 +418,7 @@ export const validation = (props: Props): void => {
                 decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
                 if (!state.amount.match(decimalRegExp)) {
                     errors.amount = `Maximum 18 decimals allowed`;
-                } else if (new BigNumber(state.total).greaterThan(account.balance)) {
+                } else if (new BigNumber(state.total).greaterThan( new BigNumber(account.balance).minus(pendingAmount) )) {
                     errors.amount = 'Not enough funds';
                 }
             }
@@ -916,6 +918,8 @@ export const onSend = (): AsyncAction => {
                 account: account,
                 selectedCurrency: currentState.currency,
                 amount: currentState.amount,
+                total: currentState.total,
+                tx,
                 txid,
                 txData,
             });

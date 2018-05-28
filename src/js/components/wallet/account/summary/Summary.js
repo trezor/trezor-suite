@@ -11,6 +11,7 @@ import SelectedAccount from '../SelectedAccount';
 import { Notification } from '~/js/components/common/Notification';
 import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
+import * as stateUtils from '~/js/reducers/utils';
 
 import type { Props } from './index';
 import type { NetworkToken } from '~/js/reducers/LocalStorageReducer';
@@ -21,6 +22,7 @@ const Summary = (props: Props) => {
         account,
         network,
         tokens,
+        pending
     } = props.selectedAccount;
 
     // flow
@@ -33,6 +35,9 @@ const Summary = (props: Props) => {
     );
     const explorerLink: string = `${network.explorer.address}${account.address}`;
 
+    const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
+    const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString();
+
     return (
         <div>
             <h2 className={ `summary-header ${account.network}` }>
@@ -43,7 +48,7 @@ const Summary = (props: Props) => {
             <SummaryDetails 
                 coin={ network }
                 summary={ props.summary } 
-                balance={ account.balance }
+                balance={ balance }
                 network={ network.network }
                 fiat={ props.fiat }
                 localStorage={ props.localStorage }

@@ -4,6 +4,7 @@
 import * as LogActions from '~/js/actions/LogActions';
 import * as STORAGE from '~/js/actions/constants/localStorage';
 import * as WALLET from '~/js/actions/constants/wallet';
+import BigNumber from 'bignumber.js';
 
 import type { 
     Middleware,
@@ -84,15 +85,24 @@ export const getDiscoveryProcess = (state: State): ?Discovery => {
     return state.discovery.find(d => d.deviceState === device.state && d.network === locationState.network);
 }
 
-export const getAccountPendingTx = (state: State, account: ?Account): Array<PendingTx> => {
+export const getAccountPendingTx = (pending: Array<PendingTx>, account: ?Account): Array<PendingTx> => {
     const a = account;
-    if (!a) return state.selectedAccount.pending.length > 0 ? [] : state.selectedAccount.pending;
-    return state.pending.filter(p => p.network === a.network && p.address === a.address);
+    if (!a) return [];
+    return pending.filter(p => p.network === a.network && p.address === a.address);
+}
+
+export const getPendingAmount = (pending: Array<PendingTx>, currency: string): BigNumber => {
+    return pending.reduce((value: BigNumber, tx: PendingTx) => {
+        if (tx.currency === currency) {
+            return new BigNumber(value).plus(tx.amount);
+        }
+        return value;
+    }, new BigNumber('0'));
 }
 
 export const getAccountTokens = (state: State, account: ?Account): Array<Token> => {
     const a = account;
-    if (!a) return state.selectedAccount.tokens.length > 0 ? [] : state.selectedAccount.tokens;
+    if (!a) return [];
     return state.tokens.filter(t => t.ethAddress === a.address && t.network === a.network && t.deviceState === a.deviceState);
 }
 
@@ -101,3 +111,4 @@ export const getWeb3 = (state: State): ?Web3Instance => {
     if (!locationState.network) return null;
     return state.web3.find(w3 => w3.network === locationState.network);
 }
+

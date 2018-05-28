@@ -34,7 +34,7 @@ const PendingTransactions = (props: Props) => {
     const bgColorFactory = new ColorHash({lightness: 0.7});
     const textColorFactory = new ColorHash();
 
-    const pendingTxs = pending.map((tx, i) => {
+    const pendingTxs: React$Element<string> = pending.map((tx, i) => {
 
         let iconColor: Style;
         let symbol: string;
@@ -80,7 +80,7 @@ const PendingTransactions = (props: Props) => {
                 <div className="name">
                     <a href={ `${props.network.explorer.tx}${tx.id}`} target="_blank" rel="noreferrer noopener">{ name }</a>
                 </div>
-                <div className="amount">{ tx.amount } { symbol }</div>
+                <div className="amount">{ tx.total } { symbol }</div>
             </div>
         )
     });

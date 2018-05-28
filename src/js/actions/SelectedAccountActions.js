@@ -36,6 +36,7 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
         const locationChange: boolean = action.type === LOCATION_CHANGE;
         const state: State = getState();
         const location = state.router.location;
+        const prevLocation = prevState.router.location;
 
         let needUpdate: boolean = false;
 
@@ -51,13 +52,14 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
             || prevState.accounts !== state.accounts
             || prevState.discovery !== state.discovery
             || prevState.tokens !== state.tokens
+            || prevState.pending !== state.pending
             || prevState.web3 !== state.web3) {
             
             const account = stateUtils.getSelectedAccount(state);
             const network = stateUtils.getSelectedNetwork(state);
             const discovery = stateUtils.getDiscoveryProcess(state);
             const tokens = stateUtils.getAccountTokens(state, account);
-            const pending = stateUtils.getAccountPendingTx(state, account);
+            const pending = stateUtils.getAccountPendingTx(state.pending, account);
             const web3 = stateUtils.getWeb3(state);
 
             const payload: $ElementType<State, 'selectedAccount'> = {
@@ -81,13 +83,17 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
                 dispatch({
                     type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
                     payload,
-                })
+                });
             }
 
             if (locationChange) {
 
-                if (prevState.router.location && prevState.router.location.state.send) {
-                    SessionStorageActions.save(prevState.router.location.pathname, state.sendForm);
+                if (prevLocation) {
+                    // save form data to session storage
+                    // TODO: move to state.sendForm on change event
+                    if (prevLocation.state.send) {
+                        SessionStorageActions.save(prevState.router.location.pathname, state.sendForm);
+                    }
                 }
 
                 dispatch( dispose() );

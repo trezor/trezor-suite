@@ -28,6 +28,7 @@ type StateProps = {
     discovery: $ElementType<State, 'discovery'>,
     wallet: $ElementType<State, 'wallet'>,
     devices: $ElementType<State, 'devices'>,
+    pending: $ElementType<State, 'pending'>,
 }
 
 type DispatchProps = {
@@ -52,7 +53,8 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         localStorage: state.localStorage,
         discovery: state.discovery,
         wallet: state.wallet,
-        devices: state.devices
+        devices: state.devices,
+        pending: state.pending,
     };
 }
 

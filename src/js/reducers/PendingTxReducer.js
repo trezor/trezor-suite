@@ -13,6 +13,8 @@ export type PendingTx = {
     +network: string;
     +currency: string;
     +amount: string;
+    +total: string;
+    +tx: any;
     +address: string;
 }
 
@@ -27,6 +29,8 @@ const add = (state: State, action: SendTxAction): State => {
         network: action.account.network,
         currency: action.selectedCurrency,
         amount: action.amount,
+        total: action.total,
+        tx: action.tx,
         address: action.account.address,
     });
     return newState;

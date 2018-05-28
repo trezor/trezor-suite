@@ -6,6 +6,7 @@ import { Link, NavLink } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 
 import { findDeviceAccounts } from '~/js/reducers/AccountsReducer';
+import * as stateUtils from '~/js/reducers/utils';
 import Loader from '~/js/components/common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
@@ -36,12 +37,16 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
         
         let balance: string = 'Loading...';
         if (account.balance !== '') {
+            const pending = stateUtils.getAccountPendingTx(props.pending, account);
+            const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, selectedCoin.symbol);
+            const availableBalance: string = new BigNumber(account.balance).minus(pendingAmount).toString();
+
             if (fiatRate) {
-                const accountBalance = new BigNumber(account.balance);
+                const accountBalance = new BigNumber(availableBalance);
                 const fiat = accountBalance.times(fiatRate.value).toFixed(2);
-                balance = `${ account.balance } ${ selectedCoin.symbol } / $${ fiat }`;
+                balance = `${ availableBalance } ${ selectedCoin.symbol } / $${ fiat }`;
             } else {
-                balance = `${ account.balance } ${ selectedCoin.symbol }`;
+                balance = `${ availableBalance } ${ selectedCoin.symbol }`;
             }
         }
 
