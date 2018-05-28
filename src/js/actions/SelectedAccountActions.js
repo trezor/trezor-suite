@@ -97,7 +97,10 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
                 }
 
                 dispatch( dispose() );
-                if (location.state.send) {
+            }
+
+            if (needUpdate) {
+                if (location.state.send && state.sendForm.currency === "") {
                     dispatch( SendFormActions.init( SessionStorageActions.load(location.pathname) ) );
                 }
             }
