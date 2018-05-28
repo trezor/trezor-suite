@@ -54,6 +54,20 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
             || prevState.tokens !== state.tokens
             || prevState.pending !== state.pending
             || prevState.web3 !== state.web3) {
+
+
+            if (locationChange) {
+
+                if (prevLocation) {
+                    // save form data to session storage
+                    // TODO: move to state.sendForm on change event
+                    if (prevLocation.state.send) {
+                        SessionStorageActions.save(prevState.router.location.pathname, state.sendForm);
+                    }
+                }
+                // dispose current account view
+                dispatch( dispose() );
+            }
             
             const account = stateUtils.getSelectedAccount(state);
             const network = stateUtils.getSelectedNetwork(state);
@@ -84,23 +98,9 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
                     type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
                     payload,
                 });
-            }
 
-            if (locationChange) {
-
-                if (prevLocation) {
-                    // save form data to session storage
-                    // TODO: move to state.sendForm on change event
-                    if (prevLocation.state.send) {
-                        SessionStorageActions.save(prevState.router.location.pathname, state.sendForm);
-                    }
-                }
-
-                dispatch( dispose() );
-            }
-
-            if (needUpdate) {
-                if (location.state.send && state.sendForm.currency === "") {
+                // initialize SendFormReducer
+                if (location.state.send && getState().sendForm.currency === "") {
                     dispatch( SendFormActions.init( SessionStorageActions.load(location.pathname) ) );
                 }
             }
