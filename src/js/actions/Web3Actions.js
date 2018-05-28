@@ -275,7 +275,7 @@ export function getTokenBalance(token: Token): AsyncAction {
 
         contract.balanceOf(token.ethAddress, (error: Error, balance: BigNumber) => {
             if (balance) {
-                const newBalance: string = balance.dividedBy( Math.pow(10, token.decimals) ).toString();
+                const newBalance: string = balance.dividedBy( Math.pow(10, token.decimals) ).toString(10);
                 if (newBalance !== token.balance) {
                     dispatch(TokenActions.setBalance(
                         token.address,
@@ -371,7 +371,7 @@ export const getTokenBalanceAsync = (erc20: ContractFactory, token: Token): Prom
             if (error) {
                 reject(error);
             } else {
-                const newBalance: string = balance.dividedBy( Math.pow(10, token.decimals) ).toString();
+                const newBalance: string = balance.dividedBy( Math.pow(10, token.decimals) ).toString(10);
                 resolve(newBalance);
             }
         });

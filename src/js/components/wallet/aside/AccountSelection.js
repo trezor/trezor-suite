@@ -39,7 +39,7 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
         if (account.balance !== '') {
             const pending = stateUtils.getAccountPendingTx(props.pending, account);
             const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, selectedCoin.symbol);
-            const availableBalance: string = new BigNumber(account.balance).minus(pendingAmount).toString();
+            const availableBalance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
 
             if (fiatRate) {
                 const accountBalance = new BigNumber(availableBalance);

@@ -36,7 +36,7 @@ const Summary = (props: Props) => {
     const explorerLink: string = `${network.explorer.address}${account.address}`;
 
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
-    const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString();
+    const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
 
     return (
         <div>

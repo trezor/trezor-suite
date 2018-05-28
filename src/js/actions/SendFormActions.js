@@ -130,22 +130,19 @@ export const calculateFee = (gasPrice: string, gasLimit: string): string => {
 
 export const calculateTotal = (amount: string, gasPrice: string, gasLimit: string): string => {
     try {
-        // return new BigNumber(amount).plus( calculateFee(gasPrice, gasLimit) ).toString();
-        const fee = calculateFee(gasPrice, gasLimit);
-        return new BigNumber(amount).plus( calculateFee(gasPrice, gasLimit) ).toFixed(16);
+        return new BigNumber(amount).plus( calculateFee(gasPrice, gasLimit) ).toString(10);
     } catch (error) {
         return '0';
     }
 }
 
-export const calculateMaxAmount = (balance: string, gasPrice: string, gasLimit: string): string => {
+export const calculateMaxAmount = (balance: BigNumber, gasPrice: string, gasLimit: string): string => {
     try {
         // TODO - minus pendings
         const fee = calculateFee(gasPrice, gasLimit);
-        const b = new BigNumber(balance);
-        const max = b.minus(fee);
+        const max = balance.minus(fee);
         if (max.lessThan(0)) return '0';
-        return max.toString();
+        return max.toString(10);
     } catch (error) {
         return '0';
     }
@@ -181,10 +178,10 @@ export const calculate = (prevProps: Props, props: Props) => {
         if (isToken) {
             const token: ?Token = findToken(tokens, account.address, state.currency, account.deviceState);
             if (token) {
-                state.amount = new BigNumber(token.balance).minus(pendingAmount).toString();
+                state.amount = new BigNumber(token.balance).minus(pendingAmount).toString(10);
             }
         } else {
-            const b = new BigNumber(account.balance).minus(pendingAmount).toString();
+            const b = new BigNumber(account.balance).minus(pendingAmount);
             state.amount = calculateMaxAmount(b, state.gasPrice, state.gasLimit);
         }
     }
@@ -203,8 +200,8 @@ export const calculate = (prevProps: Props, props: Props) => {
 export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLimit: string, selected?: FeeLevel): Array<FeeLevel> => {
     const price: BigNumber = typeof gasPrice === 'string' ? new BigNumber(gasPrice) : gasPrice
     const quarter: BigNumber = price.dividedBy(4);
-    const high: string = price.plus(quarter.times(2)).toString();
-    const low: string = price.minus(quarter.times(2)).toString();
+    const high: string = price.plus(quarter.times(2)).toString(10);
+    const low: string = price.minus(quarter.times(2)).toString(10);
     
     const customLevel: FeeLevel = selected && selected.value === 'Custom' ? {
         value: 'Custom',
@@ -226,7 +223,7 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
         { 
             value: 'Normal',
             gasPrice: gasPrice.toString(),
-            label: `${ calculateFee(price.toString(), gasLimit) } ${ symbol }`
+            label: `${ calculateFee(price.toString(10), gasLimit) } ${ symbol }`
         },
         { 
             value: 'Low',
@@ -843,7 +840,7 @@ export const onSend = (): AsyncAction => {
             if (!token) return;
 
             const contract = web3.erc20.at(token.address);
-            const amountValue: string = new BigNumber(currentState.amount).times( Math.pow(10, token.decimals) ).toString();
+            const amountValue: string = new BigNumber(currentState.amount).times( Math.pow(10, token.decimals) ).toString(10);
             
             data = contract.transfer.getData(currentState.address, amountValue, {
                 from: account.address,
