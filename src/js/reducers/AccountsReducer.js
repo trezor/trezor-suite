@@ -2,6 +2,7 @@
 'use strict';
 
 import * as CONNECT from '../actions/constants/TrezorConnect';
+import * as WALLET from '../actions/constants/wallet';
 import * as ACCOUNT from '../actions/constants/account';
 
 import type { Action, TrezorDevice } from '~/flowtype';
@@ -71,6 +72,14 @@ const removeAccounts = (state: State, device: TrezorDevice): State => {
     return state.filter(account => account.deviceState !== device.state);
 }
 
+const clear = (state: State, devices: Array<TrezorDevice>): State => {
+    let newState: State = [ ...state ];
+    devices.forEach(d => {
+        newState = removeAccounts(newState, d);
+    });
+    return newState;
+}
+
 const setBalance = (state: State, action: AccountSetBalanceAction): State => {
     const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
     const newState: State = [ ...state ];
@@ -97,6 +106,9 @@ export default (state: State = initialState, action: Action): State => {
         case CONNECT.FORGET :
         case CONNECT.FORGET_SINGLE :
             return removeAccounts(state, action.device);
+
+        case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA :
+            return clear(state, action.devices);
 
         //case CONNECT.FORGET_SINGLE :
         //    return forgetAccounts(state, action);

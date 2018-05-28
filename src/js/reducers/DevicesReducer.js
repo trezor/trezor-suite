@@ -89,28 +89,35 @@ const addDevice = (state: State, device: Device): State => {
     if (affectedDevices.length > 0 ) {
         // check if freshly added device has different "passphrase_protection" settings
 
-        let hasDifferentPassphraseSettings: boolean = false;
-        let hasInstancesWithPassphraseSettings: boolean = false;
-        const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => {
-            if (d.features && d.features.passphrase_protection === device.features.passphrase_protection) {
-                hasInstancesWithPassphraseSettings = true;
-                return mergeDevices(d, { ...device, connected: true, available: true } );
-            } else {
-                hasDifferentPassphraseSettings = true;
-                d.connected = true;
-                d.available = false;
-                return d;
-            }
-        });
+        // let hasDifferentPassphraseSettings: boolean = false;
+        // let hasInstancesWithPassphraseSettings: boolean = false;
+        // const changedDevices: Array<TrezorDevice> = affectedDevices.map(d => {
+        //     if (d.features && d.features.passphrase_protection === device.features.passphrase_protection) {
+        //         hasInstancesWithPassphraseSettings = true;
+        //         return mergeDevices(d, { ...device, connected: true, available: true } );
+        //     } else {
+        //         hasDifferentPassphraseSettings = true;
+        //         d.connected = true;
+        //         d.available = false;
+        //         return d;
+        //     }
+        // });
 
         // edge case: freshly connected device has different "passphrase_protection" than saved instances
         // need to automatically create another instance with default instance name
-        if (hasDifferentPassphraseSettings && !hasInstancesWithPassphraseSettings) {
-            const instance = getNewInstance(affectedDevices, device);
+        // if (hasDifferentPassphraseSettings && !hasInstancesWithPassphraseSettings) {
+        //     const instance = getNewInstance(affectedDevices, device);
 
-            newDevice.instance = instance;
-            newDevice.instanceLabel = `${device.label} (${instance})`;
+        //     newDevice.instance = instance;
+        //     newDevice.instanceLabel = `${device.label} (${instance})`;
 
+        //     changedDevices.push(newDevice);
+        // }
+
+        const changedDevices: Array<TrezorDevice> = affectedDevices.filter(d => d.features && d.features.passphrase_protection === device.features.passphrase_protection).map(d => {
+            return mergeDevices(d, { ...device, connected: true, available: true } );
+        });
+        if (changedDevices.length !== affectedDevices.length) {
             changedDevices.push(newDevice);
         }
 

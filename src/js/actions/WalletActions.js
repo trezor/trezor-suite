@@ -3,8 +3,10 @@
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as WALLET from './constants/wallet';
+import * as CONNECT from './constants/TrezorConnect';
 import * as stateUtils from '../reducers/utils';
 
+import type { Device } from 'trezor-connect';
 import type
  {
     Account,
@@ -12,7 +14,6 @@ import type
     Discovery,
     Token,
     Web3Instance,
-
     TrezorDevice, 
     RouterLocationState, 
     ThunkAction,
@@ -41,6 +42,9 @@ export type WalletAction = {
 } | {
     type: typeof WALLET.UPDATE_SELECTED_DEVICE,
     device: TrezorDevice
+} | {
+    type: typeof WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA,
+    devices: Array<TrezorDevice>
 }
 
 export const init = (): ThunkAction => {
@@ -69,6 +73,32 @@ export const toggleDeviceDropdown = (opened: boolean): WalletAction => {
         opened
     }
 }
+
+// This method will be called after each DEVICE.CONNECT action
+// if connected device has different "passphrase_protection" settings than saved instances
+// all saved instances will be removed immediately inside DevicesReducer
+// This method will clear leftovers associated with removed instances from reducers.
+// (DiscoveryReducer, AccountReducer, TokensReducer)
+export const clearUnavailableDevicesData = (prevState: State, device: Device): ThunkAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
+
+        if (!device.features) return;
+
+        const affectedDevices = prevState.devices.filter(d => 
+            d.features 
+            && d.features.device_id === device.features.device_id
+            && d.features.passphrase_protection !== device.features.passphrase_protection
+        );
+
+        if (affectedDevices.length > 0) {
+            dispatch({
+                type: WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA,
+                devices: affectedDevices,
+            })
+        }
+    }
+}
+
 
 export const updateSelectedValues = (prevState: State, action: Action): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {

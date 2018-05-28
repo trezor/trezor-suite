@@ -6,6 +6,7 @@ import HDKey from 'hdkey';
 import * as DISCOVERY from '../actions/constants/discovery';
 import * as ACCOUNT from '../actions/constants/account';
 import * as CONNECT from '../actions/constants/TrezorConnect';
+import * as WALLET from '../actions/constants/wallet';
 
 import type { Action, TrezorDevice } from '~/flowtype';
 import type { 
@@ -85,6 +86,14 @@ const accountCreate = (state: State, action: AccountCreateAction): State => {
 
 const forgetDiscovery = (state: State, device: TrezorDevice): State => {
     return state.filter(d => d.deviceState !== device.state);
+}
+
+const clear = (state: State, devices: Array<TrezorDevice>): State => {
+    let newState: State = [ ...state ];
+    devices.forEach(d => {
+        newState = forgetDiscovery(newState, d);
+    });
+    return newState;
 }
 
 const stop = (state: State, action: DiscoveryStopAction): State => {
@@ -184,6 +193,8 @@ export default function discovery(state: State = initialState, action: Action): 
         case CONNECT.FORGET :
         case CONNECT.FORGET_SINGLE :
             return forgetDiscovery(state, action.device);
+        case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA :
+            return clear(state, action.devices);
 
         default:
             return state;

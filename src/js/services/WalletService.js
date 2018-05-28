@@ -1,6 +1,7 @@
 /* @flow */
 'use strict';
 
+import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as WALLET from '../actions/constants/wallet';
 import * as SEND from '../actions/constants/wallet';
@@ -41,6 +42,10 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
 
     // pass action 
     next(action);
+
+    if (action.type === DEVICE.CONNECT) {
+        api.dispatch( WalletActions.clearUnavailableDevicesData(prevState, action.device) );
+    }
 
     // update common values in WallerReducer
     api.dispatch( WalletActions.updateSelectedValues(prevState, action) );
