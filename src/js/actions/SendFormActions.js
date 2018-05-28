@@ -45,6 +45,7 @@ export type SendTxAction = {
     amount: string,
     total: string,
     tx: any,
+    nonce: number,
     txid: string,
     txData: any,
 };
@@ -822,7 +823,8 @@ export const onSend = (): AsyncAction => {
         const {
             account,
             network,
-            web3
+            web3,
+            pending
         } = getState().selectedAccount;
         if (!account || !web3 || !network) return;
         
@@ -830,7 +832,7 @@ export const onSend = (): AsyncAction => {
 
         const isToken: boolean = currentState.currency !== currentState.networkSymbol;
         const w3 = web3.web3;
-                
+
         const address_n = account.addressPath;
 
         let data: string = '0x' + currentState.data;
@@ -852,6 +854,12 @@ export const onSend = (): AsyncAction => {
             txAddress = token.address;
         }
 
+        const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, currentState.currency);
+        const pendingNonce: number = stateUtils.getPendingNonce(pending);
+        const nonce = pendingNonce >= account.nonce ? pendingNonce + 1 : account.nonce;
+
+        console.warn("NONCEE", nonce, account.nonce, stateUtils.getPendingNonce(pending))
+
         const txData = {
             address_n,
             // from: currentAddress.address
@@ -859,7 +867,7 @@ export const onSend = (): AsyncAction => {
             value: txAmount,
             data,
             chainId: web3.chainId,
-            nonce: w3.toHex(account.nonce),
+            nonce: w3.toHex(nonce),
             gasLimit: w3.toHex(currentState.gasLimit),
             gasPrice: w3.toHex( EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei') ),
             r: '',
@@ -920,6 +928,7 @@ export const onSend = (): AsyncAction => {
                 amount: currentState.amount,
                 total: currentState.total,
                 tx,
+                nonce,
                 txid,
                 txData,
             });

@@ -91,6 +91,12 @@ export const getAccountPendingTx = (pending: Array<PendingTx>, account: ?Account
     return pending.filter(p => p.network === a.network && p.address === a.address);
 }
 
+export const getPendingNonce = (pending: Array<PendingTx>): number => {
+    return pending.reduce((value: number, tx: PendingTx) => {
+        return Math.max(value, tx.nonce);
+    }, 0);
+}
+
 export const getPendingAmount = (pending: Array<PendingTx>, currency: string): BigNumber => {
     return pending.reduce((value: BigNumber, tx: PendingTx) => {
         if (tx.currency === currency) {

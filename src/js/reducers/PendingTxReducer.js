@@ -15,6 +15,7 @@ export type PendingTx = {
     +amount: string;
     +total: string;
     +tx: any;
+    +nonce: number;
     +address: string;
 }
 
@@ -31,6 +32,7 @@ const add = (state: State, action: SendTxAction): State => {
         amount: action.amount,
         total: action.total,
         tx: action.tx,
+        nonce: action.nonce,
         address: action.account.address,
     });
     return newState;
