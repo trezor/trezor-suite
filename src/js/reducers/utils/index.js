@@ -100,7 +100,7 @@ export const getPendingNonce = (pending: Array<PendingTx>): number => {
 export const getPendingAmount = (pending: Array<PendingTx>, currency: string): BigNumber => {
     return pending.reduce((value: BigNumber, tx: PendingTx) => {
         if (tx.currency === currency) {
-            return new BigNumber(value).plus(tx.amount);
+            return new BigNumber(value).plus(tx.total);
         }
         return value;
     }, new BigNumber('0'));
