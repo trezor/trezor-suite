@@ -74,9 +74,8 @@ export default class BridgeTransport {
   }
 
   @debugInOut
-  async configure(config: string): Promise<void> {
-    const buffer = verifyHexBin(config);
-    const messages = parseConfigure(buffer);
+  async configure(signedData: string): Promise<void> {
+    const messages = parseConfigure(signedData);
     this.configured = true;
     this._messages = messages;
   }
