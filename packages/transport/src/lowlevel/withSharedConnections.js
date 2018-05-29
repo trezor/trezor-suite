@@ -5,7 +5,6 @@ patch();
 
 import {create as createDefered} from '../defered';
 import {parseConfigure} from './protobuf/parse_protocol';
-import {verifyHexBin} from './verify';
 import {buildAndSend} from './send';
 import {receiveAndParse} from './receive';
 import {resolveTimeoutPromise} from '../defered';
