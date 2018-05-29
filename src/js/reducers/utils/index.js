@@ -94,7 +94,7 @@ export const getAccountPendingTx = (pending: Array<PendingTx>, account: ?Account
 export const getPendingNonce = (pending: Array<PendingTx>): number => {
     return pending.reduce((value: number, tx: PendingTx) => {
         if (tx.rejected) return value;
-        return Math.max(value, tx.nonce);
+        return Math.max(value, tx.nonce + 1);
     }, 0);
 }
 

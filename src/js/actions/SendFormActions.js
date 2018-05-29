@@ -855,9 +855,9 @@ export const onSend = (): AsyncAction => {
 
         const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, currentState.currency);
         const pendingNonce: number = stateUtils.getPendingNonce(pending);
-        const nonce = pendingNonce >= account.nonce ? pendingNonce + 1 : account.nonce;
+        const nonce = pendingNonce > 0 && pendingNonce >= account.nonce ? pendingNonce : account.nonce;
 
-        console.warn("NONCE", nonce, account.nonce, stateUtils.getPendingNonce(pending))
+        console.warn("NONCE", nonce, account.nonce, pendingNonce)
 
         const txData = {
             address_n,
