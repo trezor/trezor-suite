@@ -14,7 +14,6 @@ import * as check from '../highlevel-checks';
 import {buildOne} from '../lowlevel/send';
 import type {Messages} from '../lowlevel/protobuf/messages';
 import {parseConfigure} from '../lowlevel/protobuf/parse_protocol';
-import {verifyHexBin} from '../lowlevel/verify';
 import {receiveOne} from '../lowlevel/receive';
 
 import {debugInOut} from '../debug-decorator';
