@@ -24,6 +24,7 @@ const AdvancedForm = (props: Props) => {
         currency,
         gasPrice,
         gasLimit,
+        recommendedGasPrice,
         calculatingGasLimit,
         nonce,
         data,
@@ -50,16 +51,26 @@ const AdvancedForm = (props: Props) => {
 
     const nonceTooltip = (
         <div className="tooltip-wrapper">
-            Nonce is.....<br/>
+            TODO<br/>
         </div>
     );
+
+    let gasLimitTooltipCurrency: string;
+    let gasLimitTooltipValue: string;
+    if (networkSymbol !== currency) {
+        gasLimitTooltipCurrency = 'tokens';
+        gasLimitTooltipValue = network.defaultGasLimitTokens;
+    } else {
+        gasLimitTooltipCurrency = networkSymbol;
+        gasLimitTooltipValue = network.defaultGasLimit;
+    }
 
     const gasLimitTooltip = (
         <div className="tooltip-wrapper">
             Gas limit is the amount of gas to send with your transaction.<br/>
             <span>TX fee = gas price * gas limit</span> &amp; is paid to miners for including your TX in a block.<br/>
             Increasing this number will not get your TX mined faster.<br/>
-            Default value for sending ETH is <span>{ gasLimit } WEI.</span>
+            Default value for sending { gasLimitTooltipCurrency } is <span>{ gasLimitTooltipValue }</span>
         </div>
     );
 
@@ -67,7 +78,7 @@ const AdvancedForm = (props: Props) => {
         <div className="tooltip-wrapper">
             Gas Price is the amount you pay per unit of gas.<br/>
             <span>TX fee = gas price * gas limit</span> &amp; is paid to miners for including your TX in a block.<br/>
-            Higher the gas price = faster transaction, but more expensive. Default is <span>{ gasPrice } GWEI.</span><br/>
+            Higher the gas price = faster transaction, but more expensive. Recommended is <span>{ recommendedGasPrice } GWEI.</span><br/>
             <a className="green" href="https://myetherwallet.github.io/knowledge-base/gas/what-is-gas-ethereum.html" target="_blank" rel="noreferrer noopener">Read more</a>
         </div>
     );
