@@ -56,7 +56,6 @@
     "ecurve": "^1.0.3",
     "json-stable-stringify": "^1.0.1",
     "node-fetch": "^1.6.0",
-    "node-hid": "^0.7.2",
     "object.values": "^1.0.3",
     "protobufjs-old-fixed-webpack": "3.8.5",
     "semver-compare": "^1.0.0",
