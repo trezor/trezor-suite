@@ -99,7 +99,10 @@ const Summary = (props: Props) => {
 
             </div>
 
-            <SummaryTokens tokens={ tokens } removeToken={ props.removeToken } />
+            <SummaryTokens 
+                pending={ pending }
+                tokens={ tokens } 
+                removeToken={ props.removeToken } />
 
         </div>
     )

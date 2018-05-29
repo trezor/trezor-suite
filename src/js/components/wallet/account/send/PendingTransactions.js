@@ -79,7 +79,7 @@ const PendingTransactions = (props: Props) => {
                 <div className="name">
                     <a href={ `${props.network.explorer.tx}${tx.id}`} target="_blank" rel="noreferrer noopener">{ name }</a>
                 </div>
-                <div className="amount">{ tx.total } { symbol }</div>
+                <div className="amount">{ isSmartContractTx ? tx.amount : tx.total } { symbol }</div>
             </div>
         )
     });

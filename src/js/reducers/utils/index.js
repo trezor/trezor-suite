@@ -98,10 +98,10 @@ export const getPendingNonce = (pending: Array<PendingTx>): number => {
     }, 0);
 }
 
-export const getPendingAmount = (pending: Array<PendingTx>, currency: string): BigNumber => {
+export const getPendingAmount = (pending: Array<PendingTx>, currency: string, token: boolean = false): BigNumber => {
     return pending.reduce((value: BigNumber, tx: PendingTx) => {
         if (tx.currency === currency && !tx.rejected) {
-            return new BigNumber(value).plus(tx.total);
+            return new BigNumber(value).plus(token ? tx.amount : tx.total);
         }
         return value;
     }, new BigNumber('0'));

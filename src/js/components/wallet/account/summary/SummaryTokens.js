@@ -4,10 +4,13 @@
 import React from 'react';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
+import * as stateUtils from '~/js/reducers/utils';
+import BigNumber from 'bignumber.js';
 
 import type { Props as BaseProps } from './index';
 
 type Props = {
+    pending: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'pending'>,
     tokens: $ElementType<BaseProps, 'tokens'>,
     removeToken: $ElementType<BaseProps, 'removeToken'>
 }
@@ -25,6 +28,9 @@ const SummaryTokens = (props: Props) => {
             background: bgColor.hex(token.name),
             borderColor: bgColor.hex(token.name)
         }
+
+        const pendingAmount: BigNumber = stateUtils.getPendingAmount(props.pending, token.symbol, true);
+        const balance: string = new BigNumber(token.balance).minus(pendingAmount).toString(10);
         return (
             <div key={ index } className="token">
                 <div className="icon" style={ iconColor }>
@@ -33,7 +39,7 @@ const SummaryTokens = (props: Props) => {
                     </div>
                 </div>
                 <div className="name">{ token.name }</div>
-                <div className="balance">{ token.balance } { token.symbol }</div>
+                <div className="balance">{ balance } { token.symbol }</div>
                 <button className="transparent" onClick={ event => props.removeToken(token) }></button>
             </div>
         )

@@ -174,7 +174,7 @@ export const calculate = (prevProps: Props, props: Props) => {
     
     if (state.setMax) {
 
-        const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, state.currency);
+        const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, state.currency, isToken);
 
         if (isToken) {
             const token: ?Token = findToken(tokens, account.address, state.currency, account.deviceState);
@@ -390,7 +390,7 @@ export const validation = (props: Props): void => {
         } else {
 
             let decimalRegExp: RegExp;
-            const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, state.currency);
+            const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, state.currency, state.currency !== state.networkSymbol);
 
             if (state.currency !== state.networkSymbol) {
                 const token = findToken(tokens, account.address, state.currency, account.deviceState);
@@ -404,7 +404,7 @@ export const validation = (props: Props): void => {
                     }
 
                     if (!state.amount.match(decimalRegExp)) {
-                        errors.amount = `Maximum ${ token.decimals} decimals allowed`;
+                        errors.amount = `Maximum ${ token.decimals } decimals allowed`;
                     } else if (new BigNumber(state.total).greaterThan(account.balance)) {
                         errors.amount = `Not enough ${ state.networkSymbol } to cover transaction fee`;
                     } else if (new BigNumber(state.amount).greaterThan( new BigNumber(token.balance).minus(pendingAmount) )) {
@@ -853,7 +853,6 @@ export const onSend = (): AsyncAction => {
             txAddress = token.address;
         }
 
-        const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, currentState.currency);
         const pendingNonce: number = stateUtils.getPendingNonce(pending);
         const nonce = pendingNonce > 0 && pendingNonce >= account.nonce ? pendingNonce : account.nonce;
 
