@@ -93,13 +93,14 @@ export const getAccountPendingTx = (pending: Array<PendingTx>, account: ?Account
 
 export const getPendingNonce = (pending: Array<PendingTx>): number => {
     return pending.reduce((value: number, tx: PendingTx) => {
+        if (tx.rejected) return value;
         return Math.max(value, tx.nonce);
     }, 0);
 }
 
 export const getPendingAmount = (pending: Array<PendingTx>, currency: string): BigNumber => {
     return pending.reduce((value: BigNumber, tx: PendingTx) => {
-        if (tx.currency === currency) {
+        if (tx.currency === currency && !tx.rejected) {
             return new BigNumber(value).plus(tx.total);
         }
         return value;

@@ -10,7 +10,7 @@ export type PendingTxAction = {
 } | {
     type: typeof PENDING.TX_RESOLVED,
     tx: PendingTx,
-    receipt: Object,
+    receipt?: Object,
 } | {
     type: typeof PENDING.TX_NOT_FOUND,
     tx: PendingTx,

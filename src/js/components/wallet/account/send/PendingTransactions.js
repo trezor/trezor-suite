@@ -25,8 +25,7 @@ type Style = {
 
 const PendingTransactions = (props: Props) => {
 
-    const pending = props.pending;
-
+    const pending = props.pending.filter(tx => !tx.rejected);
     if (pending.length < 1) return null;
 
     const tokens: Array<Token> = props.tokens;

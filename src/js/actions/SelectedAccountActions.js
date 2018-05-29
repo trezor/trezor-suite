@@ -4,6 +4,8 @@
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as ACCOUNT from './constants/account';
 import * as SEND from './constants/send';
+import * as NOTIFICATION from './constants/notification';
+import * as PENDING from './constants/pendingTx';
 
 import * as SendFormActions from './SendFormActions';
 import * as SessionStorageActions from './SessionStorageActions';
@@ -94,6 +96,32 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
                 // initialize SendFormReducer
                 if (location.state.send && getState().sendForm.currency === "") {
                     dispatch( SendFormActions.init() );
+                }
+
+                if (location.state.send) {
+                    const rejectedTxs = pending.filter(tx => tx.rejected);
+                    rejectedTxs.forEach(tx => {
+                        dispatch({
+                            type: NOTIFICATION.ADD,
+                            payload: {
+                                type: "warning",
+                                title: "Pending transaction rejected",
+                                message: `Transaction with id: ${ tx.id } not found.`,
+                                cancelable: true,
+                                actions: [
+                                    {
+                                        label: 'OK',
+                                        callback: () => {
+                                            dispatch({
+                                                type: PENDING.TX_RESOLVED,
+                                                tx,
+                                            });
+                                        }
+                                    }
+                                ]
+                            }
+                        })
+                    });
                 }
             }
         }
