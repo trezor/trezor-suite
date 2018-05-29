@@ -6,14 +6,24 @@
 
 import * as ProtoBuf from "protobufjs-old-fixed-webpack";
 
+import {verifyHexBin} from '../verify';
 import {Messages} from "./messages.js";
 import {protocolToJSON} from "./to_json.js";
 import * as compiledConfigProto from "./config_proto_compiled.js";
 
 // Parse configure data (it has to be already verified)
-export function parseConfigure(data: Buffer): Messages {
+export function parseConfigure(data: string): Messages {
+
+  // incoming data are in JSON format
+  if (data.match(/^\{.*\}$/)) {
+    const protobufMessages = ProtoBuf.newBuilder({})[`import`]( JSON.parse(data) ).build();
+    return new Messages(protobufMessages);
+  }
+
+  // incoming data are in binary format
+  const buffer = verifyHexBin(data);
   const configBuilder = compiledConfigProto[`Configuration`];
-  const loadedConfig = configBuilder.decode(data);
+  const loadedConfig = configBuilder.decode(buffer);
 
   const validUntil = loadedConfig.valid_until;
   const timeNow = Math.floor(Date.now() / 1000);
