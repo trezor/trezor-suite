@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { default as SendFormActions } from '~/js/actions/SendFormActions';
+import * as SessionStorageActions from '~/js/actions/SessionStorageActions';
 import SendForm from './SendForm';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
@@ -22,7 +23,8 @@ export type StateProps = BaseStateProps & {
 }
 
 export type DispatchProps = BaseDispatchProps & {
-    sendFormActions: typeof SendFormActions
+    sendFormActions: typeof SendFormActions,
+    saveSessionStorage: typeof SessionStorageActions.save
 }
 
 export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
@@ -42,6 +44,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
     return {
         sendFormActions: bindActionCreators(SendFormActions, dispatch),
+        saveSessionStorage: bindActionCreators(SessionStorageActions.save, dispatch),
     };
 }
 

@@ -21,6 +21,8 @@ export default class SendContainer extends Component<Props> {
     componentWillReceiveProps(newProps: Props) {
         calculate(this.props, newProps);
         validation(newProps);
+
+        this.props.saveSessionStorage();
     }
 
     render() {

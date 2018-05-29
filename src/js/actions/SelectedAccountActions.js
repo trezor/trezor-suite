@@ -42,9 +42,9 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
 
         // reset form to default
         if (action.type === SEND.TX_COMPLETE) {
-            dispatch( SendFormActions.init() );
+            // dispatch( SendFormActions.init() );
             // linear action
-            SessionStorageActions.clear(location.pathname);
+            // SessionStorageActions.clear(location.pathname);
         }
 
         // handle devices state change (from trezor-connect events or location change)
@@ -57,14 +57,6 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
 
 
             if (locationChange) {
-
-                if (prevLocation) {
-                    // save form data to session storage
-                    // TODO: move to state.sendForm on change event
-                    if (prevLocation.state.send) {
-                        SessionStorageActions.save(prevState.router.location.pathname, state.sendForm);
-                    }
-                }
                 // dispose current account view
                 dispatch( dispose() );
             }
@@ -101,7 +93,7 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
 
                 // initialize SendFormReducer
                 if (location.state.send && getState().sendForm.currency === "") {
-                    dispatch( SendFormActions.init( SessionStorageActions.load(location.pathname) ) );
+                    dispatch( SendFormActions.init() );
                 }
             }
         }

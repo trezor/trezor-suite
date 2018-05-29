@@ -2,18 +2,26 @@
 'use strict';
 
 import type { State as SendFormState } from '../reducers/SendFormReducer';
+import type {
+    ThunkAction,
+    GetState, 
+    Dispatch,
+} from '~/flowtype';
 
 const PREFIX: string = 'trezor:draft-tx:';
 
-export const save = (location: string, state: SendFormState): void => {
+export const save = (): ThunkAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
+        if (typeof window.localStorage === 'undefined') return;
 
-    if (typeof window.localStorage === 'undefined') return;
-
-    if (!state.untouched) {
-        try {
-            window.sessionStorage.setItem(`${PREFIX}${location}`, JSON.stringify(state) );
-        } catch (error) {
-            console.error("Saving sessionStorage error: " + error)
+        const location = getState().router.location.pathname;
+        const state = getState().sendForm;
+        if (!state.untouched) {
+            try {
+                window.sessionStorage.setItem(`${PREFIX}${location}`, JSON.stringify(state) );
+            } catch (error) {
+                console.error("Saving sessionStorage error: " + error)
+            }
         }
     }
 }
@@ -24,7 +32,12 @@ export const load = (location: string): ?SendFormState => {
 
     try {
         const value: string = window.sessionStorage.getItem(`${PREFIX}${location}`);
-        return JSON.parse(value);
+        const state: ?SendFormState = JSON.parse(value);
+        if (state && state.address === '' && (state.amount === '' || state.amount === '0')) {
+            window.sessionStorage.removeItem(`${PREFIX}${location}`);
+            return;
+        }
+        return state;
     } catch (error) {
         console.error("Loading sessionStorage error: " + error)
     }
@@ -32,12 +45,14 @@ export const load = (location: string): ?SendFormState => {
     return;
 }
 
-export const clear = (location: string) => {
-    if (typeof window.localStorage === 'undefined') return;
-
-    try {
-        window.sessionStorage.removeItem(`${PREFIX}${location}`);
-    } catch (error) {
-        console.error("Clearing sessionStorage error: " + error)
+export const clear = (): ThunkAction => {
+    return (dispatch: Dispatch, getState: GetState): void => {
+        if (typeof window.localStorage === 'undefined') return;
+        const location = getState().router.location.pathname;
+        try {
+            window.sessionStorage.removeItem(`${PREFIX}${location}`);
+        } catch (error) {
+            console.error("Clearing sessionStorage error: " + error)
+        }
     }
 }

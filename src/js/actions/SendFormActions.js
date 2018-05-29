@@ -4,6 +4,8 @@
 import * as SEND from './constants/send';
 import * as NOTIFICATION from './constants/notification';
 
+import * as SessionStorageActions from './SessionStorageActions';
+
 import { estimateGas, getGasPrice, pushTx } from './Web3Actions';
 
 import EthereumjsUtil from 'ethereumjs-util';
@@ -150,7 +152,6 @@ export const calculateMaxAmount = (balance: BigNumber, gasPrice: string, gasLimi
 }
 
 export const calculate = (prevProps: Props, props: Props) => {
-
     const {
         account,
         tokens,
@@ -236,7 +237,7 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
 
 
 // initialize component
-export const init = (stateFromStorage: ?State): ThunkAction => {
+export const init = (): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
 
         const {
@@ -247,6 +248,7 @@ export const init = (stateFromStorage: ?State): ThunkAction => {
 
         if (!account || !network || !web3) return;
 
+       const stateFromStorage = SessionStorageActions.load( getState().router.location.pathname );
         if (stateFromStorage) {
             dispatch({
                 type: SEND.INIT,
@@ -855,7 +857,7 @@ export const onSend = (): AsyncAction => {
         const pendingNonce: number = stateUtils.getPendingNonce(pending);
         const nonce = pendingNonce >= account.nonce ? pendingNonce + 1 : account.nonce;
 
-        console.warn("NONCEE", nonce, account.nonce, stateUtils.getPendingNonce(pending))
+        console.warn("NONCE", nonce, account.nonce, stateUtils.getPendingNonce(pending))
 
         const txData = {
             address_n,
@@ -929,6 +931,13 @@ export const onSend = (): AsyncAction => {
                 txid,
                 txData,
             });
+
+            // clear session storage
+            dispatch( SessionStorageActions.clear() );
+
+            // reset form
+            dispatch( init() );
+
 
             dispatch({
                 type: NOTIFICATION.ADD,
