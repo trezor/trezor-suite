@@ -31,13 +31,15 @@ const TrezorConnectService = store => next => action => {
 
         try {
             TrezorConnect.init({
-                // iframeSrc: 'https://localhost:8088/iframe.html',
+                connectSrc: 'https://localhost:8082/',
+                // transportConfigSrc: 'data/messages.json',
+                //connectSrc: 'https://sisyfos.trezor.io/',
                 // popupSrc: 'https://localhost:8088/popup.html',
-                iframeSrc: 'https://dev.trezor.io/connect5/iframe.html',
-                popupSrc: 'https://dev.trezor.io/connect5/popup.html',
+                // iframeSrc: 'https://dev.trezor.io/connect5/iframe.html',
+                // popupSrc: 'https://dev.trezor.io/connect5/popup.html',
                 // webusb: false,
                 // transportReconnect: false,
-                //popup: false,
+                popup: true,
                 debug: true,
             })
             .then(r => {
