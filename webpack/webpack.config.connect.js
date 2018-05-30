@@ -1,4 +1,4 @@
-import { TREZOR_CONNECT, TREZOR_IFRAME, TREZOR_POPUP, TREZOR_CONNECT_HTML } from './constants';
+import { TREZOR_CONNECT_ROOT, TREZOR_CONNECT, TREZOR_IFRAME, TREZOR_POPUP, TREZOR_CONNECT_HTML } from './constants';
 import path from 'path';
 import webpack from 'webpack';
 import webpackMerge from 'webpack-merge';
@@ -14,6 +14,7 @@ module.exports = webpackMerge(baseConfig, {
     resolve: {
         alias: {
             'trezor-connect': `${TREZOR_CONNECT}`,
+            'flowtype/trezor': `${TREZOR_CONNECT_ROOT}src/flowtype/empty.js`,
         }
     },
     plugins: [

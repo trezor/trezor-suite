@@ -83,6 +83,7 @@ module.exports = {
             { from: `${TREZOR_CONNECT_FILES}releases-2.json`, to: 'data/releases-2.json' },
             { from: `${TREZOR_CONNECT_FILES}latest.txt`, to: 'data/latest.txt' },
             { from: `${TREZOR_CONNECT_FILES}config_signed.bin`, to: 'data/config_signed.bin' },
+            { from: `${TREZOR_CONNECT_FILES}messages.json`, to: 'data/messages.json' },
             // { from: `${SRC}images/favicon.png` },
             // { from: `${SRC}images` },
         ]),
