@@ -790,7 +790,7 @@ const estimateGasPrice = (): AsyncAction => {
         const re = /^[0-9A-Fa-f]+$/g;
         if (!re.test(requestedData)) {
             // to stop calculating
-            dispatch( onGasLimitChange(state.gasLimit) );
+            dispatch( onGasLimitChange(requestedData.length > 0 ? state.gasLimit : network.defaultGasLimit.toString()) );
             return;
         }
 
