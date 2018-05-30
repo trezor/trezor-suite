@@ -21,8 +21,8 @@ export default class Main extends Component {
         return (
             <main>
                 <section className="methods">
-                    { navLink('/', 'Compose transaction') }
-                    { navLink('/xpub', 'Get public key') }
+                    { navLink('/', 'Get public key') }
+                    { navLink('/compose', 'Compose treansaction') }
                     { navLink('/custom', 'Custom call') }
                     { navLink('/accountinfo', 'Get account info') }
                     { navLink('/showaddress', 'Show address on TREZOR') }
