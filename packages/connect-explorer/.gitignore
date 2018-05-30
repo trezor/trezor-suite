@@ -18,4 +18,4 @@ logs
 .yarnclean
 
 # Local config file
-webpack/constants.js
+# webpack/constants.js
