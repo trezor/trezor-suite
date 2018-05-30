@@ -186,8 +186,7 @@ export default class LowlevelTransport {
 
   @debugInOut
   async configure(signedData: string): Promise<void> {
-    const buffer = verifyHexBin(signedData);
-    const messages = parseConfigure(buffer);
+    const messages = parseConfigure(signedData);
     this._messages = messages;
     this.configured = true;
   }
