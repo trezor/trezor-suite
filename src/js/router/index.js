@@ -12,7 +12,7 @@ const methodsContainer = (component) => {
 
 export default (
     <AppContainer>
-        <Route exact path="/" render={ methodsContainer(ComposeTransaction) } />
-        <Route exact path="/xpub" render={ methodsContainer(GetPublicKey) } />
+        <Route exact path="/" render={ methodsContainer(GetPublicKey) } />
+        <Route exact path="/compose" render={ methodsContainer(GetPublicKey) } />
     </AppContainer>
 );
