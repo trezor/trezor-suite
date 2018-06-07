@@ -32,6 +32,7 @@ export type Transport = {
   configured: boolean;
   version: string;
   name: string;
+  +activeName?: string;
 
   // webusb has a different model, where you have to
   // request device connection
