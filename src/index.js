@@ -17,11 +17,11 @@ import 'whatwg-fetch';
 if (typeof window === `undefined`) {
   // eslint-disable-next-line quotes
   const fetch = require('node-fetch');
-  BridgeTransportV1.setFetch(fetch);
-  BridgeTransportV2.setFetch(fetch);
+  BridgeTransportV1.setFetch(fetch, true);
+  BridgeTransportV2.setFetch(fetch, true);
 } else {
-  BridgeTransportV1.setFetch(fetch);
-  BridgeTransportV2.setFetch(fetch);
+  BridgeTransportV1.setFetch(fetch, false);
+  BridgeTransportV2.setFetch(fetch, false);
 }
 
 export default {
