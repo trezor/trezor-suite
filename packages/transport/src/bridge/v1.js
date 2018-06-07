@@ -145,8 +145,8 @@ export default class BridgeTransport {
     return check.call(res);
   }
 
-  static setFetch(fetch: any) {
-    rSetFetch(fetch);
+  static setFetch(fetch: any, isNode?: boolean) {
+    rSetFetch(fetch, isNode);
   }
 
   requestDevice(): Promise<void> {
