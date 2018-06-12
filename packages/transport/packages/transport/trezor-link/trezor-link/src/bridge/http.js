@@ -50,11 +50,11 @@ function parseResult(text: string): mixed {
 }
 
 export async function request(options: HttpRequestOptions): Promise<mixed> {
-  let fetchOptions = {
+  const fetchOptions = {
     method: options.method,
     body: wrapBody(options.body),
     credentials: `same-origin`,
-    headers: {}
+    headers: {},
   };
 
   // this is just for flowtype
@@ -69,7 +69,7 @@ export async function request(options: HttpRequestOptions): Promise<mixed> {
   if (_isNode) {
     fetchOptions.headers = {
       ...fetchOptions.headers,
-      'Origin': 'https://node.trezor.io',
+      'Origin': `https://node.trezor.io`,
     };
   }
 
