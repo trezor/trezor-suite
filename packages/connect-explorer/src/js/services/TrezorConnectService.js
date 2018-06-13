@@ -40,7 +40,7 @@ const TrezorConnectService = store => next => action => {
                 // webusb: false,
                 // transportReconnect: false,
                 popup: true,
-                debug: true,
+                debug: false,
             })
             .then(r => {
                 // post action inited
