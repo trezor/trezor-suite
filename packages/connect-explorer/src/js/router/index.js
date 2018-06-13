@@ -2,7 +2,11 @@
 'use strict';
 
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { ConnectedRouter } from 'react-router-redux';
+import store, { history } from '../store';
+
 import { AppContainer, MethodsContainer } from '../containers';
 import { 
     GetPublicKey,
@@ -15,10 +19,14 @@ const methodsContainer = (component) => {
 }
 
 export default (
-    <AppContainer>
-        <Route exact path="/" render={ methodsContainer(GetPublicKey) } />
-        <Route exact path="/nem-signtx" render={ methodsContainer(NEMSignTx) } />
-        <Route exact path="/cipherkv" render={ methodsContainer(GetPublicKey) } />
-        <Route exact path="/compose" render={ methodsContainer(GetPublicKey) } />
-    </AppContainer>
+    <Provider store={ store }>
+        <ConnectedRouter history={ history }>
+            <Switch>
+                <AppContainer>
+                    <Route exact path="/" render={ methodsContainer(GetPublicKey) } />
+                    <Route exact path="/nem-signtx" render={ methodsContainer(NEMSignTx) } />
+                </AppContainer>
+            </Switch>
+        </ConnectedRouter>
+    </Provider>
 );
