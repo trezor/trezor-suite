@@ -12,8 +12,6 @@ import composeTx from './methods/ComposeTxReducer';
 import getXpub from './methods/GetXpubReducer';
 import nemSignTx from './methods/NEMSignTx';
 
-console.warn("NEM", nemSignTx)
-
 export default combineReducers({
     router: routerReducer,
     DOM,
