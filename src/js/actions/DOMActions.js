@@ -8,3 +8,9 @@ export const onResize = (): void => {
         type: ON_RESIZE
     }
 }
+
+export const onBeforeUnload = (): void => {
+    return async function (dispatch, getState) {
+        
+    }
+}
