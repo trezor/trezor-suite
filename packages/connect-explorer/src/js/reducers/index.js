@@ -4,12 +4,15 @@
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 
-import DOM from './DomReducer.js';
-import connect from './TrezorConnectReducer.js';
-import modal from './ModalReducer.js';
+import DOM from './DomReducer';
+import connect from './TrezorConnectReducer';
+import modal from './ModalReducer';
 
-import composeTx from './methods/ComposeTxReducer.js';
-import getXpub from './methods/GetXpubReducer.js';
+import composeTx from './methods/ComposeTxReducer';
+import getXpub from './methods/GetXpubReducer';
+import nemSignTx from './methods/NEMSignTx';
+
+console.warn("NEM", nemSignTx)
 
 export default combineReducers({
     router: routerReducer,
@@ -18,5 +21,6 @@ export default combineReducers({
     modal,
     
     composeTx,
-    getXpub
+    getXpub,
+    nemSignTx,
 });

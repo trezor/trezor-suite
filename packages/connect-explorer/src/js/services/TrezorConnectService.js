@@ -31,7 +31,7 @@ const TrezorConnectService = store => next => action => {
 
         try {
             TrezorConnect.init({
-                connectSrc: 'https://localhost:8082/',
+                connectSrc: 'https://sisyfos.trezor.io/next/',
                 // transportConfigSrc: 'data/messages.json',
                 //connectSrc: 'https://sisyfos.trezor.io/',
                 // popupSrc: 'https://localhost:8088/popup.html',
