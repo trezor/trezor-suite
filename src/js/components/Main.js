@@ -22,7 +22,11 @@ export default class Main extends Component {
             <main>
                 <section className="methods">
                     { navLink('/', 'Get public key') }
-                    { navLink('/compose', 'Compose treansaction') }
+                    { navLink('/nem-signtx', 'NEM Sign Transaction') }
+
+
+
+                    {/* { navLink('/compose', 'Compose treansaction') }
                     { navLink('/custom', 'Custom call') }
                     { navLink('/accountinfo', 'Get account info') }
                     { navLink('/showaddress', 'Show address on TREZOR') }
@@ -34,7 +38,7 @@ export default class Main extends Component {
                     { navLink('/signtx_opreturn', 'Sign OP_RETURN transaction') }
                     { navLink('/signtx_multisig', 'Sign multisig transaction') }
                     { navLink('/signtx_eth', 'Sign Ethereum transaction') }
-                    { navLink('/signtx_nem', 'Sign NEM transaction') }
+                    { navLink('/signtx_nem', 'Sign NEM transaction') } */}
                 </section>
                 { this.props.children }
             </main>
