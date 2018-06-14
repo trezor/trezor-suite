@@ -5,12 +5,17 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 
 import TrezorConnect, { TRANSPORT_EVENT, DEVICE_EVENT, UI_EVENT, UI } from 'trezor-connect';
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
+import { updateCode } from '../actions/methods/CommonActions';
 
 let inited: boolean = false;
 
 const TrezorConnectService = store => next => action => {
     // Pass all actions through by default
     next(action);
+
+    if (action.type === LOCATION_CHANGE || action.type.indexOf('_@change') > 0) {
+        store.dispatch( updateCode() );
+    }
 
     if (action.type === LOCATION_CHANGE && !inited) {
         inited = true;
@@ -21,17 +26,18 @@ const TrezorConnectService = store => next => action => {
                 type: event.type,
                 device: event.payload
             });
-
-            console.warn("-------DEVICEEE", event)
         });
 
-        TrezorConnect.on(TRANSPORT_EVENT, (event) => {
-            console.warn("-------TRANSPOOOO", event)
-        })
+        // TrezorConnect.on(TRANSPORT_EVENT, (event) => {
+        //     console.warn("-------TRANSPOOOO", event)
+        // })
 
         try {
             TrezorConnect.init({
+                // connectSrc: 'https://localhost:8088/',
                 connectSrc: 'https://sisyfos.trezor.io/next/',
+
+
                 // transportConfigSrc: 'data/messages.json',
                 //connectSrc: 'https://sisyfos.trezor.io/',
                 // popupSrc: 'https://localhost:8088/popup.html',
@@ -40,7 +46,7 @@ const TrezorConnectService = store => next => action => {
                 // webusb: false,
                 // transportReconnect: false,
                 popup: true,
-                debug: false,
+                debug: true,
             })
             .then(r => {
                 // post action inited
