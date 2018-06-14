@@ -21,8 +21,17 @@ export default class Main extends Component {
         return (
             <main>
                 <section className="methods">
+                    { navLink('/cipherkv', 'Symmetrically encrypt / decrypt value') }
                     { navLink('/', 'Get public key') }
+                    { navLink('/eth-getaddress', 'Ethereum Get Address') }
+                    { navLink('/eth-signtx', 'Ethereum Sign Transaction') }
+                    { navLink('/eth-signmsg', 'Ethereum Sign Message') }
+                    { navLink('/eth-verifymsg', 'Ethereum Verify Message') }
+                    { navLink('/nem-getaddress', 'NEM Get Address') }
                     { navLink('/nem-signtx', 'NEM Sign Transaction') }
+                    { navLink('/stellar-getaddress', 'Stellar Get Address') }
+                    { navLink('/stellar-signtx', 'Stellar Sign Transaction') }
+                    { navLink('/custom', 'Custom Message') }
 
 
 
