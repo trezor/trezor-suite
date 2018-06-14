@@ -6,52 +6,10 @@ import { UI, DEVICE } from 'trezor-connect';
 import * as GetXpubActions from '../../actions/methods/GetXpubActions';
 
 type MethodState = {
+    +js: string;
+    +fields: Array<string>;
     coin: string;
-    type: string;
     path: string;
-    accountID: number;
-    accountLegacy: boolean;
-    confirmation: boolean;
-
-    responseTab: string;
-    response: ?Object;
-    code: string;
-    params: Object;
-}
-
-
-const getCode = (params): string => {
-    return 'TrezorConnect.getPublicKey(' + JSON.stringify(params, undefined, 2) + ');';    
-}
-
-const getParams = (state: MethodState): Object => {
-    let params: Object = {
-        //selectedDevice: window.selectedDevice, // from other reducer
-        coin: state.coin,
-    };
-
-    if (state.type === 'path') {
-        params.path = state.path;
-        delete params.coin;
-    } else if (state.type === 'account') {
-        params.account = state.accountID;
-        if (state.accountLegacy)
-            params.accountLegacy = state.accountLegacy;
-    }
-
-    if (!state.confirmation && state.type !== 'discovery') {
-        params.confirmation = state.confirmation;
-    }
-    return params;
-}
-
-const updateState = (state: MethodState): MethodState => {
-    const params: Object = getParams(state);
-    return {
-        ...state,
-        params,
-        code: getCode(params)
-    }
 }
 
 const defaultPaths = {
@@ -67,81 +25,32 @@ const defaultPaths = {
 }
 
 const initialState: MethodState = {
+    js: 'TrezorConnect.getPublicKey',
+    fields: ['coin', 'path'],
     coin: 'test',
-    type: 'path',
     path: "m/49'/1'/0'",
-    accountID: 0,
-    accountLegacy: false,
-    responseTab: 'response',
-    confirmation: true,
-
-    response: null,
-    code: '',
-    params: {}
 };
-initialState.params = getParams(initialState);
 
 
 export default function method(state: MethodState = initialState, action: any): any {
 
     switch (action.type) {
 
-        case LOCATION_CHANGE: {
-            return updateState({ 
-                ...initialState
-            });
-        }
+        case LOCATION_CHANGE :
+            return initialState;
 
         case GetXpubActions.COIN_CHANGE :
-            return updateState({
+            return {
                 ...state,
                 coin: action.coin,
                 path: defaultPaths[action.coin]
-            });
-
-        case GetXpubActions.TYPE_CHANGE :
-            return updateState({
-                ...state,
-                type: action.getxpubType
-            });
-
-        case GetXpubActions.PATH_CHANGE :
-            return updateState({
-                ...state,
-                path: action.path
-            });
-
-        case GetXpubActions.ACCOUNT_CHANGE :
-            return updateState({
-                ...state,
-                accountID: action.accountID
-            });
-
-        case GetXpubActions.ACCOUNT_TYPE_CHANGE :
-            return updateState({
-                ...state,
-                accountLegacy: action.accountLegacy
-            });
-
-        case GetXpubActions.CONFIRMATION_CHANGE :
-            return updateState({
-                ...state,
-                confirmation: action.confirmation
-            });
-
-        case GetXpubActions.RESPONSE_TAB_CHANGE :
-            return updateState({
-                ...state,
-                responseTab: action.tab
-            });
-        
-        case GetXpubActions.GETXPUB_RESPONSE :
-            return {
-                ...state,
-                response: action.response,
-                responseTab: 'response'
             };
 
+        case GetXpubActions.PATH_CHANGE :
+            return {
+                ...state,
+                path: action.path
+            };
 
         default:
             return state;

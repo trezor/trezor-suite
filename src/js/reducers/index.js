@@ -8,9 +8,10 @@ import DOM from './DomReducer';
 import connect from './TrezorConnectReducer';
 import modal from './ModalReducer';
 
+import common from './methods/CommonReducer';
 import composeTx from './methods/ComposeTxReducer';
-import getXpub from './methods/GetXpubReducer';
-import nemSignTx from './methods/NEMSignTx';
+import getxpub from './methods/GetXpubReducer';
+import nemsigntx from './methods/NEMSignTxReducer';
 
 export default combineReducers({
     router: routerReducer,
@@ -18,7 +19,8 @@ export default combineReducers({
     connect,
     modal,
     
+    common,
     composeTx,
-    getXpub,
-    nemSignTx,
+    getxpub,
+    nemsigntx,
 });

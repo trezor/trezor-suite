@@ -2,8 +2,8 @@
 'use strict';
 
 import React from 'react';
-import CoinSelect from './CoinSelect';
-import Response from './Response';
+import CoinSelect from './common/CoinSelect';
+import Response from './common/Response';
 
 // type Props = {
 //     composeTxActions: any,

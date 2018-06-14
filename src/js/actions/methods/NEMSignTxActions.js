@@ -2,21 +2,66 @@
 'use strict';
 
 import TrezorConnect from 'trezor-connect';
+import { onResponse } from './CommonActions';
+
 import TXS from './nem.tests';
 
 const PREFIX: string = 'action_nem_signtx_';
-export const RESPONSE_TAB_CHANGE: string = `${PREFIX}response_tab_change`;
-export const NEM_TX__RESPONSE: string = `${PREFIX}_response`;
+export const PATH_CHANGE: string = `${PREFIX}_path_@change`;
+export const TX_CHANGE: string = `${PREFIX}_json_@change`;
 
-
-export function onResponseTabChange(tab: string): any {
+export function onTransactionChange(transaction: string): any {
     return {
-        type: RESPONSE_TAB_CHANGE,
-        tab
+        type: TX_CHANGE,
+        transaction
     }
 }
 
+export function onPathChange(path: string): any {
+    return {
+        type: PATH_CHANGE,
+        path
+    }
+}
+
+export function onSignTxA(tx: string): any {
+    return async function (dispatch, getState) {
+
+        const response = await TrezorConnect.customMessage({
+            customFunction: getState().nemsigntx.transaction
+        });
+
+        dispatch( onResponse(response) );
+    }
+}
+
+
 export function onSignTx(tx: string): any {
+    return async function (dispatch, getState) {
+
+        let tx: JSON;
+        try {
+            const { path, transaction } = getState().nemsigntx;
+            tx = JSON.parse( transaction )
+
+            const response = await TrezorConnect.nemSignTransaction({
+                path: path,
+                transaction: tx
+            });
+
+            dispatch( onResponse(response) );
+
+        } catch(error) {
+            console.warn(error);
+
+            dispatch( onResponse({
+                error: 'Invalid JSON'
+            }) );
+        }
+    }
+}
+
+export function onSignTxTests(tx: string): any {
     return async function (dispatch, getState) {
 
         const response = await TrezorConnect.nemSignTransaction({
@@ -24,9 +69,6 @@ export function onSignTx(tx: string): any {
             transaction: TXS[tx]
         });
 
-        dispatch({
-            type: NEM_TX__RESPONSE,
-            response
-        });
+        dispatch( onResponse(response) );
     }
 }

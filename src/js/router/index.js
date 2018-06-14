@@ -7,24 +7,20 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import store, { history } from '../store';
 
-import { AppContainer, MethodsContainer } from '../containers';
+import AppContainer from '../containers/AppContainer';
 import { 
     GetPublicKey,
     NEMSignTx,
     ComposeTransaction 
 } from '../components/methods';
 
-const methodsContainer = (component) => {
-    return (props) => ( <MethodsContainer component={ component }/> );
-}
-
 export default (
     <Provider store={ store }>
         <ConnectedRouter history={ history }>
             <Switch>
                 <AppContainer>
-                    <Route exact path="/" render={ methodsContainer(GetPublicKey) } />
-                    <Route exact path="/nem-signtx" render={ methodsContainer(NEMSignTx) } />
+                    <Route exact path="/" component={ GetPublicKey } />
+                    <Route exact path="/nem-signtx" component={ NEMSignTx } />
                 </AppContainer>
             </Switch>
         </ConnectedRouter>
