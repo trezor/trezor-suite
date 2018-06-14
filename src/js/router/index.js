@@ -10,6 +10,7 @@ import store, { history } from '../store';
 import AppContainer from '../containers/AppContainer';
 import { 
     GetPublicKey,
+    EthereumGetAddress,
     NEMGetAddress,
     NEMSignTx,
     CustomMessage,
@@ -22,6 +23,7 @@ export default (
             <Switch>
                 <AppContainer>
                     <Route exact path="/" component={ GetPublicKey } />
+                    <Route exact path="/eth-getaddress" component={ EthereumGetAddress } />
                     <Route exact path="/nem-getaddress" component={ NEMGetAddress } />
                     <Route exact path="/nem-signtx" component={ NEMSignTx } />
                     <Route exact path="/custom" component={ CustomMessage } />
