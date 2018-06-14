@@ -10,6 +10,26 @@ const nem = {
     TYPE_MULTISIG: 0x1004
 }
 
+/*
+{
+        "timeStamp": 74649215,
+        "fee": 2000000,
+        "type": 16386,
+        "deadline": 74735615,
+        "message": {
+        },
+        "mosaicId": {
+            "namespaceId": "hellom",
+            "name": "Hello mosaic"
+        },
+        "supplyType": 1,
+        "delta": 1,
+        "version": -1744830464,
+        "creationFeeSink": "TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J",
+        "creationFee": 1500
+    }
+*/
+
 export default {
 
     // From: https://github.com/trezor/python-trezor/blob/master/trezorlib/tests/device_tests/test_msg_nem_signtx_mosaics.py
