@@ -10,6 +10,7 @@ import store, { history } from '../store';
 import AppContainer from '../containers/AppContainer';
 import { 
     GetPublicKey,
+    NEMGetAddress,
     NEMSignTx,
     CustomMessage,
     ComposeTransaction 
@@ -21,6 +22,7 @@ export default (
             <Switch>
                 <AppContainer>
                     <Route exact path="/" component={ GetPublicKey } />
+                    <Route exact path="/nem-getaddress" component={ NEMGetAddress } />
                     <Route exact path="/nem-signtx" component={ NEMSignTx } />
                     <Route exact path="/custom" component={ CustomMessage } />
                 </AppContainer>

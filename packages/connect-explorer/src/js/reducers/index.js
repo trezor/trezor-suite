@@ -11,6 +11,7 @@ import modal from './ModalReducer';
 import common from './methods/CommonReducer';
 import composeTx from './methods/ComposeTxReducer';
 import getxpub from './methods/GetXpubReducer';
+import nemgetaddress from './methods/NEMGetAddressReducer';
 import nemsigntx from './methods/NEMSignTxReducer';
 import custom from './methods/CustomMessageReducer';
 
@@ -23,6 +24,7 @@ export default combineReducers({
     common,
     composeTx,
     getxpub,
+    nemgetaddress,
     nemsigntx,
     custom,
 });

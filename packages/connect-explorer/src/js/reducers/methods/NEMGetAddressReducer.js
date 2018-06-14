@@ -2,22 +2,24 @@
 'use strict';
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import { TX_CHANGE, PATH_CHANGE } from '../../actions/methods/NEMSignTxActions';
+import { CONFIRMATION_CHANGE, NETWORK_CHANGE, PATH_CHANGE } from '../../actions/methods/NEMGetAddressActions';
 
 type MethodState = {
     +js: string;
     +fields: Array<string>;
 
+    network: number;
     path: string;
-    transaction: string;
+    showOnTrezor: boolean;
 }
 
 const initialState: MethodState = {
-    js: 'TrezorConnect.nemSignTransaction',
-    fields: ['path', 'transaction'],
+    js: 'TrezorConnect.nemGetAddress',
+    fields: ['network', 'path', 'showOnTrezor'],
 
+    network: 152,
     path: "m/44'/43'/0'",
-    transaction: '',
+    showOnTrezor: true,
 };
 
 export default function method(state: MethodState = initialState, action: any): any {
@@ -27,16 +29,22 @@ export default function method(state: MethodState = initialState, action: any): 
         case LOCATION_CHANGE :
             return initialState;
 
+        case NETWORK_CHANGE :
+            return {
+                ...state,
+                network: parseInt(action.network)
+            };
+
         case PATH_CHANGE :
             return {
                 ...state,
                 path: action.path
             };
 
-        case TX_CHANGE :
+        case CONFIRMATION_CHANGE :
             return {
                 ...state,
-                transaction: action.transaction
+                showOnTrezor: action.showOnTrezor
             };
 
         default:
