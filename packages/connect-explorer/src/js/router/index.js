@@ -11,6 +11,7 @@ import AppContainer from '../containers/AppContainer';
 import { 
     GetPublicKey,
     NEMSignTx,
+    CustomMessage,
     ComposeTransaction 
 } from '../components/methods';
 
@@ -21,6 +22,7 @@ export default (
                 <AppContainer>
                     <Route exact path="/" component={ GetPublicKey } />
                     <Route exact path="/nem-signtx" component={ NEMSignTx } />
+                    <Route exact path="/custom" component={ CustomMessage } />
                 </AppContainer>
             </Switch>
         </ConnectedRouter>
