@@ -37,16 +37,10 @@ const TrezorConnectService = store => next => action => {
                 // connectSrc: 'https://localhost:8088/',
                 connectSrc: 'https://sisyfos.trezor.io/next/',
 
-
-                // transportConfigSrc: 'data/messages.json',
-                //connectSrc: 'https://sisyfos.trezor.io/',
-                // popupSrc: 'https://localhost:8088/popup.html',
-                // iframeSrc: 'https://dev.trezor.io/connect5/iframe.html',
-                // popupSrc: 'https://dev.trezor.io/connect5/popup.html',
                 // webusb: false,
                 // transportReconnect: false,
                 popup: true,
-                debug: true,
+                debug: false,
             })
             .then(r => {
                 // post action inited
