@@ -96,9 +96,5 @@ module.exports = {
             { from: `${SRC}images/favicon.png`, to: `${BUILD}favicon.png` },
             //{ from: `${SRC}data`, to: `${BUILD}data`, cache: false },
         ]),
-
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.NamedModulesPlugin(),
-    ]
+    ],
 }
