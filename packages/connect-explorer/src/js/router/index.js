@@ -11,6 +11,7 @@ import AppContainer from '../containers/AppContainer';
 import { 
     GetPublicKey,
     EthereumGetAddress,
+    EthereumSignTx,
     NEMGetAddress,
     NEMSignTx,
     CustomMessage,
@@ -24,6 +25,7 @@ export default (
                 <AppContainer>
                     <Route exact path="/" component={ GetPublicKey } />
                     <Route exact path="/eth-getaddress" component={ EthereumGetAddress } />
+                    <Route exact path="/eth-signtx" component={ EthereumSignTx } />
                     <Route exact path="/nem-getaddress" component={ NEMGetAddress } />
                     <Route exact path="/nem-signtx" component={ NEMSignTx } />
                     <Route exact path="/custom" component={ CustomMessage } />
