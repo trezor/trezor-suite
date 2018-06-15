@@ -7,7 +7,8 @@ import * as GetXpubActions from '../../actions/methods/GetXpubActions';
 
 type MethodState = {
     +js: string;
-    +fields: Array<string>;
+    fields: Array<string>;
+
     coin: string;
     path: string;
 }
@@ -26,9 +27,9 @@ const defaultPaths = {
 
 const initialState: MethodState = {
     js: 'TrezorConnect.getPublicKey',
-    fields: ['coin', 'path'],
-    coin: 'test',
-    path: "m/49'/1'/0'",
+    fields: ['path'],
+    coin: '',
+    path: "m/49'/0'/0'",
 };
 
 
@@ -40,11 +41,21 @@ export default function method(state: MethodState = initialState, action: any): 
             return initialState;
 
         case GetXpubActions.COIN_CHANGE :
-            return {
-                ...state,
-                coin: action.coin,
-                path: defaultPaths[action.coin]
-            };
+            if (action.coin === '') {
+                return {
+                    ...state,
+                    coin: '',
+                    fields: ['path']
+                }
+            } else {
+                return {
+                    ...state,
+                    coin: action.coin,
+                    path: defaultPaths[action.coin],
+                    fields: ['path', 'coin']
+                };
+            }
+            
 
         case GetXpubActions.PATH_CHANGE :
             return {

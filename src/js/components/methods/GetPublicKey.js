@@ -38,14 +38,17 @@ const GetPublicKey = (props): any => {
         <section className="method-content">
 
             <div className="method-params">
-                <CoinSelect coin={ coin } onCoinChange={ onCoinChange } />
-            
+
                 <div className="type-path">
                     <div className="row">
                         <label>Path</label>
                         <input type="text" className="small" value={ path } onChange={ event => onPathChange(event.target.value) } />
                     </div>
                 </div>
+
+                <CoinSelect 
+                    coin={ coin }
+                    onCoinChange={ onCoinChange } />
 
                 <div className="row">
                     <label></label>
