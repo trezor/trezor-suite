@@ -6,12 +6,20 @@ import { onResponse } from './CommonActions';
 
 const PREFIX: string = 'getxpub';
 export const COIN_CHANGE: string = `${PREFIX}_coin_@change`;
+export const USE_COIN_CHANGE: string = `${PREFIX}_use_coin_@change`;
 export const PATH_CHANGE: string = `${PREFIX}_path_@change`;
 
 export function onCoinChange(coin: string): any {
     return {
         type: COIN_CHANGE,
         coin
+    }
+}
+
+export function onUseCoinChange(useCoin: boolean): any {
+    return {
+        type: USE_COIN_CHANGE,
+        useCoin
     }
 }
 
@@ -33,7 +41,6 @@ function(sendMessage) {
         sendMessage('StellarSignTx', { 
             address_n: [2147483694, 2147483708, 2147483648],
             network_passphrase: 'Test SDF Network ; September 2015',
-            protocol_version
         })
         .then(function(response) {
             resolve(response);
@@ -41,6 +48,17 @@ function(sendMessage) {
             reject(error);
         });
     });
+}
+
+async (sendMessage) =>  {
+  const resp = await sendMessage('StellarSignTx', { 
+    address_n: [2147483694, 2147483708, 2147483648],
+     network_passphrase: 'Test SDF Network ; September 2015',
+  });
+
+  return resp;
+}
+
 }
 */
 
