@@ -25,8 +25,7 @@ export default class Main extends Component {
                     { navLink('/', 'Get public key') }
                     { navLink('/eth-getaddress', 'Ethereum Get Address') }
                     { navLink('/eth-signtx', 'Ethereum Sign Transaction') }
-                    { navLink('/eth-signmsg', 'Ethereum Sign Message') }
-                    { navLink('/eth-verifymsg', 'Ethereum Verify Message') }
+                    { navLink('/eth-signmessage', 'Ethereum Sign & Verify Message') }
                     { navLink('/nem-getaddress', 'NEM Get Address') }
                     { navLink('/nem-signtx', 'NEM Sign Transaction') }
                     { navLink('/stellar-getaddress', 'Stellar Get Address') }

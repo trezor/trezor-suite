@@ -15,6 +15,7 @@ import ethgetaddress from './methods/EthereumGetAddressReducer';
 import ethsigntx from './methods/EthereumSignTxReducer';
 import nemgetaddress from './methods/NEMGetAddressReducer';
 import nemsigntx from './methods/NEMSignTxReducer';
+import stellarsigntx from './methods/StellarSignTxReducer';
 import custom from './methods/CustomMessageReducer';
 
 export default combineReducers({
@@ -30,5 +31,6 @@ export default combineReducers({
     ethsigntx,
     nemgetaddress,
     nemsigntx,
+    stellarsigntx,
     custom,
 });
