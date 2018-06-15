@@ -29,7 +29,18 @@ const Response = (props): any => {
     let currentTab = null;
     switch (props.tab) {
         case 'response' :
-            const json = props.response ? (<JSONTree data={ props.response } theme={ JSONTreeTheme } invertTheme={ false } />) : null;
+            const exp = (k, d, l) => {
+                return true;
+            }
+            const json = props.response ? 
+                (<JSONTree 
+                    data={ props.response } 
+                    hideRoot={ true } 
+                    theme={ JSONTreeTheme } 
+                    invertTheme={ false }
+                    shouldExpandNode={ () => true }
+                    />
+                ) : null;
             currentTab = (
                 <div className="response-container">
                     { json }
