@@ -9,6 +9,7 @@ import connect from './TrezorConnectReducer';
 import modal from './ModalReducer';
 
 import common from './methods/CommonReducer';
+import cipherkv from './methods/CipherKeyValueReducer';
 import composeTx from './methods/ComposeTxReducer';
 import getxpub from './methods/GetXpubReducer';
 import ethgetaddress from './methods/EthereumGetAddressReducer';
@@ -25,6 +26,7 @@ export default combineReducers({
     modal,
     
     common,
+    cipherkv,
     composeTx,
     getxpub,
     ethgetaddress,
