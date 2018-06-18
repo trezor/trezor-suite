@@ -9,6 +9,7 @@ import store, { history } from '../store';
 
 import AppContainer from '../containers/AppContainer';
 import { 
+    CipherKeyValue,
     GetPublicKey,
     EthereumGetAddress,
     EthereumSignTx,
@@ -26,6 +27,7 @@ export default (
             <Switch>
                 <AppContainer>
                     <Route exact path="/" component={ GetPublicKey } />
+                    <Route exact path="/cipherkv" component={ CipherKeyValue } />
                     <Route exact path="/eth-getaddress" component={ EthereumGetAddress } />
                     <Route exact path="/eth-signtx" component={ EthereumSignTx } />
                     <Route exact path="/eth-signmessage" component={ EthereumSignMessage } />

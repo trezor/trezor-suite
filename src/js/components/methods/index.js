@@ -1,7 +1,8 @@
 /* @flow */
 'use strict';
 
-export { default as GetPublicKey } from './GetPublicKey'; 
+export { default as CipherKeyValue } from './CipherKeyValue';
+export { default as GetPublicKey } from './GetPublicKey';
 export { default as EthereumGetAddress } from './EthereumGetAddress';
 export { default as EthereumSignTx } from './EthereumSignTx';
 export { default as EthereumSignMessage } from './EthereumSignMessage';
