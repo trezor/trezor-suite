@@ -15,8 +15,11 @@ let _fetch: (input: string | Request, init?: RequestOptions) => Promise<Response
     ? () => Promise.reject()
     : window.fetch;
 
-export function setFetch(fetch: any) {
+let _isNode = false;
+
+export function setFetch(fetch: any, isNode?: boolean) {
   _fetch = fetch;
+  _isNode = !!isNode;
 }
 
 function contentType(body: any): string {
@@ -47,21 +50,29 @@ function parseResult(text: string): mixed {
 }
 
 export async function request(options: HttpRequestOptions): Promise<mixed> {
-  let fetchOptions = {
+  const fetchOptions = {
     method: options.method,
     body: wrapBody(options.body),
     credentials: `same-origin`,
+    headers: {},
   };
 
   // this is just for flowtype
   if (options.skipContentTypeHeader == null || options.skipContentTypeHeader === false) {
-    fetchOptions = {
-      ...fetchOptions,
-      headers: {
-        'Content-Type': contentType(options.body == null ? `` : options.body),
-      },
+    fetchOptions.headers = {
+      ...fetchOptions.headers,
+      'Content-Type': contentType(options.body == null ? `` : options.body),
     };
   }
+
+  // Node applications must spoof origin for bridge CORS
+  if (_isNode) {
+    fetchOptions.headers = {
+      ...fetchOptions.headers,
+      'Origin': `https://node.trezor.io`,
+    };
+  }
+
   const res = await _fetch(options.url, fetchOptions);
   const resText = await res.text();
   if (res.ok) {
