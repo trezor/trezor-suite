@@ -14,6 +14,8 @@ import composeTx from './methods/ComposeTxReducer';
 import getxpub from './methods/GetXpubReducer';
 import ethgetaddress from './methods/EthereumGetAddressReducer';
 import ethsigntx from './methods/EthereumSignTxReducer';
+import ethsignmessage from './methods/EthereumSignMessageReducer';
+import ethverifymessage from './methods/EthereumVerifyMessageReducer';
 import nemgetaddress from './methods/NEMGetAddressReducer';
 import nemsigntx from './methods/NEMSignTxReducer';
 import stellarsigntx from './methods/StellarSignTxReducer';
@@ -31,6 +33,8 @@ export default combineReducers({
     getxpub,
     ethgetaddress,
     ethsigntx,
+    ethsignmessage,
+    ethverifymessage,
     nemgetaddress,
     nemsigntx,
     stellarsigntx,
