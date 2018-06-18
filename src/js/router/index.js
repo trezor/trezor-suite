@@ -14,6 +14,7 @@ import {
     EthereumGetAddress,
     EthereumSignTx,
     EthereumSignMessage,
+    EthereumVerifyMessage,
     NEMGetAddress,
     NEMSignTx,
     StellarSignTx,
@@ -31,6 +32,7 @@ export default (
                     <Route exact path="/eth-getaddress" component={ EthereumGetAddress } />
                     <Route exact path="/eth-signtx" component={ EthereumSignTx } />
                     <Route exact path="/eth-signmessage" component={ EthereumSignMessage } />
+                    <Route exact path="/eth-verifymessage" component={ EthereumVerifyMessage } />
                     <Route exact path="/nem-getaddress" component={ NEMGetAddress } />
                     <Route exact path="/nem-signtx" component={ NEMSignTx } />
                     <Route exact path="/stellar-signtx" component={ StellarSignTx } />
