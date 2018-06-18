@@ -10,5 +10,6 @@ export { default as EthereumVerifyMessage } from './EthereumVerifyMessage';
 export { default as NEMSignTx } from './NEMSignTx';
 export { default as NEMGetAddress } from './NEMGetAddress'; 
 export { default as StellarSignTx } from './StellarSignTx';
+export { default as StellarGetAddress } from './StellarGetAddress';
 export { default as ComposeTransaction } from './ComposeTransaction';
 export { default as CustomMessage } from './CustomMessage';

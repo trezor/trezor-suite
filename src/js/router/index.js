@@ -17,6 +17,7 @@ import {
     EthereumVerifyMessage,
     NEMGetAddress,
     NEMSignTx,
+    StellarGetAddress,
     StellarSignTx,
     CustomMessage,
     ComposeTransaction 
@@ -36,6 +37,7 @@ export default (
                     <Route exact path="/nem-getaddress" component={ NEMGetAddress } />
                     <Route exact path="/nem-signtx" component={ NEMSignTx } />
                     <Route exact path="/stellar-signtx" component={ StellarSignTx } />
+                    <Route exact path="/stellar-getaddress" component={ StellarGetAddress } />
                     <Route exact path="/custom" component={ CustomMessage } />
                 </AppContainer>
             </Switch>

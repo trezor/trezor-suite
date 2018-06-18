@@ -12,13 +12,18 @@ import common from './methods/CommonReducer';
 import cipherkv from './methods/CipherKeyValueReducer';
 import composeTx from './methods/ComposeTxReducer';
 import getxpub from './methods/GetXpubReducer';
+
 import ethgetaddress from './methods/EthereumGetAddressReducer';
 import ethsigntx from './methods/EthereumSignTxReducer';
 import ethsignmessage from './methods/EthereumSignMessageReducer';
 import ethverifymessage from './methods/EthereumVerifyMessageReducer';
+
 import nemgetaddress from './methods/NEMGetAddressReducer';
 import nemsigntx from './methods/NEMSignTxReducer';
+
+import stellargetaddress from './methods/StellarGetAddressReducer';
 import stellarsigntx from './methods/StellarSignTxReducer';
+
 import custom from './methods/CustomMessageReducer';
 
 export default combineReducers({
@@ -31,12 +36,17 @@ export default combineReducers({
     cipherkv,
     composeTx,
     getxpub,
+
     ethgetaddress,
     ethsigntx,
     ethsignmessage,
     ethverifymessage,
+
     nemgetaddress,
     nemsigntx,
+
+    stellargetaddress,
     stellarsigntx,
+    
     custom,
 });
