@@ -32,10 +32,12 @@ const TrezorConnectService = store => next => action => {
         //     console.warn("-------TRANSPOOOO", event)
         // })
 
+        const src = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/next/';
         try {
             TrezorConnect.init({
+                connectSrc: src,
                 // connectSrc: 'https://localhost:8088/',
-                connectSrc: 'https://sisyfos.trezor.io/next/',
+                // connectSrc: 'https://sisyfos.trezor.io/next/',
 
                 // webusb: false,
                 // transportReconnect: false,

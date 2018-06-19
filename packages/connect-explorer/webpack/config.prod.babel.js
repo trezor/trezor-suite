@@ -97,4 +97,8 @@ module.exports = {
             //{ from: `${SRC}data`, to: `${BUILD}data`, cache: false },
         ]),
     ],
+
+    // optimization: {
+    //     minimize: false
+    // }
 }

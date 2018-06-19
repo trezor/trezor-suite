@@ -132,6 +132,10 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
 
+        new webpack.DefinePlugin({
+            LOCAL: JSON.stringify(`http://localhost:${PORT}/`),
+        }),
+
         // ignore node lib from trezor-link
         new webpack.IgnorePlugin(/\/iconv-loader$/),
     ],
