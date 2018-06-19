@@ -20,12 +20,17 @@ const CustomMessage = (props): any => {
     } = props.common;
 
     const {
-        customFuction,
+        messages,
+        message,
+        callback,
     } = props.state;
 
     const {
+        onMessagesChange,
+        onMessageChange,
+        onParamsChange,
+        onCallbackChange,
         onCustomMessage,
-        onFnChange
     } = props.methodActions;
 
     const {
@@ -37,9 +42,26 @@ const CustomMessage = (props): any => {
 
             <div className="method-params">
 
+                <div className="row">
+                    <label>Messages definitions</label>
+                    <textarea onChange={ event => onMessagesChange(event.target.value) } value={ messages }  style={{ height: '80px' }}>
+                    </textarea>
+                </div>
+
+                <div className="row">
+                    <label>Message</label>
+                    <input type="text" onChange={ event => onMessageChange(event.target.value) } value={ message } />
+                </div>
+
+                <div className="row">
+                    <label>Params</label>
+                    <textarea onChange={ event => onParamsChange(event.target.value) } value={ props.state.params }  style={{ height: '80px' }}>
+                    </textarea>
+                </div>
+
                 <div className="transaction-json">
-                    <label>Function</label>
-                    <textarea onChange={ event => onFnChange(event.target.value) } value={ customFuction }>
+                    <label>Request handler</label>
+                    <textarea onChange={ event => onCallbackChange(event.target.value) } value={ callback }>
                     </textarea>
                 </div>
 
