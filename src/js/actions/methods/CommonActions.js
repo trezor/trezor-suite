@@ -34,7 +34,7 @@ export const updateCode = () => {
                 dispatch({
                     type: UPDATE_CODE,
                     params,
-                    code: `${reducer.js}(${ JSON.stringify(params, undefined, 2) })`
+                    code: `${reducer.js}(${ JSON.stringify(params, undefined, 2).replace(/\\n/g, "<br/>") })`
                 })
             }
         }
