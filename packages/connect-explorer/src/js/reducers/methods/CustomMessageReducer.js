@@ -2,20 +2,42 @@
 'use strict';
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import { FN_CHANGE } from '../../actions/methods/CustomMessageActions';
+import { MESSAGES_CHANGE, MESSAGE_CHANGE, PARAMS_CHANGE, CALLBACK_CHANGE } from '../../actions/methods/CustomMessageActions';
+
+import messages from '../../data/custom.messages';
 
 type MethodState = {
     +js: string;
     +fields: Array<string>;
 
-    customFunction: string;
+    messages: string;
+    message: string;
+    params: string;
+    callback: string;
 }
+
+const defaultParams: string = `{
+    "address_n": [2147483694, 2147483708, 2147483648],
+    "num_operations": 1
+}`;
+
+const defaultFn: string = `(request) => {
+    if (request.type === 'StellarTxOpRequest') {
+        return {
+            message: 'StellarPaymentOp',
+            params: { }
+        }
+    }
+}`;
 
 const initialState: MethodState = {
     js: 'TrezorConnect.customMessage',
-    fields: ['customFunction'],
+    fields: ['message', 'params', 'callback', 'messages'],
 
-    customFunction: '',
+    messages: JSON.stringify(messages, undefined, 2),
+    message: 'StellarSignTx',
+    params: defaultParams,
+    callback: defaultFn,
 };
 
 export default function method(state: MethodState = initialState, action: any): any {
@@ -25,10 +47,28 @@ export default function method(state: MethodState = initialState, action: any): 
         case LOCATION_CHANGE :
             return initialState;
 
-        case FN_CHANGE :
+        case MESSAGES_CHANGE :
             return {
                 ...state,
-                customFunction: action.customFunction
+                messages: action.messages
+            };
+
+        case MESSAGE_CHANGE :
+            return {
+                ...state,
+                message: action.message
+            };
+
+        case PARAMS_CHANGE :
+            return {
+                ...state,
+                params: action.params
+            };
+
+        case CALLBACK_CHANGE :
+            return {
+                ...state,
+                callback: action.callback
             };
 
         default:
