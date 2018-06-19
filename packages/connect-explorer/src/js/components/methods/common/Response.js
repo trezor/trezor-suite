@@ -50,8 +50,7 @@ const Response = (props): any => {
 
         case 'code' :
             currentTab = (
-                <pre className="code-container">
-                    { props.code }
+                <pre className="code-container" dangerouslySetInnerHTML={{__html: props.code }}>
                 </pre>
             );
         break;
