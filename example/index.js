@@ -87,7 +87,7 @@ window.run = () => {
 
     const blockchain = new BitcoreBlockchain(BITCORE_URLS, socketWorkerFactory);
 
-    const discovery = new WorkerDiscovery(discoveryWorkerFactory, fastXpubWorker, fastXpubWasmFilePromise, blockchain);
+    const discovery = new WorkerDiscovery(discoveryWorkerFactory, fastXpubWorker, fastXpubWasmFilePromise, blockchain, 20);
     const network = networks.bitcoin;
     discover(XPUBS, discovery, network);
 };

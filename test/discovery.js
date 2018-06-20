@@ -100,7 +100,7 @@ describe('discovery', () => {
 
     it('creates something', () => {
         blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-        discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain);
+        discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain, 20);
         assert.ok(discovery);
     });
 

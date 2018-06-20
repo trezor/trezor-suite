@@ -25,8 +25,6 @@ import {
     objectValues,
 } from '../utils';
 
-const GAP_SIZE: number = 20;
-
 function deleteTxs(
     oldInfo: AccountInfo,
     txs: Array<string>
@@ -45,7 +43,8 @@ export function integrateNewTxs(
     newInfo: AccountNewInfo,
     oldInfoUndeleted: AccountInfo,
     lastBlock: Block,
-    deletedTxs: Array<string>
+    deletedTxs: Array<string>,
+    gap: number
 ): AccountInfo {
     const oldInfo = (deletedTxs.length !== 0)
         ? deleteTxs(oldInfoUndeleted, deletedTxs)
@@ -78,14 +77,16 @@ export function integrateNewTxs(
         transactions,
         addressToPath,
         newInfo.main.allAddresses,
-        0
+        0,
+        gap
     );
 
     const usedChange = deriveUsedAddresses(
         transactions,
         addressToPath,
         newInfo.change.allAddresses,
-        1
+        1,
+        gap
     );
 
     const balance = transactions.length > 0 ? transactions[0].balance : 0;
@@ -171,7 +172,8 @@ function deriveUsedAddresses(
     transactions: Array<TransactionInfo>,
     addressToPath: AddressToPath,
     allAddresses: Array<string>,
-    chain: number
+    chain: number,
+    gap: number
 ): {
     usedAddresses: Array<AddressWithReceived>,
     unusedAddresses: Array<string>,
@@ -212,7 +214,7 @@ function deriveUsedAddresses(
         usedAddresses.push({address, received});
     }
     const unusedAddresses = [];
-    for (let i = lastUsed + 1; i <= lastConfirmed + GAP_SIZE; i++) {
+    for (let i = lastUsed + 1; i <= lastConfirmed + gap; i++) {
         unusedAddresses.push(allAddresses[i]);
     }
     return {usedAddresses, unusedAddresses, lastConfirmed};

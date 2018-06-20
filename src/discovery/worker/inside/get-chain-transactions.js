@@ -35,8 +35,6 @@ import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
 import type {TransactionInfo} from '../../index';
 import { BrowserAddressSource } from '../../../address-source';
 
-const GAP_SIZE: number = 20;
-
 export class GetChainTransactions {
     // all seen addresses, including the gap addresses
     allAddresses: Array<string>;
@@ -62,7 +60,7 @@ export class GetChainTransactions {
 
     // last address that was searched with the previous search
     originalLastSearched(): number {
-        return this.originalLastConfirmed + GAP_SIZE;
+        return this.originalLastConfirmed + this.gap;
     }
 
     // this is deferred promise for result
@@ -100,6 +98,8 @@ export class GetChainTransactions {
     webassembly: boolean;
     source: BrowserAddressSource; // used only if not webassembly
 
+    gap: number;
+
     constructor(
         id: number,
         range: BlockRange,
@@ -118,8 +118,10 @@ export class GetChainTransactions {
         network: BitcoinJsNetwork,
         xpub: string,
         segwit: boolean,
-        webassembly: boolean
+        webassembly: boolean,
+        gap: number,
     ) {
+        this.gap = gap;
         this.originalLastConfirmed = originalLastConfirmed;
         this.lastConfirmed = originalLastConfirmed;
         this.chainId = id;
@@ -140,7 +142,7 @@ export class GetChainTransactions {
         // first and last range of addresses for the first search
         // (always 0 - 19)
         const first = 0;
-        const last = GAP_SIZE - 1;
+        const last = this.gap - 1;
 
         this.iterate(first, last, this.range);
         return this.dfd.promise;
@@ -274,8 +276,8 @@ export class GetChainTransactions {
         this.lastSearched = last;
 
         // look at which is the next thing we want
-        const shouldSearchLast = this.lastConfirmed + GAP_SIZE;
-        const nextChunkEnd = this.lastSearched + GAP_SIZE;
+        const shouldSearchLast = this.lastConfirmed + this.gap;
+        const nextChunkEnd = this.lastSearched + this.gap;
         const nextLast =
             shouldSearchLast < nextChunkEnd
             ? shouldSearchLast

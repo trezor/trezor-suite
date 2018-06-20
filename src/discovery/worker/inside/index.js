@@ -35,14 +35,16 @@ let recvNetwork: BitcoinJsNetwork;
 let recvXpub: string;
 let recvSegwit: boolean;
 let recvWebAssembly: boolean;
+let recvGap: number;
 
 // init on worker start
-channel.initPromise.then(({accountInfo, network, xpub, segwit, webassembly}) => {
+channel.initPromise.then(({accountInfo, network, xpub, segwit, webassembly, gap}) => {
     recvInfo = accountInfo;
     recvNetwork = network;
     recvSegwit = segwit;
     recvXpub = xpub;
     recvWebAssembly = webassembly;
+    recvGap = gap;
 });
 
 channel.startDiscoveryPromise.then(() => {
@@ -80,7 +82,7 @@ channel.startDiscoveryPromise.then(() => {
                 const deletedP: Promise<Array<string>> = findDeleted(unconfirmedTxids, channel.doesTransactionExist);
                 const resP: Promise<AccountInfo> = deletedP.then(deleted => {
                     // ... then integrate
-                    return integrateNewTxs(newInfo, oldState, range.last, deleted);
+                    return integrateNewTxs(newInfo, oldState, range.last, deleted, recvGap);
                 });
                 return resP;
             });
@@ -97,11 +99,11 @@ function discoverAccount(
     lastUsedAddresses: [number, number],
     transactions: Array<TransactionInfo>,
     mainAddresses: Array<string>,
-    changeAddresses: Array<string>
+    changeAddresses: Array<string>,
 ): Promise<AccountNewInfo> {
     return Promise.all([
-        new GetChainTransactions(0, range, lastUsedAddresses[0], channel.chunkTransactions, transactions, mainAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly).discover(),
-        new GetChainTransactions(1, range, lastUsedAddresses[1], channel.chunkTransactions, [], changeAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly).discover(),
+        new GetChainTransactions(0, range, lastUsedAddresses[0], channel.chunkTransactions, transactions, mainAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly, recvGap).discover(),
+        new GetChainTransactions(1, range, lastUsedAddresses[1], channel.chunkTransactions, [], changeAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly, recvGap).discover(),
     ]).then(([main, change]) => ({main, change}));
 }
 
