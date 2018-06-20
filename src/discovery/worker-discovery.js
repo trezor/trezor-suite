@@ -70,9 +70,9 @@ export class WorkerDiscovery {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
-        gap?: number
+        gap_?: number
     ): Promise<boolean> {
-        gap = gap == null ? 20 : gap;
+        const gap: number = gap_ == null ? 20 : gap_;
         const node = this.tryHDNode(xpub, network);
         if (node instanceof Error) {
             return Promise.reject(node);
@@ -99,9 +99,9 @@ export class WorkerDiscovery {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
-        gap?: number
+        gap_?: number
     ): StreamWithEnding<AccountLoadStatus, AccountInfo> {
-        gap = gap == null ? 20 : gap;
+        const gap = gap_ == null ? 20 : gap_;
         const node = this.tryHDNode(xpub, network);
         if (node instanceof Error) {
             return StreamWithEnding.fromStreamAndPromise(Stream.fromArray([]), Promise.reject(node));
@@ -134,9 +134,9 @@ export class WorkerDiscovery {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
-        gap?: number
+        gap_?: number
     ): Stream<AccountInfo | Error> {
-        gap = gap == null ? 20 : gap;
+        const gap = gap_ == null ? 20 : gap_;
         const node = this.tryHDNode(xpub, network);
         if (node instanceof Error) {
             return Stream.simple(node);
