@@ -75,7 +75,8 @@ function testDiscovery(discovery, xpub, testfun, last) {
         last,
         xpub,
         bitcoin.networks.testnet,
-        'off'
+        'off',
+        20
     );
     return stream.ending.then((res) => {
         assert(/^[0-9]+$/.test(res.lastBlock.height));
@@ -100,7 +101,7 @@ describe('discovery', () => {
 
     it('creates something', () => {
         blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-        discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain, 20);
+        discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain);
         assert.ok(discovery);
     });
 
@@ -137,7 +138,8 @@ describe('discovery', () => {
         const used = discovery.detectUsedAccount(
             xpub,
             bitcoin.networks.testnet,
-            'off'
+            'off',
+            20
         );
         return used.then(k => {
             assert(!k);
@@ -201,7 +203,8 @@ describe('discovery', () => {
         const used = discovery.detectUsedAccount(
             xpub,
             bitcoin.networks.testnet,
-            'off'
+            'off',
+            20
         );
         return used.then(k => {
             assert(k);
@@ -288,7 +291,8 @@ describe('discovery', () => {
         const used = discovery.detectUsedAccount(
             xpub,
             bitcoin.networks.testnet,
-            'off'
+            'off',
+            20
         );
         return used.then(k => {
             assert(k);
@@ -611,7 +615,8 @@ describe('discovery', () => {
             lastConf,
             xpub,
             bitcoin.networks.testnet,
-            'off'
+            'off',
+            20
         );
         const res = reversePromise(stream.ending);
         res.then(
@@ -632,7 +637,8 @@ describe('discovery', () => {
             null,
             xpub,
             bitcoin.networks.testnet,
-            'off'
+            'off',
+            20
         );
         const res = reversePromise(stream.ending);
         res.then(
@@ -648,7 +654,8 @@ describe('discovery', () => {
             lastTwoRcvSent,
             xpub,
             bitcoin.networks.testnet,
-            'off'
+            'off',
+            20
         );
         testStream(
             stream,
@@ -669,7 +676,8 @@ describe('discovery', () => {
             lastTwoRcvSent,
             xpub,
             bitcoin.networks.testnet,
-            'off'
+            'off',
+            20
         );
         testStream(
             stream,
@@ -690,7 +698,8 @@ describe('discovery', () => {
             null,
             xpub2,
             bitcoin.networks.testnet,
-            'off'
+            'off',
+            20
         );
         return reversePromise(stream.ending);
     });
@@ -702,7 +711,8 @@ describe('discovery', () => {
             lastTwoRcvSent,
             'thisisnotxpub',
             bitcoin.networks.testnet,
-            'off'
+            'off',
+            20
         );
         testStream(
             stream,
@@ -719,7 +729,8 @@ describe('discovery', () => {
                 null,
                 xpub,
                 bitcoin.networks.testnet,
-                'off'
+                'off',
+                20
             );
             return reversePromise(stream.ending);
         });

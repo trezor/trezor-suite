@@ -54,7 +54,7 @@ function refresh() {
 function discover(xpubs, discovery, network) {
     let done = 0;
     xpubs.forEach((xpub, i) => {
-        const process = discovery.discoverAccount(null, xpub, network);
+        const process = discovery.discoverAccount(null, xpub, network, 20);
         appState[i] = {xpub, info: 0};
 
         process.stream.values.attach(status => {
@@ -87,7 +87,7 @@ window.run = () => {
 
     const blockchain = new BitcoreBlockchain(BITCORE_URLS, socketWorkerFactory);
 
-    const discovery = new WorkerDiscovery(discoveryWorkerFactory, fastXpubWorker, fastXpubWasmFilePromise, blockchain, 20);
+    const discovery = new WorkerDiscovery(discoveryWorkerFactory, fastXpubWorker, fastXpubWasmFilePromise, blockchain);
     const network = networks.bitcoin;
     discover(XPUBS, discovery, network);
 };

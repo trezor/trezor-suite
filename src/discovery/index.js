@@ -156,20 +156,23 @@ export type Discovery = {
         initial: ?AccountInfo,
         xpub: string,
         network: BitcoinJsNetwork,
-        segwit: 'off' | 'p2sh'
+        segwit: 'off' | 'p2sh',
+        gap?: number
     ) => StreamWithEnding<AccountLoadStatus, AccountInfo>,
 
     +detectUsedAccount: (
         xpub: string,
         network: BitcoinJsNetwork,
-        segwit: 'off' | 'p2sh'
+        segwit: 'off' | 'p2sh',
+        gap?: number
     ) => Promise<boolean>,
 
     +monitorAccountActivity: (
         initial: AccountInfo,
         xpub: string,
         network: BitcoinJsNetwork,
-        segwit: 'off' | 'p2sh'
+        segwit: 'off' | 'p2sh',
+        gap?: number
     ) => Stream<AccountInfo | Error>,
 
     // force-adds transaction to multiple addresses

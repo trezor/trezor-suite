@@ -21,14 +21,12 @@ export class WorkerDiscovery {
     discoveryWorkerFactory: () => Worker;
     addressWorkerChannel: ?AddressWorkerChannel;
     chain: Blockchain;
-    gap: number;
 
     constructor(
         discoveryWorkerFactory: () => Worker,
         fastXpubWorker: Worker,
         fastXpubWasmPromise: Promise<ArrayBuffer>,
         chain: Blockchain,
-        gap?: number,
     ) {
         this.discoveryWorkerFactory = discoveryWorkerFactory;
         // $FlowIssue
@@ -42,7 +40,6 @@ export class WorkerDiscovery {
             error => console.error(error)
         );
         this.chain = chain;
-        this.gap = gap == null ? 20 : gap;
     }
 
     tryHDNode(xpub: string, network: BitcoinJsNetwork): BitcoinJsHDNode | Error {
@@ -72,8 +69,10 @@ export class WorkerDiscovery {
     detectUsedAccount(
         xpub: string,
         network: BitcoinJsNetwork,
-        segwit: 'off' | 'p2sh'
+        segwit: 'off' | 'p2sh',
+        gap?: number
     ): Promise<boolean> {
+        gap = gap == null ? 20 : gap;
         const node = this.tryHDNode(xpub, network);
         if (node instanceof Error) {
             return Promise.reject(node);
@@ -87,7 +86,6 @@ export class WorkerDiscovery {
         ];
         // I do not actually need to do any logic in the separate worker for discovery
 
-        const gap: number = this.gap;
         return Promise.all([
             WorkerDiscoveryHandler.deriveAddresses(sources[0], null, 0, gap - 1),
             WorkerDiscoveryHandler.deriveAddresses(sources[1], null, 0, gap - 1),
@@ -100,8 +98,10 @@ export class WorkerDiscovery {
         initial: ?AccountInfo,
         xpub: string,
         network: BitcoinJsNetwork,
-        segwit: 'off' | 'p2sh'
+        segwit: 'off' | 'p2sh',
+        gap?: number
     ): StreamWithEnding<AccountLoadStatus, AccountInfo> {
+        gap = gap == null ? 20 : gap;
         const node = this.tryHDNode(xpub, network);
         if (node instanceof Error) {
             return StreamWithEnding.fromStreamAndPromise(Stream.fromArray([]), Promise.reject(node));
@@ -124,7 +124,7 @@ export class WorkerDiscovery {
                     network,
                     this.forceAddedTransactions
                 );
-                return out.discovery(initial, xpub, segwit === 'p2sh', this.gap);
+                return out.discovery(initial, xpub, segwit === 'p2sh', gap);
             })
         );
     }
@@ -133,8 +133,10 @@ export class WorkerDiscovery {
         initial: AccountInfo,
         xpub: string,
         network: BitcoinJsNetwork,
-        segwit: 'off' | 'p2sh'
+        segwit: 'off' | 'p2sh',
+        gap?: number
     ): Stream<AccountInfo | Error> {
+        gap = gap == null ? 20 : gap;
         const node = this.tryHDNode(xpub, network);
         if (node instanceof Error) {
             return Stream.simple(node);
@@ -187,7 +189,7 @@ export class WorkerDiscovery {
                         network,
                         this.forceAddedTransactions
                     );
-                    return out.discovery(currentState, xpub, segwit === 'p2sh', this.gap).ending.then(res => {
+                    return out.discovery(currentState, xpub, segwit === 'p2sh', gap).ending.then(res => {
                         currentState = res;
                         return res;
                     });
