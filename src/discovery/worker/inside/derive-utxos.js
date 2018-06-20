@@ -147,7 +147,7 @@ function _deriveUtxos(
 
     // third, find utxos in new txs and maybe overwrite existing
     const newTxs = objectValues(newTransactions);
-    newTxs.forEach(({hash, tx, height, outputAddresses, inputAddresses, vsize, fee}) => {
+    newTxs.forEach(({hash, tx, height, outputAddresses, inputAddresses, vsize}) => {
         const coinbase = isCoinbase(tx);
         const own = outputAddresses.some(address => isOwnAddress(address));
 
@@ -168,7 +168,6 @@ function _deriveUtxos(
                 addressPath,
                 vsize,
                 tsize: tx.byteLength(),
-                fee,
                 own,
             };
             res[ix] = resIx;

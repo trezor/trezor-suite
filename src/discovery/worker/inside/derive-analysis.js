@@ -169,7 +169,6 @@ function analyzeTransaction(
         inputs: inputIds,
         tsize: t.tx.byteLength(),
         vsize: t.vsize,
-        fee: t.fee,
     };
 }
 

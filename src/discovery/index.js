@@ -33,7 +33,6 @@ export type UtxoInfo = {
     coinbase: boolean,
     tsize: number, // total size - in case of segwit, total, with segwit data
     vsize: number, // virtual size - segwit concept - same as size in non-segwit
-    fee: number, // total fee
     own: boolean,
 }
 
@@ -79,9 +78,6 @@ export type TransactionInfo = {
 
     tsize: number, // total size - in case of segwit, total, with segwit data
     vsize: number, // virtual size - segwit concept - same as size in non-segwit
-
-    fee: number,
-
 }
 
 // This is used for used addresses

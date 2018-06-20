@@ -139,7 +139,6 @@ export type ChainNewTransaction = {
     timestamp: ?number,
     hash: string,
     vsize: number,
-    fee: number,
 }
 
 // New transactions on a chain
@@ -186,8 +185,6 @@ export type TransactionInfoBalanceless = {
 
     tsize: number, // total size - in case of segwit, total, with segwit data
     vsize: number, // virtual size - segwit concept - same as size in non-segwit
-
-    fee: number,
 }
 
 export type TargetsType = {

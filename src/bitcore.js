@@ -22,7 +22,6 @@ export type TransactionWithHeight = {
     inputAddresses: Array<?string>,
     outputAddresses: Array<?string>,
     vsize: number,
-    fee: number,
 }
 
 export type TxFees = {[blocks: number]: number};
@@ -84,7 +83,6 @@ type BcDetailedOutput = {
 
 type BcDetailedTransaction = {
     blockTimestamp: ?number, // undef on unconfirmed
-    feeSatoshis: number,
     hash: string,
     height: number, // -1 on unconfirmed
     hex: string,
@@ -597,7 +595,6 @@ function convertTx(zcash: boolean, bcTx: BcDetailedTransaction): TransactionWith
         hash: bcTx.hash,
         inputAddresses: bcTx.inputs.map(input => input.address),
         outputAddresses: bcTx.outputs.map(output => output.address),
-        fee: bcTx.feeSatoshis,
         vsize: bcTx.size == null ? bcTx.hex.length / 2 : bcTx.size,
     };
 }

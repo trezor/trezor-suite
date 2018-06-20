@@ -257,7 +257,6 @@ export class GetChainTransactions {
                 height: transaction.height,
                 timestamp: transaction.timestamp,
                 hash: transaction.hash,
-                fee: transaction.fee,
                 vsize: transaction.vsize,
                 inputAddresses: transaction.inputAddresses,
             };
