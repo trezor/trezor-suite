@@ -6,20 +6,12 @@ import { onResponse } from './CommonActions';
 
 const PREFIX: string = 'getxpub';
 export const COIN_CHANGE: string = `${PREFIX}_coin_@change`;
-export const USE_COIN_CHANGE: string = `${PREFIX}_use_coin_@change`;
 export const PATH_CHANGE: string = `${PREFIX}_path_@change`;
 
 export function onCoinChange(coin: string): any {
     return {
         type: COIN_CHANGE,
         coin
-    }
-}
-
-export function onUseCoinChange(useCoin: boolean): any {
-    return {
-        type: USE_COIN_CHANGE,
-        useCoin
     }
 }
 
@@ -32,7 +24,7 @@ export function onPathChange(path: string): any {
 
 export function onGetXpub(): any {
     return async function (dispatch, getState) {
-      
+
         const response = await TrezorConnect.getPublicKey( getState().common.params );
 
 /*
