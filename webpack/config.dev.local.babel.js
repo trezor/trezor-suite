@@ -26,6 +26,7 @@ module.exports = {
     output: {
         filename: '[name].[hash].js',
         path: BUILD,
+        globalObject: 'this', // fix for HMR inside WebWorker from 'hd-wallet'
     },
     devServer: {
         contentBase: SRC,
@@ -67,6 +68,14 @@ module.exports = {
                 query: {
                     outputPath: './fonts',
                     name: '[name].[ext]',
+                },
+            },
+            {
+                type: 'javascript/auto',
+                test: /\.wasm$/,
+                loader: 'file-loader',
+                query: {
+                    name: 'js/[name].[ext]',
                 },
             },
             {
