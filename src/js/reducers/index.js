@@ -12,6 +12,8 @@ import common from './methods/CommonReducer';
 import cipherkv from './methods/CipherKeyValueReducer';
 import composeTx from './methods/ComposeTxReducer';
 import getxpub from './methods/GetXpubReducer';
+import signmessage from './methods/SignMessageReducer';
+import verifymessage from './methods/VerifyMessageReducer';
 
 import ethgetaddress from './methods/EthereumGetAddressReducer';
 import ethsigntx from './methods/EthereumSignTxReducer';
@@ -36,6 +38,8 @@ export default combineReducers({
     cipherkv,
     composeTx,
     getxpub,
+    signmessage,
+    verifymessage,
 
     ethgetaddress,
     ethsigntx,

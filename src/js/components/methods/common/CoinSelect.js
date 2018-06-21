@@ -3,21 +3,34 @@
 
 import React from 'react';
 
+const coins = [
+    { symbol: 'btc', label: 'Bitcoin' },
+    { symbol: 'bch', label: 'Bitcoin Cash' },
+    { symbol: 'btg', label: 'Bitcoin Gold' },
+    { symbol: 'ltc', label: 'Litecoin' },
+    { symbol: 'dash', label: 'Dash' },
+    { symbol: 'zcash', label: 'Zcash' },
+    { symbol: 'test', label: 'Testnet' },
+    { symbol: 'doge', label: 'Dogecoin' },
+    { symbol: 'nmc', label: 'Namecoin' },
+]
+
 const CoinSelect = (props): any => {
+
+    const coinz = [ ...coins ];
+    if (!props.obligatory) {
+        coinz.unshift( { symbol: '', label: 'Select coin'} );
+    }
+    const options = coinz.map(c => {
+        return (
+            <option key={ c.symbol } value={ c.symbol }>{ c.label }</option>
+        )
+    })
     return (
         <div className="row" >
             <label>Coin:</label>
             <select value={ props.coin } onChange={ event => props.onCoinChange(event.target.value) }>
-                <option value="">Select coin</option>
-                <option value="btc">Bitcoin</option>
-                <option value="bch">Bitcoin Cash</option>
-                <option value="btg">Bitcoin Gold</option>
-                <option value="ltc">Litecoin</option>
-                <option value="dash">Dash</option>
-                <option value="zcash">Zcash</option>
-                <option value="test">Testnet</option>
-                <option value="doge">Dogecoin</option>
-                <option value="nmc">Namecoin</option>
+                { options }
             </select>
         </div>
     );
