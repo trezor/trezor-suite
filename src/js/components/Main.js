@@ -27,7 +27,7 @@ export default class Main extends Component {
                     { navLink('/getaddress', 'Get address') }
                     { navLink('/signmessage', 'Sign message') }
                     { navLink('/verifymessage', 'Verify message') }
-                    { navLink('/accountinfo', 'Get account info') }
+                    { navLink('/get-accountinfo', 'Get account info') }
                     { navLink('/singtx', 'Sign transaction') }
                     { navLink('/composetx', 'Payment request') }
                     { navLink('/eth-getaddress', 'Ethereum Get Address') }
