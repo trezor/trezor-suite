@@ -14,6 +14,7 @@ import composeTx from './methods/ComposeTxReducer';
 import getxpub from './methods/GetXpubReducer';
 import signmessage from './methods/SignMessageReducer';
 import verifymessage from './methods/VerifyMessageReducer';
+import getaccountinfo from './methods/GetAccountInfoReducer';
 
 import ethgetaddress from './methods/EthereumGetAddressReducer';
 import ethsigntx from './methods/EthereumSignTxReducer';
@@ -40,6 +41,7 @@ export default combineReducers({
     getxpub,
     signmessage,
     verifymessage,
+    getaccountinfo,
 
     ethgetaddress,
     ethsigntx,
