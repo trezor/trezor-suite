@@ -11,6 +11,7 @@ import AppContainer from '../containers/AppContainer';
 import { 
     CipherKeyValue,
     GetAccountInfo,
+    GetAddress,
     GetPublicKey,
     SignMessage,
     VerifyMessage,
@@ -36,6 +37,7 @@ export default (
                     <Route exact path="/signmessage" component={ SignMessage } />
                     <Route exact path="/verifymessage" component={ VerifyMessage } />
                     <Route exact path="/get-accountinfo" component={ GetAccountInfo } />
+                    <Route exact path="/getaddress" component={ GetAddress } />
                     <Route exact path="/eth-getaddress" component={ EthereumGetAddress } />
                     <Route exact path="/eth-signtx" component={ EthereumSignTx } />
                     <Route exact path="/eth-signmessage" component={ EthereumSignMessage } />

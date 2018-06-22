@@ -3,6 +3,7 @@
 
 export { default as CipherKeyValue } from './CipherKeyValue';
 export { default as GetAccountInfo } from './GetAccountInfo';
+export { default as GetAddress } from './GetAddress';
 export { default as GetPublicKey } from './GetPublicKey';
 export { default as SignMessage } from './SignMessage';
 export { default as VerifyMessage } from './VerifyMessage';
