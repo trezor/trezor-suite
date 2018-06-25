@@ -24,7 +24,8 @@ import {
     StellarGetAddress,
     StellarSignTx,
     CustomMessage,
-    ComposeTransaction 
+    ComposeTransaction,
+    RequestLogin
 } from '../components/methods';
 
 export default (
@@ -47,6 +48,7 @@ export default (
                     <Route exact path="/stellar-signtx" component={ StellarSignTx } />
                     <Route exact path="/stellar-getaddress" component={ StellarGetAddress } />
                     <Route exact path="/custom" component={ CustomMessage } />
+                    <Route exact path="/login" component={ RequestLogin } />
                 </AppContainer>
             </Switch>
         </ConnectedRouter>
