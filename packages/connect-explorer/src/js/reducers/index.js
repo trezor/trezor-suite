@@ -29,6 +29,7 @@ import stellargetaddress from './methods/StellarGetAddressReducer';
 import stellarsigntx from './methods/StellarSignTxReducer';
 
 import custom from './methods/CustomMessageReducer';
+import login from './methods/RequestLoginReducer';
 
 export default combineReducers({
     router: routerReducer,
@@ -57,4 +58,5 @@ export default combineReducers({
     stellarsigntx,
     
     custom,
+    login
 });
