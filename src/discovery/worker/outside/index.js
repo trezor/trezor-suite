@@ -44,14 +44,14 @@ export class WorkerDiscoveryHandler {
 
         this.workerChannel = new WorkerChannel(f, (r) => this.getPromise(r), (r) => this.getStream(r));
         this.network = network;
-        this.forceAddedTransactions = forceAddedTransactions;
         this.cashAddress = cashAddress;
+        this.forceAddedTransactions = forceAddedTransactions;
     }
 
     discovery(ai: ?AccountInfo, xpub: string, segwit: boolean, gap: number): StreamWithEnding<AccountLoadStatus, AccountInfo> {
         // $FlowIssue
         const webassembly = typeof WebAssembly !== 'undefined';
-        this.workerChannel.postToWorker({type: 'init', state: ai, network: this.network, webassembly, xpub, segwit, gap, cashAddress: this.cashAddress});
+        this.workerChannel.postToWorker({type: 'init', state: ai, network: this.network, webassembly, xpub, segwit, cashAddress: this.cashAddress, gap});
         this.workerChannel.postToWorker({type: 'startDiscovery'});
 
         const promise = this.workerChannel.resPromise(() => this.counter.finisher.emit());

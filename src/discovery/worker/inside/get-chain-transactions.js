@@ -122,8 +122,8 @@ export class GetChainTransactions {
         xpub: string,
         segwit: boolean,
         webassembly: boolean,
-        gap: number,
         cashAddress: boolean,
+        gap: number,
     ) {
         this.gap = gap;
         this.cashAddress = cashAddress;

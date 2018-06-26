@@ -39,14 +39,14 @@ let recvGap: number;
 let recvCashAddress: boolean;
 
 // init on worker start
-channel.initPromise.then(({accountInfo, network, xpub, segwit, webassembly, gap, cashAddress}) => {
+channel.initPromise.then(({accountInfo, network, xpub, segwit, webassembly, cashAddress, gap}) => {
     recvInfo = accountInfo;
     recvNetwork = network;
     recvSegwit = segwit;
     recvXpub = xpub;
     recvWebAssembly = webassembly;
-    recvGap = gap;
     recvCashAddress = cashAddress;
+    recvGap = gap;
 });
 
 channel.startDiscoveryPromise.then(() => {
@@ -104,8 +104,8 @@ function discoverAccount(
     changeAddresses: Array<string>,
 ): Promise<AccountNewInfo> {
     return Promise.all([
-        new GetChainTransactions(0, range, lastUsedAddresses[0], channel.chunkTransactions, transactions, mainAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly, recvGap, recvCashAddress).discover(),
-        new GetChainTransactions(1, range, lastUsedAddresses[1], channel.chunkTransactions, [], changeAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly, recvGap, recvCashAddress).discover(),
+        new GetChainTransactions(0, range, lastUsedAddresses[0], channel.chunkTransactions, transactions, mainAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly, recvCashAddress, recvGap).discover(),
+        new GetChainTransactions(1, range, lastUsedAddresses[1], channel.chunkTransactions, [], changeAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly, recvCashAddress, recvGap).discover(),
     ]).then(([main, change]) => ({main, change}));
 }
 
