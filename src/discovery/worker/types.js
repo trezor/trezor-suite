@@ -54,6 +54,7 @@ export type InMessage = {
     xpub: string,
     segwit: boolean,
     gap: number,
+    cashAddress: boolean,
 } | {
     // starting discovery after init
     type: 'startDiscovery',
