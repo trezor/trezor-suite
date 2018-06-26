@@ -54,7 +54,7 @@ function refresh() {
 function discover(xpubs, discovery, network) {
     let done = 0;
     xpubs.forEach((xpub, i) => {
-        const process = discovery.discoverAccount(null, xpub, network, 20);
+        const process = discovery.discoverAccount(null, xpub, network, 'off');
         appState[i] = {xpub, info: 0};
 
         process.stream.values.attach(status => {
