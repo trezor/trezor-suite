@@ -838,6 +838,13 @@ base64id@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/base64id/-/base64id-1.0.0.tgz#47688cb99bb6804f0e06d3e763b1c32e57d8e6b6"
 
+bchaddrjs@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/bchaddrjs/-/bchaddrjs-0.2.1.tgz#8c2f1582e24e5ca11687ae19e2463543cfa0dd24"
+  dependencies:
+    bs58check "^2.1.1"
+    cashaddrjs "^0.2.7"
+
 bcrypt-pbkdf@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.1.tgz#63bc5dcb61331b92bc05fd528953c33462a06f8d"
@@ -853,6 +860,10 @@ better-assert@~1.0.0:
   resolved "https://registry.yarnpkg.com/better-assert/-/better-assert-1.0.2.tgz#40866b9e1b9e0b55b481894311e68faffaebc522"
   dependencies:
     callsite "1.0.0"
+
+big-integer@^1.6.26:
+  version "1.6.31"
+  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.31.tgz#6d7852486e67c642502dcc03f7225a245c9fc7fa"
 
 bigi@^1.1.0, bigi@^1.4.0:
   version "1.4.2"
@@ -1176,6 +1187,13 @@ bs58check@^2.0.0:
     bs58 "^4.0.0"
     create-hash "^1.1.0"
 
+bs58check@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/bs58check/-/bs58check-2.1.1.tgz#8a5d0e587af97b784bf9cbf1b29f454d82bc0222"
+  dependencies:
+    bs58 "^4.0.0"
+    create-hash "^1.1.0"
+
 buffer-shims@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/buffer-shims/-/buffer-shims-1.0.0.tgz#9978ce317388c649ad8793028c3477ef044a8b51"
@@ -1252,6 +1270,12 @@ camelize@^1.0.0:
 caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
+
+cashaddrjs@^0.2.7:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/cashaddrjs/-/cashaddrjs-0.2.8.tgz#74003dd4beb55c6328c1a13117d4093f7becb580"
+  dependencies:
+    big-integer "^1.6.26"
 
 center-align@^0.1.1:
   version "0.1.3"
