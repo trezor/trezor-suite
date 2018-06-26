@@ -34,6 +34,7 @@ import {
 import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
 import type {TransactionInfo} from '../../index';
 import { BrowserAddressSource } from '../../../address-source';
+import bchaddrjs from 'bchaddrjs';
 
 export class GetChainTransactions {
     // all seen addresses, including the gap addresses
@@ -100,6 +101,8 @@ export class GetChainTransactions {
 
     gap: number;
 
+    cashAddress: boolean;
+
     constructor(
         id: number,
         range: BlockRange,
@@ -120,8 +123,10 @@ export class GetChainTransactions {
         segwit: boolean,
         webassembly: boolean,
         gap: number,
+        cashAddress: boolean,
     ) {
         this.gap = gap;
+        this.cashAddress = cashAddress;
         this.originalLastConfirmed = originalLastConfirmed;
         this.lastConfirmed = originalLastConfirmed;
         this.chainId = id;
@@ -213,6 +218,8 @@ export class GetChainTransactions {
                 // try-catch, because some outputs don't have addresses
                 try {
                     address = BitcoinJsAddress.fromOutputScript(output.script, this.network);
+                    if (this.cashAddress)
+                        address = bchaddrjs.toCashAddress(address);
                     // if mine...
                     if (this.backSearch[address] != null) {
                         // check if confirmed

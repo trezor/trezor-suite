@@ -151,12 +151,12 @@ self.onmessage = function (event: {data: InMessage}) {
 };
 
 const initDfd = deferred();
-export const initPromise: Promise<{accountInfo: ?AccountInfo, network: BitcoinJsNetwork, xpub: string, segwit: boolean, webassembly: boolean, gap: number}> = initDfd.promise;
+export const initPromise: Promise<{accountInfo: ?AccountInfo, network: BitcoinJsNetwork, xpub: string, segwit: boolean, webassembly: boolean, gap: number, cashAddress: boolean}> = initDfd.promise;
 
 messageEmitter.attach((message, detach) => {
     if (message.type === 'init') {
         detach();
-        initDfd.resolve({accountInfo: message.state, network: message.network, xpub: message.xpub, segwit: message.segwit, webassembly: message.webassembly, gap: message.gap});
+        initDfd.resolve({accountInfo: message.state, network: message.network, xpub: message.xpub, segwit: message.segwit, webassembly: message.webassembly, gap: message.gap, cashAddress: message.cashAddress });
     }
 });
 

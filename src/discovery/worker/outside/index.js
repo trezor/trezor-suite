@@ -15,6 +15,8 @@ import type { AccountInfo, AccountLoadStatus, ForceAddedTransaction } from '../.
 
 import {WorkerChannel} from './channel';
 
+import bchaddrjs from 'bchaddrjs';
+
 type WorkerFactory = () => Worker;
 
 export class WorkerDiscoveryHandler {
@@ -22,6 +24,7 @@ export class WorkerDiscoveryHandler {
     addressSources: Array<?AddressSource>;
     workerChannel: WorkerChannel;
     network: BitcoinJsNetwork;
+    cashAddress: boolean;
 
     // this array is the SAME object as in the WorkerDiscovery object
     // it will be changed here - this is intentional
@@ -33,6 +36,7 @@ export class WorkerDiscoveryHandler {
         blockchain: Blockchain,
         addressSources: Array<?AddressSource>,
         network: BitcoinJsNetwork,
+        cashAddress: boolean,
         forceAddedTransactions: Array<ForceAddedTransaction>
     ) {
         this.blockchain = blockchain;
@@ -41,12 +45,13 @@ export class WorkerDiscoveryHandler {
         this.workerChannel = new WorkerChannel(f, (r) => this.getPromise(r), (r) => this.getStream(r));
         this.network = network;
         this.forceAddedTransactions = forceAddedTransactions;
+        this.cashAddress = cashAddress;
     }
 
     discovery(ai: ?AccountInfo, xpub: string, segwit: boolean, gap: number): StreamWithEnding<AccountLoadStatus, AccountInfo> {
         // $FlowIssue
         const webassembly = typeof WebAssembly !== 'undefined';
-        this.workerChannel.postToWorker({type: 'init', state: ai, network: this.network, webassembly, xpub, segwit, gap});
+        this.workerChannel.postToWorker({type: 'init', state: ai, network: this.network, webassembly, xpub, segwit, gap, cashAddress: this.cashAddress});
         this.workerChannel.postToWorker({type: 'startDiscovery'});
 
         const promise = this.workerChannel.resPromise(() => this.counter.finisher.emit());
@@ -122,6 +127,11 @@ export class WorkerDiscoveryHandler {
 
         return Stream.fromPromise(
             addressPromise.then(addresses => {
+
+                if (this.cashAddress) {
+                    addresses = addresses.map(a => bchaddrjs.toCashAddress(a));
+                }
+
                 return this.blockchain.lookupTransactionsStream(addresses, endBlock, startBlock)
                 .map(
                     transactions => {
