@@ -53,6 +53,7 @@ export type InMessage = {
     webassembly: boolean,
     xpub: string,
     segwit: boolean,
+    cashAddress: boolean,
     gap: number,
 } | {
     // starting discovery after init

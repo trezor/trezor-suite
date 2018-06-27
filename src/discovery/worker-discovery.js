@@ -99,6 +99,7 @@ export class WorkerDiscovery {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
+        cashAddress?: boolean,
         gap_?: number
     ): StreamWithEnding<AccountLoadStatus, AccountInfo> {
         const gap = gap_ == null ? 20 : gap_;
@@ -122,6 +123,7 @@ export class WorkerDiscovery {
                     this.chain,
                     sources,
                     network,
+                    cashAddress || false,
                     this.forceAddedTransactions
                 );
                 return out.discovery(initial, xpub, segwit === 'p2sh', gap);
@@ -134,6 +136,7 @@ export class WorkerDiscovery {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
+        cashAddress?: boolean,
         gap_?: number
     ): Stream<AccountInfo | Error> {
         const gap = gap_ == null ? 20 : gap_;
@@ -187,6 +190,7 @@ export class WorkerDiscovery {
                         this.chain,
                         sources,
                         network,
+                        cashAddress || false,
                         this.forceAddedTransactions
                     );
                     return out.discovery(currentState, xpub, segwit === 'p2sh', gap).ending.then(res => {
