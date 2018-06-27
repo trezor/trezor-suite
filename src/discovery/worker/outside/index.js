@@ -127,7 +127,6 @@ export class WorkerDiscoveryHandler {
 
         return Stream.fromPromise(
             addressPromise.then(addresses => {
-
                 if (this.cashAddress) {
                     addresses = addresses.map(a => bchaddrjs.toCashAddress(a));
                 }

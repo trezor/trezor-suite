@@ -218,8 +218,9 @@ export class GetChainTransactions {
                 // try-catch, because some outputs don't have addresses
                 try {
                     address = BitcoinJsAddress.fromOutputScript(output.script, this.network);
-                    if (this.cashAddress)
+                    if (this.cashAddress) {
                         address = bchaddrjs.toCashAddress(address);
+                    }
                     // if mine...
                     if (this.backSearch[address] != null) {
                         // check if confirmed

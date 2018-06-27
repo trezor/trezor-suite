@@ -156,7 +156,15 @@ export const initPromise: Promise<{accountInfo: ?AccountInfo, network: BitcoinJs
 messageEmitter.attach((message, detach) => {
     if (message.type === 'init') {
         detach();
-        initDfd.resolve({accountInfo: message.state, network: message.network, xpub: message.xpub, segwit: message.segwit, webassembly: message.webassembly, cashAddress: message.cashAddress, gap: message.gap });
+        initDfd.resolve({
+            accountInfo: message.state,
+            network: message.network,
+            xpub: message.xpub,
+            segwit: message.segwit,
+            webassembly: message.webassembly,
+            cashAddress: message.cashAddress,
+            gap: message.gap,
+        });
     }
 });
 
