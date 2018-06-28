@@ -20,14 +20,12 @@ const RequestLogin = (props): any => {
     } = props.common;
 
     const {
-        identity,
         challengeHidden,
         challengeVisual,
         callback
     } = props.state;
 
     const { 
-        onIdentityChange,
         onHiddenChange,
         onVisualChange,
         onCallbackChange,
@@ -42,12 +40,6 @@ const RequestLogin = (props): any => {
         <section className="method-content">
 
             <div className="method-params">
-
-                <div className="row">
-                    <label>Identity</label>
-                    <textarea onChange={ event => onIdentityChange(event.target.value) } value={ identity } style={{ height: '110px' }}>
-                    </textarea>
-                </div>
 
                 <div className="row">
                     <label>Challenge hidden</label>

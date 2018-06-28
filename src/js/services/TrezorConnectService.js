@@ -56,11 +56,6 @@ const TrezorConnectService = store => next => action => {
         //     console.log("ERROR", error);
         // });
 
-        
-
-        const version: Object = TrezorConnect.getVersion();
-
-        if (version.type === 'library') {
             // handle UI events only if TrezorConnect isn't using popup
             TrezorConnect.on(UI_EVENT, (event: DeviceMessage): void => {
                 // post event to reducer
@@ -69,7 +64,7 @@ const TrezorConnectService = store => next => action => {
                     data: event.payload
                 });
             });
-        }
+
 
         
     }

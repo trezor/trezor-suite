@@ -6,12 +6,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as CommonActions from '../../actions/methods/CommonActions';
-import * as ComposeTxActions from '../../actions/methods/ComposeTxActions';
+import * as SignTxActions from '../../actions/methods/SignTxActions';
 
 import CoinSelect from './common/CoinSelect';
 import Response from './common/Response';
 
-const ComposeTransaction = (props: Props): any => {
+const SignTransaction = (props: Props): any => {
 
     const {
         response,
@@ -22,19 +22,17 @@ const ComposeTransaction = (props: Props): any => {
 
     const {
         coin,
+        inputs,
         outputs,
-        locktimeEnabled,
-        locktime,
         push,
     } = props.state;
 
     const { 
         onCoinChange,
+        onInputsChange,
         onOutputsChange,
-        onLocktimeEnable,
-        onLocktimeChange,
         onPushChange,
-        onComposeTx
+        onSignTransaction
     } = props.methodActions;
 
     const {
@@ -52,18 +50,15 @@ const ComposeTransaction = (props: Props): any => {
                     onCoinChange={ onCoinChange } />
 
                 <div className="transaction-json">
-                    <label>Outputs</label>
-                    <textarea onChange={ event => onOutputsChange(event.target.value) } value={ outputs }>
+                    <label>Inputs</label>
+                    <textarea onChange={ event => onInputsChange(event.target.value) } value={ inputs }>
                     </textarea>
                 </div>
 
-                <div className="row">
-                    <label className="custom-checkbox">
-                        Locktime
-                        <input type="checkbox" value={ locktimeEnabled } onChange={ event => onLocktimeEnable(event.target.checked) }/>
-                        <span className="indicator"></span>
-                    </label>
-                    <input type="text" className="locktime small" value={ locktime } disabled={ locktimeEnabled ? '' : 'disabled' } onChange={ event => onLocktimeChange(event.currentTarget.value) } />
+                <div className="transaction-json">
+                    <label>Outputs</label>
+                    <textarea onChange={ event => onOutputsChange(event.target.value) } value={ outputs }>
+                    </textarea>
                 </div>
 
                 <div className="row">
@@ -72,7 +67,7 @@ const ComposeTransaction = (props: Props): any => {
                         <input type="checkbox" value={ push } onChange={ event => onPushChange(event.target.checked) } />
                         <span className="indicator"></span>
                     </label>
-                    <button onClick={ event => onComposeTx(params) }>Compose transaction</button>
+                    <button onClick={ event => onSignTransaction() }>Sign transaction</button>
                 </div>
             </div>
 
@@ -90,13 +85,13 @@ export default connect(
     (state: State) => {
         return {
             common: state.common,
-            state: state.composetx,
+            state: state.signtx,
         };
     },
     (dispatch: Dispatch) => {
         return { 
             commonActions: bindActionCreators(CommonActions, dispatch),
-            methodActions: bindActionCreators(ComposeTxActions, dispatch),
+            methodActions: bindActionCreators(SignTxActions, dispatch),
         };
     }
-)(ComposeTransaction);
+)(SignTransaction);
