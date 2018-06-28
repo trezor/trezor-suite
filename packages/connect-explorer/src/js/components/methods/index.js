@@ -18,3 +18,4 @@ export { default as StellarGetAddress } from './StellarGetAddress';
 export { default as ComposeTransaction } from './ComposeTransaction';
 export { default as CustomMessage } from './CustomMessage';
 export { default as RequestLogin } from './RequestLogin';
+export { default as SignTx } from './SignTx';

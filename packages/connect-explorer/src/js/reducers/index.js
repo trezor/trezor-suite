@@ -10,7 +10,7 @@ import modal from './ModalReducer';
 
 import common from './methods/CommonReducer';
 import cipherkv from './methods/CipherKeyValueReducer';
-import composeTx from './methods/ComposeTxReducer';
+import composetx from './methods/ComposeTxReducer';
 import getxpub from './methods/GetXpubReducer';
 import signmessage from './methods/SignMessageReducer';
 import verifymessage from './methods/VerifyMessageReducer';
@@ -30,6 +30,7 @@ import stellarsigntx from './methods/StellarSignTxReducer';
 
 import custom from './methods/CustomMessageReducer';
 import login from './methods/RequestLoginReducer';
+import signtx from './methods/SignTxReducer';
 
 export default combineReducers({
     router: routerReducer,
@@ -39,7 +40,7 @@ export default combineReducers({
     
     common,
     cipherkv,
-    composeTx,
+    composetx,
     getxpub,
     signmessage,
     verifymessage,
@@ -58,5 +59,6 @@ export default combineReducers({
     stellarsigntx,
     
     custom,
-    login
+    login,
+    signtx
 });

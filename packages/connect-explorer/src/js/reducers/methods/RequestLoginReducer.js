@@ -2,7 +2,7 @@
 'use strict';
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import { IDENTITY_CHANGE, HIDDEN_CHANGE, VISUAL_CHANGE, CALLBACK_CHANGE } from '../../actions/methods/RequestLoginActions';
+import { HIDDEN_CHANGE, VISUAL_CHANGE, CALLBACK_CHANGE } from '../../actions/methods/RequestLoginActions';
 
 type MethodState = {
     +js: string;
@@ -25,20 +25,10 @@ const defaultFn: string = `() => {
     })
 }`;
 
-const defaultIdentity: string = `{
-    "host": "http://example.cz",
-    "index": 1,
-    "path": "m/0",
-    "port": "8088",
-    "proto": "Proto",
-    "user": "Username"
-}`;
-
 const initialState: MethodState = {
     js: 'TrezorConnect.requestLogin',
-    fields: ['identity', 'callback'],
+    fields: ['callback'],
 
-    identity: defaultIdentity,
     challengeHidden: '',
     challengeVisual: '',
     callback: defaultFn,
@@ -46,8 +36,6 @@ const initialState: MethodState = {
 
 const getFields = (state: MethodState): Array<string> => {
     const fields: Array<string> = [];
-    if (state.identity.length > 0)
-        fields.push('identity');
     
     if (state.challengeHidden.length > 0 || state.challengeVisual.length > 0) {
         fields.push('challengeHidden', 'challengeVisual');
@@ -64,16 +52,6 @@ export default function method(state: MethodState = initialState, action: any): 
 
         case LOCATION_CHANGE :
             return initialState;
-
-        case IDENTITY_CHANGE :
-            s = {
-                ...state,
-                identity: action.identity
-            }
-            return {
-                ...s,
-                fields: getFields(s)
-            }
 
         case HIDDEN_CHANGE :
             s = {

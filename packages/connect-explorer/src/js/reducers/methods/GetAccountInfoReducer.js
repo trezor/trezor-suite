@@ -50,7 +50,6 @@ export default function method(state: MethodState = initialState, action: any): 
             };
 
         case PATH_CHANGE :
-            
             if (action.path === '') {
                 return {
                     ...state,
