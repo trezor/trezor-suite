@@ -157,6 +157,7 @@ export type Discovery = {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
+        cashAddress?: boolean,
         gap?: number
     ) => StreamWithEnding<AccountLoadStatus, AccountInfo>,
 
@@ -172,6 +173,7 @@ export type Discovery = {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
+        cashAddress?: boolean,
         gap?: number
     ) => Stream<AccountInfo | Error>,
 
