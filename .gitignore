@@ -8,6 +8,7 @@ gh-pages/discovery-worker.js
 gh-pages/socket-worker.js
 gh-pages/trezor-crypto.js
 gh-pages/example.js.map
+gh-pages/fastxpub.js
 .nyc_output
 
 # Npm library
