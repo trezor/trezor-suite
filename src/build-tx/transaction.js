@@ -13,6 +13,7 @@ import type {
 import type {UtxoInfo} from '../discovery';
 import * as coinselect from './coinselect';
 import * as request from './request';
+import {convertCashAddress} from '../utils/bchaddr';
 
 function inputComparator(aHash: Buffer, aVout: number, bHash: Buffer, bVout: number) {
     return reverseBuffer(aHash).compare(reverseBuffer(bHash)) || aVout - bVout;
@@ -172,7 +173,7 @@ function convertOutput(
 
     return {
         output,
-        script: BitcoinJsAddress.toOutputScript(address, network),
+        script: BitcoinJsAddress.toOutputScript(convertCashAddress(address), network),
     };
 }
 

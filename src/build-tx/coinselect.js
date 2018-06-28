@@ -17,6 +17,7 @@ import {
 
 import type {UtxoInfo} from '../discovery';
 import * as request from './request';
+import {convertCashAddress} from '../utils/bchaddr';
 
 const SEGWIT_INPUT_SCRIPT_LENGTH = 51; // actually 50.25, but let's make extra room
 const INPUT_SCRIPT_LENGTH = 109;
@@ -148,7 +149,7 @@ function getScriptAddress(address: string, network: BitcoinJsNetwork): {length: 
     const bech = isBech32(address);
     let pubkeyhash;
     if (!bech) {
-        const decoded = BitcoinJsAddress.fromBase58Check(address);
+        const decoded = BitcoinJsAddress.fromBase58Check(convertCashAddress(address));
         pubkeyhash = decoded.version === network.pubKeyHash;
     } else {
         const decoded = BitcoinJsAddress.fromBech32(address);
