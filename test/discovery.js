@@ -76,6 +76,7 @@ function testDiscovery(discovery, xpub, testfun, last) {
         xpub,
         bitcoin.networks.testnet,
         'off',
+        false,
         20
     );
     return stream.ending.then((res) => {
@@ -139,6 +140,7 @@ describe('discovery', () => {
             xpub,
             bitcoin.networks.testnet,
             'off',
+            false,
             20
         );
         return used.then(k => {
@@ -616,6 +618,7 @@ describe('discovery', () => {
             xpub,
             bitcoin.networks.testnet,
             'off',
+            false,
             20
         );
         const res = reversePromise(stream.ending);
@@ -638,6 +641,7 @@ describe('discovery', () => {
             xpub,
             bitcoin.networks.testnet,
             'off',
+            false,
             20
         );
         const res = reversePromise(stream.ending);
@@ -655,6 +659,7 @@ describe('discovery', () => {
             xpub,
             bitcoin.networks.testnet,
             'off',
+            false,
             20
         );
         testStream(
@@ -677,6 +682,7 @@ describe('discovery', () => {
             xpub,
             bitcoin.networks.testnet,
             'off',
+            false,
             20
         );
         testStream(
@@ -699,6 +705,7 @@ describe('discovery', () => {
             xpub2,
             bitcoin.networks.testnet,
             'off',
+            false,
             20
         );
         return reversePromise(stream.ending);
@@ -712,6 +719,7 @@ describe('discovery', () => {
             'thisisnotxpub',
             bitcoin.networks.testnet,
             'off',
+            false,
             20
         );
         testStream(
@@ -730,6 +738,7 @@ describe('discovery', () => {
                 xpub,
                 bitcoin.networks.testnet,
                 'off',
+                false,
                 20
             );
             return reversePromise(stream.ending);
