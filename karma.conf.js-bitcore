@@ -23,6 +23,7 @@ module.exports = function (config) {
                         'transform-class-properties',
                         'transform-object-rest-spread',
                         'add-module-exports',
+                        'istanbul',
                     ],
                 }],
                 ['workerify'],
@@ -33,8 +34,8 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'test/bitcore.js',
-            {pattern: 'lib/trezor-crypto/emscripten/trezor-crypto.js', included: false},
-            {pattern: 'lib/trezor-crypto/emscripten/trezor-crypto.wasm', included: false}
+            {pattern: 'src/trezor-crypto/emscripten/trezor-crypto.js', included: false},
+            {pattern: 'src/trezor-crypto/emscripten/trezor-crypto.wasm', included: false}
 
         ],
 
