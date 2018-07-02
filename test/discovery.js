@@ -5,9 +5,9 @@ import bitcoin from 'bitcoinjs-lib-zcash';
 
 import {promiseTimeout, startBitcore, stopBitcore, testStream} from '../test_helpers/common.js';
 import {run} from '../test_helpers/_node_client.js';
-import {BitcoreBlockchain} from '../lib/bitcore';
-import {WorkerDiscovery} from '../lib/discovery/worker-discovery';
-import {Stream} from '../lib/utils/stream';
+import {BitcoreBlockchain} from '../src/bitcore';
+import {WorkerDiscovery} from '../src/discovery/worker-discovery';
+import {Stream} from '../src/utils/stream';
 
 // hack for workers in both node and browser
 const socketWorkerFactory = () => {
@@ -15,10 +15,10 @@ const socketWorkerFactory = () => {
         const TinyWorker = require('tiny-worker');
         return new TinyWorker(() => {
             require('babel-register');
-            require('../../../lib/socketio-worker/inside.js');
+            require('../../../src/socketio-worker/inside.js');
         });
     } else {
-        return new Worker('../../lib/socketio-worker/inside.js');
+        return new Worker('../../src/socketio-worker/inside.js');
     }
 };
 
@@ -33,10 +33,10 @@ const discoveryWorkerFactory = () => {
             // since this is all pretty hacky anyway
             // eslint-disable-next-line no-eval
             const requireHack = eval('req' + 'uire');
-            requireHack('../../../lib/discovery/worker/inside/index.js');
+            requireHack('../../../src/discovery/worker/inside/index.js');
         });
     } else {
-        return new Worker('../../lib/discovery/worker/inside/index.js');
+        return new Worker('../../src/discovery/worker/inside/index.js');
     }
 };
 

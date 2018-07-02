@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import utils from '../../lib/build-tx/coinselect-lib/utils';
+import utils from '../../src/build-tx/coinselect-lib/utils';
 
 describe('coinselect utils', () => {
     it('uintOrNaN', () => {

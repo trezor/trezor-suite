@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import coinAccum from '../../lib/build-tx/coinselect-lib/index';
+import coinAccum from '../../src/build-tx/coinselect-lib/index';
 import fixtures from './fixtures/index-errors.json';
 import utils from './_utils';
 
