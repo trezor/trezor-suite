@@ -46,16 +46,16 @@ clean:
 	rm -f build/fastxpub.js build/fastxpub.wasm tests/benchmark-browserify.js
 
 .docker:
-	docker pull apiaryio/emcc
+	docker pull runn1ng/emcc_old:first
 
 docker-shell: .docker
-	docker run --rm -i -v $(shell pwd)/..:/src -t apiaryio/emcc /bin/bash
+	docker run --rm -i -v $(shell pwd)/..:/src -t runn1ng/emcc_old:first /bin/bash
 
 docker-build: .docker
-	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make'
+	docker run --rm -v $(shell pwd)/..:/src runn1ng/emcc_old:first /bin/bash -c 'cd fastxpub && make'
 
 docker-benchmark: .docker
-	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make benchmark'
+	docker run --rm -v $(shell pwd)/..:/src runn1ng/emcc_old:first /bin/bash -c 'cd fastxpub && make benchmark'
 
 docker-test: .docker
-	docker run --rm -v $(shell pwd)/..:/src apiaryio/emcc /bin/bash -c 'cd fastxpub && make test'
+	docker run --rm -v $(shell pwd)/..:/src runn1ng/emcc_old:first /bin/bash -c 'cd fastxpub && make test'
