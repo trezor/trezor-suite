@@ -6,6 +6,7 @@
     "transform-flow-strip-types",
     "transform-class-properties",
     "transform-object-rest-spread",
-    "add-module-exports"
+    "add-module-exports",
+    "istanbul"
   ],
 }

@@ -39,7 +39,7 @@ unit: lib
 	`npm bin`/mocha --compilers js:babel-register
 
 coverage: lib
-	`npm bin`/nyc --require babel-register --check-coverage mocha --compilers js:babel-register
+	`npm bin`/nyc --check-coverage mocha --compilers js:babel-register 
 
 flow:
 	`npm bin`/flow check src
