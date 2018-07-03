@@ -1,6 +1,6 @@
 {
   "name": "hd-wallet",
-  "version": "7.14.2",
+  "version": "7.14.3",
   "description": "Data structures and algorithms for Bitcoin HD wallet.",
   "main": "lib/index.js",
   "scripts": {
