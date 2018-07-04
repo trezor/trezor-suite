@@ -78,8 +78,8 @@ export class GetChainTransactions {
     nullRange(): BlockRange {
         const range = this.range;
         return {
-            ...range,
-            since: range.nullBlock,
+            firstHeight: 0,
+            last: range.last,
         };
     }
 
@@ -174,7 +174,7 @@ export class GetChainTransactions {
                 this.chainId,
                 first,
                 last,
-                range.first.height,
+                range.firstHeight,
                 range.last.height,
                 this.txids.size,
                 addresses

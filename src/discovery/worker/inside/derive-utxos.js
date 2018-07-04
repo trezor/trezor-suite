@@ -124,7 +124,7 @@ function _deriveUtxos(
     const res: {[i: string]: UtxoInfo} = {};
 
     const isOwnAddress = (address) => {
-        return address &&
+        return address != null &&
             addressToPath[address] != null;
     };
 
@@ -149,7 +149,7 @@ function _deriveUtxos(
     const newTxs = objectValues(newTransactions);
     newTxs.forEach(({hash, tx, height, outputAddresses, inputAddresses, vsize}) => {
         const coinbase = isCoinbase(tx);
-        const own = outputAddresses.some(address => isOwnAddress(address));
+        const own = inputAddresses.some(address => isOwnAddress(address));
 
         tx.outs.forEach((o, index) => {
             const ix = hash + ':' + index;

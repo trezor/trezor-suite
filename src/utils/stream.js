@@ -65,36 +65,6 @@ export class Emitter<T> {
     }
 }
 
-type Taker<T> = (value: T) => void;
-
-export class Queue<T> {
-    buffer: Array<T>;
-    takers: Array<Taker<T>>;
-
-    constructor() {
-        this.buffer = [];
-        this.takers = [];
-    }
-
-    put(value: T) {
-        this.buffer.push(value);
-        this.shift();
-    }
-
-    take(taker: Taker<T>) {
-        this.takers.push(taker);
-        this.shift();
-    }
-
-    shift() {
-        if (this.buffer.length > 0 && this.takers.length > 0) {
-            const value = this.buffer.shift();
-            const taker = this.takers.shift();
-            taker(value);
-        }
-    }
-}
-
 export type Disposer = () => void;
 type Finisher = () => void;
 type Updater<T> = (value: T) => void;

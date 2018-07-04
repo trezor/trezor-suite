@@ -43,7 +43,8 @@ export function deriveAnalysis(
     newTransactions: ChainNewTransactions,
     oldTransactions: Array<TransactionInfo>,
     addressToPath: AddressToPath,
-    lastBlock: Block
+    lastBlock: Block,
+    wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ) {
     // I need the outputs in format txid+i -> address/value
     // For old transactions, that are in history, I just need my outputs
@@ -60,7 +61,8 @@ export function deriveAnalysis(
         oldTransactions,
         outputsForAnalysis,
         addressToPath,
-        lastBlock
+        lastBlock,
+        wantedOffset
     );
 
     // Add "balance" (which means balance after the transaction)
@@ -118,7 +120,8 @@ function deriveBalancelessAnalysisMap(
     oldTs: Array<TransactionInfo>,
     outputs: OutputsForAnalysisMap,
     addressToPath: AddressToPath,
-    lastBlock: Block
+    lastBlock: Block,
+    wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ): {[id: string]: TransactionInfoBalanceless} {
     const res = {};
     // first, save the old ones
@@ -126,7 +129,7 @@ function deriveBalancelessAnalysisMap(
         res[t.hash] = t;
     });
     Object.keys(newTs).forEach(id => {
-        res[id] = analyzeTransaction(newTs[id], outputs, addressToPath, lastBlock);
+        res[id] = analyzeTransaction(newTs[id], outputs, addressToPath, lastBlock, wantedOffset);
     });
     return res;
 }
@@ -136,7 +139,8 @@ function analyzeTransaction(
     t: ChainNewTransaction,
     outputs: OutputsForAnalysisMap,
     addressToPath: AddressToPath,
-    lastBlock: Block
+    lastBlock: Block,
+    wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ): TransactionInfoBalanceless {
     const inputIds = t.tx.ins.map(input =>
         ({id: getInputId(input), index: input.index})
@@ -155,7 +159,7 @@ function analyzeTransaction(
         hash,
         hasJoinsplits
     );
-    const dates = deriveDateFormats(t.timestamp);
+    const dates = deriveDateFormats(t.timestamp, wantedOffset);
 
     const confirmations = (t.height == null) ? null : ((lastBlock.height - t.height) + 1);
 

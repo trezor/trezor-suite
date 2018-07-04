@@ -65,7 +65,9 @@ export class WorkerChannel {
     }
 
     postToWorker(m: InMessage) {
-        this.w.then(w => w.worker.postMessage(m));
+        this.w.then(w => {
+            w.worker.postMessage(m);
+        });
     }
 
     resPromise(onFinish: () => void): Promise<AccountInfo> {

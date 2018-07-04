@@ -7,6 +7,7 @@ import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
 import type {AccountInfo, TransactionInfo} from '../../index';
 import * as channel from './channel';
 import {loadBlockRange} from './blocks';
+import {recomputeDateFormats} from './dates';
 import type {BlockRange, AccountNewInfo} from '../types';
 
 import {GetChainTransactions, findDeleted} from './get-chain-transactions';
@@ -38,8 +39,17 @@ let recvWebAssembly: boolean;
 let recvGap: number;
 let recvCashAddress: boolean;
 
+// predictability is just for testing
+let recvPredictable: boolean;
+
+// what (new Date().getTimezoneOffset()) returns
+// note that it is NEGATIVE from the UTC string timezone
+// so, UTC+2 timezone returns -120...
+// it's javascript, it's insane by default
+let recvTimeOffset: number;
+
 // init on worker start
-channel.initPromise.then(({accountInfo, network, xpub, segwit, webassembly, cashAddress, gap}) => {
+channel.initPromise.then(({accountInfo, network, xpub, segwit, webassembly, cashAddress, gap, predictable, timeOffset}) => {
     recvInfo = accountInfo;
     recvNetwork = network;
     recvSegwit = segwit;
@@ -47,6 +57,9 @@ channel.initPromise.then(({accountInfo, network, xpub, segwit, webassembly, cash
     recvWebAssembly = webassembly;
     recvCashAddress = cashAddress;
     recvGap = gap;
+
+    recvPredictable = predictable;
+    recvTimeOffset = timeOffset;
 });
 
 channel.startDiscoveryPromise.then(() => {
@@ -60,12 +73,14 @@ channel.startDiscoveryPromise.then(() => {
         initialState = defaultInfo;
     }
 
+    recomputeDateFormats(initialState.transactions, recvTimeOffset);
+
     // first load blocks, then count last used indexes,
     // then start asking for new transactions,
     // then integrate new transactions into old transactions
     loadBlockRange(initialState).then(range => {
         // when starting from 0, take as if there is no info
-        const oldState = range.first.height === 0 ? defaultInfo : initialState;
+        const oldState = range.firstHeight === 0 ? defaultInfo : initialState;
 
         const lastUsedMain = oldState.usedAddresses.length - 1;
         const lastUsedChange = oldState.changeIndex - 1;
@@ -84,7 +99,7 @@ channel.startDiscoveryPromise.then(() => {
                 const deletedP: Promise<Array<string>> = findDeleted(unconfirmedTxids, channel.doesTransactionExist);
                 const resP: Promise<AccountInfo> = deletedP.then(deleted => {
                     // ... then integrate
-                    return integrateNewTxs(newInfo, oldState, range.last, deleted, recvGap);
+                    return integrateNewTxs(newInfo, oldState, range.last, deleted, recvGap, recvTimeOffset);
                 });
                 return resP;
             });
@@ -103,9 +118,30 @@ function discoverAccount(
     mainAddresses: Array<string>,
     changeAddresses: Array<string>,
 ): Promise<AccountNewInfo> {
-    return Promise.all([
-        new GetChainTransactions(0, range, lastUsedAddresses[0], channel.chunkTransactions, transactions, mainAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly, recvCashAddress, recvGap).discover(),
-        new GetChainTransactions(1, range, lastUsedAddresses[1], channel.chunkTransactions, [], changeAddresses, recvNetwork, recvXpub, recvSegwit, recvWebAssembly, recvCashAddress, recvGap).discover(),
-    ]).then(([main, change]) => ({main, change}));
+    function d(i: number) {
+        return new GetChainTransactions(
+          i,
+          range,
+          lastUsedAddresses[i],
+          channel.chunkTransactions,
+          i == 0 ? transactions : [], // used for visual counting
+          i == 0 ? mainAddresses : changeAddresses,
+          recvNetwork,
+          recvXpub,
+          recvSegwit,
+          recvWebAssembly,
+          recvCashAddress,
+          recvGap
+       ).discover();
+    }
+
+    if (recvPredictable) {
+        return d(0).then(main => d(1).then(change => ({main, change})));
+    } else {
+        return Promise.all([
+            d(0),
+            d(1),
+        ]).then(([main, change]) => ({main, change}));
+    }
 }
 

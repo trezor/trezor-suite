@@ -16,33 +16,35 @@ import {
 // Some helper functions for loading block status
 // from blockchain
 
+// from which to which block do I need to do discovery
+// based on whether there was a reorg, detected by last height/hash
 export function loadBlockRange(initialState: AccountInfo): Promise<BlockRange> {
     const pBlock: Block = initialState.lastBlock;
 
-    return getBlock(0).then(nullBlock => {
-        return getCurrentBlock().then(last => {
-            const first: Promise<Block> = pBlock.height !== 0
+    // first, I ask for last block I will do
+    return getCurrentBlock().then(last => {
+        // then I detect first block I will do
+        // detect based on whether reorg is needed
+        // I do not do reorgs inteligently, I always discard all
+        const firstHeight: Promise<number> = pBlock.height !== 0
 
-                ? getBlock(pBlock.height).then((block) => {
-                    if (block.hash === pBlock.hash) {
-                        return block;
-                    } else {
-                        console.warn('Blockhash mismatch', pBlock, block);
-                        return nullBlock;
-                    }
-                }, (err) => {
-                    if (err.message === 'RPCError: Block height out of range') {
-                        console.warn('Block height out of range', pBlock.height);
-                        return nullBlock;
-                    }
-                    throw err;
-                })
+            ? getBlock(pBlock.height).then((block) => {
+                if (block.hash === pBlock.hash) {
+                    return pBlock.height;
+                } else {
+                    console.warn('Blockhash mismatch', pBlock, block);
+                    return 0;
+                }
+            }, (err) => {
+                if (err.message === 'RPCError: Block height out of range') {
+                    console.warn('Block height out of range', pBlock.height);
+                    return 0;
+                }
+                throw err;
+            })
 
-                : Promise.resolve(nullBlock);
-
-            return Promise.all([first, last])
-                          .then(([first, last]) => ({ first, last, nullBlock }));
-        });
+            : Promise.resolve(0);
+        return firstHeight.then(firstHeight => ({firstHeight, last}));
     });
 }
 

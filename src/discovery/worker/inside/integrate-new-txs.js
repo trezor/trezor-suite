@@ -44,7 +44,8 @@ export function integrateNewTxs(
     oldInfoUndeleted: AccountInfo,
     lastBlock: Block,
     deletedTxs: Array<string>,
-    gap: number
+    gap: number,
+    wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ): AccountInfo {
     const oldInfo = (deletedTxs.length !== 0)
         ? deleteTxs(oldInfoUndeleted, deletedTxs)
@@ -70,7 +71,8 @@ export function integrateNewTxs(
         joined,
         oldInfo.transactions,
         addressToPath,
-        lastBlock
+        lastBlock,
+        wantedOffset
     );
 
     const {usedAddresses, unusedAddresses, lastConfirmed: lastConfirmedMain} = deriveUsedAddresses(

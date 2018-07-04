@@ -151,7 +151,17 @@ self.onmessage = function (event: {data: InMessage}) {
 };
 
 const initDfd = deferred();
-export const initPromise: Promise<{accountInfo: ?AccountInfo, network: BitcoinJsNetwork, xpub: string, segwit: boolean, webassembly: boolean, cashAddress: boolean, gap: number}> = initDfd.promise;
+export const initPromise: Promise<{
+    accountInfo: ?AccountInfo,
+    network: BitcoinJsNetwork,
+    xpub: string,
+    segwit: boolean,
+    webassembly: boolean,
+    cashAddress: boolean,
+    gap: number,
+    predictable: boolean,
+    timeOffset: number,
+}> = initDfd.promise;
 
 messageEmitter.attach((message, detach) => {
     if (message.type === 'init') {
@@ -164,6 +174,8 @@ messageEmitter.attach((message, detach) => {
             webassembly: message.webassembly,
             cashAddress: message.cashAddress,
             gap: message.gap,
+            predictable: message.predictable,
+            timeOffset: message.timeOffset,
         });
     }
 });
