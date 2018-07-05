@@ -2,7 +2,7 @@
 
 import {MockBitcore} from '../src/mock-bitcore';
 import {WorkerDiscovery} from '../src/discovery/worker-discovery';
-import fixtures from './fixtures/discoverAccount.json';
+import fixtures from './fixtures/discover-account.json';
 import {setPredictable} from '../src/discovery/worker/outside';
 setPredictable();
 
