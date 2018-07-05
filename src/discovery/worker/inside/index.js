@@ -10,7 +10,7 @@ import {loadBlockRange} from './blocks';
 import {recomputeDateFormats} from './dates';
 import type {BlockRange, AccountNewInfo} from '../types';
 
-import {GetChainTransactions, findDeleted} from './get-chain-transactions';
+import {GetChainTransactions} from './get-chain-transactions';
 import {integrateNewTxs} from './integrate-new-txs';
 
 // Default starting info being used, when there is null
@@ -49,7 +49,17 @@ let recvPredictable: boolean;
 let recvTimeOffset: number;
 
 // init on worker start
-channel.initPromise.then(({accountInfo, network, xpub, segwit, webassembly, cashAddress, gap, predictable, timeOffset}) => {
+channel.initPromise.then(({
+    accountInfo, 
+    network, 
+    xpub, 
+    segwit, 
+    webassembly, 
+    cashAddress, 
+    gap, 
+    predictable, 
+    timeOffset
+}) => {
     recvInfo = accountInfo;
     recvNetwork = network;
     recvSegwit = segwit;
@@ -80,29 +90,56 @@ channel.startDiscoveryPromise.then(() => {
     // then integrate new transactions into old transactions
     loadBlockRange(initialState).then(range => {
         // when starting from 0, take as if there is no info
-        const oldState = range.firstHeight === 0 ? defaultInfo : initialState;
+        const oldState = range.firstHeight === 0 ? 
+            defaultInfo : 
+            initialState;
 
         const lastUsedMain = oldState.usedAddresses.length - 1;
         const lastUsedChange = oldState.changeIndex - 1;
-        const lastConfirmedMain = oldState.lastConfirmedMain == null ? lastUsedMain : oldState.lastConfirmedMain;
-        const lastConfirmedChange = oldState.lastConfirmedChange == null ? lastUsedChange : oldState.lastConfirmedChange;
 
-        const unconfirmedTxids = oldState.transactions.filter(t => t.height == null).map(t => t.hash);
+        const lastConfirmedMain = 
+            oldState.lastConfirmedMain == null ? 
+            lastUsedMain : 
+            oldState.lastConfirmedMain;
+        const lastConfirmedChange = 
+            oldState.lastConfirmedChange == null ? 
+            lastUsedChange : 
+            oldState.lastConfirmedChange;
 
-        const mainAddresses = oldState.usedAddresses.map(a => a.address).concat(oldState.unusedAddresses);
+        const unconfirmedTxids = oldState.transactions
+            .filter(t => t.height == null)
+            .map(t => t.hash);
+
+        const mainAddresses = oldState.usedAddresses
+            .map(a => a.address)
+            .concat(oldState.unusedAddresses);
+        
         const changeAddresses = oldState.changeAddresses;
 
         // get all the new info, then...
-        return discoverAccount(range, [lastConfirmedMain, lastConfirmedChange], oldState.transactions, mainAddresses, changeAddresses)
-            .then((newInfo: AccountNewInfo): Promise<AccountInfo> => {
-                // then find out deleted info
-                const deletedP: Promise<Array<string>> = findDeleted(unconfirmedTxids, channel.doesTransactionExist);
-                const resP: Promise<AccountInfo> = deletedP.then(deleted => {
-                    // ... then integrate
-                    return integrateNewTxs(newInfo, oldState, range.last, deleted, recvGap, recvTimeOffset);
-                });
-                return resP;
-            });
+        return discoverAccount(
+            range, 
+            [lastConfirmedMain, lastConfirmedChange], 
+            oldState.transactions, 
+            mainAddresses, 
+            changeAddresses
+        ).then((newInfo: AccountNewInfo): AccountInfo => {
+            // then find out deleted info
+            const deleted: Array<string> = findDeleted(
+                unconfirmedTxids, 
+                newInfo
+            );
+            // ... then integrate
+            const res: AccountInfo = integrateNewTxs(
+                newInfo, 
+                oldState, 
+                range.last, 
+                deleted, 
+                recvGap, 
+                recvTimeOffset
+            );
+            return res;
+        });
     }).then(
         // either success or failure
         // (other side will shut down the worker then)
@@ -124,8 +161,8 @@ function discoverAccount(
           range,
           lastUsedAddresses[i],
           channel.chunkTransactions,
-          i == 0 ? transactions : [], // used for visual counting
-          i == 0 ? mainAddresses : changeAddresses,
+          i === 0 ? transactions : [], // used for visual counting
+          i === 0 ? mainAddresses : changeAddresses,
           recvNetwork,
           recvXpub,
           recvSegwit,
@@ -135,13 +172,32 @@ function discoverAccount(
        ).discover();
     }
 
+    // on testing, I want the two chains be discovered
+    // after each other, so I can mock/test better
+    // in reality, I want in parallel
     if (recvPredictable) {
-        return d(0).then(main => d(1).then(change => ({main, change})));
+        return d(0)
+            .then(main => d(1).then(change => ({main, change})));
     } else {
         return Promise.all([
             d(0),
             d(1),
         ]).then(([main, change]) => ({main, change}));
     }
+}
+
+function findDeleted(
+    txids: Array<string>,
+    newInfo: AccountNewInfo
+): Array<string> {
+    return txids.filter(id => {
+        if (newInfo.main.newTransactions[id] != null) {
+            return false;
+        }
+        if (newInfo.change.newTransactions[id] != null) {
+            return false;
+        }
+        return true;
+    })
 }
 

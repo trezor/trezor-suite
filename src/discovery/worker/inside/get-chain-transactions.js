@@ -24,6 +24,7 @@ import type {
     BlockRange,
     ChunkDiscoveryInfo,
 } from '../types';
+import type {AccountInfo} from '../../index';
 import { Stream } from '../../../utils/stream';
 import {
     Transaction as BitcoinJsTransaction,
@@ -332,26 +333,6 @@ export class GetChainTransactions {
             });
         }
     }
-}
-
-export function findDeleted(
-    txids: Array<string>,
-    doesTransactionExist: (
-        txid: string
-    ) => Promise<boolean>
-): Promise<Array<string>> {
-    const result = [];
-    const str = Stream.fromArray(txids);
-    return str
-        .mapPromiseError(id => {
-            return doesTransactionExist(id).then(exists => {
-                if (!exists) {
-                    result.push(id);
-                }
-            });
-        })
-        .awaitFinish()
-        .then(() => result);
 }
 
 function deriveTxidSet(

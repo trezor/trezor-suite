@@ -1,7 +1,7 @@
 /* @flow */
 
 import { Stream, Emitter } from './utils/stream';
-import type { SyncStatus, TransactionWithHeight, TxFees, Blockchain } from './bitcore';
+import type { Blockchain, SyncStatus, TransactionWithHeight, TxFees } from './bitcore';
 
 const TICK_MS = 50;
 
@@ -30,10 +30,6 @@ type CallSpec = {
     start: number,
     end: number,
     result: Array<string> | string,
-} | {
-    type: 'lookupTransaction',
-    hash: string,
-    result: TransactionWithHeight | string,
 } | {
     type: 'lookupBlockHash',
     height: string,
@@ -230,30 +226,6 @@ export class MockBitcore {
         }
     }
 
-    lookupTransaction(hash: string): Promise<TransactionWithHeight> {
-        const spec = this.getCallSpec('lookupTransaction');
-        if (spec.type !== 'lookupTransaction') {
-            this.doneError(new Error('call spec out of order'));
-            throw new Error();
-        }
-        if (spec.hash !== hash) {
-            console.error('Expected:', spec.hash);
-            console.error('Got:', hash);
-            this.doneError(new Error('wrong hash'));
-            throw new Error();
-        }
-        if (typeof spec.result === 'string') {
-            this.emit();
-            return Promise.reject(new Error(spec.result));
-        } else {
-            const result_: TransactionWithHeight = spec.result;
-            return new Promise((resolve) => setTimeout(() => {
-                this.emit();
-                resolve(result_);
-            }, TICK_MS));
-        }
-    }
-
     lookupBlockHash(height: number): Promise<string> {
         const spec = this.getCallSpec('lookupBlockHash');
         if (spec.type !== 'lookupBlockHash') {
@@ -303,6 +275,10 @@ export class MockBitcore {
         return Promise.reject('Not mocked');
     }
 
+    lookupTransaction(hash: string): Promise<TransactionWithHeight> {
+        return Promise.reject('Not mocked');
+    }
+
     estimateTxFees(blocks: Array<number>, skipMissing: boolean): Promise<TxFees> {
         return Promise.reject('Not mocked');
     }
@@ -319,3 +295,6 @@ function arrayEqSet<X>(array: Array<X>, set: Set<X>) {
     }
     return true;
 }
+
+let flowTest: ?Blockchain = new MockBitcore([], ()=>{})
+flowTest = null;

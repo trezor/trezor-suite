@@ -99,10 +99,6 @@ export function lookupBlockHash(height: number): Promise<string> {
     return askPromise({type: 'lookupBlockHash', height});
 }
 
-export function doesTransactionExist(txid: string): Promise<boolean> {
-    return askPromise({type: 'doesTransactionExist', txid});
-}
-
 export function chunkTransactions(
     chainId: number,
     firstIndex: number,
