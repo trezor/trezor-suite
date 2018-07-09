@@ -2115,7 +2115,7 @@ eventemitter3@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
 
-events@^1.0.0:
+events@^1.0.0, events@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
 
@@ -2380,6 +2380,10 @@ find-up@^2.0.0, find-up@^2.1.0:
 flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
+
+flow-bin@^0.75.0:
+  version "0.75.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.75.0.tgz#b96d1ee99d3b446a3226be66b4013224ce9df260"
 
 flush-write-stream@^1.0.0:
   version "1.0.3"
@@ -5545,9 +5549,12 @@ tough-cookie@~2.3.3:
   dependencies:
     punycode "^1.4.1"
 
-trezor-connect@5.0.17:
-  version "5.0.17"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.17.tgz#931a4fe56761397ebe2aefc1ba9bd5a6ad373c25"
+trezor-connect@5.0.18:
+  version "5.0.18"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.18.tgz#cac533fa0357b4966e0ac6652d18ea6c115c92ff"
+  dependencies:
+    events "^1.1.1"
+    whatwg-fetch "^2.0.4"
 
 trim-newlines@^1.0.0:
   version "1.0.0"
