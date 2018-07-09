@@ -19,7 +19,7 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: {
         'trezor-connect-npm': `${TREZOR_CONNECT}.js`,
-        'iframe': ['babel-polyfill', `${TREZOR_IFRAME}`], // polyfill to trezor-link :(
+        'iframe': `${TREZOR_IFRAME}`,
         'popup': `${TREZOR_POPUP}`,
         'index': [ 'react-hot-loader/patch', `${SRC}js/index.js` ]
     },
@@ -93,8 +93,7 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules', `${TREZOR_CONNECT_ROOT}/node_modules`],
         alias: {
-            'trezor-connect': `${TREZOR_CONNECT}`,
-            'flowtype/trezor': `${TREZOR_CONNECT_ROOT}src/flowtype/empty.js`,
+            'trezor-connect': `${TREZOR_CONNECT}`
         }
     },
     performance: {
@@ -127,13 +126,7 @@ module.exports = {
         }),
 
         new CopyWebpackPlugin([
-            { from: `${TREZOR_CONNECT_FILES}config.json`, to: 'data/config.json' },
-            { from: `${TREZOR_CONNECT_FILES}coins.json`, to: 'data/coins.json' },
-            { from: `${TREZOR_CONNECT_FILES}releases-1.json`, to: 'data/releases-1.json' },
-            { from: `${TREZOR_CONNECT_FILES}releases-2.json`, to: 'data/releases-2.json' },
-            { from: `${TREZOR_CONNECT_FILES}latest.txt`, to: 'data/latest.txt' },
-            { from: `${TREZOR_CONNECT_FILES}config_signed.bin`, to: 'data/config_signed.bin' },
-            { from: `${TREZOR_CONNECT_FILES}messages.json`, to: 'data/messages.json' },
+            { from: TREZOR_CONNECT_FILES, to: 'data' },
         ]),
 
         new webpack.optimize.OccurrenceOrderPlugin(),
