@@ -14,8 +14,7 @@ const constants: Object = Object.freeze({
 });
 
 export const TREZOR_CONNECT_ROOT: string = constants.TREZOR_CONNECT_ROOT;
-export const TREZOR_CONNECT: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/entrypoints/connect');
-export const TREZOR_LIBRARY: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/entrypoints/library');
+export const TREZOR_CONNECT: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/index');
 export const TREZOR_IFRAME: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/iframe/iframe.js');
 export const TREZOR_POPUP: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/popup/popup.js');
 export const TREZOR_CONNECT_HTML: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/html/');
