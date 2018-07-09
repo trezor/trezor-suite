@@ -15,7 +15,7 @@
         "dev": "webpack-dev-server --config ./webpack/config.dev.babel.js --mode development",
         "dev:local": "webpack-dev-server --config ./webpack/config.dev.local.babel.js --mode development",
         "build": "rm -rf build && webpack --config ./webpack/config.prod.babel.js --progress",
-        "flow": "cd app/scripts && flow check"
+        "flow": "cd src/js && flow check"
     },
     "dependencies": {
         "react": "^16.4.0",
@@ -29,7 +29,7 @@
         "redux": "^4.0.0",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
-        "trezor-connect": "5.0.17"
+        "trezor-connect": "5.0.18"
     },
     "devDependencies": {
         "babel-cli": "^6.24.1",
@@ -46,6 +46,7 @@
         "express": "^4.16.3",
         "extract-text-webpack-plugin": "^3.0.0",
         "file-loader": "^1.1.11",
+        "flow-bin": "^0.75.0",
         "html-webpack-plugin": "^3.2.0",
         "json-loader": "^0.5.7",
         "less": "^3.0.4",
