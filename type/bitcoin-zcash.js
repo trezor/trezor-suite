@@ -111,6 +111,7 @@ declare module 'bitcoinjs-lib-zcash' {
         scriptHash: number;
         wif: number;
         dustThreshold: number;
+        bech32: ?string;
     }
 
     declare type Output = {
