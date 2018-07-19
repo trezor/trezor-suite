@@ -26,7 +26,8 @@ import {
     CustomMessage,
     ComposeTransaction,
     RequestLogin,
-    SignTx
+    SignTx,
+    PushTx
 } from '../components/methods';
 
 export default (
@@ -52,6 +53,7 @@ export default (
                     <Route exact path="/login" component={ RequestLogin } />
                     <Route exact path="/composetx" component={ ComposeTransaction } />
                     <Route exact path="/sign-tx" component={ SignTx } />
+                    <Route exact path="/push-tx" component={ PushTx } />
                 </AppContainer>
             </Switch>
         </ConnectedRouter>

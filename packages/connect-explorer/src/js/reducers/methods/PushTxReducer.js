@@ -2,23 +2,24 @@
 'use strict';
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import { CONFIRMATION_CHANGE, PATH_CHANGE } from '../../actions/methods/EthereumGetAddressActions';
+import { UI, DEVICE } from 'trezor-connect';
+import { COIN_CHANGE, TX_CHANGE } from '../../actions/methods/PushTxActions';
 
 type MethodState = {
     +js: string;
-    +fields: Array<string>;
+    fields: Array<string>;
 
-    path: string;
-    showOnTrezor: boolean;
+    coin: string;
+    tx: string;
 }
 
 const initialState: MethodState = {
-    js: 'TrezorConnect.ethereumGetAddress',
-    fields: ['path', 'showOnTrezor'],
-
-    path: "m/44'/60'/0'",
-    showOnTrezor: true,
+    js: 'TrezorConnect.pushTransaction',
+    fields: ['tx', 'coin'],
+    coin: '',
+    tx: '',
 };
+
 
 export default function method(state: MethodState = initialState, action: any): any {
 
@@ -27,19 +28,20 @@ export default function method(state: MethodState = initialState, action: any): 
         case LOCATION_CHANGE :
             return initialState;
 
-        case PATH_CHANGE :
+        case COIN_CHANGE :
             return {
                 ...state,
-                path: action.path
+                coin: action.coin,
             };
 
-        case CONFIRMATION_CHANGE :
+        case TX_CHANGE :
             return {
                 ...state,
-                showOnTrezor: action.showOnTrezor
+                tx: action.tx
             };
 
         default:
             return state;
     }
+
 }
