@@ -44,7 +44,6 @@ const GetAccountInfo = (props): any => {
                 </div>
 
                 <CoinSelect 
-                    obligatory={ true }
                     coin={ coin }
                     onCoinChange={ onCoinChange } />
 
