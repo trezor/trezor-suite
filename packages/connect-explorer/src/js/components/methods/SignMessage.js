@@ -54,7 +54,6 @@ const SignMessage = (props): any => {
                 </div>
 
                 <CoinSelect 
-                    obligatory={ true }
                     coin={ coin }
                     onCoinChange={ onCoinChange } />
 

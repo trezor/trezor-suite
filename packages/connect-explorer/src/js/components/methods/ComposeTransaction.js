@@ -57,14 +57,14 @@ const ComposeTransaction = (props: Props): any => {
                     </textarea>
                 </div>
 
-                <div className="row">
+                {/* <div className="row">
                     <label className="custom-checkbox">
                         Locktime
                         <input type="checkbox" value={ locktimeEnabled } onChange={ event => onLocktimeEnable(event.target.checked) }/>
                         <span className="indicator"></span>
                     </label>
                     <input type="text" className="locktime small" value={ locktime } disabled={ locktimeEnabled ? '' : 'disabled' } onChange={ event => onLocktimeChange(event.currentTarget.value) } />
-                </div>
+                </div> */}
 
                 <div className="row">
                     <label className="custom-checkbox">
