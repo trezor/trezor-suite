@@ -45,11 +45,15 @@ export function onLogin(): any {
             params.callback = handler;
         }
 
-        if (params.identity) {
-            params.identity = JSON.parse(params.identity)
-        }
-
         const response = await TrezorConnect.requestLogin(params);
+        // const response1 = await TrezorConnect.requestLogin({
+        //     challengeHidden: "a",
+        //     challengeVisible: "b",
+        // });
+
+        // const response = await TrezorConnect.requestLogin({
+        //     callback: (): Promise<any> => { throw new Error() },
+        // });
 
         dispatch( onResponse(response) );
     }

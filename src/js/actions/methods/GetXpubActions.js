@@ -25,7 +25,40 @@ export function onPathChange(path: string): any {
 export function onGetXpub(): any {
     return async function (dispatch, getState) {
 
-        const response = await TrezorConnect.getPublicKey( getState().common.params );
+        const params = getState().common.params;
+        const bundled = params.path.split(';');
+        let response;
+        if (bundled.length > 1) {
+            const bundle = bundled.map(b => {
+                return { path: b }
+            });
+            response = await TrezorConnect.getPublicKey( { bundle } );
+        } else {
+            response = await TrezorConnect.getPublicKey( params );
+        }
+
+        // const response = await TrezorConnect.getPublicKey( {
+        //     device: {
+        //         path: "web01",
+        //         state: "e086140427d0cf971b5315f9b32c0de8352e5324fb2c1868f9ee0b543edf1d56f54498106eafce0fe3d434fa53052a0f1576ffc5518fa3c7f174d04a86971b74"
+        //     },
+        //     ...getState().common.params
+        // });
+        // const response1 = await TrezorConnect.getPublicKey( {
+        //     path: [-1],
+        // });
+
+        // const response = await TrezorConnect.getPublicKey( {
+        //     //path: [-1],
+        //     bundle: [ 
+        //         { path: "m/49'/0'/0'" },
+        //         { path:  "m/44'/0'/1'", coin: 'btc' },
+        //         { path: "m/49'/2'/1'", coin: 'litecoin' },
+        //         { path: "m/44'/2'/1'" },
+        //         { path: "m/49'/2'/1'", coin: 'btc', crossChain: true },
+        //         { path: "m/49'/156'/1'", coin: 'btg' },
+        //     ]
+        // });
 
 /*
 function(sendMessage) {

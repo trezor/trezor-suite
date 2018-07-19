@@ -25,6 +25,11 @@ export function onPathChange(path: string): any {
 export function onGetAccountInfo(): any {
     return async function (dispatch, getState) {
         const response = await TrezorConnect.getAccountInfo( getState().common.params );
+        // const response = await TrezorConnect.getAccountInfo({
+        //     path: getState().common.params.path,
+        //     coin: getState().common.params.coin,
+        //     crossChain: false
+        // });
         dispatch( onResponse(response) );
     }
 }

@@ -52,7 +52,6 @@ export function onComposeTx(): any {
         const response = await TrezorConnect.composeTransaction({
             outputs: eval( getState().composetx.outputs ),
             coin: getState().composetx.coin,
-            locktime: getState().composetx.locktime,
             push: getState().composetx.push
         });
         dispatch( onResponse(response) );

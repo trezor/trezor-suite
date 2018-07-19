@@ -67,6 +67,32 @@ export function onCipherKeyValue(): any {
 
         const response = await TrezorConnect.cipherKeyValue( getState().common.params );
 
+        // const response = await TrezorConnect.cipherKeyValue({
+        //     bundle: [
+        //         {
+        //             path: "m/49'/0'/0'",
+        //             key: "My key",
+        //             value: "1c0ffeec0ffeec0ffeec0ffeec0ffee1",
+        //             encrypt: true,
+        //             askOnEncrypt: true
+        //         },
+        //         {
+        //             path: "m/49'/0'/0'",
+        //             key: "My key2",
+        //             value: "1c0ffeec0ffeec0ffeec0ffeec0ffee1",
+        //             encrypt: true,
+        //             askOnEncrypt: true
+        //         },
+        //         {
+        //             path: "m/49'/0'/0'",
+        //             key: "My key3",
+        //             value: "1c0ffeec0ffeec0ffeec0ffeec0ffee1",
+        //             encrypt: true,
+        //             askOnEncrypt: true
+        //         },
+        //     ]
+        // });
+
         dispatch( onResponse(response) );
     }
 }

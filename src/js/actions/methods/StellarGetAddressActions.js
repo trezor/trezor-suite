@@ -25,7 +25,18 @@ export function onPathChange(path: string): any {
 
 export function onGetAddress(tx: string): any {
     return async function (dispatch, getState) {
-        const response = await TrezorConnect.stellarGetAddress( getState().common.params );
+        const params = getState().common.params;
+        const bundled = params.path.split(';');
+        let response;
+        if (bundled.length > 1) {
+            const bundle = bundled.map(b => {
+                return { path: b, showOnTrezor: params.showOnTrezor }
+            });
+            response = await TrezorConnect.stellarGetAddress( { bundle } );
+        } else {
+            response = await TrezorConnect.stellarGetAddress( params );
+        }
+
         dispatch( onResponse(response) );
     }
 }
