@@ -25,12 +25,14 @@ import ethverifymessage from './methods/EthereumVerifyMessageReducer';
 import nemgetaddress from './methods/NEMGetAddressReducer';
 import nemsigntx from './methods/NEMSignTxReducer';
 
+
 import stellargetaddress from './methods/StellarGetAddressReducer';
 import stellarsigntx from './methods/StellarSignTxReducer';
 
 import custom from './methods/CustomMessageReducer';
 import login from './methods/RequestLoginReducer';
 import signtx from './methods/SignTxReducer';
+import pushtx from './methods/PushTxReducer';
 
 export default combineReducers({
     router: routerReducer,
@@ -60,5 +62,6 @@ export default combineReducers({
     
     custom,
     login,
-    signtx
+    signtx,
+    pushtx
 });

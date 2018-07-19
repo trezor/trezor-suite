@@ -6,6 +6,8 @@ import { onResponse } from './CommonActions';
 
 const PREFIX: string = 'stellar_signtx';
 export const PATH_CHANGE: string = `${PREFIX}_path_@change`;
+export const NETWORK_CHANGE: string = `${PREFIX}_network_@change`;
+export const PASSPHRASE_CHANGE: string = `${PREFIX}_passphrase_@change`;
 export const TX_CHANGE: string = `${PREFIX}_tx_@change`;
 
 export function onTransactionChange(transaction: string): any {
@@ -22,27 +24,32 @@ export function onPathChange(path: string): any {
     }
 }
 
+export function onNetworkChange(network: string): any {
+    return {
+        type: NETWORK_CHANGE,
+        network
+    }
+}
+
+export function onPassphraseChange(passphrase: string): any {
+    return {
+        type: PASSPHRASE_CHANGE,
+        passphrase
+    }
+}
+
 export function onSignTx(): any {
     return async function (dispatch, getState) {
+        const { path, ledgerVersion, networkPassphrase, transaction } = getState().stellarsigntx;
 
-        let tx: JSON;
-        try {
-            const { path, transaction } = getState().stellarsigntx;
-            tx = JSON.parse( transaction )
+        const tx = eval(`[${transaction}]`);
+        const response = await TrezorConnect.stellarSignTransaction({
+            path: path,
+            ledgerVersion,
+            networkPassphrase,
+            transaction: tx[0]
+        });
 
-            const response = await TrezorConnect.stellarSignTransaction({
-                path: path,
-                transaction: tx
-            });
-
-            dispatch( onResponse(response) );
-
-        } catch(error) {
-            console.warn(error);
-
-            dispatch( onResponse({
-                error: 'Invalid JSON'
-            }) );
-        }
+        dispatch( onResponse(response) );
     }
 }

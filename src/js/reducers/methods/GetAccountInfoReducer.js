@@ -43,33 +43,42 @@ export default function method(state: MethodState = initialState, action: any): 
             return initialState;
 
         case COIN_CHANGE :
-            return {
-                ...state,
-                coin: action.coin,
-                path: defaultPaths[action.coin],
-            };
+            if (action.coin === '') {
+                return {
+                    ...state,
+                    coin: action.coin,
+                    fields: state.fields.filter(f => f !== 'coin')
+                }
+            } else {
+                return {
+                    ...state,
+                    coin: action.coin,
+                    path: defaultPaths[action.coin],
+                    fields: ['path', 'coin']
+                }
+            }
 
         case PATH_CHANGE :
             if (action.path === '') {
                 return {
                     ...state,
-                    path: action.path,
+                    path: '',
                     xpub: '',
                     fields: ['coin'],
                 }
             } else if (action.path.indexOf("m/") !== 0) {
                 return {
                     ...state,
-                    path: action.path,
+                    path: action.path, // fill input
                     xpub: action.path,
-                    fields: ['xpub', 'coin'],
+                    fields: state.fields.filter(f => f !== 'path' && f !== 'xpub').concat(['xpub'])
                 }
             } else {
                 return {
                     ...state,
                     path: action.path,
                     xpub: '',
-                    fields: ['path', 'coin'],
+                    fields: state.fields.filter(f => f !== 'path' && f !== 'xpub').concat(['path'])
                 };
             }
             

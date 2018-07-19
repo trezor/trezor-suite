@@ -19,3 +19,4 @@ export { default as ComposeTransaction } from './ComposeTransaction';
 export { default as CustomMessage } from './CustomMessage';
 export { default as RequestLogin } from './RequestLogin';
 export { default as SignTx } from './SignTx';
+export { default as PushTx } from './PushTx';

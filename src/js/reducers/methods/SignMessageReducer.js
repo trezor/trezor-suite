@@ -42,11 +42,21 @@ export default function method(state: MethodState = initialState, action: any): 
             return initialState;
 
         case COIN_CHANGE :
-            return {
-                ...state,
-                coin: action.coin,
-                path: defaultPaths[action.coin],
-            };
+
+            if (action.coin === '') {
+                return {
+                    ...state,
+                    coin: action.coin,
+                    fields: state.fields.filter(f => f !== 'coin')
+                }
+            } else {
+                return {
+                    ...state,
+                    coin: action.coin,
+                    path: defaultPaths[action.coin],
+                    fields: ['path', 'message', 'coin']
+                }
+            }
 
         case PATH_CHANGE :
             return {
