@@ -24,7 +24,6 @@ import type {
     BlockRange,
     ChunkDiscoveryInfo,
 } from '../types';
-import type {AccountInfo} from '../../index';
 import { Stream } from '../../../utils/stream';
 import {
     Transaction as BitcoinJsTransaction,

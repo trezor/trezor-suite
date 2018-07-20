@@ -102,7 +102,7 @@ export class MockBitcore {
     }
 
     getCallSpec(type: string): CallSpec {
-        if (this.spec.length == 0) {
+        if (this.spec.length === 0) {
             this.doneError(new Error('Call spec not defined, wanted ' + type));
             throw new Error();
         }
@@ -296,5 +296,6 @@ function arrayEqSet<X>(array: Array<X>, set: Set<X>) {
     return true;
 }
 
+// eslint-disable-next-line  no-unused-vars
 let flowTest: ?Blockchain = new MockBitcore([], () => {});
 flowTest = null;

@@ -187,7 +187,7 @@ function getTargetsFromTransaction(
     // this function gets run only on new transactions,
     // so currentOutputs is always with full outputs, not pruned
     const currentOutputs_ = outputs[id];
-    const currentOutputs = filterNull(currentOutputs_);
+    const currentOutputs = filterNull(currentOutputs_, true);
 
     let nCredit = 0;
     let nDebit = 0;
@@ -323,11 +323,11 @@ function compareByOldestAndType(
     const ah = (a.height != null ? a.height : Infinity);
     const bh = (b.height != null ? b.height : Infinity);
     const diff = (ah - bh) || 0; // Infinity - Infinity = NaN
-    if (diff != 0) {
+    if (diff !== 0) {
         return diff;
     }
     const odiff = (IMPACT_ORDERING.indexOf(a.type) - IMPACT_ORDERING.indexOf(b.type));
-    if (odiff != 0) {
+    if (odiff !== 0) {
         return odiff;
     }
 
