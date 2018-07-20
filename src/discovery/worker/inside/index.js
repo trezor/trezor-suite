@@ -94,17 +94,8 @@ channel.startDiscoveryPromise.then(() => {
             defaultInfo : 
             initialState;
 
-        const lastUsedMain = oldState.usedAddresses.length - 1;
-        const lastUsedChange = oldState.changeIndex - 1;
-
-        const lastConfirmedMain = 
-            oldState.lastConfirmedMain == null ? 
-            lastUsedMain : 
-            oldState.lastConfirmedMain;
-        const lastConfirmedChange = 
-            oldState.lastConfirmedChange == null ? 
-            lastUsedChange : 
-            oldState.lastConfirmedChange;
+        const lastConfirmedMain = oldState.lastConfirmedMain;
+        const lastConfirmedChange = oldState.lastConfirmedChange;
 
         const unconfirmedTxids = oldState.transactions
             .filter(t => t.height == null)
