@@ -21,6 +21,22 @@ import {
     Transaction as BitcoinJsTransaction,
 } from 'bitcoinjs-lib-zcash';
 
+// what is hapenning here:
+// I have a state with old utxo set
+// and some new transactions
+// and the only thing that can happen is that new utxos arrive
+// from the new transactions, or the old utxos are spent
+// The way this is done, no new utxos are added "back"
+// from the old transactions.
+// This is to save time - we do not need to go through old
+// transactions, just through the new ones
+//
+// Note that this on itself could cause a problem
+// If there is outgoing transaction in a mempool in the old state
+// that is later removed,
+// old utxos need to be added;
+// I find such old utxos in index.js in findDeleted
+// and later pass them here
 export function deriveUtxos(
     newInfo: AccountNewInfo,
     oldInfo: AccountInfo,
