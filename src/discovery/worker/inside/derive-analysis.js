@@ -146,7 +146,7 @@ function analyzeTransaction(
     const inputIds = t.tx.ins.map(input =>
         ({id: getInputId(input), index: input.index})
     );
-    const hasJoinsplits = t.tx.joinsplits == null ? true : t.tx.joinsplits.length > 0;
+    const hasJoinsplits = t.tx.joinsplits.length > 0;
 
     const isCoinbase = t.tx.ins.some((i) => BitcoinJsTransaction.isCoinbaseHash(i.hash));
 
