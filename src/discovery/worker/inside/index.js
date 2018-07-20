@@ -50,15 +50,15 @@ let recvTimeOffset: number;
 
 // init on worker start
 channel.initPromise.then(({
-    accountInfo, 
-    network, 
-    xpub, 
-    segwit, 
-    webassembly, 
-    cashAddress, 
-    gap, 
-    predictable, 
-    timeOffset
+    accountInfo,
+    network,
+    xpub,
+    segwit,
+    webassembly,
+    cashAddress,
+    gap,
+    predictable,
+    timeOffset,
 }) => {
     recvInfo = accountInfo;
     recvNetwork = network;
@@ -90,9 +90,9 @@ channel.startDiscoveryPromise.then(() => {
     // then integrate new transactions into old transactions
     loadBlockRange(initialState).then(range => {
         // when starting from 0, take as if there is no info
-        const oldState = range.firstHeight === 0 ? 
-            defaultInfo : 
-            initialState;
+        const oldState = range.firstHeight === 0
+            ? defaultInfo
+            : initialState;
 
         const lastConfirmedMain = oldState.lastConfirmedMain;
         const lastConfirmedChange = oldState.lastConfirmedChange;
@@ -104,29 +104,29 @@ channel.startDiscoveryPromise.then(() => {
         const mainAddresses = oldState.usedAddresses
             .map(a => a.address)
             .concat(oldState.unusedAddresses);
-        
+
         const changeAddresses = oldState.changeAddresses;
 
         // get all the new info, then...
         return discoverAccount(
-            range, 
-            [lastConfirmedMain, lastConfirmedChange], 
-            oldState.transactions, 
-            mainAddresses, 
+            range,
+            [lastConfirmedMain, lastConfirmedChange],
+            oldState.transactions,
+            mainAddresses,
             changeAddresses
         ).then((newInfo: AccountNewInfo): AccountInfo => {
             // then find out deleted info
             const deleted: Array<string> = findDeleted(
-                unconfirmedTxids, 
+                unconfirmedTxids,
                 newInfo
             );
             // ... then integrate
             const res: AccountInfo = integrateNewTxs(
-                newInfo, 
-                oldState, 
-                range.last, 
-                deleted, 
-                recvGap, 
+                newInfo,
+                oldState,
+                range.last,
+                deleted,
+                recvGap,
                 recvTimeOffset
             );
             return res;
@@ -189,6 +189,6 @@ function findDeleted(
             return false;
         }
         return true;
-    })
+    });
 }
 
