@@ -15,3 +15,6 @@ export function objectValues<T>(k: {[k: any]: T}): Array<T> {
     return Object.keys(k).map(key => k[key]);
 }
 
+export function filterNull<T>(k: Array<?T>): Array<T> {
+    return k.filter(k => k != null);
+}
