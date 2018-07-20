@@ -28,7 +28,7 @@ const defaultInfo: AccountInfo = {
     allowChange: false,
     lastConfirmedChange: -1,
     lastConfirmedMain: -1,
-    version: 3,
+    version: 4,
 };
 
 let recvInfo: ?AccountInfo;
@@ -79,7 +79,7 @@ channel.startDiscoveryPromise.then(() => {
     // version 2 was correction in mytrezor
     // v3 added info, whether utxo is my own or not
     // so we have to re-download everything -> setting initial state as if nothing is known
-    if (initialState.version == null || initialState.version < 3) {
+    if (initialState.version == null || initialState.version < 4) {
         initialState = defaultInfo;
     }
 
