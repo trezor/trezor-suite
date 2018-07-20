@@ -15,6 +15,7 @@ import type {
 import {
     objectValues,
     getInputId,
+    filterNull,
 } from '../utils';
 
 import {
@@ -183,7 +184,10 @@ function getTargetsFromTransaction(
     id: string,
     hasJoinsplits: boolean,
 ): TargetsType {
-    const currentOutputs = outputs[id];
+    // this function gets run only on new transactions,
+    // so currentOutputs is always with full outputs, not pruned
+    const currentOutputs_ = outputs[id];
+    const currentOutputs = filterNull(currentOutputs_);
 
     let nCredit = 0;
     let nDebit = 0;
@@ -231,12 +235,10 @@ function getTargetsFromTransaction(
     // Transansction is GIVING me money,
     // if its output has address that is mine. (On any chain.)
     currentOutputs.forEach((output, i) => {
-        if (output != null) {
-            if (isCredit(output.address)) {
-                value += output.value;
-                nCredit++;
-                myOutputs[i] = {address: output.address, value: output.value, i};
-            }
+        if (isCredit(output.address)) {
+            value += output.value;
+            nCredit++;
+            myOutputs[i] = {address: output.address, value: output.value, i};
         }
     });
 
