@@ -322,8 +322,22 @@ function compareByOldestAndType(
 ): number {
     const ah = (a.height != null ? a.height : Infinity);
     const bh = (b.height != null ? b.height : Infinity);
-    return ((ah - bh) || 0) || // Infinity - Infinity = NaN
-        (IMPACT_ORDERING.indexOf(a.type) -
-        IMPACT_ORDERING.indexOf(b.type));
+    const diff = (ah - bh) || 0; // Infinity - Infinity = NaN
+    if (diff != 0) {
+        return diff;
+    }
+    const odiff = (IMPACT_ORDERING.indexOf(a.type) - IMPACT_ORDERING.indexOf(b.type));
+    if (odiff != 0) {
+        return odiff;
+    }
+
+    // this does not really matter, what matter is that it is stable
+    const ahash = a.hash;
+    const bhash = b.hash;
+    if (ahash < bhash) {
+        return -1;
+    } else {
+        return 1;
+    }
 }
 
