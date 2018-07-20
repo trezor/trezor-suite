@@ -296,5 +296,5 @@ function arrayEqSet<X>(array: Array<X>, set: Set<X>) {
     return true;
 }
 
-let flowTest: ?Blockchain = new MockBitcore([], ()=>{})
+let flowTest: ?Blockchain = new MockBitcore([], () => {});
 flowTest = null;
