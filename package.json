@@ -39,7 +39,7 @@
     "instrument": false
   },
   "browserify-shim": {
-    "../../../lib/socketio-worker/inside.js": "global:thisIsJustForKarmaTestButIHaveToWriteItHere"
+    "../../../src/socketio-worker/inside.js": "global:thisIsJustForKarmaTestButIHaveToWriteItHere"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",
