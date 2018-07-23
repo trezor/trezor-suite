@@ -48,7 +48,7 @@ coverage:
 	`npm bin`/nyc --check-coverage mocha --compilers js:babel-register 
 
 test-bitcore:
-	`npm bin`/mocha --compilers js:babel-register test_bitcore/bitcore.js
+	`npm bin`/mocha --compilers js:babel-register test/test_bitcore/bitcore.js
 
 flow:
 	`npm bin`/flow check src

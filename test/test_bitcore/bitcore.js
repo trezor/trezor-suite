@@ -2,9 +2,9 @@
 
 import assert from 'assert';
 
-import {BitcoreBlockchain} from '../src/bitcore';
-import {Stream} from '../src/utils/stream';
-import {Socket} from '../src/socketio-worker/outside';
+import {BitcoreBlockchain} from '../../src/bitcore';
+import {Stream} from '../../src/utils/stream';
+import {Socket} from '../../src/socketio-worker/outside';
 
 import {startBitcore, stopBitcore, testStream, testStreamMultiple} from './test_helpers/common.js';
 import {run} from './test_helpers/_node_client.js';
@@ -20,7 +20,7 @@ const socketWorkerFactory = () => {
             require('../../../src/socketio-worker/inside.js');
         });
     } else {
-        return new Worker('../../src/socketio-worker/inside.js');
+        return new Worker('../../../src/socketio-worker/inside.js');
     }
 };
 
