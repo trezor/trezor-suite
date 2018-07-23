@@ -6,7 +6,11 @@
   "scripts": {
     "build-lib": "make clean;make lib",
     "build-example": "make example",
+    "test": "make eslint && make flow && make unit",
     "unit": "make unit",
+    "unit-build-tx": "make unit-build-tx",
+    "unit-discovery": "make unit-discovery",
+    "test-bitcore": "make test-bitcore",
     "coverage": "make coverage",
     "flow": "make flow",
     "eslint": "make eslint",

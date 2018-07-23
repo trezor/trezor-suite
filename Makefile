@@ -35,11 +35,20 @@ lib:
 	cp -r ./fastxpub/build ./lib/fastxpub
 	cd ./src && find . -name '*.js' | xargs -I {} cp {} ../lib/{}.flow
 
-unit: lib
+unit:
 	`npm bin`/mocha --compilers js:babel-register
 
-coverage: lib
+unit-build-tx:
+	`npm bin`/mocha --compilers js:babel-register test/build-tx.js
+
+unit-discovery:
+	`npm bin`/mocha --compilers js:babel-register test/discover-account.js
+
+coverage:
 	`npm bin`/nyc --check-coverage mocha --compilers js:babel-register 
+
+test-bitcore:
+	`npm bin`/mocha --compilers js:babel-register test_bitcore/bitcore.js
 
 flow:
 	`npm bin`/flow check src
@@ -48,12 +57,11 @@ eslint:
 	cd src && `npm bin`/eslint .
 	cd ./test && `npm bin`/eslint .
 	cd ./example && `npm bin`/eslint .
-	cd ./test_helpers && `npm bin`/eslint .
 
-karma-firefox: lib
+karma-firefox:
 	`npm bin`/karma start --browsers Firefox --single-run
 
-karma-chrome: lib
+karma-chrome:
 	`npm bin`/karma start --browsers Chrome --single-run
 
 git-ancestor:

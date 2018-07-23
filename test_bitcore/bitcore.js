@@ -6,8 +6,8 @@ import {BitcoreBlockchain} from '../src/bitcore';
 import {Stream} from '../src/utils/stream';
 import {Socket} from '../src/socketio-worker/outside';
 
-import {startBitcore, stopBitcore, testStream, testStreamMultiple} from '../test_helpers/common.js';
-import {run} from '../test_helpers/_node_client.js';
+import {startBitcore, stopBitcore, testStream, testStreamMultiple} from './test_helpers/common.js';
+import {run} from './test_helpers/_node_client.js';
 
 import bitcoin from 'bitcoinjs-lib-zcash';
 
