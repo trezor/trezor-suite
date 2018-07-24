@@ -11,6 +11,7 @@
     "unit-build-tx": "make unit-build-tx",
     "unit-discovery": "make unit-discovery",
     "test-bitcore": "make test-bitcore",
+    "coverage-html": "make coverage-html",
     "coverage": "make coverage",
     "flow": "make flow",
     "eslint": "make eslint",

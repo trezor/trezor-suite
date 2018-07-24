@@ -44,6 +44,9 @@ unit-build-tx:
 unit-discovery:
 	`npm bin`/mocha --compilers js:babel-register test/discover-account.js
 
+coverage-html:
+	`npm bin`/nyc --reporter=html --check-coverage mocha --compilers js:babel-register
+
 coverage:
 	`npm bin`/nyc --check-coverage mocha --compilers js:babel-register 
 
