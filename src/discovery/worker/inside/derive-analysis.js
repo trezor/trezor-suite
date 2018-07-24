@@ -247,11 +247,9 @@ function getTargetsFromTransaction(
     function filterTargets(filterFunction: (address: string) => boolean): Array<TargetInfo> {
         const res = [];
         currentOutputs.forEach((info, i) => {
-            if (info != null) {
-                const {address, value} = info;
-                if (filterFunction(address)) {
-                    res.push({address, value, i});
-                }
+            const {address, value} = info;
+            if (filterFunction(address)) {
+                res.push({address, value, i});
             }
         });
         return res;
