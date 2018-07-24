@@ -278,11 +278,6 @@ function getTargetsFromTransaction(
         // outgoing transaction, targets are debit outputs
         type = 'sent';
         targets = filterTargets(address => isDebit(address));
-        if (targets.length === 0) {
-            // ? who knows, show self as a backup
-            type = 'self';
-            targets = [];
-        }
     }
 
     // note that target selection does NOT affect value/balance
