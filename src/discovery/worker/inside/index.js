@@ -39,9 +39,6 @@ let recvWebAssembly: boolean;
 let recvGap: number;
 let recvCashAddress: boolean;
 
-// predictability is just for testing
-let recvPredictable: boolean;
-
 // what (new Date().getTimezoneOffset()) returns
 // note that it is NEGATIVE from the UTC string timezone
 // so, UTC+2 timezone returns -120...
@@ -57,7 +54,6 @@ channel.initPromise.then(({
     webassembly,
     cashAddress,
     gap,
-    predictable,
     timeOffset,
 }) => {
     recvInfo = accountInfo;
@@ -68,7 +64,6 @@ channel.initPromise.then(({
     recvCashAddress = cashAddress;
     recvGap = gap;
 
-    recvPredictable = predictable;
     recvTimeOffset = timeOffset;
 });
 
@@ -163,18 +158,8 @@ function discoverAccount(
        ).discover();
     }
 
-    // on testing, I want the two chains be discovered
-    // after each other, so I can mock/test better
-    // in reality, I want in parallel
-    if (recvPredictable) {
-        return d(0)
-            .then(main => d(1).then(change => ({main, change})));
-    } else {
-        return Promise.all([
-            d(0),
-            d(1),
-        ]).then(([main, change]) => ({main, change}));
-    }
+    return d(0)
+        .then(main => d(1).then(change => ({main, change})));
 }
 
 function findDeleted(

@@ -155,7 +155,6 @@ export const initPromise: Promise<{
     webassembly: boolean,
     cashAddress: boolean,
     gap: number,
-    predictable: boolean,
     timeOffset: number,
 }> = initDfd.promise;
 
@@ -170,7 +169,6 @@ messageEmitter.attach((message, detach) => {
             webassembly: message.webassembly,
             cashAddress: message.cashAddress,
             gap: message.gap,
-            predictable: message.predictable,
             timeOffset: message.timeOffset,
         });
     }

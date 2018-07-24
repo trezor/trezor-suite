@@ -19,12 +19,6 @@ import bchaddrjs from 'bchaddrjs';
 
 type WorkerFactory = () => Worker;
 
-// for testing we need slightly different behavior
-let predictable = false;
-export function setPredictable() {
-    predictable = true;
-}
-
 export class WorkerDiscoveryHandler {
     blockchain: Blockchain;
     addressSources: Array<?AddressSource>;
@@ -77,7 +71,6 @@ export class WorkerDiscoveryHandler {
             segwit,
             cashAddress: this.cashAddress,
             gap,
-            predictable,
             timeOffset,
         });
         this.workerChannel.postToWorker({type: 'startDiscovery'});

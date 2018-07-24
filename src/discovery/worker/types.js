@@ -55,7 +55,6 @@ export type InMessage = {
     segwit: boolean,
     cashAddress: boolean,
     gap: number,
-    predictable: boolean,
 
     // what (new Date().getTimezoneOffset()) returns
     // note that it is NEGATIVE from the UTC string timezone
