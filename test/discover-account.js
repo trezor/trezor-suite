@@ -37,6 +37,19 @@ describe('discover account', () => {
                         }
                     }
                 }
+            }, (err) => {
+                if (err !== fixture.endError) {
+                    console.log('Discovery result', JSON.stringify(err, null, 2));
+                    console.log('Fixture', JSON.stringify(fixture.endError, null, 2));
+                    done(new Error('Result not the same'));
+                } else {
+                    if (blockchain.spec.length > 0) {
+                        console.log(JSON.stringify(blockchain.spec));
+                        done(new Error('Some spec left on end'));
+                    } else {
+                        done();
+                    }
+                }
             });
         });
     });

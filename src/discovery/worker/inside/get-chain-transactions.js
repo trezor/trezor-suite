@@ -188,7 +188,13 @@ export class GetChainTransactions {
                 }
 
                 const value = value_;
-                this.handleTransactions(value, first);
+                try {
+                    this.handleTransactions(value, first);
+                } catch (error) {
+                    this.dfd.reject('Error transaction parsing: ' + error.message || error.toString());
+                    stream.dispose();
+                    return;
+                }
             });
 
             stream.finish.attach(() => {
