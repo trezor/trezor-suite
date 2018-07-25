@@ -124,7 +124,6 @@ export class MockBitcore {
             this.doneError(new Error('call spec out of order, is ' + spec.type + ' but wanted ' + type));
             throw new Error('call spec out of order, is ' + spec.type + ' but wanted ' + type);
         }
-        console.log('Succesful call spec type', type);
         return spec;
     }
 

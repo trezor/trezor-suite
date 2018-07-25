@@ -18,8 +18,7 @@
     "eslint": "make eslint",
     "karma-firefox": "make karma-firefox",
     "karma-chrome": "make karma-chrome",
-    "bitcore-test-docker": "make bitcore-test-docker",
-    "coverage-with-docker": "make bitcore-test-docker && make run-coverage"
+    "jest": "jest test"
   },
   "author": "TREZOR <info@trezor.io>",
   "repository": "https://github.com/trezor/hd-wallet",
@@ -52,6 +51,7 @@
   "dependencies": {
     "bchaddrjs": "^0.2.1",
     "bitcoinjs-lib-zcash": "^3.5.2",
+    "jest": "^23.4.1",
     "queue": "^4.4.2",
     "socket.io-client": "^1.7.3",
     "whatwg-fetch": "^0.11.0"
@@ -64,7 +64,7 @@
     "@babel/plugin-transform-flow-strip-types": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
     "@babel/register": "^7.0.0",
-    "babel-eslint": "^7.2.1",
+    "babel-eslint": "^8.2.6",
     "babel-plugin-istanbul": "^5.1.0",
     "babelify": "^10.0.0",
     "browserify": "^14.0.0",
