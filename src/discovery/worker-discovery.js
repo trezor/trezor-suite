@@ -99,10 +99,15 @@ export class WorkerDiscovery {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
-        cashAddress?: boolean,
-        gap_?: number
+        cashAddress: boolean,
+        gap: number,
+
+        // what (new Date().getTimezoneOffset()) returns
+        // note that it is NEGATIVE from the UTC string timezone
+        // so, UTC+2 timezone returns -120...
+        // it's javascript, it's insane by default
+        timeOffset: number,
     ): StreamWithEnding<AccountLoadStatus, AccountInfo> {
-        const gap = gap_ == null ? 20 : gap_;
         const node = this.tryHDNode(xpub, network);
         if (node instanceof Error) {
             return StreamWithEnding.fromStreamAndPromise(Stream.fromArray([]), Promise.reject(node));
@@ -126,7 +131,7 @@ export class WorkerDiscovery {
                     cashAddress || false,
                     this.forceAddedTransactions
                 );
-                return out.discovery(initial, xpub, segwit === 'p2sh', gap);
+                return out.discovery(initial, xpub, segwit === 'p2sh', gap, timeOffset);
             })
         );
     }
@@ -136,10 +141,15 @@ export class WorkerDiscovery {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
-        cashAddress?: boolean,
-        gap_?: number
+        cashAddress: boolean,
+        gap: number,
+
+        // what (new Date().getTimezoneOffset()) returns
+        // note that it is NEGATIVE from the UTC string timezone
+        // so, UTC+2 timezone returns -120...
+        // it's javascript, it's insane by default
+        timeOffset: number,
     ): Stream<AccountInfo | Error> {
-        const gap = gap_ == null ? 20 : gap_;
         const node = this.tryHDNode(xpub, network);
         if (node instanceof Error) {
             return Stream.simple(node);
@@ -193,7 +203,7 @@ export class WorkerDiscovery {
                         cashAddress || false,
                         this.forceAddedTransactions
                     );
-                    return out.discovery(currentState, xpub, segwit === 'p2sh', gap).ending.then(res => {
+                    return out.discovery(currentState, xpub, segwit === 'p2sh', gap, timeOffset).ending.then(res => {
                         currentState = res;
                         return res;
                     });

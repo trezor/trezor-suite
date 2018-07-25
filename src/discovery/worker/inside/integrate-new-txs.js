@@ -4,6 +4,8 @@ import type {
     AccountInfo,
     TransactionInfo,
     AddressWithReceived,
+    UtxoInfo,
+    TargetInfo,
 } from '../../index';
 
 import type {
@@ -25,18 +27,90 @@ import {
     objectValues,
 } from '../utils';
 
+// When utxo transaction disappear, so does the utxo
+// However, if it was transaction from us, it also means
+// utxo has to be added (if it is a tx that came from us)
+//
+// If the utxo that needs to be added is in the new info
+// - as is in the case when it is a chain of unconf txs -
+// it will be readded again in derive-utxos
+//
+// However, if it is an old tx, it needs to be added here
+// because derive-utxos does not go through old txs
 function deleteTxs(
     oldInfo: AccountInfo,
-    txs: Array<string>
+    txs: Array<string>,
+    atp: AddressToPath,
 ): AccountInfo {
     const set: Set<string> = new Set(txs);
-    const utxos = oldInfo.utxos.filter(utxo => !set.has(utxo.transactionHash));
-    const transactions = oldInfo.transactions.filter(tx => !set.has(tx.hash));
+    const filteredUtxos = oldInfo.utxos.filter(utxo => !set.has(utxo.transactionHash));
+    const deletedTransactions = oldInfo.transactions.filter(tx => set.has(tx.hash));
+    const filteredTransactions = oldInfo.transactions.filter(tx => !set.has(tx.hash));
+
+    const addedUtxos: Array<UtxoInfo> = [];
+    deletedTransactions.map(deletedTran => {
+        // this is not efficient At ALL,
+        // but it does not happen frequently
+        // (usually not at all)
+        // => no need to optimize here, just go naively
+        deletedTran.inputs.forEach(deletedInp => {
+            const deletedInpHash = deletedInp.id;
+            const deletedInpI = deletedInp.index;
+            filteredTransactions.forEach(transaction => {
+                const thash = transaction.hash;
+                if (thash === deletedInpHash) {
+                    const o = transaction.myOutputs[deletedInpI];
+                    if (o != null) {
+                        // ALSO needs to find, if any of the inputs
+                        // are also mine
+                        let own = false;
+                        filteredTransactions.forEach(ptran => {
+                            transaction.inputs.forEach(ip => {
+                                if (
+                                    ip.id === ptran.hash &&
+                                    ptran.myOutputs[ip.index] != null
+                                ) {
+                                    own = true;
+                                }
+                            });
+                        });
+                        addedUtxos.push(utxoFromTarget(
+                            o,
+                            transaction,
+                            atp,
+                            own
+                        ));
+                    }
+                }
+            });
+        });
+    });
+
     return {
         ...oldInfo,
-        utxos,
-        transactions,
+        utxos: filteredUtxos.concat(addedUtxos),
+        transactions: filteredTransactions,
     };
+}
+
+function utxoFromTarget(
+    t: TargetInfo,
+    tx: TransactionInfo,
+    atp: AddressToPath,
+    own: boolean
+): UtxoInfo {
+    const resIx: UtxoInfo = {
+        index: t.i,
+        value: t.value,
+        transactionHash: tx.hash,
+        height: tx.height,
+        coinbase: tx.isCoinbase,
+        addressPath: atp[t.address],
+        vsize: tx.vsize,
+        tsize: tx.tsize,
+        own,
+    };
+    return resIx;
 }
 
 export function integrateNewTxs(
@@ -44,15 +118,17 @@ export function integrateNewTxs(
     oldInfoUndeleted: AccountInfo,
     lastBlock: Block,
     deletedTxs: Array<string>,
-    gap: number
+    gap: number,
+    wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ): AccountInfo {
-    const oldInfo = (deletedTxs.length !== 0)
-        ? deleteTxs(oldInfoUndeleted, deletedTxs)
-        : oldInfoUndeleted;
     const addressToPath = deriveAddressToPath(
         newInfo.main.allAddresses,
         newInfo.change.allAddresses
     );
+
+    const oldInfo = (deletedTxs.length !== 0)
+        ? deleteTxs(oldInfoUndeleted, deletedTxs, addressToPath)
+        : oldInfoUndeleted;
 
     const joined = deriveJoined(
         newInfo.main.newTransactions,
@@ -70,7 +146,8 @@ export function integrateNewTxs(
         joined,
         oldInfo.transactions,
         addressToPath,
-        lastBlock
+        lastBlock,
+        wantedOffset
     );
 
     const {usedAddresses, unusedAddresses, lastConfirmed: lastConfirmedMain} = deriveUsedAddresses(

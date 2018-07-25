@@ -1,8 +1,8 @@
 /* global it:false, describe:false */
 
 import assert from 'assert';
-import {buildTx} from '../lib/build-tx';
-import {Permutation} from '../lib/build-tx/permutation';
+import {buildTx} from '../src/build-tx';
+import {Permutation} from '../src/build-tx/permutation';
 
 import bitcoin from 'bitcoinjs-lib-zcash';
 

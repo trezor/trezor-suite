@@ -23,6 +23,7 @@ module.exports = function (config) {
                         'transform-class-properties',
                         'transform-object-rest-spread',
                         'add-module-exports',
+                        'istanbul',
                     ],
                 }],
                 ['workerify'],
@@ -32,9 +33,9 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'test/bitcore.js',
-            {pattern: 'lib/trezor-crypto/emscripten/trezor-crypto.js', included: false},
-            {pattern: 'lib/trezor-crypto/emscripten/trezor-crypto.wasm', included: false}
+            'test/discover-account.js',
+            {pattern: 'fastxpub/build/fastxpub.js', included: false},
+            {pattern: 'fastxpub/build/fastxpub.wasm', included: false}
 
         ],
 
@@ -46,7 +47,7 @@ module.exports = function (config) {
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
             'test/bitcore.js': [ 'browserify' ],
-            'test/discovery.js': [ 'browserify' ],
+            'test/discover-account.js': [ 'browserify' ],
         },
 
         // test results reporter to use

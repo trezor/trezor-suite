@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import coinAccum from '../../lib/build-tx/coinselect-lib/outputs/split';
+import coinAccum from '../../src/build-tx/coinselect-lib/outputs/split';
 import fixtures from './fixtures/split';
 import utils from './_utils';
 

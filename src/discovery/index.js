@@ -33,7 +33,7 @@ export type UtxoInfo = {
     coinbase: boolean,
     tsize: number, // total size - in case of segwit, total, with segwit data
     vsize: number, // virtual size - segwit concept - same as size in non-segwit
-    own: boolean,
+    own: boolean, // is the ORIGIN me (the same account)
 }
 
 // Some info about output
@@ -46,9 +46,13 @@ export type TargetInfo = {
 export type TransactionInfo = {
     isCoinbase: boolean,
 
-    // complete date Date().toString()
-    // (used instead of Date for easier saving/parsing)
-    dateInfo: ?string,
+    // unix timestamp
+    timestamp: ?number,
+
+    // I am saving it like this, because mytrezor is in angular
+    // and directly displays this
+    // and it saves suprisingly a lot of time
+    // since otherwise Angular would recompute it repeatedly
     // only day YYYY-MM-DD
     dateInfoDayFormat: ?string,
     // only time HH:MM:SS

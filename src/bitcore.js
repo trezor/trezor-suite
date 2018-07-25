@@ -39,11 +39,6 @@ export type Blockchain = {
         start: number,
         end: number
     ): Stream<Array<TransactionWithHeight> | Error>,
-    lookupTransactions(
-        addresses: Array<string>,
-        start: number,
-        end: number
-    ): Promise<Array<TransactionWithHeight>>,
 
     lookupTransactionsIds(
         addresses: Array<string>,

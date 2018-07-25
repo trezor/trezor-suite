@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import coinAccum from '../../lib/build-tx/coinselect-lib/inputs/bnb';
+import coinAccum from '../../src/build-tx/coinselect-lib/inputs/bnb';
 import fixtures from './fixtures/bnb';
 import utils from './_utils';
 

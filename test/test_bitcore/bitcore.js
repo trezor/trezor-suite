@@ -2,12 +2,12 @@
 
 import assert from 'assert';
 
-import {BitcoreBlockchain} from '../lib/bitcore';
-import {Stream} from '../lib/utils/stream';
-import {Socket} from '../lib/socketio-worker/outside';
+import {BitcoreBlockchain} from '../../src/bitcore';
+import {Stream} from '../../src/utils/stream';
+import {Socket} from '../../src/socketio-worker/outside';
 
-import {startBitcore, stopBitcore, testStream, testStreamMultiple} from '../test_helpers/common.js';
-import {run} from '../test_helpers/_node_client.js';
+import {startBitcore, stopBitcore, testStream, testStreamMultiple} from './test_helpers/common.js';
+import {run} from './test_helpers/_node_client.js';
 
 import bitcoin from 'bitcoinjs-lib-zcash';
 
@@ -17,10 +17,10 @@ const socketWorkerFactory = () => {
         const TinyWorker = require('tiny-worker');
         return new TinyWorker(() => {
             require('babel-register');
-            require('../../../lib/socketio-worker/inside.js');
+            require('../../../src/socketio-worker/inside.js');
         });
     } else {
-        return new Worker('../../lib/socketio-worker/inside.js');
+        return new Worker('../../../src/socketio-worker/inside.js');
     }
 };
 

@@ -1,8 +1,7 @@
 dist: trusty
-sudo: required
-before_script: test_helpers/install_nodejs4.sh
-addons:
-  firefox: "52.0"
+language: node_js
+node_js:
+  - "8"
 matrix:
   include:
 
@@ -14,108 +13,103 @@ matrix:
       sudo: required
       install: true
       compiler: true
-      node_js:
-        - "8"
+
+# ------------------- karma tests ---------------------
+# karma tests run a browser in headless mode and try
+# to run the tests there
 
     - before_script:
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - rm test/discovery.js test/bitcore.js
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
-        - nvm install 8
-      env: TEST_SUITE=unit TEST=build-tx
-    - before_script:
+        # we need to run xvfb fot the karma tests to work
         - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - mv karma.conf.js-buildtx karma.conf.js
+        # karma needs special conf for each test
+        - mv karma_confs/karma.conf.js-buildtx karma.conf.js
+      sudo: required
       env: TEST_SUITE=karma-chrome TEST=build-tx
+
     - before_script:
+        # we need to run xvfb fot the karma tests to work
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - mv karma.conf.js-buildtx karma.conf.js
+        # karma needs special conf for each test
+        - mv karma_confs/karma.conf.js-buildtx karma.conf.js
       env: TEST_SUITE=karma-firefox TEST=build-tx
       addons:
         firefox: latest
 
     - before_script:
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - rm test/discovery.js test/build-tx.js
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
-        - nvm install 8
-      env: TEST_SUITE=unit TEST=bitcore
-    - before_script:
+        # we need to run xvfb fot the karma tests to work
         - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - mv karma.conf.js-bitcore karma.conf.js
-      env: TEST_SUITE=karma-chrome TEST=bitcore
+        - mv karma_confs/karma.conf.js-discovery karma.conf.js
+      sudo: required
+      env: TEST_SUITE=karma-chrome TEST=discovery
+
     - before_script:
+        # we need to run xvfb fot the karma tests to work
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - mv karma.conf.js-bitcore karma.conf.js
-      env: TEST_SUITE=karma-firefox TEST=bitcore
+        # karma needs special conf for each test
+        - mv karma_confs/karma.conf.js-discovery karma.conf.js
+      env: TEST_SUITE=karma-firefox TEST=discovery
       addons:
         firefox: latest
 
     - before_script:
+        # we need to run xvfb fot the karma tests to work
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - rm test/bitcore.js test/build-tx.js
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
-        - nvm install 8
-      env: TEST_SUITE=unit TEST=discovery
-    - before_script:
-        - export CHROME_BIN=chromium-browser
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - mv karma.conf.js-discovery karma.conf.js
-      env: TEST_SUITE=karma-chrome TEST=discovery
-    - before_script:
-        - export CHROME_BIN=chromium-browser
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - mv karma.conf.js-discovery karma.conf.js
-      env: TEST_SUITE=karma-firefox TEST=discovery
-    - before_script:
-        - export CHROME_BIN=chromium-browser
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - mv karma.conf.js-discovery karma.conf.js
+        # karma needs special conf for each test
+        - mv karma_confs/karma.conf.js-discovery karma.conf.js
+      env: TEST_SUITE=karma-firefox TEST=discovery-no-webasm
       addons:
         firefox: "50.0"
-      env: TEST_SUITE=karma-firefox TEST=discovery-no-webasm
 
+
+# ------------------- bitcore tests ---------------------
+
+    # bitcore test needs special configuration, since we need to run whole bitcore in background
+    - before_script:
+        - test/test_bitcore/test_helpers/install_nodejs4.sh
+        - sudo test/test_bitcore/test_helpers/install_regtest.sh
+        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+        - nvm install 8
+      env: TEST_SUITE=test-bitcore 
+      language: generic
+      sudo: required
+    # ...and we also need to run chrome / firefox in background, at the same time, with bitcore
+    - before_script:
+        - export CHROME_BIN=chromium-browser
+        - export DISPLAY=:99.0
+        - sh -e /etc/init.d/xvfb start
+        - test/test_bitcore/test_helpers/install_nodejs4.sh
+        - sudo test/test_bitcore/test_helpers/install_regtest.sh
+        - mv karma_confs/karma.conf.js-bitcore karma.conf.js
+      env: TEST_SUITE=karma-chrome TEST=bitcore
+      language: generic
+      sudo: required
     - before_script:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test_helpers/install_nodejs4.sh
-        - sudo test_helpers/install_regtest.sh
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
-        - nvm install 8
-      env: TEST_SUITE=coverage
+        - test/test_bitcore/test_helpers/install_nodejs4.sh
+        - sudo test/test_bitcore/test_helpers/install_regtest.sh
+        - mv karma_confs/karma.conf.js-bitcore karma.conf.js
+      env: TEST_SUITE=karma-firefox TEST=bitcore
+      addons:
+        firefox: latest
+      language: generic
+      sudo: required
+
+
 env:
   - TEST_SUITE=eslint
   - TEST_SUITE=flow
   - TEST_SUITE=build-example
+  - TEST_SUITE=unit-build-tx
+  - TEST_SUITE=unit-discovery
+  - TEST_SUITE=coverage
 script: npm run-script $TEST_SUITE
 
 notifications:

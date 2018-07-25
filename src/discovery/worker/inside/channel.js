@@ -99,10 +99,6 @@ export function lookupBlockHash(height: number): Promise<string> {
     return askPromise({type: 'lookupBlockHash', height});
 }
 
-export function doesTransactionExist(txid: string): Promise<boolean> {
-    return askPromise({type: 'doesTransactionExist', txid});
-}
-
 export function chunkTransactions(
     chainId: number,
     firstIndex: number,
@@ -151,7 +147,16 @@ self.onmessage = function (event: {data: InMessage}) {
 };
 
 const initDfd = deferred();
-export const initPromise: Promise<{accountInfo: ?AccountInfo, network: BitcoinJsNetwork, xpub: string, segwit: boolean, webassembly: boolean, cashAddress: boolean, gap: number}> = initDfd.promise;
+export const initPromise: Promise<{
+    accountInfo: ?AccountInfo,
+    network: BitcoinJsNetwork,
+    xpub: string,
+    segwit: boolean,
+    webassembly: boolean,
+    cashAddress: boolean,
+    gap: number,
+    timeOffset: number,
+}> = initDfd.promise;
 
 messageEmitter.attach((message, detach) => {
     if (message.type === 'init') {
@@ -164,6 +169,7 @@ messageEmitter.attach((message, detach) => {
             webassembly: message.webassembly,
             cashAddress: message.cashAddress,
             gap: message.gap,
+            timeOffset: message.timeOffset,
         });
     }
 });

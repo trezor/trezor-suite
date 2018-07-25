@@ -6,7 +6,12 @@
   "scripts": {
     "build-lib": "make clean;make lib",
     "build-example": "make example",
+    "test": "make eslint && make flow && make unit",
     "unit": "make unit",
+    "unit-build-tx": "make unit-build-tx",
+    "unit-discovery": "make unit-discovery",
+    "test-bitcore": "make test-bitcore",
+    "coverage-html": "make coverage-html",
     "coverage": "make coverage",
     "flow": "make flow",
     "eslint": "make eslint",
@@ -34,8 +39,12 @@
       ]
     ]
   },
+  "nyc": {
+    "sourceMap": false,
+    "instrument": false
+  },
   "browserify-shim": {
-    "../../../lib/socketio-worker/inside.js": "global:thisIsJustForKarmaTestButIHaveToWriteItHere"
+    "../../../src/socketio-worker/inside.js": "global:thisIsJustForKarmaTestButIHaveToWriteItHere"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",
@@ -47,6 +56,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.2.1",
+    "babel-plugin-istanbul": "^4.1.6",
     "babel-plugin-add-module-exports": "0.1.2",
     "babel-plugin-transform-class-properties": "6.4.0",
     "babel-plugin-transform-flow-strip-types": "6.4.0",

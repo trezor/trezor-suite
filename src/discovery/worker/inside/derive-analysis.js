@@ -15,6 +15,7 @@ import type {
 import {
     objectValues,
     getInputId,
+    filterNull,
 } from '../utils';
 
 import {
@@ -43,7 +44,8 @@ export function deriveAnalysis(
     newTransactions: ChainNewTransactions,
     oldTransactions: Array<TransactionInfo>,
     addressToPath: AddressToPath,
-    lastBlock: Block
+    lastBlock: Block,
+    wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ) {
     // I need the outputs in format txid+i -> address/value
     // For old transactions, that are in history, I just need my outputs
@@ -60,7 +62,8 @@ export function deriveAnalysis(
         oldTransactions,
         outputsForAnalysis,
         addressToPath,
-        lastBlock
+        lastBlock,
+        wantedOffset
     );
 
     // Add "balance" (which means balance after the transaction)
@@ -118,7 +121,8 @@ function deriveBalancelessAnalysisMap(
     oldTs: Array<TransactionInfo>,
     outputs: OutputsForAnalysisMap,
     addressToPath: AddressToPath,
-    lastBlock: Block
+    lastBlock: Block,
+    wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ): {[id: string]: TransactionInfoBalanceless} {
     const res = {};
     // first, save the old ones
@@ -126,7 +130,7 @@ function deriveBalancelessAnalysisMap(
         res[t.hash] = t;
     });
     Object.keys(newTs).forEach(id => {
-        res[id] = analyzeTransaction(newTs[id], outputs, addressToPath, lastBlock);
+        res[id] = analyzeTransaction(newTs[id], outputs, addressToPath, lastBlock, wantedOffset);
     });
     return res;
 }
@@ -136,12 +140,13 @@ function analyzeTransaction(
     t: ChainNewTransaction,
     outputs: OutputsForAnalysisMap,
     addressToPath: AddressToPath,
-    lastBlock: Block
+    lastBlock: Block,
+    wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ): TransactionInfoBalanceless {
     const inputIds = t.tx.ins.map(input =>
         ({id: getInputId(input), index: input.index})
     );
-    const hasJoinsplits = t.tx.joinsplits == null ? true : t.tx.joinsplits.length > 0;
+    const hasJoinsplits = t.tx.joinsplits.length > 0;
 
     const isCoinbase = t.tx.ins.some((i) => BitcoinJsTransaction.isCoinbaseHash(i.hash));
 
@@ -155,7 +160,7 @@ function analyzeTransaction(
         hash,
         hasJoinsplits
     );
-    const dates = deriveDateFormats(t.timestamp);
+    const dates = deriveDateFormats(t.timestamp, wantedOffset);
 
     const confirmations = (t.height == null) ? null : ((lastBlock.height - t.height) + 1);
 
@@ -179,7 +184,10 @@ function getTargetsFromTransaction(
     id: string,
     hasJoinsplits: boolean,
 ): TargetsType {
-    const currentOutputs = outputs[id];
+    // this function gets run only on new transactions,
+    // so currentOutputs is always with full outputs, not pruned
+    const currentOutputs_ = outputs[id];
+    const currentOutputs = filterNull(currentOutputs_, true);
 
     let nCredit = 0;
     let nDebit = 0;
@@ -227,12 +235,10 @@ function getTargetsFromTransaction(
     // Transansction is GIVING me money,
     // if its output has address that is mine. (On any chain.)
     currentOutputs.forEach((output, i) => {
-        if (output != null) {
-            if (isCredit(output.address)) {
-                value += output.value;
-                nCredit++;
-                myOutputs[i] = {address: output.address, value: output.value, i};
-            }
+        if (isCredit(output.address)) {
+            value += output.value;
+            nCredit++;
+            myOutputs[i] = {address: output.address, value: output.value, i};
         }
     });
 
@@ -241,11 +247,9 @@ function getTargetsFromTransaction(
     function filterTargets(filterFunction: (address: string) => boolean): Array<TargetInfo> {
         const res = [];
         currentOutputs.forEach((info, i) => {
-            if (info != null) {
-                const {address, value} = info;
-                if (filterFunction(address)) {
-                    res.push({address, value, i});
-                }
+            const {address, value} = info;
+            if (filterFunction(address)) {
+                res.push({address, value, i});
             }
         });
         return res;
@@ -274,11 +278,6 @@ function getTargetsFromTransaction(
         // outgoing transaction, targets are debit outputs
         type = 'sent';
         targets = filterTargets(address => isDebit(address));
-        if (targets.length === 0) {
-            // ? who knows, show self as a backup
-            type = 'self';
-            targets = [];
-        }
     }
 
     // note that target selection does NOT affect value/balance
@@ -316,8 +315,22 @@ function compareByOldestAndType(
 ): number {
     const ah = (a.height != null ? a.height : Infinity);
     const bh = (b.height != null ? b.height : Infinity);
-    return ((ah - bh) || 0) || // Infinity - Infinity = NaN
-        (IMPACT_ORDERING.indexOf(a.type) -
-        IMPACT_ORDERING.indexOf(b.type));
+    const diff = (ah - bh) || 0; // Infinity - Infinity = NaN
+    if (diff !== 0) {
+        return diff;
+    }
+    const odiff = (IMPACT_ORDERING.indexOf(a.type) - IMPACT_ORDERING.indexOf(b.type));
+    if (odiff !== 0) {
+        return odiff;
+    }
+
+    // this does not really matter, what matter is that it is stable
+    const ahash = a.hash;
+    const bhash = b.hash;
+    if (ahash < bhash) {
+        return -1;
+    } else {
+        return 1;
+    }
 }
 

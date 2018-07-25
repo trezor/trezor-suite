@@ -78,8 +78,8 @@ export class GetChainTransactions {
     nullRange(): BlockRange {
         const range = this.range;
         return {
-            ...range,
-            since: range.nullBlock,
+            firstHeight: 0,
+            last: range.last,
         };
     }
 
@@ -174,7 +174,7 @@ export class GetChainTransactions {
                 this.chainId,
                 first,
                 last,
-                range.first.height,
+                range.firstHeight,
                 range.last.height,
                 this.txids.size,
                 addresses
@@ -188,7 +188,13 @@ export class GetChainTransactions {
                 }
 
                 const value = value_;
-                this.handleTransactions(value, first);
+                try {
+                    this.handleTransactions(value, first);
+                } catch (error) {
+                    this.dfd.reject('Error transaction parsing: ' + error.message || error.toString());
+                    stream.dispose();
+                    return;
+                }
             });
 
             stream.finish.attach(() => {
@@ -332,26 +338,6 @@ export class GetChainTransactions {
             });
         }
     }
-}
-
-export function findDeleted(
-    txids: Array<string>,
-    doesTransactionExist: (
-        txid: string
-    ) => Promise<boolean>
-): Promise<Array<string>> {
-    const result = [];
-    const str = Stream.fromArray(txids);
-    return str
-        .mapPromiseError(id => {
-            return doesTransactionExist(id).then(exists => {
-                if (!exists) {
-                    result.push(id);
-                }
-            });
-        })
-        .awaitFinish()
-        .then(() => result);
 }
 
 function deriveTxidSet(

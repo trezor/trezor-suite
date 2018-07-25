@@ -55,6 +55,12 @@ export type InMessage = {
     segwit: boolean,
     cashAddress: boolean,
     gap: number,
+
+    // what (new Date().getTimezoneOffset()) returns
+    // note that it is NEGATIVE from the UTC string timezone
+    // so, UTC+2 timezone returns -120...
+    // it's javascript, it's insane by default
+    timeOffset: number,
 } | {
     // starting discovery after init
     type: 'startDiscovery',
@@ -162,13 +168,13 @@ export type AccountNewInfo = {
 }
 
 export type Block = { hash: string, height: number };
-export type BlockRange = { first: Block, last: Block, nullBlock: Block };
+export type BlockRange = { firstHeight: number, last: Block };
 
 // export type InputsForAnalysis = Array<{id: string, index: number}>
 
 export type TransactionInfoBalanceless = {
     isCoinbase: boolean,
-    dateInfo: ?string,
+    timestamp: ?number,
     dateInfoDayFormat: ?string,
     dateInfoTimeFormat: ?string,
     hash: string,

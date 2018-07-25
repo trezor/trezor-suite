@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import coinAccum from '../../lib/build-tx/coinselect-lib/inputs/accumulative';
+import coinAccum from '../../src/build-tx/coinselect-lib/inputs/accumulative';
 import fixtures from './fixtures/accumulative';
 import utils from './_utils';
 

@@ -48,10 +48,31 @@ export class WorkerDiscoveryHandler {
         this.forceAddedTransactions = forceAddedTransactions;
     }
 
-    discovery(ai: ?AccountInfo, xpub: string, segwit: boolean, gap: number): StreamWithEnding<AccountLoadStatus, AccountInfo> {
+    discovery(
+        ai: ?AccountInfo,
+        xpub: string,
+        segwit: boolean,
+        gap: number,
+
+        // what (new Date().getTimezoneOffset()) returns
+        // note that it is NEGATIVE from the UTC string timezone
+        // so, UTC+2 timezone returns -120...
+        // it's javascript, it's insane by default
+        timeOffset: number,
+    ): StreamWithEnding<AccountLoadStatus, AccountInfo> {
         // $FlowIssue
         const webassembly = typeof WebAssembly !== 'undefined';
-        this.workerChannel.postToWorker({type: 'init', state: ai, network: this.network, webassembly, xpub, segwit, cashAddress: this.cashAddress, gap});
+        this.workerChannel.postToWorker({
+            type: 'init',
+            state: ai,
+            network: this.network,
+            webassembly,
+            xpub,
+            segwit,
+            cashAddress: this.cashAddress,
+            gap,
+            timeOffset,
+        });
         this.workerChannel.postToWorker({type: 'startDiscovery'});
 
         const promise = this.workerChannel.resPromise(() => this.counter.finisher.emit());
