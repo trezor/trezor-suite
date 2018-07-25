@@ -161,8 +161,9 @@ export type Discovery = {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
-        cashAddress?: boolean,
-        gap?: number
+        cashAddress: boolean,
+        gap: number,
+        timeOffset: number
     ) => StreamWithEnding<AccountLoadStatus, AccountInfo>,
 
     +detectUsedAccount: (
@@ -177,8 +178,9 @@ export type Discovery = {
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
-        cashAddress?: boolean,
-        gap?: number
+        cashAddress: boolean,
+        gap: number,
+        timeOffset: number
     ) => Stream<AccountInfo | Error>,
 
     // force-adds transaction to multiple addresses
