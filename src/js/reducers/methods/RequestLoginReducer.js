@@ -18,10 +18,10 @@ const defaultFn: string = `() => {
     return new Promise(resolve => {
         setTimeout(() => {
             resolve({
-                hidden: 'cd8552569d6e4509266ef137584d1e62c7579b5b8ed69bbafa4b864c6521e7c2',
-                visual: 'Visual'
+                challengeHidden: 'cd8552569d6e4509266ef137584d1e62c7579b5b8ed69bbafa4b864c6521e7c2',
+                challengeVisual: 'Visual'
             })
-        }, 3000)
+        }, 1000)
     })
 }`;
 
