@@ -22,7 +22,7 @@ const defaultPaths = {
     "zcash": "m/44'/133'/0'",
     "test":  "m/49'/1'/0'",
     "doge":  "m/44'/3'/0'",
-    "nmc":   "m/44'/7'/0'",
+    "vtc":   "m/44'/28'/0'",
 }
 
 const initialState: MethodState = {
