@@ -32,24 +32,39 @@ const TrezorConnectService = store => next => action => {
         //     console.warn("-------TRANSPOOOO", event)
         // })
 
-        const src = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/next/';
-        try {
-            TrezorConnect.init({
-                connectSrc: src,
-                // connectSrc: 'https://localhost:8088/',
-                // connectSrc: 'https://sisyfos.trezor.io/next/',
+        window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
 
-                // webusb: false,
-                // transportReconnect: false,
-                popup: true,
-                debug: false,
-            })
-            .then(r => {
-                // post action inited
-            })
-        } catch (E) {
-            console.log("ERROR", E);
-        }
+        // const src = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/next/';
+        /// const src = 'https://sisyfos.trezor.io/next/';
+
+        
+        /*
+        TrezorConnect.init({
+            connectSrc: src,
+            // connectSrc: 'https://localhost:8088/',
+            // connectSrc: 'https://sisyfos.trezor.io/next/',
+
+            webusb: true,
+            // transportReconnect: false,
+            popup: true,
+            debug: true,
+            // excludedDevices: ["web02"]
+        })
+        // .then(r => {
+        //     console.warn("INIT", r);
+        //     TrezorConnect.getPublicKey({ path: "m/44"});
+        // })
+        .catch(error => {
+            console.log("ERROR", error);
+        })
+        */
+
+        
+        
+        
+        
+
+       // TrezorConnect.getPublicKey({ path: "m/44"});
         
         // .catch(error => {
         //     // TODO: show some ui with errors
