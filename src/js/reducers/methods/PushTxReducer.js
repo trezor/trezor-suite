@@ -16,7 +16,7 @@ type MethodState = {
 const initialState: MethodState = {
     js: 'TrezorConnect.pushTransaction',
     fields: ['tx', 'coin'],
-    coin: '',
+    coin: 'btc',
     tx: '',
 };
 
