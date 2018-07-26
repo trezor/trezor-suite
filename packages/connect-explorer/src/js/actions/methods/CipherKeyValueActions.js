@@ -65,7 +65,7 @@ export function onIVChange(iv: string): any {
 export function onCipherKeyValue(): any {
     return async function (dispatch, getState) {
 
-        const response = await TrezorConnect.cipherKeyValue( getState().common.params );
+        const response = await TrezorConnect.cipherKeyValue( { ...getState().common.params, useEmptyPassphrase: true } );
 
         // const response = await TrezorConnect.cipherKeyValue({
         //     bundle: [
