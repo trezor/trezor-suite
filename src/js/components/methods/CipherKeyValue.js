@@ -96,12 +96,12 @@ const CipherKeyValue = (props): any => {
                     </label>
                 </div>
 
-                <div className="type-path">
+                {/* <div className="type-path">
                     <div className="row">
                         <label>IV</label>
                         <input type="text" className="small" value={ iv } onChange={ event => onIVChange(event.target.value) } />
                     </div>
-                </div>
+                </div> */}
 
                 <div className="row">
                     <label></label>
