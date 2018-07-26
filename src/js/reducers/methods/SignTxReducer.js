@@ -17,7 +17,7 @@ type MethodState = {
 const defaultInputs: string = 
 `[{
     address_n: [49 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 1, 0],
-    amount: 123456789,
+    amount: "123456789",
     prev_index: 0,
     prev_hash: "20912f98ea3ed849042efed0fdac8cb4fc301961c5988cba56902d8ffb61c337",
     script_type: "SPENDP2SHWITNESS"
@@ -26,13 +26,13 @@ const defaultInputs: string =
 const defaultOutputs: string = 
 `[{
     address: "mhRx1CeVfaayqRwq5zgRQmD7W5aWBfD5mC",
-    amount: 12300000,
+    amount: "12300000",
     script_type: "PAYTOADDRESS"
 },
 {
     address_n: [49 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 1, 0],
     script_type: "PAYTOP2SHWITNESS",
-    amount: 123456789 - 11000 - 12300000,
+    amount: Number(123456789 - 11000 - 12300000).toString(),
 }]`;
 
 const initialState: MethodState = {
