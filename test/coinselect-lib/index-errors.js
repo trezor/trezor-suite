@@ -17,7 +17,12 @@ describe('coinselect errors', () => {
             const outputs = utils.expand(f.outputs, false, outputLength);
 
             assert.throws(() => {
-                coinAccum(inputs, outputs, f.feeRate, { inputLength, changeOutputLength: outputLength, dustThreshold });
+                coinAccum(
+                    inputs,
+                    outputs,
+                    f.feeRate,
+                    { inputLength, changeOutputLength: outputLength, dustThreshold },
+                );
             }, new RegExp(f.expected));
         });
     });

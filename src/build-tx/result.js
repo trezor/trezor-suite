@@ -33,11 +33,9 @@ export const empty: Result = {
 };
 
 export function getNonfinalResult(result: coinselect.CompleteResult): Result {
-    const max = result.result.max;
-    const fee = result.result.fee;
-    const feePerByte = result.result.feePerByte;
-    const bytes = result.result.bytes;
-    const totalSpent = result.result.totalSpent;
+    const {
+        max, fee, feePerByte, bytes, totalSpent,
+    } = result.result;
 
     return {
         type: 'nonfinal',
@@ -53,11 +51,9 @@ export function getFinalResult(
     result: coinselect.CompleteResult,
     transaction: transaction.Transaction,
 ): Result {
-    const max = result.result.max;
-    const fee = result.result.fee;
-    const feePerByte = result.result.feePerByte;
-    const bytes = result.result.bytes;
-    const totalSpent = result.result.totalSpent;
+    const {
+        max, fee, feePerByte, bytes, totalSpent,
+    } = result.result;
 
     return {
         type: 'final',

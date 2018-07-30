@@ -1,4 +1,6 @@
 /* @flow */
+/* eslint-disable */
+
 
 // Simple pseudo-randomness that's based on a simple fingerprinting
 // Used so the order of backends is always the same on a computer

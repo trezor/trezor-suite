@@ -48,6 +48,7 @@ export class WorkerChannel {
 
                 // $FlowIssue
                 worker.onmessage = (event: {data: OutMessage}) => {
+                    // eslint-disable-next-line
                     const data: OutMessage = event.data;
                     this.messageEmitter.emit(data);
                 };
@@ -134,7 +135,7 @@ export class WorkerChannel {
                 },
             });
         });
-        stream.finish.attach((value) => {
+        stream.finish.attach(() => {
             this.postToWorker({
                 type: 'streamResponseFinish',
                 id: request.id,
