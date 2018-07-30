@@ -5,7 +5,4 @@ module.exports = {
     modulePathIgnorePatterns: [
         'node_modules',
     ],
-    transformIgnorePatterns: [
-        'src/babel',
-    ],
 };

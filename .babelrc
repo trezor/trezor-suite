@@ -18,5 +18,10 @@
             "rootPathSuffix": "./src",
             "rootPathPrefix": "~"
         }]
-    ]
+    ],
+    "env": {
+        "test": {
+          "presets": ["jest"]
+        }
+      }
 }
