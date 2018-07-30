@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 
 import { default as SendFormActions } from '~/js/actions/SendFormActions';
 import * as SessionStorageActions from '~/js/actions/SessionStorageActions';
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import SendForm from './SendForm';
 
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from '~/flowtype';
 import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../SelectedAccount';
 
@@ -29,23 +29,19 @@ export type DispatchProps = BaseDispatchProps & {
 
 export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
-    return {
-        className: "send-from",
-        selectedAccount: state.selectedAccount,
-        wallet: state.wallet,
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => ({
+    className: 'send-from',
+    selectedAccount: state.selectedAccount,
+    wallet: state.wallet,
 
-        sendForm: state.sendForm,
-        fiat: state.fiat,
-        localStorage: state.localStorage
-    };
-}
+    sendForm: state.sendForm,
+    fiat: state.fiat,
+    localStorage: state.localStorage,
+});
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
-    return {
-        sendFormActions: bindActionCreators(SendFormActions, dispatch),
-        saveSessionStorage: bindActionCreators(SessionStorageActions.save, dispatch),
-    };
-}
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+    sendFormActions: bindActionCreators(SendFormActions, dispatch),
+    saveSessionStorage: bindActionCreators(SessionStorageActions.save, dispatch),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendForm)
+export default connect(mapStateToProps, mapDispatchToProps)(SendForm);

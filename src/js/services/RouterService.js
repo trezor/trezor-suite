@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE, push, replace } from 'react-router-redux';
@@ -7,7 +7,7 @@ import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as WALLET from '../actions/constants/wallet';
 import * as NotificationActions from '../actions/NotificationActions';
 
-import type { 
+import type {
     Middleware,
     MiddlewareAPI,
     MiddlewareDispatch,
@@ -18,7 +18,7 @@ import type {
     AsyncAction,
     GetState,
     RouterLocationState,
-    TrezorDevice
+    TrezorDevice,
 } from '~/flowtype';
 
 /**
@@ -26,12 +26,12 @@ import type {
  */
 
 const pathToParams = (path: string): RouterLocationState => {
-    const urlParts: Array<string> = path.split("/").slice(1);
+    const urlParts: Array<string> = path.split('/').slice(1);
     const params: RouterLocationState = {};
-    if (urlParts.length < 1 || path === "/") return params;
-    
-    for (let i = 0, len = urlParts.length; i < len; i+=2) {
-        params[ urlParts[i] ] = urlParts[ i + 1 ] || urlParts[i];
+    if (urlParts.length < 1 || path === '/') return params;
+
+    for (let i = 0, len = urlParts.length; i < len; i += 2) {
+        params[urlParts[i]] = urlParts[i + 1] || urlParts[i];
     }
 
     if (params.hasOwnProperty('device')) {
@@ -43,16 +43,15 @@ const pathToParams = (path: string): RouterLocationState => {
     }
 
     return params;
-}
+};
 
 const validation = (api: MiddlewareAPI, params: RouterLocationState): boolean => {
-
     if (params.hasOwnProperty('device')) {
         const { devices } = api.getState();
 
         let device: ?TrezorDevice;
         if (params.hasOwnProperty('deviceInstance')) {
-            device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === parseInt(params.deviceInstance ) );
+            device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === parseInt(params.deviceInstance));
         } else {
             device = devices.find(d => d.path === params.device || (d.features && d.features.device_id === params.device));
         }
@@ -72,21 +71,19 @@ const validation = (api: MiddlewareAPI, params: RouterLocationState): boolean =>
     }
 
     return true;
-}
+};
 
 let __unloading: boolean = false;
 
 const LandingURLS: Array<string> = [
     '/',
-    '/bridge'
+    '/bridge',
 ];
 
 const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
-
     if (action.type === WALLET.ON_BEFORE_UNLOAD) {
         __unloading = true;
     } else if (action.type === LOCATION_CHANGE && !__unloading) {
-
         const { location } = api.getState().router;
         const web3 = api.getState().web3;
         const { devices } = api.getState();
@@ -99,16 +96,14 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         let redirectPath: ?string;
         // first event after application loads
         if (!location) {
-
             postActions.push({
                 type: WALLET.SET_INITIAL_URL,
-                pathname: action.payload.pathname, 
-                state: requestedParams
+                pathname: action.payload.pathname,
+                state: requestedParams,
             });
 
             redirectPath = '/';
         } else {
-
             const isModalOpened: boolean = api.getState().modal.opened;
             // if web3 wasn't initialized yet or there are no devices attached or initialization error occurs
             const landingPage: boolean = web3.length < 1 || devices.length < 1 || error !== null;
@@ -118,10 +113,10 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             // example 2 (invalid blocking): url changes while passphrase modal opened because device disconnect
             if (isModalOpened && action.payload.pathname !== location.pathname && validation(api, currentParams)) {
                 redirectPath = location.pathname;
-                console.warn("Modal still opened");
+                console.warn('Modal still opened');
             } else if (landingPage) {
                 // keep route on landing page
-                if (action.payload.pathname !== '/' && action.payload.pathname !== '/bridge'){
+                if (action.payload.pathname !== '/' && action.payload.pathname !== '/bridge') {
                     redirectPath = '/';
                 }
             } else {
@@ -136,8 +131,8 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                         postActions.push({
                             type: CONNECT.COIN_CHANGED,
                             payload: {
-                                network: requestedParams.network
-                            }
+                                network: requestedParams.network,
+                            },
                         });
                     }
                 }
@@ -145,13 +140,13 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         }
 
         if (redirectPath) {
-            console.warn("Redirecting...", redirectPath)
+            console.warn('Redirecting...', redirectPath);
             // override action to keep routerReducer sync
             const url: string = redirectPath;
             action.payload.state = pathToParams(url);
             action.payload.pathname = url;
             // change url
-            api.dispatch( replace(url) );
+            api.dispatch(replace(url));
         } else {
             action.payload.state = requestedParams;
         }
@@ -160,11 +155,11 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         next(action);
 
         // resolve post actions
-        postActions.forEach(a => {
+        postActions.forEach((a) => {
             api.dispatch(a);
         });
 
-        api.dispatch( NotificationActions.clear(currentParams, requestedParams) );
+        api.dispatch(NotificationActions.clear(currentParams, requestedParams));
 
         return action;
     }

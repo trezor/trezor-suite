@@ -1,11 +1,10 @@
 /* @flow */
-'use strict';
+
 
 import React from 'react';
 import type { Props } from './index';
 
 const Confirmation = (props: Props) => {
-
     if (!props.modal.opened) return null;
     const { device } = props.modal;
 
@@ -16,6 +15,6 @@ const Confirmation = (props: Props) => {
             </div>
         </div>
     );
-}
+};
 
 export default Confirmation;

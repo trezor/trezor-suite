@@ -1,11 +1,10 @@
 /* @flow */
-'use strict';
+
 
 import React from 'react';
 import type { Props } from './index';
 
 const Confirmation = (props: Props) => {
-
     if (!props.modal.opened) return null;
     const { device } = props.modal;
 
@@ -14,7 +13,7 @@ const Confirmation = (props: Props) => {
         address,
         currency,
         total,
-        selectedFeeLevel
+        selectedFeeLevel,
     } = props.sendForm;
 
     return (
@@ -25,7 +24,7 @@ const Confirmation = (props: Props) => {
             </div>
             <div className="content">
                 <label>Send </label>
-                <p>{ `${amount} ${ currency }` }</p>
+                <p>{ `${amount} ${currency}` }</p>
                 <label>To</label>
                 <p>{ address }</p>
                 <label>Fee</label>
@@ -33,6 +32,6 @@ const Confirmation = (props: Props) => {
             </div>
         </div>
     );
-}
+};
 
 export default Confirmation;

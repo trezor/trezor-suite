@@ -1,9 +1,9 @@
 /* @flow */
-'use strict';
+
 
 import React, { Component } from 'react';
-import Preloader from './Preloader';
 import Select from 'react-select';
+import Preloader from './Preloader';
 
 type State = {
     version: string;
@@ -35,7 +35,6 @@ type Props = {
 }
 
 export default class InstallBridge extends Component<Props, State> {
-
     constructor(props: Props) {
         super(props);
 
@@ -49,7 +48,7 @@ export default class InstallBridge extends Component<Props, State> {
 
     onChange(value: InstallTarget) {
         this.setState({
-            target: value
+            target: value,
         });
     }
 
@@ -57,8 +56,8 @@ export default class InstallBridge extends Component<Props, State> {
         if (this.props.browserState.osname && !this.state.target) {
             const currentTarget: ?InstallTarget = installers.find(i => i.id === this.props.browserState.osname);
             this.setState({
-                target: currentTarget
-            })
+                target: currentTarget,
+            });
         }
     }
 
@@ -67,8 +66,8 @@ export default class InstallBridge extends Component<Props, State> {
             return <Preloader />;
         }
         const label: string = this.state.target.label;
-        const url = `${ this.state.url }${ this.state.target.value }`;
-        
+        const url = `${this.state.url}${this.state.target.value}`;
+
         return (
             <main>
                 <h3 className="claim">TREZOR Bridge. <span>Version 2.0.12</span></h3>
@@ -77,12 +76,13 @@ export default class InstallBridge extends Component<Props, State> {
                     <Select
                         name="installers"
                         className="installers"
-                        searchable={ false }
-                        clearable= { false }
-                        value={ this.state.target }
-                        onChange={ this.onChange.bind(this) }
-                        options={ installers } />
-                    <a href={ url } className="button">Download for { label }</a>
+                        searchable={false}
+                        clearable={false}
+                        value={this.state.target}
+                        onChange={this.onChange.bind(this)}
+                        options={installers}
+                    />
+                    <a href={url} className="button">Download for { label }</a>
                 </div>
                 <p>Learn more about latest version in <a href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md" className="green" target="_blank" rel="noreferrer noopener">Changelog</a></p>
             </main>

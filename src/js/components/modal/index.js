@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
@@ -55,55 +55,55 @@ const duration = 300;
 
 const Fade = ({ children, ...props }) => (
     <CSSTransition
-        { ...props }
-        timeout={ 1000 }
-        classNames="fade">
-            { children }
+        {...props}
+        timeout={1000}
+        classNames="fade"
+    >
+        { children }
     </CSSTransition>
 );
 
 class Modal extends Component<Props> {
     render() {
-
         if (!this.props.modal.opened) return null;
-        
+
         const { opened, windowType } = this.props.modal;
 
         let component = null;
         switch (windowType) {
-            case UI.REQUEST_PIN :
-                component = (<Pin { ...this.props } />);
-            break;
-            case UI.INVALID_PIN :
-                component = (<InvalidPin { ...this.props } />);
-            break;
-            case UI.REQUEST_PASSPHRASE :
-                component = (<Passphrase { ...this.props } />);
-            break;
-            case "ButtonRequest_SignTx" :
-                component = (<ConfirmSignTx { ...this.props } />)
-            break;
+            case UI.REQUEST_PIN:
+                component = (<Pin {...this.props} />);
+                break;
+            case UI.INVALID_PIN:
+                component = (<InvalidPin {...this.props} />);
+                break;
+            case UI.REQUEST_PASSPHRASE:
+                component = (<Passphrase {...this.props} />);
+                break;
+            case 'ButtonRequest_SignTx':
+                component = (<ConfirmSignTx {...this.props} />);
+                break;
             // case "ButtonRequest_Address" :
             //     component = (<ConfirmAddress { ...this.props } />)
             // break;
-            case "ButtonRequest_PassphraseType" :
-                component = (<PassphraseType { ...this.props } />)
-            break;
-            case RECEIVE.REQUEST_UNVERIFIED :
-                component = (<ConfirmUnverifiedAddress { ...this.props } />)
-            break;
+            case 'ButtonRequest_PassphraseType':
+                component = (<PassphraseType {...this.props} />);
+                break;
+            case RECEIVE.REQUEST_UNVERIFIED:
+                component = (<ConfirmUnverifiedAddress {...this.props} />);
+                break;
 
-            case CONNECT.REMEMBER_REQUEST :
-                component = (<RememberDevice { ...this.props } />)
-            break;
+            case CONNECT.REMEMBER_REQUEST:
+                component = (<RememberDevice {...this.props} />);
+                break;
 
-            case CONNECT.FORGET_REQUEST :
-                component = (<ForgetDevice { ...this.props } />)
-            break;
+            case CONNECT.FORGET_REQUEST:
+                component = (<ForgetDevice {...this.props} />);
+                break;
 
-            case CONNECT.TRY_TO_DUPLICATE :
-                component = (<DuplicateDevice { ...this.props } />)
-            break;
+            case CONNECT.TRY_TO_DUPLICATE:
+                component = (<DuplicateDevice {...this.props} />);
+                break;
         }
 
         let ch = null;
@@ -123,28 +123,24 @@ class Modal extends Component<Props> {
     }
 }
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
-    return {
-        modal: state.modal,
-        accounts: state.accounts,
-        devices: state.devices,
-        connect: state.connect,
-        selectedAccount: state.selectedAccount,
-        sendForm: state.sendForm,
-        receive: state.receive,
-        localStorage: state.localStorage,
-        wallet: state.wallet
-    };
-}
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => ({
+    modal: state.modal,
+    accounts: state.accounts,
+    devices: state.devices,
+    connect: state.connect,
+    selectedAccount: state.selectedAccount,
+    sendForm: state.sendForm,
+    receive: state.receive,
+    localStorage: state.localStorage,
+    wallet: state.wallet,
+});
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
-    return {
-        modalActions: bindActionCreators(ModalActions, dispatch),
-        receiveActions: bindActionCreators(ReceiveActions, dispatch),
-    };
-}
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+    modalActions: bindActionCreators(ModalActions, dispatch),
+    receiveActions: bindActionCreators(ReceiveActions, dispatch),
+});
 
 // export default connect(mapStateToProps, mapDispatchToProps)(Modal);
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(Modal)
+    connect(mapStateToProps, mapDispatchToProps)(Modal),
 );

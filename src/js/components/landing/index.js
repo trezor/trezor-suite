@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import React from 'react';
 import { bindActionCreators } from 'redux';
@@ -26,28 +26,24 @@ type DispatchProps = {
 }
 
 type OwnProps = {
-    
+
 }
 
 export type Props = StateProps & DispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => {
-    return {
-        localStorage: state.localStorage,
-        modal: state.modal,
-        web3: state.web3,
-        wallet: state.wallet,
-        connect: state.connect,
-        router: state.router,
-        wallet: state.wallet,
-        devices: state.devices,
-    };
-}
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+    localStorage: state.localStorage,
+    modal: state.modal,
+    web3: state.web3,
+    wallet: state.wallet,
+    connect: state.connect,
+    router: state.router,
+    wallet: state.wallet,
+    devices: state.devices,
+});
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => {
-    return { 
-        
-    };
-}
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);

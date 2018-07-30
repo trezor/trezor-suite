@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 export const ADD: 'token__add' = 'token__add';
 export const REMOVE: 'token__remove' = 'token__remove';

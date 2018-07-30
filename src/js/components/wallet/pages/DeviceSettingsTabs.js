@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -16,7 +16,6 @@ type State = {
 }
 
 const AccountTabs = (props: any): any => {
-
     const urlParams = props.match.params;
     const basePath = `/device/${urlParams.device}/network/${urlParams.network}/account/${urlParams.account}`;
 
@@ -25,6 +24,6 @@ const AccountTabs = (props: any): any => {
             <a>Device settings</a>
         </div>
     );
-}
+};
 
 export default AccountTabs;

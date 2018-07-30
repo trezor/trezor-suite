@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import * as PENDING from '../actions/constants/pendingTx';
 import * as SEND from '../actions/constants/send';
@@ -25,7 +25,7 @@ export type State = Array<PendingTx>;
 const initialState: State = [];
 
 const add = (state: State, action: SendTxAction): State => {
-    const newState = [ ...state ];
+    const newState = [...state];
     newState.push({
         id: action.txid,
         network: action.account.network,
@@ -38,38 +38,31 @@ const add = (state: State, action: SendTxAction): State => {
         rejected: false,
     });
     return newState;
-}
+};
 
-const remove = (state: State, id: string): State => {
-    return state.filter(tx => tx.id !== id);
-}
+const remove = (state: State, id: string): State => state.filter(tx => tx.id !== id);
 
-const reject = (state: State, id: string): State => {
-    return state.map(tx => {
-        if (tx.id === id && !tx.rejected) {
-            return { ...tx, rejected: true };
-        }
-        return tx;
-    });
-}
+const reject = (state: State, id: string): State => state.map((tx) => {
+    if (tx.id === id && !tx.rejected) {
+        return { ...tx, rejected: true };
+    }
+    return tx;
+});
 
 export default function pending(state: State = initialState, action: Action): State {
-
     switch (action.type) {
-
-        case SEND.TX_COMPLETE :
+        case SEND.TX_COMPLETE:
             return add(state, action);
 
-        case PENDING.TX_RESOLVED :
+        case PENDING.TX_RESOLVED:
             return remove(state, action.tx.id);
-        case PENDING.TX_NOT_FOUND :
+        case PENDING.TX_NOT_FOUND:
             return reject(state, action.tx.id);
 
-        case PENDING.FROM_STORAGE :
+        case PENDING.FROM_STORAGE:
             return action.payload;
 
         default:
             return state;
     }
-
 }

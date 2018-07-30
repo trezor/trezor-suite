@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 export const INIT: 'receive__init' = 'receive__init';
 export const DISPOSE: 'receive__dispose' = 'receive__dispose';

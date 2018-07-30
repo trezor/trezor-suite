@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
@@ -20,15 +20,15 @@ const CoinSelection = (props: Props): React$Element<string> => {
         }
     }
 
-    const walletCoins = config.coins.map(item => {
-        const url = `${ baseUrl }/network/${ item.network }/account/0`;
-        const className = `coin ${ item.network }`
+    const walletCoins = config.coins.map((item) => {
+        const url = `${baseUrl}/network/${item.network}/account/0`;
+        const className = `coin ${item.network}`;
         return (
-            <NavLink key={ item.network } to={ url } className={ className }>
+            <NavLink key={item.network} to={url} className={className}>
                 { item.name }
             </NavLink>
-        )
-    })
+        );
+    });
 
     return (
         <section>
@@ -56,6 +56,6 @@ const CoinSelection = (props: Props): React$Element<string> => {
             </a>
         </section>
     );
-}
+};
 
 export default CoinSelection;

@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import { UI, DEVICE } from 'trezor-connect';
 import * as RECEIVE from '../actions/constants/receive';
@@ -18,57 +18,55 @@ export type State = {
 }
 
 const initialState: State = {
-    opened: false
+    opened: false,
     // instances: null,
     // windowType: null
 };
 
 export default function modal(state: State = initialState, action: Action): State {
-
     switch (action.type) {
-
-        case RECEIVE.REQUEST_UNVERIFIED :
+        case RECEIVE.REQUEST_UNVERIFIED:
             return {
                 opened: true,
                 device: action.device,
-                windowType: action.type
-            }
+                windowType: action.type,
+            };
 
-        case CONNECT.REMEMBER_REQUEST :
+        case CONNECT.REMEMBER_REQUEST:
             return {
                 opened: true,
                 device: action.device,
                 instances: action.instances,
-                windowType: action.type
+                windowType: action.type,
             };
-        case CONNECT.FORGET_REQUEST :
+        case CONNECT.FORGET_REQUEST:
             return {
                 opened: true,
                 device: action.device,
-                windowType: action.type
+                windowType: action.type,
             };
 
-        case CONNECT.TRY_TO_DUPLICATE :
+        case CONNECT.TRY_TO_DUPLICATE:
             return {
                 opened: true,
                 device: action.device,
-                windowType: action.type
+                windowType: action.type,
             };
 
-        case DEVICE.CHANGED :
+        case DEVICE.CHANGED:
             if (state.opened && action.device.path === state.device.path && action.device.isUsedElsewhere) {
-                return initialState
+                return initialState;
             }
             return state;
 
-        case DEVICE.DISCONNECT :
+        case DEVICE.DISCONNECT:
             if (state.opened && action.device.path === state.device.path) {
-                return initialState
+                return initialState;
             }
             return state;
 
         // case DEVICE.CONNECT :
-        // case DEVICE.CONNECT_UNACQUIRED : 
+        // case DEVICE.CONNECT_UNACQUIRED :
         //     if (state.opened && state.windowType === CONNECT.TRY_TO_FORGET) {
         //         return {
         //             ...initialState,
@@ -77,32 +75,31 @@ export default function modal(state: State = initialState, action: Action): Stat
         //     }
         //     return state;
 
-        case UI.REQUEST_PIN :
-        case UI.INVALID_PIN :
-        case UI.REQUEST_PASSPHRASE :
+        case UI.REQUEST_PIN:
+        case UI.INVALID_PIN:
+        case UI.REQUEST_PASSPHRASE:
             return {
                 opened: true,
                 device: action.payload.device,
-                windowType: action.type
+                windowType: action.type,
             };
 
-        case UI.REQUEST_BUTTON :
+        case UI.REQUEST_BUTTON:
             return {
                 opened: true,
                 device: action.payload.device,
-                windowType: action.payload.code
-            }
-        
-        case UI.CLOSE_UI_WINDOW :
-        case MODAL.CLOSE :
-        
-        case CONNECT.FORGET :
-        case CONNECT.FORGET_SINGLE :
-        case CONNECT.REMEMBER :
+                windowType: action.payload.code,
+            };
+
+        case UI.CLOSE_UI_WINDOW:
+        case MODAL.CLOSE:
+
+        case CONNECT.FORGET:
+        case CONNECT.FORGET_SINGLE:
+        case CONNECT.REMEMBER:
             return initialState;
 
         default:
             return state;
     }
-
 }

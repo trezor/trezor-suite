@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as WALLET from '../actions/constants/wallet';
@@ -25,13 +25,9 @@ export type State = Array<Token>;
 const initialState: State = [];
 
 // Helper for actions
-export const findToken = (state: Array<Token>, address: string, symbol: string, deviceState: string): ?Token => {
-    return state.find(t => t.ethAddress === address && t.symbol === symbol && t.deviceState === deviceState);
-}
+export const findToken = (state: Array<Token>, address: string, symbol: string, deviceState: string): ?Token => state.find(t => t.ethAddress === address && t.symbol === symbol && t.deviceState === deviceState);
 
-export const findAccountTokens = (state: Array<Token>, account: Account): Array<Token> => {
-    return state.filter(t => t.ethAddress === account.address && t.network === account.network && t.deviceState === account.deviceState);
-}
+export const findAccountTokens = (state: Array<Token>, account: Account): Array<Token> => state.filter(t => t.ethAddress === account.address && t.network === account.network && t.deviceState === account.deviceState);
 
 // const setBalance = (state: State, payload: any): State => {
 //     const newState: Array<Token> = [ ...state ];
@@ -44,52 +40,43 @@ export const findAccountTokens = (state: Array<Token>, account: Account): Array<
 // }
 
 const create = (state: State, token: Token): State => {
-    const newState: State = [ ...state ];
+    const newState: State = [...state];
     newState.push(token);
     return newState;
-}
+};
 
-const forget = (state: State, device: TrezorDevice): State => {
-    return state.filter(t => t.deviceState !== device.state);
-}
+const forget = (state: State, device: TrezorDevice): State => state.filter(t => t.deviceState !== device.state);
 
 const clear = (state: State, devices: Array<TrezorDevice>): State => {
-    let newState: State = [ ...state ];
-    devices.forEach(d => {
+    let newState: State = [...state];
+    devices.forEach((d) => {
         newState = forget(newState, d);
     });
     return newState;
-}
+};
 
-const remove = (state: State, token: Token): State => {
-    return state.filter(t => {
-        return !(t.ethAddress === token.ethAddress && t.address === token.address && t.deviceState === token.deviceState);
-    });
-}
+const remove = (state: State, token: Token): State => state.filter(t => !(t.ethAddress === token.ethAddress && t.address === token.address && t.deviceState === token.deviceState));
 
 export default (state: State = initialState, action: Action): State => {
-
     switch (action.type) {
-
-        case TOKEN.FROM_STORAGE :
+        case TOKEN.FROM_STORAGE:
             return action.payload;
 
-        case TOKEN.ADD :
+        case TOKEN.ADD:
             return create(state, action.payload);
-        case TOKEN.REMOVE :
+        case TOKEN.REMOVE:
             return remove(state, action.token);
-        case TOKEN.SET_BALANCE :
+        case TOKEN.SET_BALANCE:
             return action.payload;
 
-        case CONNECT.FORGET :
-        case CONNECT.FORGET_SINGLE :
+        case CONNECT.FORGET:
+        case CONNECT.FORGET_SINGLE:
             return forget(state, action.device);
 
-        case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA :
+        case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA:
             return clear(state, action.devices);
 
         default:
             return state;
     }
-
-}
+};

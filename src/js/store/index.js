@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware, push } from 'react-router-redux';
@@ -16,9 +16,9 @@ import RavenMiddleware from 'redux-raven-middleware';
 
 import type { Action, GetState, Store } from '~/flowtype';
 
-export const history: History = createHistory( { queryKey: false } );
+export const history: History = createHistory({ queryKey: false });
 
-const RAVEN_KEY: string = 'https://497392c3ff6e46dc9e54eef123979378@sentry.io/294339'
+const RAVEN_KEY: string = 'https://497392c3ff6e46dc9e54eef123979378@sentry.io/294339';
 Raven.config(RAVEN_KEY).install();
 
 const initialState: any = {};
@@ -26,26 +26,23 @@ const enhancers = [];
 const middleware = [
     thunk,
     RavenMiddleware(RAVEN_KEY),
-    routerMiddleware(history)
+    routerMiddleware(history),
 ];
 
 
 let composedEnhancers: any;
 if (process.env.NODE_ENV === 'development') {
-
     const excludeLogger = (getState: GetState, action: Action): boolean => {
         //'@@router/LOCATION_CHANGE'
         const excluded: Array<string> = ['LOG_TO_EXCLUDE', 'log__add'];
-        const pass: Array<string> = excluded.filter((act) => {
-            return action.type === act;
-        });
+        const pass: Array<string> = excluded.filter(act => action.type === act);
         return pass.length === 0;
-    }
-    
+    };
+
     const logger = createLogger({
         level: 'info',
         predicate: excludeLogger,
-        collapsed: true
+        collapsed: true,
     });
 
     const devToolsExtension: ?Function = window.devToolsExtension;
@@ -55,19 +52,19 @@ if (process.env.NODE_ENV === 'development') {
 
     composedEnhancers = compose(
         applyMiddleware(...middleware, logger, ...services),
-        ...enhancers
+        ...enhancers,
     );
 } else {
     composedEnhancers = compose(
         applyMiddleware(...middleware, ...services),
-        ...enhancers
+        ...enhancers,
     );
 }
 
 export default createStore(
     reducers,
     initialState,
-    composedEnhancers
+    composedEnhancers,
 );
 
 // if (process.env.NODE_ENV === 'production') {

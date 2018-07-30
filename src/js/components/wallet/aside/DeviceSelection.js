@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import React, { Component } from 'react';
 import Select from 'react-select';
@@ -9,62 +9,61 @@ import type { Props } from './index';
 import type { TrezorDevice } from '~/flowtype';
 
 export const DeviceSelect = (props: Props) => {
-
     const { devices } = props;
     const { transport } = props.connect;
 
     const selected: ?TrezorDevice = props.wallet.selectedDevice;
     if (!selected) return null;
 
-    let deviceStatus: string = "Connected";
-    let css: string = "device-select device";
-    if (props.deviceDropdownOpened) css += " opened";
+    let deviceStatus: string = 'Connected';
+    let css: string = 'device-select device';
+    if (props.deviceDropdownOpened) css += ' opened';
 
     if (!selected.connected) {
-        css += " disconnected";
-        deviceStatus = "Disconnected";
+        css += ' disconnected';
+        deviceStatus = 'Disconnected';
     } else if (!selected.available) {
-        css += " unavailable";
-        deviceStatus = "Unavailable";
+        css += ' unavailable';
+        deviceStatus = 'Unavailable';
     } else {
         if (selected.unacquired) {
-            css += " unacquired";
-            deviceStatus = "Used in other window";
+            css += ' unacquired';
+            deviceStatus = 'Used in other window';
         }
         if (selected.isUsedElsewhere) {
-            css += " used-elsewhere";
-            deviceStatus = "Used in other window";
+            css += ' used-elsewhere';
+            deviceStatus = 'Used in other window';
         } else if (selected.featuresNeedsReload) {
-            css += " reload-features";
+            css += ' reload-features';
         }
     }
 
     if (selected.features && selected.features.major_version > 1) {
-        css += " trezor-t";
+        css += ' trezor-t';
     }
 
     const handleOpen = () => {
-        props.toggleDeviceDropdown(props.deviceDropdownOpened ? false : true);
-    }
+        props.toggleDeviceDropdown(!props.deviceDropdownOpened);
+    };
 
     const deviceCount = devices.length;
-    const webusb: boolean = (transport && transport.version.indexOf('webusb') >= 0) ? true : false;
+    const webusb: boolean = !!((transport && transport.version.indexOf('webusb') >= 0));
     const disabled: boolean = (devices.length < 1 && !webusb) || (devices.length === 1 && !selected.features);
     if (disabled) {
-        css += " disabled";
+        css += ' disabled';
     }
 
     return (
-        <div className={ css } onClick={ !disabled ? handleOpen : null }>
+        <div className={css} onClick={!disabled ? handleOpen : null}>
             <div className="label-container">
                 <span className="label">{ selected.instanceLabel }</span>
                 <span className="status">{ deviceStatus }</span>
             </div>
             { deviceCount > 1 ? <div className="counter">{ deviceCount }</div> : null }
-            <div className="arrow"></div>
+            <div className="arrow" />
         </div>
     );
-}
+};
 
 type DeviceMenuItem = {
     type: string;
@@ -72,8 +71,8 @@ type DeviceMenuItem = {
 }
 
 export class DeviceDropdown extends Component<Props> {
-
     mouseDownHandler: (event: MouseEvent) => void;
+
     blurHandler: (event: FocusEvent) => void;
 
     constructor(props: Props) {
@@ -84,12 +83,11 @@ export class DeviceDropdown extends Component<Props> {
 
     componentDidUpdate() {
         const { transport } = this.props.connect;
-        if (transport && transport.version.indexOf('webusb') >= 0)
-            TrezorConnect.renderWebUSBButton();
+        if (transport && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
     }
 
     mouseDownHandler(event: MouseEvent): void {
-        let elem: any = (event.target : any);
+        let elem: any = (event.target: any);
         let block: boolean = false;
         while (elem.parentElement) {
             if (elem.tagName.toLowerCase() === 'aside' || (elem.className && elem.className.indexOf && elem.className.indexOf('modal-container') >= 0)) {
@@ -113,8 +111,7 @@ export class DeviceDropdown extends Component<Props> {
         window.addEventListener('mousedown', this.mouseDownHandler, false);
         // window.addEventListener('blur', this.blurHandler, false);
         const { transport } = this.props.connect;
-        if (transport && transport.version.indexOf('webusb') >= 0)
-            TrezorConnect.renderWebUSBButton();
+        if (transport && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
     }
 
     componentWillUnmount(): void {
@@ -136,8 +133,7 @@ export class DeviceDropdown extends Component<Props> {
     }
 
     render() {
-
-        const { devices  } = this.props;
+        const { devices } = this.props;
         const { transport } = this.props.connect;
         const selected: ?TrezorDevice = this.props.wallet.selectedDevice;
         if (!selected) return;
@@ -152,25 +148,23 @@ export class DeviceDropdown extends Component<Props> {
             const deviceMenuItems: Array<DeviceMenuItem> = [];
 
             if (selected.isUsedElsewhere) {
-                deviceMenuItems.push({ type: "reload", label: "Renew session" });
+                deviceMenuItems.push({ type: 'reload', label: 'Renew session' });
             } else if (selected.featuresNeedsReload) {
-                deviceMenuItems.push({ type: "reload", label: "Renew session" });
+                deviceMenuItems.push({ type: 'reload', label: 'Renew session' });
             }
 
-            deviceMenuItems.push({ type: "settings", label: "Device settings" });
+            deviceMenuItems.push({ type: 'settings', label: 'Device settings' });
             if (selected.features && selected.features.passphrase_protection && selected.connected && selected.available) {
-                deviceMenuItems.push({ type: "clone", label: "Clone device" });
+                deviceMenuItems.push({ type: 'clone', label: 'Clone device' });
             }
             //if (selected.remember) {
-                deviceMenuItems.push({ type: "forget", label: "Forget device" });
+            deviceMenuItems.push({ type: 'forget', label: 'Forget device' });
             //}
 
 
-            const deviceMenuButtons = deviceMenuItems.map((item, index) => {
-                return (
-                    <div key={ item.type } className={ item.type } onClick={ (event) => this.onDeviceMenuClick(item, selected) }>{ item.label}</div>
-                )
-            });
+            const deviceMenuButtons = deviceMenuItems.map((item, index) => (
+                <div key={item.type} className={item.type} onClick={event => this.onDeviceMenuClick(item, selected)}>{ item.label}</div>
+            ));
             currentDeviceMenu = deviceMenuButtons.length < 1 ? null : (
                 <div className="device-menu">
                     { deviceMenuButtons }
@@ -181,34 +175,37 @@ export class DeviceDropdown extends Component<Props> {
         const deviceList = devices.map((dev, index) => {
             if (dev === selected) return null;
 
-            let deviceStatus: string = "Connected";
-            let css: string = "device item"
+            let deviceStatus: string = 'Connected';
+            let css: string = 'device item';
             if (dev.unacquired || dev.isUsedElsewhere) {
-                deviceStatus = "Used in other window";
-                css += " unacquired";
+                deviceStatus = 'Used in other window';
+                css += ' unacquired';
             } else if (!dev.connected) {
-                deviceStatus = "Disconnected";
-                css += " disconnected";
+                deviceStatus = 'Disconnected';
+                css += ' disconnected';
             } else if (!dev.available) {
-                deviceStatus = "Unavailable";
-                css += " unavailable";
+                deviceStatus = 'Unavailable';
+                css += ' unavailable';
             }
 
             if (dev.features && dev.features.major_version > 1) {
-                css += " trezor-t";
+                css += ' trezor-t';
             }
 
             return (
-                <div key={index} className={ css } onClick={ () => this.props.onSelectDevice(dev) } >
+                <div key={index} className={css} onClick={() => this.props.onSelectDevice(dev)}>
                     <div className="label-container">
                         <span className="label">{ dev.instanceLabel }</span>
                         <span className="status">{ deviceStatus }</span>
                     </div>
-                    <div className="forget-button" onClick={ (event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        this.onDeviceMenuClick({ type: 'forget', label: ''}, dev);
-                    } }> </div>
+                    <div
+                        className="forget-button"
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            this.onDeviceMenuClick({ type: 'forget', label: '' }, dev);
+                        }}
+                    />
                 </div>
             );
         });

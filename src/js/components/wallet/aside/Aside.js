@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 //import React, { Node } from 'react';
 import * as React from 'react';
@@ -20,51 +20,49 @@ type TransitionMenuProps = {
     children?: React.Node;
 }
 
-const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => {
-    return (
-        <TransitionGroup component="div" className="transition-container">
-            <CSSTransition 
-                key={ props.animationType }
-                onExit= { () => { window.dispatchEvent( new Event('resize') ) } }
-                onExited= { () => window.dispatchEvent( new Event('resize') ) }
-                in={ true }
-                out={ true }
-                classNames={ props.animationType }
-                appear={false}
-                timeout={ 300 }>
-                { props.children }
-            </CSSTransition>
-        </TransitionGroup>
-    )
-}
+const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => (
+    <TransitionGroup component="div" className="transition-container">
+        <CSSTransition
+            key={props.animationType}
+            onExit={() => { window.dispatchEvent(new Event('resize')); }}
+            onExited={() => window.dispatchEvent(new Event('resize'))}
+            in
+            out
+            classNames={props.animationType}
+            appear={false}
+            timeout={300}
+        >
+            { props.children }
+        </CSSTransition>
+    </TransitionGroup>
+);
 
 const Aside = (props: Props): React$Element<typeof StickyContainer | string> => {
-
     const selected: ?TrezorDevice = props.wallet.selectedDevice;
     const { location } = props.router;
 
-    if (location.pathname === '/' || !selected) return (<aside></aside>);
+    if (location.pathname === '/' || !selected) return (<aside />);
 
-    let menu = <section></section>;
-    
+    let menu = <section />;
+
     if (props.deviceDropdownOpened) {
         menu = <DeviceDropdown {...props} />;
     } else if (location.state.network) {
         menu = (
-            <TransitionMenu animationType={ "slide-left" }>
-                <AccountSelection { ...props} />
+            <TransitionMenu animationType="slide-left">
+                <AccountSelection {...props} />
             </TransitionMenu>
         );
     } else if (selected.features && !selected.features.bootloader_mode && selected.features.initialized) {
         menu = (
-            <TransitionMenu animationType={ "slide-right" }>
-                <CoinSelection { ...props} />
+            <TransitionMenu animationType="slide-right">
+                <CoinSelection {...props} />
             </TransitionMenu>
         );
     }
 
     return (
-        <StickyContainer location={ location.pathname } deviceSelection={ props.deviceDropdownOpened }>
+        <StickyContainer location={location.pathname} deviceSelection={props.deviceDropdownOpened}>
             <DeviceSelect {...props} />
             { menu }
             <div className="sticky-bottom">
@@ -73,7 +71,7 @@ const Aside = (props: Props): React$Element<typeof StickyContainer | string> => 
                 </div>
             </div>
         </StickyContainer>
-    )
-}
+    );
+};
 
 export default Aside;

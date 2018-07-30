@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import * as LOG from '../actions/constants/log';
 import type { Action } from '~/flowtype';
@@ -23,29 +23,26 @@ export const initialState: State = {
 
 
 export default (state: State = initialState, action: Action): State => {
-
     switch (action.type) {
-
-        case LOG.OPEN : 
+        case LOG.OPEN:
             return {
                 ...state,
-                opened: true
-            }
+                opened: true,
+            };
 
-        case LOG.CLOSE : 
+        case LOG.CLOSE:
             return {
                 ...state,
-                opened: false
-            }
+                opened: false,
+            };
 
-        case LOG.ADD : 
+        case LOG.ADD:
             return {
                 ...state,
-                entries: state.entries.concat([ action.payload ])
-            }
+                entries: state.entries.concat([action.payload]),
+            };
 
         default:
             return state;
     }
-
-}
+};

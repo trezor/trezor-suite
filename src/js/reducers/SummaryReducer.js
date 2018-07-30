@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import * as ACCOUNT from '../actions/constants/account';
 import * as SUMMARY from '../actions/constants/summary';
@@ -13,30 +13,27 @@ export type State = {
 
 export const initialState: State = {
     details: true,
-    selectedToken: null
-}
+    selectedToken: null,
+};
 
 export default (state: State = initialState, action: Action): State => {
-
     switch (action.type) {
-
-        case ACCOUNT.DISPOSE :
+        case ACCOUNT.DISPOSE:
             return initialState;
 
-        case SUMMARY.INIT :
+        case SUMMARY.INIT:
             return action.state;
 
-        case SUMMARY.DISPOSE :
+        case SUMMARY.DISPOSE:
             return initialState;
 
-        case SUMMARY.DETAILS_TOGGLE :
+        case SUMMARY.DETAILS_TOGGLE:
             return {
                 ...state,
-                details: !state.details
-            }
+                details: !state.details,
+            };
 
         default:
             return state;
     }
-
-}
+};

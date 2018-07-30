@@ -1,10 +1,11 @@
 /* @flow */
-'use strict';
 
+
+import { DEVICE } from 'trezor-connect';
+import { LOCATION_CHANGE } from 'react-router-redux';
 import * as LocalStorageActions from '../actions/LocalStorageActions';
 import * as WalletActions from '../actions/WalletActions';
 
-import { DEVICE } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as MODAL from '../actions/constants/modal';
 import * as TOKEN from '../actions/constants/token';
@@ -13,10 +14,9 @@ import * as DISCOVERY from '../actions/constants/discovery';
 import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
 import * as PENDING from '../actions/constants/pendingTx';
-import { LOCATION_CHANGE } from 'react-router-redux';
 import { findAccountTokens } from '../reducers/TokensReducer';
 
-import type { 
+import type {
     Middleware,
     MiddlewareAPI,
     MiddlewareDispatch,
@@ -24,7 +24,7 @@ import type {
     Dispatch,
     Action,
     AsyncAction,
-    GetState 
+    GetState,
 } from '~/flowtype';
 
 import type { TrezorDevice } from '~/flowtype';
@@ -38,30 +38,13 @@ import type { Discovery } from '../reducers/DiscoveryReducer';
 // or
 // https://www.npmjs.com/package/redux-react-session
 
-const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): Array<Account> => {
-    return devices.reduce((arr, dev) => {
-        return arr.concat(accounts.filter(a => a.deviceState === dev.state));
-    }, []);
-}
+const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): Array<Account> => devices.reduce((arr, dev) => arr.concat(accounts.filter(a => a.deviceState === dev.state)), []);
 
-const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => {
-    return accounts.reduce((arr, account) => {
-        return arr.concat(findAccountTokens(tokens, account));
-    }, []);
-}
+const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => accounts.reduce((arr, account) => arr.concat(findAccountTokens(tokens, account)), []);
 
-const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => {
-    return devices.reduce((arr, dev) => {
-        return arr.concat(discovery.filter(a => a.deviceState === dev.state && a.publicKey.length > 0));
-    }, []);
-}
+const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => devices.reduce((arr, dev) => arr.concat(discovery.filter(a => a.deviceState === dev.state && a.publicKey.length > 0)), []);
 
-const findPendingTxs = (accounts: Array<Account>, pending: Array<PendingTx>): Array<PendingTx> => {
-
-    return accounts.reduce((result, account) => {
-        return result.concat(pending.filter(p => p.address === account.address && p.network === account.network));
-    }, []);
-}
+const findPendingTxs = (accounts: Array<Account>, pending: Array<PendingTx>): Array<PendingTx> => accounts.reduce((result, account) => result.concat(pending.filter(p => p.address === account.address && p.network === account.network)), []);
 
 const save = (dispatch: Dispatch, getState: GetState): void => {
     const devices: Array<TrezorDevice> = getState().devices.filter(d => d.features && d.remember === true);
@@ -71,24 +54,23 @@ const save = (dispatch: Dispatch, getState: GetState): void => {
     const discovery: Array<Discovery> = findDiscovery(devices, getState().discovery);
 
     // save devices
-    dispatch( LocalStorageActions.save('devices', JSON.stringify(devices) ) );
+    dispatch(LocalStorageActions.save('devices', JSON.stringify(devices)));
 
     // save already preloaded accounts
-    dispatch( LocalStorageActions.save('accounts', JSON.stringify(accounts) ) );
+    dispatch(LocalStorageActions.save('accounts', JSON.stringify(accounts)));
 
     // save discovery state
-    dispatch( LocalStorageActions.save('discovery', JSON.stringify(discovery) ) );
+    dispatch(LocalStorageActions.save('discovery', JSON.stringify(discovery)));
 
     // tokens
-    dispatch( LocalStorageActions.save('tokens', JSON.stringify( tokens ) ) );
+    dispatch(LocalStorageActions.save('tokens', JSON.stringify(tokens)));
 
     // pending transactions
-    dispatch( LocalStorageActions.save('pending', JSON.stringify( pending ) ) );
-}
+    dispatch(LocalStorageActions.save('pending', JSON.stringify(pending)));
+};
 
 
 const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
-
     // Application live cycle starts here
     // if (action.type === LOCATION_CHANGE) {
     //     const { location } = api.getState().router;
@@ -102,44 +84,42 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
     next(action);
 
     switch (action.type) {
-
         // first time saving
-        case CONNECT.REMEMBER :
+        case CONNECT.REMEMBER:
             save(api.dispatch, api.getState);
-        break;
+            break;
 
-        case TOKEN.ADD :
-        case TOKEN.REMOVE :
-        case TOKEN.SET_BALANCE :
+        case TOKEN.ADD:
+        case TOKEN.REMOVE:
+        case TOKEN.SET_BALANCE:
             save(api.dispatch, api.getState);
-        break;
+            break;
 
-        case ACCOUNT.CREATE :
-        case ACCOUNT.SET_BALANCE :
-        case ACCOUNT.SET_NONCE :
+        case ACCOUNT.CREATE:
+        case ACCOUNT.SET_BALANCE:
+        case ACCOUNT.SET_NONCE:
             save(api.dispatch, api.getState);
-        break;
+            break;
 
-        case DISCOVERY.START :
-        case DISCOVERY.STOP :
-        case DISCOVERY.COMPLETE :
+        case DISCOVERY.START:
+        case DISCOVERY.STOP:
+        case DISCOVERY.COMPLETE:
             save(api.dispatch, api.getState);
-        break;
+            break;
 
-        case CONNECT.FORGET :
-        case CONNECT.FORGET_SINGLE :
-        case DEVICE.CHANGED :
-        case DEVICE.DISCONNECT :
-        case CONNECT.AUTH_DEVICE :
+        case CONNECT.FORGET:
+        case CONNECT.FORGET_SINGLE:
+        case DEVICE.CHANGED:
+        case DEVICE.DISCONNECT:
+        case CONNECT.AUTH_DEVICE:
             save(api.dispatch, api.getState);
-        break;
+            break;
 
-        case SEND.TX_COMPLETE :
-        case PENDING.TX_RESOLVED :
-        case PENDING.TX_NOT_FOUND :
+        case SEND.TX_COMPLETE:
+        case PENDING.TX_RESOLVED:
+        case PENDING.TX_NOT_FOUND:
             save(api.dispatch, api.getState);
-        break;
-
+            break;
     }
 
     return action;

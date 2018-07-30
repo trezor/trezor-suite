@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import WalletService from './WalletService';
 import LogService from './LogService';

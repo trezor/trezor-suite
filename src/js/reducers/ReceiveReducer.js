@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import { UI } from 'trezor-connect';
 import * as RECEIVE from '../actions/constants/receive';
@@ -18,42 +18,39 @@ export const initialState: State = {
 };
 
 export default (state: State = initialState, action: Action): State => {
-
     switch (action.type) {
-
-        case RECEIVE.INIT :
+        case RECEIVE.INIT:
             return action.state;
 
-        case ACCOUNT.DISPOSE :
+        case ACCOUNT.DISPOSE:
             return initialState;
 
-        case RECEIVE.SHOW_ADDRESS :
+        case RECEIVE.SHOW_ADDRESS:
             return {
                 ...state,
                 addressVerified: true,
-                addressUnverified: false
-            }
-        case RECEIVE.HIDE_ADDRESS :
+                addressUnverified: false,
+            };
+        case RECEIVE.HIDE_ADDRESS:
             return initialState;
-            
-        case RECEIVE.SHOW_UNVERIFIED_ADDRESS :
+
+        case RECEIVE.SHOW_UNVERIFIED_ADDRESS:
             return {
                 ...state,
                 addressVerified: false,
-                addressUnverified: true
-            }
+                addressUnverified: true,
+            };
 
-        case UI.REQUEST_BUTTON : 
+        case UI.REQUEST_BUTTON:
             if (action.payload.code === 'ButtonRequest_Address') {
                 return {
                     ...state,
                     addressVerified: true,
-                }
+                };
             }
             return state;
 
         default:
             return state;
     }
-
-}
+};

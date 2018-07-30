@@ -19,7 +19,7 @@
         "build": "rm -rf build && webpack --config ./webpack/config.prod.babel.js --progress",
         "flow": "flow check src/js",
         "test": "",
-        "lint": "npx eslint ./"
+        "lint": "npx eslint ./ --fix"
     },
     "dependencies": {
         "color-hash": "^1.0.3",

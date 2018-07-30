@@ -8,27 +8,27 @@ const replacePrefix = (path, opts = [], sourceFile) => {
     const options = [].concat(opts);
     if (typeof path === 'string') {
         if (path.indexOf('~/') === 0) {
-            return path.replace('~/', `${ cwd }/src/`);
+            return path.replace('~/', `${cwd}/src/`);
         }
     }
     return path;
-}
+};
 
 
-export default ({ 'types': t }) => {
+export default ({ types: t }) => {
     const visitor = {
         CallExpression(path, state) {
             if (path.node.callee.name !== 'require') {
                 return;
             }
-    
+
             const args = path.node.arguments;
             if (!args.length) {
                 return;
             }
-    
+
             const firstArg = traverseExpression(t, args[0]);
-    
+
             if (firstArg) {
                 firstArg.value = replacePrefix(firstArg.value, state.opts, state.file.opts.filename);
             }
@@ -45,14 +45,14 @@ export default ({ 'types': t }) => {
             if (path.node.source) {
                 path.node.source.value = replacePrefix(path.node.source.value, state.opts, state.file.opts.filename);
             }
-        }
+        },
     };
 
     return {
-        'visitor': {
+        visitor: {
             Program(path, state) {
                 path.traverse(visitor, state);
-            }
-        }
+            },
+        },
     };
-}
+};
