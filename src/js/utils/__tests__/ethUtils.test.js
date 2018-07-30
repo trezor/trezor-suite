@@ -1,5 +1,11 @@
-describe('sds', () => {
+import * as ethUtils from '../ethUtils';
+
+describe('eth utils', () => {
     it('decimalToHex', () => {
-        expect(2).toMatchSnapshot();
+        const input = [0, 1, 2, 100, 999];
+
+        input.forEach((entry) => {
+            expect(ethUtils.decimalToHex(entry)).toMatchSnapshot();
+        });
     });
 });
