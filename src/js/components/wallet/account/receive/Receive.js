@@ -1,7 +1,7 @@
 /* @flow */
-
-
 import React, { Component } from 'react';
+import styled from 'styled-components';
+import { H2 } from '~/js/components/common/Heading';
 
 import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
@@ -11,6 +11,7 @@ import { Notification } from '~/js/components/common/Notification';
 
 import type { Props } from './index';
 
+const Wrapper = styled.div``;
 
 const Receive = (props: Props) => {
     const device = props.wallet.selectedDevice;
@@ -67,18 +68,17 @@ const Receive = (props: Props) => {
         );
     }
 
-    const ver = null;
+    let ver = null;
     if (props.modal.opened && props.modal.windowType === 'ButtonRequest_Address') {
         className = 'address verifying';
         address = account.address;
-        // ver = (<div className="confirm">Confirm address on TREZOR</div>)
+        ver = (<div className="confirm">Confirm address on TREZOR</div>);
         button = (<div className="confirm">{ account.network } account #{ (account.index + 1) }</div>);
     }
 
     return (
-        <div>
-            <h2>Receive Ethereum or tokens</h2>
-
+        <Wrapper>
+            <H2>Receive Ethereum or tokens</H2>
             <div className={className}>
                 { ver }
                 <div className="value">
@@ -87,7 +87,7 @@ const Receive = (props: Props) => {
                 { button }
             </div>
             { qrCode }
-        </div>
+        </Wrapper>
     );
 };
 
