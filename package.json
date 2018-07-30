@@ -23,7 +23,6 @@
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
-        "bignumber.js": "^7.2.1",
         "color-hash": "^1.0.3",
         "copy-webpack-plugin": "^4.5.2",
         "ethereumjs-tx": "^1.3.3",
