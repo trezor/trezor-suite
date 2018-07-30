@@ -1,4 +1,5 @@
 // this is a hackish way to keep workers both in node and in karma
+/* eslint-disable */
 
 export const discoveryWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
