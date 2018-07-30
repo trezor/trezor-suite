@@ -18,3 +18,5 @@ logs
 .yarnclean
 
 _old
+
+coverage
