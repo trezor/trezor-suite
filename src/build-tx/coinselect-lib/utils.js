@@ -18,16 +18,16 @@ function outputBytes(output) {
 }
 
 function dustThreshold(feeRate, inputLength, outputLength, explicitDustThreshold) {
-    const size = transactionBytes([{script: {length: inputLength}}], [{script: {length: outputLength}}]);
+    const size = transactionBytes([{ script: { length: inputLength } }], [{ script: { length: outputLength } }]);
     const price = size * feeRate;
     const threshold = Math.max(explicitDustThreshold, price);
     return threshold;
 }
 
 function transactionBytes(inputs, outputs) {
-    return TX_EMPTY_SIZE +
-    inputs.reduce(function (a, x) { return a + inputBytes(x); }, 0) +
-    outputs.reduce(function (a, x) { return a + outputBytes(x); }, 0);
+    return TX_EMPTY_SIZE
+    + inputs.reduce((a, x) => a + inputBytes(x), 0)
+    + outputs.reduce((a, x) => a + outputBytes(x), 0);
 }
 
 function uintOrNaN(v) {
@@ -39,31 +39,31 @@ function uintOrNaN(v) {
 }
 
 function sumForgiving(range) {
-    return range.reduce(function (a, x) { return a + (isFinite(x.value) ? x.value : 0); }, 0);
+    return range.reduce((a, x) => a + (isFinite(x.value) ? x.value : 0), 0);
 }
 
 function sumOrNaN(range) {
-    return range.reduce(function (a, x) { return a + uintOrNaN(x.value); }, 0);
+    return range.reduce((a, x) => a + uintOrNaN(x.value), 0);
 }
 
 function finalize(inputs, outputs, feeRate, inputLength, changeOutputLength, explicitDustThreshold) {
     const bytesAccum = transactionBytes(inputs, outputs);
-    const blankOutputBytes = outputBytes({script: {length: changeOutputLength}});
+    const blankOutputBytes = outputBytes({ script: { length: changeOutputLength } });
     const feeAfterExtraOutput = feeRate * (bytesAccum + blankOutputBytes);
     const remainderAfterExtraOutput = sumOrNaN(inputs) - (sumOrNaN(outputs) + feeAfterExtraOutput);
 
     // is it worth a change output?
     if (remainderAfterExtraOutput > dustThreshold(feeRate, inputLength, changeOutputLength, explicitDustThreshold)) {
-        outputs = outputs.concat({ value: remainderAfterExtraOutput, script: {length: changeOutputLength} });
+        outputs = outputs.concat({ value: remainderAfterExtraOutput, script: { length: changeOutputLength } });
     }
 
     const fee = sumOrNaN(inputs) - sumOrNaN(outputs);
     if (!isFinite(fee)) return { fee: feeRate * bytesAccum };
 
     return {
-        inputs: inputs,
-        outputs: outputs,
-        fee: fee,
+        inputs,
+        outputs,
+        fee,
     };
 }
 
@@ -88,14 +88,14 @@ function utxoScore(x, feeRate) {
 }
 
 module.exports = {
-    dustThreshold: dustThreshold,
-    finalize: finalize,
-    inputBytes: inputBytes,
-    outputBytes: outputBytes,
-    sumOrNaN: sumOrNaN,
-    sumForgiving: sumForgiving,
-    transactionBytes: transactionBytes,
-    uintOrNaN: uintOrNaN,
-    anyOf: anyOf,
-    utxoScore: utxoScore,
+    dustThreshold,
+    finalize,
+    inputBytes,
+    outputBytes,
+    sumOrNaN,
+    sumForgiving,
+    transactionBytes,
+    uintOrNaN,
+    anyOf,
+    utxoScore,
 };

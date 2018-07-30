@@ -4,14 +4,14 @@
 
 import assert from 'assert';
 
-import {BitcoreBlockchain} from '../src/bitcore';
-import {MockWorker} from './_mock-worker.js';
-import {Stream} from '../src/utils/stream.js';
-import {Socket} from '../src/socketio-worker/outside';
+import { BitcoreBlockchain } from '../src/bitcore';
+import { MockWorker } from './_mock-worker.js';
+import { Stream } from '../src/utils/stream.js';
+import { Socket } from '../src/socketio-worker/outside';
 
 // this is here because the starting communication is always the same
 
-const commStart = [ {
+const commStart = [{
     type: 'in',
     spec: {
         type: 'init',
@@ -324,7 +324,7 @@ describe('bitcore', () => {
             blockchain.destroy().then(() => done());
         });
 
-        it('has rejecting socket and null workingUrl on non-working bitcore', function (done) {
+        it('has rejecting socket and null workingUrl on non-working bitcore', (done) => {
             const specsA = [
                 {
                     type: 'in',
@@ -377,7 +377,7 @@ describe('bitcore', () => {
             });
         });
 
-        it('emits error on non-working bitcore', function (done) {
+        it('emits error on non-working bitcore', (done) => {
             const specsA = [
                 {
                     type: 'in',
@@ -419,7 +419,7 @@ describe('bitcore', () => {
             let error = null;
             const blockchain = new BitcoreBlockchain(['https://nonsense.com'], socketWorkerFactory);
             blockchain._silent = true; // not log the error
-            blockchain.errors.values.attach(v => { error = v; });
+            blockchain.errors.values.attach((v) => { error = v; });
             setTimeout(() => {
                 assert.deepStrictEqual(error.message, 'All backends are offline.');
                 blockchain.destroy().then(() => done());
@@ -429,7 +429,7 @@ describe('bitcore', () => {
         it('interprets hanging on getBlock for 30s as non-working', function (done) {
             this.timeout(60 * 1000);
             console.info('(note - this test takes 50s)');
-            const specsA = [ {
+            const specsA = [{
                 type: 'in',
                 spec: {
                     type: 'init',
@@ -566,15 +566,15 @@ describe('bitcore', () => {
             let error = null;
             const blockchain = new BitcoreBlockchain(['https://nonsense.com'], socketWorkerFactory);
             blockchain._silent = true; // not log the error
-            blockchain.errors.values.attach(v => { error = v; });
+            blockchain.errors.values.attach((v) => { error = v; });
             setTimeout(() => {
                 assert.deepStrictEqual(error.message, 'All backends are offline.');
                 blockchain.destroy().then(() => done());
             }, 50 * 1000);
         });
 
-        it('interprets immediately closing as non-working', function (done) {
-            const specsA = [ {
+        it('interprets immediately closing as non-working', (done) => {
+            const specsA = [{
                 type: 'in',
                 spec: {
                     type: 'init',
@@ -677,7 +677,7 @@ describe('bitcore', () => {
             let error = null;
             const blockchain = new BitcoreBlockchain(['https://nonsense.com'], socketWorkerFactory);
             blockchain._silent = true; // not log the error
-            blockchain.errors.values.attach(v => { error = v; });
+            blockchain.errors.values.attach((v) => { error = v; });
             setTimeout(() => {
                 assert.deepStrictEqual(error.message, 'All backends are offline.');
                 blockchain.destroy().then(() => done());
@@ -685,7 +685,7 @@ describe('bitcore', () => {
         });
 
         // and now working bitcore
-        it('has socket and workingUrl as expected when working', function (done) {
+        it('has socket and workingUrl as expected when working', (done) => {
             const spec = commStart.concat(commEnd);
             const socketWorkerFactory = () => {
                 const mock = new MockWorker(spec, done, true);
@@ -699,13 +699,12 @@ describe('bitcore', () => {
                     assert.ok(blockchain.workingUrl === 'http://localhost:3005');
                     blockchain.destroy().then(() => done());
                 }, () => {
-                    blockchain.destroy().then(() =>
-                    done(new Error('blockchain.socket rejected')));
+                    blockchain.destroy().then(() => done(new Error('blockchain.socket rejected')));
                 });
             }, 100);
         });
 
-        it('does not emmit error when working', function (done) {
+        it('does not emmit error when working', (done) => {
             const spec = commStart.concat(commEnd);
             const socketWorkerFactory = () => {
                 const mock = new MockWorker(spec, done, true);
@@ -724,7 +723,7 @@ describe('bitcore', () => {
     });
 
     describe('hard status check', () => {
-        it('is true when working', function (done) {
+        it('is true when working', (done) => {
             const spec = commStart.concat(commEnd);
             const socketWorkerFactory = () => {
                 // all have the same spec
@@ -739,7 +738,7 @@ describe('bitcore', () => {
             });
         });
 
-        it('is false when not working', function (done) {
+        it('is false when not working', (done) => {
             const specG = commStart.concat(commEnd);
             const specsA = [
                 {
@@ -791,7 +790,7 @@ describe('bitcore', () => {
 
     describe('subscribe', () => {
         // note - bitcore.js doesn't know about versions bytes, it doesn't check address validity
-        it('throws on wrong input', function (done) {
+        it('throws on wrong input', (done) => {
             const spec = commStart.concat(commEnd);
             const socketWorkerFactory = () => {
                 const mock = new MockWorker(spec, done, true);
@@ -810,7 +809,7 @@ describe('bitcore', () => {
             blockchain.destroy().then(() => done());
         });
 
-        it('does nothing on empty input', function (done) {
+        it('does nothing on empty input', (done) => {
             const spec = commStart.concat(commEnd);
             const socketWorkerFactory = () => {
                 const mock = new MockWorker(spec, done, true);
@@ -827,7 +826,7 @@ describe('bitcore', () => {
             blockchain.destroy().then(() => done());
         });
 
-        it('does nothing on non-working bitcore', function (done) {
+        it('does nothing on non-working bitcore', (done) => {
             const specsA = [
                 {
                     type: 'in',
@@ -877,7 +876,7 @@ describe('bitcore', () => {
             blockchain.destroy().then(() => done());
         });
 
-        it('subscribes to thing', function (done) {
+        it('subscribes to thing', (done) => {
             const commMiddle = [{
                 type: 'in',
                 spec: {
@@ -981,7 +980,7 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
 
             blockchain.subscribe(new Set(['mgyM5P4AVffXLPZ8H9Kz4Y3pJYFk5U9Qdr']));
-            blockchain.notifications.values.attach(tx => {
+            blockchain.notifications.values.attach((tx) => {
                 assert.deepStrictEqual(tx, corrTx);
                 blockchain.destroy().then(() => done());
             });
@@ -989,7 +988,7 @@ describe('bitcore', () => {
     });
 
     describe('lookupTransactionsStream', () => {
-        it('looks up transactions', function (done) {
+        it('looks up transactions', (done) => {
             const commMiddle = [{
                 type: 'in',
                 spec: {
@@ -1355,7 +1354,7 @@ describe('bitcore', () => {
                                         hash: '1bc5d5f51d99381330eb73c6e9877c9eb17fe32399230c361fceb85510c7abac',
                                         locktime: 902,
                                         // commented out to test
-																				// size: 192,
+                                        // size: 192,
                                         inputs: [
                                             {
                                                 prevTxId: 'f297faab6a597ba997abc926b3da8db84551e0de4f8efbd6a41214f4fd1c977f',
@@ -1400,7 +1399,7 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.lookupTransactionsStream(['mkYpJDNquegLmPBzUNb1Up6F5cLZntzNYa', 'n33YtcSh7WsfCjgXwmJtkE4tSHCnXwfamH', 'mtnS3H9s1Y5xkhTgssvq8BjvFP6FD1D4bv'], 10000000, 0);
             const corrTxs = [
-  [],
+                [],
                 [
                     {
                         zcash: false,
@@ -1513,7 +1512,7 @@ describe('bitcore', () => {
             }, 300);
         });
 
-        it('streams error when error returned', function (done) {
+        it('streams error when error returned', (done) => {
             const commMiddle = [{
                 type: 'in',
                 spec: {
@@ -1611,7 +1610,7 @@ describe('bitcore', () => {
     });
 
     describe('lookupTransactions', () => {
-        it('looks up transactions', function (done) {
+        it('looks up transactions', (done) => {
             const commMiddle = [{
                 type: 'in',
                 spec: {
@@ -2113,14 +2112,14 @@ describe('bitcore', () => {
                 },
             ];
             let txs = [];
-            s.then(t => { txs = t; });
+            s.then((t) => { txs = t; });
             setTimeout(() => {
                 assert.deepStrictEqual(txs, corrTxs);
                 blockchain.destroy().then(() => done());
             }, 300);
         });
 
-        it('rejects when error returned', function (done) {
+        it('rejects when error returned', (done) => {
             const commMiddle = [{
                 type: 'in',
                 spec: {
@@ -2202,7 +2201,7 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.lookupTransactions(['mkYpJDNquegLmPBzUNb1Up6F5cLZntzNYa', 'n33YtcSh7WsfCjgXwmJtkE4tSHCnXwfamH', 'mtnS3H9s1Y5xkhTgssvq8BjvFP6FD1D4bv'], 10000000, 0);
             let err;
-            s.catch(e => { err = e; });
+            s.catch((e) => { err = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(err.message, 'Some error');
                 blockchain.destroy().then(() => done());
@@ -2211,7 +2210,7 @@ describe('bitcore', () => {
     });
 
     describe('lookupTransactionsIds', () => {
-        it('looks up ids', function (done) {
+        it('looks up ids', (done) => {
             const commMiddle = [
                 {
                     type: 'in',
@@ -2285,7 +2284,7 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.lookupTransactionsIds(['n3M4CXvb6gw4tsKW6gcsYyREzPpqcrivAd'], 10000000, 0);
             let res;
-            s.then(e => { res = e; });
+            s.then((e) => { res = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(res, ['f7081e708b1fd6a1deb4259a128c299aac756b5442f06efe7dea0aa695952f2d']);
                 blockchain.destroy().then(() => done());
@@ -2294,7 +2293,7 @@ describe('bitcore', () => {
     });
 
     describe('sendTransaction', () => {
-        it('sends transaction', function (done) {
+        it('sends transaction', (done) => {
             const commMiddle = [
                 {
                     type: 'in',
@@ -2331,7 +2330,7 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.sendTransaction('longHexNotChecked');
             let res;
-            s.then(e => { res = e; });
+            s.then((e) => { res = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(res, 'txid');
                 blockchain.destroy().then(() => done());
@@ -2340,7 +2339,7 @@ describe('bitcore', () => {
     });
 
     describe('lookupBlockhash', () => {
-        it('looks up blockhash', function (done) {
+        it('looks up blockhash', (done) => {
             const commMiddle = [{
                 type: 'in',
                 spec: {
@@ -2384,7 +2383,7 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.lookupBlockHash(0);
             let res;
-            s.then(e => { res = e; });
+            s.then((e) => { res = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(res, '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
                 blockchain.destroy().then(() => done());
@@ -2393,7 +2392,7 @@ describe('bitcore', () => {
     });
 
     describe('lookupSyncStatus', () => {
-        it('looks up sync status', function (done) {
+        it('looks up sync status', (done) => {
             const commMiddle = [{
                 type: 'in',
                 spec: {
@@ -2437,7 +2436,7 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.lookupSyncStatus();
             let res;
-            s.then(e => { res = e; });
+            s.then((e) => { res = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(res, { height: 3602 });
                 blockchain.destroy().then(() => done());
@@ -2446,8 +2445,8 @@ describe('bitcore', () => {
     });
 
     describe('estimate fee', () => {
-        it('estimates dumb fees on dumb fee server, not skip missing', function (done) {
-            const commMiddle = [ {
+        it('estimates dumb fees on dumb fee server, not skip missing', (done) => {
+            const commMiddle = [{
                 type: 'in',
                 spec: {
                     type: 'send',
@@ -2501,15 +2500,15 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.estimateTxFees([5, 6], false);
             let res;
-            s.then(e => { res = e; });
+            s.then((e) => { res = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(res, { 5: 0.00020277, 6: -1 });
                 blockchain.destroy().then(() => done());
             }, 300);
         });
 
-        it('estimates dumb fees on dumb fee server, skip missing', function (done) {
-            const commMiddle = [ {
+        it('estimates dumb fees on dumb fee server, skip missing', (done) => {
+            const commMiddle = [{
                 type: 'in',
                 spec: {
                     type: 'send',
@@ -2563,14 +2562,14 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.estimateTxFees([5, 6], true);
             let res;
-            s.then(e => { res = e; });
+            s.then((e) => { res = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(res, { 5: 0.00020277 });
                 blockchain.destroy().then(() => done());
             }, 300);
         });
 
-        it('returns -1s if estimating smart on dumb server', function (done) {
+        it('returns -1s if estimating smart on dumb server', (done) => {
             const spec = commStart.concat(commEnd);
             const socketWorkerFactory = () => {
                 const mock = new MockWorker(spec, done, true);
@@ -2579,15 +2578,15 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.estimateSmartTxFees([5, 6], true);
             let res;
-            s.then(e => { res = e; });
+            s.then((e) => { res = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(res, { 5: -1, 6: -1 });
                 blockchain.destroy().then(() => done());
             }, 300);
         });
 
-        it('estimates smart on smart server', function (done) {
-            const commStartSmartFees = [ {
+        it('estimates smart on smart server', (done) => {
+            const commStartSmartFees = [{
                 type: 'in',
                 spec: {
                     type: 'init',
@@ -2722,7 +2721,7 @@ describe('bitcore', () => {
                     id: 9,
                 },
             }];
-            const commMiddle = [ {
+            const commMiddle = [{
                 type: 'in',
                 spec: {
                     type: 'send',
@@ -2754,7 +2753,7 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             const s = blockchain.estimateSmartTxFees([5], true);
             let res;
-            s.then(e => { res = e; });
+            s.then((e) => { res = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(res, { 5: 0.00020277 });
                 blockchain.destroy().then(() => done());

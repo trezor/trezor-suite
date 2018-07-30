@@ -49,16 +49,14 @@ onmessage = function (event: {data: string}) {
     const data = JSON.parse(event.data);
 
     if (data.type === 'init') {
-        const {endpoint, connectionType} = data;
+        const { endpoint, connectionType } = data;
         socket = socketIO(endpoint, {
             transports: [connectionType],
             reconnection: false,
         });
-        socket.on('connect', () =>
-            doPostMessage({
-                type: 'initDone',
-            })
-        );
+        socket.on('connect', () => doPostMessage({
+            type: 'initDone',
+        }));
         socket.on('connect_error', (e) => {
             doPostMessage({
                 type: 'initError',
@@ -112,7 +110,7 @@ onmessage = function (event: {data: string}) {
         socket.send(data.message, (reply) => {
             doPostMessage({
                 type: 'sendReply',
-                reply: reply,
+                reply,
                 id: data.id,
             });
         });
@@ -122,6 +120,6 @@ onmessage = function (event: {data: string}) {
 function doPostMessage(data: Object) {
     /* $FlowIssue worker postMessage missing */
     postMessage(
-        JSON.stringify(data)
+        JSON.stringify(data),
     );
 }

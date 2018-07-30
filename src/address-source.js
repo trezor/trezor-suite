@@ -4,11 +4,11 @@
 
 import type { HDNode } from 'bitcoinjs-lib-zcash';
 import type { Network } from 'bitcoinjs-lib-zcash';
-import type { WorkerChannel } from './utils/simple-worker-channel';
 import {
     crypto,
     address,
 } from 'bitcoinjs-lib-zcash';
+import type { WorkerChannel } from './utils/simple-worker-channel';
 
 export type AddressSource = {
     derive(
@@ -21,6 +21,7 @@ export class BrowserAddressSource {
     network: Network;
 
     segwit: boolean;
+
     node: HDNode;
 
     constructor(hdnode: HDNode, network: Network, segwit: boolean) {
@@ -31,7 +32,7 @@ export class BrowserAddressSource {
 
     derive(
         first: number,
-        last: number
+        last: number,
     ): Promise<Array<string>> {
         const addresses: Array<string> = [];
         // const chainNode = HDNode.fromBase58(this.xpub, this.network).derive(this.chainId);
@@ -60,6 +61,7 @@ export class BrowserAddressSource {
 
 export class WorkerAddressSource {
     channel: WorkerChannel;
+
     node: {
         depth: number,
         child_num: number,
@@ -67,7 +69,9 @@ export class WorkerAddressSource {
         chain_code: $ReadOnlyArray<number>,
         public_key: $ReadOnlyArray<number>,
     };
+
     version: number;
+
     segwit: 'p2sh' | 'off';
 
     constructor(channel: WorkerChannel, node: HDNode, version: number, segwit: 'p2sh' | 'off') {
@@ -93,6 +97,6 @@ export class WorkerAddressSource {
             addressFormat: this.segwit === 'p2sh' ? 1 : 0,
         };
         return this.channel.postMessage(request)
-            .then(({addresses}) => addresses);
+            .then(({ addresses }) => addresses);
     }
 }

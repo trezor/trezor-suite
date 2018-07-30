@@ -1,4 +1,7 @@
 /* @flow */
+import {
+    Transaction as BitcoinJsTransaction,
+} from 'bitcoinjs-lib-zcash';
 import type {
     ChainNewTransaction,
     ChainNewTransactions,
@@ -22,9 +25,6 @@ import {
     deriveDateFormats,
 } from './dates';
 
-import {
-    Transaction as BitcoinJsTransaction,
-} from 'bitcoinjs-lib-zcash';
 
 type OutputForAnalysis = ?{address: string, value: number};
 type OutputsForAnalysis = Array<OutputForAnalysis>;
@@ -52,7 +52,7 @@ export function deriveAnalysis(
     // For new transactions, I need all outputs (I will be analyzing them)
     const outputsForAnalysis = deriveOutputsForAnalysisMap(
         newTransactions,
-        oldTransactions
+        oldTransactions,
     );
 
     // For each tx, derive info about its impact,
@@ -63,7 +63,7 @@ export function deriveAnalysis(
         outputsForAnalysis,
         addressToPath,
         lastBlock,
-        wantedOffset
+        wantedOffset,
     );
 
     // Add "balance" (which means balance after the transaction)
@@ -74,7 +74,7 @@ export function deriveAnalysis(
 // All info about outputs
 function deriveOutputsForAnalysisMap(
     newTs: ChainNewTransactions,
-    oldTs: Array<TransactionInfo>
+    oldTs: Array<TransactionInfo>,
 ): OutputsForAnalysisMap {
     // Take only my outputs from old
     function getOutputsFromOldTransaction(t: TransactionInfo): {
@@ -82,11 +82,11 @@ function deriveOutputsForAnalysisMap(
         outputs: OutputsForAnalysis,
     } {
         const outputs = [];
-        Object.keys(t.myOutputs).forEach(i => {
+        Object.keys(t.myOutputs).forEach((i) => {
             outputs[parseInt(i)] = t.myOutputs[parseInt(i)];
         });
         const txid = t.hash;
-        return {txid, outputs};
+        return { txid, outputs };
     }
 
     // take all info from new txs, since I will be going throug them 1 by 1
@@ -98,10 +98,10 @@ function deriveOutputsForAnalysisMap(
         for (let i = 0; i < t.tx.outs.length; i++) {
             const output = t.tx.outs[i];
             const address = t.outputAddresses[i];
-            outputs.push({address, value: output.value});
+            outputs.push({ address, value: output.value });
         }
         const txid = t.hash;
-        return {txid, outputs};
+        return { txid, outputs };
     }
 
     const res = {};
@@ -110,7 +110,7 @@ function deriveOutputsForAnalysisMap(
 
     // new txs are replacing the old ones
     // (rare case - new tx can have new address "discovered")
-    oldOutputs.concat(newOutputs).forEach(({txid, outputs}) => {
+    oldOutputs.concat(newOutputs).forEach(({ txid, outputs }) => {
         res[txid] = outputs;
     });
     return res;
@@ -126,10 +126,10 @@ function deriveBalancelessAnalysisMap(
 ): {[id: string]: TransactionInfoBalanceless} {
     const res = {};
     // first, save the old ones
-    oldTs.forEach(t => {
+    oldTs.forEach((t) => {
         res[t.hash] = t;
     });
-    Object.keys(newTs).forEach(id => {
+    Object.keys(newTs).forEach((id) => {
         res[id] = analyzeTransaction(newTs[id], outputs, addressToPath, lastBlock, wantedOffset);
     });
     return res;
@@ -143,12 +143,10 @@ function analyzeTransaction(
     lastBlock: Block,
     wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ): TransactionInfoBalanceless {
-    const inputIds = t.tx.ins.map(input =>
-        ({id: getInputId(input), index: input.index})
-    );
+    const inputIds = t.tx.ins.map(input => ({ id: getInputId(input), index: input.index }));
     const hasJoinsplits = t.tx.joinsplits.length > 0;
 
-    const isCoinbase = t.tx.ins.some((i) => BitcoinJsTransaction.isCoinbaseHash(i.hash));
+    const isCoinbase = t.tx.ins.some(i => BitcoinJsTransaction.isCoinbaseHash(i.hash));
 
     const hash = t.hash;
 
@@ -158,7 +156,7 @@ function analyzeTransaction(
         outputs,
         addressToPath,
         hash,
-        hasJoinsplits
+        hasJoinsplits,
     );
     const dates = deriveDateFormats(t.timestamp, wantedOffset);
 
@@ -215,7 +213,7 @@ function getTargetsFromTransaction(
     // Transaction is TAKING me my money,
     // if its input is mine
     // == if its input belongs to a transaction that's mine AND the address of corresponding output is mine
-    inputIds.forEach(({id, index}) => {
+    inputIds.forEach(({ id, index }) => {
         const info = outputs[id];
         if (info) {
             const output = info[index];
@@ -238,7 +236,7 @@ function getTargetsFromTransaction(
         if (isCredit(output.address)) {
             value += output.value;
             nCredit++;
-            myOutputs[i] = {address: output.address, value: output.value, i};
+            myOutputs[i] = { address: output.address, value: output.value, i };
         }
     });
 
@@ -247,9 +245,9 @@ function getTargetsFromTransaction(
     function filterTargets(filterFunction: (address: string) => boolean): Array<TargetInfo> {
         const res = [];
         currentOutputs.forEach((info, i) => {
-            const {address, value} = info;
+            const { address, value } = info;
             if (filterFunction(address)) {
-                res.push({address, value, i});
+                res.push({ address, value, i });
             }
         });
         return res;
@@ -283,21 +281,22 @@ function getTargetsFromTransaction(
     // note that target selection does NOT affect value/balance
     // makes sense - even "sent to self" transactions are negative - cost fee
 
-    return {targets, type, value, myOutputs};
+    return {
+        targets, type, value, myOutputs,
+    };
 }
 
 // Full info is just analysis sorted and with added balances
 function deriveFullInfo(
-    analysis: {[id: string]: TransactionInfoBalanceless}
+    analysis: {[id: string]: TransactionInfoBalanceless},
 ): Array<TransactionInfo> {
     const sortedAnalysis = objectValues(analysis).sort(compareByOldestAndType);
 
     let prev = null;
     const impacts = sortedAnalysis.map((info: TransactionInfoBalanceless): TransactionInfo => {
-        const balance =
-            (prev != null)
-                ? prev.balance + info.value
-                : info.value;
+        const balance = (prev != null)
+            ? prev.balance + info.value
+            : info.value;
         prev = {
             ...info,
             balance,
@@ -311,7 +310,7 @@ const IMPACT_ORDERING = ['recv', 'self', 'sent'];
 
 function compareByOldestAndType(
     a: TransactionInfoBalanceless,
-    b: TransactionInfoBalanceless
+    b: TransactionInfoBalanceless,
 ): number {
     const ah = (a.height != null ? a.height : Infinity);
     const bh = (b.height != null ? b.height : Infinity);
@@ -329,8 +328,6 @@ function compareByOldestAndType(
     const bhash = b.hash;
     if (ahash < bhash) {
         return -1;
-    } else {
-        return 1;
     }
+    return 1;
 }
-

@@ -17,11 +17,11 @@ describe('coinselect index', () => {
             const outputs = utils.expand(f.outputs, false, outputLength);
             const expected = utils.addScriptLengthToExpected(f.expected, inputLength, outputLength);
 
-            const actual = coinAccum(inputs, outputs, f.feeRate, {inputLength, changeOutputLength: outputLength, dustThreshold});
+            const actual = coinAccum(inputs, outputs, f.feeRate, { inputLength, changeOutputLength: outputLength, dustThreshold });
 
             assert.deepEqual(actual, expected);
             if (actual.inputs) {
-                const feedback = coinAccum(actual.inputs, actual.outputs, f.feeRate, {inputLength, changeOutputLength: outputLength, dustThreshold});
+                const feedback = coinAccum(actual.inputs, actual.outputs, f.feeRate, { inputLength, changeOutputLength: outputLength, dustThreshold });
                 assert.deepEqual(feedback, expected);
             }
         });

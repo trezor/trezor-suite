@@ -1,7 +1,7 @@
-const TICK_MS = 10;
 import assert from 'assert';
-export class MockWorker {
 
+const TICK_MS = 10;
+export class MockWorker {
     addEventListener(something, listener) {
         this.onmessage = listener;
     }
@@ -33,9 +33,9 @@ export class MockWorker {
                 setTimeout(() => {
                     this.specLock = false;
                     if (this.serialize) {
-                        this.onmessage({data: JSON.stringify(spec)});
+                        this.onmessage({ data: JSON.stringify(spec) });
                     } else {
-                        this.onmessage({data: spec});
+                        this.onmessage({ data: spec });
                     }
                     this.sendOut();
                 }, TICK_MS);
@@ -44,6 +44,7 @@ export class MockWorker {
     }
 
     terminated = false;
+
     terminate() {
         if (this.terminated) {
             const error = new Error('Terminate twice');
@@ -66,7 +67,7 @@ export class MockWorker {
             /* console.warn
             error = new Error('In spec not defined');
             this.doneError(error);
-            throw error;*/
+            throw error; */
         }
         if (this.specLock) {
             error = new Error('Got postMessage while waiting');
@@ -79,7 +80,7 @@ export class MockWorker {
             this.doneError(error);
             throw error;
         }
-        const {spec} = sspec;
+        const { spec } = sspec;
         this.spec.shift();
         try {
             assert.deepStrictEqual(omessage, spec);
@@ -90,5 +91,4 @@ export class MockWorker {
         }
         this.sendOut();
     }
-
 }

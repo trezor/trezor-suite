@@ -3,6 +3,10 @@
 // Only types, no actual code here
 
 import type {
+    Transaction as BitcoinJsTransaction,
+} from 'bitcoinjs-lib-zcash';
+import type { Network as BitcoinJsNetwork } from 'bitcoinjs-lib-zcash';
+import type {
     TransactionWithHeight,
 } from '../../bitcore';
 
@@ -11,11 +15,6 @@ import type {
     TargetInfo,
 } from '../index';
 
-import type {
-    Transaction as BitcoinJsTransaction,
-} from 'bitcoinjs-lib-zcash';
-
-import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
 
 /* ----- messages INTO into worker, from handler ------ */
 
@@ -201,4 +200,3 @@ export type TargetsType = {
     type: 'self' | 'recv' | 'sent',
     value: number,
 };
-

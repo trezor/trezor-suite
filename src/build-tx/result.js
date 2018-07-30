@@ -51,7 +51,7 @@ export function getNonfinalResult(result: coinselect.CompleteResult): Result {
 
 export function getFinalResult(
     result: coinselect.CompleteResult,
-    transaction: transaction.Transaction
+    transaction: transaction.Transaction,
 ): Result {
     const max = result.result.max;
     const fee = result.result.fee;
@@ -69,4 +69,3 @@ export function getFinalResult(
         totalSpent,
     };
 }
-

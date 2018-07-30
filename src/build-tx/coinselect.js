@@ -4,20 +4,20 @@
 //
 // I am using the coinselect format, since the end-goal is
 // to merge the changes back to upstream; it didn't work out so far
-import bitcoinJsSplit from './coinselect-lib/outputs/split';
-import bitcoinJsCoinselect from './coinselect-lib';
-import {transactionBytes} from './coinselect-lib/utils';
-
 import type {
     Network as BitcoinJsNetwork,
 } from 'bitcoinjs-lib-zcash';
 import {
     address as BitcoinJsAddress,
 } from 'bitcoinjs-lib-zcash';
+import bitcoinJsSplit from './coinselect-lib/outputs/split';
+import bitcoinJsCoinselect from './coinselect-lib';
+import { transactionBytes } from './coinselect-lib/utils';
 
-import type {UtxoInfo} from '../discovery';
+
+import type { UtxoInfo } from '../discovery';
 import * as request from './request';
-import {convertCashAddress} from '../utils/bchaddr';
+import { convertCashAddress } from '../utils/bchaddr';
 
 const SEGWIT_INPUT_SCRIPT_LENGTH = 51; // actually 50.25, but let's make extra room
 const INPUT_SCRIPT_LENGTH = 109;
@@ -78,7 +78,7 @@ export function coinselect(
     countMax: boolean,
     countMaxId: number,
     dustThreshold: number,
-    network: BitcoinJsNetwork
+    network: BitcoinJsNetwork,
 ): Result {
     const inputs = convertInputs(utxos, height, segwit);
     const outputs = convertOutputs(rOutputs, network);
@@ -94,39 +94,35 @@ export function coinselect(
         return {
             type: 'false',
         };
-    } else {
-        const fee = result.fee;
-        const max = countMaxId === -1 ? -1 : result.outputs[countMaxId].value;
-
-        const totalSpent = result.outputs.filter((output, i) => {
-            // change is always last and additional one
-            return i !== rOutputs.length;
-        }).map(o => o.value).reduce((a, b) => a + b, 0) + result.fee;
-
-        const allSize = transactionBytes(result.inputs, result.outputs);
-        const feePerByte = fee / allSize;
-        return {
-            type: 'true',
-            result: {
-                ...result,
-                feePerByte,
-                bytes: allSize,
-                max,
-                totalSpent,
-            },
-        };
     }
+    const fee = result.fee;
+    const max = countMaxId === -1 ? -1 : result.outputs[countMaxId].value;
+
+    const totalSpent = result.outputs.filter((output, i) => i !== rOutputs.length).map(o => o.value).reduce((a, b) => a + b, 0) + result.fee;
+
+    const allSize = transactionBytes(result.inputs, result.outputs);
+    const feePerByte = fee / allSize;
+    return {
+        type: 'true',
+        result: {
+            ...result,
+            feePerByte,
+            bytes: allSize,
+            max,
+            totalSpent,
+        },
+    };
 }
 
 function convertInputs(
     inputs: Array<UtxoInfo>,
     height: number,
-    segwit: boolean
+    segwit: boolean,
 ): Array<Input> {
     const bytesPerInput = segwit ? SEGWIT_INPUT_SCRIPT_LENGTH : INPUT_SCRIPT_LENGTH;
     return inputs.map((input, i) => ({
         id: i,
-        script: {length: bytesPerInput},
+        script: { length: bytesPerInput },
         value: input.value,
         own: input.own,
         coinbase: input.coinbase,
@@ -159,16 +155,16 @@ function getScriptAddress(address: string, network: BitcoinJsNetwork): {length: 
     const length = bech
         ? (pubkeyhash ? P2WPKH_OUTPUT_SCRIPT_LENGTH : P2WSH_OUTPUT_SCRIPT_LENGTH)
         : (pubkeyhash ? P2PKH_OUTPUT_SCRIPT_LENGTH : P2SH_OUTPUT_SCRIPT_LENGTH);
-    return {length};
+    return { length };
 }
 
 function convertOutputs(
     outputs: Array<request.OutputRequest>,
-    network: BitcoinJsNetwork
+    network: BitcoinJsNetwork,
 ): Array<OutputIn> {
     // most scripts are P2PKH; default is P2PKH
-    const defaultScript = {length: P2PKH_OUTPUT_SCRIPT_LENGTH};
-    return outputs.map(output => {
+    const defaultScript = { length: P2PKH_OUTPUT_SCRIPT_LENGTH };
+    return outputs.map((output) => {
         if (output.type === 'complete') {
             return {
                 value: output.amount,
@@ -184,7 +180,7 @@ function convertOutputs(
         if (output.type === 'opreturn') {
             return {
                 value: 0,
-                script: {length: 2 + (output.dataHex.length / 2)},
+                script: { length: 2 + (output.dataHex.length / 2) },
             };
         }
         if (output.type === 'send-max') {
@@ -200,4 +196,3 @@ function convertOutputs(
         throw new Error('WRONG-OUTPUT-TYPE');
     });
 }
-

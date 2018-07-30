@@ -17,11 +17,11 @@ describe('coinselect bnb', () => {
             const outputs = utils.expand(f.outputs, false, outputLength);
             const expected = utils.addScriptLengthToExpected(f.expected, inputLength, outputLength, dustThreshold);
 
-            const actual = coinAccum(f.factor)(inputs, outputs, f.feeRate, {inputLength, changeOutputLength: outputLength, dustThreshold});
+            const actual = coinAccum(f.factor)(inputs, outputs, f.feeRate, { inputLength, changeOutputLength: outputLength, dustThreshold });
 
             assert.deepEqual(actual, expected);
             if (actual.inputs) {
-                const feedback = coinAccum(f.factor)(actual.inputs, actual.outputs, f.feeRate, {inputLength, changeOutputLength: outputLength, dustThreshold});
+                const feedback = coinAccum(f.factor)(actual.inputs, actual.outputs, f.feeRate, { inputLength, changeOutputLength: outputLength, dustThreshold });
                 assert.deepEqual(feedback, expected);
             }
         });

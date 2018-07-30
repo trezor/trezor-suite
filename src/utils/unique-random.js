@@ -19,16 +19,16 @@ export function uniqueRandom(maxNonInclusive: number) {
         ? 'node'
         : (
             navigator.languages == null
-            ? navigator.language
-            : navigator.languages.toString()
+                ? navigator.language
+                : navigator.languages.toString()
         );
     const allString = version + offset + languages;
 
     const hash = crypto.createHash('md5').update(allString).digest();
     let r = 0;
     for (let i = 0; i < hash.length; i++) {
-        r = r + hash[i];
-        r = r % maxNonInclusive;
+        r += hash[i];
+        r %= maxNonInclusive;
     }
 
     return r;

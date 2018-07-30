@@ -1,24 +1,26 @@
 /* @flow */
+import type { Network as BitcoinJsNetwork } from 'bitcoinjs-lib-zcash';
+import { HDNode as BitcoinJsHDNode } from 'bitcoinjs-lib-zcash';
 import type {
     AccountInfo,
     AccountLoadStatus,
 } from './index';
 import { Emitter, Stream, StreamWithEnding } from '../utils/stream';
 
-import {WorkerDiscoveryHandler} from './worker/outside';
-import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
-import {HDNode as BitcoinJsHDNode} from 'bitcoinjs-lib-zcash';
+import { WorkerDiscoveryHandler } from './worker/outside';
 
-import {WorkerChannel as AddressWorkerChannel} from '../utils/simple-worker-channel';
+import { WorkerChannel as AddressWorkerChannel } from '../utils/simple-worker-channel';
 
-import type {Blockchain, TransactionWithHeight} from '../bitcore';
-import {WorkerAddressSource} from '../address-source';
+import type { Blockchain, TransactionWithHeight } from '../bitcore';
+import { WorkerAddressSource } from '../address-source';
 
-import type {ForceAddedTransaction} from './index';
+import type { ForceAddedTransaction } from './index';
 
 export class WorkerDiscovery {
     discoveryWorkerFactory: () => Worker;
+
     addressWorkerChannel: ?AddressWorkerChannel;
+
     chain: Blockchain;
 
     constructor(
@@ -31,12 +33,12 @@ export class WorkerDiscovery {
         // $FlowIssue
         this.addressWorkerChannel = (typeof WebAssembly === 'undefined') ? null : new AddressWorkerChannel(fastXpubWorker);
         fastXpubWasmPromise.then(
-            binary => {
+            (binary) => {
                 if (this.addressWorkerChannel !== null) {
-                    fastXpubWorker.postMessage({type: 'init', binary});
+                    fastXpubWorker.postMessage({ type: 'init', binary });
                 }
             },
-            error => console.error(error)
+            error => console.error(error),
         );
         this.chain = chain;
     }
@@ -61,12 +63,14 @@ export class WorkerDiscovery {
     }
 
     forceAddedTransactions: Array<ForceAddedTransaction> = [];
+
     forceAddedTransactionsEmitter: Emitter<boolean> = new Emitter();
+
     forceAddedTransactionsStream: Stream<'block' | TransactionWithHeight> = Stream.fromEmitter(this.forceAddedTransactionsEmitter, () => {}).map(() => 'block');
 
     // useful for adding transactions right after succesful send
     forceAddTransaction(
-        transaction: ForceAddedTransaction
+        transaction: ForceAddedTransaction,
     ): void {
         this.forceAddedTransactions.push(transaction);
         this.forceAddedTransactionsEmitter.emit(true);
@@ -107,10 +111,10 @@ export class WorkerDiscovery {
                     sources,
                     network,
                     cashAddress || false,
-                    this.forceAddedTransactions
+                    this.forceAddedTransactions,
                 );
                 return out.discovery(initial, xpub, segwit === 'p2sh', gap, timeOffset);
-            })
+            }),
         );
     }
 
@@ -148,19 +152,19 @@ export class WorkerDiscovery {
                     }
                     return new Set(
                         info.usedAddresses.map(a => a.address)
-                        .concat(info.unusedAddresses)
-                        .concat(info.changeAddresses)
+                            .concat(info.unusedAddresses)
+                            .concat(info.changeAddresses),
                     );
                 }
 
                 this.chain.subscribe(allAddresses(initial));
                 let currentState = initial;
 
-                const txNotifs: Stream<'block' | TransactionWithHeight> = this.chain.notifications.filter(tx => {
+                const txNotifs: Stream<'block' | TransactionWithHeight> = this.chain.notifications.filter((tx) => {
                     // determine if it's mine
                     const addresses = allAddresses(currentState);
                     let mine = false;
-                    tx.inputAddresses.concat(tx.outputAddresses).forEach(a => {
+                    tx.inputAddresses.concat(tx.outputAddresses).forEach((a) => {
                         if (a != null) {
                             if (addresses.has(a)) {
                                 mine = true;
@@ -170,7 +174,7 @@ export class WorkerDiscovery {
                     return mine;
                 })
                 // flow thing
-                .map((tx: TransactionWithHeight): ('block' | TransactionWithHeight) => tx);
+                    .map((tx: TransactionWithHeight): ('block' | TransactionWithHeight) => tx);
 
                 // we need to do updates on blocks, if there are unconfs
                 const blockStream: Stream<'block' | TransactionWithHeight> = this.chain.blocks.map(() => 'block');
@@ -187,12 +191,12 @@ export class WorkerDiscovery {
                         sources,
                         network,
                         cashAddress || false,
-                        this.forceAddedTransactions
+                        this.forceAddedTransactions,
                     );
                     const discovery: StreamWithEnding<AccountLoadStatus, AccountInfo> = out.discovery(currentState, xpub, segwit === 'p2sh', gap, timeOffset);
 
                     const ending: Promise<AccountInfo> = discovery.ending;
-                    const res: Promise<AccountInfo> = ending.then(res => {
+                    const res: Promise<AccountInfo> = ending.then((res) => {
                         currentState = res;
                         return res;
                     });
@@ -200,7 +204,7 @@ export class WorkerDiscovery {
                 });
 
                 return res;
-            })
+            }),
         );
     }
 
@@ -216,18 +220,17 @@ export class WorkerDiscovery {
     deriveXpub(
         xpub: string,
         network: BitcoinJsNetwork,
-        index: number
+        index: number,
     ): Promise<string> {
         const addressWorkerChannel = this.addressWorkerChannel;
         if (addressWorkerChannel == null) {
             return Promise.resolve(BitcoinJsHDNode.fromBase58(xpub, network, true).derive(index).toBase58());
-        } else {
-            return addressWorkerChannel.postMessage({
-                type: 'deriveNode',
-                xpub: xpub,
-                version: network.bip32.public,
-                index: index,
-            }).then(x => x.xpub);
         }
+        return addressWorkerChannel.postMessage({
+            type: 'deriveNode',
+            xpub,
+            version: network.bip32.public,
+            index,
+        }).then(x => x.xpub);
     }
 }

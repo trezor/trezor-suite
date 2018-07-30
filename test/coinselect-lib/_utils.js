@@ -1,5 +1,5 @@
 function addScriptLength(values, scriptLength) {
-    return values.map(function (x) {
+    return values.map((x) => {
         if (x.script === undefined) {
             x.script = { length: scriptLength };
         }
@@ -11,20 +11,20 @@ function addScriptLengthToExpected(expected, inputLength, outputLength) {
     const newExpected = Object.assign({}, expected);
 
     if (expected.inputs != null) {
-        newExpected.inputs = expected.inputs.map(function (input) {
+        newExpected.inputs = expected.inputs.map((input) => {
             const newInput = Object.assign({}, input);
             if (newInput.script == null) {
-                newInput.script = {length: inputLength};
+                newInput.script = { length: inputLength };
             }
             return newInput;
         });
     }
 
     if (expected.outputs != null) {
-        newExpected.outputs = expected.outputs.map(function (output) {
+        newExpected.outputs = expected.outputs.map((output) => {
             const newOutput = Object.assign({}, output);
             if (newOutput.script == null) {
-                newOutput.script = {length: outputLength};
+                newOutput.script = { length: outputLength };
             }
             return newOutput;
         });
@@ -35,18 +35,16 @@ function addScriptLengthToExpected(expected, inputLength, outputLength) {
 
 function expand(values, indices, scriptLength) {
     if (indices) {
-        return addScriptLength(values.map(function (x, i) {
-            if (typeof x === 'number') return { i: i, value: x };
+        return addScriptLength(values.map((x, i) => {
+            if (typeof x === 'number') return { i, value: x };
 
-            const y = { i: i };
+            const y = { i };
             for (const k in x) y[k] = x[k];
             return y;
         }), scriptLength);
     }
 
-    return addScriptLength(values.map(function (x, i) {
-        return typeof x === 'object' ? x : { value: x };
-    }), scriptLength);
+    return addScriptLength(values.map((x, i) => (typeof x === 'object' ? x : { value: x })), scriptLength);
 }
 
 function testValues(t, actual, expected) {
@@ -55,7 +53,7 @@ function testValues(t, actual, expected) {
 
     t.equal(actual.length, expected.length, 'lengths match');
 
-    actual.forEach(function (ai, i) {
+    actual.forEach((ai, i) => {
         const ei = expected[i];
 
         if (ai.i !== undefined) {
@@ -69,7 +67,7 @@ function testValues(t, actual, expected) {
 }
 
 module.exports = {
-    expand: expand,
-    testValues: testValues,
-    addScriptLengthToExpected: addScriptLengthToExpected,
+    expand,
+    testValues,
+    addScriptLengthToExpected,
 };

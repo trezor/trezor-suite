@@ -65,6 +65,12 @@ eslint:
 	cd ./test && `npm bin`/eslint .
 	cd ./example && `npm bin`/eslint .
 
+eslint-fix:
+	cd src && `npm bin`/eslint --fix . || true
+	cd ./test && `npm bin`/eslint --fix . || true
+	cd ./example && `npm bin`/eslint --fix . || true
+
+
 karma-firefox:
 	`npm bin`/karma start --browsers Firefox --single-run
 

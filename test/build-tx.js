@@ -1,25 +1,38 @@
 /* global it:false, describe:false */
 
 import assert from 'assert';
-import {buildTx} from '../src/build-tx';
-import {Permutation} from '../src/build-tx/permutation';
-
 import bitcoin from 'bitcoinjs-lib-zcash';
+import { buildTx } from '../src/build-tx';
+import { Permutation } from '../src/build-tx/permutation';
+
 
 import fixtures from './fixtures/build-tx.json';
 
+// eslint-disable-next-line no-unused-vars
+import accumulative from './coinselect-lib/accumulative';
+// eslint-disable-next-line no-unused-vars
+import bnb from './coinselect-lib/bnb';
+// eslint-disable-next-line no-unused-vars
+import errors from './coinselect-lib/index-errors';
+// eslint-disable-next-line no-unused-vars
+import index from './coinselect-lib/index';
+// eslint-disable-next-line no-unused-vars
+import split from './coinselect-lib/split';
+// eslint-disable-next-line no-unused-vars
+import utils from './coinselect-lib/utils';
+
 describe('build tx', () => {
-    fixtures.forEach(({description, request, result}) => {
+    fixtures.forEach(({ description, request, result }) => {
         it(description, () => {
             request.network = bitcoin.networks.bitcoin;
             if (result.transaction) {
-                result.transaction.inputs.forEach(input => {
+                result.transaction.inputs.forEach((input) => {
                     input.hash = reverseBuffer(new Buffer(input.REV_hash, 'hex'));
                     delete input.REV_hash;
                 });
                 const o = result.transaction.PERM_outputs;
                 const sorted = JSON.parse(JSON.stringify(o.sorted));
-                sorted.forEach(s => { if (s.opReturnData != null) { s.opReturnData = new Buffer(s.opReturnData); } });
+                sorted.forEach((s) => { if (s.opReturnData != null) { s.opReturnData = new Buffer(s.opReturnData); } });
                 result.transaction.outputs = new Permutation(sorted, o.permutation);
                 delete result.transaction.PERM_outputs;
             }
@@ -36,17 +49,3 @@ function reverseBuffer(src: Buffer): Buffer {
     }
     return buffer;
 }
-
-// eslint-disable-next-line no-unused-vars
-import accumulative from './coinselect-lib/accumulative';
-// eslint-disable-next-line no-unused-vars
-import bnb from './coinselect-lib/bnb';
-// eslint-disable-next-line no-unused-vars
-import errors from './coinselect-lib/index-errors';
-// eslint-disable-next-line no-unused-vars
-import index from './coinselect-lib/index';
-// eslint-disable-next-line no-unused-vars
-import split from './coinselect-lib/split';
-// eslint-disable-next-line no-unused-vars
-import utils from './coinselect-lib/utils';
-

@@ -1,6 +1,5 @@
 /* @flow */
 
-import {Permutation} from './permutation';
 import {
     address as BitcoinJsAddress,
     script as BitcoinJsScript,
@@ -9,11 +8,12 @@ import {
 import type {
     Network as BitcoinJsNetwork,
 } from 'bitcoinjs-lib-zcash';
+import { Permutation } from './permutation';
 
-import type {UtxoInfo} from '../discovery';
+import type { UtxoInfo } from '../discovery';
 import * as coinselect from './coinselect';
 import * as request from './request';
-import {convertCashAddress} from '../utils/bchaddr';
+import { convertCashAddress } from '../utils/bchaddr';
 
 function inputComparator(aHash: Buffer, aVout: number, bHash: Buffer, bVout: number) {
     return reverseBuffer(aHash).compare(reverseBuffer(bHash)) || aVout - bVout;
@@ -58,16 +58,16 @@ export function createTransaction(
     basePath: Array<number>,
     changeId: number,
     changeAddress: string,
-    network: BitcoinJsNetwork
+    network: BitcoinJsNetwork,
 ): Transaction {
-    const convertedInputs = selectedInputs.map(input => {
+    const convertedInputs = selectedInputs.map((input) => {
         const id = input.id;
         const richInput = allInputs[id];
         return convertInput(
             richInput,
             segwit,
             inputAmounts,
-            basePath
+            basePath,
         );
     });
     const convertedOutputs = selectedOutputs.map((output, i) => {
@@ -79,25 +79,22 @@ export function createTransaction(
         if ((!isChange) && original.type === 'opreturn') {
             const opReturnData: string = original.dataHex;
             return convertOpReturnOutput(opReturnData);
-        } else {
-            // TODO refactor and get rid of FlowIssues everywhere
-            // $FlowIssue
-            const address = isChange ? changeAddress : original.address;
-            const amount = output.value;
-            return convertOutput(
-                address,
-                amount,
-                network,
-                basePath,
-                changeId,
-                isChange,
-                segwit
-            );
         }
+        // TODO refactor and get rid of FlowIssues everywhere
+        // $FlowIssue
+        const address = isChange ? changeAddress : original.address;
+        const amount = output.value;
+        return convertOutput(
+            address,
+            amount,
+            network,
+            basePath,
+            changeId,
+            isChange,
+            segwit,
+        );
     });
-    convertedInputs.sort((a, b) => {
-        return inputComparator(a.hash, a.index, b.hash, b.index);
-    });
+    convertedInputs.sort((a, b) => inputComparator(a.hash, a.index, b.hash, b.index));
     const permutedOutputs = Permutation.fromFunction(convertedOutputs, (a, b) => {
         // $FlowIssue
         const aValue: number = a.output.value != null ? a.output.value : 0;
@@ -115,13 +112,13 @@ function convertInput(
     utxo: UtxoInfo,
     segwit: boolean,
     inputAmounts: boolean,
-    basePath: Array<number>
+    basePath: Array<number>,
 ): Input {
     const res = {
         hash: reverseBuffer(new Buffer(utxo.transactionHash, 'hex')),
         index: utxo.index,
         path: basePath.concat([...utxo.addressPath]),
-        segwit: segwit,
+        segwit,
     };
     if (inputAmounts) {
         return {
@@ -133,7 +130,7 @@ function convertInput(
 }
 
 function convertOpReturnOutput(
-    opReturnData: string
+    opReturnData: string,
 ): {
     output: Output,
     script: Buffer,
@@ -167,7 +164,7 @@ function convertOutput(
         segwit,
         value,
     } : {
-        address: address,
+        address,
         value,
     };
 

@@ -48,15 +48,15 @@ function deleteTxs(
     const filteredTransactions = oldInfo.transactions.filter(tx => !set.has(tx.hash));
 
     const addedUtxos: Array<UtxoInfo> = [];
-    deletedTransactions.map(deletedTran => {
+    deletedTransactions.map((deletedTran) => {
         // this is not efficient At ALL,
         // but it does not happen frequently
         // (usually not at all)
         // => no need to optimize here, just go naively
-        deletedTran.inputs.forEach(deletedInp => {
+        deletedTran.inputs.forEach((deletedInp) => {
             const deletedInpHash = deletedInp.id;
             const deletedInpI = deletedInp.index;
-            filteredTransactions.forEach(transaction => {
+            filteredTransactions.forEach((transaction) => {
                 const thash = transaction.hash;
                 if (thash === deletedInpHash) {
                     const o = transaction.myOutputs[deletedInpI];
@@ -64,11 +64,11 @@ function deleteTxs(
                         // ALSO needs to find, if any of the inputs
                         // are also mine
                         let own = false;
-                        filteredTransactions.forEach(ptran => {
-                            transaction.inputs.forEach(ip => {
+                        filteredTransactions.forEach((ptran) => {
+                            transaction.inputs.forEach((ip) => {
                                 if (
-                                    ip.id === ptran.hash &&
-                                    ptran.myOutputs[ip.index] != null
+                                    ip.id === ptran.hash
+                                    && ptran.myOutputs[ip.index] != null
                                 ) {
                                     own = true;
                                 }
@@ -78,7 +78,7 @@ function deleteTxs(
                             o,
                             transaction,
                             atp,
-                            own
+                            own,
                         ));
                     }
                 }
@@ -97,7 +97,7 @@ function utxoFromTarget(
     t: TargetInfo,
     tx: TransactionInfo,
     atp: AddressToPath,
-    own: boolean
+    own: boolean,
 ): UtxoInfo {
     const resIx: UtxoInfo = {
         index: t.i,
@@ -123,7 +123,7 @@ export function integrateNewTxs(
 ): AccountInfo {
     const addressToPath = deriveAddressToPath(
         newInfo.main.allAddresses,
-        newInfo.change.allAddresses
+        newInfo.change.allAddresses,
     );
 
     const oldInfo = (deletedTxs.length !== 0)
@@ -132,14 +132,14 @@ export function integrateNewTxs(
 
     const joined = deriveJoined(
         newInfo.main.newTransactions,
-        newInfo.change.newTransactions
+        newInfo.change.newTransactions,
     );
 
     const utxos = deriveUtxos(
         newInfo,
         oldInfo,
         addressToPath,
-        joined
+        joined,
     );
 
     const transactions = deriveAnalysis(
@@ -147,15 +147,15 @@ export function integrateNewTxs(
         oldInfo.transactions,
         addressToPath,
         lastBlock,
-        wantedOffset
+        wantedOffset,
     );
 
-    const {usedAddresses, unusedAddresses, lastConfirmed: lastConfirmedMain} = deriveUsedAddresses(
+    const { usedAddresses, unusedAddresses, lastConfirmed: lastConfirmedMain } = deriveUsedAddresses(
         transactions,
         addressToPath,
         newInfo.main.allAddresses,
         0,
-        gap
+        gap,
     );
 
     const usedChange = deriveUsedAddresses(
@@ -163,7 +163,7 @@ export function integrateNewTxs(
         addressToPath,
         newInfo.change.allAddresses,
         1,
-        gap
+        gap,
     );
 
     const balance = transactions.length > 0 ? transactions[0].balance : 0;
@@ -199,7 +199,7 @@ export function integrateNewTxs(
 
 function deriveAddressToPath(
     main: Array<string>,
-    change: Array<string>
+    change: Array<string>,
 ): AddressToPath {
     const res: AddressToPath = {};
 
@@ -215,14 +215,14 @@ function deriveAddressToPath(
 
 function deriveJoined(
     main: ChainNewTransactions,
-    change: ChainNewTransactions
+    change: ChainNewTransactions,
 ): ChainNewTransactions {
     const res = {};
 
-    Object.keys(main).forEach(id => {
+    Object.keys(main).forEach((id) => {
         res[id] = main[id];
     });
-    Object.keys(change).forEach(id => {
+    Object.keys(change).forEach((id) => {
         res[id] = change[id];
     });
 
@@ -230,14 +230,14 @@ function deriveJoined(
 }
 
 function deriveSentAddresses(
-    transactions: Array<TransactionInfo>
+    transactions: Array<TransactionInfo>,
 ): {[txPlusIndex: string]: string} {
     const res = {};
-    transactions.forEach(t => {
+    transactions.forEach((t) => {
         if (t.type === 'sent') {
-            t.targets.forEach(({address, i}) => {
+            t.targets.forEach(({ address, i }) => {
                 const txId = t.hash;
-                const key = txId + ':' + i;
+                const key = `${txId}:${i}`;
                 res[key] = address;
             });
         }
@@ -250,7 +250,7 @@ function deriveUsedAddresses(
     addressToPath: AddressToPath,
     allAddresses: Array<string>,
     chain: number,
-    gap: number
+    gap: number,
 ): {
     usedAddresses: Array<AddressWithReceived>,
     unusedAddresses: Array<string>,
@@ -260,8 +260,8 @@ function deriveUsedAddresses(
     let lastUsed = -1;
     let lastConfirmed = -1;
 
-    transactions.forEach(t => {
-        objectValues(t.myOutputs).forEach(o => {
+    transactions.forEach((t) => {
+        objectValues(t.myOutputs).forEach((o) => {
             const address = o.address;
             const value = o.value;
             const path = addressToPath[address];
@@ -288,12 +288,11 @@ function deriveUsedAddresses(
     for (let i = 0; i <= lastUsed; i++) {
         const address = allAddresses[i];
         const received = allReceived[i] == null ? 0 : allReceived[i];
-        usedAddresses.push({address, received});
+        usedAddresses.push({ address, received });
     }
     const unusedAddresses = [];
     for (let i = lastUsed + 1; i <= lastConfirmed + gap; i++) {
         unusedAddresses.push(allAddresses[i]);
     }
-    return {usedAddresses, unusedAddresses, lastConfirmed};
+    return { usedAddresses, unusedAddresses, lastConfirmed };
 }
-

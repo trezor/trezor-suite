@@ -22,7 +22,7 @@ export function loadBlockRange(initialState: AccountInfo): Promise<BlockRange> {
     const pBlock: Block = initialState.lastBlock;
 
     // first, I ask for last block I will do
-    return getCurrentBlock().then(last => {
+    return getCurrentBlock().then((last) => {
         // then I detect first block I will do
         // detect based on whether reorg is needed
         // I do not do reorgs inteligently, I always discard all
@@ -31,10 +31,9 @@ export function loadBlockRange(initialState: AccountInfo): Promise<BlockRange> {
             ? getBlock(pBlock.height).then((block) => {
                 if (block.hash === pBlock.hash) {
                     return pBlock.height;
-                } else {
-                    console.warn('Blockhash mismatch', pBlock, block);
-                    return 0;
                 }
+                console.warn('Blockhash mismatch', pBlock, block);
+                return 0;
             }, (err) => {
                 if (err.message === 'RPCError: Block height out of range') {
                     console.warn('Block height out of range', pBlock.height);
@@ -44,17 +43,16 @@ export function loadBlockRange(initialState: AccountInfo): Promise<BlockRange> {
             })
 
             : Promise.resolve(0);
-        return firstHeight.then(firstHeight => ({firstHeight, last}));
+        return firstHeight.then(firstHeight => ({ firstHeight, last }));
     });
 }
 
 function getBlock(height: number): Promise<Block> {
     return lookupBlockHash(height)
-                      .then((hash) => ({ hash, height }));
+        .then(hash => ({ hash, height }));
 }
 
 function getCurrentBlock(): Promise<Block> {
     return lookupSyncStatus()
-                     .then((height) => { return getBlock(height); });
+        .then(height => getBlock(height));
 }
-

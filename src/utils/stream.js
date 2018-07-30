@@ -24,12 +24,11 @@ import { deferred } from './deferred';
 function formatError(error: mixed): Error {
     if (typeof error === 'object' && error != null && error instanceof Error) {
         return error;
-    } else {
-        if (typeof error === 'object' && error != null && error.message != null) {
-            return new Error(error.message);
-        }
-        return new Error(JSON.stringify(error));
     }
+    if (typeof error === 'object' && error != null && error.message != null) {
+        return new Error(error.message);
+    }
+    return new Error(JSON.stringify(error));
 }
 
 // having detach function in the handler is actually very useful
@@ -39,6 +38,7 @@ type Handler<T> = (value: T, detach: () => void) => void;
 // const MAX_LISTENERS = 50;
 export class Emitter<T> {
     listeners: Array<Handler<T>> = [];
+
     destroyed: boolean = false;
 
     destroy() {
@@ -55,7 +55,7 @@ export class Emitter<T> {
         }
         // this is to prevent possible unintended effects
         // (not necessary, remove if you REALLY need to do this)
-        this.listeners.forEach(oldHandler => {
+        this.listeners.forEach((oldHandler) => {
             if (oldHandler === handler) {
                 throw new Error('Cannot attach the same listener twice');
             }
@@ -68,9 +68,8 @@ export class Emitter<T> {
         this.listeners = this.listeners.filter((listener) => {
             if (listener === handler) {
                 return false;
-            } else {
-                return true;
             }
+            return true;
         });
     }
 
@@ -94,14 +93,16 @@ type Controller<T> = (update: Updater<T>, finish: Finisher) => Disposer;
 
 export class Stream<T> {
     values: Emitter<T>;
+
     finish: Emitter<void>;
+
     dispose: Disposer;
 
     // note that this never "finishes"
     // note that dispose does NOT destroy the emitter
     static fromEmitter<T>(
         emitter: Emitter<T>,
-        dispose: () => void
+        dispose: () => void,
     ): Stream<T> {
         return new Stream((update, finish) => {
             let disposed = false;
@@ -123,7 +124,7 @@ export class Stream<T> {
     static fromEmitterFinish<T>(
         emitter: Emitter<T>,
         finisher: Emitter<void>,
-        dispose: () => void
+        dispose: () => void,
     ): Stream<T> {
         return new Stream((update, finish) => {
             let disposed = false;
@@ -168,13 +169,13 @@ export class Stream<T> {
 
     static fromPromise<T>(
         promise: Promise<Stream<T>>,
-        ignoreRejectionError: ?boolean
+        ignoreRejectionError: ?boolean,
     ): Stream<Error | T> {
         const _ignoreRejectionError = ignoreRejectionError == null ? false : ignoreRejectionError;
         const nstream = new Stream((update, finish) => {
             let stream_;
             let disposed = false;
-            promise.then(stream => {
+            promise.then((stream) => {
                 if (!disposed) {
                     if (!stream.disposed) {
                         stream.values.attach(v => update(v));
@@ -190,11 +191,11 @@ export class Stream<T> {
                         update(formatError(error));
                     }
                     setTimeout(
-                      () => {
-                          if (!disposed) {
-                              finish();
-                          }
-                      }, 10
+                        () => {
+                            if (!disposed) {
+                                finish();
+                            }
+                        }, 10,
                     );
                 }
             });
@@ -211,7 +212,7 @@ export class Stream<T> {
     static setLater<T>(): {
         stream: Stream<T>,
         setter: (s: Stream<T>) => void,
-    } {
+        } {
         const df = deferred();
         let set = false;
         const setter = (s: Stream<T>) => {
@@ -223,7 +224,7 @@ export class Stream<T> {
         };
         // $FlowIssue the promise is never rejected, so the type can be Stream<T>
         const stream: Stream<T> = Stream.fromPromise(df.promise);
-        return {stream, setter};
+        return { stream, setter };
     }
 
     // note - when generate() ends with error,
@@ -233,7 +234,7 @@ export class Stream<T> {
     static generate<T>(
         initial: T,
         generate: (state: T) => Promise<T>,
-        condition: (state: T) => boolean
+        condition: (state: T) => boolean,
     ): Stream<T | Error> {
         return new Stream((update, finish) => {
             let disposed = false;
@@ -307,13 +308,13 @@ export class Stream<T> {
                 });
             });
             return () => {
-                streams.forEach((s) => s.dispose());
+                streams.forEach(s => s.dispose());
             };
         });
     }
 
     static filterError<T>(
-        stream: Stream<Error | T>
+        stream: Stream<Error | T>,
     ): Stream<T> {
         const res_: Stream<Error | T> = stream.filter(v => !(v instanceof Error));
 
@@ -329,7 +330,7 @@ export class Stream<T> {
         this.finish = new Emitter();
         const controllerDispose = controller(
             (value) => { this.values.emit(value); },
-            () => { this.finish.emit(); }
+            () => { this.finish.emit(); },
         );
         this.dispose = () => {
             controllerDispose();
@@ -395,19 +396,15 @@ export class Stream<T> {
                         return Promise.reject(e);
                     }
                 }());
-                previous = runFn.then(u => {
-                    return previousNow.then(() => {
-                        if (!disposed) {
-                            update(u);
-                        }
-                    });
-                }, error => {
-                    return previousNow.then(() => {
-                        if (!disposed) {
-                            update(error);
-                        }
-                    });
-                });
+                previous = runFn.then(u => previousNow.then(() => {
+                    if (!disposed) {
+                        update(u);
+                    }
+                }), error => previousNow.then(() => {
+                    if (!disposed) {
+                        update(error);
+                    }
+                }));
             });
             this.finish.attach(() => {
                 previous.then(() => {
@@ -451,7 +448,10 @@ export class Stream<T> {
 
 export class StreamWithEnding<UpdateT, EndingT> {
     stream: Stream<UpdateT>;
-    ending: Promise<EndingT>; // ending never resolves before stream finishes
+
+    ending: Promise<EndingT>;
+
+    // ending never resolves before stream finishes
     dispose: (e: Error) => void;
 
     static fromStreamAndPromise(s: Stream<UpdateT>, ending: Promise<EndingT>): StreamWithEnding<UpdateT, EndingT> {
@@ -483,7 +483,7 @@ export class StreamWithEnding<UpdateT, EndingT> {
         // but if we use filterError, U can never include error
         let disposed = false;
         // $FlowIssue the error thing - unfortunately, flow cannot have different type based on true/false of second paramatere
-        res.stream = Stream.fromPromise(p.then(s => {
+        res.stream = Stream.fromPromise(p.then((s) => {
             if (disposed) {
                 throw new Error('disposed'); // will be ignored
             } else {
@@ -493,7 +493,7 @@ export class StreamWithEnding<UpdateT, EndingT> {
         res.ending = p.then(s => s.ending);
         res.ending.catch(() => {});
         let resolved = null;
-        p.then(s => {
+        p.then((s) => {
             resolved = s;
         });
         res.dispose = (e: Error) => {

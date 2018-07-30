@@ -11,5 +11,5 @@ function score(feeRate) {
 }
 
 module.exports = {
-    score: score,
+    score,
 };

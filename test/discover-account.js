@@ -1,10 +1,10 @@
 /* global it:false, describe:false, WebAssembly:true */
 
-import {MockBitcore} from './_mock-bitcore';
-import {WorkerDiscovery} from '../src/discovery/worker-discovery';
+import { MockBitcore } from './_mock-bitcore';
+import { WorkerDiscovery } from '../src/discovery/worker-discovery';
 import fixtures from './fixtures/discover-account.json';
 
-import {discoveryWorkerFactory, xpubWorker, xpubFilePromise} from './_worker-helper';
+import { discoveryWorkerFactory, xpubWorker, xpubFilePromise } from './_worker-helper';
 
 const hasWasm = typeof WebAssembly !== 'undefined';
 if (hasWasm) {
@@ -14,8 +14,8 @@ discoverAccount(false);
 
 function discoverAccount(enableWebassembly) {
     const desc = enableWebassembly ? ' wasm' : ' no wasm';
-    describe('discover account' + desc, () => {
-        fixtures.forEach(fixture_orig => {
+    describe(`discover account${desc}`, () => {
+        fixtures.forEach((fixture_orig) => {
             const fixture = JSON.parse(JSON.stringify(fixture_orig));
             it(fixture.name, function (done_orig) {
                 this.timeout(30 * 1000);
@@ -52,13 +52,11 @@ function discoverAccount(enableWebassembly) {
                             console.log('Discovery result', JSON.stringify(res, null, 2));
                             console.log('Fixture', JSON.stringify(fixture.end, null, 2));
                             done(new Error('Result not the same'));
+                        } else if (blockchain.spec.length > 0) {
+                            console.log(JSON.stringify(blockchain.spec));
+                            done(new Error('Some spec left on end'));
                         } else {
-                            if (blockchain.spec.length > 0) {
-                                console.log(JSON.stringify(blockchain.spec));
-                                done(new Error('Some spec left on end'));
-                            } else {
-                                done();
-                            }
+                            done();
                         }
                     }
                 }, (err) => {
@@ -69,13 +67,11 @@ function discoverAccount(enableWebassembly) {
                         console.log('Discovery result', JSON.stringify(err, null, 2));
                         console.log('Fixture', JSON.stringify(fixture.endError, null, 2));
                         done(new Error('Result not the same'));
+                    } else if (blockchain.spec.length > 0) {
+                        console.log(JSON.stringify(blockchain.spec));
+                        done(new Error('Some spec left on end'));
                     } else {
-                        if (blockchain.spec.length > 0) {
-                            console.log(JSON.stringify(blockchain.spec));
-                            done(new Error('Some spec left on end'));
-                        } else {
-                            done();
-                        }
+                        done();
                     }
                 });
             });

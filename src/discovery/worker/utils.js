@@ -2,7 +2,7 @@
 import type { Input as BitcoinJsInput } from 'bitcoinjs-lib-zcash';
 
 export function getInputId(
-    i: BitcoinJsInput
+    i: BitcoinJsInput,
 ): string {
     const hash = i.hash;
     Array.prototype.reverse.call(hash);
@@ -20,10 +20,8 @@ export function filterNull<T>(k: Array<?T>, throwErrorOnNull: boolean): Array<T>
     for (const t of k) {
         if (t != null) {
             res.push(t);
-        } else {
-            if (throwErrorOnNull) {
-                throw new Error('Unexpected null');
-            }
+        } else if (throwErrorOnNull) {
+            throw new Error('Unexpected null');
         }
     }
     return res;

@@ -1,10 +1,10 @@
 /* @flow */
-import type {TransactionInfo} from '../../index';
+import type { TransactionInfo } from '../../index';
 
 // Functions for date formatting
 export function deriveDateFormats(
     t: ?number,
-    wantedOffset: number // what (new Date().getTimezoneOffset()) returns
+    wantedOffset: number, // what (new Date().getTimezoneOffset()) returns
 ): {
     timestamp: ?number,
     dateInfoDayFormat: ?string,
@@ -16,41 +16,40 @@ export function deriveDateFormats(
             dateInfoDayFormat: null,
             dateInfoTimeFormat: null,
         };
-    } else {
-        const t_: number = t;
-        const date = new Date((t_ - wantedOffset * 60) * 1000);
-        return {
-            timestamp: t_,
-            dateInfoDayFormat: dateToDayFormat(date),
-            dateInfoTimeFormat: dateToTimeFormat(date),
-        };
     }
+    const t_: number = t;
+    const date = new Date((t_ - wantedOffset * 60) * 1000);
+    return {
+        timestamp: t_,
+        dateInfoDayFormat: dateToDayFormat(date),
+        dateInfoTimeFormat: dateToTimeFormat(date),
+    };
 }
 
 function dateToTimeFormat(date: Date): string {
     const hh = addZero(date.getUTCHours().toString());
     const mm = addZero(date.getUTCMinutes().toString());
     const ss = addZero(date.getUTCSeconds().toString());
-    return hh + ':' + mm + ':' + ss;
+    return `${hh}:${mm}:${ss}`;
 }
 
 function dateToDayFormat(date: Date): string {
     const yyyy = date.getUTCFullYear().toString();
     const mm = addZero((date.getUTCMonth() + 1).toString()); // getMonth() is zero-based
     const dd = addZero(date.getUTCDate().toString());
-    return yyyy + '-' + mm + '-' + dd;
+    return `${yyyy}-${mm}-${dd}`;
 }
 
 function addZero(s: string): string {
     if (s.length === 1) {
-        return '0' + s;
+        return `0${s}`;
     }
     return s;
 }
 
 export function recomputeDateFormats(
     ts: Array<TransactionInfo>,
-    wantedOffset: number
+    wantedOffset: number,
 ) {
     for (const t of ts) {
         const r = deriveDateFormats(t.timestamp, wantedOffset);

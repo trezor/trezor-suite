@@ -12,7 +12,7 @@ module.exports = function (inputs, outputs, feeRate, options) {
 
     const algorithm = tryConfirmed(
         utils.anyOf([bnb(0.5), accumulative]),
-        options
+        options,
     );
 
     return algorithm(inputs, outputs, feeRate, options);
