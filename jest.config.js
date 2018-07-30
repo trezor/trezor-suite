@@ -6,7 +6,8 @@ module.exports = {
         '/node_modules/',
         '/fastxpub/',
         '/test_bitcore/',
-        'utils',
+        '/build/',
         'helper',
+        'test/coinselect-lib/_utils.js',
     ],
 };
