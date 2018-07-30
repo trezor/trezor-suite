@@ -1,11 +1,53 @@
 /* @flow */
-
-
 import React from 'react';
+import styled from 'styled-components';
+import colors from '~/js/config/colors';
+
+const Wrapper = styled.header`
+    width: 100%;
+    height: 52px;
+    background: ${colors.color_header};
+
+    svg {
+         fill: ${colors.color_white};
+         height: 28px;         
+         width: 100px;
+         flex: 1;
+     }
+`;
+
+const LayoutWrapper = styled.div`
+    width: 100%;
+    height: 100%;
+    max-width: 1170px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+`;
+
+const A = styled.a`
+    color: ${colors.color_white};
+    margin-left: 24px;
+
+    &:visited {
+        color: ${colors.color_white};
+        margin-left: 24px;
+    }
+
+    &:first-child {
+        margin: 0px;
+    }
+
+    &:hover,
+    &:active {
+        color: ${colors.color_text_secondary};
+    }
+`;
 
 const Header = (): React$Element<string> => (
-    <header>
-        <div className="layout-wrapper">
+    <Wrapper>
+        <LayoutWrapper>
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 163.7 41.9" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">
                 <polygon points="101.1,12.8 118.2,12.8 118.2,17.3 108.9,29.9 118.2,29.9 118.2,35.2 101.1,35.2 101.1,30.7 110.4,18.1 101.1,18.1" />
                 <path d="M158.8,26.9c2.1-0.8,4.3-2.9,4.3-6.6c0-4.5-3.1-7.4-7.7-7.4h-10.5v22.3h5.8v-7.5h2.2l4.1,7.5h6.7L158.8,26.9z M154.7,22.5 h-4V18h4c1.5,0,2.5,0.9,2.5,2.2C157.2,21.6,156.2,22.5,154.7,22.5z" />
@@ -16,13 +58,13 @@ const Header = (): React$Element<string> => (
                 <polygon points="40.5,12.8 58.6,12.8 58.6,18.1 52.4,18.1 52.4,35.2 46.6,35.2 46.6,18.1 40.5,18.1 " />
             </svg>
             <div>
-                <a href="https://trezor.io/" target="_blank" rel="noreferrer noopener">TREZOR</a>
-                <a href="https://doc.satoshilabs.com/trezor-user/" target="_blank" rel="noreferrer noopener">Docs</a>
-                <a href="https://blog.trezor.io/" target="_blank" rel="noreferrer noopener">Blog</a>
-                <a href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Support</a>
+                <A href="https://trezor.io/" target="_blank" rel="noreferrer noopener">TREZOR</A>
+                <A href="https://doc.satoshilabs.com/trezor-user/" target="_blank" rel="noreferrer noopener">Docs</A>
+                <A href="https://blog.trezor.io/" target="_blank" rel="noreferrer noopener">Blog</A>
+                <A href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Support</A>
             </div>
-        </div>
-    </header>
+        </LayoutWrapper>
+    </Wrapper>
 );
 
 export default Header;
