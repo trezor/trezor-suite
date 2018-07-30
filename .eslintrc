@@ -1,0 +1,55 @@
+{
+    "extends": [
+        "eslint-config-airbnb",
+        "plugin:flowtype/recommended",
+        "plugin:jest/recommended"
+        
+    ],
+    "env": {
+        "browser": true,
+        "jest": true
+    },
+    "rules": {
+        "react/jsx-one-expression-per-line": 0,
+        "react/jsx-indent": [2, 4],
+        "react/jsx-indent-props": [2, 4],
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"]}],
+        "indent": [2, 4, { "SwitchCase": 1 }],
+        "no-confusing-arrow": [2,{ "allowParens": true }],
+        "no-console": 0,
+        "no-alert": 0,
+        "no-prototype-builtins": 0,
+        "new-cap": 0,
+        "max-len": 0,
+        "eol-last": 0,
+        "spaced-comment": 0
+    },
+    "plugins": [
+        "react",
+        "import",
+        "jest",
+        "flowtype"
+    ],
+    "settings": {
+        "import/parser": "babel-eslint",
+        "import/resolver": {
+            "node": {
+                "moduleDirectory": [
+                    "src",
+                    "node_modules"
+                ]
+            }
+        },
+        "import/ignore": [
+            "\\.(scss|less|css)$"
+        ]
+    },
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "experimentalObjectRestSpread": true
+        }
+    }
+}
