@@ -1,14 +1,14 @@
-import { SRC, BUILD, PORT } from './constants';
 
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { SRC, BUILD } from './constants';
 
 module.exports = {
     mode: 'production',
     entry: {
-        'index': [ `${SRC}js/index.js` ]
+        index: [`${SRC}js/index.js`],
     },
     output: {
         filename: 'js/[name].[hash].js',
@@ -20,28 +20,28 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
+                use: ['babel-loader'],
             },
             {
                 test: /\.less$/,
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
-                        options: { publicPath: '../' }
+                        options: { publicPath: '../' },
                     },
-                    { 
+                    {
                         loader: 'css-loader',
-                        options: { 
+                        options: {
                             minimize: false,
-                        } 
+                        },
                     },
-                    { 
+                    {
                         loader: 'less-loader',
-                        options: { 
+                        options: {
                             minimize: false,
-                        } 
-                    }
-                ]
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(png|gif|jpg)$/,
@@ -49,8 +49,8 @@ module.exports = {
                 loader: 'file-loader',
                 query: {
                     outputPath: './images',
-                    name: '[name].[hash].[ext]'
-                }
+                    name: '[name].[hash].[ext]',
+                },
             },
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
@@ -70,24 +70,24 @@ module.exports = {
                     name: '[name].[hash].[ext]',
                 },
             },
-        ]
+        ],
     },
     resolve: {
         modules: [SRC, 'node_modules'],
     },
     performance: {
-        hints: false
+        hints: false,
     },
     plugins: [
         new MiniCssExtractPlugin({
             filename: 'css/[name].[hash].css',
         }),
-        
+
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
             filename: 'index.html',
-            inject: true
+            inject: true,
         }),
 
         new CopyWebpackPlugin([
@@ -101,5 +101,5 @@ module.exports = {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.NamedModulesPlugin(),
-    ]
-}
+    ],
+};

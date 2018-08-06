@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 export const INIT: 'summary__init' = 'summary__init';
 export const DISPOSE: 'summary__dispose' = 'summary__dispose';

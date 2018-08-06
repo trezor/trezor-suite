@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as NOTIFICATION from '../actions/constants/notification';
@@ -44,35 +44,33 @@ const addNotification = (state: State, payload: any): State => {
         title: payload.title.toString(),
         message: payload.message.toString(),
         cancelable: payload.cancelable,
-        actions: payload.actions
+        actions: payload.actions,
     });
 
     // TODO: sort
     return newState;
-}
+};
 
 const closeNotification = (state: State, payload: any): State => {
     if (payload && typeof payload.id === 'string') {
         return state.filter(entry => entry.id !== payload.id);
-    } else if (payload && typeof payload.devicePath === 'string') {
+    } if (payload && typeof payload.devicePath === 'string') {
         return state.filter(entry => entry.devicePath !== payload.devicePath);
-    } else {
-        return state.filter(entry => !entry.cancelable);
     }
-}
+    return state.filter(entry => !entry.cancelable);
+};
 
 export default function notification(state: State = initialState, action: Action): State {
-    switch(action.type) {
-
-        case DEVICE.DISCONNECT :
+    switch (action.type) {
+        case DEVICE.DISCONNECT:
             const path: string = action.device.path; // Flow warning
             return state.filter(entry => entry.devicePath !== path);
 
-        case NOTIFICATION.ADD :
+        case NOTIFICATION.ADD:
             return addNotification(state, action.payload);
 
-        case LOCATION_CHANGE :
-        case NOTIFICATION.CLOSE :
+        case LOCATION_CHANGE:
+        case NOTIFICATION.CLOSE:
             return closeNotification(state, action.payload);
 
         default:

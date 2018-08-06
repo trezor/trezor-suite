@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
@@ -28,43 +28,37 @@ type ContentProps = {
 }
 
 
-const Content = (props: ContentProps) => {
-    return (
-        <article>
-            <nav>
-                <Route path="/device/:device/network/:network/account/:account" component={ AccountTabs } />
-                <Route path="/device/:device/device-settings" component={ DeviceSettingsTabs } />
-            </nav>
-            <Notifications />
-            <Log />
-            { props.children }
-            <Footer />
-        </article>
-    );
-}
+const Content = (props: ContentProps) => (
+    <article>
+        <nav>
+            <Route path="/device/:device/network/:network/account/:account" component={AccountTabs} />
+            <Route path="/device/:device/device-settings" component={DeviceSettingsTabs} />
+        </nav>
+        <Notifications />
+        <Log />
+        { props.children }
+        <Footer />
+    </article>
+);
 
-const Wallet = (props: WalletContainerProps) => {
-    return (
-        <div className="app">
-            <Header />
-            {/* <div>{ props.wallet.online ? "ONLINE" : "OFFLINE" }</div> */}
-            <main>
-                <AsideContainer />
-                <Content>
-                    { props.children }
-                </Content>
-            </main>
-            <ModalContainer />
-        </div>
-    );
-}
+const Wallet = (props: WalletContainerProps) => (
+    <div className="app">
+        <Header />
+        {/* <div>{ props.wallet.online ? "ONLINE" : "OFFLINE" }</div> */}
+        <main>
+            <AsideContainer />
+            <Content>
+                { props.children }
+            </Content>
+        </main>
+        <ModalContainer />
+    </div>
+);
 
-const mapStateToProps: MapStateToProps<State, {}, WalletContainerProps> = (state: State, own: {}): WalletContainerProps => {
-    return {
-        wallet: state.wallet
-    };
-}
+const mapStateToProps: MapStateToProps<State, {}, WalletContainerProps> = (state: State, own: {}): WalletContainerProps => ({
+    wallet: state.wallet,
+});
 
 export default withRouter(
-    connect(mapStateToProps, null)(Wallet)
+    connect(mapStateToProps, null)(Wallet),
 );

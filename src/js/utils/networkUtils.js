@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import 'whatwg-fetch';
 
@@ -9,14 +9,13 @@ export const httpRequest = async (url: string, type: string = 'text'): any => {
         if (type === 'json') {
             const txt: string = await response.text();
             return JSON.parse(txt);
-        } else if (type === 'binary') {
+        } if (type === 'binary') {
             return await response.arrayBuffer();
-        } else {
-            return await response.text();
         }
-    } else {
-        throw new Error(`${ url } ${ response.statusText }`);
+        return await response.text();
     }
+    throw new Error(`${url} ${response.statusText}`);
+
 
     // return fetch(url, { credentials: 'same-origin' }).then((response) => {
     //     if (response.status === 200) {
@@ -33,7 +32,6 @@ export const JSONRequest = async (url: string): Promise<JSON> => {
     if (response.ok) {
         const txt: string = await response.text();
         return JSON.parse(txt);
-    } else {
-        throw new Error('jsonRequest error: ' + response.toString() );
     }
+    throw new Error(`jsonRequest error: ${response.toString()}`);
 };

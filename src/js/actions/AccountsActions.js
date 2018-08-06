@@ -1,5 +1,4 @@
 /* @flow */
-'use strict';
 
 import * as ACCOUNT from './constants/account';
 import type { Action, TrezorDevice } from '~/flowtype';
@@ -22,7 +21,7 @@ export type AccountCreateAction = {
     network: string,
     index: number,
     path: Array<number>,
-    address: string 
+    address: string
 }
 
 export type AccountSetBalanceAction = {
@@ -41,22 +40,18 @@ export type AccountSetNonceAction = {
     nonce: number
 }
 
-export const setBalance = (address: string, network: string, deviceState: string, balance: string): Action => {
-    return {
-        type: ACCOUNT.SET_BALANCE,
-        address,
-        network,
-        deviceState,
-        balance
-    }
-}
+export const setBalance = (address: string, network: string, deviceState: string, balance: string): Action => ({
+    type: ACCOUNT.SET_BALANCE,
+    address,
+    network,
+    deviceState,
+    balance,
+});
 
-export const setNonce = (address: string, network: string, deviceState: string, nonce: number): Action => {
-    return {
-        type: ACCOUNT.SET_NONCE,
-        address,
-        network,
-        deviceState,
-        nonce
-    }
-}
+export const setNonce = (address: string, network: string, deviceState: string, nonce: number): Action => ({
+    type: ACCOUNT.SET_NONCE,
+    address,
+    network,
+    deviceState,
+    nonce,
+});

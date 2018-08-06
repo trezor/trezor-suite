@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import React from 'react';
 import { bindActionCreators } from 'redux';
@@ -24,24 +24,24 @@ type NProps = {
     close?: typeof NotificationActions.close
 }
 
-export const Notification = (props: NProps): React$Element<string>  => {
-    const className = `notification ${ props.className }`;
+export const Notification = (props: NProps): React$Element<string> => {
+    const className = `notification ${props.className}`;
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
-    const actionButtons = props.actions ? props.actions.map((a, i) => {
-        return (
-            <button key={ i } onClick={ event => { close(); a.callback(); } } className="transparent">{ a.label }</button>
-        )
-    }) : null;
+    const actionButtons = props.actions ? props.actions.map((a, i) => (
+        <button key={i} onClick={(event) => { close(); a.callback(); }} className="transparent">{ a.label }</button>
+    )) : null;
 
     return (
-        <div className={ className }>
+        <div className={className}>
             { props.cancelable ? (
-                <button className="notification-close transparent" 
-                    onClick={ event => close() }></button>
+                <button
+                    className="notification-close transparent"
+                    onClick={event => close()}
+                />
             ) : null }
             <div className="notification-body">
                 <h2>{ props.title }</h2>
-                { props.message ? (<p dangerouslySetInnerHTML={{__html: props.message }}></p>) : null }
+                { props.message ? (<p dangerouslySetInnerHTML={{ __html: props.message }} />) : null }
             </div>
             { props.actions && props.actions.length > 0 ? (
                 <div className="notification-action">
@@ -50,35 +50,29 @@ export const Notification = (props: NProps): React$Element<string>  => {
             ) : null }
 
         </div>
-    )
-}
+    );
+};
 
 export const NotificationGroup = (props: Props) => {
     const { notifications, close } = props;
-    return notifications.map((n, i) => {
-        return (
-            <Notification 
-                key={i}
-                className={ n.type }
-                title={ n.title }
-                message={ n.message }
-                cancelable={ n.cancelable }
-                actions={ n.actions }
-                close={ close }
-                />
-        )
-    });
-}
+    return notifications.map((n, i) => (
+        <Notification
+            key={i}
+            className={n.type}
+            title={n.title}
+            message={n.message}
+            cancelable={n.cancelable}
+            actions={n.actions}
+            close={close}
+        />
+    ));
+};
 
-export default connect( 
-    (state: State) => {
-        return {
-            notifications: state.notifications
-        };
-    },
-    (dispatch: Dispatch) => {
-        return { 
-            close: bindActionCreators(NotificationActions.close, dispatch),
-        };
-    }
+export default connect(
+    (state: State) => ({
+        notifications: state.notifications,
+    }),
+    (dispatch: Dispatch) => ({
+        close: bindActionCreators(NotificationActions.close, dispatch),
+    }),
 )(NotificationGroup);

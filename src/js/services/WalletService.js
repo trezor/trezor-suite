@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE } from 'react-router-redux';
@@ -11,7 +11,7 @@ import * as LocalStorageActions from '../actions/LocalStorageActions';
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
 import * as SelectedAccountActions from '../actions/SelectedAccountActions';
 
-import type { 
+import type {
     Middleware,
     MiddlewareAPI,
     MiddlewareDispatch,
@@ -23,10 +23,9 @@ import type {
 } from '~/flowtype';
 
 /**
- * Middleware 
+ * Middleware
  */
 const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
-
     const prevState = api.getState();
     const locationChange: boolean = action.type === LOCATION_CHANGE;
 
@@ -34,31 +33,31 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     if (locationChange) {
         const { location } = api.getState().router;
         if (!location) {
-            api.dispatch( WalletActions.init() );
+            api.dispatch(WalletActions.init());
             // load data from config.json and local storage
-            api.dispatch( LocalStorageActions.loadData() );
+            api.dispatch(LocalStorageActions.loadData());
         }
     }
 
-    // pass action 
+    // pass action
     next(action);
 
     if (action.type === DEVICE.CONNECT) {
-        api.dispatch( WalletActions.clearUnavailableDevicesData(prevState, action.device) );
+        api.dispatch(WalletActions.clearUnavailableDevicesData(prevState, action.device));
     }
 
     // update common values in WallerReducer
-    api.dispatch( WalletActions.updateSelectedValues(prevState, action) );
+    api.dispatch(WalletActions.updateSelectedValues(prevState, action));
 
     // update common values in SelectedAccountReducer
-    api.dispatch( SelectedAccountActions.updateSelectedValues(prevState, action) );
+    api.dispatch(SelectedAccountActions.updateSelectedValues(prevState, action));
 
     // selected device changed
     if (action.type === WALLET.SET_SELECTED_DEVICE) {
         if (action.device) {
-            api.dispatch( TrezorConnectActions.getSelectedDeviceState() );
+            api.dispatch(TrezorConnectActions.getSelectedDeviceState());
         } else {
-            api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
+            api.dispatch(TrezorConnectActions.switchToFirstAvailableDevice());
         }
     }
 

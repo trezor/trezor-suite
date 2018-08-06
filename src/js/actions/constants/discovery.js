@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 export const START: 'discovery__start' = 'discovery__start';
 export const STOP: 'discovery__stop' = 'discovery__stop';

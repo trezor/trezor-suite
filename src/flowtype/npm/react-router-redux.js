@@ -1,12 +1,11 @@
-import type { 
+import type {
     RouterHistory,
-    Location as RouterLocation 
+    Location as RouterLocation,
 } from 'react-router';
 
-declare module "react-router-redux" {
-
+declare module 'react-router-redux' {
     // custom state for location
-    declare export type LocationState = {[key: string] : string};
+    declare export type LocationState = {[key: string]: string};
 
     declare export type Location = {
         pathname: string,
@@ -16,7 +15,7 @@ declare module "react-router-redux" {
         state: LocationState
     }
 
-    declare export var LOCATION_CHANGE: "@@router/LOCATION_CHANGE"; 
+    declare export var LOCATION_CHANGE: "@@router/LOCATION_CHANGE";
 
     declare export type RouterAction = {
         type: typeof LOCATION_CHANGE,
@@ -32,7 +31,7 @@ declare module "react-router-redux" {
     declare export function go(a: string): RouterAction;
     declare export function goBack(): RouterAction;
     declare export function goForward(): RouterAction;
-    
+
     //declare export function routerReducer<S, A>(state?: S, action: A): S;
     declare export function routerReducer(state?: State, action: any): State;
     declare export function routerMiddleware(history: any): any;

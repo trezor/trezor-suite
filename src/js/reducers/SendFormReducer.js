@@ -1,25 +1,25 @@
 /* @flow */
-'use strict';
 
+
+import EthereumjsUnits from 'ethereumjs-units';
+import BigNumber from 'bignumber.js';
 import * as SEND from '../actions/constants/send';
 import * as WEB3 from '../actions/constants/web3';
 import * as ACCOUNT from '../actions/constants/account';
 import * as WALLET from '../actions/constants/wallet';
 
-import EthereumjsUnits from 'ethereumjs-units';
-import BigNumber from 'bignumber.js';
 import { getFeeLevels } from '../actions/SendFormActions';
 
 import type { Action } from '~/flowtype';
-import type { 
-    Web3UpdateGasPriceAction 
+import type {
+    Web3UpdateGasPriceAction,
 } from '../actions/Web3Actions';
 
 export type State = {
     +networkName: string;
     +networkSymbol: string;
     currency: string;
-    
+
     // form fields
     advanced: boolean;
     untouched: boolean; // set to true when user made any changes in form
@@ -37,7 +37,7 @@ export type State = {
     data: string;
     nonce: string;
     total: string;
-    
+
     errors: {[k: string]: string};
     warnings: {[k: string]: string};
     infos: {[k: string]: string};
@@ -68,7 +68,7 @@ export const initialState: State = {
     selectedFeeLevel: {
         label: 'Normal',
         gasPrice: '0',
-        value: 'Normal'
+        value: 'Normal',
     },
     recommendedGasPrice: '0',
     gasPriceNeedsUpdate: false,
@@ -82,11 +82,10 @@ export const initialState: State = {
     errors: {},
     warnings: {},
     infos: {},
-}
+};
 
 
 const onGasPriceUpdated = (state: State, action: Web3UpdateGasPriceAction): State => {
-
     // function getRandomInt(min, max) {
     //     return Math.floor(Math.random() * (max - min + 1)) + min;
     // }
@@ -109,70 +108,68 @@ const onGasPriceUpdated = (state: State, action: Web3UpdateGasPriceAction): Stat
         return newState;
     }
     return state;
-}
+};
 
 
 export default (state: State = initialState, action: Action): State => {
-
     switch (action.type) {
-
-        case SEND.INIT :
+        case SEND.INIT:
             return action.state;
 
-        case ACCOUNT.DISPOSE :
+        case ACCOUNT.DISPOSE:
             return initialState;
 
         // this will be called right after Web3 instance initialization before any view is shown
         // and async during app live time
-        case WEB3.GAS_PRICE_UPDATED :
+        case WEB3.GAS_PRICE_UPDATED:
             return onGasPriceUpdated(state, action);
 
 
-        case SEND.TOGGLE_ADVANCED :
+        case SEND.TOGGLE_ADVANCED:
             return {
                 ...state,
-                advanced: !state.advanced
-            }
+                advanced: !state.advanced,
+            };
 
 
         // user actions
-        case SEND.ADDRESS_CHANGE :
-        case SEND.ADDRESS_VALIDATION :
-        case SEND.AMOUNT_CHANGE :
-        case SEND.SET_MAX :
-        case SEND.CURRENCY_CHANGE :
-        case SEND.FEE_LEVEL_CHANGE :
-        case SEND.UPDATE_FEE_LEVELS :
-        case SEND.GAS_PRICE_CHANGE :
-        case SEND.GAS_LIMIT_CHANGE :
-        case SEND.NONCE_CHANGE :
-        case SEND.DATA_CHANGE :
+        case SEND.ADDRESS_CHANGE:
+        case SEND.ADDRESS_VALIDATION:
+        case SEND.AMOUNT_CHANGE:
+        case SEND.SET_MAX:
+        case SEND.CURRENCY_CHANGE:
+        case SEND.FEE_LEVEL_CHANGE:
+        case SEND.UPDATE_FEE_LEVELS:
+        case SEND.GAS_PRICE_CHANGE:
+        case SEND.GAS_LIMIT_CHANGE:
+        case SEND.NONCE_CHANGE:
+        case SEND.DATA_CHANGE:
             return action.state;
 
-        case SEND.SEND :
+        case SEND.SEND:
             return {
                 ...state,
                 sending: true,
-            }
+            };
 
-        case SEND.TX_ERROR :
+        case SEND.TX_ERROR:
             return {
                 ...state,
                 sending: false,
-            }
+            };
 
-        case SEND.VALIDATION :
+        case SEND.VALIDATION:
             return {
                 ...state,
                 errors: action.errors,
                 warnings: action.warnings,
                 infos: action.infos,
-            }
+            };
 
-        case SEND.FROM_SESSION_STORAGE : 
+        case SEND.FROM_SESSION_STORAGE:
             return {
                 ...state,
-                
+
                 address: action.address,
                 amount: action.amount,
                 setMax: action.setMax,
@@ -185,10 +182,9 @@ export default (state: State = initialState, action: Action): State => {
                 nonce: action.nonce,
                 untouched: false,
                 touched: action.touched,
-            }
+            };
 
         default:
             return state;
     }
-
-}
+};

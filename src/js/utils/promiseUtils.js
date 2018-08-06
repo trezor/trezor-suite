@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 // import root from 'window-or-global';
 // import Promise from 'es6-promise';

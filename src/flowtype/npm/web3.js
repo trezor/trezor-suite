@@ -33,7 +33,7 @@ declare module 'web3' {
             network: string;
             // and many more
         }
-        
+
     }
 
     declare export type EstimateGasOptions = {
@@ -124,10 +124,8 @@ declare module 'web3' {
 }
 
 
-
-// 
-// 
-
+//
+//
 
 
 /*declare module 'web3' {

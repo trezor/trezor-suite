@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import * as React from 'react';
 
@@ -37,12 +37,14 @@ export default class CoinSelectOption extends React.Component<Props> {
     render() {
         const css = `${this.props.className} ${this.props.option.value}`;
         return (
-            <div className={ css }
-                onMouseDown={ this.handleMouseDown.bind(this) }
-                onMouseEnter={ this.handleMouseEnter.bind(this) }
-                onMouseMove={ this.handleMouseMove.bind(this) }
-                title={ this.props.option.label }>
-                    <span>{ this.props.children }</span>
+            <div
+                className={css}
+                onMouseDown={this.handleMouseDown.bind(this)}
+                onMouseEnter={this.handleMouseEnter.bind(this)}
+                onMouseMove={this.handleMouseMove.bind(this)}
+                title={this.props.option.label}
+            >
+                <span>{ this.props.children }</span>
             </div>
         );
     }

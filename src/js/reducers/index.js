@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
@@ -40,8 +40,8 @@ const reducers = {
     pending,
     fiat,
     wallet,
-    devices
-}
+    devices,
+};
 
 export type Reducers = typeof reducers;
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;

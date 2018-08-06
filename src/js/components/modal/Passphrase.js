@@ -1,10 +1,11 @@
 /* @flow */
-'use strict';
+
 
 import React, { Component } from 'react';
 import raf from 'raf';
 
 import type { Props } from './index';
+
 type State = {
     deviceLabel: string;
     singleInput: boolean;
@@ -18,10 +19,12 @@ type State = {
 }
 
 export default class PinModal extends Component<Props, State> {
-
     keyboardHandler: (event: KeyboardEvent) => void;
+
     state: State;
+
     passphraseInput: ?HTMLInputElement;
+
     passphraseRevisionInput: ?HTMLInputElement;
 
     constructor(props: Props) {
@@ -48,13 +51,11 @@ export default class PinModal extends Component<Props, State> {
             passphraseRevisionFocused: false,
             passphraseRevisionTouched: false,
             match: true,
-            visible: false
-        }
+            visible: false,
+        };
     }
 
     keyboardHandler(event: KeyboardEvent): void {
-        
-
         if (event.keyCode === 13) {
             event.preventDefault();
             //this.passphraseInput.blur();
@@ -65,7 +66,7 @@ export default class PinModal extends Component<Props, State> {
 
             this.submit();
 
-            // TODO: set timeout, or wait for blur event 
+            // TODO: set timeout, or wait for blur event
             //onPassphraseSubmit(passphrase, passphraseCached);
             //raf(() => onPassphraseSubmit(passphrase));
         }
@@ -73,11 +74,9 @@ export default class PinModal extends Component<Props, State> {
 
     componentDidMount(): void {
         // one time autofocus
-        if (this.passphraseInput)
-            this.passphraseInput.focus();
+        if (this.passphraseInput) this.passphraseInput.focus();
         this.keyboardHandler = this.keyboardHandler.bind(this);
         window.addEventListener('keydown', this.keyboardHandler, false);
-
 
 
         // document.oncontextmenu = (event) => {
@@ -101,12 +100,12 @@ export default class PinModal extends Component<Props, State> {
     // we don't want to keep password inside "value" attribute,
     // so we need to replace it thru javascript
     componentDidUpdate() {
-        const { 
+        const {
             passphrase,
             passphraseRevision,
             passphraseFocused,
             passphraseRevisionFocused,
-            visible 
+            visible,
         } = this.state;
         // } = this.props.modal;
 
@@ -121,11 +120,11 @@ export default class PinModal extends Component<Props, State> {
 
         if (this.passphraseInput) {
             this.passphraseInput.value = passphraseInputValue;
-            this.passphraseInput.setAttribute("type", visible || (!visible && !passphraseFocused) ? "text" : "password");
+            this.passphraseInput.setAttribute('type', visible || (!visible && !passphraseFocused) ? 'text' : 'password');
         }
         if (this.passphraseRevisionInput) {
             this.passphraseRevisionInput.value = passphraseRevisionInputValue;
-            this.passphraseRevisionInput.setAttribute("type", visible || (!visible && !passphraseRevisionFocused) ? "text" : "password");
+            this.passphraseRevisionInput.setAttribute('type', visible || (!visible && !passphraseRevisionFocused) ? 'text' : 'password');
         }
     }
 
@@ -136,13 +135,13 @@ export default class PinModal extends Component<Props, State> {
         if (input === 'passphrase') {
             this.setState({
                 match: this.state.singleInput || this.state.passphraseRevision === value,
-                passphrase: value
+                passphrase: value,
             });
         } else {
             this.setState({
                 match: this.state.passphrase === value,
                 passphraseRevision: value,
-                passphraseRevisionTouched: true
+                passphraseRevisionTouched: true,
             });
         }
     }
@@ -150,11 +149,11 @@ export default class PinModal extends Component<Props, State> {
     onPassphraseFocus = (input: string): void => {
         if (input === 'passphrase') {
             this.setState({
-                passphraseFocused: true
+                passphraseFocused: true,
             });
         } else {
             this.setState({
-                passphraseRevisionFocused: true
+                passphraseRevisionFocused: true,
             });
         }
     }
@@ -162,24 +161,24 @@ export default class PinModal extends Component<Props, State> {
     onPassphraseBlur = (input: string): void => {
         if (input === 'passphrase') {
             this.setState({
-                passphraseFocused: false
+                passphraseFocused: false,
             });
         } else {
             this.setState({
-                passphraseRevisionFocused: false
+                passphraseRevisionFocused: false,
             });
         }
     }
 
     onPassphraseShow = (): void => {
         this.setState({
-            visible: true
+            visible: true,
         });
     }
 
     onPassphraseHide = (): void => {
         this.setState({
-            visible: false
+            visible: false,
         });
     }
 
@@ -203,21 +202,20 @@ export default class PinModal extends Component<Props, State> {
             passphraseRevision: '',
             passphraseFocused: false,
             passphraseRevisionFocused: false,
-            visible: false
-        })
+            visible: false,
+        });
 
         raf(() => onPassphraseSubmit(empty ? '' : passphrase));
     }
 
     render() {
-
         if (!this.props.modal.opened) return null;
 
-        const { 
+        const {
             device,
         } = this.props.modal;
 
-        const { 
+        const {
             deviceLabel,
             singleInput,
             passphrase,
@@ -229,9 +227,9 @@ export default class PinModal extends Component<Props, State> {
             passphraseRevisionTouched,
         } = this.state;
 
-        let passphraseInputType: string = visible || (!visible && !passphraseFocused) ? "text" : "password";
-        let passphraseRevisionInputType: string = visible || (!visible && !passphraseRevisionFocused) ? "text" : "password";
-        passphraseInputType = passphraseRevisionInputType = "text";
+        let passphraseInputType: string = visible || (!visible && !passphraseFocused) ? 'text' : 'password';
+        let passphraseRevisionInputType: string = visible || (!visible && !passphraseRevisionFocused) ? 'text' : 'password';
+        passphraseInputType = passphraseRevisionInputType = 'text';
         //let passphraseInputType: string = visible || passphraseFocused ? "text" : "password";
         //let passphraseRevisionInputType: string = visible || passphraseRevisionFocused ? "text" : "password";
 
@@ -246,44 +244,46 @@ export default class PinModal extends Component<Props, State> {
                 <div className="row">
                     <label>Passphrase</label>
                     <input
-                        ref={ (element) => { this.passphraseInput = element; } }
-                        onChange={ event => this.onPassphraseChange('passphrase', event.currentTarget.value) }
-                        type={ passphraseInputType }
+                        ref={(element) => { this.passphraseInput = element; }}
+                        onChange={event => this.onPassphraseChange('passphrase', event.currentTarget.value)}
+                        type={passphraseInputType}
                         autoComplete="off"
                         autoCorrect="off"
                         autoCapitalize="off"
                         spellCheck="false"
                         data-lpignore="true"
-                        onFocus={ event => this.onPassphraseFocus('passphrase') }
-                        onBlur={ event => this.onPassphraseBlur('passphrase') }
-                    
-                        tabIndex="1" />
+                        onFocus={event => this.onPassphraseFocus('passphrase')}
+                        onBlur={event => this.onPassphraseBlur('passphrase')}
+
+                        tabIndex="1"
+                    />
                 </div>
                 { singleInput ? null : (
                     <div className="row">
                         <label>Re-enter passphrase</label>
                         <input
-                            ref={ (element) => { this.passphraseRevisionInput = element; } }
-                            onChange={ event => this.onPassphraseChange('revision', event.currentTarget.value) }
-                            type={ passphraseRevisionInputType }
+                            ref={(element) => { this.passphraseRevisionInput = element; }}
+                            onChange={event => this.onPassphraseChange('revision', event.currentTarget.value)}
+                            type={passphraseRevisionInputType}
                             autoComplete="off"
                             autoCorrect="off"
                             autoCapitalize="off"
                             spellCheck="false"
                             data-lpignore="true"
-                            onFocus={ event => this.onPassphraseFocus('revision') }
-                            onBlur={ event => this.onPassphraseBlur('revision') }
-                        
-                            tabIndex="2" />
+                            onFocus={event => this.onPassphraseFocus('revision')}
+                            onBlur={event => this.onPassphraseBlur('revision')}
+
+                            tabIndex="2"
+                        />
                         { !match && passphraseRevisionTouched ? <span className="error">Passphrases do not match</span> : null }
                     </div>
                 ) }
 
-                
+
                 <div className="row">
                     <label className="custom-checkbox">
-                        <input type="checkbox" tabIndex="3" onChange={ showPassphraseCheckboxFn } checked={ visible } />
-                        <span className="indicator"></span>
+                        <input type="checkbox" tabIndex="3" onChange={showPassphraseCheckboxFn} checked={visible} />
+                        <span className="indicator" />
                         Show passphrase
                     </label>
                     {/* <label className="custom-checkbox">
@@ -294,12 +294,12 @@ export default class PinModal extends Component<Props, State> {
                 </div>
 
                 <div>
-                    <button type="button" className="submit" tabIndex="4" disabled={ !match } onClick={ event => this.submit() }>Enter</button>
+                    <button type="button" className="submit" tabIndex="4" disabled={!match} onClick={event => this.submit()}>Enter</button>
                 </div>
 
                 <div>
                     <p>If you want to access your default account</p>
-                    <p><a className="green" onClick={ event => this.submit(true) }>Leave passphrase blank</a></p>
+                    <p><a className="green" onClick={event => this.submit(true)}>Leave passphrase blank</a></p>
                 </div>
 
             </div>

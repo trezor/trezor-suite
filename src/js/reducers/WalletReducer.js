@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import { DEVICE } from 'trezor-connect';
@@ -33,61 +33,60 @@ const initialState: State = {
 };
 
 export default function wallet(state: State = initialState, action: Action): State {
-    switch(action.type) {
-
-        case WALLET.SET_INITIAL_URL :
+    switch (action.type) {
+        case WALLET.SET_INITIAL_URL:
             return {
                 ...state,
                 initialParams: action.state,
-                initialPathname: action.pathname
-            }
+                initialPathname: action.pathname,
+            };
 
-        case WEB3.READY :
+        case WEB3.READY:
             return {
                 ...state,
-                ready: true
-            }
+                ready: true,
+            };
 
-        case WALLET.ONLINE_STATUS :
+        case WALLET.ONLINE_STATUS:
             return {
                 ...state,
-                online: action.online
-            }
+                online: action.online,
+            };
 
-        case WALLET.TOGGLE_DEVICE_DROPDOWN :
+        case WALLET.TOGGLE_DEVICE_DROPDOWN:
             return {
                 ...state,
-                dropdownOpened: action.opened
-            }
+                dropdownOpened: action.opened,
+            };
 
-        case LOCATION_CHANGE : 
-        case MODAL.CLOSE : 
+        case LOCATION_CHANGE:
+        case MODAL.CLOSE:
             return {
                 ...state,
-                dropdownOpened: false
-            }
+                dropdownOpened: false,
+            };
 
-        case CONNECT.DISCONNECT_REQUEST :
+        case CONNECT.DISCONNECT_REQUEST:
             return {
                 ...state,
-                disconnectRequest: action.device
-            }
+                disconnectRequest: action.device,
+            };
 
-        case DEVICE.DISCONNECT :
+        case DEVICE.DISCONNECT:
             if (state.disconnectRequest && action.device.path === state.disconnectRequest.path) {
                 return {
                     ...state,
-                    disconnectRequest: null
-                }
+                    disconnectRequest: null,
+                };
             }
             return state;
 
-        case WALLET.SET_SELECTED_DEVICE :
-        case WALLET.UPDATE_SELECTED_DEVICE :
+        case WALLET.SET_SELECTED_DEVICE:
+        case WALLET.UPDATE_SELECTED_DEVICE:
             return {
                 ...state,
-                selectedDevice: action.device
-            }
+                selectedDevice: action.device,
+            };
 
         default:
             return state;

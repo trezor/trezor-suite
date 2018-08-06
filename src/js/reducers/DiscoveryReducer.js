@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import HDKey from 'hdkey';
 
@@ -9,16 +9,16 @@ import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as WALLET from '../actions/constants/wallet';
 
 import type { Action, TrezorDevice } from '~/flowtype';
-import type { 
+import type {
     DiscoveryStartAction,
     DiscoveryWaitingAction,
     DiscoveryStopAction,
-    DiscoveryCompleteAction
+    DiscoveryCompleteAction,
 } from '../actions/DiscoveryActions';
 
 import type {
-    AccountCreateAction
-} from '../actions/AccountsActions'
+    AccountCreateAction,
+} from '../actions/AccountsActions';
 
 export type Discovery = {
     network: string;
@@ -37,13 +37,11 @@ export type Discovery = {
 export type State = Array<Discovery>;
 const initialState: State = [];
 
-const findIndex = (state: State, network: string, deviceState: string): number => {
-    return state.findIndex(d => d.network === network && d.deviceState === deviceState);
-}
+const findIndex = (state: State, network: string, deviceState: string): number => state.findIndex(d => d.network === network && d.deviceState === deviceState);
 
 const start = (state: State, action: DiscoveryStartAction): State => {
     const deviceState: string = action.device.state || '0';
-    const hdKey: HDKey =  new HDKey();
+    const hdKey: HDKey = new HDKey();
     hdKey.publicKey = new Buffer(action.publicKey, 'hex');
     hdKey.chainCode = new Buffer(action.chainCode, 'hex');
     const instance: Discovery = {
@@ -58,9 +56,9 @@ const start = (state: State, action: DiscoveryStartAction): State => {
         completed: false,
         waitingForDevice: false,
         waitingForBackend: false,
-    }
+    };
 
-    const newState: State = [ ...state ];
+    const newState: State = [...state];
     const index: number = findIndex(state, action.network, deviceState);
     if (index >= 0) {
         newState[index] = instance;
@@ -68,47 +66,44 @@ const start = (state: State, action: DiscoveryStartAction): State => {
         newState.push(instance);
     }
     return newState;
-}
+};
 
 const complete = (state: State, action: DiscoveryCompleteAction): State => {
     const index: number = findIndex(state, action.network, action.device.state || '0');
-    const newState: State = [ ...state ];
+    const newState: State = [...state];
     newState[index].completed = true;
     return newState;
-}
+};
 
 const accountCreate = (state: State, action: AccountCreateAction): State => {
     const index: number = findIndex(state, action.network, action.device.state || '0');
-    const newState: State = [ ...state ];
+    const newState: State = [...state];
     newState[index].accountIndex++;
     return newState;
-}
+};
 
-const forgetDiscovery = (state: State, device: TrezorDevice): State => {
-    return state.filter(d => d.deviceState !== device.state);
-}
+const forgetDiscovery = (state: State, device: TrezorDevice): State => state.filter(d => d.deviceState !== device.state);
 
 const clear = (state: State, devices: Array<TrezorDevice>): State => {
-    let newState: State = [ ...state ];
-    devices.forEach(d => {
+    let newState: State = [...state];
+    devices.forEach((d) => {
         newState = forgetDiscovery(newState, d);
     });
     return newState;
-}
+};
 
 const stop = (state: State, action: DiscoveryStopAction): State => {
-    const newState: State = [ ...state ];
-    return newState.map( (d: Discovery) => {
+    const newState: State = [...state];
+    return newState.map((d: Discovery) => {
         if (d.deviceState === action.device.state && !d.completed) {
             d.interrupted = true;
             d.waitingForDevice = false;
         }
         return d;
     });
-}
+};
 
 const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State => {
-
     const deviceState: string = action.device.state || '0';
     const instance: Discovery = {
         network: action.network,
@@ -122,10 +117,10 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
         completed: false,
         waitingForDevice: true,
         waitingForBackend: false,
-    }
+    };
 
     const index: number = findIndex(state, action.network, deviceState);
-    const newState: State = [ ...state ];
+    const newState: State = [...state];
     if (index >= 0) {
         newState[index] = instance;
     } else {
@@ -133,7 +128,7 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
     }
 
     return newState;
-}
+};
 
 const waitingForBackend = (state: State, action: DiscoveryWaitingAction): State => {
     const deviceState: string = action.device.state || '0';
@@ -148,11 +143,11 @@ const waitingForBackend = (state: State, action: DiscoveryWaitingAction): State 
         interrupted: false,
         completed: false,
         waitingForDevice: false,
-        waitingForBackend: true
-    }
+        waitingForBackend: true,
+    };
 
     const index: number = findIndex(state, action.network, deviceState);
-    const newState: State = [ ...state ];
+    const newState: State = [...state];
     if (index >= 0) {
         newState[index] = instance;
     } else {
@@ -160,26 +155,25 @@ const waitingForBackend = (state: State, action: DiscoveryWaitingAction): State 
     }
 
     return newState;
-}
+};
 
 export default function discovery(state: State = initialState, action: Action): State {
-
     switch (action.type) {
-        case DISCOVERY.START :
+        case DISCOVERY.START:
             return start(state, action);
-        case ACCOUNT.CREATE :
+        case ACCOUNT.CREATE:
             return accountCreate(state, action);
-        case DISCOVERY.STOP :
+        case DISCOVERY.STOP:
             return stop(state, action);
-        case DISCOVERY.COMPLETE :
+        case DISCOVERY.COMPLETE:
             return complete(state, action);
-        case DISCOVERY.WAITING_FOR_DEVICE :
+        case DISCOVERY.WAITING_FOR_DEVICE:
             return waitingForDevice(state, action);
-        case DISCOVERY.WAITING_FOR_BACKEND :
+        case DISCOVERY.WAITING_FOR_BACKEND:
             return waitingForBackend(state, action);
-        case DISCOVERY.FROM_STORAGE :
-            return action.payload.map(d => {
-                const hdKey: HDKey =  new HDKey();
+        case DISCOVERY.FROM_STORAGE:
+            return action.payload.map((d) => {
+                const hdKey: HDKey = new HDKey();
                 hdKey.publicKey = new Buffer(d.publicKey, 'hex');
                 hdKey.chainCode = new Buffer(d.chainCode, 'hex');
                 return {
@@ -188,16 +182,15 @@ export default function discovery(state: State = initialState, action: Action): 
                     interrupted: false,
                     waitingForDevice: false,
                     waitingForBackend: false,
-                }
-            })
-        case CONNECT.FORGET :
-        case CONNECT.FORGET_SINGLE :
+                };
+            });
+        case CONNECT.FORGET:
+        case CONNECT.FORGET_SINGLE:
             return forgetDiscovery(state, action.device);
-        case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA :
+        case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA:
             return clear(state, action.devices);
 
         default:
             return state;
     }
-
 }

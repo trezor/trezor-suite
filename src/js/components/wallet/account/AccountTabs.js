@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -16,8 +16,8 @@ type State = {
 }
 
 class Indicator extends Component<Props, State> {
-
     reposition: () => void;
+
     state: State;
 
     constructor(props: Props) {
@@ -26,9 +26,9 @@ class Indicator extends Component<Props, State> {
         this.state = {
             style: {
                 width: 0,
-                left: 0
+                left: 0,
             },
-        }
+        };
 
         this.reposition = this.reposition.bind(this);
     }
@@ -63,21 +63,20 @@ class Indicator extends Component<Props, State> {
             this.setState({
                 style: {
                     width: bounds.width,
-                    left: left,
-                }
-            })
+                    left,
+                },
+            });
         }
     }
 
     render() {
         return (
-            <div className="indicator" style={ this.state.style }>{ this.props.pathname }</div>
+            <div className="indicator" style={this.state.style}>{ this.props.pathname }</div>
         );
     }
 }
 
 const AccountTabs = (props: any) => {
-
     const urlParams = props.match.params;
     const basePath = `/device/${urlParams.device}/network/${urlParams.network}/account/${urlParams.account}`;
 
@@ -86,21 +85,21 @@ const AccountTabs = (props: any) => {
             {/* <NavLink to={ `${basePath}` }>
                 History
             </NavLink> */}
-            <NavLink exact to={ `${basePath}` }>
+            <NavLink exact to={`${basePath}`}>
                 Summary
             </NavLink>
-            <NavLink to={ `${basePath}/send` }>
+            <NavLink to={`${basePath}/send`}>
                 Send
             </NavLink>
-            <NavLink to={ `${basePath}/receive` }>
+            <NavLink to={`${basePath}/receive`}>
                 Receive
             </NavLink>
             {/* <NavLink to={ `${basePath}/signverify` }>
                 Sign &amp; Verify
             </NavLink> */}
-            <Indicator pathname={props.match.pathname } />
+            <Indicator pathname={props.match.pathname} />
         </div>
     );
-}
+};
 
 export default AccountTabs;

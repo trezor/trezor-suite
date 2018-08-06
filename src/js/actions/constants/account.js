@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 export const INIT: 'account__init' = 'account__init';
 export const DISPOSE: 'account__dispose' = 'account__dispose';

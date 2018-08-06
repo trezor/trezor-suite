@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 export const INIT: 'send__init' = 'send__init';
 export const DISPOSE: 'send__dispose' = 'send__dispose';

@@ -1,9 +1,11 @@
 /* @flow */
-'use strict';
+
 
 import { push } from 'react-router-redux';
 
-import TrezorConnect, { TRANSPORT, DEVICE_EVENT, UI_EVENT, UI, DEVICE } from 'trezor-connect';
+import TrezorConnect, {
+    TRANSPORT, DEVICE_EVENT, UI_EVENT, UI, DEVICE,
+} from 'trezor-connect';
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
 import * as DiscoveryActions from '../actions/DiscoveryActions';
 import * as ModalActions from '../actions/ModalActions';
@@ -14,7 +16,7 @@ import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as NOTIFICATION from '../actions/constants/notification';
 import * as MODAL from '../actions/constants/modal';
 
-import type { 
+import type {
     Middleware,
     MiddlewareAPI,
     MiddlewareDispatch,
@@ -23,11 +25,10 @@ import type {
     Action,
     AsyncAction,
     GetState,
-    RouterLocationState
+    RouterLocationState,
 } from '~/flowtype';
 
 const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
-
     const prevState: $ElementType<State, 'connect'> = api.getState().connect;
     const prevModalState: $ElementType<State, 'modal'> = api.getState().modal;
     const prevRouterState: $ElementType<State, 'router'> = api.getState().router;
@@ -35,15 +36,14 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     next(action);
 
     if (action.type === STORAGE.READY) {
-        api.dispatch( TrezorConnectActions.init() );
-
+        api.dispatch(TrezorConnectActions.init());
     } else if (action.type === TRANSPORT.ERROR) {
         // TODO: check if modal is open
         // api.dispatch( push('/') );
     } else if (action.type === TRANSPORT.START && api.getState().web3.length < 1) {
-        api.dispatch( initWeb3() );
+        api.dispatch(initWeb3());
     } else if (action.type === WEB3.READY) {
-        api.dispatch( TrezorConnectActions.postInit() );
+        api.dispatch(TrezorConnectActions.postInit());
     } else if (action.type === TRANSPORT.UNREADABLE) {
         api.dispatch({
             type: NOTIFICATION.ADD,
@@ -52,40 +52,38 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
                 title: 'Unreadable HID device',
                 message: '',
                 cancelable: true,
-            }
+            },
         });
     } else if (action.type === DEVICE.DISCONNECT) {
-        api.dispatch( TrezorConnectActions.deviceDisconnect( action.device ) );
+        api.dispatch(TrezorConnectActions.deviceDisconnect(action.device));
     } else if (action.type === CONNECT.REMEMBER_REQUEST) {
-        api.dispatch( ModalActions.onRememberRequest( prevModalState ) );
+        api.dispatch(ModalActions.onRememberRequest(prevModalState));
     } else if (action.type === CONNECT.FORGET) {
         //api.dispatch( TrezorConnectActions.forgetDevice(action.device) );
-        api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
+        api.dispatch(TrezorConnectActions.switchToFirstAvailableDevice());
     } else if (action.type === CONNECT.FORGET_SINGLE) {
         if (api.getState().devices.length < 1 && action.device.connected) {
             // prompt disconnect device info in LandingPage
             api.dispatch({
                 type: CONNECT.DISCONNECT_REQUEST,
-                device: action.device
+                device: action.device,
             });
-            api.dispatch( push('/') );
+            api.dispatch(push('/'));
         } else {
-            api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
+            api.dispatch(TrezorConnectActions.switchToFirstAvailableDevice());
         }
     } else if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
-
-        api.dispatch( DiscoveryActions.restore() );
-        api.dispatch( ModalActions.onDeviceConnect( action.device ) );
-
+        api.dispatch(DiscoveryActions.restore());
+        api.dispatch(ModalActions.onDeviceConnect(action.device));
     } else if (action.type === CONNECT.AUTH_DEVICE) {
-        api.dispatch( DiscoveryActions.check() );
+        api.dispatch(DiscoveryActions.check());
     } else if (action.type === CONNECT.DUPLICATE) {
-        api.dispatch( TrezorConnectActions.onSelectDevice( action.device ) );
+        api.dispatch(TrezorConnectActions.onSelectDevice(action.device));
     } else if (action.type === CONNECT.COIN_CHANGED) {
-        api.dispatch( TrezorConnectActions.coinChanged( action.payload.network ) );
+        api.dispatch(TrezorConnectActions.coinChanged(action.payload.network));
     }
 
     return action;
-}
+};
 
 export default TrezorConnectService;

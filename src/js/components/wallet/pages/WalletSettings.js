@@ -1,16 +1,14 @@
 /* @flow */
-'use strict';
+
 
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-export const WalletSettings = () => {
-    return (
-        <section className="settings">
+export const WalletSettings = () => (
+    <section className="settings">
             Wallet settings
-        </section>
-    );
-}
+    </section>
+);
 
 export default connect(null, null)(WalletSettings);

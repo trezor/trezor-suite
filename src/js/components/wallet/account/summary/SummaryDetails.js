@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import React from 'react';
 import BigNumber from 'bignumber.js';
@@ -18,12 +18,13 @@ type Props = {
 }
 
 const SummaryDetails = (props: Props): ?React$Element<string> => {
-
-    if (!props.summary.details) return (
-        <div className="summary-details">
-            <div className="toggle" onClick={ props.onToggle }></div>
-        </div>
-    );
+    if (!props.summary.details) {
+        return (
+            <div className="summary-details">
+                <div className="toggle" onClick={props.onToggle} />
+            </div>
+        );
+    }
 
     const selectedCoin = props.coin;
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
@@ -32,7 +33,6 @@ const SummaryDetails = (props: Props): ?React$Element<string> => {
     let rateColumn = null;
 
     if (fiatRate) {
-
         const accountBalance = new BigNumber(props.balance);
         const fiatValue = new BigNumber(fiatRate.value);
         const fiat = accountBalance.times(fiatValue).toFixed(2);
@@ -51,7 +51,7 @@ const SummaryDetails = (props: Props): ?React$Element<string> => {
                 <div className="fiat-value">${ fiatValue.toFixed(2) }</div>
                 <div className="value">1.00 { selectedCoin.symbol }</div>
             </div>
-        )
+        );
     } else {
         balanceColumn = (
             <div className="column">
@@ -60,16 +60,16 @@ const SummaryDetails = (props: Props): ?React$Element<string> => {
             </div>
         );
     }
-    
+
     return (
         <div className="summary-details opened">
-            <div className="toggle" onClick={ props.onToggle }></div>
+            <div className="toggle" onClick={props.onToggle} />
             <div className="content">
                 { balanceColumn }
                 { rateColumn }
             </div>
         </div>
     );
-}
+};
 
 export default SummaryDetails;

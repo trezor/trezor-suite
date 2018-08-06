@@ -14,6 +14,15 @@
             "polyfill": false,
             "regenerator": true
         }],
-        "./src/babel/babel-plugin-import.js"
-    ]
+        ["babel-plugin-root-import", {
+            "rootPathSuffix": "./src",
+            "rootPathPrefix": "~"
+        }],
+        "babel-plugin-styled-components"
+    ],
+    "env": {
+        "test": {
+          "presets": ["jest"]
+        }
+      }
 }

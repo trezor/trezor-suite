@@ -7,22 +7,22 @@ declare module 'bignumber.js' {
     declare type ROUND_HALF_EVEN = 2
     declare type ROUND_UP = 3
     declare type RM = ROUND_DOWN | ROUND_HALF_UP | ROUND_HALF_EVEN | ROUND_UP
-  
+
     declare class T_BigNumber {
       // Properties
       static DP: number;
       static RM: RM;
       static E_NEG: number;
       static E_POS: number;
-  
+
       c: Array<DIGIT>;
       e: number;
       s: -1 | 1;
-  
+
       // Constructors
       static (value: $npm$big$number$object): T_BigNumber;
       constructor(value: $npm$big$number$object): T_BigNumber;
-  
+
       // Methods
       abs(): BigNumber;
       cmp(n: $npm$big$number$object): $npm$cmp$result;
@@ -51,7 +51,7 @@ declare module 'bignumber.js' {
       valueOf(): string;
       toJSON(): string;
     }
-  
+
     //declare module.exports: typeof T_BigNumber
     declare export default typeof T_BigNumber;
 }

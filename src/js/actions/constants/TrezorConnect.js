@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 //regExp1 : string = '(.*)'
 //regExp2 : '$1' = '$1'

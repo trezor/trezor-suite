@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import React from 'react';
 import { bindActionCreators } from 'redux';
@@ -12,26 +12,20 @@ type Props = {
     toggle: typeof LogActions.toggle
 }
 
-const Footer = (props: Props): React$Element<string> => {
-    return (
-        <footer>
-            <span>© 2018</span>
-            <a href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi green">SatoshiLabs</a>
-            <a href="tos.pdf" target="_blank" rel="noreferrer noopener" className="green">Terms</a>
-            <a onClick={ props.toggle } className="green">Show Log</a>
-        </footer>
-    );
-}
+const Footer = (props: Props): React$Element<string> => (
+    <footer>
+        <span>© 2018</span>
+        <a href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi green">SatoshiLabs</a>
+        <a href="tos.pdf" target="_blank" rel="noreferrer noopener" className="green">Terms</a>
+        <a onClick={props.toggle} className="green">Show Log</a>
+    </footer>
+);
 
-export default connect( 
-    (state: State) => {
-        return {
-            
-        }
-    },
-    (dispatch: Dispatch) => {
-        return { 
-            toggle: bindActionCreators(LogActions.toggle, dispatch),
-        };
-    }
+export default connect(
+    (state: State) => ({
+
+    }),
+    (dispatch: Dispatch) => ({
+        toggle: bindActionCreators(LogActions.toggle, dispatch),
+    }),
 )(Footer);

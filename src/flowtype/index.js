@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 import type {
     Store as ReduxStore,
@@ -9,7 +9,7 @@ import type {
     ThunkAction as ReduxThunkAction,
     AsyncAction as ReduxAsyncAction,
     ThunkDispatch as ReduxThunkDispatch,
-    PlainDispatch as ReduxPlainDispatch
+    PlainDispatch as ReduxPlainDispatch,
 } from 'redux';
 
 import type { Reducers, ReducersState } from '~/js/reducers';
@@ -43,7 +43,7 @@ import type {
 import type { RouterAction, LocationState } from 'react-router-redux';
 
 export type TrezorDevice = {
-    remember: boolean;  // device should be remembered
+    remember: boolean; // device should be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     path: string;
@@ -87,19 +87,19 @@ type IFrameHandshake = {
     payload: any
 }
 
-export type Action = 
+export type Action =
     RouterAction
     | IFrameHandshake
     | TransportEventAction
     | DeviceEventAction
     | UiEventAction
-    
+
     | SelectedAccountAction
     | AccountAction
     | DiscoveryAction
-    | StorageAction 
-    | LogAction 
-    | ModalAction 
+    | StorageAction
+    | LogAction
+    | ModalAction
     | NotificationAction
     | PendingTxAction
     | ReceiveAction

@@ -1,6 +1,4 @@
 /* @flow */
-'use strict';
-
 import React from 'react';
 import { render } from 'react-dom';
 import store from './store';
@@ -14,8 +12,8 @@ if (root) {
 }
 
 window.onbeforeunload = () => {
-    store.dispatch( onBeforeUnload() );
-}
+    store.dispatch(onBeforeUnload());
+};
 
 if (typeof module !== undefined && module.hasOwnProperty('hot')) {
     // $FlowIssue

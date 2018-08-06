@@ -1,9 +1,9 @@
 // flow-typed signature: 59b0c4be0e1408f21e2446be96c79804
 // flow-typed version: 9092387fd2/react-redux_v5.x.x/flow_>=v0.54.x
 
-import type { Dispatch, Store } from "redux";
+import type { Dispatch, Store } from 'redux';
 
-declare module "react-redux" {
+declare module 'react-redux' {
   /*
 
     S = State
@@ -32,9 +32,7 @@ declare module "react-redux" {
 
   declare type Context = { store: Store<*, *> };
 
-  declare type ComponentWithDefaultProps<DP: {}, P: {}, CP: P> = Class<
-    React$Component<CP>
-  > & { defaultProps: DP };
+  declare type ComponentWithDefaultProps<DP: {}, P: {}, CP: P> = Class<React$Component<CP>> & { defaultProps: DP };
 
   declare class ConnectedComponentWithDefaultProps<
     OP,
@@ -55,13 +53,9 @@ declare module "react-redux" {
     state: void
   }
 
-  declare type ConnectedComponentWithDefaultPropsClass<OP, DP, CP> = Class<
-    ConnectedComponentWithDefaultProps<OP, DP, CP>
-  >;
+  declare type ConnectedComponentWithDefaultPropsClass<OP, DP, CP> = Class<ConnectedComponentWithDefaultProps<OP, DP, CP>>;
 
-  declare type ConnectedComponentClass<OP, P> = Class<
-    ConnectedComponent<OP, P>
-  >;
+  declare type ConnectedComponentClass<OP, P> = Class<ConnectedComponent<OP, P>>;
 
   declare type Connector<OP, P> = (<DP: {}, CP: {}>(
     component: ComponentWithDefaultProps<DP, P, CP>

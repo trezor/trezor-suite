@@ -1,16 +1,16 @@
 /* @flow */
-'use strict';
+
 
 import * as ACCOUNT from '../actions/constants/account';
 
-import type { 
-    Action, 
+import type {
+    Action,
     Account,
     Coin,
     Token,
     PendingTx,
     Discovery,
-    Web3Instance
+    Web3Instance,
 } from '~/flowtype';
 
 export type State = {
@@ -31,18 +31,15 @@ export const initialState: State = {
     tokens: [],
     pending: [],
     web3: null,
-    discovery: null
+    discovery: null,
 };
 
 export default (state: State = initialState, action: Action): State => {
-
     switch (action.type) {
-
-        case ACCOUNT.UPDATE_SELECTED_ACCOUNT :
+        case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
             return action.payload;
 
         default:
             return state;
     }
-
-}
+};

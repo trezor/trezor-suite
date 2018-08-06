@@ -1,5 +1,5 @@
 /* @flow */
-'use strict';
+
 
 export const ON_PASSPHRASE_CHANGE: 'action__on_passphrase_change' = 'action__on_passphrase_change';
 export const ON_PASSPHRASE_SHOW: 'action__on_passphrase_show' = 'action__on_passphrase_show';
