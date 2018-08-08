@@ -44,16 +44,6 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         api.dispatch(initWeb3());
     } else if (action.type === WEB3.READY) {
         api.dispatch(TrezorConnectActions.postInit());
-    } else if (action.type === TRANSPORT.UNREADABLE) {
-        api.dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                type: 'error',
-                title: 'Unreadable HID device',
-                message: '',
-                cancelable: true,
-            },
-        });
     } else if (action.type === DEVICE.DISCONNECT) {
         api.dispatch(TrezorConnectActions.deviceDisconnect(action.device));
     } else if (action.type === CONNECT.REMEMBER_REQUEST) {
