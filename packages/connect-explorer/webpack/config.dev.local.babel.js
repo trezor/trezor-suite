@@ -21,6 +21,7 @@ module.exports = {
         'trezor-connect-npm': `${TREZOR_CONNECT}.js`,
         'iframe': `${TREZOR_IFRAME}`,
         'popup': `${TREZOR_POPUP}`,
+        'extensionPermissions': `${TREZOR_CONNECT_ROOT}src/js/webusb/extensionPermissions.js`,
         'index': [ 'react-hot-loader/patch', `${SRC}js/index.js` ]
     },
     output: {
@@ -116,12 +117,18 @@ module.exports = {
             chunks: ['iframe'],
             filename: `iframe.html`,
             template: `${TREZOR_CONNECT_HTML}iframe.html`,
-            inject: true
+            inject: false
         }),
         new HtmlWebpackPlugin({
             chunks: ['popup'],
             filename: 'popup.html',
             template: `${TREZOR_CONNECT_HTML}popup.html`,
+            inject: false
+        }),
+        new HtmlWebpackPlugin({
+            chunks: ['extensionPermissions'],
+            filename: `extension-permissions.html`,
+            template: `${TREZOR_CONNECT_HTML}extension-permissions.html`,
             inject: true
         }),
 
