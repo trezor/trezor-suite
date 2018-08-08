@@ -111,12 +111,12 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         });
     });
 
+    // $FlowIssue LOCAL not declared
+    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/';
+
     try {
         await TrezorConnect.init({
             transportReconnect: true,
-            connectSrc: typeof window.LOCAL === 'string' ? window.LOCAL : 'https://connect.trezor.io/5/',
-            // connectSrc: 'https://connect.trezor.io/5/',
-            // connectSrc: 'https://sisyfos.trezor.io/',
             debug: true,
             popup: false,
             webusb: true,
