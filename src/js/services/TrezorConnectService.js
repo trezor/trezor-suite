@@ -32,7 +32,7 @@ const TrezorConnectService = store => next => action => {
         //     console.warn("-------TRANSPOOOO", event)
         // })
 
-        window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
+        // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
 
         // const src = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/next/';
         /// const src = 'https://sisyfos.trezor.io/next/';
