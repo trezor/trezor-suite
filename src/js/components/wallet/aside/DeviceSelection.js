@@ -49,7 +49,7 @@ export const DeviceSelect = (props: Props) => {
 
     const deviceCount = devices.length;
     const webusb: boolean = !!((transport && transport.version.indexOf('webusb') >= 0));
-    const disabled: boolean = (devices.length < 1 && !webusb) || (devices.length === 1 && !selected.features);
+    const disabled: boolean = (devices.length < 1 && !webusb) || (devices.length === 1 && !selected.features && !webusb);
     if (disabled) {
         css += ' disabled';
     }
