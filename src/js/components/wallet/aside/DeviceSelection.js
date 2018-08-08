@@ -176,9 +176,12 @@ export class DeviceDropdown extends Component<Props> {
 
             let deviceStatus: string = 'Connected';
             let css: string = 'device item';
-            if (!dev.features || (dev.features && dev.status === 'occupied')) {
+            if (dev.type === 'unacquired' || (dev.features && dev.status === 'occupied')) {
                 deviceStatus = 'Used in other window';
                 css += ' unacquired';
+            } else if (dev.type === 'unreadable') {
+                deviceStatus = 'Connected';
+                css += ' connected';
             } else if (!dev.connected) {
                 deviceStatus = 'Disconnected';
                 css += ' disconnected';
