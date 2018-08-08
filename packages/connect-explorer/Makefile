@@ -10,6 +10,10 @@ ghpages:
 	git checkout master
 	git stash pop
 
+build-test:
+	yarn run build
+	rsync -avz --delete -e ssh ./build/* admin@dev.sldev.cz:~/sisyfos/www/connect-explorer
+
 clean:
 	rm -rf css
 	rm -rf fonts
