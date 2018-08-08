@@ -191,7 +191,6 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
     const ethAddress: string = EthereumjsUtil.toChecksumAddress(publicAddress);
     const network = discoveryProcess.network;
 
-
     // TODO: check if address was created before
 
     // verify address with TREZOR

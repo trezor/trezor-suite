@@ -30,7 +30,7 @@ export const getSelectedDevice = (state: State): ?TrezorDevice => {
 
     const instance: ?number = locationState.deviceInstance ? parseInt(locationState.deviceInstance) : undefined;
     return state.devices.find((d) => {
-        if (d.unacquired && d.path === locationState.device) {
+        if (!d.features && d.path === locationState.device) {
             return true;
         } if (d.features && d.features.bootloader_mode && d.path === locationState.device) {
             return true;

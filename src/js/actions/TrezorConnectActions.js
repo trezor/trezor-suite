@@ -16,7 +16,6 @@ import { resolveAfter } from '../utils/promiseUtils';
 
 import type {
     Device,
-    ResponseMessage,
     DeviceMessage,
     UiMessage,
     TransportMessage,
@@ -115,9 +114,10 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
     try {
         await TrezorConnect.init({
             transportReconnect: true,
-            // connectSrc: 'https://localhost:8088/',
-            connectSrc: 'https://sisyfos.trezor.io/',
-            debug: false,
+            connectSrc: typeof window.LOCAL === 'string' ? window.LOCAL : 'https://connect.trezor.io/5/',
+            // connectSrc: 'https://connect.trezor.io/5/',
+            // connectSrc: 'https://sisyfos.trezor.io/',
+            debug: true,
             popup: false,
             webusb: true,
             pendingTransportEvent: (getState().devices.length < 1),
@@ -156,7 +156,7 @@ export const postInit = (): ThunkAction => (dispatch: Dispatch, getState: GetSta
     }
 
     if (devices.length > 0) {
-        const unacquired: ?TrezorDevice = devices.find(d => d.unacquired);
+        const unacquired: ?TrezorDevice = devices.find(d => d.features);
         if (unacquired) {
             dispatch(onSelectDevice(unacquired));
         } else {
@@ -246,7 +246,7 @@ export const switchToFirstAvailableDevice = (): AsyncAction => async (dispatch: 
         // 1. First Unacquired
         // 2. First connected
         // 3. Saved with latest timestamp
-        const unacquired = devices.find(d => d.unacquired);
+        const unacquired = devices.find(d => !d.features);
         if (unacquired) {
             dispatch(initConnectedDevice(unacquired));
         } else {
@@ -316,7 +316,7 @@ export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch
             dispatch(DiscoveryActions.stop(selected));
         }
 
-        const instances = getState().devices.filter(d => d.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
+        const instances = getState().devices.filter(d => d.features && device.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
         if (instances.length > 0) {
             dispatch({
                 type: CONNECT.REMEMBER_REQUEST,

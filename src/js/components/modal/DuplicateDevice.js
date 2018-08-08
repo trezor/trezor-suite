@@ -67,7 +67,8 @@ export default class DuplicateDevice extends Component<Props, State> {
 
     submit() {
         if (!this.props.modal.opened) return;
-        this.props.modalActions.onDuplicateDevice({ ...this.props.modal.device, instanceName: this.state.instanceName, instance: this.state.instance });
+        const extended: Object = { instanceName: this.state.instanceName, instance: this.state.instance };
+        this.props.modalActions.onDuplicateDevice({ ...this.props.modal.device, ...extended });
     }
 
     render() {

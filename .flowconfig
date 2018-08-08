@@ -1,5 +1,4 @@
 [include]
-.*/node_modules/trezor-connect
 
 [ignore]
 .*/node_modules/rc-util/.*
@@ -20,8 +19,6 @@
 ./src/flowtype/npm/ethereum-types.js
 ./src/flowtype/npm/web3.js
 ./src/flowtype/css.js
-
-./node_modules/trezor-connect/flowtype/
 
 
 

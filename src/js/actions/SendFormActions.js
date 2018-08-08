@@ -836,14 +836,8 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             state: selected.state,
         },
         useEmptyPassphrase: !selected.instance,
-        path: txData.address_n,
-        nonce: strip(txData.nonce),
-        gasPrice: strip(txData.gasPrice),
-        gasLimit: strip(txData.gasLimit),
-        to: strip(txData.to),
-        value: strip(txData.value),
-        data: strip(txData.data),
-        chainId: txData.chainId,
+        path: address_n,
+        transaction: txData
     });
 
     if (!signedTransaction || !signedTransaction.success) {
@@ -860,10 +854,9 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         return;
     }
 
-    txData.r = `0x${signedTransaction.payload.r}`;
-    txData.s = `0x${signedTransaction.payload.s}`;
-    txData.v = w3.toHex(signedTransaction.payload.v);
-
+    txData.r = signedTransaction.payload.r;
+    txData.s = signedTransaction.payload.s;
+    txData.v = signedTransaction.payload.v;
 
     try {
         const tx = new EthereumjsTx(txData);

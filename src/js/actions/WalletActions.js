@@ -75,7 +75,8 @@ export const toggleDeviceDropdown = (opened: boolean): WalletAction => ({
 export const clearUnavailableDevicesData = (prevState: State, device: Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     if (!device.features) return;
 
-    const affectedDevices = prevState.devices.filter(d => d.features
+    const affectedDevices = prevState.devices.filter(d => 
+            d.features && device.features
             && d.features.device_id === device.features.device_id
             && d.features.passphrase_protection !== device.features.passphrase_protection);
 

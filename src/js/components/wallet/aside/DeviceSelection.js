@@ -26,15 +26,16 @@ export const DeviceSelect = (props: Props) => {
         css += ' unavailable';
         deviceStatus = 'Unavailable';
     } else {
-        if (selected.unacquired) {
+        if (selected.type === 'acquired') {
+            if (selected.status === 'occupied') {
+                css += ' used-elsewhere';
+                deviceStatus = 'Used in other window';
+            } else if (selected.status === 'used') {
+                css += ' reload-features';
+            }
+        } else if (selected.type === 'unacquired') {
             css += ' unacquired';
             deviceStatus = 'Used in other window';
-        }
-        if (selected.isUsedElsewhere) {
-            css += ' used-elsewhere';
-            deviceStatus = 'Used in other window';
-        } else if (selected.featuresNeedsReload) {
-            css += ' reload-features';
         }
     }
 
@@ -147,14 +148,12 @@ export class DeviceDropdown extends Component<Props> {
         if (selected.features) {
             const deviceMenuItems: Array<DeviceMenuItem> = [];
 
-            if (selected.isUsedElsewhere) {
-                deviceMenuItems.push({ type: 'reload', label: 'Renew session' });
-            } else if (selected.featuresNeedsReload) {
+            if (selected.status !== 'available') {
                 deviceMenuItems.push({ type: 'reload', label: 'Renew session' });
             }
 
             deviceMenuItems.push({ type: 'settings', label: 'Device settings' });
-            if (selected.features && selected.features.passphrase_protection && selected.connected && selected.available) {
+            if (selected.features.passphrase_protection && selected.connected && selected.available) {
                 deviceMenuItems.push({ type: 'clone', label: 'Clone device' });
             }
             //if (selected.remember) {
@@ -177,7 +176,7 @@ export class DeviceDropdown extends Component<Props> {
 
             let deviceStatus: string = 'Connected';
             let css: string = 'device item';
-            if (dev.unacquired || dev.isUsedElsewhere) {
+            if (!dev.features || (dev.features && dev.status === 'occupied')) {
                 deviceStatus = 'Used in other window';
                 css += ' unacquired';
             } else if (!dev.connected) {

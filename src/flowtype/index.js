@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import type {
     Store as ReduxStore,
     ReduxDispatch,
@@ -35,6 +34,8 @@ import type { FiatRateAction } from '~/js/services/CoinmarketcapService'; // thi
 import type {
     Device,
     Features,
+    DeviceStatus,
+    DeviceFirmwareStatus,
     DeviceMessageType,
     TransportMessageType,
     UiMessageType,
@@ -42,22 +43,42 @@ import type {
 
 import type { RouterAction, LocationState } from 'react-router-redux';
 
-export type TrezorDevice = {
+export type AcquiredDevice = $Exact<{
+    +type: 'acquired',
+    path: string,
+    +label: string,
+    +features: Features,
+    +firmware: DeviceFirmwareStatus,
+    status: DeviceStatus,
+    state: ?string,
+
     remember: boolean; // device should be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
-    path: string;
-    label: string;
-    state: ?string;
     instance?: number;
     instanceLabel: string;
     instanceName: ?string;
-    features?: Features;
-    unacquired?: boolean;
-    isUsedElsewhere?: boolean;
-    featuresNeedsReload?: boolean;
     ts: number;
-}
+
+}>;
+
+export type UnknownDevice = $Exact<{
+    +type: 'unacquired' | 'unreadable',
+    path: string,
+    +label: string,
+    +features: null,
+    state: ?string,
+    
+    remember: boolean; // device should be remembered
+    connected: boolean; // device is connected
+    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
+    instance?: number;
+    instanceLabel: string;
+    instanceName: ?string;
+    ts: number;
+}>
+
+export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
 export type RouterLocationState = LocationState;
 
