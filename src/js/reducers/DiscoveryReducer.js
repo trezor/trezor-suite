@@ -71,7 +71,7 @@ const start = (state: State, action: DiscoveryStartAction): State => {
 const complete = (state: State, action: DiscoveryCompleteAction): State => {
     const index: number = findIndex(state, action.network, action.device.state || '0');
     const newState: State = [...state];
-    newState[index].completed = true;
+    newState[index] = { ...newState[index], completed: true };
     return newState;
 };
 
