@@ -3361,7 +3361,7 @@ eventemitter3@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
 
-events@^1.0.0:
+events@^1.0.0, events@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
 
@@ -8787,9 +8787,14 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
-trezor-connect@5.0.13:
-  version "5.0.13"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.13.tgz#2feee3d6644f8c3effd445b60ed80e7d5731469a"
+trezor-connect@^5.0.28:
+  version "5.0.28"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.28.tgz#eb39bb0aa2a7555623251f0fb301233886fcdd09"
+  dependencies:
+    babel-polyfill "^6.26.0"
+    babel-runtime "^6.26.0"
+    events "^1.1.1"
+    whatwg-fetch "^2.0.4"
 
 trim-newlines@^1.0.0:
   version "1.0.0"
