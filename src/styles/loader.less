@@ -15,18 +15,18 @@
     }
 
     .circular {
-    
+
         width: 100%;
         height: 100%;
         animation: rotate 2s linear infinite;
         transform-origin: center center;
-        
+
         position: absolute;
-        
+
         .route {
             stroke: @color_gray_light;
         }
-    
+
         .path {
             stroke-dasharray: 1, 200;
             stroke-dashoffset: 0;
@@ -34,15 +34,15 @@
             stroke-linecap: round;
         }
     }
-}
 
-@keyframes rotate {
-    100% {
-        transform: rotate(360deg);
+    &.info {
+        .path {
+            animation: dash 1.5s ease-in-out infinite, colorInfo 6s ease-in-out infinite;
+        }
     }
 }
 
-@keyframes dash {  
+@keyframes dash {
     0% {
         stroke-dasharray: 1, 200;
         stroke-dashoffset: 0;
@@ -57,7 +57,7 @@
     }
 }
 
-@keyframes color {  
+@keyframes color {
     100%, 0% {
         stroke: @color_green_primary;
     }
@@ -69,5 +69,20 @@
     }
     80%, 90% {
         stroke: @color_green_tertiary;
+    }
+}
+
+@keyframes colorInfo {
+    100%, 0% {
+        stroke: @color_info_primary;
+    }
+    40% {
+        stroke: @color_info_primary;
+    }
+    66% {
+        stroke: @color_info_primary;
+    }
+    80%, 90% {
+        stroke: @color_info_primary;
     }
 }
