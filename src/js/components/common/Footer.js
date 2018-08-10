@@ -1,31 +1,45 @@
-/* @flow */
-
-
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import colors from '~/js/config/colors';
 import * as LogActions from '~/js/actions/LogActions';
-import type { State, Dispatch } from '~/flowtype';
 
-type Props = {
-    toggle: typeof LogActions.toggle
-}
+const Wrapper = styled.div`
+    width: 100%;
+    font-size: 12px;
+    color: ${colors.TEXT_SECONDARY};
+    padding: 22px 48px;
+    border-top: 1px solid ${colors.DIVIDER};
+    display: flex;
+`;
 
-const Footer = (props: Props): React$Element<string> => (
-    <footer>
-        <span>© 2018</span>
-        <a href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi green">SatoshiLabs</a>
-        <a href="tos.pdf" target="_blank" rel="noreferrer noopener" className="green">Terms</a>
-        <a onClick={props.toggle} className="green">Show Log</a>
-    </footer>
+const A = styled.a`
+    margin: 0px 6px;
+    margin-right: 20px;
+`;
+
+const Copy = styled.div`
+    margin-right: 20px;
+`;
+
+const Footer = ({ toggle }) => (
+    <Wrapper>
+        <Copy>© 2018</Copy>
+        <A href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi green">SatoshiLabs</A>
+        <A href="tos.pdf" target="_blank" rel="noreferrer noopener" className="green">Terms</A>
+        <A onClick={toggle} className="green">Show Log</A>
+    </Wrapper>
 );
 
-export default connect(
-    (state: State) => ({
+Footer.propTypes = {
+    toggle: PropTypes.func.isRequired,
+};
 
-    }),
-    (dispatch: Dispatch) => ({
-        toggle: bindActionCreators(LogActions.toggle, dispatch),
-    }),
-)(Footer);
+const mapDispatchToProps = dispatch => ({
+    toggle: bindActionCreators(LogActions.toggle, dispatch),
+});
+
+export default connect(null, mapDispatchToProps)(Footer);
