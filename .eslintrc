@@ -32,14 +32,7 @@
     ],
     "settings": {
         "import/parser": "babel-eslint",
-        "import/resolver": {
-            "node": {
-                "moduleDirectory": [
-                    "src",
-                    "node_modules"
-                ]
-            }
-        },
+        "import/resolver": "babel-plugin-root-import",
         "import/ignore": [
             "\\.(scss|less|css)$"
         ]

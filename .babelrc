@@ -17,7 +17,14 @@
         }],
         ["babel-plugin-root-import", {
             "rootPathSuffix": "./src",
-            "rootPathPrefix": "~"
+            "rootPathPrefix": "~",
+            "alias": {
+                "components": "./src/js/components",
+                "config": "./src/js/config",
+                "reducers": "./src/js/reducers",
+                "actions": "./src/js/actions",
+                "services": "./src/js/services"
+            }
         }],
         "babel-plugin-styled-components"
     ],
