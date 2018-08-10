@@ -4,7 +4,6 @@
 import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as WALLET from '../actions/constants/wallet';
-import * as SEND from '../actions/constants/wallet';
 
 import * as WalletActions from '../actions/WalletActions';
 import * as LocalStorageActions from '../actions/LocalStorageActions';
@@ -15,11 +14,7 @@ import type {
     Middleware,
     MiddlewareAPI,
     MiddlewareDispatch,
-    State,
-    Dispatch,
     Action,
-    GetState,
-    TrezorDevice,
 } from '~/flowtype';
 
 /**

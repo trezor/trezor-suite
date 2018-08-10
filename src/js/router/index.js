@@ -1,7 +1,5 @@
-/* @flow */
-
-
 import React from 'react';
+import { hot } from 'react-hot-loader';
 import { Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
@@ -22,7 +20,7 @@ import SignVerifyContainer from '../components/wallet/account/sign/SignVerify';
 import DeviceSettingsContainer from '../components/wallet/pages/DeviceSettings';
 import WalletSettingsContainer from '../components/wallet/pages/WalletSettings';
 
-export default (
+const App = () => (
     <Provider store={store}>
         <ConnectedRouter history={history}>
             <Switch>
@@ -50,3 +48,5 @@ export default (
         </ConnectedRouter>
     </Provider>
 );
+
+export default hot(module)(App);

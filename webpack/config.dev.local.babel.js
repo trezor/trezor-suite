@@ -1,3 +1,7 @@
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import {
     TREZOR_CONNECT_ROOT,
     TREZOR_CONNECT_HTML,
@@ -5,26 +9,20 @@ import {
     TREZOR_CONNECT, TREZOR_IFRAME, TREZOR_POPUP, TREZOR_WEBUSB,
     SRC,
     BUILD,
-    PORT
+    PORT,
 } from './constants';
-
-
-import webpack from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 module.exports = {
     watch: true,
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
-        'index': ['react-hot-loader/patch', `${SRC}js/index.js`],
+        index: [`${SRC}js/index.js`],
         'trezor-connect-npm': `${TREZOR_CONNECT}.js`,
         // 'extension-permissions': `${TREZOR_CONNECT_ROOT}src/js/extensionPermissions.js`,
-        'iframe': TREZOR_IFRAME,
-        'popup': TREZOR_POPUP,
-        'webusb': TREZOR_WEBUSB,
+        iframe: TREZOR_IFRAME,
+        popup: TREZOR_POPUP,
+        webusb: TREZOR_WEBUSB,
     },
     output: {
         filename: '[name].[hash].js',
@@ -44,18 +42,18 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
+                use: ['babel-loader'],
             },
             {
                 test: /\.less$/,
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
-                        options: { publicPath: '../' }
+                        options: { publicPath: '../' },
                     },
                     'css-loader',
                     'less-loader',
-                ]
+                ],
             },
             {
                 test: /\.(png|gif|jpg)$/,
@@ -63,7 +61,7 @@ module.exports = {
                 query: {
                     outputPath: './images',
                     name: '[name].[ext]',
-                }
+                },
             },
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
@@ -96,11 +94,11 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules', `${TREZOR_CONNECT_ROOT}/node_modules`],
         alias: {
-            'trezor-connect': `${TREZOR_CONNECT}`
-        }
+            'trezor-connect': `${TREZOR_CONNECT}`,
+        },
     },
     performance: {
-        hints: false
+        hints: false,
     },
     plugins: [
         new MiniCssExtractPlugin({
@@ -112,26 +110,26 @@ module.exports = {
             chunks: ['index'],
             template: `${SRC}index.html`,
             filename: 'index.html',
-            inject: true
+            inject: true,
         }),
 
         new HtmlWebpackPlugin({
             chunks: ['iframe'],
-            filename: `iframe.html`,
+            filename: 'iframe.html',
             template: `${TREZOR_CONNECT_HTML}iframe.html`,
-            inject: false
+            inject: false,
         }),
         new HtmlWebpackPlugin({
             chunks: ['popup'],
             filename: 'popup.html',
             template: `${TREZOR_CONNECT_HTML}popup.html`,
-            inject: false
+            inject: false,
         }),
         new HtmlWebpackPlugin({
             chunks: ['webusb'],
-            filename: `webusb.html`,
+            filename: 'webusb.html',
             template: `${TREZOR_CONNECT_HTML}webusb.html`,
-            inject: true
+            inject: true,
         }),
         // new HtmlWebpackPlugin({
         //     chunks: ['extension-permissions'],
@@ -158,7 +156,7 @@ module.exports = {
     ],
     // ignoring "fs" import in fastxpub
     node: {
-        fs: "empty",
-        path: "empty",
+        fs: 'empty',
+        path: 'empty',
     },
-}
+};

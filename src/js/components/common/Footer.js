@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { getYear } from 'date-fns';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -27,7 +28,7 @@ const Copy = styled.div`
 
 const Footer = ({ toggle }) => (
     <Wrapper>
-        <Copy>© 2018</Copy>
+        <Copy>© {getYear(new Date())}</Copy>
         <A href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi green">SatoshiLabs</A>
         <A href="tos.pdf" target="_blank" rel="noreferrer noopener" className="green">Terms</A>
         <A onClick={toggle} className="green">Show Log</A>
