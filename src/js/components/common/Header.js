@@ -13,7 +13,7 @@ const Wrapper = styled.header`
          height: 28px;         
          width: 100px;
          flex: 1;
-     }
+    }
 `;
 
 const LayoutWrapper = styled.div`

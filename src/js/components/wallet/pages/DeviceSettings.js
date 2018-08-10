@@ -1,6 +1,5 @@
 import React from 'react';
 import { H2 } from '~/js/components/common/Heading';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 export const DeviceSettings = () => (
