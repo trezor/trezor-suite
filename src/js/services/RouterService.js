@@ -85,7 +85,7 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         __unloading = true;
     } else if (action.type === LOCATION_CHANGE && !__unloading) {
         const { location } = api.getState().router;
-        const web3 = api.getState().web3;
+        const { web3 } = api.getState();
         const { devices } = api.getState();
         const { error } = api.getState().connect;
 
@@ -123,9 +123,8 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                 // PATH VALIDATION
                 // redirect from root view
                 if (action.payload.pathname === '/' || !validation(api, requestedParams)) {
-                    // TODO: switch to first device?
-                    // redirectPath = `/device/${ devices[0].path }`;
-                    redirectPath = location.pathname;
+                    // TODO redirect to first device
+                    redirectPath = '/device/x';
                 } else if (requestedParams.device) {
                     if (requestedParams.network !== currentParams.network) {
                         postActions.push({
@@ -146,7 +145,7 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             action.payload.state = pathToParams(url);
             action.payload.pathname = url;
             // change url
-            api.dispatch(replace(url));
+            // api.dispatch(replace(url));
         } else {
             action.payload.state = requestedParams;
         }
