@@ -1,8 +1,8 @@
 /* @flow */
 
-
 import React, { Component } from 'react';
 import TrezorConnect from 'trezor-connect';
+import { H2 } from '~/js/components/common/Heading';
 
 import type { State, TrezorDevice } from '~/flowtype';
 
@@ -15,7 +15,7 @@ const DisconnectDevice = (props: Props) => {
     if (!props.disconnectRequest) return null;
     return (
         <main>
-            <h2 className="claim">The private bank in your hands.</h2>
+            <H2 claim>The private bank in your hands.</H2>
             <p>TREZOR Wallet is an easy-to-use interface for your TREZOR.</p>
             <p>TREZOR Wallet allows you to easily control your funds, manage your balance and initiate transfers.</p>
             <div className="row">
@@ -32,7 +32,7 @@ const DisconnectDevice = (props: Props) => {
 
 const ConnectHIDDevice = (props: Props) => (
     <main>
-        <h2 className="claim">The private bank in your hands.</h2>
+        <H2 claim>The private bank in your hands.</H2>
         <p>TREZOR Wallet is an easy-to-use interface for your TREZOR.</p>
         <p>TREZOR Wallet allows you to easily control your funds, manage your balance and initiate transfers.</p>
         <div className="row">
@@ -70,7 +70,7 @@ class ConnectWebUsbDevice extends Component<Props> {
     render() {
         return (
             <main>
-                <h2 className="claim">The private bank in your hands.</h2>
+                <H2 claim>The private bank in your hands.</H2>
                 <p>TREZOR Wallet is an easy-to-use interface for your TREZOR.</p>
                 <p>TREZOR Wallet allows you to easily control your funds, manage your balance and initiate transfers.</p>
                 <div className="row webusb">

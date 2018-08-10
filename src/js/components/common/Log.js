@@ -4,6 +4,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { H2 } from '~/js/components/common/Heading';
 
 import * as LogActions from '~/js/actions/LogActions';
 import type { State, Dispatch } from '~/flowtype';
@@ -25,7 +26,7 @@ const Log = (props: Props): ?React$Element<string> => {
     return (
         <div className="log">
             <button className="log-close transparent" onClick={props.toggle} />
-            <h2>Log</h2>
+            <H2>Log</H2>
             <p>Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.</p>
             <textarea value={JSON.stringify(props.log.entries)} readOnly />
         </div>

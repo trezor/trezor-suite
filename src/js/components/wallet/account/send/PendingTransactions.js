@@ -3,6 +3,7 @@
 
 import React from 'react';
 import ColorHash from 'color-hash';
+import { H2 } from '~/js/components/common/Heading';
 import ScaleText from 'react-scale-text';
 
 import { findAccountTokens } from '~/js/reducers/TokensReducer';
@@ -85,7 +86,7 @@ const PendingTransactions = (props: Props) => {
 
     return (
         <div className="pending-transactions">
-            <h2>Pending transactions</h2>
+            <H2>Pending transactions</H2>
             { pendingTxs }
         </div>
     );

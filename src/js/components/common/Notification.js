@@ -2,6 +2,7 @@
 
 
 import React from 'react';
+import { H2 } from '~/js/components/common/Heading';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -42,7 +43,7 @@ export const Notification = (props: NProps): React$Element<string> => {
                 />
             ) : null }
             <div className="notification-body">
-                <h2>{ props.title }</h2>
+                <H2>{ props.title }</H2>
                 { props.message ? (<p dangerouslySetInnerHTML={{ __html: props.message }} />) : null }
             </div>
             { props.actions && props.actions.length > 0 ? (
@@ -53,7 +54,8 @@ export const Notification = (props: NProps): React$Element<string> => {
             { props.loading ? (
                 <Loader
                     className="info"
-                    size="50" />
+                    size="50"
+                />
             ) : null }
 
         </div>

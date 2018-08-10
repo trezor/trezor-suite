@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import React, { Component } from 'react';
 import Select from 'react-select';
 import AdvancedForm from './AdvancedForm';
@@ -117,7 +116,7 @@ const Send = (props: Props) => {
 
     return (
         <section className="send-form">
-            <h2>Send Ethereum or tokens</h2>
+            <H2>Send Ethereum or tokens</H2>
             <div className="row address-input">
                 <label>Address</label>
                 <input

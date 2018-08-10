@@ -3,6 +3,7 @@
 
 import React from 'react';
 import Preloader from './Preloader';
+import { H2 } from '~/js/components/common/Heading';
 import ConnectDevice from './ConnectDevice';
 import InstallBridge from './InstallBridge';
 import LocalStorageError from './LocalStorageError';
@@ -16,7 +17,7 @@ import type { Props } from './index';
 
 const BrowserNotSupported = (props: {}): React$Element<string> => (
     <main>
-        <h2>Your browser is not supported</h2>
+        <H2>Your browser is not supported</H2>
         <p>Please choose one of the supported browsers</p>
         <div className="row">
             <div className="chrome">

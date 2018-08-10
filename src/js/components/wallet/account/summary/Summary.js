@@ -2,6 +2,7 @@
 
 
 import React, { Component } from 'react';
+import { H2 } from '~/js/components/common/Heading';
 import BigNumber from 'bignumber.js';
 import { Async as AsyncSelect } from 'react-select';
 import Tooltip from 'rc-tooltip';
@@ -55,7 +56,7 @@ const Summary = (props: Props) => {
                 onToggle={props.onDetailsToggle}
             />
 
-            <h2>
+            <H2>
                 Tokens
                 <Tooltip
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
@@ -64,7 +65,7 @@ const Summary = (props: Props) => {
                 >
                     <span className="what-is-it" />
                 </Tooltip>
-            </h2>
+            </H2>
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 T01 */}
             <div className="filter">
