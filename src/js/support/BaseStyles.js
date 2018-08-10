@@ -4,7 +4,7 @@ import normalize from 'styled-normalize';
 
 const baseStyles = () => injectGlobal`
     ${normalize};
-    
+
     * , *:before , *:after {
         box-sizing: border-box;
     }
@@ -18,6 +18,18 @@ const baseStyles = () => injectGlobal`
         outline: 0 !important;
         -webkit-appearance: none;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    a {
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    a:focus, 
+    button:focus, 
+    input:focus, 
+    textarea:focus {
+        outline: 0;
     }
 `;
 
