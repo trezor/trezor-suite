@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import Select from 'react-select';
+import { H2 } from '~/js/components/common/Heading';
 import AdvancedForm from './AdvancedForm';
 import PendingTransactions from './PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './FeeSelect';
