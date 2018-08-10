@@ -1,29 +1,66 @@
 import React from 'react';
+import styled from 'styled-components';
+
 import { H2 } from '~/js/components/common/Heading';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import colors from '~/js/config/colors';
+
+const Wrapper = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    background: ${colors.WHITE};
+    padding: 50px;
+`;
+
+const StyledH2 = styled(H2)`
+    padding-bottom: 10px;
+`;
+
+const Column = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+`;
+
+const Sign = styled(Column)``;
+
+const Verify = styled(Column)`
+    padding-left: 20px;
+`;
+
+const Label = styled.div`
+    color: ${colors.LABEL};
+    padding: 5px 0px;
+`;
+
+const Textarea = styled.textarea`
+    resize: vertical;
+    width: 100%;
+`;
+
+const Input = styled.input``;
 
 const SignVerify = () => (
-    <section className="signverify">
-        <div className="sign">
-            <H2>Sign message</H2>
-            <label>Message</label>
-            <textarea rows="4" maxLength="255" />
-            <label>Address</label>
-            <input type="text" />
-            <label>Signature</label>
-            <textarea rows="4" maxLength="255" readOnly="readonly" />
-        </div>
-        <div className="verify">
-            <H2>Verify message</H2>
-            <label>Message</label>
-            <textarea rows="4" maxLength="255" />
-            <label>Address</label>
-            <input type="text" />
-            <label>Signature</label>
-            <textarea rows="4" maxLength="255" />
-        </div>
-    </section>
+    <Wrapper>
+        <Sign>
+            <StyledH2>Sign message</StyledH2>
+            <Label>Message</Label>
+            <Textarea rows="4" maxLength="255" />
+            <Label>Address</Label>
+            <Input type="text" />
+            <Label>Signature</Label>
+            <Textarea rows="4" maxLength="255" readOnly="readonly" />
+        </Sign>
+        <Verify>
+            <StyledH2>Verify message</StyledH2>
+            <Label>Message</Label>
+            <Textarea rows="4" maxLength="255" />
+            <Label>Address</Label>
+            <Input type="text" />
+            <Label>Signature</Label>
+            <Textarea rows="4" maxLength="255" />
+        </Verify>
+    </Wrapper>
 );
 
-export default connect(null, null)(SignVerify);
+export default SignVerify;

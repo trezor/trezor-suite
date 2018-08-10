@@ -27,4 +27,6 @@ export default {
 
     ERROR_PRIMARY: '#ED1212',
     ERROR_SECONDARY: '#FFE9E9',
+
+    LABEL_COLOR: '#A9A9A9',
 };
