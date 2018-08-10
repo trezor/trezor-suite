@@ -6,10 +6,10 @@ import colors from '~/js/config/colors';
 const Wrapper = styled.header`
     width: 100%;
     height: 52px;
-    background: ${colors.color_header};
+    background: ${colors.HEADER};
 
     svg {
-         fill: ${colors.color_white};
+         fill: ${colors.WHITE};
          height: 28px;         
          width: 100px;
          flex: 1;
@@ -27,11 +27,11 @@ const LayoutWrapper = styled.div`
 `;
 
 const A = styled.a`
-    color: ${colors.color_white};
+    color: ${colors.WHITE};
     margin-left: 24px;
 
     &:visited {
-        color: ${colors.color_white};
+        color: ${colors.WHITE};
         margin-left: 24px;
     }
 
@@ -41,7 +41,7 @@ const A = styled.a`
 
     &:hover,
     &:active {
-        color: ${colors.color_text_secondary};
+        color: ${colors.TEXT_SECONDARY};
     }
 `;
 

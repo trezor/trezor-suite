@@ -4,7 +4,7 @@ import colors from '~/js/config/colors';
 const baseStyles = css`
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    color: ${colors.black};
+    color: ${colors.BLACK};
     font-weight: bold;
 `;
 

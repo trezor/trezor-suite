@@ -1,30 +1,30 @@
 export default {
-    color_white: '#ffffff',
+    WHITE: '#FFFFFF',
 
-    color_header: '#212121',
-    color_body: '#E3E3E3',
-    color_main: '#FBFBFB',
-    color_landing: '#F9F9F9',
+    HEADER: '#212121',
+    BODY: '#E3E3E3',
+    MAIN: '#FBFBFB',
+    LANDING: '#F9F9F9',
 
-    color_text_primary: '#494949',
-    color_text_secondary: '#757575',
+    TEXT_PRIMARY: '#494949',
+    TEXT_SECONDARY: '#757575',
 
-    color_gray_light: '#F2F2F2', // hover menu
-    color_divider: '#E3E3E3', //#EBEBEB,
+    GRAY_LIGHT: '#F2F2F2',
+    DIVIDER: '#E3E3E3',
 
-    color_green_primary: '#01B757',
-    color_green_secondary: '#00AB51',
-    color_green_tertiary: '#009546',
+    GREEN_PRIMARY: '#01B757',
+    GREEN_SECONDARY: '#00AB51',
+    GREEN_TERTIARY: '#009546',
 
-    color_info_primary: '#1E7FF0',
-    color_info_secondary: '#E1EFFF',
+    INFO_PRIMARY: '#1E7FF0',
+    INFO_SECONDARY: '#E1EFFF',
 
-    color_warning_primary: '#EB8A00',
-    color_warning_secondary: '#FFEFD9',
+    WARNING_PRIMARY: '#EB8A00',
+    WARNING_SECONDARY: '#FFEFD9',
 
-    color_success_primary: '#01B757',
-    color_success_secondary: '#DFFFEE',
+    SUCCESS_PRIMARY: '#01B757',
+    SUCCESS_SECONDARY: '#DFFFEE',
 
-    color_error_primary: '#ED1212',
-    color_error_secondary: '#FFE9E9',
+    ERROR_PRIMARY: '#ED1212',
+    ERROR_SECONDARY: '#FFE9E9',
 };
