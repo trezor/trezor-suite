@@ -1,4 +1,4 @@
-
+import DuplicatePackageCheckerPlugin from 'duplicate-package-checker-webpack-plugin';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -87,7 +87,7 @@ module.exports = {
             filename: 'index.html',
             inject: true,
         }),
-
+        new DuplicatePackageCheckerPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
