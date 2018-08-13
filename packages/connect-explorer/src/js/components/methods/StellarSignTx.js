@@ -21,7 +21,6 @@ const StellarSignTx = (props): any => {
 
     const {
         path,
-        ledgerVersion,
         networkPassphrase,
         transaction,
     } = props.state;
@@ -29,7 +28,6 @@ const StellarSignTx = (props): any => {
     const {
         onSignTx,
         onPathChange,
-        onNetworkChange,
         onPassphraseChange,
         onTransactionChange
     } = props.methodActions;
@@ -46,11 +44,6 @@ const StellarSignTx = (props): any => {
                 <div className="row">
                     <label>Path</label>
                     <input type="text" className="small" value={ path } onChange={ event => onPathChange(event.target.value) } />
-                </div>
-
-                <div className="row">
-                    <label>Ledger version</label>
-                    <input type="text" className="small" value={ ledgerVersion } onChange={ event => onNetworkChange(event.target.value) } />
                 </div>
 
                 <div className="row">
