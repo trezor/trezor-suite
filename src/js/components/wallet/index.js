@@ -2,7 +2,6 @@
 
 
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
 
@@ -27,29 +26,22 @@ type ContentProps = {
     children?: React.Node
 }
 
-
-const Content = (props: ContentProps) => (
-    <article>
-        <nav>
-            <Route path="/device/:device/network/:network/account/:account" component={AccountTabs} />
-            <Route path="/device/:device/device-settings" component={DeviceSettingsTabs} />
-        </nav>
-        <Notifications />
-        <Log />
-        { props.children }
-        <Footer />
-    </article>
-);
-
 const Wallet = (props: WalletContainerProps) => (
     <div className="app">
         <Header />
         {/* <div>{ props.wallet.online ? "ONLINE" : "OFFLINE" }</div> */}
         <main>
             <AsideContainer />
-            <Content>
+            <article>
+                <nav>
+                    <Route path="/device/:device/network/:network/account/:account" component={AccountTabs} />
+                    <Route path="/device/:device/device-settings" component={DeviceSettingsTabs} />
+                </nav>
+                <Notifications />
+                <Log />
                 { props.children }
-            </Content>
+                <Footer />
+            </article>
         </main>
         <ModalContainer />
     </div>
