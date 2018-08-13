@@ -2,14 +2,13 @@
 'use strict';
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import { TX_CHANGE, PATH_CHANGE, PASSPHRASE_CHANGE, NETWORK_CHANGE } from '../../actions/methods/StellarSignTxActions';
+import { TX_CHANGE, PATH_CHANGE, PASSPHRASE_CHANGE } from '../../actions/methods/StellarSignTxActions';
 
 type MethodState = {
     +js: string;
     +fields: Array<string>;
 
     path: string;
-    ledgerVersion: number;
     networkPassphrase: string;
     transaction: string;
 }
@@ -68,9 +67,8 @@ const defaultTx: string =
 
 const initialState: MethodState = {
     js: 'TrezorConnect.stellarSignTransaction',
-    fields: ['path', 'ledgerVersion', 'networkPassphrase', 'transaction'],
+    fields: ['path', 'networkPassphrase', 'transaction'],
 
-    ledgerVersion: 1,
     networkPassphrase: 'Test SDF Network ; September 2015',
     path: "m/44'/148'/0'",
     transaction: defaultTx,
@@ -87,12 +85,6 @@ export default function method(state: MethodState = initialState, action: any): 
             return {
                 ...state,
                 path: action.path
-            };
-
-        case NETWORK_CHANGE :
-            return {
-                ...state,
-                ledgerVersion: parseInt(action.network)
             };
 
         case PASSPHRASE_CHANGE :
