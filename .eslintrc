@@ -10,6 +10,7 @@
         "jest": true
     },
     "rules": {
+        "react/destructuring-assignment": 0,
         "react/jsx-one-expression-per-line": 0,
         "react/jsx-indent": [2, 4],
         "react/jsx-indent-props": [2, 4],

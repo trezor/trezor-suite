@@ -16,6 +16,8 @@ const Wrapper = styled.header`
     }
 `;
 
+const LinkWrapper = styled.div``;
+
 const LayoutWrapper = styled.div`
     width: 100%;
     height: 100%;
@@ -57,12 +59,12 @@ const Header = (): React$Element<string> => (
                 <path d="M79.4,20.3c0-4.5-3.1-7.4-7.7-7.4H61.2v22.3H67v-7.5h2.2l4.1,7.5H80l-4.9-8.3C77.2,26.1,79.4,24,79.4,20.3z M71,22.5h-4V18 h4c1.5,0,2.5,0.9,2.5,2.2C73.5,21.6,72.5,22.5,71,22.5z" />
                 <polygon points="40.5,12.8 58.6,12.8 58.6,18.1 52.4,18.1 52.4,35.2 46.6,35.2 46.6,18.1 40.5,18.1 " />
             </svg>
-            <div>
+            <LinkWrapper>
                 <A href="https://trezor.io/" target="_blank" rel="noreferrer noopener">TREZOR</A>
                 <A href="https://doc.satoshilabs.com/trezor-user/" target="_blank" rel="noreferrer noopener">Docs</A>
                 <A href="https://blog.trezor.io/" target="_blank" rel="noreferrer noopener">Blog</A>
                 <A href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Support</A>
-            </div>
+            </LinkWrapper>
         </LayoutWrapper>
     </Wrapper>
 );

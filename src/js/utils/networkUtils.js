@@ -10,9 +10,9 @@ export const httpRequest = async (url: string, type: string = 'text'): any => {
             const txt: string = await response.text();
             return JSON.parse(txt);
         } if (type === 'binary') {
-            return await response.arrayBuffer();
+            await response.arrayBuffer();
         }
-        return await response.text();
+        await response.text();
     }
     throw new Error(`${url} ${response.statusText}`);
 
