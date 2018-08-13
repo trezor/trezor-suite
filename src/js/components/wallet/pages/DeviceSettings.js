@@ -6,7 +6,8 @@ import colors from '~/js/config/colors';
 import ICONS from '~/js/constants/icons';
 import { connect } from 'react-redux';
 
-const Section = styled.section``;
+const Section = styled.section`
+`;
 
 const P = styled.p`
     padding: 12px 0px 24px 0px;
@@ -27,7 +28,7 @@ const Row = styled.div`
     padding-bottom: 98px;
 `;
 
-const DeviceSettings = () => (
+export const DeviceSettings = () => (
     <Section>
         <Row>
             <Icon
