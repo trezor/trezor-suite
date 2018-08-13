@@ -1,6 +1,5 @@
 /* @flow */
-
-
+import styled from 'styled-components';
 import React, { Component } from 'react';
 import { H2 } from '~/js/components/common/Heading';
 import BigNumber from 'bignumber.js';
@@ -16,6 +15,10 @@ import * as stateUtils from '~/js/reducers/utils';
 
 import type { Props } from './index';
 import type { NetworkToken } from '~/js/reducers/LocalStorageReducer';
+
+const StyledH2 = styled(H2)`
+   padding: 20px 48px;
+`;
 
 const Summary = (props: Props) => {
     const device = props.wallet.selectedDevice;
@@ -41,10 +44,10 @@ const Summary = (props: Props) => {
 
     return (
         <div>
-            <h2 className={`summary-header ${account.network}`}>
+            <StyledH2 className={`summary-header ${account.network}`}>
                 Account #{ parseInt(account.index) + 1 }
                 <a href={explorerLink} className="gray" target="_blank" rel="noreferrer noopener">See full transaction history</a>
-            </h2>
+            </StyledH2>
 
             <SummaryDetails
                 coin={network}
@@ -56,7 +59,7 @@ const Summary = (props: Props) => {
                 onToggle={props.onDetailsToggle}
             />
 
-            <H2>
+            <StyledH2>
                 Tokens
                 <Tooltip
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
@@ -65,7 +68,7 @@ const Summary = (props: Props) => {
                 >
                     <span className="what-is-it" />
                 </Tooltip>
-            </H2>
+            </StyledH2>
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 T01 */}
             <div className="filter">
