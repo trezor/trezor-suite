@@ -47,7 +47,7 @@ const A = styled.a`
     }
 `;
 
-const Header = (): React$Element<string> => (
+const Header = () => (
     <Wrapper>
         <LayoutWrapper>
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 163.7 41.9" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">
