@@ -9,10 +9,10 @@ const Wrapper = styled.header`
     background: ${colors.HEADER};
 
     svg {
-         fill: ${colors.WHITE};
-         height: 28px;         
-         width: 100px;
-         flex: 1;
+        fill: ${colors.WHITE};
+        height: 28px;         
+        width: 100px;
+        flex: 1;
     }
 `;
 

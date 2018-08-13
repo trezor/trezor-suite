@@ -9,20 +9,8 @@ import { H2 } from '~/js/components/common/Heading';
 import * as LogActions from '~/js/actions/LogActions';
 import type { State, Dispatch } from '~/flowtype';
 
-type Props = {
-    log: $ElementType<State, 'log'>,
-    toggle: typeof LogActions.toggle
-}
-
 const Log = (props: Props): ?React$Element<string> => {
     if (!props.log.opened) return null;
-
-    // const entries = props.log.entries.map(entry => {
-    //     return (
-
-    //     )
-    // })
-
     return (
         <div className="log">
             <button className="log-close transparent" onClick={props.toggle} />

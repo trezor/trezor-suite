@@ -32,7 +32,9 @@
     ],
     "settings": {
         "import/parser": "babel-eslint",
-        "import/resolver": "babel-plugin-root-import",
+        "import/resolver": {
+            "babel-plugin-root-import": {}
+        },
         "import/ignore": [
             "\\.(scss|less|css)$"
         ]
