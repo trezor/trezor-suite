@@ -29,6 +29,11 @@ import nemsigntx from './methods/NEMSignTxReducer';
 import stellargetaddress from './methods/StellarGetAddressReducer';
 import stellarsigntx from './methods/StellarSignTxReducer';
 
+import cardanogetaddress from './methods/CardanoGetAddressReducer';
+import cardanosigntx from './methods/CardanoSignTxReducer';
+import cardanosignmessage from './methods/CardanoSignMessageReducer';
+import cardanoverifymessage from './methods/CardanoVerifyMessageReducer';
+
 import custom from './methods/CustomMessageReducer';
 import login from './methods/RequestLoginReducer';
 import signtx from './methods/SignTxReducer';
@@ -59,6 +64,11 @@ export default combineReducers({
 
     stellargetaddress,
     stellarsigntx,
+
+    cardanogetaddress,
+    cardanosigntx,
+    cardanosignmessage,
+    cardanoverifymessage,
     
     custom,
     login,

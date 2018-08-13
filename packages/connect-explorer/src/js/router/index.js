@@ -27,7 +27,11 @@ import {
     ComposeTransaction,
     RequestLogin,
     SignTx,
-    PushTx
+    PushTx,
+    CardanoGetAddress,
+    CardanoSignTx,
+    CardanoSignMessage,
+    CardanoVerifyMessage,
 } from '../components/methods';
 
 export default (
@@ -54,6 +58,10 @@ export default (
                     <Route exact path="/composetx" component={ ComposeTransaction } />
                     <Route exact path="/sign-tx" component={ SignTx } />
                     <Route exact path="/push-tx" component={ PushTx } />
+                    <Route exact path="/cardano-getaddress" component={ CardanoGetAddress } />
+                    <Route exact path="/cardano-signtx" component={ CardanoSignTx } />
+                    <Route exact path="/cardano-signmessage" component={ CardanoSignMessage } />
+                    <Route exact path="/cardano-verifymessage" component={ CardanoVerifyMessage } />
                 </AppContainer>
             </Switch>
         </ConnectedRouter>
