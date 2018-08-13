@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { H2 } from '~/js/components/common/Heading';
 import Icon from '~/js/components/common/Icon';
 import colors from '~/js/config/colors';
+import Button from '~/js/components/common/Button';
 import ICONS from '~/js/constants/icons';
 import { connect } from 'react-redux';
 
@@ -37,7 +38,9 @@ export const DeviceSettings = () => (
             />
             <StyledH2>Device settings is under construction</StyledH2>
             <P>Please use Bitcoin wallet interface to change your device settings</P>
-            <a className="button" href="https://wallet.trezor.io/">Take me to the Bitcoin wallet</a>
+            <a href="https://wallet.trezor.io/">
+                <Button text="Take me to the Bitcoin wallet" />
+            </a>
         </Row>
     </Section>
 );
