@@ -20,3 +20,8 @@ export { default as CustomMessage } from './CustomMessage';
 export { default as RequestLogin } from './RequestLogin';
 export { default as SignTx } from './SignTx';
 export { default as PushTx } from './PushTx';
+
+export { default as CardanoGetAddress } from './CardanoGetAddress';
+export { default as CardanoSignTx } from './CardanoSignTx';
+export { default as CardanoSignMessage } from './CardanoSignMessage';
+export { default as CardanoVerifyMessage } from './CardanoVerifyMessage';

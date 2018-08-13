@@ -39,6 +39,10 @@ export default class Main extends Component {
                     { navLink('/nem-signtx', 'NEM Sign Transaction') }
                     { navLink('/stellar-getaddress', 'Stellar Get Address') }
                     { navLink('/stellar-signtx', 'Stellar Sign Transaction') }
+                    { navLink('/cardano-getaddress', 'Cardano Get Address') }
+                    { navLink('/cardano-signtx', 'Cardano Sign Transaction') }
+                    { navLink('/cardano-signmessage', 'Cardano Sign Message') }
+                    { navLink('/cardano-verifymessage', 'Cardano Verify Message') }
                     { navLink('/custom', 'Custom Message') }
                 </section>
                 { this.props.children }
