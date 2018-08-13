@@ -1,6 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import Select from 'react-select';
 import { H2 } from '~/js/components/common/Heading';
 import AdvancedForm from './AdvancedForm';
@@ -14,7 +15,6 @@ import { findToken } from '~/js/reducers/TokensReducer';
 
 import type { Props } from './index';
 import type { Token } from '~/flowtype';
-
 
 export default class SendContainer extends Component<Props> {
     componentWillReceiveProps(newProps: Props) {
@@ -33,6 +33,9 @@ export default class SendContainer extends Component<Props> {
     }
 }
 
+const StyledH2 = styled(H2)`
+    padding: 20px 48px;
+`;
 
 const Send = (props: Props) => {
     const device = props.wallet.selectedDevice;
@@ -117,7 +120,7 @@ const Send = (props: Props) => {
 
     return (
         <section className="send-form">
-            <H2>Send Ethereum or tokens</H2>
+            <StyledH2>Send Ethereum or tokens</StyledH2>
             <div className="row address-input">
                 <label>Address</label>
                 <input

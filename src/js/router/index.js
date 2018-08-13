@@ -5,6 +5,8 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import store, { history } from '../store';
 
+import ErrorBoundary from '~/js/support/ErrorBoundary';
+
 import LandingPageContainer from '../components/landing';
 import WalletContainer from '../components/wallet';
 import BootloaderContainer from '../components/wallet/pages/Bootloader';
@@ -29,19 +31,21 @@ const App = () => (
                 <Route exact path="/import" component={LandingPageContainer} />
                 <Route>
                     <WalletContainer>
-                        <Route exact path="/settings" component={WalletSettingsContainer} />
-                        <Route exact path="/device/:device/" component={DashboardContainer} />
-                        <Route exact path="/device/:device/network/:network" component={DashboardContainer} />
-                        <Route exact path="/device/:device/acquire" component={AcquireContainer} />
-                        <Route exact path="/device/:device/unreadable" component={UnreadableDeviceContainer} />
-                        <Route exact path="/device/:device/bootloader" component={BootloaderContainer} />
-                        <Route exact path="/device/:device/initialize" component={InitializeContainer} />
-                        <Route exact path="/device/:device/settings" component={DeviceSettingsContainer} />
-                        <Route exact path="/device/:device/network/:network/account/:account" component={SummaryContainer} />
-                        <Route path="/device/:device/network/:network/account/:account/send" component={SendFormContainer} />
-                        <Route path="/device/:device/network/:network/account/:account/send/override" component={SendFormContainer} />
-                        <Route path="/device/:device/network/:network/account/:account/receive" component={ReceiveContainer} />
-                        <Route path="/device/:device/network/:network/account/:account/signverify" component={SignVerifyContainer} />
+                        <ErrorBoundary>
+                            <Route exact path="/settings" component={WalletSettingsContainer} />
+                            <Route exact path="/device/:device/" component={DashboardContainer} />
+                            <Route exact path="/device/:device/network/:network" component={DashboardContainer} />
+                            <Route exact path="/device/:device/acquire" component={AcquireContainer} />
+                            <Route exact path="/device/:device/unreadable" component={UnreadableDeviceContainer} />
+                            <Route exact path="/device/:device/bootloader" component={BootloaderContainer} />
+                            <Route exact path="/device/:device/initialize" component={InitializeContainer} />
+                            <Route exact path="/device/:device/settings" component={DeviceSettingsContainer} />
+                            <Route exact path="/device/:device/network/:network/account/:account" component={SummaryContainer} />
+                            <Route path="/device/:device/network/:network/account/:account/send" component={SendFormContainer} />
+                            <Route path="/device/:device/network/:network/account/:account/send/override" component={SendFormContainer} />
+                            <Route path="/device/:device/network/:network/account/:account/receive" component={ReceiveContainer} />
+                            <Route path="/device/:device/network/:network/account/:account/signverify" component={SignVerifyContainer} />
+                        </ErrorBoundary>
                     </WalletContainer>
                 </Route>
             </Switch>

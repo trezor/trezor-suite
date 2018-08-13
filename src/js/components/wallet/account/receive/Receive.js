@@ -12,6 +12,9 @@ import { Notification } from '~/js/components/common/Notification';
 import type { Props } from './index';
 
 const Wrapper = styled.div``;
+const StyledH2 = styled(H2)`
+    padding: 20px 48px;
+`;
 
 const Receive = (props: Props) => {
     const device = props.wallet.selectedDevice;
@@ -78,7 +81,7 @@ const Receive = (props: Props) => {
 
     return (
         <Wrapper>
-            <H2>Receive Ethereum or tokens</H2>
+            <StyledH2>Receive Ethereum or tokens</StyledH2>
             <div className={className}>
                 { ver }
                 <div className="value">

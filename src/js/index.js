@@ -10,10 +10,7 @@ import styles from '~/styles/index.less';
 const root: ?HTMLElement = document.getElementById('root');
 if (root) {
     baseStyles();
-    render(
-        <App />,
-        root,
-    );
+    render(<App />, root);
 }
 
 window.onbeforeunload = () => {

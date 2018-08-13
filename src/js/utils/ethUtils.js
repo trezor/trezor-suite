@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import BigNumber from 'bignumber.js';
 
 export const decimalToHex = (dec: number): string => new BigNumber(dec).toString(16);
