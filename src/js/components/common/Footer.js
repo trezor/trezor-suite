@@ -5,8 +5,8 @@ import { getYear } from 'date-fns';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import colors from '~/js/config/colors';
-import * as LogActions from '~/js/actions/LogActions';
+import colors from 'config/colors';
+import * as LogActions from 'actions/LogActions';
 
 const Wrapper = styled.div`
     width: 100%;

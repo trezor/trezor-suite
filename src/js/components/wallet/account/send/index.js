@@ -5,12 +5,12 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { default as SendFormActions } from '~/js/actions/SendFormActions';
-import * as SessionStorageActions from '~/js/actions/SessionStorageActions';
+import { default as SendFormActions } from 'actions/SendFormActions';
+import * as SessionStorageActions from 'actions/SessionStorageActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import SendForm from './SendForm';
 
-import type { State, Dispatch } from '~/flowtype';
+import type { State, Dispatch } from 'flowtype';
 import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../SelectedAccount';
 
 type OwnProps = { }

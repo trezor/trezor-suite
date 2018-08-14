@@ -10,7 +10,7 @@ import type { State } from '../reducers/ReceiveReducer';
 
 import type {
     TrezorDevice, ThunkAction, AsyncAction, Action, GetState, Dispatch,
-} from '~/flowtype';
+} from 'flowtype';
 
 export type ReceiveAction = {
     type: typeof RECEIVE.INIT,

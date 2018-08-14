@@ -3,7 +3,7 @@
 
 import * as ACCOUNT from '../actions/constants/account';
 import * as SUMMARY from '../actions/constants/summary';
-import type { Action } from '~/flowtype';
+import type { Action } from 'flowtype';
 import type { NetworkToken } from './LocalStorageReducer';
 
 export type State = {

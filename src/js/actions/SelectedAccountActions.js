@@ -22,7 +22,7 @@ import type {
     GetState,
     Dispatch,
     State,
-} from '~/flowtype';
+} from 'flowtype';
 
 
 export type SelectedAccountAction = {

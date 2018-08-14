@@ -8,7 +8,7 @@ import * as CONNECT from './constants/TrezorConnect';
 
 import type {
     ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
-} from '~/flowtype';
+} from 'flowtype';
 import type { State } from '../reducers/ModalReducer';
 
 export type ModalAction = {

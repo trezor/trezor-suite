@@ -25,16 +25,15 @@
         "spaced-comment": 0
     },
     "plugins": [
-        "react",
         "import",
+        "react",
         "jest",
         "flowtype"
     ],
     "settings": {
-        "import/parser": "babel-eslint",
         "import/resolver": {
-            "babel-plugin-root-import": {}
-        },
+            "babel-module": {}
+          },
         "import/ignore": [
             "\\.(scss|less|css)$"
         ]

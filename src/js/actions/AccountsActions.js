@@ -1,7 +1,7 @@
 /* @flow */
 
 import * as ACCOUNT from './constants/account';
-import type { Action, TrezorDevice } from '~/flowtype';
+import type { Action, TrezorDevice } from 'flowtype';
 import type { State } from '../reducers/AccountsReducer';
 
 export type AccountAction =

@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import styled from 'styled-components';
-import colors from '~/js/config/colors';
+import colors from 'config/colors';
 
 const Wrapper = styled.header`
     width: 100%;

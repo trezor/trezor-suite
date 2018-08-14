@@ -10,7 +10,7 @@ import * as WALLET from '../actions/constants/wallet';
 
 import { getFeeLevels } from '../actions/SendFormActions';
 
-import type { Action } from '~/flowtype';
+import type { Action } from 'flowtype';
 import type {
     Web3UpdateGasPriceAction,
 } from '../actions/Web3Actions';

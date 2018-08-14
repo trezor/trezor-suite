@@ -12,7 +12,7 @@ import CoinSelection from './CoinSelection';
 import StickyContainer from './StickyContainer';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '~/flowtype';
+import type { TrezorDevice } from 'flowtype';
 
 
 type TransitionMenuProps = {

@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2 } from '~/js/components/common/Heading';
-import Icon from '~/js/components/common/Icon';
-import colors from '~/js/config/colors';
-import Button from '~/js/components/common/Button';
-import ICONS from '~/js/constants/icons';
+import { H2 } from 'components/common/Heading';
+import Icon from 'components/common/Icon';
+import colors from 'config/colors';
+import Button from 'components/common/Button';
+import ICONS from 'constants/icons';
 import { connect } from 'react-redux';
 
 const Section = styled.section`

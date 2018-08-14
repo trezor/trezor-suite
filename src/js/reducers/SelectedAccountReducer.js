@@ -11,7 +11,7 @@ import type {
     PendingTx,
     Discovery,
     Web3Instance,
-} from '~/flowtype';
+} from 'flowtype';
 
 export type State = {
     location?: string;

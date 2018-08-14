@@ -11,11 +11,11 @@ import { JSONRequest, httpRequest } from '../utils/networkUtils';
 
 import type {
     ThunkAction, AsyncAction, GetState, Dispatch, TrezorDevice,
-} from '~/flowtype';
+} from 'flowtype';
 import type { Config, Coin, TokensCollection } from '../reducers/LocalStorageReducer';
 
-import AppConfigJSON from '~/data/appConfig.json';
-import Erc20AbiJSON from '~/data/ERC20Abi.json';
+import AppConfigJSON from 'data/appConfig.json';
+import Erc20AbiJSON from 'data/ERC20Abi.json';
 
 export type StorageAction = {
     type: typeof STORAGE.READY,

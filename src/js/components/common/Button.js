@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import colors from '~/js/config/colors';
+import colors from 'config/colors';
 
 const Wrapper = styled.button`
     padding: 12px 24px;

@@ -5,7 +5,7 @@
 
 import * as React from 'react';
 import raf from 'raf';
-import { getViewportHeight, getScrollY } from '~/js/utils/windowUtils';
+import { getViewportHeight, getScrollY } from 'utils/windowUtils';
 
 type Props = {
     location: string,

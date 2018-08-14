@@ -9,7 +9,7 @@ import { initialState } from '../reducers/SummaryReducer';
 
 import type {
     ThunkAction, AsyncAction, Action, GetState, Dispatch,
-} from '~/flowtype';
+} from 'flowtype';
 import type { State } from '../reducers/SummaryReducer';
 import type { Token } from '../reducers/TokensReducer';
 

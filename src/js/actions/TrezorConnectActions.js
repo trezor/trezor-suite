@@ -32,7 +32,7 @@ import type {
     AsyncAction,
     TrezorDevice,
     RouterLocationState,
-} from '~/flowtype';
+} from 'flowtype';
 
 
 export type TrezorConnectAction = {

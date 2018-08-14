@@ -6,7 +6,7 @@ import type {
     ThunkAction,
     GetState,
     Dispatch,
-} from '~/flowtype';
+} from 'flowtype';
 
 const PREFIX: string = 'trezor:draft-tx:';
 

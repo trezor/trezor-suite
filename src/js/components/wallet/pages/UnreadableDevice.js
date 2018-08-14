@@ -4,10 +4,10 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Notification } from '~/js/components/common/Notification';
-import * as TrezorConnectActions from '~/js/actions/TrezorConnectActions';
+import { Notification } from 'components/common/Notification';
+import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 
-import type { State, Dispatch } from '~/flowtype';
+import type { State, Dispatch } from 'flowtype';
 
 type Props = {
     acquiring: boolean;

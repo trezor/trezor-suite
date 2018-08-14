@@ -4,10 +4,10 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { H2 } from '~/js/components/common/Heading';
+import { H2 } from 'components/common/Heading';
 
-import * as LogActions from '~/js/actions/LogActions';
-import type { State, Dispatch } from '~/flowtype';
+import * as LogActions from 'actions/LogActions';
+import type { State, Dispatch } from 'flowtype';
 
 const Log = (props: Props): ?React$Element<string> => {
     if (!props.log.opened) return null;

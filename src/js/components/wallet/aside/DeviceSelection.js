@@ -6,7 +6,7 @@ import Select from 'react-select';
 import TrezorConnect from 'trezor-connect';
 
 import type { Props } from './index';
-import type { TrezorDevice } from '~/flowtype';
+import type { TrezorDevice } from 'flowtype';
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;

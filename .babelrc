@@ -15,9 +15,18 @@
             "polyfill": false,
             "regenerator": true
         }],
-        ["babel-plugin-root-import", {
-            "rootPathSuffix": "./src",
-            "rootPathPrefix": "~"
+        ["module-resolver", {
+            "root": ["."],
+            "alias": {
+                "config": "./src/js/config",
+                "constants": "./src/js/constants",
+                "components": "./src/js/components",
+                "actions": "./src/js/actions",
+                "reducers": "./src/js/reducers",
+                "support": "./src/js/support",
+                "utils": "./src/js/utils",
+                "services": "./src/js/services"
+            }
         }],
         "babel-plugin-styled-components"
     ],

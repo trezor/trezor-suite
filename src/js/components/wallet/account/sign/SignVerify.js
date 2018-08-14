@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { H2 } from '~/js/components/common/Heading';
-import colors from '~/js/config/colors';
+import { H2 } from 'components/common/Heading';
+import colors from 'config/colors';
 
 const Wrapper = styled.div`
     display: flex;

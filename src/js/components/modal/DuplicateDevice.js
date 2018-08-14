@@ -2,7 +2,7 @@
 
 
 import React, { Component } from 'react';
-import { getNewInstance } from '~/js/reducers/DevicesReducer';
+import { getNewInstance } from 'reducers/DevicesReducer';
 import type { Props } from './index';
 
 type State = {

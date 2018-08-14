@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import store, { history } from '../store';
 
-import ErrorBoundary from '~/js/support/ErrorBoundary';
+import ErrorBoundary from 'support/ErrorBoundary';
 
 import LandingPageContainer from '../components/landing';
 import WalletContainer from '../components/wallet';

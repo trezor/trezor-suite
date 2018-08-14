@@ -2,7 +2,7 @@
 
 
 import React, { Component } from 'react';
-import { findAccount } from '~/js/reducers/AccountsReducer';
+import { findAccount } from 'reducers/AccountsReducer';
 
 import type { Props } from './index';
 

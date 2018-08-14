@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import colors from '~/js/config/colors';
+import colors from 'config/colors';
 
 const baseStyles = css`
     -webkit-font-smoothing: antialiased;

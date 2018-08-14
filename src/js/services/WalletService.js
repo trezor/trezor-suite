@@ -15,7 +15,7 @@ import type {
     MiddlewareAPI,
     MiddlewareDispatch,
     Action,
-} from '~/flowtype';
+} from 'flowtype';
 
 /**
  * Middleware

@@ -14,7 +14,7 @@ import { setBalance as setTokenBalance } from './TokenActions';
 
 import type {
     ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
-} from '~/flowtype';
+} from 'flowtype';
 
 import type { Discovery, State } from '../reducers/DiscoveryReducer';
 

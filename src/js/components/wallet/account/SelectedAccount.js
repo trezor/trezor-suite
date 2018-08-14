@@ -2,13 +2,13 @@
 
 
 import * as React from 'react';
-import { Notification } from '~/js/components/common/Notification';
+import { Notification } from 'components/common/Notification';
 
 import type {
     State, TrezorDevice, Action, ThunkAction,
-} from '~/flowtype';
-import type { Account } from '~/js/reducers/AccountsReducer';
-import type { Discovery } from '~/js/reducers/DiscoveryReducer';
+} from 'flowtype';
+import type { Account } from 'reducers/AccountsReducer';
+import type { Discovery } from 'reducers/DiscoveryReducer';
 
 export type StateProps = {
     className: string;

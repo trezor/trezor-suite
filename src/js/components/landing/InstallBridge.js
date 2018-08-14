@@ -1,6 +1,6 @@
 /* @flow */
 
-import installers from '~/js/constants/bridge';
+import installers from 'constants/bridge';
 import React, { Component } from 'react';
 import Select from 'react-select';
 import Preloader from './Preloader';

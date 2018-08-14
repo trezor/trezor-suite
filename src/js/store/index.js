@@ -14,7 +14,7 @@ import services from '../services';
 import Raven from 'raven-js';
 import RavenMiddleware from 'redux-raven-middleware';
 
-import type { Action, GetState, Store } from '~/flowtype';
+import type { Action, GetState, Store } from 'flowtype';
 
 export const history: History = createHistory({ queryKey: false });
 

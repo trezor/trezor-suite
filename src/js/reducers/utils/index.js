@@ -1,9 +1,9 @@
 /* @flow */
 
 
-import * as LogActions from '~/js/actions/LogActions';
-import * as STORAGE from '~/js/actions/constants/localStorage';
-import * as WALLET from '~/js/actions/constants/wallet';
+import * as LogActions from 'actions/LogActions';
+import * as STORAGE from 'actions/constants/localStorage';
+import * as WALLET from 'actions/constants/wallet';
 import BigNumber from 'bignumber.js';
 
 import type {
@@ -22,7 +22,7 @@ import type {
     Token,
     PendingTx,
     Web3Instance,
-} from '~/flowtype';
+} from 'flowtype';
 
 export const getSelectedDevice = (state: State): ?TrezorDevice => {
     const locationState = state.router.location.state;

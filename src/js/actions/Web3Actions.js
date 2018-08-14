@@ -21,7 +21,7 @@ import type {
     GetState,
     Action,
     AsyncAction,
-} from '~/flowtype';
+} from 'flowtype';
 
 import type { Account } from '../reducers/AccountsReducer';
 import type { PendingTx } from '../reducers/PendingTxReducer';

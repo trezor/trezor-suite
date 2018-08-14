@@ -8,7 +8,7 @@ import * as ACCOUNT from '../actions/constants/account';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as WALLET from '../actions/constants/wallet';
 
-import type { Action, TrezorDevice } from '~/flowtype';
+import type { Action, TrezorDevice } from 'flowtype';
 import type {
     DiscoveryStartAction,
     DiscoveryWaitingAction,

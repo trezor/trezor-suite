@@ -15,7 +15,7 @@ import Notifications from '../common/Notification';
 import Log from '../common/Log';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from '~/flowtype';
+import type { State, Dispatch } from 'flowtype';
 
 type WalletContainerProps = {
     wallet: $ElementType<State, 'wallet'>,

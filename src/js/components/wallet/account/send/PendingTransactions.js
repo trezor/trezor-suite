@@ -3,13 +3,13 @@
 
 import React from 'react';
 import ColorHash from 'color-hash';
-import { H2 } from '~/js/components/common/Heading';
+import { H2 } from 'components/common/Heading';
 import ScaleText from 'react-scale-text';
 
-import { findAccountTokens } from '~/js/reducers/TokensReducer';
+import { findAccountTokens } from 'reducers/TokensReducer';
 
-import type { Coin } from '~/js/reducers/LocalStorageReducer';
-import type { Token } from '~/js/reducers/TokensReducer';
+import type { Coin } from 'reducers/LocalStorageReducer';
+import type { Token } from 'reducers/TokensReducer';
 import type { Props as BaseProps } from './index';
 
 type Props = {

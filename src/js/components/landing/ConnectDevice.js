@@ -2,9 +2,9 @@
 
 import React, { Component } from 'react';
 import TrezorConnect from 'trezor-connect';
-import { H2 } from '~/js/components/common/Heading';
+import { H2 } from 'components/common/Heading';
 
-import type { State, TrezorDevice } from '~/flowtype';
+import type { State, TrezorDevice } from 'flowtype';
 
 type Props = {
     transport: $PropertyType<$ElementType<State, 'connect'>, 'transport'>;

@@ -4,7 +4,7 @@
 import React from 'react';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
-import * as stateUtils from '~/js/reducers/utils';
+import * as stateUtils from 'reducers/utils';
 import BigNumber from 'bignumber.js';
 
 import type { Props as BaseProps } from './index';

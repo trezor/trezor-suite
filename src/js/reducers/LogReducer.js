@@ -2,7 +2,7 @@
 
 
 import * as LOG from '../actions/constants/log';
-import type { Action } from '~/flowtype';
+import type { Action } from 'flowtype';
 
 export type LogEntry = {
     time: number;

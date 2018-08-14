@@ -7,10 +7,10 @@ import { connect } from 'react-redux';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import Summary from './Summary';
-import * as SummaryActions from '~/js/actions/SummaryActions';
-import * as TokenActions from '~/js/actions/TokenActions';
+import * as SummaryActions from 'actions/SummaryActions';
+import * as TokenActions from 'actions/TokenActions';
 
-import type { State, Dispatch } from '~/flowtype';
+import type { State, Dispatch } from 'flowtype';
 import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../SelectedAccount';
 
 type OwnProps = { }

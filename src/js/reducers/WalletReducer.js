@@ -9,7 +9,7 @@ import * as WALLET from '../actions/constants/wallet';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
 
-import type { Action, RouterLocationState, TrezorDevice } from '~/flowtype';
+import type { Action, RouterLocationState, TrezorDevice } from 'flowtype';
 
 type State = {
     ready: boolean;

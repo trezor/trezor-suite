@@ -1,20 +1,20 @@
 /* @flow */
 import styled from 'styled-components';
 import React, { Component } from 'react';
-import { H2 } from '~/js/components/common/Heading';
+import { H2 } from 'components/common/Heading';
 import BigNumber from 'bignumber.js';
 import { Async as AsyncSelect } from 'react-select';
 import Tooltip from 'rc-tooltip';
 
-import { resolveAfter } from '~/js/utils/promiseUtils';
+import { resolveAfter } from 'utils/promiseUtils';
 import SelectedAccount from '../SelectedAccount';
-import { Notification } from '~/js/components/common/Notification';
+import { Notification } from 'components/common/Notification';
 import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
-import * as stateUtils from '~/js/reducers/utils';
+import * as stateUtils from 'reducers/utils';
 
 import type { Props } from './index';
-import type { NetworkToken } from '~/js/reducers/LocalStorageReducer';
+import type { NetworkToken } from 'reducers/LocalStorageReducer';
 
 const StyledH2 = styled(H2)`
    padding: 20px 48px;

@@ -14,7 +14,7 @@ import type {
     Action,
     AsyncAction,
     GetState,
-} from '~/flowtype';
+} from 'flowtype';
 import type { Config, FiatValueTicker } from '../reducers/LocalStorageReducer';
 
 export const RATE_UPDATE: 'rate__update' = 'rate__update';

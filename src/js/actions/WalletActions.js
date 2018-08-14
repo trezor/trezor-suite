@@ -22,7 +22,7 @@ import type
     Dispatch,
     GetState,
     State,
-} from '~/flowtype';
+} from 'flowtype';
 
 export type WalletAction = {
     type: typeof WALLET.SET_INITIAL_URL,

@@ -1,13 +1,13 @@
 /* @flow */
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { H2 } from '~/js/components/common/Heading';
+import { H2 } from 'components/common/Heading';
 
 import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import SelectedAccount from '../SelectedAccount';
-import { Notification } from '~/js/components/common/Notification';
+import { Notification } from 'components/common/Notification';
 
 import type { Props } from './index';
 

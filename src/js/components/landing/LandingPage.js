@@ -3,7 +3,7 @@
 
 import React from 'react';
 import Preloader from './Preloader';
-import { H2 } from '~/js/components/common/Heading';
+import { H2 } from 'components/common/Heading';
 import ConnectDevice from './ConnectDevice';
 import InstallBridge from './InstallBridge';
 import LocalStorageError from './LocalStorageError';
