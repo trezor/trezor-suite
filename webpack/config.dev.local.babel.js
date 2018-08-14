@@ -1,5 +1,4 @@
 import webpack from 'webpack';
-import DuplicatePackageCheckerPlugin from 'duplicate-package-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -147,7 +146,6 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
-        new DuplicatePackageCheckerPlugin(),
 
         new webpack.DefinePlugin({
             LOCAL: JSON.stringify(`http://localhost:${PORT}/`),
