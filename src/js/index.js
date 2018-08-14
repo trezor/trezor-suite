@@ -17,4 +17,4 @@ window.onbeforeunload = () => {
     store.dispatch(onBeforeUnload());
 };
 
-// Application life cycle starts in ./services/WalletService.js
+// Application life cycle starts in services/WalletService.js

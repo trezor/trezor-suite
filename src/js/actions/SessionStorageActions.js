@@ -1,7 +1,7 @@
 /* @flow */
 
 
-import type { State as SendFormState } from '../reducers/SendFormReducer';
+import type { State as SendFormState } from 'reducers/SendFormReducer';
 import type {
     ThunkAction,
     GetState,

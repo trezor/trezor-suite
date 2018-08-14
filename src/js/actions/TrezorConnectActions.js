@@ -4,14 +4,14 @@
 import TrezorConnect, {
     UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT,
 } from 'trezor-connect';
-import * as TOKEN from './constants/token';
-import * as CONNECT from './constants/TrezorConnect';
-import * as NOTIFICATION from './constants/notification';
-import * as WALLET from './constants/wallet';
+import * as TOKEN from 'actions/constants/token';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as NOTIFICATION from 'actions/constants/notification';
+import * as WALLET from 'actions/constants/wallet';
 
 import { push } from 'react-router-redux';
 import * as DiscoveryActions from './DiscoveryActions';
-import { resolveAfter } from '../utils/promiseUtils';
+import { resolveAfter } from 'utils/promiseUtils';
 
 
 import type {

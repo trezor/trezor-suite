@@ -2,16 +2,16 @@
 
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import * as ACCOUNT from './constants/account';
-import * as SEND from './constants/send';
-import * as NOTIFICATION from './constants/notification';
-import * as PENDING from './constants/pendingTx';
+import * as ACCOUNT from 'actions/constants/account';
+import * as SEND from 'actions/constants/send';
+import * as NOTIFICATION from 'actions/constants/notification';
+import * as PENDING from 'actions/constants/pendingTx';
 
 import * as SendFormActions from './SendFormActions';
 import * as SessionStorageActions from './SessionStorageActions';
-import * as stateUtils from '../reducers/utils';
+import * as stateUtils from 'reducers/utils';
 
-import { initialState } from '../reducers/SelectedAccountReducer';
+import { initialState } from 'reducers/SelectedAccountReducer';
 
 import type {
     Coin,

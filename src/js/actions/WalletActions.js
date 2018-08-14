@@ -2,9 +2,9 @@
 
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import * as WALLET from './constants/wallet';
-import * as CONNECT from './constants/TrezorConnect';
-import * as stateUtils from '../reducers/utils';
+import * as WALLET from 'actions/constants/wallet';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as stateUtils from 'reducers/utils';
 
 import type { Device } from 'trezor-connect';
 import type

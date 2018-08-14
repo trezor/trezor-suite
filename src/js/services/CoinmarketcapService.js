@@ -1,8 +1,8 @@
 /* @flow */
 
 
-import { JSONRequest, httpRequest } from '../utils/networkUtils';
-import { resolveAfter } from '../utils/promiseUtils';
+import { JSONRequest, httpRequest } from 'utils/networkUtils';
+import { resolveAfter } from 'utils/promiseUtils';
 import { READY } from 'actions/constants/localStorage';
 
 import type {
@@ -15,7 +15,7 @@ import type {
     AsyncAction,
     GetState,
 } from 'flowtype';
-import type { Config, FiatValueTicker } from '../reducers/LocalStorageReducer';
+import type { Config, FiatValueTicker } from 'reducers/LocalStorageReducer';
 
 export const RATE_UPDATE: 'rate__update' = 'rate__update';
 

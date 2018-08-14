@@ -1,15 +1,15 @@
 /* @flow */
 
 
-import * as TOKEN from './constants/token';
+import * as TOKEN from 'actions/constants/token';
 import { getTokenInfoAsync, getTokenBalanceAsync } from './Web3Actions';
 
 import type {
     GetState, AsyncAction, Action, Dispatch,
 } from 'flowtype';
-import type { State, Token } from '../reducers/TokensReducer';
-import type { Account } from '../reducers/AccountsReducer';
-import type { NetworkToken } from '../reducers/LocalStorageReducer';
+import type { State, Token } from 'reducers/TokensReducer';
+import type { Account } from 'reducers/AccountsReducer';
+import type { NetworkToken } from 'reducers/LocalStorageReducer';
 
 export type TokenAction = {
     type: typeof TOKEN.FROM_STORAGE,

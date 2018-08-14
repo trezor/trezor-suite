@@ -14,7 +14,7 @@ import * as DISCOVERY from 'actions/constants/discovery';
 import * as SEND from 'actions/constants/send';
 import * as WEB3 from 'actions/constants/web3';
 import * as PENDING from 'actions/constants/pendingTx';
-import { findAccountTokens } from '../reducers/TokensReducer';
+import { findAccountTokens } from 'reducers/TokensReducer';
 
 import type {
     Middleware,
@@ -28,10 +28,10 @@ import type {
 } from 'flowtype';
 
 import type { TrezorDevice } from 'flowtype';
-import type { Account } from '../reducers/AccountsReducer';
-import type { Token } from '../reducers/TokensReducer';
-import type { PendingTx } from '../reducers/PendingTxReducer';
-import type { Discovery } from '../reducers/DiscoveryReducer';
+import type { Account } from 'reducers/AccountsReducer';
+import type { Token } from 'reducers/TokensReducer';
+import type { PendingTx } from 'reducers/PendingTxReducer';
+import type { Discovery } from 'reducers/DiscoveryReducer';
 
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js

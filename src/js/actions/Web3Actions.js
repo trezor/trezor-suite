@@ -10,9 +10,9 @@ import TrezorConnect from 'trezor-connect';
 import type { ContractFactory, EstimateGasOptions } from 'web3';
 import type BigNumber from 'bignumber.js';
 import type { TransactionStatus, TransactionReceipt } from 'web3';
-import { strip } from '../utils/ethUtils';
-import * as WEB3 from './constants/web3';
-import * as PENDING from './constants/pendingTx';
+import { strip } from 'utils/ethUtils';
+import * as WEB3 from 'actions/constants/web3';
+import * as PENDING from 'actions/constants/pendingTx';
 import * as AccountsActions from './AccountsActions';
 import * as TokenActions from './TokenActions';
 
@@ -23,11 +23,11 @@ import type {
     AsyncAction,
 } from 'flowtype';
 
-import type { Account } from '../reducers/AccountsReducer';
-import type { PendingTx } from '../reducers/PendingTxReducer';
-import type { Web3Instance } from '../reducers/Web3Reducer';
-import type { Token } from '../reducers/TokensReducer';
-import type { NetworkToken } from '../reducers/LocalStorageReducer';
+import type { Account } from 'reducers/AccountsReducer';
+import type { PendingTx } from 'reducers/PendingTxReducer';
+import type { Web3Instance } from 'reducers/Web3Reducer';
+import type { Token } from 'reducers/TokensReducer';
+import type { NetworkToken } from 'reducers/LocalStorageReducer';
 
 export type Web3Action = {
     type: typeof WEB3.READY,

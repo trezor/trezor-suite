@@ -7,20 +7,20 @@ import store, { history } from '../store';
 
 import ErrorBoundary from 'support/ErrorBoundary';
 
-import LandingPageContainer from '../components/landing';
-import WalletContainer from '../components/wallet';
-import BootloaderContainer from '../components/wallet/pages/Bootloader';
-import InitializeContainer from '../components/wallet/pages/Initialize';
-import AcquireContainer from '../components/wallet/pages/Acquire';
-import UnreadableDeviceContainer from '../components/wallet/pages/UnreadableDevice';
+import LandingPageContainer from 'components/landing';
+import WalletContainer from 'components/wallet';
+import BootloaderContainer from 'components/wallet/pages/Bootloader';
+import InitializeContainer from 'components/wallet/pages/Initialize';
+import AcquireContainer from 'components/wallet/pages/Acquire';
+import UnreadableDeviceContainer from 'components/wallet/pages/UnreadableDevice';
 
-import DashboardContainer from '../components/wallet/pages/Dashboard';
-import SummaryContainer from '../components/wallet/account/summary';
-import SendFormContainer from '../components/wallet/account/send';
-import ReceiveContainer from '../components/wallet/account/receive';
-import SignVerifyContainer from '../components/wallet/account/sign/SignVerify';
-import DeviceSettingsContainer from '../components/wallet/pages/DeviceSettings';
-import WalletSettingsContainer from '../components/wallet/pages/WalletSettings';
+import DashboardContainer from 'components/wallet/pages/Dashboard';
+import SummaryContainer from 'components/wallet/account/summary';
+import SendFormContainer from 'components/wallet/account/send';
+import ReceiveContainer from 'components/wallet/account/receive';
+import SignVerifyContainer from 'components/wallet/account/sign/SignVerify';
+import DeviceSettingsContainer from 'components/wallet/pages/DeviceSettings';
+import WalletSettingsContainer from 'components/wallet/pages/WalletSettings';
 
 const App = () => (
     <Provider store={store}>

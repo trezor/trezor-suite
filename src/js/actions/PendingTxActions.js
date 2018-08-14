@@ -1,8 +1,8 @@
 /* @flow */
 
 
-import * as PENDING from './constants/pendingTx';
-import type { State, PendingTx } from '../reducers/PendingTxReducer';
+import * as PENDING from 'actions/constants/pendingTx';
+import type { State, PendingTx } from 'reducers/PendingTxReducer';
 
 export type PendingTxAction = {
     type: typeof PENDING.FROM_STORAGE,
