@@ -1,11 +1,20 @@
 /* @flow */
 
-
+import styled from 'styled-components';
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+
+import { ExternalCoinLink, WalletCoinLink } from './CoinLink/';
+import AsideDivider from './AsideDivider';
 
 import type { TrezorDevice } from 'flowtype';
 import type { Props } from './index';
+
+const Section = styled.section`
+    width: 320px;
+    display: inline-block;
+    vertical-align: top;
+`;
 
 const CoinSelection = (props: Props): React$Element<string> => {
     const { location } = props.router;
@@ -23,38 +32,75 @@ const CoinSelection = (props: Props): React$Element<string> => {
     const walletCoins = config.coins.map((item) => {
         const url = `${baseUrl}/network/${item.network}/account/0`;
         const className = `coin ${item.network}`;
+
+        let coinImg = item.network;
+        if (item.network === 'ethereum') {
+            coinImg = 'eth';
+        } else if (item.network === 'ethereum-classic' ) {
+            coinImg = 'etc';
+        }
+
         return (
-            <NavLink key={item.network} to={url} className={className}>
-                { item.name }
-            </NavLink>
+            <WalletCoinLink
+                key={item.network}
+                coin={{
+                    img: coinImg,
+                    name: item.name,
+                }}
+                url={url}
+            />
         );
     });
 
     return (
-        <section>
+        <Section>
             { walletCoins }
             <div className="coin-divider">
                 Other coins <span>(You will be redirected)</span>
-            </div>
-            <a href="https://wallet.trezor.io/#/coin/btc" className="coin btc external">
-                Bitcoin
-            </a>
-            <a href="https://wallet.trezor.io/#/coin/ltc" className="coin ltc external">
-                Litecoin
-            </a>
-            <a href="https://wallet.trezor.io/#/coin/bch" className="coin bch external">
-                Bitcoin Cash
-            </a>
-            <a href="https://wallet.trezor.io/#/coin/btg" className="coin btg external">
-                Bitcoin Gold
-            </a>
-            <a href="https://wallet.trezor.io/#/coin/dash" className="coin dash external">
-                Dash
-            </a>
-            <a href="https://wallet.trezor.io/#/coin/zec" className="coin zec external">
-                Zcash
-            </a>
-        </section>
+
+            <ExternalCoinLink
+                coin={{
+                    img: 'btc',
+                    name: 'Bitcoin',
+                }}
+                url={'https://wallet.trezor.io/#/coin/ltc'}
+            />
+            <ExternalCoinLink
+                coin={{
+                    img: 'ltc',
+                    name: 'Litecoin',
+                }}
+                url={'https://wallet.trezor.io/#/coin/ltc'}
+            />
+            <ExternalCoinLink
+                coin={{
+                    img: 'bch',
+                    name: 'Bitcoin Cash',
+                }}
+                url={'https://wallet.trezor.io/#/coin/bch'}
+            />
+            <ExternalCoinLink
+                coin={{
+                    img: 'btg',
+                    name: 'Bitcoin Gold',
+                }}
+                url={'https://wallet.trezor.io/#/coin/btg'}
+            />
+            <ExternalCoinLink
+                coin={{
+                    img: 'Dash',
+                    name: 'Dash',
+                }}
+                url={'https://wallet.trezor.io/#/coin/dash'}
+            />
+            <ExternalCoinLink
+                coin={{
+                    img: 'zec',
+                    name: 'Zcash',
+                }}
+                url={'https://wallet.trezor.io/#/coin/zec'}
+            />
+        </Section>
     );
 };
 
