@@ -23,9 +23,8 @@ const baseStyles = () => injectGlobal`
         padding: 0;
     }
 
-    *:focus, *:active, *:active:focus, *::selection, *::-moz-selection {
+    *::selection, *::-moz-selection, *:focus, *:active, *:active:focus,  {
         outline: 0 !important;
-        -webkit-appearance: none;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
 
@@ -42,11 +41,11 @@ const baseStyles = () => injectGlobal`
     }
 
     @font-face {
-    font-family: 'Roboto Zero';
-    src: url('../fonts/roboto/RobotoZero.eot') format('embedded-opentype'),
-         url('../fonts/roboto/RobotoZero.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/roboto/RobotoZero.woff') format('woff'),
-         url('../fonts/roboto/RobotoZero.ttf') format('truetype');
+        font-family: 'Roboto Zero';
+        src: url('../fonts/roboto/RobotoZero.eot') format('embedded-opentype'),
+            url('../fonts/roboto/RobotoZero.eot?#iefix') format('embedded-opentype'),
+            url('../fonts/roboto/RobotoZero.woff') format('woff'),
+            url('../fonts/roboto/RobotoZero.ttf') format('truetype');
     }
 
     @font-face {

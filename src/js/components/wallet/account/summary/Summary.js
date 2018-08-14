@@ -17,7 +17,7 @@ import type { Props } from './index';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
 
 const StyledH2 = styled(H2)`
-   padding: 20px 48px;
+    padding: 20px 48px;
 `;
 
 const Summary = (props: Props) => {
