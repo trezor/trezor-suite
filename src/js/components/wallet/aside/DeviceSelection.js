@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import TrezorConnect from 'trezor-connect';
 
+import AsideDivider from './AsideDivider';
+
 import type { TrezorDevice } from 'flowtype';
 import type { Props } from './index';
 
@@ -214,7 +216,7 @@ export class DeviceDropdown extends Component<Props> {
         return (
             <section>
                 { currentDeviceMenu }
-                { deviceList.length > 1 ? <div className="device-divider">Other devices</div> : null }
+                { deviceList.length > 1 ? <AsideDivider textLeft={'Other devices'}/> : null }
                 { deviceList }
                 { webUsbButton }
             </section>

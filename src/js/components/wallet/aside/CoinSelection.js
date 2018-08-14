@@ -55,8 +55,10 @@ const CoinSelection = (props: Props): React$Element<string> => {
     return (
         <Section>
             { walletCoins }
-            <div className="coin-divider">
-                Other coins <span>(You will be redirected)</span>
+            <AsideDivider
+                textLeft={'Other coins'}
+                textRight={'(You will be redirected)'}
+            />
 
             <ExternalCoinLink
                 coin={{
