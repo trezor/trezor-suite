@@ -10,7 +10,7 @@ const Wrapper = styled.header`
 
     svg {
         fill: ${colors.WHITE};
-        height: 28px;         
+        height: 28px;
         width: 100px;
         flex: 1;
     }

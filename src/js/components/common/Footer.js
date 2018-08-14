@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const A = styled.a`
-    margin: 0px 6px;
+    margin: 0 6px;
     margin-right: 20px;
 `;
 

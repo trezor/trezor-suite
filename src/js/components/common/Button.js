@@ -27,10 +27,6 @@ const Wrapper = styled.button`
         color: ${colors.TEXT_SECONDARY};
         background: ${colors.GRAY_LIGHT};
     `}
-
-    ${props => props.blue && css``}
-
-    ${props => props.white && css``}
 `;
 
 const Button = ({

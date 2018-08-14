@@ -9,28 +9,28 @@ const baseStyles = css`
 `;
 
 const H1 = styled.h1`
-    ${baseStyles}
+    ${baseStyles};
     font-size: 18px;
 `;
 
 const H2 = styled.h2`
     ${baseStyles};
     font-size: 16px;
-
+ 
     ${props => props.claim && css`
         font-size: 36px;
-        padding-bottom: 24px;
+        padding-bottom: 24px
     `}
 `;
 
 const H3 = styled.h3`
-  ${baseStyles};
-  font-size: 14px;
+    ${baseStyles};
+    font-size: 14px;
 `;
 
 const H4 = styled.h4`
-  ${baseStyles};
-  font-size: 12px;
+    ${baseStyles};
+    font-size: 12px;
 `;
 
 export {
