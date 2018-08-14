@@ -24,7 +24,7 @@
         "lint:css": "stylelint './src/js/**/*.js'",
         "test:*": "run-p test:*",
         "test:unit": "jest",
-        "test-unit:watch": "jest -o --watch"
+        "test-unit:watch": "jest -o --watchAll"
     },
     "dependencies": {
         "babel": "^6.23.0",
