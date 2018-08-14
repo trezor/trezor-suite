@@ -1,7 +1,7 @@
 /* @flow */
 
 
-import * as ACCOUNT from '../actions/constants/account';
+import * as ACCOUNT from 'actions/constants/account';
 
 import type {
     Action,

@@ -3,17 +3,17 @@
 
 import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE } from 'react-router-redux';
-import * as LocalStorageActions from '../actions/LocalStorageActions';
-import * as WalletActions from '../actions/WalletActions';
+import * as LocalStorageActions from 'actions/LocalStorageActions';
+import * as WalletActions from 'actions/WalletActions';
 
-import * as CONNECT from '../actions/constants/TrezorConnect';
-import * as MODAL from '../actions/constants/modal';
-import * as TOKEN from '../actions/constants/token';
-import * as ACCOUNT from '../actions/constants/account';
-import * as DISCOVERY from '../actions/constants/discovery';
-import * as SEND from '../actions/constants/send';
-import * as WEB3 from '../actions/constants/web3';
-import * as PENDING from '../actions/constants/pendingTx';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as MODAL from 'actions/constants/modal';
+import * as TOKEN from 'actions/constants/token';
+import * as ACCOUNT from 'actions/constants/account';
+import * as DISCOVERY from 'actions/constants/discovery';
+import * as SEND from 'actions/constants/send';
+import * as WEB3 from 'actions/constants/web3';
+import * as PENDING from 'actions/constants/pendingTx';
 import { findAccountTokens } from '../reducers/TokensReducer';
 
 import type {

@@ -3,10 +3,10 @@
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import { DEVICE } from 'trezor-connect';
-import * as MODAL from '../actions/constants/modal';
-import * as WEB3 from '../actions/constants/web3';
-import * as WALLET from '../actions/constants/wallet';
-import * as CONNECT from '../actions/constants/TrezorConnect';
+import * as MODAL from 'actions/constants/modal';
+import * as WEB3 from 'actions/constants/web3';
+import * as WALLET from 'actions/constants/wallet';
+import * as CONNECT from 'actions/constants/TrezorConnect';
 
 
 import type { Action, RouterLocationState, TrezorDevice } from 'flowtype';

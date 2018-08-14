@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import baseStyles from 'support/BaseStyles';
 import store from './store';
 import App from './router';
-import { onBeforeUnload } from './actions/WalletActions';
+import { onBeforeUnload } from 'actions/WalletActions';
 import styles from 'styles/index.less';
 
 const root: ?HTMLElement = document.getElementById('root');

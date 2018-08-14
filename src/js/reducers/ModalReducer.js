@@ -2,9 +2,9 @@
 
 
 import { UI, DEVICE } from 'trezor-connect';
-import * as RECEIVE from '../actions/constants/receive';
-import * as MODAL from '../actions/constants/modal';
-import * as CONNECT from '../actions/constants/TrezorConnect';
+import * as RECEIVE from 'actions/constants/receive';
+import * as MODAL from 'actions/constants/modal';
+import * as CONNECT from 'actions/constants/TrezorConnect';
 
 import type { Action, TrezorDevice } from 'flowtype';
 

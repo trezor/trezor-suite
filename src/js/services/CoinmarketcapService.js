@@ -3,7 +3,7 @@
 
 import { JSONRequest, httpRequest } from '../utils/networkUtils';
 import { resolveAfter } from '../utils/promiseUtils';
-import { READY } from '../actions/constants/localStorage';
+import { READY } from 'actions/constants/localStorage';
 
 import type {
     Middleware,
