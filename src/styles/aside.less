@@ -29,12 +29,12 @@ aside {
 
     .transition-container {
         width: 640px;
-     
-        section {
-            width: 320px;
-            display: inline-block;
-            vertical-align: top;
-        }
+
+        // section {
+        //     width: 320px;
+        //     display: inline-block;
+        //     vertical-align: top;
+        // }
     }
 
     .trezor-webusb-button {
@@ -171,13 +171,13 @@ aside {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 white-space: nowrap;
-    
+
                 &.label {
                     font-weight: 500;
                     font-size: 14px;
                     color: @color_text_primary;
                 }
-    
+
                 &.status {
                     font-size: 12px;
                     color: @color_text_secondary;
@@ -265,20 +265,20 @@ aside {
     }
 
     a {
-        position: relative;
-        display: block;
-        cursor: pointer;
-        font-size: 16px;
-        padding: 16px 0 16px 24px;
-        white-space: nowrap;
-        color: @color_text_primary;
-        height: 50px;
+        // position: relative;
+        // display: block;
+        // cursor: pointer;
+        // font-size: 16px;
+        // padding: 16px 0 16px 24px;
+        // white-space: nowrap;
+        // color: @color_text_primary;
+        // height: 50px;
 
-        transition: background-color 0.3s, color 0.3s;
+        // transition: background-color 0.3s, color 0.3s;
 
-        &:hover {
-            background-color: @color_gray_light;
-        }
+        // &:hover {
+        //     background-color: @color_gray_light;
+        // }
 
         &.account {
             height: 64px;
@@ -309,15 +309,15 @@ aside {
                 //border-left: 3px solid @color_green_primary;
                 //border-bottom: 1px solid @color_divider;
                 //padding-left: 27px;
-    
+
                 &:before {
                     width: 3px;
                 }
-    
+
                 &:hover {
                     background: @color_white;
                 }
-    
+
                 &:last-child {
                     // border-bottom: 1px solid @color_divider;
                     &:after {
@@ -334,47 +334,47 @@ aside {
             }
         }
 
-       
 
-        &.coin {
-            padding-left: 60px;
-            &:before {
-                content: '';
-                position: absolute;
-                display: block;
-                width: 20px;
-                height: 20px;
-                left: 24px;
-                top: 0px;
-                bottom: 0px;
-                margin: auto 0;
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: 20px 20px;
-                
-            }
-        }
 
-        &.external {
-            &:after {
-                .icomoon-redirect;
-                position: absolute;
-                display: block;
-                width: 30px;
-                height: 30px;
-                right: 20px;
-                top: 0px;
-                bottom: 0px;
-                margin: auto 0;
-                font-size: 30px;
-                color: @color_text_secondary;
-                .hover();
-            }
+        // &.coin {
+        //     padding-left: 60px;
+        //     &:before {
+        //         content: '';
+        //         position: absolute;
+        //         display: block;
+        //         width: 20px;
+        //         height: 20px;
+        //         left: 24px;
+        //         top: 0px;
+        //         bottom: 0px;
+        //         margin: auto 0;
+        //         background-repeat: no-repeat;
+        //         background-position: center;
+        //         background-size: 20px 20px;
 
-            &:hover:after {
-                color: @color_text_primary;
-            }
-        }
+        //     }
+        // }
+
+        // &.external {
+        //     &:after {
+        //         .icomoon-redirect;
+        //         position: absolute;
+        //         display: block;
+        //         width: 30px;
+        //         height: 30px;
+        //         right: 20px;
+        //         top: 0px;
+        //         bottom: 0px;
+        //         margin: auto 0;
+        //         font-size: 30px;
+        //         color: @color_text_secondary;
+        //         .hover();
+        //     }
+
+        //     &:hover:after {
+        //         color: @color_text_primary;
+        //     }
+        // }
 
         &.back {
             padding-left: 80px;
@@ -407,7 +407,7 @@ aside {
                 font-size: 20px;
             }
         }
-        
+
         &.ethereum:before,
         &.ethereum-classic:before,
         &.ropsten:before,
@@ -416,7 +416,7 @@ aside {
             background-position: 2px 0px;
         }
 
-        
+
         &.ethereum:before {
             background-image: url('../images/eth-logo.png');
         }
@@ -450,20 +450,20 @@ aside {
         }
     }
 
-    .coin-divider {
-        font-size: 12px;
-        display: flex;
-        justify-content: space-between;
-        color: @color_text_secondary;
-        background: @color_gray_light;
-        padding: 8px 28px 8px 24px;
-        border-top: 1px solid @color_divider;
-        border-bottom: 1px solid @color_divider;
-        span {
-            display: flex;
-            justify-content: flex-end;
-        }
-    }
+    // .coin-divider {
+    //     font-size: 12px;
+    //     display: flex;
+    //     justify-content: space-between;
+    //     color: @color_text_secondary;
+    //     background: @color_gray_light;
+    //     padding: 8px 28px 8px 24px;
+    //     border-top: 1px solid @color_divider;
+    //     border-bottom: 1px solid @color_divider;
+    //     span {
+    //         display: flex;
+    //         justify-content: flex-end;
+    //     }
+    // }
 
     .device-divider {
         font-size: 12px;
@@ -492,7 +492,7 @@ aside {
             display: inline-block;
             padding: 8px;
             height: auto;
-            
+
             &:before {
                 .icomoon-chat;
                 font-size: 32px;
@@ -521,7 +521,7 @@ aside {
         color: @color_text_secondary;
         display: flex;
         align-items: center;
-        
+
         &:before {
             .icomoon-plus;
             margin-right: 12px;
@@ -568,7 +568,7 @@ aside {
     // menu trasitions
 
     @slide_transition_time: 300ms;
-    
+
     .slide-left-enter {
         transform: translate(100%);
         pointer-events: none;
