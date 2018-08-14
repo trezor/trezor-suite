@@ -9,10 +9,10 @@ import { withRouter } from 'react-router-dom';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import { toggleDeviceDropdown } from 'actions/WalletActions';
 
-import Aside from './Aside';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
+import Aside from './Aside';
 
 type OwnProps = {
 

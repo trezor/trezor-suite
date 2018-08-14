@@ -3,7 +3,6 @@ import { hot } from 'react-hot-loader';
 import { Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
-import store, { history } from '../store';
 
 import ErrorBoundary from 'support/ErrorBoundary';
 
@@ -21,6 +20,7 @@ import ReceiveContainer from 'components/wallet/account/receive';
 import SignVerifyContainer from 'components/wallet/account/sign/SignVerify';
 import DeviceSettingsContainer from 'components/wallet/pages/DeviceSettings';
 import WalletSettingsContainer from 'components/wallet/pages/WalletSettings';
+import store, { history } from '../store';
 
 const App = () => (
     <Provider store={store}>

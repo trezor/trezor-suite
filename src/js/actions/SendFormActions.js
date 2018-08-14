@@ -8,8 +8,6 @@ import TrezorConnect from 'trezor-connect';
 import { push } from 'react-router-redux';
 import BigNumber from 'bignumber.js';
 import { strip } from 'utils/ethUtils';
-import { estimateGas, getGasPrice, pushTx } from './Web3Actions';
-import * as SessionStorageActions from './SessionStorageActions';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SEND from 'actions/constants/send';
 
@@ -36,6 +34,8 @@ import type { Token } from 'reducers/TokensReducer';
 import type { State, FeeLevel } from 'reducers/SendFormReducer';
 import type { Account } from 'reducers/AccountsReducer';
 import type { Props } from 'components/wallet/account/send';
+import * as SessionStorageActions from './SessionStorageActions';
+import { estimateGas, getGasPrice, pushTx } from './Web3Actions';
 
 export type SendTxAction = {
     type: typeof SEND.TX_COMPLETE,
@@ -837,7 +837,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         },
         useEmptyPassphrase: !selected.instance,
         path: address_n,
-        transaction: txData
+        transaction: txData,
     });
 
     if (!signedTransaction || !signedTransaction.success) {

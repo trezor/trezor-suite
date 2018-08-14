@@ -7,16 +7,15 @@ import * as DISCOVERY from 'actions/constants/discovery';
 import * as ACCOUNT from 'actions/constants/account';
 import * as TOKEN from 'actions/constants/token';
 import * as NOTIFICATION from 'actions/constants/notification';
+import type {
+    ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
+} from 'flowtype';
+import type { Discovery, State } from 'reducers/DiscoveryReducer';
 import * as AccountsActions from './AccountsActions';
 
 import { getNonceAsync, getBalanceAsync, getTokenBalanceAsync } from './Web3Actions';
 import { setBalance as setTokenBalance } from './TokenActions';
 
-import type {
-    ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
-} from 'flowtype';
-
-import type { Discovery, State } from 'reducers/DiscoveryReducer';
 
 export type DiscoveryAction = {
     type: typeof DISCOVERY.FROM_STORAGE,

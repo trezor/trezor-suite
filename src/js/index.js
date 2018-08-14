@@ -2,10 +2,10 @@
 import React from 'react';
 import { render } from 'react-dom';
 import baseStyles from 'support/BaseStyles';
-import store from './store';
-import App from './router';
 import { onBeforeUnload } from 'actions/WalletActions';
-import styles from 'styles/index.less';
+import 'styles/index.less';
+import App from './router';
+import store from './store';
 
 const root: ?HTMLElement = document.getElementById('root');
 if (root) {

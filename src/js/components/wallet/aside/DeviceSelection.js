@@ -5,8 +5,8 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import TrezorConnect from 'trezor-connect';
 
-import type { Props } from './index';
 import type { TrezorDevice } from 'flowtype';
+import type { Props } from './index';
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;
@@ -25,18 +25,16 @@ export const DeviceSelect = (props: Props) => {
     } else if (!selected.available) {
         css += ' unavailable';
         deviceStatus = 'Unavailable';
-    } else {
-        if (selected.type === 'acquired') {
-            if (selected.status === 'occupied') {
-                css += ' used-elsewhere';
-                deviceStatus = 'Used in other window';
-            } else if (selected.status === 'used') {
-                css += ' reload-features';
-            }
-        } else if (selected.type === 'unacquired') {
-            css += ' unacquired';
+    } else if (selected.type === 'acquired') {
+        if (selected.status === 'occupied') {
+            css += ' used-elsewhere';
             deviceStatus = 'Used in other window';
+        } else if (selected.status === 'used') {
+            css += ' reload-features';
         }
+    } else if (selected.type === 'unacquired') {
+        css += ' unacquired';
+        deviceStatus = 'Used in other window';
     }
 
     if (selected.features && selected.features.major_version > 1) {

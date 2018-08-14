@@ -10,8 +10,8 @@ import * as stateUtils from 'reducers/utils';
 import Loader from 'components/common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
-import type { Props } from './index';
 import type { TrezorDevice, Accounts } from 'flowtype';
+import type { Props } from './index';
 
 const AccountSelection = (props: Props): ?React$Element<string> => {
     const selected = props.wallet.selectedDevice;

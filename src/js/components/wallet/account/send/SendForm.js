@@ -4,17 +4,17 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
 import { H2 } from 'components/common/Heading';
+import { findAccountTokens } from 'reducers/TokensReducer';
+import { calculate, validation } from 'actions/SendFormActions';
+import { findToken } from 'reducers/TokensReducer';
+import type { Token } from 'flowtype';
 import AdvancedForm from './AdvancedForm';
 import PendingTransactions from './PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './FeeSelect';
 import SelectedAccount from '../SelectedAccount';
-import { findAccountTokens } from 'reducers/TokensReducer';
-import { calculate, validation } from 'actions/SendFormActions';
 
-import { findToken } from 'reducers/TokensReducer';
 
 import type { Props } from './index';
-import type { Token } from 'flowtype';
 
 export default class SendContainer extends Component<Props> {
     componentWillReceiveProps(newProps: Props) {

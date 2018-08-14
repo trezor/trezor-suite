@@ -19,10 +19,10 @@
         "dev:local": "webpack-dev-server --config ./webpack/config.dev.local.babel.js --mode development",
         "build": "rm -rf build && webpack --config ./webpack/config.prod.babel.js --progress",
         "flow": "flow check src/js",
-        "lint": "run-p lint:*",
+        "lint": "run-s lint:*",
         "lint:js": "eslint ./src/js ./webpack",
         "lint:css": "stylelint './src/js/**/*.js'",
-        "test:*": "run-p test:*",
+        "test:*": "run-s test:*",
         "test:unit": "jest",
         "test-unit:watch": "jest -o --watchAll"
     },

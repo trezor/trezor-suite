@@ -5,10 +5,10 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import LandingPage from './LandingPage';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
+import LandingPage from './LandingPage';
 
 export type StateProps = {
     localStorage: $ElementType<State, 'localStorage'>,

@@ -13,6 +13,11 @@ import { UI } from 'trezor-connect';
 import { default as ModalActions } from 'actions/ModalActions';
 import { default as ReceiveActions } from 'actions/ReceiveActions';
 
+import * as RECEIVE from 'actions/constants/receive';
+import * as MODAL from 'actions/constants/modal';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import type { State, Dispatch } from 'flowtype';
 import Pin from './Pin';
 import InvalidPin from './InvalidPin';
 import Passphrase from './Passphrase';
@@ -22,12 +27,6 @@ import ConfirmAddress, { ConfirmUnverifiedAddress } from './ConfirmAddress';
 import RememberDevice, { ForgetDevice } from './RememberDevice';
 import DuplicateDevice from './DuplicateDevice';
 
-import * as RECEIVE from 'actions/constants/receive';
-import * as MODAL from 'actions/constants/modal';
-import * as CONNECT from 'actions/constants/TrezorConnect';
-
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from 'flowtype';
 
 type OwnProps = { }
 

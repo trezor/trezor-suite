@@ -2,8 +2,8 @@
 
 
 import React from 'react';
-import Preloader from './Preloader';
 import { H2 } from 'components/common/Heading';
+import Preloader from './Preloader';
 import ConnectDevice from './ConnectDevice';
 import InstallBridge from './InstallBridge';
 import LocalStorageError from './LocalStorageError';

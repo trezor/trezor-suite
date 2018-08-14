@@ -4,8 +4,8 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 
-import type { Props as BaseProps } from './index';
 import type { Coin } from 'reducers/LocalStorageReducer';
+import type { Props as BaseProps } from './index';
 
 type Props = {
     // coin: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'coin'>,

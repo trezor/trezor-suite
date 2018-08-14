@@ -5,6 +5,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
 
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import type { State, Dispatch } from 'flowtype';
 import Header from '../common/Header';
 import Footer from '../common/Footer';
 import AccountTabs from './account/AccountTabs';
@@ -14,8 +16,6 @@ import ModalContainer from '../modal';
 import Notifications from '../common/Notification';
 import Log from '../common/Log';
 
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from 'flowtype';
 
 type WalletContainerProps = {
     wallet: $ElementType<State, 'wallet'>,

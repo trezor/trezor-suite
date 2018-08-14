@@ -7,14 +7,14 @@ import { Async as AsyncSelect } from 'react-select';
 import Tooltip from 'rc-tooltip';
 
 import { resolveAfter } from 'utils/promiseUtils';
-import SelectedAccount from '../SelectedAccount';
 import { Notification } from 'components/common/Notification';
+import * as stateUtils from 'reducers/utils';
+import type { NetworkToken } from 'reducers/LocalStorageReducer';
+import SelectedAccount from '../SelectedAccount';
 import SummaryDetails from './SummaryDetails.js';
 import SummaryTokens from './SummaryTokens.js';
-import * as stateUtils from 'reducers/utils';
 
 import type { Props } from './index';
-import type { NetworkToken } from 'reducers/LocalStorageReducer';
 
 const StyledH2 = styled(H2)`
     padding: 20px 48px;

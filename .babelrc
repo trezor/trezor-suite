@@ -16,7 +16,7 @@
             "regenerator": true
         }],
         ["module-resolver", {
-            "root": ["."],
+            "root": ["./src"],
             "alias": {
                 "config": "./src/js/config",
                 "constants": "./src/js/constants",

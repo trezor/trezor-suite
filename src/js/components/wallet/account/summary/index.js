@@ -6,11 +6,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import Summary from './Summary';
 import * as SummaryActions from 'actions/SummaryActions';
 import * as TokenActions from 'actions/TokenActions';
 
 import type { State, Dispatch } from 'flowtype';
+import Summary from './Summary';
 import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../SelectedAccount';
 
 type OwnProps = { }

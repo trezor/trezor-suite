@@ -13,8 +13,6 @@ import type { TransactionStatus, TransactionReceipt } from 'web3';
 import { strip } from 'utils/ethUtils';
 import * as WEB3 from 'actions/constants/web3';
 import * as PENDING from 'actions/constants/pendingTx';
-import * as AccountsActions from './AccountsActions';
-import * as TokenActions from './TokenActions';
 
 import type {
     Dispatch,
@@ -28,6 +26,8 @@ import type { PendingTx } from 'reducers/PendingTxReducer';
 import type { Web3Instance } from 'reducers/Web3Reducer';
 import type { Token } from 'reducers/TokensReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
+import * as TokenActions from './TokenActions';
+import * as AccountsActions from './AccountsActions';
 
 export type Web3Action = {
     type: typeof WEB3.READY,

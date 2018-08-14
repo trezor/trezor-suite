@@ -14,18 +14,16 @@ type Props = {
     acquireDevice: typeof TrezorConnectActions.acquire
 }
 
-const UnreadableDevice = (props: Props) => {
-    return (
-        <section className="acquire">
-            <Notification
-                title="Unreadable device"
-                message="Please install bridge"
-                className="error"
-                cancelable={false}
-            />
-        </section>
-    );
-};
+const UnreadableDevice = (props: Props) => (
+    <section className="acquire">
+        <Notification
+            title="Unreadable device"
+            message="Please install bridge"
+            className="error"
+            cancelable={false}
+        />
+    </section>
+);
 
 export default connect(
     (state: State) => ({

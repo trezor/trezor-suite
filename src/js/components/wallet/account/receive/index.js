@@ -8,9 +8,9 @@ import { connect } from 'react-redux';
 import { default as ReceiveActions } from 'actions/ReceiveActions';
 import * as TokenActions from 'actions/TokenActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import type { State, Dispatch } from 'flowtype';
 import Receive from './Receive';
 
-import type { State, Dispatch } from 'flowtype';
 import type {
     StateProps as BaseStateProps,
     DispatchProps as BaseDispatchProps,

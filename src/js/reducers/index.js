@@ -1,26 +1,24 @@
 /* @flow */
-
-
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 
-import log from './LogReducer.js';
-import localStorage from './LocalStorageReducer.js';
-import connect from './TrezorConnectReducer.js';
-import notifications from './NotificationReducer.js';
-import modal from './ModalReducer.js';
-import web3 from './Web3Reducer.js';
-import accounts from './AccountsReducer.js';
-import selectedAccount from './SelectedAccountReducer.js';
-import sendForm from './SendFormReducer.js';
-import receive from './ReceiveReducer.js';
-import summary from './SummaryReducer.js';
-import tokens from './TokensReducer.js';
-import discovery from './DiscoveryReducer.js';
-import pending from './PendingTxReducer.js';
-import fiat from './FiatRateReducer.js';
-import wallet from './WalletReducer.js';
-import devices from './DevicesReducer.js';
+import log from 'reducers/LogReducer';
+import localStorage from 'reducers/LocalStorageReducer';
+import connect from 'reducers/TrezorConnectReducer';
+import notifications from 'reducers/NotificationReducer';
+import modal from 'reducers/ModalReducer';
+import web3 from 'reducers/Web3Reducer';
+import accounts from 'reducers/AccountsReducer';
+import selectedAccount from 'reducers/SelectedAccountReducer';
+import sendForm from 'reducers/SendFormReducer';
+import receive from 'reducers/ReceiveReducer';
+import summary from 'reducers/SummaryReducer';
+import tokens from 'reducers/TokensReducer';
+import discovery from 'reducers/DiscoveryReducer';
+import pending from 'reducers/PendingTxReducer';
+import fiat from 'reducers/FiatRateReducer';
+import wallet from 'reducers/WalletReducer';
+import devices from 'reducers/DevicesReducer';
 
 const reducers = {
     router: routerReducer,

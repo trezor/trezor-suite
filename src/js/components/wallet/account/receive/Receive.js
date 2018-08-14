@@ -6,8 +6,8 @@ import { H2 } from 'components/common/Heading';
 import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
 
-import SelectedAccount from '../SelectedAccount';
 import { Notification } from 'components/common/Notification';
+import SelectedAccount from '../SelectedAccount';
 
 import type { Props } from './index';
 

@@ -6,13 +6,13 @@ import * as React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
+import type { TrezorDevice } from 'flowtype';
 import { DeviceSelect, DeviceDropdown } from './DeviceSelection';
 import AccountSelection from './AccountSelection';
 import CoinSelection from './CoinSelection';
 import StickyContainer from './StickyContainer';
 
 import type { Props } from './index';
-import type { TrezorDevice } from 'flowtype';
 
 
 type TransitionMenuProps = {

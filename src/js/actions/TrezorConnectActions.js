@@ -10,7 +10,6 @@ import * as NOTIFICATION from 'actions/constants/notification';
 import * as WALLET from 'actions/constants/wallet';
 
 import { push } from 'react-router-redux';
-import * as DiscoveryActions from './DiscoveryActions';
 import { resolveAfter } from 'utils/promiseUtils';
 
 
@@ -33,6 +32,7 @@ import type {
     TrezorDevice,
     RouterLocationState,
 } from 'flowtype';
+import * as DiscoveryActions from './DiscoveryActions';
 
 
 export type TrezorConnectAction = {
@@ -207,7 +207,7 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => (d
     // switch to initial url and reset this value
 
     if (!device.features) {
-        dispatch(push(`/device/${device.path}/${ device.type === 'unreadable' ? 'unreadable' : 'acquire' }`));
+        dispatch(push(`/device/${device.path}/${device.type === 'unreadable' ? 'unreadable' : 'acquire'}`));
     } else if (device.features.bootloader_mode) {
         dispatch(push(`/device/${device.path}/bootloader`));
     } else if (!device.features.initialized) {
