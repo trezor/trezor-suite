@@ -33,9 +33,9 @@ const baseStyles = () => injectGlobal`
         cursor: pointer;
     }
 
-    a:focus, 
-    button:focus, 
-    input:focus, 
+    a:focus,
+    button:focus,
+    input:focus,
     textarea:focus {
         outline: 0;
     }
