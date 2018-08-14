@@ -7,6 +7,7 @@
         "stylelint-config-styled-components"
     ],
     "rules": {
-        "indentation": 4
+        "indentation": 4,
+        "block-no-empty": null
     }
 }
