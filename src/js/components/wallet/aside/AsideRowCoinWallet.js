@@ -3,8 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
+import AsideRow from './AsideRow';
+import CoinName from './CoinName';
+
 import { coinProp } from './common';
-import AsideRowCoin from './AsideRowCoin';
 
 const Wrapper = styled(NavLink)`
     display: block;
@@ -12,7 +14,12 @@ const Wrapper = styled(NavLink)`
 
 const AsideRowCoinWallet = ({ coin, url }) => (
     <Wrapper to={url}>
-        <AsideRowCoin coin={coin}/>
+        <AsideRow>
+            <CoinName
+                coinImg={coin.img}
+                text={coin.name}
+            />
+        </AsideRow>
     </Wrapper>
 );
 

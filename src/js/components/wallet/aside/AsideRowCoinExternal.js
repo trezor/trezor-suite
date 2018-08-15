@@ -2,11 +2,13 @@ import styled from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Icon from 'components/common/Icon';
+import AsideRow from './AsideRow';
+import CoinName from './CoinName';
+
 import ICONS from 'constants/icons';
 import colors from 'config/colors';
-
 import { coinProp } from './common';
-import AsideRowCoin from './AsideRowCoin';
 
 const A = styled.a`
     display: block;
@@ -14,13 +16,16 @@ const A = styled.a`
 
 const AsideRowCoinExternal = ({ coin, url }) => (
     <A href={url}>
-        <AsideRowCoin
-            coin={coin}
-            iconRight={{
-                type: ICONS.REDIRECT,
-                color: colors.TEXT_SECONDARY,
-            }}
-        />
+        <AsideRow>
+            <CoinName
+                coinImg={coin.img}
+                text={coin.name}
+            />
+            <Icon
+                icon={ICONS.REDIRECT}
+                color={colors.TEXT_SECONDARY}
+            />
+        </AsideRow>
     </A>
 );
 
