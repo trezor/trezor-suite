@@ -9,10 +9,6 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    p {
-        color: ${colors.TEXT_PRIMARY};
-    }
 `;
 
 const Logo = styled.div`

@@ -1,30 +1,39 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import colors from 'config/colors';
-import { FONT_SIZE, TRANSITION_TIME } from 'config/variables';
+import { TRANSITION_TIME } from 'config/variables';
 
 const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
     padding: 16px 24px;
 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    ${props => props.column && css`
+        flex-direction: column;
+        align-items: flex-start;
+    `}
+
     cursor: pointer;
-    font-size: ${FONT_SIZE.BASE};
-
     transition: background-color ${TRANSITION_TIME.BASE}, color ${TRANSITION_TIME.BASE};
-
-    &:hover {
-        background-color: ${colors.GRAY_LIGHT};
-    }
 `;
 
-const AsideRow = (props) => (
-    <Wrapper>
-        {props.children}
+const AsideRow = ({ children, column }) => (
+    <Wrapper
+        column={column}
+    >{children}
     </Wrapper>
 );
+
+AsideRow.propTypes = {
+    column: PropTypes.bool,
+};
+
+AsideRow.defaultProps = {
+    column: false,
+}
 
 export default AsideRow;

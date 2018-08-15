@@ -4,23 +4,23 @@ import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
 import AsideRow from './AsideRow';
+import AsideRowCoin from './AsideRowCoin';
 import CoinName from './CoinName';
 
+import colors from 'config/colors';
 import { coinProp } from './common';
 
-const Wrapper = styled(NavLink)`
-    display: block;
-`;
-
 const AsideRowCoinWallet = ({ coin, url }) => (
-    <Wrapper to={url}>
-        <AsideRow>
-            <CoinName
-                coinImg={coin.img}
-                text={coin.name}
-            />
-        </AsideRow>
-    </Wrapper>
+    <NavLink to={url}>
+        <AsideRowCoin>
+            <AsideRow>
+                <CoinName
+                    coinImg={coin.img}
+                    text={coin.name}
+                />
+            </AsideRow>
+        </AsideRowCoin>
+    </NavLink>
 );
 
 AsideRowCoinWallet.propTypes = {
