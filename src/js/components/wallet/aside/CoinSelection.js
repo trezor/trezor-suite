@@ -4,18 +4,14 @@ import styled from 'styled-components';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+import AsideDivider from './AsideDivider';
 import AsideRowCoinWallet from './AsideRowCoinWallet';
 import AsideRowCoinExternal from './AsideRowCoinExternal';
-import AsideDivider from './AsideDivider';
+import AsideSection from './AsideSection';
 
 import type { TrezorDevice } from 'flowtype';
 import type { Props } from './index';
 
-const Section = styled.section`
-    width: 320px;
-    display: inline-block;
-    vertical-align: top;
-`;
 
 const CoinSelection = (props: Props): React$Element<string> => {
     const { location } = props.router;
@@ -54,7 +50,7 @@ const CoinSelection = (props: Props): React$Element<string> => {
     });
 
     return (
-        <Section>
+        <AsideSection>
             { walletCoins }
             <AsideDivider
                 textLeft={'Other coins'}
@@ -103,7 +99,7 @@ const CoinSelection = (props: Props): React$Element<string> => {
                 }}
                 url={'https://wallet.trezor.io/#/coin/zec'}
             />
-        </Section>
+        </AsideSection>
     );
 };
 

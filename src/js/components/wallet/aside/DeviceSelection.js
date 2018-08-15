@@ -10,6 +10,8 @@ import AsideDivider from './AsideDivider';
 import type { TrezorDevice } from 'flowtype';
 import type { Props } from './index';
 
+import AsideSection from './AsideSection';
+
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;
     const { transport } = props.connect;
@@ -214,12 +216,12 @@ export class DeviceDropdown extends Component<Props> {
 
 
         return (
-            <section>
+            <AsideSection>
                 { currentDeviceMenu }
                 { deviceList.length > 1 ? <AsideDivider textLeft={'Other devices'}/> : null }
                 { deviceList }
                 { webUsbButton }
-            </section>
+            </AsideSection>
         );
     }
 }
