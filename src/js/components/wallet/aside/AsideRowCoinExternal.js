@@ -6,15 +6,15 @@ import ICONS from 'constants/icons';
 import colors from 'config/colors';
 
 import { coinProp } from './common';
-import CoinLink from './CoinLink';
+import AsideRowCoin from './AsideRowCoin';
 
 const A = styled.a`
     display: block;
 `;
 
-const ExternalCoinLink = ({ coin, url }) => (
+const AsideRowCoinExternal = ({ coin, url }) => (
     <A href={url}>
-        <CoinLink
+        <AsideRowCoin
             coin={coin}
             iconRight={{
                 type: ICONS.REDIRECT,
@@ -24,9 +24,9 @@ const ExternalCoinLink = ({ coin, url }) => (
     </A>
 );
 
-ExternalCoinLink.propTypes = {
+AsideRowCoinExternal.propTypes = {
     ...coinProp,
     url: PropTypes.string,
 };
 
-export default ExternalCoinLink;
+export default AsideRowCoinExternal;

@@ -13,7 +13,6 @@ const Wrapper = styled.div`
     p {
         color: ${colors.TEXT_PRIMARY};
     }
-
 `;
 
 const Logo = styled.div`
@@ -27,7 +26,7 @@ const Logo = styled.div`
     background-image: url('images/${props => props.coinImg}-logo.png');
 `;
 
-const CoinLogo = ({ coinImg, text }) => (
+const CoinName = ({ coinImg, text }) => (
     <Wrapper>
         <Logo
             coinImg={coinImg}
@@ -36,9 +35,9 @@ const CoinLogo = ({ coinImg, text }) => (
     </Wrapper>
 );
 
-CoinLogo.propTypes = {
+CoinName.propTypes = {
     coinImg: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
 };
 
-export default CoinLogo
+export default CoinName

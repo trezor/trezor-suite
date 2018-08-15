@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { ExternalCoinLink, WalletCoinLink } from './CoinLink/';
+import AsideRowCoinWallet from './AsideRowCoinWallet';
+import AsideRowCoinExternal from './AsideRowCoinExternal';
 import AsideDivider from './AsideDivider';
 
 import type { TrezorDevice } from 'flowtype';
@@ -41,7 +42,7 @@ const CoinSelection = (props: Props): React$Element<string> => {
         }
 
         return (
-            <WalletCoinLink
+            <AsideRowCoinWallet
                 key={item.network}
                 coin={{
                     img: coinImg,
@@ -60,42 +61,42 @@ const CoinSelection = (props: Props): React$Element<string> => {
                 textRight={'(You will be redirected)'}
             />
 
-            <ExternalCoinLink
+            <AsideRowCoinExternal
                 coin={{
                     img: 'btc',
                     name: 'Bitcoin',
                 }}
                 url={'https://wallet.trezor.io/#/coin/ltc'}
             />
-            <ExternalCoinLink
+            <AsideRowCoinExternal
                 coin={{
                     img: 'ltc',
                     name: 'Litecoin',
                 }}
                 url={'https://wallet.trezor.io/#/coin/ltc'}
             />
-            <ExternalCoinLink
+            <AsideRowCoinExternal
                 coin={{
                     img: 'bch',
                     name: 'Bitcoin Cash',
                 }}
                 url={'https://wallet.trezor.io/#/coin/bch'}
             />
-            <ExternalCoinLink
+            <AsideRowCoinExternal
                 coin={{
                     img: 'btg',
                     name: 'Bitcoin Gold',
                 }}
                 url={'https://wallet.trezor.io/#/coin/btg'}
             />
-            <ExternalCoinLink
+            <AsideRowCoinExternal
                 coin={{
                     img: 'Dash',
                     name: 'Dash',
                 }}
                 url={'https://wallet.trezor.io/#/coin/dash'}
             />
-            <ExternalCoinLink
+            <AsideRowCoinExternal
                 coin={{
                     img: 'zec',
                     name: 'Zcash',

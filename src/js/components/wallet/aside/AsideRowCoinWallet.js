@@ -4,21 +4,21 @@ import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
 import { coinProp } from './common';
-import CoinLink from './CoinLink';
+import AsideRowCoin from './AsideRowCoin';
 
 const Wrapper = styled(NavLink)`
     display: block;
 `;
 
-const WalletCoinLink = ({ coin, url }) => (
+const AsideRowCoinWallet = ({ coin, url }) => (
     <Wrapper to={url}>
-        <CoinLink coin={coin}/>
+        <AsideRowCoin coin={coin}/>
     </Wrapper>
 );
 
-WalletCoinLink.propTypes = {
+AsideRowCoinWallet.propTypes = {
     ...coinProp,
     url: PropTypes.string.isRequired,
 };
 
-export default WalletCoinLink;
+export default AsideRowCoinWallet;

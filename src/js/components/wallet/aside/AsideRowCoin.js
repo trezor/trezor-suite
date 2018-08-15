@@ -7,7 +7,7 @@ import colors from 'config/colors';
 import { FONT_SIZE, TRANSITION_TIME } from 'config/variables';
 
 import { coinProp } from './common';
-import CoinLogo from './CoinLogo';
+import CoinName from './CoinName';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,9 +26,9 @@ const Wrapper = styled.div`
     }
 `;
 
-const CoinLink = ({ coin, iconRight }) => (
+const AsideRowCoin = ({ coin, iconRight }) => (
     <Wrapper>
-        <CoinLogo
+        <CoinName
             coinImg={coin.img}
             text={coin.name}
         />
@@ -41,7 +41,7 @@ const CoinLink = ({ coin, iconRight }) => (
     </Wrapper>
 );
 
-CoinLink.propTypes = {
+AsideRowCoin.propTypes = {
     ...coinProp,
     iconRight: PropTypes.shape({
         type: PropTypes.string.isRequired,
@@ -49,4 +49,4 @@ CoinLink.propTypes = {
     }),
 };
 
-export default CoinLink;
+export default AsideRowCoin;
