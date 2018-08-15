@@ -11,3 +11,7 @@ export const TRANSITION_TIME = {
 export const ICON_SIZE = {
     BASE: '20px',
 }
+
+export const BORDER_WIDTH = {
+    SELECTED: '3px',
+};

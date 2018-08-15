@@ -10,6 +10,7 @@ import * as stateUtils from 'reducers/utils';
 import Loader from 'components/common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
+import AsideRowAccount from './AsideRowAccount';
 import AsideSection from './AsideSection';
 
 import type { TrezorDevice, Accounts } from 'flowtype';
@@ -52,10 +53,16 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
         }
 
         return (
-            <NavLink key={i} activeClassName="selected" className="account" to={url}>
-                { `Account #${(account.index + 1)}` }
-                <span>{ account.loaded ? balance : 'Loading...' }</span>
-            </NavLink>
+            <AsideRowAccount
+                accountIndex={account.index}
+                balance={balance}
+                url={url}
+            />
+
+            // <NavLink key={i} activeClassName="selected" className="account" to={url}>
+            //     { `Account #${(account.index + 1)}` }
+            //     <span>{ account.loaded ? balance : 'Loading...' }</span>
+            // </NavLink>
         );
     });
 
@@ -63,10 +70,15 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
         if (selected.connected) {
             const url: string = location.pathname.replace(/account+\/([0-9]*)/, 'account/0');
             selectedAccounts = (
-                <NavLink activeClassName="selected" className="account" to={url}>
-                    Account #1
-                    <span>Loading...</span>
-                </NavLink>
+                <AsideRowAccount
+                    accountIndex={0}
+                    url={url}
+                />
+
+                // <NavLink activeClassName="selected" className="account" to={url}>
+                //     Account #1
+                //     <span>Loading...</span>
+                // </NavLink>
             );
         }
     }
@@ -131,7 +143,7 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
 
     return (
         <AsideSection>
-            { backButton }
+            {/* { backButton } */}
             <div>
                 { selectedAccounts }
             </div>
