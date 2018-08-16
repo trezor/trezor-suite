@@ -10,11 +10,67 @@ import * as stateUtils from 'reducers/utils';
 import Loader from 'components/common/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
-import AsideRowAccount from './AsideRowAccount';
-import AsideSection from './AsideSection';
+import colors from 'config/colors';
+import { FONT_SIZE, BORDER_WIDTH } from 'config/variables';
+import styled, { css } from 'styled-components';
+import Row from '../Row';
+import PropTypes from 'prop-types';
+
+//import AsideRowAccount from './row/account/AsideRowAccount';
 
 import type { TrezorDevice, Accounts } from 'flowtype';
 import type { Props } from './index';
+
+const RowAccountWrapper = styled.div`
+    height: 64px;
+
+    font-size: ${FONT_SIZE.SMALL};
+    color: ${colors.TEXT_PRIMARY};
+
+    border-top: 1px solid ${colors.DIVIDER};
+    span {
+        font-size: ${FONT_SIZE.SMALLER};
+        color: ${colors.TEXT_SECONDARY};
+    }
+
+    ${props => props.isSelected && css`
+        border-left: ${BORDER_WIDTH.SELECTED} solid ${colors.GREEN_PRIMARY};
+        background: ${colors.WHITE};
+
+        &:hover {
+            background-color: ${colors.WHITE};
+        }
+
+        &:last-child {
+            border-bottom: 1px solid ${colors.DIVIDER};
+        }
+    `}
+`;
+const RowAccount = ({
+    accountIndex, balance, url, isSelected = false,
+}) => (
+    <NavLink to={url}>
+        <RowAccountWrapper
+            to={url}
+            isSelected={isSelected}
+        >
+            <Row column>
+                Account #{accountIndex + 1}
+                {balance ? (
+                    <span>{balance}</span>
+                ) : (
+                    <span>Loading...</span>
+                )}
+            </Row>
+        </RowAccountWrapper>
+    </NavLink>
+);
+RowAccount.propTypes = {
+    accountIndex: PropTypes.number.isRequired,
+    url: PropTypes.string.isRequired,
+    balance: PropTypes.string,
+    isSelected: PropTypes.bool,
+};
 
 const AccountSelection = (props: Props): ?React$Element<string> => {
     const selected = props.wallet.selectedDevice;
@@ -22,7 +78,7 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
 
     const { location } = props.router;
     const urlParams = location.state;
-    const accounts = props.accounts;
+    const { accounts } = props;
     const baseUrl: string = urlParams.deviceInstance ? `/device/${urlParams.device}:${urlParams.deviceInstance}` : `/device/${urlParams.device}`;
 
     const { config } = props.localStorage;
@@ -53,7 +109,7 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
         }
 
         return (
-            <AsideRowAccount
+            <RowAccount
                 accountIndex={account.index}
                 balance={balance}
                 url={url}
@@ -70,7 +126,7 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
         if (selected.connected) {
             const url: string = location.pathname.replace(/account+\/([0-9]*)/, 'account/0');
             selectedAccounts = (
-                <AsideRowAccount
+                <RowAccount
                     accountIndex={0}
                     url={url}
                 />
@@ -110,7 +166,7 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
                         placement="top"
                     >
                         <div className="add-account disabled">
-                                Add account
+                            Add account
                         </div>
                     </Tooltip>
                 );
@@ -119,7 +175,7 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
             discoveryStatus = (
                 <div className="discovery-status">
                     Accounts could not be loaded
-                    <span>{ `Connect ${selected.instanceLabel} device` }</span>
+                    <span>{`Connect ${selected.instanceLabel} device`}</span>
                 </div>
             );
         } else {
@@ -136,19 +192,19 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
     if (selectedCoin) {
         backButton = (
             <NavLink to={baseUrl} className={`back ${selectedCoin.network}`}>
-                <span className={selectedCoin.network}>{ selectedCoin.name }</span>
+                <span className={selectedCoin.network}>{selectedCoin.name}</span>
             </NavLink>
         );
     }
 
     return (
-        <AsideSection>
-            {/* { backButton } */}
+        <React.Fragment>
+            {backButton}
             <div>
-                { selectedAccounts }
+                {selectedAccounts}
             </div>
-            { discoveryStatus }
-        </AsideSection>
+            {discoveryStatus}
+        </React.Fragment>
     );
 };
 

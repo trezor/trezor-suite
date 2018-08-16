@@ -5,12 +5,10 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import TrezorConnect from 'trezor-connect';
 
-import AsideDivider from './AsideDivider';
+import AsideDivider from '../Divider';
 
 import type { TrezorDevice } from 'flowtype';
 import type { Props } from './index';
-
-import AsideSection from './AsideSection';
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;
@@ -59,10 +57,10 @@ export const DeviceSelect = (props: Props) => {
     return (
         <div className={css} onClick={!disabled ? handleOpen : null}>
             <div className="label-container">
-                <span className="label">{ selected.instanceLabel }</span>
-                <span className="status">{ deviceStatus }</span>
+                <span className="label">{selected.instanceLabel}</span>
+                <span className="status">{deviceStatus}</span>
             </div>
-            { deviceCount > 1 ? <div className="counter">{ deviceCount }</div> : null }
+            {deviceCount > 1 ? <div className="counter">{deviceCount}</div> : null}
             <div className="arrow" />
         </div>
     );
@@ -164,11 +162,11 @@ export class DeviceDropdown extends Component<Props> {
 
 
             const deviceMenuButtons = deviceMenuItems.map((item, index) => (
-                <div key={item.type} className={item.type} onClick={event => this.onDeviceMenuClick(item, selected)}>{ item.label}</div>
+                <div key={item.type} className={item.type} onClick={event => this.onDeviceMenuClick(item, selected)}>{item.label}</div>
             ));
             currentDeviceMenu = deviceMenuButtons.length < 1 ? null : (
                 <div className="device-menu">
-                    { deviceMenuButtons }
+                    {deviceMenuButtons}
                 </div>
             );
         }
@@ -199,8 +197,8 @@ export class DeviceDropdown extends Component<Props> {
             return (
                 <div key={index} className={css} onClick={() => this.props.onSelectDevice(dev)}>
                     <div className="label-container">
-                        <span className="label">{ dev.instanceLabel }</span>
-                        <span className="status">{ deviceStatus }</span>
+                        <span className="label">{dev.instanceLabel}</span>
+                        <span className="status">{deviceStatus}</span>
                     </div>
                     <div
                         className="forget-button"
@@ -216,12 +214,12 @@ export class DeviceDropdown extends Component<Props> {
 
 
         return (
-            <AsideSection>
-                { currentDeviceMenu }
-                { deviceList.length > 1 ? <AsideDivider textLeft={'Other devices'}/> : null }
-                { deviceList }
-                { webUsbButton }
-            </AsideSection>
+            <React.Fragment>
+                {currentDeviceMenu}
+                {deviceList.length > 1 ? <AsideDivider textLeft={'Other devices'} /> : null}
+                {deviceList}
+                {webUsbButton}
+            </React.Fragment>
         );
     }
 }

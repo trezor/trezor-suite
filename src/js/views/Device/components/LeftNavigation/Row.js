@@ -22,14 +22,16 @@ const Wrapper = styled.div`
     transition: background-color ${TRANSITION_TIME.BASE}, color ${TRANSITION_TIME.BASE};
 `;
 
-const AsideRow = ({ children, column = false }) => (
+const Row = ({
+    children, column = false,
+}) => (
     <Wrapper
         column={column}
     >{children}
     </Wrapper>
 );
 
-AsideRow.propTypes = {
+Row.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node,
@@ -37,4 +39,4 @@ AsideRow.propTypes = {
     column: PropTypes.bool,
 };
 
-export default AsideRow;
+export default Row;

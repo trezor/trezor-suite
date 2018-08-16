@@ -10,7 +10,8 @@ import Header from '../common/Header';
 import Footer from '../common/Footer';
 import AccountTabs from './account/AccountTabs';
 import DeviceSettingsTabs from './pages/DeviceSettingsTabs';
-import AsideContainer from './aside';
+// import AsideContainer from './aside';
+import LeftNavigation from 'views/Device/components/LeftNavigation/Container';
 import ModalContainer from '../modal';
 import Notifications from '../common/Notification';
 import Log from '../common/Log';
@@ -29,7 +30,7 @@ const Wallet = (props: WalletContainerProps) => (
         <Header />
         {/* <div>{ props.wallet.online ? "ONLINE" : "OFFLINE" }</div> */}
         <main>
-            <AsideContainer />
+            <LeftNavigation />
             <article>
                 <nav>
                     <Route path="/device/:device/network/:network/account/:account" component={AccountTabs} />

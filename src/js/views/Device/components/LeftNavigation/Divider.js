@@ -16,16 +16,16 @@ const Wrapper = styled.div`
     border-bottom: 1px solid ${colors.DIVIDER};
 `;
 
-const AsideDivider = ({ textLeft, textRight }) => (
+const Divider = ({ textLeft, textRight }) => (
     <Wrapper>
         <p>{textLeft}</p>
         <p>{textRight}</p>
     </Wrapper>
 );
 
-AsideDivider.propTypes = {
+Divider.propTypes = {
     textLeft: PropTypes.string.isRequired,
     textRight: PropTypes.string.isRequired,
 };
 
-export default AsideDivider;
+export default Divider;

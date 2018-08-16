@@ -1,16 +1,91 @@
 /* @flow */
 import coins from 'constants/coins';
 import colors from 'config/colors';
+import { FONT_SIZE } from 'config/variables';
+import Icon from 'components/common/Icon';
 import ICONS from 'config/icons';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import styled from 'styled-components';
+
+import { ICON_SIZE } from 'config/variables';
+import { coinProp } from '../common';
+import Divider from '../Divider';
+import Row from '../Row';
 
 import type { TrezorDevice } from 'flowtype';
-import AsideDivider from './AsideDivider';
-import AsideRowCoin from './row/coin/AsideRowCoin';
-
 import type { Props } from './index';
+
+
+const CoinNameWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+const Logo = styled.div`
+    height: ${ICON_SIZE.BASE};
+    width: ${ICON_SIZE.BASE};
+    margin-right: 10px;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto ${ICON_SIZE.BASE};
+    background-image: url('${props => props.coinImg}');
+`;
+const CoinName = ({
+    coinImg, text,
+}) => (
+    <CoinNameWrapper>
+        <Logo
+            coinImg={coinImg}
+        />
+        <p>{text}</p>
+    </CoinNameWrapper>
+);
+
+CoinName.propTypes = {
+    coinImg: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
+};
+
+const RowCoinWrapper = styled.div`
+    display: block;
+    height: 50px;
+
+    font-size: ${FONT_SIZE.BASE};
+    color: ${colors.TEXT_PRIMARY};
+    &:hover {
+        background-color: ${colors.GRAY_LIGHT};
+    }
+`;
+const RowCoin = ({
+    coin, icon,
+}) => (
+    <RowCoinWrapper>
+        <Row>
+            <CoinName
+                coinImg={coin.img}
+                text={coin.name}
+            />
+            {icon && (
+                <Icon
+                    icon={icon.type}
+                    color={icon.color}
+                />
+            )}
+        </Row>
+    </RowCoinWrapper>
+);
+
+RowCoin.propTypes = {
+    ...coinProp,
+    icon: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        color: PropTypes.string.isRequired,
+    }),
+};
+
 
 class CoinSelection extends Component {
     getBaseUrl() {
@@ -44,7 +119,7 @@ class CoinSelection extends Component {
                             key={item.network}
                             to={`${this.getBaseUrl()}/network/${item.network}/account/0`}
                         >
-                            <AsideRowCoin
+                            <RowCoin
                                 coin={{
                                     img: imgUrl,
                                     name: item.name,
@@ -53,13 +128,13 @@ class CoinSelection extends Component {
                         </NavLink>
                     );
                 })}
-                <AsideDivider
+                <Divider
                     textLeft="Other coins"
                     textRight="(You will be redirected)"
                 />
                 {coins.map(coin => (
                     <a href={coin.url}>
-                        <AsideRowCoin
+                        <RowCoin
                             coin={{
                                 img: coin.image,
                                 name: coin.coinName,

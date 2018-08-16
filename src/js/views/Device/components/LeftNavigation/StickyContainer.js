@@ -141,7 +141,7 @@ export default class StickyContainer extends React.PureComponent<Props> {
                     className="sticky-container"
                     ref={node => this.wrapper = node}
                 >
-                    { this.props.children }
+                    {this.props.children}
                 </div>
             </aside>
         );

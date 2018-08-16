@@ -1,18 +1,14 @@
 /* @flow */
-
-
-import React, { Component, PropTypes } from 'react';
+import { toggleDeviceDropdown } from 'actions/WalletActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
-import { toggleDeviceDropdown } from 'actions/WalletActions';
-
-
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
-import Aside from './Aside';
+
+import LeftNavigation from './LeftNavigation';
 
 type OwnProps = {
 
@@ -41,8 +37,6 @@ type DispatchProps = {
     onSelectDevice: typeof TrezorConnectActions.onSelectDevice,
 }
 
-export type Props = StateProps & DispatchProps;
-
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => ({
     connect: state.connect,
     accounts: state.accounts,
@@ -67,7 +61,6 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     onSelectDevice: bindActionCreators(TrezorConnectActions.onSelectDevice, dispatch),
 });
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Aside);
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(Aside),
+    connect(mapStateToProps, mapDispatchToProps)(LeftNavigation),
 );
