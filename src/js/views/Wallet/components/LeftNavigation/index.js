@@ -37,6 +37,13 @@ class LeftNavigation extends Component {
         };
     }
 
+    componentDidMount() {
+        this.setState({
+            animationType: null,
+            shouldRenderDeviceSelection: false,
+        })
+    }
+
     componentWillReceiveProps() {
         const { deviceDropdownOpened } = this.props;
         const { selectedDevice } = this.props.wallet;
