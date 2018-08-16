@@ -2,7 +2,7 @@
 
 
 import React from 'react';
-import Loader from 'components/common/LoaderCircle';
+import Loader from 'components/LoaderCircle';
 
 export default (props: {}): React$Element<string> => (
     <section className="landing">

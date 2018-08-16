@@ -2,7 +2,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Notification } from 'components/common/Notification';
+import { Notification } from 'components/Notification';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 
 import type { State, Dispatch } from 'flowtype';

@@ -2,7 +2,7 @@
 
 
 import * as React from 'react';
-import { Notification } from 'components/common/Notification';
+import { Notification } from 'components/Notification';
 
 import type {
     State, TrezorDevice, Action, ThunkAction,

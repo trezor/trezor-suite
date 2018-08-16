@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js';
 
 import { findDeviceAccounts } from 'reducers/AccountsReducer';
 import * as stateUtils from 'reducers/utils';
-import Loader from 'components/common/LoaderCircle';
+import Loader from 'components/LoaderCircle';
 import Tooltip from 'rc-tooltip';
 
 import colors from 'config/colors';

@@ -1,15 +1,13 @@
 /* @flow */
 import coins from 'constants/coins';
 import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
-import Icon from 'components/common/Icon';
+import { FONT_SIZE, ICON_SIZE } from 'config/variables';
+import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styled from 'styled-components';
-
-import { ICON_SIZE } from 'config/variables';
 import { coinProp } from '../common';
 import Divider from '../Divider';
 import Row from '../Row';

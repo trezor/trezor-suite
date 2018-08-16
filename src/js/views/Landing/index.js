@@ -1,11 +1,11 @@
 /* @flow */
 
 import React from 'react';
-import { H2 } from 'components/common/Heading';
-import Header from 'components/common/Header';
-import Footer from 'components/common/Footer';
-import Log from 'components/common/Log';
-import Notifications, { Notification } from 'components/common/Notification';
+import { H2 } from 'components/Heading';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
+import Log from 'components/Log';
+import Notifications, { Notification } from 'components/Notification';
 
 import Preloader from './components/Preloader';
 import ConnectDevice from './components/ConnectDevice';

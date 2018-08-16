@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { H2 } from 'components/common/Heading';
+import { H2 } from 'components/Heading';
 import colors from 'config/colors';
 
 const Wrapper = styled.div`

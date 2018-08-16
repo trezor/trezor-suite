@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import { H2 } from 'components/common/Heading';
+import { H2 } from 'components/Heading';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
