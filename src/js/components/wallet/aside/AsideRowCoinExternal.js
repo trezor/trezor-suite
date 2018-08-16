@@ -2,13 +2,14 @@ import styled from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import ICONS from 'config/icons';
+import colors from 'config/colors';
+
 import Icon from 'components/common/Icon';
 import AsideRow from './AsideRow';
 import AsideRowCoin from './AsideRowCoin';
 import CoinName from './CoinName';
 
-import ICONS from 'constants/icons';
-import colors from 'config/colors';
 import { coinProp } from './common';
 
 const AsideRowCoinExternal = ({ coin, url }) => (

@@ -4,7 +4,7 @@ import { H2 } from 'components/common/Heading';
 import Icon from 'components/common/Icon';
 import colors from 'config/colors';
 import Button from 'components/common/Button';
-import ICONS from 'constants/icons';
+import ICONS from 'config/icons';
 import { connect } from 'react-redux';
 
 const Section = styled.section`

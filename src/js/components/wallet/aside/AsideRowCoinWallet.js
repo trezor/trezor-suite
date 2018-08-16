@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
@@ -7,7 +6,6 @@ import AsideRow from './AsideRow';
 import AsideRowCoin from './AsideRowCoin';
 import CoinName from './CoinName';
 
-import colors from 'config/colors';
 import { coinProp } from './common';
 
 const AsideRowCoinWallet = ({ coin, url }) => (
