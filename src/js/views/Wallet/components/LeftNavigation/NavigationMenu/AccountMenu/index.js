@@ -45,22 +45,22 @@ const RowAccountWrapper = styled.div`
 const RowAccount = ({
     accountIndex, balance, url, isSelected = false,
 }) => (
-    <NavLink to={url}>
-        <RowAccountWrapper
-            to={url}
-            isSelected={isSelected}
-        >
-            <Row column>
-                Account #{accountIndex + 1}
-                {balance ? (
-                    <span>{balance}</span>
-                ) : (
-                    <span>Loading...</span>
-                )}
-            </Row>
-        </RowAccountWrapper>
-    </NavLink>
-);
+        <NavLink to={url}>
+            <RowAccountWrapper
+                to={url}
+                isSelected={isSelected}
+            >
+                <Row column>
+                    Account #{accountIndex + 1}
+                    {balance ? (
+                        <span>{balance}</span>
+                    ) : (
+                            <span>Loading...</span>
+                        )}
+                </Row>
+            </RowAccountWrapper>
+        </NavLink>
+    );
 RowAccount.propTypes = {
     accountIndex: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired,
@@ -68,7 +68,7 @@ RowAccount.propTypes = {
     isSelected: PropTypes.bool,
 };
 
-const AccountSelection = (props: Props): ?React$Element<string> => {
+const AccountMenu = (props: Props): ?React$Element<string> => {
     const selected = props.wallet.selectedDevice;
     if (!selected) return null;
 
@@ -204,4 +204,4 @@ const AccountSelection = (props: Props): ?React$Element<string> => {
     );
 };
 
-export default AccountSelection;
+export default AccountMenu;

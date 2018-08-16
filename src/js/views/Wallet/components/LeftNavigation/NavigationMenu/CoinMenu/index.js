@@ -31,13 +31,13 @@ const Logo = styled.div`
 const CoinName = ({
     coinImg, text,
 }) => (
-    <CoinNameWrapper>
-        <Logo
-            coinImg={coinImg}
-        />
-        <p>{text}</p>
-    </CoinNameWrapper>
-);
+        <CoinNameWrapper>
+            <Logo
+                coinImg={coinImg}
+            />
+            <p>{text}</p>
+        </CoinNameWrapper>
+    );
 CoinName.propTypes = {
     coinImg: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
@@ -56,21 +56,21 @@ const RowCoinWrapper = styled.div`
 const RowCoin = ({
     coin, icon,
 }) => (
-    <RowCoinWrapper>
-        <Row>
-            <CoinName
-                coinImg={coin.img}
-                text={coin.name}
-            />
-            {icon && (
-                <Icon
-                    icon={icon.type}
-                    color={icon.color}
+        <RowCoinWrapper>
+            <Row>
+                <CoinName
+                    coinImg={coin.img}
+                    text={coin.name}
                 />
-            )}
-        </Row>
-    </RowCoinWrapper>
-);
+                {icon && (
+                    <Icon
+                        icon={icon.type}
+                        color={icon.color}
+                    />
+                )}
+            </Row>
+        </RowCoinWrapper>
+    );
 RowCoin.propTypes = {
     coin: PropTypes.shape({
         img: PropTypes.string.isRequired,
@@ -83,7 +83,7 @@ RowCoin.propTypes = {
 };
 
 
-class CoinSelection extends Component {
+class CoinMenu extends Component {
     getBaseUrl() {
         const { selectedDevice } = this.props.wallet;
         let baseUrl = '';
@@ -147,11 +147,11 @@ class CoinSelection extends Component {
     }
 }
 
-CoinSelection.propTypes = {
+CoinMenu.propTypes = {
     config: PropTypes.object,
     wallet: PropTypes.object,
     selectedDevice: PropTypes.object,
     localStorage: PropTypes.object,
 };
 
-export default CoinSelection;
+export default CoinMenu;
