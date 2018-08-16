@@ -8,6 +8,7 @@ import * as TOKEN from './constants/token';
 import * as CONNECT from './constants/TrezorConnect';
 import * as NOTIFICATION from './constants/notification';
 import * as WALLET from './constants/wallet';
+import { getNewInstance } from '../reducers/DevicesReducer';
 
 import { push } from 'react-router-redux';
 import * as DiscoveryActions from './DiscoveryActions';
@@ -401,10 +402,17 @@ export const forget = (device: TrezorDevice): Action => ({
 });
 
 export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    // dispatch({
+    //     type: CONNECT.TRY_TO_DUPLICATE,
+    //     device,
+    // });
+
+    const instance: number = getNewInstance(getState().devices, device);
+    const extended: Object = { instance };
     dispatch({
-        type: CONNECT.TRY_TO_DUPLICATE,
-        device,
-    });
+        type: CONNECT.DUPLICATE,
+        device: { ...device, ...extended }
+    })
 };
 
 
