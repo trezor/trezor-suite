@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 
+// general
 import ErrorBoundary from 'support/ErrorBoundary';
 import LandingContainer from 'views/Landing/Container';
 
@@ -17,6 +18,7 @@ import WalletInitialize from 'views/Wallet/views/Initialize';
 import WalletAcquire from 'views/Wallet/views/Acquire';
 import WalletUnreadableDevice from 'views/Wallet/views/UnreadableDevice';
 
+// wallet views - accounts
 import SignVerifyContainer from './Wallet/components/Sign';
 import ReceiveContainer from './Wallet/components/Receive/Container';
 import SendFormContainer from './Wallet/components/Send/Container';
