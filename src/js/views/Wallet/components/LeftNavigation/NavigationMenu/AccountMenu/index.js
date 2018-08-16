@@ -71,6 +71,7 @@ RowAccount.propTypes = {
 
 const AccountMenu = (props: Props): ?React$Element<string> => {
     const selected = props.wallet.selectedDevice;
+    console.warn('selected', selected);
     if (!selected) return null;
 
     const { location } = props.router;
