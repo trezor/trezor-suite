@@ -29,7 +29,7 @@ const Row = styled.div`
     padding-bottom: 98px;
 `;
 
-export const DeviceSettings = () => (
+const DeviceSettings = () => (
     <Section>
         <Row>
             <Icon

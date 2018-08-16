@@ -5,18 +5,17 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 
 import ErrorBoundary from 'support/ErrorBoundary';
-
-import WalletContainer from 'views/Wallet';
-import BootloaderContainer from 'components/wallet/pages/Bootloader';
-import InitializeContainer from 'components/wallet/pages/Initialize';
-import AcquireContainer from 'components/wallet/pages/Acquire';
-import UnreadableDeviceContainer from 'components/wallet/pages/UnreadableDevice';
-
-import DashboardContainer from 'components/wallet/pages/Dashboard';
-
-import DeviceSettingsContainer from 'components/wallet/pages/DeviceSettings';
-import WalletSettingsContainer from 'components/wallet/pages/WalletSettings';
 import LandingContainer from 'views/Landing/Container';
+
+// wallet views
+import WalletContainer from 'views/Wallet';
+import WalletDashboard from 'views/Wallet/views/Dashboard';
+import WalletDeviceSettings from 'views/Wallet/views/DeviceSettings';
+import WalletSettings from 'views/Wallet/views/WalletSettings';
+import WalletBootloader from 'views/Wallet/views/Bootloader';
+import WalletInitialize from 'views/Wallet/views/Initialize';
+import WalletAcquire from 'views/Wallet/views/Acquire';
+import WalletUnreadableDevice from 'views/Wallet/views/UnreadableDevice';
 
 import SignVerifyContainer from './Wallet/components/Sign';
 import ReceiveContainer from './Wallet/components/Receive/Container';
@@ -35,14 +34,14 @@ const App = () => (
                 <Route>
                     <ErrorBoundary>
                         <WalletContainer>
-                            <Route exact path="/settings" component={WalletSettingsContainer} />
-                            <Route exact path="/device/:device/" component={DashboardContainer} />
-                            <Route exact path="/device/:device/network/:network" component={DashboardContainer} />
-                            <Route exact path="/device/:device/acquire" component={AcquireContainer} />
-                            <Route exact path="/device/:device/unreadable" component={UnreadableDeviceContainer} />
-                            <Route exact path="/device/:device/bootloader" component={BootloaderContainer} />
-                            <Route exact path="/device/:device/initialize" component={InitializeContainer} />
-                            <Route exact path="/device/:device/settings" component={DeviceSettingsContainer} />
+                            <Route exact path="/settings" component={WalletSettings} />
+                            <Route exact path="/device/:device/" component={WalletDashboard} />
+                            <Route exact path="/device/:device/network/:network" component={WalletDashboard} />
+                            <Route exact path="/device/:device/acquire" component={WalletAcquire} />
+                            <Route exact path="/device/:device/unreadable" component={WalletUnreadableDevice} />
+                            <Route exact path="/device/:device/bootloader" component={WalletBootloader} />
+                            <Route exact path="/device/:device/initialize" component={WalletInitialize} />
+                            <Route exact path="/device/:device/settings" component={WalletDeviceSettings} />
                             <Route exact path="/device/:device/network/:network/account/:account" component={SummaryContainer} />
                             <Route path="/device/:device/network/:network/account/:account/send" component={SendFormContainer} />
                             <Route path="/device/:device/network/:network/account/:account/send/override" component={SendFormContainer} />

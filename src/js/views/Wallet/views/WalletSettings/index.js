@@ -5,7 +5,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-export const WalletSettings = () => (
+const WalletSettings = () => (
     <section className="settings">
             Wallet settings
     </section>
