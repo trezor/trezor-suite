@@ -129,7 +129,7 @@ class CoinMenu extends Component {
                     textRight="(You will be redirected)"
                 />
                 {coins.map(coin => (
-                    <a href={coin.url}>
+                    <a key={coin.url} href={coin.url}>
                         <RowCoin
                             coin={{
                                 img: coin.image,

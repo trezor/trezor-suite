@@ -4,11 +4,7 @@ import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
-
-import type { TrezorDevice } from 'flowtype';
-import {
-    AccountMenu, CoinMenu, DeviceSelect, DeviceDropdown,
-} from './NavigationMenu';
+import { AccountMenu, CoinMenu, DeviceSelect, DeviceDropdown } from './NavigationMenu';
 import StickyContainer from './StickyContainer';
 
 const TransitionGroupWrapper = styled(TransitionGroup)`
@@ -42,13 +38,15 @@ class LeftNavigation extends Component {
     }
 
     componentWillReceiveProps() {
+        const { deviceDropdownOpened } = this.props;
         const { selectedDevice } = this.props.wallet;
+        const { network } = this.props.location;
         const hasFeatures = selectedDevice && selectedDevice.features;
         const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
 
-        if (this.props.deviceDropdownOpened) {
+        if (deviceDropdownOpened) {
             this.setState({ shouldRenderDeviceSelection: true });
-        } else if (this.props.location.network) {
+        } else if (network) {
             this.setState({
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-left',
@@ -83,7 +81,8 @@ class LeftNavigation extends Component {
     }
 
     shouldRenderAccounts() {
-        return !this.state.shouldRenderDeviceSelection && this.state.animationType === 'slide-left';
+        const { selectedDevice } = this.props.wallet;
+        return selectedDevice && !this.state.shouldRenderDeviceSelection && this.state.animationType === 'slide-left';
     }
 
     shouldRenderCoins() {
@@ -99,7 +98,7 @@ class LeftNavigation extends Component {
                 <DeviceSelect {...this.props} />
                 <MenuWrapper>
                     {this.state.shouldRenderDeviceSelection && this.getMenuTransition(<DeviceDropdown {...this.props} />) }
-                    {/* {this.shouldRenderAccounts && <AccountMenu key="accounts" {...this.props} />} */}
+                    {/* {this.shouldRenderAccounts && this.getMenuTransition(<AccountMenu key="accounts" {...this.props} />)} */}
                     {this.shouldRenderCoins && <CoinMenu key="coins" {...this.props} />}
                 </MenuWrapper>
                 <StickyBottom>

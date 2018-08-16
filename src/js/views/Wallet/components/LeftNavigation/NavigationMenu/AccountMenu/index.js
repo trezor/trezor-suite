@@ -43,6 +43,7 @@ const RowAccountWrapper = styled.div`
         }
     `}
 `;
+
 const RowAccount = ({
     accountIndex, balance, url, isSelected = false,
 }) => (
@@ -62,6 +63,7 @@ const RowAccount = ({
         </RowAccountWrapper>
     </NavLink>
 );
+
 RowAccount.propTypes = {
     accountIndex: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired,
@@ -71,9 +73,6 @@ RowAccount.propTypes = {
 
 const AccountMenu = (props: Props): ?React$Element<string> => {
     const selected = props.wallet.selectedDevice;
-    console.warn('selected', selected);
-    if (!selected) return null;
-
     const { location } = props.router;
     const urlParams = location.state;
     const { accounts } = props;
@@ -81,8 +80,6 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
 
     const { config } = props.localStorage;
     const selectedCoin = config.coins.find(c => c.network === location.state.network);
-    if (!selectedCoin) return;
-
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
     const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);
