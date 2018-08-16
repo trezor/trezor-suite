@@ -7,6 +7,7 @@ import { TRANSITION_TIME } from 'config/variables';
 
 const Wrapper = styled.div`
     padding: 16px 24px;
+    height: 100%;
 
     display: flex;
     flex-direction: row;
@@ -29,6 +30,10 @@ const AsideRow = ({ children, column = false }) => (
 );
 
 AsideRow.propTypes = {
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node,
+    ]),
     column: PropTypes.bool,
 };
 

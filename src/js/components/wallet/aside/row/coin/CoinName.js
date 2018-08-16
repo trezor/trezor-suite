@@ -19,7 +19,7 @@ const Logo = styled.div`
     background-repeat: no-repeat;
     background-position: center;
     background-size: auto ${ICON_SIZE.BASE};
-    background-image: url('images/${props => props.coinImg}-logo.png');
+    background-image: url('${props => props.coinImg}');
 `;
 
 const CoinName = ({ coinImg, text }) => (

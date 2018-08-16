@@ -3,14 +3,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
-import AsideRow from './AsideRow';
+import AsideRow from '../AsideRow';
 
 import colors from 'config/colors';
 import { FONT_SIZE, BORDER_WIDTH } from 'config/variables';
 
 const Wrapper = styled.div`
     height: 64px;
+
     font-size: ${FONT_SIZE.SMALL};
+    color: ${colors.TEXT_PRIMARY};
 
     border-top: 1px solid ${colors.DIVIDER};
     span {
@@ -18,7 +20,7 @@ const Wrapper = styled.div`
         color: ${colors.TEXT_SECONDARY};
     }
 
-    ${props => props.selected && css`
+    ${props => props.isSelected && css`
         border-left: ${BORDER_WIDTH.SELECTED} solid ${colors.GREEN_PRIMARY};
         background: ${colors.WHITE};
 
@@ -32,11 +34,11 @@ const Wrapper = styled.div`
     `}
 `;
 
-const AsideRowAccount = ({ accountIndex, balance, url, selected }) => (
+const AsideRowAccount = ({ accountIndex, balance, url, isSelected = false }) => (
     <NavLink to={url}>
         <Wrapper
             to={url}
-            selected={selected}
+            isSelected={isSelected}
         >
             <AsideRow column>
                 Account #{accountIndex + 1}
@@ -52,13 +54,9 @@ const AsideRowAccount = ({ accountIndex, balance, url, selected }) => (
 
 AsideRowAccount.propTypes = {
     accountIndex: PropTypes.number.isRequired,
-    balance: PropTypes.string,
     url: PropTypes.string.isRequired,
-    selected: PropTypes.bool,
-};
-
-AsideRowAccount.defaultProps = {
-    selected: true,
+    balance: PropTypes.string,
+    isSelected: PropTypes.bool,
 };
 
 export default AsideRowAccount;
