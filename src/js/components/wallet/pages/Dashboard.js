@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { H2 } from 'components/common/Heading';
+import { H2 } from 'components/Heading';
 import DashboardImg from 'images/dashboard.png';
 
 const Wrapper = styled.div`

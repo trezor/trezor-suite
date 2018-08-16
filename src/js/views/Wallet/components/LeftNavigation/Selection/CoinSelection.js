@@ -1,7 +1,7 @@
 /* @flow */
 import coins from 'constants/coins';
 import colors from 'config/colors';
-import Icon from 'components/common/Icon';
+import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';

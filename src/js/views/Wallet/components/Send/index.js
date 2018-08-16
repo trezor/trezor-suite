@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
-import { H2 } from 'components/common/Heading';
+import { H2 } from 'components/Heading';
 import { calculate, validation } from 'actions/SendFormActions';
 import type { Token } from 'flowtype';
 import AdvancedForm from './components/AdvancedForm';

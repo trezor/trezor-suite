@@ -6,7 +6,7 @@ import { ConnectedRouter } from 'react-router-redux';
 
 import ErrorBoundary from 'support/ErrorBoundary';
 
-import WalletContainer from 'views/Device';
+import WalletContainer from 'views/Wallet';
 import BootloaderContainer from 'components/wallet/pages/Bootloader';
 import InitializeContainer from 'components/wallet/pages/Initialize';
 import AcquireContainer from 'components/wallet/pages/Acquire';
@@ -18,10 +18,10 @@ import DeviceSettingsContainer from 'components/wallet/pages/DeviceSettings';
 import WalletSettingsContainer from 'components/wallet/pages/WalletSettings';
 import LandingContainer from 'views/Landing/Container';
 
-import SignVerifyContainer from './Device/components/Sign';
-import ReceiveContainer from './Device/components/Receive/Container';
-import SendFormContainer from './Device/components/Send/Container';
-import SummaryContainer from './Device/components/Summary/Container';
+import SignVerifyContainer from './Wallet/components/Sign';
+import ReceiveContainer from './Wallet/components/Receive/Container';
+import SendFormContainer from './Wallet/components/Send/Container';
+import SummaryContainer from './Wallet/components/Summary/Container';
 
 import store, { history } from '../store';
 

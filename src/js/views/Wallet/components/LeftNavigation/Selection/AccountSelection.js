@@ -1,7 +1,7 @@
 /* @flow */
 import BigNumber from 'bignumber.js';
 import colors from 'config/colors';
-import Loader from 'components/common/LoaderCircle';
+import Loader from 'components/LoaderCircle';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled, { css } from 'styled-components';

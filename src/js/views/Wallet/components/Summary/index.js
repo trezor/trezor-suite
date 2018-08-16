@@ -1,13 +1,13 @@
 /* @flow */
 import styled from 'styled-components';
 import React, { Component } from 'react';
-import { H2 } from 'components/common/Heading';
+import { H2 } from 'components/Heading';
 import BigNumber from 'bignumber.js';
 import { Async as AsyncSelect } from 'react-select';
 import Tooltip from 'rc-tooltip';
 
 import { resolveAfter } from 'utils/promiseUtils';
-import { Notification } from 'components/common/Notification';
+import { Notification } from 'components/Notification';
 import * as stateUtils from 'reducers/utils';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
 import SelectedAccount from '../SelectedAccount';

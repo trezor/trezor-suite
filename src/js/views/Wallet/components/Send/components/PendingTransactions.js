@@ -3,7 +3,7 @@
 
 import React from 'react';
 import ColorHash from 'color-hash';
-import { H2 } from 'components/common/Heading';
+import { H2 } from 'components/Heading';
 import ScaleText from 'react-scale-text';
 
 import { findAccountTokens } from 'reducers/TokensReducer';

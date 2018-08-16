@@ -7,12 +7,12 @@ import { Route, withRouter } from 'react-router-dom';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 
-import Header from 'components/common/Header';
-import Footer from 'components/common/Footer';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
 import DeviceSettingsTabs from 'components/wallet/pages/DeviceSettingsTabs';
 import ModalContainer from 'components/modal';
-import Notifications from 'components/common/Notification';
-import Log from 'components/common/Log';
+import Notifications from 'components/Notification';
+import Log from 'components/Log';
 
 import LeftNavigation from './components/LeftNavigation/Container';
 import AccountTabs from './components/Tabs';

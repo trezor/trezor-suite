@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import TrezorConnect from 'trezor-connect';
-import { H2 } from 'components/common/Heading';
+import { H2 } from 'components/Heading';
 
 import type { State, TrezorDevice } from 'flowtype';
 
