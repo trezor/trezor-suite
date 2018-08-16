@@ -154,7 +154,7 @@ export class DeviceDropdown extends Component<Props> {
 
             deviceMenuItems.push({ type: 'settings', label: 'Device settings' });
             if (selected.features.passphrase_protection && selected.connected && selected.available) {
-                deviceMenuItems.push({ type: 'clone', label: 'Clone device' });
+                deviceMenuItems.push({ type: 'clone', label: 'Create hidden wallet' });
             }
             //if (selected.remember) {
             deviceMenuItems.push({ type: 'forget', label: 'Forget device' });
