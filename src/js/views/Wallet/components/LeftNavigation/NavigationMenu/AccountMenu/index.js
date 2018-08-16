@@ -17,6 +17,11 @@ import type { Props } from '../../common';
 
 import Row from '../../Row';
 
+const Text = styled.span`
+    font-size: ${FONT_SIZE.SMALLER};
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 const RowAccountWrapper = styled.div`
     height: 64px;
 
@@ -24,10 +29,6 @@ const RowAccountWrapper = styled.div`
     color: ${colors.TEXT_PRIMARY};
 
     border-top: 1px solid ${colors.DIVIDER};
-    span {
-        font-size: ${FONT_SIZE.SMALLER};
-        color: ${colors.TEXT_SECONDARY};
-    }
 
     ${props => props.isSelected && css`
         border-left: ${BORDER_WIDTH.SELECTED} solid ${colors.GREEN_PRIMARY};
@@ -53,9 +54,9 @@ const RowAccount = ({
             <Row column>
                 Account #{accountIndex + 1}
                 {balance ? (
-                    <span>{balance}</span>
+                    <Text>{balance}</Text>
                 ) : (
-                    <span>Loading...</span>
+                    <Text>Loading...</Text>
                 )}
             </Row>
         </RowAccountWrapper>
