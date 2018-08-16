@@ -6,11 +6,11 @@ export const FONT_SIZE = {
 
 export const TRANSITION_TIME = {
     BASE: '0.3s',
-}
+};
 
 export const ICON_SIZE = {
     BASE: '20px',
-}
+};
 
 export const BORDER_WIDTH = {
     SELECTED: '3px',

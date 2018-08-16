@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     transition: background-color ${TRANSITION_TIME.BASE}, color ${TRANSITION_TIME.BASE};
 `;
 
-const AsideRow = ({ children, column }) => (
+const AsideRow = ({ children, column = false }) => (
     <Wrapper
         column={column}
     >{children}
@@ -31,9 +31,5 @@ const AsideRow = ({ children, column }) => (
 AsideRow.propTypes = {
     column: PropTypes.bool,
 };
-
-AsideRow.defaultProps = {
-    column: false,
-}
 
 export default AsideRow;

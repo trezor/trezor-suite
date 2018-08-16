@@ -3,10 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
-import AsideRow from './AsideRow';
 
 import colors from 'config/colors';
 import { FONT_SIZE, BORDER_WIDTH } from 'config/variables';
+import AsideRow from './AsideRow';
 
 const Wrapper = styled.div`
     height: 64px;
@@ -32,7 +32,9 @@ const Wrapper = styled.div`
     `}
 `;
 
-const AsideRowAccount = ({ accountIndex, balance, url, selected }) => (
+const AsideRowAccount = ({
+    accountIndex, balance, url, selected,
+}) => (
     <NavLink to={url}>
         <Wrapper
             to={url}

@@ -25,7 +25,8 @@
                 "reducers": "./src/js/reducers",
                 "support": "./src/js/support",
                 "utils": "./src/js/utils",
-                "services": "./src/js/services"
+                "services": "./src/js/services",
+                "views": "./src/js/views"
             }
         }],
         "babel-plugin-styled-components"

@@ -1,17 +1,17 @@
 /* @flow */
 
-
 import React from 'react';
 import { H2 } from 'components/common/Heading';
-import Preloader from './Preloader';
-import ConnectDevice from './ConnectDevice';
-import InstallBridge from './InstallBridge';
-import LocalStorageError from './LocalStorageError';
-import TrezorConnectError from './TrezorConnectError';
-import Header from '../common/Header';
-import Footer from '../common/Footer';
-import Log from '../common/Log';
-import Notifications, { Notification } from '../common/Notification';
+import Header from 'components/common/Header';
+import Footer from 'components/common/Footer';
+import Log from 'components/common/Log';
+import Notifications, { Notification } from 'components/common/Notification';
+
+import Preloader from './components/Preloader';
+import ConnectDevice from './components/ConnectDevice';
+import InstallBridge from './components/InstallBridge';
+import LocalStorageError from './components/LocalStorageError';
+import TrezorConnectError from './components/TrezorConnectError';
 
 import type { Props } from './index';
 

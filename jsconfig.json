@@ -11,6 +11,7 @@
             "reducers/*": ["./src/js/reducers/*"],
             "utils/*": ["./src/js/utils/*"],
             "services/*": ["./src/js/services/*"],
+            "views/*": ["./src/js/views/*"],
         }
     }
 }

@@ -6,7 +6,6 @@ import { ConnectedRouter } from 'react-router-redux';
 
 import ErrorBoundary from 'support/ErrorBoundary';
 
-import LandingPageContainer from 'components/landing';
 import WalletContainer from 'components/wallet';
 import BootloaderContainer from 'components/wallet/pages/Bootloader';
 import InitializeContainer from 'components/wallet/pages/Initialize';
@@ -20,15 +19,16 @@ import ReceiveContainer from 'components/wallet/account/receive';
 import SignVerifyContainer from 'components/wallet/account/sign/SignVerify';
 import DeviceSettingsContainer from 'components/wallet/pages/DeviceSettings';
 import WalletSettingsContainer from 'components/wallet/pages/WalletSettings';
+import LandingContainer from 'views/Landing/Container';
 import store, { history } from '../store';
 
 const App = () => (
     <Provider store={store}>
         <ConnectedRouter history={history}>
             <Switch>
-                <Route exact path="/" component={LandingPageContainer} />
-                <Route exact path="/bridge" component={LandingPageContainer} />
-                <Route exact path="/import" component={LandingPageContainer} />
+                <Route exact path="/" component={LandingContainer} />
+                <Route exact path="/bridge" component={LandingContainer} />
+                <Route exact path="/import" component={LandingContainer} />
                 <Route>
                     <WalletContainer>
                         <ErrorBoundary>

@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
@@ -15,7 +14,6 @@ import AsideContainer from './aside';
 import ModalContainer from '../modal';
 import Notifications from '../common/Notification';
 import Log from '../common/Log';
-
 
 type WalletContainerProps = {
     wallet: $ElementType<State, 'wallet'>,
