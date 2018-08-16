@@ -37,12 +37,6 @@ export default class InstallBridge extends Component<Props, State> {
         };
     }
 
-    onChange(value: InstallTarget) {
-        this.setState({
-            target: value,
-        });
-    }
-
     componentWillUpdate() {
         if (this.props.browserState.osname && !this.state.target) {
             const currentTarget: ?InstallTarget = installers.find(i => i.id === this.props.browserState.osname);
@@ -50,6 +44,12 @@ export default class InstallBridge extends Component<Props, State> {
                 target: currentTarget,
             });
         }
+    }
+
+    onChange(value: InstallTarget) {
+        this.setState({
+            target: value,
+        });
     }
 
     render() {

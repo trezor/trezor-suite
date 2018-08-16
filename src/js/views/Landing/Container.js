@@ -36,7 +36,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     wallet: state.wallet,
     connect: state.connect,
     router: state.router,
-    wallet: state.wallet,
     devices: state.devices,
 });
 

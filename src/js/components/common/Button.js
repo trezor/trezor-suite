@@ -13,15 +13,12 @@ const Wrapper = styled.button`
     background: ${colors.GREEN_PRIMARY};
     color: ${colors.WHITE};
     border: 0;
-
     &:hover {
         background: ${colors.GREEN_SECONDARY};
     }
-
     &:active {
         background: ${colors.GREEN_TERTIARY};
     }
-
     ${props => props.disabled && css`
         pointer-events: none;
         color: ${colors.TEXT_SECONDARY};
