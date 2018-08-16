@@ -81,8 +81,9 @@ class LeftNavigation extends Component {
     }
 
     shouldRenderAccounts() {
+        const { network } = this.props.location;
         const { selectedDevice } = this.props.wallet;
-        return selectedDevice && !this.state.shouldRenderDeviceSelection && this.state.animationType === 'slide-left';
+        return selectedDevice && network && !this.state.shouldRenderDeviceSelection && this.state.animationType === 'slide-left';
     }
 
     shouldRenderCoins() {
@@ -98,8 +99,8 @@ class LeftNavigation extends Component {
                 <DeviceSelect {...this.props} />
                 <MenuWrapper>
                     {this.state.shouldRenderDeviceSelection && this.getMenuTransition(<DeviceDropdown {...this.props} />) }
-                    {/* {this.shouldRenderAccounts && this.getMenuTransition(<AccountMenu key="accounts" {...this.props} />)} */}
-                    {this.shouldRenderCoins && <CoinMenu key="coins" {...this.props} />}
+                    {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
+                    {this.shouldRenderCoins() && <CoinMenu {...this.props} />}
                 </MenuWrapper>
                 <StickyBottom>
                     <Help className="help">
