@@ -4,9 +4,9 @@ import TrezorConnect from 'trezor-connect';
 
 import type { TrezorDevice } from 'flowtype';
 
-import type { Props } from '../common';
+import type { Props } from '../../common';
 
-import AsideDivider from '../Divider';
+import AsideDivider from '../../Divider';
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;

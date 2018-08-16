@@ -9,10 +9,10 @@ import type { State, Dispatch } from 'flowtype';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import DeviceSettingsTabs from 'components/wallet/pages/DeviceSettingsTabs';
 import ModalContainer from 'components/modal';
 import Notifications from 'components/Notification';
 import Log from 'components/Log';
+import DeviceSettingsTabs from './views/DeviceSettingsTabs';
 
 import LeftNavigation from './components/LeftNavigation/Container';
 import AccountTabs from './components/Tabs';
