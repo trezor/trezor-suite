@@ -146,7 +146,7 @@ class LeftNavigation extends Component {
                             target="_blank"
                             rel="noreferrer noopener"
                         >
-                            <StyledIcon size={25} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />Need help?
+                            <Icon size={25} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />Need help?
                         </A>
                     </Help>
                 </StickyBottom>
