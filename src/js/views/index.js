@@ -6,20 +6,23 @@ import { ConnectedRouter } from 'react-router-redux';
 
 import ErrorBoundary from 'support/ErrorBoundary';
 
-import WalletContainer from 'components/wallet';
+import WalletContainer from 'views/Device';
 import BootloaderContainer from 'components/wallet/pages/Bootloader';
 import InitializeContainer from 'components/wallet/pages/Initialize';
 import AcquireContainer from 'components/wallet/pages/Acquire';
 import UnreadableDeviceContainer from 'components/wallet/pages/UnreadableDevice';
 
 import DashboardContainer from 'components/wallet/pages/Dashboard';
-import SummaryContainer from 'components/wallet/account/summary';
-import SendFormContainer from 'components/wallet/account/send';
-import ReceiveContainer from 'components/wallet/account/receive';
-import SignVerifyContainer from 'components/wallet/account/sign/SignVerify';
+
 import DeviceSettingsContainer from 'components/wallet/pages/DeviceSettings';
 import WalletSettingsContainer from 'components/wallet/pages/WalletSettings';
 import LandingContainer from 'views/Landing/Container';
+
+import SignVerifyContainer from './Device/components/Sign';
+import ReceiveContainer from './Device/components/Receive/Container';
+import SendFormContainer from './Device/components/Send/Container';
+import SummaryContainer from './Device/components/Summary/Container';
+
 import store, { history } from '../store';
 
 const App = () => (
@@ -30,8 +33,8 @@ const App = () => (
                 <Route exact path="/bridge" component={LandingContainer} />
                 <Route exact path="/import" component={LandingContainer} />
                 <Route>
-                    <WalletContainer>
-                        <ErrorBoundary>
+                    <ErrorBoundary>
+                        <WalletContainer>
                             <Route exact path="/settings" component={WalletSettingsContainer} />
                             <Route exact path="/device/:device/" component={DashboardContainer} />
                             <Route exact path="/device/:device/network/:network" component={DashboardContainer} />
@@ -45,8 +48,8 @@ const App = () => (
                             <Route path="/device/:device/network/:network/account/:account/send/override" component={SendFormContainer} />
                             <Route path="/device/:device/network/:network/account/:account/receive" component={ReceiveContainer} />
                             <Route path="/device/:device/network/:network/account/:account/signverify" component={SignVerifyContainer} />
-                        </ErrorBoundary>
-                    </WalletContainer>
+                        </WalletContainer>
+                    </ErrorBoundary>
                 </Route>
             </Switch>
         </ConnectedRouter>
