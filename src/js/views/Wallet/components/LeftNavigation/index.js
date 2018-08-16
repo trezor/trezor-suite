@@ -5,11 +5,11 @@ import styled from 'styled-components';
 
 import type { TrezorDevice } from 'flowtype';
 import {
-    AccountSelection,
-    CoinSelection,
+    AccountMenu,
+    CoinMenu,
     DeviceSelect,
     DeviceDropdown,
-} from './Selection';
+} from './Menu';
 import StickyContainer from './StickyContainer';
 
 import type { Props } from './index';
@@ -72,7 +72,7 @@ const LeftNavigation = (props: Props): React$Element<typeof StickyContainer | st
         animationType = 'slide-left';
         // menu = (
         //     <TransitionMenu animationType="slide-left">
-        //         <AccountSelection {...props} />
+        //         <AccountMenu {...props} />
         //     </TransitionMenu>
         // );
     } else if (selected.features && !selected.features.bootloader_mode && selected.features.initialized) {
@@ -81,7 +81,7 @@ const LeftNavigation = (props: Props): React$Element<typeof StickyContainer | st
         animationType = 'slide-right';
         // menu = (
         //     <TransitionMenu animationType="slide-right">
-        //         <CoinSelection {...props} />
+        //         <CoinMenu {...props} />
         //     </TransitionMenu>
         // );
     }
@@ -97,8 +97,8 @@ const LeftNavigation = (props: Props): React$Element<typeof StickyContainer | st
                 <TransitionMenu
                     animationType={animationType}
                 >
-                    {animationType === 'slide-left' && <AccountSelection key="accounts" {...props} />}
-                    {animationType === 'slide-right' && <CoinSelection key="coins" {...props} />}
+                    {animationType === 'slide-left' && <AccountMenu key="accounts" {...props} />}
+                    {animationType === 'slide-right' && <CoinMenu key="coins" {...props} />}
                 </TransitionMenu>
             )}
 

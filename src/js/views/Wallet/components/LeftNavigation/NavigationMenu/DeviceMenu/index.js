@@ -1,14 +1,12 @@
 /* @flow */
-
-
 import React, { Component } from 'react';
-import Select from 'react-select';
 import TrezorConnect from 'trezor-connect';
 
-import AsideDivider from '../Divider';
-
 import type { TrezorDevice } from 'flowtype';
-import type { Props } from './index';
+
+import type { Props } from '../common';
+
+import AsideDivider from '../Divider';
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;

@@ -8,33 +8,12 @@ import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 
+import type { StateProps, DispatchProps } from './common';
+
 import LeftNavigation from './index';
 
 type OwnProps = {
 
-}
-
-type StateProps = {
-    connect: $ElementType<State, 'connect'>,
-    accounts: $ElementType<State, 'accounts'>,
-    router: $ElementType<State, 'router'>,
-    deviceDropdownOpened: boolean,
-    fiat: $ElementType<State, 'fiat'>,
-    localStorage: $ElementType<State, 'localStorage'>,
-    discovery: $ElementType<State, 'discovery'>,
-    wallet: $ElementType<State, 'wallet'>,
-    devices: $ElementType<State, 'devices'>,
-    pending: $ElementType<State, 'pending'>,
-}
-
-type DispatchProps = {
-    toggleDeviceDropdown: typeof toggleDeviceDropdown,
-    addAccount: typeof TrezorConnectActions.addAccount,
-    acquireDevice: typeof TrezorConnectActions.acquire,
-    forgetDevice: typeof TrezorConnectActions.forget,
-    duplicateDevice: typeof TrezorConnectActions.duplicateDevice,
-    gotoDeviceSettings: typeof TrezorConnectActions.gotoDeviceSettings,
-    onSelectDevice: typeof TrezorConnectActions.onSelectDevice,
 }
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => ({

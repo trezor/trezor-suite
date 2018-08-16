@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import colors from 'config/colors';
 import { TRANSITION_TIME } from 'config/variables';
 
 const Wrapper = styled.div`

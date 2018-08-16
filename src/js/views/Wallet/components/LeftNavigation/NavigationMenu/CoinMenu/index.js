@@ -1,20 +1,17 @@
 /* @flow */
 import coins from 'constants/coins';
 import colors from 'config/colors';
-import { FONT_SIZE, ICON_SIZE } from 'config/variables';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { coinProp } from '../common';
+
+import { FONT_SIZE, ICON_SIZE } from 'config/variables';
+
 import Divider from '../Divider';
 import Row from '../Row';
-
-import type { TrezorDevice } from 'flowtype';
-import type { Props } from './index';
-
 
 const CoinNameWrapper = styled.div`
     display: flex;
@@ -34,14 +31,13 @@ const Logo = styled.div`
 const CoinName = ({
     coinImg, text,
 }) => (
-    <CoinNameWrapper>
-        <Logo
-            coinImg={coinImg}
-        />
-        <p>{text}</p>
-    </CoinNameWrapper>
-);
-
+        <CoinNameWrapper>
+            <Logo
+                coinImg={coinImg}
+            />
+            <p>{text}</p>
+        </CoinNameWrapper>
+    );
 CoinName.propTypes = {
     coinImg: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
@@ -60,24 +56,26 @@ const RowCoinWrapper = styled.div`
 const RowCoin = ({
     coin, icon,
 }) => (
-    <RowCoinWrapper>
-        <Row>
-            <CoinName
-                coinImg={coin.img}
-                text={coin.name}
-            />
-            {icon && (
-                <Icon
-                    icon={icon.type}
-                    color={icon.color}
+        <RowCoinWrapper>
+            <Row>
+                <CoinName
+                    coinImg={coin.img}
+                    text={coin.name}
                 />
-            )}
-        </Row>
-    </RowCoinWrapper>
-);
-
+                {icon && (
+                    <Icon
+                        icon={icon.type}
+                        color={icon.color}
+                    />
+                )}
+            </Row>
+        </RowCoinWrapper>
+    );
 RowCoin.propTypes = {
-    ...coinProp,
+    coin: PropTypes.shape({
+        img: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+    }).isRequired,
     icon: PropTypes.shape({
         type: PropTypes.string.isRequired,
         color: PropTypes.string.isRequired,
@@ -85,7 +83,7 @@ RowCoin.propTypes = {
 };
 
 
-class CoinSelection extends Component {
+class CoinMenu extends Component {
     getBaseUrl() {
         const { selectedDevice } = this.props.wallet;
         let baseUrl = '';
@@ -149,11 +147,11 @@ class CoinSelection extends Component {
     }
 }
 
-CoinSelection.propTypes = {
+CoinMenu.propTypes = {
     config: PropTypes.object,
     wallet: PropTypes.object,
     selectedDevice: PropTypes.object,
     localStorage: PropTypes.object,
 };
 
-export default CoinSelection;
+export default CoinMenu;
