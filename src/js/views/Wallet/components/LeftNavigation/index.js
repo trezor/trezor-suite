@@ -40,7 +40,7 @@ class LeftNavigation extends Component {
     componentWillReceiveProps() {
         const { deviceDropdownOpened } = this.props;
         const { selectedDevice } = this.props.wallet;
-        const { network } = this.props.location;
+        const { network } = this.props.location.state;
         const hasFeatures = selectedDevice && selectedDevice.features;
         const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
 
@@ -81,9 +81,13 @@ class LeftNavigation extends Component {
     }
 
     shouldRenderAccounts() {
-        const { network } = this.props.location;
         const { selectedDevice } = this.props.wallet;
-        return selectedDevice && network && !this.state.shouldRenderDeviceSelection && this.state.animationType === 'slide-left';
+        return selectedDevice 
+            && this.props.location 
+            && this.props.location.state 
+            && this.props.location.state.network 
+            && !this.state.shouldRenderDeviceSelection 
+            && this.state.animationType === 'slide-left';
     }
 
     shouldRenderCoins() {
