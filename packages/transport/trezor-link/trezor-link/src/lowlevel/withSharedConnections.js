@@ -186,7 +186,12 @@ export default class LowlevelTransportWithSharedConnections {
 
   @debugInOut
   async acquire(input: AcquireInput): Promise<string> {
-    const messBack = await this.sendToWorker({type: `acquire-intent`, ...input});
+    const messBack = await this.sendToWorker({
+        type: `acquire-intent`,
+        path: input.path,
+        previous: input.previous,
+        checkPrevious: input.checkPrevious,
+    });
     if (messBack.type === `wrong-previous-session`) {
       throw new Error(`wrong previous session`);
     }
