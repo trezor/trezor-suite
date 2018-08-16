@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Icon = ({ icon, size = 30, color = 'black' }) => {
+const Icon = ({ icon, size = 32, color = 'black' }) => {
     const styles = {
         svg: {
             display: 'inline-block',
@@ -17,7 +17,7 @@ const Icon = ({ icon, size = 30, color = 'black' }) => {
             style={styles.svg}
             width={`${size}`}
             height={`${size}`}
-            viewBox="0 0 16 16"
+            viewBox="0 0 1024 1024"
         >
             <path
                 style={styles.path}

@@ -65,6 +65,7 @@ const RowCoin = ({
             {icon && (
                 <Icon
                     icon={icon.type}
+                    size={27}
                     color={icon.color}
                 />
             )}
@@ -136,7 +137,7 @@ class CoinMenu extends Component {
                                 name: coin.coinName,
                             }}
                             icon={{
-                                type: ICONS.REDIRECT,
+                                type: ICONS.SKIP,
                                 color: colors.TEXT_SECONDARY,
                             }}
                         />
