@@ -10,8 +10,8 @@ import styled from 'styled-components';
 
 import { FONT_SIZE, ICON_SIZE } from 'config/variables';
 
-import Divider from '../Divider';
-import Row from '../Row';
+import Divider from '../../Divider';
+import Row from '../../Row';
 
 const CoinNameWrapper = styled.div`
     display: flex;
@@ -31,13 +31,13 @@ const Logo = styled.div`
 const CoinName = ({
     coinImg, text,
 }) => (
-        <CoinNameWrapper>
-            <Logo
-                coinImg={coinImg}
-            />
-            <p>{text}</p>
-        </CoinNameWrapper>
-    );
+    <CoinNameWrapper>
+        <Logo
+            coinImg={coinImg}
+        />
+        <p>{text}</p>
+    </CoinNameWrapper>
+);
 CoinName.propTypes = {
     coinImg: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
@@ -56,21 +56,21 @@ const RowCoinWrapper = styled.div`
 const RowCoin = ({
     coin, icon,
 }) => (
-        <RowCoinWrapper>
-            <Row>
-                <CoinName
-                    coinImg={coin.img}
-                    text={coin.name}
+    <RowCoinWrapper>
+        <Row>
+            <CoinName
+                coinImg={coin.img}
+                text={coin.name}
+            />
+            {icon && (
+                <Icon
+                    icon={icon.type}
+                    color={icon.color}
                 />
-                {icon && (
-                    <Icon
-                        icon={icon.type}
-                        color={icon.color}
-                    />
-                )}
-            </Row>
-        </RowCoinWrapper>
-    );
+            )}
+        </Row>
+    </RowCoinWrapper>
+);
 RowCoin.propTypes = {
     coin: PropTypes.shape({
         img: PropTypes.string.isRequired,

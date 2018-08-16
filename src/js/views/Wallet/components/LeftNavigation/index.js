@@ -9,10 +9,10 @@ import {
     CoinMenu,
     DeviceSelect,
     DeviceDropdown,
-} from './Menu';
+} from './NavigationMenu';
 import StickyContainer from './StickyContainer';
 
-import type { Props } from './index';
+import type { Props } from './common';
 
 type TransitionMenuProps = {
     animationType: string;
