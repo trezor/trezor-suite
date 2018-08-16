@@ -171,7 +171,11 @@ export class DeviceDropdown extends Component<Props> {
             );
         }
 
-        const deviceList = devices.map((dev, index) => {
+        const sortByInstance = (a: TrezorDevice, b: TrezorDevice) => {
+            if (!a.instance || !b.instance) return -1;
+            return a.instance > b.instance ? 1 : -1;
+        }
+        const deviceList = devices.sort(sortByInstance).map((dev, index) => {
             if (dev === selected) return null;
 
             let deviceStatus: string = 'Connected';
@@ -197,7 +201,7 @@ export class DeviceDropdown extends Component<Props> {
             return (
                 <div key={index} className={css} onClick={() => this.props.onSelectDevice(dev)}>
                     <div className="label-container">
-                        <span className="label">{ dev.instanceLabel }</span>
+                        <span className="label">111{ dev.instanceLabel }</span>
                         <span className="status">{ deviceStatus }</span>
                     </div>
                     <div
