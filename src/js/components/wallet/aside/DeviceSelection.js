@@ -201,7 +201,7 @@ export class DeviceDropdown extends Component<Props> {
             return (
                 <div key={index} className={css} onClick={() => this.props.onSelectDevice(dev)}>
                     <div className="label-container">
-                        <span className="label">111{ dev.instanceLabel }</span>
+                        <span className="label">{ dev.instanceLabel }</span>
                         <span className="status">{ deviceStatus }</span>
                     </div>
                     <div
