@@ -1,12 +1,11 @@
-import styled, { css } from 'styled-components';
-import React from 'react';
-import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
-
-import AsideRow from '../AsideRow';
-
 import colors from 'config/colors';
 import { FONT_SIZE, BORDER_WIDTH } from 'config/variables';
+import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled, { css } from 'styled-components';
+
+import AsideRow from '../AsideRow';
 
 const Wrapper = styled.div`
     height: 64px;
@@ -34,7 +33,9 @@ const Wrapper = styled.div`
     `}
 `;
 
-const AsideRowAccount = ({ accountIndex, balance, url, isSelected = false }) => (
+const AsideRowAccount = ({
+    accountIndex, balance, url, isSelected = false,
+}) => (
     <NavLink to={url}>
         <Wrapper
             to={url}

@@ -6,12 +6,11 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
+import type { TrezorDevice } from 'flowtype';
 import AsideDivider from './AsideDivider';
 import AsideRowCoin from './row/coin/AsideRowCoin';
 
-
 import type { Props } from './index';
-
 
 class CoinSelection extends Component {
     getBaseUrl() {
