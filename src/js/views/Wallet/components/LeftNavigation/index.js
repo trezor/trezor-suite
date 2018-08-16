@@ -1,10 +1,13 @@
-/* @flow */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
+import Icon from 'components/Icon';
+import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
-import { AccountMenu, CoinMenu, DeviceSelect, DeviceDropdown } from './NavigationMenu';
+import {
+    AccountMenu, CoinMenu, DeviceSelect, DeviceDropdown,
+} from './NavigationMenu';
 import StickyContainer from './StickyContainer';
 
 const TransitionGroupWrapper = styled(TransitionGroup)`
@@ -26,7 +29,30 @@ const StickyBottom = styled.div`
 
 const MenuWrapper = styled.div``;
 
-const Help = styled.div``;
+const Help = styled.div`
+    text-align: center;
+    width: 319px;
+    padding: 8px 0px;
+    border-top: 1px solid ${colors.DIVIDER};
+
+    &.fixed {
+        position: fixed;
+        bottom: 0px;
+    }
+`;
+
+const A = styled.a`
+    color: ${colors.TEXT_SECONDARY};
+    font-size: 12px;
+    display: inline-block;
+    padding: 8px;
+    height: auto;
+
+    &:hover {
+        background: transparent;
+        color: ${colors.TEXT_PRIMARY};
+    }
+`;
 
 class LeftNavigation extends Component {
     constructor(props) {
@@ -41,7 +67,7 @@ class LeftNavigation extends Component {
         this.setState({
             animationType: null,
             shouldRenderDeviceSelection: false,
-        })
+        });
     }
 
     componentWillReceiveProps() {
@@ -89,11 +115,11 @@ class LeftNavigation extends Component {
 
     shouldRenderAccounts() {
         const { selectedDevice } = this.props.wallet;
-        return selectedDevice 
-            && this.props.location 
-            && this.props.location.state 
-            && this.props.location.state.network 
-            && !this.state.shouldRenderDeviceSelection 
+        return selectedDevice
+            && this.props.location
+            && this.props.location.state
+            && this.props.location.state.network
+            && !this.state.shouldRenderDeviceSelection
             && this.state.animationType === 'slide-left';
     }
 
@@ -114,8 +140,14 @@ class LeftNavigation extends Component {
                     {this.shouldRenderCoins() && <CoinMenu {...this.props} />}
                 </MenuWrapper>
                 <StickyBottom>
-                    <Help className="help">
-                        <a href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Need help?</a>
+                    <Help>
+                        <A
+                            href="https://trezor.io/support/"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                        >
+                            <StyledIcon size={25} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />Need help?
+                        </A>
                     </Help>
                 </StickyBottom>
             </StickyContainer>
