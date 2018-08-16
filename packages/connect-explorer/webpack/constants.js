@@ -10,7 +10,7 @@ const constants: Object = Object.freeze({
     SRC: path.join(ABSOLUTE_BASE, 'src/'),
     PORT: 8082,
     INDEX: path.join(ABSOLUTE_BASE, 'src/index.html'),
-    TREZOR_CONNECT_ROOT: path.join(ABSOLUTE_BASE, '../trezor.js2/')
+    TREZOR_CONNECT_ROOT: path.join(ABSOLUTE_BASE, '../trezor-connect/')
 });
 
 export const TREZOR_CONNECT_ROOT: string = constants.TREZOR_CONNECT_ROOT;
