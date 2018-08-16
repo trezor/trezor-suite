@@ -24,8 +24,8 @@ const Divider = ({ textLeft, textRight }) => (
 );
 
 Divider.propTypes = {
-    textLeft: PropTypes.string.isRequired,
-    textRight: PropTypes.string.isRequired,
+    textLeft: PropTypes.string,
+    textRight: PropTypes.string,
 };
 
 export default Divider;

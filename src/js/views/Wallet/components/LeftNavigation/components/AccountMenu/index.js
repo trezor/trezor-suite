@@ -13,9 +13,9 @@ import { findDeviceAccounts } from 'reducers/AccountsReducer';
 import { FONT_SIZE, BORDER_WIDTH } from 'config/variables';
 
 import type { Accounts } from 'flowtype';
-import type { Props } from '../../common';
+import type { Props } from '../common';
 
-import Row from '../../Row';
+import Row from '../Row';
 
 const RowAccountWrapper = styled.div`
     height: 64px;

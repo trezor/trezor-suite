@@ -10,8 +10,8 @@ import styled from 'styled-components';
 
 import { FONT_SIZE, ICON_SIZE } from 'config/variables';
 
-import Divider from '../../Divider';
-import Row from '../../Row';
+import Divider from '../Divider';
+import Row from '../Row';
 
 const CoinNameWrapper = styled.div`
     display: flex;

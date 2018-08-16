@@ -4,15 +4,12 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 
 import type { TrezorDevice } from 'flowtype';
-import {
-    AccountMenu,
-    CoinMenu,
-    DeviceSelect,
-    DeviceDropdown,
-} from './NavigationMenu';
-import StickyContainer from './StickyContainer';
+import AccountMenu from './components/AccountMenu';
+import CoinMenu from './components/CoinMenu';
+import { DeviceDropdown, DeviceSelect } from './components/DeviceMenu';
+import StickyContainer from './components/StickyContainer';
 
-import type { Props } from './common';
+import type { Props } from './components/common';
 
 type TransitionMenuProps = {
     animationType: string;
@@ -28,26 +25,24 @@ const TransitionContentWrapper = styled.div`
     vertical-align: top;
 `;
 
-const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => {
-    return (
-        <TransitionGroupWrapper component="div" className="transition-container">
-            <CSSTransition
-                key={props.animationType}
-                onExit={() => { window.dispatchEvent(new Event('resize')); }}
-                onExited={() => window.dispatchEvent(new Event('resize'))}
-                in
-                out
-                classNames={props.animationType}
-                appear={false}
-                timeout={300}
-            >
-                <TransitionContentWrapper>
-                    {props.children}
-                </TransitionContentWrapper>
-            </CSSTransition>
-        </TransitionGroupWrapper>
-    );
-};
+const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => (
+    <TransitionGroupWrapper component="div" className="transition-container">
+        <CSSTransition
+            key={props.animationType}
+            onExit={() => { window.dispatchEvent(new Event('resize')); }}
+            onExited={() => window.dispatchEvent(new Event('resize'))}
+            in
+            out
+            classNames={props.animationType}
+            appear={false}
+            timeout={300}
+        >
+            <TransitionContentWrapper>
+                {props.children}
+            </TransitionContentWrapper>
+        </CSSTransition>
+    </TransitionGroupWrapper>
+);
 
 
 const LeftNavigation = (props: Props): React$Element<typeof StickyContainer | string> => {
@@ -56,7 +51,7 @@ const LeftNavigation = (props: Props): React$Element<typeof StickyContainer | st
 
     if (location.pathname === '/' || !selected) return (<aside />);
 
-    let menu = <section />;
+    const menu = <section />;
 
     let shouldRenderDeviceSelection = false;
     // let shouldRenderCoins = false;
