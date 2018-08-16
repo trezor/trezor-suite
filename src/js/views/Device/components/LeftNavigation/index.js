@@ -4,9 +4,12 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 
 import type { TrezorDevice } from 'flowtype';
-import { DeviceSelect, DeviceDropdown } from './selection/DeviceSelection';
-import AccountSelection from './selection/AccountSelection';
-import CoinSelection from './selection/CoinSelection';
+import {
+    AccountSelection,
+    CoinSelection,
+    DeviceSelect,
+    DeviceDropdown,
+} from './Selection';
 import StickyContainer from './StickyContainer';
 
 import type { Props } from './index';
