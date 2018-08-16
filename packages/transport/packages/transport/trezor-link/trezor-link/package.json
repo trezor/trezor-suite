@@ -62,7 +62,6 @@
   },
   "dependencies": {
     "bigi": "^1.4.1",
-    "bitcoinjs-lib-zcash": "^3.0.0",
     "ecurve": "^1.0.3",
     "json-stable-stringify": "^1.0.1",
     "node-fetch": "^1.6.0",
