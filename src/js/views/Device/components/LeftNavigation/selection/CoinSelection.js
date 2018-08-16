@@ -1,7 +1,6 @@
 /* @flow */
 import coins from 'constants/coins';
 import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
 import Icon from 'components/common/Icon';
 import ICONS from 'config/icons';
 import { NavLink } from 'react-router-dom';
@@ -9,14 +8,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import { ICON_SIZE } from 'config/variables';
-import { coinProp } from '../common';
+import { FONT_SIZE, ICON_SIZE } from 'config/variables';
+
 import Divider from '../Divider';
 import Row from '../Row';
-
-import type { TrezorDevice } from 'flowtype';
-import type { Props } from './index';
-
 
 const CoinNameWrapper = styled.div`
     display: flex;
@@ -43,7 +38,6 @@ const CoinName = ({
         <p>{text}</p>
     </CoinNameWrapper>
 );
-
 CoinName.propTypes = {
     coinImg: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
@@ -77,9 +71,11 @@ const RowCoin = ({
         </Row>
     </RowCoinWrapper>
 );
-
 RowCoin.propTypes = {
-    ...coinProp,
+    coin: PropTypes.shape({
+        img: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+    }).isRequired,
     icon: PropTypes.shape({
         type: PropTypes.string.isRequired,
         color: PropTypes.string.isRequired,

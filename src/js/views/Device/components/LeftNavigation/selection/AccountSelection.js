@@ -1,25 +1,21 @@
 /* @flow */
-
-
-import React, { PureComponent } from 'react';
-import { Link, NavLink } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
-
-import { findDeviceAccounts } from 'reducers/AccountsReducer';
-import * as stateUtils from 'reducers/utils';
+import colors from 'config/colors';
 import Loader from 'components/common/LoaderCircle';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled, { css } from 'styled-components';
+import * as stateUtils from 'reducers/utils';
 import Tooltip from 'rc-tooltip';
 
-import colors from 'config/colors';
+import { NavLink } from 'react-router-dom';
+import { findDeviceAccounts } from 'reducers/AccountsReducer';
 import { FONT_SIZE, BORDER_WIDTH } from 'config/variables';
-import styled, { css } from 'styled-components';
-import Row from '../Row';
-import PropTypes from 'prop-types';
 
-//import AsideRowAccount from './row/account/AsideRowAccount';
-
-import type { TrezorDevice, Accounts } from 'flowtype';
+import type { Accounts } from 'flowtype';
 import type { Props } from './index';
+
+import Row from '../Row';
 
 const RowAccountWrapper = styled.div`
     height: 64px;
