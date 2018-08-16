@@ -44,6 +44,7 @@ class LeftNavigation extends Component {
     componentWillReceiveProps() {
         const { selectedDevice } = this.props.wallet;
         const hasFeatures = selectedDevice && selectedDevice.features;
+        const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
 
         if (this.props.deviceDropdownOpened) {
             this.setState({ shouldRenderDeviceSelection: true });
@@ -52,7 +53,7 @@ class LeftNavigation extends Component {
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-left',
             });
-        } else if (selectedDevice && hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized) {
+        } else if (deviceReady) {
             this.setState({
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-right',
