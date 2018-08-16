@@ -103,6 +103,8 @@ class Modal extends Component<Props> {
             case CONNECT.TRY_TO_DUPLICATE:
                 component = (<DuplicateDevice {...this.props} />);
                 break;
+
+            default: null;
         }
 
         let ch = null;
