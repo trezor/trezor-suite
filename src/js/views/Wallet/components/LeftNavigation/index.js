@@ -1,110 +1,165 @@
-/* @flow */
-import * as React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import colors from 'config/colors';
+import Icon from 'components/Icon';
+import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
-
-import type { TrezorDevice } from 'flowtype';
-import AccountMenu from './components/AccountMenu';
-import CoinMenu from './components/CoinMenu';
-import { DeviceDropdown, DeviceSelect } from './components/DeviceMenu';
-import StickyContainer from './components/StickyContainer';
-
-import type { Props } from './components/common';
-
-type TransitionMenuProps = {
-    animationType: string;
-    children?: React.Node;
-}
+import {
+    AccountMenu, CoinMenu, DeviceSelect, DeviceDropdown,
+} from './NavigationMenu';
+import StickyContainer from './StickyContainer';
 
 const TransitionGroupWrapper = styled(TransitionGroup)`
     width: 640px;
 `;
+
 const TransitionContentWrapper = styled.div`
     width: 320px;
     display: inline-block;
     vertical-align: top;
 `;
 
-const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => (
-    <TransitionGroupWrapper component="div" className="transition-container">
-        <CSSTransition
-            key={props.animationType}
-            onExit={() => { window.dispatchEvent(new Event('resize')); }}
-            onExited={() => window.dispatchEvent(new Event('resize'))}
-            in
-            out
-            classNames={props.animationType}
-            appear={false}
-            timeout={300}
-        >
-            <TransitionContentWrapper>
-                {props.children}
-            </TransitionContentWrapper>
-        </CSSTransition>
-    </TransitionGroupWrapper>
-);
+const StickyBottom = styled.div`
+    position: fixed;
+    bottom: 0;
+    background: ${colors.MAIN};
+    border-right: 1px solid ${colors.DIVIDER};
+`;
 
+const MenuWrapper = styled.div``;
 
-const LeftNavigation = (props: Props): React$Element<typeof StickyContainer | string> => {
-    const selected: ?TrezorDevice = props.wallet.selectedDevice;
-    const { location } = props.router;
+const Help = styled.div`
+    text-align: center;
+    width: 319px;
+    padding: 8px 0px;
+    border-top: 1px solid ${colors.DIVIDER};
 
-    if (location.pathname === '/' || !selected) return (<aside />);
+    &.fixed {
+        position: fixed;
+        bottom: 0px;
+    }
+`;
 
-    const menu = <section />;
+const A = styled.a`
+    color: ${colors.TEXT_SECONDARY};
+    font-size: 12px;
+    display: inline-block;
+    padding: 8px;
+    height: auto;
 
-    let shouldRenderDeviceSelection = false;
-    // let shouldRenderCoins = false;
-    // let shouldRenderAccounts = false;
+    &:hover {
+        background: transparent;
+        color: ${colors.TEXT_PRIMARY};
+    }
+`;
 
-    let animationType = '';
-    if (props.deviceDropdownOpened) {
-        shouldRenderDeviceSelection = true;
-        // menu = <DeviceDropdown {...props} />;
-    } else if (location.state.network) {
-        // shouldRenderAccounts = true;
-        shouldRenderDeviceSelection = false;
-        animationType = 'slide-left';
-        // menu = (
-        //     <TransitionMenu animationType="slide-left">
-        //         <AccountMenu {...props} />
-        //     </TransitionMenu>
-        // );
-    } else if (selected.features && !selected.features.bootloader_mode && selected.features.initialized) {
-        // shouldRenderCoins = true;
-        shouldRenderDeviceSelection = false;
-        animationType = 'slide-right';
-        // menu = (
-        //     <TransitionMenu animationType="slide-right">
-        //         <CoinMenu {...props} />
-        //     </TransitionMenu>
-        // );
+class LeftNavigation extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            animationType: null,
+            shouldRenderDeviceSelection: false,
+        };
     }
 
-    return (
-        <StickyContainer location={location.pathname} deviceSelection={props.deviceDropdownOpened}>
-            <DeviceSelect {...props} />
-            {/* { menu } */}
+    componentDidMount() {
+        this.setState({
+            animationType: null,
+            shouldRenderDeviceSelection: false,
+        });
+    }
 
-            {shouldRenderDeviceSelection ? (
-                <DeviceDropdown {...props} />
-            ) : (
-                <TransitionMenu
-                    animationType={animationType}
+    componentWillReceiveProps() {
+        const { deviceDropdownOpened } = this.props;
+        const { selectedDevice } = this.props.wallet;
+        const { network } = this.props.location.state;
+        const hasFeatures = selectedDevice && selectedDevice.features;
+        const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
+
+        if (deviceDropdownOpened) {
+            this.setState({ shouldRenderDeviceSelection: true });
+        } else if (network) {
+            this.setState({
+                shouldRenderDeviceSelection: false,
+                animationType: 'slide-left',
+            });
+        } else if (deviceReady) {
+            this.setState({
+                shouldRenderDeviceSelection: false,
+                animationType: 'slide-right',
+            });
+        }
+    }
+
+    // TODO: refactor to transition component for reuse of transitions
+    getMenuTransition(children) {
+        return (
+            <TransitionGroupWrapper component="div" className="transition-container">
+                <CSSTransition
+                    key={this.state.animationType}
+                    onExit={() => { window.dispatchEvent(new Event('resize')); }}
+                    onExited={() => window.dispatchEvent(new Event('resize'))}
+                    in
+                    out
+                    classNames={this.state.animationType}
+                    appear={false}
+                    timeout={300}
                 >
-                    {animationType === 'slide-left' && <AccountMenu key="accounts" {...props} />}
-                    {animationType === 'slide-right' && <CoinMenu key="coins" {...props} />}
-                </TransitionMenu>
-            )}
+                    <TransitionContentWrapper>
+                        {children}
+                    </TransitionContentWrapper>
+                </CSSTransition>
+            </TransitionGroupWrapper>);
+    }
 
+    shouldRenderAccounts() {
+        const { selectedDevice } = this.props.wallet;
+        return selectedDevice
+            && this.props.location
+            && this.props.location.state
+            && this.props.location.state.network
+            && !this.state.shouldRenderDeviceSelection
+            && this.state.animationType === 'slide-left';
+    }
 
-            <div className="sticky-bottom">
-                <div className="help">
-                    <a href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Need help?</a>
-                </div>
-            </div>
-        </StickyContainer>
-    );
+    shouldRenderCoins() {
+        return !this.state.shouldRenderDeviceSelection && this.state.animationType === 'slide-right';
+    }
+
+    render() {
+        return (
+            <StickyContainer
+                location={this.props.location.pathname}
+                deviceSelection={this.props.deviceDropdownOpened}
+            >
+                <DeviceSelect {...this.props} />
+                <MenuWrapper>
+                    {this.state.shouldRenderDeviceSelection && this.getMenuTransition(<DeviceDropdown {...this.props} />) }
+                    {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
+                    {this.shouldRenderCoins() && <CoinMenu {...this.props} />}
+                </MenuWrapper>
+                <StickyBottom>
+                    <Help>
+                        <A
+                            href="https://trezor.io/support/"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                        >
+                            <Icon size={25} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />Need help?
+                        </A>
+                    </Help>
+                </StickyBottom>
+            </StickyContainer>
+        );
+    }
+}
+
+LeftNavigation.propTypes = {
+    selectedDevice: PropTypes.object,
+    wallet: PropTypes.object,
+    deviceDropdownOpened: PropTypes.bool,
 };
+
 
 export default LeftNavigation;

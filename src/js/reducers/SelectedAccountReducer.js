@@ -38,7 +38,6 @@ export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
         case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
             return action.payload;
-
         default:
             return state;
     }

@@ -17,6 +17,11 @@ import type { Props } from '../common';
 
 import Row from '../Row';
 
+const Text = styled.span`
+    font-size: ${FONT_SIZE.SMALLER};
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 const RowAccountWrapper = styled.div`
     height: 64px;
 
@@ -24,10 +29,6 @@ const RowAccountWrapper = styled.div`
     color: ${colors.TEXT_PRIMARY};
 
     border-top: 1px solid ${colors.DIVIDER};
-    span {
-        font-size: ${FONT_SIZE.SMALLER};
-        color: ${colors.TEXT_SECONDARY};
-    }
 
     ${props => props.isSelected && css`
         border-left: ${BORDER_WIDTH.SELECTED} solid ${colors.GREEN_PRIMARY};
@@ -42,6 +43,7 @@ const RowAccountWrapper = styled.div`
         }
     `}
 `;
+
 const RowAccount = ({
     accountIndex, balance, url, isSelected = false,
 }) => (
@@ -53,14 +55,15 @@ const RowAccount = ({
             <Row column>
                 Account #{accountIndex + 1}
                 {balance ? (
-                    <span>{balance}</span>
+                    <Text>{balance}</Text>
                 ) : (
-                    <span>Loading...</span>
+                    <Text>Loading...</Text>
                 )}
             </Row>
         </RowAccountWrapper>
     </NavLink>
 );
+
 RowAccount.propTypes = {
     accountIndex: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired,
@@ -70,8 +73,6 @@ RowAccount.propTypes = {
 
 const AccountMenu = (props: Props): ?React$Element<string> => {
     const selected = props.wallet.selectedDevice;
-    if (!selected) return null;
-
     const { location } = props.router;
     const urlParams = location.state;
     const { accounts } = props;
@@ -79,8 +80,6 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
 
     const { config } = props.localStorage;
     const selectedCoin = config.coins.find(c => c.network === location.state.network);
-    if (!selectedCoin) return;
-
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
     const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);

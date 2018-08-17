@@ -65,6 +65,7 @@ const RowCoin = ({
             {icon && (
                 <Icon
                     icon={icon.type}
+                    size={27}
                     color={icon.color}
                 />
             )}
@@ -129,14 +130,14 @@ class CoinMenu extends Component {
                     textRight="(You will be redirected)"
                 />
                 {coins.map(coin => (
-                    <a href={coin.url}>
+                    <a key={coin.url} href={coin.url}>
                         <RowCoin
                             coin={{
                                 img: coin.image,
                                 name: coin.coinName,
                             }}
                             icon={{
-                                type: ICONS.REDIRECT,
+                                type: ICONS.SKIP,
                                 color: colors.TEXT_SECONDARY,
                             }}
                         />
