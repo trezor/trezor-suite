@@ -2,12 +2,11 @@
 
 
 import { TRANSPORT, DEVICE } from 'trezor-connect';
-import type { Device } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as WALLET from '../actions/constants/wallet';
 import { getDuplicateInstanceNumber } from './utils';
 
-import type { Action, TrezorDevice } from '~/flowtype';
+import type { Action, Device, TrezorDevice } from '~/flowtype';
 
 export type State = Array<TrezorDevice>;
 

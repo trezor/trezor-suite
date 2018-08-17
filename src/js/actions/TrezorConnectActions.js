@@ -16,7 +16,6 @@ import { resolveAfter } from '../utils/promiseUtils';
 
 
 import type {
-    Device,
     DeviceMessage,
     UiMessage,
     TransportMessage,
@@ -31,6 +30,7 @@ import type {
     Action,
     ThunkAction,
     AsyncAction,
+    Device,
     TrezorDevice,
     RouterLocationState,
 } from '~/flowtype';
