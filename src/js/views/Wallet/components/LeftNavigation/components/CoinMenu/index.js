@@ -1,4 +1,4 @@
-/* @flow */
+import styled from 'styled-components';
 import coins from 'constants/coins';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
@@ -7,6 +7,8 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';
+
+const Wrapper = styled.div``;
 
 class CoinMenu extends Component {
     getBaseUrl() {
@@ -35,7 +37,7 @@ class CoinMenu extends Component {
     render() {
         const { config } = this.props.localStorage;
         return (
-            <React.Fragment>
+            <Wrapper>
                 {config.coins.map(item => (
                     <NavLink
                         key={item.network}
@@ -68,7 +70,7 @@ class CoinMenu extends Component {
                         />
                     </a>
                 ))}
-            </React.Fragment>
+            </Wrapper>
         );
     }
 }
