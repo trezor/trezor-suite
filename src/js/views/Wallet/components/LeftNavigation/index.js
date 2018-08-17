@@ -5,10 +5,10 @@ import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
-import {
-    AccountMenu, CoinMenu, DeviceSelect, DeviceDropdown,
-} from './NavigationMenu';
-import StickyContainer from './StickyContainer';
+import AccountMenu from './components/AccountMenu';
+import CoinMenu from './components/CoinMenu';
+import { DeviceSelect, DeviceDropdown } from './components/DeviceMenu';
+import StickyContainer from './components/StickyContainer';
 
 const TransitionGroupWrapper = styled(TransitionGroup)`
     width: 640px;
