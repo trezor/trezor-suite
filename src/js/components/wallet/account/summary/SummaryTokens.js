@@ -18,14 +18,14 @@ type Props = {
 const SummaryTokens = (props: Props) => {
     if (!props.tokens || props.tokens.length < 1) return null;
 
-    const bgColor = new ColorHash({ lightness: 0.7 });
+    const bgColor = new ColorHash({ lightness: 0.16 } );
     const textColor = new ColorHash();
 
     const tokens = props.tokens.map((token, index) => {
         const iconColor = {
-            color: textColor.hex(token.name),
-            background: bgColor.hex(token.name),
-            borderColor: bgColor.hex(token.name),
+            color: textColor.hex(token.address),
+            background: bgColor.hex(token.address),
+            borderColor: bgColor.hex(token.address),
         };
 
         const pendingAmount: BigNumber = stateUtils.getPendingAmount(props.pending, token.symbol, true);
