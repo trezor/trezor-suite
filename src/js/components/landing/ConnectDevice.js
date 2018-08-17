@@ -21,7 +21,7 @@ const DisconnectDevice = (props: Props) => {
             <div className="row">
                 <p className="connect">
                     <span>
-                        Unplug { props.disconnectRequest.instanceLabel } device.
+                        Unplug { props.disconnectRequest.label } device.
                     </span>
                 </p>
             </div>
