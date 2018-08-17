@@ -19,7 +19,7 @@ import Row from '../Row';
 import RowCoin from '../RowCoin';
 
 
-const Wrapper = style.div``;
+const Wrapper = styled.div``;
 
 const Text = styled.span`
     font-size: ${FONT_SIZE.SMALLER};
