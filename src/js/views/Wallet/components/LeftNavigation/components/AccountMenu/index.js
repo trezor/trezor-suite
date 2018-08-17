@@ -1,12 +1,13 @@
 /* @flow */
+import React, { components } from 'react';
 import BigNumber from 'bignumber.js';
 import colors from 'config/colors';
 import Loader from 'components/LoaderCircle';
 import PropTypes from 'prop-types';
-import React from 'react';
 import styled, { css } from 'styled-components';
 import * as stateUtils from 'reducers/utils';
 import Tooltip from 'rc-tooltip';
+import ICONS from 'config/icons';
 
 import { NavLink } from 'react-router-dom';
 import { findDeviceAccounts } from 'reducers/AccountsReducer';
@@ -14,8 +15,9 @@ import { FONT_SIZE, BORDER_WIDTH } from 'config/variables';
 
 import type { Accounts } from 'flowtype';
 import type { Props } from '../common';
-
 import Row from '../Row';
+import RowCoin from '../RowCoin';
+
 
 const Text = styled.span`
     font-size: ${FONT_SIZE.SMALLER};
@@ -63,7 +65,6 @@ const RowAccount = ({
         </RowAccountWrapper>
     </NavLink>
 );
-
 RowAccount.propTypes = {
     accountIndex: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired,
@@ -183,12 +184,28 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
         }
     }
 
-
     let backButton = null;
     if (selectedCoin) {
+        let imgName = selectedCoin.network;
+        if (selectedCoin.network === 'ethereum') {
+            imgName = 'eth';
+        } else if (selectedCoin.network === 'ethereum-classic') {
+            imgName = 'etc';
+        }
+        const imgUrl = `../images/${imgName}-logo.png`;
         backButton = (
-            <NavLink to={baseUrl} className={`back ${selectedCoin.network}`}>
-                <span className={selectedCoin.network}>{selectedCoin.name}</span>
+            <NavLink to={baseUrl}>
+                <RowCoin
+                    coin={{
+                        img: imgUrl,
+                        name: selectedCoin.name,
+                    }}
+                    iconLeft={{
+                        type: ICONS.ARROW_LEFT,
+                        color: colors.TEXT_PRIMARY,
+                        size: 20,
+                    }}
+                />
             </NavLink>
         );
     }

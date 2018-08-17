@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { TRANSITION_TIME } from 'config/variables';
 
 const Wrapper = styled.div`
-    padding: 16px 24px;
     height: 100%;
 
     display: flex;
