@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 const Divider = ({
-    textLeft, textRight, borderTop, borderBottom,
+    textLeft, textRight, borderTop = false, borderBottom = false,
 }) => (
     <Wrapper
         borderTop={borderTop}
