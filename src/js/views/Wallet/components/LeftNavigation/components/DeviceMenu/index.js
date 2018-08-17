@@ -6,7 +6,7 @@ import type { TrezorDevice } from 'flowtype';
 
 import type { Props } from '../common';
 
-import AsideDivider from '../Divider';
+import Divider from '../Divider';
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;
@@ -214,7 +214,7 @@ export class DeviceDropdown extends Component<Props> {
         return (
             <React.Fragment>
                 {currentDeviceMenu}
-                {deviceList.length > 1 ? <AsideDivider textLeft="Other devices" /> : null}
+                {deviceList.length > 1 ? <Divider textLeft="Other devices" borderBottom /> : null}
                 {deviceList}
                 {webUsbButton}
             </React.Fragment>

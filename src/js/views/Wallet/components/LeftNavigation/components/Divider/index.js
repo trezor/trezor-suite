@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -12,12 +12,21 @@ const Wrapper = styled.div`
     font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
     background: ${colors.GRAY_LIGHT};
-    border-top: 1px solid ${colors.DIVIDER};
-    border-bottom: 1px solid ${colors.DIVIDER};
+    ${props => props.borderTop && css`
+        border-top: 1px solid ${colors.DIVIDER};
+    `}
+    ${props => props.borderBottom && css`
+        border-bottom: 1px solid ${colors.DIVIDER};
+    `}
 `;
 
-const Divider = ({ textLeft, textRight }) => (
-    <Wrapper>
+const Divider = ({
+    textLeft, textRight, borderTop, borderBottom,
+}) => (
+    <Wrapper
+        borderTop={borderTop}
+        borderBottom={borderBottom}
+    >
         <p>{textLeft}</p>
         <p>{textRight}</p>
     </Wrapper>
@@ -26,6 +35,8 @@ const Divider = ({ textLeft, textRight }) => (
 Divider.propTypes = {
     textLeft: PropTypes.string,
     textRight: PropTypes.string,
+    borderTop: PropTypes.bool.isRequired,
+    borderBottom: PropTypes.bool.isRequired,
 };
 
 export default Divider;
