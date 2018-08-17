@@ -70,16 +70,16 @@ class LeftNavigation extends Component {
         });
     }
 
-    componentWillReceiveProps() {
-        const { deviceDropdownOpened } = this.props;
-        const { selectedDevice } = this.props.wallet;
-        const { network } = this.props.location.state;
+    componentWillReceiveProps(nextProps) {
+        const { deviceDropdownOpened } = nextProps;
+        const { selectedDevice } = nextProps.wallet;
+        const hasNetwork = nextProps.location.state && nextProps.location.state.network;
         const hasFeatures = selectedDevice && selectedDevice.features;
         const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
 
         if (deviceDropdownOpened) {
             this.setState({ shouldRenderDeviceSelection: true });
-        } else if (network) {
+        } else if (hasNetwork) {
             this.setState({
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-left',
@@ -135,9 +135,9 @@ class LeftNavigation extends Component {
             >
                 <DeviceSelect {...this.props} />
                 <MenuWrapper>
-                    {this.state.shouldRenderDeviceSelection && this.getMenuTransition(<DeviceDropdown {...this.props} />) }
+                    {this.state.shouldRenderDeviceSelection && <DeviceDropdown {...this.props} />}
                     {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
-                    {this.shouldRenderCoins() && <CoinMenu {...this.props} />}
+                    {this.shouldRenderCoins() && this.getMenuTransition(<CoinMenu {...this.props} />)}
                 </MenuWrapper>
                 <StickyBottom>
                     <Help>
