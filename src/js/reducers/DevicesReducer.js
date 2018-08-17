@@ -5,6 +5,7 @@ import { TRANSPORT, DEVICE } from 'trezor-connect';
 import type { Device } from 'trezor-connect';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as WALLET from '../actions/constants/wallet';
+import { getDuplicateInstanceNumber } from './utils';
 
 import type { Action, TrezorDevice } from '~/flowtype';
 
@@ -123,7 +124,7 @@ const addDevice = (state: State, device: Device): State => {
         // edge case: freshly connected device has different "passphrase_protection" than saved instances
         // need to automatically create another instance with default instance name
         // if (hasDifferentPassphraseSettings && !hasInstancesWithPassphraseSettings) {
-        //     const instance = getNewInstance(affectedDevices, device);
+        //     const instance = getDuplicateInstanceNumber(affectedDevices, device);
 
         //     newDevice.instance = instance;
         //     newDevice.instanceLabel = `${device.label} (${instance})`;
@@ -152,7 +153,7 @@ const duplicate = (state: State, device: TrezorDevice): State => {
 
     const newState: State = [...state];
 
-    const instance: number = getNewInstance(state, device);
+    const instance: number = getDuplicateInstanceNumber(state, device);
 
     const newDevice: TrezorDevice = {
         ...device,
@@ -300,19 +301,3 @@ export default function devices(state: State = initialState, action: Action): St
             return state;
     }
 }
-
-// UTILS
-
-export const getNewInstance = (devices: State, device: Device | TrezorDevice): number => {
-    const affectedDevices: State = devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id)
-        .sort((a, b) => {
-            if (!a.instance) {
-                return -1;
-            }
-            return !b.instance || a.instance > b.instance ? 1 : -1;
-        });
-
-    const instance: number = affectedDevices.reduce((inst, dev) => (dev.instance ? dev.instance + 1 : inst + 1), 0);
-
-    return instance;
-};

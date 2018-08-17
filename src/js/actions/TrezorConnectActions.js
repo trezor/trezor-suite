@@ -8,7 +8,7 @@ import * as TOKEN from './constants/token';
 import * as CONNECT from './constants/TrezorConnect';
 import * as NOTIFICATION from './constants/notification';
 import * as WALLET from './constants/wallet';
-import { getNewInstance } from '../reducers/DevicesReducer';
+import { getDuplicateInstanceNumber } from '../reducers/utils';
 
 import { push } from 'react-router-redux';
 import * as DiscoveryActions from './DiscoveryActions';
@@ -113,15 +113,16 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
     });
 
     // $FlowIssue LOCAL not declared
+    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
     // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/';
-    window.__TREZOR_CONNECT_SRC = 'https://sisyfos.trezor.io/connect/';
+    //window.__TREZOR_CONNECT_SRC = 'https://sisyfos.trezor.io/connect/';
     // window.__TREZOR_CONNECT_SRC = 'https://localhost:8088/';
 
     try {
         await TrezorConnect.init({
             transportReconnect: true,
             debug: true,
-            popup: false,
+            popup: true,
             webusb: true,
             pendingTransportEvent: (getState().devices.length < 1),
         });
@@ -407,7 +408,7 @@ export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dis
     //     device,
     // });
 
-    const instance: number = getNewInstance(getState().devices, device);
+    const instance: number = getDuplicateInstanceNumber(getState().devices, device);
     const extended: Object = { instance };
     dispatch({
         type: CONNECT.DUPLICATE,
