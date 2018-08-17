@@ -1,14 +1,12 @@
 /* @flow */
 import React, { Component } from 'react';
 import TrezorConnect from 'trezor-connect';
-import styled from 'styled-components';
+
 import type { TrezorDevice } from 'flowtype';
 
 import type { Props } from '../common';
 
-import Divider from '../Divider';
-
-const Wrapper = styled.div``;
+import AsideDivider from '../Divider';
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;
@@ -214,12 +212,12 @@ export class DeviceDropdown extends Component<Props> {
 
 
         return (
-            <Wrapper>
+            <React.Fragment>
                 {currentDeviceMenu}
-                {deviceList.length > 1 ? <Divider textLeft="Other devices" borderBottom /> : null}
+                {deviceList.length > 1 ? <AsideDivider textLeft="Other devices" /> : null}
                 {deviceList}
                 {webUsbButton}
-            </Wrapper>
+            </React.Fragment>
         );
     }
 }
