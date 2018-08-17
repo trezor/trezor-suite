@@ -105,6 +105,7 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
 
         return (
             <RowAccount
+                key={account.index}
                 accountIndex={account.index}
                 balance={balance}
                 url={url}
