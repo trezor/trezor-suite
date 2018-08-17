@@ -1,4 +1,4 @@
-/* @flow */
+import styled from 'styled-components';
 import coins from 'constants/coins';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
@@ -7,6 +7,8 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';
+
+const Wrapper = styled.div``;
 
 class CoinMenu extends Component {
     getBaseUrl() {
@@ -22,33 +24,33 @@ class CoinMenu extends Component {
         return baseUrl;
     }
 
+    getImgUrl(network) {
+        let imgName = network;
+        if (network === 'ethereum') {
+            imgName = 'eth';
+        } else if (network === 'ethereum-classic') {
+            imgName = 'etc';
+        }
+        return `../images/${imgName}-logo.png`;
+    }
+
     render() {
         const { config } = this.props.localStorage;
         return (
-            <React.Fragment>
-                {config.coins.map((item) => {
-                    let imgName = item.network;
-                    if (item.network === 'ethereum') {
-                        imgName = 'eth';
-                    } else if (item.network === 'ethereum-classic') {
-                        imgName = 'etc';
-                    }
-                    const imgUrl = `../images/${imgName}-logo.png`;
-
-                    return (
-                        <NavLink
-                            key={item.network}
-                            to={`${this.getBaseUrl()}/network/${item.network}/account/0`}
-                        >
-                            <RowCoin
-                                coin={{
-                                    img: imgUrl,
-                                    name: item.name,
-                                }}
-                            />
-                        </NavLink>
-                    );
-                })}
+            <Wrapper>
+                {config.coins.map(item => (
+                    <NavLink
+                        key={item.network}
+                        to={`${this.getBaseUrl()}/network/${item.network}/account/0`}
+                    >
+                        <RowCoin
+                            coin={{
+                                img: this.getImgUrl(item.network),
+                                name: item.name,
+                            }}
+                        />
+                    </NavLink>
+                ))}
                 <Divider
                     textLeft="Other coins"
                     textRight="(You will be redirected)"
@@ -70,7 +72,7 @@ class CoinMenu extends Component {
                         />
                     </a>
                 ))}
-            </React.Fragment>
+            </Wrapper>
         );
     }
 }
