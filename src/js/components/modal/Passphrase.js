@@ -39,7 +39,7 @@ export default class PinModal extends Component<Props, State> {
         let singleInput = false;
         if (selected && selected.path === device.path) {
             deviceLabel = selected.instanceLabel;
-            singleInput = selected.remember;
+            singleInput = selected.remember || selected.state !== null;
         }
 
         this.state = {
