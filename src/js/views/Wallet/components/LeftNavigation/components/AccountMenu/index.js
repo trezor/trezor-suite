@@ -19,6 +19,8 @@ import Row from '../Row';
 import RowCoin from '../RowCoin';
 
 
+const Wrapper = style.div``;
+
 const Text = styled.span`
     font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
@@ -210,13 +212,13 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
     }
 
     return (
-        <React.Fragment>
+        <Wrapper>
             {backButton}
             <div>
                 {selectedAccounts}
             </div>
             {discoveryStatus}
-        </React.Fragment>
+        </Wrapper>
     );
 };
 
