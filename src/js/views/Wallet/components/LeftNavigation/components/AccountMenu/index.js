@@ -1,5 +1,5 @@
 /* @flow */
-import React, { components } from 'react';
+import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
 import colors from 'config/colors';
 import Loader from 'components/LoaderCircle';
@@ -19,6 +19,8 @@ import Row from '../Row';
 import RowCoin from '../RowCoin';
 
 
+const Wrapper = styled.div``;
+
 const Text = styled.span`
     font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
@@ -26,12 +28,13 @@ const Text = styled.span`
 
 const RowAccountWrapper = styled.div`
     height: 64px;
-
+    padding: 16px 0 16px 24px;
     font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_PRIMARY};
-
     border-top: 1px solid ${colors.DIVIDER};
-
+    &:hover {
+        background-color: ${colors.GRAY_LIGHT};
+    }
     ${props => props.isSelected && css`
         border-left: ${BORDER_WIDTH.SELECTED} solid ${colors.GREEN_PRIMARY};
         background: ${colors.WHITE};
@@ -47,27 +50,24 @@ const RowAccountWrapper = styled.div`
 `;
 
 const RowAccount = ({
-    accountIndex, balance, url, isSelected = false,
+    accountIndex, balance, isSelected = false,
 }) => (
-    <NavLink to={url}>
-        <RowAccountWrapper
-            to={url}
-            isSelected={isSelected}
-        >
-            <Row column>
-                Account #{accountIndex + 1}
-                {balance ? (
-                    <Text>{balance}</Text>
-                ) : (
-                    <Text>Loading...</Text>
-                )}
-            </Row>
-        </RowAccountWrapper>
-    </NavLink>
+    <RowAccountWrapper
+        isSelected={isSelected}
+    >
+        <Row column>
+            Account #{accountIndex + 1}
+            {balance ? (
+                <Text>{balance}</Text>
+            ) : (
+                <Text>Loading...</Text>
+            )}
+        </Row>
+    </RowAccountWrapper>
 );
+
 RowAccount.propTypes = {
     accountIndex: PropTypes.number.isRequired,
-    url: PropTypes.string.isRequired,
     balance: PropTypes.string,
     isSelected: PropTypes.bool,
 };
@@ -104,18 +104,19 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             }
         }
 
+        const urlAccountIndex = parseInt(props.location.state.account);
         return (
-            <RowAccount
+            <NavLink
+                to={url}
                 key={account.index}
-                accountIndex={account.index}
-                balance={balance}
-                url={url}
-            />
-
-            // <NavLink key={i} activeClassName="selected" className="account" to={url}>
-            //     { `Account #${(account.index + 1)}` }
-            //     <span>{ account.loaded ? balance : 'Loading...' }</span>
-            // </NavLink>
+            >
+                <RowAccount
+                    accountIndex={account.index}
+                    url={url}
+                    balance={balance}
+                    isSelected={urlAccountIndex === account.index}
+                />
+            </NavLink>
         );
     });
 
@@ -123,15 +124,15 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
         if (selected.connected) {
             const url: string = location.pathname.replace(/account+\/([0-9]*)/, 'account/0');
             selectedAccounts = (
-                <RowAccount
-                    accountIndex={0}
-                    url={url}
-                />
-
-                // <NavLink activeClassName="selected" className="account" to={url}>
-                //     Account #1
-                //     <span>Loading...</span>
-                // </NavLink>
+                <NavLink
+                    to={url}
+                >
+                    <RowAccount
+                        accountIndex={0}
+                        url={url}
+                        isSelected
+                    />
+                </NavLink>
             );
         }
     }
@@ -211,13 +212,13 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
     }
 
     return (
-        <React.Fragment>
+        <Wrapper>
             {backButton}
             <div>
                 {selectedAccounts}
             </div>
             {discoveryStatus}
-        </React.Fragment>
+        </Wrapper>
     );
 };
 

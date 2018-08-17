@@ -2,10 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
-import { FONT_SIZE } from 'config/variables';
+import { ICON_SIZE, FONT_SIZE } from 'config/variables';
 import colors from 'config/colors';
 import Row from '../Row';
-import CoinName from './components/CoinName';
+
+const CoinNameWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+const Logo = styled.div`
+    height: ${ICON_SIZE.BASE};
+    width: ${ICON_SIZE.BASE};
+    margin-right: 5px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto ${ICON_SIZE.BASE};
+    background-image: url('${props => props.coinImg}');
+`;
 
 const RowCoinWrapper = styled.div`
     padding: 16px 24px;
@@ -43,10 +58,10 @@ const RowCoin = ({
                         />
                     </IconWrapper>
                 )}
-                <CoinName
-                    coinImg={coin.img}
-                    text={coin.name}
-                />
+                <CoinNameWrapper>
+                    <Logo coinImg={coin.img} />
+                    <p>{coin.name}</p>
+                </CoinNameWrapper>
             </Left>
             {iconRight && (
                 <Icon
