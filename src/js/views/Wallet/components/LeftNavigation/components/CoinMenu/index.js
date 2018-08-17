@@ -22,33 +22,33 @@ class CoinMenu extends Component {
         return baseUrl;
     }
 
+    getImgUrl(network) {
+        let imgName = network;
+        if (network === 'ethereum') {
+            imgName = 'eth';
+        } else if (network === 'ethereum-classic') {
+            imgName = 'etc';
+        }
+        return `../images/${imgName}-logo.png`;
+    }
+
     render() {
         const { config } = this.props.localStorage;
         return (
             <React.Fragment>
-                {config.coins.map((item) => {
-                    let imgName = item.network;
-                    if (item.network === 'ethereum') {
-                        imgName = 'eth';
-                    } else if (item.network === 'ethereum-classic') {
-                        imgName = 'etc';
-                    }
-                    const imgUrl = `../images/${imgName}-logo.png`;
-
-                    return (
-                        <NavLink
-                            key={item.network}
-                            to={`${this.getBaseUrl()}/network/${item.network}/account/0`}
-                        >
-                            <RowCoin
-                                coin={{
-                                    img: imgUrl,
-                                    name: item.name,
-                                }}
-                            />
-                        </NavLink>
-                    );
-                })}
+                {config.coins.map(item => (
+                    <NavLink
+                        key={item.network}
+                        to={`${this.getBaseUrl()}/network/${item.network}/account/0`}
+                    >
+                        <RowCoin
+                            coin={{
+                                img: this.getImgUrl(item.network),
+                                name: item.name,
+                            }}
+                        />
+                    </NavLink>
+                ))}
                 <Divider
                     textLeft="Other coins"
                     textRight="(You will be redirected)"
