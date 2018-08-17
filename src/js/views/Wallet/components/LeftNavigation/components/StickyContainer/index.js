@@ -35,20 +35,12 @@ export default class StickyContainer extends React.PureComponent<Props> {
 
     subscribers = [];
 
-    handleResize = (event: Event) => {
+    // handleResize = (event: Event) => {
 
-    }
-
-    handleScroll = (event: ?Event) => {
-        if (!this.framePending) {
-            this.framePending = true;
-            raf(this.update);
-        }
-    }
+    // }
 
     shouldUpdate = () => {
-        const wrapper: ?HTMLElement = this.wrapper;
-        const aside: ?HTMLElement = this.aside;
+        const { wrapper, aside }: {wrapper: ?HTMLElement, aside: ?HTMLElement} = this;
         if (!wrapper || !aside) return;
         const bottom: ?HTMLElement = wrapper.querySelector('.sticky-bottom');
         if (!bottom) return;
@@ -107,11 +99,6 @@ export default class StickyContainer extends React.PureComponent<Props> {
         raf(this.update);
     }
 
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.handleScroll);
-        window.removeEventListener('resize', this.handleScroll);
-    }
-
     componentDidUpdate(prevProps: Props) {
         if (this.props.location !== prevProps.location && this.aside) {
             const asideBounds = this.aside.getBoundingClientRect();
@@ -125,6 +112,18 @@ export default class StickyContainer extends React.PureComponent<Props> {
         } else if (!this.firstRender) {
             raf(this.update);
             this.firstRender = true;
+        }
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.handleScroll);
+        window.removeEventListener('resize', this.handleScroll);
+    }
+
+    handleScroll = (/* event: ?Event */) => {
+        if (!this.framePending) {
+            this.framePending = true;
+            raf(this.update);
         }
     }
 
