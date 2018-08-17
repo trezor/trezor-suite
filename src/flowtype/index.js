@@ -78,6 +78,7 @@ export type UnknownDevice = $Exact<{
     ts: number;
 }>
 
+export type { Device } from 'trezor-connect';
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
 export type RouterLocationState = LocationState;
