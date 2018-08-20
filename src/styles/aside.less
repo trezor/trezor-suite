@@ -6,10 +6,10 @@ aside {
     overflow-x: hidden;
 
     .sticky-container {
-        position: relative;
-        top: 0;
-        width: 320px;
-        overflow: hidden;
+        // position: relative;
+        // top: 0;
+        // width: 320px;
+        // overflow: hidden;
 
         &.fixed {
             position: fixed;
@@ -18,12 +18,12 @@ aside {
 
         &.fixed-bottom {
             padding-bottom: 60px; // height of .help
-            .sticky-bottom {
-                position: fixed;
-                bottom: 0;
-                background: @color_main;
-                border-right: 1px solid @color_divider;
-            }
+            // .sticky-bottom {
+            //     position: fixed;
+            //     bottom: 0;
+            //     background: @color_main;
+            //     border-right: 1px solid @color_divider;
+            // }
         }
     }
 
@@ -475,38 +475,38 @@ aside {
     //     border-bottom: 1px solid @color_divider;
     // }
 
-    .help {
-        width: 319px; // - 1px border-roght; 320px;
-        padding: 14px 0px;
-        text-align: center;
-        border-top: 1px solid @color_divider;
+    // .help {
+    //     width: 319px; // - 1px border-roght; 320px;
+    //     padding: 14px 0px;
+    //     text-align: center;
+    //     border-top: 1px solid @color_divider;
 
-        &.fixed {
-            position: fixed;
-            bottom: 0px;
-        }
+    //     &.fixed {
+    //         position: fixed;
+    //         bottom: 0px;
+    //     }
 
-        a {
-            color: @color_text_secondary;
-            font-size: 12px;
-            display: inline-block;
-            padding: 8px;
-            height: auto;
+    //     a {
+    //         color: @color_text_secondary;
+    //         font-size: 12px;
+    //         display: inline-block;
+    //         padding: 8px;
+    //         height: auto;
 
-            &:before {
-                .icomoon-chat;
-                font-size: 32px;
-                position: absolute;
-                top: 0px;
-                left: -26px;
-            }
+    //         &:before {
+    //             .icomoon-chat;
+    //             font-size: 32px;
+    //             position: absolute;
+    //             top: 0px;
+    //             left: -26px;
+    //         }
 
-            &:hover {
-                background: transparent;
-                color: @color_text_primary;
-            }
-        }
-    }
+    //         &:hover {
+    //             background: transparent;
+    //             color: @color_text_primary;
+    //         }
+    //     }
+    // }
 
     .wallet-settings {
 
@@ -514,56 +514,56 @@ aside {
 
 
 
-    .add-account {
-        position: relative;
-        padding: 8px 0 8px 20px;
-        cursor: pointer;
-        color: @color_text_secondary;
-        display: flex;
-        align-items: center;
+    // .add-account {
+    //     position: relative;
+    //     padding: 8px 0 8px 20px;
+    //     cursor: pointer;
+    //     color: @color_text_secondary;
+    //     display: flex;
+    //     align-items: center;
 
-        &:before {
-            .icomoon-plus;
-            margin-right: 12px;
-        }
+    //     &:before {
+    //         .icomoon-plus;
+    //         margin-right: 12px;
+    //     }
 
-        .hover();
-        &:hover {
-            color: @color_text_primary;
-        }
-    }
+    //     .hover();
+    //     &:hover {
+    //         color: @color_text_primary;
+    //     }
+    // }
 
-    .discovery-status {
-        height: 64px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        font-size: 14px;
-        padding: 16px 28px 16px 30px;
-        white-space: nowrap;
-        border-top: 1px solid @color_divider;
-        span {
-            display: block;
-            font-size: 12px;
-            color: @color_text_secondary;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    }
+    // .discovery-status {
+    //     height: 64px;
+    //     display: flex;
+    //     flex-direction: column;
+    //     justify-content: space-evenly;
+    //     font-size: 14px;
+    //     padding: 16px 28px 16px 30px;
+    //     white-space: nowrap;
+    //     border-top: 1px solid @color_divider;
+    //     span {
+    //         display: block;
+    //         font-size: 12px;
+    //         color: @color_text_secondary;
+    //         overflow: hidden;
+    //         text-overflow: ellipsis;
+    //     }
+    // }
 
-    .discovery-loading {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        font-size: 14px;
-        padding: 8px 0 8px 22px;
-        white-space: nowrap;
-        color: @color_text_secondary;
-        //border-top: 1px solid @color_divider;
-        .loader-circle {
-            margin-right: 14px;
-        }
-    }
+    // .discovery-loading {
+    //     display: flex;
+    //     flex-direction: row;
+    //     align-items: center;
+    //     font-size: 14px;
+    //     padding: 8px 0 8px 22px;
+    //     white-space: nowrap;
+    //     color: @color_text_secondary;
+    //     //border-top: 1px solid @color_divider;
+    //     .loader-circle {
+    //         margin-right: 14px;
+    //     }
+    // }
 
     // menu trasitions
 

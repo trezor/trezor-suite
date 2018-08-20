@@ -6,12 +6,20 @@
 import * as React from 'react';
 import raf from 'raf';
 import { getViewportHeight, getScrollY } from 'utils/windowUtils';
+import styled from 'styled-components';
 
 type Props = {
     location: string,
     deviceSelection: boolean,
     children?: React.Node,
 }
+
+const StickyContainerWrapper = styled.div`
+    position: relative;
+    top: 0;
+    width: 320px;
+    overflow: hidden;
+`;
 
 export default class StickyContainer extends React.PureComponent<Props> {
     // Class variables.
@@ -136,12 +144,11 @@ export default class StickyContainer extends React.PureComponent<Props> {
                 onTouchMove={this.handleScroll}
                 onTouchEnd={this.handleScroll}
             >
-                <div
-                    className="sticky-container"
+                <StickyContainerWrapper
                     ref={node => this.wrapper = node}
                 >
                     {this.props.children}
-                </div>
+                </StickyContainerWrapper>
             </aside>
         );
     }

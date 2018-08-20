@@ -1,6 +1,7 @@
 /* @flow */
 import React, { Component } from 'react';
 import BigNumber from 'bignumber.js';
+import Icon from 'components/Icon';
 import colors from 'config/colors';
 import Loader from 'components/LoaderCircle';
 import PropTypes from 'prop-types';
@@ -11,7 +12,9 @@ import ICONS from 'config/icons';
 
 import { NavLink } from 'react-router-dom';
 import { findDeviceAccounts } from 'reducers/AccountsReducer';
-import { FONT_SIZE, BORDER_WIDTH } from 'config/variables';
+import {
+    FONT_SIZE, BORDER_WIDTH, TRANSITION_TIME,
+} from 'config/variables';
 
 import type { Accounts } from 'flowtype';
 import type { Props } from '../common';
@@ -72,6 +75,79 @@ RowAccount.propTypes = {
     isSelected: PropTypes.bool,
 };
 
+const AddAccountWrapper = styled.div`
+    position: relative;
+    padding: 8px 0 8px 20px;
+    cursor: pointer;
+    color: ${colors.TEXT_SECONDARY};
+    display: flex;
+    align-items: center;
+
+    &:hover {
+        color: ${colors.TEXT_PRIMARY};
+        transition: background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${TRANSITION_TIME.BASE} ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out;
+    }
+`;
+
+const AddAccountIconWrapper = styled.div`
+    margin-right: 12px;
+`;
+
+const DiscoveryStatusWrapper = styled.div`
+    height: 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    font-size: ${FONT_SIZE.SMALL};
+    padding: 16px 28px 16px 30px;
+    white-space: nowrap;
+    border-top: 1px solid ${colors.DIVIDER};
+`;
+
+const DiscoveryStatusText = styled.div`
+    display: block;
+    font-size: ${FONT_SIZE.SMALLER};
+    color: ${colors.TEXT_SECONDARY};
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const DiscoveryLoadingWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: ${FONT_SIZE.SMALL};
+    padding: 8px 0 8px 22px;
+    white-space: nowrap;
+    color: ${colors.TEXT_SECONDARY};
+`;
+
+const DiscoveryLoadingText = styled.span`
+    margin-left: 14px;
+`;
+
+// class AccountMenu extends Component {
+//     constructor(props: Props) {
+//         super(props);
+//         this.state = {
+//             selectedAccounts: null,
+//             selectedCoin: null,
+//         };
+//     }
+
+//     componentWillReceiveProps(nextProps) {
+
+//     }
+
+//     render() {
+//         return (
+//             <div>
+//                 Hello
+//             </div>
+//         );
+//     }
+// }
+
 const AccountMenu = (props: Props): ?React$Element<string> => {
     const selected = props.wallet.selectedDevice;
     const { location } = props.router;
@@ -104,7 +180,7 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             }
         }
 
-        const urlAccountIndex = parseInt(props.location.state.account);
+        const urlAccountIndex = parseInt(props.router.location.state.account, 10);
         return (
             <NavLink
                 to={url}
@@ -147,9 +223,18 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             const lastAccount = deviceAccounts[deviceAccounts.length - 1];
             if (lastAccount && (new BigNumber(lastAccount.balance).greaterThan(0) || lastAccount.nonce > 0)) {
                 discoveryStatus = (
-                    <div className="add-account" onClick={props.addAccount}>
+                    <AddAccountWrapper
+                        onClick={props.addAccount}
+                    >
+                        <AddAccountIconWrapper>
+                            <Icon
+                                icon={ICONS.PLUS}
+                                size={24}
+                                color={colors.TEXT_SECONDARY}
+                            />
+                        </AddAccountIconWrapper>
                         Add account
-                    </div>
+                    </AddAccountWrapper>
                 );
             } else {
                 const tooltip = (
@@ -171,16 +256,21 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             }
         } else if (!selected.connected || !selected.available) {
             discoveryStatus = (
-                <div className="discovery-status">
+                <DiscoveryStatusWrapper>
                     Accounts could not be loaded
-                    <span>{`Connect ${selected.instanceLabel} device`}</span>
-                </div>
+                    <DiscoveryStatusText>
+                        {`Connect ${selected.instanceLabel} device`}
+                    </DiscoveryStatusText>
+                </DiscoveryStatusWrapper>
             );
         } else {
             discoveryStatus = (
-                <div className="discovery-loading">
-                    <Loader size="20" /> Loading accounts...
-                </div>
+                <DiscoveryLoadingWrapper>
+                    <Loader size="20" />
+                    <DiscoveryLoadingText>
+                        Loading accounts...
+                    </DiscoveryLoadingText>
+                </DiscoveryLoadingWrapper>
             );
         }
     }

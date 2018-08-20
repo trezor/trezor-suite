@@ -30,6 +30,9 @@ const StickyBottom = styled.div`
 const MenuWrapper = styled.div``;
 
 const Help = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     width: 319px;
     padding: 8px 0px;
@@ -94,17 +97,30 @@ class LeftNavigation extends Component {
 
     // TODO: refactor to transition component for reuse of transitions
     getMenuTransition(children) {
+        console.warn('GET MENU TRANSITION', this.state.animationType);
         return (
             <TransitionGroupWrapper component="div" className="transition-container">
                 <CSSTransition
                     key={this.state.animationType}
-                    onExit={() => { window.dispatchEvent(new Event('resize')); }}
+                    onEnter={() => {
+                        console.warn('ON ENTER');
+                    }}
+                    onEntering={() => {
+                        console.warn('ON ENTERING (ACTIVE)');
+                    }}
+                    onExit={() => {
+                        console.warn('ON EXIT');
+                        window.dispatchEvent(new Event('resize'));
+                    }}
+                    onExiting={() => {
+                        console.warn('ON EXITING (ACTIVE)');
+                    }}
                     onExited={() => window.dispatchEvent(new Event('resize'))}
-                    in
-                    out
                     classNames={this.state.animationType}
                     appear={false}
-                    timeout={300}
+                    timeout={30000}
+                    in
+                    out
                 >
                     <TransitionContentWrapper>
                         {children}
