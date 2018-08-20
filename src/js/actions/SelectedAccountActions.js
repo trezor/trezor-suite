@@ -67,7 +67,7 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
         const web3 = stateUtils.getWeb3(state);
 
         const payload: $ElementType<State, 'selectedAccount'> = {
-            // location: location.pathname,
+            location: location.pathname,
             account,
             network,
             discovery,

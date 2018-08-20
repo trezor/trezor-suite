@@ -60,7 +60,7 @@
         "redux-thunk": "^2.2.0",
         "styled-components": "^3.3.3",
         "styled-normalize": "^8.0.0",
-        "trezor-connect": "^5.0.28",
+        "trezor-connect": "5.0.30",
         "web3": "^0.19.0",
         "webpack": "^4.16.3",
         "whatwg-fetch": "^2.0.4",

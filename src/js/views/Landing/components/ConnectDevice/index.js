@@ -18,7 +18,7 @@ type Props = {
 const ConnectDevice = (props: Props) => {
     const { transport, disconnectRequest } = props;
     if (disconnectRequest) {
-        return <DisconnectDevice instanceLabel={props.disconnectRequest.instanceLabel} />;
+        return <DisconnectDevice label={props.disconnectRequest.label} />;
     } if (transport && transport.version.indexOf('webusb') >= 0) {
         return <ConnectWebUsbDevice {...props} />;
     }

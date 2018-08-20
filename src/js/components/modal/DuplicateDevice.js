@@ -2,7 +2,7 @@
 
 
 import React, { Component } from 'react';
-import { getNewInstance } from 'reducers/DevicesReducer';
+import { getDuplicateInstanceNumber } from 'reducers/utils';
 import type { Props } from './index';
 
 type State = {
@@ -25,7 +25,7 @@ export default class DuplicateDevice extends Component<Props, State> {
         const device = props.modal.opened ? props.modal.device : null;
         if (!device) return;
 
-        const instance = getNewInstance(props.devices, device);
+        const instance = getDuplicateInstanceNumber(props.devices, device);
 
         this.state = {
             defaultName: `${device.label} (${instance.toString()})`,
