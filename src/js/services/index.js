@@ -1,6 +1,3 @@
-/* @flow */
-
-
 import WalletService from './WalletService';
 import LogService from './LogService';
 import RouterService from './RouterService';

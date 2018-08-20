@@ -2,10 +2,10 @@
 
 
 import { TRANSPORT, DEVICE, UI } from 'trezor-connect';
-import * as CONNECT from '../actions/constants/TrezorConnect';
-import * as WALLET from '../actions/constants/wallet';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as WALLET from 'actions/constants/wallet';
 
-import type { Action, Device, TrezorDevice } from '~/flowtype';
+import type { Action } from 'flowtype';
 
 export type SelectedDevice = {
     id: string; // could be device path if unacquired or features.device_id

@@ -3,9 +3,9 @@
 
 import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE, push, replace } from 'react-router-redux';
-import * as CONNECT from '../actions/constants/TrezorConnect';
-import * as WALLET from '../actions/constants/wallet';
-import * as NotificationActions from '../actions/NotificationActions';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as WALLET from 'actions/constants/wallet';
+import * as NotificationActions from 'actions/NotificationActions';
 
 import type {
     Middleware,
@@ -19,7 +19,7 @@ import type {
     GetState,
     RouterLocationState,
     TrezorDevice,
-} from '~/flowtype';
+} from 'flowtype';
 
 /**
  * Middleware used for init application and managing router path.

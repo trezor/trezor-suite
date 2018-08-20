@@ -4,15 +4,13 @@
 import TrezorConnect, {
     UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT,
 } from 'trezor-connect';
-import * as TOKEN from './constants/token';
-import * as CONNECT from './constants/TrezorConnect';
-import * as NOTIFICATION from './constants/notification';
-import * as WALLET from './constants/wallet';
-import { getDuplicateInstanceNumber } from '../reducers/utils';
+import * as TOKEN from 'actions/constants/token';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as NOTIFICATION from 'actions/constants/notification';
+import * as WALLET from 'actions/constants/wallet';
+import { getDuplicateInstanceNumber } from 'reducers/utils';
 
 import { push } from 'react-router-redux';
-import * as DiscoveryActions from './DiscoveryActions';
-import { resolveAfter } from '../utils/promiseUtils';
 
 
 import type {
@@ -33,7 +31,8 @@ import type {
     Device,
     TrezorDevice,
     RouterLocationState,
-} from '~/flowtype';
+} from 'flowtype';
+import * as DiscoveryActions from './DiscoveryActions';
 
 
 export type TrezorConnectAction = {
@@ -209,7 +208,7 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => (d
     // switch to initial url and reset this value
 
     if (!device.features) {
-        dispatch(push(`/device/${device.path}/${ device.type === 'unreadable' ? 'unreadable' : 'acquire' }`));
+        dispatch(push(`/device/${device.path}/${device.type === 'unreadable' ? 'unreadable' : 'acquire'}`));
     } else if (device.features.bootloader_mode) {
         dispatch(push(`/device/${device.path}/bootloader`));
     } else if (!device.features.initialized) {
@@ -412,8 +411,8 @@ export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dis
     const extended: Object = { instance };
     dispatch({
         type: CONNECT.DUPLICATE,
-        device: { ...device, ...extended }
-    })
+        device: { ...device, ...extended },
+    });
 };
 
 

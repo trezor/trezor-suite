@@ -2,15 +2,15 @@
 
 
 import TrezorConnect from 'trezor-connect';
-import * as RECEIVE from './constants/receive';
-import * as NOTIFICATION from './constants/notification';
+import * as RECEIVE from 'actions/constants/receive';
+import * as NOTIFICATION from 'actions/constants/notification';
 
-import { initialState } from '../reducers/ReceiveReducer';
-import type { State } from '../reducers/ReceiveReducer';
+import { initialState } from 'reducers/ReceiveReducer';
+import type { State } from 'reducers/ReceiveReducer';
 
 import type {
     TrezorDevice, ThunkAction, AsyncAction, Action, GetState, Dispatch,
-} from '~/flowtype';
+} from 'flowtype';
 
 export type ReceiveAction = {
     type: typeof RECEIVE.INIT,

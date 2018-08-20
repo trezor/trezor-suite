@@ -1,12 +1,12 @@
 /* @flow */
 
 
-import * as NOTIFICATION from './constants/notification';
+import * as NOTIFICATION from 'actions/constants/notification';
 
 import type {
     Action, AsyncAction, GetState, Dispatch, RouterLocationState,
-} from '~/flowtype';
-import type { CallbackAction } from '../reducers/NotificationReducer';
+} from 'flowtype';
+import type { CallbackAction } from 'reducers/NotificationReducer';
 
 export type NotificationAction = {
     type: typeof NOTIFICATION.ADD,

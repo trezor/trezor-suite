@@ -2,7 +2,7 @@
 
 
 import React, { Component } from 'react';
-import Loader from '../common/LoaderCircle';
+import Loader from 'components/LoaderCircle';
 
 import type { Props } from './index';
 

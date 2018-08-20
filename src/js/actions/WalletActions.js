@@ -2,9 +2,9 @@
 
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import * as WALLET from './constants/wallet';
-import * as CONNECT from './constants/TrezorConnect';
-import * as stateUtils from '../reducers/utils';
+import * as WALLET from 'actions/constants/wallet';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as stateUtils from 'reducers/utils';
 
 import type
 {
@@ -22,7 +22,7 @@ import type
     Dispatch,
     GetState,
     State,
-} from '~/flowtype';
+} from 'flowtype';
 
 export type WalletAction = {
     type: typeof WALLET.SET_INITIAL_URL,
@@ -75,8 +75,7 @@ export const toggleDeviceDropdown = (opened: boolean): WalletAction => ({
 export const clearUnavailableDevicesData = (prevState: State, device: Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     if (!device.features) return;
 
-    const affectedDevices = prevState.devices.filter(d => 
-            d.features && device.features
+    const affectedDevices = prevState.devices.filter(d => d.features && device.features
             && d.features.device_id === device.features.device_id
             && d.features.passphrase_protection !== device.features.passphrase_protection);
 

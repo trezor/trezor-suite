@@ -1,21 +1,21 @@
 /* @flow */
 
 
-import * as CONNECT from './constants/TrezorConnect';
-import * as ACCOUNT from './constants/account';
-import * as TOKEN from './constants/token';
-import * as DISCOVERY from './constants/discovery';
-import * as STORAGE from './constants/localStorage';
-import * as PENDING from './constants/pendingTx';
-import { JSONRequest, httpRequest } from '../utils/networkUtils';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as ACCOUNT from 'actions/constants/account';
+import * as TOKEN from 'actions/constants/token';
+import * as DISCOVERY from 'actions/constants/discovery';
+import * as STORAGE from 'actions/constants/localStorage';
+import * as PENDING from 'actions/constants/pendingTx';
+import { JSONRequest, httpRequest } from 'utils/networkUtils';
 
 import type {
     ThunkAction, AsyncAction, GetState, Dispatch, TrezorDevice,
-} from '~/flowtype';
-import type { Config, Coin, TokensCollection } from '../reducers/LocalStorageReducer';
+} from 'flowtype';
+import type { Config, Coin, TokensCollection } from 'reducers/LocalStorageReducer';
 
-import AppConfigJSON from '~/data/appConfig.json';
-import Erc20AbiJSON from '~/data/ERC20Abi.json';
+import AppConfigJSON from 'data/appConfig.json';
+import Erc20AbiJSON from 'data/ERC20Abi.json';
 
 export type StorageAction = {
     type: typeof STORAGE.READY,

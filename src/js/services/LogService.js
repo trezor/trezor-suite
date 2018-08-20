@@ -1,10 +1,10 @@
 /* @flow */
 
 
-import * as LogActions from '../actions/LogActions';
-import * as STORAGE from '../actions/constants/localStorage';
-import * as SEND from '../actions/constants/send';
-import { OPEN, CLOSE, ADD } from '../actions/constants/log';
+import * as LogActions from 'actions/LogActions';
+import * as STORAGE from 'actions/constants/localStorage';
+import * as SEND from 'actions/constants/send';
+import { OPEN, CLOSE, ADD } from 'actions/constants/log';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 
 import type {
@@ -16,7 +16,7 @@ import type {
     Action,
     AsyncAction,
     GetState,
-} from '~/flowtype';
+} from 'flowtype';
 
 const exclude: Array<string> = [
     ADD, OPEN, CLOSE,

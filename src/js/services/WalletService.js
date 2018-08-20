@@ -3,24 +3,19 @@
 
 import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE } from 'react-router-redux';
-import * as WALLET from '../actions/constants/wallet';
-import * as SEND from '../actions/constants/wallet';
+import * as WALLET from 'actions/constants/wallet';
 
-import * as WalletActions from '../actions/WalletActions';
-import * as LocalStorageActions from '../actions/LocalStorageActions';
-import * as TrezorConnectActions from '../actions/TrezorConnectActions';
-import * as SelectedAccountActions from '../actions/SelectedAccountActions';
+import * as WalletActions from 'actions/WalletActions';
+import * as LocalStorageActions from 'actions/LocalStorageActions';
+import * as TrezorConnectActions from 'actions/TrezorConnectActions';
+import * as SelectedAccountActions from 'actions/SelectedAccountActions';
 
 import type {
     Middleware,
     MiddlewareAPI,
     MiddlewareDispatch,
-    State,
-    Dispatch,
     Action,
-    GetState,
-    TrezorDevice,
-} from '~/flowtype';
+} from 'flowtype';
 
 /**
  * Middleware

@@ -1,4 +1,3 @@
-
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -9,7 +8,7 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
-        index: ['react-hot-loader/patch', `${SRC}js/index.js`],
+        index: [`${SRC}js/index.js`],
     },
     output: {
         filename: '[name].[hash].js',
@@ -87,7 +86,6 @@ module.exports = {
             filename: 'index.html',
             inject: true,
         }),
-
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),

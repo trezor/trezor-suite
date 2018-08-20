@@ -11,25 +11,25 @@ import type {
     PlainDispatch as ReduxPlainDispatch,
 } from 'redux';
 
-import type { Reducers, ReducersState } from '~/js/reducers';
+import type { Reducers, ReducersState } from 'reducers';
 
 // Actions
-import type { SelectedAccountAction } from '~/js/actions/SelectedAccountActions';
-import type { AccountAction } from '~/js/actions/AccountsActions';
-import type { DiscoveryAction } from '~/js/actions/DiscoveryActions';
-import type { StorageAction } from '~/js/actions/LocalStorageActions';
-import type { LogAction } from '~/js/actions/LogActions';
-import type { ModalAction } from '~/js/actions/ModalActions';
-import type { NotificationAction } from '~/js/actions/NotificationActions';
-import type { PendingTxAction } from '~/js/actions/PendingTxActions';
-import type { ReceiveAction } from '~/js/actions/ReceiveActions';
-import type { SendFormAction } from '~/js/actions/SendFormActions';
-import type { SummaryAction } from '~/js/actions/SummaryActions';
-import type { TokenAction } from '~/js/actions/TokenActions';
-import type { TrezorConnectAction } from '~/js/actions/TrezorConnectActions';
-import type { WalletAction } from '~/js/actions/WalletActions';
-import type { Web3Action } from '~/js/actions/Web3Actions';
-import type { FiatRateAction } from '~/js/services/CoinmarketcapService'; // this service has no action file, all is written inside one file
+import type { SelectedAccountAction } from 'actions/SelectedAccountActions';
+import type { AccountAction } from 'actions/AccountsActions';
+import type { DiscoveryAction } from 'actions/DiscoveryActions';
+import type { StorageAction } from 'actions/LocalStorageActions';
+import type { LogAction } from 'actions/LogActions';
+import type { ModalAction } from 'actions/ModalActions';
+import type { NotificationAction } from 'actions/NotificationActions';
+import type { PendingTxAction } from 'actions/PendingTxActions';
+import type { ReceiveAction } from 'actions/ReceiveActions';
+import type { SendFormAction } from 'actions/SendFormActions';
+import type { SummaryAction } from 'actions/SummaryActions';
+import type { TokenAction } from 'actions/TokenActions';
+import type { TrezorConnectAction } from 'actions/TrezorConnectActions';
+import type { WalletAction } from 'actions/WalletActions';
+import type { Web3Action } from 'actions/Web3Actions';
+import type { FiatRateAction } from 'services/CoinmarketcapService'; // this service has no action file, all is written inside one file
 
 import type {
     Device,
@@ -68,7 +68,7 @@ export type UnknownDevice = $Exact<{
     +label: string,
     +features: null,
     state: ?string,
-    
+
     remember: boolean; // device should be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
@@ -136,12 +136,12 @@ export type Action =
 export type State = ReducersState;
 
 // reexport reduces types
-export type { Coin } from '~/js/reducers/LocalStorageReducer';
-export type { Account } from '~/js/reducers/AccountsReducer';
-export type { Discovery } from '~/js/reducers/DiscoveryReducer';
-export type { Token } from '~/js/reducers/TokensReducer';
-export type { Web3Instance } from '~/js/reducers/Web3Reducer';
-export type { PendingTx } from '~/js/reducers/PendingTxReducer';
+export type { Coin } from 'reducers/LocalStorageReducer';
+export type { Account } from 'reducers/AccountsReducer';
+export type { Discovery } from 'reducers/DiscoveryReducer';
+export type { Token } from 'reducers/TokensReducer';
+export type { Web3Instance } from 'reducers/Web3Reducer';
+export type { PendingTx } from 'reducers/PendingTxReducer';
 
 export type Accounts = $ElementType<State, 'accounts'>;
 export type LocalStorage = $ElementType<State, 'localStorage'>;

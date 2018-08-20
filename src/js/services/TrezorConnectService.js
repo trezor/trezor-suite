@@ -6,15 +6,15 @@ import { push } from 'react-router-redux';
 import TrezorConnect, {
     TRANSPORT, DEVICE_EVENT, UI_EVENT, UI, DEVICE,
 } from 'trezor-connect';
-import * as TrezorConnectActions from '../actions/TrezorConnectActions';
-import * as DiscoveryActions from '../actions/DiscoveryActions';
-import * as ModalActions from '../actions/ModalActions';
-import { init as initWeb3 } from '../actions/Web3Actions';
-import * as WEB3 from '../actions/constants/web3';
-import * as STORAGE from '../actions/constants/localStorage';
-import * as CONNECT from '../actions/constants/TrezorConnect';
-import * as NOTIFICATION from '../actions/constants/notification';
-import * as MODAL from '../actions/constants/modal';
+import * as TrezorConnectActions from 'actions/TrezorConnectActions';
+import * as DiscoveryActions from 'actions/DiscoveryActions';
+import * as ModalActions from 'actions/ModalActions';
+import { init as initWeb3 } from 'actions/Web3Actions';
+import * as WEB3 from 'actions/constants/web3';
+import * as STORAGE from 'actions/constants/localStorage';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as NOTIFICATION from 'actions/constants/notification';
+import * as MODAL from 'actions/constants/modal';
 
 import type {
     Middleware,
@@ -26,7 +26,7 @@ import type {
     AsyncAction,
     GetState,
     RouterLocationState,
-} from '~/flowtype';
+} from 'flowtype';
 
 const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
     const prevState: $ElementType<State, 'connect'> = api.getState().connect;

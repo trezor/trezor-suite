@@ -2,13 +2,13 @@
 
 
 import TrezorConnect, { UI, UI_EVENT } from 'trezor-connect';
-import * as MODAL from './constants/modal';
-import * as CONNECT from './constants/TrezorConnect';
+import * as MODAL from 'actions/constants/modal';
+import * as CONNECT from 'actions/constants/TrezorConnect';
 
 import type {
-    ThunkAction, AsyncAction, Action, GetState, Dispatch, Device, TrezorDevice,
-} from '~/flowtype';
-import type { State } from '../reducers/ModalReducer';
+    ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
+} from 'flowtype';
+import type { State } from 'reducers/ModalReducer';
 
 export type ModalAction = {
     type: typeof MODAL.CLOSE

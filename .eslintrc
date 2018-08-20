@@ -3,13 +3,16 @@
         "eslint-config-airbnb",
         "plugin:flowtype/recommended",
         "plugin:jest/recommended"
-        
     ],
     "env": {
         "browser": true,
         "jest": true
     },
     "rules": {
+        "class-methods-use-this": 0,
+        "react/require-default-props": 0,
+        "react/forbid-prop-types": 0,
+        "react/destructuring-assignment": 0,
         "react/jsx-one-expression-per-line": 0,
         "react/jsx-indent": [2, 4],
         "react/jsx-indent-props": [2, 4],
@@ -25,21 +28,15 @@
         "spaced-comment": 0
     },
     "plugins": [
-        "react",
         "import",
+        "react",
         "jest",
         "flowtype"
     ],
     "settings": {
-        "import/parser": "babel-eslint",
         "import/resolver": {
-            "node": {
-                "moduleDirectory": [
-                    "src",
-                    "node_modules"
-                ]
-            }
-        },
+            "babel-module": {}
+          },
         "import/ignore": [
             "\\.(scss|less|css)$"
         ]

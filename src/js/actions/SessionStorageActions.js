@@ -1,12 +1,12 @@
 /* @flow */
 
 
-import type { State as SendFormState } from '../reducers/SendFormReducer';
+import type { State as SendFormState } from 'reducers/SendFormReducer';
 import type {
     ThunkAction,
     GetState,
     Dispatch,
-} from '~/flowtype';
+} from 'flowtype';
 
 const PREFIX: string = 'trezor:draft-tx:';
 

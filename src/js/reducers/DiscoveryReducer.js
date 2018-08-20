@@ -3,22 +3,22 @@
 
 import HDKey from 'hdkey';
 
-import * as DISCOVERY from '../actions/constants/discovery';
-import * as ACCOUNT from '../actions/constants/account';
-import * as CONNECT from '../actions/constants/TrezorConnect';
-import * as WALLET from '../actions/constants/wallet';
+import * as DISCOVERY from 'actions/constants/discovery';
+import * as ACCOUNT from 'actions/constants/account';
+import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as WALLET from 'actions/constants/wallet';
 
-import type { Action, TrezorDevice } from '~/flowtype';
+import type { Action, TrezorDevice } from 'flowtype';
 import type {
     DiscoveryStartAction,
     DiscoveryWaitingAction,
     DiscoveryStopAction,
     DiscoveryCompleteAction,
-} from '../actions/DiscoveryActions';
+} from 'actions/DiscoveryActions';
 
 import type {
     AccountCreateAction,
-} from '../actions/AccountsActions';
+} from 'actions/AccountsActions';
 
 export type Discovery = {
     network: string;

@@ -1,8 +1,8 @@
 /* @flow */
 
 
-import * as LOG from '../actions/constants/log';
-import type { Action } from '~/flowtype';
+import * as LOG from 'actions/constants/log';
+import type { Action } from 'flowtype';
 
 export type LogEntry = {
     time: number;

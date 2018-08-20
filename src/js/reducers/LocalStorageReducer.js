@@ -1,9 +1,9 @@
 /* @flow */
 
 
-import * as STORAGE from '../actions/constants/localStorage';
+import * as STORAGE from 'actions/constants/localStorage';
 
-import type { Action } from '~/flowtype';
+import type { Action } from 'flowtype';
 
 export type Coin = {
     name: string;

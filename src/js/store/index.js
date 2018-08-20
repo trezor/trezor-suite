@@ -8,13 +8,13 @@ import thunk from 'redux-thunk';
 // import { useRouterHistory } from 'react-router';
 import createHistory from 'history/createHashHistory';
 import { createLogger } from 'redux-logger';
-import reducers from '../reducers';
-import services from '../services';
+import reducers from 'reducers';
+import services from 'services';
 
 import Raven from 'raven-js';
 import RavenMiddleware from 'redux-raven-middleware';
 
-import type { Action, GetState, Store } from '~/flowtype';
+import type { Action, GetState, Store } from 'flowtype';
 
 export const history: History = createHistory({ queryKey: false });
 

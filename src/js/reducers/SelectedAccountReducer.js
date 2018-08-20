@@ -1,7 +1,7 @@
 /* @flow */
 
 
-import * as ACCOUNT from '../actions/constants/account';
+import * as ACCOUNT from 'actions/constants/account';
 
 import type {
     Action,
@@ -11,7 +11,7 @@ import type {
     PendingTx,
     Discovery,
     Web3Instance,
-} from '~/flowtype';
+} from 'flowtype';
 
 export type State = {
     location?: string;
@@ -38,7 +38,6 @@ export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
         case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
             return action.payload;
-
         default:
             return state;
     }

@@ -7,6 +7,7 @@
         "react"
     ],
     "plugins": [
+        "react-hot-loader/babel",
         "transform-class-properties",
         "transform-object-rest-spread",
         "transform-flow-strip-types",
@@ -14,9 +15,19 @@
             "polyfill": false,
             "regenerator": true
         }],
-        ["babel-plugin-root-import", {
-            "rootPathSuffix": "./src",
-            "rootPathPrefix": "~"
+        ["module-resolver", {
+            "root": ["./src"],
+            "alias": {
+                "config": "./src/js/config",
+                "constants": "./src/js/constants",
+                "components": "./src/js/components",
+                "actions": "./src/js/actions",
+                "reducers": "./src/js/reducers",
+                "support": "./src/js/support",
+                "utils": "./src/js/utils",
+                "services": "./src/js/services",
+                "views": "./src/js/views"
+            }
         }],
         "babel-plugin-styled-components"
     ],

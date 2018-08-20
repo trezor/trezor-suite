@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "*": ["src/*"],
+            "components/*": ["./src/js/components/*"],
+            "config/*": ["./src/js/config/*"],
+            "constants/*": ["./src/js/constants/*"],
+            "support/*": ["./src/js/support/*"],
+            "actions/*": ["./src/js/actions/*"],
+            "reducers/*": ["./src/js/reducers/*"],
+            "utils/*": ["./src/js/utils/*"],
+            "services/*": ["./src/js/services/*"],
+            "views/*": ["./src/js/views/*"],
+        }
+    }
+}

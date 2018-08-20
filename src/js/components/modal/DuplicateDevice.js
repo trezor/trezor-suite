@@ -2,7 +2,7 @@
 
 
 import React, { Component } from 'react';
-import { getDuplicateInstanceNumber } from '~/js/reducers/utils';
+import { getDuplicateInstanceNumber } from 'reducers/utils';
 import type { Props } from './index';
 
 type State = {

@@ -2,10 +2,10 @@
 
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import * as NOTIFICATION from '../actions/constants/notification';
+import * as NOTIFICATION from 'actions/constants/notification';
 import { DEVICE } from 'trezor-connect';
 
-import type { Action } from '~/flowtype';
+import type { Action } from 'flowtype';
 
 export type CallbackAction = {
     label: string;

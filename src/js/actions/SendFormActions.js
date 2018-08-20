@@ -7,17 +7,15 @@ import EthereumjsTx from 'ethereumjs-tx';
 import TrezorConnect from 'trezor-connect';
 import { push } from 'react-router-redux';
 import BigNumber from 'bignumber.js';
-import { strip } from '../utils/ethUtils';
-import { estimateGas, getGasPrice, pushTx } from './Web3Actions';
-import * as SessionStorageActions from './SessionStorageActions';
-import * as NOTIFICATION from './constants/notification';
-import * as SEND from './constants/send';
+import { strip } from 'utils/ethUtils';
+import * as NOTIFICATION from 'actions/constants/notification';
+import * as SEND from 'actions/constants/send';
 
-import { initialState } from '../reducers/SendFormReducer';
-import { findAccount } from '../reducers/AccountsReducer';
-import { findToken } from '../reducers/TokensReducer';
-import { findDevice } from '../reducers/utils';
-import * as stateUtils from '../reducers/utils';
+import { initialState } from 'reducers/SendFormReducer';
+import { findAccount } from 'reducers/AccountsReducer';
+import { findToken } from 'reducers/TokensReducer';
+import { findDevice } from 'reducers/utils';
+import * as stateUtils from 'reducers/utils';
 
 import type {
     PendingTx,
@@ -28,14 +26,16 @@ import type {
     AsyncAction,
     RouterLocationState,
     TrezorDevice,
-} from '~/flowtype';
-import type { State as AccountState } from '../reducers/SelectedAccountReducer';
-import type { Web3Instance } from '../reducers/Web3Reducer';
-import type { Config, Coin } from '../reducers/LocalStorageReducer';
-import type { Token } from '../reducers/TokensReducer';
-import type { State, FeeLevel } from '../reducers/SendFormReducer';
-import type { Account } from '../reducers/AccountsReducer';
-import type { Props } from '../components/wallet/account/send';
+} from 'flowtype';
+import type { State as AccountState } from 'reducers/SelectedAccountReducer';
+import type { Web3Instance } from 'reducers/Web3Reducer';
+import type { Config, Coin } from 'reducers/LocalStorageReducer';
+import type { Token } from 'reducers/TokensReducer';
+import type { State, FeeLevel } from 'reducers/SendFormReducer';
+import type { Account } from 'reducers/AccountsReducer';
+import type { Props } from 'components/wallet/account/send';
+import * as SessionStorageActions from './SessionStorageActions';
+import { estimateGas, getGasPrice, pushTx } from './Web3Actions';
 
 export type SendTxAction = {
     type: typeof SEND.TX_COMPLETE,
@@ -837,7 +837,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         },
         useEmptyPassphrase: !selected.instance,
         path: address_n,
-        transaction: txData
+        transaction: txData,
     });
 
     if (!signedTransaction || !signedTransaction.success) {
