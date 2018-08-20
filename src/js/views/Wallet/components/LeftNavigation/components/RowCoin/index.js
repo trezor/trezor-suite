@@ -43,6 +43,10 @@ const IconWrapper = styled.div`
     margin-right: 10px;
 `;
 
+const LogoWrapper = styled.div`
+    margin-right: 3px;
+`;
+
 const RowCoin = ({
     coin, iconLeft, iconRight,
 }) => (
@@ -59,7 +63,9 @@ const RowCoin = ({
                     </IconWrapper>
                 )}
                 <CoinNameWrapper>
-                    <Logo coinImg={coin.img} />
+                    <LogoWrapper>
+                        <Logo coinImg={coin.img} />
+                    </LogoWrapper>
                     <p>{coin.name}</p>
                 </CoinNameWrapper>
             </Left>
