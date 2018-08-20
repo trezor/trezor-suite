@@ -87,6 +87,13 @@ const AddAccountWrapper = styled.div`
         color: ${colors.TEXT_PRIMARY};
         transition: background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${TRANSITION_TIME.BASE} ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out;
     }
+
+    ${props => props.disabled && css`
+        cursor: not-allowed;
+        &:hover {
+            color: ${colors.TEXT_SECONDARY};
+        }
+    `}
 `;
 
 const AddAccountIconWrapper = styled.div`
@@ -248,9 +255,19 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
                         overlay={tooltip}
                         placement="top"
                     >
-                        <div className="add-account disabled">
+                        <AddAccountWrapper
+                            onClick={props.addAccount}
+                            disabled
+                        >
+                            <AddAccountIconWrapper>
+                                <Icon
+                                    icon={ICONS.PLUS}
+                                    size={24}
+                                    color={colors.TEXT_SECONDARY}
+                                />
+                            </AddAccountIconWrapper>
                             Add account
-                        </div>
+                        </AddAccountWrapper>
                     </Tooltip>
                 );
             }
