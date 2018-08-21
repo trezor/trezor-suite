@@ -152,7 +152,7 @@ export class DeviceDropdown extends Component<Props> {
 
             deviceMenuItems.push({ type: 'settings', label: 'Device settings' });
             if (selected.features.passphrase_protection && selected.connected && selected.available) {
-                deviceMenuItems.push({ type: 'clone', label: 'Clone device' });
+                deviceMenuItems.push({ type: 'clone', label: 'Create hidden wallet' });
             }
             //if (selected.remember) {
             deviceMenuItems.push({ type: 'forget', label: 'Forget device' });
@@ -169,7 +169,11 @@ export class DeviceDropdown extends Component<Props> {
             );
         }
 
-        const deviceList = devices.map((dev, index) => {
+        const sortByInstance = (a: TrezorDevice, b: TrezorDevice) => {
+            if (!a.instance || !b.instance) return -1;
+            return a.instance > b.instance ? 1 : -1;
+        }
+        const deviceList = devices.sort(sortByInstance).map((dev, index) => {
             if (dev === selected) return null;
 
             let deviceStatus: string = 'Connected';

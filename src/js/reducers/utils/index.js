@@ -15,6 +15,7 @@ import type {
     Action,
     AsyncAction,
     GetState,
+    Device,
     TrezorDevice,
     Account,
     Coin,
@@ -52,6 +53,23 @@ export const findDevice = (devices: Array<TrezorDevice>, deviceId: string, devic
     }
     return false;
 });
+
+// get next instance number
+export const getDuplicateInstanceNumber = (devices: Array<TrezorDevice>, device: Device | TrezorDevice): number => {
+    // find device(s) with the same features.device_id
+    // and sort them by instance number
+    const affectedDevices: Array<TrezorDevice> = devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id)
+        .sort((a, b) => {
+            if (!a.instance) {
+                return -1;
+            }
+            return !b.instance || a.instance > b.instance ? 1 : -1;
+        });
+    
+    // calculate new instance number
+    const instance: number = affectedDevices.reduce((inst, dev) => (dev.instance ? dev.instance + 1 : inst + 1), 0);
+    return instance;
+};
 
 export const getSelectedAccount = (state: State): ?Account => {
     const device = state.wallet.selectedDevice;

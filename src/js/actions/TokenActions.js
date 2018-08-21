@@ -32,7 +32,7 @@ type SelectOptions = {
 
 // action from component <reactSelect>
 export const load = (input: string, network: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<any> => {
-    if (input.length < 1) return;
+    if (input.length < 1) input = '0x';
 
     const tokens = getState().localStorage.tokens[network];
     const value = input.toLowerCase();

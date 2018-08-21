@@ -75,7 +75,7 @@ const Summary = (props: Props) => {
                 <AsyncSelect
                     className="token-select"
                     multi={false}
-                    autoload={false}
+                    autoload={true}
                     ignoreCase
                     backspaceRemoves
                     value={null}
