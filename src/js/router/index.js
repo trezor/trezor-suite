@@ -29,6 +29,7 @@ import {
     SignTx,
     PushTx,
     CardanoGetAddress,
+    CardanoGetXpub,
     CardanoSignTx,
     CardanoSignMessage,
     CardanoVerifyMessage,
@@ -59,6 +60,7 @@ export default (
                     <Route exact path="/sign-tx" component={ SignTx } />
                     <Route exact path="/push-tx" component={ PushTx } />
                     <Route exact path="/cardano-getaddress" component={ CardanoGetAddress } />
+                    <Route exact path="/cardano-getxpub" component={ CardanoGetXpub } />
                     <Route exact path="/cardano-signtx" component={ CardanoSignTx } />
                     <Route exact path="/cardano-signmessage" component={ CardanoSignMessage } />
                     <Route exact path="/cardano-verifymessage" component={ CardanoVerifyMessage } />
