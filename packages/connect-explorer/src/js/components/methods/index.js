@@ -26,3 +26,9 @@ export { default as CardanoGetXpub } from './CardanoGetXpub';
 export { default as CardanoSignTx } from './CardanoSignTx';
 export { default as CardanoSignMessage } from './CardanoSignMessage';
 export { default as CardanoVerifyMessage } from './CardanoVerifyMessage';
+
+export { default as LiskGetAddress } from './LiskGetAddress';
+export { default as LiskGetXpub } from './LiskGetXpub';
+export { default as LiskSignTx } from './LiskSignTx';
+export { default as LiskSignMessage } from './LiskSignMessage';
+export { default as LiskVerifyMessage } from './LiskVerifyMessage';

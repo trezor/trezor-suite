@@ -44,6 +44,13 @@ export default class Main extends Component {
                     { navLink('/cardano-signtx', 'Cardano Sign Transaction') }
                     { navLink('/cardano-signmessage', 'Cardano Sign Message') }
                     { navLink('/cardano-verifymessage', 'Cardano Verify Message') }
+
+                    { navLink('/lisk-getaddress', 'Lisk Get Address') }
+                    { navLink('/lisk-getxpub', 'Lisk Get Public Key') }
+                    { navLink('/lisk-signtx', 'Lisk Sign Transaction') }
+                    { navLink('/lisk-signmessage', 'Lisk Sign Message') }
+                    { navLink('/lisk-verifymessage', 'Lisk Verify Message') }
+
                     { navLink('/custom', 'Custom Message') }
                 </section>
                 { this.props.children }
