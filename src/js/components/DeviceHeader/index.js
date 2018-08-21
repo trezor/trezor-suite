@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
-import { getStatusColor } from 'utils/device';
+import { getStatusColor, getStatusName } from 'utils/device';
 import TrezorImage from 'components/TrezorImage';
 
 import colors from 'config/colors';
@@ -92,11 +92,11 @@ const DeviceHeader = ({
     <Wrapper>
         <ClickWrapper onClick={!disabled ? handleOpen : null}>
             <ImageWrapper>
-                <Dot color={getStatusColor('device')} />
+                <Dot color={getStatusColor(status)} />
                 <TrezorImage model={trezorModel} />
             </ImageWrapper>
             <LabelWrapper>
-                <Name>{label}</Name>
+                <Name>{getStatusName(status)}</Name>
                 <Status>{status}</Status>
             </LabelWrapper>
             <IconWrapper>
