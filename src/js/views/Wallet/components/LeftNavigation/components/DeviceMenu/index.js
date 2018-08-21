@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
 import DeviceHeader from 'components/DeviceHeader';
-import { getStatus, getVersion } from 'utils/device';
+import { getDeviceSelectStatus, getVersion } from 'utils/device';
 
 // import DeviceList from './components/DeviceList';
 import type { Props } from '../common';
@@ -63,7 +63,7 @@ export const DeviceSelect = (props: Props) => {
             <DeviceHeader
                 handleOpen={handleOpen}
                 label={selected.instanceLabel}
-                status={getStatus(selected)}
+                status={getDeviceSelectStatus(selected)}
                 deviceCount={deviceCount}
                 isOpen={props.deviceDropdownOpened}
                 trezorModel={getVersion(selected)}

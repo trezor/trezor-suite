@@ -1,22 +1,23 @@
 import colors from 'js/config/colors';
 
-const getStatus = (device) => {
-    let deviceStatus = '';
-    if (device.type === 'unacquired' || (device.features && device.status === 'occupied')) {
-        deviceStatus = 'used-in-other-window';
-    } else if (device.type === 'unreadable') {
-        deviceStatus = 'connected';
-    } else if (!device.connected) {
-        deviceStatus = 'disconnected';
+const getDeviceSelectStatus = (device) => {
+    let status = 'connected';
+    if (!device.connected) {
+        status = 'disconnected';
     } else if (!device.available) {
-        deviceStatus = 'unavailable';
+        status = 'unavailable';
+    } else if (device.type === 'acquired') {
+        if (device.status === 'occupied') {
+            status = 'used-in-other-window';
+        }
+    } else if (device.type === 'unacquired') {
+        status = 'unacquired';
     }
 
-    return deviceStatus;
+    return status;
 };
 
-const getStatusName = (device) => {
-    const deviceStatus = getStatus(device);
+const getStatusName = (deviceStatus) => {
     const unknownStatusName = 'Status unknown';
     let statusName;
     switch (deviceStatus) {
@@ -41,7 +42,7 @@ const getStatusName = (device) => {
 
 const isWebUSB = transport => !!((transport && transport.version.indexOf('webusb') >= 0));
 
-const isDisabled = (devices, transport) => (devices.length < 1 && !isWebUSB(transport)) || (devices.length === 1 && !selected.features && !webusb);
+const isDisabled = (selectedDevice, devices, transport) => (devices.length < 1 && !isWebUSB(transport)) || (devices.length === 1 && !selectedDevice.features && !isWebUSB(transport));
 
 const getVersion = (device) => {
     let version = null;
@@ -53,8 +54,7 @@ const getVersion = (device) => {
     return version;
 };
 
-const getStatusColor = (device) => {
-    const deviceStatus = getStatus(device);
+const getStatusColor = (deviceStatus) => {
     let color = null;
 
     switch (deviceStatus) {
@@ -74,10 +74,13 @@ const getStatusColor = (device) => {
             color = colors.ERROR_PRIMARY;
     }
 
+    console.log('color', color);
+
     return color;
 };
 
 export {
+    getDeviceSelectStatus,
     isDisabled,
     getStatusName,
     getVersion,

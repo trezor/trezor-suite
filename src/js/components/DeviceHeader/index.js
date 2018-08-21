@@ -16,16 +16,6 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const ImageWrapper = styled.div`
-`;
-
-const Dot = styled.div`
-    border: 2px solid @color_white;
-    border-radius: 50%;
-    position: absolute;
-    background: red;
-`;
-
 const ClickWrapper = styled.div`
     width: 100%;
     display: flex;
@@ -91,13 +81,13 @@ const DeviceHeader = ({
 }) => (
     <Wrapper>
         <ClickWrapper onClick={!disabled ? handleOpen : null}>
-            <ImageWrapper>
-                <Dot color={getStatusColor(status)} />
-                <TrezorImage model={trezorModel} />
-            </ImageWrapper>
+            <TrezorImage
+                status={status}
+                model={trezorModel}
+            />
             <LabelWrapper>
-                <Name>{getStatusName(status)}</Name>
-                <Status>{status}</Status>
+                <Name>{label}</Name>
+                <Status>{getStatusName(status)}</Status>
             </LabelWrapper>
             <IconWrapper>
                 {deviceCount > 1 ? <Counter>{deviceCount}</Counter> : null}
