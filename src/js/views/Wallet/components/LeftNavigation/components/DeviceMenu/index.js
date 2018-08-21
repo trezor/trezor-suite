@@ -1,12 +1,18 @@
 /* @flow */
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-
 import type { TrezorDevice } from 'flowtype';
+import DeviceHeader from 'components/DeviceHeader';
+import { getStatus, getVersion } from 'utils/device';
 
+// import DeviceList from './components/DeviceList';
 import type { Props } from '../common';
 
 import AsideDivider from '../Divider';
+
+
+const Wrapper = styled.div``;
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;
@@ -41,10 +47,6 @@ export const DeviceSelect = (props: Props) => {
         css += ' trezor-t';
     }
 
-    const handleOpen = () => {
-        props.toggleDeviceDropdown(!props.deviceDropdownOpened);
-    };
-
     const deviceCount = devices.length;
     const webusb: boolean = !!((transport && transport.version.indexOf('webusb') >= 0));
     const disabled: boolean = (devices.length < 1 && !webusb) || (devices.length === 1 && !selected.features && !webusb);
@@ -52,14 +54,28 @@ export const DeviceSelect = (props: Props) => {
         css += ' disabled';
     }
 
+    const handleOpen = () => {
+        props.toggleDeviceDropdown(!props.deviceDropdownOpened);
+    };
+
     return (
-        <div className={css} onClick={!disabled ? handleOpen : null}>
-            <div className="label-container">
-                <span className="label">{selected.instanceLabel}</span>
-                <span className="status">{deviceStatus}</span>
+        <div>
+            <DeviceHeader
+                handleOpen={handleOpen}
+                label={selected.instanceLabel}
+                status={deviceStatus}
+                deviceCount={deviceCount}
+                isOpen={props.deviceDropdownOpened}
+                trezorModel={getVersion(selected)}
+            />
+            <div className={css} onClick={!disabled ? handleOpen : null}>
+                <div className="label-container">
+                    <span className="label">{selected.instanceLabel}</span>
+                    <span className="status">{deviceStatus}</span>
+                </div>
+                {deviceCount > 1 ? <div className="counter">{deviceCount}</div> : null}
+                <div className="arrow" />
             </div>
-            {deviceCount > 1 ? <div className="counter">{deviceCount}</div> : null}
-            <div className="arrow" />
         </div>
     );
 };
@@ -172,7 +188,7 @@ export class DeviceDropdown extends Component<Props> {
         const sortByInstance = (a: TrezorDevice, b: TrezorDevice) => {
             if (!a.instance || !b.instance) return -1;
             return a.instance > b.instance ? 1 : -1;
-        }
+        };
         const deviceList = devices.sort(sortByInstance).map((dev, index) => {
             if (dev === selected) return null;
 
@@ -214,14 +230,14 @@ export class DeviceDropdown extends Component<Props> {
             );
         });
 
-
         return (
-            <React.Fragment>
+            <Wrapper>
                 {currentDeviceMenu}
-                {deviceList.length > 1 ? <AsideDivider textLeft="Other devices" /> : null}
+                {this.props.devices.length > 1 ? <AsideDivider textLeft="Other devices" /> : null}
+                {/* <DeviceList devices={devices} /> */}
                 {deviceList}
                 {webUsbButton}
-            </React.Fragment>
+            </Wrapper>
         );
     }
 }

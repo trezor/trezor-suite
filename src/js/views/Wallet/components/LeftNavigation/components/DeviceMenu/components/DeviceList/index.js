@@ -1,33 +1,21 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
-import deviceConstants from 'constants/device';
+import { getStatus } from 'utils/device';
 
 const Wrapper = styled.div``;
 
-class DeviceList {
-    getStatus(device) {
-        let deviceStatus = '';
-        if (device.type === 'unacquired' || (device.features && device.status === 'occupied')) {
-            deviceStatus = 'Used in other window';
-        } else if (device.type === 'unreadable') {
-            deviceStatus = 'Connected';
-        } else if (!device.connected) {
-            deviceStatus = 'Disconnected';
-        } else if (!device.available) {
-            deviceStatus = 'Unavailable';
-        }
-
-        return deviceStatus;
-    }
-
+class DeviceList extends Component {
     render() {
         return (
             <Wrapper>
                 {this.props.devices.map((device, index) => (
-                    <div key={index} className={css} onClick={() => this.props.onSelectDevice(device)}>
+                    <div
+                        key={index}
+                        onClick={() => this.props.onSelectDevice(device)}
+                    >
                         <div className="label-container">
                             <span className="label">{device.instanceLabel}</span>
-                            <span className="status">{this.getStatus(device)}</span>
+                            <span className="status">{getStatus(device)}</span>
                         </div>
                         <div
                             className="forget-button"
