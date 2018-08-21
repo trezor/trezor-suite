@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
-import { ICON_SIZE, FONT_SIZE } from 'config/variables';
+import { ICON_SIZE, FONT_SIZE, LEFT_NAVIGATION_ROW } from 'config/variables';
 import colors from 'config/colors';
 import Row from '../Row';
 
@@ -23,7 +23,7 @@ const Logo = styled.div`
 `;
 
 const RowCoinWrapper = styled.div`
-    padding: 16px 24px;
+    padding: ${LEFT_NAVIGATION_ROW.PADDING};
     height: 50px;
     display: block;
     font-size: ${FONT_SIZE.BASE};

@@ -15,3 +15,7 @@ export const ICON_SIZE = {
 export const BORDER_WIDTH = {
     SELECTED: '3px',
 };
+
+export const LEFT_NAVIGATION_ROW = {
+    PADDING: '16px 24px',
+};

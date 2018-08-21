@@ -6,21 +6,27 @@ import { TRANSITION_TIME } from 'config/variables';
 
 const Wrapper = styled.div`
     height: 100%;
+    width: 100%;
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    cursor: pointer;
-    transition: background-color ${TRANSITION_TIME.BASE}, color ${TRANSITION_TIME.BASE};
+    transition: background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${TRANSITION_TIME.BASE} ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out;
 
-    ${props => props.column && css`
-        flex-direction: column;
-        align-items: flex-start;
+    ${props => props.disabled && css`
+        cursor: not-allowed;
     `}
 `;
 
-const Row = ({ children, column = false }) => (
-    <Wrapper column={column}>
+const Row = ({
+    children, disabled = false, onClick, onMouseEnter, onMouseLeave, onFocus,
+}) => (
+    <Wrapper
+        disabled={disabled}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onFocus={onFocus}
+    >
         {children}
     </Wrapper>
 );
@@ -30,7 +36,11 @@ Row.propTypes = {
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node,
     ]),
-    column: PropTypes.bool,
+    disabled: PropTypes.bool,
+    onClick: PropTypes.func,
+    onMouseEnter: PropTypes.func,
+    onMouseLeave: PropTypes.func,
+    onFocus: PropTypes.func,
 };
 
 export default Row;
