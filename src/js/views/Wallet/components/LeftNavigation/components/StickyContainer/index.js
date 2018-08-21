@@ -145,7 +145,7 @@ export default class StickyContainer extends React.PureComponent<Props> {
                 onTouchEnd={this.handleScroll}
             >
                 <StickyContainerWrapper
-                    ref={(node) => { this.wrapper = node; }}
+                    innerRef={(node) => { this.wrapper = node; }}
                 >
                     {this.props.children}
                 </StickyContainerWrapper>
