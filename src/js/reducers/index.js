@@ -35,6 +35,12 @@ import cardanosigntx from './methods/CardanoSignTxReducer';
 import cardanosignmessage from './methods/CardanoSignMessageReducer';
 import cardanoverifymessage from './methods/CardanoVerifyMessageReducer';
 
+import liskgetaddress from './methods/LiskGetAddressReducer';
+import liskgetxpub from './methods/LiskGetXpubReducer';
+import lisksigntx from './methods/LiskSignTxReducer';
+import lisksignmessage from './methods/LiskSignMessageReducer';
+import liskverifymessage from './methods/LiskVerifyMessageReducer';
+
 import custom from './methods/CustomMessageReducer';
 import login from './methods/RequestLoginReducer';
 import signtx from './methods/SignTxReducer';
@@ -71,6 +77,12 @@ export default combineReducers({
     cardanosigntx,
     cardanosignmessage,
     cardanoverifymessage,
+
+    liskgetaddress,
+    liskgetxpub,
+    lisksigntx,
+    lisksignmessage,
+    liskverifymessage,
     
     custom,
     login,
