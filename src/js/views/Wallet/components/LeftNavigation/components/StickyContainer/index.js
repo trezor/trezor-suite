@@ -138,14 +138,14 @@ export default class StickyContainer extends React.PureComponent<Props> {
     render() {
         return (
             <aside
-                ref={node => this.aside = node}
+                ref={(node) => { this.aside = node; }}
                 onScroll={this.handleScroll}
                 onTouchStart={this.handleScroll}
                 onTouchMove={this.handleScroll}
                 onTouchEnd={this.handleScroll}
             >
                 <StickyContainerWrapper
-                    ref={node => this.wrapper = node}
+                    ref={(node) => { this.wrapper = node; }}
                 >
                     {this.props.children}
                 </StickyContainerWrapper>

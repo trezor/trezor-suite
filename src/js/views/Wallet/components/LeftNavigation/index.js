@@ -97,7 +97,6 @@ class LeftNavigation extends Component {
 
     // TODO: refactor to transition component for reuse of transitions
     getMenuTransition(children) {
-        console.warn('GET MENU TRANSITION', this.state.animationType);
         return (
             <TransitionGroupWrapper component="div" className="transition-container">
                 <CSSTransition
