@@ -37,6 +37,7 @@ const RowAccountWrapper = styled.div`
     padding: ${LEFT_NAVIGATION_ROW.PADDING};
     font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_PRIMARY};
+    border-left: ${BORDER_WIDTH.SELECTED} solid transparent;
     ${props => props.borderTop && css`
         border-top: 1px solid ${colors.DIVIDER};
     `}
