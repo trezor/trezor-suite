@@ -16,7 +16,7 @@ type MethodState = {
 const defaultInputs: string = 
 `[
     {
-        address_n: "m/44'/1815'/0'/0/0",
+        path: "m/44'/1815'/0'/0/0",
         prev_hash: "2effff328b76a8113e32a218f7af99e77768289c9201e8d26a9cda0edaf59bfd",
         prev_index: 0,
         type: 0
@@ -30,7 +30,7 @@ const defaultOutputs: string =
         amount: "1000000"
     },
     {
-        address_n: "m/44'/1815'/0'/0/1",
+        path: "m/44'/1815'/0'/0/1",
         amount: "7120787"
     }
 ]`;
