@@ -30,6 +30,7 @@ import stellargetaddress from './methods/StellarGetAddressReducer';
 import stellarsigntx from './methods/StellarSignTxReducer';
 
 import cardanogetaddress from './methods/CardanoGetAddressReducer';
+import cardanogetxpub from './methods/CardanoGetXpubReducer';
 import cardanosigntx from './methods/CardanoSignTxReducer';
 import cardanosignmessage from './methods/CardanoSignMessageReducer';
 import cardanoverifymessage from './methods/CardanoVerifyMessageReducer';
@@ -66,6 +67,7 @@ export default combineReducers({
     stellarsigntx,
 
     cardanogetaddress,
+    cardanogetxpub,
     cardanosigntx,
     cardanosignmessage,
     cardanoverifymessage,

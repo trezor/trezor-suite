@@ -40,6 +40,7 @@ export default class Main extends Component {
                     { navLink('/stellar-getaddress', 'Stellar Get Address') }
                     { navLink('/stellar-signtx', 'Stellar Sign Transaction') }
                     { navLink('/cardano-getaddress', 'Cardano Get Address') }
+                    { navLink('/cardano-getxpub', 'Cardano Get Public Key') }
                     { navLink('/cardano-signtx', 'Cardano Sign Transaction') }
                     { navLink('/cardano-signmessage', 'Cardano Sign Message') }
                     { navLink('/cardano-verifymessage', 'Cardano Verify Message') }
