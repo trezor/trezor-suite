@@ -13,6 +13,8 @@ export { default as EthereumSignMessage } from './EthereumSignMessage';
 export { default as EthereumVerifyMessage } from './EthereumVerifyMessage';
 export { default as NEMSignTx } from './NEMSignTx';
 export { default as NEMGetAddress } from './NEMGetAddress'; 
+export { default as RippleSignTx } from './RippleSignTx';
+export { default as RippleGetAddress } from './RippleGetAddress';
 export { default as StellarSignTx } from './StellarSignTx';
 export { default as StellarGetAddress } from './StellarGetAddress';
 export { default as ComposeTransaction } from './ComposeTransaction';

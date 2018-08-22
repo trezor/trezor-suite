@@ -39,6 +39,8 @@ export default class Main extends Component {
                     { navLink('/nem-signtx', 'NEM Sign Transaction') }
                     { navLink('/stellar-getaddress', 'Stellar Get Address') }
                     { navLink('/stellar-signtx', 'Stellar Sign Transaction') }
+                    { navLink('/ripple-getaddress', 'Ripple Get Address') }
+                    { navLink('/ripple-signtx', 'Ripple Sign Transaction') }
                     { navLink('/cardano-getaddress', 'Cardano Get Address') }
                     { navLink('/cardano-getxpub', 'Cardano Get Public Key') }
                     { navLink('/cardano-signtx', 'Cardano Sign Transaction') }

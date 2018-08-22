@@ -25,6 +25,8 @@ import ethverifymessage from './methods/EthereumVerifyMessageReducer';
 import nemgetaddress from './methods/NEMGetAddressReducer';
 import nemsigntx from './methods/NEMSignTxReducer';
 
+import ripplegetaddress from './methods/RippleGetAddressReducer';
+import ripplesigntx from './methods/RippleSignTxReducer';
 
 import stellargetaddress from './methods/StellarGetAddressReducer';
 import stellarsigntx from './methods/StellarSignTxReducer';
@@ -68,6 +70,9 @@ export default combineReducers({
 
     nemgetaddress,
     nemsigntx,
+
+    ripplegetaddress,
+    ripplesigntx,
 
     stellargetaddress,
     stellarsigntx,
