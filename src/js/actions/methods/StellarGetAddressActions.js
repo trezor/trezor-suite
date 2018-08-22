@@ -4,7 +4,7 @@
 import TrezorConnect from 'trezor-connect';
 import { onResponse } from './CommonActions';
 
-const PREFIX: string = 'nem_getaddress';
+const PREFIX: string = 'stellar_getaddress';
 export const NETWORK_CHANGE: string = `${PREFIX}_network_@change`;
 export const PATH_CHANGE: string = `${PREFIX}_path_@change`;
 export const CONFIRMATION_CHANGE: string = `${PREFIX}_confirmation_@change`;
