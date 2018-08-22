@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 const ClickWrapper = styled.div`
     width: 100%;
     display: flex;
-    padding-left: 22px;
+    padding-left: 25px;
     height: 100%;
     align-items: center;
     cursor: pointer;
@@ -66,6 +66,22 @@ const IconWrapper = styled.div`
     display: flex;
 `;
 
+const ImageWrapper = styled.div`
+    position: relative;
+`;
+
+const Dot = styled.div`
+    border: 2px solid ${colors.WHITE};
+    border-radius: 50%;
+    position: absolute;
+    z-index: 10;
+    background: ${props => props.color};
+    top: -4px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+`;
+
 const StyledIcon = styled(Icon)`
     transform: rotate(180deg);
 `;
@@ -81,10 +97,13 @@ const DeviceHeader = ({
 }) => (
     <Wrapper>
         <ClickWrapper onClick={!disabled ? handleOpen : null}>
-            <TrezorImage
-                status={status}
-                model={trezorModel}
-            />
+            <ImageWrapper>
+                <Dot color={getStatusColor(status)} />
+                <TrezorImage
+                    status={status}
+                    model={trezorModel}
+                />
+            </ImageWrapper>
             <LabelWrapper>
                 <Name>{label}</Name>
                 <Status>{getStatusName(status)}</Status>

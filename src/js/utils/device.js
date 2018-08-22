@@ -1,6 +1,6 @@
 import colors from 'js/config/colors';
 
-const getDeviceSelectStatus = (device) => {
+const getStatus = (device) => {
     let status = 'connected';
     if (!device.connected) {
         status = 'disconnected';
@@ -18,7 +18,6 @@ const getDeviceSelectStatus = (device) => {
 };
 
 const getStatusName = (deviceStatus) => {
-    const unknownStatusName = 'Status unknown';
     let statusName;
     switch (deviceStatus) {
         case 'used-in-other-window':
@@ -34,9 +33,8 @@ const getStatusName = (deviceStatus) => {
             statusName = 'Unavailable';
             break;
         default:
-            statusName = unknownStatusName;
+            statusName = 'Status unknown';
     }
-
     return statusName;
 };
 
@@ -45,7 +43,7 @@ const isWebUSB = transport => !!((transport && transport.version.indexOf('webusb
 const isDisabled = (selectedDevice, devices, transport) => (devices.length < 1 && !isWebUSB(transport)) || (devices.length === 1 && !selectedDevice.features && !isWebUSB(transport));
 
 const getVersion = (device) => {
-    let version = null;
+    let version;
     if (device.features && device.features.major_version > 1) {
         version = 'T';
     } else {
@@ -55,8 +53,7 @@ const getVersion = (device) => {
 };
 
 const getStatusColor = (deviceStatus) => {
-    let color = null;
-
+    let color;
     switch (deviceStatus) {
         case 'used-in-other-window':
             color = colors.WARNING_PRIMARY;
@@ -71,16 +68,13 @@ const getStatusColor = (deviceStatus) => {
             color = colors.ERROR_PRIMARY;
             break;
         default:
-            color = colors.ERROR_PRIMARY;
+            color = colors.TEXT_PRIMARY;
     }
-
-    console.log('color', color);
-
     return color;
 };
 
 export {
-    getDeviceSelectStatus,
+    getStatus,
     isDisabled,
     getStatusName,
     getVersion,
