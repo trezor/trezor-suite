@@ -14,6 +14,19 @@ const Wrapper = styled.div`
     width: 320px;
     display: flex;
     align-items: center;
+    background: ${colors.WHITE};
+    border-bottom: 1px solid ${colors.DIVIDER};
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+
+    ${props => props.isOpen && css`
+        border-bottom: 1px solid ${colors.WHITE};
+        box-shadow: none;
+    `}
+
+    ${props => props.disabled && css`
+        cursor: initial;
+    `}
 `;
 
 const ClickWrapper = styled.div`
@@ -23,6 +36,10 @@ const ClickWrapper = styled.div`
     height: 100%;
     align-items: center;
     cursor: pointer;
+
+    ${props => props.disabled && css`
+        cursor: initial;
+    `}
 `;
 
 const LabelWrapper = styled.div`
@@ -98,13 +115,12 @@ class DeviceHeader extends Component {
     }
 
     render() {
-        console.log('cananitem', this.state.clicked);
         const {
-            status, label, deviceCount, isOpen, trezorModel,
+            status, label, deviceCount, isOpen, trezorModel, disabled,
         } = this.props;
         return (
-            <Wrapper>
-                <ClickWrapper onClick={() => this.handleClick()}>
+            <Wrapper isOpen={isOpen} disabled={disabled}>
+                <ClickWrapper disabled={disabled} onClick={() => this.handleClick()}>
                     <ImageWrapper>
                         <Dot color={getStatusColor(status)} />
                         <TrezorImage status={status} model={trezorModel} />
@@ -115,14 +131,16 @@ class DeviceHeader extends Component {
                     </LabelWrapper>
                     <IconWrapper>
                         {deviceCount > 1 && <Counter>{deviceCount}</Counter>}
-                        <Icon
-                            canAnimate={this.state.clicked === true}
-                            isActive={isOpen}
-                            size={25}
-                            color={colors.TEXT_SECONDARY}
-                            icon={icons.ARROW_DOWN}
-                            rotateOnActive
-                        />
+                        {!disabled && (
+                            <Icon
+                                canAnimate={this.state.clicked === true}
+                                isActive={isOpen}
+                                size={25}
+                                color={colors.TEXT_SECONDARY}
+                                icon={icons.ARROW_DOWN}
+                            />
+                        )
+                        }
                     </IconWrapper>
                 </ClickWrapper>
             </Wrapper>

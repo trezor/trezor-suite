@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
-import DeviceHeader from 'components/DeviceHeader';
 import { getStatus, getVersion } from 'utils/device';
+
+import DeviceHeader from './components/DeviceHeader';
 
 // import DeviceList from './components/DeviceList';
 import type { Props } from '../common';
@@ -17,66 +18,24 @@ const Wrapper = styled.div``;
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;
     const { transport } = props.connect;
-
-    const selected: ?TrezorDevice = props.wallet.selectedDevice;
-    if (!selected) return null;
-
-    let deviceStatus: string = 'Connected';
-    let css: string = 'device-select device';
-    if (props.deviceDropdownOpened) css += ' opened';
-
-    if (!selected.connected) {
-        css += ' disconnected';
-        deviceStatus = 'Disconnected';
-    } else if (!selected.available) {
-        css += ' unavailable';
-        deviceStatus = 'Unavailable';
-    } else if (selected.type === 'acquired') {
-        if (selected.status === 'occupied') {
-            css += ' used-elsewhere';
-            deviceStatus = 'Used in other window';
-        } else if (selected.status === 'used') {
-            css += ' reload-features';
-        }
-    } else if (selected.type === 'unacquired') {
-        css += ' unacquired';
-        deviceStatus = 'Used in other window';
-    }
-
-    if (selected.features && selected.features.major_version > 1) {
-        css += ' trezor-t';
-    }
-
-    const deviceCount = devices.length;
+    const { selectedDevice } = props.wallet;
     const webusb: boolean = !!((transport && transport.version.indexOf('webusb') >= 0));
-    const disabled: boolean = (devices.length < 1 && !webusb) || (devices.length === 1 && !selected.features && !webusb);
-    if (disabled) {
-        css += ' disabled';
-    }
+    const disabled: boolean = (devices.length < 1 && !webusb) || (devices.length === 1 && !selectedDevice.features && !webusb);
 
     const handleOpen = () => {
         props.toggleDeviceDropdown(!props.deviceDropdownOpened);
     };
 
     return (
-        <div>
-            <DeviceHeader
-                handleOpen={handleOpen}
-                label={selected.instanceLabel}
-                status={getStatus(selected)}
-                deviceCount={devices.length}
-                isOpen={props.deviceDropdownOpened}
-                trezorModel={getVersion(selected)}
-            />
-            <div className={css} onClick={!disabled ? handleOpen : null}>
-                <div className="label-container">
-                    <span className="label">{selected.instanceLabel}</span>
-                    <span className="status">{deviceStatus}</span>
-                </div>
-                {deviceCount > 1 ? <div className="counter">{deviceCount}</div> : null}
-                <div className="arrow" />
-            </div>
-        </div>
+        <DeviceHeader
+            handleOpen={handleOpen}
+            disabled={disabled}
+            label={selectedDevice.instanceLabel}
+            status={getStatus(selectedDevice)}
+            deviceCount={devices.length}
+            isOpen={props.deviceDropdownOpened}
+            trezorModel={getVersion(selectedDevice)}
+        />
     );
 };
 

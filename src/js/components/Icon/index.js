@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
 
+// TODO: make animation of icons better
 const rotate180up = keyframes`
     from {
         transform: rotate(0deg);
