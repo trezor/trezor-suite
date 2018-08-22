@@ -64,7 +64,7 @@ export const DeviceSelect = (props: Props) => {
                 handleOpen={handleOpen}
                 label={selected.instanceLabel}
                 status={getStatus(selected)}
-                deviceCount={deviceCount}
+                deviceCount={devices.length}
                 isOpen={props.deviceDropdownOpened}
                 trezorModel={getVersion(selected)}
             />

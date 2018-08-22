@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
@@ -82,38 +82,54 @@ const Dot = styled.div`
     height: 10px;
 `;
 
-const DeviceHeader = ({
-    disabled = false,
-    handleOpen,
-    status,
-    label,
-    deviceCount,
-    isOpen = false,
-    trezorModel,
-}) => (
-    <Wrapper>
-        <ClickWrapper onClick={!disabled ? handleOpen : null}>
-            <ImageWrapper>
-                <Dot color={getStatusColor(status)} />
-                <TrezorImage status={status} model={trezorModel} />
-            </ImageWrapper>
-            <LabelWrapper>
-                <Name>{label}</Name>
-                <Status>{getStatusName(status)}</Status>
-            </LabelWrapper>
-            <IconWrapper>
-                {deviceCount > 1 && <Counter>{deviceCount}</Counter>}
-                <Icon
-                    isOpen={isOpen}
-                    size={25}
-                    color={colors.TEXT_SECONDARY}
-                    icon={icons.ARROW_DOWN}
-                    rotateOnActive
-                />
-            </IconWrapper>
-        </ClickWrapper>
-    </Wrapper>
-);
+class DeviceHeader extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            clicked: false,
+        };
+    }
+
+    handleClick() {
+        this.setState({ clicked: true });
+        if (!this.props.disabled) {
+            this.props.handleOpen();
+        }
+    }
+
+    render() {
+        console.log('cananitem', this.state.clicked);
+        const {
+            status, label, deviceCount, isOpen, trezorModel,
+        } = this.props;
+        return (
+            <Wrapper>
+                <ClickWrapper onClick={() => this.handleClick()}>
+                    <ImageWrapper>
+                        <Dot color={getStatusColor(status)} />
+                        <TrezorImage status={status} model={trezorModel} />
+                    </ImageWrapper>
+                    <LabelWrapper>
+                        <Name>{label}</Name>
+                        <Status>{getStatusName(status)}</Status>
+                    </LabelWrapper>
+                    <IconWrapper>
+                        {deviceCount > 1 && <Counter>{deviceCount}</Counter>}
+                        <Icon
+                            canAnimate={this.state.clicked === true}
+                            isActive={isOpen}
+                            size={25}
+                            color={colors.TEXT_SECONDARY}
+                            icon={icons.ARROW_DOWN}
+                            rotateOnActive
+                        />
+                    </IconWrapper>
+                </ClickWrapper>
+            </Wrapper>
+        );
+    }
+}
+
 
 DeviceHeader.propTypes = {
     deviceCount: PropTypes.number,
