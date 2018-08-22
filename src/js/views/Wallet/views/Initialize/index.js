@@ -1,17 +1,41 @@
-/* @flow */
+import styled from 'styled-components';
 import { H2 } from 'components/Heading';
+import Button from 'components/Button';
+import P from 'components/P';
 import React from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+const Wrapper = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+`;
+
+const Row = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+`;
+
+const A = styled.a``;
+
+const StyledP = styled(P)`
+    margin: 20px 50px;
+    display: block;
+`;
+
 const Initialize = () => (
-    <section className="device-settings">
-        <div className="row">
+    <Wrapper>
+        <Row>
             <H2>Your device is in not initialized</H2>
-            <p>Please use Bitcoin wallet interface to start initialization process</p>
-            <a className="button" href="https://wallet.trezor.io/">Take me to the Bitcoin wallet</a>
-        </div>
-    </section>
+            <StyledP>Please use Bitcoin wallet interface to start initialization process</StyledP>
+            <A href="https://wallet.trezor.io/">
+                <Button text="Take me to the Bitcoin wallet" />
+            </A>
+        </Row>
+    </Wrapper>
 );
 
 export default connect(null, null)(Initialize);
