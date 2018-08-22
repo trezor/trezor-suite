@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
@@ -34,7 +34,7 @@ const Name = styled.div`
     display: block;
     text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
+    white-space: no-wrap;
     font-weight: 500;
     font-size: 14px;
     color: ${colors.TEXT_PRIMARY};
@@ -82,10 +82,6 @@ const Dot = styled.div`
     height: 10px;
 `;
 
-const StyledIcon = styled(Icon)`
-    transform: rotate(180deg);
-`;
-
 const DeviceHeader = ({
     disabled = false,
     handleOpen,
@@ -99,22 +95,20 @@ const DeviceHeader = ({
         <ClickWrapper onClick={!disabled ? handleOpen : null}>
             <ImageWrapper>
                 <Dot color={getStatusColor(status)} />
-                <TrezorImage
-                    status={status}
-                    model={trezorModel}
-                />
+                <TrezorImage status={status} model={trezorModel} />
             </ImageWrapper>
             <LabelWrapper>
                 <Name>{label}</Name>
                 <Status>{getStatusName(status)}</Status>
             </LabelWrapper>
             <IconWrapper>
-                {deviceCount > 1 ? <Counter>{deviceCount}</Counter> : null}
-                <StyledIcon
+                {deviceCount > 1 && <Counter>{deviceCount}</Counter>}
+                <Icon
                     isOpen={isOpen}
                     size={25}
                     color={colors.TEXT_SECONDARY}
                     icon={icons.ARROW_DOWN}
+                    rotateOnActive
                 />
             </IconWrapper>
         </ClickWrapper>
