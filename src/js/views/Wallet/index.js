@@ -34,7 +34,7 @@ const AppWrapper = styled.div`
     min-width: 720px;
     display: flex;
     flex-direction: column;
-    background: ${colors.DIVIDER};
+    background: ${colors.BACKGROUND};
     
     &.resized {
         // to make sure that unpacked coin menu will not overflow main container

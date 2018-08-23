@@ -15,11 +15,10 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     background: ${colors.WHITE};
-    border-bottom: 1px solid ${colors.DIVIDER};
+    border-radius: 4px 0 0 0;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
 
     ${props => props.isOpen && css`
-        border-bottom: 1px solid ${colors.WHITE};
         box-shadow: none;
     `}
 `;

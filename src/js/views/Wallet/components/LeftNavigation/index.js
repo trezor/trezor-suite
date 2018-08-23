@@ -27,7 +27,9 @@ const StickyBottom = styled.div`
     border-right: 1px solid ${colors.DIVIDER};
 `;
 
-const MenuWrapper = styled.div``;
+const MenuWrapper = styled.div`
+    background: ${colors.LANDING};
+`;
 
 const Help = styled.div`
     display: flex;

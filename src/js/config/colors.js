@@ -1,7 +1,8 @@
 export default {
     WHITE: '#FFFFFF',
+    BACKGROUND: '#EBEBEB',
 
-    HEADER: '#212121',
+    HEADER: '#1A1A1A',
     BODY: '#E3E3E3',
     MAIN: '#FBFBFB',
     LANDING: '#F9F9F9',
