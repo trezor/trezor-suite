@@ -24,9 +24,12 @@ const LayoutWrapper = styled.div`
     height: 100%;
     max-width: 1170px;
     margin: 0 auto;
-    padding: 0 32px;
     display: flex;
     align-items: center;
+
+    @media screen and (max-width: 1170px) {
+        padding: 0 25px;
+    }
 `;
 
 const A = styled.a`

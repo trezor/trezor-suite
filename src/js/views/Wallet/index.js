@@ -48,7 +48,7 @@ const WalletWrapper = styled.div`
     max-width: 1170px;
     margin: 0 auto;
     flex: 1;
-    background: ${colors.MAIN};
+    background: ${colors.WHITE};
     display: flex;
     flex-direction: row;
     border-radius: 4px 4px 0px 0px;
