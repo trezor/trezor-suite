@@ -2,6 +2,14 @@ export const FONT_SIZE = {
     SMALLER: '12px',
     SMALL: '14px',
     BASE: '16px',
+    BIGGEST: '36px',
+};
+
+export const FONT_WEIGHT = {
+    SMALLEST: '300',
+    SMALL: '400',
+    BASE: '500',
+    BIGGER: '600',
 };
 
 export const TRANSITION_TIME = {
@@ -18,4 +26,12 @@ export const BORDER_WIDTH = {
 
 export const LEFT_NAVIGATION_ROW = {
     PADDING: '16px 24px',
+};
+
+export const TRANSITION = {
+    HOVER: `transition: background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${TRANSITION_TIME.BASE} ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out`,
+};
+
+export const LINE_HEIGHT = {
+    BASE: '1.8',
 };
