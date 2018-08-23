@@ -12,10 +12,6 @@ export const FONT_WEIGHT = {
     BIGGER: '600',
 };
 
-export const TRANSITION_TIME = {
-    BASE: '0.3s',
-};
-
 export const ICON_SIZE = {
     BASE: '20px',
 };
@@ -26,6 +22,10 @@ export const BORDER_WIDTH = {
 
 export const LEFT_NAVIGATION_ROW = {
     PADDING: '16px 24px',
+};
+
+const TRANSITION_TIME = {
+    BASE: '0.3s',
 };
 
 export const TRANSITION = {
