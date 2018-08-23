@@ -29,6 +29,9 @@ const getStatusName = (deviceStatus) => {
         case 'disconnected':
             statusName = 'Disconnected';
             break;
+        case 'unacquired':
+            statusName = 'Used in other window';
+            break;
         case 'unavailable':
             statusName = 'Unavailable';
             break;
@@ -60,6 +63,9 @@ const getStatusColor = (deviceStatus) => {
             break;
         case 'connected':
             color = colors.GREEN_PRIMARY;
+            break;
+        case 'unacquired':
+            color = colors.WARNING_PRIMARY;
             break;
         case 'disconnected':
             color = colors.ERROR_PRIMARY;

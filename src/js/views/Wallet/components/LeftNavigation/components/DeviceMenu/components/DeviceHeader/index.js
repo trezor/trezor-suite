@@ -17,15 +17,10 @@ const Wrapper = styled.div`
     background: ${colors.WHITE};
     border-bottom: 1px solid ${colors.DIVIDER};
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
-    cursor: pointer;
 
     ${props => props.isOpen && css`
         border-bottom: 1px solid ${colors.WHITE};
         box-shadow: none;
-    `}
-
-    ${props => props.disabled && css`
-        cursor: initial;
     `}
 `;
 
@@ -119,11 +114,11 @@ class DeviceHeader extends Component {
             status, label, deviceCount, isOpen, trezorModel, disabled,
         } = this.props;
         return (
-            <Wrapper isOpen={isOpen} disabled={disabled}>
+            <Wrapper isOpen={isOpen}>
                 <ClickWrapper disabled={disabled} onClick={() => this.handleClick()}>
                     <ImageWrapper>
                         <Dot color={getStatusColor(status)} />
-                        <TrezorImage status={status} model={trezorModel} />
+                        <TrezorImage model={trezorModel} />
                     </ImageWrapper>
                     <LabelWrapper>
                         <Name>{label}</Name>
