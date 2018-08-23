@@ -1,7 +1,9 @@
 /* @flow */
 import React from 'react';
+import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import colors from 'config/colors';
 import { Notification } from 'components/Notification';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 
@@ -11,6 +13,13 @@ type Props = {
     acquiring: boolean;
     acquireDevice: typeof TrezorConnectActions.acquire
 }
+
+const Wrapper = styled.div`
+    display: flex;
+    background: ${colors.WHITE};
+    flex-direction: column;
+    flex: 1;
+`;
 
 const Acquire = (props: Props) => {
     const actions = props.acquiring ? [] : [
@@ -23,7 +32,7 @@ const Acquire = (props: Props) => {
     ];
 
     return (
-        <section className="acquire">
+        <Wrapper>
             <Notification
                 title="Device is used in other window"
                 message="Do you want to use your device in this window?"
@@ -31,7 +40,7 @@ const Acquire = (props: Props) => {
                 cancelable={false}
                 actions={actions}
             />
-        </section>
+        </Wrapper>
     );
 };
 

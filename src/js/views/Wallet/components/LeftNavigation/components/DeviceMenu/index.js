@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
-import { getStatus, getVersion } from 'utils/device';
+import { getStatus, getVersion, isDisabled } from 'utils/device';
 
 import DeviceHeader from './components/DeviceHeader';
 
@@ -12,15 +12,13 @@ import type { Props } from '../common';
 
 import AsideDivider from '../Divider';
 
-
 const Wrapper = styled.div``;
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;
     const { transport } = props.connect;
     const { selectedDevice } = props.wallet;
-    const webusb: boolean = !!((transport && transport.version.indexOf('webusb') >= 0));
-    const disabled: boolean = (devices.length < 1 && !webusb) || (devices.length === 1 && !selectedDevice.features && !webusb);
+    const disabled = isDisabled(selectedDevice, devices, transport);
 
     const handleOpen = () => {
         props.toggleDeviceDropdown(!props.deviceDropdownOpened);
