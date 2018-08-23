@@ -5549,9 +5549,9 @@ tough-cookie@~2.3.3:
   dependencies:
     punycode "^1.4.1"
 
-trezor-connect@5.0.30:
-  version "5.0.30"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.30.tgz#3a71613a6d6e63532c7880c1dc25abca18f0b0e7"
+trezor-connect@5.0.31:
+  version "5.0.31"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.31.tgz#7ecf5e26e154962b638ddc35e68a52d57f4cc107"
   dependencies:
     babel-runtime "^6.26.0"
     events "^1.1.1"
