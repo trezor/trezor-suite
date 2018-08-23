@@ -1,81 +1,157 @@
 /* @flow */
 
 import React from 'react';
-import { H2 } from 'components/Heading';
+import styled from 'styled-components';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Log from 'components/Log';
+import Link from 'components/Link';
+import Loader from 'components/LoaderCircle';
 import Notifications, { Notification } from 'components/Notification';
+import colors from 'config/colors';
+import P from 'components/Paragraph';
+import { H2 } from 'components/Heading';
 
-import Preloader from './components/Preloader';
+import BrowserNotSupported from './components/BrowserNotSupported';
 import ConnectDevice from './components/ConnectDevice';
 import InstallBridge from './components/InstallBridge';
-import LocalStorageError from './components/LocalStorageError';
-import TrezorConnectError from './components/TrezorConnectError';
 
-import type { Props } from './index';
+import type { Props } from './Container';
 
-const BrowserNotSupported = (props: {}): React$Element<string> => (
-    <main>
-        <H2>Your browser is not supported</H2>
-        <p>Please choose one of the supported browsers</p>
-        <div className="row">
-            <div className="chrome">
-                <p>Google Chrome</p>
-                <a className="button" href="https://www.google.com/chrome/" target="_blank" rel="noreferrer noopener">Get Chrome</a>
-            </div>
-            <div className="firefox">
-                <p>Mozilla Firefox</p>
-                <a className="button" href="https://www.mozilla.org/en-US/firefox/new/" target="_blank" rel="noreferrer noopener">Get Firefox</a>
-            </div>
-        </div>
-    </main>
-);
+const LandingWrapper = styled.div`
+    min-height: 100vh;
+    min-width: 720px;
 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+    background: ${colors.LANDING};
+`;
+
+const LandingContent = styled.div`
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const LandingImage = styled.div`
+    width: 777px;
+    min-height: 500px;
+    margin: auto;
+    background-image: url('../images/case.png');
+    background-repeat: no-repeat;
+    background-position: center 0px;
+    background-size: contain;
+`;
+
+const TitleWrapper = styled.div`
+    margin-top: 60px;
+`;
+
+const LandingFooterWrapper = styled.div`
+    margin-bottom: 32px;
+`;
+
+const LandingFooterTextWrapper = styled.span`
+    margin-right: 4px;
+`;
+
+const LandingLoader = styled(Loader)`
+    margin: auto;
+`;
 
 export default (props: Props) => {
-    const { web3 } = props;
     const { devices } = props;
     const { browserState, transport } = props.connect;
     const localStorageError = props.localStorage.error;
     const connectError = props.connect.error;
 
-    let notification = null;
-    let body = null;
-    let css: string = 'app landing';
     const bridgeRoute: boolean = props.router.location.state.hasOwnProperty('bridge');
+    const deviceLabel = props.wallet.disconnectRequest ? props.wallet.disconnectRequest.label : '';
 
-    if (localStorageError) {
-        notification = (
-            <Notification
-                title="Initialization error"
-                message="Config files are missing"
-                className="error"
-            />
-        );
-        css += ' config-error';
-    } else if (browserState.supported === false) {
-        css += ' browser-not-supported';
-        body = <BrowserNotSupported />;
-    } else if (connectError || bridgeRoute) {
-        css += ' install-bridge';
-        body = <InstallBridge browserState={browserState} />;
-    } else if (props.wallet.ready && devices.length < 1) {
-        css += ' connect-device';
-        body = <ConnectDevice transport={transport} disconnectRequest={props.wallet.disconnectRequest} />;
-    }
+    const hasWebUsb = transport && transport.version.indexOf('webusb') >= 0;
+    const shouldShowInstallBridge = connectError || bridgeRoute;
+    const shouldShowConnectDevice = props.wallet.ready && devices.length < 1;
+    const shouldShowDisconnectDevice = !!props.wallet.disconnectRequest;
+    const shouldShowUnsupportedBrowser = browserState.supported === false;
 
-    if (notification || body) {
-        return (
-            <div className={css}>
-                <Header />
-                { notification }
-                <Notifications />
-                <Log />
-                { body }
-                <Footer />
-            </div>
-        );
-    }
-    return (<Preloader />);
+    const isLoading = !shouldShowInstallBridge && !shouldShowConnectDevice && !shouldShowUnsupportedBrowser && !localStorageError;
+
+    return (
+        <LandingWrapper>
+            {isLoading && <LandingLoader label="Loading" size="100" />}
+            {!isLoading && (
+                <React.Fragment>
+                    <Header />
+                    {localStorageError && (
+                        <Notification
+                            title="Initialization error"
+                            message="Config files are missing"
+                            className="error"
+                        />
+                    )}
+                    <Notifications />
+                    <Log />
+
+                    <LandingContent>
+
+                        {shouldShowUnsupportedBrowser && <BrowserNotSupported />}
+                        {shouldShowInstallBridge && <InstallBridge browserState={browserState} />}
+
+                        {(shouldShowConnectDevice || shouldShowDisconnectDevice) && (
+                            <div>
+                                <TitleWrapper>
+                                    <H2 claim>The private bank in your hands.</H2>
+                                    <P>TREZOR Wallet is an easy-to-use interface for your TREZOR.</P>
+                                    <P>TREZOR Wallet allows you to easily control your funds, manage your balance and initiate transfers.</P>
+                                </TitleWrapper>
+
+                                <ConnectDevice
+                                    deviceLabel={deviceLabel}
+                                    showWebUsb={hasWebUsb}
+                                    showDisconnect={shouldShowDisconnectDevice}
+                                />
+
+                                <LandingImage />
+
+                                {shouldShowConnectDevice && (
+                                    <LandingFooterWrapper>
+                                        {hasWebUsb && (
+                                            <P>
+                                                <LandingFooterTextWrapper>
+                                                    Device not recognized?
+                                                </LandingFooterTextWrapper>
+                                                <Link
+                                                    text="Try installing the TREZOR Bridge."
+                                                    href="#/bridge"
+                                                    isGreen
+                                                />
+                                            </P>
+                                        )}
+                                        <P>
+                                            <LandingFooterTextWrapper>
+                                                Don't have TREZOR?
+                                            </LandingFooterTextWrapper>
+                                            <Link
+                                                text="Get one"
+                                                href="https://trezor.io/"
+                                                target="_blank"
+                                                rel="noreferrer noopener"
+                                                isGreen
+                                            />
+                                        </P>
+                                    </LandingFooterWrapper>
+                                )}
+                            </div>
+                        )}
+                    </LandingContent>
+
+                    <Footer />
+                </React.Fragment>
+            )}
+        </LandingWrapper>
+    );
 };
