@@ -12,6 +12,7 @@ const Icon = ({ icon, size = 32, color = 'black' }) => {
         },
     };
 
+
     return (
         <svg
             style={styles.svg}
@@ -19,17 +20,19 @@ const Icon = ({ icon, size = 32, color = 'black' }) => {
             height={`${size}`}
             viewBox="0 0 1024 1024"
         >
-            <path
-                style={styles.path}
-                d={icon}
-
-            />
+            {icon.map(iconPath => (
+                <path
+                    key={iconPath}
+                    style={styles.path}
+                    d={iconPath}
+                />
+            ))}
         </svg>
     );
 };
 
 Icon.propTypes = {
-    icon: PropTypes.string.isRequired,
+    icon: PropTypes.arrayOf(PropTypes.string).isRequired,
     size: PropTypes.number,
     color: PropTypes.string,
 };
