@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TRANSITION_TIME } from 'config/variables';
+import { TRANSITION } from 'config/variables';
 
 const Wrapper = styled.div`
     height: 100%;
@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${TRANSITION_TIME.BASE} ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out;
+    transition: ${TRANSITION.HOVER};
 
     ${props => props.disabled && css`
         cursor: not-allowed;
