@@ -28,7 +28,7 @@ const Copy = styled.div`
 
 const Footer = ({ toggle }) => (
     <Wrapper>
-        <Copy>© {getYear(new Date())}</Copy>
+        <Copy>&copy; {getYear(new Date())}</Copy>
         <A href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi green">SatoshiLabs</A>
         <A href="tos.pdf" target="_blank" rel="noreferrer noopener" className="green">Terms</A>
         <A onClick={toggle} className="green">Show Log</A>
