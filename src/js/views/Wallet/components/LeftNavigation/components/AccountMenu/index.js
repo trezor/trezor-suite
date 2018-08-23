@@ -13,7 +13,7 @@ import ICONS from 'config/icons';
 import { NavLink } from 'react-router-dom';
 import { findDeviceAccounts } from 'reducers/AccountsReducer';
 import {
-    FONT_SIZE, BORDER_WIDTH, TRANSITION_TIME, LEFT_NAVIGATION_ROW,
+    FONT_SIZE, BORDER_WIDTH, LEFT_NAVIGATION_ROW,
 } from 'config/variables';
 
 import type { Accounts } from 'flowtype';
