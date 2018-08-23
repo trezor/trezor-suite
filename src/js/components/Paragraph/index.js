@@ -1,0 +1,32 @@
+import React from 'react';
+import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
+import colors from 'config/colors';
+import { FONT_SIZE, LINE_HEIGHT } from 'config/variables';
+
+const Wrapper = styled.p`
+    font-size: ${FONT_SIZE.BASE};
+    line-height: ${LINE_HEIGHT.BASE};
+    color: ${colors.TEXT_SECONDARY};
+
+    ${props => props.isSmaller && css`
+        font-size: ${FONT_SIZE.SMALLER};
+    `}
+`;
+
+const P = ({ children, className, isSmaller = false }) => (
+    <Wrapper
+        className={className}
+        isSmaller={isSmaller}
+    >{children}
+    </Wrapper>
+);
+
+P.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.string.isRequired,
+    isSmaller: PropTypes.bool,
+};
+
+
+export default P;
