@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
-import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import installers from 'constants/bridge';
 import Select from 'components/Select';
 import Link from 'components/Link';
@@ -62,39 +62,12 @@ const LearnMoreText = styled.span`
     margin-right: 4px;
 `;
 
-const Row = styled.div`
-    margin: 24px 0px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+const SelectWrapper = styled(Select)`
+    margin-right: 10px;
 `;
 
-// const SelectWrapper = styled(Select)`
-//     width: 200px;
-//     height: 40px;
-//     margin-right: 4px;
-
-//     .Select-control {
-//         width: 200px;
-//         height: 40px;
-//         border: 1px solid ${colors.DIVIDER};
-//         border-radius: 0px 2px 2px 0px;
-//         background: ${colors.WHITE};
-//     }
-
-//     .Select-option {
-//         ${TRANSITION.HOVER};
-//         &.is-focused {
-//             background: ${colors.GRAY_LIGHT};
-//         }
-
-//         &.is-selected {
-//             background: ${colors.DIVIDER};
-//         }
-//     }
-// `;
-
 const DownloadBridgeWrapper = styled.div`
+    margin: 24px auto;
     display: flex;
     align-items: center;
 `;
@@ -121,6 +94,7 @@ export default class InstallBridge extends Component<Props, State> {
     }
 
     onChange(value: InstallTarget) {
+        console.warn(value);
         this.setState({
             target: value,
         });
@@ -143,38 +117,25 @@ export default class InstallBridge extends Component<Props, State> {
                 </TitleHeader>
 
                 <P>New communication tool to facilitate the connection between your TREZOR and your internet browser.</P>
-                <Row>
-                    <DownloadBridgeWrapper>
-                        {/* <SelectWrapper
-                            name="installers"
-                            className="installers"
-                            searchable={false}
-                            clearable={false}
-                            value={this.state.target}
-                            onChange={this.onChange.bind(this)}
-                            options={installers}
-                        /> */}
-                        <Select
-                            searchable={false}
-                            clearable={false}
-                            value={this.state.target}
-                            onChange={this.onChange.bind(this)}
-                            options={installers}
+                <DownloadBridgeWrapper>
+                    <SelectWrapper
+                        isSearchable={false}
+                        isClearable={false}
+                        value={this.state.target}
+                        onChange={val => this.onChange(val)}
+                        options={installers}
+                    />
+                    <Link href={url}>
+                        <Button
+                            icon={{
+                                type: ICONS.DOWNLOAD,
+                                color: colors.WHITE,
+                                size: 30,
+                            }}
+                            text={`Download for ${label}`}
                         />
-                        <Link
-                            href={url}
-                        >
-                            <Button
-                                icon={{
-                                    type: ICONS.DOWNLOAD,
-                                    color: colors.WHITE,
-                                    size: 30,
-                                }}
-                                text={`Download fro ${label}`}
-                            />
-                        </Link>
-                    </DownloadBridgeWrapper>
-                </Row>
+                    </Link>
+                </DownloadBridgeWrapper>
 
                 <P>
                     <LearnMoreText>Learn more about latest version in</LearnMoreText>
