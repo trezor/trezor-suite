@@ -1,11 +1,11 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import React from 'react';
-
+import Icon from 'components/Icon';
 import colors from 'config/colors';
 
 const Wrapper = styled.button`
-    padding: 12px 24px;
+    padding: ${props => (props.icon ? '4px 24px 4px 15px' : '11px 24px')};
     border-radius: 3px;
     font-size: 14px;
     font-weight: 300;
@@ -26,15 +26,30 @@ const Wrapper = styled.button`
     `}
 `;
 
+const IconWrapper = styled.span`
+    margin-right: 8px;
+`;
+
 const Button = ({
-    text, onClick, disabled, blue, white,
+    text, icon, onClick, disabled, blue, white,
 }) => (
     <Wrapper
+        icon={icon}
         onClick={onClick}
         disabled={disabled}
         blue={blue}
         white={white}
-    >{text}
+    >
+        {icon && (
+            <IconWrapper>
+                <Icon
+                    icon={icon.type}
+                    color={icon.color}
+                    size={icon.size}
+                />
+            </IconWrapper>
+        )}
+        {text}
     </Wrapper>
 );
 
@@ -43,6 +58,11 @@ Button.propTypes = {
     disabled: PropTypes.bool,
     blue: PropTypes.bool,
     white: PropTypes.bool,
+    icon: PropTypes.shape({
+        type: PropTypes.arrayOf(PropTypes.string).isRequired,
+        color: PropTypes.string,
+        size: PropTypes.number,
+    }),
     text: PropTypes.string.isRequired,
 };
 
