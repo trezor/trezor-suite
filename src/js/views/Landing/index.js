@@ -6,7 +6,7 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Log from 'components/Log';
 import Link from 'components/Link';
-import Loader from 'components/LoaderCircle';
+import Loader from 'components/Loader';
 import Notifications, { Notification } from 'components/Notification';
 import colors from 'config/colors';
 import P from 'components/Paragraph';
@@ -82,7 +82,7 @@ export default (props: Props) => {
 
     return (
         <LandingWrapper>
-            {isLoading && <LandingLoader label="Loading" size="100" />}
+            {isLoading && <LandingLoader text="Loading" size={100} />}
             {!isLoading && (
                 <React.Fragment>
                     <Header />
@@ -98,8 +98,7 @@ export default (props: Props) => {
 
                     <LandingContent>
 
-                        <InstallBridge browserState={browserState} />
-                        {/* {shouldShowUnsupportedBrowser && <BrowserNotSupported />}
+                        {shouldShowUnsupportedBrowser && <BrowserNotSupported />}
                         {shouldShowInstallBridge && <InstallBridge browserState={browserState} />}
 
                         {(shouldShowConnectDevice || shouldShowDisconnectDevice) && (
@@ -147,7 +146,7 @@ export default (props: Props) => {
                                     </LandingFooterWrapper>
                                 )}
                             </div>
-                        )} */}
+                        )}
                     </LandingContent>
 
                     <Footer />

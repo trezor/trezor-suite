@@ -2,7 +2,7 @@
 
 
 import React, { Component } from 'react';
-import Loader from 'components/LoaderCircle';
+import Loader from 'components/Loader';
 
 import type { Props } from './index';
 
@@ -89,7 +89,7 @@ export default class RememberDevice extends Component<Props, State> {
             <div className="remember">
                 <h3>Forget {label}?</h3>
                 <p>Would you like TREZOR Wallet to forget your { devicePlural }, so that it is still visible even while disconnected?</p>
-                <button onClick={event => this.forget()}><span>Forget <Loader size="28" label={this.state.countdown.toString()} /></span></button>
+                <button onClick={event => this.forget()}><span>Forget <Loader size={28} text={this.state.countdown.toString()} /></span></button>
                 <button className="white" onClick={event => onRememberDevice(device)}>Remember</button>
             </div>
         );

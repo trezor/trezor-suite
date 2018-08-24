@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as NotificationActions from 'actions/NotificationActions';
 import type { Action, State, Dispatch } from 'flowtype';
-import Loader from 'components/LoaderCircle';
+import Loader from 'components/Loader';
 
 type Props = {
     notifications: $ElementType<State, 'notifications'>,
@@ -53,8 +53,7 @@ export const Notification = (props: NProps): React$Element<string> => {
             ) : null }
             { props.loading ? (
                 <Loader
-                    className="info"
-                    size="50"
+                    size={50}
                 />
             ) : null }
 

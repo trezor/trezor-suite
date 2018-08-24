@@ -8,7 +8,7 @@ import installers from 'constants/bridge';
 import Select from 'components/Select';
 import Link from 'components/Link';
 import Button from 'components/Button';
-import Loader from 'components/LoaderCircle';
+import Loader from 'components/Loader';
 import P from 'components/Paragraph';
 import ICONS from 'config/icons';
 
@@ -128,7 +128,7 @@ export default class InstallBridge extends Component<Props, State> {
 
     render() {
         if (!this.state.target) {
-            return <Loader label="Loading" size="100" />;
+            return <Loader text="Loading" size={100} />;
         }
         const { label } = this.state.target;
         const url = `${this.state.url}${this.state.target.value}`;
