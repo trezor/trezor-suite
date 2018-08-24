@@ -98,7 +98,8 @@ export default (props: Props) => {
 
                     <LandingContent>
 
-                        {shouldShowUnsupportedBrowser && <BrowserNotSupported />}
+                        <InstallBridge browserState={browserState} />
+                        {/* {shouldShowUnsupportedBrowser && <BrowserNotSupported />}
                         {shouldShowInstallBridge && <InstallBridge browserState={browserState} />}
 
                         {(shouldShowConnectDevice || shouldShowDisconnectDevice) && (
@@ -125,10 +126,10 @@ export default (props: Props) => {
                                                     Device not recognized?
                                                 </LandingFooterTextWrapper>
                                                 <Link
-                                                    text="Try installing the TREZOR Bridge."
                                                     href="#/bridge"
                                                     isGreen
-                                                />
+                                                >Try installing the TREZOR Bridge.
+                                                </Link>
                                             </P>
                                         )}
                                         <P>
@@ -136,17 +137,17 @@ export default (props: Props) => {
                                                 Don't have TREZOR?
                                             </LandingFooterTextWrapper>
                                             <Link
-                                                text="Get one"
                                                 href="https://trezor.io/"
                                                 target="_blank"
                                                 rel="noreferrer noopener"
                                                 isGreen
-                                            />
+                                            >Get one
+                                            </Link>
                                         </P>
                                     </LandingFooterWrapper>
                                 )}
                             </div>
-                        )}
+                        )} */}
                     </LandingContent>
 
                     <Footer />
