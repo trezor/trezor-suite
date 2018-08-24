@@ -62,6 +62,7 @@ const Link = ({
 Link.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.string,
+        PropTypes.object,
         PropTypes.array,
     ]).isRequired,
     href: PropTypes.string.isRequired,
