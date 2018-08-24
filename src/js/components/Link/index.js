@@ -18,7 +18,8 @@ const A = styled.a`
 
     &,
     &:visited,
-    &:active {
+    &:active,
+    &:hover {
         ${props => props.isGreen && css`
             color: ${colors.GREEN_PRIMARY};
         `}
@@ -29,12 +30,6 @@ const A = styled.a`
 
     &:hover {
         border-color: transparent;
-        ${props => props.isGreen && css`
-            color: ${colors.GREEN_SECONDARY};
-        `}
-        ${props => props.isGray && css`
-            color: ${colors.TEXT_PRIMARY};
-        `}
     }
 `;
 
