@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import Link from 'components/Link';
+import Button from 'components/Button';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 
@@ -39,23 +40,28 @@ const BrowserNotSupported = () => (
                 <BrowserLogo isChrome />
                 <P isSmaller>Google Chrome</P>
                 <Link
-                    text="Get Chrome"
                     href="https://www.google.com/chrome/"
                     target="_blank"
                     rel="noreferrer noopener"
-                    isButton
-                />
+                >
+                    <Button
+                        text="Get Chrome"
+                    />
+                </Link>
             </Browser>
             <Browser>
                 <BrowserLogo isFirefox />
                 <P isSmaller>Mozzila Firefox</P>
                 <Link
-                    text="Get Firefox"
                     href="https://www.mozilla.org/en-US/firefox/new/"
                     target="_blank"
                     rel="noreferrer noopener"
-                    isButton
-                />
+                >
+                    <Button
+                        text="Get Firefox"
+                    />
+                </Link>
+
             </Browser>
         </ChooseBrowserWrapper>
     </Wrapper>

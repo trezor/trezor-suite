@@ -47,7 +47,7 @@ const A = styled.a`
 `;
 
 const Link = ({
-    text, href, target, rel, isGreen = false, isGray = false,
+    children, href, target, rel, isGreen = false, isGray = false,
 }) => (
     <A
         href={href}
@@ -55,12 +55,15 @@ const Link = ({
         rel={rel}
         isGreen={isGreen}
         isGray={isGray}
-    >{text}
+    >{children}
     </A>
 );
 
 Link.propTypes = {
-    text: PropTypes.string.isRequired,
+    children: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.array,
+    ]).isRequired,
     href: PropTypes.string.isRequired,
     target: PropTypes.string,
     rel: PropTypes.string,
