@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import React from 'react';
+import Link from 'components/Link';
 import { getYear } from 'date-fns';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 
 import colors from 'config/colors';
 import * as LogActions from 'actions/LogActions';
@@ -17,7 +19,7 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-const A = styled.a`
+const LinkWrapper = styled(Link)`
     margin: 0 6px;
     margin-right: 20px;
 `;
@@ -29,9 +31,9 @@ const Copy = styled.div`
 const Footer = ({ toggle }) => (
     <Wrapper>
         <Copy>&copy; {getYear(new Date())}</Copy>
-        <A href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi green">SatoshiLabs</A>
-        <A href="tos.pdf" target="_blank" rel="noreferrer noopener" className="green">Terms</A>
-        <A onClick={toggle} className="green">Show Log</A>
+        <LinkWrapper href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi" isGreen>SatoshiLabs</LinkWrapper>
+        <LinkWrapper href="tos.pdf" target="_blank" rel="noreferrer noopener" isGreen>Terms</LinkWrapper>
+        <LinkWrapper onClick={toggle} isGreen>Show Log</LinkWrapper>
     </Wrapper>
 );
 

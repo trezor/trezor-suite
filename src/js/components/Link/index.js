@@ -47,12 +47,14 @@ const A = styled.a`
 `;
 
 const Link = ({
-    children, href, target, rel, isGreen = false, isGray = false,
+    children, className, href, target, rel, onClick, isGreen = false, isGray = false,
 }) => (
     <A
+        className={className}
         href={href}
         target={target}
         rel={rel}
+        onClick={onClick}
         isGreen={isGreen}
         isGray={isGray}
     >{children}
@@ -65,9 +67,11 @@ Link.propTypes = {
         PropTypes.object,
         PropTypes.array,
     ]).isRequired,
-    href: PropTypes.string.isRequired,
+    className: PropTypes.string,
+    href: PropTypes.string,
     target: PropTypes.string,
     rel: PropTypes.string,
+    onClick: PropTypes.func,
     isGreen: PropTypes.bool,
     isGray: PropTypes.bool,
 };
