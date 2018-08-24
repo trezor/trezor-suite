@@ -1,0 +1,192 @@
+/* @flow */
+
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import colors from 'config/colors';
+import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
+import installers from 'constants/bridge';
+import Select from 'components/Select';
+import Link from 'components/Link';
+import Button from 'components/Button';
+import Loader from 'components/LoaderCircle';
+import P from 'components/Paragraph';
+import ICONS from 'config/icons';
+
+type State = {
+    version: string;
+    target: ?InstallTarget;
+    url: string;
+}
+
+type InstallTarget = {
+    id: string;
+    value: string;
+    label: string;
+}
+
+// import type { Props } from './index';
+
+type Props = {
+    browserState: {
+        osname: string,
+    };
+}
+
+const InstallBridgeWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 0px;
+    max-width: 500px;
+`;
+
+const TitleHeader = styled.h3`
+    font-size: ${FONT_SIZE.BIGGEST};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+`;
+
+const BridgeVersion = styled.span`
+    color: ${colors.GREEN_PRIMARY};
+    padding: 6px 10px;
+    border: 1px solid ${colors.GREEN_PRIMARY};
+    border-radius: 3px;
+    font-size: ${FONT_SIZE.SMALL};
+    font-weight: ${FONT_WEIGHT.SMALLEST};
+    margin-left: 24px;
+`;
+
+const LearnMoreText = styled.span`
+    margin-right: 4px;
+`;
+
+const Row = styled.div`
+    margin: 24px 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+`;
+
+// const SelectWrapper = styled(Select)`
+//     width: 200px;
+//     height: 40px;
+//     margin-right: 4px;
+
+//     .Select-control {
+//         width: 200px;
+//         height: 40px;
+//         border: 1px solid ${colors.DIVIDER};
+//         border-radius: 0px 2px 2px 0px;
+//         background: ${colors.WHITE};
+//     }
+
+//     .Select-option {
+//         ${TRANSITION.HOVER};
+//         &.is-focused {
+//             background: ${colors.GRAY_LIGHT};
+//         }
+
+//         &.is-selected {
+//             background: ${colors.DIVIDER};
+//         }
+//     }
+// `;
+
+const DownloadBridgeWrapper = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+export default class InstallBridge extends Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+
+        const currentTarget: ?InstallTarget = installers.find(i => i.id === props.browserState.osname);
+        this.state = {
+            version: '2.0.12',
+            url: 'https://wallet.trezor.io/data/bridge/2.0.12/',
+            target: currentTarget,
+        };
+    }
+
+    componentWillUpdate() {
+        if (this.props.browserState.osname && !this.state.target) {
+            const currentTarget: ?InstallTarget = installers.find(i => i.id === this.props.browserState.osname);
+            this.setState({
+                target: currentTarget,
+            });
+        }
+    }
+
+    onChange(value: InstallTarget) {
+        this.setState({
+            target: value,
+        });
+    }
+
+    render() {
+        if (!this.state.target) {
+            return <Loader label="Loading" size="100" />;
+        }
+        const { label } = this.state.target;
+        const url = `${this.state.url}${this.state.target.value}`;
+
+        return (
+            <InstallBridgeWrapper>
+                <TitleHeader>
+                    TREZOR Bridge.
+                    <BridgeVersion>
+                        Version {this.state.version}
+                    </BridgeVersion>
+                </TitleHeader>
+
+                <P>New communication tool to facilitate the connection between your TREZOR and your internet browser.</P>
+                <Row>
+                    <DownloadBridgeWrapper>
+                        {/* <SelectWrapper
+                            name="installers"
+                            className="installers"
+                            searchable={false}
+                            clearable={false}
+                            value={this.state.target}
+                            onChange={this.onChange.bind(this)}
+                            options={installers}
+                        /> */}
+                        <Select
+                            searchable={false}
+                            clearable={false}
+                            value={this.state.target}
+                            onChange={this.onChange.bind(this)}
+                            options={installers}
+                        />
+                        <Link
+                            href={url}
+                        >
+                            <Button
+                                icon={{
+                                    type: ICONS.DOWNLOAD,
+                                    color: colors.WHITE,
+                                    size: 30,
+                                }}
+                                text={`Download fro ${label}`}
+                            />
+                        </Link>
+                    </DownloadBridgeWrapper>
+                </Row>
+
+                <P>
+                    <LearnMoreText>Learn more about latest version in</LearnMoreText>
+                    <Link
+                        href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        isGreen
+                    >Changelog
+                    </Link>
+                </P>
+            </InstallBridgeWrapper>
+        );
+    }
+}
