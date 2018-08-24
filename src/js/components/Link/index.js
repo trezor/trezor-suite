@@ -17,7 +17,8 @@ const A = styled.a`
     `}
 
     &,
-    &:visited {
+    &:visited,
+    &:active {
         ${props => props.isGreen && css`
             color: ${colors.GREEN_PRIMARY};
         `}
@@ -30,15 +31,6 @@ const A = styled.a`
         border-color: transparent;
         ${props => props.isGreen && css`
             color: ${colors.GREEN_SECONDARY};
-        `}
-        ${props => props.isGray && css`
-            color: ${colors.TEXT_PRIMARY};
-        `}
-    }
-
-    &:active {
-        ${props => props.isGreen && css`
-            color: ${colors.GREEN_TERTIARY};
         `}
         ${props => props.isGray && css`
             color: ${colors.TEXT_PRIMARY};
