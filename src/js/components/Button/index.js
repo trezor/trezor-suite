@@ -14,16 +14,60 @@ const Wrapper = styled.button`
     background: ${colors.GREEN_PRIMARY};
     color: ${colors.WHITE};
     border: 0;
+
     &:hover {
         background: ${colors.GREEN_SECONDARY};
     }
+
     &:active {
         background: ${colors.GREEN_TERTIARY};
     }
+
     ${props => props.disabled && css`
         pointer-events: none;
         color: ${colors.TEXT_SECONDARY};
         background: ${colors.GRAY_LIGHT};
+    `}
+
+    ${props => props.isBlue && css`
+        background: transparent;
+        border: 1px solid ${colors.INFO_PRIMARY};
+        color: ${colors.INFO_PRIMARY};
+        padding: 12px 58px;
+
+        &:hover {
+            color: ${colors.WHITE};
+            background: ${colors.INFO_PRIMARY};
+        }
+    `}
+
+    ${props => props.isWhite && css`
+        background: @color_white;
+        color: ${colors.TEXT_SECONDARY};
+        border: 1px solid ${colors.DIVIDER};
+
+        &:hover {
+            color: ${colors.TEXT_PRIMARY};
+            border-color: ${colors.TEXT_PRIMARY};
+            background: ${colors.DIVIDER};
+        }
+
+        &:active {
+            color: ${colors.TEXT_PRIMARY};
+            background: ${colors.DIVIDER};
+        }
+    `}
+
+    ${props => props.isTransparent && css`
+        background: transparent;
+        border: 0px;
+        color: ${colors.TEXT_SECONDARY};
+
+        &:hover,
+        &:active {
+            color: ${colors.TEXT_PRIMARY};
+            background: transparent;
+        }
     `}
 
     ${props => props.isWebUsb && css`
@@ -81,7 +125,7 @@ const IconWrapper = styled.span`
 `;
 
 const Button = ({
-    className, text, icon, onClick = () => { }, disabled, isBlue = false, isWhite = false, isWebUsb = false,
+    className, text, icon, onClick = () => { }, disabled, isBlue = false, isWhite = false, isWebUsb = false, isTransparent = false,
 }) => (
     <Wrapper
         className={className}
@@ -91,6 +135,7 @@ const Button = ({
         isBlue={isBlue}
         isWhite={isWhite}
         isWebUsb={isWebUsb}
+        isTransparent={isTransparent}
     >
         {icon && (
             <IconWrapper>
@@ -112,6 +157,7 @@ Button.propTypes = {
     isBlue: PropTypes.bool,
     isWhite: PropTypes.bool,
     isWebUsb: PropTypes.bool,
+    isTransparent: PropTypes.bool,
     icon: PropTypes.shape({
         type: PropTypes.arrayOf(PropTypes.string).isRequired,
         color: PropTypes.string,

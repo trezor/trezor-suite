@@ -1,6 +1,8 @@
 /* @flow */
 
 import * as React from 'react';
+import colors from 'config/colors';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
 
@@ -26,11 +28,43 @@ type ContentProps = {
     children?: React.Node
 }
 
+const AppWrapper = styled.div`
+    position: relative;
+    min-height: 100vh;
+    min-width: 720px;
+    display: flex;
+    flex-direction: column;
+    background: ${colors.BACKGROUND};
+    
+    &.resized {
+        // to make sure that unpacked coin menu will not overflow main container
+        // 512 dropdown height + 50 header + 30 margin + 64 topnav height
+        min-height: 680px;
+    }
+`;
+
+const WalletWrapper = styled.div`
+    width: 100%;
+    max-width: 1170px;
+    margin: 0 auto;
+    flex: 1;
+    background: ${colors.WHITE};
+    display: flex;
+    flex-direction: row;
+    border-radius: 4px 4px 0px 0px;
+    overflow: hidden;
+    margin-top: 32px;
+
+    @media screen and (max-width: 1170px) {
+        border-radius: 0px;
+        margin-top: 0px;
+    }
+`;
+
 const Wallet = (props: WalletContainerProps) => (
-    <div className="app">
+    <AppWrapper>
         <Header />
-        {/* <div>{ props.wallet.online ? "ONLINE" : "OFFLINE" }</div> */}
-        <main>
+        <WalletWrapper>
             <LeftNavigation />
             <article>
                 <nav>
@@ -42,9 +76,9 @@ const Wallet = (props: WalletContainerProps) => (
                 { props.children }
                 <Footer />
             </article>
-        </main>
+        </WalletWrapper>
         <ModalContainer />
-    </div>
+    </AppWrapper>
 );
 
 const mapStateToProps: MapStateToProps<State, {}, WalletContainerProps> = (state: State, own: {}): WalletContainerProps => ({

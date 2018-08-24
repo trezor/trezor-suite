@@ -27,7 +27,9 @@ const StickyBottom = styled.div`
     border-right: 1px solid ${colors.DIVIDER};
 `;
 
-const MenuWrapper = styled.div``;
+const MenuWrapper = styled.div`
+    background: ${colors.LANDING};
+`;
 
 const Help = styled.div`
     display: flex;
@@ -143,12 +145,13 @@ class LeftNavigation extends Component {
     }
 
     render() {
+        const { selectedDevice } = this.props.wallet;
         return (
             <StickyContainer
                 location={this.props.location.pathname}
                 deviceSelection={this.props.deviceDropdownOpened}
             >
-                <DeviceSelect {...this.props} />
+                {selectedDevice && <DeviceSelect {...this.props} />}
                 <MenuWrapper>
                     {this.state.shouldRenderDeviceSelection && <DeviceDropdown {...this.props} />}
                     {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
