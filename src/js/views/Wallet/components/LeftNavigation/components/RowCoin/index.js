@@ -81,7 +81,7 @@ const RowCoin = ({
 );
 
 const iconShape = {
-    type: PropTypes.string.isRequired,
+    type: PropTypes.arrayOf(PropTypes.string).isRequired,
     color: PropTypes.string.isRequired,
     size: PropTypes.number.isRequired,
 };
