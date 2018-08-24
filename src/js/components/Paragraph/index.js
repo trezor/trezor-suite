@@ -24,9 +24,11 @@ const P = ({ children, className, isSmaller = false }) => (
 
 P.propTypes = {
     className: PropTypes.string,
-    children: PropTypes.string.isRequired,
     isSmaller: PropTypes.bool,
+    children: PropTypes.oneOfType([
+        PropTypes.array,
+        PropTypes.string,
+    ]).isRequired,
 };
-
 
 export default P;
