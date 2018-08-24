@@ -29,7 +29,7 @@ const TRANSITION_TIME = {
 };
 
 export const TRANSITION = {
-    HOVER: `transition: background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${TRANSITION_TIME.BASE} ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out`,
+    HOVER: `background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${TRANSITION_TIME.BASE} ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out`,
 };
 
 export const LINE_HEIGHT = {
