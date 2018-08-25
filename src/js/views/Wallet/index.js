@@ -59,21 +59,35 @@ const WalletWrapper = styled.div`
     }
 `;
 
+const MainContent = styled.article`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+`;
+
+const Navigation = styled.nav`
+    height: 64px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    background: ${colors.WHITE};
+    position: relative;
+`;
+
 const Wallet = (props: WalletContainerProps) => (
     <AppWrapper>
         <Header />
         <WalletWrapper>
             <LeftNavigation />
-            <article>
-                <nav>
+            <MainContent>
+                <Navigation>
                     <Route path="/device/:device/network/:network/account/:account" component={AccountTabs} />
                     <Route path="/device/:device/device-settings" component={DeviceSettingsTabs} />
-                </nav>
+                </Navigation>
                 <Notifications />
                 <Log />
                 { props.children }
                 <Footer />
-            </article>
+            </MainContent>
         </WalletWrapper>
         <ModalContainer />
     </AppWrapper>
