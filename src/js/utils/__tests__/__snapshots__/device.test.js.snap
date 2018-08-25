@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`device utils get status 1`] = `"Status unknown"`;
+
+exports[`device utils get status 2`] = `"Status unknown"`;
+
+exports[`device utils get status 3`] = `"Status unknown"`;
+
+exports[`device utils get status 4`] = `"Status unknown"`;
+
+exports[`device utils get status color 1`] = `"#494949"`;
+
+exports[`device utils get status color 2`] = `"#494949"`;
+
+exports[`device utils get status color 3`] = `"#494949"`;
+
+exports[`device utils get status color 4`] = `"#EB8A00"`;
+
+exports[`device utils get status color 5`] = `"#01B757"`;
+
+exports[`device utils get status color 6`] = `"#EB8A00"`;
+
+exports[`device utils get status color 7`] = `"#ED1212"`;
+
+exports[`device utils get status color 8`] = `"#ED1212"`;
+
+exports[`device utils get status name 1`] = `"Status unknown"`;
+
+exports[`device utils get status name 2`] = `"Status unknown"`;
+
+exports[`device utils get status name 3`] = `"Status unknown"`;
+
+exports[`device utils get status name 4`] = `"Used in other window"`;
+
+exports[`device utils get status name 5`] = `"Connected"`;
+
+exports[`device utils get status name 6`] = `"Used in other window"`;
+
+exports[`device utils get status name 7`] = `"Disconnected"`;
+
+exports[`device utils get status name 8`] = `"Unavailable"`;

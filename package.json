@@ -22,7 +22,7 @@
         "lint": "run-s lint:*",
         "lint:js": "eslint ./src/js ./webpack",
         "lint:css": "stylelint './src/js/**/*.js'",
-        "test:*": "run-s test:*",
+        "test": "run-s test:*",
         "test:unit": "jest",
         "test-unit:watch": "jest -o --watchAll"
     },

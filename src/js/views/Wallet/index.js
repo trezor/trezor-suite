@@ -37,8 +37,6 @@ const AppWrapper = styled.div`
     background: ${colors.BACKGROUND};
     
     &.resized {
-        // to make sure that unpacked coin menu will not overflow main container
-        // 512 dropdown height + 50 header + 30 margin + 64 topnav height
         min-height: 680px;
     }
 `;
