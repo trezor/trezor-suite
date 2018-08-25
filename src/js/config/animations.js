@@ -2,13 +2,21 @@ import { keyframes } from 'styled-components';
 import colors from 'config/colors';
 
 export const ROTATE_180_UP = keyframes`
-    from { transform: rotate(0deg) }
-    to { transform: rotate(180deg) }
+    from { 
+        transform: rotate(0deg) 
+    }
+    to { 
+        transform: rotate(180deg) 
+    }
 `;
 
 export const ROTATE_180_DOWN = keyframes`
-    from { transform: rotate(180deg) }
-    to { transform: rotate(0deg) }
+    from { 
+        transform: rotate(180deg) 
+    }
+    to { 
+        transform: rotate(0deg) 
+    }
 `;
 
 export const DASH = keyframes`
@@ -38,5 +46,14 @@ export const GREEN_COLOR = keyframes`
     }
     80%, 90% {
         stroke: ${colors.GREEN_TERTIARY};
+    }
+`;
+
+export const PULSATE = keyframes`
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1.0;
     }
 `;

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Paragraph from 'components/Paragraph';
 import { DASH, GREEN_COLOR } from 'config/animations';
@@ -38,10 +38,7 @@ const CircleWrapper = styled.circle`
 const Loader = ({
     className, text, size = 100,
 }) => (
-    <Wrapper
-        className={className}
-        size={size}
-    >
+    <Wrapper className={className} size={size}>
         <Paragraph>{text}</Paragraph>
         <SvgWrapper viewBox="25 25 50 50">
             <CircleWrapper

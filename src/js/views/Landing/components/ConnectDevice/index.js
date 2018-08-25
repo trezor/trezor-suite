@@ -5,6 +5,7 @@ import styled, { keyframes } from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
+import { PULSATE } from 'config/animations';
 import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
@@ -65,20 +66,10 @@ class ConnectDevice extends Component<Props> {
             padding: 36px 0;
         `;
 
-        const animationPulsate = keyframes`
-            0%, 100% {
-                opacity: 0.5;
-            }
-            50% {
-                opacity: 1.0;
-            }
-        `;
-
         const ConnectTrezorWrapper = styled.div`
             position: relative;
             top: 1px;
-            animation: ${animationPulsate} 1.3s ease-out infinite;
-
+            animation: ${PULSATE} 1.3s ease-out infinite;
             color: ${colors.GREEN_PRIMARY};
             font-size: ${FONT_SIZE.BASE};
             font-weight: ${FONT_WEIGHT.BASE};
