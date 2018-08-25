@@ -101,20 +101,20 @@ class DeviceHeader extends Component {
         };
     }
 
-    handleClick() {
+    handleClickWrapper() {
         this.setState({ clicked: true });
         if (!this.props.disabled) {
-            this.props.handleOpen();
+            this.props.onClickWrapper();
         }
     }
 
     render() {
         const {
-            status, label, deviceCount, isOpen, trezorModel, disabled,
+            status, label, deviceCount, isOpen, trezorModel, disabled, icon,
         } = this.props;
         return (
             <Wrapper isOpen={isOpen}>
-                <ClickWrapper disabled={disabled} onClick={() => this.handleClick()}>
+                <ClickWrapper disabled={disabled} onClick={() => this.handleClickWrapper()}>
                     <ImageWrapper>
                         <Dot color={getStatusColor(status)} />
                         <TrezorImage model={trezorModel} />
@@ -124,8 +124,9 @@ class DeviceHeader extends Component {
                         <Status>{getStatusName(status)}</Status>
                     </LabelWrapper>
                     <IconWrapper>
-                        {deviceCount > 1 && <Counter>{deviceCount}</Counter>}
-                        {!disabled && (
+                        {icon && icon}
+                        {!icon && deviceCount > 1 && <Counter>{deviceCount}</Counter>}
+                        {!icon && !disabled && (
                             <Icon
                                 canAnimate={this.state.clicked === true}
                                 isActive={isOpen}
@@ -148,7 +149,7 @@ DeviceHeader.propTypes = {
     disabled: PropTypes.bool,
     isOpen: PropTypes.bool,
     trezorModel: PropTypes.string.isRequired,
-    handleOpen: PropTypes.func.isRequired,
+    onClickWrapper: PropTypes.func.isRequired,
     status: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
 };

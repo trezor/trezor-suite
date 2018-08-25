@@ -1,6 +1,9 @@
 /* @flow */
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import icons from 'config/icons';
+import colors from 'config/colors';
+import Icon from 'components/Icon';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
 import { getStatus, getVersion, isDisabled } from 'utils/device';
@@ -13,6 +16,7 @@ import type { Props } from '../common';
 import AsideDivider from '../Divider';
 
 const Wrapper = styled.div``;
+const IconClick = styled.div``;
 
 export const DeviceSelect = (props: Props) => {
     const { devices } = props;
@@ -26,7 +30,7 @@ export const DeviceSelect = (props: Props) => {
 
     return (
         <DeviceHeader
-            handleOpen={handleOpen}
+            onClickWrapper={handleOpen}
             disabled={disabled}
             label={selectedDevice.instanceLabel}
             status={getStatus(selectedDevice)}
@@ -170,20 +174,27 @@ export class DeviceDropdown extends Component<Props> {
             }
 
             return (
-                <div key={index} className={css} onClick={() => this.props.onSelectDevice(dev)}>
-                    <div className="label-container">
-                        <span className="label">{dev.instanceLabel}</span>
-                        <span className="status">{deviceStatus}</span>
-                    </div>
-                    <div
-                        className="forget-button"
-                        onClick={(event) => {
+                <DeviceHeader
+                    onClickWrapper={() => this.props.onSelectDevice(dev)}
+                    onClickIcon={() => this.onDeviceMenuClick({ type: 'forget', label: '' }, dev)}
+                    icon={(
+                        <IconClick onClick={(event) => {
                             event.stopPropagation();
                             event.preventDefault();
                             this.onDeviceMenuClick({ type: 'forget', label: '' }, dev);
                         }}
-                    />
-                </div>
+                        >
+                            <Icon
+                                icon={icons.EJECT}
+                                size={25}
+                                color={colors.TEXT_SECONDARY}
+                            />
+                        </IconClick>
+                    )}
+                    label={dev.instanceLabel}
+                    status={getStatus(dev)}
+                    trezorModel={getVersion(dev)}
+                />
             );
         });
 
