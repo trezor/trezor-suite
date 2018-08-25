@@ -4,10 +4,13 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { Notification } from 'components/Notification';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 
 import type { State, Dispatch } from 'flowtype';
+
+const Wrapper = styled.div``;
 
 type Props = {
     acquiring: boolean;
@@ -15,14 +18,14 @@ type Props = {
 }
 
 const UnreadableDevice = (props: Props) => (
-    <section className="acquire">
+    <Wrapper>
         <Notification
             title="Unreadable device"
             message="Please install bridge"
             className="error"
             cancelable={false}
         />
-    </section>
+    </Wrapper>
 );
 
 export default connect(
