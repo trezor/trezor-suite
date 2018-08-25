@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import colors from 'config/colors';
 import { H2 } from 'components/Heading';
 import Icon from 'components/Icon';
-import P from 'components/P';
+import Paragraph from 'components/Paragraph';
 
 import * as LogActions from 'actions/LogActions';
 import icons from 'config/icons';
@@ -50,7 +50,7 @@ const Textarea = styled.textarea`
     }
 `;
 
-const StyledP = styled(P)`
+const StyledParagraph = styled(Paragraph)`
     margin: 10px 0;
 `;
 
@@ -62,7 +62,7 @@ const Log = (props: Props): ?React$Element<string> => {
                 <Icon size={25} color={colors.INFO_PRIMARY} icon={icons.CLOSE} />
             </Click>
             <H2>Log</H2>
-            <StyledP>Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.</StyledP>
+            <StyledParagraph>Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.</StyledParagraph>
             <Textarea value={JSON.stringify(props.log.entries)} readOnly />
         </Wrapper>
     );

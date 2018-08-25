@@ -109,13 +109,7 @@ export default class InstallBridge extends Component<Props, State> {
 
         return (
             <InstallBridgeWrapper>
-                <TitleHeader>
-                    TREZOR Bridge.
-                    <BridgeVersion>
-                        Version {this.state.version}
-                    </BridgeVersion>
-                </TitleHeader>
-
+                <TitleHeader>TREZOR Bridge.<BridgeVersion>Version {this.state.version}</BridgeVersion></TitleHeader>
                 <P>New communication tool to facilitate the connection between your TREZOR and your internet browser.</P>
                 <DownloadBridgeWrapper>
                     <SelectWrapper
@@ -136,7 +130,6 @@ export default class InstallBridge extends Component<Props, State> {
                         />
                     </Link>
                 </DownloadBridgeWrapper>
-
                 <P>
                     <LearnMoreText>Learn more about latest version in</LearnMoreText>
                     <Link

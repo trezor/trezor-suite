@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
-import P from 'components/Paragraph';
+import Paragraph from 'components/Paragraph';
 import colors from 'config/colors';
 
 const Wrapper = styled.div`
@@ -71,7 +71,7 @@ const Loader = ({
         className={className}
         size={size}
     >
-        <P>{text}</P>
+        <Paragraph>{text}</Paragraph>
         <SvgWrapper viewBox="25 25 50 50">
             <CircleWrapper
                 cx="50"
