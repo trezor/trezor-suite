@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
 import Paragraph from 'components/Paragraph';
+import { DASH, GREEN_COLOR } from 'config/animations';
 import colors from 'config/colors';
 
 const Wrapper = styled.div`
@@ -21,36 +22,6 @@ const SvgWrapper = styled.svg`
     transform-origin: center center;
 `;
 
-const animationDash = keyframes`
-    0% {
-        stroke-dasharray: 1, 200;
-        stroke-dashoffset: 0;
-    }
-    50% {
-        stroke-dasharray: 89, 200;
-        stroke-dashoffset: -35;
-    }
-    100% {
-        stroke-dasharray: 89, 200;
-        stroke-dashoffset: -124;
-    }
-`;
-
-const animationColor = keyframes`
-    100%, 0% {
-        stroke: ${colors.GREEN_PRIMARY};
-    }
-    40% {
-        stroke: ${colors.GREEN_PRIMARY};
-    }
-    66% {
-        stroke: ${colors.GREEN_SECONDARY};
-    }
-    80%, 90% {
-        stroke: ${colors.GREEN_TERTIARY};
-    }
-`;
-
 const CircleWrapper = styled.circle`
     ${props => props.isRoute && css`
         stroke: ${colors.GRAY_LIGHT};
@@ -59,7 +30,7 @@ const CircleWrapper = styled.circle`
     ${props => props.isPath && css`
         stroke-dasharray: 1, 200;
         stroke-dashoffset: 0;
-        animation: ${animationDash} 1.5s ease-in-out infinite, ${animationColor} 6s ease-in-out infinite;
+        animation: ${DASH} 1.5s ease-in-out infinite, ${GREEN_COLOR} 6s ease-in-out infinite;
         stroke-linecap: round;
     `};
 `;

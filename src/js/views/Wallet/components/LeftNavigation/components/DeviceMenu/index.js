@@ -150,53 +150,35 @@ export class DeviceDropdown extends Component<Props> {
             if (!a.instance || !b.instance) return -1;
             return a.instance > b.instance ? 1 : -1;
         };
-        const deviceList = devices.sort(sortByInstance).map((dev, index) => {
-            if (dev === selected) return null;
 
-            let deviceStatus: string = 'Connected';
-            let css: string = 'device item';
-            if (dev.type === 'unacquired' || (dev.features && dev.status === 'occupied')) {
-                deviceStatus = 'Used in other window';
-                css += ' unacquired';
-            } else if (dev.type === 'unreadable') {
-                deviceStatus = 'Connected';
-                css += ' connected';
-            } else if (!dev.connected) {
-                deviceStatus = 'Disconnected';
-                css += ' disconnected';
-            } else if (!dev.available) {
-                deviceStatus = 'Unavailable';
-                css += ' unavailable';
-            }
-
-            if (dev.features && dev.features.major_version > 1) {
-                css += ' trezor-t';
-            }
-
-            return (
-                <DeviceHeader
-                    onClickWrapper={() => this.props.onSelectDevice(dev)}
-                    onClickIcon={() => this.onDeviceMenuClick({ type: 'forget', label: '' }, dev)}
-                    icon={(
-                        <IconClick onClick={(event) => {
-                            event.stopPropagation();
-                            event.preventDefault();
-                            this.onDeviceMenuClick({ type: 'forget', label: '' }, dev);
-                        }}
-                        >
-                            <Icon
-                                icon={icons.EJECT}
-                                size={25}
-                                color={colors.TEXT_SECONDARY}
-                            />
-                        </IconClick>
-                    )}
-                    label={dev.instanceLabel}
-                    status={getStatus(dev)}
-                    trezorModel={getVersion(dev)}
-                />
-            );
-        });
+        const deviceList = devices.sort(sortByInstance)
+            .map((dev, index) => {
+                if (dev === selected) return null;
+                return (
+                    <DeviceHeader
+                        key={`${dev.instanceLabel}`}
+                        onClickWrapper={() => this.props.onSelectDevice(dev)}
+                        onClickIcon={() => this.onDeviceMenuClick({ type: 'forget', label: '' }, dev)}
+                        icon={(
+                            <IconClick onClick={(event) => {
+                                event.stopPropagation();
+                                event.preventDefault();
+                                this.onDeviceMenuClick({ type: 'forget', label: '' }, dev);
+                            }}
+                            >
+                                <Icon
+                                    icon={icons.EJECT}
+                                    size={25}
+                                    color={colors.TEXT_SECONDARY}
+                                />
+                            </IconClick>
+                        )}
+                        label={dev.instanceLabel}
+                        status={getStatus(dev)}
+                        trezorModel={getVersion(dev)}
+                    />
+                );
+            });
 
         return (
             <Wrapper>
