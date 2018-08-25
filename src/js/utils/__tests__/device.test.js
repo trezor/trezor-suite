@@ -4,19 +4,52 @@ describe('device utils', () => {
     it('get status', () => {
         const deviceMock = [
             {
-                device: {
-                    connected: false,
-                    type: 'acquired',
-                    status: 'occupied',
-                },
+                connected: false,
             },
-            { device: { connected: true } },
-            { device: { available: false } },
-            { device: { available: true } },
+            {
+                connected: true,
+                available: false,
+            },
+            {
+                connected: true,
+                available: false,
+                type: null,
+            },
+            {
+                connected: true,
+                available: true,
+                type: 'acquired',
+            },
+            {
+                connected: true,
+                available: true,
+                type: 'unacquired',
+            },
+            {
+                connected: true,
+                available: true,
+                type: 'acquired',
+                status: 'occupied',
+            },
         ];
 
         deviceMock.forEach((device) => {
-            expect(dUtils.getStatusName(device)).toMatchSnapshot();
+            expect(dUtils.getStatus(device)).toMatchSnapshot();
+        });
+    });
+
+    it('get version', () => {
+        const deviceMock = [
+            { },
+            { features: {} },
+            { features: { major_version: null } },
+            { features: { major_version: 0 } },
+            { features: { major_version: 1 } },
+            { features: { major_version: 2 } },
+        ];
+
+        deviceMock.forEach((device) => {
+            expect(dUtils.getVersion(device)).toMatchSnapshot();
         });
     });
 

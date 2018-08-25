@@ -1,12 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`device utils get status 1`] = `"Status unknown"`;
+exports[`device utils get status 1`] = `"disconnected"`;
 
-exports[`device utils get status 2`] = `"Status unknown"`;
+exports[`device utils get status 2`] = `"unavailable"`;
 
-exports[`device utils get status 3`] = `"Status unknown"`;
+exports[`device utils get status 3`] = `"unavailable"`;
 
-exports[`device utils get status 4`] = `"Status unknown"`;
+exports[`device utils get status 4`] = `"connected"`;
+
+exports[`device utils get status 5`] = `"unacquired"`;
+
+exports[`device utils get status 6`] = `"used-in-other-window"`;
 
 exports[`device utils get status color 1`] = `"#494949"`;
 
@@ -39,3 +43,15 @@ exports[`device utils get status name 6`] = `"Used in other window"`;
 exports[`device utils get status name 7`] = `"Disconnected"`;
 
 exports[`device utils get status name 8`] = `"Unavailable"`;
+
+exports[`device utils get version 1`] = `"1"`;
+
+exports[`device utils get version 2`] = `"1"`;
+
+exports[`device utils get version 3`] = `"1"`;
+
+exports[`device utils get version 4`] = `"1"`;
+
+exports[`device utils get version 5`] = `"1"`;
+
+exports[`device utils get version 6`] = `"T"`;
