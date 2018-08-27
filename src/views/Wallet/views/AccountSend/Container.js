@@ -9,9 +9,9 @@ import { default as SendFormActions } from 'actions/SendFormActions';
 import * as SessionStorageActions from 'actions/SessionStorageActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
+import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from 'views/Wallet/components/SelectedAccount';
 import SendForm from './index';
 
-import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from '../SelectedAccount';
 
 type OwnProps = { }
 

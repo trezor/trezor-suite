@@ -9,12 +9,11 @@ import { default as ReceiveActions } from 'actions/ReceiveActions';
 import * as TokenActions from 'actions/TokenActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
-import Receive from './index';
-
 import type {
     StateProps as BaseStateProps,
     DispatchProps as BaseDispatchProps,
-} from '../SelectedAccount';
+} from 'views/Wallet/components/SelectedAccount';
+import Receive from './index';
 
 type OwnProps = { }
 
