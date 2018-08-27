@@ -1,5 +1,5 @@
 /* @flow */
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import React, { Component } from 'react';
 import { H2 } from 'components/Heading';
 import BigNumber from 'bignumber.js';
@@ -8,16 +8,34 @@ import Tooltip from 'rc-tooltip';
 
 import { resolveAfter } from 'utils/promiseUtils';
 import { Notification } from 'components/Notification';
+import CoinLogo from 'components/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
-import SelectedAccount from '../SelectedAccount';
+import SelectedAccount from 'views/Wallet/components/SelectedAccount'; // TODO: SekectedAccount component
+import Link from 'components/Link';
 import SummaryDetails from './components/Details';
 import SummaryTokens from './components/Tokens';
 
 import type { Props } from './index';
 
+const AccountHeading = styled.div`
+    padding: 20px 48px 20px 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
 const StyledH2 = styled(H2)`
     padding: 20px 48px;
+`;
+
+const AccountName = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const StyledCoinLogo = styled(CoinLogo)`
+    margin-right: 10px;
 `;
 
 const Summary = (props: Props) => {
@@ -44,10 +62,19 @@ const Summary = (props: Props) => {
 
     return (
         <div>
-            <StyledH2 className={`summary-header ${account.network}`}>
-                Account #{ parseInt(account.index) + 1 }
-                <a href={explorerLink} className="gray" target="_blank" rel="noreferrer noopener">See full transaction history</a>
-            </StyledH2>
+            <AccountHeading network={account.network}>
+                <AccountName>
+                    <StyledCoinLogo coinNetwork={account.network} />
+                    <H2>Account #{parseInt(account.index, 10) + 1}</H2>
+                </AccountName>
+                <Link
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    href={explorerLink}
+                    isGray
+                >See full transaction history
+                </Link>
+            </AccountHeading>
 
             <SummaryDetails
                 coin={network}
@@ -75,7 +102,7 @@ const Summary = (props: Props) => {
                 <AsyncSelect
                     className="token-select"
                     multi={false}
-                    autoload={true}
+                    autoload
                     ignoreCase
                     backspaceRemoves
                     value={null}
