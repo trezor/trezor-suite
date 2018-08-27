@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
+
 import icons from 'config/icons';
 import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
@@ -26,25 +28,30 @@ const Label = styled.div`
 `;
 
 class MenuItems extends Component {
-    onClick(action, device) {
-        if (action === 'reload') {
-            this.props.acquireDevice();
-        } else if (action === 'forget') {
-            this.props.forgetDevice(device);
-        } else if (action === 'clone') {
-            this.props.duplicateDevice(device);
-        } else if (action === 'settings') {
-            this.props.toggleDeviceDropdown(false);
-            this.props.gotoDeviceSettings(device);
-        }
-    }
+    // makeAction(action, device) {
+    //     switch (action) {
+    //         case 'reload': this.props.acquireDevice();
+    //             break;
+    //         case 'forget': this.props.forgetDevice();
+    //             break;
+    //         case 'clone': this.props.duplicateDevice();
+    //             break;
+    //         case 'settings': {
+    //             this.props.toggleDeviceDropdown(false);
+    //             this.props.gotoDeviceSettings(device);
+    //             break;
+    //         }
+    //         default: console.log('no action');
+    //             break;
+    //     }
+    // }
 
     showClone() {
-        return this.props.selectedDevice.features.passphrase_protection && this.props.selectedDevice.connected && this.props.selectedDevice.available;
+        return this.props.selectedDevice && this.props.selectedDevice.features.passphrase_protection && this.props.selectedDevice.connected && this.props.selectedDevice.available;
     }
 
     showRenewSession() {
-        return this.props.selectedDevice.status !== 'available';
+        return this.props.selectedDevice && this.props.selectedDevice.status !== 'available';
     }
 
     render() {
@@ -74,5 +81,14 @@ class MenuItems extends Component {
         );
     }
 }
+
+MenuItems.propTypes = {
+    selectedDevice: PropTypes.object.isRequired,
+    acquireDevice: PropTypes.func.isRequired,
+    forgetDevice: PropTypes.func.isRequired,
+    duplicateDevice: PropTypes.func.isRequired,
+    toggleDeviceDropdown: PropTypes.func.isRequired,
+    gotoDeviceSettings: PropTypes.func.isRequired,
+};
 
 export default MenuItems;

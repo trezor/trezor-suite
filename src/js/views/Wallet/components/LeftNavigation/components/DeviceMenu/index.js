@@ -81,6 +81,19 @@ export class DeviceDropdown extends Component<Props> {
         if (transport && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
     }
 
+    onDeviceMenuClick(item: DeviceMenuItem, device: TrezorDevice): void {
+        if (item.type === 'reload') {
+            this.props.acquireDevice();
+        } else if (item.type === 'forget') {
+            this.props.forgetDevice(device);
+        } else if (item.type === 'clone') {
+            this.props.duplicateDevice(device);
+        } else if (item.type === 'settings') {
+            this.props.toggleDeviceDropdown(false);
+            this.props.gotoDeviceSettings(device);
+        }
+    }
+
     componentWillUnmount(): void {
         window.removeEventListener('mousedown', this.mouseDownHandler, false);
         // window.removeEventListener('blur', this.blurHandler, false);
@@ -88,10 +101,6 @@ export class DeviceDropdown extends Component<Props> {
 
     showDivider() {
         return this.props.devices.length > 1;
-    }
-
-    showMenuItems() {
-        return this.props.wallet.selectedDevice;
     }
 
     render() {
@@ -128,8 +137,8 @@ export class DeviceDropdown extends Component<Props> {
 
         return (
             <Wrapper>
-                {/* {currentDeviceMenu} */}
-                {this.showMenuItems() && <MenuItems selectedDevice={selectedDevice} />}
+                {currentDeviceMenu}
+                {/* {selectedDevice && selectedDevice.features && <MenuItems {...this.props} />} */}
                 {this.showDivider() && <AsideDivider textLeft="Other devices" />}
                 <DeviceList
                     devices={devices}

@@ -35,8 +35,8 @@ const Divider = ({
 Divider.propTypes = {
     textLeft: PropTypes.string,
     textRight: PropTypes.string,
-    borderTop: PropTypes.bool.isRequired,
-    borderBottom: PropTypes.bool.isRequired,
+    borderTop: PropTypes.bool,
+    borderBottom: PropTypes.bool,
 };
 
 export default Divider;
