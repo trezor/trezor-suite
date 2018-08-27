@@ -1,4 +1,5 @@
 export const FONT_SIZE = {
+    SMALLEST: '10px',
     SMALLER: '12px',
     SMALL: '14px',
     BASE: '16px',
