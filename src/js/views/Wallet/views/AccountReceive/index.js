@@ -7,7 +7,7 @@ import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import { Notification } from 'components/Notification';
-import SelectedAccount from '../SelectedAccount';
+import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 
 import type { Props } from './index';
 
@@ -16,7 +16,7 @@ const StyledH2 = styled(H2)`
     padding: 20px 48px;
 `;
 
-const Receive = (props: Props) => {
+const AccountReceive = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const {
         account,
@@ -96,6 +96,6 @@ const Receive = (props: Props) => {
 
 export default (props: Props) => (
     <SelectedAccount {...props}>
-        <Receive {...props} />
+        <AccountReceive {...props} />
     </SelectedAccount>
 );

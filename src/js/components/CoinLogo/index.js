@@ -27,7 +27,7 @@ const CoinLogo = ({
     return (
         <Logo
             className={className}
-            coinImg={coinImg || coinImgUrl}
+            coinImg={coinImgName ? coinImgUrl : coinImg}
         />
     );
 };
@@ -35,7 +35,7 @@ const CoinLogo = ({
 CoinLogo.propTypes = {
     className: PropTypes.string,
     coinImg: PropTypes.string,
-    coinNetwork: PropTypes.string.isRequired,
+    coinNetwork: PropTypes.string,
 };
 
 export default CoinLogo;

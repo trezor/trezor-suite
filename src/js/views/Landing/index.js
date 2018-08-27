@@ -11,6 +11,7 @@ import Notifications, { Notification } from 'components/Notification';
 import colors from 'config/colors';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
+import { isWebUSB } from 'utils/device';
 
 import BrowserNotSupported from './components/BrowserNotSupported';
 import ConnectDevice from './components/ConnectDevice';
@@ -72,7 +73,6 @@ export default (props: Props) => {
     const bridgeRoute: boolean = props.router.location.state.hasOwnProperty('bridge');
     const deviceLabel = props.wallet.disconnectRequest ? props.wallet.disconnectRequest.label : '';
 
-    const hasWebUsb = transport && transport.version.indexOf('webusb') >= 0;
     const shouldShowInstallBridge = connectError || bridgeRoute;
     const shouldShowConnectDevice = props.wallet.ready && devices.length < 1;
     const shouldShowDisconnectDevice = !!props.wallet.disconnectRequest;
@@ -111,7 +111,7 @@ export default (props: Props) => {
 
                                 <ConnectDevice
                                     deviceLabel={deviceLabel}
-                                    showWebUsb={hasWebUsb}
+                                    showWebUsb={isWebUSB(transport)}
                                     showDisconnect={shouldShowDisconnectDevice}
                                 />
 
@@ -119,7 +119,7 @@ export default (props: Props) => {
 
                                 {shouldShowConnectDevice && (
                                     <LandingFooterWrapper>
-                                        {hasWebUsb && (
+                                        {isWebUSB(transport) && (
                                             <P>
                                                 <LandingFooterTextWrapper>
                                                     Device not recognized?

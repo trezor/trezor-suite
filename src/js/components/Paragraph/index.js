@@ -28,7 +28,7 @@ P.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.array,
         PropTypes.string,
-    ]).isRequired,
+    ]),
 };
 
 export default P;

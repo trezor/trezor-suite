@@ -83,7 +83,7 @@ const iconShape = {
 RowCoin.propTypes = {
     coin: PropTypes.shape({
         name: PropTypes.string.isRequired,
-        network: PropTypes.string.isRequired,
+        network: PropTypes.string,
         img: PropTypes.string,
     }).isRequired,
     iconLeft: PropTypes.shape(iconShape),
