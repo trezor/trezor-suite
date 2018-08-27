@@ -1,4 +1,4 @@
-import colors from 'js/config/colors';
+import colors from 'config/colors';
 
 const getStatus = (device) => {
     let status = 'connected';

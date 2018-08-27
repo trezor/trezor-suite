@@ -17,7 +17,7 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
-        index: [`${SRC}js/index.js`],
+        index: [`${SRC}/index.js`],
         'trezor-connect-npm': `${TREZOR_CONNECT}.js`,
         // 'extension-permissions': `${TREZOR_CONNECT_ROOT}src/js/extensionPermissions.js`,
         iframe: TREZOR_IFRAME,

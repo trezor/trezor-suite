@@ -8,10 +8,10 @@ import { SRC, BUILD } from './constants';
 module.exports = {
     mode: 'production',
     entry: {
-        index: [`${SRC}js/index.js`],
+        index: [`${SRC}index.js`],
     },
     output: {
-        filename: 'js/[name].[hash].js',
+        filename: '[name].[hash].js',
         path: BUILD,
         publicPath: './',
     },
