@@ -19,10 +19,11 @@ import WalletAcquire from 'views/Wallet/views/Acquire';
 import WalletUnreadableDevice from 'views/Wallet/views/UnreadableDevice';
 
 // wallet views - accounts
+// import SummaryContainer from './Wallet/components/Summary/Container';
+import AccountContainer from 'views/Wallet/views/Account/Container';
 import SignVerifyContainer from './Wallet/components/Sign';
 import ReceiveContainer from './Wallet/components/Receive/Container';
 import SendFormContainer from './Wallet/components/Send/Container';
-import SummaryContainer from './Wallet/components/Summary/Container';
 
 import store, { history } from '../store';
 
@@ -44,7 +45,7 @@ const App = () => (
                             <Route exact path="/device/:device/bootloader" component={WalletBootloader} />
                             <Route exact path="/device/:device/initialize" component={WalletInitialize} />
                             <Route exact path="/device/:device/settings" component={WalletDeviceSettings} />
-                            <Route exact path="/device/:device/network/:network/account/:account" component={SummaryContainer} />
+                            <Route exact path="/device/:device/network/:network/account/:account" component={AccountContainer} />
                             <Route path="/device/:device/network/:network/account/:account/send" component={SendFormContainer} />
                             <Route path="/device/:device/network/:network/account/:account/send/override" component={SendFormContainer} />
                             <Route path="/device/:device/network/:network/account/:account/receive" component={ReceiveContainer} />
