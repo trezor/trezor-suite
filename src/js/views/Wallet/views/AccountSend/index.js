@@ -14,7 +14,7 @@ import SelectedAccount from '../SelectedAccount';
 
 import type { Props } from './index';
 
-export default class SendContainer extends Component<Props> {
+export default class AccountSendContainer extends Component<Props> {
     componentWillReceiveProps(newProps: Props) {
         calculate(this.props, newProps);
         validation(newProps);
