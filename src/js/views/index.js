@@ -10,6 +10,7 @@ import LandingContainer from 'views/Landing/Container';
 
 // wallet views
 import WalletContainer from 'views/Wallet';
+import AccountReceive from 'views/Wallet/views/AccountReceive/Container';
 import WalletDashboard from 'views/Wallet/views/Dashboard';
 import WalletDeviceSettings from 'views/Wallet/views/DeviceSettings';
 import WalletSettings from 'views/Wallet/views/WalletSettings';
@@ -22,7 +23,6 @@ import WalletUnreadableDevice from 'views/Wallet/views/UnreadableDevice';
 // import SummaryContainer from './Wallet/components/Summary/Container';
 import AccountContainer from 'views/Wallet/views/Account/Container';
 import SignVerifyContainer from './Wallet/components/Sign';
-import ReceiveContainer from './Wallet/components/Receive/Container';
 import SendFormContainer from './Wallet/components/Send/Container';
 
 import store, { history } from '../store';
@@ -48,8 +48,8 @@ const App = () => (
                             <Route exact path="/device/:device/network/:network/account/:account" component={AccountContainer} />
                             <Route path="/device/:device/network/:network/account/:account/send" component={SendFormContainer} />
                             <Route path="/device/:device/network/:network/account/:account/send/override" component={SendFormContainer} />
-                            <Route path="/device/:device/network/:network/account/:account/receive" component={ReceiveContainer} />
                             <Route path="/device/:device/network/:network/account/:account/signverify" component={SignVerifyContainer} />
+                            <Route path="/device/:device/network/:network/account/:account/receive" component={AccountReceive} />
                         </WalletContainer>
                     </ErrorBoundary>
                 </Route>

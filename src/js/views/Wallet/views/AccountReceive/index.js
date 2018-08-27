@@ -16,7 +16,7 @@ const StyledH2 = styled(H2)`
     padding: 20px 48px;
 `;
 
-const Receive = (props: Props) => {
+const AccountReceive = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const {
         account,
