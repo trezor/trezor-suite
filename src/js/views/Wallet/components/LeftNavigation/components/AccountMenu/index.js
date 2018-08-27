@@ -38,13 +38,16 @@ const RowAccountWrapper = styled.div`
     font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_PRIMARY};
     border-left: ${BORDER_WIDTH.SELECTED} solid transparent;
-    ${props => props.borderTop && css`
-        border-top: 1px solid ${colors.DIVIDER};
-    `}
     border-bottom: 1px solid ${colors.DIVIDER};
+
     &:hover {
         background-color: ${colors.GRAY_LIGHT};
     }
+
+    ${props => props.borderTop && css`
+        border-top: 1px solid ${colors.DIVIDER};
+    `}
+
     ${props => props.isSelected && css`
         border-left: ${BORDER_WIDTH.SELECTED} solid ${colors.GREEN_PRIMARY};
         background: ${colors.WHITE};
