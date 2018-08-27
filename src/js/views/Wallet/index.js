@@ -14,10 +14,10 @@ import Footer from 'components/Footer';
 import ModalContainer from 'components/modal';
 import Notifications from 'components/Notification';
 import Log from 'components/Log';
-import DeviceSettingsTabs from './views/DeviceSettingsTabs';
 
 import LeftNavigation from './components/LeftNavigation/Container';
 import TopNavigationAccount from './components/TopNavigationAccount';
+import TopNavigationDeviceSettings from './components/TopNavigationDeviceSettings';
 
 type WalletContainerProps = {
     wallet: $ElementType<State, 'wallet'>,
@@ -35,7 +35,7 @@ const AppWrapper = styled.div`
     display: flex;
     flex-direction: column;
     background: ${colors.BACKGROUND};
-    
+
     &.resized {
         min-height: 680px;
     }
@@ -80,8 +80,8 @@ const Wallet = (props: WalletContainerProps) => (
             <LeftNavigation />
             <MainContent>
                 <Navigation>
-                    <Route path="/device/:device/device-settings" component={DeviceSettingsTabs} />
                     <Route path="/device/:device/network/:network/account/:account" component={TopNavigationAccount} />
+                    <Route path="/device/:device/device-settings" component={TopNavigationDeviceSettings} />
                 </Navigation>
                 <Notifications />
                 <Log />
