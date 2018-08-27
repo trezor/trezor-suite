@@ -1,6 +1,6 @@
 /* @flow */
-import styled, { css } from 'styled-components';
-import React, { Component } from 'react';
+import styled from 'styled-components';
+import React from 'react';
 import { H2 } from 'components/Heading';
 import BigNumber from 'bignumber.js';
 import { Async as AsyncSelect } from 'react-select';
@@ -11,7 +11,7 @@ import { Notification } from 'components/Notification';
 import CoinLogo from 'components/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
-import SelectedAccount from 'views/Wallet/components/SelectedAccount'; // TODO: SekectedAccount component
+import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import Link from 'components/Link';
 import SummaryDetails from './components/Details';
 import SummaryTokens from './components/Tokens';
