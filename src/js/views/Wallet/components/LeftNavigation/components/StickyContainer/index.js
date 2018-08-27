@@ -7,12 +7,22 @@ import * as React from 'react';
 import raf from 'raf';
 import { getViewportHeight, getScrollY } from 'utils/windowUtils';
 import styled from 'styled-components';
+import colors from 'config/colors';
 
 type Props = {
     location: string,
     deviceSelection: boolean,
     children?: React.Node,
 }
+
+const AsideWrapper = styled.aside`
+    position: relative;
+    width: 320px;
+    min-width: 320px;
+    border-right: 1px solid ${colors.DIVIDER};
+    overflow-x: hidden;
+    background: ${colors.MAIN};
+`;
 
 const StickyContainerWrapper = styled.div`
     position: relative;
@@ -137,8 +147,8 @@ export default class StickyContainer extends React.PureComponent<Props> {
 
     render() {
         return (
-            <aside
-                ref={(node) => { this.aside = node; }}
+            <AsideWrapper
+                innerRef={(node) => { this.aside = node; }}
                 onScroll={this.handleScroll}
                 onTouchStart={this.handleScroll}
                 onTouchMove={this.handleScroll}
@@ -149,7 +159,7 @@ export default class StickyContainer extends React.PureComponent<Props> {
                 >
                     {this.props.children}
                 </StickyContainerWrapper>
-            </aside>
+            </AsideWrapper>
         );
     }
 }
