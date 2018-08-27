@@ -40,7 +40,7 @@ const Textarea = styled.textarea`
 
 const Input = styled.input``;
 
-const SignVerify = () => (
+const AccountSignVerify = () => (
     <Wrapper>
         <Sign>
             <StyledH2>Sign message</StyledH2>
@@ -63,4 +63,4 @@ const SignVerify = () => (
     </Wrapper>
 );
 
-export default SignVerify;
+export default AccountSignVerify;
