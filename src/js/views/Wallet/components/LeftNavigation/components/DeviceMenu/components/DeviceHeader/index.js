@@ -3,9 +3,14 @@ import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
-import { getStatusColor, getStatusName } from 'utils/device';
+import {
+    getStatusColor,
+    getStatusName,
+    isDisabled,
+    getStatus,
+    getVersion,
+} from 'utils/device';
 import TrezorImage from 'components/TrezorImage';
-
 import colors from 'config/colors';
 
 const Wrapper = styled.div`
@@ -20,6 +25,12 @@ const Wrapper = styled.div`
 
     ${props => props.isOpen && css`
         box-shadow: none;
+    `}
+
+    ${props => props.isHoverable && css`
+        &:hover {
+            background: ${colors.GRAY_LIGHT};
+        }
     `}
 `;
 
@@ -101,6 +112,10 @@ class DeviceHeader extends Component {
         };
     }
 
+    isDisabled(device, devices, transport) {
+        return isDisabled(device, devices, transport);
+    }
+
     handleClickWrapper() {
         this.setState({ clicked: true });
         if (!this.props.disabled) {
@@ -110,17 +125,21 @@ class DeviceHeader extends Component {
 
     render() {
         const {
-            status, label, deviceCount, isOpen, trezorModel, disabled, icon,
+            isOpen, icon, device, devices, transport, isHoverable,
         } = this.props;
+        const status = getStatus(device);
+        const disabled = isDisabled(device, devices, transport);
+        const deviceCount = devices.length;
+
         return (
-            <Wrapper isOpen={isOpen}>
+            <Wrapper isOpen={isOpen} isHoverable={isHoverable}>
                 <ClickWrapper disabled={disabled} onClick={() => this.handleClickWrapper()}>
                     <ImageWrapper>
                         <Dot color={getStatusColor(status)} />
-                        <TrezorImage model={trezorModel} />
+                        <TrezorImage model={getVersion(device)} />
                     </ImageWrapper>
                     <LabelWrapper>
-                        <Name>{label}</Name>
+                        <Name>{device.instanceLabel}</Name>
                         <Status>{getStatusName(status)}</Status>
                     </LabelWrapper>
                     <IconWrapper>

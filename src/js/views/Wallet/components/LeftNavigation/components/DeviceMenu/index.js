@@ -6,7 +6,6 @@ import colors from 'config/colors';
 import Icon from 'components/Icon';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
-import { getStatus, getVersion, isDisabled } from 'utils/device';
 
 import DeviceHeader from './components/DeviceHeader';
 
@@ -19,11 +18,6 @@ const Wrapper = styled.div``;
 const IconClick = styled.div``;
 
 export const DeviceSelect = (props: Props) => {
-    const { devices } = props;
-    const { transport } = props.connect;
-    const { selectedDevice } = props.wallet;
-    const disabled = isDisabled(selectedDevice, devices, transport);
-
     const handleOpen = () => {
         props.toggleDeviceDropdown(!props.deviceDropdownOpened);
     };
@@ -31,12 +25,10 @@ export const DeviceSelect = (props: Props) => {
     return (
         <DeviceHeader
             onClickWrapper={handleOpen}
-            disabled={disabled}
-            label={selectedDevice.instanceLabel}
-            status={getStatus(selectedDevice)}
-            deviceCount={devices.length}
+            device={props.wallet.selectedDevice}
+            transport={props.connect.transport}
+            devices={props.devices.length}
             isOpen={props.deviceDropdownOpened}
-            trezorModel={getVersion(selectedDevice)}
         />
     );
 };
@@ -152,7 +144,7 @@ export class DeviceDropdown extends Component<Props> {
         };
 
         const deviceList = devices.sort(sortByInstance)
-            .map((dev, index) => {
+            .map((dev) => {
                 if (dev === selected) return null;
                 return (
                     <DeviceHeader
@@ -173,9 +165,9 @@ export class DeviceDropdown extends Component<Props> {
                                 />
                             </IconClick>
                         )}
-                        label={dev.instanceLabel}
-                        status={getStatus(dev)}
-                        trezorModel={getVersion(dev)}
+                        device={dev}
+                        devices={devices}
+                        isHoverable
                     />
                 );
             });
