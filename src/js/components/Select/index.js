@@ -2,31 +2,6 @@ import React from 'react';
 import Select from 'react-select';
 import colors from 'config/colors';
 
-// const SelectWrapper = styled(Select)`
-//     width: 200px;
-//     height: 40px;
-//     margin-right: 4px;
-
-//     .Select-control {
-//         width: 200px;
-//         height: 40px;
-//         border: 1px solid ${colors.DIVIDER};
-//         border-radius: 0px 2px 2px 0px;
-//         background: ${colors.WHITE};
-//     }
-
-//     .Select-option {
-//         ${TRANSITION.HOVER};
-//         &.is-focused {
-//             background: ${colors.GRAY_LIGHT};
-//         }
-
-//         &.is-selected {
-//             background: ${colors.DIVIDER};
-//         }
-//     }
-// `;
-
 const styles = {
     singleValue: base => ({
         ...base,
