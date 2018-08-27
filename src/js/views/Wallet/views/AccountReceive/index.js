@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { H2 } from 'components/Heading';
 
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'components/Tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import { Notification } from 'components/Notification';

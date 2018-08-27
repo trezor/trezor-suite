@@ -2,7 +2,7 @@
 
 
 import React from 'react';
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'components/Tooltip';
 import type { Props as BaseProps } from './index';
 
 type Props = {

@@ -7,7 +7,7 @@ import Loader from 'components/Loader';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import * as stateUtils from 'reducers/utils';
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'components/Tooltip';
 import ICONS from 'config/icons';
 
 import { NavLink } from 'react-router-dom';

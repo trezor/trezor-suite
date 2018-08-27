@@ -4,7 +4,7 @@ import React from 'react';
 import { H2 } from 'components/Heading';
 import BigNumber from 'bignumber.js';
 import { Async as AsyncSelect } from 'react-select';
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'components/Tooltip';
 
 import { resolveAfter } from 'utils/promiseUtils';
 import { Notification } from 'components/Notification';
