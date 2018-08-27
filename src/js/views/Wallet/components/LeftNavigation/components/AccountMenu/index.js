@@ -291,19 +291,12 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
 
     let backButton = null;
     if (selectedCoin) {
-        let imgName = selectedCoin.network;
-        if (selectedCoin.network === 'ethereum') {
-            imgName = 'eth';
-        } else if (selectedCoin.network === 'ethereum-classic') {
-            imgName = 'etc';
-        }
-        const imgUrl = `../images/${imgName}-logo.png`;
         backButton = (
             <NavLink to={baseUrl}>
                 <RowCoin
                     coin={{
-                        img: imgUrl,
                         name: selectedCoin.name,
+                        network: selectedCoin.network,
                     }}
                     iconLeft={{
                         type: ICONS.ARROW_LEFT,

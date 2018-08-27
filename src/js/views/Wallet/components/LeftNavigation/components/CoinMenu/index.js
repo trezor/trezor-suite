@@ -24,16 +24,6 @@ class CoinMenu extends Component {
         return baseUrl;
     }
 
-    getImgUrl(network) {
-        let imgName = network;
-        if (network === 'ethereum') {
-            imgName = 'eth';
-        } else if (network === 'ethereum-classic') {
-            imgName = 'etc';
-        }
-        return `../images/${imgName}-logo.png`;
-    }
-
     render() {
         const { config } = this.props.localStorage;
         return (
@@ -45,8 +35,8 @@ class CoinMenu extends Component {
                     >
                         <RowCoin
                             coin={{
-                                img: this.getImgUrl(item.network),
                                 name: item.name,
+                                network: item.network,
                             }}
                         />
                     </NavLink>
@@ -61,8 +51,8 @@ class CoinMenu extends Component {
                     <a key={coin.url} href={coin.url}>
                         <RowCoin
                             coin={{
-                                img: coin.image,
                                 name: coin.coinName,
+                                img: coin.image,
                             }}
                             iconRight={{
                                 type: ICONS.SKIP,
