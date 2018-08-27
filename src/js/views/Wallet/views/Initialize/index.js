@@ -22,7 +22,7 @@ const Row = styled.div`
 const A = styled.a``;
 
 const StyledParagraph = styled(Paragraph)`
-    margin: 20px 50px;
+    margin: 10px 50px;
     display: block;
 `;
 

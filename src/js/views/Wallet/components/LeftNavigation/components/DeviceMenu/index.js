@@ -102,7 +102,7 @@ export class DeviceDropdown extends Component<Props> {
     }
 
     render() {
-        const { devices } = this.props;
+        const { devices, onSelectDevice } = this.props;
         const { transport } = this.props.connect;
         const { selectedDevice } = this.props.wallet;
 
@@ -140,6 +140,7 @@ export class DeviceDropdown extends Component<Props> {
                 <DeviceList
                     devices={devices}
                     selectedDevice={selectedDevice}
+                    onSelectDevice={onSelectDevice}
                 />
                 {isWebUSB(transport) && (
                     <Button
