@@ -1,21 +1,18 @@
 /* @flow */
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import icons from 'config/icons';
-import colors from 'config/colors';
-import Icon from 'components/Icon';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
+import DeviceHeader from 'components/DeviceHeader';
+import Button from 'components/Button';
+import { isWebUSB } from 'utils/device';
+import DeviceList from './components/DeviceList';
 
-import DeviceHeader from './components/DeviceHeader';
-
-// import DeviceList from './components/DeviceList';
 import type { Props } from '../common';
 
 import AsideDivider from '../Divider';
 
 const Wrapper = styled.div``;
-const IconClick = styled.div``;
 
 export const DeviceSelect = (props: Props) => {
     const handleOpen = () => {
@@ -51,7 +48,7 @@ export class DeviceDropdown extends Component<Props> {
 
     componentDidUpdate() {
         const { transport } = this.props.connect;
-        if (transport && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
+        if (isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
     }
 
     mouseDownHandler(event: MouseEvent): void {
@@ -100,27 +97,25 @@ export class DeviceDropdown extends Component<Props> {
         }
     }
 
+    showDivider() {
+        return this.props.devices.length > 1;
+    }
+
     render() {
         const { devices } = this.props;
         const { transport } = this.props.connect;
-        const selected: ?TrezorDevice = this.props.wallet.selectedDevice;
-        if (!selected) return;
-
-        let webUsbButton = null;
-        if (transport && transport.version.indexOf('webusb') >= 0) {
-            webUsbButton = <button className="trezor-webusb-button">Check for devices</button>;
-        }
+        const { selectedDevice } = this.props.wallet;
 
         let currentDeviceMenu = null;
-        if (selected.features) {
+        if (selectedDevice.features) {
             const deviceMenuItems: Array<DeviceMenuItem> = [];
 
-            if (selected.status !== 'available') {
+            if (selectedDevice.status !== 'available') {
                 deviceMenuItems.push({ type: 'reload', label: 'Renew session' });
             }
 
             deviceMenuItems.push({ type: 'settings', label: 'Device settings' });
-            if (selected.features.passphrase_protection && selected.connected && selected.available) {
+            if (selectedDevice.features.passphrase_protection && selectedDevice.connected && selected.available) {
                 deviceMenuItems.push({ type: 'clone', label: 'Create hidden wallet' });
             }
             //if (selected.remember) {
@@ -138,47 +133,21 @@ export class DeviceDropdown extends Component<Props> {
             );
         }
 
-        const sortByInstance = (a: TrezorDevice, b: TrezorDevice) => {
-            if (!a.instance || !b.instance) return -1;
-            return a.instance > b.instance ? 1 : -1;
-        };
-
-        const deviceList = devices.sort(sortByInstance)
-            .map((dev) => {
-                if (dev === selected) return null;
-                return (
-                    <DeviceHeader
-                        key={`${dev.instanceLabel}`}
-                        onClickWrapper={() => this.props.onSelectDevice(dev)}
-                        onClickIcon={() => this.onDeviceMenuClick({ type: 'forget', label: '' }, dev)}
-                        icon={(
-                            <IconClick onClick={(event) => {
-                                event.stopPropagation();
-                                event.preventDefault();
-                                this.onDeviceMenuClick({ type: 'forget', label: '' }, dev);
-                            }}
-                            >
-                                <Icon
-                                    icon={icons.EJECT}
-                                    size={25}
-                                    color={colors.TEXT_SECONDARY}
-                                />
-                            </IconClick>
-                        )}
-                        device={dev}
-                        devices={devices}
-                        isHoverable
-                    />
-                );
-            });
-
         return (
             <Wrapper>
                 {currentDeviceMenu}
-                {this.props.devices.length > 1 ? <AsideDivider textLeft="Other devices" /> : null}
-                {/* <DeviceList devices={devices} /> */}
-                {deviceList}
-                {webUsbButton}
+                {this.showDivider() && <AsideDivider textLeft="Other devices" />}
+                <DeviceList
+                    devices={devices}
+                    selectedDevice={selectedDevice}
+                />
+                {isWebUSB(transport) && (
+                    <Button
+                        className="trezor-webusb-button"
+                        text="Check for devices"
+                        isWebUsb
+                    />
+                )}
             </Wrapper>
         );
     }
