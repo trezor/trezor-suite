@@ -28,51 +28,46 @@ const Label = styled.div`
 `;
 
 class MenuItems extends Component {
-    // makeAction(action, device) {
-    //     switch (action) {
-    //         case 'reload': this.props.acquireDevice();
-    //             break;
-    //         case 'forget': this.props.forgetDevice();
-    //             break;
-    //         case 'clone': this.props.duplicateDevice();
-    //             break;
-    //         case 'settings': {
-    //             this.props.toggleDeviceDropdown(false);
-    //             this.props.gotoDeviceSettings(device);
-    //             break;
-    //         }
-    //         default: console.log('no action');
-    //             break;
-    //     }
-    // }
+    onDeviceMenuClick(action, device) {
+        if (action === 'reload') {
+            this.props.acquireDevice();
+        } else if (action === 'forget') {
+            this.props.forgetDevice(device);
+        } else if (action === 'clone') {
+            this.props.duplicateDevice(device);
+        } else if (action === 'settings') {
+            this.props.toggleDeviceDropdown(false);
+            this.props.gotoDeviceSettings(device);
+        }
+    }
 
     showClone() {
-        return this.props.selectedDevice && this.props.selectedDevice.features.passphrase_protection && this.props.selectedDevice.connected && this.props.selectedDevice.available;
+        return this.props.device && this.props.device.features.passphrase_protection && this.props.device.connected && this.props.device.available;
     }
 
     showRenewSession() {
-        return this.props.selectedDevice && this.props.selectedDevice.status !== 'available';
+        return this.props.device && this.props.device.status !== 'available';
     }
 
     render() {
         return (
             <Wrapper>
-                <Item>
+                <Item onClick={() => this.onDeviceMenuClick('settings', this.props.device)}>
                     <Icon icon={icons.COG} size={25} color={colors.TEXT_SECONDARY} />
                     <Label>Device settings</Label>
                 </Item>
-                <Item>
+                <Item onClick={() => this.onDeviceMenuClick('forget', this.props.device)}>
                     <Icon icon={icons.EJECT} size={25} color={colors.TEXT_SECONDARY} />
                     <Label>Forget</Label>
                 </Item>
                 {this.showClone() && (
-                    <Item>
+                    <Item onClick={() => this.onDeviceMenuClick('clone', this.props.device)}>
                         <Icon icon={icons.T1} size={25} color={colors.TEXT_SECONDARY} />
                         <Label>Create hidden wallet</Label>
                     </Item>
                 )}
                 {this.showRenewSession() && (
-                    <Item>
+                    <Item onClick={() => this.onDeviceMenuClick('reload')}>
                         <Icon icon={icons.T1} size={25} color={colors.TEXT_SECONDARY} />
                         <Label>Renew session</Label>
                     </Item>
@@ -83,7 +78,7 @@ class MenuItems extends Component {
 }
 
 MenuItems.propTypes = {
-    selectedDevice: PropTypes.object.isRequired,
+    device: PropTypes.object.isRequired,
     acquireDevice: PropTypes.func.isRequired,
     forgetDevice: PropTypes.func.isRequired,
     duplicateDevice: PropTypes.func.isRequired,

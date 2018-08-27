@@ -5,9 +5,10 @@ import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
+import DeviceHeader from 'components/DeviceHeader';
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
-import { DeviceSelect, DeviceDropdown } from './components/DeviceMenu';
+import DeviceMenu from './components/DeviceMenu';
 import StickyContainer from './components/StickyContainer';
 
 const TransitionGroupWrapper = styled(TransitionGroup)`
@@ -139,6 +140,10 @@ class LeftNavigation extends Component {
             && this.state.animationType === 'slide-left';
     }
 
+    handleOpen() {
+        this.props.toggleDeviceDropdown(!this.props.deviceDropdownOpened);
+    }
+
     shouldRenderCoins() {
         return !this.state.shouldRenderDeviceSelection && this.state.animationType === 'slide-right';
     }
@@ -150,9 +155,18 @@ class LeftNavigation extends Component {
                 location={this.props.location.pathname}
                 deviceSelection={this.props.deviceDropdownOpened}
             >
-                {selectedDevice && <DeviceSelect {...this.props} />}
+                {selectedDevice && (
+                    <DeviceHeader
+                        onClickWrapper={() => this.handleOpen()}
+                        device={this.props.wallet.selectedDevice}
+                        transport={this.props.connect.transport}
+                        devices={this.props.devices}
+                        isOpen={this.props.deviceDropdownOpened}
+                        {...this.props}
+                    />
+                ) }
                 <MenuWrapper>
-                    {this.state.shouldRenderDeviceSelection && <DeviceDropdown {...this.props} />}
+                    {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
                     {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
                     {this.shouldRenderCoins() && this.getMenuTransition(<CoinMenu {...this.props} />)}
                 </MenuWrapper>

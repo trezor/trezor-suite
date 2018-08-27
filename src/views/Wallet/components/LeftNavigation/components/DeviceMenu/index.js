@@ -16,28 +16,12 @@ import AsideDivider from '../Divider';
 const Wrapper = styled.div``;
 const ButtonWrapper = styled.div``;
 
-export const DeviceSelect = (props: Props) => {
-    const handleOpen = () => {
-        props.toggleDeviceDropdown(!props.deviceDropdownOpened);
-    };
-
-    return (
-        <DeviceHeader
-            onClickWrapper={handleOpen}
-            device={props.wallet.selectedDevice}
-            transport={props.connect.transport}
-            devices={props.devices}
-            isOpen={props.deviceDropdownOpened}
-        />
-    );
-};
-
 type DeviceMenuItem = {
     type: string;
     label: string;
 }
 
-export class DeviceDropdown extends Component<Props> {
+class DeviceMenu extends Component<Props> {
     mouseDownHandler: (event: MouseEvent) => void;
 
     blurHandler: (event: FocusEvent) => void;
@@ -96,11 +80,15 @@ export class DeviceDropdown extends Component<Props> {
 
     componentWillUnmount(): void {
         window.removeEventListener('mousedown', this.mouseDownHandler, false);
-        // window.removeEventListener('blur', this.blurHandler, false);
     }
 
     showDivider() {
         return this.props.devices.length > 1;
+    }
+
+    showMenuItems() {
+        const { selectedDevice } = this.props.wallet;
+        return selectedDevice && selectedDevice.features;
     }
 
     render() {
@@ -108,37 +96,9 @@ export class DeviceDropdown extends Component<Props> {
         const { transport } = this.props.connect;
         const { selectedDevice } = this.props.wallet;
 
-        let currentDeviceMenu = null;
-        if (selectedDevice.features) {
-            const deviceMenuItems: Array<DeviceMenuItem> = [];
-
-            if (selectedDevice.status !== 'available') {
-                deviceMenuItems.push({ type: 'reload', label: 'Renew session' });
-            }
-
-            deviceMenuItems.push({ type: 'settings', label: 'Device settings' });
-            if (selectedDevice.features.passphrase_protection && selectedDevice.connected && selectedDevice.available) {
-                deviceMenuItems.push({ type: 'clone', label: 'Create hidden wallet' });
-            }
-            //if (selected.remember) {
-            deviceMenuItems.push({ type: 'forget', label: 'Forget device' });
-            //}
-
-
-            const deviceMenuButtons = deviceMenuItems.map((item, index) => (
-                <div key={item.type} className={item.type} onClick={event => this.onDeviceMenuClick(item, selectedDevice)}>{item.label}</div>
-            ));
-            currentDeviceMenu = deviceMenuButtons.length < 1 ? null : (
-                <div className="device-menu">
-                    {deviceMenuButtons}
-                </div>
-            );
-        }
-
         return (
             <Wrapper>
-                {currentDeviceMenu}
-                {/* {selectedDevice && selectedDevice.features && <MenuItems {...this.props} />} */}
+                {this.showMenuItems() && <MenuItems device={selectedDevice} {...this.props} />}
                 {this.showDivider() && <AsideDivider textLeft="Other devices" />}
                 <DeviceList
                     devices={devices}
@@ -158,3 +118,5 @@ export class DeviceDropdown extends Component<Props> {
         );
     }
 }
+
+export default DeviceMenu;
