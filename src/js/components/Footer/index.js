@@ -6,16 +6,15 @@ import { getYear } from 'date-fns';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-
 import colors from 'config/colors';
 import * as LogActions from 'actions/LogActions';
 
 const Wrapper = styled.div`
     width: 100%;
     font-size: 12px;
+    background: ${colors.LANDING};
     color: ${colors.TEXT_SECONDARY};
     padding: 22px 48px;
-    border-top: 1px solid ${colors.DIVIDER};
     display: flex;
 `;
 

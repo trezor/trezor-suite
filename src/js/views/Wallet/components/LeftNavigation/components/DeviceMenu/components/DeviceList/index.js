@@ -15,8 +15,7 @@ class DeviceList extends Component {
     }
 
     render() {
-        const { devices, selectedDevice } = this.props;
-        console.warn('devices', devices);
+        const { devices, selectedDevice, onSelectDevice } = this.props;
         return (
             <Wrapper>
                 {devices

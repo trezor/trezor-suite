@@ -6,6 +6,7 @@ import type { TrezorDevice } from 'flowtype';
 import DeviceHeader from 'components/DeviceHeader';
 import Button from 'components/Button';
 import { isWebUSB } from 'utils/device';
+import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
 
 import type { Props } from '../common';
@@ -13,6 +14,7 @@ import type { Props } from '../common';
 import AsideDivider from '../Divider';
 
 const Wrapper = styled.div``;
+const ButtonWrapper = styled.div``;
 
 export const DeviceSelect = (props: Props) => {
     const handleOpen = () => {
@@ -24,7 +26,7 @@ export const DeviceSelect = (props: Props) => {
             onClickWrapper={handleOpen}
             device={props.wallet.selectedDevice}
             transport={props.connect.transport}
-            devices={props.devices.length}
+            devices={props.devices}
             isOpen={props.deviceDropdownOpened}
         />
     );
@@ -79,11 +81,6 @@ export class DeviceDropdown extends Component<Props> {
         if (transport && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
     }
 
-    componentWillUnmount(): void {
-        window.removeEventListener('mousedown', this.mouseDownHandler, false);
-        // window.removeEventListener('blur', this.blurHandler, false);
-    }
-
     onDeviceMenuClick(item: DeviceMenuItem, device: TrezorDevice): void {
         if (item.type === 'reload') {
             this.props.acquireDevice();
@@ -97,12 +94,17 @@ export class DeviceDropdown extends Component<Props> {
         }
     }
 
+    componentWillUnmount(): void {
+        window.removeEventListener('mousedown', this.mouseDownHandler, false);
+        // window.removeEventListener('blur', this.blurHandler, false);
+    }
+
     showDivider() {
         return this.props.devices.length > 1;
     }
 
     render() {
-        const { devices } = this.props;
+        const { devices, onSelectDevice } = this.props;
         const { transport } = this.props.connect;
         const { selectedDevice } = this.props.wallet;
 
@@ -115,7 +117,7 @@ export class DeviceDropdown extends Component<Props> {
             }
 
             deviceMenuItems.push({ type: 'settings', label: 'Device settings' });
-            if (selectedDevice.features.passphrase_protection && selectedDevice.connected && selected.available) {
+            if (selectedDevice.features.passphrase_protection && selectedDevice.connected && selectedDevice.available) {
                 deviceMenuItems.push({ type: 'clone', label: 'Create hidden wallet' });
             }
             //if (selected.remember) {
@@ -124,7 +126,7 @@ export class DeviceDropdown extends Component<Props> {
 
 
             const deviceMenuButtons = deviceMenuItems.map((item, index) => (
-                <div key={item.type} className={item.type} onClick={event => this.onDeviceMenuClick(item, selected)}>{item.label}</div>
+                <div key={item.type} className={item.type} onClick={event => this.onDeviceMenuClick(item, selectedDevice)}>{item.label}</div>
             ));
             currentDeviceMenu = deviceMenuButtons.length < 1 ? null : (
                 <div className="device-menu">
@@ -136,18 +138,22 @@ export class DeviceDropdown extends Component<Props> {
         return (
             <Wrapper>
                 {currentDeviceMenu}
+                {/* {selectedDevice && selectedDevice.features && <MenuItems {...this.props} />} */}
                 {this.showDivider() && <AsideDivider textLeft="Other devices" />}
                 <DeviceList
                     devices={devices}
                     selectedDevice={selectedDevice}
+                    onSelectDevice={onSelectDevice}
                 />
-                {isWebUSB(transport) && (
-                    <Button
-                        className="trezor-webusb-button"
-                        text="Check for devices"
-                        isWebUsb
-                    />
-                )}
+                <ButtonWrapper>
+                    {isWebUSB(transport) && (
+                        <Button
+                            className="trezor-webusb-button"
+                            text="Check for devices"
+                            isWebUsb
+                        />
+                    )}
+                </ButtonWrapper>
             </Wrapper>
         );
     }

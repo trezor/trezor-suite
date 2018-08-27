@@ -16,14 +16,15 @@ const Row = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;  
+    align-items: center;
 `;
 
 const A = styled.a``;
 
 const StyledParagraph = styled(Paragraph)`
-    margin: 20px 50px;
+    margin: 10px 50px;
     display: block;
+    text-align: center;
 `;
 
 const Initialize = () => (

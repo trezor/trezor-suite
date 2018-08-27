@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     padding: 8px 28px 8px 24px;
     font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
-    background: ${colors.GRAY_LIGHT};
+    background: ${colors.LANDING};
     ${props => props.borderTop && css`
         border-top: 1px solid ${colors.DIVIDER};
     `}
@@ -35,8 +35,8 @@ const Divider = ({
 Divider.propTypes = {
     textLeft: PropTypes.string,
     textRight: PropTypes.string,
-    borderTop: PropTypes.bool.isRequired,
-    borderBottom: PropTypes.bool.isRequired,
+    borderTop: PropTypes.bool,
+    borderBottom: PropTypes.bool,
 };
 
 export default Divider;

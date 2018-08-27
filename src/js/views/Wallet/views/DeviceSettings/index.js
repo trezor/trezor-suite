@@ -33,6 +33,7 @@ const DeviceSettings = () => (
     <Section>
         <Row>
             <Icon
+                size={60}
                 color={colors.WARNING_PRIMARY}
                 icon={ICONS.WARNING}
             />
