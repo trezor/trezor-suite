@@ -36,17 +36,16 @@ const styles = {
         ...base,
         width: '180px',
     }),
-    control: (base, state) => ({
+    control: (base, { isDisabled }) => ({
         ...base,
         borderRadius: '2px',
-        // state.onHover: () => {
-        //     borderColor: colors.DIVIDER,
-        // },
-        borderColor: state.hover ? colors.DIVIDER : colors.DIVIDER,
-    }),
-    option: base => ({
-        ...base,
-        color: colors.TEXT_SECONDARY,
+        borderColor: colors.DIVIDER,
+        boxShadow: 'none',
+        background: isDisabled ? colors.LANDING : colors.WHITE,
+        '&:hover': {
+            cursor: 'pointer',
+            borderColor: colors.DIVIDER,
+        },
     }),
     indicatorSeparator: () => ({
         display: 'none',
@@ -55,6 +54,35 @@ const styles = {
         ...base,
         color: colors.TEXT_SECONDARY,
         path: '',
+        '&:hover': {
+            color: colors.TEXT_SECONDARY,
+        },
+    }),
+    menu: base => ({
+        ...base,
+        margin: 0,
+        boxShadow: 'none',
+    }),
+    menuList: base => ({
+        ...base,
+        padding: 0,
+        boxShadow: 'none',
+        background: colors.WHITE,
+    }),
+    option: (base, { isSelected }) => ({
+        ...base,
+        color: colors.TEXT_SECONDARY,
+        background: isSelected ? colors.LANDING : colors.WHITE,
+        borderRadius: 0,
+        borderLeft: `1px solid ${colors.DIVIDER}`,
+        borderRight: `1px solid ${colors.DIVIDER}`,
+        '&:last-child': {
+            borderBottom: `1px solid ${colors.DIVIDER}`,
+        },
+        '&:hover': {
+            cursor: 'pointer',
+            background: colors.LANDING,
+        },
     }),
 };
 
