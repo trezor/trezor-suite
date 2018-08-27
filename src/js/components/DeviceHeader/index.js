@@ -162,15 +162,15 @@ class DeviceHeader extends Component {
     }
 }
 
-
 DeviceHeader.propTypes = {
-    deviceCount: PropTypes.number,
+    device: PropTypes.object,
+    devices: PropTypes.array,
+    transport: PropTypes.object,
+    icon: PropTypes.element,
+    isHoverable: PropTypes.bool,
     disabled: PropTypes.bool,
     isOpen: PropTypes.bool,
-    trezorModel: PropTypes.string.isRequired,
     onClickWrapper: PropTypes.func.isRequired,
-    status: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
 };
 
 export default DeviceHeader;

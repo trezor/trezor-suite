@@ -39,19 +39,8 @@ if (process.env.NODE_ENV === 'development') {
         return pass.length === 0;
     };
 
-    const logger = createLogger({
-        level: 'info',
-        predicate: excludeLogger,
-        collapsed: true,
-    });
-
-    const devToolsExtension: ?Function = window.devToolsExtension;
-    if (typeof devToolsExtension === 'function') {
-        enhancers.push(devToolsExtension());
-    }
-
     composedEnhancers = compose(
-        applyMiddleware(...middleware, logger, ...services),
+        applyMiddleware(...middleware, ...services),
         ...enhancers,
     );
 } else {

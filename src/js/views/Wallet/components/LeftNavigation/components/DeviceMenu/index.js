@@ -24,7 +24,7 @@ export const DeviceSelect = (props: Props) => {
             onClickWrapper={handleOpen}
             device={props.wallet.selectedDevice}
             transport={props.connect.transport}
-            devices={props.devices.length}
+            devices={props.devices}
             isOpen={props.deviceDropdownOpened}
         />
     );
@@ -99,6 +99,10 @@ export class DeviceDropdown extends Component<Props> {
 
     showDivider() {
         return this.props.devices.length > 1;
+    }
+
+    getMenu() {
+
     }
 
     render() {
