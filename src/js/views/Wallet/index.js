@@ -17,7 +17,7 @@ import Log from 'components/Log';
 import DeviceSettingsTabs from './views/DeviceSettingsTabs';
 
 import LeftNavigation from './components/LeftNavigation/Container';
-import AccountTabs from './components/Tabs';
+import TopNavigationAccount from './components/TopNavigationAccount';
 
 type WalletContainerProps = {
     wallet: $ElementType<State, 'wallet'>,
@@ -80,8 +80,8 @@ const Wallet = (props: WalletContainerProps) => (
             <LeftNavigation />
             <MainContent>
                 <Navigation>
-                    <Route path="/device/:device/network/:network/account/:account" component={AccountTabs} />
                     <Route path="/device/:device/device-settings" component={DeviceSettingsTabs} />
+                    <Route path="/device/:device/network/:network/account/:account" component={TopNavigationAccount} />
                 </Navigation>
                 <Notifications />
                 <Log />

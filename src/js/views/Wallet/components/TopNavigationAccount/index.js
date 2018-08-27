@@ -76,7 +76,7 @@ class Indicator extends Component<Props, State> {
     }
 }
 
-const AccountTabs = (props: any) => {
+const TopNavigationAccount = (props: any) => {
     const urlParams = props.match.params;
     const basePath = `/device/${urlParams.device}/network/${urlParams.network}/account/${urlParams.account}`;
 
@@ -102,4 +102,4 @@ const AccountTabs = (props: any) => {
     );
 };
 
-export default AccountTabs;
+export default TopNavigationAccount;
