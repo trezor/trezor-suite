@@ -115,7 +115,7 @@ export class DeviceDropdown extends Component<Props> {
             }
 
             deviceMenuItems.push({ type: 'settings', label: 'Device settings' });
-            if (selectedDevice.features.passphrase_protection && selectedDevice.connected && selected.available) {
+            if (selectedDevice.features.passphrase_protection && selectedDevice.connected && selectedDevice.available) {
                 deviceMenuItems.push({ type: 'clone', label: 'Create hidden wallet' });
             }
             //if (selected.remember) {
@@ -124,7 +124,7 @@ export class DeviceDropdown extends Component<Props> {
 
 
             const deviceMenuButtons = deviceMenuItems.map((item, index) => (
-                <div key={item.type} className={item.type} onClick={event => this.onDeviceMenuClick(item, selected)}>{item.label}</div>
+                <div key={item.type} className={item.type} onClick={event => this.onDeviceMenuClick(item, selectedDevice)}>{item.label}</div>
             ));
             currentDeviceMenu = deviceMenuButtons.length < 1 ? null : (
                 <div className="device-menu">
