@@ -1,13 +1,14 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import { TRANSITION } from 'config/variables';
+import { FONT_SIZE, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
 
 const A = styled.a`
     text-decoration: none;
     cursor: pointer;
     transition: ${TRANSITION.HOVER};
+    font-size: ${FONT_SIZE.SMALLER};
 
     ${props => props.isGreen && css`
         border-bottom: 1px solid ${colors.GREEN_PRIMARY};
