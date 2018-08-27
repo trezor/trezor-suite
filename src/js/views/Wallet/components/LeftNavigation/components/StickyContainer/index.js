@@ -19,7 +19,6 @@ const AsideWrapper = styled.aside`
     position: relative;
     width: 320px;
     min-width: 320px;
-    border-right: 1px solid ${colors.DIVIDER};
     overflow-x: hidden;
     background: ${colors.MAIN};
 `;
