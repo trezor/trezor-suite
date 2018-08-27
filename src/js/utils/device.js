@@ -80,6 +80,7 @@ const getStatusColor = (deviceStatus) => {
 };
 
 export {
+    isWebUSB,
     getStatus,
     isDisabled,
     getStatusName,
