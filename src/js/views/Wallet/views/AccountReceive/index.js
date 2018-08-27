@@ -7,7 +7,7 @@ import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import { Notification } from 'components/Notification';
-import SelectedAccount from '../SelectedAccount';
+import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 
 import type { Props } from './index';
 
@@ -96,6 +96,6 @@ const AccountReceive = (props: Props) => {
 
 export default (props: Props) => (
     <SelectedAccount {...props}>
-        <Receive {...props} />
+        <AccountReceive {...props} />
     </SelectedAccount>
 );

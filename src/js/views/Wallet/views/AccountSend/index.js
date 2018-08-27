@@ -5,12 +5,11 @@ import styled from 'styled-components';
 import Select from 'react-select';
 import { H2 } from 'components/Heading';
 import { calculate, validation } from 'actions/SendFormActions';
+import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import type { Token } from 'flowtype';
 import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from './components/PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './components/FeeSelect';
-import SelectedAccount from '../SelectedAccount';
-
 
 import type { Props } from './index';
 
