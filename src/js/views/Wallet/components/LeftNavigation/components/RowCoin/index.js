@@ -2,24 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
-import { ICON_SIZE, FONT_SIZE, LEFT_NAVIGATION_ROW } from 'config/variables';
+import CoinLogo from 'components/CoinLogo';
+import { FONT_SIZE, LEFT_NAVIGATION_ROW } from 'config/variables';
 import colors from 'config/colors';
 import Row from '../Row';
+
 
 const CoinNameWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-`;
-
-const Logo = styled.div`
-    height: ${ICON_SIZE.BASE};
-    width: ${ICON_SIZE.BASE};
-    margin-right: 5px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: auto ${ICON_SIZE.BASE};
-    background-image: url('${props => props.coinImg}');
 `;
 
 const RowCoinWrapper = styled.div`
@@ -64,7 +56,10 @@ const RowCoin = ({
                 )}
                 <CoinNameWrapper>
                     <LogoWrapper>
-                        <Logo coinImg={coin.img} />
+                        <CoinLogo
+                            coinNetwork={coin.network}
+                            coinImg={coin.img}
+                        />
                     </LogoWrapper>
                     <p>{coin.name}</p>
                 </CoinNameWrapper>
@@ -87,8 +82,9 @@ const iconShape = {
 };
 RowCoin.propTypes = {
     coin: PropTypes.shape({
-        img: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
+        network: PropTypes.string.isRequired,
+        img: PropTypes.string,
     }).isRequired,
     iconLeft: PropTypes.shape(iconShape),
     iconRight: PropTypes.shape(iconShape),
