@@ -11,17 +11,12 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     transition: ${TRANSITION.HOVER};
-
-    ${props => props.disabled && css`
-        cursor: not-allowed;
-    `}
 `;
 
 const Row = ({
-    children, disabled = false, onClick, onMouseEnter, onMouseLeave, onFocus,
+    children, onClick, onMouseEnter, onMouseLeave, onFocus,
 }) => (
     <Wrapper
-        disabled={disabled}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -36,7 +31,6 @@ Row.propTypes = {
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node,
     ]),
-    disabled: PropTypes.bool,
     onClick: PropTypes.func,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,

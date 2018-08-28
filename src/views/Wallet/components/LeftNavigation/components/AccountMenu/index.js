@@ -58,31 +58,6 @@ const RowAccountWrapper = styled.div`
     `}
 `;
 
-const RowAccount = ({
-    accountIndex, balance, isSelected = false, borderTop = false,
-}) => (
-    <Row column>
-        <RowAccountWrapper
-            isSelected={isSelected}
-            borderTop={borderTop}
-        >
-            Account #{accountIndex + 1}
-            {balance ? (
-                <Text>{balance}</Text>
-            ) : (
-                <Text>Loading...</Text>
-            )}
-        </RowAccountWrapper>
-    </Row>
-);
-
-RowAccount.propTypes = {
-    accountIndex: PropTypes.number.isRequired,
-    balance: PropTypes.string,
-    isSelected: PropTypes.bool,
-    borderTop: PropTypes.bool,
-};
-
 const RowAddAccountWrapper = styled.div`
     width: 100%;
     padding: ${LEFT_NAVIGATION_ROW.PADDING};
@@ -98,39 +73,6 @@ const RowAddAccountWrapper = styled.div`
 const AddAccountIconWrapper = styled.div`
     margin-right: 12px;
 `;
-
-const RowAddAccount = (({
-    disabled = false, onClick, onMouseEnter, onMouseLeave, onFocus,
-}) => (
-    <Row
-        disabled={disabled}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onFocus={onFocus}
-    >
-        <RowAddAccountWrapper
-            disabled={disabled}
-        >
-            <AddAccountIconWrapper>
-                <Icon
-                    icon={ICONS.PLUS}
-                    size={24}
-                    color={colors.TEXT_SECONDARY}
-                />
-            </AddAccountIconWrapper>
-            Add account
-        </RowAddAccountWrapper>
-    </Row>
-));
-
-RowAddAccount.propTypes = {
-    disabled: PropTypes.bool,
-    onClick: PropTypes.func,
-    onMouseEnter: PropTypes.func,
-    onMouseLeave: PropTypes.func,
-    onFocus: PropTypes.func,
-};
 
 const DiscoveryStatusWrapper = styled.div`
     display: flex;
@@ -150,23 +92,6 @@ const DiscoveryStatusText = styled.div`
     text-overflow: ellipsis;
 `;
 
-const RowDiscoveryStatus = (({
-    instanceLabel,
-}) => (
-    <Row>
-        <DiscoveryStatusWrapper>
-            Accounts could not be loaded
-            <DiscoveryStatusText>
-                {`Connect ${instanceLabel} device`}
-            </DiscoveryStatusText>
-        </DiscoveryStatusWrapper>
-    </Row>
-));
-
-RowDiscoveryStatus.propTypes = {
-    instanceLabel: PropTypes.number.isRequired,
-};
-
 const DiscoveryLoadingWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -180,17 +105,7 @@ const DiscoveryLoadingText = styled.span`
     margin-left: 14px;
 `;
 
-const RowDiscoveryLoading = (() => (
-    <Row>
-        <DiscoveryLoadingWrapper>
-            <Loader size={20} />
-            <DiscoveryLoadingText>
-                Loading...
-            </DiscoveryLoadingText>
-        </DiscoveryLoadingWrapper>
-    </Row>
-));
-
+// TODO: Refactorize deviceStatus & selectedAccounts
 const AccountMenu = (props: Props): ?React$Element<string> => {
     const selected = props.wallet.selectedDevice;
     const { location } = props.router;
@@ -214,12 +129,11 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, selectedCoin.symbol);
             const availableBalance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
 
+            balance = `${availableBalance} ${selectedCoin.symbol}`;
             if (fiatRate) {
                 const accountBalance = new BigNumber(availableBalance);
                 const fiat = accountBalance.times(fiatRate.value).toFixed(2);
                 balance = `${availableBalance} ${selectedCoin.symbol} / $${fiat}`;
-            } else {
-                balance = `${availableBalance} ${selectedCoin.symbol}`;
             }
         }
 
@@ -229,13 +143,16 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
                 to={url}
                 key={account.index}
             >
-                <RowAccount
-                    accountIndex={account.index}
-                    url={url}
-                    balance={balance}
-                    isSelected={urlAccountIndex === account.index}
-                    borderTop={account.index === 0}
-                />
+                <Row column>
+                    <RowAccountWrapper
+                        isSelected={urlAccountIndex === account.index}
+                        borderTop={account.index === 0}
+                    >
+                        Account #{account.index + 1}
+                        {balance && <Text>{balance}</Text>}
+                        {!balance && <Text>Loading...</Text>}
+                    </RowAccountWrapper>
+                </Row>
             </NavLink>
         );
     });
@@ -247,12 +164,14 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
                 <NavLink
                     to={url}
                 >
-                    <RowAccount
-                        accountIndex={0}
-                        url={url}
-                        isSelected
-                        borderTop
-                    />
+                    <Row column>
+                        <RowAccountWrapper
+                            isSelected
+                            borderTop
+                        >
+                            Account #0
+                        </RowAccountWrapper>
+                    </Row>
                 </NavLink>
             );
         }
@@ -267,7 +186,20 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             //if (selectedAccounts.length > 0 && selectedAccounts[selectedAccounts.length - 1])
             const lastAccount = deviceAccounts[deviceAccounts.length - 1];
             if (lastAccount && (new BigNumber(lastAccount.balance).greaterThan(0) || lastAccount.nonce > 0)) {
-                discoveryStatus = <RowAddAccount onClick={props.addAccount} />;
+                discoveryStatus = (
+                    <Row onClick={props.addAccount}>
+                        <RowAddAccountWrapper>
+                            <AddAccountIconWrapper>
+                                <Icon
+                                    icon={ICONS.PLUS}
+                                    size={24}
+                                    color={colors.TEXT_SECONDARY}
+                                />
+                            </AddAccountIconWrapper>
+                            Add account
+                        </RowAddAccountWrapper>
+                    </Row>
+                );
             } else {
                 discoveryStatus = (
                     <Tooltip
@@ -275,44 +207,66 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
                         overlay={<TooltipContent isAside>To add a new account, last account must have some transactions.</TooltipContent>}
                         placement="bottom"
                     >
-                        <RowAddAccount disabled />
+                        <Row>
+                            <RowAddAccountWrapper disabled>
+                                <AddAccountIconWrapper>
+                                    <Icon
+                                        icon={ICONS.PLUS}
+                                        size={24}
+                                        color={colors.TEXT_SECONDARY}
+                                    />
+                                </AddAccountIconWrapper>
+                                Add account
+                            </RowAddAccountWrapper>
+                        </Row>
                     </Tooltip>
                 );
             }
         } else if (!selected.connected || !selected.available) {
-            discoveryStatus = <RowDiscoveryStatus instanceLabel={selected.instanceLabel} />;
+            discoveryStatus = (
+                <Row>
+                    <DiscoveryStatusWrapper>
+                        Accounts could not be loaded
+                        <DiscoveryStatusText>
+                            {`Connect ${selected.instanceLabel} device`}
+                        </DiscoveryStatusText>
+                    </DiscoveryStatusWrapper>
+                </Row>
+            );
         } else {
             discoveryStatus = (
-                <RowDiscoveryLoading />
+                <Row>
+                    <DiscoveryLoadingWrapper>
+                        <Loader size={20} />
+                        <DiscoveryLoadingText>
+                            Loading...
+                        </DiscoveryLoadingText>
+                    </DiscoveryLoadingWrapper>
+                </Row>
             );
         }
     }
 
-    let backButton = null;
-    if (selectedCoin) {
-        backButton = (
-            <NavLink to={baseUrl}>
-                <RowCoin
-                    coin={{
-                        name: selectedCoin.name,
-                        network: selectedCoin.network,
-                    }}
-                    iconLeft={{
-                        type: ICONS.ARROW_LEFT,
-                        color: colors.TEXT_PRIMARY,
-                        size: 20,
-                    }}
-                />
-            </NavLink>
-        );
-    }
-
     return (
         <Wrapper>
-            {backButton}
-            <div>
+            {selectedCoin && (
+                <NavLink to={baseUrl}>
+                    <RowCoin
+                        coin={{
+                            name: selectedCoin.name,
+                            network: selectedCoin.network,
+                        }}
+                        iconLeft={{
+                            type: ICONS.ARROW_LEFT,
+                            color: colors.TEXT_PRIMARY,
+                            size: 20,
+                        }}
+                    />
+                </NavLink>
+            )}
+            <Wrapper>
                 {selectedAccounts}
-            </div>
+            </Wrapper>
             {discoveryStatus}
         </Wrapper>
     );
