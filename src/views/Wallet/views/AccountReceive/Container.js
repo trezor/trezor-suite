@@ -1,12 +1,8 @@
 /* @flow */
-
-
-import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { default as ReceiveActions } from 'actions/ReceiveActions';
-import * as TokenActions from 'actions/TokenActions';
+import { showAddress } from 'actions/ReceiveActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 import type {
@@ -23,7 +19,7 @@ type StateProps = BaseStateProps & {
 }
 
 type DispatchProps = BaseDispatchProps & {
-    showAddress: typeof ReceiveActions.showAddress
+    showAddress: typeof showAddress
 };
 
 export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
@@ -38,7 +34,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    showAddress: bindActionCreators(ReceiveActions.showAddress, dispatch),
+    showAddress: bindActionCreators(showAddress, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Receive);
