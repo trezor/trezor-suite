@@ -5,6 +5,8 @@ import React from 'react';
 import { H2 } from 'components/Heading';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+import colors from 'config/colors';
 
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as NotificationActions from 'actions/NotificationActions';
@@ -27,6 +29,18 @@ type NProps = {
     loading?: boolean
 }
 
+const Wrapper = styled.div`
+    position: relative;
+    color: ${colors.INFO_PRIMARY};
+    background: ${colors.INFO_SECONDARY};
+    padding: 24px 48px 24px 80px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    text-align: left;
+`;
+
 export const Notification = (props: NProps): React$Element<string> => {
     const className = `notification ${props.className}`;
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
@@ -35,7 +49,7 @@ export const Notification = (props: NProps): React$Element<string> => {
     )) : null;
 
     return (
-        <div className={className}>
+        <Wrapper className={className}>
             { props.cancelable ? (
                 <button
                     className="notification-close transparent"
@@ -57,7 +71,7 @@ export const Notification = (props: NProps): React$Element<string> => {
                 />
             ) : null }
 
-        </div>
+        </Wrapper>
     );
 };
 

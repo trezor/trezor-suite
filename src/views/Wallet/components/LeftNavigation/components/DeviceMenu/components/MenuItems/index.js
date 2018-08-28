@@ -53,21 +53,35 @@ class MenuItems extends Component {
         return (
             <Wrapper>
                 <Item onClick={() => this.onDeviceMenuClick('settings', this.props.device)}>
-                    <Icon icon={icons.COG} size={25} color={colors.TEXT_SECONDARY} />
+                    <Icon
+                        icon={icons.COG}
+                        size={25}
+                        color={colors.TEXT_SECONDARY}
+                    />
                     <Label>Device settings</Label>
                 </Item>
                 <Item onClick={() => this.onDeviceMenuClick('forget', this.props.device)}>
-                    <Icon icon={icons.EJECT} size={25} color={colors.TEXT_SECONDARY} />
+                    <Icon
+                        icon={icons.EJECT}
+                        size={25}
+                        color={colors.TEXT_SECONDARY}
+                    />
                     <Label>Forget</Label>
                 </Item>
                 {this.showClone() && (
                     <Item onClick={() => this.onDeviceMenuClick('clone', this.props.device)}>
-                        <Icon icon={icons.T1} size={25} color={colors.TEXT_SECONDARY} />
+                        <Icon
+                            icon={icons.T1}
+                            size={25}
+                            color={colors.TEXT_SECONDARY}
+                        />
                         <Label>Create hidden wallet</Label>
                     </Item>
                 )}
                 {this.showRenewSession() && (
-                    <Item onClick={() => this.onDeviceMenuClick('reload')}>
+                    <Item
+                        onClick={() => this.onDeviceMenuClick('reload')}
+                    >
                         <Icon icon={icons.T1} size={25} color={colors.TEXT_SECONDARY} />
                         <Label>Renew session</Label>
                     </Item>
