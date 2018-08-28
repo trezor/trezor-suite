@@ -8,7 +8,7 @@ import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 
-import type { StateProps, DispatchProps } from './common';
+import type { StateProps, DispatchProps } from './components/common';
 
 import LeftNavigation from './index';
 

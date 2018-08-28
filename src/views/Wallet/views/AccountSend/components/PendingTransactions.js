@@ -10,7 +10,7 @@ import { findAccountTokens } from 'reducers/TokensReducer';
 
 import type { Coin } from 'reducers/LocalStorageReducer';
 import type { Token } from 'reducers/TokensReducer';
-import type { Props as BaseProps } from './index';
+import type { Props as BaseProps } from '../Container';
 
 type Props = {
     pending: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'pending'>,

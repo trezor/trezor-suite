@@ -6,8 +6,6 @@ import BigNumber from 'bignumber.js';
 import { Async as AsyncSelect } from 'react-select';
 import Tooltip from 'components/Tooltip';
 
-import { resolveAfter } from 'utils/promiseUtils';
-import { Notification } from 'components/Notification';
 import CoinLogo from 'components/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
@@ -16,7 +14,7 @@ import Link from 'components/Link';
 import SummaryDetails from './components/Details';
 import SummaryTokens from './components/Tokens';
 
-import type { Props } from './index';
+import type { Props } from './Container';
 
 const AccountHeading = styled.div`
     padding: 20px 48px 20px 45px;

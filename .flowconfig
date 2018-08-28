@@ -1,6 +1,7 @@
 [include]
 
 [ignore]
+.*/node_modules/fbjs/.*
 .*/node_modules/rc-util/.*
 .*/node_modules/react-redux/.*
 .*/node_modules/redux/.*
@@ -20,8 +21,6 @@
 ./src/flowtype/npm/web3.js
 ./src/flowtype/css.js
 
-
-
 [options]
 esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
@@ -31,4 +30,15 @@ esproposal.decorators=ignore
 module.name_mapper='.*\(.less\)' -> 'CSSModule'
 module.name_mapper='^\(~/\)' -> '<PROJECT_ROOT>/src/'
 module.name_mapper='^universal' -> '<PROJECT_ROOT>/src/'
+module.name_mapper='^flowtype' -> '<PROJECT_ROOT>/src/flowtype'
+module.name_mapper='^components' -> '<PROJECT_ROOT>/src/components'
+module.name_mapper='^config' -> '<PROJECT_ROOT>/src/config'
+module.name_mapper='^constants' -> '<PROJECT_ROOT>/src/constants'
+module.name_mapper='^utils' -> '<PROJECT_ROOT>/src/utils'
+module.name_mapper='^reducers' -> '<PROJECT_ROOT>/src/reducers'
+module.name_mapper='^actions' -> '<PROJECT_ROOT>/src/actions'
+module.name_mapper='^views' -> '<PROJECT_ROOT>/src/views'
+module.name_mapper='^data' -> '<PROJECT_ROOT>/src/data'
+module.name_mapper='^services' -> '<PROJECT_ROOT>/src/services'
+module.name_mapper='^support' -> '<PROJECT_ROOT>/src/support'
 module.system=haste

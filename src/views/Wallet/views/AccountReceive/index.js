@@ -1,15 +1,14 @@
 /* @flow */
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { H2 } from 'components/Heading';
 
 import Tooltip from 'components/Tooltip';
 import { QRCode } from 'react-qr-svg';
 
-import { Notification } from 'components/Notification';
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 
-import type { Props } from './index';
+import type { Props } from './Container';
 
 const Wrapper = styled.div``;
 const StyledH2 = styled(H2)`

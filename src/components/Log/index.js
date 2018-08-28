@@ -10,7 +10,12 @@ import Paragraph from 'components/Paragraph';
 
 import * as LogActions from 'actions/LogActions';
 import icons from 'config/icons';
-import { State, Dispatch } from 'flowtype';
+import type { State, Dispatch } from 'flowtype';
+
+type Props = {
+    log: $ElementType<State, 'log'>,
+    toggle: typeof LogActions.toggle
+}
 
 const Wrapper = styled.div`
     position: relative;

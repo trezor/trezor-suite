@@ -11,7 +11,7 @@ import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from './components/PendingTransactions';
 import { FeeSelectValue, FeeSelectOption } from './components/FeeSelect';
 
-import type { Props } from './index';
+import type { Props } from './Container';
 
 export default class AccountSendContainer extends Component<Props> {
     componentWillReceiveProps(newProps: Props) {

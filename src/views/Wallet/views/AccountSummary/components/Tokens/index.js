@@ -7,7 +7,7 @@ import ScaleText from 'react-scale-text';
 import * as stateUtils from 'reducers/utils';
 import BigNumber from 'bignumber.js';
 
-import type { Props as BaseProps } from './index';
+import type { Props as BaseProps } from '../../Container';
 
 type Props = {
     pending: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'pending'>,
@@ -18,7 +18,7 @@ type Props = {
 const SummaryTokens = (props: Props) => {
     if (!props.tokens || props.tokens.length < 1) return null;
 
-    const bgColor = new ColorHash({ lightness: 0.16 } );
+    const bgColor = new ColorHash({ lightness: 0.16 });
     const textColor = new ColorHash();
 
     const tokens = props.tokens.map((token, index) => {

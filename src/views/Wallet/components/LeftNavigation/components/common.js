@@ -1,6 +1,7 @@
 /* @flow */
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import { toggleDeviceDropdown } from 'actions/WalletActions';
+import type { State } from 'flowtype';
 
 export type StateProps = {
     connect: $ElementType<State, 'connect'>,

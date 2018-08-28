@@ -3,7 +3,7 @@
 
 import React from 'react';
 import Tooltip from 'components/Tooltip';
-import type { Props as BaseProps } from './index';
+import type { Props as BaseProps } from '../Container';
 
 type Props = {
     selectedAccount: $ElementType<BaseProps, 'selectedAccount'>,

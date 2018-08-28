@@ -12,6 +12,7 @@ import colors from 'config/colors';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import { isWebUSB } from 'utils/device';
+import { FONT_SIZE } from 'config/variables';
 
 import BrowserNotSupported from './components/BrowserNotSupported';
 import ConnectDevice from './components/ConnectDevice';
@@ -62,6 +63,10 @@ const LandingFooterTextWrapper = styled.span`
 
 const LandingLoader = styled(Loader)`
     margin: auto;
+`;
+
+const StyledLink = styled(Link)`
+    font-size: ${FONT_SIZE.BASE};
 `;
 
 export default (props: Props) => {
@@ -124,24 +129,24 @@ export default (props: Props) => {
                                                 <LandingFooterTextWrapper>
                                                     Device not recognized?
                                                 </LandingFooterTextWrapper>
-                                                <Link
+                                                <StyledLink
                                                     href="#/bridge"
                                                     isGreen
                                                 >Try installing the TREZOR Bridge.
-                                                </Link>
+                                                </StyledLink>
                                             </P>
                                         )}
                                         <P>
                                             <LandingFooterTextWrapper>
                                                 Don't have TREZOR?
                                             </LandingFooterTextWrapper>
-                                            <Link
+                                            <StyledLink
                                                 href="https://trezor.io/"
                                                 target="_blank"
                                                 rel="noreferrer noopener"
                                                 isGreen
                                             >Get one
-                                            </Link>
+                                            </StyledLink>
                                         </P>
                                     </LandingFooterWrapper>
                                 )}

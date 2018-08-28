@@ -1,7 +1,7 @@
 /* @flow */
 
-
 import TrezorConnect, { UI, UI_EVENT } from 'trezor-connect';
+import type { Device } from 'trezor-connect';
 import * as MODAL from 'actions/constants/modal';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 

@@ -33,7 +33,7 @@ import type { Config, Coin } from 'reducers/LocalStorageReducer';
 import type { Token } from 'reducers/TokensReducer';
 import type { State, FeeLevel } from 'reducers/SendFormReducer';
 import type { Account } from 'reducers/AccountsReducer';
-import type { Props } from 'components/wallet/account/send';
+import type { Props } from 'views/Wallet/views/AccountSend/Container';
 import * as SessionStorageActions from './SessionStorageActions';
 import { estimateGas, getGasPrice, pushTx } from './Web3Actions';
 
