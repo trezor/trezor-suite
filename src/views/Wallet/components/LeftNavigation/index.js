@@ -25,6 +25,7 @@ const StickyBottom = styled.div`
     position: fixed;
     bottom: 0;
     background: ${colors.MAIN};
+    border-right: 1px solid ${colors.DIVIDER};
 `;
 
 const MenuWrapper = styled.div`
