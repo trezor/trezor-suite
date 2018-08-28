@@ -1,10 +1,5 @@
 .notification {
 
-    .notification-body {
-        flex: 1;
-        margin-right: 24px;
-    }
-
     .notification-action button {
         padding: 12px 58px;
     }
@@ -28,26 +23,6 @@
         }
     }
 
-    h2 {
-        font-size: 14px;
-        font-weight: bold;
-        
-        padding: 0px;
-        &:before {
-            .icomoon-info;
-            position: absolute;
-            top: 17px;
-            left: 40px;
-            font-size: 32px !important;
-        }
-    }
-
-    p {
-        padding: 0px;
-        margin: 8px 0px;
-        color: inherit;
-    }
-
     &.info {
         .notification-action button {
             border: 1px solid @color_info_primary;
@@ -59,11 +34,7 @@
         }
     }
 
-    
-
     &.success {
-        color: @color_success_primary;
-        background: @color_success_secondary;
 
         .notification-action button {
             border: 1px solid @color_success_primary;
@@ -76,11 +47,6 @@
     }
 
     &.warning {
-        color: @color_warning_primary;
-        background: @color_warning_secondary;
-        h2:before {
-            .icomoon-warning;
-        }
 
         .notification-action button {
             border: 1px solid @color_warning_primary;
@@ -93,11 +59,6 @@
     }
 
     &.error {
-        color: @color_error_primary;
-        background: @color_error_secondary;
-        h2:before {
-            .icomoon-error;
-        }
 
         .notification-close {
             color: @color_error_primary;
