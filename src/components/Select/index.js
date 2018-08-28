@@ -4,14 +4,10 @@ import Select from 'react-select';
 import AsyncSelect from 'react-select/lib/Async';
 import colors from 'config/colors';
 
-const styles = {
+const styles = isSearchable => ({
     singleValue: base => ({
         ...base,
         color: colors.TEXT_SECONDARY,
-    }),
-    container: base => ({
-        ...base,
-        width: '180px',
     }),
     control: (base, { isDisabled }) => ({
         ...base,
@@ -20,7 +16,7 @@ const styles = {
         boxShadow: 'none',
         background: isDisabled ? colors.LANDING : colors.WHITE,
         '&:hover': {
-            cursor: 'pointer',
+            cursor: isSearchable ? 'text' : 'pointer',
             borderColor: colors.DIVIDER,
         },
     }),
@@ -29,6 +25,7 @@ const styles = {
     }),
     dropdownIndicator: base => ({
         ...base,
+        display: isSearchable ? 'none' : 'block',
         color: colors.TEXT_SECONDARY,
         path: '',
         '&:hover': {
@@ -61,21 +58,23 @@ const styles = {
             background: colors.LANDING,
         },
     }),
-};
+});
 
 const SelectWrapper = props => (
     <div>
-        {props.isAsync && <AsyncSelect styles={styles} {...props} /> }
-        {!props.isAsync && <Select styles={styles} {...props} />}
+        {props.isAsync && <AsyncSelect styles={styles(props.isSearchable)} {...props} /> }
+        {!props.isAsync && <Select styles={styles(props.isSearchable)} {...props} />}
     </div>
 );
 
 SelectWrapper.propTypes = {
     isAsync: PropTypes.bool,
+    isSearchable: PropTypes.bool,
 };
 
 SelectWrapper.defaultProps = {
     isAsync: false,
+    isSearchable: false,
 };
 
 export default SelectWrapper;

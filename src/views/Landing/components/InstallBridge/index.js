@@ -64,6 +64,7 @@ const LearnMoreText = styled.span`
 
 const SelectWrapper = styled(Select)`
     margin-right: 10px;
+    width: 180px;
 `;
 
 const DownloadBridgeWrapper = styled.div`
