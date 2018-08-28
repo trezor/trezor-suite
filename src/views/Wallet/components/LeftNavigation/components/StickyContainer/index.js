@@ -21,6 +21,7 @@ const AsideWrapper = styled.aside`
     min-width: 320px;
     overflow-x: hidden;
     background: ${colors.MAIN};
+    border-right: 1px solid ${colors.DIVIDER};
 `;
 
 const StickyContainerWrapper = styled.div`
