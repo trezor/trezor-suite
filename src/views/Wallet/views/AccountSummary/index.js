@@ -4,7 +4,7 @@ import React from 'react';
 import { H2 } from 'components/Heading';
 import BigNumber from 'bignumber.js';
 import { Async as AsyncSelect } from 'react-select';
-import Tooltip from 'components/Tooltip';
+import Tooltip from 'rc-tooltip';
 
 import CoinLogo from 'components/CoinLogo';
 import * as stateUtils from 'reducers/utils';
@@ -60,7 +60,7 @@ const Summary = (props: Props) => {
 
     return (
         <div>
-            <AccountHeading network={account.network}>
+            <AccountHeading network={account.networks}>
                 <AccountName>
                     <StyledCoinLogo coinNetwork={account.network} />
                     <H2>Account #{parseInt(account.index, 10) + 1}</H2>

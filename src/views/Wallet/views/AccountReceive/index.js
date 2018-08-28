@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { H2 } from 'components/Heading';
 
-import Tooltip from 'components/Tooltip';
+import Tooltip from 'rc-tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
