@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Select from 'react-select';
+import AsyncSelect from 'react-select/lib/Async';
 import colors from 'config/colors';
 
 const styles = {
@@ -62,10 +64,18 @@ const styles = {
 };
 
 const SelectWrapper = props => (
-    <Select
-        styles={styles}
-        {...props}
-    />
+    <div>
+        {props.isAsync && <AsyncSelect styles={styles} {...props} /> }
+        {!props.isAsync && <Select styles={styles} {...props} />}
+    </div>
 );
+
+SelectWrapper.propTypes = {
+    isAsync: PropTypes.bool,
+};
+
+SelectWrapper.defaultProps = {
+    isAsync: false,
+};
 
 export default SelectWrapper;
