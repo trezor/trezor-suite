@@ -2,6 +2,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import { H2 } from 'components/Heading';
+import TooltipContent from 'components/TooltipContent';
 import BigNumber from 'bignumber.js';
 import { Async as AsyncSelect } from 'react-select';
 import Tooltip from 'rc-tooltip';
@@ -49,9 +50,9 @@ const Summary = (props: Props) => {
     if (!device || !account || !network) return null;
 
     const tokensTooltip = (
-        <div className="tooltip-wrapper">
+        <TooltipContent>
             Insert token name, symbol or address to be able to send it.
-        </div>
+        </TooltipContent>
     );
     const explorerLink: string = `${network.explorer.address}${account.address}`;
 

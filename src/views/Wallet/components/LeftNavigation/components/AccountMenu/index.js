@@ -1,6 +1,7 @@
 /* @flow */
 import React from 'react';
 import BigNumber from 'bignumber.js';
+import TooltipContent from 'components/TooltipContent';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import Loader from 'components/Loader';
@@ -268,15 +269,10 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             if (lastAccount && (new BigNumber(lastAccount.balance).greaterThan(0) || lastAccount.nonce > 0)) {
                 discoveryStatus = <RowAddAccount onClick={props.addAccount} />;
             } else {
-                const tooltip = (
-                    <div className="aside-tooltip-wrapper">
-                        To add a new account, last account must have some transactions.
-                    </div>
-                );
                 discoveryStatus = (
                     <Tooltip
                         arrowContent={<div className="rc-tooltip-arrow-inner" />}
-                        overlay={tooltip}
+                        overlay={<TooltipContent isAside>To add a new account, last account must have some transactions.</TooltipContent>}
                         placement="bottom"
                     >
                         <RowAddAccount disabled />

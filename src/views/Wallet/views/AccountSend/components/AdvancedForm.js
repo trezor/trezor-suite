@@ -1,9 +1,15 @@
 /* @flow */
-
-
 import React from 'react';
 import Tooltip from 'rc-tooltip';
+import TooltipContent from 'components/TooltipContent';
+import Link from 'components/Link';
+import styled from 'styled-components';
+import colors from 'config/colors';
 import type { Props as BaseProps } from '../Container';
+
+const GreenSpan = styled.span`
+    color: ${colors.GREEN_PRIMARY};
+`;
 
 type Props = {
     selectedAccount: $ElementType<BaseProps, 'selectedAccount'>,
@@ -51,9 +57,9 @@ const AdvancedForm = (props: Props) => {
     }
 
     const nonceTooltip = (
-        <div className="tooltip-wrapper">
+        <TooltipContent>
             TODO<br />
-        </div>
+        </TooltipContent>
     );
 
     let gasLimitTooltipCurrency: string;
@@ -67,27 +73,27 @@ const AdvancedForm = (props: Props) => {
     }
 
     const gasLimitTooltip = (
-        <div className="tooltip-wrapper">
+        <TooltipContent>
             Gas limit is the amount of gas to send with your transaction.<br />
-            <span>TX fee = gas price * gas limit</span> &amp; is paid to miners for including your TX in a block.<br />
+            <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
             Increasing this number will not get your TX mined faster.<br />
-            Default value for sending { gasLimitTooltipCurrency } is <span>{ gasLimitTooltipValue }</span>
-        </div>
+            Default value for sending {gasLimitTooltipCurrency} is <GreenSpan>{gasLimitTooltipValue}</GreenSpan>
+        </TooltipContent>
     );
 
     const gasPriceTooltip = (
-        <div className="tooltip-wrapper">
+        <TooltipContent>
             Gas Price is the amount you pay per unit of gas.<br />
-            <span>TX fee = gas price * gas limit</span> &amp; is paid to miners for including your TX in a block.<br />
-            Higher the gas price = faster transaction, but more expensive. Recommended is <span>{ recommendedGasPrice } GWEI.</span><br />
-            <a className="green" href="https://myetherwallet.github.io/knowledge-base/gas/what-is-gas-ethereum.html" target="_blank" rel="noreferrer noopener">Read more</a>
-        </div>
+            <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
+            Higher the gas price = faster transaction, but more expensive. Recommended is <GreenSpan>{recommendedGasPrice} GWEI.</GreenSpan><br />
+            <Link href="https://myetherwallet.github.io/knowledge-base/gas/what-is-gas-ethereum.html" target="_blank" rel="noreferrer noopener" isGreen>Read more</Link>
+        </TooltipContent>
     );
 
     const dataTooltip = (
-        <div className="tooltip-wrapper">
+        <TooltipContent>
             Data is usually used when you send transactions to contracts.
-        </div>
+        </TooltipContent>
     );
 
 
