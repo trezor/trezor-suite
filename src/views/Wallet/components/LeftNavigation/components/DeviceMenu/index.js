@@ -14,7 +14,14 @@ import type { Props } from '../common';
 import AsideDivider from '../Divider';
 
 const Wrapper = styled.div``;
-const ButtonWrapper = styled.div``;
+const ButtonWrapper = styled.div`
+    margin-top: 10px;
+    padding: 0 10px;
+    display: flex;
+`;
+const StyledButton = styled(Button)`
+    flex: 1;
+`;
 
 type DeviceMenuItem = {
     type: string;
@@ -107,7 +114,7 @@ class DeviceMenu extends Component<Props> {
                 />
                 <ButtonWrapper>
                     {isWebUSB(transport) && (
-                        <Button
+                        <StyledButton
                             className="trezor-webusb-button"
                             text="Check for devices"
                             isWebUsb
