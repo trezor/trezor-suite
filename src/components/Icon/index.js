@@ -28,9 +28,10 @@ const SvgWrapper = styled.svg`
 const Path = styled.path``;
 
 const Icon = ({
-    icon, size = 32, color = 'black', isActive, canAnimate,
+    className, icon, size = 32, color = 'black', isActive, canAnimate, onMouseEnter, onMouseLeave, onFocus, onClick,
 }) => (
     <SvgWrapper
+        className={className}
         canAnimate={canAnimate}
         isActive={isActive}
         style={{
@@ -40,6 +41,10 @@ const Icon = ({
         width={`${size}`}
         height={`${size}`}
         viewBox="0 0 1024 1024"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onFocus={onFocus}
+        onClick={onClick}
     >
         {icon.map(path => (
             <Path
@@ -53,11 +58,16 @@ const Icon = ({
 );
 
 Icon.propTypes = {
+    className: PropTypes.string,
     canAnimate: PropTypes.bool,
     icon: PropTypes.arrayOf(PropTypes.string).isRequired,
     size: PropTypes.number,
     isActive: PropTypes.bool,
     color: PropTypes.string,
+    onMouseEnter: PropTypes.func,
+    onMouseLeave: PropTypes.func,
+    onFocus: PropTypes.func,
+    onClick: PropTypes.func,
 };
 
 

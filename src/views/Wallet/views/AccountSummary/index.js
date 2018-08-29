@@ -9,7 +9,6 @@ import Tooltip from 'rc-tooltip';
 
 import CoinLogo from 'components/CoinLogo';
 import * as stateUtils from 'reducers/utils';
-import type { NetworkToken } from 'reducers/LocalStorageReducer';
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import Link from 'components/Link';
 import SummaryDetails from './components/Details';
@@ -37,6 +36,14 @@ const StyledCoinLogo = styled(CoinLogo)`
     margin-right: 10px;
 `;
 
+const StyledIcon = styled(Icon)`
+    position: relative;
+    top: -1px;
+    &:hover {
+        cursor: pointer;
+    }
+`;
+
 const Summary = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const {
@@ -58,9 +65,8 @@ const Summary = (props: Props) => {
 
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
     const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
-
     return (
-        <div>
+        <SelectedAccount {...props}>
             <AccountHeading network={account.networks}>
                 <AccountName>
                     <StyledCoinLogo coinNetwork={account.network} />
@@ -92,7 +98,11 @@ const Summary = (props: Props) => {
                     overlay={tokensTooltip}
                     placement="top"
                 >
-                    <span className="what-is-it" />
+                    <StyledIcon
+                        icon={ICONS.HELP}
+                        color={colors.TEXT_SECONDARY}
+                        size={24}
+                    />
                 </Tooltip>
             </StyledH2>
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
@@ -134,13 +144,8 @@ const Summary = (props: Props) => {
                 tokens={tokens}
                 removeToken={props.removeToken}
             />
-
-        </div>
+        </SelectedAccount>
     );
 };
 
-export default (props: Props) => (
-    <SelectedAccount {...props}>
-        <Summary {...props} />
-    </SelectedAccount>
-);
+export default Summary;
