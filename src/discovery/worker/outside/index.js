@@ -170,7 +170,7 @@ export class WorkerDiscoveryHandler {
                                 };
                                 if (transactions_.map(t => t.hash).some(hash => transaction.hash === hash)) {
                                     // transaction already came from blockchain again
-                                    this.forceAddedTransactions.slice(i, 1);
+                                    this.forceAddedTransactions.splice(i, 1);
                                 } else {
                                     const txAddresses = new Set();
                                     transaction.inputAddresses.concat(transaction.outputAddresses).forEach(a => {
