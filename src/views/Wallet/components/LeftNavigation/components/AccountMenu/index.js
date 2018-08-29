@@ -169,7 +169,7 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
                             isSelected
                             borderTop
                         >
-                            Account #0
+                            Account #1
                         </RowAccountWrapper>
                     </Row>
                 </NavLink>
