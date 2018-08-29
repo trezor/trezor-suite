@@ -19,8 +19,6 @@ const Wrapper = styled.div`
     padding: 24px 48px 24px 24px;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
     text-align: left;
 
     ${props => props.type === 'info' && css`
@@ -45,12 +43,13 @@ const Wrapper = styled.div`
 `;
 
 const Body = styled.div`
-    flex: 1;
     display: flex;
     margin-right: 40px;
+    flex: 1;
 `;
 
 const Title = styled.div`
+    padding-bottom: 5px;
     font-weight: ${FONT_WEIGHT.BIGGER};
 `;
 
@@ -64,12 +63,7 @@ const CloseClick = styled.div`
 `;
 
 const Message = styled.div`
-    padding: 5px 0 0 0;
     font-size: ${FONT_SIZE.SMALLER};
-`;
-
-const IconContent = styled.div`
-    padding-right: 5px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -77,7 +71,17 @@ const StyledIcon = styled(Icon)`
     top: -7px;
 `;
 
-const MessageContent = styled.div``;
+const MessageContent = styled.div`
+    height: 20px;
+    display: flex;
+`;
+
+const Texts = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const AdditionalContent = styled.div``;
 
 export const Notification = (props: NProps): React$Element<string> => {
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
@@ -117,25 +121,25 @@ export const Notification = (props: NProps): React$Element<string> => {
                 </CloseClick>
             )}
             <Body>
-                <IconContent>
+                <MessageContent>
                     <StyledIcon
                         color={getIconColor(props.className)}
                         icon={icons[props.className.toUpperCase()]}
                     />
-                </IconContent>
-                <MessageContent>
-                    <Title>{ props.title }</Title>
-                    { props.message && (
-                        <Message>
-                            <p dangerouslySetInnerHTML={{ __html: props.message }} />
-                        </Message>
-                    ) }
+                    <Texts>
+                        <Title>{ props.title }</Title>
+                        { props.message && (
+                            <Message>
+                                <p dangerouslySetInnerHTML={{ __html: props.message }} />
+                            </Message>
+                        ) }
+                    </Texts>
                 </MessageContent>
             </Body>
-            {props.actions && props.actions.length > 0 && (
-                <ActionContent>
-                    {props.actions
-                        .map(action => (
+            <AdditionalContent>
+                {props.actions && props.actions.length > 0 && (
+                    <ActionContent>
+                        {props.actions.map(action => (
                             <NotificationButton
                                 key={action.label}
                                 type={props.className}
@@ -143,8 +147,9 @@ export const Notification = (props: NProps): React$Element<string> => {
                                 onClick={() => { close(); action.callback(); }}
                             />
                         ))}
-                </ActionContent>
-            )}
+                    </ActionContent>
+                )}
+            </AdditionalContent>
         </Wrapper>
     );
 };
