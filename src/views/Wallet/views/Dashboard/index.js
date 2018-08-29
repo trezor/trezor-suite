@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
+import { Notification } from 'components/Notification';
+
 import { H2 } from 'components/Heading';
 import DashboardImg from 'images/dashboard.png';
 
@@ -32,6 +34,46 @@ const P = styled.p`
 
 const Dashboard = () => (
     <Wrapper>
+        <Notification
+            title="TITLE TITLE TITLE TITLETITLE TITLE"
+            message="Config files are missing"
+            className="error"
+            actions={[{
+                label: 'Button action',
+                callback: () => false,
+            }]}
+        />
+
+        <Notification
+            title="TITLE TITLE TITLE TITLETITLE TITLE"
+            message="Config files are missing"
+            className="warning"
+            actions={[{
+                label: 'Button action',
+                callback: () => false,
+            }]}
+        />
+
+        <Notification
+            title="TITLE TITLE TITLE TITLETITLE TITLE"
+            message="Config files are missing"
+            className="success"
+            cancelable={false}
+            actions={[{
+                label: 'Button action',
+                callback: () => false,
+            }]}
+        />
+
+        <Notification
+            title="TITLE TITLE TITLE TITLETITLE TITLE"
+            message="Description hahahah aloglg lfkdlfkdlfk"
+            className="info"
+            actions={[{
+                label: 'Button action',
+                callback: () => false,
+            }]}
+        />
         <StyledH2>Dashboard</StyledH2>
         <Row>
             <H2>Please select your coin</H2>

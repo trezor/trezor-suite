@@ -29,42 +29,6 @@ const Wrapper = styled.button`
         background: ${colors.GRAY_LIGHT};
     `}
 
-    ${props => props.color === 'blue' && css`
-        background: transparent;
-        border: 1px solid ${colors.INFO_PRIMARY};
-        color: ${colors.INFO_PRIMARY};
-        padding: 12px 58px;
-
-        &:hover {
-            color: ${colors.WHITE};
-            background: ${colors.INFO_PRIMARY};
-        }
-    `}
-
-    ${props => props.color === 'red' && css`
-        background: transparent;
-        border: 1px solid ${colors.ERROR_PRIMARY};
-        color: ${colors.ERROR_SECONDARY};
-        padding: 12px 58px;
-
-        &:hover {
-            color: ${colors.WHITE};
-            background: ${colors.ERROR_PRIMARY};
-        }
-    `}
-
-    ${props => props.color === 'orange' && css`
-        background: transparent;
-        border: 1px solid ${colors.WARNING_PRIMARY};
-        color: ${colors.WARNING_SECONDARY};
-        padding: 12px 58px;
-
-        &:hover {
-            color: ${colors.WHITE};
-            background: ${colors.WARNING_PRIMARY};
-        }
-    `}
-
     ${props => props.color === 'white' && css`
         background: ${colors.WHITE};
         color: ${colors.TEXT_SECONDARY};
