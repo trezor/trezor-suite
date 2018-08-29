@@ -42,17 +42,15 @@ const styles = isSearchable => ({
         padding: 0,
         boxShadow: 'none',
         background: colors.WHITE,
+        borderLeft: `1px solid ${colors.DIVIDER}`,
+        borderRight: `1px solid ${colors.DIVIDER}`,
+        borderBottom: `1px solid ${colors.DIVIDER}`,
     }),
     option: (base, { isSelected }) => ({
         ...base,
         color: colors.TEXT_SECONDARY,
         background: isSelected ? colors.LANDING : colors.WHITE,
         borderRadius: 0,
-        borderLeft: `1px solid ${colors.DIVIDER}`,
-        borderRight: `1px solid ${colors.DIVIDER}`,
-        '&:last-child': {
-            borderBottom: `1px solid ${colors.DIVIDER}`,
-        },
         '&:hover': {
             cursor: 'pointer',
             background: colors.LANDING,
