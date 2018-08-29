@@ -28,9 +28,10 @@ const SvgWrapper = styled.svg`
 const Path = styled.path``;
 
 const Icon = ({
-    icon, size = 32, color = 'black', isActive, canAnimate,
+    icon, size = 32, color = 'black', isActive, canAnimate, className,
 }) => (
     <SvgWrapper
+        className={className}
         canAnimate={canAnimate}
         isActive={isActive}
         style={{
@@ -53,6 +54,7 @@ const Icon = ({
 );
 
 Icon.propTypes = {
+    className: PropTypes.string,
     canAnimate: PropTypes.bool,
     icon: PropTypes.arrayOf(PropTypes.string).isRequired,
     size: PropTypes.number,
