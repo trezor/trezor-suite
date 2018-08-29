@@ -37,20 +37,21 @@ export const load = (input: string, network: string): AsyncAction => async (disp
     const tokens = getState().localStorage.tokens[network];
     const value = input.toLowerCase();
     const result = tokens.filter(t => t.symbol.toLowerCase().indexOf(value) >= 0
-            || t.address.toLowerCase().indexOf(value) >= 0
-            || t.name.toLowerCase().indexOf(value) >= 0);
+        || t.address.toLowerCase().indexOf(value) >= 0
+        || t.name.toLowerCase().indexOf(value) >= 0);
 
     if (result.length > 0) {
-        return { options: result };
+        // TODO: Temporary fix for async select
+        // async react-select starts getting very laggy
+        // when options is a large list (>200 items)
+        return result.slice(0, 100);
     }
     const web3instance = getState().web3.find(w3 => w3.network === network);
     if (!web3instance) return;
 
     const info = await getTokenInfoAsync(web3instance.erc20, input);
     if (info) {
-        return {
-            options: [info],
-        };
+        return [info];
     }
     //await resolveAfter(300000);
     //await resolveAfter(3000);
