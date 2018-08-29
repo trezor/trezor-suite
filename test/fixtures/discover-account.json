@@ -7315,7 +7315,7 @@
     "name": "Nonsensical tx",
     "start": null,
     "xpub": "tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U",
-    "endError": "Error transaction parsing: Index out of range",
+    "endError": "Error transaction parsing",
     "network": {
       "messagePrefix": "N/A",
       "bip32": {

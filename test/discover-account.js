@@ -38,7 +38,7 @@ describe('discover account', () => {
                     }
                 }
             }, (err) => {
-                if (err !== fixture.endError) {
+                if (!(err.startsWith(fixture.endError))) {
                     console.log('Discovery result', JSON.stringify(err, null, 2));
                     console.log('Fixture', JSON.stringify(fixture.endError, null, 2));
                     done(new Error('Result not the same'));
