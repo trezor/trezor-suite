@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import installers from 'constants/bridge';
-import Select from 'components/Select';
+import { Select } from 'components/Select';
 import Link from 'components/Link';
 import Button from 'components/Button';
 import Loader from 'components/Loader';

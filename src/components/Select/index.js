@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
-import AsyncSelect from 'react-select/lib/Async';
+import ReactSelect from 'react-select';
+import ReactAsyncSelect from 'react-select/lib/Async';
 import colors from 'config/colors';
 
 const styles = isSearchable => ({
@@ -58,21 +58,16 @@ const styles = isSearchable => ({
     }),
 });
 
-const SelectWrapper = props => (
-    <div>
-        {props.isAsync && <AsyncSelect styles={styles(props.isSearchable)} {...props} /> }
-        {!props.isAsync && <Select styles={styles(props.isSearchable)} {...props} />}
-    </div>
-);
-
-SelectWrapper.propTypes = {
+const propTypes = {
     isAsync: PropTypes.bool,
     isSearchable: PropTypes.bool,
 };
+const Select = props => <ReactSelect styles={styles(props.isSearchable)} {...props} />;
+const AsyncSelect = props => <ReactAsyncSelect styles={styles(props.isSearchable)} {...props} />;
+Select.propTypes = propTypes;
+AsyncSelect.propTypes = propTypes;
 
-SelectWrapper.defaultProps = {
-    isAsync: false,
-    isSearchable: false,
+export {
+    Select,
+    AsyncSelect,
 };
-
-export default SelectWrapper;
