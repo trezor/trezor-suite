@@ -4,7 +4,10 @@ import React from 'react';
 import { H2 } from 'components/Heading';
 import TooltipContent from 'components/TooltipContent';
 import BigNumber from 'bignumber.js';
-import { Async as AsyncSelect } from 'react-select';
+import Icon from 'components/Icon';
+import { AsyncSelect } from 'components/Select';
+import ICONS from 'config/icons';
+import colors from 'config/colors';
 import Tooltip from 'rc-tooltip';
 
 import CoinLogo from 'components/CoinLogo';
@@ -44,6 +47,10 @@ const StyledIcon = styled(Icon)`
     }
 `;
 
+const AsyncSelectWrapper = styled.div`
+    padding: 0px 48px 32px 48px;
+`;
+
 const Summary = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const {
@@ -56,15 +63,10 @@ const Summary = (props: Props) => {
     // flow
     if (!device || !account || !network) return null;
 
-    const tokensTooltip = (
-        <TooltipContent>
-            Insert token name, symbol or address to be able to send it.
-        </TooltipContent>
-    );
     const explorerLink: string = `${network.explorer.address}${account.address}`;
-
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
     const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
+
     return (
         <SelectedAccount {...props}>
             <AccountHeading network={account.networks}>
@@ -95,7 +97,11 @@ const Summary = (props: Props) => {
                 Tokens
                 <Tooltip
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
-                    overlay={tokensTooltip}
+                    overlay={(
+                        <TooltipContent>
+                            Insert token name, symbol or address to be able to send it.
+                        </TooltipContent>
+                    )}
                     placement="top"
                 >
                     <StyledIcon
@@ -107,37 +113,31 @@ const Summary = (props: Props) => {
             </StyledH2>
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 T01 */}
-            <div className="filter">
+
+            {/* TOOO: AsyncSelect is lagging when dropdown menu must show more than 200 items */}
+            {/* TODO: Input's box-shadow  */}
+            <AsyncSelectWrapper>
                 <AsyncSelect
-                    className="token-select"
-                    multi={false}
-                    autoload
-                    ignoreCase
-                    backspaceRemoves
+                    isSearchable
+                    defaultOptions
                     value={null}
+                    isMulti={false}
+                    placeholder="Search for the token"
+                    loadingMessage={() => 'Loading...'}
+                    noOptionsMessage={() => 'Token not found'}
                     onChange={token => props.addToken(token, account)}
                     loadOptions={input => props.loadTokens(input, account.network)}
-                    filterOptions={
-                        (options: Array<NetworkToken>, search: string, values: Array<NetworkToken>) => options.map((o) => {
-                            const added = tokens.find(t => t.symbol === o.symbol);
-                            if (added) {
-                                return {
-                                    ...o,
-                                    name: `${o.name} (Already added)`,
-                                    disabled: true,
-                                };
-                            }
-                            return o;
-                        })
-                    }
-                    valueKey="symbol"
-                    labelKey="name"
-                    placeholder="Search for token"
-                    searchPromptText="Type token name or address"
-                    noResultsText="Token not found"
+                    formatOptionLabel={(option) => {
+                        const isAdded = tokens.find(t => t.symbol === option.symbol);
+                        if (isAdded) {
+                            return `${option.name} (Already added)`;
+                        }
+                        return option.name;
+                    }}
+                    getOptionLabel={option => option.name}
+                    getOptionValue={option => option.symbol}
                 />
-
-            </div>
+            </AsyncSelectWrapper>
 
             <SummaryTokens
                 pending={pending}
