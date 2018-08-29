@@ -76,9 +76,28 @@ const CloseClick = styled.div``;
 
 export const Notification = (props: NProps): React$Element<string> => {
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
-    const actionButtons = props.actions ? props.actions.map((a, i) => (
-        <button key={i} onClick={(event) => { close(); a.callback(); }} className="transparent">{ a.label }</button>
-    )) : null;
+
+    const getButtonColor = (type) => {
+        let color;
+        switch (type) {
+            case 'info':
+                color = 'blue';
+                break;
+            case 'error':
+                color = 'red';
+                break;
+            case 'warning':
+                color = 'orange';
+                break;
+            case 'success':
+                color = 'green';
+                break;
+            default:
+                color = null;
+        }
+
+        return color;
+    };
 
     return (
         <Wrapper type={props.className}>
@@ -92,18 +111,19 @@ export const Notification = (props: NProps): React$Element<string> => {
                 <H2>{ props.title }</H2>
                 { props.message && <p dangerouslySetInnerHTML={{ __html: props.message }} /> }
             </Body>
-            { props.actions && props.actions.length > 0 ? (
+            { props.actions && props.actions.length > 0 && (
                 <ActionContent>
                     {props.actions
                         .map(action => (
                             <Button
-                                color={props.className}
+                                color={getButtonColor(props.className)}
                                 text={action.label}
                                 onClick={() => { close(); action.callback(); }}
                             />
                         ))}
                 </ActionContent>
-            ) : null }
+            )
+            }
             { props.loading && <Loader size={50} /> }
 
         </Wrapper>
