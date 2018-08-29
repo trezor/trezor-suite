@@ -13,6 +13,17 @@ import type {BlockRange, AccountNewInfo} from '../types';
 import {GetChainTransactions} from './get-chain-transactions';
 import {integrateNewTxs} from './integrate-new-txs';
 
+// increase version for forced redownload of txs
+// (on either format change, or on some widespread data corruption)
+//
+// version 1 added infos about fees and sizes; we cannot calculate that
+// version 2 was correction in mytrezor
+// v3 added info, whether utxo is my own or not
+// so we have to re-download everything -> setting initial state as if nothing is known
+// v4 changed timestamp format
+// v5 is just to force re-download on forceAdded data corruption
+const LATEST_VERSION = 5;
+
 // Default starting info being used, when there is null
 const defaultInfo: AccountInfo = {
     utxos: [],
@@ -28,7 +39,7 @@ const defaultInfo: AccountInfo = {
     allowChange: false,
     lastConfirmedChange: -1,
     lastConfirmedMain: -1,
-    version: 4,
+    version: LATEST_VERSION,
 };
 
 let recvInfo: ?AccountInfo;
@@ -70,11 +81,7 @@ channel.initPromise.then(({
 channel.startDiscoveryPromise.then(() => {
     let initialState = recvInfo == null ? defaultInfo : recvInfo;
 
-    // version null => 1 added infos about fees and sizes; we cannot calculate that
-    // version 2 was correction in mytrezor
-    // v3 added info, whether utxo is my own or not
-    // so we have to re-download everything -> setting initial state as if nothing is known
-    if (initialState.version == null || initialState.version < 4) {
+    if (initialState.version == null || initialState.version < LATEST_VERSION) {
         initialState = defaultInfo;
     }
 
