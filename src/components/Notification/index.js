@@ -98,6 +98,28 @@ export const Notification = (props: NProps): React$Element<string> => {
         return color;
     };
 
+    const getIconColor = (type) => {
+        let color;
+        switch (type) {
+            case 'info':
+                color = colors.INFO_PRIMARY;
+                break;
+            case 'error':
+                color = colors.ERROR_PRIMARY;
+                break;
+            case 'warning':
+                color = colors.WARNING_PRIMARY;
+                break;
+            case 'success':
+                color = colors.SUCCESS_PRIMARY;
+                break;
+            default:
+                color = null;
+        }
+
+        return color;
+    };
+
     return (
         <Wrapper type={props.className}>
             {props.loading && <Loader size={50} /> }
@@ -108,7 +130,10 @@ export const Notification = (props: NProps): React$Element<string> => {
             )}
             <Body>
                 <IconContent>
-                    <StyledIcon icon={icons[props.className.toUpperCase()]} />
+                    <StyledIcon
+                        color={getIconColor(props.className)}
+                        icon={icons[props.className.toUpperCase()]}
+                    />
                 </IconContent>
                 <MessageContent>
                     <Title>{ props.title }</Title>
@@ -136,7 +161,7 @@ export const Notification = (props: NProps): React$Element<string> => {
     );
 };
 
-export const NotificationGroup = (props: Props) => {
+export const NotificationGroup = (props) => {
     const { notifications, close } = props;
     return notifications.map((n, i) => (
         <Notification
@@ -152,10 +177,10 @@ export const NotificationGroup = (props: Props) => {
 };
 
 export default connect(
-    (state: State) => ({
+    state => ({
         notifications: state.notifications,
     }),
-    (dispatch: Dispatch) => ({
+    dispatch => ({
         close: bindActionCreators(NotificationActions.close, dispatch),
     }),
 )(NotificationGroup);
