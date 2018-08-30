@@ -126,8 +126,8 @@ export default class InstallBridge extends Component<Props, State> {
                                 color: colors.WHITE,
                                 size: 30,
                             }}
-                            text={`Download for ${label}`}
-                        />
+                        >Download for {label}
+                        </Button>
                     </Link>
                 </DownloadBridgeWrapper>
                 <P>

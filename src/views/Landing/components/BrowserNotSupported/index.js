@@ -44,9 +44,7 @@ const BrowserNotSupported = () => (
                     target="_blank"
                     rel="noreferrer noopener"
                 >
-                    <Button
-                        text="Get Chrome"
-                    />
+                    <Button>Get Chrome</Button>
                 </Link>
             </Browser>
             <Browser>
@@ -57,9 +55,7 @@ const BrowserNotSupported = () => (
                     target="_blank"
                     rel="noreferrer noopener"
                 >
-                    <Button
-                        text="Get Firefox"
-                    />
+                    <Button>Get Firefox</Button>
                 </Link>
 
             </Browser>

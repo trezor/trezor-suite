@@ -109,9 +109,9 @@ class DeviceMenu extends Component<Props> {
                     {isWebUSB(transport) && (
                         <Button
                             className="trezor-webusb-button"
-                            text="Check for devices"
                             isWebUsb
-                        />
+                        >Check for devices
+                        </Button>
                     )}
                 </ButtonWrapper>
             </Wrapper>

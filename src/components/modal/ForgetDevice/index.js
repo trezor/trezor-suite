@@ -55,8 +55,8 @@ class ForgetDevice extends Component {
                 <H3>Forget { device.instanceLabel }?</H3>
                 <StyledP isSmaller>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your TREZOR again.</StyledP>
                 <Row>
-                    <StyledButton onClick={() => this.forget()} text="Forget" />
-                    <StyledButton isWhite onClick={onCancel} text="Don't forget" />
+                    <StyledButton onClick={() => this.forget()}>Forget</StyledButton>
+                    <StyledButton isWhite onClick={onCancel}>Don't forget</StyledButton>
                 </Row>
             </Wrapper>
         );

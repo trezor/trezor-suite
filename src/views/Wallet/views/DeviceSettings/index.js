@@ -40,7 +40,7 @@ const DeviceSettings = () => (
             <StyledH2>Device settings is under construction</StyledH2>
             <P>Please use Bitcoin wallet interface to change your device settings</P>
             <a href="https://wallet.trezor.io/">
-                <Button text="Take me to the Bitcoin wallet" />
+                <Button>Take me to the Bitcoin wallet</Button>
             </a>
         </Row>
     </Section>

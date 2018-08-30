@@ -91,9 +91,9 @@ class ConnectDevice extends Component<Props> {
                         <P>and</P>
                         <Button
                             className="trezor-webusb-button"
-                            text="Check for devices"
                             isWebUsb
-                        />
+                        >Check for devices
+                        </Button>
                     </React.Fragment>
                 )}
             </Wrapper>
