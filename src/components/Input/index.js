@@ -49,7 +49,19 @@ const StyledInput = styled.input`
     }
 `;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+`;
+
+const InputWrapper = styled.div``;
+
+const ErrorLabel = styled.span`
+    margin-top: 10px;
+    font-size: ${FONT_SIZE.SMALLER};
+    color: ${colors.ERROR_PRIMARY};
+`;
 
 const StyledIcon = styled(Icon)`
     position: absolute;
@@ -57,38 +69,45 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Input = ({
-    type, autoComplete, autoCorrect, autoCapitalize, spellCheck, value, onChange, isSuccess, isWarning, isError,
+    type, autoComplete, autoCorrect, autoCapitalize, spellCheck, value, onChange, isSuccess, isWarning, isError, errorText,
 }) => (
     <Wrapper>
-        <StyledInput
-            type={type}
-            autoComplete={autoComplete}
-            autoCorrect={autoCorrect}
-            autoCapitalize={autoCapitalize}
-            spellCheck={spellCheck}
-            value={value}
-            onChange={onChange}
-            isSuccess={isSuccess}
-            isWarning={isWarning}
-            isError={isError}
-        />
+        <InputWrapper>
+            <StyledInput
+                type={type}
+                autoComplete={autoComplete}
+                autoCorrect={autoCorrect}
+                autoCapitalize={autoCapitalize}
+                spellCheck={spellCheck}
+                value={value}
+                onChange={onChange}
+                isSuccess={isSuccess}
+                isWarning={isWarning}
+                isError={isError}
+            />
+            {isError && (
+                <StyledIcon
+                    icon={ICONS.ERROR}
+                    color={colors.ERROR_PRIMARY}
+                />
+            )}
+            {isWarning && (
+                <StyledIcon
+                    icon={ICONS.WARNING}
+                    color={colors.WARNING_PRIMARY}
+                />
+            )}
+            {isSuccess && (
+                <StyledIcon
+                    icon={ICONS.CHECKED}
+                    color={colors.SUCCESS_PRIMARY}
+                />
+            )}
+        </InputWrapper>
         {isError && (
-            <StyledIcon
-                icon={ICONS.ERROR}
-                color={colors.ERROR_PRIMARY}
-            />
-        )}
-        {isWarning && (
-            <StyledIcon
-                icon={ICONS.WARNING}
-                color={colors.WARNING_PRIMARY}
-            />
-        )}
-        {isSuccess && (
-            <StyledIcon
-                icon={ICONS.CHECKED}
-                color={colors.SUCCESS_PRIMARY}
-            />
+            <ErrorLabel>
+                {errorText}
+            </ErrorLabel>
         )}
     </Wrapper>
 );
@@ -104,6 +123,7 @@ Input.propTypes = {
     isSuccess: PropTypes.bool,
     isWarning: PropTypes.bool,
     isError: PropTypes.bool,
+    errorText: PropTypes.string,
 };
 
 export default Input;
