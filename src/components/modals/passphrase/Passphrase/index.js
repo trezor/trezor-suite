@@ -1,6 +1,4 @@
 /* @flow */
-
-
 import React, { Component } from 'react';
 import raf from 'raf';
 
