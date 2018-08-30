@@ -15,7 +15,7 @@ import * as stateUtils from 'reducers/utils';
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import Link from 'components/Link';
 import AccountBalance from './components/AccountBalance';
-import SummaryTokens from './components/Tokens';
+import AddedToken from './components/AddedToken';
 
 import type { Props } from './Container';
 
@@ -51,7 +51,9 @@ const AsyncSelectWrapper = styled.div`
     padding: 0px 48px 32px 48px;
 `;
 
-const Summary = (props: Props) => {
+const AddedTokensWrapper = styled.div``;
+
+const AccountSummary = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const {
         account,
@@ -139,13 +141,18 @@ const Summary = (props: Props) => {
                 />
             </AsyncSelectWrapper>
 
-            <SummaryTokens
-                pending={pending}
-                tokens={tokens}
-                removeToken={props.removeToken}
-            />
+            <AddedTokensWrapper>
+                {tokens.map(token => (
+                    <AddedToken
+                        key={token.symbol}
+                        token={token}
+                        pending={pending}
+                        removeToken={props.removeToken}
+                    />
+                ))}
+            </AddedTokensWrapper>
         </SelectedAccount>
     );
 };
 
-export default Summary;
+export default AccountSummary;
