@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import * as SummaryActions from 'actions/SummaryActions';
 import * as TokenActions from 'actions/TokenActions';
 
 import type { State, Dispatch } from 'flowtype';
@@ -20,7 +19,6 @@ type StateProps = BaseStateProps & {
 };
 
 type DispatchProps = BaseDispatchProps & {
-    onDetailsToggle: typeof SummaryActions.onDetailsToggle,
     addToken: typeof TokenActions.add,
     loadTokens: typeof TokenActions.load,
     removeToken: typeof TokenActions.remove,
@@ -40,7 +38,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    onDetailsToggle: bindActionCreators(SummaryActions.onDetailsToggle, dispatch),
     addToken: bindActionCreators(TokenActions.add, dispatch),
     loadTokens: bindActionCreators(TokenActions.load, dispatch),
     removeToken: bindActionCreators(TokenActions.remove, dispatch),

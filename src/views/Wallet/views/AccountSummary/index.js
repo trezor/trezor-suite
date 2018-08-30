@@ -14,7 +14,7 @@ import CoinLogo from 'components/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import Link from 'components/Link';
-import SummaryDetails from './components/Details';
+import AccountBalance from './components/AccountBalance';
 import SummaryTokens from './components/Tokens';
 
 import type { Props } from './Container';
@@ -83,7 +83,7 @@ const Summary = (props: Props) => {
                 </Link>
             </AccountHeading>
 
-            <SummaryDetails
+            <AccountBalance
                 coin={network}
                 summary={props.summary}
                 balance={balance}

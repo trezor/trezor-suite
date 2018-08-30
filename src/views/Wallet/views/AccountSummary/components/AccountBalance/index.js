@@ -1,25 +1,24 @@
 /* @flow */
 import React, { Component } from 'react';
-import styled, { css } from 'styled-components';
+import BigNumber from 'bignumber.js';
+import styled from 'styled-components';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import BigNumber from 'bignumber.js';
-
 
 import type { Coin } from 'reducers/LocalStorageReducer';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    // coin: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'coin'>,
     coin: Coin,
-    summary: $ElementType<BaseProps, 'summary'>,
     balance: string,
-    network: string,
     fiat: $ElementType<BaseProps, 'fiat'>,
-    onToggle: $ElementType<BaseProps, 'onDetailsToggle'>
 }
+
+type State = {
+    isHidden: boolean,
+};
 
 const Wrapper = styled.div`
     padding: 0 48px 25px;
@@ -72,106 +71,60 @@ const BalanceWrapper = styled.div`
     margin-right: 48px;
 `;
 
-class AccountBalance extends Component<Props> {
-    constructor(props) {
+class AccountBalance extends Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             isHidden: false,
         };
     }
 
-    shouldHide(hide) {
-        this.setState({
-            isHidden: hide,
-        });
+    handleHideBallanceIconClick() {
+        this.setState(previousState => ({ isHidden: !previousState.isHidden }));
     }
 
     render() {
-        const selectedCoin = props.coin;
-        const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
+        const selectedCoin = this.props.coin;
+        const fiatRate: any = this.props.fiat.find(f => f.network === selectedCoin.network);
 
-        const accountBalance = new BigNumber(props.balance);
+        const accountBalance = new BigNumber(this.props.balance);
         const fiatRateValue = new BigNumber(fiatRate.value);
         const fiat = accountBalance.times(fiatRateValue).toFixed(2);
 
         return (
-
-        );
-    }
-}
-
-
-const AccountBalance = (props: Props): ?React$Element<string> => {
-    if (!props.summary.details) {
-        return (
             <Wrapper>
                 <HideBalanceIconWrapper
-                    onClick={props.onToggle}
+                    onClick={() => this.handleHideBallanceIconClick()}
                 >
                     <Icon
-                        canAnimate={props.summary.details}
-                        isActive
+                        canAnimate
+                        isActive={this.state.isHidden}
                         icon={ICONS.ARROW_UP}
                         color={colors.TEXT_SECONDARY}
                         size={26}
                     />
                 </HideBalanceIconWrapper>
+                {!this.state.isHidden && (
+                    <React.Fragment>
+                        <BalanceWrapper>
+                            <Label>Balance</Label>
+                            {fiatRate && (
+                                <FiatValue>${fiat}</FiatValue>
+                            )}
+                            <CoinBalace>{this.props.balance} {selectedCoin.symbol}</CoinBalace>
+                        </BalanceWrapper>
+                        {fiatRate && (
+                            <BalanceWrapper>
+                                <Label>Rate</Label>
+                                <FiatValue>${fiatRateValue.toFixed(2)}</FiatValue>
+                                <CoinBalace>1.00 {selectedCoin.symbol}</CoinBalace>
+                            </BalanceWrapper>
+                        )}
+                    </React.Fragment>
+                )}
             </Wrapper>
         );
     }
-
-    const selectedCoin = props.coin;
-    const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
-
-    const accountBalance = new BigNumber(props.balance);
-    const fiatRateValue = new BigNumber(fiatRate.value);
-    const fiat = accountBalance.times(fiatRateValue).toFixed(2);
-
-    return (
-        <Wrapper>
-            {props.summary.details && (
-                <React.Fragment>
-                    <HideBalanceIconWrapper
-                        onClick={props.onToggle}
-                    >
-                        <Icon
-                            icon={ICONS.ARROW_UP}
-                            color={colors.TEXT_SECONDARY}
-                            size={26}
-                        />
-                    </HideBalanceIconWrapper>
-
-                    <BalanceWrapper>
-                        <Label>Balance</Label>
-                        {fiatRate && (
-                            <FiatValue>${fiat}</FiatValue>
-                        )}
-                        <CoinBalace>{props.balance} {selectedCoin.symbol}</CoinBalace>
-                    </BalanceWrapper>
-                    {fiatRate && (
-                        <BalanceWrapper>
-                            <Label>Rate</Label>
-                            <FiatValue>${fiatRateValue.toFixed(2)}</FiatValue>
-                            <CoinBalace>1.00 {selectedCoin.symbol}</CoinBalace>
-                        </BalanceWrapper>
-                    )}
-                </React.Fragment>
-            )}
-
-            {!props.summary.details && (
-                <HideBalanceIconWrapper
-                    isBalanceHidden
-                    onClick={props.onToggle}
-                >
-                    <Icon
-                        icon={ICONS.ARROW_UP}
-                        color={colors.TEXT_SECONDARY}
-                        size={26}
-                    />
-                </HideBalanceIconWrapper>
-            )}
-        </Wrapper>
-    );
-};
+}
 
 export default AccountBalance;
