@@ -109,7 +109,7 @@ const Wrapper = styled.button`
 `;
 
 const IconWrapper = styled.span`
-    margin-right: 8px;
+    ${props => (props.hasText ? 'margin-right: 8px;' : '')};
 `;
 
 const Button = ({
@@ -126,7 +126,9 @@ const Button = ({
         isTransparent={isTransparent}
     >
         {icon && (
-            <IconWrapper>
+            <IconWrapper
+                hasText={!!text}
+            >
                 <Icon
                     icon={icon.type}
                     color={icon.color}
