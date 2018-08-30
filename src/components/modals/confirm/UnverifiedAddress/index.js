@@ -1,10 +1,41 @@
 /* @flow */
-
-
 import React, { Component } from 'react';
+import { H3 } from 'components/Heading';
+import P from 'components/Paragraph';
+import styled from 'styled-components';
+import Icon from 'components/Icon';
+import colors from 'config/colors';
+import icons from 'config/icons';
+import Button from 'components/buttons/Button';
+import Link from 'components/Link';
 import { findAccount } from 'reducers/AccountsReducer';
 
 import type { Props } from './index';
+
+const StyledLink = styled(Link)`
+    position: absolute;
+    right: 15px;
+    top: 15px;
+`;
+
+const Wrapper = styled.div`
+    width: 370px;
+    padding: 24px 48px;
+`;
+
+const StyledP = styled(P)`
+    padding: 10px 0px;
+`;
+
+const Row = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+`;
+
+const StyledButton = styled(Button)`
+    margin: 0 0 10px 0;
+`;
 
 class ConfirmUnverifiedAddress extends Component<Props> {
     keyboardHandler: (event: KeyboardEvent) => void;
@@ -67,13 +98,17 @@ class ConfirmUnverifiedAddress extends Component<Props> {
         }
 
         return (
-            <div className="confirm-address-unverified">
-                <button className="close-modal transparent" onClick={onCancel} />
-                <h3>{ deviceStatus }</h3>
-                <p>To prevent phishing attacks, you should verify the address on your TREZOR first. { claim } to continue with the verification process.</p>
-                <button onClick={event => this.verifyAddress()}>Try again</button>
-                <button className="white" onClick={event => this.showUnverifiedAddress()}>Show unverified address</button>
-            </div>
+            <Wrapper>
+                <StyledLink onClick={onCancel}>
+                    <Icon size={20} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                </StyledLink>
+                <H3>{ deviceStatus }</H3>
+                <P>To prevent phishing attacks, you should verify the address on your TREZOR first. { claim } to continue with the verification process.</P>
+                <Row>
+                    <StyledButton onClick={() => this.verifyAddress()}>Try again</StyledButton>
+                    <StyledButton isWhite onClick={() => this.showUnverifiedAddress()}>Show unverified address</StyledButton>
+                </Row>
+            </Wrapper>
         );
     }
 }

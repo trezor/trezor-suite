@@ -1,10 +1,11 @@
 /* @flow */
-
 import React, { Component } from 'react';
+
 import { findAccount } from 'reducers/AccountsReducer';
 
 const Wrapper = styled.div`
-    width: 390px;
+    width: 370px;
+    padding: 24px 48px;
 `;
 
 const Header = styled.div`
