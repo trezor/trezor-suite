@@ -29,12 +29,14 @@ const StyledInput = styled.input`
             box-shadow: 0 1px 4px 0 rgba(1, 183, 87, 0.25);
         }
     `}
+
     ${props => props.isWarning && css`
         border-color: ${colors.WARNING_PRIMARY};
         &:focus {
             box-shadow: 0 1px 4px 0 rgba(235, 138, 0, 0.25);
         }
     `}
+    
     ${props => props.isError && css`
         border-color: ${colors.ERROR_PRIMARY};
         &:focus {
