@@ -21,19 +21,19 @@ const StyledInput = styled.input`
     }
 
     ${props => props.isValid && css`
-        background-color: ${colors.SUCCESS_PRIMARY};
+        border-color: ${colors.SUCCESS_PRIMARY};
         &:focus {
             box-shadow: 0 1px 4px 0 rgba(1, 183, 87, 0.25);
         }
     `}
     ${props => props.isWarning && css`
-        background-color: ${colors.WARNING_PRIMARY};
+        border-color: ${colors.WARNING_PRIMARY};
         &:focus {
             box-shadow: 0 1px 4px 0 rgba(235, 138, 0, 0.25);
         }
     `}
     ${props => props.isError && css`
-        background-color: ${colors.ERROR_PRIMARY};
+        border-color: ${colors.ERROR_PRIMARY};
         &:focus {
             box-shadow: 0 1px 4px 0 rgba(255, 111, 109, 0.25);
         }
