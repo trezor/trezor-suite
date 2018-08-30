@@ -108,7 +108,7 @@ const Wrapper = styled.button`
 `;
 
 const IconWrapper = styled.span`
-    ${props => (props.hasText ? 'margin-right: 8px;' : '')};
+    ${props => (props.hasChildren ? 'margin-right: 8px;' : '')};
 `;
 
 const Button = ({
@@ -125,7 +125,7 @@ const Button = ({
     >
         {icon && (
             <IconWrapper
-                hasText={!!text}
+                hasChildren={!!children}
             >
                 <Icon
                     icon={icon.type}
