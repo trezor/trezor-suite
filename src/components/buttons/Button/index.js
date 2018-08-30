@@ -112,7 +112,7 @@ const IconWrapper = styled.span`
 `;
 
 const Button = ({
-    children, className, text, icon, onClick = () => { }, disabled, isWhite = false, isWebUsb = false, isTransparent = false,
+    children, className, icon, onClick = () => { }, disabled, isWhite = false, isWebUsb = false, isTransparent = false,
 }) => (
     <Wrapper
         className={className}
@@ -149,7 +149,6 @@ Button.propTypes = {
         color: PropTypes.string,
         size: PropTypes.number,
     }),
-    text: PropTypes.string.isRequired,
 };
 
 export default Button;
