@@ -19,7 +19,6 @@ import * as CONNECT from 'actions/constants/TrezorConnect';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 
-import ForgetDevice from 'components/modals/ForgetDevice';
 
 import Pin from 'components/modals/Pin';
 import InvalidPin from 'components/modals/InvalidPin';
@@ -27,9 +26,10 @@ import Passphrase from 'components/modals/Passphrase';
 import PassphraseType from 'components/modals/PassphraseType';
 import ConfirmSignTx from 'components/modals/ConfirmSignTx';
 import ConfirmAddress, { ConfirmUnverifiedAddress } from 'components/modals/ConfirmAddress';
-import RememberDevice from 'components/modals/RememberDevice';
-import DuplicateDevice from 'components/modals/DuplicateDevice';
 
+import ForgetDevice from 'components/modals/device/Forget';
+import RememberDevice from 'components/modals/device/Remember';
+import DuplicateDevice from 'components/modals/device/Duplicate';
 
 type OwnProps = { }
 
@@ -92,7 +92,8 @@ class Modal extends Component<Props> {
     render() {
         if (!this.props.modal.opened) return null;
 
-        const { opened, windowType } = this.props.modal;
+        const { opened } = this.props.modal;
+        const windowType = CONNECT.TRY_TO_DUPLICATE;
 
         let component = null;
         switch (windowType) {
