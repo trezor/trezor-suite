@@ -1,10 +1,10 @@
 /* @flow */
-
-
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import styled from 'styled-components';
+import colors from 'config/colors';
 
 import { CSSTransition, Transition } from 'react-transition-group';
 
@@ -65,12 +65,35 @@ const Fade = ({ children, ...props }) => (
     </CSSTransition>
 );
 
+const ModalContainer = styled.div`
+    position: fixed;
+    z-index: 10000;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+    padding: 20px; 
+`;
+
+const ModalWindow = styled.div`
+    margin: auto;
+    position: relative;
+    border-radius: 4px;
+    background-color: ${colors.WHITE};
+    text-align: center;
+`;
+
 class Modal extends Component<Props> {
     render() {
         if (!this.props.modal.opened) return null;
 
-        const { opened, windowType } = this.props.modal;
-
+        const { opened } = this.props.modal;
+        const windowType = CONNECT.REMEMBER_REQUEST;
         let component = null;
         switch (windowType) {
             case UI.REQUEST_PIN:
@@ -86,8 +109,6 @@ class Modal extends Component<Props> {
                 component = (<ConfirmSignTx {...this.props} />);
                 break;
             // case "ButtonRequest_Address" :
-            //     component = (<ConfirmAddress { ...this.props } />)
-            // break;
             case 'ButtonRequest_PassphraseType':
                 component = (<PassphraseType {...this.props} />);
                 break;
@@ -114,11 +135,11 @@ class Modal extends Component<Props> {
         if (opened) {
             ch = (
                 <Fade key="1">
-                    <div className="modal-container">
-                        <div className="modal-window">
+                    <ModalContainer className="modal-container">
+                        <ModalWindow>
                             { component }
-                        </div>
-                    </div>
+                        </ModalWindow>
+                    </ModalContainer>
                 </Fade>
             );
         }

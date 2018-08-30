@@ -4,7 +4,7 @@ import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/buttons/Button';
 
-const Remember = styled.div`
+const Wrapper = styled.div`
     width: 360px;
     padding: 24px 48px;
 `;
@@ -51,14 +51,14 @@ class ForgetDevice extends Component {
         const { device } = this.props.modal;
         const { onCancel } = this.props.modalActions;
         return (
-            <Remember>
-                <H3>Forget { device.instanceLabel } ?</H3>
+            <Wrapper>
+                <H3>Forget { device.instanceLabel }?</H3>
                 <StyledP isSmaller>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your TREZOR again.</StyledP>
                 <Row>
                     <StyledButton onClick={() => this.forget()} text="Forget" />
                     <StyledButton isWhite onClick={onCancel} text="Don't forget" />
                 </Row>
-            </Remember>
+            </Wrapper>
         );
     }
 }

@@ -36,7 +36,6 @@ const Wrapper = styled.button`
 
         &:hover {
             color: ${colors.TEXT_PRIMARY};
-            border-color: ${colors.TEXT_PRIMARY};
             background: ${colors.DIVIDER};
         }
 
@@ -113,7 +112,7 @@ const IconWrapper = styled.span`
 `;
 
 const Button = ({
-    className, text, icon, onClick = () => { }, disabled, isWhite = false, isWebUsb = false, isTransparent = false,
+    children, className, text, icon, onClick = () => { }, disabled, isWhite = false, isWebUsb = false, isTransparent = false,
 }) => (
     <Wrapper
         className={className}
@@ -133,11 +132,12 @@ const Button = ({
                 />
             </IconWrapper>
         )}
-        {text}
+        {children}
     </Wrapper>
 );
 
 Button.propTypes = {
+    children: PropTypes.element.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
     disabled: PropTypes.bool,
