@@ -7,7 +7,7 @@ import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import installers from 'constants/bridge';
 import Select from 'components/Select';
 import Link from 'components/Link';
-import Button from 'components/Button';
+import Button from 'components/buttons/Button';
 import Loader from 'components/Loader';
 import P from 'components/Paragraph';
 import ICONS from 'config/icons';
