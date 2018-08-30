@@ -145,7 +145,8 @@ export const Notification = (props: NProps): React$Element<string> => {
                                 type={props.className}
                                 text={action.label}
                                 onClick={() => { close(); action.callback(); }}
-                            />
+                            >{action.label}
+                            </NotificationButton>
                         ))}
                     </ActionContent>
                 )}
