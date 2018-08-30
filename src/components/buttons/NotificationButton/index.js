@@ -62,7 +62,7 @@ const IconWrapper = styled.span`
 `;
 
 const NotificationButton = ({
-    className, text, icon, onClick = () => { }, type = null,
+    children, className, icon, onClick = () => { }, type = null,
 }) => (
     <Wrapper
         className={className}
@@ -79,11 +79,12 @@ const NotificationButton = ({
                 />
             </IconWrapper>
         )}
-        {text}
+        {children}
     </Wrapper>
 );
 
 NotificationButton.propTypes = {
+    children: PropTypes.element.isRequired,
     type: PropTypes.string.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
@@ -92,7 +93,6 @@ NotificationButton.propTypes = {
         color: PropTypes.string,
         size: PropTypes.number,
     }),
-    text: PropTypes.string.isRequired,
 };
 
 export default NotificationButton;
