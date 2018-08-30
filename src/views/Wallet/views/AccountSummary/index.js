@@ -10,7 +10,7 @@ import ICONS from 'config/icons';
 import colors from 'config/colors';
 import Tooltip from 'rc-tooltip';
 
-import CoinLogo from 'components/CoinLogo';
+import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import Link from 'components/Link';

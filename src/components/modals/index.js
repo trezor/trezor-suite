@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from 'config/colors';
-
-import { CSSTransition, Transition } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 
 import { UI } from 'trezor-connect';
 
@@ -14,22 +13,21 @@ import { default as ModalActions } from 'actions/ModalActions';
 import { default as ReceiveActions } from 'actions/ReceiveActions';
 
 import * as RECEIVE from 'actions/constants/receive';
-import * as MODAL from 'actions/constants/modal';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
-
-import ForgetDevice from 'components/modals/ForgetDevice';
 
 import Pin from 'components/modals/Pin';
 import InvalidPin from 'components/modals/InvalidPin';
 import Passphrase from 'components/modals/Passphrase';
 import PassphraseType from 'components/modals/PassphraseType';
-import ConfirmSignTx from 'components/modals/ConfirmSignTx';
-import ConfirmAddress, { ConfirmUnverifiedAddress } from 'components/modals/ConfirmAddress';
-import RememberDevice from 'components/modals/RememberDevice';
-import DuplicateDevice from 'components/modals/DuplicateDevice';
 
+import ConfirmSignTx from 'components/modals/confirm/SignTx';
+import ConfirmUnverifiedAddress from 'components/modals/confirm/UnverifiedAddress';
+
+import ForgetDevice from 'components/modals/device/Forget';
+import RememberDevice from 'components/modals/device/Remember';
+import DuplicateDevice from 'components/modals/device/Duplicate';
 
 type OwnProps = { }
 
@@ -108,7 +106,6 @@ class Modal extends Component<Props> {
             case 'ButtonRequest_SignTx':
                 component = (<ConfirmSignTx {...this.props} />);
                 break;
-            // case "ButtonRequest_Address" :
             case 'ButtonRequest_PassphraseType':
                 component = (<PassphraseType {...this.props} />);
                 break;

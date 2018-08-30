@@ -8,6 +8,24 @@
     ],
     "rules": {
         "indentation": 4,
-        "block-no-empty": null
+        "declaration-empty-line-before": null,
+        "custom-property-empty-line-before": null,
+        "max-empty-lines": 1,
+        "block-no-empty": null,
+        "property-no-unknown": [
+            true, {
+                "ignoreProperties": ["composes", "font-smoothing", "font-smooth"]
+            }
+        ],
+        "at-rule-empty-line-before": [
+            "always", {
+                "ignoreAtRules": [
+                    "import"
+                ]
+            }
+        ],
+        "at-rule-no-unknown": [ true, {
+            ignoreAtRules: ["each"]
+        }]
     }
 }

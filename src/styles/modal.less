@@ -12,38 +12,6 @@
         font-size: 12px;
     }
 
-    .confirm-tx {
-        width: 390px; // address overflow
-
-        .header {
-            padding: 24px 48px;
-            &:before {
-                .icomoon-T1;
-                font-size: 52px;
-                color: @color_text_secondary;
-            }
-            h3 {
-                margin: 0;
-            }
-        }
-        .content {
-            border-top: 1px solid @color_divider;
-            background: @color_main;
-            padding: 24px 48px;
-
-            label {
-                font-size: 10px;
-                color: @color_text_secondary;
-            }
-
-            p {
-                font-size: 12px;
-                font-weight: 400;
-                color: @color_text_primary;
-            }
-        }
-    }
-
     .confirm-address {
         width: 390px; // address overflow
         
@@ -72,76 +40,6 @@
                 font-size: 12px;
                 font-weight: 400;
                 color: @color_text_primary;
-            }
-        }
-    }
-
-    .confirm-address-unverified {
-        width: 370px;
-        padding: 24px 48px;
-
-        h3 {
-            word-break: break-all;
-        }
-
-        button:not(.close-modal) {
-            width: 100%;
-            margin-top: 12px;
-        }
-    }
-
-    .duplicate,
-    .remember {
-        width: 360px;
-        padding: 24px 48px;
-
-        h3 {
-            word-break: break-all;
-        }
-
-        p {
-            padding: 14px 0px;
-        }
-
-        .row {
-            position: relative;
-            text-align: left;
-            padding-bottom: 20px;
-
-            label {
-                display: block;
-                padding-bottom: 6px;
-                text-align: left;
-                color: @color_text_secondary;
-            }
-
-            .error {
-                position: absolute;
-                left: 0px;
-                bottom: 0px;
-                font-size: 12px;
-                color: @color_error_primary;
-            }
-        }
-
-        button:not(.close-modal) {
-            width: 100%;
-            margin-top: 12px;
-            span {
-                position: relative;
-            }
-        }
-
-        .loader-circle {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: -36px;
-            margin: auto;
-            p {
-                margin: 0;
-                padding: 0;
-                color: @color_white;
             }
         }
     }
@@ -267,22 +165,4 @@
         margin-top: 24px;
         margin-bottom: 14px;
     }
-}
-
-.fade-enter {
-    opacity: 0.01;
-}
-
-.fade-enter.fade-enter-active {
-    opacity: 1;
-    transition: opacity 1000ms ease-in;
-}
-
-.fade-exit {
-    opacity: 1;
-}
-
-.fade-exit.fade-exit-active {
-    opacity: 0.01;
-    transition: opacity 800ms ease-in;
 }
