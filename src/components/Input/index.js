@@ -47,9 +47,10 @@ const StyledInput = styled.input`
 `;
 
 const Input = ({
-    type, autoComplete, autoCorrect, autoCapitalize, spellCheck, value, onChange, isValid, isWarning, isError,
+    type, autoComplete, autoCorrect, autoCapitalize, spellCheck, value, onChange, isValid, isWarning, isError, placeholder,
 }) => (
     <StyledInput
+        placeholder={placeholder}
         type={type}
         autoComplete={autoComplete}
         autoCorrect={autoCorrect}
@@ -64,6 +65,7 @@ const Input = ({
 );
 
 Input.propTypes = {
+    placeholder: PropTypes.string,
     type: PropTypes.string,
     autoComplete: PropTypes.string,
     autoCorrect: PropTypes.string,
