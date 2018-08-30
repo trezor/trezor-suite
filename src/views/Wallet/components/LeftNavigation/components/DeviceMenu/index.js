@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
 import DeviceHeader from 'components/DeviceHeader';
-import Button from 'components/Button';
+import Button from 'components/buttons/Button';
 import { isWebUSB } from 'utils/device';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
@@ -116,9 +116,9 @@ class DeviceMenu extends Component<Props> {
                     {isWebUSB(transport) && (
                         <StyledButton
                             className="trezor-webusb-button"
-                            text="Check for devices"
                             isWebUsb
-                        />
+                        >Check for devices
+                        </Button>
                     )}
                 </ButtonWrapper>
             </Wrapper>

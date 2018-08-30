@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { H2 } from 'components/Heading';
-import Button from 'components/Button';
+import Button from 'components/buttons/Button';
 import Paragraph from 'components/Paragraph';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -33,7 +33,7 @@ const Initialize = () => (
             <H2>Your device is in not initialized</H2>
             <StyledParagraph>Please use Bitcoin wallet interface to start initialization process</StyledParagraph>
             <A href="https://wallet.trezor.io/">
-                <Button text="Take me to the Bitcoin wallet" />
+                <Button>Take me to the Bitcoin wallet</Button>
             </A>
         </Row>
     </Wrapper>

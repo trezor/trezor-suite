@@ -1,10 +1,10 @@
 /* @flow */
-
-
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import styled from 'styled-components';
+import colors from 'config/colors';
 
 import { CSSTransition, Transition } from 'react-transition-group';
 
@@ -18,14 +18,17 @@ import * as MODAL from 'actions/constants/modal';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
-import Pin from './Pin';
-import InvalidPin from './InvalidPin';
-import Passphrase from './Passphrase';
-import PassphraseType from './PassphraseType';
-import ConfirmSignTx from './ConfirmSignTx';
-import ConfirmAddress, { ConfirmUnverifiedAddress } from './ConfirmAddress';
-import RememberDevice, { ForgetDevice } from './RememberDevice';
-import DuplicateDevice from './DuplicateDevice';
+
+import ForgetDevice from 'components/modal/ForgetDevice';
+
+import Pin from 'components/modal/Pin';
+import InvalidPin from 'components/modal/InvalidPin';
+import Passphrase from 'components/modal/Passphrase';
+import PassphraseType from 'components/modal/PassphraseType';
+import ConfirmSignTx from 'components/modal/ConfirmSignTx';
+import ConfirmAddress, { ConfirmUnverifiedAddress } from 'components/modal/ConfirmAddress';
+import RememberDevice from 'components/modal/RememberDevice';
+import DuplicateDevice from 'components/modal/DuplicateDevice';
 
 
 type OwnProps = { }
@@ -62,6 +65,29 @@ const Fade = ({ children, ...props }) => (
     </CSSTransition>
 );
 
+const ModalContainer = styled.div`
+    position: fixed;
+    z-index: 10000;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+    padding: 20px; 
+`;
+
+const ModalWindow = styled.div`
+    margin: auto;
+    position: relative;
+    border-radius: 4px;
+    background-color: ${colors.WHITE};
+    text-align: center;
+`;
+
 class Modal extends Component<Props> {
     render() {
         if (!this.props.modal.opened) return null;
@@ -83,8 +109,6 @@ class Modal extends Component<Props> {
                 component = (<ConfirmSignTx {...this.props} />);
                 break;
             // case "ButtonRequest_Address" :
-            //     component = (<ConfirmAddress { ...this.props } />)
-            // break;
             case 'ButtonRequest_PassphraseType':
                 component = (<PassphraseType {...this.props} />);
                 break;
@@ -111,11 +135,11 @@ class Modal extends Component<Props> {
         if (opened) {
             ch = (
                 <Fade key="1">
-                    <div className="modal-container">
-                        <div className="modal-window">
+                    <ModalContainer className="modal-container">
+                        <ModalWindow>
                             { component }
-                        </div>
-                    </div>
+                        </ModalWindow>
+                    </ModalContainer>
                 </Fade>
             );
         }

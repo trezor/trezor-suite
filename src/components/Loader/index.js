@@ -35,11 +35,15 @@ const CircleWrapper = styled.circle`
     `};
 `;
 
+const StyledParagraph = styled(Paragraph)`
+    color: ${props => (props.isWhiteText ? colors.WHITE : colors.TEXT_PRIMARY)};
+`;
+
 const Loader = ({
-    className, text, size = 100,
+    className, text, isWhiteText = false, size = 100,
 }) => (
     <Wrapper className={className} size={size}>
-        <Paragraph>{text}</Paragraph>
+        <StyledParagraph isWhiteText={isWhiteText}>{text}</StyledParagraph>
         <SvgWrapper viewBox="25 25 50 50">
             <CircleWrapper
                 cx="50"
@@ -65,6 +69,7 @@ const Loader = ({
 );
 
 Loader.propTypes = {
+    isWhiteText: PropTypes.bool,
     className: PropTypes.string,
     text: PropTypes.string,
     size: PropTypes.number,

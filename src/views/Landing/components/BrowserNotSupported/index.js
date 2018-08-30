@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import Link from 'components/Link';
-import Button from 'components/Button';
+import Button from 'components/buttons/Button';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 
@@ -44,9 +44,7 @@ const BrowserNotSupported = () => (
                     target="_blank"
                     rel="noreferrer noopener"
                 >
-                    <Button
-                        text="Get Chrome"
-                    />
+                    <Button>Get Chrome</Button>
                 </Link>
             </Browser>
             <Browser>
@@ -57,9 +55,7 @@ const BrowserNotSupported = () => (
                     target="_blank"
                     rel="noreferrer noopener"
                 >
-                    <Button
-                        text="Get Firefox"
-                    />
+                    <Button>Get Firefox</Button>
                 </Link>
 
             </Browser>

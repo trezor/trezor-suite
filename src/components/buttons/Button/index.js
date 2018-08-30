@@ -29,14 +29,13 @@ const Wrapper = styled.button`
         background: ${colors.GRAY_LIGHT};
     `}
 
-    ${props => props.color === 'white' && css`
+    ${props => props.isWhite && css`
         background: ${colors.WHITE};
         color: ${colors.TEXT_SECONDARY};
         border: 1px solid ${colors.DIVIDER};
 
         &:hover {
             color: ${colors.TEXT_PRIMARY};
-            border-color: ${colors.TEXT_PRIMARY};
             background: ${colors.DIVIDER};
         }
 
@@ -113,14 +112,13 @@ const IconWrapper = styled.span`
 `;
 
 const Button = ({
-    className, text, icon, onClick = () => { }, disabled, color = null, isWhite = false, isWebUsb = false, isTransparent = false,
+    children, className, text, icon, onClick = () => { }, disabled, isWhite = false, isWebUsb = false, isTransparent = false,
 }) => (
     <Wrapper
         className={className}
         icon={icon}
         onClick={onClick}
         disabled={disabled}
-        color={color}
         isWhite={isWhite}
         isWebUsb={isWebUsb}
         isTransparent={isTransparent}
@@ -136,15 +134,15 @@ const Button = ({
                 />
             </IconWrapper>
         )}
-        {text}
+        {children}
     </Wrapper>
 );
 
 Button.propTypes = {
+    children: PropTypes.element.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
     disabled: PropTypes.bool,
-    color: PropTypes.string,
     isWhite: PropTypes.bool,
     isWebUsb: PropTypes.bool,
     isTransparent: PropTypes.bool,

@@ -1,8 +1,10 @@
 /* @flow */
-
-
 import React, { Component } from 'react';
+import styled from 'styled-components';
+import { H3 } from 'components/Heading';
+import P from 'components/Paragraph';
 import Loader from 'components/Loader';
+import Button from 'components/buttons/Button';
 
 import type { Props } from './index';
 
@@ -10,6 +12,40 @@ type State = {
     countdown: number;
     ticker?: number;
 }
+
+const ButtonContent = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+`;
+
+const StyledP = styled(P)`
+    padding: 10px 0;
+`;
+
+const Wrapper = styled.div`
+    width: 360px;
+    padding: 24px 48px;
+`;
+
+const Text = styled.div`
+    padding-right: 10px;
+`;
+
+const Column = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const StyledButton = styled(Button)`
+    margin: 5px 0;
+`;
+
+const StyledLoader = styled(Loader)`
+    position: absolute;
+    left: 200px;
+`;
 
 export default class RememberDevice extends Component<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
@@ -86,52 +122,27 @@ export default class RememberDevice extends Component<Props, State> {
             });
         }
         return (
-            <div className="remember">
-                <h3>Forget {label}?</h3>
-                <p>Would you like TREZOR Wallet to forget your { devicePlural }, so that it is still visible even while disconnected?</p>
-                <button onClick={event => this.forget()}><span>Forget <Loader size={28} text={this.state.countdown.toString()} /></span></button>
-                <button className="white" onClick={event => onRememberDevice(device)}>Remember</button>
-            </div>
-        );
-    }
-}
-
-export class ForgetDevice extends Component<Props> {
-    keyboardHandler: (event: KeyboardEvent) => void;
-
-    keyboardHandler(event: KeyboardEvent): void {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            this.forget();
-        }
-    }
-
-    componentDidMount(): void {
-        this.keyboardHandler = this.keyboardHandler.bind(this);
-        window.addEventListener('keydown', this.keyboardHandler, false);
-    }
-
-    componentWillUnmount(): void {
-        window.removeEventListener('keydown', this.keyboardHandler, false);
-    }
-
-    forget() {
-        if (this.props.modal.opened) {
-            this.props.modalActions.onForgetSingleDevice(this.props.modal.device);
-        }
-    }
-
-    render() {
-        if (!this.props.modal.opened) return null;
-        const { device } = this.props.modal;
-        const { onCancel } = this.props.modalActions;
-        return (
-            <div className="remember">
-                <h3>Forget { device.instanceLabel } ?</h3>
-                <p>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your TREZOR again.</p>
-                <button onClick={event => this.forget()}>Forget</button>
-                <button className="white" onClick={onCancel}>Don't forget</button>
-            </div>
+            <Wrapper>
+                <H3>Forget {label}?</H3>
+                <StyledP isSmaller>Would you like TREZOR Wallet to forget your { devicePlural }, so that it is still visible even while disconnected?</StyledP>
+                <Column>
+                    <StyledButton onClick={() => this.forget()}>
+                        <ButtonContent>
+                            <Text>Forget</Text>
+                            <StyledLoader
+                                isWhiteText
+                                size={28}
+                                text={this.state.countdown.toString()}
+                            />
+                        </ButtonContent>
+                    </StyledButton>
+                    <StyledButton
+                        isWhite
+                        onClick={event => onRememberDevice(device)}
+                    >Remember
+                    </StyledButton>
+                </Column>
+            </Wrapper>
         );
     }
 }

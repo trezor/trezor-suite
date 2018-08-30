@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { H2 } from 'components/Heading';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
-import Button from 'components/Button';
+import Button from 'components/buttons/Button';
 import ICONS from 'config/icons';
 import { connect } from 'react-redux';
 
@@ -40,7 +40,7 @@ const DeviceSettings = () => (
             <StyledH2>Device settings is under construction</StyledH2>
             <P>Please use Bitcoin wallet interface to change your device settings</P>
             <a href="https://wallet.trezor.io/">
-                <Button text="Take me to the Bitcoin wallet" />
+                <Button>Take me to the Bitcoin wallet</Button>
             </a>
         </Row>
     </Section>
