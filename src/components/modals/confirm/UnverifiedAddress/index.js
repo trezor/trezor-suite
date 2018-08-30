@@ -6,29 +6,7 @@ import { findAccount } from 'reducers/AccountsReducer';
 
 import type { Props } from './index';
 
-const ConfirmAddress = (props: Props) => {
-    const {
-        account,
-        network,
-    } = props.selectedAccount;
-    if (!account || !network) return null;
-
-    return (
-        <div className="confirm-address">
-            <div className="header">
-                <h3>Confirm address on TREZOR</h3>
-                <p>Please compare your address on device with address shown bellow.</p>
-            </div>
-            <div className="content">
-                <p>{ account.address }</p>
-                <label>{ network.symbol } account #{ (account.index + 1) }</label>
-            </div>
-        </div>
-    );
-};
-export default ConfirmAddress;
-
-export class ConfirmUnverifiedAddress extends Component<Props> {
+class ConfirmUnverifiedAddress extends Component<Props> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     keyboardHandler(event: KeyboardEvent): void {
@@ -99,3 +77,5 @@ export class ConfirmUnverifiedAddress extends Component<Props> {
         );
     }
 }
+
+export default ConfirmUnverifiedAddress;
