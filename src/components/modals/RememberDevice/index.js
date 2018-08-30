@@ -138,7 +138,7 @@ export default class RememberDevice extends Component<Props, State> {
                     </StyledButton>
                     <StyledButton
                         isWhite
-                        onClick={event => onRememberDevice(device)}
+                        onClick={() => onRememberDevice(device)}
                     >Remember
                     </StyledButton>
                 </Column>
