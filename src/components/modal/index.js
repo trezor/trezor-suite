@@ -18,14 +18,17 @@ import * as MODAL from 'actions/constants/modal';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
-import Pin from './Pin';
-import InvalidPin from './InvalidPin';
-import Passphrase from './Passphrase';
-import PassphraseType from './PassphraseType';
-import ConfirmSignTx from './ConfirmSignTx';
-import ConfirmAddress, { ConfirmUnverifiedAddress } from './ConfirmAddress';
-import RememberDevice, { ForgetDevice } from './RememberDevice';
-import DuplicateDevice from './DuplicateDevice';
+
+import ForgetDevice from 'components/modal/ForgetDevice';
+
+import Pin from 'components/modal/Pin';
+import InvalidPin from 'components/modal/InvalidPin';
+import Passphrase from 'components/modal/Passphrase';
+import PassphraseType from 'components/modal/PassphraseType';
+import ConfirmSignTx from 'components/modal/ConfirmSignTx';
+import ConfirmAddress, { ConfirmUnverifiedAddress } from 'components/modal/ConfirmAddress';
+import RememberDevice from 'components/modal/RememberDevice';
+import DuplicateDevice from 'components/modal/DuplicateDevice';
 
 
 type OwnProps = { }
