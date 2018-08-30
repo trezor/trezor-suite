@@ -29,20 +29,8 @@ const Wrapper = styled.button`
         background: ${colors.GRAY_LIGHT};
     `}
 
-    ${props => props.isBlue && css`
-        background: transparent;
-        border: 1px solid ${colors.INFO_PRIMARY};
-        color: ${colors.INFO_PRIMARY};
-        padding: 12px 58px;
-
-        &:hover {
-            color: ${colors.WHITE};
-            background: ${colors.INFO_PRIMARY};
-        }
-    `}
-
-    ${props => props.isWhite && css`
-        background: @color_white;
+    ${props => props.color === 'white' && css`
+        background: ${colors.WHITE};
         color: ${colors.TEXT_SECONDARY};
         border: 1px solid ${colors.DIVIDER};
 
@@ -125,14 +113,14 @@ const IconWrapper = styled.span`
 `;
 
 const Button = ({
-    className, text, icon, onClick = () => { }, disabled, isBlue = false, isWhite = false, isWebUsb = false, isTransparent = false,
+    className, text, icon, onClick = () => { }, disabled, color = null, isWhite = false, isWebUsb = false, isTransparent = false,
 }) => (
     <Wrapper
         className={className}
         icon={icon}
         onClick={onClick}
         disabled={disabled}
-        isBlue={isBlue}
+        color={color}
         isWhite={isWhite}
         isWebUsb={isWebUsb}
         isTransparent={isTransparent}
@@ -154,7 +142,7 @@ Button.propTypes = {
     className: PropTypes.string,
     onClick: PropTypes.func,
     disabled: PropTypes.bool,
-    isBlue: PropTypes.bool,
+    color: PropTypes.string,
     isWhite: PropTypes.bool,
     isWebUsb: PropTypes.bool,
     isTransparent: PropTypes.bool,
