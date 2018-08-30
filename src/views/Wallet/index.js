@@ -11,7 +11,7 @@ import type { State, Dispatch } from 'flowtype';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import ModalContainer from 'components/modal';
+import ModalContainer from 'components/modals';
 import Notifications from 'components/Notification';
 import Log from 'components/Log';
 
