@@ -78,7 +78,6 @@ class AddedToken extends Component<> {
                 <RemoveTokenButton
                     isTransparent
                     onClick={() => this.props.removeToken(this.props.token)}
-                    text=""
                     icon={{
                         type: ICONS.CLOSE,
                         size: 23,
