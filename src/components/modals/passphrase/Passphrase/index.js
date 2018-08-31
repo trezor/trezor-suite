@@ -15,6 +15,7 @@ import type { Props } from './index';
 
 const Wrapper = styled.div`
     padding: 24px 48px;
+    max-width: 390px;
 `;
 
 const Label = styled.div`
@@ -272,8 +273,8 @@ export default class PinModal extends Component<Props, State> {
         console.log('passphraseInputType', passphraseInputType);
         return (
             <Wrapper>
-                <H2>Enter { deviceLabel } passphrase</H2>
-                <P isSmaller>Note that passphrase is case-sensitive.</P>
+                {/* ?<H2>Enter { deviceLabel } passphrase</H2> */}
+                {/* <P isSmaller>Note that passphrase is case-sensitive.</P> */}
                 <Row>
                     <Label>Passphrase</Label>
                     <Input

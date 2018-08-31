@@ -20,6 +20,7 @@ const Wrapper = styled.div`
 
 const InputRow = styled.div`
     margin-top: 24px;
+    max-width: 260px;
 `;
 
 const PinRow = styled.div``;
@@ -140,7 +141,7 @@ class Pin extends Component<Props, State> {
         return (
             <Wrapper className="pin">
                 <H2>Enter { device.label } PIN</H2>
-                <P>The PIN layout is displayed on your TREZOR.</P>
+                <P isSmaller>The PIN layout is displayed on your TREZOR.</P>
                 <InputRow>
                     <PinInput value={pin} onDeleteClick={() => this.onPinBackspace()} />
                 </InputRow>
@@ -161,8 +162,9 @@ class Pin extends Component<Props, State> {
                 </PinRow>
                 <Footer>
                     <Button type="button" onClick={() => onPinSubmit(pin)}>Enter PIN</Button>
-                    <StyledP>Not sure how PIN works?
+                    <StyledP isSmaller>Not sure how PIN works?
                         <StyledLink
+                            isGreen
                             href="http://doc.satoshilabs.com/trezor-user/enteringyourpin.html"
                             target="_blank"
                             rel="noreferrer noopener"

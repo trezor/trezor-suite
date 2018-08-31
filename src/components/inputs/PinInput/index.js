@@ -12,6 +12,7 @@ const Wrapper = styled.div`
 
 const StyledInput = styled.input`
     letter-spacing: 7px;
+    width: 100%;
     font-weight: ${FONT_WEIGHT.BIGGER};
     font-size: ${FONT_SIZE.BIGGER};
     padding: 5px 31px 10px 20px;
