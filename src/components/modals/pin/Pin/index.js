@@ -1,19 +1,44 @@
 /* @flow */
-
-
+import P from 'components/Paragraph';
+import { H2 } from 'components/Heading';
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import Link from 'components/Link';
 import colors from 'config/colors';
+import styled from 'styled-components';
+import PinInput from 'components/inputs/PinInput';
+import PinButton from 'components/buttons/PinButton';
+import Button from 'components/buttons/Button';
 import type { Props } from './index';
 
 type State = {
     pin: string;
 }
 
-const Wrapper = styled.div``;
-const InputRow = styled.div``;
+const Wrapper = styled.div`
+    padding: 24px 48px;
+`;
 
-export default class Pin extends Component<Props, State> {
+const InputRow = styled.div`
+    margin-top: 24px;
+`;
+
+const PinRow = styled.div``;
+
+const StyledP = styled(P)`
+    padding-top: 5px;
+`;
+
+const StyledLink = styled(Link)`
+    padding-left: 5px;
+`;
+
+const Footer = styled.div`
+    margin: 20px 0 10px 0;
+    display: flex;
+    flex-direction: column;
+`;
+
+class Pin extends Component<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     state: State;
@@ -109,41 +134,45 @@ export default class Pin extends Component<Props, State> {
 
     render() {
         if (!this.props.modal.opened) return null;
-
         const { onPinSubmit } = this.props.modalActions;
         const { device } = this.props.modal;
         const { pin } = this.state;
-
         return (
             <Wrapper className="pin">
-                {/* <button className="close-modal transparent"></button> */}
-                <h3>Enter { device.label } PIN</h3>
-                <p>The PIN layout is displayed on your TREZOR.</p>
-
-                <div className="pin-input-row">
-                    <input type="password" autoComplete="off" maxLength="9" disabled value={pin} />
-                    <button type="button" className="pin-backspace transparent" onClick={event => this.onPinBackspace()} />
-                </div>
-
-                <div className="pin-row">
-                    <button type="button" data-value="7" onClick={event => this.onPinAdd(7)}>&#8226;</button>
-                    <button type="button" data-value="8" onClick={event => this.onPinAdd(8)}>&#8226;</button>
-                    <button type="button" data-value="9" onClick={event => this.onPinAdd(9)}>&#8226;</button>
-                </div>
-                <div className="pin-row">
-                    <button type="button" data-value="4" onClick={event => this.onPinAdd(4)}>&#8226;</button>
-                    <button type="button" data-value="5" onClick={event => this.onPinAdd(5)}>&#8226;</button>
-                    <button type="button" data-value="6" onClick={event => this.onPinAdd(6)}>&#8226;</button>
-                </div>
-                <div className="pin-row">
-                    <button type="button" data-value="1" onClick={event => this.onPinAdd(1)}>&#8226;</button>
-                    <button type="button" data-value="2" onClick={event => this.onPinAdd(2)}>&#8226;</button>
-                    <button type="button" data-value="3" onClick={event => this.onPinAdd(3)}>&#8226;</button>
-                </div>
-
-                <div><button className="submit" type="button" onClick={event => onPinSubmit(pin)}>Enter PIN</button></div>
-                <p>Not sure how PIN works? <a className="green" href="http://doc.satoshilabs.com/trezor-user/enteringyourpin.html" target="_blank" rel="noreferrer noopener">Learn more</a></p>
+                <H2>Enter { device.label } PIN</H2>
+                <P>The PIN layout is displayed on your TREZOR.</P>
+                <InputRow>
+                    <PinInput value={pin} onDeleteClick={() => this.onPinBackspace()} />
+                </InputRow>
+                <PinRow>
+                    <PinButton type="button" data-value="7" onClick={() => this.onPinAdd(7)}>&#8226; </PinButton>
+                    <PinButton type="button" data-value="8" onClick={() => this.onPinAdd(8)}>&#8226;</PinButton>
+                    <PinButton type="button" data-value="9" onClick={() => this.onPinAdd(9)}>&#8226;</PinButton>
+                </PinRow>
+                <PinRow>
+                    <PinButton type="button" data-value="4" onClick={() => this.onPinAdd(4)}>&#8226; </PinButton>
+                    <PinButton type="button" data-value="5" onClick={() => this.onPinAdd(5)}>&#8226;</PinButton>
+                    <PinButton type="button" data-value="6" onClick={() => this.onPinAdd(6)}>&#8226;</PinButton>
+                </PinRow>
+                <PinRow>
+                    <PinButton type="button" data-value="1" onClick={() => this.onPinAdd(1)}>&#8226; </PinButton>
+                    <PinButton type="button" data-value="2" onClick={() => this.onPinAdd(2)}>&#8226;</PinButton>
+                    <PinButton type="button" data-value="3" onClick={() => this.onPinAdd(3)}>&#8226;</PinButton>
+                </PinRow>
+                <Footer>
+                    <Button type="button" onClick={() => onPinSubmit(pin)}>Enter PIN</Button>
+                    <StyledP>Not sure how PIN works?
+                        <StyledLink
+                            href="http://doc.satoshilabs.com/trezor-user/enteringyourpin.html"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                        >Learn more
+                        </StyledLink>
+                    </StyledP>
+                </Footer>
             </Wrapper>
         );
     }
 }
+
+export default Pin;

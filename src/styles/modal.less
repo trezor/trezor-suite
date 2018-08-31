@@ -6,7 +6,6 @@
         margin-top: 14px;
     }
     p {
-        margin: 5px 0px;
         font-weight: normal;
         color: @color_text_secondary;
         font-size: 12px;
@@ -56,51 +55,6 @@
     }
 
     .pin {
-        padding: 24px 48px;
-        .pin-row {
-            button {
-                width: 80px;
-                height: 80px;
-                margin-top: 15px;
-                margin-left: 10px;
-                font-size: 22px;
-                font-weight: 600;
-                color: @color_text_primary;
-                border: 1px solid @color_divider;
-                background: @color_white;
-                transition: all 0.3s;
-                &:first-child {
-                    margin-left: 0px;
-                }
-                &:hover {
-                    color: @color_text_primary;
-                    border-color: @color_text_secondary;
-                }
-                &:active {
-                    color: @color_text_primary;
-                    background: @color_divider;
-                    border-color: @color_divider;
-                }
-
-            }
-        }
-    
-        .pin-input-row {
-            margin-top: 24px;
-            display: inline-block;
-            position: relative;
-        }
-    
-        input {
-            letter-spacing: 6px;
-            line-height: 48px;
-            font-weight: 600;
-            font-size: 32px;
-            height: auto;
-            padding: 0px 31px;
-            color: @color_text_primary;
-            background: transparent;
-        }
     
         .pin-backspace {
             position: absolute;
