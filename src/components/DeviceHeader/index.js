@@ -10,7 +10,7 @@ import {
     getStatus,
     getVersion,
 } from 'utils/device';
-import TrezorImage from 'components/TrezorImage';
+import TrezorImage from 'components/images/TrezorImage';
 import colors from 'config/colors';
 
 const Wrapper = styled.div`

@@ -1,12 +1,8 @@
 {
-    "name": "trezor-connect-react-boilerplate",
+    "name": "trezor-wallet",
     "version": "1.0.0",
     "author": "TREZOR <info@trezor.io>",
     "description": "",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/szymonlesisz/trezor-connect-react-boilerplate.git"
-    },
     "bugs": {
         "url": "https://github.com/szymonlesisz/trezor-connect-react-boilerplate/issues"
     },
