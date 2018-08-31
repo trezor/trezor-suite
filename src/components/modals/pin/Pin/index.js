@@ -139,7 +139,7 @@ class Pin extends Component<Props, State> {
         const { device } = this.props.modal;
         const { pin } = this.state;
         return (
-            <Wrapper className="pin">
+            <Wrapper>
                 <H2>Enter { device.label } PIN</H2>
                 <P isSmaller>The PIN layout is displayed on your TREZOR.</P>
                 <InputRow>

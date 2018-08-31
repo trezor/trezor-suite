@@ -314,7 +314,7 @@ export default class PinModal extends Component<Props, State> {
                     <Checkbox onClick={showPassphraseCheckboxFn} checked={visible}>Show passphrase</Checkbox>
                 </Row>
                 <Row>
-                    <Button type="button" className="submit" tabIndex="4" disabled={!match} onClick={event => this.submit()}>Enter</Button>
+                    <Button type="button" tabIndex="4" disabled={!match} onClick={event => this.submit()}>Enter</Button>
                 </Row>
                 <Footer>
                     <P isSmaller>If you want to access your default account</P>

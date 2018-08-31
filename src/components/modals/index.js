@@ -132,7 +132,7 @@ class Modal extends Component<Props> {
         if (opened) {
             ch = (
                 <Fade key="1">
-                    <ModalContainer className="modal-container">
+                    <ModalContainer>
                         <ModalWindow>
                             { component }
                         </ModalWindow>
