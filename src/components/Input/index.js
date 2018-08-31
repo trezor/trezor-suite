@@ -78,7 +78,7 @@ const StyledIcon = styled(Icon)`
 const Input = ({
     type,
     autoComplete,
-    placeholder
+    placeholder,
     autoCorrect,
     autoCapitalize,
     spellCheck,
