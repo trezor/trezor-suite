@@ -10,7 +10,7 @@ import * as SessionStorageActions from 'actions/SessionStorageActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from 'views/Wallet/components/SelectedAccount';
-import SendForm from './index';
+import AccountSend from './index';
 
 
 type OwnProps = { }
@@ -44,4 +44,4 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     saveSessionStorage: bindActionCreators(SessionStorageActions.save, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendForm);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountSend);
