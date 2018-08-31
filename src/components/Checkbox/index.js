@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import colors from 'config/css/colors';
-import variables from 'config/css/variables';
-
-import TickImage from './images/tick.svg';
+import colors from 'config/colors';
+import Icon from 'components/Icon';
+import icons from 'config/icons';
+import { FONT_SIZE } from 'config/variables';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,38 +21,34 @@ const Wrapper = styled.div`
 const Tick = styled.div`
 `;
 
-const Icon = styled.div`
+const IconWrapper = styled.div`
     display: flex;
+    border-radius: 2px;
     justify-content: center;
     align-items: center;
-    background: ${colors.CORE_WHITE};
-    border: 2px solid ${props => (props.checked ? colors.BLUE : colors.LIGHT_GRAY_2)};
-    width: 16px;
-    height: 16px;
+    color: ${props => (props.checked ? colors.WHITE : colors.GREEN_PRIMARY)};
+    background: ${props => (props.checked ? colors.GREEN_PRIMARY : colors.WHITE)};
+    border: 1px solid ${props => (props.checked ? colors.GREEN_PRIMARY : colors.DIVIDER)};
+    width: 24px;
+    height: 24px;
 
-    ${/*sc-selector*/Wrapper}:hover &,
-    ${/*sc-selector*/Wrapper}:focus & {
-        border: 2px solid ${colors.BLUE};
-    }
-
-    ${/*sc-selector*/Wrapper}:hover & {
-        background: ${props => (props.checked ? colors.BLUE : colors.CORE_WHITE)};
-
-        * {
-            fill: ${props => (props.checked ? colors.CORE_WHITE : colors.BLUE)};
-        }
+    &:hover,
+    &:focus {
+        border: 1px solid ${colors.TEXT_PRIMARY};
+        background: ${props => (props.checked ? colors.TEXT_PRIMARY : colors.WHITE)};
     }
 `;
 
 const Label = styled.div`
     display: flex;
-    padding-left: 5px;
-    font-weight: ${variables.FONT.WEIGHT.LIGHT};
+    padding-left: 10px;
     justify-content: center;
+    ${colors.TEXT_SECONDARY};
+    font-size: ${FONT_SIZE.SMALL};
 
-    ${/*sc-selector*/Wrapper}:hover &,
-    ${/*sc-selector*/Wrapper}:focus & {
-        color: ${props => (props.checked ? colors.DARK_GRAY_1 : colors.BLUE)};
+    &:hover,
+    &:focus {
+        color: ${props => (props.checked ? colors.TEXT_PRIMARY : colors.TEXT_PRIMARY)};
     }
 `;
 
@@ -75,16 +71,14 @@ class Checkbox extends PureComponent {
                 onKeyUp={e => this.handleKeyboard(e)}
                 tabIndex={0}
             >
-                <Icon
-                    checked={checked}
-                >
+                <IconWrapper checked={checked}>
                     {checked && (
                         <Tick>
-                            <TickImage fill={colors.BLUE} />
+                            <Icon size={26} color={checked ? colors.WHITE : colors.GREEN_PRIMARY} icon={icons.SUCCESS} />
                         </Tick>
                     )
                     }
-                </Icon>
+                </IconWrapper>
                 <Label checked={checked}>{children}</Label>
             </Wrapper>
         );

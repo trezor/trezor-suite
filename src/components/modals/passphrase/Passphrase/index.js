@@ -1,8 +1,45 @@
 /* @flow */
 import React, { Component } from 'react';
 import raf from 'raf';
+import colors from 'config/colors';
+import P from 'components/Paragraph';
+import { FONT_SIZE } from 'config/variables';
+import { H2 } from 'components/Heading';
+import Link from 'components/Link';
+import Checkbox from 'components/Checkbox';
+import Button from 'components/buttons/Button';
+import Input from 'components/inputs/Input';
+import styled from 'styled-components';
 
 import type { Props } from './index';
+
+const Wrapper = styled.div`
+    padding: 24px 48px;
+`;
+
+const Label = styled.div`
+    ${colors.TEXT_SECONDARY};
+    font-size: ${FONT_SIZE.SMALL};
+    padding-bottom: 5px;
+`;
+
+const PassphraseError = styled.div``;
+
+const Row = styled.div`
+    position: relative;
+    text-align: left;
+    padding-top: 24px;
+    display: flex;
+    flex-direction: column;
+`;
+
+const Footer = styled.div`
+    display: flex;
+    padding-top: 10px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+`;
 
 type State = {
     deviceLabel: string;
@@ -231,18 +268,16 @@ export default class PinModal extends Component<Props, State> {
         //let passphraseInputType: string = visible || passphraseFocused ? "text" : "password";
         //let passphraseRevisionInputType: string = visible || passphraseRevisionFocused ? "text" : "password";
 
-
         const showPassphraseCheckboxFn: Function = visible ? this.onPassphraseHide : this.onPassphraseShow;
-
+        console.log('passphraseInputType', passphraseInputType);
         return (
-            <div className="passphrase">
-                {/* <button className="close-modal transparent" onClick={ event => this.submit(true) }></button> */}
-                <h3>Enter { deviceLabel } passphrase</h3>
-                <p>Note that passphrase is case-sensitive.</p>
-                <div className="row">
-                    <label>Passphrase</label>
-                    <input
-                        ref={(element) => { this.passphraseInput = element; }}
+            <Wrapper>
+                <H2>Enter { deviceLabel } passphrase</H2>
+                <P isSmaller>Note that passphrase is case-sensitive.</P>
+                <Row>
+                    <Label>Passphrase</Label>
+                    <Input
+                        innerRef={(element) => { this.passphraseInput = element; }}
                         onChange={event => this.onPassphraseChange('passphrase', event.currentTarget.value)}
                         type={passphraseInputType}
                         autoComplete="off"
@@ -250,17 +285,16 @@ export default class PinModal extends Component<Props, State> {
                         autoCapitalize="off"
                         spellCheck="false"
                         data-lpignore="true"
-                        onFocus={event => this.onPassphraseFocus('passphrase')}
-                        onBlur={event => this.onPassphraseBlur('passphrase')}
-
+                        onFocus={() => this.onPassphraseFocus('passphrase')}
+                        onBlur={() => this.onPassphraseBlur('passphrase')}
                         tabIndex="1"
                     />
-                </div>
-                { singleInput ? null : (
-                    <div className="row">
-                        <label>Re-enter passphrase</label>
-                        <input
-                            ref={(element) => { this.passphraseRevisionInput = element; }}
+                </Row>
+                {!singleInput && (
+                    <Row>
+                        <Label>Re-enter passphrase</Label>
+                        <Input
+                            innerRef={(element) => { this.passphraseRevisionInput = element; }}
                             onChange={event => this.onPassphraseChange('revision', event.currentTarget.value)}
                             type={passphraseRevisionInputType}
                             autoComplete="off"
@@ -268,39 +302,26 @@ export default class PinModal extends Component<Props, State> {
                             autoCapitalize="off"
                             spellCheck="false"
                             data-lpignore="true"
-                            onFocus={event => this.onPassphraseFocus('revision')}
-                            onBlur={event => this.onPassphraseBlur('revision')}
-
+                            onFocus={() => this.onPassphraseFocus('revision')}
+                            onBlur={() => this.onPassphraseBlur('revision')}
                             tabIndex="2"
                         />
-                        { !match && passphraseRevisionTouched ? <span className="error">Passphrases do not match</span> : null }
-                    </div>
+                        {!match && passphraseRevisionTouched && <PassphraseError className="error">Passphrases do not match</PassphraseError> }
+                    </Row>
                 ) }
-
-
-                <div className="row">
-                    <label className="custom-checkbox">
-                        <input type="checkbox" tabIndex="3" onChange={showPassphraseCheckboxFn} checked={visible} />
-                        <span className="indicator" />
-                        Show passphrase
-                    </label>
-                    {/* <label className="custom-checkbox">
-                        <input type="checkbox" className="save_passphrase" tabIndex="4" onChange={ savePassphraseCheckboxFn } checked={ passphraseCached } />
-                        <span className="indicator"></span>
-                        <span>Save passphrase for current session (i)</span>
-                    </label> */}
-                </div>
-
-                <div>
-                    <button type="button" className="submit" tabIndex="4" disabled={!match} onClick={event => this.submit()}>Enter</button>
-                </div>
-
-                <div>
-                    <p>If you want to access your default account</p>
-                    <p><a className="green" onClick={event => this.submit(true)}>Leave passphrase blank</a></p>
-                </div>
-
-            </div>
+                <Row>
+                    <Checkbox onClick={showPassphraseCheckboxFn} checked={visible}>Show passphrase</Checkbox>
+                </Row>
+                <Row>
+                    <Button type="button" className="submit" tabIndex="4" disabled={!match} onClick={event => this.submit()}>Enter</Button>
+                </Row>
+                <Footer>
+                    <P isSmaller>If you want to access your default account</P>
+                    <P isSmaller>
+                        <Link isGreen onClick={() => this.submit(true)}>Leave passphrase blank</Link>
+                    </P>
+                </Footer>
+            </Wrapper>
         );
     }
 }
