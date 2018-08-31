@@ -90,9 +90,7 @@ class Modal extends Component<Props> {
     render() {
         if (!this.props.modal.opened) return null;
 
-        const { opened } = this.props.modal;
-
-        const windowType = UI.REQUEST_PIN;
+        const { opened, windowType } = this.props.modal;
 
         let component = null;
         switch (windowType) {
