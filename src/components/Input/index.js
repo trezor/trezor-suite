@@ -36,7 +36,7 @@ const StyledInput = styled.input`
             box-shadow: 0 1px 4px 0 rgba(235, 138, 0, 0.25);
         }
     `}
-    
+
     ${props => props.isError && css`
         border-color: ${colors.ERROR_PRIMARY};
         &:focus {
@@ -59,6 +59,11 @@ const Wrapper = styled.div`
 
 const InputWrapper = styled.div``;
 
+const InputLabel = styled.span`
+    padding-bottom: 4px;
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 const ErrorLabel = styled.span`
     margin-top: 10px;
     font-size: ${FONT_SIZE.SMALLER};
@@ -71,9 +76,24 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Input = ({
-    type, autoComplete, placeholder, autoCorrect, autoCapitalize, spellCheck, value, onChange, isSuccess, isWarning, isError, errorText,
+    type,
+    autoComplete,
+    placeholder,
+    autoCorrect,
+    autoCapitalize,
+    spellCheck,
+    value,
+    onChange,
+    isSuccess,
+    isWarning,
+    isError,
+    errorText,
+    inputLabel,
 }) => (
     <Wrapper>
+        {inputLabel && (
+            <InputLabel>{inputLabel}</InputLabel>
+        )}
         <InputWrapper>
             <StyledInput
                 type={type}
@@ -128,6 +148,7 @@ Input.propTypes = {
     isWarning: PropTypes.bool,
     isError: PropTypes.bool,
     errorText: PropTypes.string,
+    inputLabel: PropTypes.string,
 };
 
 export default Input;

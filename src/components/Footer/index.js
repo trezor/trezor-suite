@@ -18,7 +18,7 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-const LinkWrapper = styled(Link)`
+const StyledLink = styled(Link)`
     margin: 0 6px;
     margin-right: 20px;
 `;
@@ -30,9 +30,9 @@ const Copy = styled.div`
 const Footer = ({ toggle }) => (
     <Wrapper>
         <Copy>&copy; {getYear(new Date())}</Copy>
-        <LinkWrapper href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi" isGreen>SatoshiLabs</LinkWrapper>
-        <LinkWrapper href="tos.pdf" target="_blank" rel="noreferrer noopener" isGreen>Terms</LinkWrapper>
-        <LinkWrapper onClick={toggle} isGreen>Show Log</LinkWrapper>
+        <StyledLink href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" className="satoshi" isGreen>SatoshiLabs</StyledLink>
+        <StyledLink href="tos.pdf" target="_blank" rel="noreferrer noopener" isGreen>Terms</StyledLink>
+        <StyledLink onClick={toggle} isGreen>Show Log</StyledLink>
     </Wrapper>
 );
 

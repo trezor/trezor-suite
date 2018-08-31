@@ -1,5 +1,6 @@
 /* @flow */
 import React from 'react';
+import Link from 'components/Link';
 import styled from 'styled-components';
 
 import colors from 'config/colors';
@@ -32,7 +33,7 @@ const LayoutWrapper = styled.div`
     }
 `;
 
-const A = styled.a`
+const A = styled(Link)`
     color: ${colors.WHITE};
     margin-left: 24px;
 

@@ -87,9 +87,15 @@ class AccountBalance extends Component<Props, State> {
         const selectedCoin = this.props.coin;
         const fiatRate: any = this.props.fiat.find(f => f.network === selectedCoin.network);
 
-        const accountBalance = new BigNumber(this.props.balance);
-        const fiatRateValue = new BigNumber(fiatRate.value);
-        const fiat = accountBalance.times(fiatRateValue).toFixed(2);
+        let accountBalance = '';
+        let fiatRateValue = '';
+        let fiat = '';
+        if (fiatRate) {
+            accountBalance = new BigNumber(this.props.balance);
+            fiatRateValue = new BigNumber(fiatRate.value);
+            fiat = accountBalance.times(fiatRateValue).toFixed(2);
+        }
+
 
         return (
             <Wrapper>

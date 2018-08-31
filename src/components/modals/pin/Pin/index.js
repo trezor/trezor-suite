@@ -2,12 +2,16 @@
 
 
 import React, { Component } from 'react';
-
+import styled from 'styled-components';
+import colors from 'config/colors';
 import type { Props } from './index';
 
 type State = {
     pin: string;
 }
+
+const Wrapper = styled.div``;
+const InputRow = styled.div``;
 
 export default class Pin extends Component<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
@@ -111,7 +115,7 @@ export default class Pin extends Component<Props, State> {
         const { pin } = this.state;
 
         return (
-            <div className="pin">
+            <Wrapper className="pin">
                 {/* <button className="close-modal transparent"></button> */}
                 <h3>Enter { device.label } PIN</h3>
                 <p>The PIN layout is displayed on your TREZOR.</p>
@@ -139,7 +143,7 @@ export default class Pin extends Component<Props, State> {
 
                 <div><button className="submit" type="button" onClick={event => onPinSubmit(pin)}>Enter PIN</button></div>
                 <p>Not sure how PIN works? <a className="green" href="http://doc.satoshilabs.com/trezor-user/enteringyourpin.html" target="_blank" rel="noreferrer noopener">Learn more</a></p>
-            </div>
+            </Wrapper>
         );
     }
 }
