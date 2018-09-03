@@ -48,6 +48,7 @@ const StyledInput = styled.input`
     background-color: ${colors.WHITE};
     transition: ${TRANSITION.HOVER};
     &:disabled {
+        pointer-events: none;
         background: ${colors.GRAY_LIGHT};
         color: ${colors.TEXT_SECONDARY};
     }
@@ -117,6 +118,7 @@ class Input extends Component {
                             value={this.props.value}
                             onChange={this.props.onChange}
                             borderColor={this.getColor(this.props.state)}
+                            disabled={this.props.isDisabled}
                         />
                     </InputIconWrapper>
                     {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
@@ -147,6 +149,7 @@ Input.propTypes = {
     bottomText: PropTypes.string,
     inputLabel: PropTypes.string,
     sideAddons: PropTypes.arrayOf(PropTypes.node),
+    isDisabled: PropTypes.bool,
 };
 
 Input.defaultProps = {
