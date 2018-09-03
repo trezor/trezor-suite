@@ -84,7 +84,7 @@ const NotificationButton = ({
 );
 
 NotificationButton.propTypes = {
-    children: PropTypes.element.isRequired,
+    children: PropTypes.node.isRequired,
     type: PropTypes.string.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
