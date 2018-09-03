@@ -31,7 +31,6 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         // TODO: check if modal is open
         // api.dispatch( push('/') );
     } else if (action.type === TRANSPORT.START) {
-        // api.dispatch({ type: WEB3.READY });
         api.dispatch(TrezorConnectActions.postInit());
     } else if (action.type === DEVICE.DISCONNECT) {
         api.dispatch(TrezorConnectActions.deviceDisconnect(action.device));
