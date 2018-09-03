@@ -1,0 +1,54 @@
+/* @flow */
+import React from 'react';
+import styled from 'styled-components';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import colors from 'config/colors';
+import { Notification } from 'components/Notification';
+import * as TrezorConnectActions from 'actions/TrezorConnectActions';
+
+import type { State, Dispatch } from 'flowtype';
+
+type Props = {
+    acquiring: boolean;
+    acquireDevice: typeof TrezorConnectActions.acquire
+}
+
+const Wrapper = styled.div`
+    display: flex;
+    background: ${colors.WHITE};
+    flex-direction: column;
+    flex: 1;
+`;
+
+const Acquire = (props: Props) => {
+    const actions = props.acquiring ? [] : [
+        {
+            label: 'Acquire device',
+            callback: () => {
+                props.acquireDevice();
+            },
+        },
+    ];
+
+    return (
+        <Wrapper>
+            <Notification
+                title="Device is used in other window"
+                message="Do you want to use your device in this window?"
+                className="info"
+                cancelable={false}
+                actions={actions}
+            />
+        </Wrapper>
+    );
+};
+
+export default connect(
+    (state: State) => ({
+        acquiring: state.connect.acquiring,
+    }),
+    (dispatch: Dispatch) => ({
+        acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
+    }),
+)(Acquire);

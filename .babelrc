@@ -16,18 +16,7 @@
             "regenerator": true
         }],
         ["module-resolver", {
-            "root": ["./src"],
-            "alias": {
-                "config": "./src/js/config",
-                "constants": "./src/js/constants",
-                "components": "./src/js/components",
-                "actions": "./src/js/actions",
-                "reducers": "./src/js/reducers",
-                "support": "./src/js/support",
-                "utils": "./src/js/utils",
-                "services": "./src/js/services",
-                "views": "./src/js/views"
-            }
+            "root": ["./src"]
         }],
         "babel-plugin-styled-components"
     ],

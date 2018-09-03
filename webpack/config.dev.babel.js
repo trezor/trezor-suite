@@ -8,7 +8,7 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
-        index: [`${SRC}js/index.js`],
+        index: [`${SRC}/index.js`],
     },
     output: {
         filename: '[name].[hash].js',
