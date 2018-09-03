@@ -17,10 +17,11 @@ import * as CONNECT from 'actions/constants/TrezorConnect';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 
-import Pin from 'components/modals/Pin';
-import InvalidPin from 'components/modals/InvalidPin';
-import Passphrase from 'components/modals/Passphrase';
-import PassphraseType from 'components/modals/PassphraseType';
+import Pin from 'components/modals/pin/Pin';
+import InvalidPin from 'components/modals/pin/Invalid';
+
+import Passphrase from 'components/modals/passphrase/Passphrase';
+import PassphraseType from 'components/modals/passphrase/Type';
 
 import ConfirmSignTx from 'components/modals/confirm/SignTx';
 import ConfirmUnverifiedAddress from 'components/modals/confirm/UnverifiedAddress';
@@ -51,7 +52,6 @@ type DispatchProps = {
 export type Props = StateProps & DispatchProps;
 
 const duration = 300;
-
 
 const Fade = ({ children, ...props }) => (
     <CSSTransition
@@ -132,7 +132,7 @@ class Modal extends Component<Props> {
         if (opened) {
             ch = (
                 <Fade key="1">
-                    <ModalContainer className="modal-container">
+                    <ModalContainer>
                         <ModalWindow>
                             { component }
                         </ModalWindow>

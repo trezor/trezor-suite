@@ -1,6 +1,6 @@
 /* @flow */
 import React, { Component } from 'react';
-import { H3 } from 'components/Heading';
+import { H2 } from 'components/Heading';
 import P from 'components/Paragraph';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
@@ -102,8 +102,8 @@ class ConfirmUnverifiedAddress extends Component<Props> {
                 <StyledLink onClick={onCancel}>
                     <Icon size={20} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                 </StyledLink>
-                <H3>{ deviceStatus }</H3>
-                <P>To prevent phishing attacks, you should verify the address on your TREZOR first. { claim } to continue with the verification process.</P>
+                <H2>{ deviceStatus }</H2>
+                <StyledP isSmaller>To prevent phishing attacks, you should verify the address on your TREZOR first. { claim } to continue with the verification process.</StyledP>
                 <Row>
                     <StyledButton onClick={() => this.verifyAddress()}>Try again</StyledButton>
                     <StyledButton isWhite onClick={() => this.showUnverifiedAddress()}>Show unverified address</StyledButton>

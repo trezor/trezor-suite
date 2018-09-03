@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/buttons/Button';
-import Input from 'components/Input';
+import Input from 'components/inputs/Input';
 import { getDuplicateInstanceNumber } from 'reducers/utils';
 import { FONT_SIZE } from 'config/variables';
 import Icon from 'components/Icon';

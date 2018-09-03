@@ -43,7 +43,7 @@ const ConfirmSignTx = (props) => {
             <Header>
                 <Icon icon={icons.T1} size={60} color={colors.TEXT_SECONDARY} />
                 <H3>Confirm transaction on { device.label } device</H3>
-                <P>Details are shown on display</P>
+                <P isSmaller>Details are shown on display</P>
             </Header>
             <Content>
                 <Label>Send</Label>

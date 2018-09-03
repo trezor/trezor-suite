@@ -3,6 +3,7 @@ export const FONT_SIZE = {
     SMALLER: '12px',
     SMALL: '14px',
     BASE: '16px',
+    BIGGER: '32px',
     BIGGEST: '36px',
 };
 

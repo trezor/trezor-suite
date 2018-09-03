@@ -1,14 +1,16 @@
-/* @flow */
-import React, { Component } from 'react';
-
-import { findAccount } from 'reducers/AccountsReducer';
+import styled from 'styled-components';
+import H3 from 'components/Heading';
+import colors from 'config/colors';
+import P from 'components/Paragraph';
+import { FONT_SIZE } from 'config/variables';
+import React from 'react';
 
 const Wrapper = styled.div`
-    width: 370px;
-    padding: 24px 48px;
+    width: 390px;
 `;
 
 const Header = styled.div`
+    padding: 24px 48px;
 `;
 
 const Content = styled.div`
@@ -18,11 +20,11 @@ const Content = styled.div`
 `;
 
 const Label = styled.div`
-    font-size: 10px;
+    font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const ConfirmAddress = (props: Props) => {
+const ConfirmAddress = (props) => {
     const {
         account,
         network,
@@ -30,16 +32,16 @@ const ConfirmAddress = (props: Props) => {
     if (!account || !network) return null;
 
     return (
-        <div className="confirm-address">
-            <div className="header">
-                <h3>Confirm address on TREZOR</h3>
-                <p>Please compare your address on device with address shown bellow.</p>
-            </div>
-            <div className="content">
-                <p>{ account.address }</p>
-                <label>{ network.symbol } account #{ (account.index + 1) }</label>
-            </div>
-        </div>
+        <Wrapper>
+            <Header>
+                <H3>Confirm address on TREZOR</H3>
+                <P>Please compare your address on device with address shown bellow.</P>
+            </Header>
+            <Content>
+                <P>{ account.address }</P>
+                <Label>{ network.symbol } account #{ (account.index + 1) }</Label>
+            </Content>
+        </Wrapper>
     );
 };
 

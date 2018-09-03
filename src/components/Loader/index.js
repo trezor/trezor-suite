@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Paragraph from 'components/Paragraph';
+import { FONT_SIZE } from 'config/variables';
 import { DASH, GREEN_COLOR } from 'config/animations';
 import colors from 'config/colors';
 
@@ -36,14 +37,15 @@ const CircleWrapper = styled.circle`
 `;
 
 const StyledParagraph = styled(Paragraph)`
+    font-size: ${props => (props.isSmallText ? FONT_SIZE.SMALLER : FONT_SIZE.BASE)};
     color: ${props => (props.isWhiteText ? colors.WHITE : colors.TEXT_PRIMARY)};
 `;
 
 const Loader = ({
-    className, text, isWhiteText = false, size = 100,
+    className, text, isWhiteText = false, isSmallText, size = 100,
 }) => (
     <Wrapper className={className} size={size}>
-        <StyledParagraph isWhiteText={isWhiteText}>{text}</StyledParagraph>
+        <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>{text}</StyledParagraph>
         <SvgWrapper viewBox="25 25 50 50">
             <CircleWrapper
                 cx="50"
@@ -70,6 +72,7 @@ const Loader = ({
 
 Loader.propTypes = {
     isWhiteText: PropTypes.bool,
+    isSmallText: PropTypes.bool,
     className: PropTypes.string,
     text: PropTypes.string,
     size: PropTypes.number,

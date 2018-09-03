@@ -130,6 +130,7 @@ export default class RememberDevice extends Component<Props, State> {
                         <ButtonContent>
                             <Text>Forget</Text>
                             <StyledLoader
+                                isSmallText
                                 isWhiteText
                                 size={28}
                                 text={this.state.countdown.toString()}

@@ -107,7 +107,7 @@ class Input extends Component {
                             />
                         )}
                         <StyledInput
-                            hasAddon={!!this.props.sideAddon}
+                            hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
                             placeholder={this.props.placeholder}
                             autoComplete={this.props.autoComplete}
@@ -119,7 +119,7 @@ class Input extends Component {
                             borderColor={this.getColor(this.props.state)}
                         />
                     </InputIconWrapper>
-                    {this.props.sideAddon}
+                    {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
                 </InputWrapper>
                 {this.props.bottomText && (
                     <BottomText
@@ -146,7 +146,7 @@ Input.propTypes = {
     state: PropTypes.string,
     bottomText: PropTypes.string,
     inputLabel: PropTypes.string,
-    sideAddon: PropTypes.node,
+    sideAddons: PropTypes.arrayOf(PropTypes.node),
 };
 
 Input.defaultProps = {
