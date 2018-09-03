@@ -71,7 +71,7 @@ const AccountSummary = (props: Props) => {
 
     return (
         <SelectedAccount {...props}>
-            <AccountHeading network={account.networks}>
+            <AccountHeading>
                 <AccountName>
                     <StyledCoinLogo coinNetwork={account.network} />
                     <H2>Account #{parseInt(account.index, 10) + 1}</H2>
@@ -92,7 +92,6 @@ const AccountSummary = (props: Props) => {
                 network={network.network}
                 fiat={props.fiat}
                 localStorage={props.localStorage}
-                onToggle={props.onDetailsToggle}
             />
 
             <StyledH2>
