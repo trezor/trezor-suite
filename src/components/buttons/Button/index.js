@@ -23,7 +23,7 @@ const Wrapper = styled.button`
         background: ${colors.GREEN_TERTIARY};
     }
 
-    ${props => props.disabled && css`
+    ${props => props.isDisabled && css`
         pointer-events: none;
         color: ${colors.TEXT_SECONDARY};
         background: ${colors.GRAY_LIGHT};
@@ -108,33 +108,46 @@ const Wrapper = styled.button`
 `;
 
 const IconWrapper = styled.span`
-    ${props => (props.hasChildren ? 'margin: 0 8px 0 -4px;' : '')};
+    ${props => ((props.hasChildren && !props.isRight) ? 'margin: 0 8px 0 -4px;' : '')};
+    ${props => ((props.hasChildren && props.isRight) ? 'margin: 0 -4px 0 8px;' : '')};
 `;
 
 const Button = ({
-    children, className, icon, onClick = () => { }, disabled, isWhite = false, isWebUsb = false, isTransparent = false,
+    children,
+    className,
+    icon,
+    onClick = () => { },
+    isDisabled = false,
+    isWhite = false,
+    isWebUsb = false,
+    isTransparent = false,
+    hasIconRight = false,
 }) => (
     <Wrapper
         className={className}
         icon={icon}
         onClick={onClick}
-        disabled={disabled}
+        isDisabled={isDisabled}
         isWhite={isWhite}
         isWebUsb={isWebUsb}
         isTransparent={isTransparent}
     >
+        {hasIconRight && children}
         {icon && (
             <IconWrapper
                 hasChildren={!!children}
+                isRight={hasIconRight}
             >
                 <Icon
                     icon={icon.type}
                     color={icon.color}
                     size={icon.size}
+                    isActive={icon.isActive}
+                    canAnimate={icon.canAnimate}
                 />
             </IconWrapper>
         )}
-        {children}
+        {!hasIconRight && children}
     </Wrapper>
 );
 
@@ -142,7 +155,7 @@ Button.propTypes = {
     children: PropTypes.element.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
-    disabled: PropTypes.bool,
+    isDisabled: PropTypes.bool,
     isWhite: PropTypes.bool,
     isWebUsb: PropTypes.bool,
     isTransparent: PropTypes.bool,
@@ -150,7 +163,10 @@ Button.propTypes = {
         type: PropTypes.arrayOf(PropTypes.string).isRequired,
         color: PropTypes.string,
         size: PropTypes.number,
+        isActive: PropTypes.bool,
+        canAnimate: PropTypes.bool,
     }),
+    hasIconRight: PropTypes.bool,
 };
 
 export default Button;
