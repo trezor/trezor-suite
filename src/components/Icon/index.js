@@ -28,7 +28,16 @@ const SvgWrapper = styled.svg`
 const Path = styled.path``;
 
 const Icon = ({
-    icon, size = 32, color = 'black', isActive, canAnimate, className, onMouseEnter, onMouseLeave, onFocus, onClick,
+    icon,
+    size = 32,
+    color = 'black',
+    isActive,
+    canAnimate,
+    className,
+    onMouseEnter,
+    onMouseLeave,
+    onFocus,
+    onClick,
 }) => (
     <SvgWrapper
         className={className}
