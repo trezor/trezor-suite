@@ -14,6 +14,11 @@ export const FONT_WEIGHT = {
     BIGGER: '600',
 };
 
+export const FONT_FAMILY = {
+    MONOSPACE: '"Roboto Mono", Menlo, Monaco, Consolas, "Courier New", monospace',
+    MONOSPACE_NUMBERS: '"Roboto Zero", "Roboto Mono", Menlo, Monaco, Consolas, "Courier New", monospace',
+};
+
 export const ICON_SIZE = {
     BASE: '20px',
 };
