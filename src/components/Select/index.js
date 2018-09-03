@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ReactSelect from 'react-select';
 import ReactAsyncSelect from 'react-select/lib/Async';
 import colors from 'config/colors';
+import { FONT_FAMILY } from 'config/variables';
 
 const styles = isSearchable => ({
     singleValue: base => ({
@@ -12,6 +13,7 @@ const styles = isSearchable => ({
     }),
     control: (base, { isDisabled }) => ({
         ...base,
+        fontFamily: FONT_FAMILY.MONOSPACE,
         minHeight: 'initial',
         height: '100%',
         borderRadius: '2px',
@@ -43,6 +45,7 @@ const styles = isSearchable => ({
     menuList: base => ({
         ...base,
         padding: 0,
+        fontFamily: FONT_FAMILY.MONOSPACE,
         boxShadow: 'none',
         background: colors.WHITE,
         borderLeft: `1px solid ${colors.DIVIDER}`,
