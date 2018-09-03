@@ -7,10 +7,13 @@ import colors from 'config/colors';
 const styles = isSearchable => ({
     singleValue: base => ({
         ...base,
+        width: '100%',
         color: colors.TEXT_SECONDARY,
     }),
     control: (base, { isDisabled }) => ({
         ...base,
+        minHeight: 'initial',
+        height: '100%',
         borderRadius: '2px',
         borderColor: colors.DIVIDER,
         boxShadow: 'none',
@@ -23,9 +26,9 @@ const styles = isSearchable => ({
     indicatorSeparator: () => ({
         display: 'none',
     }),
-    dropdownIndicator: base => ({
+    dropdownIndicator: (base, { isDisabled }) => ({
         ...base,
-        display: isSearchable ? 'none' : 'block',
+        display: (isSearchable || isDisabled) ? 'none' : 'block',
         color: colors.TEXT_SECONDARY,
         path: '',
         '&:hover': {
