@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Loader from 'components/Loader';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 
 import type { Props } from './index';
 

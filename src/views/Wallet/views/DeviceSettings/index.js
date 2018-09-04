@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { H2 } from 'components/Heading';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import ICONS from 'config/icons';
 import { connect } from 'react-redux';
 

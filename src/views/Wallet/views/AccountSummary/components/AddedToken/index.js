@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
 import colors from 'config/colors';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import ICONS from 'config/icons';
 import * as stateUtils from 'reducers/utils';
 import BigNumber from 'bignumber.js';

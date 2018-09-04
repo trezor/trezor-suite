@@ -7,7 +7,7 @@ import { FONT_SIZE } from 'config/variables';
 import { H2 } from 'components/Heading';
 import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import Input from 'components/inputs/Input';
 import styled from 'styled-components';
 

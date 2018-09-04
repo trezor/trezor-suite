@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { H2 } from 'components/Heading';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import Paragraph from 'components/Paragraph';
 import React from 'react';
 import { connect } from 'react-redux';

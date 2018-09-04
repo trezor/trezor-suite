@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import icons from 'config/icons';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import Link from 'components/Link';
 import { findAccount } from 'reducers/AccountsReducer';
 
