@@ -79,7 +79,7 @@ const AddressInfoText = styled.div`
     margin: 0px 2px;
 `;
 
-const StyledButton = styled(Button)`
+const ShowAddressButton = styled(Button)`
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 `;
@@ -180,7 +180,7 @@ const AccountReceive = (props: Props) => {
                         />
                     )}
                     {!(addressVerified || addressUnverified) && (
-                        <StyledButton
+                        <ShowAddressButton
                             onClick={() => props.showAddress(account.addressPath)}
                             isDisabled={device.connected && !discovery.completed}
                             icon={{
@@ -189,7 +189,7 @@ const AccountReceive = (props: Props) => {
                                 size: 25,
                             }}
                         >Show full address
-                        </StyledButton>
+                        </ShowAddressButton>
                     )}
                 </AddressWrapper>
             </Wrapper>
