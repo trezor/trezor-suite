@@ -158,8 +158,7 @@ const AccountReceive = (props: Props) => {
                                     type: addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE,
                                     color: addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY,
                                 }}
-                            >""
-                            </EyeButton>
+                            />
                         </Tooltip>
                     )}
                     <ValueWrapper

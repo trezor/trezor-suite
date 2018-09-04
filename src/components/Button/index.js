@@ -158,7 +158,7 @@ const Button = ({
 );
 
 Button.propTypes = {
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
     className: PropTypes.string,
     onClick: PropTypes.func,
     onMouseEnter: PropTypes.func,
