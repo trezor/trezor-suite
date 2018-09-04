@@ -3,9 +3,6 @@
     "version": "1.0.0",
     "author": "TREZOR <info@trezor.io>",
     "description": "",
-    "bugs": {
-        "url": "https://github.com/szymonlesisz/trezor-connect-react-boilerplate/issues"
-    },
     "bin": {
         "flow": "./node_modules/flow-bin"
     },

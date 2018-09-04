@@ -119,6 +119,7 @@ module.exports = {
             template: `${SRC}index.html`,
             filename: 'index.html',
             inject: true,
+            favicon: `${SRC}images/favicon.ico`,
         }),
 
         new HtmlWebpackPlugin({
