@@ -117,6 +117,9 @@ const Button = ({
     className,
     icon,
     onClick = () => { },
+    onMouseEnter,
+    onMouseLeave,
+    onFocus,
     isDisabled = false,
     isWhite = false,
     isWebUsb = false,
@@ -127,6 +130,9 @@ const Button = ({
         className={className}
         icon={icon}
         onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onFocus={onFocus}
         isDisabled={isDisabled}
         isWhite={isWhite}
         isWebUsb={isWebUsb}
@@ -155,6 +161,9 @@ Button.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
+    onMouseEnter: PropTypes.func,
+    onMouseLeave: PropTypes.func,
+    onFocus: PropTypes.func,
     isDisabled: PropTypes.bool,
     isWhite: PropTypes.bool,
     isWebUsb: PropTypes.bool,
