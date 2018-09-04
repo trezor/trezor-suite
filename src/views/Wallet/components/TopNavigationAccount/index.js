@@ -1,104 +1,53 @@
-/* @flow */
-
-
-import React, { Component } from 'react';
+import styled from 'styled-components';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
+import colors from 'config/colors';
+import Indicator from './components/Indicator';
 
+const Wrapper = styled.div`
+    position: relative;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 28px;
+    max-width: 600px;
+`;
 
-type Props = {
-    pathname: string;
-}
-type State = {
-    style: {
-        width: number,
-        left: number
-    };
-}
+const StyledNavLink = styled(NavLink)`
+    font-weight: 500;
+    font-size: 14px;
+    color: ${colors.TEXT_SECONDARY};
+    margin: 0px 4px;
+    padding: 20px;
 
-class Indicator extends Component<Props, State> {
-    reposition: () => void;
-
-    state: State;
-
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            style: {
-                width: 0,
-                left: 0,
-            },
-        };
-
-        this.reposition = this.reposition.bind(this);
+    &.active,
+    &:hover {
+        transition: all 0.3s ease-in-out;
+        color: ${colors.TEXT_PRIMARY};
     }
 
-    handleResize() {
-        this.reposition();
+    &:first-child {
+        margin-left: 0px;
     }
 
-    componentDidMount() {
-        this.reposition();
-        window.addEventListener('resize', this.reposition, false);
+    &:last-child {
+        margin-right: 0px;
     }
+`;
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.reposition, false);
-    }
-
-    componentDidUpdate(newProps: Props) {
-        this.reposition();
-    }
-
-    reposition() {
-        const tabs = document.querySelector('.account-tabs');
-        if (!tabs) return;
-        const active = tabs.querySelector('.active');
-        if (!active) return;
-        const bounds = active.getBoundingClientRect();
-
-        const left = bounds.left - tabs.getBoundingClientRect().left;
-
-        if (this.state.style.left !== left) {
-            this.setState({
-                style: {
-                    width: bounds.width,
-                    left,
-                },
-            });
-        }
-    }
-
-    render() {
-        return (
-            <div className="indicator" style={this.state.style}>{ this.props.pathname }</div>
-        );
-    }
-}
 
 const TopNavigationAccount = (props: any) => {
     const urlParams = props.match.params;
     const basePath = `/device/${urlParams.device}/network/${urlParams.network}/account/${urlParams.account}`;
 
     return (
-        <div className="account-tabs">
-            {/* <NavLink to={ `${basePath}` }>
-                History
-            </NavLink> */}
-            <NavLink exact to={`${basePath}`}>
-                Summary
-            </NavLink>
-            <NavLink to={`${basePath}/send`}>
-                Send
-            </NavLink>
-            <NavLink to={`${basePath}/receive`}>
-                Receive
-            </NavLink>
-            {/* <NavLink to={ `${basePath}/signverify` }>
-                Sign &amp; Verify
-            </NavLink> */}
+        <Wrapper className="account-tabs">
+            <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
+            <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
+            <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
             <Indicator pathname={props.match.pathname} />
-        </div>
+        </Wrapper>
     );
 };
 
