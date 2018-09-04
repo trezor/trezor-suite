@@ -82,7 +82,7 @@ const Wrapper = styled.button`
             left: 18px;
         }
 
-        &:after {
+    &:after {
             width: 2px;
             height: 12px;
             left: 23px;
@@ -107,15 +107,9 @@ const Wrapper = styled.button`
     `}
 `;
 
-const IconWrapper = styled.span`
-    ${props => ((props.hasChildren && !props.isRight) ? 'margin: 0 8px 0 -4px;' : '')};
-    ${props => ((props.hasChildren && props.isRight) ? 'margin: 0 -4px 0 8px;' : '')};
-`;
-
 const Button = ({
     children,
     className,
-    icon,
     onClick = () => { },
     onMouseEnter,
     onMouseLeave,
@@ -124,11 +118,9 @@ const Button = ({
     isWhite = false,
     isWebUsb = false,
     isTransparent = false,
-    hasIconRight = false,
 }) => (
     <Wrapper
         className={className}
-        icon={icon}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -138,27 +130,12 @@ const Button = ({
         isWebUsb={isWebUsb}
         isTransparent={isTransparent}
     >
-        {hasIconRight && children}
-        {icon && (
-            <IconWrapper
-                hasChildren={!!children}
-                isRight={hasIconRight}
-            >
-                <Icon
-                    icon={icon.type}
-                    color={icon.color}
-                    size={icon.size}
-                    isActive={icon.isActive}
-                    canAnimate={icon.canAnimate}
-                />
-            </IconWrapper>
-        )}
-        {!hasIconRight && children}
+        {children}
     </Wrapper>
 );
 
 Button.propTypes = {
-    children: PropTypes.node,
+    children: PropTypes.node.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
     onMouseEnter: PropTypes.func,
@@ -168,14 +145,6 @@ Button.propTypes = {
     isWhite: PropTypes.bool,
     isWebUsb: PropTypes.bool,
     isTransparent: PropTypes.bool,
-    icon: PropTypes.shape({
-        type: PropTypes.arrayOf(PropTypes.string).isRequired,
-        color: PropTypes.string,
-        size: PropTypes.number,
-        isActive: PropTypes.bool,
-        canAnimate: PropTypes.bool,
-    }),
-    hasIconRight: PropTypes.bool,
 };
 
 export default Button;

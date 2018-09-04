@@ -3,6 +3,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { H2 } from 'components/Heading';
 import Button from 'components/Button';
+import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import colors from 'config/colors';
 
@@ -80,8 +81,21 @@ const AddressInfoText = styled.div`
 `;
 
 const ShowAddressButton = styled(Button)`
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 10px;
+
+    display: flex;
+    align-items: center;
+
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+`;
+
+const ShowAddressIcon = styled(Icon)`
+    margin-right: 7px;
+    position: relative;
+    top: 2px;
 `;
 
 const EyeButton = styled(Button)`
@@ -89,8 +103,8 @@ const EyeButton = styled(Button)`
     padding: 0;
     position: absolute;
     left: auto;
-    right: 40px;
-    top: 2px;
+    right: 60px;
+    top: 3px;
 `;
 
 const qrCodeStyle = {
@@ -154,11 +168,12 @@ const AccountReceive = (props: Props) => {
                             <EyeButton
                                 isTransparent
                                 onClick={() => props.showAddress(account.addressPath)}
-                                icon={{
-                                    type: addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE,
-                                    color: addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY,
-                                }}
-                            />
+                            >
+                                <Icon
+                                    icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
+                                    color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
+                                />
+                            </EyeButton>
                         </Tooltip>
                     )}
                     <ValueWrapper
@@ -183,12 +198,12 @@ const AccountReceive = (props: Props) => {
                         <ShowAddressButton
                             onClick={() => props.showAddress(account.addressPath)}
                             isDisabled={device.connected && !discovery.completed}
-                            icon={{
-                                type: ICONS.EYE,
-                                color: colors.WHITE,
-                                size: 25,
-                            }}
-                        >Show full address
+                        >
+                            <ShowAddressIcon
+                                icon={ICONS.EYE}
+                                color={colors.WHITE}
+                            />
+                            Show full address
                         </ShowAddressButton>
                     )}
                 </AddressWrapper>

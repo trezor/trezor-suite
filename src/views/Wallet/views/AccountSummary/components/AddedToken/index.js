@@ -4,6 +4,7 @@ import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
 import colors from 'config/colors';
 import Button from 'components/Button';
+import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import * as stateUtils from 'reducers/utils';
 import BigNumber from 'bignumber.js';
@@ -78,11 +79,12 @@ class AddedToken extends Component<> {
                 <RemoveTokenButton
                     isTransparent
                     onClick={() => this.props.removeToken(this.props.token)}
-                    icon={{
-                        type: ICONS.CLOSE,
-                        size: 23,
-                    }}
-                />
+                >
+                    <Icon
+                        icon={ICONS.CLOSE}
+                        size={23}
+                    />
+                </RemoveTokenButton>
             </TokenWrapper>
         );
     }

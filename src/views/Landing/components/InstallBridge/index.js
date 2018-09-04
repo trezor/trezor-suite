@@ -10,6 +10,7 @@ import Link from 'components/Link';
 import Button from 'components/Button';
 import Loader from 'components/Loader';
 import P from 'components/Paragraph';
+import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 
 type State = {
@@ -73,6 +74,13 @@ const DownloadBridgeWrapper = styled.div`
     align-items: center;
 `;
 
+const DownloadBridgeButton = styled(Button)`
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: flex;
+    align-items: center;
+`;
+
 export default class InstallBridge extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
@@ -121,14 +129,14 @@ export default class InstallBridge extends Component<Props, State> {
                         options={installers}
                     />
                     <Link href={url}>
-                        <Button
-                            icon={{
-                                type: ICONS.DOWNLOAD,
-                                color: colors.WHITE,
-                                size: 30,
-                            }}
-                        >Download for {label}
-                        </Button>
+                        <DownloadBridgeButton>
+                            <Icon
+                                icon={ICONS.DOWNLOAD}
+                                color={colors.WHITE}
+                                size={30}
+                            />
+                            Download for {label}
+                        </DownloadBridgeButton>
                     </Link>
                 </DownloadBridgeWrapper>
                 <P>
