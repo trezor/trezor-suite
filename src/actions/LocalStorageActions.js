@@ -14,8 +14,8 @@ import type {
 } from 'flowtype';
 import type { Config, Coin, TokensCollection } from 'reducers/LocalStorageReducer';
 
-import AppConfigJSON from 'data/appConfig.json';
-import Erc20AbiJSON from 'data/ERC20Abi.json';
+import Erc20AbiJSON from 'public/data/ERC20Abi.json';
+import AppConfigJSON from 'public/data/appConfig.json';
 
 export type StorageAction = {
     type: typeof STORAGE.READY,

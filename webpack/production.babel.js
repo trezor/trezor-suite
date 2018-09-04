@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { SRC, BUILD } from './constants';
+import { SRC, BUILD, PUBLIC } from './constants';
 
 module.exports = {
     mode: 'production',
@@ -73,6 +73,9 @@ module.exports = {
         ],
     },
     resolve: {
+        alias: {
+            public: PUBLIC,
+        },
         modules: [SRC, 'node_modules'],
     },
     performance: {
@@ -82,22 +85,15 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: 'css/[name].[hash].css',
         }),
-
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
             filename: 'index.html',
             inject: true,
         }),
-
         new CopyWebpackPlugin([
-            //{from: `${SRC}/app/robots.txt`},
-            { from: `${SRC}images/favicon.ico`, to: `${BUILD}favicon.ico` },
-            { from: `${SRC}images/favicon.png`, to: `${BUILD}favicon.png` },
-            { from: `${SRC}data`, to: `${BUILD}data`, cache: false },
-            { from: `${SRC}assets`, to: `${BUILD}assets`, cache: false },
+            { from: `${PUBLIC}`, to: './' },
         ]),
-
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.NamedModulesPlugin(),

@@ -31,7 +31,7 @@ const Footer = ({ toggle }) => (
     <Wrapper>
         <Copy>&copy; {getYear(new Date())}</Copy>
         <StyledLink href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" isGreen>SatoshiLabs</StyledLink>
-        <StyledLink href="tos.pdf" target="_blank" rel="noreferrer noopener" isGreen>Terms</StyledLink>
+        <StyledLink href="/assets/tos.pdf" target="_blank" rel="noreferrer noopener" isGreen>Terms</StyledLink>
         <StyledLink onClick={toggle} isGreen>Show Log</StyledLink>
     </Wrapper>
 );

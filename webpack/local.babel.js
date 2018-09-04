@@ -1,7 +1,17 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { SRC, BUILD, PORT } from './constants';
+import {
+    TREZOR_CONNECT_ROOT,
+    TREZOR_CONNECT_HTML,
+    TREZOR_CONNECT_FILES,
+    TREZOR_CONNECT, TREZOR_IFRAME, TREZOR_POPUP, TREZOR_WEBUSB,
+    SRC,
+    BUILD,
+    PUBLIC,
+    PORT,
+} from './constants';
 
 module.exports = {
     watch: true,
@@ -9,13 +19,22 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: {
         index: [`${SRC}/index.js`],
+        'trezor-connect-npm': `${TREZOR_CONNECT}.js`,
+        // 'extension-permissions': `${TREZOR_CONNECT_ROOT}src/js/extensionPermissions.js`,
+        iframe: TREZOR_IFRAME,
+        popup: TREZOR_POPUP,
+        webusb: TREZOR_WEBUSB,
     },
     output: {
         filename: '[name].[hash].js',
         path: BUILD,
+        globalObject: 'this', // fix for HMR inside WebWorker from 'hd-wallet'
     },
     devServer: {
-        contentBase: SRC,
+        contentBase: [
+            SRC,
+            PUBLIC,
+        ],
         hot: true,
         https: false,
         port: PORT,
@@ -66,10 +85,25 @@ module.exports = {
                     name: '[name].[ext]',
                 },
             },
+            {
+                type: 'javascript/auto',
+                test: /\.wasm$/,
+                loader: 'file-loader',
+                query: {
+                    name: 'js/[name].[ext]',
+                },
+            },
         ],
     },
     resolve: {
-        modules: [SRC, 'node_modules'],
+        modules: [
+            SRC,
+            'node_modules',
+            `${TREZOR_CONNECT_ROOT}/node_modules`],
+        alias: {
+            public: PUBLIC,
+            'trezor-connect': `${TREZOR_CONNECT}`,
+        },
     },
     performance: {
         hints: false,
@@ -86,9 +120,51 @@ module.exports = {
             filename: 'index.html',
             inject: true,
         }),
+
+        new HtmlWebpackPlugin({
+            chunks: ['iframe'],
+            filename: 'iframe.html',
+            template: `${TREZOR_CONNECT_HTML}iframe.html`,
+            inject: false,
+        }),
+        new HtmlWebpackPlugin({
+            chunks: ['popup'],
+            filename: 'popup.html',
+            template: `${TREZOR_CONNECT_HTML}popup.html`,
+            inject: false,
+        }),
+        new HtmlWebpackPlugin({
+            chunks: ['webusb'],
+            filename: 'webusb.html',
+            template: `${TREZOR_CONNECT_HTML}webusb.html`,
+            inject: true,
+        }),
+        // new HtmlWebpackPlugin({
+        //     chunks: ['extension-permissions'],
+        //     filename: `extension-permissions.html`,
+        //     template: `${TREZOR_CONNECT_HTML}extension-permissions.html`,
+        //     inject: true
+        // }),
+
+        new CopyWebpackPlugin([
+            { from: TREZOR_CONNECT_FILES, to: 'data' },
+        ]),
+
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
+
+        new webpack.DefinePlugin({
+            LOCAL: JSON.stringify(`http://localhost:${PORT}/`),
+        }),
+
+        // ignore node lib from trezor-link
+        new webpack.IgnorePlugin(/\/iconv-loader$/),
     ],
+    // ignoring "fs" import in fastxpub
+    node: {
+        fs: 'empty',
+        path: 'empty',
+    },
 };
