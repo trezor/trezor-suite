@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
-import NotificationButton from 'components/buttons/NotificationButton';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
@@ -11,6 +10,7 @@ import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as NotificationActions from 'actions/NotificationActions';
 import Loader from 'components/Loader';
+import NotificationButton from './components/NotificationButton';
 
 const Wrapper = styled.div`
     position: relative;
