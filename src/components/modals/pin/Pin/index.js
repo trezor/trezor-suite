@@ -6,8 +6,8 @@ import Link from 'components/Link';
 import colors from 'config/colors';
 import styled from 'styled-components';
 import PinInput from 'components/inputs/PinInput';
-import PinButton from 'components/buttons/PinButton';
 import Button from 'components/buttons/Button';
+import PinButton from './components/PinButton';
 import type { Props } from './index';
 
 type State = {
