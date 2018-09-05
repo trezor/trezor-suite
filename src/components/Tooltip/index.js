@@ -10,7 +10,7 @@ const TooltipContent = styled.div`
     font-size: ${FONT_SIZE.SMALLEST};
 `;
 
-const StyledRcTooltip = styled(RcTooltip)`
+const Wrapper = styled.div`
     .rc-tooltip {
         position: absolute;
         z-index: 1070;
@@ -164,7 +164,7 @@ const StyledRcTooltip = styled(RcTooltip)`
     .rc-tooltip-placement-bottomLeft .rc-tooltip-arrow {
         left: 15%;
     }
-    
+
     .rc-tooltip-placement-bottomRight .rc-tooltip-arrow {
         right: 15%;
     }
@@ -173,14 +173,16 @@ const StyledRcTooltip = styled(RcTooltip)`
 const Tooltip = ({
     content, placement = 'bottomRight', children, className,
 }) => (
-    <StyledRcTooltip
-        className={className}
-        arrowContent={<div className="rc-tooltip-arrow-inner" />}
-        placement={placement}
-        overlay={<TooltipContent>{content}</TooltipContent>}
-    >
-        {children}
-    </StyledRcTooltip>
+    <Wrapper>
+        <RcTooltip
+            className={className}
+            arrowContent={<div className="rc-tooltip-arrow-inner" />}
+            placement={placement}
+            overlay={<TooltipContent>{content}</TooltipContent>}
+        >
+            {children}
+        </RcTooltip>
+    </Wrapper>
 );
 
 Tooltip.propTypes = {
