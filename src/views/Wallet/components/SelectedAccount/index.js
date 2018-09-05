@@ -20,7 +20,7 @@ export type Props = StateProps & DispatchProps;
 const SelectedAccount = (props: Props) => {
     const device = props.wallet.selectedDevice;
     if (!device || !device.state) {
-        return (<section><Notification type="info" title="Loading device..." /></section>);
+        return (<Notification type="info" title="Loading device..." />);
     }
 
     const accountState = props.selectedAccount;
@@ -37,52 +37,40 @@ const SelectedAccount = (props: Props) => {
                 // case 1: device is connected but discovery not started yet (probably waiting for auth)
                 if (device.available) {
                     return (
-                        <section>
-                            <Notification type="info" title="Loading accounts..." />
-                        </section>
+                        <Notification type="info" title="Loading accounts..." />
                     );
                 }
                 // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
                 return (
-                    <section>
-                        <Notification
-                            type="info"
-                            title={`Device ${device.instanceLabel} is unavailable`}
-                            message="Change passphrase settings to use this device"
-                        />
-                    </section>
+                    <Notification
+                        type="info"
+                        title={`Device ${device.instanceLabel} is unavailable`}
+                        message="Change passphrase settings to use this device"
+                    />
                 );
             }
             // case 3: device is disconnected
             return (
-                <section>
-                    <Notification
-                        type="info"
-                        title={`Device ${device.instanceLabel} is disconnected`}
-                        message="Connect device to load accounts"
-                    />
-                </section>
+                <Notification
+                    type="info"
+                    title={`Device ${device.instanceLabel} is disconnected`}
+                    message="Connect device to load accounts"
+                />
             );
         } if (discovery.waitingForBackend) {
             // case 4: backend is not working
             return (
-                <section>
-                    <Notification type="warning" title="Backend not working" />
-                </section>
+                <Notification type="warning" title="Backend not working" />
             );
         } if (discovery.completed) {
             // case 5: account not found and discovery is completed
             return (
-                <section>
-                    <Notification type="warning" title="Account does not exist" />
-                </section>
+                <Notification type="warning" title="Account does not exist" />
             );
         }
         // case 6: discovery is not completed yet
         return (
-            <section>
-                <Notification type="info" title="Loading accounts..." />
-            </section>
+            <Notification type="info" title="Loading accounts..." />
         );
     }
 
