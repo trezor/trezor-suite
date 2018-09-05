@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import { AsyncSelect } from 'components/Select';
 import ICONS from 'config/icons';
 import colors from 'config/colors';
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'components/Tooltip';
 
 import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
@@ -25,8 +25,15 @@ const AccountHeading = styled.div`
     align-items: center;
 `;
 
-const StyledH2 = styled(H2)`
+const H2Wrapper = styled.div`
+    display: flex;
+    align-items: center;
     padding: 20px 48px;
+`;
+
+const StyledTooltip = styled(Tooltip)`
+    position: relative;
+    top: 2px;
 `;
 
 const AccountName = styled.div`
@@ -93,24 +100,23 @@ const AccountSummary = (props: Props) => {
                 localStorage={props.localStorage}
             />
 
-            <StyledH2>
-                Tokens
-                <Tooltip
-                    arrowContent={<div className="rc-tooltip-arrow-inner" />}
-                    overlay={(
+            <H2Wrapper>
+                <H2>Tokens</H2>
+                <StyledTooltip
+                    placement="top"
+                    content={(
                         <React.Fragment>
                             Insert token name, symbol or address to be able to send it.
                         </React.Fragment>
                     )}
-                    placement="top"
                 >
                     <StyledIcon
                         icon={ICONS.HELP}
                         color={colors.TEXT_SECONDARY}
                         size={24}
                     />
-                </Tooltip>
-            </StyledH2>
+                </StyledTooltip>
+            </H2Wrapper>
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 T01 */}
 

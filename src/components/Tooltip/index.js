@@ -173,9 +173,17 @@ const Wrapper = styled.div`
 
 class Tooltip extends Component {
     render() {
-        const { placement, content, children } = this.props;
+        const {
+            className,
+            placement,
+            content,
+            children,
+        } = this.props;
         return (
-            <Wrapper innerRef={(node) => { this.tooltipContainerRef = node; }}>
+            <Wrapper
+                className={className}
+                innerRef={(node) => { this.tooltipContainerRef = node; }}
+            >
                 <RcTooltip
                     getTooltipContainer={() => this.tooltipContainerRef}
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
@@ -190,6 +198,7 @@ class Tooltip extends Component {
 }
 
 Tooltip.propTypes = {
+    className: PropTypes.string,
     placement: PropTypes.string,
     children: PropTypes.oneOfType([
         PropTypes.element,
