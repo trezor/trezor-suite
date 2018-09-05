@@ -1,14 +1,8 @@
 /* @flow */
-
-
 import * as React from 'react';
 import { Notification } from 'components/Notification';
 
-import type {
-    State, TrezorDevice, Action, ThunkAction,
-} from 'flowtype';
-import type { Account } from 'reducers/AccountsReducer';
-import type { Discovery } from 'reducers/DiscoveryReducer';
+import type { State } from 'flowtype';
 
 export type StateProps = {
     className: string;
@@ -63,7 +57,7 @@ const SelectedAccount = (props: Props) => {
             return (
                 <section>
                     <Notification
-                        className="info"
+                        type="info"
                         title={`Device ${device.instanceLabel} is disconnected`}
                         message="Connect device to load accounts"
                     />
@@ -73,34 +67,34 @@ const SelectedAccount = (props: Props) => {
             // case 4: backend is not working
             return (
                 <section>
-                    <Notification className="warning" title="Backend not working" />
+                    <Notification type="warning" title="Backend not working" />
                 </section>
             );
         } if (discovery.completed) {
             // case 5: account not found and discovery is completed
             return (
                 <section>
-                    <Notification className="warning" title="Account does not exist" />
+                    <Notification type="warning" title="Account does not exist" />
                 </section>
             );
         }
         // case 6: discovery is not completed yet
         return (
             <section>
-                <Notification className="info" title="Loading accounts..." />
+                <Notification type="info" title="Loading accounts..." />
             </section>
         );
     }
 
     let notification: ?React$Element<typeof Notification> = null;
     if (!device.connected) {
-        notification = <Notification className="info" title={`Device ${device.instanceLabel} is disconnected`} />;
+        notification = <Notification type="info" title={`Device ${device.instanceLabel} is disconnected`} />;
     } else if (!device.available) {
-        notification = <Notification className="info" title={`Device ${device.instanceLabel} is unavailable`} message="Change passphrase settings to use this device" />;
+        notification = <Notification type="info" title={`Device ${device.instanceLabel} is unavailable`} message="Change passphrase settings to use this device" />;
     }
 
     if (discovery && !discovery.completed && !notification) {
-        notification = <Notification className="info" title="Loading accounts..." />;
+        notification = <Notification type="info" title="Loading accounts..." />;
     }
 
     return (

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -7,7 +8,6 @@ import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
-import * as NOTIFICATION from 'actions/constants/notification';
 import * as NotificationActions from 'actions/NotificationActions';
 import Loader from 'components/Loader';
 import NotificationButton from './components/NotificationButton';
