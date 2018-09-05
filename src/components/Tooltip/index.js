@@ -172,17 +172,12 @@ const Wrapper = styled.div`
 `;
 
 class Tooltip extends Component {
-    constructor(props) {
-        super(props);
-        this.tooltipContainerRef = React.createRef();
-    }
-
     render() {
         const { placement, content, children } = this.props;
         return (
-            <Wrapper innerRef={this.tooltipContainerRef}>
+            <Wrapper innerRef={(node) => { this.tooltipContainerRef = node; }}>
                 <RcTooltip
-                    getTooltipContainer={() => this.tooltipContainerRef.current}
+                    getTooltipContainer={() => this.tooltipContainerRef}
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
                     placement={placement}
                     overlay={<TooltipContent>{content}</TooltipContent>}
