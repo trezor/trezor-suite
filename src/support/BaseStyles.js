@@ -1,5 +1,4 @@
 import { injectGlobal } from 'styled-components';
-
 import normalize from 'styled-normalize';
 
 const baseStyles = () => injectGlobal`

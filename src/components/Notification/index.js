@@ -45,15 +45,12 @@ const Wrapper = styled.div`
 const Body = styled.div`
     display: flex;
     margin-right: 40px;
-    flex: 1;
 `;
 
 const Title = styled.div`
     padding-bottom: 5px;
     font-weight: ${FONT_WEIGHT.BIGGER};
 `;
-
-const ActionContent = styled.div``;
 
 const CloseClick = styled.div`
     position: absolute;
@@ -81,7 +78,17 @@ const Texts = styled.div`
     flex-direction: column;
 `;
 
-const AdditionalContent = styled.div``;
+const AdditionalContent = styled.div`
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+`;
+
+const ActionContent = styled.div`
+    justify-content: right;
+    align-items: flex-end;
+`;
 
 export const Notification = (props: NProps): React$Element<string> => {
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
