@@ -31,7 +31,15 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader'],
+                use: [
+                    'babel-loader',
+                    {
+                        loader: 'stylelint-custom-processor-loader',
+                        options: {
+                            configPath: '.stylelintrc',
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(png|gif|jpg)$/,

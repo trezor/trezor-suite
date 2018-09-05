@@ -6007,7 +6007,7 @@ loader-utils@^0.2.16:
     json5 "^0.5.0"
     object-assign "^4.0.1"
 
-loader-utils@^1.0.2, loader-utils@^1.1.0:
+loader-utils@^1.0.2, loader-utils@^1.1.0, loader-utils@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.1.0.tgz#c98aef488bcceda2ffb5e2de646d6a754429f5cd"
   dependencies:
@@ -7831,6 +7831,10 @@ raf@^3.4.0:
   dependencies:
     performance-now "^2.1.0"
 
+ramda@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.25.0.tgz#8fdf68231cffa90bc2f9460390a0cb74a29b29a9"
+
 randomatic@^1.1.3:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/randomatic/-/randomatic-1.1.7.tgz#c7abe9cc8b87c0baa876b19fde83fd464797e38c"
@@ -9319,6 +9323,12 @@ stylelint-config-styled-components@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/stylelint-config-styled-components/-/stylelint-config-styled-components-0.1.1.tgz#b408388d7c687833ab4be4c4e6522d97d2827ede"
 
+stylelint-custom-processor-loader@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/stylelint-custom-processor-loader/-/stylelint-custom-processor-loader-0.5.0.tgz#304d13e0c995b9f8a68da1a8d899700e2deacad8"
+  dependencies:
+    loader-utils "~1.1.0"
+
 stylelint-processor-styled-components@^1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/stylelint-processor-styled-components/-/stylelint-processor-styled-components-1.3.2.tgz#092cf8fb064b31c6d0d3bedf0c4844349e1e8f0f"
@@ -9326,6 +9336,15 @@ stylelint-processor-styled-components@^1.3.2:
     "@babel/traverse" "^7.0.0-beta.40"
     babylon "^7.0.0-beta.40"
     postcss "^6.0.14"
+
+stylelint-webpack-plugin@^0.10.5:
+  version "0.10.5"
+  resolved "https://registry.yarnpkg.com/stylelint-webpack-plugin/-/stylelint-webpack-plugin-0.10.5.tgz#0b6e0d373ff5e03baa8197ebe0f2625981bd266b"
+  dependencies:
+    arrify "^1.0.1"
+    micromatch "^3.1.8"
+    object-assign "^4.1.0"
+    ramda "^0.25.0"
 
 stylelint@^9.4.0:
   version "9.4.0"
