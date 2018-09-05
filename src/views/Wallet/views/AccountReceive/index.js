@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import colors from 'config/colors';
 
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'components/Tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
@@ -112,8 +112,6 @@ const qrCodeStyle = {
     margin: '20px auto',
 };
 
-const TooltipContentWrapper = styled.div``;
-
 const AccountReceive = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const {
@@ -149,8 +147,8 @@ const AccountReceive = (props: Props) => {
                         <Tooltip
                             arrowContent={<div className="rc-tooltip-arrow-inner" />}
                             placement="bottomRight"
-                            overlay={(
-                                <TooltipContentWrapper>
+                            content={(
+                                <React.Fragment>
                                     {addressUnverified ? (
                                         <React.Fragment>
                                             Unverified address.
@@ -162,7 +160,7 @@ const AccountReceive = (props: Props) => {
                                             {device.connected ? 'Show on TREZOR' : 'Connect your TREZOR to verify address.'}
                                         </React.Fragment>
                                     )}
-                                </TooltipContentWrapper>
+                                </React.Fragment>
                             )}
                         >
                             <EyeButton

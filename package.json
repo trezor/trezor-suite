@@ -37,7 +37,7 @@
         "raf": "^3.4.0",
         "raven-js": "^3.22.3",
         "rc-tooltip": "^3.7.0",
-        "react": "^16.2.0",
+        "react": "^16.4.2",
         "react-css-transition": "^0.7.4",
         "react-dom": "^16.2.0",
         "react-hot-loader": "^4.3.4",

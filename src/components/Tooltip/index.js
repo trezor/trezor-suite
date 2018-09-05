@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import RcTooltip from 'rc-tooltip';
 import colors from 'config/colors';
 import styled from 'styled-components';
@@ -15,6 +15,7 @@ const Wrapper = styled.div`
         position: absolute;
         z-index: 1070;
         display: block;
+        background: red;
         visibility: visible;
         border: 1px solid ${colors.DIVIDER};
         border-radius: 3px;
@@ -170,24 +171,31 @@ const Wrapper = styled.div`
     }
 `;
 
-const Tooltip = ({
-    content, placement = 'bottomRight', children, className,
-}) => (
-    <Wrapper>
-        <RcTooltip
-            className={className}
-            arrowContent={<div className="rc-tooltip-arrow-inner" />}
-            placement={placement}
-            overlay={<TooltipContent>{content}</TooltipContent>}
-        >
-            {children}
-        </RcTooltip>
-    </Wrapper>
-);
+class Tooltip extends Component {
+    constructor(props) {
+        super(props);
+        this.tooltipContainerRef = React.createRef();
+    }
+
+    render() {
+        const { placement, content, children } = this.props;
+        return (
+            <Wrapper innerRef={this.tooltipContainerRef}>
+                <RcTooltip
+                    getTooltipContainer={() => this.tooltipContainerRef.current}
+                    arrowContent={<div className="rc-tooltip-arrow-inner" />}
+                    placement={placement}
+                    overlay={<TooltipContent>{content}</TooltipContent>}
+                >
+                    {children}
+                </RcTooltip>
+            </Wrapper>
+        );
+    }
+}
 
 Tooltip.propTypes = {
     placement: PropTypes.string,
-    className: PropTypes.string,
     children: PropTypes.oneOfType([
         PropTypes.element,
         PropTypes.string,
