@@ -46,7 +46,6 @@ const StyledRcTooltip = styled(RcTooltip)`
         border-style: solid;
     }
 
-
     .rc-tooltip-placement-top .rc-tooltip-arrow,
     .rc-tooltip-placement-topLeft .rc-tooltip-arrow,
     .rc-tooltip-placement-topRight .rc-tooltip-arrow {
@@ -58,7 +57,6 @@ const StyledRcTooltip = styled(RcTooltip)`
     .rc-tooltip-placement-top .rc-tooltip-arrow-inner,
     .rc-tooltip-placement-topLeft .rc-tooltip-arrow-inner,
     .rc-tooltip-placement-topRight .rc-tooltip-arrow-inner {
-        //bottom: 1px;
         bottom: 2px;
         margin-left: -6px;
         border-width: 6px 6px 0;
@@ -153,9 +151,10 @@ const StyledRcTooltip = styled(RcTooltip)`
 `;
 
 const Tooltip = ({
-    content, placement = 'bottomRight', children,
+    content, placement = 'bottomRight', children, className,
 }) => (
     <StyledRcTooltip
+        className={className}
         arrowContent={<div className="rc-tooltip-arrow-inner" />}
         placement={placement}
         overlay={<TooltipContent>{content}</TooltipContent>}
@@ -166,6 +165,7 @@ const Tooltip = ({
 
 Tooltip.propTypes = {
     placement: PropTypes.string,
+    className: PropTypes.string,
     children: PropTypes.oneOfType([
         PropTypes.element,
         PropTypes.string,
