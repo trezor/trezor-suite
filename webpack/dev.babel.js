@@ -29,10 +29,16 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.js?$/,
                 exclude: /node_modules/,
                 use: [
                     'babel-loader',
+                    {
+                        loader: 'eslint-loader',
+                        options: {
+                            emitWarning: true,
+                        },
+                    },
                     {
                         loader: 'stylelint-custom-processor-loader',
                         options: {
