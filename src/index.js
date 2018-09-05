@@ -5,7 +5,7 @@ import baseStyles from 'support/BaseStyles';
 import { onBeforeUnload } from 'actions/WalletActions';
 import 'styles/index.less';
 import App from 'views/index';
-import store from 'support/store';
+import store from 'store';
 
 const root: ?HTMLElement = document.getElementById('root');
 if (root) {
