@@ -1,6 +1,8 @@
 import webpack from 'webpack';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+
 import {
     TREZOR_CONNECT_ROOT,
     TREZOR_CONNECT_HTML,
@@ -43,9 +45,23 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.js?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader'],
+                use: [
+                    'babel-loader',
+                    {
+                        loader: 'eslint-loader',
+                        options: {
+                            emitWarning: true,
+                        },
+                    },
+                    {
+                        loader: 'stylelint-custom-processor-loader',
+                        options: {
+                            configPath: '.stylelintrc',
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(png|gif|jpg)$/,
@@ -133,7 +149,11 @@ module.exports = {
         new CopyWebpackPlugin([
             { from: TREZOR_CONNECT_FILES, to: 'data' },
         ]),
-
+        new BundleAnalyzerPlugin({
+            openAnalyzer: false,
+            analyzerMode: false, // turn on to generate bundle pass 'static'
+            reportFilename: 'bundle-report.html',
+        }),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
