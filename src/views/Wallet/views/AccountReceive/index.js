@@ -183,7 +183,6 @@ const AccountReceive = (props: Props) => {
                     )}
                     {(addressVerified || addressUnverified) && (
                         <QRCode
-                            className="qr"
                             bgColor="#FFFFFF"
                             fgColor="#000000"
                             level="Q"

@@ -42,7 +42,7 @@ const TopNavigationAccount = (props: any) => {
     const basePath = `/device/${urlParams.device}/network/${urlParams.network}/account/${urlParams.account}`;
 
     return (
-        <Wrapper className="account-tabs">
+        <Wrapper>
             <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
             <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
             <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>

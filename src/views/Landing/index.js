@@ -95,7 +95,7 @@ export default (props: Props) => {
                         <Notification
                             title="Initialization error"
                             message="Config files are missing"
-                            className="error"
+                            type="error"
                         />
                     )}
                     <Notifications />
