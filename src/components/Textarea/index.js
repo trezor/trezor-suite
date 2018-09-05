@@ -86,6 +86,11 @@ const TextArea = styled.textarea`
     }
 `;
 
+const TopLabel = styled.span`
+    padding-bottom: 4px;
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 const Textarea = ({
     className,
     placeholder = '',
@@ -96,11 +101,11 @@ const Textarea = ({
     isDisabled,
     onChange,
     isError,
-    label,
+    topLabel,
 }) => (
     <Wrapper>
-        {label && (
-            <Label>{label}</Label>
+        {topLabel && (
+            <TopLabel>{topLabel}</TopLabel>
         )}
         <TextArea
             className={className}
@@ -126,7 +131,7 @@ Textarea.propTypes = {
     placeholder: PropTypes.string,
     value: PropTypes.string,
     isDisabled: PropTypes.bool,
-    label: PropTypes.string,
+    topLabel: PropTypes.node,
 };
 
 export default Textarea;

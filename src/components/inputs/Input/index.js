@@ -28,7 +28,7 @@ const InputIconWrapper = styled.div`
     display: inline-block;
 `;
 
-const InputLabel = styled.span`
+const TopLabel = styled.span`
     padding-bottom: 4px;
     color: ${colors.TEXT_SECONDARY};
 `;
@@ -102,8 +102,8 @@ class Input extends Component {
             <Wrapper
                 className={this.props.className}
             >
-                {this.props.inputLabel && (
-                    <InputLabel>{this.props.inputLabel}</InputLabel>
+                {this.props.topLabel && (
+                    <TopLabel>{this.props.topLabel}</TopLabel>
                 )}
                 <InputWrapper>
                     <InputIconWrapper>
@@ -153,7 +153,7 @@ Input.propTypes = {
     onChange: PropTypes.func,
     state: PropTypes.string,
     bottomText: PropTypes.string,
-    inputLabel: PropTypes.string,
+    topLabel: PropTypes.node,
     sideAddons: PropTypes.arrayOf(PropTypes.node),
     isDisabled: PropTypes.bool,
 };
