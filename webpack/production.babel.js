@@ -2,7 +2,6 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { SRC, BUILD, PUBLIC } from './constants';
 
 module.exports = {
@@ -21,27 +20,6 @@ module.exports = {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
                 use: ['babel-loader'],
-            },
-            {
-                test: /\.less$/,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: { publicPath: '../' },
-                    },
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            minimize: false,
-                        },
-                    },
-                    {
-                        loader: 'less-loader',
-                        options: {
-                            minimize: false,
-                        },
-                    },
-                ],
             },
             {
                 test: /\.(png|gif|jpg)$/,
@@ -82,9 +60,6 @@ module.exports = {
         hints: false,
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: 'css/[name].[hash].css',
-        }),
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
