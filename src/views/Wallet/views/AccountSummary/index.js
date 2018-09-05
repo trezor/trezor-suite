@@ -2,7 +2,6 @@
 import styled from 'styled-components';
 import React from 'react';
 import { H2 } from 'components/Heading';
-import TooltipContent from 'components/TooltipContent';
 import BigNumber from 'bignumber.js';
 import Icon from 'components/Icon';
 import { AsyncSelect } from 'components/Select';
@@ -99,9 +98,9 @@ const AccountSummary = (props: Props) => {
                 <Tooltip
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
                     overlay={(
-                        <TooltipContent>
+                        <React.Fragment>
                             Insert token name, symbol or address to be able to send it.
-                        </TooltipContent>
+                        </React.Fragment>
                     )}
                     placement="top"
                 >

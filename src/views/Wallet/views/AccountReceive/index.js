@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import colors from 'config/colors';
 
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'components/Tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
@@ -147,7 +147,6 @@ const AccountReceive = (props: Props) => {
                     )}
                     {((addressVerified || addressUnverified) && !isAddressVerifying) && (
                         <Tooltip
-                            arrowContent={<div className="rc-tooltip-arrow-inner" />}
                             placement="bottomRight"
                             overlay={(
                                 <TooltipContentWrapper>

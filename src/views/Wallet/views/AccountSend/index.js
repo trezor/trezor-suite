@@ -13,8 +13,7 @@ import colors from 'config/colors';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import Textarea from 'components/Textarea';
-import Tooltip from 'rc-tooltip';
-import TooltipContent from 'components/TooltipContent';
+import Tooltip from 'components/Tooltip';
 import { calculate, validation } from 'actions/SendFormActions';
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import type { Token } from 'flowtype';
@@ -463,14 +462,13 @@ class AccountSend extends Component<Props, State> {
                                         <React.Fragment>
                                             Gas limit
                                             <Tooltip
-                                                arrowContent={<div className="rc-tooltip-arrow-inner" />}
-                                                overlay={(
-                                                    <TooltipContent>
+                                                content={(
+                                                    <React.Fragment>
                                                         Gas limit is the amount of gas to send with your transaction.<br />
                                                         <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
                                                         Increasing this number will not get your TX mined faster.<br />
                                                         Default value for sending {gasLimitTooltipCurrency} is <GreenSpan>{gasLimitTooltipValue}</GreenSpan>
-                                                    </TooltipContent>
+                                                    </React.Fragment>
                                                 )}
                                                 placement="top"
                                             >
@@ -497,14 +495,13 @@ class AccountSend extends Component<Props, State> {
                                         <React.Fragment>
                                             Gas price
                                             <Tooltip
-                                                arrowContent={<div className="rc-tooltip-arrow-inner" />}
-                                                overlay={(
-                                                    <TooltipContent>
+                                                content={(
+                                                    <React.Fragment>
                                                         Gas Price is the amount you pay per unit of gas.<br />
                                                         <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
                                                         Higher the gas price = faster transaction, but more expensive. Recommended is <GreenSpan>{recommendedGasPrice} GWEI.</GreenSpan><br />
                                                         <Link href="https://myetherwallet.github.io/knowledge-base/gas/what-is-gas-ethereum.html" target="_blank" rel="noreferrer noopener" isGreen>Read more</Link>
-                                                    </TooltipContent>
+                                                    </React.Fragment>
                                                 )}
                                                 placement="top"
                                             >
@@ -526,11 +523,10 @@ class AccountSend extends Component<Props, State> {
                                     <React.Fragment>
                                         Data
                                         <Tooltip
-                                            arrowContent={<div className="rc-tooltip-arrow-inner" />}
-                                            overlay={(
-                                                <TooltipContent>
+                                            content={(
+                                                <React.Fragment>
                                                     Data is usually used when you send transactions to contracts.
-                                                </TooltipContent>
+                                                </React.Fragment>
                                             )}
                                             placement="top"
                                         >
