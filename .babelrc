@@ -16,7 +16,10 @@
             "regenerator": true
         }],
         ["module-resolver", {
-            "root": ["./src"]
+            "root": ["./src"],
+            "alias": {
+                "public": ["./public"]
+            }
         }],
         "babel-plugin-styled-components"
     ],

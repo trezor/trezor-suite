@@ -4,12 +4,6 @@ import * as ACCOUNT from 'actions/constants/account';
 import type { Action, TrezorDevice } from 'flowtype';
 import type { State } from 'reducers/AccountsReducer';
 
-export type AccountAction =
-    AccountFromStorageAction
-  | AccountCreateAction
-  | AccountSetBalanceAction
-  | AccountSetNonceAction;
-
 export type AccountFromStorageAction = {
     type: typeof ACCOUNT.FROM_STORAGE,
     payload: State
@@ -39,6 +33,12 @@ export type AccountSetNonceAction = {
     deviceState: string,
     nonce: number
 }
+
+export type AccountAction =
+    AccountFromStorageAction
+    | AccountCreateAction
+    | AccountSetBalanceAction
+    | AccountSetNonceAction;
 
 export const setBalance = (address: string, network: string, deviceState: string, balance: string): Action => ({
     type: ACCOUNT.SET_BALANCE,

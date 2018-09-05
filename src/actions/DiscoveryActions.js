@@ -1,11 +1,9 @@
 /* @flow */
 
 import TrezorConnect from 'trezor-connect';
-import HDKey from 'hdkey';
 import EthereumjsUtil from 'ethereumjs-util';
 import * as DISCOVERY from 'actions/constants/discovery';
 import * as ACCOUNT from 'actions/constants/account';
-import * as TOKEN from 'actions/constants/token';
 import * as NOTIFICATION from 'actions/constants/notification';
 import type {
     ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
@@ -13,17 +11,8 @@ import type {
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
 import * as AccountsActions from './AccountsActions';
 
-import { getNonceAsync, getBalanceAsync, getTokenBalanceAsync } from './Web3Actions';
-import { setBalance as setTokenBalance } from './TokenActions';
+import { getNonceAsync, getBalanceAsync } from './Web3Actions';
 
-
-export type DiscoveryAction = {
-    type: typeof DISCOVERY.FROM_STORAGE,
-    payload: State
-} | DiscoveryStartAction
-  | DiscoveryWaitingAction
-  | DiscoveryStopAction
-  | DiscoveryCompleteAction;
 
 export type DiscoveryStartAction = {
     type: typeof DISCOVERY.START,
@@ -51,144 +40,29 @@ export type DiscoveryCompleteAction = {
     network: string
 }
 
-export const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const selected = getState().wallet.selectedDevice;
-    if (!selected) {
-        // TODO: throw error
-        console.error('Start discovery: no selected device', device);
-        return;
-    } if (selected.path !== device.path) {
-        console.error('Start discovery: requested device is not selected', device, selected);
-        return;
-    } if (!selected.state) {
-        console.warn("Start discovery: Selected device wasn't authenticated yet...");
-        return;
-    } if (selected.connected && !selected.available) {
-        console.warn('Start discovery: Selected device is unavailable...');
-        return;
-    }
-
-    const web3 = getState().web3.find(w3 => w3.network === network);
-    if (!web3) {
-        console.error('Start discovery: Web3 does not exist', network);
-        return;
-    }
-
-    if (!web3.web3.currentProvider.isConnected()) {
-        console.error('Start discovery: Web3 is not connected', network);
-        dispatch({
-            type: DISCOVERY.WAITING_FOR_BACKEND,
-            device,
-            network,
-        });
-        return;
-    }
-
-    const discovery: State = getState().discovery;
-    const discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
+export type DiscoveryAction = {
+    type: typeof DISCOVERY.FROM_STORAGE,
+    payload: State
+} | DiscoveryStartAction
+    | DiscoveryWaitingAction
+    | DiscoveryStopAction
+    | DiscoveryCompleteAction;
 
 
-    if (!selected.connected && (!discoveryProcess || !discoveryProcess.completed)) {
-        dispatch({
-            type: DISCOVERY.WAITING_FOR_DEVICE,
-            device,
-            network,
-        });
-        return;
-    }
+// Because start() is calling begin() and begin() is calling start() one of them must be declared first
+// otherwise eslint will start complaining
+let begin;
 
-    if (!discoveryProcess) {
-        dispatch(begin(device, network));
-    } else if (discoveryProcess.completed && !ignoreCompleted) {
-        dispatch({
-            type: DISCOVERY.COMPLETE,
-            device,
-            network,
-        });
-    } else if (discoveryProcess.interrupted || discoveryProcess.waitingForDevice) {
-        // discovery cycle was interrupted
-        // start from beginning
-        dispatch(begin(device, network));
-    } else {
-        dispatch(discoverAccount(device, discoveryProcess));
-    }
-};
-
-const begin = (device: TrezorDevice, network: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const { config } = getState().localStorage;
-    const coinToDiscover = config.coins.find(c => c.network === network);
-    if (!coinToDiscover) return;
-
-    dispatch({
-        type: DISCOVERY.WAITING_FOR_DEVICE,
-        device,
-        network,
-    });
-
-    // get xpub from TREZOR
-    const response = await TrezorConnect.getPublicKey({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: device.state,
-        },
-        path: coinToDiscover.bip44,
-        keepSession: true, // acquire and hold session
-        useEmptyPassphrase: !device.instance,
-    });
-
-        // handle TREZOR response error
-    if (!response.success) {
-        // TODO: check message
-        console.warn('DISCOVERY ERROR', response);
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                type: 'error',
-                title: 'Discovery error',
-                message: response.payload.error,
-                cancelable: true,
-                actions: [
-                    {
-                        label: 'Try again',
-                        callback: () => {
-                            dispatch(start(device, network));
-                        },
-                    },
-                ],
-            },
-        });
-        return;
-    }
-
-    // check for interruption
-    const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === device.state && d.network === network);
-    if (discoveryProcess && discoveryProcess.interrupted) return;
-
-    const basePath: Array<number> = response.payload.path;
-
-    // send data to reducer
-    dispatch({
-        type: DISCOVERY.START,
-        network: coinToDiscover.network,
-        device,
-        publicKey: response.payload.publicKey,
-        chainCode: response.payload.chainCode,
-        basePath,
-    });
-
-    dispatch(start(device, network));
-};
 
 const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const completed: boolean = discoveryProcess.completed;
+    const { completed } = discoveryProcess;
     discoveryProcess.completed = false;
 
     const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
     const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
     const publicAddress: string = EthereumjsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex');
     const ethAddress: string = EthereumjsUtil.toChecksumAddress(publicAddress);
-    const network = discoveryProcess.network;
+    const { network } = discoveryProcess;
 
     // TODO: check if address was created before
 
@@ -310,6 +184,135 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
             network,
         });
     }
+};
+
+export const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const selected = getState().wallet.selectedDevice;
+    if (!selected) {
+        // TODO: throw error
+        console.error('Start discovery: no selected device', device);
+        return;
+    } if (selected.path !== device.path) {
+        console.error('Start discovery: requested device is not selected', device, selected);
+        return;
+    } if (!selected.state) {
+        console.warn("Start discovery: Selected device wasn't authenticated yet...");
+        return;
+    } if (selected.connected && !selected.available) {
+        console.warn('Start discovery: Selected device is unavailable...');
+        return;
+    }
+
+    const web3 = getState().web3.find(w3 => w3.network === network);
+    if (!web3) {
+        console.error('Start discovery: Web3 does not exist', network);
+        return;
+    }
+
+    if (!web3.web3.currentProvider.isConnected()) {
+        console.error('Start discovery: Web3 is not connected', network);
+        dispatch({
+            type: DISCOVERY.WAITING_FOR_BACKEND,
+            device,
+            network,
+        });
+        return;
+    }
+
+    const { discovery }: { discovery: State } = getState();
+    const discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
+
+
+    if (!selected.connected && (!discoveryProcess || !discoveryProcess.completed)) {
+        dispatch({
+            type: DISCOVERY.WAITING_FOR_DEVICE,
+            device,
+            network,
+        });
+        return;
+    }
+
+    if (!discoveryProcess) {
+        dispatch(begin(device, network));
+    } else if (discoveryProcess.completed && !ignoreCompleted) {
+        dispatch({
+            type: DISCOVERY.COMPLETE,
+            device,
+            network,
+        });
+    } else if (discoveryProcess.interrupted || discoveryProcess.waitingForDevice) {
+        // discovery cycle was interrupted
+        // start from beginning
+        dispatch(begin(device, network));
+    } else {
+        dispatch(discoverAccount(device, discoveryProcess));
+    }
+};
+
+begin = (device: TrezorDevice, network: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { config } = getState().localStorage;
+    const coinToDiscover = config.coins.find(c => c.network === network);
+    if (!coinToDiscover) return;
+
+    dispatch({
+        type: DISCOVERY.WAITING_FOR_DEVICE,
+        device,
+        network,
+    });
+
+    // get xpub from TREZOR
+    const response = await TrezorConnect.getPublicKey({
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
+        },
+        path: coinToDiscover.bip44,
+        keepSession: true, // acquire and hold session
+        useEmptyPassphrase: !device.instance,
+    });
+
+        // handle TREZOR response error
+    if (!response.success) {
+        // TODO: check message
+        console.warn('DISCOVERY ERROR', response);
+        dispatch({
+            type: NOTIFICATION.ADD,
+            payload: {
+                type: 'error',
+                title: 'Discovery error',
+                message: response.payload.error,
+                cancelable: true,
+                actions: [
+                    {
+                        label: 'Try again',
+                        callback: () => {
+                            dispatch(start(device, network));
+                        },
+                    },
+                ],
+            },
+        });
+        return;
+    }
+
+    // check for interruption
+    const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === device.state && d.network === network);
+    if (discoveryProcess && discoveryProcess.interrupted) return;
+
+    const basePath: Array<number> = response.payload.path;
+
+    // send data to reducer
+    dispatch({
+        type: DISCOVERY.START,
+        network: coinToDiscover.network,
+        device,
+        publicKey: response.payload.publicKey,
+        chainCode: response.payload.chainCode,
+        basePath,
+    });
+
+    dispatch(start(device, network));
 };
 
 export const restore = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
