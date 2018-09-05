@@ -1,20 +1,8 @@
 /* @flow */
-
-
-import * as LogActions from 'actions/LogActions';
-import * as STORAGE from 'actions/constants/localStorage';
-import * as WALLET from 'actions/constants/wallet';
 import BigNumber from 'bignumber.js';
 
 import type {
-    Middleware,
-    MiddlewareAPI,
-    MiddlewareDispatch,
     State,
-    Dispatch,
-    Action,
-    AsyncAction,
-    GetState,
     Device,
     TrezorDevice,
     Account,
@@ -65,7 +53,7 @@ export const getDuplicateInstanceNumber = (devices: Array<TrezorDevice>, device:
             }
             return !b.instance || a.instance > b.instance ? 1 : -1;
         });
-    
+
     // calculate new instance number
     const instance: number = affectedDevices.reduce((inst, dev) => (dev.instance ? dev.instance + 1 : inst + 1), 0);
     return instance;

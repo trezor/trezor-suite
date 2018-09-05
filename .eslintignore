@@ -1,4 +1,5 @@
-solidity
+public
 coverage
 images
 node_modules
+src/flowtype/npm
