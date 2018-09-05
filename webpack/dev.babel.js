@@ -1,8 +1,12 @@
 import webpack from 'webpack';
+
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+
 import {
     SRC, BUILD, PORT, PUBLIC,
 } from './constants';
+
 
 module.exports = {
     watch: true,
@@ -91,6 +95,11 @@ module.exports = {
             filename: 'index.html',
             inject: true,
             favicon: `${SRC}images/favicon.ico`,
+        }),
+        new BundleAnalyzerPlugin({
+            openAnalyzer: false,
+            analyzerMode: false, // turn on to generate bundle pass 'static'
+            reportFilename: 'bundle-report.html',
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
