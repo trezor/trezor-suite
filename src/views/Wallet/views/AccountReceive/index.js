@@ -112,8 +112,6 @@ const qrCodeStyle = {
     margin: '20px auto',
 };
 
-const TooltipContentWrapper = styled.div``;
-
 const AccountReceive = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const {
@@ -148,8 +146,8 @@ const AccountReceive = (props: Props) => {
                     {((addressVerified || addressUnverified) && !isAddressVerifying) && (
                         <Tooltip
                             placement="bottomRight"
-                            overlay={(
-                                <TooltipContentWrapper>
+                            content={(
+                                <React.Fragment>
                                     {addressUnverified ? (
                                         <React.Fragment>
                                             Unverified address.
@@ -161,7 +159,7 @@ const AccountReceive = (props: Props) => {
                                             {device.connected ? 'Show on TREZOR' : 'Connect your TREZOR to verify address.'}
                                         </React.Fragment>
                                     )}
-                                </TooltipContentWrapper>
+                                </React.Fragment>
                             )}
                         >
                             <EyeButton
