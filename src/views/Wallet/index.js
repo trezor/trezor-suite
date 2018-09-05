@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
 
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from 'flowtype';
+import type { MapStateToProps } from 'react-redux';
+import type { State } from 'flowtype';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';

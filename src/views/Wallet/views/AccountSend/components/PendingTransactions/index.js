@@ -17,12 +17,6 @@ type Props = {
     network: Coin
 }
 
-type Style = {
-    +color: string,
-    +background: string,
-    +borderColor: string
-}
-
 const Wrapper = styled.div`
     border-top: 1px solid ${colors.DIVIDER};
 `;
