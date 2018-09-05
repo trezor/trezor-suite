@@ -22,7 +22,7 @@ const UnreadableDevice = (props: Props) => (
         <Notification
             title="Unreadable device"
             message="Please install bridge"
-            className="error"
+            type="error"
             cancelable={false}
         />
     </Wrapper>

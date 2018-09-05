@@ -109,12 +109,12 @@ export const Notification = (props: NProps): React$Element<string> => {
     };
 
     return (
-        <Wrapper type={props.className}>
+        <Wrapper type={props.type}>
             {props.loading && <Loader size={50} /> }
             {props.cancelable && (
                 <CloseClick onClick={() => close()}>
                     <Icon
-                        color={getIconColor(props.className)}
+                        color={getIconColor(props.type)}
                         icon={icons.CLOSE}
                         size={20}
                     />
@@ -123,8 +123,8 @@ export const Notification = (props: NProps): React$Element<string> => {
             <Body>
                 <MessageContent>
                     <StyledIcon
-                        color={getIconColor(props.className)}
-                        icon={icons[props.className.toUpperCase()]}
+                        color={getIconColor(props.type)}
+                        icon={icons[props.type.toUpperCase()]}
                     />
                     <Texts>
                         <Title>{ props.title }</Title>
@@ -142,7 +142,7 @@ export const Notification = (props: NProps): React$Element<string> => {
                         {props.actions.map(action => (
                             <NotificationButton
                                 key={action.label}
-                                type={props.className}
+                                type={props.type}
                                 text={action.label}
                                 onClick={() => { close(); action.callback(); }}
                             >{action.label}
@@ -160,7 +160,7 @@ export const NotificationGroup = (props) => {
     return notifications.map((n, i) => (
         <Notification
             key={i}
-            className={n.type}
+            type={n.type}
             title={n.title}
             message={n.message}
             cancelable={n.cancelable}

@@ -20,7 +20,7 @@ export type Props = StateProps & DispatchProps;
 const SelectedAccount = (props: Props) => {
     const device = props.wallet.selectedDevice;
     if (!device || !device.state) {
-        return (<section><Notification className="info" title="Loading device..." /></section>);
+        return (<section><Notification type="info" title="Loading device..." /></section>);
     }
 
     const accountState = props.selectedAccount;
@@ -38,7 +38,7 @@ const SelectedAccount = (props: Props) => {
                 if (device.available) {
                     return (
                         <section>
-                            <Notification className="info" title="Loading accounts..." />
+                            <Notification type="info" title="Loading accounts..." />
                         </section>
                     );
                 }
@@ -46,7 +46,7 @@ const SelectedAccount = (props: Props) => {
                 return (
                     <section>
                         <Notification
-                            className="info"
+                            type="info"
                             title={`Device ${device.instanceLabel} is unavailable`}
                             message="Change passphrase settings to use this device"
                         />
