@@ -89,11 +89,7 @@ class ConnectDevice extends Component<Props> {
                 {this.props.showWebUsb && (
                     <React.Fragment>
                         <P>and</P>
-                        <Button
-                            className="trezor-webusb-button"
-                            isWebUsb
-                        >Check for devices
-                        </Button>
+                        <Button isWebUsb>Check for devices</Button>
                     </React.Fragment>
                 )}
             </Wrapper>

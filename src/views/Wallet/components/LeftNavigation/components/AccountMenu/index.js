@@ -202,7 +202,6 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             } else {
                 discoveryStatus = (
                     <Tooltip
-                        arrowContent={<div className="rc-tooltip-arrow-inner" />}
                         content={<React.Fragment>To add a new account, last account must have some transactions.</React.Fragment>}
                         placement="bottom"
                     >

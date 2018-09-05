@@ -307,7 +307,7 @@ export default class PinModal extends Component<Props, State> {
                             onBlur={() => this.onPassphraseBlur('revision')}
                             tabIndex="2"
                         />
-                        {!match && passphraseRevisionTouched && <PassphraseError className="error">Passphrases do not match</PassphraseError> }
+                        {!match && passphraseRevisionTouched && <PassphraseError>Passphrases do not match</PassphraseError> }
                     </Row>
                 ) }
                 <Row>
