@@ -163,6 +163,11 @@ const GreenSpan = styled.span`
     color: ${colors.GREEN_PRIMARY};
 `;
 
+const InputLabelWrapper = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
 class AccountSend extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
@@ -322,6 +327,7 @@ class AccountSend extends Component<Props, State> {
             gasLimitTooltipValue = network.defaultGasLimit.toString(10);
         }
 
+
         return (
             <SelectedAccount {...this.props}>
                 <Wrapper>
@@ -459,7 +465,7 @@ class AccountSend extends Component<Props, State> {
                                     autoCapitalize="off"
                                     spellCheck="false"
                                     topLabel={(
-                                        <React.Fragment>
+                                        <InputLabelWrapper>
                                             Gas limit
                                             <Tooltip
                                                 content={(
@@ -475,9 +481,10 @@ class AccountSend extends Component<Props, State> {
                                                 <Icon
                                                     icon={ICONS.HELP}
                                                     color={colors.TEXT_SECONDARY}
+                                                    size={24}
                                                 />
                                             </Tooltip>
-                                        </React.Fragment>
+                                        </InputLabelWrapper>
                                     )}
                                     bottomText={errors.gasLimit ? errors.gasLimit : warnings.gasLimit}
                                     value={gasLimit}
@@ -492,7 +499,7 @@ class AccountSend extends Component<Props, State> {
                                     autoCapitalize="off"
                                     spellCheck="false"
                                     topLabel={(
-                                        <React.Fragment>
+                                        <InputLabelWrapper>
                                             Gas price
                                             <Tooltip
                                                 content={(
@@ -508,9 +515,10 @@ class AccountSend extends Component<Props, State> {
                                                 <Icon
                                                     icon={ICONS.HELP}
                                                     color={colors.TEXT_SECONDARY}
+                                                    size={24}
                                                 />
                                             </Tooltip>
-                                        </React.Fragment>
+                                        </InputLabelWrapper>
                                     )}
                                     bottomText={errors.gasPrice ? errors.gasPrice : warnings.gasPrice}
                                     value={gasPrice}
@@ -520,7 +528,7 @@ class AccountSend extends Component<Props, State> {
 
                             <StyledTextarea
                                 topLabel={(
-                                    <React.Fragment>
+                                    <InputLabelWrapper>
                                         Data
                                         <Tooltip
                                             content={(
@@ -533,9 +541,10 @@ class AccountSend extends Component<Props, State> {
                                             <Icon
                                                 icon={ICONS.HELP}
                                                 color={colors.TEXT_SECONDARY}
+                                                size={24}
                                             />
                                         </Tooltip>
-                                    </React.Fragment>
+                                    </InputLabelWrapper>
                                 )}
                                 disabled={networkSymbol !== currency}
                                 value={networkSymbol !== currency ? '' : data}
@@ -553,11 +562,13 @@ class AccountSend extends Component<Props, State> {
                         </AdvancedSettingsWrapper>
                     )}
 
-                    <PendingTransactions
-                        pending={this.props.selectedAccount.pending}
-                        tokens={this.props.selectedAccount.tokens}
-                        network={network}
-                    />
+                    {this.props.selectedAccount.pending.length > 0 && (
+                        <PendingTransactions
+                            pending={this.props.selectedAccount.pending}
+                            tokens={this.props.selectedAccount.tokens}
+                            network={network}
+                        />
+                    )}
                 </Wrapper>
             </SelectedAccount>
         );
