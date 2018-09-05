@@ -73,6 +73,12 @@ const Navigation = styled.nav`
     position: relative;
 `;
 
+const Body = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+`;
+
 const Wallet = (props: WalletContainerProps) => (
     <AppWrapper>
         <Header />
@@ -85,7 +91,9 @@ const Wallet = (props: WalletContainerProps) => (
                 </Navigation>
                 <Notifications />
                 <Log />
-                { props.children }
+                <Body>
+                    { props.children }
+                </Body>
                 <Footer />
             </MainContent>
         </WalletWrapper>
