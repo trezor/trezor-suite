@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import RedBox from 'redbox-react';
 
 class ErrorBoundary extends Component {
@@ -7,7 +8,7 @@ class ErrorBoundary extends Component {
         this.state = { hasError: false, error: false };
     }
 
-    componentDidCatch(error, info) {
+    componentDidCatch(error) {
         this.setState({ hasError: true, error });
     }
 
@@ -18,5 +19,9 @@ class ErrorBoundary extends Component {
         return this.props.children;
     }
 }
+
+ErrorBoundary.propTypes = {
+    children: PropTypes.node,
+};
 
 export default ErrorBoundary;

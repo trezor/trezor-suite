@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import colors from 'config/colors';
 import Icon from 'components/Icon';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';

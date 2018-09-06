@@ -63,11 +63,11 @@ const ErrorMessage = styled.div`
 `;
 
 export default class DuplicateDevice extends Component<Props, State> {
-    keyboardHandler: (event: KeyboardEvent) => void;
-
     state: State;
 
     input: ?HTMLInputElement;
+
+    keyboardHandler: (event: KeyboardEvent) => void;
 
     constructor(props: Props) {
         super(props);
@@ -83,13 +83,6 @@ export default class DuplicateDevice extends Component<Props, State> {
             instanceName: null,
             isUsed: false,
         };
-    }
-
-    keyboardHandler(event: KeyboardEvent): void {
-        if (event.keyCode === 13 && !this.state.isUsed) {
-            event.preventDefault();
-            this.submit();
-        }
     }
 
     componentDidMount(): void {
@@ -115,6 +108,13 @@ export default class DuplicateDevice extends Component<Props, State> {
         });
     }
 
+    keyboardHandler(event: KeyboardEvent): void {
+        if (event.keyCode === 13 && !this.state.isUsed) {
+            event.preventDefault();
+            this.submit();
+        }
+    }
+
     submit() {
         if (!this.props.modal.opened) return;
         const extended: Object = { instanceName: this.state.instanceName, instance: this.state.instance };
@@ -125,7 +125,7 @@ export default class DuplicateDevice extends Component<Props, State> {
         if (!this.props.modal.opened) return null;
 
         const { device } = this.props.modal;
-        const { onCancel, onDuplicateDevice } = this.props.modalActions;
+        const { onCancel } = this.props.modalActions;
         const {
             defaultName,
             instanceName,

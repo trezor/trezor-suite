@@ -89,7 +89,9 @@ class ConnectDevice extends Component<Props> {
                 {this.props.showWebUsb && (
                     <React.Fragment>
                         <P>and</P>
-                        <Button isWebUsb>Check for devices</Button>
+                        <Button isWebUsb>
+                            Check for devices
+                        </Button>
                     </React.Fragment>
                 )}
             </Wrapper>

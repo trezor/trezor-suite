@@ -1,10 +1,7 @@
 /* @flow */
-
-
 import TrezorConnect, {
-    UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT,
+    DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT,
 } from 'trezor-connect';
-import * as TOKEN from 'actions/constants/token';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as WALLET from 'actions/constants/wallet';
@@ -82,6 +79,13 @@ export type TrezorConnectAction = {
 };
 
 
+const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => devices.sort((a, b) => {
+    if (!a.ts || !b.ts) {
+        return -1;
+    }
+    return a.ts > b.ts ? -1 : 1;
+});
+
 export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     // set listeners
     TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
@@ -112,7 +116,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
     });
 
     // $FlowIssue LOCAL not declared
-    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
+    // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
     // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/';
     //window.__TREZOR_CONNECT_SRC = 'https://sisyfos.trezor.io/connect/';
     // window.__TREZOR_CONNECT_SRC = 'https://localhost:8088/';
@@ -131,71 +135,6 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         //     error
         // })
     }
-};
-
-// called after backend was initialized
-// set listeners for connect/disconnect
-export const postInit = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const handleDeviceConnect = (device: Device) => {
-        dispatch(initConnectedDevice(device));
-    };
-
-    TrezorConnect.off(DEVICE.CONNECT, handleDeviceConnect);
-    TrezorConnect.off(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
-
-    TrezorConnect.on(DEVICE.CONNECT, handleDeviceConnect);
-    TrezorConnect.on(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
-
-    const { devices } = getState();
-
-    const { initialPathname, initialParams } = getState().wallet;
-
-    if (initialPathname) {
-        dispatch({
-            type: WALLET.SET_INITIAL_URL,
-            // pathname: null,
-            // params: null
-        });
-    }
-
-    if (devices.length > 0) {
-        const unacquired: ?TrezorDevice = devices.find(d => d.features);
-        if (unacquired) {
-            dispatch(onSelectDevice(unacquired));
-        } else {
-            const latest: Array<TrezorDevice> = sortDevices(devices);
-            const firstConnected: ?TrezorDevice = latest.find(d => d.connected);
-            dispatch(onSelectDevice(firstConnected || latest[0]));
-
-            // TODO
-            if (initialParams) {
-                if (!initialParams.hasOwnProperty('network') && initialPathname !== getState().router.location.pathname) {
-                    // dispatch( push(initialPathname) );
-                } else {
-
-                }
-            }
-        }
-    }
-};
-
-const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => devices.sort((a, b) => {
-    if (!a.ts || !b.ts) {
-        return -1;
-    }
-    return a.ts > b.ts ? -1 : 1;
-});
-
-export const initConnectedDevice = (device: TrezorDevice | Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const selected = getState().wallet.selectedDevice;
-    // if (!selected || (selected && selected.state)) {
-    dispatch(onSelectDevice(device));
-    // }
-    // if (device.unacquired && selected && selected.path !== device.path && !selected.connected) {
-    //     dispatch( onSelectDevice(device) );
-    // } else if (!selected) {
-    //     dispatch( onSelectDevice(device) );
-    // }
 };
 
 // selection from Aside dropdown button
@@ -238,6 +177,62 @@ export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => (d
 
         if (urlParams.deviceInstance !== instance || urlParams.device !== deviceId) {
             dispatch(push(url));
+        }
+    }
+};
+
+export const initConnectedDevice = (device: TrezorDevice | Device): ThunkAction => (dispatch: Dispatch/* , getState: GetState */): void => {
+    // const selected = getState().wallet.selectedDevice;
+    // if (!selected || (selected && selected.state)) {
+    dispatch(onSelectDevice(device));
+    // }
+    // if (device.unacquired && selected && selected.path !== device.path && !selected.connected) {
+    //     dispatch( onSelectDevice(device) );
+    // } else if (!selected) {
+    //     dispatch( onSelectDevice(device) );
+    // }
+};
+
+// called after backend was initialized
+// set listeners for connect/disconnect
+export const postInit = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const handleDeviceConnect = (device: Device) => {
+        dispatch(initConnectedDevice(device));
+    };
+
+    TrezorConnect.off(DEVICE.CONNECT, handleDeviceConnect);
+    TrezorConnect.off(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
+
+    TrezorConnect.on(DEVICE.CONNECT, handleDeviceConnect);
+    TrezorConnect.on(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
+
+    const { devices } = getState();
+
+    const { initialPathname, initialParams } = getState().wallet;
+
+    if (initialPathname) {
+        dispatch({
+            type: WALLET.SET_INITIAL_URL,
+            // pathname: null,
+            // params: null
+        });
+    }
+
+    if (devices.length > 0) {
+        const unacquired: ?TrezorDevice = devices.find(d => d.features);
+        if (unacquired) {
+            dispatch(onSelectDevice(unacquired));
+        } else {
+            const latest: Array<TrezorDevice> = sortDevices(devices);
+            const firstConnected: ?TrezorDevice = latest.find(d => d.connected);
+            dispatch(onSelectDevice(firstConnected || latest[0]));
+
+            // TODO
+            if (initialParams) {
+                if (!initialParams.hasOwnProperty('network') && initialPathname !== getState().router.location.pathname) {
+                    // dispatch( push(initialPathname) );
+                }
+            }
         }
     }
 };
@@ -388,7 +383,7 @@ export function acquire(): AsyncAction {
     };
 }
 
-export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (dispatch: Dispatch): void => {
     if (device.features) {
         const devUrl: string = `${device.features.device_id}${device.instance ? `:${device.instance}` : ''}`;
         dispatch(push(`/device/${devUrl}/settings`));

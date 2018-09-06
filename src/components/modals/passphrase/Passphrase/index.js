@@ -4,14 +4,13 @@ import raf from 'raf';
 import colors from 'config/colors';
 import P from 'components/Paragraph';
 import { FONT_SIZE } from 'config/variables';
-import { H2 } from 'components/Heading';
 import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
 import Button from 'components/Button';
 import Input from 'components/inputs/Input';
 import styled from 'styled-components';
 
-import type { Props } from './index';
+import type { Props } from '../../index';
 
 const Wrapper = styled.div`
     padding: 24px 48px;
@@ -55,14 +54,6 @@ type State = {
 }
 
 export default class PinModal extends Component<Props, State> {
-    keyboardHandler: (event: KeyboardEvent) => void;
-
-    state: State;
-
-    passphraseInput: ?HTMLInputElement;
-
-    passphraseRevisionInput: ?HTMLInputElement;
-
     constructor(props: Props) {
         super(props);
 
@@ -91,6 +82,15 @@ export default class PinModal extends Component<Props, State> {
         };
     }
 
+    keyboardHandler: (event: KeyboardEvent) => void;
+
+    state: State;
+
+    passphraseInput: ?HTMLInputElement;
+
+    passphraseRevisionInput: ?HTMLInputElement;
+
+
     keyboardHandler(event: KeyboardEvent): void {
         if (event.keyCode === 13) {
             event.preventDefault();
@@ -108,6 +108,7 @@ export default class PinModal extends Component<Props, State> {
         }
     }
 
+
     componentDidMount(): void {
         // one time autofocus
         if (this.passphraseInput) this.passphraseInput.focus();
@@ -123,15 +124,6 @@ export default class PinModal extends Component<Props, State> {
         //     }
         // };
     }
-
-    componentWillUnmount(): void {
-        window.removeEventListener('keydown', this.keyboardHandler, false);
-        // this.passphraseInput.type = 'text';
-        // this.passphraseInput.style.display = 'none';
-        // this.passphraseRevisionInput.type = 'text';
-        // this.passphraseRevisionInput.style.display = 'none';
-    }
-
 
     // we don't want to keep password inside "value" attribute,
     // so we need to replace it thru javascript
@@ -164,21 +156,30 @@ export default class PinModal extends Component<Props, State> {
         }
     }
 
+    componentWillUnmount(): void {
+        window.removeEventListener('keydown', this.keyboardHandler, false);
+        // this.passphraseInput.type = 'text';
+        // this.passphraseInput.style.display = 'none';
+        // this.passphraseRevisionInput.type = 'text';
+        // this.passphraseRevisionInput.style.display = 'none';
+    }
+
+
     onPassphraseChange = (input: string, value: string): void => {
         // https://codepen.io/MiDri/pen/PGqvrO
         // or
         // https://github.com/zakangelle/react-password-mask/blob/master/src/index.js
         if (input === 'passphrase') {
-            this.setState({
-                match: this.state.singleInput || this.state.passphraseRevision === value,
+            this.setState(previousState => ({
+                match: previousState.singleInput || previousState.passphraseRevision === value,
                 passphrase: value,
-            });
+            }));
         } else {
-            this.setState({
-                match: this.state.passphrase === value,
+            this.setState(previousState => ({
+                match: previousState.passphrase === value,
                 passphraseRevision: value,
                 passphraseRevisionTouched: true,
-            });
+            }));
         }
     }
 

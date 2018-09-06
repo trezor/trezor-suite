@@ -1,8 +1,5 @@
 /* @flow */
-
-
-import { DEVICE } from 'trezor-connect';
-import { LOCATION_CHANGE, push, replace } from 'react-router-redux';
+import { LOCATION_CHANGE/* , replace */ } from 'react-router-redux';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as WALLET from 'actions/constants/wallet';
 import * as NotificationActions from 'actions/NotificationActions';
@@ -11,12 +8,7 @@ import type {
     Middleware,
     MiddlewareAPI,
     MiddlewareDispatch,
-    State,
-    Dispatch,
     Action,
-    ThunkAction,
-    AsyncAction,
-    GetState,
     RouterLocationState,
     TrezorDevice,
 } from 'flowtype';
@@ -51,7 +43,7 @@ const validation = (api: MiddlewareAPI, params: RouterLocationState): boolean =>
 
         let device: ?TrezorDevice;
         if (params.hasOwnProperty('deviceInstance')) {
-            device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === parseInt(params.deviceInstance));
+            device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === parseInt(params.deviceInstance, 10));
         } else {
             device = devices.find(d => d.path === params.device || (d.features && d.features.device_id === params.device));
         }
@@ -61,24 +53,19 @@ const validation = (api: MiddlewareAPI, params: RouterLocationState): boolean =>
 
     if (params.hasOwnProperty('network')) {
         const { config } = api.getState().localStorage;
-        const coin = config.coins.find(coin => coin.network === params.network);
+        const coin = config.coins.find(c => c.network === params.network);
         if (!coin) return false;
         if (!params.account) return false;
     }
 
-    if (params.account) {
+    // if (params.account) {
 
-    }
+    // }
 
     return true;
 };
 
 let __unloading: boolean = false;
-
-const LandingURLS: Array<string> = [
-    '/',
-    '/bridge',
-];
 
 const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
     if (action.type === WALLET.ON_BEFORE_UNLOAD) {

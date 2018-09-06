@@ -22,7 +22,7 @@ const mergeDevices = (current: TrezorDevice, upcoming: Device | TrezorDevice): T
     //     }
     // }
 
-    let instanceLabel = current.instanceLabel;
+    let { instanceLabel } = current;
     if (upcoming.label !== current.label) {
         instanceLabel = upcoming.label;
         if (typeof current.instance === 'number') {

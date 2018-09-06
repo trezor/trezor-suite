@@ -15,8 +15,6 @@ const Wrapper = styled.div`
 class Indicator extends Component<Props, State> {
     reposition: () => void;
 
-    state: State;
-
     constructor(props: Props) {
         super(props);
 
@@ -29,6 +27,8 @@ class Indicator extends Component<Props, State> {
 
         this.reposition = this.reposition.bind(this);
     }
+
+    state: State;
 
     handleResize() {
         this.reposition();
@@ -43,7 +43,7 @@ class Indicator extends Component<Props, State> {
         window.removeEventListener('resize', this.reposition, false);
     }
 
-    componentDidUpdate(newProps: Props) {
+    componentDidUpdate() {
         this.reposition();
     }
 

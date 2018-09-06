@@ -20,13 +20,13 @@ import TopNavigationAccount from './components/TopNavigationAccount';
 import TopNavigationDeviceSettings from './components/TopNavigationDeviceSettings';
 
 type WalletContainerProps = {
-    wallet: $ElementType<State, 'wallet'>,
+    // wallet: $ElementType<State, 'wallet'>,
     children?: React.Node
 }
 
-type ContentProps = {
-    children?: React.Node
-}
+// type ContentProps = {
+//     children?: React.Node
+// }
 
 const AppWrapper = styled.div`
     position: relative;
@@ -101,7 +101,7 @@ const Wallet = (props: WalletContainerProps) => (
     </AppWrapper>
 );
 
-const mapStateToProps: MapStateToProps<State, {}, WalletContainerProps> = (state: State, own: {}): WalletContainerProps => ({
+const mapStateToProps: MapStateToProps<State, {}, WalletContainerProps> = (state: State): WalletContainerProps => ({
     wallet: state.wallet,
 });
 

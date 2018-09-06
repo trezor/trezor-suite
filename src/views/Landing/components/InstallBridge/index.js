@@ -13,16 +13,16 @@ import P from 'components/Paragraph';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 
-type State = {
-    version: string;
-    target: ?InstallTarget;
-    url: string;
-}
-
 type InstallTarget = {
     id: string;
     value: string;
     label: string;
+}
+
+type State = {
+    version: string;
+    target: ?InstallTarget;
+    url: string;
 }
 
 // import type { Props } from './index';

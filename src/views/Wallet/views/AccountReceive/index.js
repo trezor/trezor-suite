@@ -25,6 +25,7 @@ const AddressWrapper = styled.div`
     padding: 0px 48px;
     display: flex;
     flex-wrap: wrap;
+    flex-direction: ${props => (props.isShowingQrCode ? 'column' : 'row')};
 `;
 
 const ValueWrapper = styled.div`
@@ -139,7 +140,9 @@ const AccountReceive = (props: Props) => {
         <SelectedAccount {...props}>
             <Wrapper>
                 <StyledH2>Receive Ethereum or tokens</StyledH2>
-                <AddressWrapper>
+                <AddressWrapper
+                    isShowingQrCode={addressVerified || addressUnverified}
+                >
                     {isAddressVerifying && (
                         <AddressInfoText>Confirm address on TREZOR</AddressInfoText>
                     )}

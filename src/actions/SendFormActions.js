@@ -5,37 +5,29 @@ import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsUnits from 'ethereumjs-units';
 import EthereumjsTx from 'ethereumjs-tx';
 import TrezorConnect from 'trezor-connect';
-import { push } from 'react-router-redux';
 import BigNumber from 'bignumber.js';
-import { strip } from 'utils/ethUtils';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SEND from 'actions/constants/send';
 
 import { initialState } from 'reducers/SendFormReducer';
-import { findAccount } from 'reducers/AccountsReducer';
 import { findToken } from 'reducers/TokensReducer';
-import { findDevice } from 'reducers/utils';
-import * as stateUtils from 'reducers/utils';
+import { findDevice, getPendingAmount, getPendingNonce } from 'reducers/utils';
 
 import type {
-    PendingTx,
     Dispatch,
     GetState,
     Action,
     ThunkAction,
     AsyncAction,
-    RouterLocationState,
     TrezorDevice,
 } from 'flowtype';
-import type { State as AccountState } from 'reducers/SelectedAccountReducer';
-import type { Web3Instance } from 'reducers/Web3Reducer';
-import type { Config, Coin } from 'reducers/LocalStorageReducer';
+import type { Coin } from 'reducers/LocalStorageReducer';
 import type { Token } from 'reducers/TokensReducer';
 import type { State, FeeLevel } from 'reducers/SendFormReducer';
 import type { Account } from 'reducers/AccountsReducer';
 import type { Props } from 'views/Wallet/views/AccountSend/Container';
 import * as SessionStorageActions from './SessionStorageActions';
-import { estimateGas, getGasPrice, pushTx } from './Web3Actions';
+import { estimateGas, pushTx } from './Web3Actions';
 
 export type SendTxAction = {
     type: typeof SEND.TX_COMPLETE,
@@ -155,7 +147,6 @@ export const calculate = (prevProps: Props, props: Props) => {
     } = props.selectedAccount;
     if (!account) return;
 
-    const prevState = prevProps.sendForm;
     const state = props.sendForm;
     const isToken: boolean = state.currency !== state.networkSymbol;
 
@@ -169,7 +160,7 @@ export const calculate = (prevProps: Props, props: Props) => {
 
 
     if (state.setMax) {
-        const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, state.currency, isToken);
+        const pendingAmount: BigNumber = getPendingAmount(pending, state.currency, isToken);
 
         if (isToken) {
             const token: ?Token = findToken(tokens, account.address, state.currency, account.deviceState);
@@ -277,7 +268,7 @@ export const init = (): ThunkAction => (dispatch: Dispatch, getState: GetState):
     });
 };
 
-export const toggleAdvanced = (address: string): Action => ({
+export const toggleAdvanced = (/* address: string */): Action => ({
     type: SEND.TOGGLE_ADVANCED,
 });
 
@@ -286,7 +277,6 @@ const addressValidation = (): ThunkAction => (dispatch: Dispatch, getState: GetS
     const {
         account,
         network,
-        tokens,
     } = getState().selectedAccount;
     if (!account || !network) return;
 
@@ -310,7 +300,7 @@ const addressValidation = (): ThunkAction => (dispatch: Dispatch, getState: GetS
         } else {
             const otherNetworkAccount = savedAccounts[0];
             const device: ?TrezorDevice = findDevice(getState().devices, otherNetworkAccount.deviceID, otherNetworkAccount.deviceState);
-            const coins = getState().localStorage.config.coins;
+            const { coins } = getState().localStorage.config;
             const otherNetwork: ?Coin = coins.find(c => c.network === otherNetworkAccount.network);
             if (device && otherNetwork) {
                 warnings.address = `Looks like it's ${device.instanceLabel} Account #${(otherNetworkAccount.index + 1)} address of ${otherNetwork.name} network`;
@@ -351,7 +341,7 @@ export const validation = (props: Props): void => {
     if (state.untouched) return;
     // valid address
     if (state.touched.address) {
-        if (state.address.length < 1) {
+        /* if (state.address.length < 1) {
             errors.address = 'Address is not set';
         } else if (!EthereumjsUtil.isValidAddress(state.address)) {
             errors.address = 'Address is not valid';
@@ -361,6 +351,20 @@ export const validation = (props: Props): void => {
             if (state.warnings.address) {
                 warnings.address = state.warnings.address;
             } else if (state.infos.address) {
+                infos.address = state.infos.address;
+            }
+        } */
+
+        /* eslint (no-lonely-if) */
+        if (state.address.length < 1) {
+            errors.address = 'Address is not set';
+        } else if (!EthereumjsUtil.isValidAddress(state.address)) {
+            errors.address = 'Address is not valid';
+        } else if (state.warnings.address) {
+            // address warning or info are set in addressValidation ThunkAction
+            // do not override this
+            warnings.address = state.warnings.address;
+            if (state.infos.address) {
                 infos.address = state.infos.address;
             }
         }
@@ -376,7 +380,7 @@ export const validation = (props: Props): void => {
             errors.amount = 'Amount is not a number';
         } else {
             let decimalRegExp: RegExp;
-            const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, state.currency, state.currency !== state.networkSymbol);
+            const pendingAmount: BigNumber = getPendingAmount(pending, state.currency, state.currency !== state.networkSymbol);
 
             if (state.currency !== state.networkSymbol) {
                 const token = findToken(tokens, account.address, state.currency, account.deviceState);
@@ -612,7 +616,7 @@ export const updateFeeLevels = (): ThunkAction => (dispatch: Dispatch, getState:
         // update only gasPrice
         currentState.selectedFeeLevel.gasPrice = currentState.recommendedGasPrice;
         // leave gas limit as it was
-        gasLimit = currentState.gasLimit;
+        ({ gasLimit } = currentState);
     }
 
     const feeLevels: Array<FeeLevel> = getFeeLevels(network.symbol, currentState.recommendedGasPrice, gasLimit, currentState.selectedFeeLevel);
@@ -659,9 +663,8 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => (dispatch: Di
     });
 };
 
-export const onGasLimitChange = (gasLimit: string, updateFeeLevels: boolean = false): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const onGasLimitChange = (gasLimit: string/* , shouldUpdateFeeLevels: boolean = false */): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const currentState: State = getState().sendForm;
-    const isToken: boolean = currentState.currency !== currentState.networkSymbol;
 
     const touched = { ...currentState.touched };
     touched.gasLimit = true;
@@ -704,34 +707,6 @@ export const onNonceChange = (nonce: string): AsyncAction => async (dispatch: Di
     });
 };
 
-export const onDataChange = (data: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const currentState: State = getState().sendForm;
-    const touched = { ...currentState.touched };
-    touched.data = true;
-
-    const state: State = {
-        ...currentState,
-        calculatingGasLimit: true,
-        untouched: false,
-        touched,
-        data,
-    };
-
-    if (currentState.selectedFeeLevel.value !== 'Custom') {
-        const customLevel = currentState.feeLevels.find(f => f.value === 'Custom');
-        if (!customLevel) return;
-        state.selectedFeeLevel = customLevel;
-    }
-
-    dispatch({
-        type: SEND.DATA_CHANGE,
-        state,
-    });
-
-    dispatch(estimateGasPrice());
-};
-
-
 const estimateGasPrice = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const {
         web3,
@@ -771,6 +746,33 @@ const estimateGasPrice = (): AsyncAction => async (dispatch: Dispatch, getState:
     }
 };
 
+export const onDataChange = (data: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const currentState: State = getState().sendForm;
+    const touched = { ...currentState.touched };
+    touched.data = true;
+
+    const state: State = {
+        ...currentState,
+        calculatingGasLimit: true,
+        untouched: false,
+        touched,
+        data,
+    };
+
+    if (currentState.selectedFeeLevel.value !== 'Custom') {
+        const customLevel = currentState.feeLevels.find(f => f.value === 'Custom');
+        if (!customLevel) return;
+        state.selectedFeeLevel = customLevel;
+    }
+
+    dispatch({
+        type: SEND.DATA_CHANGE,
+        state,
+    });
+
+    dispatch(estimateGasPrice());
+};
+
 export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const {
         account,
@@ -806,7 +808,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         txAddress = token.address;
     }
 
-    const pendingNonce: number = stateUtils.getPendingNonce(pending);
+    const pendingNonce: number = getPendingNonce(pending);
     const nonce = pendingNonce > 0 && pendingNonce >= account.nonce ? pendingNonce : account.nonce;
 
     console.warn('NONCE', nonce, account.nonce, pendingNonce);
