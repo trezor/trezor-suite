@@ -33,8 +33,6 @@ import {
     CardanoGetAddress,
     CardanoGetXpub,
     CardanoSignTx,
-    CardanoSignMessage,
-    CardanoVerifyMessage,
     LiskGetAddress,
     LiskGetXpub,
     LiskSignTx,
@@ -71,8 +69,6 @@ export default (
                     <Route exact path="/cardano-getaddress" component={ CardanoGetAddress } />
                     <Route exact path="/cardano-getxpub" component={ CardanoGetXpub } />
                     <Route exact path="/cardano-signtx" component={ CardanoSignTx } />
-                    <Route exact path="/cardano-signmessage" component={ CardanoSignMessage } />
-                    <Route exact path="/cardano-verifymessage" component={ CardanoVerifyMessage } />
                     <Route exact path="/lisk-getaddress" component={ LiskGetAddress } />
                     <Route exact path="/lisk-getxpub" component={ LiskGetXpub } />
                     <Route exact path="/lisk-signtx" component={ LiskSignTx } />
