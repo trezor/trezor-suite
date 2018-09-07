@@ -44,8 +44,6 @@ export default class Main extends Component {
                     { navLink('/cardano-getaddress', 'Cardano Get Address') }
                     { navLink('/cardano-getxpub', 'Cardano Get Public Key') }
                     { navLink('/cardano-signtx', 'Cardano Sign Transaction') }
-                    { navLink('/cardano-signmessage', 'Cardano Sign Message') }
-                    { navLink('/cardano-verifymessage', 'Cardano Verify Message') }
 
                     { navLink('/lisk-getaddress', 'Lisk Get Address') }
                     { navLink('/lisk-getxpub', 'Lisk Get Public Key') }

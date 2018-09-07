@@ -26,8 +26,6 @@ export { default as PushTx } from './PushTx';
 export { default as CardanoGetAddress } from './CardanoGetAddress';
 export { default as CardanoGetXpub } from './CardanoGetXpub';
 export { default as CardanoSignTx } from './CardanoSignTx';
-export { default as CardanoSignMessage } from './CardanoSignMessage';
-export { default as CardanoVerifyMessage } from './CardanoVerifyMessage';
 
 export { default as LiskGetAddress } from './LiskGetAddress';
 export { default as LiskGetXpub } from './LiskGetXpub';
