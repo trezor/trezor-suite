@@ -28,7 +28,7 @@ export type ReceiveAction = {
     type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS
 }
 
-export const init = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const init = (): ThunkAction => (dispatch: Dispatch): void => {
     const state: State = {
         ...initialState,
     };

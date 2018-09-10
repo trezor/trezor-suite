@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import Icon from 'components/Icon';
 import colors from 'config/colors';
 import { TRANSITION } from 'config/variables';
 
@@ -82,7 +81,7 @@ const Wrapper = styled.button`
             left: 18px;
         }
 
-        &:after {
+    &:after {
             width: 2px;
             height: 12px;
             left: 23px;
@@ -107,66 +106,47 @@ const Wrapper = styled.button`
     `}
 `;
 
-const IconWrapper = styled.span`
-    ${props => ((props.hasChildren && !props.isRight) ? 'margin: 0 8px 0 -4px;' : '')};
-    ${props => ((props.hasChildren && props.isRight) ? 'margin: 0 -4px 0 8px;' : '')};
-`;
-
 const Button = ({
     children,
     className,
-    icon,
     onClick = () => { },
+    onMouseEnter,
+    onMouseLeave,
+    onFocus,
     isDisabled = false,
     isWhite = false,
     isWebUsb = false,
     isTransparent = false,
-    hasIconRight = false,
-}) => (
-    <Wrapper
-        className={className}
-        icon={icon}
-        onClick={onClick}
-        isDisabled={isDisabled}
-        isWhite={isWhite}
-        isWebUsb={isWebUsb}
-        isTransparent={isTransparent}
-    >
-        {hasIconRight && children}
-        {icon && (
-            <IconWrapper
-                hasChildren={!!children}
-                isRight={hasIconRight}
-            >
-                <Icon
-                    icon={icon.type}
-                    color={icon.color}
-                    size={icon.size}
-                    isActive={icon.isActive}
-                    canAnimate={icon.canAnimate}
-                />
-            </IconWrapper>
-        )}
-        {!hasIconRight && children}
-    </Wrapper>
-);
+}) => {
+    const newClassName = isWebUsb ? `${className} trezor-webusb-button` : className;
+    return (
+        <Wrapper
+            className={newClassName}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onFocus={onFocus}
+            isDisabled={isDisabled}
+            isWhite={isWhite}
+            isWebUsb={isWebUsb}
+            isTransparent={isTransparent}
+        >
+            {children}
+        </Wrapper>
+    );
+};
 
 Button.propTypes = {
-    children: PropTypes.element.isRequired,
+    children: PropTypes.node.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
+    onMouseEnter: PropTypes.func,
+    onMouseLeave: PropTypes.func,
+    onFocus: PropTypes.func,
     isDisabled: PropTypes.bool,
     isWhite: PropTypes.bool,
     isWebUsb: PropTypes.bool,
     isTransparent: PropTypes.bool,
-    icon: PropTypes.shape({
-        type: PropTypes.arrayOf(PropTypes.string).isRequired,
-        color: PropTypes.string,
-        size: PropTypes.number,
-        isActive: PropTypes.bool,
-        canAnimate: PropTypes.bool,
-    }),
-    hasIconRight: PropTypes.bool,
 };
 
 export default Button;

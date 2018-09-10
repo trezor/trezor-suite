@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
 
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from 'flowtype';
+import type { MapStateToProps } from 'react-redux';
+import type { State } from 'flowtype';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -20,13 +20,13 @@ import TopNavigationAccount from './components/TopNavigationAccount';
 import TopNavigationDeviceSettings from './components/TopNavigationDeviceSettings';
 
 type WalletContainerProps = {
-    wallet: $ElementType<State, 'wallet'>,
+    // wallet: $ElementType<State, 'wallet'>,
     children?: React.Node
 }
 
-type ContentProps = {
-    children?: React.Node
-}
+// type ContentProps = {
+//     children?: React.Node
+// }
 
 const AppWrapper = styled.div`
     position: relative;
@@ -73,6 +73,12 @@ const Navigation = styled.nav`
     position: relative;
 `;
 
+const Body = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+`;
+
 const Wallet = (props: WalletContainerProps) => (
     <AppWrapper>
         <Header />
@@ -85,7 +91,9 @@ const Wallet = (props: WalletContainerProps) => (
                 </Navigation>
                 <Notifications />
                 <Log />
-                { props.children }
+                <Body>
+                    { props.children }
+                </Body>
                 <Footer />
             </MainContent>
         </WalletWrapper>
@@ -93,7 +101,7 @@ const Wallet = (props: WalletContainerProps) => (
     </AppWrapper>
 );
 
-const mapStateToProps: MapStateToProps<State, {}, WalletContainerProps> = (state: State, own: {}): WalletContainerProps => ({
+const mapStateToProps: MapStateToProps<State, {}, WalletContainerProps> = (state: State): WalletContainerProps => ({
     wallet: state.wallet,
 });
 

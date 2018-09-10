@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import colors from 'config/colors';
 import styled, { keyframes } from 'styled-components';
 
 // TODO: make animation of icons better
@@ -23,16 +24,25 @@ const rotate180down = keyframes`
 
 const SvgWrapper = styled.svg`
     animation: ${props => (props.canAnimate ? (props.isActive ? rotate180up : rotate180down) : null)} 0.2s linear 1 forwards;
+
+    :hover {
+        path {
+            fill: ${props => props.hoverColor || colors.TEXT_SECONDARY}
+        }
+    }
 `;
 
-const Path = styled.path``;
+const Path = styled.path`
+    fill: ${props => props.color};
+`;
 
 const Icon = ({
     icon,
     size = 32,
-    color = 'black',
+    color = colors.TEXT_SECONDARY,
     isActive,
     canAnimate,
+    hoverColor,
     className,
     onMouseEnter,
     onMouseLeave,
@@ -42,6 +52,7 @@ const Icon = ({
     <SvgWrapper
         className={className}
         canAnimate={canAnimate}
+        hoverColor={hoverColor}
         isActive={isActive}
         style={{
             display: 'inline-block',
@@ -59,7 +70,7 @@ const Icon = ({
             <Path
                 key={path}
                 isActive={isActive}
-                style={{ fill: color }}
+                color={color}
                 d={path}
             />
         ))}
@@ -68,6 +79,7 @@ const Icon = ({
 
 Icon.propTypes = {
     className: PropTypes.string,
+    hoverColor: PropTypes.string,
     canAnimate: PropTypes.bool,
     icon: PropTypes.arrayOf(PropTypes.string).isRequired,
     size: PropTypes.number,

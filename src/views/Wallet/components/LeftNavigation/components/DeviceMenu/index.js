@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
-import DeviceHeader from 'components/DeviceHeader';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import { isWebUSB } from 'utils/device';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
@@ -39,6 +38,13 @@ class DeviceMenu extends Component<Props> {
         this.blurHandler = this.blurHandler.bind(this);
     }
 
+    componentDidMount(): void {
+        window.addEventListener('mousedown', this.mouseDownHandler, false);
+        // window.addEventListener('blur', this.blurHandler, false);
+        const { transport } = this.props.connect;
+        if (transport && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
+    }
+
     componentDidUpdate() {
         const { transport } = this.props.connect;
         if (isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
@@ -61,15 +67,8 @@ class DeviceMenu extends Component<Props> {
         }
     }
 
-    blurHandler(event: FocusEvent): void {
+    blurHandler(): void {
         this.props.toggleDeviceDropdown(false);
-    }
-
-    componentDidMount(): void {
-        window.addEventListener('mousedown', this.mouseDownHandler, false);
-        // window.addEventListener('blur', this.blurHandler, false);
-        const { transport } = this.props.connect;
-        if (transport && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
     }
 
     onDeviceMenuClick(item: DeviceMenuItem, device: TrezorDevice): void {

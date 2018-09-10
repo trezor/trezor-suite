@@ -4,7 +4,12 @@ import styled, { css } from 'styled-components';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
 import Icon from 'components/Icon';
-import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
+import {
+    FONT_SIZE,
+    FONT_WEIGHT,
+    TRANSITION,
+    FONT_FAMILY,
+} from 'config/variables';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -23,7 +28,7 @@ const InputIconWrapper = styled.div`
     display: inline-block;
 `;
 
-const InputLabel = styled.span`
+const TopLabel = styled.span`
     padding-bottom: 4px;
     color: ${colors.TEXT_SECONDARY};
 `;
@@ -33,8 +38,9 @@ const StyledInput = styled.input`
     padding: 6px 12px;
 
     line-height: 1.42857143;
+    font-family: ${FONT_FAMILY.MONOSPACE};
     font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.SMALLEST};
+    font-weight: ${FONT_WEIGHT.BASE};
     color: ${colors.TEXT_PRIMARY};
 
     border-radius: 2px;
@@ -96,8 +102,8 @@ class Input extends Component {
             <Wrapper
                 className={this.props.className}
             >
-                {this.props.inputLabel && (
-                    <InputLabel>{this.props.inputLabel}</InputLabel>
+                {this.props.topLabel && (
+                    <TopLabel>{this.props.topLabel}</TopLabel>
                 )}
                 <InputWrapper>
                     <InputIconWrapper>
@@ -147,7 +153,7 @@ Input.propTypes = {
     onChange: PropTypes.func,
     state: PropTypes.string,
     bottomText: PropTypes.string,
-    inputLabel: PropTypes.string,
+    topLabel: PropTypes.node,
     sideAddons: PropTypes.arrayOf(PropTypes.node),
     isDisabled: PropTypes.bool,
 };

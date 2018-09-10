@@ -2,23 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import colors from 'config/colors';
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
 
 const Wrapper = styled.div`
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 `;
 
 const disabledColor = colors.TEXT_PRIMARY;
 
 const TextArea = styled.textarea`
     width: 100%;
-    padding: 5px 10px;
+    padding: 6px 12px;
     box-sizing: border-box;
     min-height: 25px;
-    border: ${props => (props.isError ? `1px solid ${colors.ERROR_PRIMARY}` : `1px solid ${colors.TEXT_PRIMARY}`)};
+    border: ${props => (props.isError ? `1px solid ${colors.ERROR_PRIMARY}` : `1px solid ${colors.DIVIDER}`)};
+    border-radius: 2px;
     resize: none;
     outline: none;
-    background: transparent;
+    font-family: ${FONT_FAMILY.MONOSPACE};
+    color: ${colors.TEXT_PRIMARY};
+    background: ${colors.WHITE};
     font-weight: ${FONT_WEIGHT.BASE};
     font-size: ${FONT_SIZE.BASE};
     white-space: pre-wrap;       /* css-3 */
@@ -73,34 +79,38 @@ const TextArea = styled.textarea`
             opacity: 1;
         }
     }
+`;
 
-    &:hover:not(:disabled),
-    &:focus:not(:disabled) {
-        border: 1px solid ${colors.TEXT_SECONDARY};
-    }
+const TopLabel = styled.span`
+    padding-bottom: 4px;
+    color: ${colors.TEXT_SECONDARY};
 `;
 
 const Textarea = ({
     className,
     placeholder = '',
-    value = '',
+    value,
     customStyle = {},
     onFocus,
     onBlur,
-    disabled,
+    isDisabled,
     onChange,
     isError,
+    topLabel,
 }) => (
     <Wrapper>
+        {topLabel && (
+            <TopLabel>{topLabel}</TopLabel>
+        )}
         <TextArea
             className={className}
-            disabled={disabled}
+            disabled={isDisabled}
             style={customStyle}
             onFocus={onFocus}
             onBlur={onBlur}
             value={value}
             placeholder={placeholder}
-            onChange={e => onChange(e.target.value)}
+            onChange={onChange}
             isError={isError}
         />
     </Wrapper>
@@ -115,7 +125,8 @@ Textarea.propTypes = {
     customStyle: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.string,
-    disabled: PropTypes.bool,
+    isDisabled: PropTypes.bool,
+    topLabel: PropTypes.node,
 };
 
 export default Textarea;

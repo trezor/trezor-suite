@@ -12,17 +12,12 @@ import type { State, Dispatch } from 'flowtype';
 
 const Wrapper = styled.div``;
 
-type Props = {
-    acquiring: boolean;
-    acquireDevice: typeof TrezorConnectActions.acquire
-}
-
-const UnreadableDevice = (props: Props) => (
+const UnreadableDevice = () => (
     <Wrapper>
         <Notification
             title="Unreadable device"
             message="Please install bridge"
-            className="error"
+            type="error"
             cancelable={false}
         />
     </Wrapper>

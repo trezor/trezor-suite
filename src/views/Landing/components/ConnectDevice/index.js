@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import styled, { keyframes } from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import P from 'components/Paragraph';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import { PULSATE } from 'config/animations';
 import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
@@ -89,10 +89,8 @@ class ConnectDevice extends Component<Props> {
                 {this.props.showWebUsb && (
                     <React.Fragment>
                         <P>and</P>
-                        <Button
-                            className="trezor-webusb-button"
-                            isWebUsb
-                        >Check for devices
+                        <Button isWebUsb>
+                            Check for devices
                         </Button>
                     </React.Fragment>
                 )}

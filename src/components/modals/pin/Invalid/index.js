@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 
-import type { Props } from './index';
+import type { Props } from '../../index';
 
 const Wrapper = styled.div`
     padding: 24px 48px;

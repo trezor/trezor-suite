@@ -4,7 +4,6 @@
 import Web3 from 'web3';
 
 import type { ContractFactory } from 'web3';
-import * as STORAGE from 'actions/constants/localStorage';
 import * as WEB3 from 'actions/constants/web3';
 
 import type { Action } from 'flowtype';

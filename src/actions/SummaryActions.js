@@ -1,17 +1,11 @@
 /* @flow */
-
-
-import EthereumjsUtil from 'ethereumjs-util';
 import * as SUMMARY from 'actions/constants/summary';
-import * as TOKEN from 'actions/constants/token';
-import { resolveAfter } from 'utils/promiseUtils';
 import { initialState } from 'reducers/SummaryReducer';
 
 import type {
-    ThunkAction, AsyncAction, Action, GetState, Dispatch,
+    ThunkAction, Action, Dispatch,
 } from 'flowtype';
 import type { State } from 'reducers/SummaryReducer';
-import type { Token } from 'reducers/TokensReducer';
 
 export type SummaryAction = {
     type: typeof SUMMARY.INIT,
@@ -22,7 +16,7 @@ export type SummaryAction = {
     type: typeof SUMMARY.DETAILS_TOGGLE
 }
 
-export const init = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const init = (): ThunkAction => (dispatch: Dispatch): void => {
     const state: State = {
         ...initialState,
     };

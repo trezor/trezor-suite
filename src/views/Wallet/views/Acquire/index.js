@@ -36,7 +36,7 @@ const Acquire = (props: Props) => {
             <Notification
                 title="Device is used in other window"
                 message="Do you want to use your device in this window?"
-                className="info"
+                type="info"
                 cancelable={false}
                 actions={actions}
             />

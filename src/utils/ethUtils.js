@@ -4,9 +4,9 @@ import BigNumber from 'bignumber.js';
 
 export const decimalToHex = (dec: number): string => new BigNumber(dec).toString(16);
 
-export const hexToDecimal = (hex: number): string => {
-    const sanitized: ?string = sanitizeHex(hex);
-    return !sanitized ? 'null' : new BigNumber(sanitized).toString();
+export const padLeftEven = (hex: string): string => {
+    hex = hex.length % 2 != 0 ? `0${hex}` : hex;
+    return hex;
 };
 
 export const sanitizeHex = (hex: number | string): ?string => {
@@ -16,9 +16,9 @@ export const sanitizeHex = (hex: number | string): ?string => {
     return `0x${padLeftEven(hex)}`;
 };
 
-export const padLeftEven = (hex: string): string => {
-    hex = hex.length % 2 != 0 ? `0${hex}` : hex;
-    return hex;
+export const hexToDecimal = (hex: number): string => {
+    const sanitized: ?string = sanitizeHex(hex);
+    return !sanitized ? 'null' : new BigNumber(sanitized).toString();
 };
 
 export const strip = (str: string): string => {

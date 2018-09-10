@@ -1,10 +1,8 @@
 /* @flow */
-
-
 import { push } from 'react-router-redux';
 
-import TrezorConnect, {
-    TRANSPORT, DEVICE_EVENT, UI_EVENT, UI, DEVICE,
+import {
+    TRANSPORT, DEVICE,
 } from 'trezor-connect';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as DiscoveryActions from 'actions/DiscoveryActions';
@@ -13,25 +11,19 @@ import { init as initWeb3 } from 'actions/Web3Actions';
 import * as WEB3 from 'actions/constants/web3';
 import * as STORAGE from 'actions/constants/localStorage';
 import * as CONNECT from 'actions/constants/TrezorConnect';
-import * as NOTIFICATION from 'actions/constants/notification';
-import * as MODAL from 'actions/constants/modal';
 
 import type {
     Middleware,
     MiddlewareAPI,
     MiddlewareDispatch,
     State,
-    Dispatch,
     Action,
-    AsyncAction,
-    GetState,
-    RouterLocationState,
 } from 'flowtype';
 
 const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
-    const prevState: $ElementType<State, 'connect'> = api.getState().connect;
+    // const prevState: $ElementType<State, 'connect'> = api.getState().connect;
     const prevModalState: $ElementType<State, 'modal'> = api.getState().modal;
-    const prevRouterState: $ElementType<State, 'router'> = api.getState().router;
+    // const prevRouterState: $ElementType<State, 'router'> = api.getState().router;
 
     next(action);
 

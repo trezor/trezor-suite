@@ -2,13 +2,12 @@
 import styled from 'styled-components';
 import React from 'react';
 import { H2 } from 'components/Heading';
-import TooltipContent from 'components/TooltipContent';
 import BigNumber from 'bignumber.js';
 import Icon from 'components/Icon';
 import { AsyncSelect } from 'components/Select';
 import ICONS from 'config/icons';
 import colors from 'config/colors';
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'components/Tooltip';
 
 import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
@@ -26,8 +25,15 @@ const AccountHeading = styled.div`
     align-items: center;
 `;
 
-const StyledH2 = styled(H2)`
+const H2Wrapper = styled.div`
+    display: flex;
+    align-items: center;
     padding: 20px 48px;
+`;
+
+const StyledTooltip = styled(Tooltip)`
+    position: relative;
+    top: 2px;
 `;
 
 const AccountName = styled.div`
@@ -71,7 +77,7 @@ const AccountSummary = (props: Props) => {
 
     return (
         <SelectedAccount {...props}>
-            <AccountHeading network={account.networks}>
+            <AccountHeading>
                 <AccountName>
                     <StyledCoinLogo coinNetwork={account.network} />
                     <H2>Account #{parseInt(account.index, 10) + 1}</H2>
@@ -92,27 +98,25 @@ const AccountSummary = (props: Props) => {
                 network={network.network}
                 fiat={props.fiat}
                 localStorage={props.localStorage}
-                onToggle={props.onDetailsToggle}
             />
 
-            <StyledH2>
-                Tokens
-                <Tooltip
-                    arrowContent={<div className="rc-tooltip-arrow-inner" />}
-                    overlay={(
-                        <TooltipContent>
-                            Insert token name, symbol or address to be able to send it.
-                        </TooltipContent>
-                    )}
+            <H2Wrapper>
+                <H2>Tokens</H2>
+                <StyledTooltip
                     placement="top"
+                    content={(
+                        <React.Fragment>
+                            Insert token name, symbol or address to be able to send it.
+                        </React.Fragment>
+                    )}
                 >
                     <StyledIcon
                         icon={ICONS.HELP}
                         color={colors.TEXT_SECONDARY}
                         size={24}
                     />
-                </Tooltip>
-            </StyledH2>
+                </StyledTooltip>
+            </H2Wrapper>
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
             {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 T01 */}
 

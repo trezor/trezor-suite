@@ -24,7 +24,7 @@ class DeviceList extends Component {
                         device !== selectedDevice && (
                             <DeviceHeader
                                 key={`${device.instanceLabel}`}
-                                onClickWrapper={() => this.props.onSelectDevice(device)}
+                                onClickWrapper={() => onSelectDevice(device)}
                                 onClickIcon={() => this.onDeviceMenuClick({ type: 'forget', label: '' }, device)}
                                 icon={(
                                     <IconClick onClick={(event) => {

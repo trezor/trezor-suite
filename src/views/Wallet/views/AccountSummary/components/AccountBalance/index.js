@@ -18,6 +18,7 @@ type Props = {
 
 type State = {
     isHidden: boolean,
+    canAnimateHideBalanceIcon: boolean,
 };
 
 const Wrapper = styled.div`
@@ -76,11 +77,15 @@ class AccountBalance extends Component<Props, State> {
         super(props);
         this.state = {
             isHidden: false,
+            canAnimateHideBalanceIcon: false,
         };
     }
 
     handleHideBallanceIconClick() {
-        this.setState(previousState => ({ isHidden: !previousState.isHidden }));
+        this.setState(previousState => ({
+            isHidden: !previousState.isHidden,
+            canAnimateHideBalanceIcon: true,
+        }));
     }
 
     render() {
@@ -103,7 +108,7 @@ class AccountBalance extends Component<Props, State> {
                     onClick={() => this.handleHideBallanceIconClick()}
                 >
                     <Icon
-                        canAnimate
+                        canAnimate={this.state.canAnimateHideBalanceIcon}
                         isActive={this.state.isHidden}
                         icon={ICONS.ARROW_UP}
                         color={colors.TEXT_SECONDARY}

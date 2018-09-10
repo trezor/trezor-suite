@@ -1,26 +1,18 @@
+
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { SRC, BUILD, PORT } from './constants';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { SRC, BUILD, PUBLIC } from './constants';
 
 module.exports = {
-    watch: true,
-    mode: 'development',
-    devtool: 'inline-source-map',
+    mode: 'production',
     entry: {
-        index: [`${SRC}/index.js`],
+        index: [`${SRC}index.js`],
     },
     output: {
         filename: '[name].[hash].js',
         path: BUILD,
-    },
-    devServer: {
-        contentBase: SRC,
-        hot: true,
-        https: false,
-        port: PORT,
-        stats: 'minimal',
-        inline: true,
+        publicPath: './',
     },
     module: {
         rules: [
@@ -30,22 +22,12 @@ module.exports = {
                 use: ['babel-loader'],
             },
             {
-                test: /\.less$/,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: { publicPath: '../' },
-                    },
-                    'css-loader',
-                    'less-loader',
-                ],
-            },
-            {
                 test: /\.(png|gif|jpg)$/,
-                loader: 'file-loader?name=./images/[name].[ext]',
+                exclude: /(node_modules)/,
+                loader: 'file-loader',
                 query: {
                     outputPath: './images',
-                    name: '[name].[ext]',
+                    name: '[name].[hash].[ext]',
                 },
             },
             {
@@ -53,7 +35,7 @@ module.exports = {
                 loader: 'file-loader',
                 query: {
                     outputPath: './fonts',
-                    name: '[name].[ext]',
+                    name: '[name].[hash].[ext]',
                 },
             },
             {
@@ -63,32 +45,33 @@ module.exports = {
                 loader: 'file-loader',
                 query: {
                     outputPath: './data',
-                    name: '[name].[ext]',
+                    name: '[name].[hash].[ext]',
                 },
             },
         ],
     },
     resolve: {
+        alias: {
+            public: PUBLIC,
+        },
         modules: [SRC, 'node_modules'],
     },
     performance: {
         hints: false,
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: '[name].css',
-            chunkFilename: '[id].css',
-        }),
-
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
             filename: 'index.html',
             inject: true,
+            favicon: `${SRC}images/favicon.ico`,
         }),
+        new CopyWebpackPlugin([
+            { from: `${PUBLIC}`, to: './' },
+        ]),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
     ],
 };

@@ -9,8 +9,8 @@ import { CSSTransition } from 'react-transition-group';
 
 import { UI } from 'trezor-connect';
 
-import { default as ModalActions } from 'actions/ModalActions';
-import { default as ReceiveActions } from 'actions/ReceiveActions';
+import ModalActions from 'actions/ModalActions';
+import ReceiveActions from 'actions/ReceiveActions';
 
 import * as RECEIVE from 'actions/constants/receive';
 import * as CONNECT from 'actions/constants/TrezorConnect';
@@ -51,8 +51,6 @@ type DispatchProps = {
 
 export type Props = StateProps & DispatchProps;
 
-const duration = 300;
-
 const Fade = ({ children, ...props }) => (
     <CSSTransition
         {...props}
@@ -75,7 +73,7 @@ const ModalContainer = styled.div`
     flex-direction: column;
     align-items: center;
     overflow: auto;
-    padding: 20px; 
+    padding: 20px;
 `;
 
 const ModalWindow = styled.div`
@@ -125,7 +123,8 @@ class Modal extends Component<Props> {
                 component = (<DuplicateDevice {...this.props} />);
                 break;
 
-            default: null;
+            default:
+                component = null;
         }
 
         let ch = null;
@@ -145,7 +144,7 @@ class Modal extends Component<Props> {
     }
 }
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     modal: state.modal,
     accounts: state.accounts,
     devices: state.devices,

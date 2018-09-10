@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import Link from 'components/Link';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 

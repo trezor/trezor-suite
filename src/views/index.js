@@ -23,7 +23,7 @@ import WalletInitialize from 'views/Wallet/views/Initialize';
 import WalletAcquire from 'views/Wallet/views/Acquire';
 import WalletUnreadableDevice from 'views/Wallet/views/UnreadableDevice';
 
-import store, { history } from 'support/store';
+import store, { history } from 'store';
 
 const App = () => (
     <Provider store={store}>

@@ -7,21 +7,22 @@ import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import installers from 'constants/bridge';
 import { Select } from 'components/Select';
 import Link from 'components/Link';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import Loader from 'components/Loader';
 import P from 'components/Paragraph';
+import Icon from 'components/Icon';
 import ICONS from 'config/icons';
-
-type State = {
-    version: string;
-    target: ?InstallTarget;
-    url: string;
-}
 
 type InstallTarget = {
     id: string;
     value: string;
     label: string;
+}
+
+type State = {
+    version: string;
+    target: ?InstallTarget;
+    url: string;
 }
 
 // import type { Props } from './index';
@@ -69,6 +70,13 @@ const SelectWrapper = styled(Select)`
 
 const DownloadBridgeWrapper = styled.div`
     margin: 24px auto;
+    display: flex;
+    align-items: center;
+`;
+
+const DownloadBridgeButton = styled(Button)`
+    padding-top: 5px;
+    padding-bottom: 5px;
     display: flex;
     align-items: center;
 `;
@@ -121,14 +129,14 @@ export default class InstallBridge extends Component<Props, State> {
                         options={installers}
                     />
                     <Link href={url}>
-                        <Button
-                            icon={{
-                                type: ICONS.DOWNLOAD,
-                                color: colors.WHITE,
-                                size: 30,
-                            }}
-                        >Download for {label}
-                        </Button>
+                        <DownloadBridgeButton>
+                            <Icon
+                                icon={ICONS.DOWNLOAD}
+                                color={colors.WHITE}
+                                size={30}
+                            />
+                            Download for {label}
+                        </DownloadBridgeButton>
                     </Link>
                 </DownloadBridgeWrapper>
                 <P>

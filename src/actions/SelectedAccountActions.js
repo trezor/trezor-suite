@@ -9,19 +9,13 @@ import * as PENDING from 'actions/constants/pendingTx';
 
 import * as stateUtils from 'reducers/utils';
 
-import { initialState } from 'reducers/SelectedAccountReducer';
-
 import type {
-    Coin,
-    TrezorDevice,
     AsyncAction,
-    ThunkAction,
     Action,
     GetState,
     Dispatch,
     State,
 } from 'flowtype';
-import * as SessionStorageActions from './SessionStorageActions';
 import * as SendFormActions from './SendFormActions';
 
 
@@ -32,13 +26,14 @@ export type SelectedAccountAction = {
     payload: $ElementType<State, 'selectedAccount'>
 };
 
+export const dispose = (): Action => ({
+    type: ACCOUNT.DISPOSE,
+});
+
 export const updateSelectedValues = (prevState: State, action: Action): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const locationChange: boolean = action.type === LOCATION_CHANGE;
     const state: State = getState();
-    const location = state.router.location;
-    const prevLocation = prevState.router.location;
-
-    const needUpdate: boolean = false;
+    const { location } = state.router;
 
     // reset form to default
     if (action.type === SEND.TX_COMPLETE) {
@@ -126,7 +121,3 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
         }
     }
 };
-
-export const dispose = (): Action => ({
-    type: ACCOUNT.DISPOSE,
-});

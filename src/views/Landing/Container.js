@@ -1,7 +1,4 @@
 /* @flow */
-
-import React from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
@@ -39,7 +36,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     devices: state.devices,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (/* dispatch: Dispatch */): DispatchProps => ({
 
 });
 

@@ -24,7 +24,7 @@ type DispatchProps = BaseDispatchProps & {
 
 export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     className: 'receive',
     selectedAccount: state.selectedAccount,
     wallet: state.wallet,

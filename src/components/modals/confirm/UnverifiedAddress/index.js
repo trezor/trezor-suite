@@ -6,11 +6,10 @@ import styled from 'styled-components';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import icons from 'config/icons';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 import Link from 'components/Link';
-import { findAccount } from 'reducers/AccountsReducer';
 
-import type { Props } from './index';
+import type { Props } from '../../index';
 
 const StyledLink = styled(Link)`
     position: absolute;
@@ -38,15 +37,6 @@ const StyledButton = styled(Button)`
 `;
 
 class ConfirmUnverifiedAddress extends Component<Props> {
-    keyboardHandler: (event: KeyboardEvent) => void;
-
-    keyboardHandler(event: KeyboardEvent): void {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            this.verifyAddress();
-        }
-    }
-
     componentDidMount(): void {
         this.keyboardHandler = this.keyboardHandler.bind(this);
         window.addEventListener('keydown', this.keyboardHandler, false);
@@ -54,6 +44,15 @@ class ConfirmUnverifiedAddress extends Component<Props> {
 
     componentWillUnmount(): void {
         window.removeEventListener('keydown', this.keyboardHandler, false);
+    }
+
+    keyboardHandler: (event: KeyboardEvent) => void;
+
+    keyboardHandler(event: KeyboardEvent): void {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            this.verifyAddress();
+        }
     }
 
     verifyAddress() {

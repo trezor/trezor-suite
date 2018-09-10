@@ -21,14 +21,14 @@ export const formatTime = (n: number): string => {
 
     if (!n) return 'No time estimate';
     let res = '';
-    if (hours != 0) {
+    if (hours !== 0) {
         res += `${hours} hour`;
         if (hours > 1) {
             res += 's';
         }
         res += ' ';
     }
-    if (minutes != 0) {
+    if (minutes !== 0) {
         res += `${minutes} minutes`;
     }
     return res;

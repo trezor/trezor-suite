@@ -3,12 +3,11 @@ import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import React, { Component } from 'react';
 import Link from 'components/Link';
-import colors from 'config/colors';
 import styled from 'styled-components';
 import PinInput from 'components/inputs/PinInput';
-import PinButton from 'components/buttons/PinButton';
-import Button from 'components/buttons/Button';
-import type { Props } from './index';
+import Button from 'components/Button';
+import PinButton from './components/PinButton';
+import type { Props } from '../../index';
 
 type State = {
     pin: string;
@@ -53,7 +52,7 @@ class Pin extends Component<Props, State> {
     }
 
     onPinAdd = (input: number): void => {
-        let pin: string = this.state.pin;
+        let { pin } = this.state;
         if (pin.length < 9) {
             pin += input;
             this.setState({
@@ -63,9 +62,9 @@ class Pin extends Component<Props, State> {
     }
 
     onPinBackspace = (): void => {
-        this.setState({
-            pin: this.state.pin.substring(0, this.state.pin.length - 1),
-        });
+        this.setState(previousState => ({
+            pin: previousState.pin.substring(0, previousState.pin.length - 1),
+        }));
     }
 
     keyboardHandler(event: KeyboardEvent): void {

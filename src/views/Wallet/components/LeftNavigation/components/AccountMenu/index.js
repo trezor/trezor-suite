@@ -1,14 +1,12 @@
 /* @flow */
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import TooltipContent from 'components/TooltipContent';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import Loader from 'components/Loader';
-import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import * as stateUtils from 'reducers/utils';
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'components/Tooltip';
 import ICONS from 'config/icons';
 
 import { NavLink } from 'react-router-dom';
@@ -203,8 +201,7 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             } else {
                 discoveryStatus = (
                     <Tooltip
-                        arrowContent={<div className="rc-tooltip-arrow-inner" />}
-                        overlay={<TooltipContent isAside>To add a new account, last account must have some transactions.</TooltipContent>}
+                        content={<React.Fragment>To add a new account, last account must have some transactions.</React.Fragment>}
                         placement="bottom"
                     >
                         <Row>

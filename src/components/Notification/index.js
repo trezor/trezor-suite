@@ -3,14 +3,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
-import NotificationButton from 'components/buttons/NotificationButton';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
-import * as NOTIFICATION from 'actions/constants/notification';
 import * as NotificationActions from 'actions/NotificationActions';
 import Loader from 'components/Loader';
+import NotificationButton from './components/NotificationButton';
 
 const Wrapper = styled.div`
     position: relative;
@@ -45,15 +44,12 @@ const Wrapper = styled.div`
 const Body = styled.div`
     display: flex;
     margin-right: 40px;
-    flex: 1;
 `;
 
 const Title = styled.div`
     padding-bottom: 5px;
     font-weight: ${FONT_WEIGHT.BIGGER};
 `;
-
-const ActionContent = styled.div``;
 
 const CloseClick = styled.div`
     position: absolute;
@@ -81,7 +77,17 @@ const Texts = styled.div`
     flex-direction: column;
 `;
 
-const AdditionalContent = styled.div``;
+const AdditionalContent = styled.div`
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+`;
+
+const ActionContent = styled.div`
+    justify-content: right;
+    align-items: flex-end;
+`;
 
 export const Notification = (props: NProps): React$Element<string> => {
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
@@ -109,12 +115,12 @@ export const Notification = (props: NProps): React$Element<string> => {
     };
 
     return (
-        <Wrapper type={props.className}>
+        <Wrapper type={props.type}>
             {props.loading && <Loader size={50} /> }
             {props.cancelable && (
                 <CloseClick onClick={() => close()}>
                     <Icon
-                        color={getIconColor(props.className)}
+                        color={getIconColor(props.type)}
                         icon={icons.CLOSE}
                         size={20}
                     />
@@ -123,8 +129,8 @@ export const Notification = (props: NProps): React$Element<string> => {
             <Body>
                 <MessageContent>
                     <StyledIcon
-                        color={getIconColor(props.className)}
-                        icon={icons[props.className.toUpperCase()]}
+                        color={getIconColor(props.type)}
+                        icon={icons[props.type.toUpperCase()]}
                     />
                     <Texts>
                         <Title>{ props.title }</Title>
@@ -142,7 +148,7 @@ export const Notification = (props: NProps): React$Element<string> => {
                         {props.actions.map(action => (
                             <NotificationButton
                                 key={action.label}
-                                type={props.className}
+                                type={props.type}
                                 text={action.label}
                                 onClick={() => { close(); action.callback(); }}
                             >{action.label}
@@ -157,10 +163,10 @@ export const Notification = (props: NProps): React$Element<string> => {
 
 export const NotificationGroup = (props) => {
     const { notifications, close } = props;
-    return notifications.map((n, i) => (
+    return notifications.map(n => (
         <Notification
-            key={i}
-            className={n.type}
+            key={n.title}
+            type={n.type}
             title={n.title}
             message={n.message}
             cancelable={n.cancelable}

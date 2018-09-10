@@ -7,15 +7,15 @@ import * as TOKEN from 'actions/constants/token';
 import * as DISCOVERY from 'actions/constants/discovery';
 import * as STORAGE from 'actions/constants/localStorage';
 import * as PENDING from 'actions/constants/pendingTx';
-import { JSONRequest, httpRequest } from 'utils/networkUtils';
+import { httpRequest } from 'utils/networkUtils';
 
 import type {
-    ThunkAction, AsyncAction, GetState, Dispatch, TrezorDevice,
+    ThunkAction, AsyncAction, /* GetState, */ Dispatch,
 } from 'flowtype';
 import type { Config, Coin, TokensCollection } from 'reducers/LocalStorageReducer';
 
-import AppConfigJSON from 'data/appConfig.json';
-import Erc20AbiJSON from 'data/ERC20Abi.json';
+import Erc20AbiJSON from 'public/data/ERC20Abi.json';
+import AppConfigJSON from 'public/data/appConfig.json';
 
 export type StorageAction = {
     type: typeof STORAGE.READY,
@@ -30,59 +30,66 @@ export type StorageAction = {
     error: string,
 };
 
-export const loadData = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    // check if local storage is available
-    // let available: boolean = true;
-    // if (typeof window.localStorage === 'undefined') {
-    //     available = false;
-    // } else {
-    //     try {
-    //         window.localStorage.setItem('ethereum_wallet', true);
-    //     } catch (error) {
-    //         available = false;
-    //     }
-    // }
-
-    dispatch(loadTokensFromJSON());
+export const get = (key: string): ?string => {
+    try {
+        return window.localStorage.getItem(key);
+    } catch (error) {
+        // available = false;
+        return null;
+    }
 };
 
-// const parseConfig = (json: JSON): Config => {
+export function update(event: StorageEvent): AsyncAction {
+    return async (dispatch: Dispatch/* , getState: GetState */): Promise<void> => {
+        if (!event.newValue) return;
 
-//     if (json['coins']) {
+        if (event.key === 'devices') {
+            // check if device was added/ removed
+            // const newDevices: Array<TrezorDevice> = JSON.parse(event.newValue);
+            // const myDevices: Array<TrezorDevice> = getState().connect.devices.filter(d => d.features);
 
-//     }
+            // if (newDevices.length !== myDevices.length) {
+            //     const diff = myDevices.filter(d => newDevices.indexOf(d) < 0)
+            //     console.warn("DEV LIST CHANGED!", newDevices.length, myDevices.length, diff)
+            //     // check if difference is caused by local device which is not saved
+            //     // or device which was saved in other tab
+            // }
 
-//     for (let key in json) {
-//         if (key === 'coins') {
+            // const diff = oldDevices.filter(d => newDevices.indexOf())
+        }
 
-//         }
-//     }
+        if (event.key === 'accounts') {
+            dispatch({
+                type: ACCOUNT.FROM_STORAGE,
+                payload: JSON.parse(event.newValue),
+            });
+        }
 
-//     const coins: Array<Object> = json.coins || [];
+        if (event.key === 'tokens') {
+            dispatch({
+                type: TOKEN.FROM_STORAGE,
+                payload: JSON.parse(event.newValue),
+            });
+        }
 
-//     if ("coins" in json){
-//         json.coins
-//     }
-//     if (!json.hasOwnProperty("fiatValueTickers")) throw new Error(`Property "fiatValueTickers" is missing in appConfig.json`);
-//     if (json.config && json.hasOwnProperty('coins') && Array.isArray(json.coins)) {
-//         json.coins.map(c => {
-//             return {
+        if (event.key === 'pending') {
+            dispatch({
+                type: PENDING.FROM_STORAGE,
+                payload: JSON.parse(event.newValue),
+            });
+        }
 
-//             }
-//         })
-//     } else {
-//         throw new Error(`Property "coins" is missing in appConfig.json`);
-//     }
-
-
-//     return {
-//         coins: [],
-//         fiatValueTickers: []
-//     }
-// }
+        if (event.key === 'discovery') {
+            dispatch({
+                type: DISCOVERY.FROM_STORAGE,
+                payload: JSON.parse(event.newValue),
+            });
+        }
+    };
+}
 
 export function loadTokensFromJSON(): AsyncAction {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    return async (dispatch: Dispatch): Promise<void> => {
         if (typeof window.localStorage === 'undefined') return;
 
         try {
@@ -157,57 +164,58 @@ export function loadTokensFromJSON(): AsyncAction {
     };
 }
 
-export function update(event: StorageEvent): AsyncAction {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        if (!event.newValue) return;
+export const loadData = (): ThunkAction => (dispatch: Dispatch): void => {
+    // check if local storage is available
+    // let available: boolean = true;
+    // if (typeof window.localStorage === 'undefined') {
+    //     available = false;
+    // } else {
+    //     try {
+    //         window.localStorage.setItem('ethereum_wallet', true);
+    //     } catch (error) {
+    //         available = false;
+    //     }
+    // }
 
-        if (event.key === 'devices') {
-            // check if device was added/ removed
-            // const newDevices: Array<TrezorDevice> = JSON.parse(event.newValue);
-            // const myDevices: Array<TrezorDevice> = getState().connect.devices.filter(d => d.features);
+    dispatch(loadTokensFromJSON());
+};
 
-            // if (newDevices.length !== myDevices.length) {
-            //     const diff = myDevices.filter(d => newDevices.indexOf(d) < 0)
-            //     console.warn("DEV LIST CHANGED!", newDevices.length, myDevices.length, diff)
-            //     // check if difference is caused by local device which is not saved
-            //     // or device which was saved in other tab
-            // }
+// const parseConfig = (json: JSON): Config => {
 
-            // const diff = oldDevices.filter(d => newDevices.indexOf())
-        }
+//     if (json['coins']) {
 
-        if (event.key === 'accounts') {
-            dispatch({
-                type: ACCOUNT.FROM_STORAGE,
-                payload: JSON.parse(event.newValue),
-            });
-        }
+//     }
 
-        if (event.key === 'tokens') {
-            dispatch({
-                type: TOKEN.FROM_STORAGE,
-                payload: JSON.parse(event.newValue),
-            });
-        }
+//     for (let key in json) {
+//         if (key === 'coins') {
 
-        if (event.key === 'pending') {
-            dispatch({
-                type: PENDING.FROM_STORAGE,
-                payload: JSON.parse(event.newValue),
-            });
-        }
+//         }
+//     }
 
-        if (event.key === 'discovery') {
-            dispatch({
-                type: DISCOVERY.FROM_STORAGE,
-                payload: JSON.parse(event.newValue),
-            });
-        }
-    };
-}
+//     const coins: Array<Object> = json.coins || [];
+
+//     if ("coins" in json){
+//         json.coins
+//     }
+//     if (!json.hasOwnProperty("fiatValueTickers")) throw new Error(`Property "fiatValueTickers" is missing in appConfig.json`);
+//     if (json.config && json.hasOwnProperty('coins') && Array.isArray(json.coins)) {
+//         json.coins.map(c => {
+//             return {
+
+//             }
+//         })
+//     } else {
+//         throw new Error(`Property "coins" is missing in appConfig.json`);
+//     }
 
 
-export const save = (key: string, value: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+//     return {
+//         coins: [],
+//         fiatValueTickers: []
+//     }
+// }
+
+export const save = (key: string, value: string): ThunkAction => (): void => {
     if (typeof window.localStorage !== 'undefined') {
         try {
             window.localStorage.setItem(key, value);
@@ -215,14 +223,5 @@ export const save = (key: string, value: string): ThunkAction => (dispatch: Disp
             // available = false;
             console.error(`Local Storage ERROR: ${error}`);
         }
-    }
-};
-
-export const get = (key: string): ?string => {
-    try {
-        return window.localStorage.getItem(key);
-    } catch (error) {
-        // available = false;
-        return null;
     }
 };

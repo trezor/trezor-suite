@@ -1,7 +1,8 @@
 import webpack from 'webpack';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
 import {
     TREZOR_CONNECT_ROOT,
     TREZOR_CONNECT_HTML,
@@ -9,6 +10,7 @@ import {
     TREZOR_CONNECT, TREZOR_IFRAME, TREZOR_POPUP, TREZOR_WEBUSB,
     SRC,
     BUILD,
+    PUBLIC,
     PORT,
 } from './constants';
 
@@ -30,7 +32,10 @@ module.exports = {
         globalObject: 'this', // fix for HMR inside WebWorker from 'hd-wallet'
     },
     devServer: {
-        contentBase: SRC,
+        contentBase: [
+            SRC,
+            PUBLIC,
+        ],
         hot: true,
         https: false,
         port: PORT,
@@ -40,19 +45,22 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.js?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader'],
-            },
-            {
-                test: /\.less$/,
                 use: [
+                    'babel-loader',
                     {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: { publicPath: '../' },
+                        loader: 'eslint-loader',
+                        options: {
+                            emitWarning: true,
+                        },
                     },
-                    'css-loader',
-                    'less-loader',
+                    {
+                        loader: 'stylelint-custom-processor-loader',
+                        options: {
+                            configPath: '.stylelintrc',
+                        },
+                    },
                 ],
             },
             {
@@ -92,8 +100,12 @@ module.exports = {
         ],
     },
     resolve: {
-        modules: [SRC, 'node_modules', `${TREZOR_CONNECT_ROOT}/node_modules`],
+        modules: [
+            SRC,
+            'node_modules',
+            `${TREZOR_CONNECT_ROOT}/node_modules`],
         alias: {
+            public: PUBLIC,
             'trezor-connect': `${TREZOR_CONNECT}`,
         },
     },
@@ -101,16 +113,12 @@ module.exports = {
         hints: false,
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: '[name].css',
-            chunkFilename: '[id].css',
-        }),
-
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
             filename: 'index.html',
             inject: true,
+            favicon: `${SRC}images/favicon.ico`,
         }),
 
         new HtmlWebpackPlugin({
@@ -141,7 +149,11 @@ module.exports = {
         new CopyWebpackPlugin([
             { from: TREZOR_CONNECT_FILES, to: 'data' },
         ]),
-
+        new BundleAnalyzerPlugin({
+            openAnalyzer: false,
+            analyzerMode: false, // turn on to generate bundle pass 'static'
+            reportFilename: 'bundle-report.html',
+        }),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),

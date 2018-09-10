@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
-import Button from 'components/buttons/Button';
+import Button from 'components/Button';
 
 const Wrapper = styled.div`
     width: 360px;
