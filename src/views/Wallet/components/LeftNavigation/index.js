@@ -10,14 +10,7 @@ import DeviceHeader from 'components/DeviceHeader';
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
-
-const Wrapper = styled.div`
-    width: 320px;
-    overflow: scroll;
-    border: 2px solid red;
-    background: ${colors.MAIN};
-    border-right: 1px solid ${colors.DIVIDER};
-`;
+import StickyContainer from './components/StickyContainer';
 
 const Header = styled(DeviceHeader)``;
 
@@ -157,27 +150,24 @@ class LeftNavigation extends Component {
 
     render() {
         return (
-            <Wrapper
+            <StickyContainer
                 location={this.props.location.pathname}
                 deviceSelection={this.props.deviceDropdownOpened}
             >
-                <Sticky>
-                    <Header
-                        onClickWrapper={() => this.handleOpen()}
-                        device={this.props.wallet.selectedDevice}
-                        transport={this.props.connect.transport}
-                        devices={this.props.devices}
-                        isOpen={this.props.deviceDropdownOpened}
-                        {...this.props}
-                    />
-                </Sticky>
+                <Header
+                    onClickWrapper={() => this.handleOpen()}
+                    device={this.props.wallet.selectedDevice}
+                    transport={this.props.connect.transport}
+                    devices={this.props.devices}
+                    isOpen={this.props.deviceDropdownOpened}
+                    {...this.props}
+                />
                 <Body>
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
                     {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
                     {this.shouldRenderCoins() && this.getMenuTransition(<CoinMenu {...this.props} />)}
                 </Body>
-                <Sticky mode="bottom" />
-                <Footer>
+                <Footer className="sticky-bottom">
                     <Help>
                         <A
                             href="https://trezor.io/support/"
@@ -189,7 +179,7 @@ class LeftNavigation extends Component {
                     </Help>
                 </Footer>
                 <Sticky />
-            </Wrapper>
+            </StickyContainer>
         );
     }
 }
