@@ -85,8 +85,6 @@ export default class StickyContainer extends React.PureComponent<Props> {
         const scrollDirection = this.currentScrollY >= this.lastKnownScrollY ? 'down' : 'up';
         const distanceScrolled = Math.abs(this.currentScrollY - this.lastKnownScrollY);
 
-        console.warn(wrapper, bottom);
-
         if (asideBounds.top < 0) {
             wrapper.classList.add('fixed');
             let maxTop: number = 1;

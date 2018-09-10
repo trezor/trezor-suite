@@ -47,7 +47,6 @@
         "react-router-redux": "next",
         "react-scale-text": "^1.2.2",
         "react-select": "2.0.0",
-        "react-sticky-el": "^1.0.20",
         "react-transition-group": "^2.2.1",
         "redbox-react": "^1.6.0",
         "redux": "4.0.0",
