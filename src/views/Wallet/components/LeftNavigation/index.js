@@ -150,22 +150,19 @@ class LeftNavigation extends Component {
     }
 
     render() {
-        const { selectedDevice } = this.props.wallet;
         return (
             <StickyContainer
                 location={this.props.location.pathname}
                 deviceSelection={this.props.deviceDropdownOpened}
             >
-                {selectedDevice && (
-                    <DeviceHeader
-                        onClickWrapper={() => this.handleOpen()}
-                        device={this.props.wallet.selectedDevice}
-                        transport={this.props.connect.transport}
-                        devices={this.props.devices}
-                        isOpen={this.props.deviceDropdownOpened}
-                        {...this.props}
-                    />
-                ) }
+                <DeviceHeader
+                    onClickWrapper={() => this.handleOpen()}
+                    device={this.props.wallet.selectedDevice}
+                    transport={this.props.connect.transport}
+                    devices={this.props.devices}
+                    isOpen={this.props.deviceDropdownOpened}
+                    {...this.props}
+                />
                 <MenuWrapper>
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
                     {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}

@@ -83,7 +83,7 @@ const Wallet = (props: WalletContainerProps) => (
     <AppWrapper>
         <Header />
         <WalletWrapper>
-            <LeftNavigation />
+            {props.wallet.selectedDevice && <LeftNavigation />}
             <MainContent>
                 <Navigation>
                     <Route path="/device/:device/network/:network/account/:account" component={TopNavigationAccount} />
