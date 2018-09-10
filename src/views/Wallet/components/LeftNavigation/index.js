@@ -12,10 +12,9 @@ import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
 
 const Wrapper = styled.div`
-    position: relative;
     width: 320px;
-    min-width: 320px;
-    overflow-x: hidden;
+    overflow: scroll;
+    border: 2px solid red;
     background: ${colors.MAIN};
     border-right: 1px solid ${colors.DIVIDER};
 `;
@@ -159,11 +158,10 @@ class LeftNavigation extends Component {
     render() {
         return (
             <Wrapper
-                className="block"
                 location={this.props.location.pathname}
                 deviceSelection={this.props.deviceDropdownOpened}
             >
-                <Sticky boundaryElement=".block" scrollElement=".scroll-area">
+                <Sticky>
                     <Header
                         onClickWrapper={() => this.handleOpen()}
                         device={this.props.wallet.selectedDevice}
@@ -173,12 +171,12 @@ class LeftNavigation extends Component {
                         {...this.props}
                     />
                 </Sticky>
-                <Body className="scroll-area">
+                <Body>
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
                     {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
                     {this.shouldRenderCoins() && this.getMenuTransition(<CoinMenu {...this.props} />)}
                 </Body>
-                <Sticky mode="bottom" boundaryElement=".block" />
+                <Sticky mode="bottom" />
                 <Footer>
                     <Help>
                         <A
