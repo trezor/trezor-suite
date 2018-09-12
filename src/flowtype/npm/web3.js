@@ -1,8 +1,10 @@
+/* @flow */
+
 import type BigNumber from 'bignumber.js';
 import type { EthereumUnitT, EthereumAddressT } from 'ethereum-types';
 
 declare module 'web3' {
-    declare type ProviderT = {
+    declare type HttpProviderT = {
         host: string;
         timeout: number;
         isConnected: () => boolean;
@@ -10,14 +12,25 @@ declare module 'web3' {
         sendAsync: (payload: any, callback: (error: Error, result: any) => void) => any;
     };
 
+    declare type WebsocketProviderT = {
+        on: (type: string, callback: () => any) => void;
+        removeAllListeners: (type: string) => void;
+        reset: () => void;
+        connected: boolean;
+    }
+
     declare class Web3T {
         static providers: {
-            HttpProvider: (host: string, timeout?: number) => ProviderT;
+            HttpProvider: (host: string, timeout?: number) => HttpProviderT;
+            WebsocketProvider: (host: string, options?: any) => WebsocketProviderT;
         };
 
-        constructor(ProviderT): Web3T;
-        currentProvider: ProviderT;
+        // constructor(HttpProviderT): Web3T;
+        constructor(WebsocketProviderT): Web3T;
+        // currentProvider: HttpProviderT;
+        currentProvider: WebsocketProviderT;
         eth: Eth;
+        utils: Utils;
 
         toHex: (str: string | number) => string;
         isAddress: (address: string) => boolean;
@@ -78,20 +91,33 @@ declare module 'web3' {
         transactionIndex: number
     }
 
+    //declare function F_CardanoGetAddress(params: (P.$Common & CARDANO.$CardanoGetAddress)): Promise<CARDANO.CardanoGetAddress$>;
+    //declare function F_CardanoGetAddress(params: (P.$Common & { bundle: Array<CARDANO.$CardanoGetAddress> })): Promise<CARDANO.CardanoGetAddress$$>;
+
+    declare type PromiseEvent<T> = {
+        once: typeof F_PromiseEventOn;
+        on: typeof F_PromiseEventOn;
+        off: (type: string, callback: Function) => PromiseEvent<T>;
+        then: () => (result: T) => PromiseEvent<T>;
+        catch: () => (error: Error) => PromiseEvent<T>;
+    }
+
+    declare function F_PromiseEventOn<T>(type: 'transactionHash', callback: (hash: string) => void): PromiseEvent<T>;
+    declare function F_PromiseEventOn<T>(type: 'receipt', callback: (receipt: TransactionReceipt) => void): PromiseEvent<T>;
+    declare function F_PromiseEventOn<T>(type: 'confirmation', callback: (confirmations: number, receipt: TransactionReceipt) => void): PromiseEvent<T>;
+    declare function F_PromiseEventOn<T>(type: 'error', callback: (error: Error) => void): PromiseEvent<T>;
+
     declare class Eth {
-        getGasPrice: (callback: (error: Error, gasPrice: string) => void) => void,
-        getBalance: (address: string, callback: (error: Error, balance: BigNumber) => void) => void,
-        getTransactionCount: (address: string, callback: (error: Error, result: number) => void) => void,
-        getTransaction: (txid: string, callback: (error: Error, result: TransactionStatus) => void) => void,
-        getTransactionReceipt: (txid: string, callback: (error: Error, result: TransactionReceipt) => void) => void,
-        getBlockNumber: (callback: (error: Error, blockNumber: number) => void) => void,
-        getBlock: (hash: string, callback: (error: Error, result: any) => void) => void,
-        // getAccounts: (callback: (error: Error, accounts: Array<EthereumAddressT>) => void) => void,
-        // sign: (payload: string, signer: EthereumAddressT) => Promise<string>,
-        contract: (abi: Array<Object>) => ContractFactory,
-        estimateGas: (options: EstimateGasOptions, callback: (error: ?Error, gas: ?number) => void) => void,
-        sendRawTransaction: (tx: any, callback: (error: Error, result: string) => void) => void,
-        filter: (type: string) => Filter; // return intance with "watch"
+        getBalance: (address: string) => Promise<string>;
+        getTransactionCount: (address: string) => Promise<number>;
+        estimateGas: (options: EstimateGasOptions) => Promise<number>;
+        getGasPrice: () => Promise<string>;
+        getBlockNumber: () => Promise<number>;
+        Contract: (abi: Array<Object>, options?: any) => Contract;
+        sendSignedTransaction: (tx: string) => PromiseEvent<TransactionReceipt>;
+        getTransaction: (txid: string) => Promise<TransactionStatus>;
+        getTransactionReceipt: (txid: string) => Promise<TransactionReceipt>;
+        subscribe: (type: string, callback: Function) => any;
     }
 
     declare export class Filter {
@@ -99,108 +125,40 @@ declare module 'web3' {
         stopWatching: (callback: any) => void,
     }
 
-    declare export class ContractFactory {
-        // constructor(abi: Array<Object>);
-        eth: Eth;
-        abi: Array<Object>;
-        at: (address: string, callback: ?(error: Error, contract: Contract) => void) => Contract; // TODO
+    declare type ContractMethod<T> = {
+        call: () => Promise<T>;
     }
 
     declare export class Contract {
-        name: {
-            call: (callback: (error: Error, name: string) => void) => void;
-        },
-        symbol: {
-            call: (callback: (error: Error, symbol: string) => void) => void;
-        },
-        decimals: {
-            call: (callback: (error: Error, decimals: BigNumber) => void) => void;
-        },
-        balanceOf: (address: string, callback: (error: Error, balance: BigNumber) => void) => void,
-        transfer: any,
+        clone: () => Contract;
+
+        options: {
+            address: string;
+            jsonInterface: JSON;
+        };
+
+        methods: {
+            name: () => ContractMethod<string>;
+            symbol: () => ContractMethod<string>;
+            decimals: () => ContractMethod<number>;
+            balanceOf: (address: string) => ContractMethod<string>;
+            transfer: (to: string, amount: any) => {
+                encodeABI: () => string;
+            }
+        };
+    }
+
+    declare class Utils {
+        toHex: (str: string | number) => string;
+        hexToNumberString: (str: string) => string;
+
+        isAddress: (address: string) => boolean;
+        toWei: (number: BigNumber, unit?: EthereumUnitT) => BigNumber;
+        toWei: (number: string, unit?: EthereumUnitT) => string;
+        toDecimal: (number: BigNumber) => number;
+        toDecimal: (number: string) => number;
+        soliditySha3: (payload: string | number | BigNumber | Object) => String;
     }
 
     declare export default typeof Web3T;
 }
-
-
-//
-//
-
-
-/*declare module 'web3' {
-
-    module.exports = {
-        eth:  {
-            _requestManager: any;
-            iban: {
-                (iban: string): void;
-                fromAddress: (address: string) => any;
-                fromBban: (bban: string) => any;
-                createIndirect: (options: any) => any;
-                isValid: (iban: string) => boolean;
-            };
-            sendIBANTransaction: any;
-            contract: (abi: any) => {
-                eth: any;
-                abi: any[];
-                new: (...args: any[]) => {
-                    _eth: any;
-                    transactionHash: any;
-                    address: any;
-                    abi: any[];
-                };
-                at: (address: any, callback: Function) => any;
-                getData: (...args: any[]) => any;
-            };
-            filter: (fil: any, callback: any, filterCreationErrorCallback: any) => {
-                requestManager: any;
-                options: any;
-                implementation: {
-                    [x: string]: any;
-                };
-                filterId: any;
-                callbacks: any[];
-                getLogsCallbacks: any[];
-                pollFilters: any[];
-                formatter: any;
-                watch: (callback: any) => any;
-                stopWatching: (callback: any) => any;
-                get: (callback: any) => any;
-            };
-            namereg: () => {
-                eth: any;
-                abi: any[];
-                new: (...args: any[]) => {
-                    _eth: any;
-                    transactionHash: any;
-                    address: any;
-                    abi: any[];
-                };
-                at: (address: any, callback: Function) => any;
-                getData: (...args: any[]) => any;
-            };
-            icapNamereg: () => {
-                eth: any;
-                abi: any[];
-                new: (...args: any[]) => {
-                    _eth: any;
-                    transactionHash: any;
-                    address: any;
-                    abi: any[];
-                };
-                at: (address: any, callback: Function) => any;
-                getData: (...args: any[]) => any;
-            };
-            isSyncing: (callback: any) => {
-                requestManager: any;
-                pollId: string;
-                callbacks: any[];
-                lastSyncState: boolean;
-                addCallback: (callback: any) => any;
-                stopWatching: () => void;
-            };
-        }
-    }
-}
-*/

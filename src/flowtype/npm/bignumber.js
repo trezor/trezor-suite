@@ -1,3 +1,5 @@
+/* @flow */
+
 declare module 'bignumber.js' {
     declare type $npm$big$number$object = number | string | T_BigNumber
     declare type $npm$cmp$result = -1 | 0 | 1
@@ -24,7 +26,7 @@ declare module 'bignumber.js' {
       constructor(value: $npm$big$number$object): T_BigNumber;
 
       // Methods
-      abs(): BigNumber;
+      abs(): T_BigNumber;
       cmp(n: $npm$big$number$object): $npm$cmp$result;
       div(n: $npm$big$number$object): T_BigNumber;
       dividedBy(n: $npm$big$number$object): T_BigNumber;
