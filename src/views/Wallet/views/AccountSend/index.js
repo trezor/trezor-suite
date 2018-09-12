@@ -237,7 +237,7 @@ class AccountSend extends Component<Props, State> {
     }
 
     getTokensSelectData(tokens: Array<Token>, accountNetwork: any) {
-        const tokensSelectData = tokens.map(t => ({ value: t.symbol, label: t.symbol }));
+        const tokensSelectData: Array<{ value: string, label: string }> = tokens.map(t => ({ value: t.symbol, label: t.symbol }));
         tokensSelectData.unshift({ value: accountNetwork.symbol, label: accountNetwork.symbol });
 
         return tokensSelectData;

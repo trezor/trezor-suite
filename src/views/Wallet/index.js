@@ -20,7 +20,7 @@ import TopNavigationAccount from './components/TopNavigationAccount';
 import TopNavigationDeviceSettings from './components/TopNavigationDeviceSettings';
 
 type WalletContainerProps = {
-    // wallet: $ElementType<State, 'wallet'>,
+    wallet: $ElementType<State, 'wallet'>,
     children?: React.Node
 }
 
