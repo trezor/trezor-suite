@@ -19,6 +19,9 @@
                     ]
                 }
             ],
+            "web3": [
+                "wss://eth2.trezor.io/geth"
+            ],
             "explorer": {
                 "tx": "https://etherscan.io/tx/",
                 "address": "https://etherscan.io/address/"
@@ -42,6 +45,9 @@
                         "https://mew.epool.io/"
                     ]
                 }
+            ],
+            "web3": [
+                "wss://etc2.trezor.io/geth"
             ],
             "explorer": {
                 "tx": "https://gastracker.io/tx/",
@@ -67,32 +73,13 @@
                     ]
                 }
             ],
+            "web3": [
+                "wss://ropsten3.trezor.io",
+                "wss://ropsten1.trezor.io/geth"
+            ],
             "explorer": {
                 "tx": "https://ropsten.etherscan.io/tx/",
                 "address": "https://ropsten.etherscan.io/address/"
-            }
-        },
-        { 
-            "name": "Ethereum Rinkeby",
-            "symbol": "tETH",
-            "network": "rinkeby",
-            "chainId": 4,
-            "bip44": "m/44'/61'/0'/0",
-            "defaultGasPrice": 64,
-            "defaultGasLimit": 21000,
-            "defaultGasLimitTokens": 200000,
-            "tokens": "./data/rinkebyTokens.json",
-            "backends": [
-                {
-                    "name": "TREZOR Wallet - Ethereum",
-                    "urls": [
-                        "https://rinkeby.infura.io/QGyVKozSUEh2YhL4s2G4"
-                    ]
-                }
-            ],
-            "explorer": {
-                "tx": "https://rinkeby.etherscan.io/tx/",
-                "address": "https://rinkeby.etherscan.io/address/"
             }
         }
     ],
