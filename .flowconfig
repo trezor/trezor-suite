@@ -8,7 +8,7 @@
 .*/node_modules/react-router/.*
 .*/node_modules/react-router-redux/.*
 .*/_old/.*
-.*/src/solidity/.*
+.*/public/.*
 
 [libs]
 ./src/flowtype/npm/redux_v3.x.x.js

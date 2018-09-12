@@ -12,11 +12,13 @@ exports[`format utils btckb2satoshib 5`] = `99900000`;
 
 exports[`format utils formatAmount 1`] = `"0 btc"`;
 
-exports[`format utils formatAmount 2`] = `"5e-9 btc"`;
+exports[`format utils formatAmount 2`] = `"10 mBTC"`;
 
-exports[`format utils formatAmount 3`] = `"1e-8 eth"`;
+exports[`format utils formatAmount 3`] = `"0.000005 mBTC"`;
 
-exports[`format utils formatAmount 4`] = `"0.00099999 undefined"`;
+exports[`format utils formatAmount 4`] = `"1e-8 eth"`;
+
+exports[`format utils formatAmount 5`] = `"0.00099999 undefined"`;
 
 exports[`format utils formatTime 1`] = `"No time estimate"`;
 
@@ -28,15 +30,13 @@ exports[`format utils formatTime 4`] = `"1 hour 40 minutes"`;
 
 exports[`format utils formatTime 5`] = `"16 hours 39 minutes"`;
 
-exports[`format utils hexToString 1`] = `""`;
+exports[`format utils formatTime 6`] = `"45 minutes"`;
 
-exports[`format utils hexToString 2`] = `"ªªª"`;
+exports[`format utils hexToString 1`] = `"test"`;
 
-exports[`format utils hexToString 3`] = `""`;
+exports[`format utils hexToString 2`] = `"0001"`;
 
-exports[`format utils hexToString 4`] = `""`;
-
-exports[`format utils hexToString 5`] = `""`;
+exports[`format utils hexToString 3`] = `"test99999"`;
 
 exports[`format utils stringToHex 1`] = `"0074006500730074"`;
 
