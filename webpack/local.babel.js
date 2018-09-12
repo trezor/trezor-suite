@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import FlowWebpackPlugin from 'flow-webpack-plugin';
 
 import {
     TREZOR_CONNECT_ROOT,
@@ -113,6 +114,7 @@ module.exports = {
         hints: false,
     },
     plugins: [
+        new FlowWebpackPlugin(),
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,

@@ -2,6 +2,7 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import FlowWebpackPlugin from 'flow-webpack-plugin';
 import { SRC, BUILD, PUBLIC } from './constants';
 
 module.exports = {
@@ -60,6 +61,7 @@ module.exports = {
         hints: false,
     },
     plugins: [
+        new FlowWebpackPlugin(),
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
