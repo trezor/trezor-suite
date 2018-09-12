@@ -1,5 +1,6 @@
 module.exports = {
     rootDir: './src',
+    coverageDirectory: 'coverage/',
     collectCoverage: true,
     testURL: 'http://localhost',
     modulePathIgnorePatterns: [
