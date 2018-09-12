@@ -5,6 +5,7 @@ module.exports = {
     testURL: 'http://localhost',
     modulePathIgnorePatterns: [
         'node_modules',
+        'utils/windowUtils.js',
     ],
     collectCoverageFrom: [
         'utils/**.js',
