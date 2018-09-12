@@ -27,7 +27,8 @@ import type { State, FeeLevel } from 'reducers/SendFormReducer';
 import type { Account } from 'reducers/AccountsReducer';
 import type { Props } from 'views/Wallet/views/AccountSend/Container';
 import * as SessionStorageActions from './SessionStorageActions';
-import { estimateGas, pushTx } from './Web3Actions';
+import { prepareEthereumTx, serializeEthereumTx } from './TxActions';
+import * as BlockchainActions from './BlockchainActions';
 
 export type SendTxAction = {
     type: typeof SEND.TX_COMPLETE,
@@ -223,14 +224,13 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
 
 
 // initialize component
-export const init = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const {
         account,
         network,
-        web3,
     } = getState().selectedAccount;
 
-    if (!account || !network || !web3) return;
+    if (!account || !network) return;
 
     const stateFromStorage = SessionStorageActions.load(getState().router.location.pathname);
     if (stateFromStorage) {
@@ -243,7 +243,10 @@ export const init = (): ThunkAction => (dispatch: Dispatch, getState: GetState):
 
     // TODO: check if there are some unfinished tx in localStorage
 
-    const gasPrice: BigNumber = new BigNumber(EthereumjsUnits.convert(web3.gasPrice, 'wei', 'gwei')) || new BigNumber(network.defaultGasPrice);
+
+    // const gasPrice: BigNumber = new BigNumber(EthereumjsUnits.convert(web3.gasPrice, 'wei', 'gwei')) || new BigNumber(network.defaultGasPrice);
+    const gasPrice: BigNumber = await dispatch( BlockchainActions.getGasPrice(network.network, network.defaultGasPrice) );
+    // const gasPrice: BigNumber = new BigNumber(network.defaultGasPrice);
     const gasLimit: string = network.defaultGasLimit.toString();
     const feeLevels: Array<FeeLevel> = getFeeLevels(network.symbol, gasPrice, gasLimit);
 
@@ -709,12 +712,9 @@ export const onNonceChange = (nonce: string): AsyncAction => async (dispatch: Di
 
 const estimateGasPrice = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const {
-        web3,
         network,
     } = getState().selectedAccount;
-    if (!web3 || !network) return;
-
-    const w3 = web3.web3;
+    if (!network) return;
 
     const state: State = getState().sendForm;
     const requestedData = state.data;
@@ -732,14 +732,7 @@ const estimateGasPrice = (): AsyncAction => async (dispatch: Dispatch, getState:
         return;
     }
 
-    // TODO: allow data starting with 0x ...
-    const data: string = `0x${state.data.length % 2 === 0 ? state.data : `0${state.data}`}`;
-    const gasLimit = await estimateGas(w3, {
-        to: '0x0000000000000000000000000000000000000000',
-        data,
-        value: w3.toHex(w3.toWei(state.amount, 'ether')),
-        gasPrice: w3.toHex(EthereumjsUnits.convert(state.gasPrice, 'gwei', 'wei')),
-    });
+    const gasLimit: number = await dispatch( BlockchainActions.estimateGasLimit(network.network, state.data, state.amount, state.gasPrice) );
 
     if (getState().sendForm.data === requestedData) {
         dispatch(onGasLimitChange(gasLimit.toString()));
@@ -777,56 +770,69 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     const {
         account,
         network,
-        web3,
         pending,
     } = getState().selectedAccount;
-    if (!account || !web3 || !network) return;
+
+    if (!account || !network) return;
 
     const currentState: State = getState().sendForm;
 
     const isToken: boolean = currentState.currency !== currentState.networkSymbol;
-    const w3 = web3.web3;
-
     const address_n = account.addressPath;
-
-    let data: string = `0x${currentState.data}`;
-    let txAmount: string = w3.toHex(w3.toWei(currentState.amount, 'ether'));
-    let txAddress: string = currentState.address;
-    if (isToken) {
-        const token: ?Token = findToken(getState().tokens, account.address, currentState.currency, account.deviceState);
-        if (!token) return;
-
-        const contract = web3.erc20.at(token.address);
-        const amountValue: string = new BigNumber(currentState.amount).times(Math.pow(10, token.decimals)).toString(10);
-
-        data = contract.transfer.getData(currentState.address, amountValue, {
-            from: account.address,
-            gasLimit: currentState.gasLimit,
-            gasPrice: currentState.gasPrice,
-        });
-        txAmount = '0x00';
-        txAddress = token.address;
-    }
-
-    const pendingNonce: number = getPendingNonce(pending);
+    const pendingNonce: number = stateUtils.getPendingNonce(pending);
     const nonce = pendingNonce > 0 && pendingNonce >= account.nonce ? pendingNonce : account.nonce;
 
-    console.warn('NONCE', nonce, account.nonce, pendingNonce);
+    console.warn("NONCE", nonce);
 
-    const txData = {
-        address_n,
-        // from: currentAddress.address
-        to: txAddress,
-        value: txAmount,
-        data,
-        chainId: web3.chainId,
-        nonce: w3.toHex(nonce),
-        gasLimit: w3.toHex(currentState.gasLimit),
-        gasPrice: w3.toHex(EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei')),
-        r: '',
-        s: '',
-        v: '',
-    };
+    const txData = await dispatch( prepareEthereumTx({
+        network: network.network,
+        token: isToken ? findToken(getState().tokens, account.address, currentState.currency, account.deviceState) : null,
+        from: account.address,
+        to: currentState.address,
+        amount: currentState.amount,
+        data: currentState.data,
+        gasLimit: currentState.gasLimit,
+        gasPrice: currentState.gasPrice,
+        nonce
+    }) );
+
+    // let data: string = `0x${currentState.data}`;
+    // let txAmount: string = w3.toHex(w3.toWei(currentState.amount, 'ether'));
+    // let txAddress: string = currentState.address;
+    // if (isToken) {
+    //     const token: ?Token = findToken(getState().tokens, account.address, currentState.currency, account.deviceState);
+    //     if (!token) return;
+
+    //     const contract = web3.erc20.at(token.address);
+    //     const amountValue: string = new BigNumber(currentState.amount).times(Math.pow(10, token.decimals)).toString(10);
+
+    //     data = contract.transfer.getData(currentState.address, amountValue, {
+    //         from: account.address,
+    //         gasLimit: currentState.gasLimit,
+    //         gasPrice: currentState.gasPrice,
+    //     });
+    //     txAmount = '0x00';
+    //     txAddress = token.address;
+    // }
+
+    
+
+    // console.warn('NONCE', nonce, account.nonce, pendingNonce);
+
+    // const txData = {
+    //     address_n,
+    //     // from: currentAddress.address
+    //     to: txAddress,
+    //     value: txAmount,
+    //     data,
+    //     chainId: web3.chainId,
+    //     nonce: w3.toHex(nonce),
+    //     gasLimit: w3.toHex(currentState.gasLimit),
+    //     gasPrice: w3.toHex(EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei')),
+    //     r: '',
+    //     s: '',
+    //     v: '',
+    // };
 
     const selected: ?TrezorDevice = getState().wallet.selectedDevice;
     if (!selected) return;
@@ -861,9 +867,17 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     txData.v = signedTransaction.payload.v;
 
     try {
-        const tx = new EthereumjsTx(txData);
-        const serializedTx = `0x${tx.serialize().toString('hex')}`;
-        const txid: string = await pushTx(w3, serializedTx);
+        const serializedTx: string = await dispatch( serializeEthereumTx(txData) );
+        const push = await TrezorConnect.pushTransaction({
+            tx: serializedTx,
+            coin: network.network
+        });
+        
+        if (!push.success) {
+            throw new Error( push.payload.error );
+        }
+
+        const txid = push.payload.txid;
 
         dispatch({
             type: SEND.TX_COMPLETE,
@@ -871,7 +885,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             selectedCurrency: currentState.currency,
             amount: currentState.amount,
             total: currentState.total,
-            tx,
+            tx: txData,
             nonce,
             txid,
             txData,

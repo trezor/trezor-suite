@@ -1,13 +1,15 @@
 /* @flow */
 import Web3 from 'web3';
+import HDKey from 'hdkey';
+import BigNumber from 'bignumber.js';
 
-import type {
-    ContractFactory,
-    EstimateGasOptions,
-    TransactionStatus,
-    TransactionReceipt,
-} from 'web3';
-import type BigNumber from 'bignumber.js';
+import EthereumjsUtil from 'ethereumjs-util';
+import EthereumjsUnits from 'ethereumjs-units';
+import EthereumjsTx from 'ethereumjs-tx';
+import InputDataDecoder from 'ethereum-input-data-decoder';
+import TrezorConnect from 'trezor-connect';
+import type { EstimateGasOptions, TransactionStatus, TransactionReceipt } from 'web3';
+import { strip } from 'utils/ethUtils';
 import * as WEB3 from 'actions/constants/web3';
 import * as PENDING from 'actions/constants/pendingTx';
 
@@ -15,6 +17,10 @@ import type {
     Dispatch,
     GetState,
     AsyncAction,
+    PromiseAction,
+    AccountDiscovery,
+    EthereumTxRequest,
+    EthereumPreparedTx
 } from 'flowtype';
 
 import type { Account } from 'reducers/AccountsReducer';
@@ -44,377 +50,335 @@ export type Web3Action = {
 } | {
     type: typeof WEB3.CREATE,
     instance: Web3Instance
-}
-    | Web3UpdateBlockAction
-    | Web3UpdateGasPriceAction;
+} | Web3UpdateBlockAction
+  | Web3UpdateGasPriceAction;
 
-export function init(instance: ?Web3, coinIndex: number = 0): AsyncAction {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const initWeb3 = (network: string, urlIndex: number = 0): PromiseAction<Web3Instance> => async (dispatch: Dispatch, getState: GetState): Promise<Web3Instance> => {
+    return new Promise(async (resolve, reject) => {
+        // check if requested web was initialized before
+        const instance = getState().web3.find(w3 => w3.network === network);
+        if (instance && instance.web3.currentProvider.connected) {
+            resolve(instance);
+            return;
+        }
+
+        // requested web3 wasn't initialized or is disconnected
+        // initialize again
         const { config, ERC20Abi } = getState().localStorage;
-
-        const coin = config.coins[coinIndex];
+        const coin = config.coins.find(c => c.network === network);
         if (!coin) {
-            // all instances done
-            dispatch({
-                type: WEB3.READY,
-            });
+            // coin not found
+            reject(new Error(`Network ${ network} not found in application config.`));
             return;
         }
 
-        const { network } = coin;
-        const urls = coin.backends[0].urls;
-
-        let web3host: string = urls[0];
-
-        if (instance) {
-            const currentHost = instance.currentProvider.host;
-            const currentHostIndex: number = urls.indexOf(currentHost);
-
-            if (currentHostIndex + 1 < urls.length) {
-                web3host = urls[currentHostIndex + 1];
-            } else {
-                console.error(`TODO: Backend ${network} not working`, instance.currentProvider);
-
-                dispatch({
-                    type: WEB3.CREATE,
-                    instance: {
-                        network,
-                        web3: instance,
-                        chainId: coin.chainId,
-                        erc20: instance.eth.contract(ERC20Abi),
-                        latestBlock: '0',
-                        gasPrice: '0',
-                    },
-                });
-
-                // try next coin
-                dispatch(init(null, coinIndex + 1));
-                return;
-            }
-        }
-
-        //const instance = new Web3(window.web3.currentProvider);
-        const web3 = new Web3(new Web3.providers.HttpProvider(web3host));
-
-        // instance = new Web3( new Web3.providers.HttpProvider('https://pyrus2.ubiqscan.io') ); // UBQ
-        //instance = new Web3( new Web3.providers.HttpProvider('https://node.expanse.tech/') ); // EXP
-        //instance = new Web3( new Web3.providers.HttpProvider('http://10.34.0.91:8545/') );
-
-        //web3 = new Web3(new Web3.providers.HttpProvider("https://api.myetherapi.com/rop"));
-        //instance = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io2/QGyVKozSUEh2YhL4s2G4"));
-        //web3 = new Web3( new Web3.providers.HttpProvider("ws://34.230.234.51:30303") );
-
-
-        // initial check if backend is running
-        if (!web3.currentProvider.isConnected()) {
-            // try different url
-            dispatch(init(web3, coinIndex));
+        // get first url
+        const url = coin.web3[ urlIndex ];
+        if (!url) {
+            reject(new Error('Web3 backend is not responding'));
             return;
         }
 
-        const erc20 = web3.eth.contract(ERC20Abi);
+        const web3 = new Web3( new Web3.providers.WebsocketProvider(url) );
 
-        dispatch({
-            type: WEB3.CREATE,
-            instance: {
+        const onConnect = async () => {
+
+            const latestBlock = await web3.eth.getBlockNumber();
+            const gasPrice = await web3.eth.getGasPrice();
+
+            const instance = {
                 network,
                 web3,
                 chainId: coin.chainId,
-                erc20,
-                latestBlock: '0',
-                gasPrice: '0',
-            },
-        });
-
-        // dispatch({
-        //     type: WEB3.GAS_PRICE_UPDATED,
-        //     network,
-        //     gasPrice
-        // });
-
-
-        // console.log("GET CHAIN", instance.version.network)
-
-        // instance.version.getWhisper((err, shh) => {
-        //     console.log("-----whisperrr", error, shh)
-        // })
-
-
-        // const sshFilter = instance.ssh.filter('latest');
-        // sshFilter.watch((error, blockHash) => {
-        //     console.warn("SSH", error, blockHash);
-        // });
-
-        //const shh = instance.shh.newIdentity();
-
-        // const latestBlockFilter = web3.eth.filter('latest');
-
-        const onBlockMined = async (error: ?Error, blockHash: ?string) => {
-            if (error) {
-                window.setTimeout(() => {
-                    // try again
-                    onBlockMined(new Error('manually_triggered_error'), undefined);
-                }, 30000);
+                erc20: new web3.eth.Contract(ERC20Abi),
+                latestBlock,
+                gasPrice,
             }
 
-            if (blockHash) {
-                dispatch({
-                    type: WEB3.BLOCK_UPDATED,
-                    network,
-                    blockHash,
-                });
-            }
+            console.warn("CONNECT", web3)
 
-            // TODO: filter only current device
-            const accounts = getState().accounts.filter(a => a.network === network);
-            for (const account of accounts) {
-                const nonce = await getNonceAsync(web3, account.address);
-                if (nonce !== account.nonce) {
-                    dispatch(AccountsActions.setNonce(account.address, account.network, account.deviceState, nonce));
+            dispatch({
+                type: WEB3.CREATE,
+                instance,
+            });
 
-                    // dispatch( getBalance(account) );
-                    // TODO: check if nonce was updated,
-                    // update tokens balance,
-                    // update account balance,
-                    // update pending transactions
+            // await dispatch( _onNewBlock(instance) );
+
+            resolve(instance);
+        }
+
+        const onEnd = async () => {
+            web3.currentProvider.removeAllListeners('connect');
+            web3.currentProvider.removeAllListeners('end');
+            web3.currentProvider.removeAllListeners('error');
+            web3.currentProvider.reset();
+            // if (web3.eth)
+            //    web3.eth.clearSubscriptions();
+
+            const instance = getState().web3.find(w3 => w3.network === network);
+
+            if (instance && instance.web3.currentProvider.connected) {
+                // backend disconnects
+                // dispatch({
+                //     type: 'WEB3.DISCONNECT',
+                //     network
+                // });
+            } else {
+                // backend initialization error for given url, try next one
+                try {
+                    const web3 = await dispatch( initWeb3(network, urlIndex + 1) );
+                    resolve(web3);
+                } catch (error) {
+                    reject(error);
                 }
-                dispatch(getBalance(account));
-                // dispatch( getNonce(account) );
             }
+        }
 
-            const tokens = getState().tokens.filter(t => t.network === network);
-            tokens.forEach(token => dispatch(getTokenBalance(token)));
+        web3.currentProvider.on('connect', onConnect);
+        web3.currentProvider.on('end', onEnd);
+        web3.currentProvider.on('error', onEnd);
+    });
+}
 
-            dispatch(getGasPrice(network));
+const _onNewBlock = (instance: Web3Instance): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
-            const pending = getState().pending.filter(p => p.network === network);
-            pending.forEach(pendingTx => dispatch(getTransactionReceipt(pendingTx)));
-        };
+    // const latestBlock = await instance.web3.eth.getBlockNumber();
 
-        // latestBlockFilter.watch(onBlockMined);
-        onBlockMined(new Error('manually_triggered_error'), undefined);
+    // dispatch({
+    //     type: WEB3.BLOCK_UPDATED,
+    //     network: instance.network,
+    //     blockHash: latestBlock,
+    // });
 
+    
 
-        // init next coin
-        dispatch(init(web3, coinIndex + 1));
+    // TODO: filter only current device
+    const accounts = getState().accounts.filter(a => a.network === instance.network);
+    for (const account of accounts) {
+        const nonce = await instance.web3.eth.getTransactionCount(account.address);
+        if (nonce !== account.nonce) {
+            dispatch(AccountsActions.setNonce(account.address, account.network, account.deviceState, nonce));
+        }
 
+        const balance = await instance.web3.eth.getBalance(account.address);
+        const newBalance = EthereumjsUnits.convert(balance, 'wei', 'ether');
+        if (newBalance !== account.balance) {
+            dispatch(AccountsActions.setBalance(
+                account.address,
+                account.network,
+                account.deviceState,
+                newBalance
+            ));
+        }
+    }
 
-        // let instance2 = new Web3( new Web3.providers.HttpProvider('https://pyrus2.ubiqscan.io') );
-        // console.log("INIT WEB3", instance, instance2);
-        // instance2.eth.getGasPrice((error, gasPrice) => {
-        //     console.log("---gasss price from UBQ", gasPrice)
-        // });
+    const tokens = getState().tokens.filter(t => t.network === instance.network);
+    for (const token of tokens) {
+        const balance = await dispatch( getTokenBalance(token) );
+        console.warn("TOK BALAC", balance)
+        // const newBalance: string = balance.dividedBy(Math.pow(10, token.decimals)).toString(10);
+        if (balance !== token.balance) {
+            dispatch(TokenActions.setBalance(
+                token.address,
+                token.ethAddress,
+                balance,
+            ));
+        }
+    }
+
+    // dispatch(getGasPrice(network));
+
+    
+}
+
+export const discoverAccount = (address: string, network: string): PromiseAction<AccountDiscovery> => async (dispatch: Dispatch, getState: GetState): Promise<AccountDiscovery> => {
+    const instance: Web3Instance = await dispatch( initWeb3(network) );
+    const balance = await instance.web3.eth.getBalance(address);
+    const nonce = await instance.web3.eth.getTransactionCount(address);
+    return { 
+        transactions: 0,
+        block: 0,
+        balance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
+        nonce 
     };
 }
 
-
-export function getGasPrice(network: string): AsyncAction {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        const index: number = getState().web3.findIndex(w3 => w3.network === network);
-
-        const web3instance = getState().web3[index];
-        const { web3 } = web3instance;
-        web3.eth.getGasPrice((error, gasPrice) => {
-            if (!error) {
-                if (web3instance.gasPrice && web3instance.gasPrice.toString() !== gasPrice.toString()) {
-                    dispatch({
-                        type: WEB3.GAS_PRICE_UPDATED,
-                        network,
-                        gasPrice,
-                    });
-                }
-            }
-        });
-    };
-}
-
-export function getBalance(account: Account): AsyncAction {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        const web3instance = getState().web3.filter(w3 => w3.network === account.network)[0];
-        const { web3 } = web3instance;
-
-        web3.eth.getBalance(account.address, (error: Error, balance: BigNumber) => {
-            if (!error) {
-                const newBalance: string = web3.fromWei(balance.toString(), 'ether');
-                if (account.balance !== newBalance) {
-                    dispatch(AccountsActions.setBalance(
-                        account.address,
-                        account.network,
-                        account.deviceState,
-                        newBalance,
-                    ));
-
-                    // dispatch( loadHistory(addr) );
-                }
-            }
-        });
-    };
-}
-
-export function getTokenBalance(token: Token): AsyncAction {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        const web3instance = getState().web3.filter(w3 => w3.network === token.network)[0];
-        const contract = web3instance.erc20.at(token.address);
-
-        contract.balanceOf(token.ethAddress, (error: Error, balance: BigNumber) => {
-            if (balance) {
-                const newBalance: string = balance.dividedBy(Math.pow(10, token.decimals)).toString(10);
-                if (newBalance !== token.balance) {
-                    dispatch(TokenActions.setBalance(
-                        token.address,
-                        token.ethAddress,
-                        newBalance,
-                    ));
-                }
-            }
-        });
-    };
-}
-
-export function getNonce(account: Account): AsyncAction {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        const web3instance = getState().web3.filter(w3 => w3.network === account.network)[0];
-        const { web3 } = web3instance;
-
-        web3.eth.getTransactionCount(account.address, (error: Error, result: number) => {
-            if (!error) {
-                if (account.nonce !== result) {
-                    dispatch(AccountsActions.setNonce(account.address, account.network, account.deviceState, result));
-                }
-            }
-        });
-    };
-}
-
-export const getTransactionReceipt = (tx: PendingTx): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const web3instance = getState().web3.filter(w3 => w3.network === tx.network)[0];
-    const { web3 } = web3instance;
-
-    web3.eth.getTransaction(tx.id, (error: Error, status: TransactionStatus) => {
-        if (!error && !status) {
+export const resolvePendingTransactions = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const instance: Web3Instance = await dispatch( initWeb3(network) );
+    const pending = getState().pending.filter(p => p.network === network);
+    for (const tx of pending) {
+        const status = await instance.web3.eth.getTransaction(tx.id);
+        if (!status) {
             dispatch({
                 type: PENDING.TX_NOT_FOUND,
                 tx,
             });
-        } else if (status && status.blockNumber) {
-            web3.eth.getTransactionReceipt(tx.id, (error: Error, receipt: TransactionReceipt) => {
-                if (receipt) {
-                    if (status.gas !== receipt.gasUsed) {
-                        dispatch({
-                            type: PENDING.TX_TOKEN_ERROR,
-                            tx,
-                        });
-                    }
+        } else {
+            const receipt = await instance.web3.eth.getTransactionReceipt(tx.id);
+            if (receipt) {
+                if (status.gas !== receipt.gasUsed) {
                     dispatch({
-                        type: PENDING.TX_RESOLVED,
+                        type: PENDING.TX_TOKEN_ERROR,
                         tx,
-                        receipt,
                     });
                 }
-            });
+                dispatch({
+                    type: PENDING.TX_RESOLVED,
+                    tx,
+                    receipt,
+                });
+            }
         }
-    });
+    }
+}
+
+export const getPendingInfo = (network: string, txid: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const instance: Web3Instance = await dispatch( initWeb3(network) );
+    const tx = await instance.web3.eth.getTransaction(txid);
+
+    /*
+    if (tx.input !== "0x") {
+        // find token:
+        // tx.to <= smart contract address
+
+        // smart contract data
+        const decoder = new InputDataDecoder(instance.erc20.options.jsonInterface);
+        const data = decoder.decodeData(tx.input);
+        if (data.name === 'transfer') {
+            console.warn("DATA!", data.inputs[0], data.inputs[1].toString(10));
+        }
+        
+
+    }
+    */
+    // return tx;
+}
+
+export const getTxInput = (): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    
+    const instance: Web3Instance = await dispatch( initWeb3("ropsten") );
+    console.warn("GETTX", instance.erc20.options.jsonInterface)
+    // const inputData = instance.web3.utils.hexToAscii("0xa9059cbb00000000000000000000000073d0385f4d8e00c5e6504c6030f47bf6212736a80000000000000000000000000000000000000000000000000000000000000001");
+    // console.warn("input data!", inputData);
+}
+
+
+export const updateAccount = (account: Account, newAccount: AccountDiscovery, network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const instance: Web3Instance = await dispatch( initWeb3(network) );
+    const balance = await instance.web3.eth.getBalance(account.address);
+    const nonce = await instance.web3.eth.getTransactionCount(account.address);
+
+    dispatch( AccountsActions.update( { ...account, ...newAccount, balance: EthereumjsUnits.convert(balance, 'wei', 'ether'), nonce }) );
+    // TODO update tokens for this account
+    
+}
+
+export const getTokenInfo = (address: string, network: string): PromiseAction<NetworkToken> => async (dispatch: Dispatch, getState: GetState): Promise<NetworkToken> => {
+    const instance: Web3Instance = await dispatch( initWeb3(network) );
+    const contract = instance.erc20.clone();
+    contract.options.address = address;
+
+    const name = await contract.methods.name().call();
+    const symbol = await contract.methods.symbol().call();
+    const decimals = await contract.methods.decimals().call();
+
+    return {
+        address,
+        name,
+        symbol,
+        decimals,
+    };
 };
 
-export const getTransaction = (web3: Web3, txid: string): Promise<any> => new Promise((resolve, reject) => {
-    web3.eth.getTransaction(txid, (error, result) => {
-        if (error) {
-            reject(error);
-        } else {
-            resolve(result);
-        }
-    });
-});
+export const getTokenBalance = (token: Token): PromiseAction<string> => async (dispatch: Dispatch, getState: GetState): Promise<string> => {
+    const instance = await dispatch( initWeb3(token.network) );
+    const contract = instance.erc20.clone();
+    contract.options.address = token.address;
 
-export const getBalanceAsync = (web3: Web3, address: string): Promise<BigNumber> => new Promise((resolve, reject) => {
-    web3.eth.getBalance(address, (error: Error, result: BigNumber) => {
-        if (error) {
-            reject(error);
-        } else {
-            resolve(result);
-        }
-    });
-});
+    const balance = await contract.methods.balanceOf(token.ethAddress).call();
+    return new BigNumber(balance).dividedBy(Math.pow(10, token.decimals)).toString(10);
+};
 
-export const getTokenBalanceAsync = (erc20: ContractFactory, token: Token): Promise<string> => new Promise((resolve, reject) => {
-    const contract = erc20.at(token.address);
-    contract.balanceOf(token.ethAddress, (error: Error, balance: BigNumber) => {
-        if (error) {
-            reject(error);
-        } else {
-            const newBalance: string = balance.dividedBy(Math.pow(10, token.decimals)).toString(10);
-            resolve(newBalance);
-        }
-    });
-});
+export const getCurrentGasPrice = (network: string): PromiseAction<string> => async (dispatch: Dispatch, getState: GetState): Promise<string> => {
+    const instance = getState().web3.find(w3 => w3.network === network);
+    if (instance) {
+        return EthereumjsUnits.convert(instance.gasPrice, 'wei', 'gwei');
+    } else {
+        return "0";
+    }
 
-export const getNonceAsync = (web3: Web3, address: string): Promise<number> => new Promise((resolve, reject) => {
-    web3.eth.getTransactionCount(address, (error: Error, result: number) => {
-        if (error) {
-            reject(error);
-        } else {
-            resolve(result);
-        }
-    });
-});
+    // const index: number = getState().web3.findIndex(w3 => w3.network === network);
+
+    // const web3instance = getState().web3[index];
+    // const web3 = web3instance.web3;
+    // web3.eth.getGasPrice((error, gasPrice) => {
+    //     if (!error) {
+    //         if (web3instance.gasPrice && web3instance.gasPrice.toString() !== gasPrice.toString()) {
+    //             dispatch({
+    //                 type: WEB3.GAS_PRICE_UPDATED,
+    //                 network,
+    //                 gasPrice,
+    //             });
+    //         }
+    //     }
+    // });
+}
 
 
-export const getTokenInfoAsync = (erc20: ContractFactory, address: string): Promise<?NetworkToken> => new Promise((resolve) => {
-    const contract = erc20.at(address, (error/* , res */) => {
-        // console.warn("callback", error, res)
-    });
+export const estimateGasLimit = (network: string, options: EstimateGasOptions): PromiseAction<number> => async (dispatch: Dispatch, getState: GetState): Promise<number> => {
+    const instance = await dispatch( initWeb3(network) );
+    // TODO: allow data starting with 0x ...
+    options.to = '0x0000000000000000000000000000000000000000';
+    options.data = `0x${options.data.length % 2 === 0 ? options.data : `0${options.data}`}`;
+    options.value = instance.web3.utils.toHex( EthereumjsUnits.convert(options.value || '0', 'ether', 'wei') );
+    options.gasPrice = instance.web3.utils.toHex( EthereumjsUnits.convert(options.gasPrice, 'gwei', 'wei') );
 
-    const info: NetworkToken = {
-        address,
-        name: '',
-        symbol: '',
-        decimals: 0,
-    };
+    const limit = await instance.web3.eth.estimateGas(options);
+    return limit;
+};
 
-    contract.name.call((error: Error, name: string) => {
-        if (error) {
-            resolve(null);
-            return;
-        }
-        info.name = name;
+// export const prepareTx = (tx: EthereumTxRequest): PromiseAction<EthereumPreparedTx> => async (dispatch: Dispatch, getState: GetState): Promise<EthereumPreparedTx> => {
 
+//     const instance = await dispatch( initWeb3(tx.network) );
+//     const token = tx.token;
+//     let data: string = `0x${tx.data}`; // TODO: check if already prefixed
+//     let value: string = instance.web3.utils.toHex( EthereumjsUnits.convert(tx.amount, 'ether', 'wei') );
+//     let to: string = tx.to;
 
-        contract.symbol.call((error: Error, symbol: string) => {
-            if (error) {
-                resolve(null);
-                return;
-            }
-            info.symbol = symbol;
+//     if (token) {
+//         // smart contract transaction
+//         const contract = instance.erc20.clone();
+//         contract.options.address = token.address;
+//         const tokenAmount: string = new BigNumber(tx.amount).times(Math.pow(10, token.decimals)).toString(10);
+//         data = instance.erc20.methods.transfer(to, tokenAmount).encodeABI();
+//         value = '0x00';
+//         to = token.address;
+//     }
 
+//     return {
+//         to,
+//         value,
+//         data,
+//         chainId: instance.chainId,
+//         nonce: instance.web3.utils.toHex(tx.nonce),
+//         gasLimit: instance.web3.utils.toHex(tx.gasLimit),
+//         gasPrice: instance.web3.utils.toHex( EthereumjsUnits.convert(tx.gasPrice, 'gwei', 'wei') ),
+//         r: '',
+//         s: '',
+//         v: '',
+//     }
+// };
 
-            contract.decimals.call((error: Error, decimals: BigNumber) => {
-                if (decimals) {
-                    info.decimals = decimals.toNumber();
-                    resolve(info);
-                } else {
-                    resolve(null);
-                }
-            });
-        });
-    });
-});
+// export const pushTx = (network: string, tx: EthereumPreparedTx): PromiseAction<string> => async (dispatch: Dispatch, getState: GetState): Promise<string> => {
+//     const instance = await dispatch( initWeb3(network) );
+//     const ethTx = new EthereumjsTx(tx);
+//     const serializedTx = `0x${ethTx.serialize().toString('hex')}`;
 
-export const estimateGas = (web3: Web3, options: EstimateGasOptions): Promise<number> => new Promise((resolve, reject) => {
-    web3.eth.estimateGas(options, (error: ?Error, gas: ?number) => {
-        if (error) {
-            reject(error);
-        } else if (typeof gas === 'number') {
-            resolve(gas);
-        }
-    });
-});
-
-export const pushTx = (web3: Web3, tx: any): Promise<string> => new Promise((resolve, reject) => {
-    web3.eth.sendRawTransaction(tx, (error: Error, result: string) => {
-        if (error) {
-            reject(error);
-        } else {
-            resolve(result);
-        }
-    });
-});
+//     return new Promise((resolve, reject) => {
+//         instance.web3.eth.sendSignedTransaction(serializedTx)
+//         .on('error', error => reject(error))
+//         .once('transactionHash', (hash: string) => {
+//             resolve(hash);
+//         });
+//     });
+// };

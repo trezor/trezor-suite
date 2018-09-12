@@ -116,7 +116,7 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
     } else {
         response.payload.forEach((a, i) => {
             if (a.transactions > 0) {
-                dispatch( Web3Actions.updateAccount(accounts[i], a, network) )
+                // dispatch( Web3Actions.updateAccount(accounts[i], a, network) )
             }
         });
     }
@@ -134,16 +134,14 @@ export const onNotification = (payload: any): PromiseAction<void> => async (disp
 
     // const exists = getState().pending.filter(p => p.id === payload.tx.txid && p.address === address);
     const exists = getState().pending.filter(p => {
-        console.warn("CHECK", p.address === address, p.id === payload.tx.txid, p)
         return p.address === address;
     });
     if (exists.length < 1) {
-        
-        console.warn("TXINFO!", txInfo);
         if (txInfo) {
             dispatch({
                 type: PENDING.ADD,
                 payload: {
+                    type: 'send',
                     id: payload.tx.txid,
                     network: payload.coin,
                     currency: "tETH",
@@ -152,6 +150,7 @@ export const onNotification = (payload: any): PromiseAction<void> => async (disp
                     tx: {},
                     nonce: txInfo.nonce,
                     address,
+                    rejected: false
                 }
             });
         } else {

@@ -1,6 +1,6 @@
 /* @flow */
 import TrezorConnect, {
-    DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT,
+    UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT
 } from 'trezor-connect';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as NOTIFICATION from 'actions/constants/notification';
@@ -12,11 +12,13 @@ import { push } from 'react-router-redux';
 
 import type {
     DeviceMessage,
-    UiMessage,
-    TransportMessage,
     DeviceMessageType,
-    TransportMessageType,
+    UiMessage,
     UiMessageType,
+    TransportMessage,
+    TransportMessageType,
+    BlockchainMessage,
+    BlockchainMessageType,
 } from 'trezor-connect';
 
 import type {
@@ -109,6 +111,15 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
     TrezorConnect.on(TRANSPORT_EVENT, (event: TransportMessage): void => {
         // post event to reducers
         const type: TransportMessageType = event.type; // assert flow type
+        dispatch({
+            type,
+            payload: event.payload,
+        });
+    });
+
+    TrezorConnect.on(BLOCKCHAIN_EVENT, (event: BlockchainMessage): void => {
+        // post event to reducers
+        const type: BlockchainMessageType = event.type; // assert flow type
         dispatch({
             type,
             payload: event.payload,

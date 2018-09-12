@@ -2,7 +2,7 @@
 
 import * as ACCOUNT from 'actions/constants/account';
 import type { Action, TrezorDevice } from 'flowtype';
-import type { State } from 'reducers/AccountsReducer';
+import type { Account, State } from 'reducers/AccountsReducer';
 
 export type AccountFromStorageAction = {
     type: typeof ACCOUNT.FROM_STORAGE,
@@ -11,11 +11,12 @@ export type AccountFromStorageAction = {
 
 export type AccountCreateAction = {
     type: typeof ACCOUNT.CREATE,
-    device: TrezorDevice,
-    network: string,
-    index: number,
-    path: Array<number>,
-    address: string
+    payload: Account,
+}
+
+export type AccountUpdateAction = {
+    type: typeof ACCOUNT.UPDATE,
+    payload: Account,
 }
 
 export type AccountSetBalanceAction = {
@@ -36,9 +37,10 @@ export type AccountSetNonceAction = {
 
 export type AccountAction =
     AccountFromStorageAction
-    | AccountCreateAction
-    | AccountSetBalanceAction
-    | AccountSetNonceAction;
+  | AccountCreateAction
+  | AccountUpdateAction
+  | AccountSetBalanceAction
+  | AccountSetNonceAction;
 
 export const setBalance = (address: string, network: string, deviceState: string, balance: string): Action => ({
     type: ACCOUNT.SET_BALANCE,
@@ -55,3 +57,11 @@ export const setNonce = (address: string, network: string, deviceState: string, 
     deviceState,
     nonce,
 });
+<<<<<<< HEAD
+=======
+
+export const update = (account: Account): Action => ({
+    type: ACCOUNT.UPDATE,
+    payload: account
+});
+>>>>>>> web3 actions splitted to blockchain actions
