@@ -59,6 +59,7 @@ module.exports = {
                     {
                         loader: 'stylelint-custom-processor-loader',
                         options: {
+                            emitWarning: true,
                             configPath: '.stylelintrc',
                         },
                     },

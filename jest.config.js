@@ -1,5 +1,6 @@
 module.exports = {
     rootDir: './src',
+    automock: false,
     coverageDirectory: 'coverage/',
     collectCoverage: true,
     testURL: 'http://localhost',
@@ -9,5 +10,8 @@ module.exports = {
     ],
     collectCoverageFrom: [
         'utils/**.js',
+    ],
+    setupFiles: [
+        './support/setupJest.js',
     ],
 };
