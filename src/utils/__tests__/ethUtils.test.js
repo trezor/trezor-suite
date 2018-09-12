@@ -11,7 +11,7 @@ describe('eth utils', () => {
     });
 
     it('hexToDecimal', () => {
-        const input = ['2540be3ff', '64', '2', '1', '0'];
+        const input = ['2540be3ff', '64', '2', '1', '0', ''];
 
         input.forEach((entry) => {
             expect(ethUtils.hexToDecimal(entry)).toMatchSnapshot();
@@ -27,7 +27,7 @@ describe('eth utils', () => {
     });
 
     it('sanitizeHex', () => {
-        const input = ['0x2540be3ff', '1', '2', '100', 999];
+        const input = ['0x2540be3ff', '1', '2', '100', 999, ''];
 
         input.forEach((entry) => {
             expect(ethUtils.sanitizeHex(entry)).toMatchSnapshot();
@@ -36,7 +36,7 @@ describe('eth utils', () => {
 
 
     it('strip', () => {
-        const input = ['0x', '0x2540be3ff'];
+        const input = ['0x', '0x2540be3ff', '2540be3ff'];
 
         input.forEach((entry) => {
             expect(ethUtils.strip(entry)).toMatchSnapshot();

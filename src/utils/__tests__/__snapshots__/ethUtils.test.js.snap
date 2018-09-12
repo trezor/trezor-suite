@@ -22,6 +22,8 @@ exports[`eth utils hexToDecimal 4`] = `"1"`;
 
 exports[`eth utils hexToDecimal 5`] = `"0"`;
 
+exports[`eth utils hexToDecimal 6`] = `"null"`;
+
 exports[`eth utils padLeftEven 1`] = `"02540be3ff"`;
 
 exports[`eth utils sanitizeHex 1`] = `"0x02540be3ff"`;
@@ -34,6 +36,10 @@ exports[`eth utils sanitizeHex 4`] = `"0x0100"`;
 
 exports[`eth utils sanitizeHex 5`] = `null`;
 
+exports[`eth utils sanitizeHex 6`] = `""`;
+
 exports[`eth utils strip 1`] = `""`;
 
 exports[`eth utils strip 2`] = `"02540be3ff"`;
+
+exports[`eth utils strip 3`] = `"02540be3ff"`;
