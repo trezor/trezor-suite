@@ -16,9 +16,7 @@ import type {
     DiscoveryCompleteAction,
 } from 'actions/DiscoveryActions';
 
-import type {
-    AccountCreateAction,
-} from 'actions/AccountsActions';
+import type { Account } from './AccountsReducer';
 
 export type Discovery = {
     network: string;
@@ -75,8 +73,8 @@ const complete = (state: State, action: DiscoveryCompleteAction): State => {
     return newState;
 };
 
-const accountCreate = (state: State, action: AccountCreateAction): State => {
-    const index: number = findIndex(state, action.network, action.device.state || '0');
+const accountCreate = (state: State, account: Account): State => {
+    const index: number = findIndex(state, account.network, account.deviceState);
     const newState: State = [...state];
     newState[index].accountIndex++;
     return newState;
@@ -162,7 +160,7 @@ export default function discovery(state: State = initialState, action: Action): 
         case DISCOVERY.START:
             return start(state, action);
         case ACCOUNT.CREATE:
-            return accountCreate(state, action);
+            return accountCreate(state, action.payload);
         case DISCOVERY.STOP:
             return stop(state, action);
         case DISCOVERY.COMPLETE:

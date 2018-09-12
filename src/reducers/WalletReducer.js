@@ -4,7 +4,6 @@
 import { LOCATION_CHANGE } from 'react-router-redux';
 import { DEVICE, TRANSPORT } from 'trezor-connect';
 import * as MODAL from 'actions/constants/modal';
-import * as WEB3 from 'actions/constants/web3';
 import * as WALLET from 'actions/constants/wallet';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 
