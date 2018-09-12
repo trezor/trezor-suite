@@ -18,7 +18,7 @@ exports[`format utils formatAmount 3`] = `"0.000005 mBTC"`;
 
 exports[`format utils formatAmount 4`] = `"1e-8 eth"`;
 
-exports[`format utils formatAmount 5`] = `"0.00099999 undefined"`;
+exports[`format utils formatAmount 5`] = `"0.00099999 tau"`;
 
 exports[`format utils formatTime 1`] = `"No time estimate"`;
 

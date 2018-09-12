@@ -7,7 +7,7 @@ describe('format utils', () => {
             { amount: 1000000, coinInfo: { isBitcoin: true, currencyUnits: 'mbtc', shortcut: 'btc' } },
             { amount: 0.5, coinInfo: { isBitcoin: true, currencyUnits: 'mbtc', shortcut: 'btc' } },
             { amount: 1, coinInfo: { isBitcoin: false, shortcut: 'eth' } },
-            { amount: 99999, coinInfo: { isBitcoin: false, currencyUnits: 'tau' } },
+            { amount: 99999, coinInfo: { isBitcoin: false, shortcut: 'tau' } },
         ];
 
         input.forEach((entry) => {
