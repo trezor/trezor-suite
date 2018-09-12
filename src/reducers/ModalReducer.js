@@ -57,6 +57,7 @@ export default function modal(state: State = initialState, action: Action): Stat
             if (state.opened && action.device.path === state.device.path && action.device.status === 'occupied') {
                 return initialState;
             }
+
             return state;
 
         case DEVICE.DISCONNECT:
