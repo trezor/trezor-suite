@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import Icon from 'components/Icon';
+import Sticky from 'react-sticky-el';
 import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
@@ -10,6 +11,8 @@ import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
 import StickyContainer from './components/StickyContainer';
+
+const Header = styled(DeviceHeader)``;
 
 const TransitionGroupWrapper = styled(TransitionGroup)`
     width: 640px;
@@ -21,14 +24,15 @@ const TransitionContentWrapper = styled.div`
     vertical-align: top;
 `;
 
-const StickyBottom = styled.div`
+const Footer = styled.div`
     position: fixed;
     bottom: 0;
     background: ${colors.MAIN};
     border-right: 1px solid ${colors.DIVIDER};
 `;
 
-const MenuWrapper = styled.div`
+const Body = styled.div`
+    overflow: auto;
     background: ${colors.LANDING};
 `;
 
@@ -40,11 +44,6 @@ const Help = styled.div`
     width: 319px;
     padding: 8px 0px;
     border-top: 1px solid ${colors.DIVIDER};
-
-    &.fixed {
-        position: fixed;
-        bottom: 0px;
-    }
 `;
 
 const A = styled.a`
@@ -150,28 +149,25 @@ class LeftNavigation extends Component {
     }
 
     render() {
-        const { selectedDevice } = this.props.wallet;
         return (
             <StickyContainer
                 location={this.props.location.pathname}
                 deviceSelection={this.props.deviceDropdownOpened}
             >
-                {selectedDevice && (
-                    <DeviceHeader
-                        onClickWrapper={() => this.handleOpen()}
-                        device={this.props.wallet.selectedDevice}
-                        transport={this.props.connect.transport}
-                        devices={this.props.devices}
-                        isOpen={this.props.deviceDropdownOpened}
-                        {...this.props}
-                    />
-                ) }
-                <MenuWrapper>
+                <Header
+                    onClickWrapper={() => this.handleOpen()}
+                    device={this.props.wallet.selectedDevice}
+                    transport={this.props.connect.transport}
+                    devices={this.props.devices}
+                    isOpen={this.props.deviceDropdownOpened}
+                    {...this.props}
+                />
+                <Body>
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
                     {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
                     {this.shouldRenderCoins() && this.getMenuTransition(<CoinMenu {...this.props} />)}
-                </MenuWrapper>
-                <StickyBottom>
+                </Body>
+                <Footer className="sticky-bottom">
                     <Help>
                         <A
                             href="https://trezor.io/support/"
@@ -181,7 +177,8 @@ class LeftNavigation extends Component {
                             <Icon size={26} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />Need help?
                         </A>
                     </Help>
-                </StickyBottom>
+                </Footer>
+                <Sticky />
             </StickyContainer>
         );
     }
