@@ -57,11 +57,8 @@ export const setNonce = (address: string, network: string, deviceState: string, 
     deviceState,
     nonce,
 });
-<<<<<<< HEAD
-=======
 
 export const update = (account: Account): Action => ({
     type: ACCOUNT.UPDATE,
     payload: account
 });
->>>>>>> web3 actions splitted to blockchain actions

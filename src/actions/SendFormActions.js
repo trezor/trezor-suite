@@ -12,6 +12,7 @@ import * as SEND from 'actions/constants/send';
 import { initialState } from 'reducers/SendFormReducer';
 import { findToken } from 'reducers/TokensReducer';
 import { findDevice, getPendingAmount, getPendingNonce } from 'reducers/utils';
+import * as stateUtils from 'reducers/utils';
 
 import type {
     Dispatch,
