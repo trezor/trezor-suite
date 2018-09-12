@@ -3,7 +3,8 @@
 
 import Web3 from 'web3';
 
-import type { ContractFactory } from 'web3';
+import type { Contract } from 'web3';
+import * as STORAGE from 'actions/constants/localStorage';
 import * as WEB3 from 'actions/constants/web3';
 
 import type { Action } from 'flowtype';
@@ -18,7 +19,7 @@ export type Web3Instance = {
     chainId: number;
     latestBlock: any;
     gasPrice: string;
-    erc20: ContractFactory;
+    erc20: Contract;
 }
 
 export type State = Array<Web3Instance>;
@@ -26,8 +27,13 @@ export type State = Array<Web3Instance>;
 const initialState: State = [];
 
 const createWeb3 = (state: State, instance: Web3Instance): State => {
+    const index: number = state.findIndex(w3 => w3.network === instance.network);
     const newState: Array<Web3Instance> = [...state];
-    newState.push(instance);
+    if (index >= 0) {
+        newState[index] = instance;
+    } else {
+        newState.push(instance);
+    }
     return newState;
 };
 
