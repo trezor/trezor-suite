@@ -7,11 +7,10 @@ import type {
     Middleware as ReduxMiddleware,
     ThunkAction as ReduxThunkAction,
     AsyncAction as ReduxAsyncAction,
-    ThunkDispatch as ReduxThunkDispatch,
     PlainDispatch as ReduxPlainDispatch,
 } from 'redux';
 
-import type { Reducers, ReducersState } from 'reducers';
+import type { ReducersState } from 'reducers';
 
 // Actions
 import type { SelectedAccountAction } from 'actions/SelectedAccountActions';

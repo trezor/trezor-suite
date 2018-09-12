@@ -36,7 +36,8 @@ const StyledNavLink = styled(NavLink)`
     }
 `;
 
-const TopNavigationAccount = (props: any) => {
+
+const TopNavigationAccount = (props) => {
     const urlParams = props.match.params;
     const basePath = `/device/${urlParams.device}/network/${urlParams.network}/account/${urlParams.account}`;
 

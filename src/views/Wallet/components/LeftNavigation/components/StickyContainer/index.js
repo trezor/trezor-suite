@@ -17,11 +17,26 @@ type Props = {
 
 const AsideWrapper = styled.aside`
     position: relative;
+    top: 0;
     width: 320px;
-    min-width: 320px;
-    overflow-x: hidden;
+    overflow: hidden;
     background: ${colors.MAIN};
     border-right: 1px solid ${colors.DIVIDER};
+
+    .fixed {
+        position: fixed;
+        border-right: 1px solid ${colors.DIVIDER};
+    }
+
+    .fixed-bottom {
+        padding-bottom: 60px;
+        .sticky-bottom {
+            position: fixed;
+            bottom: 0;
+            background: ${colors.MAIN};
+            border-right: 1px solid ${colors.DIVIDER};
+        }
+    }
 `;
 
 const StickyContainerWrapper = styled.div`

@@ -28,7 +28,7 @@ export const formatTime = (n: number): string => {
         }
         res += ' ';
     }
-    if (minutes != 0) {
+    if (minutes !== 0) {
         res += `${minutes} minutes`;
     }
     return res;

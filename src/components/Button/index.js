@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import Icon from 'components/Icon';
 import colors from 'config/colors';
 import { TRANSITION } from 'config/variables';
 
@@ -118,21 +117,24 @@ const Button = ({
     isWhite = false,
     isWebUsb = false,
     isTransparent = false,
-}) => (
-    <Wrapper
-        className={className}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onFocus={onFocus}
-        isDisabled={isDisabled}
-        isWhite={isWhite}
-        isWebUsb={isWebUsb}
-        isTransparent={isTransparent}
-    >
-        {children}
-    </Wrapper>
-);
+}) => {
+    const newClassName = isWebUsb ? `${className} trezor-webusb-button` : className;
+    return (
+        <Wrapper
+            className={newClassName}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onFocus={onFocus}
+            isDisabled={isDisabled}
+            isWhite={isWhite}
+            isWebUsb={isWebUsb}
+            isTransparent={isTransparent}
+        >
+            {children}
+        </Wrapper>
+    );
+};
 
 Button.propTypes = {
     children: PropTypes.node.isRequired,

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -164,9 +163,9 @@ export const Notification = (props: NProps): React$Element<string> => {
 
 export const NotificationGroup = (props) => {
     const { notifications, close } = props;
-    return notifications.map((n, i) => (
+    return notifications.map(n => (
         <Notification
-            key={i}
+            key={n.title}
             type={n.type}
             title={n.title}
             message={n.message}

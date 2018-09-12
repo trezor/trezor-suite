@@ -1,6 +1,6 @@
 /* @flow */
 
-import { JSONRequest, httpRequest } from 'utils/networkUtils';
+import { httpRequest } from 'utils/networkUtils';
 import { resolveAfter } from 'utils/promiseUtils';
 import { READY } from 'actions/constants/localStorage';
 
@@ -8,7 +8,6 @@ import type {
     Middleware,
     MiddlewareAPI,
     MiddlewareDispatch,
-    State,
     Dispatch,
     Action,
     AsyncAction,

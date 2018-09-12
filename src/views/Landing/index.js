@@ -138,7 +138,7 @@ export default (props: Props) => {
                                         )}
                                         <P>
                                             <LandingFooterTextWrapper>
-                                                Don't have TREZOR?
+                                                Don&amp;t have TREZOR?
                                             </LandingFooterTextWrapper>
                                             <StyledLink
                                                 href="https://trezor.io/"

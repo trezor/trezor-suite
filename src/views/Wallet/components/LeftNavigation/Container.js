@@ -16,7 +16,7 @@ type OwnProps = {
 
 }
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State/* , own: OwnProps */): StateProps => ({
     connect: state.connect,
     accounts: state.accounts,
     router: state.router,

@@ -9,7 +9,7 @@ import ScaleText from 'react-scale-text';
 
 import type { Coin } from 'reducers/LocalStorageReducer';
 import type { Token } from 'reducers/TokensReducer';
-import type { Props as BaseProps } from '../Container';
+import type { Props as BaseProps } from '../../Container';
 
 type Props = {
     pending: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'pending'>,

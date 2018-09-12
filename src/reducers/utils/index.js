@@ -17,7 +17,7 @@ export const getSelectedDevice = (state: State): ?TrezorDevice => {
     const locationState = state.router.location.state;
     if (!locationState.device) return undefined;
 
-    const instance: ?number = locationState.deviceInstance ? parseInt(locationState.deviceInstance) : undefined;
+    const instance: ?number = locationState.deviceInstance ? parseInt(locationState.deviceInstance, 10) : undefined;
     return state.devices.find((d) => {
         if (!d.features && d.path === locationState.device) {
             return true;
@@ -64,14 +64,14 @@ export const getSelectedAccount = (state: State): ?Account => {
     const locationState = state.router.location.state;
     if (!device || !locationState.network || !locationState.account) return null;
 
-    const index: number = parseInt(locationState.account);
+    const index: number = parseInt(locationState.account, 10);
 
     return state.accounts.find(a => a.deviceState === device.state && a.index === index && a.network === locationState.network);
 };
 
 export const getSelectedNetwork = (state: State): ?Coin => {
     const device = state.wallet.selectedDevice;
-    const coins = state.localStorage.config.coins;
+    const { coins } = state.localStorage.config;
     const locationState = state.router.location.state;
     if (!device || !locationState.network) return null;
 

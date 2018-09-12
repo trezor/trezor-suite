@@ -6,7 +6,7 @@ import P from 'components/Paragraph';
 import Loader from 'components/Loader';
 import Button from 'components/Button';
 
-import type { Props } from './index';
+import type { Props } from '../../index';
 
 type State = {
     countdown: number;
@@ -77,9 +77,9 @@ export default class RememberDevice extends Component<Props, State> {
                     this.props.modalActions.onForgetDevice(this.props.modal.device);
                 }
             } else {
-                this.setState({
-                    countdown: this.state.countdown - 1,
-                });
+                this.setState(previousState => ({
+                    countdown: previousState.countdown - 1,
+                }));
             }
         };
 
@@ -108,16 +108,16 @@ export default class RememberDevice extends Component<Props, State> {
     render() {
         if (!this.props.modal.opened) return null;
         const { device, instances } = this.props.modal;
-        const { onForgetDevice, onRememberDevice } = this.props.modalActions;
+        const { onRememberDevice } = this.props.modalActions;
 
-        let label = device.label;
+        let { label } = device;
         const devicePlural: string = instances && instances.length > 1 ? 'devices or to remember them' : 'device or to remember it';
         if (instances && instances.length > 0) {
             label = instances.map((instance, index) => {
                 let comma: string = '';
                 if (index > 0) comma = ', ';
                 return (
-                    <span key={index}>{ comma }{ instance.instanceLabel }</span>
+                    <span key={instance.instanceLabel}>{ comma }{ instance.instanceLabel }</span>
                 );
             });
         }

@@ -11,11 +11,6 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-const Label = styled.span`
-    padding-bottom: 4px;
-    color: ${colors.TEXT_SECONDARY};
-`;
-
 const disabledColor = colors.TEXT_PRIMARY;
 
 const TextArea = styled.textarea`

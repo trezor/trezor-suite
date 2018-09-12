@@ -3,16 +3,10 @@
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as WALLET from 'actions/constants/wallet';
-import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as stateUtils from 'reducers/utils';
 
 import type
 {
-    Account,
-    Coin,
-    Discovery,
-    Token,
-    Web3Instance,
     Device,
     TrezorDevice,
     RouterLocationState,
@@ -47,8 +41,8 @@ export type WalletAction = {
     devices: Array<TrezorDevice>
 }
 
-export const init = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const updateOnlineStatus = (event) => {
+export const init = (): ThunkAction => (dispatch: Dispatch): void => {
+    const updateOnlineStatus = () => {
         dispatch({
             type: WALLET.ONLINE_STATUS,
             online: navigator.onLine,
@@ -72,7 +66,7 @@ export const toggleDeviceDropdown = (opened: boolean): WalletAction => ({
 // all saved instances will be removed immediately inside DevicesReducer
 // This method will clear leftovers associated with removed instances from reducers.
 // (DiscoveryReducer, AccountReducer, TokensReducer)
-export const clearUnavailableDevicesData = (prevState: State, device: Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const clearUnavailableDevicesData = (prevState: State, device: Device): ThunkAction => (dispatch: Dispatch): void => {
     if (!device.features) return;
 
     const affectedDevices = prevState.devices.filter(d => d.features && device.features

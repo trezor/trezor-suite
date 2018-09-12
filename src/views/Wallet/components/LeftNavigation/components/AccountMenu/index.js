@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import Loader from 'components/Loader';
-import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import * as stateUtils from 'reducers/utils';
 import Tooltip from 'components/Tooltip';

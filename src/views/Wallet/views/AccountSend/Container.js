@@ -5,7 +5,7 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { default as SendFormActions } from 'actions/SendFormActions';
+import SendFormActions from 'actions/SendFormActions';
 import * as SessionStorageActions from 'actions/SessionStorageActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
@@ -29,7 +29,7 @@ export type DispatchProps = BaseDispatchProps & {
 
 export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     className: 'send-from',
     selectedAccount: state.selectedAccount,
     wallet: state.wallet,

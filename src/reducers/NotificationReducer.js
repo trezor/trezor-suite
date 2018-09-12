@@ -62,9 +62,10 @@ const closeNotification = (state: State, payload: any): State => {
 
 export default function notification(state: State = initialState, action: Action): State {
     switch (action.type) {
-        case DEVICE.DISCONNECT:
-            const path: string = action.device.path; // Flow warning
+        case DEVICE.DISCONNECT: {
+            const { path } = action.device; // Flow warning
             return state.filter(entry => entry.devicePath !== path);
+        }
 
         case NOTIFICATION.ADD:
             return addNotification(state, action.payload);
