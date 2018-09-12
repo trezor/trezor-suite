@@ -89,8 +89,6 @@
         "file-loader": "1.1.11",
         "flow-bin": "0.72.0",
         "jest": "^23.4.2",
-        "less": "^3.0.1",
-        "less-loader": "4.1.0",
         "stylelint": "^8.0.0",
         "stylelint-config-standard": "^18.2.0",
         "stylelint-config-styled-components": "^0.1.1",
