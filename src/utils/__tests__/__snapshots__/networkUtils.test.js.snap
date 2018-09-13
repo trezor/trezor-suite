@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`network utils JSONRequest ok 1`] = `
+Object {
+  "test_json": "01234",
+}
+`;
+
+exports[`network utils httpRequest json ok response 1`] = `
+Object {
+  "test_json": "12345",
+}
+`;

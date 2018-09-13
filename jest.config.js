@@ -7,6 +7,7 @@ module.exports = {
     modulePathIgnorePatterns: [
         'node_modules',
         'utils/windowUtils.js',
+        'utils/promiseUtils.js',
     ],
     collectCoverageFrom: [
         'utils/**.js',
