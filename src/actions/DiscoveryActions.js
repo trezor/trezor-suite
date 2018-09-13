@@ -210,8 +210,6 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
                     transactions: account.transactions
                 }
             });
-
-            dispatch( Web3Actions.getTxInput() );
         }
 
         if (accountIsEmpty) {
