@@ -783,8 +783,6 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     const pendingNonce: number = stateUtils.getPendingNonce(pending);
     const nonce = pendingNonce > 0 && pendingNonce >= account.nonce ? pendingNonce : account.nonce;
 
-    console.warn("NONCE", nonce);
-
     const txData = await dispatch( prepareEthereumTx({
         network: network.network,
         token: isToken ? findToken(getState().tokens, account.address, currentState.currency, account.deviceState) : null,
@@ -796,44 +794,6 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         gasPrice: currentState.gasPrice,
         nonce
     }) );
-
-    // let data: string = `0x${currentState.data}`;
-    // let txAmount: string = w3.toHex(w3.toWei(currentState.amount, 'ether'));
-    // let txAddress: string = currentState.address;
-    // if (isToken) {
-    //     const token: ?Token = findToken(getState().tokens, account.address, currentState.currency, account.deviceState);
-    //     if (!token) return;
-
-    //     const contract = web3.erc20.at(token.address);
-    //     const amountValue: string = new BigNumber(currentState.amount).times(Math.pow(10, token.decimals)).toString(10);
-
-    //     data = contract.transfer.getData(currentState.address, amountValue, {
-    //         from: account.address,
-    //         gasLimit: currentState.gasLimit,
-    //         gasPrice: currentState.gasPrice,
-    //     });
-    //     txAmount = '0x00';
-    //     txAddress = token.address;
-    // }
-
-    
-
-    // console.warn('NONCE', nonce, account.nonce, pendingNonce);
-
-    // const txData = {
-    //     address_n,
-    //     // from: currentAddress.address
-    //     to: txAddress,
-    //     value: txAmount,
-    //     data,
-    //     chainId: web3.chainId,
-    //     nonce: w3.toHex(nonce),
-    //     gasLimit: w3.toHex(currentState.gasLimit),
-    //     gasPrice: w3.toHex(EthereumjsUnits.convert(currentState.gasPrice, 'gwei', 'wei')),
-    //     r: '',
-    //     s: '',
-    //     v: '',
-    // };
 
     const selected: ?TrezorDevice = getState().wallet.selectedDevice;
     if (!selected) return;
