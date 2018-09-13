@@ -6,19 +6,19 @@ describe('network utils', () => {
     });
 
     it('httpRequest json ok response json', async () => {
-        fetch.mockResponse(JSON.stringify({ test_json: '12345' }));
+        fetch.mockResponseOnce('{ "test_json": 12345 }', { status: 200, headers: { 'content-type': 'application/json' } });
         const result = await networkUtils.httpRequest('/http-request-test-response-json/', 'json');
         expect(result).toMatchSnapshot();
     });
 
     it('httpRequest json ok response text', async () => {
-        fetch.mockResponse(JSON.stringify({ test_json: '12345' }));
-        const result = networkUtils.httpRequest('/http-request-test-response-text/', 'text');
+        fetch.mockResponseOnce('aaaa', { status: 200, headers: { 'content-type': 'text/html' } });
+        const result = networkUtils.httpRequest('/http-request-test-response-text/');
         expect(result).toMatchSnapshot();
     });
 
     it('httpRequest json ok response binary', async () => {
-        fetch.mockResponse(1);
+        fetch.mockResponseOnce('{ "id": 1 }', { status: 200, headers: { 'content-type': 'application/octet-stream' } });
         const result = networkUtils.httpRequest('/http-request-test-response-binary/', 'binary');
         expect(result).toMatchSnapshot();
     });

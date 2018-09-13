@@ -14,7 +14,7 @@ exports[`network utils httpRequest json ok response binary 1`] = `Promise {}`;
 
 exports[`network utils httpRequest json ok response json 1`] = `
 Object {
-  "test_json": "12345",
+  "test_json": 12345,
 }
 `;
 
