@@ -34,12 +34,8 @@ import type { Token } from 'reducers/TokensReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
 
 export type BlockchainAction = {
-    type: typeof BLOCKCHAIN.START | typeof BLOCKCHAIN.CONNECTING,
-    network: string,
-} | {
-    type: typeof BLOCKCHAIN.STOP,
-    network: string,
-};
+    type: typeof BLOCKCHAIN.READY,
+}
 
 export const discoverAccount = (device: TrezorDevice, xpub: string, network: string): PromiseAction<AccountDiscovery> => async (dispatch: Dispatch, getState: GetState): Promise<AccountDiscovery> => {
     // get data from connect
@@ -93,36 +89,22 @@ export const estimateGasLimit = (network: string, data: string, value: string, g
 export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
     // try to resolve pending transactions
-    // await dispatch( Web3Actions.resolvePendingTransactions(network) );
+    await dispatch( Web3Actions.resolvePendingTransactions(network) );
 
-    // get network accounts
-    // const accounts: Array<any> = getState().accounts.filter(a => a.network === network).map(a => {
-    //     return {
-    //         address: a.address,
-    //         block: a.block,
-    //         transactions: a.transactions
-    //     }
-    // });
     const accounts: Array<any> = getState().accounts.filter(a => a.network === network);
-    
     // find out which account changed
     const response = await TrezorConnect.ethereumGetAccountInfo({
         accounts,
         coin: network,
     });
 
-    if (!response.success) {
-
-    } else {
+    if (response.success) {
         response.payload.forEach((a, i) => {
             if (a.transactions > 0) {
-                // dispatch( Web3Actions.updateAccount(accounts[i], a, network) )
+                dispatch( Web3Actions.updateAccount(accounts[i], a, network) )
             }
         });
     }
-
-    //return await dispatch( Web3Actions.estimateGasLimit(network, { to: '', data, value, gasPrice }) );
-    console.warn("onBlockMined", response)
 }
 
 export const onNotification = (payload: any): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -177,4 +159,38 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
         accounts: [],
         coin: network
     });
+}
+
+// Conditionally subscribe to blockchain backend
+// called after TrezorConnect.init successfully emits TRANSPORT.START event
+// checks if there are discovery processes loaded from LocalStorage
+// if so starts subscription to proper networks
+export const init = (): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    if (getState().discovery.length > 0) {
+        // get unique networks
+        const networks: Array<string> = [];
+        getState().discovery.forEach(discovery => {
+            if (networks.indexOf(discovery.network) < 0) {
+                networks.push(discovery.network);
+            }
+        });
+
+        // subscribe
+        for (let i = 0; i < networks.length; i++) {
+            await dispatch( subscribe(networks[i]) );
+        }
+    } else {
+        await dispatch( subscribe('ropsten') );
+    }
+
+    // continue wallet initialization
+    dispatch({
+        type: BLOCKCHAIN.READY
+    });
+}
+
+// Handle BLOCKCHAIN.ERROR event from TrezorConnect
+// disconnect and remove Web3 webscocket instance if exists
+export const error = (payload: any): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    dispatch( Web3Actions.disconnect(payload.coin) );
 }

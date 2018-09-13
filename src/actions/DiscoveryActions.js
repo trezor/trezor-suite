@@ -6,7 +6,7 @@ import * as DISCOVERY from 'actions/constants/discovery';
 import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
 import type {
-    ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
+    ThunkAction, AsyncAction, PromiseAction, Action, GetState, Dispatch, TrezorDevice,
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
 import * as AccountsActions from './AccountsActions';
@@ -26,7 +26,7 @@ export type DiscoveryStartAction = {
 }
 
 export type DiscoveryWaitingAction = {
-    type: typeof DISCOVERY.WAITING_FOR_DEVICE | typeof DISCOVERY.WAITING_FOR_BACKEND,
+    type: typeof DISCOVERY.WAITING_FOR_DEVICE | typeof DISCOVERY.WAITING_FOR_BLOCKCHAIN,
     device: TrezorDevice,
     network: string
 }
@@ -80,8 +80,12 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
     }
 
     const blockchain = getState().blockchain.find(b => b.name === network);
-    if (blockchain && !blockchain.connected) {
-        console.error("NO BACKEND!") // TODO
+    if (blockchain && !blockchain.connected && (!discoveryProcess || !discoveryProcess.completed)) {
+        dispatch({
+            type: DISCOVERY.WAITING_FOR_BLOCKCHAIN,
+            device,
+            network,
+        });
         return;
     }
 
@@ -93,7 +97,7 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
             device,
             network,
         });
-    } else if (discoveryProcess.interrupted || discoveryProcess.waitingForDevice) {
+    } else if (discoveryProcess.interrupted || discoveryProcess.waitingForDevice || discoveryProcess.waitingForBlockchain) {
         // discovery cycle was interrupted
         // start from beginning
         dispatch(begin(device, network));
@@ -268,12 +272,19 @@ const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction 
 
 }
 
+export const reconnect = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    await dispatch(BlockchainActions.subscribe(network));
+    dispatch(restore());
+}
+
 export const restore = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const selected = getState().wallet.selectedDevice;
 
     if (selected && selected.connected && selected.features) {
-        const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && d.waitingForDevice);
+        const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && (d.interrupted || d.waitingForDevice || d.waitingForBlockchain));
+        console.warn("AAAA2")
         if (discoveryProcess) {
+            console.warn("AAAA3", discoveryProcess)
             dispatch(start(selected, discoveryProcess.network));
         }
     }

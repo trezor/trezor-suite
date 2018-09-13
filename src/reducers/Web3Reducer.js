@@ -51,6 +51,13 @@ const updateGasPrice = (state: State, action: Web3UpdateGasPriceAction): State =
     return newState;
 };
 
+const disconnect = (state: State, instance: Web3Instance): State => {
+    const index: number = state.indexOf(instance);
+    const newState: Array<Web3Instance> = [...state];
+    newState.splice(index, 1);
+    return newState;
+};
+
 export default function web3(state: State = initialState, action: Action): State {
     switch (action.type) {
         case WEB3.CREATE:
@@ -59,6 +66,8 @@ export default function web3(state: State = initialState, action: Action): State
             return updateLatestBlock(state, action);
         case WEB3.GAS_PRICE_UPDATED:
             return updateGasPrice(state, action);
+        case WEB3.DISCONNECT:
+            return disconnect(state, action.instance);
         default:
             return state;
     }

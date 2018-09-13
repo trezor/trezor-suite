@@ -10,6 +10,7 @@ import * as BlockchainActions from 'actions/BlockchainActions';
 import * as ModalActions from 'actions/ModalActions';
 import * as STORAGE from 'actions/constants/localStorage';
 import * as CONNECT from 'actions/constants/TrezorConnect';
+import { READY as BLOCKCHAIN_READY } from 'actions/constants/blockchain';
 
 import type {
     Middleware,
@@ -32,10 +33,9 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         // TODO: check if modal is open
         // api.dispatch( push('/') );
     } else if (action.type === TRANSPORT.START) {
+        api.dispatch(BlockchainActions.init());
+    } else if (action.type === BLOCKCHAIN_READY) {
         api.dispatch(TrezorConnectActions.postInit());
-
-        api.dispatch( BlockchainActions.subscribe('ropsten') );
-
     } else if (action.type === DEVICE.DISCONNECT) {
         api.dispatch(TrezorConnectActions.deviceDisconnect(action.device));
     } else if (action.type === CONNECT.REMEMBER_REQUEST) {
@@ -64,9 +64,11 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     } else if (action.type === CONNECT.COIN_CHANGED) {
         api.dispatch(TrezorConnectActions.coinChanged(action.payload.network));
     } else if (action.type === BLOCKCHAIN.BLOCK) {
-        // api.dispatch(BlockchainActions.onBlockMined(action.payload.coin));
+        api.dispatch(BlockchainActions.onBlockMined(action.payload.coin));
     } else if (action.type === BLOCKCHAIN.NOTIFICATION) {
         // api.dispatch(BlockchainActions.onNotification(action.payload));
+    } else if (action.type === BLOCKCHAIN.ERROR) {
+        api.dispatch( BlockchainActions.error(action.payload) );
     }
 
     return action;

@@ -16,6 +16,7 @@ import * as PENDING from 'actions/constants/pendingTx';
 import type {
     Dispatch,
     GetState,
+    ThunkAction,
     AsyncAction,
     PromiseAction,
     AccountDiscovery,
@@ -23,6 +24,7 @@ import type {
     EthereumPreparedTx
 } from 'flowtype';
 
+import type { EthereumAccount } from 'trezor-connect';
 import type { Account } from 'reducers/AccountsReducer';
 import type { PendingTx } from 'reducers/PendingTxReducer';
 import type { Web3Instance } from 'reducers/Web3Reducer';
@@ -48,7 +50,7 @@ export type Web3Action = {
 } | {
     type: typeof WEB3.START,
 } | {
-    type: typeof WEB3.CREATE,
+    type: typeof WEB3.CREATE | typeof WEB3.DISCONNECT,
     instance: Web3Instance
 } | Web3UpdateBlockAction
   | Web3UpdateGasPriceAction;
@@ -108,13 +110,8 @@ export const initWeb3 = (network: string, urlIndex: number = 0): PromiseAction<W
         }
 
         const onEnd = async () => {
-            web3.currentProvider.removeAllListeners('connect');
-            web3.currentProvider.removeAllListeners('end');
-            web3.currentProvider.removeAllListeners('error');
-            web3.currentProvider.reset();
-            // if (web3.eth)
-            //    web3.eth.clearSubscriptions();
 
+            web3.currentProvider.reset();
             const instance = getState().web3.find(w3 => w3.network === network);
 
             if (instance && instance.web3.currentProvider.connected) {
@@ -263,14 +260,25 @@ export const getTxInput = (): PromiseAction<void> => async (dispatch: Dispatch, 
 }
 
 
-export const updateAccount = (account: Account, newAccount: AccountDiscovery, network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const updateAccount = (account: Account, newAccount: EthereumAccount, network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const instance: Web3Instance = await dispatch( initWeb3(network) );
     const balance = await instance.web3.eth.getBalance(account.address);
     const nonce = await instance.web3.eth.getTransactionCount(account.address);
-
     dispatch( AccountsActions.update( { ...account, ...newAccount, balance: EthereumjsUnits.convert(balance, 'wei', 'ether'), nonce }) );
-    // TODO update tokens for this account
-    
+
+    // update tokens for this account
+    const tokens = getState().tokens.filter(t => t.network === account.network && t.ethAddress === account.address);
+    for (const token of tokens) {
+        const balance = await dispatch( getTokenBalance(token) );
+        // const newBalance: string = balance.dividedBy(Math.pow(10, token.decimals)).toString(10);
+        if (balance !== token.balance) {
+            dispatch(TokenActions.setBalance(
+                token.address,
+                token.ethAddress,
+                balance,
+            ));
+        }
+    }
 }
 
 export const getTokenInfo = (address: string, network: string): PromiseAction<NetworkToken> => async (dispatch: Dispatch, getState: GetState): Promise<NetworkToken> => {
@@ -337,48 +345,18 @@ export const estimateGasLimit = (network: string, options: EstimateGasOptions): 
     return limit;
 };
 
-// export const prepareTx = (tx: EthereumTxRequest): PromiseAction<EthereumPreparedTx> => async (dispatch: Dispatch, getState: GetState): Promise<EthereumPreparedTx> => {
-
-//     const instance = await dispatch( initWeb3(tx.network) );
-//     const token = tx.token;
-//     let data: string = `0x${tx.data}`; // TODO: check if already prefixed
-//     let value: string = instance.web3.utils.toHex( EthereumjsUnits.convert(tx.amount, 'ether', 'wei') );
-//     let to: string = tx.to;
-
-//     if (token) {
-//         // smart contract transaction
-//         const contract = instance.erc20.clone();
-//         contract.options.address = token.address;
-//         const tokenAmount: string = new BigNumber(tx.amount).times(Math.pow(10, token.decimals)).toString(10);
-//         data = instance.erc20.methods.transfer(to, tokenAmount).encodeABI();
-//         value = '0x00';
-//         to = token.address;
-//     }
-
-//     return {
-//         to,
-//         value,
-//         data,
-//         chainId: instance.chainId,
-//         nonce: instance.web3.utils.toHex(tx.nonce),
-//         gasLimit: instance.web3.utils.toHex(tx.gasLimit),
-//         gasPrice: instance.web3.utils.toHex( EthereumjsUnits.convert(tx.gasPrice, 'gwei', 'wei') ),
-//         r: '',
-//         s: '',
-//         v: '',
-//     }
-// };
-
-// export const pushTx = (network: string, tx: EthereumPreparedTx): PromiseAction<string> => async (dispatch: Dispatch, getState: GetState): Promise<string> => {
-//     const instance = await dispatch( initWeb3(network) );
-//     const ethTx = new EthereumjsTx(tx);
-//     const serializedTx = `0x${ethTx.serialize().toString('hex')}`;
-
-//     return new Promise((resolve, reject) => {
-//         instance.web3.eth.sendSignedTransaction(serializedTx)
-//         .on('error', error => reject(error))
-//         .once('transactionHash', (hash: string) => {
-//             resolve(hash);
-//         });
-//     });
-// };
+export const disconnect = (network: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    // check if Web3 was already initialized
+    const instance = getState().web3.find(w3 => w3.network === network);
+    if (instance) {
+        // reset current connection
+        instance.web3.currentProvider.reset();
+        instance.web3.currentProvider.connection.close();
+        
+        // remove instance from reducer
+        dispatch({
+            type: WEB3.DISCONNECT,
+            instance
+        });
+    }
+};

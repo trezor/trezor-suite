@@ -29,7 +29,7 @@ export type Discovery = {
     interrupted: boolean;
     completed: boolean;
     waitingForDevice: boolean;
-    waitingForBackend: boolean;
+    waitingForBlockchain: boolean;
 }
 
 export type State = Array<Discovery>;
@@ -53,7 +53,7 @@ const start = (state: State, action: DiscoveryStartAction): State => {
         interrupted: false,
         completed: false,
         waitingForDevice: false,
-        waitingForBackend: false,
+        waitingForBlockchain: false,
     };
 
     const newState: State = [...state];
@@ -96,6 +96,7 @@ const stop = (state: State, action: DiscoveryStopAction): State => {
         if (d.deviceState === action.device.state && !d.completed) {
             d.interrupted = true;
             d.waitingForDevice = false;
+            d.waitingForBlockchain = false;
         }
         return d;
     });
@@ -114,7 +115,7 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
         interrupted: false,
         completed: false,
         waitingForDevice: true,
-        waitingForBackend: false,
+        waitingForBlockchain: false,
     };
 
     const index: number = findIndex(state, action.network, deviceState);
@@ -128,7 +129,7 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
     return newState;
 };
 
-const waitingForBackend = (state: State, action: DiscoveryWaitingAction): State => {
+const waitingForBlockchain = (state: State, action: DiscoveryWaitingAction): State => {
     const deviceState: string = action.device.state || '0';
     const instance: Discovery = {
         network: action.network,
@@ -141,7 +142,7 @@ const waitingForBackend = (state: State, action: DiscoveryWaitingAction): State 
         interrupted: false,
         completed: false,
         waitingForDevice: false,
-        waitingForBackend: true,
+        waitingForBlockchain: true,
     };
 
     const index: number = findIndex(state, action.network, deviceState);
@@ -167,8 +168,8 @@ export default function discovery(state: State = initialState, action: Action): 
             return complete(state, action);
         case DISCOVERY.WAITING_FOR_DEVICE:
             return waitingForDevice(state, action);
-        case DISCOVERY.WAITING_FOR_BACKEND:
-            return waitingForBackend(state, action);
+        case DISCOVERY.WAITING_FOR_BLOCKCHAIN:
+            return waitingForBlockchain(state, action);
         case DISCOVERY.FROM_STORAGE:
             return action.payload.map((d) => {
                 const hdKey: HDKey = new HDKey();
@@ -179,7 +180,7 @@ export default function discovery(state: State = initialState, action: Action): 
                     hdKey,
                     interrupted: false,
                     waitingForDevice: false,
-                    waitingForBackend: false,
+                    waitingForBlockchain: false,
                 };
             });
         case CONNECT.FORGET:

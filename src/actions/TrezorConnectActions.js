@@ -9,7 +9,6 @@ import { getDuplicateInstanceNumber } from 'reducers/utils';
 
 import { push } from 'react-router-redux';
 
-
 import type {
     DeviceMessage,
     DeviceMessageType,
@@ -129,8 +128,6 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
     // $FlowIssue LOCAL not declared
     window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/';
     // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
-    //window.__TREZOR_CONNECT_SRC = 'https://sisyfos.trezor.io/connect/';
-    // window.__TREZOR_CONNECT_SRC = 'https://localhost:8088/';
 
     try {
         await TrezorConnect.init({
