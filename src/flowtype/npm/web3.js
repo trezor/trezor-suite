@@ -13,6 +13,9 @@ declare module 'web3' {
     };
 
     declare type WebsocketProviderT = {
+        connection: {
+            close: () => void;
+        }; // WebSocket type
         on: (type: string, callback: () => any) => void;
         removeAllListeners: (type: string) => void;
         reset: () => void;
