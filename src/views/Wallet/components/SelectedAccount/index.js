@@ -33,6 +33,8 @@ const SelectedAccount = (props: Props) => {
         network
     } = accountState;
 
+    if (!network) return; // TODO: this shouldn't happen. change accountState reducer?
+
     const blockchain = props.blockchain.find(b => b.name === network.network);
     if (blockchain && !blockchain.connected) {
         return (
@@ -76,21 +78,6 @@ const SelectedAccount = (props: Props) => {
                     title={`Device ${device.instanceLabel} is disconnected`}
                     message="Connect device to load accounts"
                 />
-            );
-        } if (discovery.waitingForBlockchain) {
-            // case 4: backend is not working
-            return (
-                <Notification 
-                    type="error" 
-                    title="Backend not connected"
-                    actions={
-                        [{
-                            label: "Try again",
-                            callback: async () => {
-                                await props.blockchainReconnect(discovery.network);
-                            }
-                        }]
-                    } />
             );
         } if (discovery.completed) {
             // case 5: account not found and discovery is completed
