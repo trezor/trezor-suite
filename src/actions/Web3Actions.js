@@ -137,57 +137,6 @@ export const initWeb3 = (network: string, urlIndex: number = 0): PromiseAction<W
     });
 }
 
-const _onNewBlock = (instance: Web3Instance): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-
-    // const latestBlock = await instance.web3.eth.getBlockNumber();
-
-    // dispatch({
-    //     type: WEB3.BLOCK_UPDATED,
-    //     network: instance.network,
-    //     blockHash: latestBlock,
-    // });
-
-    
-
-    // TODO: filter only current device
-    const accounts = getState().accounts.filter(a => a.network === instance.network);
-    for (const account of accounts) {
-        const nonce = await instance.web3.eth.getTransactionCount(account.address);
-        if (nonce !== account.nonce) {
-            dispatch(AccountsActions.setNonce(account.address, account.network, account.deviceState, nonce));
-        }
-
-        const balance = await instance.web3.eth.getBalance(account.address);
-        const newBalance = EthereumjsUnits.convert(balance, 'wei', 'ether');
-        if (newBalance !== account.balance) {
-            dispatch(AccountsActions.setBalance(
-                account.address,
-                account.network,
-                account.deviceState,
-                newBalance
-            ));
-        }
-    }
-
-    const tokens = getState().tokens.filter(t => t.network === instance.network);
-    for (const token of tokens) {
-        const balance = await dispatch( getTokenBalance(token) );
-        console.warn("TOK BALAC", balance)
-        // const newBalance: string = balance.dividedBy(Math.pow(10, token.decimals)).toString(10);
-        if (balance !== token.balance) {
-            dispatch(TokenActions.setBalance(
-                token.address,
-                token.ethAddress,
-                balance,
-            ));
-        }
-    }
-
-    // dispatch(getGasPrice(network));
-
-    
-}
-
 export const discoverAccount = (address: string, network: string): PromiseAction<AccountDiscovery> => async (dispatch: Dispatch, getState: GetState): Promise<AccountDiscovery> => {
     const instance: Web3Instance = await dispatch( initWeb3(network) );
     const balance = await instance.web3.eth.getBalance(address);
@@ -312,24 +261,25 @@ export const getCurrentGasPrice = (network: string): PromiseAction<string> => as
     if (instance) {
         return EthereumjsUnits.convert(instance.gasPrice, 'wei', 'gwei');
     } else {
-        return "0";
+        throw "0";
     }
+}
 
-    // const index: number = getState().web3.findIndex(w3 => w3.network === network);
-
-    // const web3instance = getState().web3[index];
-    // const web3 = web3instance.web3;
-    // web3.eth.getGasPrice((error, gasPrice) => {
-    //     if (!error) {
-    //         if (web3instance.gasPrice && web3instance.gasPrice.toString() !== gasPrice.toString()) {
-    //             dispatch({
-    //                 type: WEB3.GAS_PRICE_UPDATED,
-    //                 network,
-    //                 gasPrice,
-    //             });
-    //         }
-    //     }
-    // });
+export const updateGasPrice = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    try {
+        const instance = await dispatch( initWeb3(network) );
+        const gasPrice = await instance.web3.eth.getGasPrice();
+        if (instance.gasPrice !== gasPrice) {
+            dispatch({
+                type: WEB3.GAS_PRICE_UPDATED,
+                network,
+                gasPrice
+            });
+        }
+    } catch (e) {
+        // silent action
+        // nothing happens if this fails
+    }
 }
 
 

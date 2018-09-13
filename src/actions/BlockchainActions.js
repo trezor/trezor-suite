@@ -91,6 +91,8 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
     // try to resolve pending transactions
     await dispatch( Web3Actions.resolvePendingTransactions(network) );
 
+    await dispatch( Web3Actions.updateGasPrice(network) );
+
     const accounts: Array<any> = getState().accounts.filter(a => a.network === network);
     if (accounts.length > 0) {
         // find out which account changed
@@ -98,7 +100,7 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
             accounts,
             coin: network,
         });
-
+        
         if (response.success) {
             response.payload.forEach((a, i) => {
                 if (a.transactions > 0) {
