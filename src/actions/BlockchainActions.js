@@ -92,18 +92,20 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
     await dispatch( Web3Actions.resolvePendingTransactions(network) );
 
     const accounts: Array<any> = getState().accounts.filter(a => a.network === network);
-    // find out which account changed
-    const response = await TrezorConnect.ethereumGetAccountInfo({
-        accounts,
-        coin: network,
-    });
-
-    if (response.success) {
-        response.payload.forEach((a, i) => {
-            if (a.transactions > 0) {
-                dispatch( Web3Actions.updateAccount(accounts[i], a, network) )
-            }
+    if (accounts.length > 0) {
+        // find out which account changed
+        const response = await TrezorConnect.ethereumGetAccountInfo({
+            accounts,
+            coin: network,
         });
+
+        if (response.success) {
+            response.payload.forEach((a, i) => {
+                if (a.transactions > 0) {
+                    dispatch( Web3Actions.updateAccount(accounts[i], a, network) )
+                }
+            });
+        }
     }
 }
 
@@ -179,8 +181,6 @@ export const init = (): PromiseAction<void> => async (dispatch: Dispatch, getSta
         for (let i = 0; i < networks.length; i++) {
             await dispatch( subscribe(networks[i]) );
         }
-    } else {
-        await dispatch( subscribe('ropsten') );
     }
 
     // continue wallet initialization
