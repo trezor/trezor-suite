@@ -1,13 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`network utils JSONRequest ok 1`] = `
+exports[`network utils JSONRequest 1`] = `
 Object {
   "test_json": "01234",
 }
 `;
 
-exports[`network utils httpRequest json ok response 1`] = `
+exports[`network utils JSONRequest error 1`] = `[Error: jsonRequest error: [object Object]]`;
+
+exports[`network utils httpRequest error (500) 1`] = `[Error: /test/ Internal Server Error]`;
+
+exports[`network utils httpRequest json ok response binary 1`] = `Promise {}`;
+
+exports[`network utils httpRequest json ok response json 1`] = `
 Object {
   "test_json": "12345",
 }
 `;
+
+exports[`network utils httpRequest json ok response text 1`] = `Promise {}`;
