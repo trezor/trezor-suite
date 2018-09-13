@@ -2,6 +2,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import { reconnect } from 'actions/DiscoveryActions';
 import { showAddress } from 'actions/ReceiveActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
@@ -28,12 +29,14 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     className: 'receive',
     selectedAccount: state.selectedAccount,
     wallet: state.wallet,
+    blockchain: state.blockchain,
 
     receive: state.receive,
     modal: state.modal,
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+    blockchainReconnect: bindActionCreators(reconnect, dispatch),
     showAddress: bindActionCreators(showAddress, dispatch),
 });
 
