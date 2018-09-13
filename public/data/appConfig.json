@@ -74,7 +74,6 @@
                 }
             ],
             "web3": [
-                "wss://ropsten3.trezor.io",
                 "wss://ropsten1.trezor.io/geth"
             ],
             "explorer": {
