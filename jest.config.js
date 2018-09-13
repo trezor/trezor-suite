@@ -8,6 +8,7 @@ module.exports = {
         'node_modules',
         'utils/windowUtils.js',
         'utils/promiseUtils.js',
+        'utils/networkUtils.js',
     ],
     collectCoverageFrom: [
         'utils/**.js',
