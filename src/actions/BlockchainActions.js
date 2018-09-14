@@ -86,7 +86,9 @@ export const estimateGasLimit = (network: string, data: string, value: string, g
     return await dispatch( Web3Actions.estimateGasLimit(network, { to: '', data, value, gasPrice }) );
 }
 
-export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const onBlockMined = (coinInfo: any): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    // incoming "coinInfo" from TrezorConnect is CoinInfo | EthereumNetwork type
+    const network: string = coinInfo.shortcut.toLowerCase();
 
     // try to resolve pending transactions
     await dispatch( Web3Actions.resolvePendingTransactions(network) );
@@ -119,12 +121,15 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
     }
 }
 
+
+// not used for now, waiting for fix in blockbook
 export const onNotification = (payload: any): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
 
     // this event can be triggered multiple times
     // 1. check if pair [txid + address] is already in reducer
+    const network: string = payload.coin.shortcut.toLowerCase();
     const address: string = EthereumjsUtil.toChecksumAddress(payload.tx.address);
-    const txInfo = await dispatch( Web3Actions.getPendingInfo(payload.coin, payload.tx.txid) );
+    const txInfo = await dispatch( Web3Actions.getPendingInfo(network, payload.tx.txid) );
 
     // const exists = getState().pending.filter(p => p.id === payload.tx.txid && p.address === address);
     const exists = getState().pending.filter(p => {
@@ -137,7 +142,7 @@ export const onNotification = (payload: any): PromiseAction<void> => async (disp
                 payload: {
                     type: 'send',
                     id: payload.tx.txid,
-                    network: payload.coin,
+                    network,
                     currency: "tETH",
                     amount: txInfo.value,
                     total: "0",
@@ -152,7 +157,7 @@ export const onNotification = (payload: any): PromiseAction<void> => async (disp
             // dispatch({
             //     type: PENDING.ADD_UNKNOWN,
             //     payload: {
-            //         network: payload.coin,
+            //         network,
             //         ...payload.tx,
             //     }
             // });

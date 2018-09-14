@@ -299,7 +299,9 @@ export const estimateGasLimit = (network: string, options: EstimateGasOptions): 
     return limit;
 };
 
-export const disconnect = (network: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const disconnect = (coinInfo: any): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+     // incoming "coinInfo" from TrezorConnect is CoinInfo | EthereumNetwork type
+     const network: string = coinInfo.shortcut.toLowerCase();
     // check if Web3 was already initialized
     const instance = getState().web3.find(w3 => w3.network === network);
     if (instance) {

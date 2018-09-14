@@ -18,12 +18,13 @@ const find = (state: State, name: string): number => {
 }
 
 const connect = (state: State, action: any): State => {
+    const name = action.payload.coin.shortcut.toLowerCase();
     const network: BlockchainNetwork = {
-        name: action.payload.coin,
+        name,
         connected: true,
     }
     const newState: State = [...state];
-    const index: number = find(newState, action.payload.coin);
+    const index: number = find(newState, name);
     if (index >= 0) {
         newState[index] = network;
     } else {
@@ -33,12 +34,13 @@ const connect = (state: State, action: any): State => {
 };
 
 const disconnect = (state: State, action: any): State => {
+    const name = action.payload.coin.shortcut.toLowerCase();
     const network: BlockchainNetwork = {
-        name: action.payload.coin,
+        name,
         connected: false,
     }
     const newState: State = [...state];
-    const index: number = find(newState, action.payload.coin);
+    const index: number = find(newState, name);
     if (index >= 0) {
         newState[index] = network;
     } else {
