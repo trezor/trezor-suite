@@ -3,22 +3,13 @@
         {
             "name": "Ethereum",
             "symbol": "ETH",
-            "network": "ethereum",
+            "network": "eth",
             "bip44": "m/44'/60'/0'/0",
             "chainId": 1,
             "defaultGasPrice": 64,
             "defaultGasLimit": 21000,
             "defaultGasLimitTokens": 200000,
             "tokens": "./data/ethereumTokens.json",
-            "backends": [
-                {
-                    "name": "TREZOR Wallet - Ethereum",
-                    "urls": [
-                        "https://mainnet.infura.io/QGyVKozSUEh2YhL4s2G4",
-                        "http://88.208.115.69"
-                    ]
-                }
-            ],
             "web3": [
                 "wss://eth2.trezor.io/geth"
             ],
@@ -30,22 +21,13 @@
         {
             "name": "Ethereum Classic",
             "symbol": "ETC",
-            "network": "ethereum-classic",
+            "network": "etc",
             "chainId": 61,
             "bip44": "m/44'/61'/0'/0",
             "defaultGasPrice": 64,
             "defaultGasLimit": 21000,
             "defaultGasLimitTokens": 200000,
             "tokens": "./data/ethereumClassicTokens.json",
-            "backends": [
-                {
-                    "name": "TREZOR Wallet - Ethereum",
-                    "urls": [
-                        "https://etc-geth.0xinfra.com/",
-                        "https://mew.epool.io/"
-                    ]
-                }
-            ],
             "web3": [
                 "wss://etc2.trezor.io/geth"
             ],
@@ -56,23 +38,14 @@
         },
         { 
             "name": "Ethereum Ropsten",
-            "symbol": "tETH",
-            "network": "ropsten",
+            "symbol": "tROP",
+            "network": "trop",
             "chainId": 3,
             "bip44": "m/44'/60'/0'/0",
             "defaultGasPrice": 64,
             "defaultGasLimit": 21000,
             "defaultGasLimitTokens": 200000,
             "tokens": "./data/ropstenTokens.json",
-            "backends": [
-                {
-                    "name": "TREZOR Wallet - Ethereum",
-                    "urls": [
-                        "https://ropsten.infura.io/QGyVKozSUEh2YhL4s2G4",
-                        "http://10.34.2.5:8545"
-                    ]
-                }
-            ],
             "web3": [
                 "wss://ropsten1.trezor.io/geth"
             ],
