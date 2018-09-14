@@ -16,6 +16,7 @@ import * as BLOCKCHAIN from 'actions/constants/blockchain';
 import * as WEB3 from 'actions/constants/web3';
 import * as PENDING from 'actions/constants/pendingTx';
 
+import * as AccountsActions from './AccountsActions';
 import * as Web3Actions from './Web3Actions';
 
 import type {
@@ -43,7 +44,6 @@ export const discoverAccount = (device: TrezorDevice, xpub: string, network: str
     const txs = await TrezorConnect.ethereumGetAccountInfo({
         account: {
             address: xpub,
-            // block: 3984156,
             block: 0,
             transactions: 0
         },
@@ -104,7 +104,15 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
         if (response.success) {
             response.payload.forEach((a, i) => {
                 if (a.transactions > 0) {
+                    // load additional data from Web3 (balance, nonce, tokens)
                     dispatch( Web3Actions.updateAccount(accounts[i], a, network) )
+                } else {
+                    // there are no new txs, just update block
+                    dispatch( AccountsActions.update( { ...accounts[i], ...a }) );
+
+                    // HACK: since blockbook can't work with smart contracts for now
+                    // try to update tokens balances added to this account using Web3
+                    dispatch( Web3Actions.updateAccountTokens(accounts[i]) );
                 }
             });
         }

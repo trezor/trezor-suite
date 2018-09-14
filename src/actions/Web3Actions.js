@@ -216,6 +216,10 @@ export const updateAccount = (account: Account, newAccount: EthereumAccount, net
     dispatch( AccountsActions.update( { ...account, ...newAccount, balance: EthereumjsUnits.convert(balance, 'wei', 'ether'), nonce }) );
 
     // update tokens for this account
+    dispatch( updateAccountTokens(account) );
+}
+
+export const updateAccountTokens = (account: Account): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const tokens = getState().tokens.filter(t => t.network === account.network && t.ethAddress === account.address);
     for (const token of tokens) {
         const balance = await dispatch( getTokenBalance(token) );
