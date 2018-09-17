@@ -15,7 +15,6 @@ const Wrapper = styled.div`
         position: absolute;
         z-index: 1070;
         display: block;
-        background: red;
         visibility: visible;
         border: 1px solid ${colors.DIVIDER};
         border-radius: 3px;
