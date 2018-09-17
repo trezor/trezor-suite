@@ -34,8 +34,9 @@ const IconWrapper = styled.div`
 
     &:hover,
     &:focus {
-        border: 1px solid ${colors.TEXT_PRIMARY};
-        background: ${props => (props.checked ? colors.TEXT_PRIMARY : colors.WHITE)};
+        border: 1px solid ${colors.GREEN_PRIMARY};
+        color: ${colors.WHITE};
+        background: ${props => (props.checked ? colors.GREEN_PRIMARY : colors.WHITE)};
     }
 `;
 
@@ -74,7 +75,12 @@ class Checkbox extends PureComponent {
                 <IconWrapper checked={checked}>
                     {checked && (
                         <Tick>
-                            <Icon size={26} color={checked ? colors.WHITE : colors.GREEN_PRIMARY} icon={icons.SUCCESS} />
+                            <Icon
+                                hoverColor={colors.WHITE}
+                                size={26}
+                                color={checked ? colors.WHITE : colors.GREEN_PRIMARY}
+                                icon={icons.SUCCESS}
+                            />
                         </Tick>
                     )
                     }
