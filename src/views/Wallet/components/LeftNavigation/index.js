@@ -24,7 +24,8 @@ const TransitionContentWrapper = styled.div`
 `;
 
 const Footer = styled.div`
-    position: fixed;
+    position: relative;
+    width: 320px;
     bottom: 0;
     background: ${colors.MAIN};
     border-right: 1px solid ${colors.DIVIDER};
