@@ -58,6 +58,29 @@ const A = styled.a`
     }
 `;
 
+const Transition = ({ children, animationType }) => (
+    <TransitionGroupWrapper component="div">
+        <CSSTransition
+            key={animationType}
+            onExit={() => {
+                console.log('ON EXIT');
+                window.dispatchEvent(new Event('resize'));
+            }}
+            onEntering={el => console.warn('Entering', el)}
+            onExited={() => window.dispatchEvent(new Event('resize'))}
+            classNames={animationType}
+            appear={false}
+            timeout={20000}
+            in
+            out
+        >
+            <TransitionContentWrapper>
+                {children}
+            </TransitionContentWrapper>
+        </CSSTransition>
+    </TransitionGroupWrapper>
+);
+
 class LeftNavigation extends Component {
     constructor(props) {
         super(props);
@@ -96,39 +119,6 @@ class LeftNavigation extends Component {
         }
     }
 
-    // TODO: refactor to transition component for reuse of transitions
-    getMenuTransition(children) {
-        return (
-            <TransitionGroupWrapper component="div" className="transition-container">
-                <CSSTransition
-                    key={this.state.animationType}
-                    onEnter={() => {
-                        console.warn('ON ENTER');
-                    }}
-                    onEntering={() => {
-                        console.warn('ON ENTERING (ACTIVE)');
-                    }}
-                    onExit={() => {
-                        console.warn('ON EXIT');
-                        window.dispatchEvent(new Event('resize'));
-                    }}
-                    onExiting={() => {
-                        console.warn('ON EXITING (ACTIVE)');
-                    }}
-                    onExited={() => window.dispatchEvent(new Event('resize'))}
-                    classNames={this.state.animationType}
-                    appear={false}
-                    timeout={30000}
-                    in
-                    out
-                >
-                    <TransitionContentWrapper>
-                        {children}
-                    </TransitionContentWrapper>
-                </CSSTransition>
-            </TransitionGroupWrapper>);
-    }
-
     shouldRenderAccounts() {
         const { selectedDevice } = this.props.wallet;
         return selectedDevice
@@ -163,8 +153,16 @@ class LeftNavigation extends Component {
                 />
                 <Body>
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
-                    {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
-                    {this.shouldRenderCoins() && this.getMenuTransition(<CoinMenu {...this.props} />)}
+                    {this.shouldRenderAccounts() && (
+                        <Transition animationType="slide-left">
+                            <AccountMenu {...this.props} />
+                        </Transition>
+                    )}
+                    {this.shouldRenderCoins() && (
+                        <Transition animationType="slide-right">
+                            <CoinMenu {...this.props} />
+                        </Transition>
+                    )}
                 </Body>
                 <Footer className="sticky-bottom">
                     <Help>
