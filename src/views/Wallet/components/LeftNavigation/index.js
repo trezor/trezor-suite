@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import Icon from 'components/Icon';
-import Sticky from 'react-sticky-el';
 import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
@@ -178,7 +177,6 @@ class LeftNavigation extends Component {
                         </A>
                     </Help>
                 </Footer>
-                <Sticky />
             </StickyContainer>
         );
     }
