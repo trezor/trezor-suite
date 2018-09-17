@@ -31,7 +31,7 @@ const Footer = styled.div`
 `;
 
 const Body = styled.div`
-    overflow: auto;
+    width: 320px;
     background: ${colors.LANDING};
 `;
 
