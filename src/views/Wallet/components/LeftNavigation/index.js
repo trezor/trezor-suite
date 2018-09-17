@@ -33,7 +33,6 @@ const Footer = styled.div`
 
 const Body = styled.div`
     width: 320px;
-    background: ${colors.LANDING};
 `;
 
 const Help = styled.div`
