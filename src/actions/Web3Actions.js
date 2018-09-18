@@ -27,7 +27,6 @@ import type { PendingTx } from 'reducers/PendingTxReducer';
 import type { Web3Instance } from 'reducers/Web3Reducer';
 import type { Token } from 'reducers/TokensReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
-import type { DiscoveryResult } from './BlockchainActions';
 import * as TokenActions from './TokenActions';
 import * as AccountsActions from './AccountsActions';
 
@@ -131,11 +130,12 @@ export const initWeb3 = (network: string, urlIndex: number = 0): PromiseAction<W
     });
 }
 
-export const discoverAccount = (address: string, network: string): PromiseAction<DiscoveryResult> => async (dispatch: Dispatch, getState: GetState): Promise<DiscoveryResult> => {
+export const discoverAccount = (address: string, network: string): PromiseAction<EthereumAccount> => async (dispatch: Dispatch, getState: GetState): Promise<EthereumAccount> => {
     const instance: Web3Instance = await dispatch( initWeb3(network) );
     const balance = await instance.web3.eth.getBalance(address);
     const nonce = await instance.web3.eth.getTransactionCount(address);
     return { 
+        address,
         transactions: 0,
         block: 0,
         balance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
