@@ -10,8 +10,6 @@ import type {
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
 import * as AccountsActions from './AccountsActions';
-import * as Web3Actions from './Web3Actions';
-
 import * as BlockchainActions from './BlockchainActions';
 import { setBalance as setTokenBalance } from './TokenActions';
 
