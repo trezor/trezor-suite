@@ -59,7 +59,7 @@ const A = styled.a`
 `;
 
 const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => (
-    <TransitionGroupWrapper component={null} className="transition-container">
+    <TransitionGroupWrapper component="div" className="transition-container">
         <CSSTransition
             key={props.animationType}
             onExit={() => { window.dispatchEvent(new Event('resize')); }}
