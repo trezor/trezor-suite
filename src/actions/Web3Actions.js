@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsUnits from 'ethereumjs-units';
 import EthereumjsTx from 'ethereumjs-tx';
-import InputDataDecoder from 'ethereum-input-data-decoder';
+// import InputDataDecoder from 'ethereum-input-data-decoder';
 import TrezorConnect from 'trezor-connect';
 import type { EstimateGasOptions, TransactionStatus, TransactionReceipt } from 'web3';
 import { strip } from 'utils/ethUtils';
