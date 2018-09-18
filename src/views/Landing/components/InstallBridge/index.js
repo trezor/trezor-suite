@@ -103,7 +103,6 @@ export default class InstallBridge extends Component<Props, State> {
     }
 
     onChange(value: InstallTarget) {
-        console.warn(value);
         this.setState({
             target: value,
         });

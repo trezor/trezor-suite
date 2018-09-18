@@ -246,8 +246,6 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
 };
 
 const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-
-    console.warn("FINISH!");
     await TrezorConnect.getFeatures({
         device: {
             path: device.path,
@@ -277,12 +275,9 @@ export const reconnect = (network: string): PromiseAction<void> => async (dispat
 
 export const restore = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const selected = getState().wallet.selectedDevice;
-
     if (selected && selected.connected && selected.features) {
         const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && (d.interrupted || d.waitingForDevice || d.waitingForBlockchain));
-        console.warn("AAAA2")
         if (discoveryProcess) {
-            console.warn("AAAA3", discoveryProcess)
             dispatch(start(selected, discoveryProcess.network));
         }
     }

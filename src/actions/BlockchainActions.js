@@ -168,8 +168,6 @@ export const onNotification = (payload: any): PromiseAction<void> => async (disp
             // });
         }
     }
-
-    console.warn("WEB3", payload, exists, getState().pending, address)
 }
 
 

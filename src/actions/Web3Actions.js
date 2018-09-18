@@ -95,14 +95,10 @@ export const initWeb3 = (network: string, urlIndex: number = 0): PromiseAction<W
                 gasPrice,
             }
 
-            console.warn("CONNECT", web3)
-
             dispatch({
                 type: WEB3.CREATE,
                 instance,
             });
-
-            // await dispatch( _onNewBlock(instance) );
 
             resolve(instance);
         }
@@ -199,9 +195,7 @@ export const getPendingInfo = (network: string, txid: string): PromiseAction<voi
 }
 
 export const getTxInput = (): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    
     const instance: Web3Instance = await dispatch( initWeb3("ropsten") );
-    console.warn("GETTX", instance.erc20.options.jsonInterface)
     // const inputData = instance.web3.utils.hexToAscii("0xa9059cbb00000000000000000000000073d0385f4d8e00c5e6504c6030f47bf6212736a80000000000000000000000000000000000000000000000000000000000000001");
     // console.warn("input data!", inputData);
 }
