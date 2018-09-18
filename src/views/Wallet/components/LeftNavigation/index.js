@@ -58,24 +58,20 @@ const A = styled.a`
     }
 `;
 
-const Transition = ({ children, animationType }) => (
-    <TransitionGroupWrapper component="div">
+const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => (
+    <TransitionGroupWrapper component={null} className="transition-container">
         <CSSTransition
-            key={animationType}
-            onExit={() => {
-                console.log('ON EXIT');
-                window.dispatchEvent(new Event('resize'));
-            }}
-            onEntering={el => console.warn('Entering', el)}
+            key={props.animationType}
+            onExit={() => { window.dispatchEvent(new Event('resize')); }}
             onExited={() => window.dispatchEvent(new Event('resize'))}
-            classNames={animationType}
-            appear={false}
-            timeout={20000}
             in
             out
+            classNames={props.animationType}
+            appear={false}
+            timeout={300}
         >
             <TransitionContentWrapper>
-                {children}
+                { props.children }
             </TransitionContentWrapper>
         </CSSTransition>
     </TransitionGroupWrapper>
@@ -138,6 +134,22 @@ class LeftNavigation extends Component {
     }
 
     render() {
+        const { props } = this;
+        let menu;
+        if (this.shouldRenderAccounts()) {
+            menu = (
+                <TransitionMenu animationType="slide-left">
+                    <AccountMenu {...props} />
+                </TransitionMenu>
+            );
+        } else if (this.shouldRenderCoins()) {
+            menu = (
+                <TransitionMenu animationType="slide-right">
+                    <CoinMenu {...props} />
+                </TransitionMenu>
+            );
+        }
+
         return (
             <StickyContainer
                 location={this.props.location.pathname}
@@ -153,16 +165,7 @@ class LeftNavigation extends Component {
                 />
                 <Body>
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
-                    {this.shouldRenderAccounts() && (
-                        <Transition animationType="slide-left">
-                            <AccountMenu {...this.props} />
-                        </Transition>
-                    )}
-                    {this.shouldRenderCoins() && (
-                        <Transition animationType="slide-right">
-                            <CoinMenu {...this.props} />
-                        </Transition>
-                    )}
+                    {menu}
                 </Body>
                 <Footer className="sticky-bottom">
                     <Help>
