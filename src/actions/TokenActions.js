@@ -9,7 +9,7 @@ import type {
 import type { State, Token } from 'reducers/TokensReducer';
 import type { Account } from 'reducers/AccountsReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
-import { getTokenInfoAsync, getTokenBalanceAsync } from './Web3Actions';
+import * as BlockchainActions from './BlockchainActions';
 
 export type TokenAction = {
     type: typeof TOKEN.FROM_STORAGE,
@@ -42,15 +42,11 @@ export const load = (input: string, network: string): AsyncAction => async (disp
         // when options is a large list (>200 items)
         return result.slice(0, 100);
     }
-    const web3instance = getState().web3.find(w3 => w3.network === network);
-    if (!web3instance) return;
 
-    const info = await getTokenInfoAsync(web3instance.erc20, input);
+    const info = await dispatch( BlockchainActions.getTokenInfo(input, network) );
     if (info) {
         return [info];
     }
-    //await resolveAfter(300000);
-    //await resolveAfter(3000);
 };
 
 export const setBalance = (tokenAddress: string, ethAddress: string, balance: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -68,9 +64,6 @@ export const setBalance = (tokenAddress: string, ethAddress: string, balance: st
 };
 
 export const add = (token: NetworkToken, account: Account): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const web3instance = getState().web3.find(w3 => w3.network === account.network);
-    if (!web3instance) return;
-
     const tkn: Token = {
         loaded: false,
         deviceState: account.deviceState,
@@ -88,7 +81,7 @@ export const add = (token: NetworkToken, account: Account): AsyncAction => async
         payload: tkn,
     });
 
-    const tokenBalance = await getTokenBalanceAsync(web3instance.erc20, tkn);
+    const tokenBalance = await dispatch( BlockchainActions.getTokenBalance(tkn) );
     dispatch(setBalance(token.address, account.address, tokenBalance));
 };
 

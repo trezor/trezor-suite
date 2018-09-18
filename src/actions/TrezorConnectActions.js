@@ -1,6 +1,6 @@
 /* @flow */
 import TrezorConnect, {
-    DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT,
+    UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT
 } from 'trezor-connect';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as NOTIFICATION from 'actions/constants/notification';
@@ -9,14 +9,15 @@ import { getDuplicateInstanceNumber } from 'reducers/utils';
 
 import { push } from 'react-router-redux';
 
-
 import type {
     DeviceMessage,
-    UiMessage,
-    TransportMessage,
     DeviceMessageType,
-    TransportMessageType,
+    UiMessage,
     UiMessageType,
+    TransportMessage,
+    TransportMessageType,
+    BlockchainMessage,
+    BlockchainMessageType,
 } from 'trezor-connect';
 
 import type {
@@ -115,11 +116,18 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         });
     });
 
+    TrezorConnect.on(BLOCKCHAIN_EVENT, (event: BlockchainMessage): void => {
+        // post event to reducers
+        const type: BlockchainMessageType = event.type; // assert flow type
+        dispatch({
+            type,
+            payload: event.payload,
+        });
+    });
+
     // $FlowIssue LOCAL not declared
+    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/';
     // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
-    // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/';
-    //window.__TREZOR_CONNECT_SRC = 'https://sisyfos.trezor.io/connect/';
-    // window.__TREZOR_CONNECT_SRC = 'https://localhost:8088/';
 
     try {
         await TrezorConnect.init({

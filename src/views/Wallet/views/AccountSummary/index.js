@@ -69,7 +69,7 @@ const AccountSummary = (props: Props) => {
     } = props.selectedAccount;
 
     // flow
-    if (!device || !account || !network) return null;
+    if (!device || !account || !network) return <SelectedAccount {...props} />;
 
     const explorerLink: string = `${network.explorer.address}${account.address}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
