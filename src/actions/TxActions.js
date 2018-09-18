@@ -10,12 +10,28 @@ import type {
     Dispatch,
     GetState,
     PromiseAction,
-    EthereumTxRequest,
-    EthereumPreparedTx
 } from 'flowtype';
 
+import type {
+    EthereumTransaction
+} from 'trezor-connect';
 
-export const prepareEthereumTx = (tx: EthereumTxRequest): PromiseAction<EthereumPreparedTx> => async (dispatch: Dispatch, getState: GetState): Promise<EthereumPreparedTx> => {
+import type { Token } from 'reducers/TokensReducer';
+
+type EthereumTxRequest = {
+    network: string;
+    token: ?Token;
+    from: string;
+    to: string;
+    amount: string;
+    data: string;
+    gasLimit: string;
+    gasPrice: string;
+    nonce: number;
+}
+
+
+export const prepareEthereumTx = (tx: EthereumTxRequest): PromiseAction<EthereumTransaction> => async (dispatch: Dispatch, getState: GetState): Promise<EthereumTransaction> => {
     const instance = await dispatch( initWeb3(tx.network) );
     const token = tx.token;
     let data: string = `0x${tx.data}`; // TODO: check if already prefixed
@@ -46,10 +62,8 @@ export const prepareEthereumTx = (tx: EthereumTxRequest): PromiseAction<Ethereum
     }
 };
 
-export const serializeEthereumTx = (tx: EthereumPreparedTx): PromiseAction<string> => async (dispatch: Dispatch, getState: GetState): Promise<string> => {
+export const serializeEthereumTx = (tx: EthereumTransaction): PromiseAction<string> => async (dispatch: Dispatch, getState: GetState): Promise<string> => {
     const ethTx = new EthereumjsTx(tx);
-    console.warn("SERIALIZE 1", `0x${ ethTx.serialize().toString('hex') }`)
-    console.warn("SERIALIZE 2", toHex( ethTx.serialize() ))
     return `0x${ ethTx.serialize().toString('hex') }`;
     // return toHex( ethTx.serialize() );
 }

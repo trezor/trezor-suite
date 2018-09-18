@@ -19,9 +19,6 @@ import type {
     ThunkAction,
     AsyncAction,
     PromiseAction,
-    AccountDiscovery,
-    EthereumTxRequest,
-    EthereumPreparedTx
 } from 'flowtype';
 
 import type { EthereumAccount } from 'trezor-connect';
@@ -30,6 +27,7 @@ import type { PendingTx } from 'reducers/PendingTxReducer';
 import type { Web3Instance } from 'reducers/Web3Reducer';
 import type { Token } from 'reducers/TokensReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
+import type { DiscoveryResult } from './BlockchainActions';
 import * as TokenActions from './TokenActions';
 import * as AccountsActions from './AccountsActions';
 
@@ -137,7 +135,7 @@ export const initWeb3 = (network: string, urlIndex: number = 0): PromiseAction<W
     });
 }
 
-export const discoverAccount = (address: string, network: string): PromiseAction<AccountDiscovery> => async (dispatch: Dispatch, getState: GetState): Promise<AccountDiscovery> => {
+export const discoverAccount = (address: string, network: string): PromiseAction<DiscoveryResult> => async (dispatch: Dispatch, getState: GetState): Promise<DiscoveryResult> => {
     const instance: Web3Instance = await dispatch( initWeb3(network) );
     const balance = await instance.web3.eth.getBalance(address);
     const nonce = await instance.web3.eth.getTransactionCount(address);

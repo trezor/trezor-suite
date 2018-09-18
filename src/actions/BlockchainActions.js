@@ -27,8 +27,6 @@ import type {
     AsyncAction,
     PromiseAction,
     ThunkAction,
-    AccountDiscovery,
-    EthereumTxRequest
 } from 'flowtype';
 
 import type { Token } from 'reducers/TokensReducer';
@@ -38,7 +36,14 @@ export type BlockchainAction = {
     type: typeof BLOCKCHAIN.READY,
 }
 
-export const discoverAccount = (device: TrezorDevice, xpub: string, network: string): PromiseAction<AccountDiscovery> => async (dispatch: Dispatch, getState: GetState): Promise<AccountDiscovery> => {
+export type DiscoveryResult = {
+    transactions: number;
+    block: number;
+    balance: string;
+    nonce: number;
+}
+
+export const discoverAccount = (device: TrezorDevice, xpub: string, network: string): PromiseAction<DiscoveryResult> => async (dispatch: Dispatch, getState: GetState): Promise<DiscoveryResult> => {
     // get data from connect
     // Temporary disabled, enable after trezor-connect@5.0.32 release
     const txs = await TrezorConnect.ethereumGetAccountInfo({
