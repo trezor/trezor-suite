@@ -119,7 +119,7 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
 
     const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);
 
-    let selectedAccounts = deviceAccounts.map((account, i) => {
+    const selectedAccounts = deviceAccounts.map((account, i) => {
         // const url: string = `${baseUrl}/network/${location.state.network}/account/${i}`;
         const url: string = location.pathname.replace(/account+\/([0-9]*)/, `account/${i}`);
 
@@ -156,26 +156,6 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             </NavLink>
         );
     });
-
-    if (selectedAccounts.length < 1) {
-        if (selected.connected) {
-            const url: string = location.pathname.replace(/account+\/([0-9]*)/, 'account/0');
-            selectedAccounts = (
-                <NavLink
-                    to={url}
-                >
-                    <Row column>
-                        <RowAccountWrapper
-                            isSelected
-                            borderTop
-                        >
-                            Account #1
-                        </RowAccountWrapper>
-                    </Row>
-                </NavLink>
-            );
-        }
-    }
 
     let discoveryStatus = null;
     const discovery = props.discovery.find(d => d.deviceState === selected.state && d.network === location.state.network);
