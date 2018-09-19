@@ -7,7 +7,6 @@ import {
     SRC, BUILD, PORT, PUBLIC,
 } from './constants';
 
-
 module.exports = {
     watch: true,
     mode: 'development',

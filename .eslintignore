@@ -1,4 +1,6 @@
 public
+build
+build-devel
 coverage
 images
 node_modules

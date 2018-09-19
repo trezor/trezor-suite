@@ -60,6 +60,9 @@ module.exports = {
         hints: false,
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env.BUILD': JSON.stringify(process.env.BUILD),
+        }),
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
