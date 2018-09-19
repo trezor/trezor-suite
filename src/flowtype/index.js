@@ -7,6 +7,8 @@ import type {
     Middleware as ReduxMiddleware,
     ThunkAction as ReduxThunkAction,
     AsyncAction as ReduxAsyncAction,
+    PromiseAction as ReduxPromiseAction,
+    ThunkDispatch as ReduxThunkDispatch,
     PlainDispatch as ReduxPlainDispatch,
 } from 'redux';
 
@@ -15,6 +17,7 @@ import type { ReducersState } from 'reducers';
 // Actions
 import type { SelectedAccountAction } from 'actions/SelectedAccountActions';
 import type { AccountAction } from 'actions/AccountsActions';
+import type { BlockchainAction } from 'actions/BlockchainActions';
 import type { DiscoveryAction } from 'actions/DiscoveryActions';
 import type { StorageAction } from 'actions/LocalStorageActions';
 import type { LogAction } from 'actions/LogActions';
@@ -37,6 +40,7 @@ import type {
     DeviceFirmwareStatus,
     DeviceMessageType,
     TransportMessageType,
+    BlockchainMessageType,
     UiMessageType,
 } from 'trezor-connect';
 
@@ -102,6 +106,11 @@ type UiEventAction = {
     // },
 }
 
+type BlockchainEventAction = {
+    type: BlockchainMessageType,
+    payload: any,
+}
+
 // TODO: join this message with uiMessage
 type IFrameHandshake = {
     type: 'iframe_handshake',
@@ -114,9 +123,11 @@ export type Action =
     | TransportEventAction
     | DeviceEventAction
     | UiEventAction
+    | BlockchainEventAction
 
     | SelectedAccountAction
     | AccountAction
+    | BlockchainAction
     | DiscoveryAction
     | StorageAction
     | LogAction
@@ -154,6 +165,7 @@ export type Middleware = ReduxMiddleware<State, Action>;
 
 export type ThunkAction = ReduxThunkAction<State, Action>;
 export type AsyncAction = ReduxAsyncAction<State, Action>;
+export type PromiseAction<R> = ReduxPromiseAction<State, Action, R>;
 
 export type Store = ReduxStore<State, Action>;
 export type GetState = () => State;
