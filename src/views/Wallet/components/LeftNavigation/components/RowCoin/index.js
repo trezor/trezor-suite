@@ -20,6 +20,8 @@ const RowCoinWrapper = styled.div`
     display: block;
     font-size: ${FONT_SIZE.BASE};
     color: ${colors.TEXT_PRIMARY};
+    transition: background-color 0.3s, color 0.3s;
+    
     &:hover {
         background-color: ${colors.GRAY_LIGHT};
     }
