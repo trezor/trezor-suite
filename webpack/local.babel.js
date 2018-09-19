@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from '../../trezor-connect/node_modules/mini-css-extract-plugin';
 
 import {
     TREZOR_CONNECT_ROOT,
@@ -47,20 +48,17 @@ module.exports = {
             {
                 test: /\.js?$/,
                 exclude: /node_modules/,
+                use: ['babel-loader'],
+            },
+            {
+                test: /\.less$/,
                 use: [
-                    'babel-loader',
                     {
-                        loader: 'eslint-loader',
-                        options: {
-                            emitWarning: true,
-                        },
+                        loader: MiniCssExtractPlugin.loader,
+                        options: { publicPath: '../' },
                     },
-                    {
-                        loader: 'stylelint-custom-processor-loader',
-                        options: {
-                            configPath: '.stylelintrc',
-                        },
-                    },
+                    `${TREZOR_CONNECT_ROOT}/node_modules/css-loader`,
+                    `${TREZOR_CONNECT_ROOT}/node_modules/less-loader`,
                 ],
             },
             {
@@ -113,6 +111,11 @@ module.exports = {
         hints: false,
     },
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+            chunkFilename: '[id].css',
+        }),
+        
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,

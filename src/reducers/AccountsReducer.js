@@ -7,7 +7,6 @@ import * as ACCOUNT from 'actions/constants/account';
 
 import type { Action, TrezorDevice } from 'flowtype';
 import type {
-    AccountCreateAction,
     AccountSetBalanceAction,
     AccountSetNonceAction,
 } from 'actions/AccountsActions';
@@ -22,6 +21,8 @@ export type Account = {
     +address: string;
     balance: string;
     nonce: number;
+    block: number;
+    transactions: number;
 }
 
 export type State = Array<Account>;
@@ -37,28 +38,14 @@ export const findDeviceAccounts = (state: State, device: TrezorDevice, network: 
     return state.filter(addr => addr.deviceState === device.state);
 };
 
-const createAccount = (state: State, action: AccountCreateAction): State => {
+const createAccount = (state: State, account: Account): State => {
     // TODO check with device_id
     // check if account was created before
-    // const exist: ?Account = state.find(account => account.address === action.address && account.network === action.network && action.device.features && account.deviceID === action.device.features.device_id);
-    const exist: ?Account = state.find(account => account.address === action.address && account.network === action.network && account.deviceState === action.device.state);
+    const exist: ?Account = state.find(a => a.address === account.address && a.network === account.network && a.deviceState === account.deviceState);
     if (exist) {
         return state;
     }
-
-    const account: Account = {
-        loaded: false,
-        network: action.network,
-        deviceID: action.device.features ? action.device.features.device_id : '0',
-        deviceState: action.device.state || 'undefined',
-        index: action.index,
-        addressPath: action.path,
-        address: action.address,
-        balance: '0',
-        nonce: 0,
-    };
-
-    const newState: State = [...state];
+    const newState: State = [ ...state ];
     newState.push(account);
     return newState;
 };
@@ -74,8 +61,16 @@ const clear = (state: State, devices: Array<TrezorDevice>): State => {
     return newState;
 };
 
+const updateAccount = (state: State, account: Account): State => {
+    const index: number = state.findIndex(a => a.address === account.address && a.network === account.network && a.deviceState === account.deviceState);
+    const newState: State = [...state];
+    newState[index] = account;
+    return newState;
+}
+
 const setBalance = (state: State, action: AccountSetBalanceAction): State => {
-    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
+    // const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
+    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network);
     const newState: State = [...state];
     newState[index].loaded = true;
     newState[index].balance = action.balance;
@@ -93,7 +88,7 @@ const setNonce = (state: State, action: AccountSetNonceAction): State => {
 export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
         case ACCOUNT.CREATE:
-            return createAccount(state, action);
+            return createAccount(state, action.payload);
 
         case CONNECT.FORGET:
         case CONNECT.FORGET_SINGLE:
@@ -104,6 +99,9 @@ export default (state: State = initialState, action: Action): State => {
 
         //case CONNECT.FORGET_SINGLE :
         //    return forgetAccounts(state, action);
+
+        case ACCOUNT.UPDATE :
+            return updateAccount(state, action.payload);
 
         case ACCOUNT.SET_BALANCE:
             return setBalance(state, action);

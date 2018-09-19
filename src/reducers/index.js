@@ -19,6 +19,7 @@ import pending from 'reducers/PendingTxReducer';
 import fiat from 'reducers/FiatRateReducer';
 import wallet from 'reducers/WalletReducer';
 import devices from 'reducers/DevicesReducer';
+import blockchain from 'reducers/BlockchainReducer';
 
 const reducers = {
     router: routerReducer,
@@ -39,6 +40,7 @@ const reducers = {
     fiat,
     wallet,
     devices,
+    blockchain
 };
 
 export type Reducers = typeof reducers;

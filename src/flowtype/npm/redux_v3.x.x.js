@@ -1,10 +1,12 @@
+/* @flow */
+
 declare module 'redux' {
   /*
 
     S = State
     A = Action
     D = Dispatch
-
+    R = Promise response
   */
 
   declare export type DispatchAPI<A> = (action: A) => A;
@@ -13,12 +15,14 @@ declare module 'redux' {
 
   declare export type ThunkAction<S, A> = (dispatch: ReduxDispatch<S, A>, getState: () => S) => void;
   declare export type AsyncAction<S, A> = (dispatch: ReduxDispatch<S, A>, getState: () => S) => Promise<void>;
+  declare export type PromiseAction<S, A, R> = (dispatch: ReduxDispatch<S, A>, getState: () => S) => Promise<R>;
 
   declare export type ThunkDispatch<S, A> = (action: ThunkAction<S, A>) => void;
   declare export type AsyncDispatch<S, A> = (action: AsyncAction<S, A>) => Promise<void>;
+  declare export type PromiseDispatch<S, A> = <R>(action: PromiseAction<S, A, R>) => Promise<R>;
   declare export type PlainDispatch<A: {type: $Subtype<string>}> = DispatchAPI<A>;
   /* NEW: Dispatch is now a combination of these different dispatch types */
-  declare export type ReduxDispatch<S, A> = PlainDispatch<A> & ThunkDispatch<S, A> & AsyncDispatch<S, A>;
+  declare export type ReduxDispatch<S, A> = PlainDispatch<A> & ThunkDispatch<S, A> & AsyncDispatch<S, A> & PromiseDispatch<S, A>;
 
   declare export type MiddlewareAPI<S, A> = {
     // dispatch: Dispatch<S, A>;

@@ -22,7 +22,8 @@ export type Coin = {
     backends: Array<{
         name: string;
         urls: Array<string>;
-    }>
+    }>;
+    web3: Array<string>;
 }
 
 export type NetworkToken = {

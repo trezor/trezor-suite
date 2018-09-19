@@ -6,12 +6,12 @@ import * as DISCOVERY from 'actions/constants/discovery';
 import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
 import type {
-    ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
+    ThunkAction, AsyncAction, PromiseAction, Action, GetState, Dispatch, TrezorDevice,
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
 import * as AccountsActions from './AccountsActions';
-
-import { getNonceAsync, getBalanceAsync } from './Web3Actions';
+import * as BlockchainActions from './BlockchainActions';
+import { setBalance as setTokenBalance } from './TokenActions';
 
 
 export type DiscoveryStartAction = {
@@ -24,7 +24,7 @@ export type DiscoveryStartAction = {
 }
 
 export type DiscoveryWaitingAction = {
-    type: typeof DISCOVERY.WAITING_FOR_DEVICE | typeof DISCOVERY.WAITING_FOR_BACKEND,
+    type: typeof DISCOVERY.WAITING_FOR_DEVICE | typeof DISCOVERY.WAITING_FOR_BLOCKCHAIN,
     device: TrezorDevice,
     network: string
 }
@@ -44,147 +44,9 @@ export type DiscoveryAction = {
     type: typeof DISCOVERY.FROM_STORAGE,
     payload: State
 } | DiscoveryStartAction
-    | DiscoveryWaitingAction
-    | DiscoveryStopAction
-    | DiscoveryCompleteAction;
-
-
-// Because start() is calling begin() and begin() is calling start() one of them must be declared first
-// otherwise eslint will start complaining
-let begin;
-
-
-const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const { completed } = discoveryProcess;
-    discoveryProcess.completed = false;
-
-    const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
-    const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
-    const publicAddress: string = EthereumjsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex');
-    const ethAddress: string = EthereumjsUtil.toChecksumAddress(publicAddress);
-    const { network } = discoveryProcess;
-
-    // TODO: check if address was created before
-
-    // verify address with TREZOR
-    const verifyAddress = await TrezorConnect.ethereumGetAddress({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: device.state,
-        },
-        path,
-        showOnTrezor: false,
-        keepSession: true,
-        useEmptyPassphrase: !device.instance,
-    });
-    if (discoveryProcess.interrupted) return;
-
-    // TODO: with block-book (Martin)
-    // const discoveryA = await TrezorConnect.accountDiscovery({
-    //     device: {
-    //         path: device.path,
-    //         instance: device.instance,
-    //         state: device.state
-    //     },
-    // });
-    // if (discoveryProcess.interrupted) return;
-
-    if (verifyAddress && verifyAddress.success) {
-        //const trezorAddress: string = '0x' + verifyAddress.payload.address;
-        const trezorAddress: string = EthereumjsUtil.toChecksumAddress(verifyAddress.payload.address);
-        if (trezorAddress !== ethAddress) {
-            // throw inconsistent state error
-            console.warn('Inconsistent state', trezorAddress, ethAddress);
-
-            dispatch({
-                type: NOTIFICATION.ADD,
-                payload: {
-                    type: 'error',
-                    title: 'Address validation error',
-                    message: `Addresses are different. TREZOR: ${trezorAddress} HDKey: ${ethAddress}`,
-                    cancelable: true,
-                    actions: [
-                        {
-                            label: 'Try again',
-                            callback: () => {
-                                dispatch(start(device, discoveryProcess.network));
-                            },
-                        },
-                    ],
-                },
-            });
-            return;
-        }
-    } else {
-        // handle TREZOR communication error
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                type: 'error',
-                title: 'Address validation error',
-                message: verifyAddress.payload.error,
-                cancelable: true,
-                actions: [
-                    {
-                        label: 'Try again',
-                        callback: () => {
-                            dispatch(start(device, discoveryProcess.network));
-                        },
-                    },
-                ],
-            },
-        });
-        return;
-    }
-
-    const web3instance = getState().web3.find(w3 => w3.network === network);
-    if (!web3instance) return;
-
-    const balance = await getBalanceAsync(web3instance.web3, ethAddress);
-    if (discoveryProcess.interrupted) return;
-    const nonce: number = await getNonceAsync(web3instance.web3, ethAddress);
-    if (discoveryProcess.interrupted) return;
-
-    const addressIsEmpty = nonce < 1 && !balance.greaterThan(0);
-
-    if (!addressIsEmpty || (addressIsEmpty && completed) || (addressIsEmpty && discoveryProcess.accountIndex === 0)) {
-        dispatch({
-            type: ACCOUNT.CREATE,
-            device,
-            network,
-            index: discoveryProcess.accountIndex,
-            path,
-            address: ethAddress,
-        });
-        dispatch(
-            AccountsActions.setBalance(ethAddress, network, device.state || 'undefined', web3instance.web3.fromWei(balance.toString(), 'ether')),
-        );
-        dispatch(AccountsActions.setNonce(ethAddress, network, device.state || 'undefined', nonce));
-
-        if (!completed) { dispatch(discoverAccount(device, discoveryProcess)); }
-    }
-
-    if (addressIsEmpty) {
-        // release acquired sesssion
-        await TrezorConnect.getFeatures({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-            },
-            keepSession: false,
-            useEmptyPassphrase: !device.instance,
-        });
-        if (discoveryProcess.interrupted) return;
-
-        dispatch({
-            type: DISCOVERY.COMPLETE,
-            device,
-            network,
-        });
-    }
-};
+  | DiscoveryWaitingAction
+  | DiscoveryStopAction
+  | DiscoveryCompleteAction;
 
 export const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const selected = getState().wallet.selectedDevice;
@@ -203,25 +65,8 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
         return;
     }
 
-    const web3 = getState().web3.find(w3 => w3.network === network);
-    if (!web3) {
-        console.error('Start discovery: Web3 does not exist', network);
-        return;
-    }
-
-    if (!web3.web3.currentProvider.isConnected()) {
-        console.error('Start discovery: Web3 is not connected', network);
-        dispatch({
-            type: DISCOVERY.WAITING_FOR_BACKEND,
-            device,
-            network,
-        });
-        return;
-    }
-
-    const { discovery }: { discovery: State } = getState();
+    const discovery: State = getState().discovery;
     const discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
-
 
     if (!selected.connected && (!discoveryProcess || !discoveryProcess.completed)) {
         dispatch({
@@ -232,15 +77,25 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
         return;
     }
 
+    const blockchain = getState().blockchain.find(b => b.name === network);
+    if (blockchain && !blockchain.connected && (!discoveryProcess || !discoveryProcess.completed)) {
+        dispatch({
+            type: DISCOVERY.WAITING_FOR_BLOCKCHAIN,
+            device,
+            network,
+        });
+        return;
+    }
+
     if (!discoveryProcess) {
-        dispatch(begin(device, network));
+        dispatch(begin(device, network))
     } else if (discoveryProcess.completed && !ignoreCompleted) {
         dispatch({
             type: DISCOVERY.COMPLETE,
             device,
             network,
         });
-    } else if (discoveryProcess.interrupted || discoveryProcess.waitingForDevice) {
+    } else if (discoveryProcess.interrupted || discoveryProcess.waitingForDevice || discoveryProcess.waitingForBlockchain) {
         // discovery cycle was interrupted
         // start from beginning
         dispatch(begin(device, network));
@@ -249,7 +104,10 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
     }
 };
 
-begin = (device: TrezorDevice, network: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+// first iteration
+// generate public key for this account
+// start discovery process
+const begin = (device: TrezorDevice, network: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { config } = getState().localStorage;
     const coinToDiscover = config.coins.find(c => c.network === network);
     if (!coinToDiscover) return;
@@ -272,10 +130,8 @@ begin = (device: TrezorDevice, network: string): AsyncAction => async (dispatch:
         useEmptyPassphrase: !device.instance,
     });
 
-        // handle TREZOR response error
+    // handle TREZOR response error
     if (!response.success) {
-        // TODO: check message
-        console.warn('DISCOVERY ERROR', response);
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
@@ -312,14 +168,113 @@ begin = (device: TrezorDevice, network: string): AsyncAction => async (dispatch:
         basePath,
     });
 
+    // next iteration
     dispatch(start(device, network));
 };
 
+const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { completed } = discoveryProcess;
+    discoveryProcess.completed = false;
+
+    const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
+    const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
+    const publicAddress: string = EthereumjsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex');
+    const ethAddress: string = EthereumjsUtil.toChecksumAddress(publicAddress);
+    const { network } = discoveryProcess;
+
+    // TODO: check if address was created before
+
+    try {
+        const account = await dispatch( BlockchainActions.discoverAccount(device, ethAddress, network) );
+        if (discoveryProcess.interrupted) return;
+
+        // const accountIsEmpty = account.transactions <= 0 && account.nonce <= 0 && account.balance === '0';
+        const accountIsEmpty = account.nonce <= 0 && account.balance === '0';
+        if (!accountIsEmpty || (accountIsEmpty && completed) || (accountIsEmpty && discoveryProcess.accountIndex === 0)) {
+
+            dispatch({
+                type: ACCOUNT.CREATE,
+                payload: {
+                    index: discoveryProcess.accountIndex,
+                    loaded: true,
+                    network,
+                    deviceID: device.features ? device.features.device_id : '0',
+                    deviceState: device.state || '0',
+                    addressPath: path,
+                    address: ethAddress,
+                    balance: account.balance,
+                    nonce: account.nonce,
+                    block: account.block,
+                    transactions: account.transactions
+                }
+            });
+        }
+
+        if (accountIsEmpty) {
+            dispatch( finish(device, discoveryProcess) );
+        } else {
+            if (!completed) { dispatch( discoverAccount(device, discoveryProcess) ); }
+        }
+
+    } catch (error) {
+
+        dispatch({
+            type: DISCOVERY.STOP,
+            device
+        });
+
+        dispatch({
+            type: NOTIFICATION.ADD,
+            payload: {
+                type: 'error',
+                title: 'Account discovery error',
+                message: error.message,
+                cancelable: true,
+                actions: [
+                    {
+                        label: 'Try again',
+                        callback: () => {
+                            dispatch(start(device, discoveryProcess.network));
+                        },
+                    },
+                ],
+            },
+        });
+    }
+};
+
+const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    await TrezorConnect.getFeatures({
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
+        },
+        keepSession: false,
+        useEmptyPassphrase: !device.instance,
+    });
+
+    await dispatch( BlockchainActions.subscribe(discoveryProcess.network) );
+
+    if (discoveryProcess.interrupted) return;
+
+    dispatch({
+        type: DISCOVERY.COMPLETE,
+        device,
+        network: discoveryProcess.network,
+    });
+
+}
+
+export const reconnect = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    await dispatch(BlockchainActions.subscribe(network));
+    dispatch(restore());
+}
+
 export const restore = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const selected = getState().wallet.selectedDevice;
-
     if (selected && selected.connected && selected.features) {
-        const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && d.waitingForDevice);
+        const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && (d.interrupted || d.waitingForDevice || d.waitingForBlockchain));
         if (discoveryProcess) {
             dispatch(start(selected, discoveryProcess.network));
         }
