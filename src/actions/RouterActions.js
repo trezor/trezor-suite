@@ -71,8 +71,33 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
     // if (params.hasOwnProperty('account')) {
 
     // }
+    return true;
+}
+
+export const deviceModeValidation = (current: RouterLocationState, requested: RouterLocationState): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+    // allow url change if requested device is not the same as current state
+    if (current.device !== requested.device) return true;
+    // find device
+    const { devices } = getState();
+    let device: ?TrezorDevice;
+    if (requested.hasOwnProperty('deviceInstance')) {
+        device = devices.find(d => d.features && d.features.device_id === requested.device && d.instance === parseInt(requested.deviceInstance, 10));
+    } else {
+        device = devices.find(d => d.path === requested.device || (d.features && d.features.device_id === requested.device));
+    }
+    if (!device) return false;
+    if (!device.features) return false;
+    if (device.firmware === 'required') return false;
 
     return true;
+}
+
+/*
+* Composing url string from given RouterLocationState object
+* Filters unrecognized fields and sorting in correct order
+*/
+export const paramsToPath = (params: RouterLocationState): PayloadAction<string> => (dispatch: Dispatch, getState: GetState): string => {
+    return "/";
 }
 
 /*
@@ -87,7 +112,7 @@ const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => devic
 });
 
 /*
-* Compose url from requested device
+* Compose url from given device object and redirect
 */
 export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     let url: ?string;
@@ -122,7 +147,7 @@ export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dis
 
 /*
 * Try to find first available device using order:
-* 1. First Unacquired
+* 1. First unacquired
 * 2. First connected
 * 3. Saved with latest timestamp
 * OR redirect to landing page
@@ -153,7 +178,7 @@ const goto = (url: string): ThunkAction => (dispatch: Dispatch, getState: GetSta
 }
 
 /*
-* Check if requested OR current (from RouterReducer) url is landing page
+* Check if requested OR current url is landing page
 */
 export const isLandingPageUrl = (url?: string): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
     if (typeof url !== 'string') {
@@ -167,7 +192,6 @@ export const isLandingPageUrl = (url?: string): PayloadAction<boolean> => (dispa
 * Try to redirect to landing page
 */
 export const gotoLandingPage = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    // check if current url is not valid landing page url
     const isLandingPage = dispatch( isLandingPageUrl() );
     if (!isLandingPage) {
         dispatch( goto('/') );

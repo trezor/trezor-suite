@@ -1,8 +1,6 @@
 /* @flow */
 import { LOCATION_CHANGE, replace } from 'react-router-redux';
-import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as WALLET from 'actions/constants/wallet';
-import * as NotificationActions from 'actions/NotificationActions';
 import * as RouterActions from 'actions/RouterActions';
 
 import type {
@@ -15,69 +13,10 @@ import type {
     TrezorDevice,
 } from 'flowtype';
 
-/*
-const validation = (api: MiddlewareAPI, params: RouterLocationState): boolean => {
-    if (params.hasOwnProperty('device')) {
-        const { devices } = api.getState();
-
-        let device: ?TrezorDevice;
-        if (params.hasOwnProperty('deviceInstance')) {
-            device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === parseInt(params.deviceInstance, 10));
-        } else {
-            device = devices.find(d => d.path === params.device || (d.features && d.features.device_id === params.device));
-        }
-
-        if (!device) return false;
-    }
-
-    if (params.hasOwnProperty('network')) {
-        const { config } = api.getState().localStorage;
-        const coin = config.coins.find(c => c.network === params.network);
-        if (!coin) return false;
-        if (!params.account) return false;
-    }
-
-    // if (params.account) {
-
-    // }
-
-    return true;
-};
-*/
-
-const deviceModeValidation = (api: MiddlewareAPI, current: RouterLocationState, requested: RouterLocationState): boolean => {
-    // allow url change if requested device is not the same as current state
-    if (current.device !== requested.device) return true;
-    // find device
-    const { devices } = api.getState();
-    let device: ?TrezorDevice;
-    if (requested.hasOwnProperty('deviceInstance')) {
-        device = devices.find(d => d.features && d.features.device_id === requested.device && d.instance === parseInt(requested.deviceInstance, 10));
-    } else {
-        device = devices.find(d => d.path === requested.device || (d.features && d.features.device_id === requested.device));
-    }
-    if (!device) return false;
-    if (!device.features) return false;
-    if (device.firmware === 'required') return false;
-
-    return true;
-}
-
 /**
  * Redux Middleware used for managing router path
  * This middleware couldn't use async/await because LOCATION_CHANGE action is also synchronized with RouterReducer (react-router-redux)
  */
-const RouterService1: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
-    if (action.type !== LOCATION_CHANGE) {
-        return next(action);
-    }
-
-    action.payload.state = api.dispatch( RouterActions.pathToParams(action.payload.pathname) );
-
-    next(action);
-
-    return action;
-}
 
 const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
     // make sure that middleware should process this action
@@ -135,23 +74,17 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             if (isLandingPageUrl) {
                 // Corner case: disallow displaying landing page
                 // redirect to previous url
-                // TODO:  && currentParamsAreValid
+                // TODO: make sure that currentParamsAreValid, otherwise selectFirstAvailableDevice
                 redirectUrl = location.pathname;
             } else if (!requestedParamsAreValid) {
                 // Corner case: requested params are not valid
                 // Neither device or network doesn't exists
-                postActions.push( RouterActions.selectFirstAvailableDevice() );
+                redirectUrl = location.pathname;
+                // postActions.push( RouterActions.selectFirstAvailableDevice() );
             } else if (requestedParams.device) {
-                if (!deviceModeValidation(api, currentParams, requestedParams)) {
+                if (!api.dispatch( RouterActions.deviceModeValidation(currentParams, requestedParams) )) {
                     redirectUrl = location.pathname;
                     console.warn('Device is not in valid mode');
-                } else if (requestedParams.network !== currentParams.network) {
-                    postActions.push({
-                        type: CONNECT.COIN_CHANGED,
-                        payload: {
-                            network: requestedParams.network,
-                        },
-                    });
                 }
             }
         }
@@ -180,11 +113,7 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         api.dispatch(a);
     });
 
-    // TODO: move this to wallet service?
-    api.dispatch(NotificationActions.clear(currentParams, requestedParams));
-
     return action;
-
 };
 
 export default RouterService;
