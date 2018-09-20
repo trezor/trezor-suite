@@ -30,8 +30,6 @@ declare module 'redux' {
     getState(): S;
   };
 
-  declare export type ReduxDispatchAPI<A> = (action: A) => Promise<A>;
-
   declare export type Middleware<S, A> =
     (api: MiddlewareAPI<S, A>) =>
       (next: PlainDispatch<A>) =>
