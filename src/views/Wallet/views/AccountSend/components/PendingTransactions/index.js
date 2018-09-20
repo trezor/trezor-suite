@@ -44,7 +44,7 @@ const TransactionIcon = styled.div`
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    line-height: 30px;
+    line-height: 25px;
     text-transform: uppercase;
     user-select: none;
     text-align: center;
