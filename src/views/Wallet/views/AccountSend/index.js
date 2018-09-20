@@ -76,6 +76,7 @@ const SetMaxAmountButton = styled(Button)`
 `;
 
 const CurrencySelect = styled(Select)`
+    min-width: 77px;
     height: 34px;
     flex: 0.2;
 `;
