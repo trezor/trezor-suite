@@ -48,9 +48,13 @@ const TransactionIcon = styled.div`
     text-transform: uppercase;
     user-select: none;
     text-align: center;
-    color: ${props => props.color};
+    color: ${props => props.textColor};
     background: ${props => props.background};
     border-color: ${props => props.borderColor};
+
+    &:before {
+        content: ${props => props.color};
+    }
 `;
 
 const P = styled.p``;
@@ -70,9 +74,9 @@ class PendingTransactions extends Component<Props> {
 
     getTransactionIconColors(tx: any) {
         let iconColors = {
-            color: '',
-            background: '',
-            borderColor: '',
+            textColor: '#fff',
+            background: '#000',
+            borderColor: '#000',
         };
         const bgColorFactory = new ColorHash({ lightness: 0.7 });
         const textColorFactory = new ColorHash();
@@ -84,21 +88,21 @@ class PendingTransactions extends Component<Props> {
 
             if (!token) {
                 iconColors = {
-                    color: '#ffffff',
+                    textColor: '#ffffff',
                     background: '#000000',
                     borderColor: '#000000',
                 };
             } else {
                 const bgColor: string = bgColorFactory.hex(token.name);
                 iconColors = {
-                    color: textColorFactory.hex(token.name),
+                    textColor: textColorFactory.hex(token.name),
                     background: bgColor,
                     borderColor: bgColor,
                 };
             }
         } else {
             iconColors = {
-                color: textColorFactory.hex(tx.network),
+                textColor: textColorFactory.hex(tx.network),
                 background: bgColorFactory.hex(tx.network),
                 borderColor: bgColorFactory.hex(tx.network),
             };
@@ -139,7 +143,7 @@ class PendingTransactions extends Component<Props> {
                         key={tx.id}
                     >
                         <TransactionIcon
-                            color={() => this.getTransactionIconColors(tx).color}
+                            textColor={() => this.getTransactionIconColors(tx).textColor}
                             background={() => this.getTransactionIconColors(tx).background}
                             borderColor={() => this.getTransactionIconColors(tx).borderColor}
                         >
