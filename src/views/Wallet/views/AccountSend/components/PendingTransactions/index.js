@@ -125,7 +125,9 @@ class PendingTransactions extends Component<Props> {
             <Wrapper>
                 <H2>Pending transactions</H2>
                 {this.getPendingTransactions().map(tx => (
-                    <TransactionWrapper>
+                    <TransactionWrapper
+                        key={tx.id}
+                    >
                         <TransactionIcon
                             color={() => this.getTransactionIconColors(tx).color}
                             background={() => this.getTransactionIconColors(tx).background}
