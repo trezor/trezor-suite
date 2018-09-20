@@ -12,17 +12,18 @@ import type { Action, RouterLocationState, TrezorDevice } from 'flowtype';
 
 type State = {
     ready: boolean;
+    unloading: boolean;
     online: boolean;
     dropdownOpened: boolean;
     initialParams: ?RouterLocationState;
     initialPathname: ?string;
     disconnectRequest: ?TrezorDevice;
-
     selectedDevice: ?TrezorDevice;
 }
 
 const initialState: State = {
     ready: false,
+    unloading: false,
     online: navigator.onLine,
     dropdownOpened: false,
     initialParams: null,
@@ -33,6 +34,12 @@ const initialState: State = {
 
 export default function wallet(state: State = initialState, action: Action): State {
     switch (action.type) {
+        case WALLET.ON_BEFORE_UNLOAD:
+            return {
+                ...state,
+                unloading: true
+            }
+
         case WALLET.SET_INITIAL_URL:
             return {
                 ...state,
