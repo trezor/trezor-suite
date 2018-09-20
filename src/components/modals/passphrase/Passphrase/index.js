@@ -141,8 +141,6 @@ export default class PinModal extends Component<Props, State> {
         } = this.state;
         // } = this.props.modal;
 
-        console.warn('passphrase', passphrase);
-        console.warn('passphraseRevision', passphraseRevision);
         const passphraseInputValue: string = passphrase;
         const passphraseRevisionInputValue: string = passphraseRevision;
         // if (!visible && !passphraseFocused) {
@@ -152,10 +150,8 @@ export default class PinModal extends Component<Props, State> {
         //     passphraseRevisionInputValue = passphraseRevision.replace(/./g, '•');
         // }
 
-        console.warn('VISIBLE', visible);
 
         if (this.passphraseInput) {
-            console.warn('this.passphraseInput', this.passphraseInput);
             // this.passphraseInput.value = passphraseInputValue;
             // this.passphraseInput.setAttribute('type', visible || (!visible && !passphraseFocused) ? 'text' : 'password');
             this.passphraseInput.setAttribute('type', visible ? 'text' : 'password');
@@ -181,7 +177,6 @@ export default class PinModal extends Component<Props, State> {
         // or
         // https://github.com/zakangelle/react-password-mask/blob/master/src/index.js
         if (input === 'passphrase') {
-            console.warn('PASSPHRASE CHANGE', value);
             this.setState(previousState => ({
                 match: previousState.singleInput || previousState.passphraseRevision === value,
                 passphrase: value,
@@ -307,7 +302,6 @@ export default class PinModal extends Component<Props, State> {
         //let passphraseRevisionInputType: string = visible || passphraseRevisionFocused ? "text" : "password";
 
         const showPassphraseCheckboxFn: Function = visible ? this.onPassphraseHide : this.onPassphraseShow;
-        console.log('passphraseInputType', passphraseInputType);
         return (
             <Wrapper>
                 <H2>Enter { deviceLabel } passphrase</H2>
