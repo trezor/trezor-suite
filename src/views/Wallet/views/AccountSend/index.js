@@ -21,6 +21,10 @@ import PendingTransactions from './components/PendingTransactions';
 
 import type { Props } from './Container';
 
+// TODO: Decide on a small screen width for the whole app
+// and put it inside config/variables.js
+const SmallScreenWidth = '850px';
+
 type State = {
     isAdvancedSettingsHidden: boolean,
     shouldAnimateAdvancedSettingsToggle: boolean,
@@ -111,7 +115,12 @@ const StyledLink = styled(Link)`
 const ToggleAdvancedSettingsWrapper = styled.div`
     margin-bottom: 20px;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
+
+    @media screen and (max-width: ${SmallScreenWidth}) {
+        flex-direction: column;
+    }
 `;
 
 const ToggleAdvancedSettingsButton = styled(Button)`
@@ -122,7 +131,12 @@ const ToggleAdvancedSettingsButton = styled(Button)`
 `;
 
 const SendButton = styled(Button)`
-    min-width: 50%;
+    min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
+    font-size: 13px;
+
+    @media screen and (max-width: ${SmallScreenWidth}) {
+        margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
+    }
 `;
 
 const AdvancedSettingsWrapper = styled.div`
@@ -449,6 +463,7 @@ class AccountSend extends Component<Props, State> {
                         {this.state.isAdvancedSettingsHidden && (
                             <SendButton
                                 isDisabled={isSendButtonDisabled}
+                                isAdvancedSettingsHidden={this.state.isAdvancedSettingsHidden}
                                 onClick={() => onSend()}
                             >
                                 {sendButtonText}
