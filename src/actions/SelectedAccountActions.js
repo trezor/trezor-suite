@@ -48,10 +48,6 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
             || prevState.discovery !== state.discovery
             || prevState.tokens !== state.tokens
             || prevState.pending !== state.pending) {
-        if (locationChange) {
-            // dispose current account view
-            dispatch(dispose());
-        }
 
         const account = stateUtils.getSelectedAccount(state);
         const network = stateUtils.getSelectedNetwork(state);
