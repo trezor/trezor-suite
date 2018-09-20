@@ -25,15 +25,21 @@ import type {
  */
 const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
     const prevState = api.getState();
-    const locationChange: boolean = action.type === LOCATION_CHANGE;
 
-    // Application live cycle starts here
-    if (locationChange) {
-        const { location } = api.getState().router;
-        if (!location) {
-            api.dispatch(WalletActions.init());
-            return next(action);
-        }
+    // Application live cycle starts HERE!
+    // when first LOCATION_CHANGE is called router does not have "location" set yet
+    if (action.type === LOCATION_CHANGE && !prevState.router.location) {
+        // initialize wallet
+        api.dispatch(WalletActions.init());
+        // set initial url
+        // TODO: validate if initial url is potentially correct
+        api.dispatch({
+            type: WALLET.SET_INITIAL_URL,
+            pathname: action.payload.pathname,
+            state: {},
+        });
+        // pass action and break process
+        return next(action);
     }
 
     // pass action
@@ -65,10 +71,10 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     if (!api.getState().wallet.ready) return action;
 
     // double verification needed
-    // Corner case: LOCATION_CHANGE was called but pathname didn't changed (redirection in RouterService)
+    // Corner case: LOCATION_CHANGE was called but pathname didn't changed (redirection from RouterService)
     const prevLocation = prevState.router.location;
     const currentLocation = api.getState().router.location;
-    if (locationChange && prevLocation.pathname !== currentLocation.pathname) {
+    if (action.type === LOCATION_CHANGE && prevLocation.pathname !== currentLocation.pathname) {
         // watch for coin change
         if (prevLocation.state.network !== currentLocation.state.network) {
             api.dispatch({
@@ -80,7 +86,7 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         }
 
         // watch for account change
-        if (prevLocation.state.account !== currentLocation.state.account) {
+        if (prevLocation.state.network !== currentLocation.state.network || prevLocation.state.account !== currentLocation.state.account) {
             api.dispatch(SelectedAccountActions.dispose());
         }
 

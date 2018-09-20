@@ -11,6 +11,7 @@ import type {
     Dispatch,
     GetState,
 } from 'flowtype';
+import type { RouterAction } from 'react-router-redux';
 
 /*
 * Parse url string to RouterLocationState object (key/value)
@@ -67,28 +68,10 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
     }
 
     // validate requested account
-    // TODO: check if discovery on this network is completed
+    // TODO: only if discovery on this network is completed
     // if (params.hasOwnProperty('account')) {
 
     // }
-    return true;
-}
-
-export const deviceModeValidation = (current: RouterLocationState, requested: RouterLocationState): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
-    // allow url change if requested device is not the same as current state
-    if (current.device !== requested.device) return true;
-    // find device
-    const { devices } = getState();
-    let device: ?TrezorDevice;
-    if (requested.hasOwnProperty('deviceInstance')) {
-        device = devices.find(d => d.features && d.features.device_id === requested.device && d.instance === parseInt(requested.deviceInstance, 10));
-    } else {
-        device = devices.find(d => d.path === requested.device || (d.features && d.features.device_id === requested.device));
-    }
-    if (!device) return false;
-    if (!device.features) return false;
-    if (device.firmware === 'required') return false;
-
     return true;
 }
 
@@ -96,9 +79,106 @@ export const deviceModeValidation = (current: RouterLocationState, requested: Ro
 * Composing url string from given RouterLocationState object
 * Filters unrecognized fields and sorting in correct order
 */
-export const paramsToPath = (params: RouterLocationState): PayloadAction<string> => (dispatch: Dispatch, getState: GetState): string => {
-    return "/";
+export const paramsToPath = (params: RouterLocationState): PayloadAction<?string> => (dispatch: Dispatch, getState: GetState): ?string => {
+    // TODO: share this patterns with /views/index.js
+    const patterns: Array<Array<string>> = [
+        ['device', 'settings'],
+        ['device', 'bootloader'],
+        ['device', 'initialize'],
+        ['device', 'acquire'],
+        ['device', 'unreadable'],
+        ['device', 'network', 'account', 'send'],
+        ['device', 'network', 'account', 'receive'],
+        ['device', 'network', 'account'],
+        ['device']
+    ];
+
+    // find pattern
+    const keys: Array<string> = Object.keys(params);
+    let patternToUse: ?Array<string>;
+    for (let pattern of patterns) {
+        const match: Array<string> = keys.filter(key => pattern.indexOf(key) >= 0);
+        if (match.length === pattern.length) {
+            patternToUse = pattern;
+            break;
+        }
+    }
+
+    // pattern not found, redirect back
+    if (!patternToUse) return null;
+    
+    // compose url string from pattern
+    let url: string = '';
+    patternToUse.forEach(field => {
+        if (field === params[field]) {
+            // standalone (odd) fields
+            url += `/${ field }`;
+        } else {
+            url += `/${ field }/${ params[field] }`;
+            if (field === 'device') {
+                if (params.hasOwnProperty('deviceInstance')) {
+                    url += `:${ params.deviceInstance }`;
+                }
+            }
+        }
+        
+    });
+    return url;
 }
+
+export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dispatch: Dispatch, getState: GetState): string => {
+    const { location } = getState().router;
+
+    // redirect to landing page (loading screen)
+    // and wait until application is ready
+    if (!location) return '/';
+
+    const requestedUrl = action.payload.pathname;
+    // Corner case: LOCATION_CHANGE was called but pathname didn't changed (redirect action from RouterService)
+    if (requestedUrl === location.pathname) return requestedUrl;
+    
+    // Modal is opened
+    // redirect to previous url
+    if (getState().modal.opened) {
+        // Corner case: modal is opened and currentParams are still valid
+        // example 1 (valid blocking): url changed while passphrase modal opened but device is still connected (we want user to finish this action)
+        // example 2 (invalid blocking): url changes while passphrase modal opened because device disconnect
+        const currentParams = dispatch( pathToParams(location.pathname) );
+        const currentParamsAreValid = dispatch( paramsValidation(currentParams) );
+        if (currentParamsAreValid)
+        return location.pathname;
+    }
+
+    // there are no connected devices or application isn't ready or initialization error occurred
+    // redirect to landing page
+    const shouldBeLandingPage = getState().devices.length < 1 || !getState().wallet.ready || getState().connect.error !== null;
+    const landingPageUrl = dispatch( isLandingPageUrl(requestedUrl) );
+    if (shouldBeLandingPage) {
+        return !landingPageUrl ? '/' : requestedUrl;
+    }
+
+    // Disallow displaying landing page
+    // redirect to previous url
+    if (!shouldBeLandingPage && landingPageUrl) {
+        return location.pathname;
+    }
+
+    // Regular url change during application live cycle
+    const requestedParams = dispatch( pathToParams(requestedUrl) );
+    const requestedParamsAreValid: boolean = dispatch( paramsValidation(requestedParams) );
+
+    // Requested params are not valid
+    // Neither device or network doesn't exists
+    if (!requestedParamsAreValid) {
+        return location.pathname;
+    }
+
+    // Compose valid url from requested params
+    const composedUrl = dispatch( paramsToPath(requestedParams) );
+    return composedUrl || location.pathname;
+}
+
+
 
 /*
 * Utility used in "selectDevice" and "selectFirstAvailableDevice"
