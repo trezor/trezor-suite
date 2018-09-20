@@ -7,6 +7,9 @@ import * as SEND from 'actions/constants/send';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as PENDING from 'actions/constants/pendingTx';
 
+import * as SendFormActions from 'actions/SendFormActions';
+import * as SessionStorageActions from 'actions/SessionStorageActions';
+
 import * as stateUtils from 'reducers/utils';
 
 import type {
@@ -16,7 +19,7 @@ import type {
     Dispatch,
     State,
 } from 'flowtype';
-import * as SendFormActions from './SendFormActions';
+
 
 
 export type SelectedAccountAction = {
@@ -40,6 +43,10 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
         // dispatch( SendFormActions.init() );
         // linear action
         // SessionStorageActions.clear(location.pathname);
+    }
+
+    if (prevState.sendForm !== state.sendForm) {
+        dispatch( SessionStorageActions.save() );
     }
 
     // handle devices state change (from trezor-connect events or location change)
