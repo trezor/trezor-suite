@@ -113,6 +113,9 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
 
     const { config } = props.localStorage;
     const selectedCoin = config.coins.find(c => c.network === location.state.network);
+
+    if (!selected || !selectedCoin) return;
+    
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
     const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);

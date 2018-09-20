@@ -12,7 +12,7 @@ import icons from 'config/icons';
 import colors from 'config/colors';
 import Link from 'components/Link';
 
-import { Props } from './index';
+import type { Props } from 'components/modals/index';
 
 type State = {
     defaultName: string;

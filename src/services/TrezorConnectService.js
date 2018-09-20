@@ -1,16 +1,16 @@
 /* @flow */
 import { push } from 'react-router-redux';
 
-import {
-    TRANSPORT, DEVICE,
+import TrezorConnect, {
+    TRANSPORT, DEVICE_EVENT, UI_EVENT, UI, DEVICE, BLOCKCHAIN
 } from 'trezor-connect';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as DiscoveryActions from 'actions/DiscoveryActions';
+import * as BlockchainActions from 'actions/BlockchainActions';
 import * as ModalActions from 'actions/ModalActions';
-import { init as initWeb3 } from 'actions/Web3Actions';
-import * as WEB3 from 'actions/constants/web3';
 import * as STORAGE from 'actions/constants/localStorage';
 import * as CONNECT from 'actions/constants/TrezorConnect';
+import { READY as BLOCKCHAIN_READY } from 'actions/constants/blockchain';
 
 import type {
     Middleware,
@@ -32,9 +32,9 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     } else if (action.type === TRANSPORT.ERROR) {
         // TODO: check if modal is open
         // api.dispatch( push('/') );
-    } else if (action.type === TRANSPORT.START && api.getState().web3.length < 1) {
-        api.dispatch(initWeb3());
-    } else if (action.type === WEB3.READY) {
+    } else if (action.type === TRANSPORT.START) {
+        api.dispatch(BlockchainActions.init());
+    } else if (action.type === BLOCKCHAIN_READY) {
         api.dispatch(TrezorConnectActions.postInit());
     } else if (action.type === DEVICE.DISCONNECT) {
         api.dispatch(TrezorConnectActions.deviceDisconnect(action.device));
@@ -63,6 +63,12 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         api.dispatch(TrezorConnectActions.onSelectDevice(action.device));
     } else if (action.type === CONNECT.COIN_CHANGED) {
         api.dispatch(TrezorConnectActions.coinChanged(action.payload.network));
+    } else if (action.type === BLOCKCHAIN.BLOCK) {
+        api.dispatch(BlockchainActions.onBlockMined(action.payload.coin));
+    } else if (action.type === BLOCKCHAIN.NOTIFICATION) {
+        // api.dispatch(BlockchainActions.onNotification(action.payload));
+    } else if (action.type === BLOCKCHAIN.ERROR) {
+        api.dispatch( BlockchainActions.error(action.payload) );
     }
 
     return action;

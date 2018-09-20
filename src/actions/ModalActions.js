@@ -24,14 +24,14 @@ export const onPinSubmit = (value: string): Action => {
     };
 };
 
-export const onPassphraseSubmit = (/* passphrase: string */): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
-    // const resp = await TrezorConnect.uiResponse({
-    //     type: UI.RECEIVE_PASSPHRASE,
-    //     payload: {
-    //         value: passphrase,
-    //         save: true,
-    //     },
-    // });
+export const onPassphraseSubmit = (passphrase: string): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
+    const resp = await TrezorConnect.uiResponse({
+        type: UI.RECEIVE_PASSPHRASE,
+        payload: {
+            value: passphrase,
+            save: true,
+        },
+    });
 
     dispatch({
         type: MODAL.CLOSE,

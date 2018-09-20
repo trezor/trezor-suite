@@ -16,9 +16,7 @@ import type {
     DiscoveryCompleteAction,
 } from 'actions/DiscoveryActions';
 
-import type {
-    AccountCreateAction,
-} from 'actions/AccountsActions';
+import type { Account } from './AccountsReducer';
 
 export type Discovery = {
     network: string;
@@ -31,7 +29,7 @@ export type Discovery = {
     interrupted: boolean;
     completed: boolean;
     waitingForDevice: boolean;
-    waitingForBackend: boolean;
+    waitingForBlockchain: boolean;
 }
 
 export type State = Array<Discovery>;
@@ -55,7 +53,7 @@ const start = (state: State, action: DiscoveryStartAction): State => {
         interrupted: false,
         completed: false,
         waitingForDevice: false,
-        waitingForBackend: false,
+        waitingForBlockchain: false,
     };
 
     const newState: State = [...state];
@@ -75,8 +73,8 @@ const complete = (state: State, action: DiscoveryCompleteAction): State => {
     return newState;
 };
 
-const accountCreate = (state: State, action: AccountCreateAction): State => {
-    const index: number = findIndex(state, action.network, action.device.state || '0');
+const accountCreate = (state: State, account: Account): State => {
+    const index: number = findIndex(state, account.network, account.deviceState);
     const newState: State = [...state];
     newState[index].accountIndex++;
     return newState;
@@ -98,6 +96,7 @@ const stop = (state: State, action: DiscoveryStopAction): State => {
         if (d.deviceState === action.device.state && !d.completed) {
             d.interrupted = true;
             d.waitingForDevice = false;
+            d.waitingForBlockchain = false;
         }
         return d;
     });
@@ -116,7 +115,7 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
         interrupted: false,
         completed: false,
         waitingForDevice: true,
-        waitingForBackend: false,
+        waitingForBlockchain: false,
     };
 
     const index: number = findIndex(state, action.network, deviceState);
@@ -130,7 +129,7 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
     return newState;
 };
 
-const waitingForBackend = (state: State, action: DiscoveryWaitingAction): State => {
+const waitingForBlockchain = (state: State, action: DiscoveryWaitingAction): State => {
     const deviceState: string = action.device.state || '0';
     const instance: Discovery = {
         network: action.network,
@@ -143,7 +142,7 @@ const waitingForBackend = (state: State, action: DiscoveryWaitingAction): State 
         interrupted: false,
         completed: false,
         waitingForDevice: false,
-        waitingForBackend: true,
+        waitingForBlockchain: true,
     };
 
     const index: number = findIndex(state, action.network, deviceState);
@@ -162,15 +161,15 @@ export default function discovery(state: State = initialState, action: Action): 
         case DISCOVERY.START:
             return start(state, action);
         case ACCOUNT.CREATE:
-            return accountCreate(state, action);
+            return accountCreate(state, action.payload);
         case DISCOVERY.STOP:
             return stop(state, action);
         case DISCOVERY.COMPLETE:
             return complete(state, action);
         case DISCOVERY.WAITING_FOR_DEVICE:
             return waitingForDevice(state, action);
-        case DISCOVERY.WAITING_FOR_BACKEND:
-            return waitingForBackend(state, action);
+        case DISCOVERY.WAITING_FOR_BLOCKCHAIN:
+            return waitingForBlockchain(state, action);
         case DISCOVERY.FROM_STORAGE:
             return action.payload.map((d) => {
                 const hdKey: HDKey = new HDKey();
@@ -181,7 +180,7 @@ export default function discovery(state: State = initialState, action: Action): 
                     hdKey,
                     interrupted: false,
                     waitingForDevice: false,
-                    waitingForBackend: false,
+                    waitingForBlockchain: false,
                 };
             });
         case CONNECT.FORGET:

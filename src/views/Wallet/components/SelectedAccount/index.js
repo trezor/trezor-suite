@@ -1,6 +1,7 @@
 /* @flow */
 import * as React from 'react';
 import { Notification } from 'components/Notification';
+import { reconnect } from 'actions/DiscoveryActions';
 
 import type { State } from 'flowtype';
 
@@ -8,11 +9,12 @@ export type StateProps = {
     className: string;
     selectedAccount: $ElementType<State, 'selectedAccount'>,
     wallet: $ElementType<State, 'wallet'>,
+    blockchain: $ElementType<State, 'blockchain'>,
     children?: React.Node
 }
 
 export type DispatchProps = {
-
+    blockchainReconnect: typeof reconnect;
 }
 
 export type Props = StateProps & DispatchProps;
@@ -28,7 +30,27 @@ const SelectedAccount = (props: Props) => {
     const {
         account,
         discovery,
+        network
     } = accountState;
+
+    if (!network) return; // TODO: this shouldn't happen. change accountState reducer?
+
+    const blockchain = props.blockchain.find(b => b.name === network.network);
+    if (blockchain && !blockchain.connected) {
+        return (
+            <Notification 
+                type="error" 
+                title="Backend not connected"
+                actions={
+                    [{
+                        label: "Try again",
+                        callback: async () => {
+                            await props.blockchainReconnect(network.network);
+                        }
+                    }]
+                } />
+        );
+    }
 
     // account not found (yet). checking why...
     if (!account) {
@@ -56,11 +78,6 @@ const SelectedAccount = (props: Props) => {
                     title={`Device ${device.instanceLabel} is disconnected`}
                     message="Connect device to load accounts"
                 />
-            );
-        } if (discovery.waitingForBackend) {
-            // case 4: backend is not working
-            return (
-                <Notification type="warning" title="Backend not working" />
             );
         } if (discovery.completed) {
             // case 5: account not found and discovery is completed

@@ -97,7 +97,7 @@ class AccountBalance extends Component<Props, State> {
         let fiat = '';
         if (fiatRate) {
             accountBalance = new BigNumber(this.props.balance);
-            fiatRateValue = new BigNumber(fiatRate.value);
+            fiatRateValue = new BigNumber(fiatRate.value).toFixed(2);
             fiat = accountBalance.times(fiatRateValue).toFixed(2);
         }
 
@@ -127,7 +127,7 @@ class AccountBalance extends Component<Props, State> {
                         {fiatRate && (
                             <BalanceWrapper>
                                 <Label>Rate</Label>
-                                <FiatValue>${fiatRateValue.toFixed(2)}</FiatValue>
+                                <FiatValue>${fiatRateValue}</FiatValue>
                                 <CoinBalace>1.00 {selectedCoin.symbol}</CoinBalace>
                             </BalanceWrapper>
                         )}

@@ -8,6 +8,9 @@ export type PendingTxAction = {
     type: typeof PENDING.FROM_STORAGE,
     payload: State
 } | {
+    type: typeof PENDING.ADD,
+    payload: PendingTx
+} | {
     type: typeof PENDING.TX_RESOLVED,
     tx: PendingTx,
     receipt?: Object,

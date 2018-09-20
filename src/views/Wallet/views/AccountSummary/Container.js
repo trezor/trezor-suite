@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import { reconnect } from 'actions/DiscoveryActions';
 import * as TokenActions from 'actions/TokenActions';
 
 import type { State, Dispatch } from 'flowtype';
@@ -30,6 +31,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     className: 'summary',
     selectedAccount: state.selectedAccount,
     wallet: state.wallet,
+    blockchain: state.blockchain,
 
     tokens: state.tokens,
     summary: state.summary,
@@ -38,6 +40,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+    blockchainReconnect: bindActionCreators(reconnect, dispatch),
     addToken: bindActionCreators(TokenActions.add, dispatch),
     loadTokens: bindActionCreators(TokenActions.load, dispatch),
     removeToken: bindActionCreators(TokenActions.remove, dispatch),

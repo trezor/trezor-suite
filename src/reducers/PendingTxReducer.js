@@ -6,6 +6,7 @@ import type { Action } from 'flowtype';
 import type { SendTxAction } from 'actions/SendFormActions';
 
 export type PendingTx = {
+    +type: 'send' | 'recv';
     +id: string;
     +network: string;
     +currency: string;
@@ -24,6 +25,7 @@ const initialState: State = [];
 const add = (state: State, action: SendTxAction): State => {
     const newState = [...state];
     newState.push({
+        type: 'send',
         id: action.txid,
         network: action.account.network,
         currency: action.selectedCurrency,
@@ -34,6 +36,12 @@ const add = (state: State, action: SendTxAction): State => {
         address: action.account.address,
         rejected: false,
     });
+    return newState;
+};
+
+const add_NEW = (state: State, payload: any): State => {
+    const newState = [...state];
+    newState.push(payload);
     return newState;
 };
 
@@ -51,6 +59,8 @@ export default function pending(state: State = initialState, action: Action): St
         case SEND.TX_COMPLETE:
             return add(state, action);
 
+        // case PENDING.ADD:
+        //    return add(state, action.payload);
         case PENDING.TX_RESOLVED:
             return remove(state, action.tx.id);
         case PENDING.TX_NOT_FOUND:

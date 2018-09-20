@@ -6,13 +6,14 @@ import thunk from 'redux-thunk';
 // import createHistory from 'history/createBrowserHistory';
 // import { useRouterHistory } from 'react-router';
 import createHistory from 'history/createHashHistory';
+import { createLogger } from 'redux-logger';
 import reducers from 'reducers';
 import services from 'services';
 
 import Raven from 'raven-js';
 import RavenMiddleware from 'redux-raven-middleware';
 
-// import type { Action, GetState, Store } from 'flowtype';
+import type { Action, GetState, Store } from 'flowtype';
 
 export const history: History = createHistory({ queryKey: false });
 
@@ -30,17 +31,29 @@ const middleware = [
 
 let composedEnhancers: any;
 if (process.env.NODE_ENV === 'development') {
-    // const excludeLogger = (getState: GetState, action: Action): boolean => {
-    //     //'@@router/LOCATION_CHANGE'
-    //     const excluded: Array<string> = ['LOG_TO_EXCLUDE', 'log__add'];
-    //     const pass: Array<string> = excluded.filter(act => action.type === act);
-    //     return pass.length === 0;
-    // };
+    const excludeLogger = (getState: GetState, action: Action): boolean => {
+        //'@@router/LOCATION_CHANGE'
+        const excluded: Array<?string> = ['LOG_TO_EXCLUDE', 'log__add', undefined];
+        const pass: Array<?string> = excluded.filter(act => action.type === act);
+        return pass.length === 0;
+    };
+
+    const logger = createLogger({
+        level: 'info',
+        predicate: excludeLogger,
+        collapsed: true,
+    });
+
+    const devToolsExtension: ?Function = window.devToolsExtension;
+    if (typeof devToolsExtension === 'function') {
+        enhancers.push(devToolsExtension());
+    }
 
     composedEnhancers = compose(
-        applyMiddleware(...middleware, ...services),
+        applyMiddleware(logger, ...middleware, ...services),
         ...enhancers,
     );
+    
 } else {
     composedEnhancers = compose(
         applyMiddleware(...middleware, ...services),
