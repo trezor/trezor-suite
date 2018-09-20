@@ -8,7 +8,6 @@ import {
     FONT_SIZE,
     FONT_WEIGHT,
     TRANSITION,
-    FONT_FAMILY,
 } from 'config/variables';
 
 const Wrapper = styled.div`
@@ -38,7 +37,6 @@ const StyledInput = styled.input`
     padding: 6px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
 
     line-height: 1.42857143;
-    font-family: ${FONT_FAMILY.MONOSPACE};
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.BASE};
     color: ${colors.TEXT_PRIMARY};
