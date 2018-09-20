@@ -203,9 +203,11 @@ class AccountSend extends Component<Props, State> {
         let state = '';
         if (address && !addressErrors) {
             state = 'success';
-        } else if (addressWarnings && !addressErrors) {
+        }
+        if (addressWarnings && !addressErrors) {
             state = 'warning';
-        } else if (addressErrors) {
+        }
+        if (addressErrors) {
             state = 'error';
         }
         return state;
@@ -215,7 +217,8 @@ class AccountSend extends Component<Props, State> {
         let state = '';
         if (amountWarnings && !amountErrors) {
             state = 'warning';
-        } else if (amountErrors) {
+        }
+        if (amountErrors) {
             state = 'error';
         }
         return state;
@@ -225,7 +228,8 @@ class AccountSend extends Component<Props, State> {
         let state = '';
         if (gasLimitWarnings && !gasLimitErrors) {
             state = 'warning';
-        } else if (gasLimitErrors) {
+        }
+        if (gasLimitErrors) {
             state = 'error';
         }
         return state;
@@ -235,7 +239,8 @@ class AccountSend extends Component<Props, State> {
         let state = '';
         if (gasPriceWarnings && !gasPriceErrors) {
             state = 'warning';
-        } else if (gasPriceErrors) {
+        }
+        if (gasPriceErrors) {
             state = 'error';
         }
         return state;
