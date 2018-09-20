@@ -27,6 +27,10 @@ const Text = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
+const TooltipContent = styled.div`
+    font-size: ${FONT_SIZE.SMALLEST};
+`;
+
 const RowAccountWrapper = styled.div`
     width: 100%;
     display: flex;
@@ -183,7 +187,8 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             } else {
                 discoveryStatus = (
                     <Tooltip
-                        content={<React.Fragment>To add a new account, last account must have some transactions.</React.Fragment>}
+                        maxWidth={300}
+                        content={<TooltipContent>To add a new account, last account must have some transactions.</TooltipContent>}
                         placement="bottom"
                     >
                         <Row>
