@@ -62,7 +62,11 @@ class PendingTransactions extends Component<Props> {
     }
 
     getTransactionIconColors(tx: any) {
-        let iconColors = { };
+        let iconColors = {
+            color: '',
+            background: '',
+            borderColor: '',
+        };
         const bgColorFactory = new ColorHash({ lightness: 0.7 });
         const textColorFactory = new ColorHash();
 
@@ -92,7 +96,6 @@ class PendingTransactions extends Component<Props> {
                 borderColor: bgColorFactory.hex(tx.network),
             };
         }
-
         return iconColors;
     }
 
