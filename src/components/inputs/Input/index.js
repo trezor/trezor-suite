@@ -35,7 +35,7 @@ const TopLabel = styled.span`
 
 const StyledInput = styled.input`
     width: 100%;
-    padding: 6px 12px;
+    padding: 6px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
 
     line-height: 1.42857143;
     font-family: ${FONT_FAMILY.MONOSPACE};
@@ -114,6 +114,7 @@ class Input extends Component {
                             />
                         )}
                         <StyledInput
+                            hasIcon={!!this.props.state}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
                             placeholder={this.props.placeholder}
