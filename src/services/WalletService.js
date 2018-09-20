@@ -6,6 +6,7 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 import * as WALLET from 'actions/constants/wallet';
 
 import * as WalletActions from 'actions/WalletActions';
+import * as RouterActions from 'actions/RouterActions';
 import * as LocalStorageActions from 'actions/LocalStorageActions';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as SelectedAccountActions from 'actions/SelectedAccountActions';
@@ -29,9 +30,12 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         const { location } = api.getState().router;
         if (!location) {
             api.dispatch(WalletActions.init());
-            // load data from config.json and local storage
-            api.dispatch(LocalStorageActions.loadData());
         }
+    }
+
+    if (action.type === WALLET.SET_INITIAL_URL) {
+        // load data from config.json and local storage
+        api.dispatch(LocalStorageActions.loadData());
     }
 
     // pass action
@@ -41,18 +45,23 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         api.dispatch(WalletActions.clearUnavailableDevicesData(prevState, action.device));
     }
 
-    // update common values in WallerReducer
-    api.dispatch(WalletActions.updateSelectedValues(prevState, action));
+    // update common values ONLY if application is ready
+    if (api.getState().wallet.ready) {
+        // update common values in WallerReducer
+        api.dispatch(WalletActions.updateSelectedValues(prevState, action));
 
-    // update common values in SelectedAccountReducer
-    api.dispatch(SelectedAccountActions.updateSelectedValues(prevState, action));
+        // update common values in SelectedAccountReducer
+        api.dispatch(SelectedAccountActions.updateSelectedValues(prevState, action));
+    }
 
-    // selected device changed
+    // handle selected device change
     if (action.type === WALLET.SET_SELECTED_DEVICE) {
         if (action.device) {
+            // try to authorize device
             api.dispatch(TrezorConnectActions.getSelectedDeviceState());
         } else {
-            api.dispatch(TrezorConnectActions.switchToFirstAvailableDevice());
+            // try select different device
+            api.dispatch(RouterActions.selectFirstAvailableDevice());
         }
     }
 
