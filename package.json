@@ -21,8 +21,8 @@
         "test": "run-s test:*",
         "test:unit": "npx jest",
         "test-unit:watch": "npx jest -o --watch",
-        "prod-server": "npx http-server ./build -a localhost --ssl",
-        "prod-server-dev": "npx http-server ./build-devel -a localhost --ssl"
+        "prod-server": "npx http-server ./build -a localhost -S -C ./server/cert.pem -K ./server/key.pem -o",
+        "prod-server-dev": "npx http-server ./build-devel -a localhost -S -C ./server/cert.pem -K ./server/key.pem -o"
     },
     "dependencies": {
         "babel": "^6.23.0",
