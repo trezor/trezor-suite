@@ -38,6 +38,29 @@ describe('device utils', () => {
         });
     });
 
+    it('isWebUSB', () => {
+        const data = [
+            { transport: { version: ['webusb'] } },
+            { transport: { version: ['aaaaaa'] } },
+            { transport: { version: ['webusb', 'test'] } },
+        ];
+
+        data.forEach((item) => {
+            expect(dUtils.isWebUSB(item.transport)).toMatchSnapshot();
+        });
+    });
+
+    it('isDisabled', () => {
+        const data = [
+            { selectedDevice: { features: null }, devices: [1, 2, 3], transport: { version: ['webusb', 'test'] } },
+            { selectedDevice: { features: null }, devices: [], transport: { version: ['test'] } },
+        ];
+
+        data.forEach((item) => {
+            expect(dUtils.isDisabled(item.selectedDevice, item.devices, item.transport)).toMatchSnapshot();
+        });
+    });
+
     it('get version', () => {
         const deviceMock = [
             { },

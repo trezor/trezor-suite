@@ -55,3 +55,13 @@ exports[`device utils get version 4`] = `"1"`;
 exports[`device utils get version 5`] = `"1"`;
 
 exports[`device utils get version 6`] = `"T"`;
+
+exports[`device utils isDisabled 1`] = `false`;
+
+exports[`device utils isDisabled 2`] = `true`;
+
+exports[`device utils isWebUSB 1`] = `true`;
+
+exports[`device utils isWebUSB 2`] = `false`;
+
+exports[`device utils isWebUSB 3`] = `true`;

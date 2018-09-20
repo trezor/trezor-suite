@@ -115,7 +115,6 @@ module.exports = {
             filename: '[name].css',
             chunkFilename: '[id].css',
         }),
-        
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
