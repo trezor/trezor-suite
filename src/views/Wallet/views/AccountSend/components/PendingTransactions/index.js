@@ -18,12 +18,17 @@ type Props = {
 }
 
 const Wrapper = styled.div`
+    padding-top: 20px;
     border-top: 1px solid ${colors.DIVIDER};
+`;
+
+const StyledLink = styled(Link)`
+    text-decoration: none;
 `;
 
 const TransactionWrapper = styled.div`
     border-bottom: 1px solid ${colors.DIVIDER};
-    padding: 14px 48px;
+    padding: 14px 0;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -54,7 +59,9 @@ const TransactionName = styled.div`
     flex: 1;
 `;
 
-const TransactionAmount = styled.div``;
+const TransactionAmount = styled.div`
+    color: colors.TEXT_SECONDARY;
+`;
 
 class PendingTransactions extends Component<Props> {
     getPendingTransactions() {
@@ -142,13 +149,14 @@ class PendingTransactions extends Component<Props> {
                         </TransactionIcon>
 
                         <TransactionName>
-                            <Link
+                            <StyledLink
                                 href={`${this.props.network.explorer.tx}${tx.id}`}
                                 target="_blank"
                                 rel="noreferrer noopener"
+                                isGray
                             >
                                 {this.getTransactionName(tx)}
-                            </Link>
+                            </StyledLink>
                         </TransactionName>
 
                         <TransactionAmount>
