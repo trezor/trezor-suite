@@ -221,16 +221,6 @@ class AccountSend extends Component<Props, State> {
         return state;
     }
 
-    getAmountInputBottomText(amountErrors: string, amountWarnings: string) {
-        let text = '';
-        if (amountWarnings && !amountErrors) {
-            text = amountWarnings;
-        } else if (amountErrors) {
-            text = amountErrors;
-        }
-        return text;
-    }
-
     getGasLimitInputState(gasLimitErrors: string, gasLimitWarnings: string) {
         let state = '';
         if (gasLimitWarnings && !gasLimitErrors) {
@@ -290,6 +280,7 @@ class AccountSend extends Component<Props, State> {
             total,
             errors,
             warnings,
+            infos,
             data,
             sending,
             gasLimit,
@@ -355,7 +346,7 @@ class AccountSend extends Component<Props, State> {
                             autoCapitalize="off"
                             spellCheck="false"
                             topLabel="Address"
-                            bottomText={errors.address ? 'Wrong Address' : ''}
+                            bottomText={errors.address || warnings.address || infos.address}
                             value={address}
                             onChange={event => onAddressChange(event.target.value)}
                         />
@@ -371,7 +362,7 @@ class AccountSend extends Component<Props, State> {
                             topLabel="Amount"
                             value={amount}
                             onChange={event => onAmountChange(event.target.value)}
-                            bottomText={this.getAmountInputBottomText(errors.amount, warnings.amount)}
+                            bottomText={errors.amount || warnings.amount || infos.amount}
                             sideAddons={[
                                 (
                                     <SetMaxAmountButton
@@ -502,7 +493,7 @@ class AccountSend extends Component<Props, State> {
                                             </Tooltip>
                                         </InputLabelWrapper>
                                     )}
-                                    bottomText={errors.gasLimit ? errors.gasLimit : warnings.gasLimit}
+                                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
                                     value={gasLimit}
                                     isDisabled={networkSymbol === currency && data.length > 0}
                                     onChange={event => onGasLimitChange(event.target.value)}
@@ -536,7 +527,7 @@ class AccountSend extends Component<Props, State> {
                                             </Tooltip>
                                         </InputLabelWrapper>
                                     )}
-                                    bottomText={errors.gasPrice ? errors.gasPrice : warnings.gasPrice}
+                                    bottomText={errors.gasPrice || warnings.gasPrice || infos.gasPrice}
                                     value={gasPrice}
                                     onChange={event => onGasPriceChange(event.target.value)}
                                 />
