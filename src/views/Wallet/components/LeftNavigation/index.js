@@ -93,10 +93,6 @@ class LeftNavigation extends Component {
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-right',
             });
-        } else if (selectedDevice.features.bootloader_mode) {
-            this.setState({
-                shouldRenderDeviceSelection: false,
-            });
         }
     }
 
