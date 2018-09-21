@@ -3,7 +3,7 @@
 // TODO: chagne currency units
 const currencyUnitsConstant: string = 'mbtc2';
 
-export const formatAmount = (n: number, coinInfo: any, currencyUnits = currencyUnitsConstant): string => {
+export const formatAmount = (n: number, coinInfo: any, currencyUnits: string = currencyUnitsConstant): string => {
     const amount = (n / 1e8);
     if (coinInfo.isBitcoin && currencyUnits === 'mbtc' && amount <= 0.1 && n !== 0) {
         const s = (n / 1e5).toString();
