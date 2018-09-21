@@ -1,6 +1,7 @@
 /* @flow */
 
-import { push } from 'react-router-redux';
+import { push, LOCATION_CHANGE } from 'react-router-redux';
+import { routes } from 'support/routes';
 
 import type {
     RouterLocationState,
@@ -80,18 +81,10 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
 * Filters unrecognized fields and sorting in correct order
 */
 export const paramsToPath = (params: RouterLocationState): PayloadAction<?string> => (dispatch: Dispatch, getState: GetState): ?string => {
-    // TODO: share this patterns with /views/index.js
-    const patterns: Array<Array<string>> = [
-        ['device', 'settings'],
-        ['device', 'bootloader'],
-        ['device', 'initialize'],
-        ['device', 'acquire'],
-        ['device', 'unreadable'],
-        ['device', 'network', 'account', 'send'],
-        ['device', 'network', 'account', 'receive'],
-        ['device', 'network', 'account'],
-        ['device']
-    ];
+    // get patterns (fields) from routes and sort them by complexity
+    const patterns: Array<Array<string>> = routes.map(r => r.fields).sort((a, b) => {
+        return a.length > b.length ? -1 : 1;
+    });
 
     // find pattern
     const keys: Array<string> = Object.keys(params);
@@ -292,6 +285,21 @@ export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (dispat
 * Try to redirect to initial url
 */
 export const setInitialUrl = (): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
-    // TODO
+    const { initialPathname } = getState().wallet;
+    if (typeof initialPathname === 'string' && !dispatch(isLandingPageUrl(initialPathname))) {
+        const valid = dispatch( getValidUrl({
+            type: LOCATION_CHANGE,
+            payload: {
+                pathname: initialPathname,
+                hash: "",
+                search: "",
+                state: {}
+            }
+        }) );
+        if (valid === initialPathname) {
+            dispatch( goto(valid) );
+            return true;
+        }
+    }
     return false;
 }
