@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`format utils btckb2satoshib 1`] = `0`;
+
+exports[`format utils btckb2satoshib 2`] = `100000`;
+
+exports[`format utils btckb2satoshib 3`] = `200000`;
+
+exports[`format utils btckb2satoshib 4`] = `10000000`;
+
+exports[`format utils btckb2satoshib 5`] = `99900000`;
+
+exports[`format utils formatAmount 1`] = `"0 btc"`;
+
+exports[`format utils formatAmount 2`] = `"10 mBTC"`;
+
+exports[`format utils formatAmount 3`] = `"0.000005 mBTC"`;
+
+exports[`format utils formatAmount 4`] = `"1e-8 eth"`;
+
+exports[`format utils formatAmount 5`] = `"0.00099999 tau"`;
+
+exports[`format utils formatTime 1`] = `"No time estimate"`;
+
+exports[`format utils formatTime 2`] = `"1 minutes"`;
+
+exports[`format utils formatTime 3`] = `"2 minutes"`;
+
+exports[`format utils formatTime 4`] = `"1 hour 40 minutes"`;
+
+exports[`format utils formatTime 5`] = `"16 hours 39 minutes"`;
+
+exports[`format utils formatTime 6`] = `"45 minutes"`;
+
+exports[`format utils hexToString 1`] = `"test"`;
+
+exports[`format utils hexToString 2`] = `"0001"`;
+
+exports[`format utils hexToString 3`] = `"test99999"`;
+
+exports[`format utils stringToHex 1`] = `"0074006500730074"`;
+
+exports[`format utils stringToHex 2`] = `"0030003000300031"`;
+
+exports[`format utils stringToHex 3`] = `"007400650073007400390039003900390039"`;

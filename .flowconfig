@@ -9,7 +9,7 @@
 .*/node_modules/react-router-redux/.*
 .*/node_modules/oboe/test/.*
 .*/_old/.*
-.*/public/solidity/.*
+.*/public/.*
 
 [libs]
 ./src/flowtype/npm/redux_v3.x.x.js

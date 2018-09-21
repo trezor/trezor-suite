@@ -3,6 +3,7 @@ import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import FlowWebpackPlugin from 'flow-webpack-plugin';
 import { SRC, BUILD, PUBLIC } from './constants';
 
 const gitRevisionPlugin = new GitRevisionPlugin();
@@ -66,6 +67,7 @@ module.exports = {
         new webpack.DefinePlugin({
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
+        new FlowWebpackPlugin(),
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,

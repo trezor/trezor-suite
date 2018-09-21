@@ -1,6 +1,8 @@
 import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import FlowWebpackPlugin from 'flow-webpack-plugin';
+
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import {
@@ -47,6 +49,7 @@ module.exports = {
                     {
                         loader: 'stylelint-custom-processor-loader',
                         options: {
+                            emitWarning: true,
                             configPath: '.stylelintrc',
                         },
                     },
@@ -93,6 +96,7 @@ module.exports = {
         new webpack.DefinePlugin({
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
+        new FlowWebpackPlugin(),
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
