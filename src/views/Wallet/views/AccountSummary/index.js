@@ -131,7 +131,12 @@ const AccountSummary = (props: Props) => {
                     placeholder="Search for the token"
                     loadingMessage={() => 'Loading...'}
                     noOptionsMessage={() => 'Token not found'}
-                    onChange={token => props.addToken(token, account)}
+                    onChange={(token) => {
+                        const isAdded = tokens.find(t => t.symbol === token.symbol);
+                        if (!isAdded) {
+                            props.addToken(token, account);
+                        }
+                    }}
                     loadOptions={input => props.loadTokens(input, account.network)}
                     formatOptionLabel={(option) => {
                         const isAdded = tokens.find(t => t.symbol === option.symbol);
