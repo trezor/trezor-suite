@@ -7058,7 +7058,7 @@ node-libs-browser@^2.0.0:
     util "^0.10.3"
     vm-browserify "0.0.4"
 
-node-notifier@^5.2.1:
+node-notifier@5.2.1, node-notifier@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/node-notifier/-/node-notifier-5.2.1.tgz#fa313dd08f5517db0e2502e5758d664ac69f9dea"
   dependencies:
@@ -10969,6 +10969,14 @@ webpack-addons@^1.1.5:
   resolved "https://registry.yarnpkg.com/webpack-addons/-/webpack-addons-1.1.5.tgz#2b178dfe873fb6e75e40a819fa5c26e4a9bc837a"
   dependencies:
     jscodeshift "^0.4.0"
+
+webpack-build-notifier@^0.1.29:
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/webpack-build-notifier/-/webpack-build-notifier-0.1.29.tgz#d71f89bb94346c6b748e07aa3d117d2beb0a151f"
+  dependencies:
+    ansi-regex "^2.0.0"
+    node-notifier "5.2.1"
+    strip-ansi "^3.0.1"
 
 webpack-bundle-analyzer@^2.13.1:
   version "2.13.1"
