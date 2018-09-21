@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import colors from 'config/colors';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
@@ -34,8 +34,9 @@ const IconWrapper = styled.div`
 
     &:hover,
     &:focus {
-        border: 1px solid ${colors.GREEN_PRIMARY};
-        color: ${colors.WHITE};
+        ${props => !props.checked && css`
+            border: 1px solid ${colors.GREEN_PRIMARY};
+        `}
         background: ${props => (props.checked ? colors.GREEN_PRIMARY : colors.WHITE)};
     }
 `;
