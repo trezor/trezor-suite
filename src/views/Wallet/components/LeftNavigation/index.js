@@ -111,27 +111,22 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         });
     }
 
-    componentWillReceiveProps(nextProps: Props) {
-        const { deviceDropdownOpened } = nextProps;
-        const { selectedDevice } = nextProps.wallet;
-        const hasNetwork = nextProps.router.location.state && nextProps.router.location.state.network;
-        const deviceReady = selectedDevice && selectedDevice.features && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
-
-        if (deviceDropdownOpened) {
+    componentWillReceiveProps(nextProps) {
+        const { dropdownOpened, selectedDevice } = nextProps.wallet;
+        const hasNetwork = nextProps.location.state && nextProps.location.state.network;
+        const hasFeatures = selectedDevice && selectedDevice.features;
+        const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
+        if (dropdownOpened) {
             this.setState({ shouldRenderDeviceSelection: true });
         } else if (hasNetwork) {
             this.setState({
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-left',
             });
-        } else if (deviceReady) {
+        } else {
             this.setState({
                 shouldRenderDeviceSelection: false,
-                animationType: 'slide-right',
-            });
-        } else if (selectedDevice.features.bootloader_mode) {
-            this.setState({
-                shouldRenderDeviceSelection: false,
+                animationType: deviceReady ? 'slide-right' : null,
             });
         }
     }
@@ -148,7 +143,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
     }
 
     handleOpen() {
-        this.props.toggleDeviceDropdown(!this.props.deviceDropdownOpened);
+        this.props.toggleDeviceDropdown(!this.props.wallet.dropdownOpened);
     }
 
     shouldRenderCoins() {
@@ -174,15 +169,15 @@ class LeftNavigation extends React.PureComponent<Props, State> {
 
         return (
             <StickyContainer
-                location={this.props.router.location.pathname}
-                deviceSelection={this.props.deviceDropdownOpened}
+                location={this.props.location.pathname}
+                deviceSelection={this.props.wallet.dropdownOpened}
             >
                 <Header
                     onClickWrapper={() => this.handleOpen()}
                     device={this.props.wallet.selectedDevice}
                     transport={this.props.connect.transport}
                     devices={this.props.devices}
-                    isOpen={this.props.deviceDropdownOpened}
+                    isOpen={this.props.wallet.dropdownOpened}
                     {...this.props}
                 />
                 <Body>
@@ -209,7 +204,6 @@ LeftNavigation.propTypes = {
     connect: PropTypes.object,
     accounts: PropTypes.array,
     router: PropTypes.object,
-    deviceDropdownOpened: PropTypes.bool,
     fiat: PropTypes.array,
     localStorage: PropTypes.object,
     discovery: PropTypes.array,
@@ -218,6 +212,7 @@ LeftNavigation.propTypes = {
     pending: PropTypes.array,
 
     toggleDeviceDropdown: PropTypes.func,
+    selectedDevice: PropTypes.object,
 };
 
 
