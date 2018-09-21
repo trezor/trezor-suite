@@ -1,10 +1,9 @@
 /* @flow */
 import TrezorConnect, {
-    UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT
+    DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as NOTIFICATION from 'actions/constants/notification';
-import * as WALLET from 'actions/constants/wallet';
 import { getDuplicateInstanceNumber } from 'reducers/utils';
 import * as RouterActions from 'actions/RouterActions';
 
@@ -27,7 +26,6 @@ import type {
     AsyncAction,
     Device,
     TrezorDevice,
-    RouterLocationState,
 } from 'flowtype';
 import * as DiscoveryActions from './DiscoveryActions';
 
@@ -82,7 +80,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
     // set listeners
     TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
         // post event to reducers
-        const type: DeviceMessageType = event.type; // assert flow type
+        const type: DeviceMessageType = event.type; // eslint-disable-line prefer-destructuring
         dispatch({
             type,
             device: event.payload,
@@ -91,7 +89,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     TrezorConnect.on(UI_EVENT, (event: UiMessage): void => {
         // post event to reducers
-        const type: UiMessageType = event.type; // assert flow type
+        const type: UiMessageType = event.type; // eslint-disable-line prefer-destructuring
         dispatch({
             type,
             payload: event.payload,
@@ -100,7 +98,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     TrezorConnect.on(TRANSPORT_EVENT, (event: TransportMessage): void => {
         // post event to reducers
-        const type: TransportMessageType = event.type; // assert flow type
+        const type: TransportMessageType = event.type; // eslint-disable-line prefer-destructuring
         dispatch({
             type,
             payload: event.payload,
@@ -109,16 +107,17 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     TrezorConnect.on(BLOCKCHAIN_EVENT, (event: BlockchainMessage): void => {
         // post event to reducers
-        const type: BlockchainMessageType = event.type; // assert flow type
+        const type: BlockchainMessageType = event.type; // eslint-disable-line prefer-destructuring
         dispatch({
             type,
             payload: event.payload,
         });
     });
 
+    /* global LOCAL */
     // $FlowIssue LOCAL not declared
-    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
-    // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/';
+    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
+    // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/'; // eslint-disable-line no-underscore-dangle
 
     try {
         await TrezorConnect.init({
@@ -138,9 +137,9 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
 // called after backend was initialized
 // set listeners for connect/disconnect
-export const postInit = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const postInit = (): ThunkAction => (dispatch: Dispatch): void => {
     const handleDeviceConnect = (device: Device) => {
-        dispatch( RouterActions.selectDevice(device) );
+        dispatch(RouterActions.selectDevice(device));
     };
 
     TrezorConnect.off(DEVICE.CONNECT, handleDeviceConnect);
@@ -149,12 +148,10 @@ export const postInit = (): ThunkAction => (dispatch: Dispatch, getState: GetSta
     TrezorConnect.on(DEVICE.CONNECT, handleDeviceConnect);
     TrezorConnect.on(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
 
-    const { devices } = getState();
-
     // try to redirect to initial url
-    if (!dispatch( RouterActions.setInitialUrl() )) {
+    if (!dispatch(RouterActions.setInitialUrl())) {
         // if initial redirection fails try to switch to first available device
-        dispatch( RouterActions.selectFirstAvailableDevice() )
+        dispatch(RouterActions.selectFirstAvailableDevice());
     }
 };
 
@@ -237,7 +234,7 @@ export const coinChanged = (network: ?string): ThunkAction => (dispatch: Dispatc
 };
 
 export function reload(): AsyncAction {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    return async (): Promise<void> => {
     };
 }
 

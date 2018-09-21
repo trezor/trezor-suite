@@ -37,8 +37,8 @@ export default function wallet(state: State = initialState, action: Action): Sta
         case WALLET.ON_BEFORE_UNLOAD:
             return {
                 ...state,
-                unloading: true
-            }
+                unloading: true,
+            };
 
         case WALLET.SET_INITIAL_URL:
             return {

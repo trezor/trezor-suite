@@ -20,8 +20,6 @@ import type {
     State,
 } from 'flowtype';
 
-
-
 export type SelectedAccountAction = {
     type: typeof ACCOUNT.DISPOSE,
 } | {
@@ -46,7 +44,7 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
     }
 
     if (prevState.sendForm !== state.sendForm) {
-        dispatch( SessionStorageActions.save() );
+        dispatch(SessionStorageActions.save());
     }
 
     // handle devices state change (from trezor-connect events or location change)
@@ -55,7 +53,6 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
             || prevState.discovery !== state.discovery
             || prevState.tokens !== state.tokens
             || prevState.pending !== state.pending) {
-
         const account = stateUtils.getSelectedAccount(state);
         const network = stateUtils.getSelectedNetwork(state);
         const discovery = stateUtils.getDiscoveryProcess(state);

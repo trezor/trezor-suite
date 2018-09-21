@@ -1,7 +1,7 @@
 /* @flow */
 
-import TrezorConnect, {
-    TRANSPORT, DEVICE_EVENT, UI_EVENT, UI, DEVICE, BLOCKCHAIN
+import {
+    TRANSPORT, DEVICE, BLOCKCHAIN,
 } from 'trezor-connect';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as DiscoveryActions from 'actions/DiscoveryActions';
@@ -42,7 +42,7 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
         api.dispatch(ModalActions.onRememberRequest(prevModalState));
     } else if (action.type === CONNECT.FORGET) {
         //api.dispatch( TrezorConnectActions.forgetDevice(action.device) );
-        api.dispatch( RouterActions.selectFirstAvailableDevice() );
+        api.dispatch(RouterActions.selectFirstAvailableDevice());
     } else if (action.type === CONNECT.FORGET_SINGLE) {
         if (api.getState().devices.length < 1 && action.device.connected) {
             // prompt disconnect device info in LandingPage
@@ -50,9 +50,9 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
                 type: CONNECT.DISCONNECT_REQUEST,
                 device: action.device,
             });
-            api.dispatch( RouterActions.gotoLandingPage() );
+            api.dispatch(RouterActions.gotoLandingPage());
         } else {
-            api.dispatch( RouterActions.selectFirstAvailableDevice() );
+            api.dispatch(RouterActions.selectFirstAvailableDevice());
         }
     } else if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
         api.dispatch(DiscoveryActions.restore());
@@ -68,7 +68,7 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     } else if (action.type === BLOCKCHAIN.NOTIFICATION) {
         // api.dispatch(BlockchainActions.onNotification(action.payload));
     } else if (action.type === BLOCKCHAIN.ERROR) {
-        api.dispatch( BlockchainActions.error(action.payload) );
+        api.dispatch(BlockchainActions.error(action.payload));
     }
 
     return action;

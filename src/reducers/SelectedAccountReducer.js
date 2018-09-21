@@ -1,6 +1,4 @@
 /* @flow */
-
-
 import * as ACCOUNT from 'actions/constants/account';
 
 import type {
@@ -14,7 +12,6 @@ import type {
 
 export type State = {
     location?: string;
-
     account: ?Account;
     network: ?Coin;
     tokens: Array<Token>,

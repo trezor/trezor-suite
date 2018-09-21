@@ -7,9 +7,6 @@ import type {
     MiddlewareAPI,
     MiddlewareDispatch,
     Action,
-    ThunkAction,
-    RouterLocationState,
-    TrezorDevice,
 } from 'flowtype';
 
 /**
@@ -25,24 +22,25 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     }
 
     // compose valid url
-    const validUrl = api.dispatch( RouterActions.getValidUrl(action) );
+    const validUrl = api.dispatch(RouterActions.getValidUrl(action));
     // override action state (to be stored in RouterReducer)
-    action.payload.state = api.dispatch( RouterActions.pathToParams(validUrl) );
+    const override = action;
+    override.payload.state = api.dispatch(RouterActions.pathToParams(validUrl));
     const redirect = action.payload.pathname !== validUrl;
     if (redirect) {
         // override action pathname
-        action.payload.pathname = validUrl;
+        override.payload.pathname = validUrl;
     }
 
     // pass action
-    next(action);
+    next(override);
 
     if (redirect) {
         // replace invalid url
-        api.dispatch( replace(validUrl) );
+        api.dispatch(replace(validUrl));
     }
 
-    return action;
+    return override;
 };
 
 export default RouterService;

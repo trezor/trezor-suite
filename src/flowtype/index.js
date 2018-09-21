@@ -9,7 +9,6 @@ import type {
     PayloadAction as ReduxPayloadAction,
     AsyncAction as ReduxAsyncAction,
     PromiseAction as ReduxPromiseAction,
-    ThunkDispatch as ReduxThunkDispatch,
     PlainDispatch as ReduxPlainDispatch,
 } from 'redux';
 

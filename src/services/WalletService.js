@@ -1,6 +1,4 @@
 /* @flow */
-
-
 import { DEVICE } from 'trezor-connect';
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as WALLET from 'actions/constants/wallet';
@@ -49,7 +47,7 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         case WALLET.SET_INITIAL_URL:
             api.dispatch(LocalStorageActions.loadData());
             break;
-        case WALLET.SET_SELECTED_DEVICE: {
+        case WALLET.SET_SELECTED_DEVICE:
             if (action.device) {
                 // try to authorize device
                 api.dispatch(TrezorConnectActions.getSelectedDeviceState());
@@ -57,8 +55,7 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                 // try select different device
                 api.dispatch(RouterActions.selectFirstAvailableDevice());
             }
-        }
-        break;
+            break;
         case DEVICE.CONNECT:
             api.dispatch(WalletActions.clearUnavailableDevicesData(prevState, action.device));
             break;

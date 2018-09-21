@@ -10,85 +10,85 @@ export const routes: Array<Route> = [
     {
         name: 'landing-home',
         pattern: '/',
-        fields: []
+        fields: [],
     },
     {
         name: 'landing-bridge',
         pattern: '/bridge',
-        fields: ['bridge']
+        fields: ['bridge'],
     },
     {
         name: 'landing-import',
         pattern: '/import',
-        fields: ['import']
+        fields: ['import'],
     },
     {
         name: 'wallet-setting',
         pattern: '/settings',
-        fields: ['settings']
+        fields: ['settings'],
     },
     {
         name: 'wallet-acquire',
         pattern: '/device/:device/acquire',
-        fields: ['device', 'acquire']
+        fields: ['device', 'acquire'],
     },
     {
         name: 'wallet-unreadable',
         pattern: '/device/:device/unreadable',
-        fields: ['device', 'unreadable']
+        fields: ['device', 'unreadable'],
     },
     {
         name: 'wallet-bootloader',
         pattern: '/device/:device/bootloader',
-        fields: ['device', 'bootloader']
+        fields: ['device', 'bootloader'],
     },
     {
         name: 'wallet-initialize',
         pattern: '/device/:device/initialize',
-        fields: ['device', 'initialize']
+        fields: ['device', 'initialize'],
     },
     {
         name: 'wallet-device-settings',
         pattern: '/device/:device/settings',
-        fields: ['device', 'settings']
+        fields: ['device', 'settings'],
     },
     {
         name: 'wallet-dashboard',
         pattern: '/device/:device',
-        fields: ['device']
+        fields: ['device'],
     },
     {
         name: 'wallet-account-summary',
         pattern: '/device/:device/network/:network/account/:account',
-        fields: ['device', 'network', 'account']
+        fields: ['device', 'network', 'account'],
     },
     {
         name: 'wallet-account-send',
         pattern: '/device/:device/network/:network/account/:account/send',
-        fields: ['device', 'network', 'account', 'send']
+        fields: ['device', 'network', 'account', 'send'],
     },
     {
         name: 'wallet-account-send-override',
         pattern: '/device/:device/network/:network/account/:account/send/override',
-        fields: ['device', 'network', 'account', 'send']
+        fields: ['device', 'network', 'account', 'send'],
     },
     {
         name: 'wallet-account-receive',
         pattern: '/device/:device/network/:network/account/:account/receive',
-        fields: ['device', 'network', 'account', 'receive']
+        fields: ['device', 'network', 'account', 'receive'],
     },
     {
         name: 'wallet-account-signverify',
         pattern: '/device/:device/network/:network/account/:account/signverify',
-        fields: ['device', 'network', 'account', 'signverify']
-    }
+        fields: ['device', 'network', 'account', 'signverify'],
+    },
 ];
 
 export const getPattern = (name: string): string => {
     const entry = routes.find(r => r.name === name);
     if (!entry) {
-        console.error(`Route for ${ name } not found`);
+        console.error(`Route for ${name} not found`);
         return '/';
     }
     return entry.pattern;
-}
+};

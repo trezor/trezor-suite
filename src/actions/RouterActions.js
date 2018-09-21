@@ -17,7 +17,7 @@ import type { RouterAction } from 'react-router-redux';
 /*
 * Parse url string to RouterLocationState object (key/value)
 */
-export const pathToParams = (path: string): PayloadAction<RouterLocationState> => (dispatch: Dispatch, getState: GetState): RouterLocationState => {
+export const pathToParams = (path: string): PayloadAction<RouterLocationState> => (): RouterLocationState => {
     // split url into parts
     const parts: Array<string> = path.split('/').slice(1);
     const params: RouterLocationState = {};
@@ -34,8 +34,9 @@ export const pathToParams = (path: string): PayloadAction<RouterLocationState> =
     if (params.hasOwnProperty('device')) {
         const isClonedDevice: Array<string> = params.device.split(':');
         if (isClonedDevice.length > 1) {
-            params.device = isClonedDevice[0];
-            params.deviceInstance = isClonedDevice[1];
+            const [device, instance] = isClonedDevice;
+            params.device = device;
+            params.deviceInstance = instance;
         }
     }
     return params;
@@ -74,22 +75,22 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
 
     // }
     return true;
-}
+};
 
 /*
 * Composing url string from given RouterLocationState object
 * Filters unrecognized fields and sorting in correct order
 */
-export const paramsToPath = (params: RouterLocationState): PayloadAction<?string> => (dispatch: Dispatch, getState: GetState): ?string => {
+export const paramsToPath = (params: RouterLocationState): PayloadAction<?string> => (): ?string => {
     // get patterns (fields) from routes and sort them by complexity
-    const patterns: Array<Array<string>> = routes.map(r => r.fields).sort((a, b) => {
-        return a.length > b.length ? -1 : 1;
-    });
+    const patterns: Array<Array<string>> = routes.map(r => r.fields).sort((a, b) => (a.length > b.length ? -1 : 1));
 
     // find pattern
     const keys: Array<string> = Object.keys(params);
     let patternToUse: ?Array<string>;
-    for (let pattern of patterns) {
+    let i: number;
+    for (i = 0; i < patterns.length; i++) {
+        const pattern = patterns[i];
         const match: Array<string> = keys.filter(key => pattern.indexOf(key) >= 0);
         if (match.length === pattern.length) {
             patternToUse = pattern;
@@ -99,25 +100,24 @@ export const paramsToPath = (params: RouterLocationState): PayloadAction<?string
 
     // pattern not found, redirect back
     if (!patternToUse) return null;
-    
+
     // compose url string from pattern
     let url: string = '';
-    patternToUse.forEach(field => {
+    patternToUse.forEach((field) => {
         if (field === params[field]) {
             // standalone (odd) fields
-            url += `/${ field }`;
+            url += `/${field}`;
         } else {
-            url += `/${ field }/${ params[field] }`;
+            url += `/${field}/${params[field]}`;
             if (field === 'device') {
                 if (params.hasOwnProperty('deviceInstance')) {
-                    url += `:${ params.deviceInstance }`;
+                    url += `:${params.deviceInstance}`;
                 }
             }
         }
-        
     });
     return url;
-}
+};
 
 export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dispatch: Dispatch, getState: GetState): string => {
     const { location } = getState().router;
@@ -129,23 +129,22 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
     const requestedUrl = action.payload.pathname;
     // Corner case: LOCATION_CHANGE was called but pathname didn't changed (redirect action from RouterService)
     if (requestedUrl === location.pathname) return requestedUrl;
-    
+
     // Modal is opened
     // redirect to previous url
     if (getState().modal.opened) {
         // Corner case: modal is opened and currentParams are still valid
         // example 1 (valid blocking): url changed while passphrase modal opened but device is still connected (we want user to finish this action)
         // example 2 (invalid blocking): url changes while passphrase modal opened because device disconnect
-        const currentParams = dispatch( pathToParams(location.pathname) );
-        const currentParamsAreValid = dispatch( paramsValidation(currentParams) );
-        if (currentParamsAreValid)
-        return location.pathname;
+        const currentParams = dispatch(pathToParams(location.pathname));
+        const currentParamsAreValid = dispatch(paramsValidation(currentParams));
+        if (currentParamsAreValid) { return location.pathname; }
     }
 
     // there are no connected devices or application isn't ready or initialization error occurred
     // redirect to landing page
     const shouldBeLandingPage = getState().devices.length < 1 || !getState().wallet.ready || getState().connect.error !== null;
-    const landingPageUrl = dispatch( isLandingPageUrl(requestedUrl) );
+    const landingPageUrl = dispatch(isLandingPageUrl(requestedUrl));
     if (shouldBeLandingPage) {
         return !landingPageUrl ? '/' : requestedUrl;
     }
@@ -157,8 +156,8 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
     }
 
     // Regular url change during application live cycle
-    const requestedParams = dispatch( pathToParams(requestedUrl) );
-    const requestedParamsAreValid: boolean = dispatch( paramsValidation(requestedParams) );
+    const requestedParams = dispatch(pathToParams(requestedUrl));
+    const requestedParamsAreValid: boolean = dispatch(paramsValidation(requestedParams));
 
     // Requested params are not valid
     // Neither device or network doesn't exists
@@ -167,10 +166,9 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
     }
 
     // Compose valid url from requested params
-    const composedUrl = dispatch( paramsToPath(requestedParams) );
+    const composedUrl = dispatch(paramsToPath(requestedParams));
     return composedUrl || location.pathname;
-}
-
+};
 
 
 /*
@@ -212,11 +210,11 @@ export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dis
     }
 
     const currentParams: RouterLocationState = getState().router.location.state;
-    const requestedParams = dispatch( pathToParams(url) );
+    const requestedParams = dispatch(pathToParams(url));
     if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
-        dispatch( goto(url) );
+        dispatch(goto(url));
     }
-}
+};
 
 /*
 * Try to find first available device using order:
@@ -230,46 +228,47 @@ export const selectFirstAvailableDevice = (): ThunkAction => (dispatch: Dispatch
     if (devices.length > 0) {
         const unacquired = devices.find(d => !d.features);
         if (unacquired) {
-            dispatch( selectDevice(unacquired) );
+            dispatch(selectDevice(unacquired));
         } else {
             const latest: Array<TrezorDevice> = sortDevices(devices);
             const firstConnected: ?TrezorDevice = latest.find(d => d.connected);
-            dispatch( selectDevice(firstConnected || latest[0]) );
+            dispatch(selectDevice(firstConnected || latest[0]));
         }
     } else {
-        dispatch( gotoLandingPage() );
+        dispatch(gotoLandingPage());
     }
-}
+};
 
 /*
 * Internal method. redirect to given url
 */
 const goto = (url: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     if (getState().router.location.pathname !== url) {
-        dispatch( push(url) );
+        dispatch(push(url));
     }
-}
+};
 
 /*
 * Check if requested OR current url is landing page
 */
-export const isLandingPageUrl = (url?: string): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+export const isLandingPageUrl = ($url?: string): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+    let url: ?string = $url;
     if (typeof url !== 'string') {
         url = getState().router.location.pathname;
     }
     // TODO: add more landing page cases/urls to config.json (like /tools etc)
     return (url === '/' || url === '/bridge');
-}
+};
 
 /*
 * Try to redirect to landing page
 */
-export const gotoLandingPage = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const isLandingPage = dispatch( isLandingPageUrl() );
+export const gotoLandingPage = (): ThunkAction => (dispatch: Dispatch): void => {
+    const isLandingPage = dispatch(isLandingPageUrl());
     if (!isLandingPage) {
-        dispatch( goto('/') );
+        dispatch(goto('/'));
     }
-}
+};
 
 /*
 * Go to given device settings page
@@ -277,7 +276,7 @@ export const gotoLandingPage = (): ThunkAction => (dispatch: Dispatch, getState:
 export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (dispatch: Dispatch): void => {
     if (device.features) {
         const devUrl: string = `${device.features.device_id}${device.instance ? `:${device.instance}` : ''}`;
-        dispatch( goto(`/device/${devUrl}/settings`) );
+        dispatch(goto(`/device/${devUrl}/settings`));
     }
 };
 
@@ -287,19 +286,19 @@ export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (dispat
 export const setInitialUrl = (): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
     const { initialPathname } = getState().wallet;
     if (typeof initialPathname === 'string' && !dispatch(isLandingPageUrl(initialPathname))) {
-        const valid = dispatch( getValidUrl({
+        const valid = dispatch(getValidUrl({
             type: LOCATION_CHANGE,
             payload: {
                 pathname: initialPathname,
-                hash: "",
-                search: "",
-                state: {}
-            }
-        }) );
+                hash: '',
+                search: '',
+                state: {},
+            },
+        }));
         if (valid === initialPathname) {
-            dispatch( goto(valid) );
+            dispatch(goto(valid));
             return true;
         }
     }
     return false;
-}
+};
