@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import FlowWebpackPlugin from 'flow-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
 
 // turn on for bundle analyzing
@@ -100,6 +101,9 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
+        }),
+        new FlowWebpackPlugin({
+            reportingSeverity: 'warning',
         }),
         new HtmlWebpackPlugin({
             chunks: ['index'],
