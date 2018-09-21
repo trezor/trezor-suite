@@ -1,5 +1,6 @@
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from '../../trezor-connect/node_modules/mini-css-extract-plugin';
@@ -14,6 +15,8 @@ import {
     PUBLIC,
     PORT,
 } from './constants';
+
+const gitRevisionPlugin = new GitRevisionPlugin();
 
 module.exports = {
     watch: true,
@@ -163,6 +166,7 @@ module.exports = {
 
         new webpack.DefinePlugin({
             LOCAL: JSON.stringify(`http://localhost:${PORT}/`),
+            COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
 
         // ignore node lib from trezor-link
