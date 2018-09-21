@@ -43,7 +43,15 @@ const getStatusName = (deviceStatus) => {
 
 const isWebUSB = transport => !!((transport && transport.version.indexOf('webusb') >= 0));
 
-const isDisabled = (selectedDevice, devices, transport) => (devices.length < 1 && !isWebUSB(transport)) || (devices.length === 1 && !selectedDevice.features && !isWebUSB(transport));
+const isDisabled = (selectedDevice, devices, transport) => {
+    if (isWebUSB(transport)) return false; // always enabled if webusb
+    if (devices.length < 1) return true; // no devices
+    if (devices.length === 1) {
+        if (!selectedDevice.features) return true; // unacquired, unreadable
+        if (selectedDevice.features.bootloader_mode || !selectedDevice.features.initialized) return true; // bootlader, not initialized
+    }
+    return false; // default
+}
 
 const getVersion = (device) => {
     let version;

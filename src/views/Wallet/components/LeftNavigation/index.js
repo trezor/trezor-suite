@@ -75,27 +75,21 @@ class LeftNavigation extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { deviceDropdownOpened } = nextProps;
-        const { selectedDevice } = nextProps.wallet;
+        const { dropdownOpened, selectedDevice } = nextProps.wallet;
         const hasNetwork = nextProps.location.state && nextProps.location.state.network;
         const hasFeatures = selectedDevice && selectedDevice.features;
         const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
-
-        if (deviceDropdownOpened) {
+        if (dropdownOpened) {
             this.setState({ shouldRenderDeviceSelection: true });
         } else if (hasNetwork) {
             this.setState({
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-left',
             });
-        } else if (deviceReady) {
+        } else {
             this.setState({
                 shouldRenderDeviceSelection: false,
-                animationType: 'slide-right',
-            });
-        } else if (selectedDevice.features.bootloader_mode) {
-            this.setState({
-                shouldRenderDeviceSelection: false,
+                animationType: deviceReady ? 'slide-right' : null,
             });
         }
     }
@@ -134,7 +128,7 @@ class LeftNavigation extends Component {
     }
 
     handleOpen() {
-        this.props.toggleDeviceDropdown(!this.props.deviceDropdownOpened);
+        this.props.toggleDeviceDropdown(!this.props.wallet.dropdownOpened);
     }
 
     shouldRenderCoins() {
@@ -145,14 +139,14 @@ class LeftNavigation extends Component {
         return (
             <StickyContainer
                 location={this.props.location.pathname}
-                deviceSelection={this.props.deviceDropdownOpened}
+                deviceSelection={this.props.wallet.dropdownOpened}
             >
                 <Header
                     onClickWrapper={() => this.handleOpen()}
                     device={this.props.wallet.selectedDevice}
                     transport={this.props.connect.transport}
                     devices={this.props.devices}
-                    isOpen={this.props.deviceDropdownOpened}
+                    isOpen={this.props.wallet.dropdownOpened}
                     {...this.props}
                 />
                 <Body>
@@ -179,7 +173,6 @@ class LeftNavigation extends Component {
 LeftNavigation.propTypes = {
     selectedDevice: PropTypes.object,
     wallet: PropTypes.object,
-    deviceDropdownOpened: PropTypes.bool,
 };
 
 
