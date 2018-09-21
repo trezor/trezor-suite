@@ -20,12 +20,15 @@ import type { Props } from '../common';
 import Row from '../Row';
 import RowCoin from '../RowCoin';
 
-
 const Wrapper = styled.div``;
 
 const Text = styled.span`
     font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
+`;
+
+const TooltipContent = styled.div`
+    font-size: ${FONT_SIZE.SMALLEST};
 `;
 
 const RowAccountWrapper = styled.div`
@@ -115,12 +118,12 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
     const selectedCoin = config.coins.find(c => c.network === location.state.network);
 
     if (!selected || !selectedCoin) return;
-    
+
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 
     const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);
 
-    let selectedAccounts = deviceAccounts.map((account, i) => {
+    const selectedAccounts = deviceAccounts.map((account, i) => {
         // const url: string = `${baseUrl}/network/${location.state.network}/account/${i}`;
         const url: string = location.pathname.replace(/account+\/([0-9]*)/, `account/${i}`);
 
@@ -158,26 +161,6 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
         );
     });
 
-    if (selectedAccounts.length < 1) {
-        if (selected.connected) {
-            const url: string = location.pathname.replace(/account+\/([0-9]*)/, 'account/0');
-            selectedAccounts = (
-                <NavLink
-                    to={url}
-                >
-                    <Row column>
-                        <RowAccountWrapper
-                            isSelected
-                            borderTop
-                        >
-                            Account #1
-                        </RowAccountWrapper>
-                    </Row>
-                </NavLink>
-            );
-        }
-    }
-
     let discoveryStatus = null;
     const discovery = props.discovery.find(d => d.deviceState === selected.state && d.network === location.state.network);
 
@@ -204,7 +187,8 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             } else {
                 discoveryStatus = (
                     <Tooltip
-                        content={<React.Fragment>To add a new account, last account must have some transactions.</React.Fragment>}
+                        maxWidth={300}
+                        content={<TooltipContent>To add a new account, last account must have some transactions.</TooltipContent>}
                         placement="bottom"
                     >
                         <Row>

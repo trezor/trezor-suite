@@ -111,7 +111,7 @@ export const onBlockMined = (coinInfo: any): PromiseAction<void> => async (dispa
                     dispatch( Web3Actions.updateAccount(accounts[i], a, network) )
                 } else {
                     // there are no new txs, just update block
-                    dispatch( AccountsActions.update( { ...accounts[i], ...a }) );
+                    dispatch( AccountsActions.update( { ...accounts[i], block: a.block }) );
 
                     // HACK: since blockbook can't work with smart contracts for now
                     // try to update tokens balances added to this account using Web3

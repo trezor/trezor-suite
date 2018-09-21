@@ -27,7 +27,7 @@ const SvgWrapper = styled.svg`
 
     :hover {
         path {
-            fill: ${props => props.hoverColor || colors.TEXT_SECONDARY}
+            fill: ${props => props.hoverColor}
         }
     }
 `;

@@ -30,25 +30,27 @@ const SelectedAccount = (props: Props) => {
     const {
         account,
         discovery,
-        network
+        network,
     } = accountState;
 
-    if (!network) return; // TODO: this shouldn't happen. change accountState reducer?
+    // corner case: accountState didn't finish loading state after LOCATION_CHANGE action
+    if (!network) return (<Notification type="info" title="Loading account state..." />);
 
     const blockchain = props.blockchain.find(b => b.name === network.network);
     if (blockchain && !blockchain.connected) {
         return (
-            <Notification 
-                type="error" 
+            <Notification
+                type="error"
                 title="Backend not connected"
                 actions={
                     [{
-                        label: "Try again",
+                        label: 'Try again',
                         callback: async () => {
                             await props.blockchainReconnect(network.network);
-                        }
+                        },
                     }]
-                } />
+                }
+            />
         );
     }
 

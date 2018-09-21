@@ -5,6 +5,7 @@ import P from 'components/Paragraph';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { H3 } from 'components/Heading';
+import { LINE_HEIGHT } from 'config/variables';
 
 const Wrapper = styled.div`
     width: 390px;
@@ -19,6 +20,12 @@ const Content = styled.div`
     border-top: 1px solid ${colors.DIVIDER};
     background: ${colors.MAIN};
     padding: 24px 48px;
+`;
+
+const StyledP = styled(P)`
+    word-wrap: break-word;
+    padding: 5px 0;
+    line-height: ${LINE_HEIGHT.SMALL}
 `;
 
 const Label = styled.div`
@@ -49,7 +56,7 @@ const ConfirmSignTx = (props) => {
                 <Label>Send</Label>
                 <P>{`${amount} ${currency}` }</P>
                 <Label>To</Label>
-                <P>{ address }</P>
+                <StyledP>{ address }</StyledP>
                 <Label>Fee</Label>
                 <P>{ selectedFeeLevel.label }</P>
             </Content>

@@ -21,7 +21,7 @@ export type StorageAction = {
     type: typeof STORAGE.READY,
     config: Config,
     tokens: TokensCollection,
-    ERC20Abi: Array<Object>
+    ERC20Abi: Array<TokensCollection>
 } | {
     type: typeof STORAGE.SAVE,
     network: string,
@@ -147,7 +147,6 @@ export function loadTokensFromJSON(): AsyncAction {
                     payload: JSON.parse(discovery),
                 });
             }
-
 
             dispatch({
                 type: STORAGE.READY,

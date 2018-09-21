@@ -8,7 +8,6 @@ import {
     FONT_SIZE,
     FONT_WEIGHT,
     TRANSITION,
-    FONT_FAMILY,
 } from 'config/variables';
 
 const Wrapper = styled.div`
@@ -35,10 +34,9 @@ const TopLabel = styled.span`
 
 const StyledInput = styled.input`
     width: 100%;
-    padding: 6px 12px;
+    padding: 6px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
 
     line-height: 1.42857143;
-    font-family: ${FONT_FAMILY.MONOSPACE};
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.BASE};
     color: ${colors.TEXT_PRIMARY};
@@ -114,6 +112,8 @@ class Input extends Component {
                             />
                         )}
                         <StyledInput
+                            hasIcon={!!this.props.state}
+                            innerRef={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
                             placeholder={this.props.placeholder}
@@ -143,13 +143,14 @@ class Input extends Component {
 
 Input.propTypes = {
     className: PropTypes.string,
+    innerRef: PropTypes.func,
     placeholder: PropTypes.string,
     type: PropTypes.string,
     autoComplete: PropTypes.string,
     autoCorrect: PropTypes.string,
     autoCapitalize: PropTypes.string,
     spellCheck: PropTypes.string,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.string,
     onChange: PropTypes.func,
     state: PropTypes.string,
     bottomText: PropTypes.string,
