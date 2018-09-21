@@ -76,7 +76,12 @@ class Checkbox extends PureComponent {
                 <IconWrapper checked={checked}>
                     {checked && (
                         <Tick>
-                            <Icon size={26} color={checked ? colors.WHITE : colors.GREEN_PRIMARY} icon={icons.SUCCESS} />
+                            <Icon
+                                hoverColor={colors.WHITE}
+                                size={26}
+                                color={checked ? colors.WHITE : colors.GREEN_PRIMARY}
+                                icon={icons.SUCCESS}
+                            />
                         </Tick>
                     )
                     }
