@@ -96,7 +96,9 @@ module.exports = {
         new webpack.DefinePlugin({
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
-        new FlowWebpackPlugin(),
+        new FlowWebpackPlugin({
+            reportingSeverity: 'warning'
+        }),
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
