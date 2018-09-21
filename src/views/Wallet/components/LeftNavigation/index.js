@@ -129,6 +129,10 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-right',
             });
+        } else if (selectedDevice.features.bootloader_mode) {
+            this.setState({
+                shouldRenderDeviceSelection: false,
+            });
         }
     }
 
