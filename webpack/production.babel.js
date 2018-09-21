@@ -65,7 +65,8 @@ module.exports = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
+            'process.env.BUILD': JSON.stringify(process.env.BUILD),
+            COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()
         }),
         new FlowWebpackPlugin(),
         new HtmlWebpackPlugin({

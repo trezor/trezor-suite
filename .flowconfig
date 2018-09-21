@@ -43,4 +43,5 @@ module.name_mapper='^data' -> '<PROJECT_ROOT>/src/data'
 module.name_mapper='^services' -> '<PROJECT_ROOT>/src/services'
 module.name_mapper='^support' -> '<PROJECT_ROOT>/src/support'
 module.name_mapper='^public' -> '<PROJECT_ROOT>/public'
+module.name_mapper='^images' -> '<PROJECT_ROOT>/src/images'
 module.system=haste

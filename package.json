@@ -10,8 +10,8 @@
     "scripts": {
         "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js",
         "dev:local": "npx webpack-dev-server --config ./webpack/local.babel.js",
-        "build:clean": "rm -rf build",
-        "build:production": "npx webpack --config ./webpack/production.babel.js --progress --bail",
+        "build:prod": "rimraf build && npx webpack --config ./webpack/production.babel.js --progress --bail",
+        "build:dev": "rimraf build-devel && cross-env BUILD=development npx webpack --config ./webpack/production.babel.js --output-path build-devel --progress --bail",
         "build": "run-s build:*",
         "flow": "flow check src",
         "lint": "run-s lint:*",
@@ -19,7 +19,9 @@
         "lint:css": "npx stylelint './src/**/*.js'",
         "test": "run-s test:*",
         "test:unit": "npx jest",
-        "test-unit:watch": "npx jest -o --watch"
+        "test-unit:watch": "npx jest -o --watch",
+        "prod-server": "npx http-server ./build -a localhost -S -C ./server/cert.pem -K ./server/key.pem -o",
+        "prod-server-dev": "npx http-server ./build-devel -a localhost -S -C ./server/cert.pem -K ./server/key.pem -o"
     },
     "dependencies": {
         "babel": "^6.23.0",
@@ -27,6 +29,7 @@
         "bignumber.js": "2.4.0",
         "color-hash": "^1.0.3",
         "copy-webpack-plugin": "^4.5.2",
+        "cross-env": "^5.2.0",
         "date-fns": "^1.29.0",
         "ethereumjs-tx": "^1.3.3",
         "ethereumjs-units": "^0.2.0",
@@ -35,6 +38,7 @@
         "flow-webpack-plugin": "^1.2.0",
         "hdkey": "^0.8.0",
         "html-webpack-plugin": "^3.2.0",
+        "http-server": "^0.11.1",
         "jest-fetch-mock": "^1.6.5",
         "npm-run-all": "^4.1.3",
         "prop-types": "^15.6.2",
@@ -56,6 +60,7 @@
         "redux-logger": "^3.0.6",
         "redux-raven-middleware": "^1.2.0",
         "redux-thunk": "^2.2.0",
+        "rimraf": "^2.6.2",
         "styled-components": "^3.3.3",
         "styled-media-query": "^2.0.2",
         "styled-normalize": "^8.0.0",
