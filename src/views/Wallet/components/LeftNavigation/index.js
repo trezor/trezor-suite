@@ -93,6 +93,10 @@ class LeftNavigation extends Component {
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-right',
             });
+        } else if (selectedDevice.features.bootloader_mode) {
+            this.setState({
+                shouldRenderDeviceSelection: false,
+            });
         }
     }
 
@@ -102,18 +106,8 @@ class LeftNavigation extends Component {
             <TransitionGroupWrapper component="div" className="transition-container">
                 <CSSTransition
                     key={this.state.animationType}
-                    onEnter={() => {
-                        console.warn('ON ENTER');
-                    }}
-                    onEntering={() => {
-                        console.warn('ON ENTERING (ACTIVE)');
-                    }}
                     onExit={() => {
-                        console.warn('ON EXIT');
                         window.dispatchEvent(new Event('resize'));
-                    }}
-                    onExiting={() => {
-                        console.warn('ON EXITING (ACTIVE)');
                     }}
                     onExited={() => window.dispatchEvent(new Event('resize'))}
                     classNames={this.state.animationType}
