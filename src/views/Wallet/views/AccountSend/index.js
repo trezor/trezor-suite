@@ -113,13 +113,16 @@ const StyledLink = styled(Link)`
 `;
 
 const ToggleAdvancedSettingsWrapper = styled.div`
+    min-height: 40px;
     margin-bottom: 20px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 
     @media screen and (max-width: ${SmallScreenWidth}) {
-        flex-direction: column;
+        ${props => (props.isAdvancedSettingsHidden && css`
+            flex-direction: column;
+        `)}
     }
 `;
 
@@ -441,7 +444,9 @@ class AccountSend extends Component<Props, State> {
                         />
                     </InputRow>
 
-                    <ToggleAdvancedSettingsWrapper>
+                    <ToggleAdvancedSettingsWrapper
+                        isAdvancedSettingsHidden={this.state.isAdvancedSettingsHidden}
+                    >
                         <ToggleAdvancedSettingsButton
                             isTransparent
                             onClick={() => this.handleToggleAdvancedSettingsButton()}
