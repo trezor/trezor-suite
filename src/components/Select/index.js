@@ -49,10 +49,10 @@ const styles = isSearchable => ({
         borderRight: `1px solid ${colors.DIVIDER}`,
         borderBottom: `1px solid ${colors.DIVIDER}`,
     }),
-    option: (base, { isSelected }) => ({
+    option: (base, { isFocused }) => ({
         ...base,
         color: colors.TEXT_SECONDARY,
-        background: isSelected ? colors.LANDING : colors.WHITE,
+        background: isFocused ? colors.LANDING : colors.WHITE,
         borderRadius: 0,
         '&:hover': {
             cursor: 'pointer',
