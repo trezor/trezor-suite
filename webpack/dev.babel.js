@@ -23,6 +23,7 @@ module.exports = {
         path: BUILD,
     },
     devServer: {
+        host: '0.0.0.0',
         contentBase: [
             SRC,
             PUBLIC,
@@ -97,7 +98,7 @@ module.exports = {
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
         new FlowWebpackPlugin({
-            reportingSeverity: 'warning'
+            reportingSeverity: 'warning',
         }),
         new HtmlWebpackPlugin({
             chunks: ['index'],
