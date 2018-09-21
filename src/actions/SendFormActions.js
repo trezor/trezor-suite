@@ -247,7 +247,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
 
     // const gasPrice: BigNumber = new BigNumber(EthereumjsUnits.convert(web3.gasPrice, 'wei', 'gwei')) || new BigNumber(network.defaultGasPrice);
-    const gasPrice: BigNumber = await dispatch( BlockchainActions.getGasPrice(network.network, network.defaultGasPrice) );
+    const gasPrice: BigNumber = await dispatch(BlockchainActions.getGasPrice(network.network, network.defaultGasPrice));
     // const gasPrice: BigNumber = new BigNumber(network.defaultGasPrice);
     const gasLimit: string = network.defaultGasLimit.toString();
     const feeLevels: Array<FeeLevel> = getFeeLevels(network.symbol, gasPrice, gasLimit);
@@ -721,7 +721,7 @@ const estimateGasPrice = (): AsyncAction => async (dispatch: Dispatch, getState:
         return;
     }
 
-    const gasLimit: number = await dispatch( BlockchainActions.estimateGasLimit(network.network, state.data, state.amount, state.gasPrice) );
+    const gasLimit: number = await dispatch(BlockchainActions.estimateGasLimit(network.network, state.data, state.amount, state.gasPrice));
 
     if (getState().sendForm.data === requestedData) {
         dispatch(onGasLimitChange(gasLimit.toString()));
@@ -771,7 +771,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     const pendingNonce: number = stateUtils.getPendingNonce(pending);
     const nonce = pendingNonce > 0 && pendingNonce >= account.nonce ? pendingNonce : account.nonce;
 
-    const txData = await dispatch( prepareEthereumTx({
+    const txData = await dispatch(prepareEthereumTx({
         network: network.network,
         token: isToken ? findToken(getState().tokens, account.address, currentState.currency, account.deviceState) : null,
         from: account.address,
@@ -780,8 +780,8 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         data: currentState.data,
         gasLimit: currentState.gasLimit,
         gasPrice: currentState.gasPrice,
-        nonce
-    }) );
+        nonce,
+    }));
 
     const selected: ?TrezorDevice = getState().wallet.selectedDevice;
     if (!selected) return;
@@ -816,14 +816,14 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     txData.v = signedTransaction.payload.v;
 
     try {
-        const serializedTx: string = await dispatch( serializeEthereumTx(txData) );
+        const serializedTx: string = await dispatch(serializeEthereumTx(txData));
         const push = await TrezorConnect.pushTransaction({
             tx: serializedTx,
-            coin: network.network
+            coin: network.network,
         });
-        
+
         if (!push.success) {
-            throw new Error( push.payload.error );
+            throw new Error(push.payload.error);
         }
 
         const txid = push.payload.txid;

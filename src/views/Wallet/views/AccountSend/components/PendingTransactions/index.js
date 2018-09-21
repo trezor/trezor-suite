@@ -18,12 +18,17 @@ type Props = {
 }
 
 const Wrapper = styled.div`
+    padding-top: 20px;
     border-top: 1px solid ${colors.DIVIDER};
+`;
+
+const StyledLink = styled(Link)`
+    text-decoration: none;
 `;
 
 const TransactionWrapper = styled.div`
     border-bottom: 1px solid ${colors.DIVIDER};
-    padding: 14px 48px;
+    padding: 14px 0;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -39,13 +44,17 @@ const TransactionIcon = styled.div`
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    line-height: 30px;
+    line-height: 25px;
     text-transform: uppercase;
     user-select: none;
     text-align: center;
-    color: ${props => props.color};
+    color: ${props => props.textColor};
     background: ${props => props.background};
     border-color: ${props => props.borderColor};
+
+    &:before {
+        content: ${props => props.color};
+    }
 `;
 
 const P = styled.p``;
@@ -54,7 +63,9 @@ const TransactionName = styled.div`
     flex: 1;
 `;
 
-const TransactionAmount = styled.div``;
+const TransactionAmount = styled.div`
+    color: colors.TEXT_SECONDARY;
+`;
 
 class PendingTransactions extends Component<Props> {
     getPendingTransactions() {
@@ -62,7 +73,11 @@ class PendingTransactions extends Component<Props> {
     }
 
     getTransactionIconColors(tx: any) {
-        let iconColors = { };
+        let iconColors = {
+            textColor: '#fff',
+            background: '#000',
+            borderColor: '#000',
+        };
         const bgColorFactory = new ColorHash({ lightness: 0.7 });
         const textColorFactory = new ColorHash();
 
@@ -73,26 +88,25 @@ class PendingTransactions extends Component<Props> {
 
             if (!token) {
                 iconColors = {
-                    color: '#ffffff',
+                    textColor: '#ffffff',
                     background: '#000000',
                     borderColor: '#000000',
                 };
             } else {
                 const bgColor: string = bgColorFactory.hex(token.name);
                 iconColors = {
-                    color: textColorFactory.hex(token.name),
+                    textColor: textColorFactory.hex(token.name),
                     background: bgColor,
                     borderColor: bgColor,
                 };
             }
         } else {
             iconColors = {
-                color: textColorFactory.hex(tx.network),
+                textColor: textColorFactory.hex(tx.network),
                 background: bgColorFactory.hex(tx.network),
                 borderColor: bgColorFactory.hex(tx.network),
             };
         }
-
         return iconColors;
     }
 
@@ -125,9 +139,11 @@ class PendingTransactions extends Component<Props> {
             <Wrapper>
                 <H2>Pending transactions</H2>
                 {this.getPendingTransactions().map(tx => (
-                    <TransactionWrapper>
+                    <TransactionWrapper
+                        key={tx.id}
+                    >
                         <TransactionIcon
-                            color={() => this.getTransactionIconColors(tx).color}
+                            textColor={() => this.getTransactionIconColors(tx).textColor}
                             background={() => this.getTransactionIconColors(tx).background}
                             borderColor={() => this.getTransactionIconColors(tx).borderColor}
                         >
@@ -137,13 +153,14 @@ class PendingTransactions extends Component<Props> {
                         </TransactionIcon>
 
                         <TransactionName>
-                            <Link
+                            <StyledLink
                                 href={`${this.props.network.explorer.tx}${tx.id}`}
                                 target="_blank"
                                 rel="noreferrer noopener"
+                                isGray
                             >
                                 {this.getTransactionName(tx)}
-                            </Link>
+                            </StyledLink>
                         </TransactionName>
 
                         <TransactionAmount>
