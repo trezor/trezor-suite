@@ -16,6 +16,18 @@ import type { Props } from './components/common';
 
 const Header = styled(DeviceHeader)``;
 
+const Counter = styled.div`
+    border: 1px solid ${colors.DIVIDER};
+    border-radius: 50%;
+    color: ${colors.TEXT_SECONDARY};
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 11px;
+    margin-right: 8px;
+`;
+
 const TransitionGroupWrapper = styled(TransitionGroup)`
     width: 640px;
 `;
@@ -101,6 +113,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         this.state = {
             animationType: null,
             shouldRenderDeviceSelection: false,
+            clicked: false,
         };
     }
 
@@ -143,6 +156,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
     }
 
     handleOpen() {
+        this.setState({ clicked: true });
         this.props.toggleDeviceDropdown(!this.props.wallet.dropdownOpened);
     }
 
@@ -173,11 +187,26 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                 deviceSelection={this.props.wallet.dropdownOpened}
             >
                 <Header
+                    isSelected
                     onClickWrapper={() => this.handleOpen()}
                     device={this.props.wallet.selectedDevice}
                     transport={this.props.connect.transport}
                     devices={this.props.devices}
                     isOpen={this.props.wallet.dropdownOpened}
+                    icon={(
+                        <React.Fragment>
+                            {this.props.devices.length > 1 && (
+                                <Counter>{this.props.devices.length}</Counter>
+                            )}
+                            <Icon
+                                canAnimate={this.state.clicked === true}
+                                isActive={this.props.wallet.dropdownOpened}
+                                size={25}
+                                color={colors.TEXT_SECONDARY}
+                                icon={icons.ARROW_DOWN}
+                            />
+                        </React.Fragment>
+                    )}
                     {...this.props}
                 />
                 <Body>

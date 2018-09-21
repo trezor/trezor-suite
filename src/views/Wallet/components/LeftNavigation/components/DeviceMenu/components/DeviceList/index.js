@@ -23,22 +23,30 @@ class DeviceList extends Component {
                     .map(device => (
                         device !== selectedDevice && (
                             <DeviceHeader
-                                key={`${device.instanceLabel}`}
-                                onClickWrapper={() => onSelectDevice(device)}
+                                key={device.state || device.path}
+                                disabled={device.features && device.features.bootloader_mode}
+                                onClickWrapper={() => {
+                                    if (device.features
+                                    && !device.features.bootloader_mode) {
+                                        onSelectDevice(device);
+                                    }
+                                }}
                                 onClickIcon={() => this.onDeviceMenuClick({ type: 'forget', label: '' }, device)}
                                 icon={(
-                                    <IconClick onClick={(event) => {
-                                        event.stopPropagation();
-                                        event.preventDefault();
-                                        this.onDeviceMenuClick({ type: 'forget', label: '' }, device);
-                                    }}
-                                    >
-                                        <Icon
-                                            icon={icons.EJECT}
-                                            size={25}
-                                            color={colors.TEXT_SECONDARY}
-                                        />
-                                    </IconClick>
+                                    <React.Fragment>
+                                        <IconClick onClick={(event) => {
+                                            event.stopPropagation();
+                                            event.preventDefault();
+                                            this.onDeviceMenuClick({ type: 'forget', label: '' }, device);
+                                        }}
+                                        >
+                                            <Icon
+                                                icon={icons.EJECT}
+                                                size={25}
+                                                color={colors.TEXT_SECONDARY}
+                                            />
+                                        </IconClick>
+                                    </React.Fragment>
                                 )}
                                 device={device}
                                 devices={devices}
