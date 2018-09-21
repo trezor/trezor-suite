@@ -86,7 +86,7 @@ class ConnectDevice extends Component<Props> {
                         </React.Fragment>
                     )}
                 </ConnectTrezorWrapper>
-                {this.props.showWebUsb && (
+                {this.props.showWebUsb && !this.props.showDisconnect && (
                     <React.Fragment>
                         <P>and</P>
                         <Button isWebUsb>

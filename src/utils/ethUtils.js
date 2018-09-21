@@ -1,6 +1,7 @@
 /* @flow */
 
 import BigNumber from 'bignumber.js';
+import EthereumjsUtil from 'ethereumjs-util';
 
 export const decimalToHex = (dec: number): string => new BigNumber(dec).toString(16);
 
@@ -29,3 +30,15 @@ export const strip = (str: string): string => {
 };
 
 export const calcGasPrice = (price: BigNumber, limit: string): string => price.times(limit).toString();
+
+export const validateAddress = (address: string): ?string => {
+    const hasUpperCase = new RegExp('^(.*[A-Z].*)$');
+    if (address.length < 1) {
+        return 'Address is not set';
+    } else if (!EthereumjsUtil.isValidAddress(address)) {
+        return 'Address is not valid';
+    } else if (address.match(hasUpperCase) && !EthereumjsUtil.isValidChecksumAddress(address)) {
+        return 'Address is not a valid checksum';
+    }
+    return null;
+}

@@ -66,7 +66,6 @@ export type CustomBackend = {
     url: string;
 }
 
-
 export type State = {
     initialized: boolean;
     error: ?string;

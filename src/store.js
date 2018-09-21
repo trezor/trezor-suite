@@ -3,8 +3,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
 import thunk from 'redux-thunk';
-// import createHistory from 'history/createBrowserHistory';
-// import { useRouterHistory } from 'react-router';
 import createHistory from 'history/createHashHistory';
 import { createLogger } from 'redux-logger';
 import reducers from 'reducers';
@@ -17,17 +15,21 @@ import type { Action, GetState, Store } from 'flowtype';
 
 export const history: History = createHistory({ queryKey: false });
 
-const RAVEN_KEY: string = 'https://497392c3ff6e46dc9e54eef123979378@sentry.io/294339';
-Raven.config(RAVEN_KEY).install();
-
 const initialState: any = {};
 const enhancers = [];
-const middleware = [
+
+const middlewares = [
     thunk,
-    RavenMiddleware(RAVEN_KEY),
     routerMiddleware(history),
 ];
 
+// sentry io middleware only in dev build
+if (process.env.BUILD === 'development') {
+    const RAVEN_KEY = 'https://34b8c09deb6c4cd2a4dc3f0029cd02d8@sentry.io/1279550';
+    const ravenMiddleware = RavenMiddleware(RAVEN_KEY);
+    Raven.config(RAVEN_KEY).install();
+    middlewares.push(ravenMiddleware);
+}
 
 let composedEnhancers: any;
 if (process.env.NODE_ENV === 'development') {
@@ -50,13 +52,12 @@ if (process.env.NODE_ENV === 'development') {
     }
 
     composedEnhancers = compose(
-        applyMiddleware(logger, ...middleware, ...services),
+        applyMiddleware(logger, ...middlewares, ...services),
         ...enhancers,
     );
-    
 } else {
     composedEnhancers = compose(
-        applyMiddleware(...middleware, ...services),
+        applyMiddleware(...middlewares, ...services),
         ...enhancers,
     );
 }

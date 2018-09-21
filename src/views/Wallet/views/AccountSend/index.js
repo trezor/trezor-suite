@@ -21,6 +21,10 @@ import PendingTransactions from './components/PendingTransactions';
 
 import type { Props } from './Container';
 
+// TODO: Decide on a small screen width for the whole app
+// and put it inside config/variables.js
+const SmallScreenWidth = '850px';
+
 type State = {
     isAdvancedSettingsHidden: boolean,
     shouldAnimateAdvancedSettingsToggle: boolean,
@@ -76,6 +80,7 @@ const SetMaxAmountButton = styled(Button)`
 `;
 
 const CurrencySelect = styled(Select)`
+    min-width: 77px;
     height: 34px;
     flex: 0.2;
 `;
@@ -108,12 +113,21 @@ const StyledLink = styled(Link)`
 `;
 
 const ToggleAdvancedSettingsWrapper = styled.div`
+    min-height: 40px;
     margin-bottom: 20px;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
+
+    @media screen and (max-width: ${SmallScreenWidth}) {
+        ${props => (props.isAdvancedSettingsHidden && css`
+            flex-direction: column;
+        `)}
+    }
 `;
 
 const ToggleAdvancedSettingsButton = styled(Button)`
+    min-height: 40px;
     padding: 0;
     display: flex;
     align-items: center;
@@ -121,7 +135,12 @@ const ToggleAdvancedSettingsButton = styled(Button)`
 `;
 
 const SendButton = styled(Button)`
-    min-width: 50%;
+    min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
+    font-size: 13px;
+
+    @media screen and (max-width: ${SmallScreenWidth}) {
+        margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
+    }
 `;
 
 const AdvancedSettingsWrapper = styled.div`
@@ -180,17 +199,17 @@ class AccountSend extends Component<Props, State> {
     componentWillReceiveProps(newProps: Props) {
         calculate(this.props, newProps);
         validation(newProps);
-
-        this.props.saveSessionStorage();
     }
 
     getAddressInputState(address: string, addressErrors: string, addressWarnings: string) {
         let state = '';
         if (address && !addressErrors) {
             state = 'success';
-        } else if (addressWarnings && !addressErrors) {
+        }
+        if (addressWarnings && !addressErrors) {
             state = 'warning';
-        } else if (addressErrors) {
+        }
+        if (addressErrors) {
             state = 'error';
         }
         return state;
@@ -200,27 +219,19 @@ class AccountSend extends Component<Props, State> {
         let state = '';
         if (amountWarnings && !amountErrors) {
             state = 'warning';
-        } else if (amountErrors) {
+        }
+        if (amountErrors) {
             state = 'error';
         }
         return state;
-    }
-
-    getAmountInputBottomText(amountErrors: string, amountWarnings: string) {
-        let text = '';
-        if (amountWarnings && !amountErrors) {
-            text = amountWarnings;
-        } else if (amountErrors) {
-            text = amountErrors;
-        }
-        return text;
     }
 
     getGasLimitInputState(gasLimitErrors: string, gasLimitWarnings: string) {
         let state = '';
         if (gasLimitWarnings && !gasLimitErrors) {
             state = 'warning';
-        } else if (gasLimitErrors) {
+        }
+        if (gasLimitErrors) {
             state = 'error';
         }
         return state;
@@ -230,7 +241,8 @@ class AccountSend extends Component<Props, State> {
         let state = '';
         if (gasPriceWarnings && !gasPriceErrors) {
             state = 'warning';
-        } else if (gasPriceErrors) {
+        }
+        if (gasPriceErrors) {
             state = 'error';
         }
         return state;
@@ -275,6 +287,7 @@ class AccountSend extends Component<Props, State> {
             total,
             errors,
             warnings,
+            infos,
             data,
             sending,
             gasLimit,
@@ -340,7 +353,7 @@ class AccountSend extends Component<Props, State> {
                             autoCapitalize="off"
                             spellCheck="false"
                             topLabel="Address"
-                            bottomText={errors.address ? 'Wrong Address' : ''}
+                            bottomText={errors.address || warnings.address || infos.address}
                             value={address}
                             onChange={event => onAddressChange(event.target.value)}
                         />
@@ -356,7 +369,7 @@ class AccountSend extends Component<Props, State> {
                             topLabel="Amount"
                             value={amount}
                             onChange={event => onAmountChange(event.target.value)}
-                            bottomText={this.getAmountInputBottomText(errors.amount, warnings.amount)}
+                            bottomText={errors.amount || warnings.amount || infos.amount}
                             sideAddons={[
                                 (
                                     <SetMaxAmountButton
@@ -430,7 +443,9 @@ class AccountSend extends Component<Props, State> {
                         />
                     </InputRow>
 
-                    <ToggleAdvancedSettingsWrapper>
+                    <ToggleAdvancedSettingsWrapper
+                        isAdvancedSettingsHidden={this.state.isAdvancedSettingsHidden}
+                    >
                         <ToggleAdvancedSettingsButton
                             isTransparent
                             onClick={() => this.handleToggleAdvancedSettingsButton()}
@@ -448,6 +463,7 @@ class AccountSend extends Component<Props, State> {
                         {this.state.isAdvancedSettingsHidden && (
                             <SendButton
                                 isDisabled={isSendButtonDisabled}
+                                isAdvancedSettingsHidden={this.state.isAdvancedSettingsHidden}
                                 onClick={() => onSend()}
                             >
                                 {sendButtonText}
@@ -486,7 +502,7 @@ class AccountSend extends Component<Props, State> {
                                             </Tooltip>
                                         </InputLabelWrapper>
                                     )}
-                                    bottomText={errors.gasLimit ? errors.gasLimit : warnings.gasLimit}
+                                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
                                     value={gasLimit}
                                     isDisabled={networkSymbol === currency && data.length > 0}
                                     onChange={event => onGasLimitChange(event.target.value)}
@@ -520,7 +536,7 @@ class AccountSend extends Component<Props, State> {
                                             </Tooltip>
                                         </InputLabelWrapper>
                                     )}
-                                    bottomText={errors.gasPrice ? errors.gasPrice : warnings.gasPrice}
+                                    bottomText={errors.gasPrice || warnings.gasPrice || infos.gasPrice}
                                     value={gasPrice}
                                     onChange={event => onGasPriceChange(event.target.value)}
                                 />

@@ -1,5 +1,6 @@
 /* @flow */
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
+import * as RouterActions from 'actions/RouterActions';
 import { toggleDeviceDropdown } from 'actions/WalletActions';
 import type { State } from 'flowtype';
 
@@ -21,8 +22,8 @@ export type DispatchProps = {
     acquireDevice: typeof TrezorConnectActions.acquire,
     forgetDevice: typeof TrezorConnectActions.forget,
     duplicateDevice: typeof TrezorConnectActions.duplicateDevice,
-    gotoDeviceSettings: typeof TrezorConnectActions.gotoDeviceSettings,
-    onSelectDevice: typeof TrezorConnectActions.onSelectDevice,
+    gotoDeviceSettings: typeof RouterActions.gotoDeviceSettings,
+    onSelectDevice: typeof RouterActions.selectDevice,
 }
 
 export type Props = StateProps & DispatchProps;

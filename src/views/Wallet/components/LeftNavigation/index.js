@@ -36,15 +36,15 @@ const TransitionContentWrapper = styled.div`
 `;
 
 const Footer = styled.div`
-    position: fixed;
+    position: relative;
+    width: 320px;
     bottom: 0;
     background: ${colors.MAIN};
     border-right: 1px solid ${colors.DIVIDER};
 `;
 
 const Body = styled.div`
-    overflow: auto;
-    background: ${colors.LANDING};
+    width: 320px;
 `;
 
 const Help = styled.div`
@@ -69,6 +69,25 @@ const A = styled.a`
         color: ${colors.TEXT_PRIMARY};
     }
 `;
+
+const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => (
+    <TransitionGroupWrapper component="div" className="transition-container">
+        <CSSTransition
+            key={props.animationType}
+            onExit={() => { window.dispatchEvent(new Event('resize')); }}
+            onExited={() => window.dispatchEvent(new Event('resize'))}
+            in
+            out
+            classNames={props.animationType}
+            appear={false}
+            timeout={300}
+        >
+            <TransitionContentWrapper>
+                { props.children }
+            </TransitionContentWrapper>
+        </CSSTransition>
+    </TransitionGroupWrapper>
+);
 
 class LeftNavigation extends Component {
     constructor(props) {
@@ -106,30 +125,7 @@ class LeftNavigation extends Component {
             });
         }
     }
-
-    // TODO: refactor to transition component for reuse of transitions
-    getMenuTransition(children) {
-        return (
-            <TransitionGroupWrapper component="div" className="transition-container">
-                <CSSTransition
-                    key={this.state.animationType}
-                    onExit={() => {
-                        window.dispatchEvent(new Event('resize'));
-                    }}
-                    onExited={() => window.dispatchEvent(new Event('resize'))}
-                    classNames={this.state.animationType}
-                    appear={false}
-                    timeout={30000}
-                    in
-                    out
-                >
-                    <TransitionContentWrapper>
-                        {children}
-                    </TransitionContentWrapper>
-                </CSSTransition>
-            </TransitionGroupWrapper>);
-    }
-
+  
     shouldRenderAccounts() {
         const { selectedDevice } = this.props.wallet;
         return selectedDevice
@@ -150,6 +146,22 @@ class LeftNavigation extends Component {
     }
 
     render() {
+        const { props } = this;
+        let menu;
+        if (this.shouldRenderAccounts()) {
+            menu = (
+                <TransitionMenu animationType="slide-left">
+                    <AccountMenu {...props} />
+                </TransitionMenu>
+            );
+        } else if (this.shouldRenderCoins()) {
+            menu = (
+                <TransitionMenu animationType="slide-right">
+                    <CoinMenu {...props} />
+                </TransitionMenu>
+            );
+        }
+
         return (
             <StickyContainer
                 location={this.props.location.pathname}
@@ -180,8 +192,7 @@ class LeftNavigation extends Component {
                 />
                 <Body>
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
-                    {this.shouldRenderAccounts() && this.getMenuTransition(<AccountMenu {...this.props} />)}
-                    {this.shouldRenderCoins() && this.getMenuTransition(<CoinMenu {...this.props} />)}
+                    {menu}
                 </Body>
                 <Footer className="sticky-bottom">
                     <Help>
