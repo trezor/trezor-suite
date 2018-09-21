@@ -127,6 +127,7 @@ const ToggleAdvancedSettingsWrapper = styled.div`
 `;
 
 const ToggleAdvancedSettingsButton = styled(Button)`
+    min-height: 40px;
     padding: 0;
     display: flex;
     align-items: center;
