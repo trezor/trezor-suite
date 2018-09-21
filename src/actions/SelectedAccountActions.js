@@ -7,6 +7,9 @@ import * as SEND from 'actions/constants/send';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as PENDING from 'actions/constants/pendingTx';
 
+import * as SendFormActions from 'actions/SendFormActions';
+import * as SessionStorageActions from 'actions/SessionStorageActions';
+
 import * as stateUtils from 'reducers/utils';
 
 import type {
@@ -16,8 +19,6 @@ import type {
     Dispatch,
     State,
 } from 'flowtype';
-import * as SendFormActions from './SendFormActions';
-
 
 export type SelectedAccountAction = {
     type: typeof ACCOUNT.DISPOSE,
@@ -42,17 +43,16 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
         // SessionStorageActions.clear(location.pathname);
     }
 
+    if (prevState.sendForm !== state.sendForm) {
+        dispatch(SessionStorageActions.save());
+    }
+
     // handle devices state change (from trezor-connect events or location change)
     if (locationChange
             || prevState.accounts !== state.accounts
             || prevState.discovery !== state.discovery
             || prevState.tokens !== state.tokens
             || prevState.pending !== state.pending) {
-        if (locationChange) {
-            // dispose current account view
-            dispatch(dispose());
-        }
-
         const account = stateUtils.getSelectedAccount(state);
         const network = stateUtils.getSelectedNetwork(state);
         const discovery = stateUtils.getDiscoveryProcess(state);

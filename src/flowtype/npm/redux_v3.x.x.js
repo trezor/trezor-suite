@@ -2,7 +2,6 @@
 
 declare module 'redux' {
   /*
-
     S = State
     A = Action
     D = Dispatch
@@ -16,28 +15,25 @@ declare module 'redux' {
   declare export type ThunkAction<S, A> = (dispatch: ReduxDispatch<S, A>, getState: () => S) => void;
   declare export type AsyncAction<S, A> = (dispatch: ReduxDispatch<S, A>, getState: () => S) => Promise<void>;
   declare export type PromiseAction<S, A, R> = (dispatch: ReduxDispatch<S, A>, getState: () => S) => Promise<R>;
+  declare export type PayloadAction<S, A, R> = (dispatch: ReduxDispatch<S, A>, getState: () => S) => R;
 
   declare export type ThunkDispatch<S, A> = (action: ThunkAction<S, A>) => void;
   declare export type AsyncDispatch<S, A> = (action: AsyncAction<S, A>) => Promise<void>;
   declare export type PromiseDispatch<S, A> = <R>(action: PromiseAction<S, A, R>) => Promise<R>;
+  declare export type PayloadDispatch<S, A> = <R>(action: PayloadAction<S, A, R>) => R;
   declare export type PlainDispatch<A: {type: $Subtype<string>}> = DispatchAPI<A>;
   /* NEW: Dispatch is now a combination of these different dispatch types */
-  declare export type ReduxDispatch<S, A> = PlainDispatch<A> & ThunkDispatch<S, A> & AsyncDispatch<S, A> & PromiseDispatch<S, A>;
+  declare export type ReduxDispatch<S, A> = PlainDispatch<A> & ThunkDispatch<S, A> & AsyncDispatch<S, A> & PromiseDispatch<S, A> & PayloadDispatch<S, A>;
 
   declare export type MiddlewareAPI<S, A> = {
-    // dispatch: Dispatch<S, A>;
-    // dispatch: (action: A | ThunkAction<S, A>) => A | void;
-    // dispatch: PlainDispatch<A> | () => A;
-    // dispatch: ( A | ThunkAction<S, A> | void ) => void;
     dispatch: ReduxDispatch<S, A>;
-    // dispatch: Dispatch<S, A>;
-    // dispatch: D;
     getState(): S;
   };
 
   declare export type Middleware<S, A> =
     (api: MiddlewareAPI<S, A>) =>
-      (next: PlainDispatch<A>) => PlainDispatch<A>;
+      (next: PlainDispatch<A>) =>
+        (PlainDispatch<A> | (action: A) => Promise<A>);
 
   declare export type Store<S, A, D = ReduxDispatch<S, A>> = {
     // rewrite MiddlewareAPI members in order to get nicer error messages (intersections produce long messages)

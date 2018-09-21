@@ -199,8 +199,6 @@ class AccountSend extends Component<Props, State> {
     componentWillReceiveProps(newProps: Props) {
         calculate(this.props, newProps);
         validation(newProps);
-
-        this.props.saveSessionStorage();
     }
 
     getAddressInputState(address: string, addressErrors: string, addressWarnings: string) {

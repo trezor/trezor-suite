@@ -6,9 +6,9 @@ import type {
     MiddlewareAPI as ReduxMiddlewareAPI,
     Middleware as ReduxMiddleware,
     ThunkAction as ReduxThunkAction,
+    PayloadAction as ReduxPayloadAction,
     AsyncAction as ReduxAsyncAction,
     PromiseAction as ReduxPromiseAction,
-    ThunkDispatch as ReduxThunkDispatch,
     PlainDispatch as ReduxPlainDispatch,
 } from 'redux';
 
@@ -164,6 +164,7 @@ export type MiddlewareAPI = ReduxMiddlewareAPI<State, Action>;
 export type Middleware = ReduxMiddleware<State, Action>;
 
 export type ThunkAction = ReduxThunkAction<State, Action>;
+export type PayloadAction<R> = ReduxPayloadAction<State, Action, R>;
 export type AsyncAction = ReduxAsyncAction<State, Action>;
 export type PromiseAction<R> = ReduxPromiseAction<State, Action, R>;
 

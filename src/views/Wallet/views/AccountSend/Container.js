@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 
 import { reconnect } from 'actions/DiscoveryActions';
 import SendFormActions from 'actions/SendFormActions';
-import * as SessionStorageActions from 'actions/SessionStorageActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from 'views/Wallet/components/SelectedAccount';
@@ -24,7 +23,6 @@ export type StateProps = BaseStateProps & {
 
 export type DispatchProps = BaseDispatchProps & {
     sendFormActions: typeof SendFormActions,
-    saveSessionStorage: typeof SessionStorageActions.save
 }
 
 export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
@@ -43,7 +41,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
     blockchainReconnect: bindActionCreators(reconnect, dispatch),
     sendFormActions: bindActionCreators(SendFormActions, dispatch),
-    saveSessionStorage: bindActionCreators(SessionStorageActions.save, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountSend);

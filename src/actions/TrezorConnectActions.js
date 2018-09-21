@@ -1,13 +1,11 @@
 /* @flow */
 import TrezorConnect, {
-    UI, DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT
+    DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as NOTIFICATION from 'actions/constants/notification';
-import * as WALLET from 'actions/constants/wallet';
 import { getDuplicateInstanceNumber } from 'reducers/utils';
-
-import { push } from 'react-router-redux';
+import * as RouterActions from 'actions/RouterActions';
 
 import type {
     DeviceMessage,
@@ -28,7 +26,6 @@ import type {
     AsyncAction,
     Device,
     TrezorDevice,
-    RouterLocationState,
 } from 'flowtype';
 import * as DiscoveryActions from './DiscoveryActions';
 
@@ -79,19 +76,11 @@ export type TrezorConnectAction = {
     type: typeof CONNECT.STOP_ACQUIRING,
 };
 
-
-const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => devices.sort((a, b) => {
-    if (!a.ts || !b.ts) {
-        return -1;
-    }
-    return a.ts > b.ts ? -1 : 1;
-});
-
 export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     // set listeners
     TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
         // post event to reducers
-        const type: DeviceMessageType = event.type; // assert flow type
+        const type: DeviceMessageType = event.type; // eslint-disable-line prefer-destructuring
         dispatch({
             type,
             device: event.payload,
@@ -100,7 +89,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     TrezorConnect.on(UI_EVENT, (event: UiMessage): void => {
         // post event to reducers
-        const type: UiMessageType = event.type; // assert flow type
+        const type: UiMessageType = event.type; // eslint-disable-line prefer-destructuring
         dispatch({
             type,
             payload: event.payload,
@@ -109,7 +98,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     TrezorConnect.on(TRANSPORT_EVENT, (event: TransportMessage): void => {
         // post event to reducers
-        const type: TransportMessageType = event.type; // assert flow type
+        const type: TransportMessageType = event.type; // eslint-disable-line prefer-destructuring
         dispatch({
             type,
             payload: event.payload,
@@ -118,21 +107,22 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     TrezorConnect.on(BLOCKCHAIN_EVENT, (event: BlockchainMessage): void => {
         // post event to reducers
-        const type: BlockchainMessageType = event.type; // assert flow type
+        const type: BlockchainMessageType = event.type; // eslint-disable-line prefer-destructuring
         dispatch({
             type,
             payload: event.payload,
         });
     });
 
+    /* global LOCAL */
     // $FlowIssue LOCAL not declared
-    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
-    // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/';
+    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
+    // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/'; // eslint-disable-line no-underscore-dangle
 
     try {
         await TrezorConnect.init({
             transportReconnect: true,
-            debug: true,
+            debug: false,
             popup: false,
             webusb: true,
             pendingTransportEvent: (getState().devices.length < 1),
@@ -145,67 +135,11 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
     }
 };
 
-// selection from Aside dropdown button
-// after device_connect event
-// or after acquiring device
-// device type could be local TrezorDevice or Device (from trezor-connect device_connect event)
-export const onSelectDevice = (device: TrezorDevice | Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    // || device.isUsedElsewhere
-
-    // switch to initial url and reset this value
-
-    if (!device.features) {
-        dispatch(push(`/device/${device.path}/${device.type === 'unreadable' ? 'unreadable' : 'acquire'}`));
-    } else if (device.features.bootloader_mode) {
-        dispatch(push(`/device/${device.path}/bootloader`));
-    } else if (!device.features.initialized) {
-        dispatch(push(`/device/${device.features.device_id}/initialize`));
-    } else if (typeof device.instance === 'number') {
-        dispatch(push(`/device/${device.features.device_id}:${device.instance}`));
-    } else {
-        const deviceId: string = device.features.device_id;
-        const urlParams: RouterLocationState = getState().router.location.state;
-        // let url: string = `/device/${ device.features.device_id }/network/ethereum/account/0`;
-        let url: string = `/device/${deviceId}`;
-        let instance: ?number;
-        // check if device is not TrezorDevice type
-        if (!device.hasOwnProperty('ts')) {
-            // its device from trezor-connect (called in initConnectedDevice triggered by device_connect event)
-            // need to lookup if there are unavailable instances
-            const available: Array<TrezorDevice> = getState().devices.filter(d => d.path === device.path);
-            const latest: Array<TrezorDevice> = sortDevices(available);
-
-            if (latest.length > 0 && latest[0].instance) {
-                url += `:${latest[0].instance}`;
-                instance = latest[0].instance;
-            }
-        }
-        // check if current location is not set to this device
-        //dispatch( push(`/device/${ device.features.device_id }/network/etc/account/0`) );
-
-        if (urlParams.deviceInstance !== instance || urlParams.device !== deviceId) {
-            dispatch(push(url));
-        }
-    }
-};
-
-export const initConnectedDevice = (device: TrezorDevice | Device): ThunkAction => (dispatch: Dispatch/* , getState: GetState */): void => {
-    // const selected = getState().wallet.selectedDevice;
-    // if (!selected || (selected && selected.state)) {
-    dispatch(onSelectDevice(device));
-    // }
-    // if (device.unacquired && selected && selected.path !== device.path && !selected.connected) {
-    //     dispatch( onSelectDevice(device) );
-    // } else if (!selected) {
-    //     dispatch( onSelectDevice(device) );
-    // }
-};
-
 // called after backend was initialized
 // set listeners for connect/disconnect
-export const postInit = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const postInit = (): ThunkAction => (dispatch: Dispatch): void => {
     const handleDeviceConnect = (device: Device) => {
-        dispatch(initConnectedDevice(device));
+        dispatch(RouterActions.selectDevice(device));
     };
 
     TrezorConnect.off(DEVICE.CONNECT, handleDeviceConnect);
@@ -214,57 +148,12 @@ export const postInit = (): ThunkAction => (dispatch: Dispatch, getState: GetSta
     TrezorConnect.on(DEVICE.CONNECT, handleDeviceConnect);
     TrezorConnect.on(DEVICE.CONNECT_UNACQUIRED, handleDeviceConnect);
 
-    const { devices } = getState();
-
-    const { initialPathname, initialParams } = getState().wallet;
-
-    if (initialPathname) {
-        dispatch({
-            type: WALLET.SET_INITIAL_URL,
-            // pathname: null,
-            // params: null
-        });
-    }
-
-    if (devices.length > 0) {
-        const unacquired: ?TrezorDevice = devices.find(d => d.features);
-        if (unacquired) {
-            dispatch(onSelectDevice(unacquired));
-        } else {
-            const latest: Array<TrezorDevice> = sortDevices(devices);
-            const firstConnected: ?TrezorDevice = latest.find(d => d.connected);
-            dispatch(onSelectDevice(firstConnected || latest[0]));
-
-            // TODO
-            if (initialParams) {
-                if (!initialParams.hasOwnProperty('network') && initialPathname !== getState().router.location.pathname) {
-                    // dispatch( push(initialPathname) );
-                }
-            }
-        }
+    // try to redirect to initial url
+    if (!dispatch(RouterActions.setInitialUrl())) {
+        // if initial redirection fails try to switch to first available device
+        dispatch(RouterActions.selectFirstAvailableDevice());
     }
 };
-
-export const switchToFirstAvailableDevice = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const { devices } = getState();
-    if (devices.length > 0) {
-        // TODO: Priority:
-        // 1. First Unacquired
-        // 2. First connected
-        // 3. Saved with latest timestamp
-        const unacquired = devices.find(d => !d.features);
-        if (unacquired) {
-            dispatch(initConnectedDevice(unacquired));
-        } else {
-            const latest: Array<TrezorDevice> = sortDevices(devices);
-            const firstConnected: ?TrezorDevice = latest.find(d => d.connected);
-            dispatch(onSelectDevice(firstConnected || latest[0]));
-        }
-    } else {
-        dispatch(push('/'));
-    }
-};
-
 
 export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
@@ -345,7 +234,7 @@ export const coinChanged = (network: ?string): ThunkAction => (dispatch: Dispatc
 };
 
 export function reload(): AsyncAction {
-    return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    return async (): Promise<void> => {
     };
 }
 
@@ -390,13 +279,6 @@ export function acquire(): AsyncAction {
         });
     };
 }
-
-export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (dispatch: Dispatch): void => {
-    if (device.features) {
-        const devUrl: string = `${device.features.device_id}${device.instance ? `:${device.instance}` : ''}`;
-        dispatch(push(`/device/${devUrl}/settings`));
-    }
-};
 
 // called from Aside - device menu (forget single instance)
 export const forget = (device: TrezorDevice): Action => ({
