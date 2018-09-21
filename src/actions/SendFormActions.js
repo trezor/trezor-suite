@@ -13,6 +13,7 @@ import { initialState } from 'reducers/SendFormReducer';
 import { findToken } from 'reducers/TokensReducer';
 import { findDevice, getPendingAmount, getPendingNonce } from 'reducers/utils';
 import * as stateUtils from 'reducers/utils';
+import { validateAddress } from 'utils/ethUtils';
 
 import type {
     Dispatch,
@@ -345,32 +346,19 @@ export const validation = (props: Props): void => {
     if (state.untouched) return;
     // valid address
     if (state.touched.address) {
-        /* if (state.address.length < 1) {
-            errors.address = 'Address is not set';
-        } else if (!EthereumjsUtil.isValidAddress(state.address)) {
-            errors.address = 'Address is not valid';
-        } else {
-            // address warning or info are set in addressValidation ThunkAction
-            // do not override this
-            if (state.warnings.address) {
-                warnings.address = state.warnings.address;
-            } else if (state.infos.address) {
-                infos.address = state.infos.address;
-            }
-        } */
+        const addressError = validateAddress(state.address);
+        if (addressError) {
+            errors.address = addressError;
+        }
 
-        /* eslint (no-lonely-if) */
-        if (state.address.length < 1) {
-            errors.address = 'Address is not set';
-        } else if (!EthereumjsUtil.isValidAddress(state.address)) {
-            errors.address = 'Address is not valid';
-        } else if (state.warnings.address) {
-            // address warning or info are set in addressValidation ThunkAction
-            // do not override this
+        // address warning or info may be set in addressValidation ThunkAction
+        // do not override them
+        if (state.warnings.address) {
             warnings.address = state.warnings.address;
-            if (state.infos.address) {
-                infos.address = state.infos.address;
-            }
+        }
+
+        if (state.infos.address) {
+            infos.address = state.infos.address;
         }
     }
 

@@ -113,6 +113,7 @@ class Input extends Component {
                         )}
                         <StyledInput
                             hasIcon={!!this.props.state}
+                            innerRef={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
                             placeholder={this.props.placeholder}
@@ -142,13 +143,14 @@ class Input extends Component {
 
 Input.propTypes = {
     className: PropTypes.string,
+    innerRef: PropTypes.func,
     placeholder: PropTypes.string,
     type: PropTypes.string,
     autoComplete: PropTypes.string,
     autoCorrect: PropTypes.string,
     autoCapitalize: PropTypes.string,
     spellCheck: PropTypes.string,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.string,
     onChange: PropTypes.func,
     state: PropTypes.string,
     bottomText: PropTypes.string,

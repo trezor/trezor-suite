@@ -3,15 +3,10 @@ import RcTooltip from 'rc-tooltip';
 import colors from 'config/colors';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { FONT_SIZE } from 'config/variables';
-
-const TooltipContent = styled.div`
-    width: ${props => (props.isAside ? '260px' : '320px')};
-    font-size: ${FONT_SIZE.SMALLEST};
-`;
 
 const Wrapper = styled.div`
     .rc-tooltip {
+        max-width: ${props => `${props.maxWidth}px` || 'auto'};
         position: absolute;
         z-index: 1070;
         display: block;
@@ -177,9 +172,11 @@ class Tooltip extends Component {
             placement,
             content,
             children,
+            maxWidth,
         } = this.props;
         return (
             <Wrapper
+                maxWidth={maxWidth}
                 className={className}
                 innerRef={(node) => { this.tooltipContainerRef = node; }}
             >
@@ -187,7 +184,7 @@ class Tooltip extends Component {
                     getTooltipContainer={() => this.tooltipContainerRef}
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
                     placement={placement}
-                    overlay={<TooltipContent>{content}</TooltipContent>}
+                    overlay={content}
                 >
                     {children}
                 </RcTooltip>
@@ -203,6 +200,7 @@ Tooltip.propTypes = {
         PropTypes.element,
         PropTypes.string,
     ]),
+    maxWidth: PropTypes.number,
     content: PropTypes.oneOfType([
         PropTypes.element,
         PropTypes.string,

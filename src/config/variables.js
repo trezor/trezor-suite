@@ -41,5 +41,6 @@ export const TRANSITION = {
 };
 
 export const LINE_HEIGHT = {
+    SMALL: '1.4',
     BASE: '1.8',
 };
