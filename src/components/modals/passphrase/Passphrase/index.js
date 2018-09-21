@@ -241,11 +241,12 @@ export default class PinModal extends Component<Props, State> {
             visible: false,
         });
         if (this.passphraseRevisionInput) {
-            this.passphraseRevisionInput.value = '';
-            this.setState({
-                passphraseRevision: '',
-                match: false,
-            });
+            const emptyPassphraseRevisionValue = '';
+            this.passphraseRevisionInput.value = emptyPassphraseRevisionValue;
+            this.setState(previousState => ({
+                passphraseRevision: emptyPassphraseRevisionValue,
+                match: emptyPassphraseRevisionValue === previousState.passphrase,
+            }));
             this.passphraseRevisionInput.disabled = false;
         }
     }
