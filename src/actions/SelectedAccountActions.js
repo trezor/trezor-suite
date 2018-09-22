@@ -3,12 +3,8 @@
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as ACCOUNT from 'actions/constants/account';
-import * as SEND from 'actions/constants/send';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as PENDING from 'actions/constants/pendingTx';
-
-import * as SendFormActions from 'actions/SendFormActions';
-import * as SessionStorageActions from 'actions/SessionStorageActions';
 
 import * as stateUtils from 'reducers/utils';
 
@@ -35,17 +31,6 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
     const locationChange: boolean = action.type === LOCATION_CHANGE;
     const state: State = getState();
     const { location } = state.router;
-
-    // reset form to default
-    if (action.type === SEND.TX_COMPLETE) {
-        // dispatch( SendFormActions.init() );
-        // linear action
-        // SessionStorageActions.clear(location.pathname);
-    }
-
-    if (prevState.sendForm !== state.sendForm) {
-        dispatch(SessionStorageActions.save());
-    }
 
     // handle devices state change (from trezor-connect events or location change)
     if (locationChange
@@ -84,11 +69,6 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
                 type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
                 payload,
             });
-
-            // initialize SendFormReducer
-            if (location.state.send && getState().sendForm.currency === '') {
-                dispatch(SendFormActions.init());
-            }
 
             if (location.state.send) {
                 const rejectedTxs = pending.filter(tx => tx.rejected);
