@@ -83,9 +83,12 @@ export const getGasPrice = (network: string, defaultGasPrice: number): PromiseAc
     }
 }
 
-export const estimateGasLimit = (network: string, data: string, value: string, gasPrice: string): PromiseAction<number> => async (dispatch: Dispatch, getState: GetState): Promise<number> => {
-    return await dispatch( Web3Actions.estimateGasLimit(network, { to: '', data, value, gasPrice }) );
-}
+export const estimateGasLimit = (network: string, data: string, value: string, gasPrice: string): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => dispatch(Web3Actions.estimateGasLimit(network, {
+    to: '',
+    data,
+    value,
+    gasPrice,
+}));
 
 export const onBlockMined = (coinInfo: any): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     // incoming "coinInfo" from TrezorConnect is CoinInfo | EthereumNetwork type

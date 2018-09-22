@@ -279,16 +279,20 @@ export const updateGasPrice = (network: string): PromiseAction<void> => async (d
 }
 
 
-export const estimateGasLimit = (network: string, options: EstimateGasOptions): PromiseAction<number> => async (dispatch: Dispatch, getState: GetState): Promise<number> => {
-    const instance = await dispatch( initWeb3(network) );
+export const estimateGasLimit = (network: string, $options: EstimateGasOptions): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => {
+    const instance = await dispatch(initWeb3(network));
     // TODO: allow data starting with 0x ...
-    options.to = '0x0000000000000000000000000000000000000000';
-    options.data = `0x${options.data.length % 2 === 0 ? options.data : `0${options.data}`}`;
-    options.value = instance.web3.utils.toHex( EthereumjsUnits.convert(options.value || '0', 'ether', 'wei') );
-    options.gasPrice = instance.web3.utils.toHex( EthereumjsUnits.convert(options.gasPrice, 'gwei', 'wei') );
+    const data = `0x${$options.data.length % 2 === 0 ? $options.data : `0${$options.data}`}`;
+    const options = {
+        ...$options,
+        to: '0x0000000000000000000000000000000000000000',
+        data,
+        value: instance.web3.utils.toHex(EthereumjsUnits.convert($options.value || '0', 'ether', 'wei')),
+        gasPrice: instance.web3.utils.toHex(EthereumjsUnits.convert($options.gasPrice, 'gwei', 'wei')),
+    };
 
     const limit = await instance.web3.eth.estimateGas(options);
-    return limit;
+    return limit.toString();
 };
 
 export const disconnect = (coinInfo: any): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
