@@ -115,3 +115,22 @@ export const getWeb3 = (state: State): ?Web3Instance => {
     if (!locationState.network) return null;
     return state.web3.find(w3 => w3.network === locationState.network);
 };
+
+export const observeChanges = (prev: ?(Object | Array<any>), current: ?(Object | Array<any>), fields?: Array<string>): boolean => {
+    if (prev !== current) {
+        // 1. one of the objects is null/undefined
+        if (!prev || !current) return true;
+        // 2. object are Arrays and they have different length
+        if (Array.isArray(prev) && Array.isArray(current)) return prev.length !== current.length;
+        // 3. no nested field to check
+        if (!Array.isArray(fields)) return true;
+        // 4. validate nested field
+        if (prev instanceof Object && current instanceof Object) {
+            for (let i = 0; i < fields.length; i++) {
+                const key = fields[i];
+                if (prev[key] !== current[key]) return true;
+            }
+        }
+    }
+    return false;
+};
