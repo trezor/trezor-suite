@@ -83,12 +83,31 @@ export const getGasPrice = (network: string, defaultGasPrice: number): PromiseAc
     }
 }
 
-export const estimateGasLimit = (network: string, data: string, value: string, gasPrice: string): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => dispatch(Web3Actions.estimateGasLimit(network, {
-    to: '',
-    data,
-    value,
-    gasPrice,
-}));
+const estimateProxy: Array<Promise<string>> = [];
+export const estimateGasLimit = (network: string, data: string, value: string, gasPrice: string): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => {
+    // Since this method could be called multiple times in short period of time
+    // check for pending calls in proxy and if there more than two (first is current running and the second is waiting for result of first)
+    // TODO: should reject second call immediately?
+    if (estimateProxy.length > 0) {
+        // wait for proxy result (but do not process it)
+        await estimateProxy[0];
+    }
+
+    const call = dispatch(Web3Actions.estimateGasLimit(network, {
+        to: '',
+        data,
+        value,
+        gasPrice,
+    }));
+    // add current call to proxy
+    estimateProxy.push(call);
+    // wait for result
+    const result = await call;
+    // remove current call from proxy
+    estimateProxy.splice(0, 1);
+    // return result
+    return result;
+};
 
 export const onBlockMined = (coinInfo: any): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     // incoming "coinInfo" from TrezorConnect is CoinInfo | EthereumNetwork type
