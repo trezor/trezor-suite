@@ -48,7 +48,7 @@ export const showUnverifiedAddress = (): Action => ({
 });
 
 //export const showAddress = (address_n: string): AsyncAction => {
-export const showAddress = (address_n: Array<number>): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const showAddress = (path: Array<number>): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
 
@@ -66,7 +66,7 @@ export const showAddress = (address_n: Array<number>): AsyncAction => async (dis
             instance: selected.instance,
             state: selected.state,
         },
-        path: address_n,
+        path,
         useEmptyPassphrase: !selected.instance,
     });
 
@@ -90,7 +90,7 @@ export const showAddress = (address_n: Array<number>): AsyncAction => async (dis
                     {
                         label: 'Try again',
                         callback: () => {
-                            dispatch(showAddress(address_n));
+                            dispatch(showAddress(path));
                         },
                     },
                 ],

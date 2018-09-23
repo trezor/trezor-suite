@@ -3,19 +3,15 @@
 import EthereumjsTx from 'ethereumjs-tx';
 import EthereumjsUnits from 'ethereumjs-units';
 import BigNumber from 'bignumber.js';
-import { toHex } from 'web3-utils';
-import { initWeb3 } from './Web3Actions';
+import { toHex } from 'web3-utils'; // eslint-disable-line import/no-extraneous-dependencies
+import { initWeb3 } from 'actions/Web3Actions';
 
 import type {
     Dispatch,
-    GetState,
     PromiseAction,
 } from 'flowtype';
 
-import type {
-    EthereumTransaction
-} from 'trezor-connect';
-
+import type { EthereumTransaction } from 'trezor-connect';
 import type { Token } from 'reducers/TokensReducer';
 
 type EthereumTxRequest = {
@@ -30,19 +26,18 @@ type EthereumTxRequest = {
     nonce: number;
 }
 
-
-export const prepareEthereumTx = (tx: EthereumTxRequest): PromiseAction<EthereumTransaction> => async (dispatch: Dispatch, getState: GetState): Promise<EthereumTransaction> => {
-    const instance = await dispatch( initWeb3(tx.network) );
-    const token = tx.token;
+export const prepareEthereumTx = (tx: EthereumTxRequest): PromiseAction<EthereumTransaction> => async (dispatch: Dispatch): Promise<EthereumTransaction> => {
+    const instance = await dispatch(initWeb3(tx.network));
+    const { token } = tx;
     let data: string = `0x${tx.data}`; // TODO: check if already prefixed
-    let value: string = toHex( EthereumjsUnits.convert(tx.amount, 'ether', 'wei') );
-    let to: string = tx.to;
+    let value: string = toHex(EthereumjsUnits.convert(tx.amount, 'ether', 'wei'));
+    let to: string = tx.to; // eslint-disable-line prefer-destructuring
 
     if (token) {
         // smart contract transaction
         const contract = instance.erc20.clone();
         contract.options.address = token.address;
-        const tokenAmount: string = new BigNumber(tx.amount).times(Math.pow(10, token.decimals)).toString(10);
+        const tokenAmount: string = new BigNumber(tx.amount).times(10 ** token.decimals).toString(10);
         data = instance.erc20.methods.transfer(to, tokenAmount).encodeABI();
         value = '0x00';
         to = token.address;
@@ -55,15 +50,14 @@ export const prepareEthereumTx = (tx: EthereumTxRequest): PromiseAction<Ethereum
         chainId: instance.chainId,
         nonce: toHex(tx.nonce),
         gasLimit: toHex(tx.gasLimit),
-        gasPrice: toHex( EthereumjsUnits.convert(tx.gasPrice, 'gwei', 'wei') ),
+        gasPrice: toHex(EthereumjsUnits.convert(tx.gasPrice, 'gwei', 'wei')),
         r: '',
         s: '',
         v: '',
-    }
+    };
 };
 
-export const serializeEthereumTx = (tx: EthereumTransaction): PromiseAction<string> => async (dispatch: Dispatch, getState: GetState): Promise<string> => {
+export const serializeEthereumTx = (tx: EthereumTransaction): PromiseAction<string> => async (): Promise<string> => {
     const ethTx = new EthereumjsTx(tx);
-    return `0x${ ethTx.serialize().toString('hex') }`;
-    // return toHex( ethTx.serialize() );
-}
+    return `0x${ethTx.serialize().toString('hex')}`;
+};
