@@ -13,7 +13,6 @@ import type {
     AsyncAction,
     GetState,
 } from 'flowtype';
-import type { Config, FiatValueTicker } from 'reducers/LocalStorageReducer';
 
 export const RATE_UPDATE: 'rate__update' = 'rate__update';
 
@@ -24,11 +23,11 @@ export type FiatRateAction = {
 }
 
 const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const config: ?Config = getState().localStorage.config;
+    const { config } = getState().localStorage;
     if (!config) return;
 
     try {
-        config.fiatValueTickers.forEach(async (ticker: FiatValueTicker) => {
+        config.fiatValueTickers.forEach(async (ticker) => {
             // const rate: ?Array<any> = await JSONRequest(`${ticker.url}?convert=USD`, 'json');
             const rate: ?Array<any> = await httpRequest(`${ticker.url}?convert=USD`, 'json');
             if (rate) {
