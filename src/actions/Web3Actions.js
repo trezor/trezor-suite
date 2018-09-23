@@ -135,7 +135,7 @@ export const discoverAccount = (address: string, network: string): PromiseAction
 export const resolvePendingTransactions = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const instance: Web3Instance = await dispatch(initWeb3(network));
     const pending = getState().pending.filter(p => p.network === network);
-    for (const tx of pending) {
+    pending.forEach(async (tx) => {
         const status = await instance.web3.eth.getTransaction(tx.id);
         if (!status) {
             dispatch({
@@ -158,7 +158,7 @@ export const resolvePendingTransactions = (network: string): PromiseAction<void>
                 });
             }
         }
-    }
+    });
 };
 
 /*
@@ -205,7 +205,7 @@ export const updateAccount = (account: Account, newAccount: EthereumAccount, net
 
 export const updateAccountTokens = (account: Account): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const tokens = getState().tokens.filter(t => t.network === account.network && t.ethAddress === account.address);
-    for (const token of tokens) {
+    tokens.forEach(async (token) => {
         const balance = await dispatch(getTokenBalance(token));
         // const newBalance: string = balance.dividedBy(Math.pow(10, token.decimals)).toString(10);
         if (balance !== token.balance) {
@@ -215,7 +215,7 @@ export const updateAccountTokens = (account: Account): PromiseAction<void> => as
                 balance,
             ));
         }
-    }
+    });
 };
 
 export const getTokenInfo = (address: string, network: string): PromiseAction<NetworkToken> => async (dispatch: Dispatch): Promise<NetworkToken> => {

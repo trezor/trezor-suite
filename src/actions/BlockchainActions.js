@@ -1,10 +1,8 @@
 /* @flow */
 
-import EthereumjsUtil from 'ethereumjs-util';
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as BLOCKCHAIN from 'actions/constants/blockchain';
-import * as PENDING from 'actions/constants/pendingTx';
 
 import type {
     TrezorDevice,
@@ -128,6 +126,7 @@ export const onBlockMined = (coinInfo: any): PromiseAction<void> => async (dispa
 
 
 // not used for now, waiting for fix in blockbook
+/*
 export const onNotification = (payload: any): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     // this event can be triggered multiple times
     // 1. check if pair [txid + address] is already in reducer
@@ -166,6 +165,7 @@ export const onNotification = (payload: any): PromiseAction<void> => async (disp
         }
     }
 };
+*/
 
 
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {

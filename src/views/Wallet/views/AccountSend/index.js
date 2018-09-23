@@ -195,7 +195,6 @@ const AccountSend = (props: Props) => {
         errors,
         warnings,
         infos,
-        data,
         sending,
         advanced,
     } = props.sendForm;
