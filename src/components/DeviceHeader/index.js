@@ -56,7 +56,7 @@ const Name = styled.div`
     display: block;
     text-overflow: ellipsis;
     overflow: hidden;
-    white-space: no-wrap;
+    white-space: nowrap;
     font-weight: 500;
     font-size: 14px;
     color: ${colors.TEXT_PRIMARY};
