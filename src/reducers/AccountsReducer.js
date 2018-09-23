@@ -45,7 +45,7 @@ const createAccount = (state: State, account: Account): State => {
     if (exist) {
         return state;
     }
-    const newState: State = [ ...state ];
+    const newState: State = [...state];
     newState.push(account);
     return newState;
 };
@@ -66,7 +66,7 @@ const updateAccount = (state: State, account: Account): State => {
     const newState: State = [...state];
     newState[index] = account;
     return newState;
-}
+};
 
 const setBalance = (state: State, action: AccountSetBalanceAction): State => {
     // const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
@@ -100,7 +100,7 @@ export default (state: State = initialState, action: Action): State => {
         //case CONNECT.FORGET_SINGLE :
         //    return forgetAccounts(state, action);
 
-        case ACCOUNT.UPDATE :
+        case ACCOUNT.UPDATE:
             return updateAccount(state, action.payload);
 
         case ACCOUNT.SET_BALANCE:
