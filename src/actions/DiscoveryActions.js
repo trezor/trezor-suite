@@ -9,10 +9,7 @@ import type {
     ThunkAction, AsyncAction, PromiseAction, Action, GetState, Dispatch, TrezorDevice,
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
-import * as AccountsActions from './AccountsActions';
 import * as BlockchainActions from './BlockchainActions';
-import { setBalance as setTokenBalance } from './TokenActions';
-
 
 export type DiscoveryStartAction = {
     type: typeof DISCOVERY.START,
@@ -65,7 +62,7 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
         return;
     }
 
-    const discovery: State = getState().discovery;
+    const { discovery } = getState();
     const discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
 
     if (!selected.connected && (!discoveryProcess || !discoveryProcess.completed)) {
@@ -88,7 +85,7 @@ export const start = (device: TrezorDevice, network: string, ignoreCompleted?: b
     }
 
     if (!discoveryProcess) {
-        dispatch(begin(device, network))
+        dispatch(begin(device, network));
     } else if (discoveryProcess.completed && !ignoreCompleted) {
         dispatch({
             type: DISCOVERY.COMPLETE,
@@ -172,9 +169,8 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => async (dis
     dispatch(start(device, network));
 };
 
-const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
     const { completed } = discoveryProcess;
-    discoveryProcess.completed = false;
 
     const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
     const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
@@ -183,15 +179,13 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
     const { network } = discoveryProcess;
 
     // TODO: check if address was created before
-
     try {
-        const account = await dispatch( BlockchainActions.discoverAccount(device, ethAddress, network) );
+        const account = await dispatch(BlockchainActions.discoverAccount(device, ethAddress, network));
         if (discoveryProcess.interrupted) return;
 
         // const accountIsEmpty = account.transactions <= 0 && account.nonce <= 0 && account.balance === '0';
         const accountIsEmpty = account.nonce <= 0 && account.balance === '0';
         if (!accountIsEmpty || (accountIsEmpty && completed) || (accountIsEmpty && discoveryProcess.accountIndex === 0)) {
-
             dispatch({
                 type: ACCOUNT.CREATE,
                 payload: {
@@ -205,22 +199,20 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
                     balance: account.balance,
                     nonce: account.nonce,
                     block: account.block,
-                    transactions: account.transactions
-                }
+                    transactions: account.transactions,
+                },
             });
         }
 
         if (accountIsEmpty) {
-            dispatch( finish(device, discoveryProcess) );
-        } else {
-            if (!completed) { dispatch( discoverAccount(device, discoveryProcess) ); }
+            dispatch(finish(device, discoveryProcess));
+        } else if (!completed) {
+            dispatch(discoverAccount(device, discoveryProcess));
         }
-
     } catch (error) {
-
         dispatch({
             type: DISCOVERY.STOP,
-            device
+            device,
         });
 
         dispatch({
@@ -243,7 +235,7 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
     }
 };
 
-const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
     await TrezorConnect.getFeatures({
         device: {
             path: device.path,
@@ -254,7 +246,7 @@ const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction 
         useEmptyPassphrase: !device.instance,
     });
 
-    await dispatch( BlockchainActions.subscribe(discoveryProcess.network) );
+    await dispatch(BlockchainActions.subscribe(discoveryProcess.network));
 
     if (discoveryProcess.interrupted) return;
 
@@ -263,13 +255,12 @@ const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction 
         device,
         network: discoveryProcess.network,
     });
+};
 
-}
-
-export const reconnect = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const reconnect = (network: string): PromiseAction<void> => async (dispatch: Dispatch): Promise<void> => {
     await dispatch(BlockchainActions.subscribe(network));
     dispatch(restore());
-}
+};
 
 export const restore = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const selected = getState().wallet.selectedDevice;
