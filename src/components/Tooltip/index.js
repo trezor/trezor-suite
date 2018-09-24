@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
 
 const Wrapper = styled.div`
     .rc-tooltip {
+        min-width: 200px;
         max-width: ${props => `${props.maxWidth}px` || 'auto'};
         position: absolute;
         z-index: 1070;
-        display: block;
         visibility: visible;
         border: 1px solid ${colors.DIVIDER};
         border-radius: 3px;

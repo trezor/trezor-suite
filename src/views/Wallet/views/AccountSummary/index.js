@@ -108,12 +108,9 @@ const AccountSummary = (props: Props) => {
                 <H2Wrapper>
                     <H2>Tokens</H2>
                     <StyledTooltip
+                        maxWidth={200}
                         placement="top"
-                        content={(
-                            <React.Fragment>
-                            Insert token name, symbol or address to be able to send it.
-                            </React.Fragment>
-                        )}
+                        content="Insert token name, symbol or address to be able to send it."
                     >
                         <StyledIcon
                             icon={ICONS.HELP}
