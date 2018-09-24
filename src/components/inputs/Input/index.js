@@ -34,7 +34,7 @@ const TopLabel = styled.span`
 
 const StyledInput = styled.input`
     width: 100%;
-    padding: 6px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
+    padding: 6px ${props => (props.hasIcon ? '32px' : '12px')} 6px 12px;
 
     line-height: 1.42857143;
     font-size: ${FONT_SIZE.SMALL};
@@ -61,7 +61,7 @@ const StyledInput = styled.input`
 const StyledIcon = styled(Icon)`
     position: absolute;
     left: auto;
-    right: 10px;
+    right: 3px;
 `;
 
 const BottomText = styled.span`
@@ -112,7 +112,7 @@ class Input extends Component {
                             />
                         )}
                         <StyledInput
-                            hasIcon={!!this.props.state}
+                            hasIcon={this.getIcon(this.props.state).length > 0}
                             innerRef={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
