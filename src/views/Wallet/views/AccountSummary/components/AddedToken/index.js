@@ -11,7 +11,7 @@ import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 
 const TokenWrapper = styled.div`
-    padding: 14px 48px;
+    padding: 14px 0;
     position: relative;
     display: flex;
     align-items: center;

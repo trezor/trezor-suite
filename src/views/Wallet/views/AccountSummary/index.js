@@ -19,7 +19,7 @@ import AddedToken from './components/AddedToken';
 import type { Props } from './Container';
 
 const Content = styled.div`
-    padding-left: 35px;
+    padding: 0 35px;
 `;
 
 const AccountHeading = styled.div`
