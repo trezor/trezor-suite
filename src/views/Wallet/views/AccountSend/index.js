@@ -233,10 +233,6 @@ const AccountSend = (props: Props) => {
 
     const tokensSelectData = getTokensSelectData(tokens, network);
     const isAdvancedSettingsHidden = !advanced;
-    // eslint workaround (is this some bug?)
-    // if i put {true} directly to "AdvancedSettingsIcon" component
-    // i get eslint error
-    const advancedButtonCanAnimate = true;
 
     return (
         <SelectedAccount {...props}>
@@ -348,7 +344,7 @@ const AccountSend = (props: Props) => {
                             color={colors.TEXT_SECONDARY}
                             size={24}
                             isActive={advanced}
-                            canAnimate={advancedButtonCanAnimate}
+                            canAnimate
                         />
                     </ToggleAdvancedSettingsButton>
 

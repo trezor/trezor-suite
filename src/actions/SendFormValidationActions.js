@@ -86,7 +86,7 @@ export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getSt
     state.errors = {};
     state.warnings = {};
     state.infos = {};
-    state = dispatch(recalculate(state));
+    state = dispatch(recalculateTotalAmount(state));
     state = dispatch(updateCustomFeeLabel(state));
     state = dispatch(addressValidation(state));
     state = dispatch(addressLabel(state));
@@ -98,7 +98,7 @@ export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getSt
     return state;
 };
 
-export const recalculate = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
     const {
         account,
         tokens,

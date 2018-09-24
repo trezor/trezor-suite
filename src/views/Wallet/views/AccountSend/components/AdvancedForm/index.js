@@ -13,11 +13,9 @@ import ICONS from 'config/icons';
 
 import type { Props } from '../../Container';
 
-// duplicates from ../../Container
 const InputRow = styled.div`
     margin-bottom: 20px;
 `;
-// duplicates end
 
 const InputLabelWrapper = styled.div`
     display: flex;
