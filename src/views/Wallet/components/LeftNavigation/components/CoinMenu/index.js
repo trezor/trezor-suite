@@ -44,8 +44,7 @@ class CoinMenu extends Component {
                 <Divider
                     textLeft="Other coins"
                     textRight="(You will be redirected)"
-                    borderTop
-                    borderBottom
+                    hasBorder
                 />
                 {coins.map(coin => (
                     <a key={coin.url} href={coin.url}>

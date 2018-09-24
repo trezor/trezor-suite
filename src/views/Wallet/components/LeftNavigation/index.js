@@ -28,7 +28,6 @@ const Footer = styled.div`
     width: 320px;
     bottom: 0;
     background: ${colors.MAIN};
-    border-right: 1px solid ${colors.DIVIDER};
 `;
 
 const Body = styled.div`
@@ -42,7 +41,7 @@ const Help = styled.div`
     text-align: center;
     width: 319px;
     padding: 8px 0px;
-    border-top: 1px solid ${colors.DIVIDER};
+    border-top: 1px solid ${colors.BACKGROUND};
 `;
 
 const A = styled.a`

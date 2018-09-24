@@ -22,11 +22,9 @@ const AsideWrapper = styled.aside`
     min-width: 320px;
     overflow: hidden;
     background: ${colors.MAIN};
-    border-right: 1px solid ${colors.DIVIDER};
 
     .fixed {
         position: fixed;
-        border-right: 1px solid ${colors.DIVIDER};
     }
 
     .fixed-bottom {
@@ -35,7 +33,6 @@ const AsideWrapper = styled.aside`
             position: fixed;
             bottom: 0;
             background: ${colors.MAIN};
-            border-right: 1px solid ${colors.DIVIDER};
         }
     }
 `;
