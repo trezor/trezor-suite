@@ -56,8 +56,9 @@ const TextArea = styled.textarea`
     }
 
     &:disabled {
-        border: 1px solid ${disabledColor};
-        cursor: not-allowed;
+        pointer-events: none;
+        background: ${colors.GRAY_LIGHT};
+        color: ${colors.TEXT_SECONDARY};
 
         &::-webkit-input-placeholder {
             color: ${disabledColor};
