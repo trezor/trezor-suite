@@ -65,7 +65,7 @@ const GasInput = styled(Input)`
 
 const StyledTextarea = styled(Textarea)`
     margin-bottom: 20px;
-    height: 80px;
+    min-height: 80px;
 `;
 
 const AdvancedSettingsSendButtonWrapper = styled.div`
@@ -91,6 +91,17 @@ const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string)
         state = 'warning';
     }
     if (gasPriceErrors) {
+        state = 'error';
+    }
+    return state;
+};
+
+const getDataTextareaState = (dataError: string, dataWarning: string): string => {
+    let state = '';
+    if (dataWarning) {
+        state = 'warning';
+    }
+    if (dataError) {
         state = 'error';
     }
     return state;
@@ -221,6 +232,7 @@ const AdvancedForm = (props: Props) => {
                         </Tooltip>
                     </InputLabelWrapper>
                 )}
+                state={getDataTextareaState(errors.data, warnings.data)}
                 bottomText={errors.data || warnings.data || infos.data}
                 isDisabled={networkSymbol !== currency}
                 value={networkSymbol !== currency ? '' : data}
