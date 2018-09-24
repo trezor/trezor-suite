@@ -66,7 +66,7 @@ const MainContent = styled.article`
 `;
 
 const Navigation = styled.nav`
-    height: 64px;
+    height: 70px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
     display: flex;
     background: ${colors.WHITE};

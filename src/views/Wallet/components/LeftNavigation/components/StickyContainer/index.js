@@ -22,8 +22,10 @@ const AsideWrapper = styled.aside`
     min-width: 320px;
     overflow: hidden;
     background: ${colors.MAIN};
+    border-right: 1px solid ${colors.BACKGROUND};
 
     .fixed {
+        border-right: 1px solid ${colors.BACKGROUND};
         position: fixed;
     }
 

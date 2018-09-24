@@ -11,7 +11,9 @@ import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
 import StickyContainer from './components/StickyContainer';
 
-const Header = styled(DeviceHeader)``;
+const Header = styled(DeviceHeader)`
+    border-right: 1px solid ${colors.BACKGROUND};
+`;
 
 const TransitionGroupWrapper = styled(TransitionGroup)`
     width: 640px;

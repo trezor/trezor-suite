@@ -24,7 +24,7 @@ import type { Props } from './Container';
 const SmallScreenWidth = '850px';
 
 const Wrapper = styled.section`
-    padding: 0 48px;
+    padding: 20px 48px;
 `;
 
 const StyledH2 = styled(H2)`

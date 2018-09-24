@@ -16,7 +16,10 @@ import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
 
 import type { Props } from './Container';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    padding-top: 20px;
+`;
+
 const StyledH2 = styled(H2)`
     padding: 20px 48px;
 `;
