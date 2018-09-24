@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+/* @flow */
+
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import Icon from 'components/Icon';
@@ -10,6 +12,7 @@ import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
 import StickyContainer from './components/StickyContainer';
+import type { Props } from './components/common';
 
 const Header = styled(DeviceHeader)``;
 
@@ -23,8 +26,11 @@ const TransitionContentWrapper = styled.div`
     vertical-align: top;
 `;
 
-const Footer = styled.div`
-    position: relative;
+const Footer = styled.div.attrs({
+    style: ({ position }) => ({
+        position,
+    }),
+})`
     width: 320px;
     bottom: 0;
     background: ${colors.MAIN};
@@ -58,6 +64,13 @@ const A = styled.a`
     }
 `;
 
+type TransitionMenuProps = {
+    animationType: ?string;
+    children?: React.Node;
+}
+
+// TransitionMenu needs to dispatch window.resize even
+// in order to StickyContainer be recalculated
 const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => (
     <TransitionGroupWrapper component="div" className="transition-container">
         <CSSTransition
@@ -77,8 +90,13 @@ const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGro
     </TransitionGroupWrapper>
 );
 
-class LeftNavigation extends Component {
-    constructor(props) {
+type State = {
+    animationType: ?string;
+    shouldRenderDeviceSelection: boolean;
+}
+
+class LeftNavigation extends React.PureComponent<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             animationType: null,
@@ -93,12 +111,11 @@ class LeftNavigation extends Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: Props) {
         const { deviceDropdownOpened } = nextProps;
         const { selectedDevice } = nextProps.wallet;
-        const hasNetwork = nextProps.location.state && nextProps.location.state.network;
-        const hasFeatures = selectedDevice && selectedDevice.features;
-        const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
+        const hasNetwork = nextProps.router.location.state && nextProps.router.location.state.network;
+        const deviceReady = selectedDevice && selectedDevice.features && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
 
         if (deviceDropdownOpened) {
             this.setState({ shouldRenderDeviceSelection: true });
@@ -117,10 +134,11 @@ class LeftNavigation extends Component {
 
     shouldRenderAccounts() {
         const { selectedDevice } = this.props.wallet;
+        const { location } = this.props.router;
         return selectedDevice
-            && this.props.location
-            && this.props.location.state
-            && this.props.location.state.network
+            && location
+            && location.state
+            && location.state.network
             && !this.state.shouldRenderDeviceSelection
             && this.state.animationType === 'slide-left';
     }
@@ -130,7 +148,7 @@ class LeftNavigation extends Component {
     }
 
     shouldRenderCoins() {
-        return !this.state.shouldRenderDeviceSelection && this.state.animationType === 'slide-right';
+        return !this.state.shouldRenderDeviceSelection && this.state.animationType !== 'slide-left';
     }
 
     render() {
@@ -152,7 +170,7 @@ class LeftNavigation extends Component {
 
         return (
             <StickyContainer
-                location={this.props.location.pathname}
+                location={this.props.router.location.pathname}
                 deviceSelection={this.props.deviceDropdownOpened}
             >
                 <Header
@@ -167,7 +185,7 @@ class LeftNavigation extends Component {
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
                     {menu}
                 </Body>
-                <Footer className="sticky-bottom">
+                <Footer key="sticky-footer">
                     <Help>
                         <A
                             href="https://trezor.io/support/"
@@ -184,9 +202,18 @@ class LeftNavigation extends Component {
 }
 
 LeftNavigation.propTypes = {
-    selectedDevice: PropTypes.object,
-    wallet: PropTypes.object,
+    connect: PropTypes.object,
+    accounts: PropTypes.array,
+    router: PropTypes.object,
     deviceDropdownOpened: PropTypes.bool,
+    fiat: PropTypes.array,
+    localStorage: PropTypes.object,
+    discovery: PropTypes.array,
+    wallet: PropTypes.object,
+    devices: PropTypes.array,
+    pending: PropTypes.array,
+
+    toggleDeviceDropdown: PropTypes.func,
 };
 
 

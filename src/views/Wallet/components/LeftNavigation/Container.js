@@ -17,7 +17,7 @@ type OwnProps = {
 
 }
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State/* , own: OwnProps */): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     connect: state.connect,
     accounts: state.accounts,
     router: state.router,
@@ -31,7 +31,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    //onAccountSelect: bindActionCreators(AccountActions.onAccountSelect, dispatch),
     toggleDeviceDropdown: bindActionCreators(toggleDeviceDropdown, dispatch),
     addAccount: bindActionCreators(TrezorConnectActions.addAccount, dispatch),
     acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
