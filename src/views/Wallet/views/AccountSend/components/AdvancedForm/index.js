@@ -106,6 +106,7 @@ const AdvancedForm = (props: Props) => {
         networkSymbol,
         currency,
         recommendedGasPrice,
+        calculatingGasLimit,
         errors,
         warnings,
         infos,
@@ -160,7 +161,7 @@ const AdvancedForm = (props: Props) => {
                             </Tooltip>
                         </InputLabelWrapper>
                     )}
-                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
+                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit || (calculatingGasLimit ? 'Calculating...' : '')}
                     value={gasLimit}
                     isDisabled={networkSymbol === currency && data.length > 0}
                     onChange={event => onGasLimitChange(event.target.value)}
