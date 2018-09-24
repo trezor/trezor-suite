@@ -14,7 +14,7 @@ import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import type { Token } from 'flowtype';
-import AdvancedForm from './components/Advanced';
+import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from './components/PendingTransactions';
 
 import type { Props } from './Container';
