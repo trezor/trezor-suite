@@ -31,6 +31,16 @@ const StyledH2 = styled(H2)`
     padding: 20px 0;
 `;
 
+const AmountInputLabelWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const AmountInputLabel = styled.span`
+    text-align: right;
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 const InputRow = styled.div`
     margin-bottom: 20px;
 `;
@@ -198,7 +208,6 @@ const AccountSend = (props: Props) => {
         sending,
         advanced,
     } = props.sendForm;
-
     const {
         toggleAdvanced,
         onAddressChange,
@@ -209,6 +218,14 @@ const AccountSend = (props: Props) => {
         updateFeeLevels,
         onSend,
     } = props.sendFormActions;
+
+    const isCurrentCurrencyToken = networkSymbol !== currency;
+
+    let selectedTokenBalance = 0;
+    const selectedToken = tokens.find(t => t.symbol === currency);
+    if (selectedToken) {
+        selectedTokenBalance = selectedToken.balance;
+    }
 
     if (!device || !account || !discovery || !network) return null;
 
@@ -259,7 +276,14 @@ const AccountSend = (props: Props) => {
                         autoCorrect="off"
                         autoCapitalize="off"
                         spellCheck="false"
-                        topLabel="Amount"
+                        topLabel={(
+                            <AmountInputLabelWrapper>
+                                <AmountInputLabel>Amount</AmountInputLabel>
+                                {(isCurrentCurrencyToken && selectedToken) && (
+                                    <AmountInputLabel>You have: {selectedTokenBalance} {selectedToken.symbol}</AmountInputLabel>
+                                )}
+                            </AmountInputLabelWrapper>
+                        )}
                         value={amount}
                         onChange={event => onAmountChange(event.target.value)}
                         bottomText={errors.amount || warnings.amount || infos.amount}
