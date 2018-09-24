@@ -10,13 +10,28 @@
     <meta name="keywords" content="trezor wallet" />
     <meta name="author" content="satoshilabs s.r.o." />
     <meta name="viewport" content="width=1024, initial-scale=1">
-    <!--[if lte IE 8]>
-        <link media="all" rel="stylesheet" href="/unsupported-browsers.css" />
+    <!--[if lt IE 9]>
+        <link media="all" rel="stylesheet" href="/unsupported-browsers/style.css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <![endif]-->
 </head>
 <body>
-     <!--[if lte IE 8]>
-        <p class="unsupported-ie">This page is not supported for IE8 and lower versions of IE.</p>
+    <!--[if lt IE 9]>
+     <div class="unsupported-browsers">
+        <div class="header"></div>
+        <h1>Your browser is not supported</h1>
+        <p>Please choose one of the supported browsers</p>
+        <div class="main">
+            <div class="box left">
+                <img src="/unsupported-browsers/browser-chrome.png">
+                <a href="https://www.google.com/chrome/" target="_blank" rel="noreferrer noopener">Get Chrome</a>
+            </div>
+            <div class="box right">
+                <img src="/unsupported-browsers/browser-firefox.png">
+                <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank" rel="noreferrer noopener">Get Firefox</a>
+            </div>
+        </div>
+    </div>
     <![endif]-->
     <div id="root"></div>
 </body>
