@@ -20,6 +20,11 @@ const Wrapper = styled.div`
     padding-top: 20px;
 `;
 
+const Label = styled.div`
+    padding: 25px 0 5px 0;
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 const StyledH2 = styled(H2)`
     padding: 20px 48px;
 `;
@@ -29,6 +34,12 @@ const AddressWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
     flex-direction: ${props => (props.isShowingQrCode ? 'column' : 'row')};
+`;
+
+const StyledQRCode = styled(QRCode)`
+    padding: 15px;
+    margin-top: 0 25px;
+    border: 1px solid ${colors.BODY};
 `;
 
 const ValueWrapper = styled.div`
@@ -111,11 +122,6 @@ const EyeButton = styled(Button)`
     top: 3px;
 `;
 
-const qrCodeStyle = {
-    width: 256,
-    margin: '20px auto',
-};
-
 const AccountReceive = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const {
@@ -182,19 +188,23 @@ const AccountReceive = (props: Props) => {
                     <ValueWrapper
                         isHidden={isAddressHidden}
                         isVerifying={isAddressVerifying}
-                    >{address}
+                    >
+                        {address}
                     </ValueWrapper>
                     {isAddressVerifying && (
                         <AddressInfoText>{account.network} account #{account.index + 1}</AddressInfoText>
                     )}
                     {(addressVerified || addressUnverified) && (
-                        <QRCode
-                            bgColor="#FFFFFF"
-                            fgColor="#000000"
-                            level="Q"
-                            style={qrCodeStyle}
-                            value={account.address}
-                        />
+                        <React.Fragment>
+                            <Label>QR code</Label>
+                            <StyledQRCode
+                                bgColor="#FFFFFF"
+                                fgColor="#000000"
+                                level="Q"
+                                style={{ width: 150 }}
+                                value={account.address}
+                            />
+                        </React.Fragment>
                     )}
                     {!(addressVerified || addressUnverified) && (
                         <ShowAddressButton
