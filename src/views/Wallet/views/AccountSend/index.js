@@ -37,6 +37,7 @@ const AmountInputLabelWrapper = styled.div`
 `;
 
 const AmountInputLabel = styled.span`
+    text-align: right;
     color: ${colors.TEXT_SECONDARY};
 `;
 
