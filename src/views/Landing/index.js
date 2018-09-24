@@ -1,6 +1,6 @@
 /* @flow */
-
 import React from 'react';
+import CaseImage from 'images/case.png';
 import styled from 'styled-components';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -39,11 +39,10 @@ const LandingContent = styled.div`
     justify-content: center;
 `;
 
-const LandingImage = styled.div`
+const LandingImage = styled.img`
     width: 777px;
     min-height: 500px;
     margin: auto;
-    background-image: url('../images/case.png');
     background-repeat: no-repeat;
     background-position: center 0px;
     background-size: contain;
@@ -120,7 +119,7 @@ export default (props: Props) => {
                                     showDisconnect={shouldShowDisconnectDevice}
                                 />
 
-                                <LandingImage />
+                                <LandingImage src={CaseImage} />
 
                                 {shouldShowConnectDevice && (
                                     <LandingFooterWrapper>

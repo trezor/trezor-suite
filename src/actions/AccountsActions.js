@@ -1,7 +1,7 @@
 /* @flow */
 
 import * as ACCOUNT from 'actions/constants/account';
-import type { Action, TrezorDevice } from 'flowtype';
+import type { Action } from 'flowtype';
 import type { Account, State } from 'reducers/AccountsReducer';
 
 export type AccountFromStorageAction = {
@@ -60,5 +60,5 @@ export const setNonce = (address: string, network: string, deviceState: string, 
 
 export const update = (account: Account): Action => ({
     type: ACCOUNT.UPDATE,
-    payload: account
+    payload: account,
 });

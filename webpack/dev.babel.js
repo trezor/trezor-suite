@@ -2,8 +2,10 @@ import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import FlowWebpackPlugin from 'flow-webpack-plugin';
+import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
 
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+// turn on for bundle analyzing
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import {
     SRC, BUILD, PORT, PUBLIC,
@@ -94,6 +96,10 @@ module.exports = {
         hints: false,
     },
     plugins: [
+        new WebpackBuildNotifierPlugin({
+            title: 'Trezor Wallet',
+            suppressSuccess: true,
+        }),
         new webpack.DefinePlugin({
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
@@ -107,11 +113,11 @@ module.exports = {
             inject: true,
             favicon: `${SRC}images/favicon.ico`,
         }),
-        new BundleAnalyzerPlugin({
-            openAnalyzer: false,
-            analyzerMode: false, // turn on to generate bundle pass 'static'
-            reportFilename: 'bundle-report.html',
-        }),
+        // new BundleAnalyzerPlugin({
+        //     openAnalyzer: false,
+        //     analyzerMode: false, // turn on to generate bundle pass 'static'
+        //     reportFilename: 'bundle-report.html',
+        // }),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),

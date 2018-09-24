@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { Select } from 'components/Select';
 import Button from 'components/Button';
@@ -12,11 +12,9 @@ import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
-import Textarea from 'components/Textarea';
-import Tooltip from 'components/Tooltip';
-import { calculate, validation } from 'actions/SendFormActions';
 import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import type { Token } from 'flowtype';
+import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from './components/PendingTransactions';
 
 import type { Props } from './Container';
@@ -25,17 +23,22 @@ import type { Props } from './Container';
 // and put it inside config/variables.js
 const SmallScreenWidth = '850px';
 
-type State = {
-    isAdvancedSettingsHidden: boolean,
-    shouldAnimateAdvancedSettingsToggle: boolean,
-};
-
 const Wrapper = styled.section`
     padding: 0 48px;
 `;
 
 const StyledH2 = styled(H2)`
     padding: 20px 0;
+`;
+
+const AmountInputLabelWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const AmountInputLabel = styled.span`
+    text-align: right;
+    color: ${colors.TEXT_SECONDARY};
 `;
 
 const InputRow = styled.div`
@@ -143,453 +146,264 @@ const SendButton = styled(Button)`
     }
 `;
 
-const AdvancedSettingsWrapper = styled.div`
-    padding: 20px 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    border-top: 1px solid ${colors.DIVIDER};
-`;
-
-const GasInputRow = styled(InputRow)`
-    width: 100%;
-    display: flex;
-`;
-
-const GasInput = styled(Input)`
-    &:first-child {
-        padding-right: 20px;
-    }
-`;
-
-const AdvancedSettingsSendButtonWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-`;
-
-const StyledTextarea = styled(Textarea)`
-    margin-bottom: 20px;
-    height: 80px;
-`;
-
 const AdvancedSettingsIcon = styled(Icon)`
     margin-left: 10px;
 `;
 
-const GreenSpan = styled.span`
-    color: ${colors.GREEN_PRIMARY};
-`;
+// render helpers
+const getAddressInputState = (address: string, addressErrors: string, addressWarnings: string): string => {
+    let state = '';
+    if (address && !addressErrors) {
+        state = 'success';
+    }
+    if (addressWarnings && !addressErrors) {
+        state = 'warning';
+    }
+    if (addressErrors) {
+        state = 'error';
+    }
+    return state;
+};
 
-const InputLabelWrapper = styled.div`
-    display: flex;
-    align-items: center;
-`;
+const getAmountInputState = (amountErrors: string, amountWarnings: string): string => {
+    let state = '';
+    if (amountWarnings && !amountErrors) {
+        state = 'warning';
+    }
+    if (amountErrors) {
+        state = 'error';
+    }
+    return state;
+};
 
-class AccountSend extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            isAdvancedSettingsHidden: true,
-            shouldAnimateAdvancedSettingsToggle: false,
-        };
+const getTokensSelectData = (tokens: Array<Token>, accountNetwork: any): Array<{ value: string, label: string }> => {
+    const tokensSelectData: Array<{ value: string, label: string }> = tokens.map(t => ({ value: t.symbol, label: t.symbol }));
+    tokensSelectData.unshift({ value: accountNetwork.symbol, label: accountNetwork.symbol });
+
+    return tokensSelectData;
+};
+
+// stateless component
+const AccountSend = (props: Props) => {
+    const device = props.wallet.selectedDevice;
+    const {
+        account,
+        network,
+        discovery,
+        tokens,
+    } = props.selectedAccount;
+    const {
+        address,
+        amount,
+        setMax,
+        networkSymbol,
+        currency,
+        feeLevels,
+        selectedFeeLevel,
+        gasPriceNeedsUpdate,
+        total,
+        errors,
+        warnings,
+        infos,
+        sending,
+        advanced,
+    } = props.sendForm;
+    const {
+        toggleAdvanced,
+        onAddressChange,
+        onAmountChange,
+        onSetMax,
+        onCurrencyChange,
+        onFeeLevelChange,
+        updateFeeLevels,
+        onSend,
+    } = props.sendFormActions;
+
+    const isCurrentCurrencyToken = networkSymbol !== currency;
+
+    let selectedTokenBalance = 0;
+    const selectedToken = tokens.find(t => t.symbol === currency);
+    if (selectedToken) {
+        selectedTokenBalance = selectedToken.balance;
     }
 
-    componentWillReceiveProps(newProps: Props) {
-        calculate(this.props, newProps);
-        validation(newProps);
+    if (!device || !account || !discovery || !network) return null;
+
+    let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
+    let sendButtonText: string = 'Send';
+    if (networkSymbol !== currency && amount.length > 0 && !errors.amount) {
+        sendButtonText += ` ${amount} ${currency.toUpperCase()}`;
+    } else if (networkSymbol === currency && total !== '0') {
+        sendButtonText += ` ${total} ${network.symbol}`;
     }
 
-    getAddressInputState(address: string, addressErrors: string, addressWarnings: string) {
-        let state = '';
-        if (address && !addressErrors) {
-            state = 'success';
-        }
-        if (addressWarnings && !addressErrors) {
-            state = 'warning';
-        }
-        if (addressErrors) {
-            state = 'error';
-        }
-        return state;
+    if (!device.connected) {
+        sendButtonText = 'Device is not connected';
+        isSendButtonDisabled = true;
+    } else if (!device.available) {
+        sendButtonText = 'Device is unavailable';
+        isSendButtonDisabled = true;
+    } else if (!discovery.completed) {
+        sendButtonText = 'Loading accounts';
+        isSendButtonDisabled = true;
     }
 
-    getAmountInputState(amountErrors: string, amountWarnings: string) {
-        let state = '';
-        if (amountWarnings && !amountErrors) {
-            state = 'warning';
-        }
-        if (amountErrors) {
-            state = 'error';
-        }
-        return state;
-    }
+    const tokensSelectData = getTokensSelectData(tokens, network);
+    const isAdvancedSettingsHidden = !advanced;
 
-    getGasLimitInputState(gasLimitErrors: string, gasLimitWarnings: string) {
-        let state = '';
-        if (gasLimitWarnings && !gasLimitErrors) {
-            state = 'warning';
-        }
-        if (gasLimitErrors) {
-            state = 'error';
-        }
-        return state;
-    }
+    return (
+        <SelectedAccount {...props}>
+            <Wrapper>
+                <StyledH2>Send Ethereum or tokens</StyledH2>
+                <InputRow>
+                    <Input
+                        state={getAddressInputState(address, errors.address, warnings.address)}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck="false"
+                        topLabel="Address"
+                        bottomText={errors.address || warnings.address || infos.address}
+                        value={address}
+                        onChange={event => onAddressChange(event.target.value)}
+                    />
+                </InputRow>
 
-    getGasPriceInputState(gasPriceErrors: string, gasPriceWarnings: string) {
-        let state = '';
-        if (gasPriceWarnings && !gasPriceErrors) {
-            state = 'warning';
-        }
-        if (gasPriceErrors) {
-            state = 'error';
-        }
-        return state;
-    }
-
-    getTokensSelectData(tokens: Array<Token>, accountNetwork: any) {
-        const tokensSelectData: Array<{ value: string, label: string }> = tokens.map(t => ({ value: t.symbol, label: t.symbol }));
-        tokensSelectData.unshift({ value: accountNetwork.symbol, label: accountNetwork.symbol });
-
-        return tokensSelectData;
-    }
-
-    handleToggleAdvancedSettingsButton() {
-        this.toggleAdvancedSettings();
-    }
-
-    toggleAdvancedSettings() {
-        this.setState(previousState => ({
-            isAdvancedSettingsHidden: !previousState.isAdvancedSettingsHidden,
-            shouldAnimateAdvancedSettingsToggle: true,
-        }));
-    }
-
-    render() {
-        const device = this.props.wallet.selectedDevice;
-        const {
-            account,
-            network,
-            discovery,
-            tokens,
-        } = this.props.selectedAccount;
-        const {
-            address,
-            amount,
-            setMax,
-            networkSymbol,
-            currency,
-            feeLevels,
-            selectedFeeLevel,
-            recommendedGasPrice,
-            gasPriceNeedsUpdate,
-            total,
-            errors,
-            warnings,
-            infos,
-            data,
-            sending,
-            gasLimit,
-            gasPrice,
-        } = this.props.sendForm;
-
-        const {
-            onAddressChange,
-            onAmountChange,
-            onSetMax,
-            onCurrencyChange,
-            onFeeLevelChange,
-            updateFeeLevels,
-            onSend,
-            onGasLimitChange,
-            onGasPriceChange,
-            onDataChange,
-        } = this.props.sendFormActions;
-
-        if (!device || !account || !discovery || !network) return null;
-
-        let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
-        let sendButtonText: string = 'Send';
-        if (networkSymbol !== currency && amount.length > 0 && !errors.amount) {
-            sendButtonText += ` ${amount} ${currency.toUpperCase()}`;
-        } else if (networkSymbol === currency && total !== '0') {
-            sendButtonText += ` ${total} ${network.symbol}`;
-        }
-
-        if (!device.connected) {
-            sendButtonText = 'Device is not connected';
-            isSendButtonDisabled = true;
-        } else if (!device.available) {
-            sendButtonText = 'Device is unavailable';
-            isSendButtonDisabled = true;
-        } else if (!discovery.completed) {
-            sendButtonText = 'Loading accounts';
-            isSendButtonDisabled = true;
-        }
-
-        const tokensSelectData = this.getTokensSelectData(tokens, network);
-
-        let gasLimitTooltipCurrency: string;
-        let gasLimitTooltipValue: string;
-        if (networkSymbol !== currency) {
-            gasLimitTooltipCurrency = 'tokens';
-            gasLimitTooltipValue = network.defaultGasLimitTokens.toString(10);
-        } else {
-            gasLimitTooltipCurrency = networkSymbol;
-            gasLimitTooltipValue = network.defaultGasLimit.toString(10);
-        }
-
-
-        return (
-            <SelectedAccount {...this.props}>
-                <Wrapper>
-                    <StyledH2>Send Ethereum or tokens</StyledH2>
-                    <InputRow>
-                        <Input
-                            state={this.getAddressInputState(address, errors.address, warnings.address)}
-                            autoComplete="off"
-                            autoCorrect="off"
-                            autoCapitalize="off"
-                            spellCheck="false"
-                            topLabel="Address"
-                            bottomText={errors.address || warnings.address || infos.address}
-                            value={address}
-                            onChange={event => onAddressChange(event.target.value)}
-                        />
-                    </InputRow>
-
-                    <InputRow>
-                        <Input
-                            state={this.getAmountInputState(errors.amount, warnings.amount)}
-                            autoComplete="off"
-                            autoCorrect="off"
-                            autoCapitalize="off"
-                            spellCheck="false"
-                            topLabel="Amount"
-                            value={amount}
-                            onChange={event => onAmountChange(event.target.value)}
-                            bottomText={errors.amount || warnings.amount || infos.amount}
-                            sideAddons={[
-                                (
-                                    <SetMaxAmountButton
-                                        key="icon"
-                                        onClick={() => onSetMax()}
-                                        isActive={setMax}
-                                    >
-                                        {!setMax && (
-                                            <Icon
-                                                icon={ICONS.TOP}
-                                                size={25}
-                                                color={colors.TEXT_SECONDARY}
-                                            />
-                                        )}
-                                        {setMax && (
-                                            <Icon
-                                                icon={ICONS.CHECKED}
-                                                size={25}
-                                                color={colors.WHITE}
-                                            />
-                                        )}
-                                        Set max
-                                    </SetMaxAmountButton>
-                                ),
-                                (
-                                    <CurrencySelect
-                                        key="currency"
-                                        isSearchable={false}
-                                        isClearable={false}
-                                        defaultValue={tokensSelectData[0]}
-                                        isDisabled={tokensSelectData.length < 2}
-                                        onChange={onCurrencyChange}
-                                        options={tokensSelectData}
-                                    />
-                                ),
-                            ]}
-                        />
-                    </InputRow>
-
-                    <InputRow>
-                        <FeeLabelWrapper>
-                            <FeeLabel>Fee</FeeLabel>
-                            {gasPriceNeedsUpdate && (
-                                <UpdateFeeWrapper>
-                                    <Icon
-                                        icon={ICONS.WARNING}
-                                        color={colors.WARNING_PRIMARY}
-                                        size={20}
-                                    />
-                                    Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
-                                </UpdateFeeWrapper>
-                            )}
-                        </FeeLabelWrapper>
-                        <Select
-                            isSearchable={false}
-                            isClearable={false}
-                            value={selectedFeeLevel}
-                            onChange={(option) => {
-                                if (option.value === 'Custom') {
-                                    this.toggleAdvancedSettings();
-                                }
-                                onFeeLevelChange(option);
-                            }}
-                            options={feeLevels}
-                            formatOptionLabel={option => (
-                                <FeeOptionWrapper>
-                                    <P>{option.value}</P>
-                                    <P>{option.label}</P>
-                                </FeeOptionWrapper>
-                            )}
-                        />
-                    </InputRow>
-
-                    <ToggleAdvancedSettingsWrapper
-                        isAdvancedSettingsHidden={this.state.isAdvancedSettingsHidden}
-                    >
-                        <ToggleAdvancedSettingsButton
-                            isTransparent
-                            onClick={() => this.handleToggleAdvancedSettingsButton()}
-                        >
-                            Advanced settings
-                            <AdvancedSettingsIcon
-                                icon={ICONS.ARROW_DOWN}
-                                color={colors.TEXT_SECONDARY}
-                                size={24}
-                                isActive={this.state.isAdvancedSettingsHidden}
-                                canAnimate={this.state.shouldAnimateAdvancedSettingsToggle}
-                            />
-                        </ToggleAdvancedSettingsButton>
-
-                        {this.state.isAdvancedSettingsHidden && (
-                            <SendButton
-                                isDisabled={isSendButtonDisabled}
-                                isAdvancedSettingsHidden={this.state.isAdvancedSettingsHidden}
-                                onClick={() => onSend()}
-                            >
-                                {sendButtonText}
-                            </SendButton>
-                        )}
-                    </ToggleAdvancedSettingsWrapper>
-
-                    {!this.state.isAdvancedSettingsHidden && (
-                        <AdvancedSettingsWrapper>
-                            <GasInputRow>
-                                <GasInput
-                                    state={this.getGasLimitInputState(errors.gasLimit, warnings.gasLimit)}
-                                    autoComplete="off"
-                                    autoCorrect="off"
-                                    autoCapitalize="off"
-                                    spellCheck="false"
-                                    topLabel={(
-                                        <InputLabelWrapper>
-                                            Gas limit
-                                            <Tooltip
-                                                content={(
-                                                    <React.Fragment>
-                                                        Gas limit is the amount of gas to send with your transaction.<br />
-                                                        <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
-                                                        Increasing this number will not get your TX mined faster.<br />
-                                                        Default value for sending {gasLimitTooltipCurrency} is <GreenSpan>{gasLimitTooltipValue}</GreenSpan>
-                                                    </React.Fragment>
-                                                )}
-                                                placement="top"
-                                            >
-                                                <Icon
-                                                    icon={ICONS.HELP}
-                                                    color={colors.TEXT_SECONDARY}
-                                                    size={24}
-                                                />
-                                            </Tooltip>
-                                        </InputLabelWrapper>
-                                    )}
-                                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
-                                    value={gasLimit}
-                                    isDisabled={networkSymbol === currency && data.length > 0}
-                                    onChange={event => onGasLimitChange(event.target.value)}
-                                />
-
-                                <GasInput
-                                    state={this.getGasPriceInputState(errors.gasPrice, warnings.gasPrice)}
-                                    autoComplete="off"
-                                    autoCorrect="off"
-                                    autoCapitalize="off"
-                                    spellCheck="false"
-                                    topLabel={(
-                                        <InputLabelWrapper>
-                                            Gas price
-                                            <Tooltip
-                                                content={(
-                                                    <React.Fragment>
-                                                        Gas Price is the amount you pay per unit of gas.<br />
-                                                        <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
-                                                        Higher the gas price = faster transaction, but more expensive. Recommended is <GreenSpan>{recommendedGasPrice} GWEI.</GreenSpan><br />
-                                                        <Link href="https://myetherwallet.github.io/knowledge-base/gas/what-is-gas-ethereum.html" target="_blank" rel="noreferrer noopener" isGreen>Read more</Link>
-                                                    </React.Fragment>
-                                                )}
-                                                placement="top"
-                                            >
-                                                <Icon
-                                                    icon={ICONS.HELP}
-                                                    color={colors.TEXT_SECONDARY}
-                                                    size={24}
-                                                />
-                                            </Tooltip>
-                                        </InputLabelWrapper>
-                                    )}
-                                    bottomText={errors.gasPrice || warnings.gasPrice || infos.gasPrice}
-                                    value={gasPrice}
-                                    onChange={event => onGasPriceChange(event.target.value)}
-                                />
-                            </GasInputRow>
-
-                            <StyledTextarea
-                                topLabel={(
-                                    <InputLabelWrapper>
-                                        Data
-                                        <Tooltip
-                                            content={(
-                                                <React.Fragment>
-                                                    Data is usually used when you send transactions to contracts.
-                                                </React.Fragment>
-                                            )}
-                                            placement="top"
-                                        >
-                                            <Icon
-                                                icon={ICONS.HELP}
-                                                color={colors.TEXT_SECONDARY}
-                                                size={24}
-                                            />
-                                        </Tooltip>
-                                    </InputLabelWrapper>
+                <InputRow>
+                    <Input
+                        state={getAmountInputState(errors.amount, warnings.amount)}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck="false"
+                        topLabel={(
+                            <AmountInputLabelWrapper>
+                                <AmountInputLabel>Amount</AmountInputLabel>
+                                {(isCurrentCurrencyToken && selectedToken) && (
+                                    <AmountInputLabel>You have: {selectedTokenBalance} {selectedToken.symbol}</AmountInputLabel>
                                 )}
-                                disabled={networkSymbol !== currency}
-                                value={networkSymbol !== currency ? '' : data}
-                                onChange={event => onDataChange(event.target.value)}
-                            />
-
-                            <AdvancedSettingsSendButtonWrapper>
-                                <SendButton
-                                    isDisabled={isSendButtonDisabled}
-                                    onClick={() => onSend()}
+                            </AmountInputLabelWrapper>
+                        )}
+                        value={amount}
+                        onChange={event => onAmountChange(event.target.value)}
+                        bottomText={errors.amount || warnings.amount || infos.amount}
+                        sideAddons={[
+                            (
+                                <SetMaxAmountButton
+                                    key="icon"
+                                    onClick={() => onSetMax()}
+                                    isActive={setMax}
                                 >
-                                    {sendButtonText}
-                                </SendButton>
-                            </AdvancedSettingsSendButtonWrapper>
-                        </AdvancedSettingsWrapper>
-                    )}
+                                    {!setMax && (
+                                        <Icon
+                                            icon={ICONS.TOP}
+                                            size={25}
+                                            color={colors.TEXT_SECONDARY}
+                                        />
+                                    )}
+                                    {setMax && (
+                                        <Icon
+                                            icon={ICONS.CHECKED}
+                                            size={25}
+                                            color={colors.WHITE}
+                                        />
+                                    )}
+                                    Set max
+                                </SetMaxAmountButton>
+                            ),
+                            (
+                                <CurrencySelect
+                                    key="currency"
+                                    isSearchable={false}
+                                    isClearable={false}
+                                    defaultValue={tokensSelectData[0]}
+                                    isDisabled={tokensSelectData.length < 2}
+                                    onChange={onCurrencyChange}
+                                    options={tokensSelectData}
+                                />
+                            ),
+                        ]}
+                    />
+                </InputRow>
 
-                    {this.props.selectedAccount.pending.length > 0 && (
-                        <PendingTransactions
-                            pending={this.props.selectedAccount.pending}
-                            tokens={this.props.selectedAccount.tokens}
-                            network={network}
+                <InputRow>
+                    <FeeLabelWrapper>
+                        <FeeLabel>Fee</FeeLabel>
+                        {gasPriceNeedsUpdate && (
+                            <UpdateFeeWrapper>
+                                <Icon
+                                    icon={ICONS.WARNING}
+                                    color={colors.WARNING_PRIMARY}
+                                    size={20}
+                                />
+                                Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
+                            </UpdateFeeWrapper>
+                        )}
+                    </FeeLabelWrapper>
+                    <Select
+                        isSearchable={false}
+                        isClearable={false}
+                        value={selectedFeeLevel}
+                        onChange={onFeeLevelChange}
+                        options={feeLevels}
+                        formatOptionLabel={option => (
+                            <FeeOptionWrapper>
+                                <P>{option.value}</P>
+                                <P>{option.label}</P>
+                            </FeeOptionWrapper>
+                        )}
+                    />
+                </InputRow>
+
+                <ToggleAdvancedSettingsWrapper
+                    isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                >
+                    <ToggleAdvancedSettingsButton
+                        isTransparent
+                        onClick={toggleAdvanced}
+                    >
+                        Advanced settings
+                        <AdvancedSettingsIcon
+                            icon={ICONS.ARROW_DOWN}
+                            color={colors.TEXT_SECONDARY}
+                            size={24}
+                            isActive={advanced}
+                            canAnimate
                         />
-                    )}
-                </Wrapper>
-            </SelectedAccount>
-        );
-    }
-}
+                    </ToggleAdvancedSettingsButton>
 
+                    {isAdvancedSettingsHidden && (
+                        <SendButton
+                            isDisabled={isSendButtonDisabled}
+                            isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                            onClick={() => onSend()}
+                        >
+                            {sendButtonText}
+                        </SendButton>
+                    )}
+                </ToggleAdvancedSettingsWrapper>
+
+                {advanced && (
+                    <AdvancedForm {...props}>
+                        <SendButton
+                            isDisabled={isSendButtonDisabled}
+                            onClick={() => onSend()}
+                        >
+                            {sendButtonText}
+                        </SendButton>
+                    </AdvancedForm>
+                )}
+
+                {props.selectedAccount.pending.length > 0 && (
+                    <PendingTransactions
+                        pending={props.selectedAccount.pending}
+                        tokens={props.selectedAccount.tokens}
+                        network={network}
+                    />
+                )}
+            </Wrapper>
+        </SelectedAccount>
+    );
+};
 
 export default AccountSend;

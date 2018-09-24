@@ -6,10 +6,6 @@ import * as WALLET from 'actions/constants/wallet';
 import * as stateUtils from 'reducers/utils';
 
 import type {
-    Account,
-    Coin,
-    Discovery,
-    Token,
     Device,
     TrezorDevice,
     RouterLocationState,

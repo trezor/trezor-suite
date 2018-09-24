@@ -10,6 +10,7 @@ import * as NotificationActions from 'actions/NotificationActions';
 import * as LocalStorageActions from 'actions/LocalStorageActions';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as SelectedAccountActions from 'actions/SelectedAccountActions';
+import * as SendFormActionActions from 'actions/SendFormActions';
 
 import type {
     Middleware,
@@ -91,6 +92,8 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         api.dispatch(NotificationActions.clear(prevLocation.state, currentLocation.state));
     }
 
+    // observe send form props changes
+    api.dispatch(SendFormActionActions.observe(prevState, action));
 
     // update common values in WallerReducer
     api.dispatch(WalletActions.updateSelectedValues(prevState, action));

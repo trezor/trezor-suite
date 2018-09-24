@@ -27,7 +27,8 @@ export type TokenAction = {
 
 
 // action from component <reactSelect>
-export const load = (input: string, network: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<any> => {
+export const load = ($input: string, network: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<any> => {
+    let input = $input;
     if (input.length < 1) input = '0x';
 
     const tokens = getState().localStorage.tokens[network];
@@ -43,10 +44,12 @@ export const load = (input: string, network: string): AsyncAction => async (disp
         return result.slice(0, 100);
     }
 
-    const info = await dispatch( BlockchainActions.getTokenInfo(input, network) );
+    const info = await dispatch(BlockchainActions.getTokenInfo(input, network));
     if (info) {
         return [info];
     }
+
+    return null;
 };
 
 export const setBalance = (tokenAddress: string, ethAddress: string, balance: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -63,7 +66,7 @@ export const setBalance = (tokenAddress: string, ethAddress: string, balance: st
     });
 };
 
-export const add = (token: NetworkToken, account: Account): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const add = (token: NetworkToken, account: Account): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
     const tkn: Token = {
         loaded: false,
         deviceState: account.deviceState,
@@ -81,7 +84,7 @@ export const add = (token: NetworkToken, account: Account): AsyncAction => async
         payload: tkn,
     });
 
-    const tokenBalance = await dispatch( BlockchainActions.getTokenBalance(tkn) );
+    const tokenBalance = await dispatch(BlockchainActions.getTokenBalance(tkn));
     dispatch(setBalance(token.address, account.address, tokenBalance));
 };
 

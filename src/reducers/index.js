@@ -40,7 +40,7 @@ const reducers = {
     fiat,
     wallet,
     devices,
-    blockchain
+    blockchain,
 };
 
 export type Reducers = typeof reducers;

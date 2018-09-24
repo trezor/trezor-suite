@@ -25,7 +25,7 @@ export const onPinSubmit = (value: string): Action => {
 };
 
 export const onPassphraseSubmit = (passphrase: string): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
-    const resp = await TrezorConnect.uiResponse({
+    await TrezorConnect.uiResponse({
         type: UI.RECEIVE_PASSPHRASE,
         payload: {
             value: passphrase,

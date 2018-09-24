@@ -39,11 +39,13 @@ const add = (state: State, action: SendTxAction): State => {
     return newState;
 };
 
-const add_NEW = (state: State, payload: any): State => {
+/*
+const addFromBloockbokNotifiaction = (state: State, payload: any): State => {
     const newState = [...state];
     newState.push(payload);
     return newState;
 };
+*/
 
 const remove = (state: State, id: string): State => state.filter(tx => tx.id !== id);
 

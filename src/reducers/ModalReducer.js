@@ -94,7 +94,6 @@ export default function modal(state: State = initialState, action: Action): Stat
 
         case UI.CLOSE_UI_WINDOW:
         case MODAL.CLOSE:
-
         case CONNECT.FORGET:
         case CONNECT.FORGET_SINGLE:
         case CONNECT.REMEMBER:
