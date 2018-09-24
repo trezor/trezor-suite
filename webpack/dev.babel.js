@@ -23,7 +23,7 @@ module.exports = {
         path: BUILD,
     },
     devServer: {
-        host: '0.0.0.0',
+        // host: '0.0.0.0',
         contentBase: [
             SRC,
             PUBLIC,
