@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import Input from 'components/inputs/Input';
+import Textarea from 'components/Textarea';
 
 import { H2 } from 'components/Heading';
 import colors from 'config/colors';
@@ -32,13 +34,6 @@ const Label = styled.div`
     color: ${colors.LABEL};
     padding: 5px 0px;
 `;
-
-const Textarea = styled.textarea`
-    resize: vertical;
-    width: 100%;
-`;
-
-const Input = styled.input``;
 
 const AccountSignVerify = () => (
     <Wrapper>

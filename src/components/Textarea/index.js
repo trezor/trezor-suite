@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 
 const disabledColor = colors.TEXT_PRIMARY;
 
-const TextArea = styled.textarea`
+const StyledTextarea = styled.textarea`
     width: 100%;
     padding: 6px 12px;
     box-sizing: border-box;
@@ -102,7 +102,7 @@ const Textarea = ({
         {topLabel && (
             <TopLabel>{topLabel}</TopLabel>
         )}
-        <TextArea
+        <StyledTextarea
             className={className}
             disabled={isDisabled}
             style={customStyle}
