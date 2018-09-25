@@ -98,7 +98,7 @@ class DeviceMenu extends Component<Props> {
     }
 
     render() {
-        const { devices, onSelectDevice } = this.props;
+        const { devices, onSelectDevice, forgetDevice } = this.props;
         const { transport } = this.props.connect;
         const { selectedDevice } = this.props.wallet;
 
@@ -110,7 +110,7 @@ class DeviceMenu extends Component<Props> {
                     devices={devices}
                     selectedDevice={selectedDevice}
                     onSelectDevice={onSelectDevice}
-                    forgetDevice={() => this.props.forgetDevice(selectedDevice)}
+                    forgetDevice={forgetDevice}
                 />
                 <ButtonWrapper>
                     {isWebUSB(transport) && (
