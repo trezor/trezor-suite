@@ -5,7 +5,6 @@ import * as WALLET from 'actions/constants/wallet';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 
 import * as WalletActions from 'actions/WalletActions';
-import * as RouterActions from 'actions/RouterActions';
 import * as NotificationActions from 'actions/NotificationActions';
 import * as LocalStorageActions from 'actions/LocalStorageActions';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
