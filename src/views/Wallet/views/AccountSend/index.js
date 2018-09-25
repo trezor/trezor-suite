@@ -42,7 +42,7 @@ const AmountInputLabel = styled.span`
 `;
 
 const InputRow = styled.div`
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 `;
 
 const SetMaxAmountButton = styled(Button)`
