@@ -30,7 +30,7 @@ type WalletContainerProps = {
 
 const AppWrapper = styled.div`
     position: relative;
-    min-height: 100vh;
+    min-height: 100%;
     min-width: 720px;
     display: flex;
     flex-direction: column;
