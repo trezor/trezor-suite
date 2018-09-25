@@ -15,7 +15,9 @@ class DeviceList extends Component {
     }
 
     render() {
-        const { devices, selectedDevice, onSelectDevice } = this.props;
+        const {
+            devices, selectedDevice, onSelectDevice, forgetDevice,
+        } = this.props;
         return (
             <Wrapper>
                 {devices
@@ -31,13 +33,13 @@ class DeviceList extends Component {
                                         onSelectDevice(device);
                                     }
                                 }}
-                                onClickIcon={() => this.onDeviceMenuClick({ type: 'forget', label: '' }, device)}
+                                onClickIcon={() => forgetDevice(device)}
                                 icon={(
                                     <React.Fragment>
                                         <IconClick onClick={(event) => {
                                             event.stopPropagation();
                                             event.preventDefault();
-                                            this.onDeviceMenuClick({ type: 'forget', label: '' }, device);
+                                            forgetDevice(device);
                                         }}
                                         >
                                             <Icon

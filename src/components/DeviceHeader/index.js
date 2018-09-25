@@ -26,7 +26,7 @@ const Wrapper = styled.div`
         box-shadow: none;
     `}
 
-    ${props => props.isHoverable && css`
+    ${props => props.isHoverable && !props.disabled && css`
         &:hover {
             background: ${colors.GRAY_LIGHT};
         }
@@ -103,7 +103,10 @@ const DeviceHeader = ({
             isHoverable={isHoverable}
             disabled={disabled}
         >
-            <ClickWrapper disabled={disabled} onClick={onClickWrapper}>
+            <ClickWrapper
+                disabled={disabled}
+                onClick={onClickWrapper}
+            >
                 <ImageWrapper>
                     <Dot color={getStatusColor(status)} />
                     <TrezorImage model={getVersion(device)} />
