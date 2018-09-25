@@ -190,8 +190,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     isSelected
                     onClickWrapper={() => this.handleOpen()}
                     device={this.props.wallet.selectedDevice}
-                    transport={this.props.connect.transport}
-                    devices={this.props.devices}
+                    disabled={this.props.wallet.selectedDevice.features && this.props.wallet.selectedDevice.features.bootloader_mode && this.props.devices.length === 1}
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
