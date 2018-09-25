@@ -256,8 +256,7 @@ export const isLandingPageUrl = ($url?: string): PayloadAction<boolean> => (disp
     if (typeof url !== 'string') {
         url = getState().router.location.pathname;
     }
-    // TODO: add more landing page cases/urls to config.json (like /tools etc)
-    return (url === '/' || url === '/bridge');
+    return url === '/';
 };
 
 /*

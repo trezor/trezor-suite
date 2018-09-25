@@ -52,9 +52,6 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             if (action.device) {
                 // try to authorize device
                 api.dispatch(TrezorConnectActions.getSelectedDeviceState());
-            } else {
-                // try select different device
-                api.dispatch(RouterActions.selectFirstAvailableDevice());
             }
             break;
         case DEVICE.CONNECT:
