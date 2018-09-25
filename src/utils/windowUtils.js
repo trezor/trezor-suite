@@ -3,7 +3,7 @@
 
 export const getViewportHeight = (): number => (
     // $FlowIssue
-    window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight // $FlowIssue
+    document.documentElement.clientHeight || document.body.clientHeight // $FlowIssue
 );
 
 export const getScrollX = (): number => {
