@@ -13,6 +13,11 @@ import ICONS from 'config/icons';
 
 import type { Props } from '../../Container';
 
+// TODO: Decide on a small screen width for the whole app
+// and put it inside config/variables.js
+// same variable also in "AccountSend/index.js"
+const SmallScreenWidth = '850px';
+
 const InputRow = styled.div`
     margin-bottom: 20px;
 `;
@@ -38,17 +43,29 @@ const AdvancedSettingsWrapper = styled.div`
 const GasInputRow = styled(InputRow)`
     width: 100%;
     display: flex;
+
+    @media screen and (max-width: ${SmallScreenWidth}) {
+        flex-direction: column;
+    }
 `;
 
 const GasInput = styled(Input)`
+    min-height: 85px;
     &:first-child {
         padding-right: 20px;
+    }
+
+    @media screen and (max-width: ${SmallScreenWidth}) {
+        &:first-child {
+            padding-right: 0;
+            margin-bottom: 2px;
+        }
     }
 `;
 
 const StyledTextarea = styled(Textarea)`
     margin-bottom: 20px;
-    height: 80px;
+    min-height: 80px;
 `;
 
 const AdvancedSettingsSendButtonWrapper = styled.div`
@@ -79,6 +96,17 @@ const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string)
     return state;
 };
 
+const getDataTextareaState = (dataError: string, dataWarning: string): string => {
+    let state = '';
+    if (dataWarning) {
+        state = 'warning';
+    }
+    if (dataError) {
+        state = 'error';
+    }
+    return state;
+};
+
 // stateless component
 const AdvancedForm = (props: Props) => {
     const {
@@ -89,6 +117,7 @@ const AdvancedForm = (props: Props) => {
         networkSymbol,
         currency,
         recommendedGasPrice,
+        calculatingGasLimit,
         errors,
         warnings,
         infos,
@@ -143,7 +172,7 @@ const AdvancedForm = (props: Props) => {
                             </Tooltip>
                         </InputLabelWrapper>
                     )}
-                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
+                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit || (calculatingGasLimit ? 'Calculating...' : '')}
                     value={gasLimit}
                     isDisabled={networkSymbol === currency && data.length > 0}
                     onChange={event => onGasLimitChange(event.target.value)}
@@ -203,8 +232,9 @@ const AdvancedForm = (props: Props) => {
                         </Tooltip>
                     </InputLabelWrapper>
                 )}
+                state={getDataTextareaState(errors.data, warnings.data)}
                 bottomText={errors.data || warnings.data || infos.data}
-                disabled={networkSymbol !== currency}
+                isDisabled={networkSymbol !== currency}
                 value={networkSymbol !== currency ? '' : data}
                 onChange={event => onDataChange(event.target.value)}
             />
