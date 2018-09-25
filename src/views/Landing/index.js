@@ -21,7 +21,7 @@ import InstallBridge from './components/InstallBridge';
 import type { Props } from './Container';
 
 const LandingWrapper = styled.div`
-    min-height: 100vh;
+    min-height: 100%;
     min-width: 720px;
 
     display: flex;
