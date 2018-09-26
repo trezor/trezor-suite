@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import colors from 'config/colors';
 
+import { PRIORITY } from 'constants/notifications';
 import Group from './components/Group';
 
 const Wrapper = styled.div``;
@@ -8,43 +10,53 @@ const Wrapper = styled.div``;
 class NotificationsGroup extends Component {
     constructor() {
         super();
-        this.notificationPriority = {
-            error: 0,
-            warning: 1,
-            info: 2,
-            success: 3,
-        };
-
         this.notifications = [
-            { type: 'warning' },
-            { type: 'error' },
-            { type: 'info' },
-            { type: 'error' },
-            { type: 'warning' },
-            { type: 'success' },
-            { type: 'error' },
-            { type: 'error' },
+            { type: 'warning', title: 'aaa', message: 'aaaa' },
+            { type: 'error', title: 'aaa', message: 'aaaa' },
+            { type: 'info', title: 'aaa', message: 'aaaa' },
+            { type: 'error', title: 'aaa', message: 'aaaa' },
+            { type: 'warning', title: 'aaa', message: 'aaaa' },
+            { type: 'success', title: 'aaa', message: 'aaaa' },
+            { type: 'error', title: 'aaa', message: 'aaaa' },
+            { type: 'error', title: 'aaa', message: 'aaaa' },
         ];
     }
 
-    getGroupNotifications(notifications, type) {
-        return notifications.filter(item => item.type === type);
-    }
+    getColor = (type) => {
+        let color;
+        switch (type) {
+            case 'info':
+                color = colors.INFO_PRIMARY;
+                break;
+            case 'error':
+                color = colors.ERROR_PRIMARY;
+                break;
+            case 'warning':
+                color = colors.WARNING_PRIMARY;
+                break;
+            case 'success':
+                color = colors.SUCCESS_PRIMARY;
+                break;
+            default:
+                color = null;
+        }
+        return color;
+    };
 
-    groupNotifications = (items, key) => items.reduce(
-        (result, item) => ({
-            ...result,
-            [item[key]]: [...(result[item[key]] || []), item],
-        }),
-        {},
-    );
+    groupNotifications = notifications => notifications.reduce((acc, obj) => {
+        const key = obj.type;
+        if (!acc[key]) {
+            acc[key] = [];
+        }
+        acc[key].push(obj);
+
+        return acc;
+    }, {});
 
     sortByPriority(notifications) {
-        const sorted = Object.keys(notifications).sort((a, b) => {
-            // sort
-        });
-        return sorted;
+        return notifications;
     }
+
 
     render() {
         const { notifications } = this;
@@ -53,10 +65,11 @@ class NotificationsGroup extends Component {
 
         return (
             <Wrapper>
-                {sortedNotifications.map(group => (
+                {Object.keys(sortedNotifications).map(group => (
                     <Group
-                        notifications={this.getGroupNotifications(group.type, sortedNotifications)}
-                        type={group.type}
+                        groupNotifications={notificationGroups[group]}
+                        color={this.getColor(group)}
+                        type={group}
                     />
                 ))}
             </Wrapper>
