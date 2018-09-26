@@ -11,10 +11,6 @@ const Wrapper = styled.div`
     flex: 1;
 `;
 
-const StyledH2 = styled(H2)`
-    padding: 24px 48px;
-`;
-
 const Row = styled.div`
     flex: 1;
     display: flex;
@@ -32,7 +28,7 @@ const P = styled.p`
 
 const Dashboard = () => (
     <Wrapper>
-        <StyledH2>Dashboard</StyledH2>
+        <H2>Dashboard</H2>
         <Row>
             <H2>Please select your coin</H2>
             <P>You will gain access to recieving &amp; sending selected coin</P>

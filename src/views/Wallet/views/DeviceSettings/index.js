@@ -4,19 +4,16 @@ import { H2 } from 'components/Heading';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import Button from 'components/Button';
+import P from 'components/Paragraph';
+import Link from 'components/Link';
 import ICONS from 'config/icons';
 import { connect } from 'react-redux';
 
 const Section = styled.section`
-`;
-
-const P = styled.p`
-    padding: 12px 0px 24px 0px;
-    text-align: center;
-`;
-
-const StyledH2 = styled(H2)`
-    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 `;
 
 const Row = styled.div`
@@ -25,8 +22,11 @@ const Row = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 0px 48px;
-    padding-bottom: 98px;
+`;
+
+const StyledP = styled(P)`
+    padding: 10px 0 15px 0;
+    text-align: center;
 `;
 
 const DeviceSettings = () => (
@@ -37,11 +37,11 @@ const DeviceSettings = () => (
                 color={colors.WARNING_PRIMARY}
                 icon={ICONS.WARNING}
             />
-            <StyledH2>Device settings is under construction</StyledH2>
-            <P>Please use Bitcoin wallet interface to change your device settings</P>
-            <a href="https://wallet.trezor.io/">
+            <H2>Device settings is under construction</H2>
+            <StyledP isSmaller>Please use Bitcoin wallet interface to change your device settings</StyledP>
+            <Link href="https://wallet.trezor.io/">
                 <Button>Take me to the Bitcoin wallet</Button>
-            </a>
+            </Link>
         </Row>
     </Section>
 );

@@ -102,7 +102,7 @@ export default (props: Props) => {
 
                     <LandingContent>
 
-                        {shouldShowUnsupportedBrowser && <BrowserNotSupported />}
+                        {true && <BrowserNotSupported />}
                         {shouldShowInstallBridge && <InstallBridge browserState={browserState} />}
 
                         {(shouldShowConnectDevice || shouldShowDisconnectDevice) && (
