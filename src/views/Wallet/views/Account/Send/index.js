@@ -23,16 +23,10 @@ import type { Props } from './Container';
 // and put it inside config/variables.js
 const SmallScreenWidth = '850px';
 
-const Wrapper = styled.section`
-    padding: 20px 48px;
-`;
-
-const StyledH2 = styled(H2)`
-    padding: 20px 0;
-`;
+const Wrapper = styled.section``;
 
 const InputRow = styled.div`
-    margin-bottom: 20px;
+    margin: 20px 0;
 `;
 
 const SetMaxAmountButton = styled(Button)`
@@ -237,7 +231,7 @@ const AccountSend = (props: Props) => {
     return (
         <SelectedAccount {...props}>
             <Wrapper>
-                <StyledH2>Send Ethereum or tokens</StyledH2>
+                <H2>Send Ethereum or tokens</H2>
                 <InputRow>
                     <Input
                         state={getAddressInputState(address, errors.address, warnings.address)}

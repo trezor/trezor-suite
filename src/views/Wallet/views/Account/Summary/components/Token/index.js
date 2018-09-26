@@ -62,9 +62,7 @@ class AddedToken extends Component<> {
         const textColor = new ColorHash();
 
         return (
-            <TokenWrapper
-                key={this.props.token.symbol}
-            >
+            <TokenWrapper key={this.props.token.symbol}>
                 <TokenIcon
                     textColor={textColor.hex(this.props.token.address)}
                     backgroundColor={bgColor.hex(this.props.token.address)}

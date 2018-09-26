@@ -16,22 +16,17 @@ import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
 
 import type { Props } from './Container';
 
-const Wrapper = styled.div`
-    padding-top: 20px;
-`;
+const Wrapper = styled.div``;
 
 const Label = styled.div`
     padding: 25px 0 5px 0;
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const StyledH2 = styled(H2)`
-    padding: 20px 48px;
-`;
 const AddressWrapper = styled.div`
     position: relative;
-    padding: 0px 48px;
     display: flex;
+    margin-top: 20px;
     flex-wrap: wrap;
     flex-direction: ${props => (props.isShowingQrCode ? 'column' : 'row')};
 `;
@@ -148,7 +143,7 @@ const AccountReceive = (props: Props) => {
     return (
         <SelectedAccount {...props}>
             <Wrapper>
-                <StyledH2>Receive Ethereum or tokens</StyledH2>
+                <H2>Receive Ethereum or tokens</H2>
                 <AddressWrapper
                     isShowingQrCode={addressVerified || addressUnverified}
                 >

@@ -11,7 +11,6 @@ const Wrapper = styled.div`
     flex: 1;
     flex-direction: row;
     background: ${colors.WHITE};
-    padding: 50px;
 `;
 
 const StyledH2 = styled(H2)`
