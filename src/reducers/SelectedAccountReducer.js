@@ -22,7 +22,7 @@ export type State = {
         title: string,
         message?: string,
     },
-    visible: boolean,
+    shouldRender: boolean,
 };
 
 export const initialState: State = {
@@ -33,7 +33,7 @@ export const initialState: State = {
     pending: [],
     discovery: null,
     notification: null,
-    visible: false,
+    shouldRender: false,
 };
 
 export default (state: State = initialState, action: Action): State => {

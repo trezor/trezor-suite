@@ -64,11 +64,11 @@ const AccountSummary = (props: Props) => {
         network,
         tokens,
         pending,
-        visible,
+        shouldRender,
     } = props.selectedAccount;
 
     // flow
-    if (!device || !account || !network || !visible) return null;
+    if (!device || !account || !network || !shouldRender) return null;
 
     const explorerLink: string = `${network.explorer.address}${account.address}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);

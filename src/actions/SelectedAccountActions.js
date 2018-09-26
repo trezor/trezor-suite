@@ -22,10 +22,10 @@ export type SelectedAccountAction = {
 };
 
 type AccountStatus = {
-    type: string;
-    title: string;
-    message?: string;
-    visible: boolean;
+    type: string; // notification type
+    title: string; // notification title
+    message?: string; // notification message
+    shouldRender: boolean; // should render account page
 }
 
 export const dispose = (): Action => ({
@@ -38,7 +38,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'info',
             title: 'Loading device...',
-            visible: false,
+            shouldRender: false,
         };
     }
 
@@ -53,7 +53,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'info',
             title: 'Loading account state...',
-            visible: false,
+            shouldRender: false,
         };
     }
 
@@ -62,7 +62,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'backend',
             title: 'Backend is not connected',
-            visible: false,
+            shouldRender: false,
         };
     }
 
@@ -75,7 +75,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
                     return {
                         type: 'info',
                         title: 'Loading accounts...',
-                        visible: false,
+                        shouldRender: false,
                     };
                 }
                 // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
@@ -83,7 +83,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
                     type: 'info',
                     title: `Device ${device.instanceLabel} is unavailable`,
                     message: 'Change passphrase settings to use this device',
-                    visible: false,
+                    shouldRender: false,
                 };
             }
 
@@ -92,7 +92,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
                 type: 'info',
                 title: `Device ${device.instanceLabel} is disconnected`,
                 message: 'Connect device to load accounts',
-                visible: false,
+                shouldRender: false,
             };
         }
 
@@ -101,7 +101,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
             return {
                 type: 'warning',
                 title: 'Account does not exist',
-                visible: false,
+                shouldRender: false,
             };
         }
 
@@ -109,7 +109,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'info',
             title: 'Loading accounts...',
-            visible: false,
+            shouldRender: false,
         };
     }
 
@@ -118,7 +118,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'info',
             title: `Device ${device.instanceLabel} is disconnected`,
-            visible: true,
+            shouldRender: true,
         };
     }
     if (!device.available) {
@@ -126,7 +126,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
             type: 'info',
             title: `Device ${device.instanceLabel} is unavailable`,
             message: 'Change passphrase settings to use this device',
-            visible: true,
+            shouldRender: true,
         };
     }
 
@@ -135,7 +135,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'info',
             title: 'Loading accounts...',
-            visible: true,
+            shouldRender: true,
         };
     }
 
@@ -178,50 +178,21 @@ export const observe = (prevState: State, action: Action): AsyncAction => async 
         tokens,
         pending,
         notification: null,
-        visible: false,
+        shouldRender: false,
     };
 
     // get "selectedAccount" status from newState
     const status = getAccountStatus(state, newState);
     newState.notification = status || null;
-    newState.visible = status ? status.visible : true;
+    newState.shouldRender = status ? status.shouldRender : true;
 
     // check if newState is different than previous state
-    const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, ['location', 'account', 'network', 'discovery', 'tokens', 'pending', 'status', 'visible']);
+    const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, ['location', 'account', 'network', 'discovery', 'tokens', 'pending', 'notification', 'shouldRender']);
     if (stateChanged) {
         // update values in reducer
         dispatch({
             type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
             payload: newState,
         });
-
-        // TODO: move this to send account actions
-        /*
-        if (location.state.send) {
-            const rejectedTxs = pending.filter(tx => tx.rejected);
-            rejectedTxs.forEach((tx) => {
-                dispatch({
-                    type: NOTIFICATION.ADD,
-                    payload: {
-                        type: 'warning',
-                        title: 'Pending transaction rejected',
-                        message: `Transaction with id: ${tx.id} not found.`,
-                        cancelable: true,
-                        actions: [
-                            {
-                                label: 'OK',
-                                callback: () => {
-                                    dispatch({
-                                        type: PENDING.TX_RESOLVED,
-                                        tx,
-                                    });
-                                },
-                            },
-                        ],
-                    },
-                });
-            });
-        }
-        */
     }
 };

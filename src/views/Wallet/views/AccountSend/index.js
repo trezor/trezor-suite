@@ -190,6 +190,7 @@ const AccountSend = (props: Props) => {
         network,
         discovery,
         tokens,
+        shouldRender,
     } = props.selectedAccount;
     const {
         address,
@@ -218,6 +219,8 @@ const AccountSend = (props: Props) => {
         onSend,
     } = props.sendFormActions;
 
+    if (!device || !account || !discovery || !network || !shouldRender) return null;
+
     const isCurrentCurrencyToken = networkSymbol !== currency;
 
     let selectedTokenBalance = 0;
@@ -225,8 +228,6 @@ const AccountSend = (props: Props) => {
     if (selectedToken) {
         selectedTokenBalance = selectedToken.balance;
     }
-
-    if (!device || !account || !discovery || !network) return null;
 
     let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
     let sendButtonText: string = 'Send';

@@ -133,9 +133,10 @@ const AccountReceive = (props: Props) => {
     const {
         account,
         discovery,
+        shouldRender,
     } = props.selectedAccount;
 
-    if (!device || !account || !discovery) return null;
+    if (!device || !account || !discovery || !shouldRender) return null;
 
     const {
         addressVerified,
