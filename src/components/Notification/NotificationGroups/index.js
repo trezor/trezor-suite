@@ -11,14 +11,14 @@ class NotificationsGroup extends Component {
     constructor() {
         super();
         this.notifications = [
-            { type: 'warning', title: 'aaa', message: 'aaaa' },
-            { type: 'error', title: 'aaa', message: 'aaaa' },
-            { type: 'info', title: 'aaa', message: 'aaaa' },
-            { type: 'error', title: 'aaa', message: 'aaaa' },
-            { type: 'warning', title: 'aaa', message: 'aaaa' },
-            { type: 'success', title: 'aaa', message: 'aaaa' },
-            { type: 'error', title: 'aaa', message: 'aaaa' },
-            { type: 'error', title: 'aaa', message: 'aaaa' },
+            { type: 'warning', title: 'adddaa', message: 'aaaa' },
+            { type: 'error', title: 'aaddda', message: 'aaaa' },
+            { type: 'info', title: 'aafffa', message: 'aaaa' },
+            { type: 'error', title: 'aggaa', message: 'aaaa' },
+            { type: 'warning', title: 'aasssa', message: 'aaaa' },
+            { type: 'success', title: 'afaa', message: 'aaaa' },
+            { type: 'error', title: 'aada', message: 'aaaa' },
+            { type: 'error', title: 'aafffa', message: 'aaaa' },
         ];
     }
 
