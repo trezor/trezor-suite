@@ -117,14 +117,15 @@ class Input extends Component {
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
                             placeholder={this.props.placeholder}
-                            autoComplete={this.props.autoComplete}
-                            autoCorrect={this.props.autoCorrect}
-                            autoCapitalize={this.props.autoCapitalize}
+                            autocomplete={this.props.autocomplete}
+                            autocorrect={this.props.autocorrect}
+                            autocapitalize={this.props.autocapitalize}
                             spellCheck={this.props.spellCheck}
                             value={this.props.value}
                             onChange={this.props.onChange}
                             borderColor={this.getColor(this.props.state)}
                             disabled={this.props.isDisabled}
+                            name={this.props.name}
                         />
                     </InputIconWrapper>
                     {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
@@ -146,9 +147,9 @@ Input.propTypes = {
     innerRef: PropTypes.func,
     placeholder: PropTypes.string,
     type: PropTypes.string,
-    autoComplete: PropTypes.string,
-    autoCorrect: PropTypes.string,
-    autoCapitalize: PropTypes.string,
+    autocomplete: PropTypes.string,
+    autocorrect: PropTypes.string,
+    autocapitalize: PropTypes.string,
     spellCheck: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func,
@@ -157,6 +158,7 @@ Input.propTypes = {
     topLabel: PropTypes.node,
     sideAddons: PropTypes.arrayOf(PropTypes.node),
     isDisabled: PropTypes.bool,
+    name: PropTypes.string,
 };
 
 Input.defaultProps = {

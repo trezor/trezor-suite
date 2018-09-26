@@ -26,18 +26,18 @@ const IconWrapper = styled.div`
     border-radius: 2px;
     justify-content: center;
     align-items: center;
-    color: ${props => (props.checked ? colors.WHITE : colors.GREEN_PRIMARY)};
-    background: ${props => (props.checked ? colors.GREEN_PRIMARY : colors.WHITE)};
-    border: 1px solid ${props => (props.checked ? colors.GREEN_PRIMARY : colors.DIVIDER)};
+    color: ${props => (props.isChecked ? colors.WHITE : colors.GREEN_PRIMARY)};
+    background: ${props => (props.isChecked ? colors.GREEN_PRIMARY : colors.WHITE)};
+    border: 1px solid ${props => (props.isChecked ? colors.GREEN_PRIMARY : colors.DIVIDER)};
     width: 24px;
     height: 24px;
 
     &:hover,
     &:focus {
-        ${props => !props.checked && css`
+        ${props => !props.isChecked && css`
             border: 1px solid ${colors.GREEN_PRIMARY};
         `}
-        background: ${props => (props.checked ? colors.GREEN_PRIMARY : colors.WHITE)};
+        background: ${props => (props.isChecked ? colors.GREEN_PRIMARY : colors.WHITE)};
     }
 `;
 
@@ -50,7 +50,7 @@ const Label = styled.div`
 
     &:hover,
     &:focus {
-        color: ${props => (props.checked ? colors.TEXT_PRIMARY : colors.TEXT_PRIMARY)};
+        color: ${props => (props.isChecked ? colors.TEXT_PRIMARY : colors.TEXT_PRIMARY)};
     }
 `;
 
@@ -63,7 +63,7 @@ class Checkbox extends PureComponent {
 
     render() {
         const {
-            checked,
+            isChecked,
             children,
             onClick,
         } = this.props;
@@ -73,20 +73,20 @@ class Checkbox extends PureComponent {
                 onKeyUp={e => this.handleKeyboard(e)}
                 tabIndex={0}
             >
-                <IconWrapper checked={checked}>
-                    {checked && (
+                <IconWrapper isChecked={isChecked}>
+                    {isChecked && (
                         <Tick>
                             <Icon
                                 hoverColor={colors.WHITE}
                                 size={26}
-                                color={checked ? colors.WHITE : colors.GREEN_PRIMARY}
+                                color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
                                 icon={icons.SUCCESS}
                             />
                         </Tick>
                     )
                     }
                 </IconWrapper>
-                <Label checked={checked}>{children}</Label>
+                <Label isChecked={isChecked}>{children}</Label>
             </Wrapper>
         );
     }
@@ -94,7 +94,7 @@ class Checkbox extends PureComponent {
 
 Checkbox.propTypes = {
     onClick: PropTypes.func.isRequired,
-    checked: PropTypes.bool,
+    isChecked: PropTypes.bool,
     children: PropTypes.string,
 };
 
