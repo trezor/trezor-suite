@@ -4,7 +4,6 @@ import CaseImage from 'images/case.png';
 import styled from 'styled-components';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import GroupNotifications from 'components/Notification/NotificationGroups';
 import Log from 'components/Log';
 import Link from 'components/Link';
 import Loader from 'components/Loader';
@@ -109,7 +108,6 @@ export default (props: Props) => {
                         {(shouldShowConnectDevice || shouldShowDisconnectDevice) && (
                             <div>
                                 <TitleWrapper>
-                                    <GroupNotifications />
                                     <H2 claim>The private bank in your hands.</H2>
                                     <P>TREZOR Wallet is an easy-to-use interface for your TREZOR.</P>
                                     <P>TREZOR Wallet allows you to easily control your funds, manage your balance and initiate transfers.</P>

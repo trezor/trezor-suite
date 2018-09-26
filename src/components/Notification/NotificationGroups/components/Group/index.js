@@ -25,7 +25,6 @@ const Left = styled.div`
 `;
 
 const Right = styled.div``;
-
 const Body = styled.div``;
 
 const Title = styled.div`
@@ -68,9 +67,8 @@ class Group extends Component {
                                 size={30}
                                 icon={getIcon(type)}
                             />
-                            <Title
-                                color={color}
-                            >{groupNotifications.length} {groupNotifications.length > 1 ? `${type}s` : type}
+                            <Title color={color}>
+                                {groupNotifications.length} {groupNotifications.length > 1 ? `${type}s` : type}
                             </Title>
                         </Left>
                         <Right>
