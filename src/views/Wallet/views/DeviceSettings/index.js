@@ -7,6 +7,7 @@ import Button from 'components/Button';
 import P from 'components/Paragraph';
 import Link from 'components/Link';
 import ICONS from 'config/icons';
+import Content from 'views/Wallet/components/Content';
 import { connect } from 'react-redux';
 
 const Section = styled.section`
@@ -30,20 +31,22 @@ const StyledP = styled(P)`
 `;
 
 const DeviceSettings = () => (
-    <Section>
-        <Row>
-            <Icon
-                size={60}
-                color={colors.WARNING_PRIMARY}
-                icon={ICONS.WARNING}
-            />
-            <H2>Device settings is under construction</H2>
-            <StyledP isSmaller>Please use Bitcoin wallet interface to change your device settings</StyledP>
-            <Link href="https://wallet.trezor.io/">
-                <Button>Take me to the Bitcoin wallet</Button>
-            </Link>
-        </Row>
-    </Section>
+    <Content>
+        <Section>
+            <Row>
+                <Icon
+                    size={60}
+                    color={colors.WARNING_PRIMARY}
+                    icon={ICONS.WARNING}
+                />
+                <H2>Device settings is under construction</H2>
+                <StyledP isSmaller>Please use Bitcoin wallet interface to change your device settings</StyledP>
+                <Link href="https://wallet.trezor.io/">
+                    <Button>Take me to the Bitcoin wallet</Button>
+                </Link>
+            </Row>
+        </Section>
+    </Content>
 );
 
 export default connect(null, null)(DeviceSettings);

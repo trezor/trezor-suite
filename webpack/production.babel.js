@@ -65,7 +65,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env.BUILD': JSON.stringify(process.env.BUILD),
-            COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash())
+            COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
         new HtmlWebpackPlugin({
             chunks: ['index'],

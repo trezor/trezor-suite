@@ -77,7 +77,6 @@ const Body = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    padding: 40px 35px 40px 35px;
 `;
 
 const Wallet = (props: WalletContainerProps) => (
