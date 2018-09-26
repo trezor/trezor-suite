@@ -75,7 +75,7 @@ const AccountSummary = (props: Props) => {
     const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
 
     return (
-        <section>
+        <React.Fragment>
             <AccountHeading>
                 <AccountName>
                     <StyledCoinLogo coinNetwork={account.network} />
@@ -155,7 +155,7 @@ const AccountSummary = (props: Props) => {
                     />
                 ))}
             </AddedTokensWrapper>
-        </section>
+        </React.Fragment>
     );
 };
 

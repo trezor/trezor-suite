@@ -32,11 +32,11 @@ export type Props = StateProps & DispatchProps;
 type OwnProps = {};
 
 const Notifications = (props: Props) => (
-    <div>
+    <React.Fragment>
         <StaticNotifications {...props} />
         <AccountNotifications {...props} />
         <ActionNotifications {...props} />
-    </div>
+    </React.Fragment>
 );
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({

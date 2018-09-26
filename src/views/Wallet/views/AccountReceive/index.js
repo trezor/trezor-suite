@@ -10,8 +10,6 @@ import colors from 'config/colors';
 import Tooltip from 'components/Tooltip';
 import { QRCode } from 'react-qr-svg';
 
-import SelectedAccount from 'views/Wallet/components/SelectedAccount';
-
 import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
 
 import type { Props } from './Container';
