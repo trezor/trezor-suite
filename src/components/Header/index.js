@@ -35,6 +35,7 @@ const LayoutWrapper = styled.div`
 const A = styled.a`
     color: ${colors.WHITE};
     margin-left: 24px;
+    transition: all .1s ease-in;
 
     &:visited {
         color: ${colors.WHITE};
