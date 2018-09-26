@@ -71,14 +71,18 @@ const ValueWrapper = styled.div`
 `;
 
 const AddressInfoText = styled.div`
-    display: block;
-    position: relative;
-    background: ${colors.WHITE};
-    z-index: 10001;
-    width: 100%;
-    padding: 6px 12px;
-    transform: translate(-1px, -1px);
+    height: 37px;
     margin: 0px 2px;
+    padding: 0 14px;
+    display: block;
+    position: absolute;
+    top: 36px;
+    background: black;
+    color: ${colors.WHITE};
+    border-radius: 5px;
+    line-height: 37px;
+    z-index: 10001;
+    transform: translate(-1px, -1px);
 `;
 
 const ShowAddressButton = styled(Button)`
@@ -143,9 +147,6 @@ const AccountReceive = (props: Props) => {
                 <AddressWrapper
                     isShowingQrCode={addressVerified || addressUnverified}
                 >
-                    {isAddressVerifying && (
-                        <AddressInfoText>Confirm address on TREZOR</AddressInfoText>
-                    )}
                     {((addressVerified || addressUnverified) && !isAddressVerifying) && (
                         <Tooltip
                             placement="bottomRight"
@@ -182,8 +183,11 @@ const AccountReceive = (props: Props) => {
                     >{address}
                     </ValueWrapper>
                     {isAddressVerifying && (
-                        <AddressInfoText>{account.network} account #{account.index + 1}</AddressInfoText>
+                        <AddressInfoText>Check address on your Trezor</AddressInfoText>
                     )}
+                    {/* {isAddressVerifying && (
+                        <AddressInfoText>{account.network} account #{account.index + 1}</AddressInfoText>
+                    )} */}
                     {(addressVerified || addressUnverified) && (
                         <QRCode
                             bgColor="#FFFFFF"
