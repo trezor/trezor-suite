@@ -1,32 +1,26 @@
 export default [
     {
+        id: 'btc',
         coinName: 'Bitcoin',
-        url: 'https://wallet.trezor.io/#/coin/btc',
-        image: '../images/btc-logo.png',
     },
     {
+        id: 'ltc',
         coinName: 'Litecoin',
-        url: 'https://wallet.trezor.io/#/coin/ltc',
-        image: '../images/ltc-logo.png',
     },
     {
+        id: 'bch',
         coinName: 'Bitcoin Cash',
-        url: 'https://wallet.trezor.io/#/coin/bch',
-        image: '../images/bch-logo.png',
     },
     {
+        id: 'btg',
         coinName: 'Bitcoin Gold',
-        url: 'https://wallet.trezor.io/#/coin/btg',
-        image: '../images/btg-logo.png',
     },
     {
+        id: 'dash',
         coinName: 'Dash',
-        url: 'https://wallet.trezor.io/#/coin/dash',
-        image: '../images/dash-logo.png',
     },
     {
+        id: 'zec',
         coinName: 'Zcash',
-        url: 'https://wallet.trezor.io/#/coin/zec',
-        image: '../images/zec-logo.png',
     },
 ];

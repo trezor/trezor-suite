@@ -1,40 +1,58 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { ICON_SIZE } from 'config/variables';
 
-const Logo = styled.div`
-    height: ${ICON_SIZE.BASE};
-    width: ${ICON_SIZE.BASE};
-    margin-right: 5px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: auto ${ICON_SIZE.BASE};
-    background-image: url('${props => props.coinImg}');
+const Wrapper = styled.div`
+    padding-right: 20px;
+    width: 40px;
 `;
 
-const CoinLogo = ({
-    className, coinNetwork, coinImg,
-}) => {
-    let coinImgName = coinNetwork;
-    if (coinImgName === 'ethereum') {
-        coinImgName = 'eth';
-    } else if (coinImgName === 'ethereum-classic') {
-        coinImgName = 'etc';
-    }
-    const coinImgUrl = `../images/${coinImgName}-logo.png`;
+const Logo = styled.img`
+    width: ${props => (props.hasLongIcon ? '15px' : '23px')};
+    margin-left: ${props => (props.hasLongIcon ? '3px' : '0px')};
+    display: block;
+`;
 
-    return (
-        <Logo
-            className={className}
-            coinImg={coinImgName ? coinImgUrl : coinImg}
-        />
-    );
-};
+class CoinLogo extends Component {
+    constructor() {
+        super();
+        this.longIcons = ['etc', 'eth', 'trop'];
+    }
+
+    getIcon() {
+        const { coinNetwork, coinId } = this.props;
+        let coinImgName = coinNetwork;
+        if (coinImgName === 'ethereum') {
+            coinImgName = 'eth';
+        } else if (coinImgName === 'ethereum-classic') {
+            coinImgName = 'etc';
+        }
+        return coinImgName || coinId;
+    }
+
+    hasLongIcon(coinImgName) {
+        let hasLongIcon = false;
+        if (this.longIcons.includes(coinImgName)) {
+            hasLongIcon = true;
+        }
+        return hasLongIcon;
+    }
+
+    render() {
+        const iconName = this.getIcon();
+        return (
+            <Wrapper>
+                <Logo
+                    hasLongIcon={this.hasLongIcon(iconName)}
+                    src={require(`./images/${iconName}.png`)} // eslint-disable-line
+                />
+            </Wrapper>
+        );
+    }
+}
 
 CoinLogo.propTypes = {
-    className: PropTypes.string,
-    coinImg: PropTypes.string,
+    coinId: PropTypes.string,
     coinNetwork: PropTypes.string,
 };
 
