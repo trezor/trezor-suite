@@ -13,7 +13,8 @@ const Wrapper = styled.div`
     color: ${colors.TEXT_SECONDARY};
     background: ${colors.LANDING};
     ${props => props.hasBorder && css`
-        border: 1px solid ${colors.BODY};
+        border-top: 1px solid ${colors.BODY};
+        border-bottom: 1px solid ${colors.BODY};
     `}
 `;
 
