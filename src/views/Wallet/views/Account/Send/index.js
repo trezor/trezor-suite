@@ -31,7 +31,7 @@ const InputRow = styled.div`
 `;
 
 const SetMaxAmountButton = styled(Button)`
-    height: 34px;
+    height: 40px;
     padding: 0 10px;
     display: flex;
     align-items: center;
@@ -69,7 +69,7 @@ const SetMaxAmountButton = styled(Button)`
 
 const CurrencySelect = styled(Select)`
     min-width: 77px;
-    height: 34px;
+    height: 40px;
     flex: 0.2;
 `;
 

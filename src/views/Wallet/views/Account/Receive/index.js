@@ -40,13 +40,14 @@ const StyledQRCode = styled(QRCode)`
 
 const ValueWrapper = styled.div`
     font-size: ${FONT_SIZE.SMALL};
+    height: 40px;
     font-weight: ${FONT_WEIGHT.SMALLEST};
     line-height: 1.42857143;
     font-family: ${FONT_FAMILY.MONOSPACE};
     color: ${colors.TEXT_PRIMARY};
     border: 1px solid ${colors.DIVIDER};
     border-radius: 3px;
-    padding: 6px 12px;
+    padding: 10px 12px;
     padding-right: 38px;
     position: relative;
     flex: 1;

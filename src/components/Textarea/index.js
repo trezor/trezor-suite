@@ -15,7 +15,7 @@ const disabledColor = colors.TEXT_PRIMARY;
 
 const StyledTextarea = styled.textarea`
     width: 100%;
-    padding: 6px 12px;
+    padding: 12px;
     box-sizing: border-box;
     min-height: 25px;
     border: ${props => (props.isError ? `1px solid ${colors.ERROR_PRIMARY}` : `1px solid ${colors.DIVIDER}`)};
