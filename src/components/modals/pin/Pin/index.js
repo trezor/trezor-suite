@@ -4,9 +4,10 @@ import { H2 } from 'components/Heading';
 import React, { Component } from 'react';
 import Link from 'components/Link';
 import styled from 'styled-components';
-import PinInput from 'components/inputs/PinInput';
+
 import Button from 'components/Button';
-import PinButton from './components/PinButton';
+import PinButton from './components/Button';
+import PinInput from './components/Input';
 import type { Props } from '../../index';
 
 type State = {
