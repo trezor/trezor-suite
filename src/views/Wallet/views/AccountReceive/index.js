@@ -62,11 +62,11 @@ const ValueWrapper = styled.div`
     `};
 
     ${props => props.isVerifying && css`
-        background: ${colors.WHITE};
         z-index: 10001; /* bigger than modal container */
-        border-color: ${colors.GREEN_PRIMARY};
+        border-color: ${colors.WHITE};
         border-width: 2px;
         transform: translate(-1px, -1px);
+        background: ${colors.DIVIDER};
     `};
 `;
 
