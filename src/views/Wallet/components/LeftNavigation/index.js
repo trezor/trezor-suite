@@ -30,6 +30,7 @@ const Footer = styled.div`
     width: 320px;
     bottom: 0;
     background: ${colors.MAIN};
+    border-right: 1px solid ${colors.BACKGROUND};
 `;
 
 const Body = styled.div`
