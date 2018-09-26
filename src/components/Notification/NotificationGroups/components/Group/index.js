@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Icon from 'components/Icon';
 import colors from 'config/colors';
 import { Notification } from 'components/Notification';
+import { getIcon } from 'utils/notification';
 
 const Wrapper = styled.div``;
 
@@ -9,6 +11,8 @@ const Header = styled.div`
     display: flex;
     cursor: pointer;
     background: ${colors.WHITE};
+    justify-content: flex-start;
+    align-items: center;
     padding: 5px 10px;
     border-bottom: 1px solid ${colors.BACKGROUND};
 `;
@@ -46,12 +50,19 @@ class Group extends Component {
         const { type, groupNotifications, color } = this.props;
         return (
             <Wrapper>
-                <Header onClick={this.toggle}>
-                    <Title
-                        color={color}
-                    >{groupNotifications.length} {groupNotifications.length > 1 ? `${type}s` : type}
-                    </Title>
-                </Header>
+                {groupNotifications.length > 1 && (
+                    <Header onClick={this.toggle}>
+                        <Icon
+                            color={color}
+                            size={30}
+                            icon={getIcon(type)}
+                        />
+                        <Title
+                            color={color}
+                        >{groupNotifications.length} {groupNotifications.length > 1 ? `${type}s` : type}
+                        </Title>
+                    </Header>
+                )}
                 <Body>
                     {groupNotifications
                         .slice(0, this.state.visibleCount)

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import colors from 'config/colors';
+import { getColor } from 'utils/notification';
 
 import { PRIORITY } from 'constants/notifications';
 import Group from './components/Group';
@@ -22,34 +22,12 @@ class NotificationsGroup extends Component {
         ];
     }
 
-    getColor = (type) => {
-        let color;
-        switch (type) {
-            case 'info':
-                color = colors.INFO_PRIMARY;
-                break;
-            case 'error':
-                color = colors.ERROR_PRIMARY;
-                break;
-            case 'warning':
-                color = colors.WARNING_PRIMARY;
-                break;
-            case 'success':
-                color = colors.SUCCESS_PRIMARY;
-                break;
-            default:
-                color = null;
-        }
-        return color;
-    };
-
     groupNotifications = notifications => notifications.reduce((acc, obj) => {
         const key = obj.type;
         if (!acc[key]) {
             acc[key] = [];
         }
         acc[key].push(obj);
-
         return acc;
     }, {});
 
@@ -57,10 +35,9 @@ class NotificationsGroup extends Component {
         return notifications;
     }
 
-
     render() {
         const { notifications } = this;
-        const notificationGroups = this.groupNotifications(notifications, 'type');
+        const notificationGroups = this.groupNotifications(notifications);
         const sortedNotifications = this.sortByPriority(notificationGroups);
 
         return (
@@ -68,7 +45,7 @@ class NotificationsGroup extends Component {
                 {Object.keys(sortedNotifications).map(group => (
                     <Group
                         groupNotifications={notificationGroups[group]}
-                        color={this.getColor(group)}
+                        color={getColor(group)}
                         type={group}
                     />
                 ))}

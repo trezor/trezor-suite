@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
+import { getColor, getIcon } from 'utils/notification';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
@@ -92,27 +93,6 @@ const ActionContent = styled.div`
 export const Notification = (props: NProps): React$Element<string> => {
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
 
-    const getIconColor = (type) => {
-        let color;
-        switch (type) {
-            case 'info':
-                color = colors.INFO_PRIMARY;
-                break;
-            case 'error':
-                color = colors.ERROR_PRIMARY;
-                break;
-            case 'warning':
-                color = colors.WARNING_PRIMARY;
-                break;
-            case 'success':
-                color = colors.SUCCESS_PRIMARY;
-                break;
-            default:
-                color = null;
-        }
-
-        return color;
-    };
 
     return (
         <Wrapper type={props.type}>
@@ -120,7 +100,7 @@ export const Notification = (props: NProps): React$Element<string> => {
             {props.cancelable && (
                 <CloseClick onClick={() => close()}>
                     <Icon
-                        color={getIconColor(props.type)}
+                        color={getColor(props.type)}
                         icon={icons.CLOSE}
                         size={20}
                     />
@@ -129,8 +109,8 @@ export const Notification = (props: NProps): React$Element<string> => {
             <Body>
                 <MessageContent>
                     <StyledIcon
-                        color={getIconColor(props.type)}
-                        icon={icons[props.type.toUpperCase()]}
+                        color={getColor(props.type)}
+                        icon={getIcon(props.type)}
                     />
                     <Texts>
                         <Title>{ props.title }</Title>
