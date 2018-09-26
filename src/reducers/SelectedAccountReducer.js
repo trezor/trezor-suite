@@ -11,12 +11,18 @@ import type {
 } from 'flowtype';
 
 export type State = {
-    location?: string;
+    location: string;
     account: ?Account;
     network: ?Coin;
     tokens: Array<Token>,
     pending: Array<PendingTx>,
-    discovery: ?Discovery
+    discovery: ?Discovery,
+    notification: ?{
+        type: string,
+        title: string,
+        message?: string,
+    },
+    visible: boolean,
 };
 
 export const initialState: State = {
@@ -26,6 +32,8 @@ export const initialState: State = {
     tokens: [],
     pending: [],
     discovery: null,
+    notification: null,
+    visible: false,
 };
 
 export default (state: State = initialState, action: Action): State => {

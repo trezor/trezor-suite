@@ -128,6 +128,7 @@ export const observeChanges = (prev: ?(Object | Array<any>), current: ?(Object |
         if (prev instanceof Object && current instanceof Object) {
             for (let i = 0; i < fields.length; i++) {
                 const key = fields[i];
+                if (Array.isArray(prev[key]) && Array.isArray(current[key])) return prev[key].length !== current[key].length;
                 if (prev[key] !== current[key]) return true;
             }
         }

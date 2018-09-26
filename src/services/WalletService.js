@@ -92,10 +92,10 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     api.dispatch(SendFormActionActions.observe(prevState, action));
 
     // update common values in WallerReducer
-    api.dispatch(WalletActions.updateSelectedValues(prevState, action));
+    api.dispatch(WalletActions.observe(prevState, action));
 
     // update common values in SelectedAccountReducer
-    api.dispatch(SelectedAccountActions.updateSelectedValues(prevState, action));
+    api.dispatch(SelectedAccountActions.observe(prevState, action));
 
     return action;
 };
