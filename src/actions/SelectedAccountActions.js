@@ -185,7 +185,6 @@ export const observe = (prevState: State, action: Action): AsyncAction => async 
     const status = getAccountStatus(state, newState);
     newState.notification = status || null;
     newState.shouldRender = status ? status.shouldRender : true;
-
     // check if newState is different than previous state
     const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, ['location', 'account', 'network', 'discovery', 'tokens', 'pending', 'notification', 'shouldRender']);
     if (stateChanged) {
