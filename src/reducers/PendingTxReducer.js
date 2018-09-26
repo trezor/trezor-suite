@@ -65,7 +65,7 @@ export default function pending(state: State = initialState, action: Action): St
         //    return add(state, action.payload);
         case PENDING.TX_RESOLVED:
             return remove(state, action.tx.id);
-        case PENDING.TX_NOT_FOUND:
+        case PENDING.TX_REJECTED:
             return reject(state, action.tx.id);
 
         case PENDING.FROM_STORAGE:

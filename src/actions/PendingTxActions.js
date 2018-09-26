@@ -15,7 +15,7 @@ export type PendingTxAction = {
     tx: PendingTx,
     receipt?: Object,
 } | {
-    type: typeof PENDING.TX_NOT_FOUND,
+    type: typeof PENDING.TX_REJECTED,
     tx: PendingTx,
 } | {
     type: typeof PENDING.TX_TOKEN_ERROR,
