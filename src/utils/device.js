@@ -2,7 +2,9 @@ import colors from 'config/colors';
 
 const getStatus = (device) => {
     let status = 'connected';
-    if (!device.connected) {
+    if (device.features && device.features.bootloader_mode) {
+        status = 'connected-bootloader';
+    } else if (!device.connected) {
         status = 'disconnected';
     } else if (!device.available) {
         status = 'unavailable';
@@ -25,6 +27,9 @@ const getStatusName = (deviceStatus) => {
             break;
         case 'connected':
             statusName = 'Connected';
+            break;
+        case 'connected-bootloader':
+            statusName = 'Connected (bootloader mode)';
             break;
         case 'disconnected':
             statusName = 'Disconnected';
@@ -51,7 +56,7 @@ const isDisabled = (selectedDevice, devices, transport) => {
         if (selectedDevice.features.bootloader_mode || !selectedDevice.features.initialized) return true; // bootlader, not initialized
     }
     return false; // default
-}
+};
 
 const getVersion = (device) => {
     let version;
@@ -71,6 +76,9 @@ const getStatusColor = (deviceStatus) => {
             break;
         case 'connected':
             color = colors.GREEN_PRIMARY;
+            break;
+        case 'connected-bootloader':
+            color = colors.WARNING_PRIMARY;
             break;
         case 'unacquired':
             color = colors.WARNING_PRIMARY;
