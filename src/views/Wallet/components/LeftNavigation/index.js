@@ -179,7 +179,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             );
         }
 
-        const isDeviceInBootloader = this.props.wallet.selectedDevice.features && this.props.wallet.selectedDevice.features.bootloader_mode && this.props.devices.length === 1;
+        const isDeviceInBootloader = this.props.wallet.selectedDevice.features && this.props.wallet.selectedDevice.features.bootloader_mode;
         return (
             <StickyContainer
                 location={this.props.location.pathname}
@@ -188,12 +188,12 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                 <Header
                     isSelected
                     onClickWrapper={() => {
-                        if (!isDeviceInBootloader) {
+                        if (!isDeviceInBootloader || this.props.devices.length > 1) {
                             this.handleOpen();
                         }
                     }}
                     device={this.props.wallet.selectedDevice}
-                    disabled={isDeviceInBootloader}
+                    disabled={isDeviceInBootloader && this.props.devices.length === 1}
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
@@ -212,7 +212,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     {...this.props}
                 />
                 <Body>
-                    {(!isDeviceInBootloader && this.state.shouldRenderDeviceSelection) && <DeviceMenu {...this.props} />}
+                    {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
                     {!isDeviceInBootloader && menu}
                 </Body>
                 <Footer key="sticky-footer">
