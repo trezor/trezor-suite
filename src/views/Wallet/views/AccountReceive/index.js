@@ -70,13 +70,26 @@ const ValueWrapper = styled.div`
     `};
 `;
 
+const ArrowUp = styled.div`
+    position: absolute;
+    top: 30px;
+    left: 70px;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 9px solid black;
+    z-index: 10001;
+`;
+
 const AddressInfoText = styled.div`
+    display: flex;
+    align-items: center;
     height: 37px;
     margin: 0px 2px;
-    padding: 0 14px;
-    display: block;
+    padding: 0 14px 0 5px;
     position: absolute;
-    top: 36px;
+    top: 39px;
     background: black;
     color: ${colors.WHITE};
     border-radius: 5px;
@@ -183,7 +196,16 @@ const AccountReceive = (props: Props) => {
                     >{address}
                     </ValueWrapper>
                     {isAddressVerifying && (
-                        <AddressInfoText>Check address on your Trezor</AddressInfoText>
+                        <React.Fragment>
+                            <ArrowUp />
+                            <AddressInfoText>
+                                <Icon
+                                    icon={ICONS.T1}
+                                    color={colors.WHITE}
+                                />
+                                Check address on your Trezor
+                            </AddressInfoText>
+                        </React.Fragment>
                     )}
                     {/* {isAddressVerifying && (
                         <AddressInfoText>{account.network} account #{account.index + 1}</AddressInfoText>
