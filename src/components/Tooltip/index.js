@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import RcTooltip from 'rc-tooltip';
 import colors from 'config/colors';
+import Link from 'components/Link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -165,6 +166,19 @@ const Wrapper = styled.div`
     }
 `;
 
+const Content = styled.div`
+    padding-bottom: 10px;
+`;
+
+const ContentWrapper = styled.div``;
+const ReadMore = styled.div`
+    padding: 10px 0;
+    text-align: center;
+    width: 100%;
+    color: ${colors.WHITE};
+    border-top: 1px solid ${colors.TEXT_SECONDARY};
+`;
+
 class Tooltip extends Component {
     render() {
         const {
@@ -172,6 +186,7 @@ class Tooltip extends Component {
             placement,
             content,
             children,
+            readMoreLink,
             maxWidth,
         } = this.props;
         return (
@@ -184,7 +199,16 @@ class Tooltip extends Component {
                     getTooltipContainer={() => this.tooltipContainerRef}
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
                     placement={placement}
-                    overlay={content}
+                    overlay={() => (
+                        <ContentWrapper>
+                            <Content>{content}</Content>
+                            {readMoreLink && (
+                                <Link target="_blank" href={readMoreLink}>
+                                    <ReadMore>Read more</ReadMore>
+                                </Link>
+                            )
+                            }
+                        </ContentWrapper>)}
                 >
                     {children}
                 </RcTooltip>
@@ -205,6 +229,7 @@ Tooltip.propTypes = {
         PropTypes.element,
         PropTypes.string,
     ]),
+    readMoreLink: PropTypes.string,
 };
 
 export default Tooltip;
