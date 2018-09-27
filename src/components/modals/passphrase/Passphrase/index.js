@@ -1,17 +1,24 @@
 /* @flow */
 import React, { Component } from 'react';
-import raf from 'raf';
+import styled from 'styled-components';
 import colors from 'config/colors';
+import { FONT_SIZE, TRANSITION } from 'config/variables';
 import { H2 } from 'components/Heading';
 import P from 'components/Paragraph';
-import { FONT_SIZE } from 'config/variables';
-import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
 import Button from 'components/Button';
 import Input from 'components/inputs/Input';
-import styled from 'styled-components';
 
 import type { Props } from '../../index';
+
+type State = {
+    deviceLabel: string,
+    shouldShowSingleInput: boolean,
+    passphraseInputValue: string,
+    passphraseCheckInputValue: string,
+    doPassphraseInputsMatch: boolean,
+    isPassphraseHidden: boolean,
+};
 
 const Wrapper = styled.div`
     padding: 24px 48px;
@@ -45,315 +52,229 @@ const Footer = styled.div`
     justify-content: center;
 `;
 
-type State = {
-    deviceLabel: string;
-    singleInput: boolean;
-    passphrase: string;
-    passphraseRevision: string;
-    passphraseFocused: boolean;
-    passphraseRevisionFocused: boolean;
-    passphraseRevisionTouched: boolean;
-    match: boolean;
-    visible: boolean;
-}
+const LinkButton = styled(Button)`
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    cursor: pointer;
+    transition: ${TRANSITION.HOVER};
+    font-size: ${FONT_SIZE.SMALLER};
+    border-radius: 0;
+    border-bottom: 1px solid ${colors.GREEN_PRIMARY};
+    background: transparent;
 
-export default class PinModal extends Component<Props, State> {
+    &,
+    &:visited,
+    &:active,
+    &:hover {
+        color: ${colors.GREEN_PRIMARY};
+    }
+
+    &:hover {
+        border-color: transparent;
+        background: transparent;
+    }
+`;
+
+class Passphrase extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
         const device = props.modal.opened ? props.modal.device : null;
-        if (!device) return;
+        if (!device) {
+            return;
+        }
 
-        // check if this device is already known
-        const selected = props.wallet.selectedDevice;
+        // Check if this device is already known
+        // if device is already known then only one input is presented
+        const { selectedDevice } = props.wallet;
         let deviceLabel = device.label;
-        let singleInput = false;
-        if (selected && selected.path === device.path) {
-            deviceLabel = selected.instanceLabel;
-            singleInput = selected.remember || selected.state !== null;
+        let shouldShowSingleInput = false;
+        if (selectedDevice && selectedDevice.path === device.path) {
+            deviceLabel = selectedDevice.instanceLabel;
+            shouldShowSingleInput = selectedDevice.remember || selectedDevice.state !== null;
         }
 
         this.state = {
             deviceLabel,
-            singleInput,
-            passphrase: '',
-            passphraseRevision: '',
-            passphraseFocused: false,
-            passphraseRevisionFocused: false,
-            passphraseRevisionTouched: false,
-            match: true,
-            visible: false,
+            shouldShowSingleInput,
+            passphraseInputValue: '',
+            passphraseCheckInputValue: '',
+            doPassphraseInputsMatch: true,
+            isPassphraseHidden: true,
         };
     }
 
-    keyboardHandler: (event: KeyboardEvent) => void;
-
     state: State;
 
-    passphraseInput: ?HTMLInputElement;
+    componentDidMount() {
+        this.passphraseInput.focus();
 
-    passphraseRevisionInput: ?HTMLInputElement;
-
-
-    keyboardHandler(event: KeyboardEvent): void {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            //this.passphraseInput.blur();
-            //this.passphraseRevisionInput.blur();
-
-            //this.passphraseInput.type = 'text';
-            //this.passphraseRevisionInput.type = 'text';
-
-            this.submit();
-
-            // TODO: set timeout, or wait for blur event
-            //onPassphraseSubmit(passphrase, passphraseCached);
-            //raf(() => onPassphraseSubmit(passphrase));
-        }
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        window.addEventListener('keypress', this.handleKeyPress, false);
     }
 
-
-    componentDidMount(): void {
-        // one time autofocus
-        if (this.passphraseInput) this.passphraseInput.focus();
-        this.keyboardHandler = this.keyboardHandler.bind(this);
-        window.addEventListener('keydown', this.keyboardHandler, false);
-
-
-        // document.oncontextmenu = (event) => {
-        //     const el = window.event.srcElement || event.target;
-        //     const type = el.tagName.toLowerCase() || '';
-        //     if (type === 'input') {
-        //         return false;
-        //     }
-        // };
+    componentWillUnmount() {
+        window.removeEventListener('keypress', this.handleKeyPress, false);
     }
 
-    // we don't want to keep password inside "value" attribute,
-    // so we need to replace it thru javascript
-    componentDidUpdate() {
-        const {
-            passphrase,
-            passphraseRevision,
-            passphraseFocused,
-            passphraseRevisionFocused,
-            visible,
-        } = this.state;
-        // } = this.props.modal;
+    handleKeyPress: (event: KeyboardEvent) => void;
 
-        const passphraseInputValue: string = passphrase;
-        const passphraseRevisionInputValue: string = passphraseRevision;
-        // if (!visible && !passphraseFocused) {
-        //     passphraseInputValue = passphrase.replace(/./g, '•');
-        // }
-        // if (!visible && !passphraseRevisionFocused) {
-        //     passphraseRevisionInputValue = passphraseRevision.replace(/./g, '•');
-        // }
+    passphraseInput: HTMLInputElement;
 
+    handleInputChange(event: Event) {
+        const { target } = event;
+        if (target instanceof HTMLInputElement) {
+            const inputValue = target.value;
+            const inputName = target.name;
 
-        if (this.passphraseInput) {
-            // this.passphraseInput.value = passphraseInputValue;
-            // this.passphraseInput.setAttribute('type', visible || (!visible && !passphraseFocused) ? 'text' : 'password');
-            this.passphraseInput.setAttribute('type', visible ? 'text' : 'password');
-        }
-        if (this.passphraseRevisionInput) {
-            // this.passphraseRevisionInput.value = passphraseRevisionInputValue;
-            // this.passphraseRevisionInput.setAttribute('type', visible || (!visible && !passphraseRevisionFocused) ? 'text' : 'password');
-            this.passphraseRevisionInput.setAttribute('type', visible ? 'text' : 'password');
-        }
-    }
-
-    componentWillUnmount(): void {
-        window.removeEventListener('keydown', this.keyboardHandler, false);
-        // this.passphraseInput.type = 'text';
-        // this.passphraseInput.style.display = 'none';
-        // this.passphraseRevisionInput.type = 'text';
-        // this.passphraseRevisionInput.style.display = 'none';
-    }
-
-
-    onPassphraseChange = (input: string, value: string): void => {
-        // https://codepen.io/MiDri/pen/PGqvrO
-        // or
-        // https://github.com/zakangelle/react-password-mask/blob/master/src/index.js
-        if (input === 'passphrase') {
-            this.setState(previousState => ({
-                match: previousState.singleInput || previousState.passphraseRevision === value,
-                passphrase: value,
-            }));
-
-            if (this.state.visible && this.passphraseRevisionInput) {
-                this.setState({
-                    match: true,
-                    passphraseRevision: value,
-                });
-                this.passphraseRevisionInput.value = value;
+            let doPassphraseInputsMatch = false;
+            if (inputName === 'passphraseInputValue') {
+                // If passphrase is not hidden the second input should get filled automatically
+                // and should be disabled
+                if (this.state.isPassphraseHidden) {
+                    doPassphraseInputsMatch = inputValue === this.state.passphraseCheckInputValue;
+                } else {
+                    // Since both inputs are same they really do match
+                    // see: comment above
+                    this.setState({
+                        passphraseCheckInputValue: inputValue,
+                    });
+                    doPassphraseInputsMatch = true;
+                }
+            } else if (inputName === 'passphraseCheckInputValue') {
+                doPassphraseInputsMatch = inputValue === this.state.passphraseInputValue;
             }
+
+            if (this.state.shouldShowSingleInput) {
+                doPassphraseInputsMatch = true;
+            }
+
+            this.setState({
+                [inputName]: inputValue,
+                doPassphraseInputsMatch,
+            });
+        }
+    }
+
+    handleCheckboxClick() {
+        // If passphrase was visible and now shouldn't be --> delete the value of passphraseCheckInputValue
+        // doPassphraseInputsMatch
+        // - if passphrase was visible and now shouldn't be --> doPassphraseInputsMatch = false
+        //  - because passphraseCheckInputValue will be empty string
+        // - if passphrase wasn't visibe and now should be --> doPassphraseInputsMatch = true
+        //  - because passphraseCheckInputValue will be same as passphraseInputValue
+        let doInputsMatch = false;
+        if (this.state.shouldShowSingleInput || this.state.passphraseInputValue === this.state.passphraseCheckInputValue) {
+            doInputsMatch = true;
         } else {
-            this.setState(previousState => ({
-                match: previousState.passphrase === value,
-                passphraseRevision: value,
-                passphraseRevisionTouched: true,
-            }));
+            doInputsMatch = !!this.state.isPassphraseHidden;
         }
+
+        this.setState(previousState => ({
+            isPassphraseHidden: !previousState.isPassphraseHidden,
+            passphraseInputValue: previousState.isPassphraseHidden ? previousState.passphraseInputValue : '',
+            passphraseCheckInputValue: previousState.isPassphraseHidden ? previousState.passphraseInputValue : '',
+            doPassphraseInputsMatch: doInputsMatch,
+        }));
     }
 
-    onPassphraseFocus = (input: string): void => {
-        if (input === 'passphrase') {
-            this.setState({
-                passphraseFocused: true,
-            });
-        } else {
-            this.setState({
-                passphraseRevisionFocused: true,
-            });
-        }
-    }
-
-    onPassphraseBlur = (input: string): void => {
-        if (input === 'passphrase') {
-            this.setState({
-                passphraseFocused: false,
-            });
-        } else {
-            this.setState({
-                passphraseRevisionFocused: false,
-            });
-        }
-    }
-
-    onPassphraseShow = (): void => {
-        this.setState({
-            visible: true,
-        });
-        if (this.passphraseRevisionInput) {
-            this.passphraseRevisionInput.disabled = true;
-            this.passphraseRevisionInput.value = this.state.passphrase;
-            this.setState(previousState => ({
-                passphraseRevision: previousState.passphrase,
-                match: true,
-            }));
-        }
-    }
-
-    onPassphraseHide = (): void => {
-        this.setState({
-            visible: false,
-        });
-        if (this.passphraseRevisionInput) {
-            const emptyPassphraseRevisionValue = '';
-            this.passphraseRevisionInput.value = emptyPassphraseRevisionValue;
-            this.setState(previousState => ({
-                passphraseRevision: emptyPassphraseRevisionValue,
-                match: emptyPassphraseRevisionValue === previousState.passphrase,
-            }));
-            this.passphraseRevisionInput.disabled = false;
-        }
-    }
-
-    submit = (empty: boolean = false): void => {
+    submitPassphrase(shouldLeavePassphraseBlank: boolean = false) {
         const { onPassphraseSubmit } = this.props.modalActions;
-        const { passphrase, match } = this.state;
+        const passphrase = this.state.passphraseInputValue;
 
-        if (!match) return;
-
-        //this.passphraseInput.type = 'text';
-        // this.passphraseInput.style.display = 'none';
-        //this.passphraseInput.setAttribute('readonly', 'readonly');
-        // this.passphraseRevisionInput.type = 'text';
-        //this.passphraseRevisionInput.style.display = 'none';
-        //this.passphraseRevisionInput.setAttribute('readonly', 'readonly');
-
-        // const p = passphrase;
-
+        // Reset state so same passphrase isn't filled when the modal will be visible again
         this.setState({
-            passphrase: '',
-            passphraseRevision: '',
-            passphraseFocused: false,
-            passphraseRevisionFocused: false,
-            visible: false,
+            passphraseInputValue: '',
+            passphraseCheckInputValue: '',
+            doPassphraseInputsMatch: true,
+            isPassphraseHidden: true,
         });
 
-        raf(() => onPassphraseSubmit(empty ? '' : passphrase));
+        onPassphraseSubmit(shouldLeavePassphraseBlank ? '' : passphrase);
+    }
+
+    handleKeyPress(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            console.warn('ENTER', this.state);
+            if (this.state.doPassphraseInputsMatch) {
+                this.submitPassphrase();
+            }
+        }
     }
 
     render() {
-        if (!this.props.modal.opened) return null;
+        if (!this.props.modal.opened) {
+            return null;
+        }
 
-        const {
-            device,
-        } = this.props.modal;
-
-        const {
-            deviceLabel,
-            singleInput,
-            passphrase,
-            passphraseRevision,
-            passphraseFocused,
-            passphraseRevisionFocused,
-            visible,
-            match,
-            passphraseRevisionTouched,
-        } = this.state;
-
-        let passphraseInputType: string = visible || (!visible && !passphraseFocused) ? 'text' : 'password';
-        let passphraseRevisionInputType: string = visible || (!visible && !passphraseRevisionFocused) ? 'text' : 'password';
-        passphraseInputType = passphraseRevisionInputType = 'text';
-        //let passphraseInputType: string = visible || passphraseFocused ? "text" : "password";
-        //let passphraseRevisionInputType: string = visible || passphraseRevisionFocused ? "text" : "password";
-
-        const showPassphraseCheckboxFn: Function = visible ? this.onPassphraseHide : this.onPassphraseShow;
         return (
             <Wrapper>
-                <H2>Enter { deviceLabel } passphrase</H2>
+                <H2>Enter {this.state.deviceLabel} passphrase</H2>
                 <P isSmaller>Note that passphrase is case-sensitive.</P>
                 <Row>
                     <Label>Passphrase</Label>
                     <Input
-                        innerRef={(element) => { this.passphraseInput = element; }}
-                        onChange={event => this.onPassphraseChange('passphrase', event.currentTarget.value)}
-                        type={passphraseInputType}
-                        autoComplete="off"
-                        autoCorrect="off"
-                        autoCapitalize="off"
-                        spellCheck="false"
-                        data-lpignore="true"
-                        onFocus={() => this.onPassphraseFocus('passphrase')}
-                        onBlur={() => this.onPassphraseBlur('passphrase')}
-                        tabIndex="0"
+                        innerRef={(input) => { this.passphraseInput = input; }}
+                        name="passphraseInputValue"
+                        type={this.state.isPassphraseHidden ? 'password' : 'text'}
+                        autocorrect="off"
+                        autocapitalize="off"
+                        autocomplete="off"
+                        value={this.state.passphraseInputValue}
+                        onChange={event => this.handleInputChange(event)}
                     />
                 </Row>
-                {!singleInput && (
+                {!this.state.shouldShowSingleInput && (
                     <Row>
                         <Label>Re-enter passphrase</Label>
                         <Input
-                            innerRef={(element) => { this.passphraseRevisionInput = element; }}
-                            onChange={event => this.onPassphraseChange('revision', event.currentTarget.value)}
-                            type={passphraseRevisionInputType}
-                            autoComplete="off"
-                            autoCorrect="off"
-                            autoCapitalize="off"
-                            spellCheck="false"
-                            data-lpignore="true"
-                            onFocus={() => this.onPassphraseFocus('revision')}
-                            onBlur={() => this.onPassphraseBlur('revision')}
+                            name="passphraseCheckInputValue"
+                            type={this.state.isPassphraseHidden ? 'password' : 'text'}
+                            autocorrect="off"
+                            autocapitalize="off"
+                            autocomplete="off"
+                            value={this.state.passphraseCheckInputValue}
+                            onChange={event => this.handleInputChange(event)}
+                            isDisabled={!this.state.isPassphraseHidden}
                         />
-                        {!match && passphraseRevisionTouched && <PassphraseError>Passphrases do not match</PassphraseError> }
                     </Row>
-                ) }
+                )}
+
+                {!this.state.doPassphraseInputsMatch && (
+                    <PassphraseError>Passphrases do not match</PassphraseError>
+                )}
+
                 <Row>
-                    <Checkbox onClick={showPassphraseCheckboxFn} checked={visible}>Show passphrase</Checkbox>
+                    <Checkbox
+                        isChecked={!this.state.isPassphraseHidden}
+                        onClick={() => this.handleCheckboxClick()}
+                    >
+                        Show passphrase
+                    </Checkbox>
                 </Row>
                 <Row>
-                    <Button type="button" disabled={!match} onClick={() => this.submit()}>Enter</Button>
+                    <Button
+                        isDisabled={!this.state.doPassphraseInputsMatch}
+                        onClick={() => this.submitPassphrase()}
+                    >Enter
+                    </Button>
                 </Row>
+
                 <Footer>
                     <P isSmaller>If you want to access your default account</P>
                     <P isSmaller>
-                        <Link isGreen onClick={() => this.submit(true)}>Leave passphrase blank</Link>
+                        <LinkButton
+                            isGreen
+                            onClick={() => this.submitPassphrase(true)}
+                        >Leave passphrase blank
+                        </LinkButton>
                     </P>
                 </Footer>
             </Wrapper>
         );
     }
 }
+
+export default Passphrase;
