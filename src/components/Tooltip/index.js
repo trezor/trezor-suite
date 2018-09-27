@@ -22,15 +22,15 @@ const Wrapper = styled.div`
 
     .rc-tooltip-inner {
         padding: 8px 10px;
-        color: ${colors.TEXT_SECONDARY};
+        color: ${colors.WHITE};
         font-size: 12px;
         line-height: 1.5;
         text-align: left;
         text-decoration: none;
-        background-color: ${colors.WHITE};
+        background-color: ${colors.TOOLTIP_BACKGROUND};
         border-radius: 3px;
         min-height: 34px;
-        border: 1px solid ${colors.WHITE};
+        border: 1px solid ${colors.BLACK};
     }
 
     .rc-tooltip-arrow,
@@ -48,7 +48,7 @@ const Wrapper = styled.div`
         bottom: -6px;
         margin-left: -6px;
         border-width: 6px 6px 0;
-        border-top-color: ${colors.DIVIDER};
+        border-top-color: ${colors.BLACK};
     }
 
     .rc-tooltip-placement-top .rc-tooltip-arrow-inner,
@@ -57,7 +57,7 @@ const Wrapper = styled.div`
         bottom: 2px;
         margin-left: -6px;
         border-width: 6px 6px 0;
-        border-top-color: ${colors.WHITE};
+        border-top-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-top .rc-tooltip-arrow {
@@ -78,7 +78,7 @@ const Wrapper = styled.div`
         left: -5px;
         margin-top: -6px;
         border-width: 6px 6px 6px 0;
-        border-right-color: ${colors.DIVIDER};
+        border-right-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-right .rc-tooltip-arrow-inner,
@@ -87,7 +87,7 @@ const Wrapper = styled.div`
         left: 1px;
         margin-top: -6px;
         border-width: 6px 6px 6px 0;
-        border-right-color: ${colors.WHITE};
+        border-right-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-right .rc-tooltip-arrow {
@@ -109,7 +109,7 @@ const Wrapper = styled.div`
         right: -5px;
         margin-top: -6px;
         border-width: 6px 0 6px 6px;
-        border-left-color: ${colors.DIVIDER};
+        border-left-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-left .rc-tooltip-arrow-inner,
@@ -118,7 +118,7 @@ const Wrapper = styled.div`
         right: 1px;
         margin-top: -6px;
         border-width: 6px 0 6px 6px;
-        border-left-color: ${colors.WHITE};
+        border-left-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-left .rc-tooltip-arrow {
@@ -140,7 +140,7 @@ const Wrapper = styled.div`
         top: -5px;
         margin-left: -6px;
         border-width: 0 6px 6px;
-        border-bottom-color: ${colors.DIVIDER};
+        border-bottom-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-bottom .rc-tooltip-arrow-inner,
@@ -149,7 +149,7 @@ const Wrapper = styled.div`
         top: 1px;
         margin-left: -6px;
         border-width: 0 6px 6px;
-        border-bottom-color: ${colors.WHITE};
+        border-bottom-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-bottom .rc-tooltip-arrow {

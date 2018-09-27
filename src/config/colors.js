@@ -30,4 +30,5 @@ export default {
     ERROR_SECONDARY: '#FFE9E9',
 
     LABEL_COLOR: '#A9A9A9',
+    TOOLTIP_BACKGROUND: '#333333',
 };
