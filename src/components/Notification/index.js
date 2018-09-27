@@ -1,3 +1,5 @@
+/* @flow */
+
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -10,7 +12,24 @@ import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 import * as NotificationActions from 'actions/NotificationActions';
 import Loader from 'components/Loader';
+import type { Action, State } from 'flowtype';
 import NotificationButton from './components/NotificationButton';
+
+type Props = {
+    key?: number,
+    notifications: $ElementType<State, 'notifications'>,
+    close: (notif?: any) => Action,
+};
+
+type NProps = {
+    type: string,
+    cancelable?: boolean;
+    title: string;
+    message?: string;
+    actions?: Array<any>;
+    close?: typeof NotificationActions.close,
+    loading?: boolean
+};
 
 const Wrapper = styled.div`
     position: relative;
@@ -141,7 +160,7 @@ export const Notification = (props: NProps): React$Element<string> => {
     );
 };
 
-export const NotificationGroup = (props) => {
+export const NotificationGroup = (props: Props) => {
     const { notifications, close } = props;
     return notifications.map(n => (
         <Notification

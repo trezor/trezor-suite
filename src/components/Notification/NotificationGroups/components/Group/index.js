@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
@@ -98,5 +99,15 @@ class Group extends Component {
         );
     }
 }
+
+Group.propTypes = {
+    type: PropTypes.string,
+    groupNotifications: PropTypes.arrayOf({
+        key: PropTypes.string,
+        type: PropTypes.string,
+        title: PropTypes.string,
+        message: PropTypes.string,
+    }),
+};
 
 export default Group;
