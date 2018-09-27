@@ -168,11 +168,12 @@ const Wrapper = styled.div`
 
 const Content = styled.div`
     padding-bottom: 10px;
+    text-align: justify;
 `;
 
 const ContentWrapper = styled.div``;
 const ReadMore = styled.div`
-    padding: 10px 0;
+    padding: 10px 0 5px 0;
     text-align: center;
     width: 100%;
     color: ${colors.WHITE};
