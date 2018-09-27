@@ -156,12 +156,13 @@ const AdvancedForm = (props: Props) => {
                             <Tooltip
                                 content={(
                                     <React.Fragment>
-                                        Gas limit is the amount of gas to send with your transaction.<br />
-                                        <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
-                                        Increasing this number will not get your TX mined faster.<br />
-                                        Default value for sending {gasLimitTooltipCurrency} is <GreenSpan>{gasLimitTooltipValue}</GreenSpan>
+                                        Gas limit refers to the maximum amount of gas user is willing to spendon a particular transaction.{' '}
+                                        <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>.{' '}Increasing the gas limit will not get the transaction confirmed sooner.
+                                        Default value for sending {gasLimitTooltipCurrency} is <GreenSpan>{gasLimitTooltipValue}</GreenSpan>.
                                     </React.Fragment>
                                 )}
+                                maxWidth={410}
+                                readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
                                 placement="top"
                             >
                                 <Icon
@@ -190,12 +191,13 @@ const AdvancedForm = (props: Props) => {
                             <Tooltip
                                 content={(
                                     <React.Fragment>
-                                        Gas Price is the amount you pay per unit of gas.<br />
-                                        <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
-                                        Higher the gas price = faster transaction, but more expensive. Recommended is <GreenSpan>{recommendedGasPrice} GWEI.</GreenSpan><br />
-                                        <Link href="https://myetherwallet.github.io/knowledge-base/gas/what-is-gas-ethereum.html" target="_blank" rel="noreferrer noopener" isGreen>Read more</Link>
+                                        Gas price refers to the amount of ether you are willing to pay for every
+                                        unit of gas, and is usually measured in “Gwei”. <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>. Increasing the gas price will get the transaction confirmed sooner but
+                                        makes it more expensive. The recommended gas price is <GreenSpan>{recommendedGasPrice} GWEI</GreenSpan>.
                                     </React.Fragment>
                                 )}
+                                maxWidth={400}
+                                readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
                                 placement="top"
                             >
                                 <Icon
