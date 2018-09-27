@@ -1,5 +1,3 @@
-/* @flow */
-
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
@@ -181,6 +179,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             );
         }
 
+        const isDeviceInBootloader = this.props.wallet.selectedDevice.features && this.props.wallet.selectedDevice.features.bootloader_mode && this.props.devices.length === 1;
         return (
             <StickyContainer
                 location={this.props.location.pathname}
@@ -188,9 +187,13 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             >
                 <Header
                     isSelected
-                    onClickWrapper={() => this.handleOpen()}
+                    onClickWrapper={() => {
+                        if (!isDeviceInBootloader) {
+                            this.handleOpen();
+                        }
+                    }}
                     device={this.props.wallet.selectedDevice}
-                    disabled={this.props.wallet.selectedDevice.features && this.props.wallet.selectedDevice.features.bootloader_mode && this.props.devices.length === 1}
+                    disabled={isDeviceInBootloader}
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
@@ -209,8 +212,8 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     {...this.props}
                 />
                 <Body>
-                    {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
-                    {menu}
+                    {(!isDeviceInBootloader && this.state.shouldRenderDeviceSelection) && <DeviceMenu {...this.props} />}
+                    {!isDeviceInBootloader && menu}
                 </Body>
                 <Footer key="sticky-footer">
                     <Help>
