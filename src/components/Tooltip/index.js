@@ -12,7 +12,7 @@ const Wrapper = styled.div`
         z-index: 1070;
         display: block;
         visibility: visible;
-        border: 1px solid ${colors.DIVIDER};
+        border: none;
         border-radius: 3px;
         box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
     }
@@ -31,7 +31,7 @@ const Wrapper = styled.div`
         background-color: ${colors.TOOLTIP_BACKGROUND};
         border-radius: 3px;
         min-height: 34px;
-        border: 1px solid ${colors.BLACK};
+        border: none;
     }
 
     .rc-tooltip-arrow,
