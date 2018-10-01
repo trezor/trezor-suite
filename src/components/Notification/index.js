@@ -37,6 +37,7 @@ const Wrapper = styled.div`
     background: ${colors.TEXT_SECONDARY};
     padding: 24px 48px 24px 24px;
     display: flex;
+    min-height: 90px;
     flex-direction: row;
     text-align: left;
 
