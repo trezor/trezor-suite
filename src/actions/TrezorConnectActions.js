@@ -206,7 +206,7 @@ export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispat
 export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected: ?TrezorDevice = getState().wallet.selectedDevice;
 
-    if (device && device.features) {
+    if (device.features) {
         if (selected && selected.features && selected.features.device_id === device.features.device_id) {
             dispatch(DiscoveryActions.stop(selected));
         }
@@ -218,7 +218,11 @@ export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch
                 device: instances[0],
                 instances,
             });
+        } else {
+            dispatch(RouterActions.selectFirstAvailableDevice());
         }
+    } else {
+        dispatch(RouterActions.selectFirstAvailableDevice());
     }
 };
 
