@@ -21,7 +21,7 @@ import type {
 /**
  * Middleware
  */
-const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
+const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => async (action: Action): Promise<Action> => {
     const prevState = api.getState();
 
     // Application live cycle starts HERE!
@@ -88,14 +88,14 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         api.dispatch(NotificationActions.clear(prevLocation.state, currentLocation.state));
     }
 
-    // observe send form props changes
-    api.dispatch(SendFormActionActions.observe(prevState, action));
-
-    // update common values in WallerReducer
-    api.dispatch(WalletActions.observe(prevState, action));
-
-    // update common values in SelectedAccountReducer
-    api.dispatch(SelectedAccountActions.observe(prevState, action));
+    // observe common values in WallerReducer
+    if (!await api.dispatch(WalletActions.observe(prevState, action))) {
+        // if "selectedDevice" didn't change observe common values in SelectedAccountReducer
+        if (!await api.dispatch(SelectedAccountActions.observe(prevState, action))) {
+            // if "selectedAccount" didn't change observe send form props changes
+            api.dispatch(SendFormActionActions.observe(prevState, action));
+        }
+    }
 
     return action;
 };

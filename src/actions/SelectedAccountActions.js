@@ -1,11 +1,15 @@
 /* @flow */
-
+import { LOCATION_CHANGE } from 'react-router-redux';
+import * as WALLET from 'actions/constants/wallet';
 import * as ACCOUNT from 'actions/constants/account';
+import * as DISCOVERY from 'actions/constants/discovery';
+import * as TOKEN from 'actions/constants/token';
+import * as PENDING from 'actions/constants/pendingTx';
+
 import * as reducerUtils from 'reducers/utils';
-import { initialState } from 'reducers/SelectedAccountReducer';
 
 import type {
-    AsyncAction,
+    PayloadAction,
     Action,
     GetState,
     Dispatch,
@@ -61,7 +65,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
     if (blockchain && !blockchain.connected) {
         return {
             type: 'backend',
-            title: 'Backend is not connected',
+            title: `${network.name} backend is not connected`,
             shouldRender: false,
         };
     }
@@ -142,25 +146,29 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
     return null;
 };
 
-export const observe = (prevState: State, action: Action): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    // ignore actions dispatched from this process
-    if (action.type === ACCOUNT.UPDATE_SELECTED_ACCOUNT) {
-        return;
-    }
+// list of all actions which has influence on "selectedAccount" reducer
+// other actions will be ignored
+const actions = [
+    LOCATION_CHANGE,
+    WALLET.SET_SELECTED_DEVICE,
+    WALLET.UPDATE_SELECTED_DEVICE,
+    ...Object.values(ACCOUNT).filter(v => typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT), // exported values got unwanted "__esModule: true" as first element
+    ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
+    ...Object.values(TOKEN).filter(v => typeof v === 'string'),
+    ...Object.values(PENDING).filter(v => typeof v === 'string'),
+];
+
+/*
+* Called from WalletService
+*/
+export const observe = (prevState: State, action: Action): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+    // ignore not listed actions
+    if (actions.indexOf(action.type) < 0) return false;
 
     const state: State = getState();
     const { location } = state.router;
-    if (!location.state.account) {
-        // displayed route is not an account route
-        if (state.selectedAccount.location.length > 1) {
-            // reset "selectedAccount" reducer to default
-            dispatch({
-                type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
-                payload: initialState,
-            });
-        }
-        return;
-    }
+    // displayed route is not an account route
+    if (!location.state.account) return false;
 
     // get new values for selected account
     const account = reducerUtils.getSelectedAccount(state);
@@ -186,7 +194,11 @@ export const observe = (prevState: State, action: Action): AsyncAction => async 
     newState.notification = status || null;
     newState.shouldRender = status ? status.shouldRender : true;
     // check if newState is different than previous state
-    const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, ['location', 'account', 'network', 'discovery', 'tokens', 'pending', 'notification', 'shouldRender']);
+    const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, {
+        account: ['balance', 'nonce'],
+        discovery: ['accountIndex', 'interrupted', 'completed', 'waitingForBlockchain', 'waitingForDevice'],
+    });
+
     if (stateChanged) {
         // update values in reducer
         dispatch({
@@ -194,4 +206,5 @@ export const observe = (prevState: State, action: Action): AsyncAction => async 
             payload: newState,
         });
     }
+    return stateChanged;
 };
