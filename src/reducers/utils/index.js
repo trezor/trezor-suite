@@ -116,21 +116,58 @@ export const getWeb3 = (state: State): ?Web3Instance => {
     return state.web3.find(w3 => w3.network === locationState.network);
 };
 
-export const observeChanges = (prev: ?(Object | Array<any>), current: ?(Object | Array<any>), fields?: Array<string>): boolean => {
-    if (prev !== current) {
-        // 1. one of the objects is null/undefined
-        if (!prev || !current) return true;
-        // 2. object are Arrays and they have different length
-        if (Array.isArray(prev) && Array.isArray(current)) return prev.length !== current.length;
-        // 3. no nested field to check
-        if (!Array.isArray(fields)) return true;
-        // 4. validate nested field
-        if (prev instanceof Object && current instanceof Object) {
-            for (let i = 0; i < fields.length; i++) {
-                const key = fields[i];
-                if (prev[key] !== current[key]) return true;
+export const observeChanges = (prev: ?Object, current: ?Object, filter?: {[k: string]: Array<string>}): boolean => {
+    // 1. both objects are the same (solves simple types like string, boolean and number)
+    if (prev === current) return false;
+    // 2. one of the objects is null/undefined
+    if (!prev || !current) return true;
+
+    const prevType = Object.prototype.toString.call(current);
+    const currentType = Object.prototype.toString.call(current);
+    // 3. one of the objects has different type then other
+    if (prevType !== currentType) return true;
+
+    if (currentType === '[object Array]') {
+        // 4. Array length is different
+        if (prev.length !== current.length) return true;
+        // observe array recursive
+        for (let i = 0; i < current.length; i++) {
+            if (observeChanges(prev[i], current[i], filter)) return true;
+        }
+    } else if (currentType === '[object Object]') {
+        const prevKeys = Object.keys(prev);
+        const currentKeys = Object.keys(prev);
+        // 5. simple validation of keys length
+        if (prevKeys.length !== currentKeys.length) return true;
+
+        // 6. "prev" has keys which "current" doesn't have
+        const prevDifference = prevKeys.find(k => currentKeys.indexOf(k) < 0);
+        if (prevDifference) return true;
+
+        // 7. "current" has keys which "prev" doesn't have
+        const currentDifference = currentKeys.find(k => prevKeys.indexOf(k) < 0);
+        if (currentDifference) return true;
+
+        // 8. observe every key recursive
+        for (let i = 0; i < currentKeys.length; i++) {
+            const key = currentKeys[i];
+            if (filter && filter.hasOwnProperty(key) && prev[key] && current[key]) {
+                const prevFiltered = {};
+                const currentFiltered = {};
+                for (let i2 = 0; i2 < filter[key].length; i2++) {
+                    const field = filter[key][i2];
+                    prevFiltered[field] = prev[key][field];
+                    currentFiltered[field] = current[key][field];
+                }
+                if (observeChanges(prevFiltered, currentFiltered)) return true;
+            } else if (observeChanges(prev[key], current[key])) {
+                return true;
             }
         }
+    } else if (prev !== current) {
+        // solve simple types like string, boolean and number
+        return true;
     }
+
     return false;
 };

@@ -139,7 +139,7 @@ export const resolvePendingTransactions = (network: string): PromiseAction<void>
         const status = await instance.web3.eth.getTransaction(tx.id);
         if (!status) {
             dispatch({
-                type: PENDING.TX_NOT_FOUND,
+                type: PENDING.TX_REJECTED,
                 tx,
             });
         } else {
