@@ -11,23 +11,24 @@ export default (props: Props) => {
         if (notification.type === 'backend') {
             // special case: backend is down
             // TODO: this is a different component with "auto resolve" button
-            /*
+            
             return (
                 <Notification
                     type="error"
-                    title="Backend not connected"
+                    title={notification.title}
+                    message={notification.message}
                     actions={
                         [{
-                            label: 'Try again',
+                            label: 'Connect',
                             callback: async () => {
-                                await props.blockchainReconnect(network.network);
+                                await props.blockchainReconnect('trop');
                             },
                         }]
                     }
                 />
             );
-            */
-            return (<Notification type="error" title={notification.title} message={notification.message} />);
+          
+           // return (<Notification type="error" title={notification.title} message={notification.message} />);
         }
         return (<Notification type={notification.type} title={notification.title} message={notification.message} />);
     }
