@@ -9,9 +9,9 @@ export default (props: Props) => {
     if (!location) return null;
 
     const notifications: Array<Notification> = [];
-    if (location.state.device) {
-        notifications.push(<Notification key="example" type="info" title="Static example" />);
-    }
+    // if (location.state.device) {
+    //     notifications.push(<Notification key="example" type="info" title="Static example" />);
+    // }
 
     return notifications;
 };
