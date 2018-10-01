@@ -133,10 +133,9 @@ const AccountReceive = (props: Props) => {
     const {
         account,
         discovery,
-        shouldRender,
     } = props.selectedAccount;
 
-    if (!device || !account || !discovery || !shouldRender) return null;
+    if (!device || !account || !discovery) return null;
 
     const {
         addressVerified,
@@ -158,9 +157,6 @@ const AccountReceive = (props: Props) => {
             <AddressWrapper
                 isShowingQrCode={addressVerified || addressUnverified}
             >
-                {isAddressVerifying && (
-                    <AddressInfoText>Confirm address on TREZOR</AddressInfoText>
-                )}
                 {((addressVerified || addressUnverified) && !isAddressVerifying) && (
                     <Tooltip
                         placement="bottomRight"
@@ -197,8 +193,20 @@ const AccountReceive = (props: Props) => {
                 >{address}
                 </ValueWrapper>
                 {isAddressVerifying && (
-                    <AddressInfoText>{account.network} account #{account.index + 1}</AddressInfoText>
+                    <React.Fragment>
+                        <ArrowUp />
+                        <AddressInfoText>
+                            <Icon
+                                icon={ICONS.T1}
+                                color={colors.WHITE}
+                            />
+                            Check address on your Trezor
+                        </AddressInfoText>
+                    </React.Fragment>
                 )}
+                {/* {isAddressVerifying && (
+                    <AddressInfoText>{account.network} account #{account.index + 1}</AddressInfoText>
+                )} */}
                 {(addressVerified || addressUnverified) && (
                     <QRCode
                         bgColor="#FFFFFF"
