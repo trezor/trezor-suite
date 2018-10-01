@@ -56,7 +56,7 @@ class Group extends Component {
     }
 
     render() {
-        const { type, groupNotifications } = this.props;
+        const { type, groupNotifications, close } = this.props;
         const color = getColor(type);
         return (
             <Wrapper>
@@ -92,6 +92,9 @@ class Group extends Component {
                                 type={notification.type}
                                 title={notification.title}
                                 message={notification.message}
+                                cancelable={notification.cancelable}
+                                actions={notification.actions}
+                                close={close}
                             />
                         ))}
                 </Body>
@@ -102,6 +105,7 @@ class Group extends Component {
 
 Group.propTypes = {
     type: PropTypes.string,
+    close: PropTypes.func.isRequired,
     groupNotifications: PropTypes.arrayOf({
         key: PropTypes.string,
         type: PropTypes.string,
