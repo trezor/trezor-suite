@@ -1,6 +1,7 @@
 /* @flow */
 
 import React from 'react';
+import media from 'styled-media-query';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
@@ -60,11 +61,19 @@ const Wrapper = styled.div`
         color: ${colors.ERROR_PRIMARY};
         background: ${colors.ERROR_SECONDARY};
     `}
+
+    ${media.lessThan('610px')`
+        flex-direction: column;
+    `}
 `;
 
 const Body = styled.div`
     display: flex;
-    margin-right: 40px;
+    width: 60%;
+
+    ${media.lessThan('610px')`
+        width: 100%;
+    `}
 `;
 
 const Title = styled.div`
@@ -86,28 +95,36 @@ const Message = styled.div`
 const StyledIcon = styled(Icon)`
     position: relative;
     top: -7px;
+    min-width: 20px;
 `;
 
-const MessageContent = styled.div`
-    height: 20px;
-    display: flex;
+const IconWrapper = styled.div`
+    min-width: 20px;
 `;
 
 const Texts = styled.div`
     display: flex;
     flex-direction: column;
+    flex: 1;
 `;
 
 const AdditionalContent = styled.div`
-    flex: 1;
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
+    flex: 1;
 `;
 
 const ActionContent = styled.div`
+    display: flex;
     justify-content: right;
     align-items: flex-end;
+
+    ${media.lessThan('610px')`
+        width: 100%;
+        padding: 10px 0 0 30px;
+        align-items: flex-start;
+    `}
 `;
 
 export const Notification = (props: NProps): React$Element<string> => {
@@ -127,20 +144,20 @@ export const Notification = (props: NProps): React$Element<string> => {
                 </CloseClick>
             )}
             <Body>
-                <MessageContent>
+                <IconWrapper>
                     <StyledIcon
                         color={getColor(props.type)}
                         icon={getIcon(props.type)}
                     />
-                    <Texts>
-                        <Title>{ props.title }</Title>
-                        { props.message && (
-                            <Message>
-                                <p dangerouslySetInnerHTML={{ __html: props.message }} />
-                            </Message>
-                        ) }
-                    </Texts>
-                </MessageContent>
+                </IconWrapper>
+                <Texts>
+                    <Title>{ props.title }</Title>
+                    { props.message && (
+                        <Message>
+                            <p dangerouslySetInnerHTML={{ __html: props.message }} />
+                        </Message>
+                    ) }
+                </Texts>
             </Body>
             <AdditionalContent>
                 {props.actions && props.actions.length > 0 && (
