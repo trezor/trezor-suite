@@ -8,9 +8,9 @@
     },
     "license": "LGPL-3.0+",
     "scripts": {
-        "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js",
-        "dev:local": "npx webpack-dev-server --config ./webpack/local.babel.js",
-        "build:prod": "rimraf build && npx webpack --config ./webpack/production.babel.js --progress --bail",
+        "dev": "npx webpack-dev-server --config webpack/dev.babel.js",
+        "dev:local": "npx webpack-dev-server --config webpack/local.babel.js",
+        "build:prod": "rimraf build && npx webpack --config webpack/production.babel.js --progress --bail",
         "build:dev": "rimraf build-devel && cross-env BUILD=development npx webpack --config webpack/production.babel.js --output-path build-devel --progress --bail",
         "build": "run-s build:*",
         "flow": "flow check src",
