@@ -25,24 +25,24 @@ describe('reducers utils', () => {
                 current: 'a',
             },
             {
-                pervious: { test: 1 },
-                current: { test: 1 },
+                pervious: { one: 1 },
+                current: { one: 1 },
             },
             {
-                pervious: { test: { test: 1 } },
-                current: { test: { test: 1 } },
+                pervious: { one: { two: 1 } },
+                current: { one: { two: 1 } },
             },
             {
-                pervious: { test: { test: [1, 2, 3] } },
-                current: { test: { test: [1, 2, 3] } },
+                pervious: { one: { two: [1, 2, 3] } },
+                current: { one: { two: [1, 2, 3] } },
             },
             {
-                pervious: { test: { test: [1, { test: 1 }, 3] } },
-                current: { test: { test: [1, { test: 1 }, 3] } },
+                pervious: { one: { two: [1, { three: 1 }, 3] } },
+                current: { one: { two: [1, { three: 1 }, 3] } },
             },
             {
-                pervious: { test: { test: [1, { test: 1 }, { test: 3, test1: { test: 3 } }] } },
-                current: { test: { test: [1, { test: 1 }, { test: 3, test1: { test: 3 } }] } },
+                pervious: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 3 } }] } },
+                current: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 3 } }] } },
             },
         ];
 
@@ -57,8 +57,12 @@ describe('reducers utils', () => {
         const data = [
             // example of different data (true)
             {
-                pervious: { test: 1 },
+                pervious: { one: 1 },
                 current: {},
+            },
+            {
+                pervious: { one: 1 },
+                current: { one: 1, two: 2 },
             },
             {
                 pervious: [{}, {}],
@@ -77,24 +81,32 @@ describe('reducers utils', () => {
                 current: '1',
             },
             {
-                pervious: { test: 1 },
-                current: { test: 2 },
+                pervious: { one: 1 },
+                current: { one: 2 },
             },
             {
-                pervious: { test: { test: 1 } },
-                current: { test: { test: 2 } },
+                pervious: { one: { two: 1 } },
+                current: { one: { two: 2 } },
             },
             {
-                pervious: { test: { test: [1, 2, 3] } },
-                current: { test: { test: [1, 1, 3] } },
+                pervious: { one: { two: 1 } },
+                current: { one: { two: 2 } },
             },
             {
-                pervious: { test: { test: [1, { test: 1 }, 3] } },
-                current: { test: { test: [1, { test: 2 }, 3] } },
+                pervious: { one: { two: [1, 2, 3] } },
+                current: { one: { two: [1, 1, 3] } },
             },
             {
-                pervious: { test: { test: [1, { test: 1 }, { test: 3, test1: { test: 3 } }] } },
-                current: { test: { test: [1, { test: 1 }, { test: 3, test1: { test: 1 } }] } },
+                pervious: { one: { two: [1, { three: 1 }, 3] } },
+                current: { one: { two: [1, { three: 2 }, 3] } },
+            },
+            {
+                pervious: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 3 } }] } },
+                current: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 1 } }] } },
+            },
+            {
+                pervious: { one: { two: [1, { three: 1 }, { four: 3, five: { sixxx: 3 } }] } },
+                current: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 1 } }] } },
             },
         ];
 

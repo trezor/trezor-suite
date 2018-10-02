@@ -39,3 +39,9 @@ exports[`reducers utils observeChanges shoul NOT be the same - returns true 8`] 
 exports[`reducers utils observeChanges shoul NOT be the same - returns true 9`] = `true`;
 
 exports[`reducers utils observeChanges shoul NOT be the same - returns true 10`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 11`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 12`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 13`] = `true`;
