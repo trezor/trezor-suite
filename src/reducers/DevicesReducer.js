@@ -94,7 +94,6 @@ const addDevice = (state: State, device: Device): State => {
 
     const newDevice: TrezorDevice = device.type === 'acquired' ? {
         ...device,
-        // acquiring: false,
         ...extended,
     } : {
         ...device,
@@ -132,8 +131,8 @@ const addDevice = (state: State, device: Device): State => {
 
         const changedDevices: Array<TrezorDevice> = affectedDevices.filter(d => d.features && device.features
             && d.features.passphrase_protection === device.features.passphrase_protection).map((d) => {
-            const extended: Object = { connected: true, available: true };
-            return mergeDevices(d, { ...device, ...extended });
+            const extended2: Object = { connected: true, available: true };
+            return mergeDevices(d, { ...device, ...extended2 });
         });
         if (changedDevices.length !== affectedDevices.length) {
             changedDevices.push(newDevice);
@@ -154,7 +153,6 @@ const duplicate = (state: State, device: TrezorDevice): State => {
 
     const newDevice: TrezorDevice = {
         ...device,
-        // acquiring: false,
         remember: false,
         state: null,
         // instance, (instance is already part of device - added in modal)
@@ -199,7 +197,7 @@ const authDevice = (state: State, device: TrezorDevice, deviceState: string): St
 
 
 // Transform JSON form local storage into State
-const devicesFromStorage = (devices: Array<TrezorDevice>): State => devices.map((device: TrezorDevice) => {
+const devicesFromStorage = ($devices: Array<TrezorDevice>): State => $devices.map((device: TrezorDevice) => {
     const extended = {
         connected: false,
         available: false,
@@ -233,14 +231,14 @@ const disconnectDevice = (state: State, device: Device): State => {
     const otherDevices: State = state.filter(d => affectedDevices.indexOf(d) === -1);
 
     if (affectedDevices.length > 0) {
-        const acquiredDevices = affectedDevices.filter(d => d.features && d.state).map((d) => {
-            if (d.type === 'acquired') {
-                d.connected = false;
-                d.available = false;
-                d.status = 'available';
-                d.path = '';
-            }
-            return d;
+        const acquiredDevices = affectedDevices.filter(d => d.features && d.state).map((d) => { // eslint-disable-line arrow-body-style
+            return d.type === 'acquired' ? {
+                ...d,
+                connected: false,
+                available: false,
+                status: 'available',
+                path: '',
+            } : d;
         });
         return otherDevices.concat(acquiredDevices);
     }
@@ -249,12 +247,18 @@ const disconnectDevice = (state: State, device: Device): State => {
 };
 
 const onSelectedDevice = (state: State, device: ?TrezorDevice): State => {
-    if (device) {
-        const otherDevices: Array<TrezorDevice> = state.filter(d => d !== device);
-        device.ts = new Date().getTime();
-        return otherDevices.concat([device]);
-    }
-    return state;
+    if (!device) return state;
+
+    const otherDevices: Array<TrezorDevice> = state.filter(d => d !== device);
+    const extended = device.type === 'acquired' ? {
+        ...device,
+        ts: new Date().getTime(),
+    } : {
+        ...device,
+        features: null,
+        ts: new Date().getTime(),
+    };
+    return otherDevices.concat([extended]);
 };
 
 export default function devices(state: State = initialState, action: Action): State {

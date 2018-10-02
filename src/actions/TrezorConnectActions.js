@@ -71,9 +71,7 @@ export type TrezorConnectAction = {
     type: typeof CONNECT.DEVICE_FROM_STORAGE,
     payload: Array<TrezorDevice>
 } | {
-    type: typeof CONNECT.START_ACQUIRING,
-} | {
-    type: typeof CONNECT.STOP_ACQUIRING,
+    type: typeof CONNECT.START_ACQUIRING | typeof CONNECT.STOP_ACQUIRING,
 };
 
 export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -128,10 +126,10 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
             pendingTransportEvent: (getState().devices.length < 1),
         });
     } catch (error) {
-        // dispatch({
-        //     type: CONNECT.INITIALIZATION_ERROR,
-        //     error
-        // })
+        dispatch({
+            type: CONNECT.INITIALIZATION_ERROR,
+            error,
+        });
     }
 };
 
