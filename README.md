@@ -5,8 +5,8 @@ To start locally run `npm run dev` or `yarn run dev`
 To build the project run `npm run build` or `yarn run build`
 
 ## Docker
-- Build docker image `docker build -t trezor-wallet .`
-- Run image
+- Build run `./scripts/docker-build.sh`
+- Run run `./scripts/docker-run.sh`
 
 ## Project structure
 The project is divided into two parts - data that are used when compiling the project and data that aren't.
