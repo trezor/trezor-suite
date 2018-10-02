@@ -69,6 +69,7 @@ class NotificationsGroup extends Component {
             <Wrapper>
                 {Object.keys(sortedNotifications).map(group => (
                     <Group
+                        key={group}
                         groupNotifications={notificationGroups[group]}
                         type={group}
                         close={close}
