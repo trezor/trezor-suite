@@ -45,12 +45,12 @@ class Group extends Component {
         if (this.state.visible) {
             this.setState({
                 visible: false,
-                visibleCount: 0,
+                visibleCount: this.props.groupNotifications.length,
             });
         } else {
             this.setState({
                 visible: true,
-                visibleCount: this.props.groupNotifications.length,
+                visibleCount: 0,
             });
         }
     }
@@ -88,7 +88,7 @@ class Group extends Component {
                         .slice(0, this.state.visibleCount)
                         .map(notification => (
                             <Notification
-                                key={notification.title}
+                                key={notification.key}
                                 type={notification.type}
                                 title={notification.title}
                                 message={notification.message}
