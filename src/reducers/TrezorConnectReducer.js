@@ -10,9 +10,7 @@ export type SelectedDevice = {
 }
 
 export type State = {
-    // devices: Array<TrezorDevice>;
-    // selectedDevice: ?SelectedDevice;
-    discoveryComplete: boolean;
+    initialized: boolean;
     error: ?string;
     transport: ?{
         type: string;
@@ -26,54 +24,42 @@ export type State = {
     //     mobile: boolean;
     // } | {};
     browserState: any;
-    acquiring: boolean;
+    acquiringDevice: boolean;
 }
 
-
 const initialState: State = {
-    // devices: [],
-    //selectedDevice: null,
-    discoveryComplete: false,
+    initialized: false,
     error: null,
     transport: null,
     browserState: {},
-    acquiring: false,
+    acquiringDevice: false,
 };
 
 
 export default function connect(state: State = initialState, action: Action): State {
     switch (action.type) {
-        case UI.IFRAME_HANDSHAKE:
-            return {
-                ...state,
-                browserState: action.payload.browser,
-            };
-
-        case CONNECT.START_ACQUIRING:
-            return {
-                ...state,
-                acquiring: true,
-            };
-
-        case CONNECT.STOP_ACQUIRING:
-            return {
-                ...state,
-                acquiring: false,
-            };
-
+        // trezor-connect iframe didn't loaded properly
         case CONNECT.INITIALIZATION_ERROR:
             return {
                 ...state,
                 error: action.error,
             };
-
+        // trezor-connect iframe loaded
+        case UI.IFRAME_HANDSHAKE:
+            return {
+                ...state,
+                initialized: true,
+                browserState: action.payload.browser,
+            };
+        // trezor-connect (trezor-link) initialized
         case TRANSPORT.START:
             return {
                 ...state,
                 transport: action.payload,
                 error: null,
             };
-
+        // trezor-connect (trezor-link)
+        // will be called continuously in interval until connection (bridge/webusb) will be established
         case TRANSPORT.ERROR:
             return {
                 ...state,
@@ -82,6 +68,17 @@ export default function connect(state: State = initialState, action: Action): St
                 transport: null,
             };
 
+        case CONNECT.START_ACQUIRING:
+            return {
+                ...state,
+                acquiringDevice: true,
+            };
+
+        case CONNECT.STOP_ACQUIRING:
+            return {
+                ...state,
+                acquiringDevice: false,
+            };
 
         default:
             return state;

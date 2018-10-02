@@ -23,11 +23,4 @@ const UnreadableDevice = () => (
     </Wrapper>
 );
 
-export default connect(
-    (state: State) => ({
-        acquiring: state.connect.acquiring,
-    }),
-    (dispatch: Dispatch) => ({
-        acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
-    }),
-)(UnreadableDevice);
+export default connect(null, null)(UnreadableDevice);

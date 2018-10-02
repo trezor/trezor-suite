@@ -94,7 +94,6 @@ const addDevice = (state: State, device: Device): State => {
 
     const newDevice: TrezorDevice = device.type === 'acquired' ? {
         ...device,
-        // acquiring: false,
         ...extended,
     } : {
         ...device,
@@ -154,7 +153,6 @@ const duplicate = (state: State, device: TrezorDevice): State => {
 
     const newDevice: TrezorDevice = {
         ...device,
-        // acquiring: false,
         remember: false,
         state: null,
         // instance, (instance is already part of device - added in modal)
