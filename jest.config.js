@@ -1,7 +1,7 @@
 module.exports = {
     rootDir: './src',
     automock: false,
-    coverageDirectory: 'coverage/',
+    coverageDirectory: '../coverage/',
     collectCoverage: true,
     testURL: 'http://localhost',
     modulePathIgnorePatterns: [
