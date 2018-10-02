@@ -1,12 +1,12 @@
 # Trezor Ethereum wallet
 
 To install dependencies run `npm install` or `yarn`
-
 To start locally run `npm run dev` or `yarn run dev`
-
 To build the project run `npm run build` or `yarn run build`
 
-======================================
+## Docker
+- Build docker image `docker build -t trezor-wallet .`
+- Run image
 
 ## Project structure
 The project is divided into two parts - data that are used when compiling the project and data that aren't.
