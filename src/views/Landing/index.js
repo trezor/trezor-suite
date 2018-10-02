@@ -14,6 +14,7 @@ import { H2 } from 'components/Heading';
 import { isWebUSB } from 'utils/device';
 import { FONT_SIZE } from 'config/variables';
 
+import InitializationError from './components/InitializationError';
 import BrowserNotSupported from './components/BrowserNotSupported';
 import ConnectDevice from './components/ConnectDevice';
 import InstallBridge from './components/InstallBridge';
@@ -77,13 +78,13 @@ export default (props: Props) => {
     const bridgeRoute: boolean = props.router.location.state.hasOwnProperty('bridge');
     const deviceLabel = props.wallet.disconnectRequest ? props.wallet.disconnectRequest.label : '';
 
-    const shouldShowInstallBridge = connectError || bridgeRoute;
+    const shouldShowInitializationError = connectError && !props.connect.initialized;
+    const shouldShowInstallBridge = props.connect.initialized && (connectError || bridgeRoute);
     const shouldShowConnectDevice = props.wallet.ready && devices.length < 1;
     const shouldShowDisconnectDevice = !!props.wallet.disconnectRequest;
     const shouldShowUnsupportedBrowser = browserState.supported === false;
 
-    const isLoading = !shouldShowInstallBridge && !shouldShowConnectDevice && !shouldShowUnsupportedBrowser && !localStorageError;
-
+    const isLoading = !shouldShowInitializationError && !shouldShowInstallBridge && !shouldShowConnectDevice && !shouldShowUnsupportedBrowser && !localStorageError;
     return (
         <LandingWrapper>
             {isLoading && <LandingLoader text="Loading" size={100} />}
@@ -98,10 +99,9 @@ export default (props: Props) => {
                         />
                     )}
                     <Notifications />
+                    {shouldShowInitializationError && <InitializationError error={connectError} />}
                     <Log />
-
                     <LandingContent>
-
                         {shouldShowUnsupportedBrowser && <BrowserNotSupported />}
                         {shouldShowInstallBridge && <InstallBridge browserState={browserState} />}
 
