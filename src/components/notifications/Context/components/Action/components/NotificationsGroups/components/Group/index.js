@@ -77,7 +77,7 @@ class Group extends Component {
                                 icon={ICONS.ARROW_DOWN}
                                 color={colors.TEXT_SECONDARY}
                                 size={24}
-                                isActive={this.state.visible}
+                                isActive={!this.state.visible}
                                 canAnimate
                             />
                         </Right>
@@ -106,12 +106,14 @@ class Group extends Component {
 Group.propTypes = {
     type: PropTypes.string,
     close: PropTypes.func.isRequired,
-    groupNotifications: PropTypes.arrayOf({
-        key: PropTypes.string,
-        type: PropTypes.string,
-        title: PropTypes.string,
-        message: PropTypes.string,
-    }),
+    groupNotifications: PropTypes.arrayOf(
+        PropTypes.shape({
+            key: PropTypes.number,
+            type: PropTypes.string,
+            title: PropTypes.string,
+            message: PropTypes.string,
+        }),
+    ),
 };
 
 export default Group;
