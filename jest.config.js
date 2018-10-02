@@ -12,6 +12,7 @@ module.exports = {
     ],
     collectCoverageFrom: [
         'utils/**.js',
+        'reducers/utils/**.js',
     ],
     setupFiles: [
         './support/setupJest.js',
