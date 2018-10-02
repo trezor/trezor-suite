@@ -17,6 +17,10 @@ describe('reducers utils', () => {
                 current: [],
             },
             {
+                pervious: [1, 1, 1],
+                current: [1, 1, 1],
+            },
+            {
                 pervious: 'a',
                 current: 'a',
             },
@@ -57,8 +61,12 @@ describe('reducers utils', () => {
                 current: {},
             },
             {
-                pervious: [{}],
+                pervious: [{}, {}],
                 current: [],
+            },
+            {
+                pervious: [1, 1, 1],
+                current: [1, 1],
             },
             {
                 pervious: 'a',

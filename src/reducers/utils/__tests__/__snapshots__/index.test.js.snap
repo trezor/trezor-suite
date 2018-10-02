@@ -18,6 +18,8 @@ exports[`reducers utils observeChanges shoud be the same - returns false 8`] = `
 
 exports[`reducers utils observeChanges shoud be the same - returns false 9`] = `false`;
 
+exports[`reducers utils observeChanges shoud be the same - returns false 10`] = `false`;
+
 exports[`reducers utils observeChanges shoul NOT be the same - returns true 1`] = `true`;
 
 exports[`reducers utils observeChanges shoul NOT be the same - returns true 2`] = `true`;
@@ -35,3 +37,5 @@ exports[`reducers utils observeChanges shoul NOT be the same - returns true 7`] 
 exports[`reducers utils observeChanges shoul NOT be the same - returns true 8`] = `true`;
 
 exports[`reducers utils observeChanges shoul NOT be the same - returns true 9`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 10`] = `true`;

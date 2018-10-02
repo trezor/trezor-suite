@@ -122,7 +122,7 @@ export const observeChanges = (prev: ?Object, current: ?Object, filter?: {[k: st
     // 2. one of the objects is null/undefined
     if (!prev || !current) return true;
 
-    const prevType = Object.prototype.toString.call(current);
+    const prevType = Object.prototype.toString.call(prev);
     const currentType = Object.prototype.toString.call(current);
     // 3. one of the objects has different type then other
     if (prevType !== currentType) return true;
