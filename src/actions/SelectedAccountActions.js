@@ -80,7 +80,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
                 if (device.available) {
                     return {
                         type: 'info',
-                        title: 'Loading accounts...',
+                        title: 'Authenticating device...',
                         shouldRender: false,
                     };
                 }
