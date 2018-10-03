@@ -108,7 +108,7 @@ Group.propTypes = {
     close: PropTypes.func.isRequired,
     groupNotifications: PropTypes.arrayOf(
         PropTypes.shape({
-            key: PropTypes.number,
+            key: PropTypes.object,
             type: PropTypes.string,
             title: PropTypes.string,
             message: PropTypes.string,

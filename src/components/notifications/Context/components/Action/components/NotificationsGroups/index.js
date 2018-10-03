@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { PRIORITY } from 'constants/notifications';
 import Group from './components/Group';
 
 const Wrapper = styled.div``;
@@ -14,7 +13,7 @@ class NotificationsGroup extends Component {
             if (!acc[key]) {
                 acc[key] = [];
             }
-            acc[key].push(obj);
+            acc[key].push({ ...obj, key: obj });
             return acc;
         }, {});
 
