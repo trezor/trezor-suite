@@ -5,50 +5,50 @@ describe('reducers utils', () => {
         const data = [
             // example of same data (false)
             {
-                pervious: {},
+                previous: {},
                 current: {},
             },
             {
-                pervious: 1,
+                previous: 1,
                 current: 1,
             },
             {
-                pervious: [],
+                previous: [],
                 current: [],
             },
             {
-                pervious: [1, 1, 1],
+                previous: [1, 1, 1],
                 current: [1, 1, 1],
             },
             {
-                pervious: 'a',
+                previous: 'a',
                 current: 'a',
             },
             {
-                pervious: { one: 1 },
+                previous: { one: 1 },
                 current: { one: 1 },
             },
             {
-                pervious: { one: { two: 1 } },
+                previous: { one: { two: 1 } },
                 current: { one: { two: 1 } },
             },
             {
-                pervious: { one: { two: [1, 2, 3] } },
+                previous: { one: { two: [1, 2, 3] } },
                 current: { one: { two: [1, 2, 3] } },
             },
             {
-                pervious: { one: { two: [1, { three: 1 }, 3] } },
+                previous: { one: { two: [1, { three: 1 }, 3] } },
                 current: { one: { two: [1, { three: 1 }, 3] } },
             },
             {
-                pervious: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 3 } }] } },
+                previous: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 3 } }] } },
                 current: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 3 } }] } },
             },
         ];
 
         data.forEach((item) => {
             expect(reducerUtils.observeChanges(
-                item.pervious, item.current,
+                item.previous, item.current,
             )).toMatchSnapshot();
         });
     });
@@ -57,62 +57,87 @@ describe('reducers utils', () => {
         const data = [
             // example of different data (true)
             {
-                pervious: { one: 1 },
+                previous: null,
                 current: {},
             },
             {
-                pervious: { one: 1 },
+                previous: { one: 1 },
+                current: {},
+            },
+            {
+                previous: { one: 1 },
                 current: { one: 1, two: 2 },
             },
             {
-                pervious: [{}, {}],
+                previous: [{}, {}],
                 current: [],
             },
             {
-                pervious: [1, 1, 1],
+                previous: [1, 1, 1],
                 current: [1, 1],
             },
             {
-                pervious: 'a',
+                previous: 'a',
                 current: 'b',
             },
             {
-                pervious: 1,
+                previous: 1,
                 current: '1',
             },
             {
-                pervious: { one: 1 },
+                previous: { one: 1 },
                 current: { one: 2 },
             },
             {
-                pervious: { one: { two: 1 } },
+                previous: { one: { two: 1 } },
                 current: { one: { two: 2 } },
             },
             {
-                pervious: { one: { two: 1 } },
+                previous: { one: { two: 1 } },
                 current: { one: { two: 2 } },
             },
             {
-                pervious: { one: { two: [1, 2, 3] } },
+                previous: { one: { two: [1, 2, 3] } },
                 current: { one: { two: [1, 1, 3] } },
             },
             {
-                pervious: { one: { two: [1, { three: 1 }, 3] } },
+                previous: { one: { two: [1, { three: 1 }, 3] } },
                 current: { one: { two: [1, { three: 2 }, 3] } },
             },
             {
-                pervious: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 3 } }] } },
+                previous: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 3 } }] } },
                 current: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 1 } }] } },
             },
             {
-                pervious: { one: { two: [1, { three: 1 }, { four: 3, five: { sixxx: 3 } }] } },
+                previous: { one: { two: [1, { three: 1 }, { four: 3, five: { sixxx: 3 } }] } },
                 current: { one: { two: [1, { three: 1 }, { four: 3, five: { six: 1 } }] } },
             },
         ];
 
         data.forEach((item) => {
             expect(reducerUtils.observeChanges(
-                item.pervious, item.current,
+                item.previous, item.current,
+            )).toMatchSnapshot();
+        });
+    });
+
+    it('observeChanges test filter', () => {
+        const data = [
+            {
+                previous: { one: { two: 2, three: 3 } },
+                current: { one: { two: 2 } },
+                filter: { one: ['two'] },
+            },
+            {
+                previous: { one: { two: 2, three: 3 } },
+                current: { one: { two: 1 } },
+                filter: { one: ['two'] },
+            },
+        ];
+
+        data.forEach((item) => {
+            expect(reducerUtils.observeChanges(
+                item.previous, item.current, item.filter,
             )).toMatchSnapshot();
         });
     });
