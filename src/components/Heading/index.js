@@ -6,6 +6,8 @@ const baseStyles = css`
     text-rendering: optimizeLegibility;
     color: ${colors.TEXT_PRIMARY};
     font-weight: bold;
+    padding: 0;
+    margin: 0;
 `;
 
 const H1 = styled.h1`

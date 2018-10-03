@@ -20,6 +20,7 @@ import WalletDashboard from 'views/Wallet/views/Dashboard';
 import WalletDeviceSettings from 'views/Wallet/views/DeviceSettings';
 import WalletSettings from 'views/Wallet/views/WalletSettings';
 import WalletBootloader from 'views/Wallet/views/Bootloader';
+import WalletFirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
 import WalletInitialize from 'views/Wallet/views/Initialize';
 import WalletAcquire from 'views/Wallet/views/Acquire';
 import WalletUnreadableDevice from 'views/Wallet/views/UnreadableDevice';
