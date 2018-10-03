@@ -23,8 +23,6 @@ import type { Props } from './Container';
 // and put it inside config/variables.js
 const SmallScreenWidth = '850px';
 
-const Wrapper = styled.section``;
-
 const AmountInputLabelWrapper = styled.div`
     display: flex;
     justify-content: space-between;
@@ -249,7 +247,7 @@ const AccountSend = (props: Props) => {
 
     return (
         <Content>
-            <Wrapper>
+            <React.Fragment>
                 <H2>Send Ethereum or tokens</H2>
                 <InputRow>
                     <Input
@@ -397,7 +395,7 @@ const AccountSend = (props: Props) => {
                         network={network}
                     />
                 )}
-            </Wrapper>
+            </React.Fragment>
         </Content>
     );
 };
