@@ -71,23 +71,40 @@ const ValueWrapper = styled.div`
     `};
 
     ${props => props.isVerifying && css`
-        background: ${colors.WHITE};
         z-index: 10001; /* bigger than modal container */
-        border-color: ${colors.GREEN_PRIMARY};
+        border-color: ${colors.WHITE};
         border-width: 2px;
         transform: translate(-1px, -1px);
+        background: ${colors.DIVIDER};
     `};
 `;
 
-const AddressInfoText = styled.div`
-    display: block;
-    position: relative;
-    background: ${colors.WHITE};
+const ArrowUp = styled.div`
+    position: absolute;
+    top: 30px;
+    left: 70px;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 9px solid black;
     z-index: 10001;
-    width: 100%;
-    padding: 6px 12px;
-    transform: translate(-1px, -1px);
+`;
+
+const AddressInfoText = styled.div`
+    display: flex;
+    align-items: center;
+    height: 37px;
     margin: 0px 2px;
+    padding: 0 14px 0 5px;
+    position: absolute;
+    top: 39px;
+    background: black;
+    color: ${colors.WHITE};
+    border-radius: 5px;
+    line-height: 37px;
+    z-index: 10001;
+    transform: translate(-1px, -1px);
 `;
 
 const ShowAddressButton = styled(Button)`
@@ -143,7 +160,7 @@ const AccountReceive = (props: Props) => {
 
     return (
         <Content>
-            <Wrapper>
+            <React.Fragment>
                 <H2>Receive Ethereum or tokens</H2>
                 <AddressWrapper
                     isShowingQrCode={addressVerified || addressUnverified}
@@ -188,7 +205,16 @@ const AccountReceive = (props: Props) => {
                         {address}
                     </ValueWrapper>
                     {isAddressVerifying && (
-                        <AddressInfoText>{account.network} account #{account.index + 1}</AddressInfoText>
+                        <React.Fragment>
+                            <ArrowUp />
+                            <AddressInfoText>
+                                <Icon
+                                    icon={ICONS.T1}
+                                    color={colors.WHITE}
+                                />
+                                Check address on your Trezor
+                            </AddressInfoText>
+                        </React.Fragment>
                     )}
                     {(addressVerified || addressUnverified) && (
                         <React.Fragment>
@@ -215,7 +241,7 @@ const AccountReceive = (props: Props) => {
                         </ShowAddressButton>
                     )}
                 </AddressWrapper>
-            </Wrapper>
+            </React.Fragment>
         </Content>
     );
 };
