@@ -46,7 +46,7 @@ const Acquire = (props: Props) => {
 
 export default connect(
     (state: State) => ({
-        acquiring: state.connect.acquiring,
+        acquiring: state.connect.acquiringDevice,
     }),
     (dispatch: Dispatch) => ({
         acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),

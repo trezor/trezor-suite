@@ -2,13 +2,13 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
-import { TRANSITION } from 'config/variables';
+import { TRANSITION, FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 
 const Wrapper = styled.button`
     padding: ${props => (props.icon ? '4px 24px 4px 15px' : '11px 24px')};
     border-radius: 3px;
-    font-size: 14px;
-    font-weight: 300;
+    font-size: ${FONT_SIZE.SMALL};
+    font-weight: ${FONT_WEIGHT.SMALLEST};
     cursor: pointer;
     background: ${colors.GREEN_PRIMARY};
     color: ${colors.WHITE};

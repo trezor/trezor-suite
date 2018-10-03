@@ -41,6 +41,10 @@ const baseStyles = () => injectGlobal`
         outline: 0;
     }
 
+    #root {
+        height: 100%;
+    }
+
     /* 
         custom Roboto with Zero without the thing inside, so it's more readable as number
         since 0 doesn't look too similar to 8

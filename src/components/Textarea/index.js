@@ -15,10 +15,11 @@ const disabledColor = colors.TEXT_PRIMARY;
 
 const StyledTextarea = styled.textarea`
     width: 100%;
-    padding: 12px;
+    min-height: 85px;
+    margin-bottom: 10px;
+    padding: 6px 12px;
     box-sizing: border-box;
-    min-height: 25px;
-    border: ${props => (props.isError ? `1px solid ${colors.ERROR_PRIMARY}` : `1px solid ${colors.DIVIDER}`)};
+    border: 1px solid ${props => (props.borderColor ? props.borderColor : colors.DIVIDER)};
     border-radius: 2px;
     resize: none;
     outline: none;
@@ -56,8 +57,9 @@ const StyledTextarea = styled.textarea`
     }
 
     &:disabled {
-        border: 1px solid ${disabledColor};
-        cursor: not-allowed;
+        pointer-events: none;
+        background: ${colors.GRAY_LIGHT};
+        color: ${colors.TEXT_SECONDARY};
 
         &::-webkit-input-placeholder {
             color: ${disabledColor};
@@ -86,6 +88,23 @@ const TopLabel = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
+const BottomText = styled.span`
+    font-size: ${FONT_SIZE.SMALLER};
+    color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
+`;
+
+const getColor = (inputState) => {
+    let color = '';
+    if (inputState === 'success') {
+        color = colors.SUCCESS_PRIMARY;
+    } else if (inputState === 'warning') {
+        color = colors.WARNING_PRIMARY;
+    } else if (inputState === 'error') {
+        color = colors.ERROR_PRIMARY;
+    }
+    return color;
+};
+
 const Textarea = ({
     className,
     placeholder = '',
@@ -95,10 +114,13 @@ const Textarea = ({
     onBlur,
     isDisabled,
     onChange,
-    isError,
     topLabel,
+    state = '',
+    bottomText = '',
 }) => (
-    <Wrapper>
+    <Wrapper
+        className={className}
+    >
         {topLabel && (
             <TopLabel>{topLabel}</TopLabel>
         )}
@@ -111,14 +133,20 @@ const Textarea = ({
             value={value}
             placeholder={placeholder}
             onChange={onChange}
-            isError={isError}
+            borderColor={getColor(state)}
         />
+        {bottomText && (
+            <BottomText
+                color={getColor(state)}
+            >
+                {bottomText}
+            </BottomText>
+        )}
     </Wrapper>
 );
 
 Textarea.propTypes = {
     className: PropTypes.string,
-    isError: PropTypes.bool,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
@@ -127,6 +155,8 @@ Textarea.propTypes = {
     value: PropTypes.string,
     isDisabled: PropTypes.bool,
     topLabel: PropTypes.node,
+    state: PropTypes.string,
+    bottomText: PropTypes.string,
 };
 
 export default Textarea;

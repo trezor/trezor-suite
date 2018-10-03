@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import RcTooltip from 'rc-tooltip';
 import colors from 'config/colors';
+import Link from 'components/Link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -11,7 +12,7 @@ const Wrapper = styled.div`
         position: absolute;
         z-index: 1070;
         visibility: visible;
-        border: 1px solid ${colors.DIVIDER};
+        border: none;
         border-radius: 3px;
         box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
     }
@@ -22,15 +23,15 @@ const Wrapper = styled.div`
 
     .rc-tooltip-inner {
         padding: 8px 10px;
-        color: ${colors.TEXT_SECONDARY};
+        color: ${colors.WHITE};
         font-size: 12px;
         line-height: 1.5;
         text-align: left;
         text-decoration: none;
-        background-color: ${colors.WHITE};
+        background-color: ${colors.TOOLTIP_BACKGROUND};
         border-radius: 3px;
         min-height: 34px;
-        border: 1px solid ${colors.WHITE};
+        border: none;
     }
 
     .rc-tooltip-arrow,
@@ -48,7 +49,7 @@ const Wrapper = styled.div`
         bottom: -6px;
         margin-left: -6px;
         border-width: 6px 6px 0;
-        border-top-color: ${colors.DIVIDER};
+        border-top-color: ${colors.BLACK};
     }
 
     .rc-tooltip-placement-top .rc-tooltip-arrow-inner,
@@ -57,7 +58,7 @@ const Wrapper = styled.div`
         bottom: 2px;
         margin-left: -6px;
         border-width: 6px 6px 0;
-        border-top-color: ${colors.WHITE};
+        border-top-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-top .rc-tooltip-arrow {
@@ -78,7 +79,7 @@ const Wrapper = styled.div`
         left: -5px;
         margin-top: -6px;
         border-width: 6px 6px 6px 0;
-        border-right-color: ${colors.DIVIDER};
+        border-right-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-right .rc-tooltip-arrow-inner,
@@ -87,7 +88,7 @@ const Wrapper = styled.div`
         left: 1px;
         margin-top: -6px;
         border-width: 6px 6px 6px 0;
-        border-right-color: ${colors.WHITE};
+        border-right-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-right .rc-tooltip-arrow {
@@ -109,7 +110,7 @@ const Wrapper = styled.div`
         right: -5px;
         margin-top: -6px;
         border-width: 6px 0 6px 6px;
-        border-left-color: ${colors.DIVIDER};
+        border-left-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-left .rc-tooltip-arrow-inner,
@@ -118,7 +119,7 @@ const Wrapper = styled.div`
         right: 1px;
         margin-top: -6px;
         border-width: 6px 0 6px 6px;
-        border-left-color: ${colors.WHITE};
+        border-left-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-left .rc-tooltip-arrow {
@@ -140,7 +141,7 @@ const Wrapper = styled.div`
         top: -5px;
         margin-left: -6px;
         border-width: 0 6px 6px;
-        border-bottom-color: ${colors.DIVIDER};
+        border-bottom-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-bottom .rc-tooltip-arrow-inner,
@@ -149,7 +150,7 @@ const Wrapper = styled.div`
         top: 1px;
         margin-left: -6px;
         border-width: 0 6px 6px;
-        border-bottom-color: ${colors.WHITE};
+        border-bottom-color: ${colors.TOOLTIP_BACKGROUND};
     }
 
     .rc-tooltip-placement-bottom .rc-tooltip-arrow {
@@ -165,6 +166,20 @@ const Wrapper = styled.div`
     }
 `;
 
+const Content = styled.div`
+    padding-bottom: 10px;
+    text-align: justify;
+`;
+
+const ContentWrapper = styled.div``;
+const ReadMore = styled.div`
+    padding: 10px 0 5px 0;
+    text-align: center;
+    width: 100%;
+    color: ${colors.WHITE};
+    border-top: 1px solid ${colors.TEXT_SECONDARY};
+`;
+
 class Tooltip extends Component {
     render() {
         const {
@@ -172,6 +187,7 @@ class Tooltip extends Component {
             placement,
             content,
             children,
+            readMoreLink,
             maxWidth,
         } = this.props;
         return (
@@ -184,7 +200,16 @@ class Tooltip extends Component {
                     getTooltipContainer={() => this.tooltipContainerRef}
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
                     placement={placement}
-                    overlay={content}
+                    overlay={() => (
+                        <ContentWrapper>
+                            <Content>{content}</Content>
+                            {readMoreLink && (
+                                <Link target="_blank" href={readMoreLink}>
+                                    <ReadMore>Read more</ReadMore>
+                                </Link>
+                            )
+                            }
+                        </ContentWrapper>)}
                 >
                     {children}
                 </RcTooltip>
@@ -205,6 +230,7 @@ Tooltip.propTypes = {
         PropTypes.element,
         PropTypes.string,
     ]),
+    readMoreLink: PropTypes.string,
 };
 
 export default Tooltip;

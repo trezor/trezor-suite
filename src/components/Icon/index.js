@@ -3,6 +3,16 @@ import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import styled, { keyframes } from 'styled-components';
 
+const chooseIconAnimationType = (canAnimate, isActive) => {
+    if (canAnimate) {
+        if (isActive) {
+            return rotate180up;
+        }
+        return rotate180down;
+    }
+    return null;
+};
+
 // TODO: make animation of icons better
 const rotate180up = keyframes`
     from {
@@ -23,7 +33,7 @@ const rotate180down = keyframes`
 `;
 
 const SvgWrapper = styled.svg`
-    animation: ${props => (props.canAnimate ? (props.isActive ? rotate180up : rotate180down) : null)} 0.2s linear 1 forwards;
+    animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1 forwards;
 
     :hover {
         path {

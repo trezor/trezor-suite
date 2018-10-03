@@ -5,7 +5,6 @@ import * as WALLET from 'actions/constants/wallet';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 
 import * as WalletActions from 'actions/WalletActions';
-import * as RouterActions from 'actions/RouterActions';
 import * as NotificationActions from 'actions/NotificationActions';
 import * as LocalStorageActions from 'actions/LocalStorageActions';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
@@ -22,7 +21,7 @@ import type {
 /**
  * Middleware
  */
-const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
+const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => async (action: Action): Promise<Action> => {
     const prevState = api.getState();
 
     // Application live cycle starts HERE!
@@ -52,9 +51,6 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             if (action.device) {
                 // try to authorize device
                 api.dispatch(TrezorConnectActions.getSelectedDeviceState());
-            } else {
-                // try select different device
-                api.dispatch(RouterActions.selectFirstAvailableDevice());
             }
             break;
         case DEVICE.CONNECT:
@@ -92,14 +88,14 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         api.dispatch(NotificationActions.clear(prevLocation.state, currentLocation.state));
     }
 
-    // observe send form props changes
-    api.dispatch(SendFormActionActions.observe(prevState, action));
-
-    // update common values in WallerReducer
-    api.dispatch(WalletActions.updateSelectedValues(prevState, action));
-
-    // update common values in SelectedAccountReducer
-    api.dispatch(SelectedAccountActions.updateSelectedValues(prevState, action));
+    // observe common values in WallerReducer
+    if (!await api.dispatch(WalletActions.observe(prevState, action))) {
+        // if "selectedDevice" didn't change observe common values in SelectedAccountReducer
+        if (!await api.dispatch(SelectedAccountActions.observe(prevState, action))) {
+            // if "selectedAccount" didn't change observe send form props changes
+            api.dispatch(SendFormActionActions.observe(prevState, action));
+        }
+    }
 
     return action;
 };

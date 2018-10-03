@@ -1,16 +1,16 @@
 /* @flow */
 
-
 import { LOCATION_CHANGE } from 'react-router-redux';
+import { DEVICE } from 'trezor-connect';
 import * as WALLET from 'actions/constants/wallet';
-import * as stateUtils from 'reducers/utils';
+import * as reducerUtils from 'reducers/utils';
 
 import type {
     Device,
     TrezorDevice,
     RouterLocationState,
     ThunkAction,
-    AsyncAction,
+    PayloadAction,
     Action,
     Dispatch,
     GetState,
@@ -80,26 +80,40 @@ export const clearUnavailableDevicesData = (prevState: State, device: Device): T
     }
 };
 
+// list of all actions which has influence on "selectedDevice" field in "wallet" reducer
+// other actions will be ignored
+const actions = [
+    LOCATION_CHANGE,
+    ...Object.values(DEVICE).filter(v => typeof v === 'string'),
+];
 
-export const updateSelectedValues = (prevState: State, action: Action): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const locationChange: boolean = action.type === LOCATION_CHANGE;
+/*
+* Called from WalletService
+*/
+export const observe = (prevState: State, action: Action): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+    // ignore not listed actions
+    if (actions.indexOf(action.type) < 0) return false;
+
     const state: State = getState();
 
+    const locationChanged = reducerUtils.observeChanges(prevState.router.location, state.router.location);
+    const device = reducerUtils.getSelectedDevice(state);
+    const selectedDeviceChanged = reducerUtils.observeChanges(state.wallet.selectedDevice, device);
+
     // handle devices state change (from trezor-connect events or location change)
-    if (locationChange || prevState.devices !== state.devices) {
-        const device = stateUtils.getSelectedDevice(state);
-        if (state.wallet.selectedDevice !== device) {
-            if (device && stateUtils.isSelectedDevice(state.wallet.selectedDevice, device)) {
-                dispatch({
-                    type: WALLET.UPDATE_SELECTED_DEVICE,
-                    device,
-                });
-            } else {
-                dispatch({
-                    type: WALLET.SET_SELECTED_DEVICE,
-                    device,
-                });
-            }
+    if (locationChanged || selectedDeviceChanged) {
+        if (device && reducerUtils.isSelectedDevice(state.wallet.selectedDevice, device)) {
+            dispatch({
+                type: WALLET.UPDATE_SELECTED_DEVICE,
+                device,
+            });
+        } else {
+            dispatch({
+                type: WALLET.SET_SELECTED_DEVICE,
+                device,
+            });
         }
+        return true;
     }
+    return false;
 };

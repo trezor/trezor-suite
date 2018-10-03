@@ -13,6 +13,11 @@ import ICONS from 'config/icons';
 
 import type { Props } from '../../Container';
 
+// TODO: Decide on a small screen width for the whole app
+// and put it inside config/variables.js
+// same variable also in "AccountSend/index.js"
+const SmallScreenWidth = '850px';
+
 const InputRow = styled.div`
     margin-bottom: 20px;
 `;
@@ -38,17 +43,29 @@ const AdvancedSettingsWrapper = styled.div`
 const GasInputRow = styled(InputRow)`
     width: 100%;
     display: flex;
+
+    @media screen and (max-width: ${SmallScreenWidth}) {
+        flex-direction: column;
+    }
 `;
 
 const GasInput = styled(Input)`
+    min-height: 85px;
     &:first-child {
         padding-right: 20px;
+    }
+
+    @media screen and (max-width: ${SmallScreenWidth}) {
+        &:first-child {
+            padding-right: 0;
+            margin-bottom: 2px;
+        }
     }
 `;
 
 const StyledTextarea = styled(Textarea)`
     margin-bottom: 20px;
-    height: 80px;
+    min-height: 80px;
 `;
 
 const AdvancedSettingsSendButtonWrapper = styled.div`
@@ -79,6 +96,17 @@ const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string)
     return state;
 };
 
+const getDataTextareaState = (dataError: string, dataWarning: string): string => {
+    let state = '';
+    if (dataWarning) {
+        state = 'warning';
+    }
+    if (dataError) {
+        state = 'error';
+    }
+    return state;
+};
+
 // stateless component
 const AdvancedForm = (props: Props) => {
     const {
@@ -89,6 +117,7 @@ const AdvancedForm = (props: Props) => {
         networkSymbol,
         currency,
         recommendedGasPrice,
+        calculatingGasLimit,
         errors,
         warnings,
         infos,
@@ -127,12 +156,13 @@ const AdvancedForm = (props: Props) => {
                             <Tooltip
                                 content={(
                                     <React.Fragment>
-                                        Gas limit is the amount of gas to send with your transaction.<br />
-                                        <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
-                                        Increasing this number will not get your TX mined faster.<br />
-                                        Default value for sending {gasLimitTooltipCurrency} is <GreenSpan>{gasLimitTooltipValue}</GreenSpan>
+                                        Gas limit refers to the maximum amount of gas user is willing to spendon a particular transaction.{' '}
+                                        <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>.{' '}Increasing the gas limit will not get the transaction confirmed sooner.
+                                        Default value for sending {gasLimitTooltipCurrency} is <GreenSpan>{gasLimitTooltipValue}</GreenSpan>.
                                     </React.Fragment>
                                 )}
+                                maxWidth={410}
+                                readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
                                 placement="top"
                             >
                                 <Icon
@@ -143,7 +173,7 @@ const AdvancedForm = (props: Props) => {
                             </Tooltip>
                         </InputLabelWrapper>
                     )}
-                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
+                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit || (calculatingGasLimit ? 'Calculating...' : '')}
                     value={gasLimit}
                     isDisabled={networkSymbol === currency && data.length > 0}
                     onChange={event => onGasLimitChange(event.target.value)}
@@ -161,12 +191,13 @@ const AdvancedForm = (props: Props) => {
                             <Tooltip
                                 content={(
                                     <React.Fragment>
-                                        Gas Price is the amount you pay per unit of gas.<br />
-                                        <GreenSpan>TX fee = gas price * gas limit</GreenSpan> &amp; is paid to miners for including your TX in a block.<br />
-                                        Higher the gas price = faster transaction, but more expensive. Recommended is <GreenSpan>{recommendedGasPrice} GWEI.</GreenSpan><br />
-                                        <Link href="https://myetherwallet.github.io/knowledge-base/gas/what-is-gas-ethereum.html" target="_blank" rel="noreferrer noopener" isGreen>Read more</Link>
+                                        Gas price refers to the amount of ether you are willing to pay for every
+                                        unit of gas, and is usually measured in “Gwei”. <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>. Increasing the gas price will get the transaction confirmed sooner but
+                                        makes it more expensive. The recommended gas price is <GreenSpan>{recommendedGasPrice} GWEI</GreenSpan>.
                                     </React.Fragment>
                                 )}
+                                maxWidth={400}
+                                readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
                                 placement="top"
                             >
                                 <Icon
@@ -203,8 +234,9 @@ const AdvancedForm = (props: Props) => {
                         </Tooltip>
                     </InputLabelWrapper>
                 )}
+                state={getDataTextareaState(errors.data, warnings.data)}
                 bottomText={errors.data || warnings.data || infos.data}
-                disabled={networkSymbol !== currency}
+                isDisabled={networkSymbol !== currency}
                 value={networkSymbol !== currency ? '' : data}
                 onChange={event => onDataChange(event.target.value)}
             />

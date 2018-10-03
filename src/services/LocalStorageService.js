@@ -110,9 +110,12 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
 
         case SEND.TX_COMPLETE:
         case PENDING.TX_RESOLVED:
-        case PENDING.TX_NOT_FOUND:
+        case PENDING.TX_REJECTED:
             save(api.dispatch, api.getState);
             break;
+
+        default:
+            return action;
     }
 
     return action;

@@ -1,15 +1,36 @@
+/* @flow */
+
 import React from 'react';
+import media from 'styled-media-query';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
+import { getColor, getIcon } from 'utils/notification';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 import * as NotificationActions from 'actions/NotificationActions';
 import Loader from 'components/Loader';
+import type { Action, State } from 'flowtype';
 import NotificationButton from './components/NotificationButton';
+
+type Props = {
+    key?: number,
+    notifications: $ElementType<State, 'notifications'>,
+    close: (notif?: any) => Action,
+};
+
+type NProps = {
+    type: string,
+    cancelable?: boolean;
+    title: string;
+    message?: string;
+    actions?: Array<any>;
+    close?: typeof NotificationActions.close,
+    loading?: boolean
+};
 
 const Wrapper = styled.div`
     position: relative;
@@ -17,6 +38,7 @@ const Wrapper = styled.div`
     background: ${colors.TEXT_SECONDARY};
     padding: 24px 48px 24px 24px;
     display: flex;
+    min-height: 90px;
     flex-direction: row;
     text-align: left;
 
@@ -39,11 +61,19 @@ const Wrapper = styled.div`
         color: ${colors.ERROR_PRIMARY};
         background: ${colors.ERROR_SECONDARY};
     `}
+
+    ${media.lessThan('610px')`
+        flex-direction: column;
+    `}
 `;
 
 const Body = styled.div`
     display: flex;
-    margin-right: 40px;
+    width: 60%;
+
+    ${media.lessThan('610px')`
+        width: 100%;
+    `}
 `;
 
 const Title = styled.div`
@@ -65,54 +95,41 @@ const Message = styled.div`
 const StyledIcon = styled(Icon)`
     position: relative;
     top: -7px;
+    min-width: 20px;
 `;
 
-const MessageContent = styled.div`
-    height: 20px;
-    display: flex;
+const IconWrapper = styled.div`
+    min-width: 20px;
 `;
 
 const Texts = styled.div`
     display: flex;
     flex-direction: column;
+    flex: 1;
 `;
 
 const AdditionalContent = styled.div`
-    flex: 1;
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
+    flex: 1;
 `;
 
 const ActionContent = styled.div`
+    display: flex;
     justify-content: right;
     align-items: flex-end;
+
+    ${media.lessThan('610px')`
+        width: 100%;
+        padding: 10px 0 0 30px;
+        align-items: flex-start;
+    `}
 `;
 
 export const Notification = (props: NProps): React$Element<string> => {
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
 
-    const getIconColor = (type) => {
-        let color;
-        switch (type) {
-            case 'info':
-                color = colors.INFO_PRIMARY;
-                break;
-            case 'error':
-                color = colors.ERROR_PRIMARY;
-                break;
-            case 'warning':
-                color = colors.WARNING_PRIMARY;
-                break;
-            case 'success':
-                color = colors.SUCCESS_PRIMARY;
-                break;
-            default:
-                color = null;
-        }
-
-        return color;
-    };
 
     return (
         <Wrapper type={props.type}>
@@ -120,27 +137,27 @@ export const Notification = (props: NProps): React$Element<string> => {
             {props.cancelable && (
                 <CloseClick onClick={() => close()}>
                     <Icon
-                        color={getIconColor(props.type)}
+                        color={getColor(props.type)}
                         icon={icons.CLOSE}
                         size={20}
                     />
                 </CloseClick>
             )}
             <Body>
-                <MessageContent>
+                <IconWrapper>
                     <StyledIcon
-                        color={getIconColor(props.type)}
-                        icon={icons[props.type.toUpperCase()]}
+                        color={getColor(props.type)}
+                        icon={getIcon(props.type)}
                     />
-                    <Texts>
-                        <Title>{ props.title }</Title>
-                        { props.message && (
-                            <Message>
-                                <p dangerouslySetInnerHTML={{ __html: props.message }} />
-                            </Message>
-                        ) }
-                    </Texts>
-                </MessageContent>
+                </IconWrapper>
+                <Texts>
+                    <Title>{ props.title }</Title>
+                    { props.message && (
+                        <Message>
+                            <p dangerouslySetInnerHTML={{ __html: props.message }} />
+                        </Message>
+                    ) }
+                </Texts>
             </Body>
             <AdditionalContent>
                 {props.actions && props.actions.length > 0 && (
@@ -161,7 +178,7 @@ export const Notification = (props: NProps): React$Element<string> => {
     );
 };
 
-export const NotificationGroup = (props) => {
+export const NotificationGroup = (props: Props) => {
     const { notifications, close } = props;
     return notifications.map(n => (
         <Notification

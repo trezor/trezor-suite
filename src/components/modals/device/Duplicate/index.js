@@ -63,12 +63,6 @@ const ErrorMessage = styled.div`
 `;
 
 export default class DuplicateDevice extends Component<Props, State> {
-    state: State;
-
-    input: ?HTMLInputElement;
-
-    keyboardHandler: (event: KeyboardEvent) => void;
-
     constructor(props: Props) {
         super(props);
 
@@ -84,6 +78,12 @@ export default class DuplicateDevice extends Component<Props, State> {
             isUsed: false,
         };
     }
+
+    state: State;
+
+    input: ?HTMLInputElement;
+
+    keyboardHandler: (event: KeyboardEvent) => void;
 
     componentDidMount(): void {
         // one time autofocus
