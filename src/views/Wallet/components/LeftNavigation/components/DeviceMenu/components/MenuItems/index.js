@@ -41,6 +41,11 @@ class MenuItems extends Component {
         }
     }
 
+    showDeviceMenu() {
+        const device = this.props.device;
+        return device && device.features && !device.features.bootloader_mode && device.features.initialized;
+    }
+
     showClone() {
         return this.props.device && this.props.device.features.passphrase_protection && this.props.device.connected && this.props.device.available;
     }
@@ -50,6 +55,7 @@ class MenuItems extends Component {
     }
 
     render() {
+        if (!this.showDeviceMenu()) return null;
         return (
             <Wrapper>
                 <Item onClick={() => this.onDeviceMenuClick('settings', this.props.device)}>

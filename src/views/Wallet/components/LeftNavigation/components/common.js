@@ -8,7 +8,6 @@ export type StateProps = {
     connect: $ElementType<State, 'connect'>,
     accounts: $ElementType<State, 'accounts'>,
     router: $ElementType<State, 'router'>,
-    deviceDropdownOpened: boolean,
     fiat: $ElementType<State, 'fiat'>,
     localStorage: $ElementType<State, 'localStorage'>,
     discovery: $ElementType<State, 'discovery'>,

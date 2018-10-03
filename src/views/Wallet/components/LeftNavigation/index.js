@@ -1,5 +1,3 @@
-/* @flow */
-
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
@@ -15,6 +13,18 @@ import StickyContainer from './components/StickyContainer';
 import type { Props } from './components/common';
 
 const Header = styled(DeviceHeader)``;
+
+const Counter = styled.div`
+    border: 1px solid ${colors.DIVIDER};
+    border-radius: 50%;
+    color: ${colors.TEXT_SECONDARY};
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 11px;
+    margin-right: 8px;
+`;
 
 const TransitionGroupWrapper = styled(TransitionGroup)`
     width: 640px;
@@ -103,26 +113,26 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         this.state = {
             animationType: hasNetwork ? 'slide-left' : null,
             shouldRenderDeviceSelection: false,
+            clicked: false,
         };
     }
 
-    componentWillReceiveProps(nextProps: Props) {
-        const { deviceDropdownOpened } = nextProps;
-        const { selectedDevice } = nextProps.wallet;
-        const hasNetwork = nextProps.router.location.state && nextProps.router.location.state.network;
-        const deviceReady = selectedDevice && selectedDevice.features && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
-
-        if (deviceDropdownOpened) {
+    componentWillReceiveProps(nextProps) {
+        const { dropdownOpened, selectedDevice } = nextProps.wallet;
+        const hasNetwork = nextProps.location.state && nextProps.location.state.network;
+        const hasFeatures = selectedDevice && selectedDevice.features;
+        const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
+        if (dropdownOpened) {
             this.setState({ shouldRenderDeviceSelection: true });
         } else if (hasNetwork) {
             this.setState({
                 shouldRenderDeviceSelection: false,
                 animationType: 'slide-left',
             });
-        } else if (deviceReady) {
+        } else {
             this.setState({
                 shouldRenderDeviceSelection: false,
-                animationType: 'slide-right',
+                animationType: deviceReady ? 'slide-right' : null,
             });
         }
     }
@@ -139,7 +149,8 @@ class LeftNavigation extends React.PureComponent<Props, State> {
     }
 
     handleOpen() {
-        this.props.toggleDeviceDropdown(!this.props.deviceDropdownOpened);
+        this.setState({ clicked: true });
+        this.props.toggleDeviceDropdown(!this.props.wallet.dropdownOpened);
     }
 
     shouldRenderCoins() {
@@ -163,22 +174,42 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             );
         }
 
+        const isDeviceInBootloader = this.props.wallet.selectedDevice.features && this.props.wallet.selectedDevice.features.bootloader_mode;
         return (
             <StickyContainer
-                location={this.props.router.location.pathname}
-                deviceSelection={this.props.deviceDropdownOpened}
+                location={this.props.location.pathname}
+                deviceSelection={this.props.wallet.dropdownOpened}
             >
                 <Header
-                    onClickWrapper={() => this.handleOpen()}
+                    isSelected
+                    isHoverable={false}
+                    onClickWrapper={() => {
+                        if (!isDeviceInBootloader || this.props.devices.length > 1) {
+                            this.handleOpen();
+                        }
+                    }}
                     device={this.props.wallet.selectedDevice}
-                    transport={this.props.connect.transport}
-                    devices={this.props.devices}
-                    isOpen={this.props.deviceDropdownOpened}
+                    disabled={isDeviceInBootloader && this.props.devices.length === 1}
+                    isOpen={this.props.wallet.dropdownOpened}
+                    icon={(
+                        <React.Fragment>
+                            {this.props.devices.length > 1 && (
+                                <Counter>{this.props.devices.length}</Counter>
+                            )}
+                            <Icon
+                                canAnimate={this.state.clicked === true}
+                                isActive={this.props.wallet.dropdownOpened}
+                                size={25}
+                                color={colors.TEXT_SECONDARY}
+                                icon={icons.ARROW_DOWN}
+                            />
+                        </React.Fragment>
+                    )}
                     {...this.props}
                 />
                 <Body>
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
-                    {menu}
+                    {!isDeviceInBootloader && menu}
                 </Body>
                 <Footer key="sticky-footer">
                     <Help>
@@ -200,7 +231,6 @@ LeftNavigation.propTypes = {
     connect: PropTypes.object,
     accounts: PropTypes.array,
     router: PropTypes.object,
-    deviceDropdownOpened: PropTypes.bool,
     fiat: PropTypes.array,
     localStorage: PropTypes.object,
     discovery: PropTypes.array,
@@ -209,6 +239,7 @@ LeftNavigation.propTypes = {
     pending: PropTypes.array,
 
     toggleDeviceDropdown: PropTypes.func,
+    selectedDevice: PropTypes.object,
 };
 
 

@@ -1,12 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import Icon from 'components/Icon';
-import icons from 'config/icons';
 import {
     getStatusColor,
     getStatusName,
-    isDisabled,
     getStatus,
     getVersion,
 } from 'utils/device';
@@ -19,15 +16,17 @@ const Wrapper = styled.div`
     width: 320px;
     display: flex;
     align-items: center;
-    background: ${colors.WHITE};
-    border-radius: 4px 0 0 0;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+    background: ${props => (props.disabled ? colors.GRAY_LIGHT : 'transparent')};
+    background: ${props => (props.isSelected ? colors.WHITE : 'transparent')};
 
-    ${props => props.isOpen && css`
+    border-radius: 4px 0 0 0;
+    box-shadow: ${props => (props.disabled ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.04)')};
+
+    ${props => (props.isOpen || !props.isSelected) && css`
         box-shadow: none;
     `}
 
-    ${props => props.isHoverable && css`
+    ${props => props.isHoverable && !props.disabled && css`
         &:hover {
             background: ${colors.GRAY_LIGHT};
         }
@@ -43,7 +42,7 @@ const ClickWrapper = styled.div`
     cursor: pointer;
 
     ${props => props.disabled && css`
-        cursor: initial;
+        cursor: default;
     `}
 `;
 
@@ -71,18 +70,6 @@ const Status = styled.div`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const Counter = styled.div`
-    border: 1px solid ${colors.DIVIDER};
-    border-radius: 50%;
-    color: ${colors.TEXT_SECONDARY};
-    width: 24px;
-    height: 24px;
-    line-height: 22px;
-    text-align: center;
-    font-size: 11px;
-    margin-right: 8px;
-`;
-
 const IconWrapper = styled.div`
     padding-right: 25px;
     display: flex;
@@ -104,72 +91,53 @@ const Dot = styled.div`
     height: 10px;
 `;
 
-class DeviceHeader extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            clicked: false,
-        };
-    }
 
-    isDisabled(device, devices, transport) {
-        return isDisabled(device, devices, transport);
-    }
-
-    handleClickWrapper() {
-        this.setState({ clicked: true });
-        if (!this.props.disabled) {
-            this.props.onClickWrapper();
-        }
-    }
-
-    render() {
-        const {
-            isOpen, icon, device, devices, transport, isHoverable,
-        } = this.props;
-        const status = getStatus(device);
-        const disabled = isDisabled(device, devices, transport);
-        const deviceCount = devices.length;
-
-        return (
-            <Wrapper isOpen={isOpen} isHoverable={isHoverable}>
-                <ClickWrapper disabled={disabled} onClick={() => this.handleClickWrapper()}>
-                    <ImageWrapper>
-                        <Dot color={getStatusColor(status)} />
-                        <TrezorImage model={getVersion(device)} />
-                    </ImageWrapper>
-                    <LabelWrapper>
-                        <Name>{device.instanceLabel}</Name>
-                        <Status>{getStatusName(status)}</Status>
-                    </LabelWrapper>
-                    <IconWrapper>
-                        {icon && icon}
-                        {!icon && deviceCount > 1 && <Counter>{deviceCount}</Counter>}
-                        {!icon && !disabled && (
-                            <Icon
-                                canAnimate={this.state.clicked === true}
-                                isActive={isOpen}
-                                size={25}
-                                color={colors.TEXT_SECONDARY}
-                                icon={icons.ARROW_DOWN}
-                            />
-                        )
-                        }
-                    </IconWrapper>
-                </ClickWrapper>
-            </Wrapper>
-        );
-    }
-}
+const DeviceHeader = ({
+    isOpen,
+    icon,
+    device,
+    isHoverable = true,
+    onClickWrapper,
+    isBootloader = false,
+    disabled = false,
+    isSelected = false,
+}) => {
+    const status = getStatus(device);
+    return (
+        <Wrapper
+            isSelected={isSelected}
+            isOpen={isOpen}
+            isHoverable={isHoverable}
+            disabled={disabled}
+        >
+            <ClickWrapper
+                disabled={disabled}
+                onClick={onClickWrapper}
+            >
+                <ImageWrapper>
+                    <Dot color={getStatusColor(status)} />
+                    <TrezorImage model={getVersion(device)} />
+                </ImageWrapper>
+                <LabelWrapper>
+                    <Name>{device.instanceLabel}</Name>
+                    <Status>{getStatusName(status)}</Status>
+                </LabelWrapper>
+                <IconWrapper>
+                    {icon && !disabled && !isBootloader && icon}
+                </IconWrapper>
+            </ClickWrapper>
+        </Wrapper>
+    );
+};
 
 DeviceHeader.propTypes = {
+    isBootloader: PropTypes.bool,
     device: PropTypes.object,
-    devices: PropTypes.array,
-    transport: PropTypes.object,
     icon: PropTypes.element,
     isHoverable: PropTypes.bool,
     disabled: PropTypes.bool,
     isOpen: PropTypes.bool,
+    isSelected: PropTypes.bool,
     onClickWrapper: PropTypes.func.isRequired,
 };
 

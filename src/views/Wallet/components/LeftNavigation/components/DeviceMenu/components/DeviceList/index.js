@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import DeviceHeader from 'components/DeviceHeader';
 import icons from 'config/icons';
 import colors from 'config/colors';
+import { withRouter } from 'react-router-dom';
 
 const Wrapper = styled.div``;
 const IconClick = styled.div``;
@@ -14,8 +15,14 @@ class DeviceList extends Component {
         return a.instance > b.instance ? 1 : -1;
     }
 
+    redirectToBootloader(selectedDevice) {
+        this.props.history.push(`/device/${selectedDevice.features.device_id}/bootloader`);
+    }
+
     render() {
-        const { devices, selectedDevice, onSelectDevice } = this.props;
+        const {
+            devices, selectedDevice, onSelectDevice, forgetDevice,
+        } = this.props;
         return (
             <Wrapper>
                 {devices
@@ -23,22 +30,32 @@ class DeviceList extends Component {
                     .map(device => (
                         device !== selectedDevice && (
                             <DeviceHeader
-                                key={`${device.instanceLabel}`}
-                                onClickWrapper={() => onSelectDevice(device)}
-                                onClickIcon={() => this.onDeviceMenuClick({ type: 'forget', label: '' }, device)}
+                                key={device.state || device.path}
+                                isBootloader={device.features.bootloader_mode}
+                                onClickWrapper={() => {
+                                    if (device.features) {
+                                        if (device.features.bootloader_mode) {
+                                            this.redirectToBootloader(selectedDevice);
+                                        }
+                                        onSelectDevice(device);
+                                    }
+                                }}
+                                onClickIcon={() => forgetDevice(device)}
                                 icon={(
-                                    <IconClick onClick={(event) => {
-                                        event.stopPropagation();
-                                        event.preventDefault();
-                                        this.onDeviceMenuClick({ type: 'forget', label: '' }, device);
-                                    }}
-                                    >
-                                        <Icon
-                                            icon={icons.EJECT}
-                                            size={25}
-                                            color={colors.TEXT_SECONDARY}
-                                        />
-                                    </IconClick>
+                                    <React.Fragment>
+                                        <IconClick onClick={(event) => {
+                                            event.stopPropagation();
+                                            event.preventDefault();
+                                            forgetDevice(device);
+                                        }}
+                                        >
+                                            <Icon
+                                                icon={icons.EJECT}
+                                                size={25}
+                                                color={colors.TEXT_SECONDARY}
+                                            />
+                                        </IconClick>
+                                    </React.Fragment>
                                 )}
                                 device={device}
                                 devices={devices}
@@ -52,4 +69,4 @@ class DeviceList extends Component {
     }
 }
 
-export default DeviceList;
+export default withRouter(DeviceList);

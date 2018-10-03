@@ -21,7 +21,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     connect: state.connect,
     accounts: state.accounts,
     router: state.router,
-    deviceDropdownOpened: state.wallet.dropdownOpened,
     fiat: state.fiat,
     localStorage: state.localStorage,
     discovery: state.discovery,
