@@ -25,6 +25,16 @@ const SmallScreenWidth = '850px';
 
 const Wrapper = styled.section``;
 
+const AmountInputLabelWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const AmountInputLabel = styled.span`
+    text-align: right;
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 const InputRow = styled.div`
     margin: 20px 0;
 `;
@@ -207,6 +217,14 @@ const AccountSend = (props: Props) => {
 
     if (!device || !account || !discovery || !network || !shouldRender) return null;
 
+    const isCurrentCurrencyToken = networkSymbol !== currency;
+
+    let selectedTokenBalance = 0;
+    const selectedToken = tokens.find(t => t.symbol === currency);
+    if (selectedToken) {
+        selectedTokenBalance = selectedToken.balance;
+    }
+
     let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
     let sendButtonText: string = 'Send';
     if (networkSymbol !== currency && amount.length > 0 && !errors.amount) {
@@ -254,7 +272,14 @@ const AccountSend = (props: Props) => {
                         autoCorrect="off"
                         autoCapitalize="off"
                         spellCheck="false"
-                        topLabel="Amount"
+                        topLabel={(
+                            <AmountInputLabelWrapper>
+                                <AmountInputLabel>Amount</AmountInputLabel>
+                                {(isCurrentCurrencyToken && selectedToken) && (
+                                    <AmountInputLabel>You have: {selectedTokenBalance} {selectedToken.symbol}</AmountInputLabel>
+                                )}
+                            </AmountInputLabelWrapper>
+                        )}
                         value={amount}
                         onChange={event => onAmountChange(event.target.value)}
                         bottomText={errors.amount || warnings.amount || infos.amount}
