@@ -15,8 +15,6 @@ import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
 
 import type { Props } from './Container';
 
-const Wrapper = styled.div``;
-
 const Label = styled.div`
     padding: 25px 0 5px 0;
     color: ${colors.TEXT_SECONDARY};
