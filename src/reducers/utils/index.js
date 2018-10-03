@@ -34,7 +34,7 @@ export const getSelectedDevice = (state: State): ?TrezorDevice => {
 export const isSelectedDevice = (current: ?TrezorDevice, device: ?TrezorDevice): boolean => !!((current && device && (current.path === device.path && current.instance === device.instance)));
 
 // find device by id and state
-export const findDevice = (devices: Array<TrezorDevice>, deviceId: string, deviceState: string, instance: ?number): ?TrezorDevice => devices.find((d) => {
+export const findDevice = (devices: Array<TrezorDevice>, deviceId: string, deviceState: string /*, instance: ?number*/): ?TrezorDevice => devices.find((d) => {
     // TODO: && (instance && d.instance === instance)
     if (d.features && d.features.device_id === deviceId && d.state === deviceState) {
         return true;
@@ -136,7 +136,7 @@ export const observeChanges = (prev: ?Object, current: ?Object, filter?: {[k: st
         }
     } else if (currentType === '[object Object]') {
         const prevKeys = Object.keys(prev);
-        const currentKeys = Object.keys(prev);
+        const currentKeys = Object.keys(current);
         // 5. simple validation of keys length
         if (prevKeys.length !== currentKeys.length) return true;
 
