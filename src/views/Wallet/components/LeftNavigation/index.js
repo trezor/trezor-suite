@@ -187,6 +187,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             >
                 <Header
                     isSelected
+                    isHoverable={false}
                     onClickWrapper={() => {
                         if (!isDeviceInBootloader || this.props.devices.length > 1) {
                             this.handleOpen();

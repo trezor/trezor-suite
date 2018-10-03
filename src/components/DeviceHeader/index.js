@@ -42,7 +42,7 @@ const ClickWrapper = styled.div`
     cursor: pointer;
 
     ${props => props.disabled && css`
-        cursor: not-allowed;
+        cursor: default;
     `}
 `;
 
@@ -93,7 +93,14 @@ const Dot = styled.div`
 
 
 const DeviceHeader = ({
-    isOpen, icon, device, isHoverable = true, onClickWrapper, disabled = false, isSelected = false,
+    isOpen,
+    icon,
+    device,
+    isHoverable = true,
+    onClickWrapper,
+    isBootloader = false,
+    disabled = false,
+    isSelected = false,
 }) => {
     const status = getStatus(device);
     return (
@@ -116,7 +123,7 @@ const DeviceHeader = ({
                     <Status>{getStatusName(status)}</Status>
                 </LabelWrapper>
                 <IconWrapper>
-                    {icon && !disabled && icon}
+                    {icon && !disabled && !isBootloader && icon}
                 </IconWrapper>
             </ClickWrapper>
         </Wrapper>
@@ -124,6 +131,7 @@ const DeviceHeader = ({
 };
 
 DeviceHeader.propTypes = {
+    isBootloader: PropTypes.bool,
     device: PropTypes.object,
     icon: PropTypes.element,
     isHoverable: PropTypes.bool,

@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import DeviceHeader from 'components/DeviceHeader';
 import icons from 'config/icons';
 import colors from 'config/colors';
+import { withRouter } from 'react-router-dom';
 
 const Wrapper = styled.div``;
 const IconClick = styled.div``;
@@ -12,6 +13,10 @@ class DeviceList extends Component {
     sortByInstance(a, b) {
         if (!a.instance || !b.instance) return -1;
         return a.instance > b.instance ? 1 : -1;
+    }
+
+    redirectToBootloader(selectedDevice) {
+        this.props.history.push(`/device/${selectedDevice.features.device_id}/bootloader`);
     }
 
     render() {
@@ -26,10 +31,12 @@ class DeviceList extends Component {
                         device !== selectedDevice && (
                             <DeviceHeader
                                 key={device.state || device.path}
-                                disabled={device.features && device.features.bootloader_mode}
+                                isBootloader={device.features.bootloader_mode}
                                 onClickWrapper={() => {
-                                    if (device.features
-                                    && !device.features.bootloader_mode) {
+                                    if (device.features) {
+                                        if (device.features.bootloader_mode) {
+                                            this.redirectToBootloader(selectedDevice);
+                                        }
                                         onSelectDevice(device);
                                     }
                                 }}
@@ -62,4 +69,4 @@ class DeviceList extends Component {
     }
 }
 
-export default DeviceList;
+export default withRouter(DeviceList);
