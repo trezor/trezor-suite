@@ -115,8 +115,8 @@ const EyeButton = styled(Button)`
     padding: 0;
     position: absolute;
     left: auto;
-    right: 60px;
-    top: 3px;
+    right: 10px;
+    top: 6px;
 `;
 
 const AccountReceive = (props: Props) => {
