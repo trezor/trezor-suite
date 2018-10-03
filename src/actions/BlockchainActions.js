@@ -57,7 +57,7 @@ export const getTokenBalance = (token: Token): PromiseAction<string> => async (d
 export const getGasPrice = (network: string, defaultGasPrice: number): PromiseAction<BigNumber> => async (dispatch: Dispatch): Promise<BigNumber> => {
     try {
         const gasPrice = await dispatch(Web3Actions.getCurrentGasPrice(network));
-        return new BigNumber(gasPrice);
+        return gasPrice === '0' ? new BigNumber(defaultGasPrice) : new BigNumber(gasPrice);
     } catch (error) {
         return new BigNumber(defaultGasPrice);
     }
@@ -175,6 +175,8 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
         accounts: [],
         coin: network,
     });
+    // init web3 instance if not exists
+    await dispatch(Web3Actions.initWeb3(network));
 };
 
 // Conditionally subscribe to blockchain backend
