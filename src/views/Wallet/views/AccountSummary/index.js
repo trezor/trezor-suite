@@ -11,7 +11,6 @@ import Tooltip from 'components/Tooltip';
 
 import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
-import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import Link from 'components/Link';
 import AccountBalance from './components/AccountBalance';
 import AddedToken from './components/AddedToken';
@@ -65,17 +64,18 @@ const AccountSummary = (props: Props) => {
         network,
         tokens,
         pending,
+        shouldRender,
     } = props.selectedAccount;
 
     // flow
-    if (!device || !account || !network) return <SelectedAccount {...props} />;
+    if (!device || !account || !network || !shouldRender) return null;
 
     const explorerLink: string = `${network.explorer.address}${account.address}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
     const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
 
     return (
-        <SelectedAccount {...props}>
+        <React.Fragment>
             <AccountHeading>
                 <AccountName>
                     <StyledCoinLogo coinNetwork={account.network} />
@@ -155,7 +155,7 @@ const AccountSummary = (props: Props) => {
                     />
                 ))}
             </AddedTokensWrapper>
-        </SelectedAccount>
+        </React.Fragment>
     );
 };
 

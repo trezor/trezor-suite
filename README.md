@@ -1,4 +1,4 @@
-# TREZOR Wallet
+# Trezor Ethereum wallet
 
 To install dependencies run `npm install` or `yarn`
 

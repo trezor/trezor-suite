@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`reducers utils observeChanges shoud be the same - returns false 1`] = `false`;
+
+exports[`reducers utils observeChanges shoud be the same - returns false 2`] = `false`;
+
+exports[`reducers utils observeChanges shoud be the same - returns false 3`] = `false`;
+
+exports[`reducers utils observeChanges shoud be the same - returns false 4`] = `false`;
+
+exports[`reducers utils observeChanges shoud be the same - returns false 5`] = `false`;
+
+exports[`reducers utils observeChanges shoud be the same - returns false 6`] = `false`;
+
+exports[`reducers utils observeChanges shoud be the same - returns false 7`] = `false`;
+
+exports[`reducers utils observeChanges shoud be the same - returns false 8`] = `false`;
+
+exports[`reducers utils observeChanges shoud be the same - returns false 9`] = `false`;
+
+exports[`reducers utils observeChanges shoud be the same - returns false 10`] = `false`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 1`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 2`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 3`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 4`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 5`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 6`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 7`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 8`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 9`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 10`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 11`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 12`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 13`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 14`] = `true`;
+
+exports[`reducers utils observeChanges shoul NOT be the same - returns true 15`] = `true`;
+
+exports[`reducers utils observeChanges test filter 1`] = `false`;
+
+exports[`reducers utils observeChanges test filter 2`] = `true`;

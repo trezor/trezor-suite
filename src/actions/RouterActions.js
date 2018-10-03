@@ -152,7 +152,7 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
     // Disallow displaying landing page
     // redirect to previous url
     if (!shouldBeLandingPage && landingPageUrl) {
-        return location.pathname;
+        return dispatch(getFirstAvailableDeviceUrl()) || location.pathname;
     }
 
     // Regular url change during application live cycle
@@ -170,22 +170,10 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
     return composedUrl || location.pathname;
 };
 
-
 /*
-* Utility used in "selectDevice" and "selectFirstAvailableDevice"
-* sorting device array by "ts" (timestamp) field
+* Compose url from requested device object and returns url
 */
-const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => devices.sort((a, b) => {
-    if (!a.ts || !b.ts) {
-        return -1;
-    }
-    return a.ts > b.ts ? -1 : 1;
-});
-
-/*
-* Compose url from given device object and redirect
-*/
-export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+const getDeviceUrl = (device: TrezorDevice | Device): PayloadAction<?string> => (dispatch: Dispatch, getState: GetState): ?string => {
     let url: ?string;
     if (!device.features) {
         url = `/device/${device.path}/${device.type === 'unreadable' ? 'unreadable' : 'acquire'}`;
@@ -208,12 +196,7 @@ export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dis
             }
         }
     }
-
-    const currentParams: RouterLocationState = getState().router.location.state;
-    const requestedParams = dispatch(pathToParams(url));
-    if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
-        dispatch(goto(url));
-    }
+    return url;
 };
 
 /*
@@ -223,17 +206,54 @@ export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dis
 * 3. Saved with latest timestamp
 * OR redirect to landing page
 */
-export const selectFirstAvailableDevice = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const getFirstAvailableDeviceUrl = (): PayloadAction<?string> => (dispatch: Dispatch, getState: GetState): ?string => {
     const { devices } = getState();
+    let url: ?string;
     if (devices.length > 0) {
         const unacquired = devices.find(d => !d.features);
         if (unacquired) {
-            dispatch(selectDevice(unacquired));
+            url = dispatch(getDeviceUrl(unacquired));
         } else {
             const latest: Array<TrezorDevice> = sortDevices(devices);
             const firstConnected: ?TrezorDevice = latest.find(d => d.connected);
-            dispatch(selectDevice(firstConnected || latest[0]));
+            url = dispatch(getDeviceUrl(firstConnected || latest[0]));
         }
+    }
+    return url;
+};
+
+/*
+* Utility used in "getDeviceUrl" and "getFirstAvailableDeviceUrl"
+* sorting device array by "ts" (timestamp) field
+*/
+const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => devices.sort((a, b) => {
+    if (!a.ts || !b.ts) {
+        return -1;
+    }
+    return a.ts > b.ts ? -1 : 1;
+});
+
+/*
+* Redirect to requested device
+*/
+export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const url: ?string = dispatch(getDeviceUrl(device));
+    if (!url) return;
+
+    const currentParams: RouterLocationState = getState().router.location.state;
+    const requestedParams = dispatch(pathToParams(url));
+    if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
+        dispatch(goto(url));
+    }
+};
+
+/*
+* Redirect to first device or landing page
+*/
+export const selectFirstAvailableDevice = (): ThunkAction => (dispatch: Dispatch): void => {
+    const url = dispatch(getFirstAvailableDeviceUrl());
+    if (url) {
+        dispatch(goto(url));
     } else {
         dispatch(gotoLandingPage());
     }

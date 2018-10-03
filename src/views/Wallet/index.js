@@ -12,12 +12,14 @@ import type { State } from 'flowtype';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import ModalContainer from 'components/modals';
-import Notifications from 'components/Notification';
+import ContextNotifications from 'components/notifications/Context';
+
 import Log from 'components/Log';
 
 import LeftNavigation from './components/LeftNavigation/Container';
 import TopNavigationAccount from './components/TopNavigationAccount';
 import TopNavigationDeviceSettings from './components/TopNavigationDeviceSettings';
+
 
 type WalletContainerProps = {
     wallet: $ElementType<State, 'wallet'>,
@@ -89,7 +91,7 @@ const Wallet = (props: WalletContainerProps) => (
                     <Route path="/device/:device/network/:network/account/:account" component={TopNavigationAccount} />
                     <Route path="/device/:device/device-settings" component={TopNavigationDeviceSettings} />
                 </Navigation>
-                <Notifications />
+                <ContextNotifications />
                 <Log />
                 <Body>
                     { props.children }

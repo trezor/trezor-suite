@@ -79,7 +79,7 @@ type TransitionMenuProps = {
     children?: React.Node;
 }
 
-// TransitionMenu needs to dispatch window.resize even
+// TransitionMenu needs to dispatch window.resize event
 // in order to StickyContainer be recalculated
 const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGroup> => (
     <TransitionGroupWrapper component="div" className="transition-container">
@@ -108,18 +108,13 @@ type State = {
 class LeftNavigation extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
+        const { location } = this.props.router;
+        const hasNetwork = location && location.state && location.state.network;
         this.state = {
-            animationType: null,
+            animationType: hasNetwork ? 'slide-left' : null,
             shouldRenderDeviceSelection: false,
             clicked: false,
         };
-    }
-
-    componentDidMount() {
-        this.setState({
-            animationType: null,
-            shouldRenderDeviceSelection: false,
-        });
     }
 
     componentWillReceiveProps(nextProps) {

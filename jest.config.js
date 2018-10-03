@@ -1,7 +1,7 @@
 module.exports = {
     rootDir: './src',
     automock: false,
-    coverageDirectory: 'coverage/',
+    coverageDirectory: '../coverage/',
     collectCoverage: true,
     testURL: 'http://localhost',
     modulePathIgnorePatterns: [
@@ -12,6 +12,7 @@ module.exports = {
     ],
     collectCoverageFrom: [
         'utils/**.js',
+        'reducers/utils/**.js',
     ],
     setupFiles: [
         './support/setupJest.js',

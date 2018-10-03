@@ -45,18 +45,18 @@ class Group extends Component {
         if (this.state.visible) {
             this.setState({
                 visible: false,
-                visibleCount: 0,
+                visibleCount: this.props.groupNotifications.length,
             });
         } else {
             this.setState({
                 visible: true,
-                visibleCount: this.props.groupNotifications.length,
+                visibleCount: 0,
             });
         }
     }
 
     render() {
-        const { type, groupNotifications } = this.props;
+        const { type, groupNotifications, close } = this.props;
         const color = getColor(type);
         return (
             <Wrapper>
@@ -77,7 +77,7 @@ class Group extends Component {
                                 icon={ICONS.ARROW_DOWN}
                                 color={colors.TEXT_SECONDARY}
                                 size={24}
-                                isActive={this.state.visible}
+                                isActive={!this.state.visible}
                                 canAnimate
                             />
                         </Right>
@@ -88,10 +88,13 @@ class Group extends Component {
                         .slice(0, this.state.visibleCount)
                         .map(notification => (
                             <Notification
-                                key={notification.title}
+                                key={notification.key}
                                 type={notification.type}
                                 title={notification.title}
                                 message={notification.message}
+                                cancelable={notification.cancelable}
+                                actions={notification.actions}
+                                close={close}
                             />
                         ))}
                 </Body>
@@ -102,12 +105,15 @@ class Group extends Component {
 
 Group.propTypes = {
     type: PropTypes.string,
-    groupNotifications: PropTypes.arrayOf({
-        key: PropTypes.string,
-        type: PropTypes.string,
-        title: PropTypes.string,
-        message: PropTypes.string,
-    }),
+    close: PropTypes.func.isRequired,
+    groupNotifications: PropTypes.arrayOf(
+        PropTypes.shape({
+            key: PropTypes.number,
+            type: PropTypes.string,
+            title: PropTypes.string,
+            message: PropTypes.string,
+        }),
+    ),
 };
 
 export default Group;

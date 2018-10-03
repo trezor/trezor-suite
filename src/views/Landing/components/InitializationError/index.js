@@ -4,17 +4,20 @@ import React from 'react';
 import styled from 'styled-components';
 import { Notification } from 'components/Notification';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    min-width: 720px;
+    width: 100%;
+`;
 
-const UnreadableDevice = () => (
+const InitializationError = (props: { error: ?string }) => (
     <Wrapper>
         <Notification
-            title="Unreadable device"
-            message="Please install bridge"
+            title="Initialization error"
+            message={props.error || ''}
             type="error"
             cancelable={false}
         />
     </Wrapper>
 );
 
-export default UnreadableDevice;
+export default InitializationError;

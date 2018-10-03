@@ -2,6 +2,7 @@
 
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
+import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SEND from 'actions/constants/send';
 import * as WEB3 from 'actions/constants/web3';
@@ -45,10 +46,21 @@ export type SendFormAction = {
     type: typeof SEND.TOGGLE_ADVANCED | typeof SEND.TX_SENDING | typeof SEND.TX_ERROR,
 } | SendTxAction;
 
+// list of all actions which has influence on "sendForm" reducer
+// other actions will be ignored
+const actions = [
+    ACCOUNT.UPDATE_SELECTED_ACCOUNT,
+    WEB3.GAS_PRICE_UPDATED,
+    ...Object.values(SEND).filter(v => typeof v === 'string'),
+];
+
 /*
-* Called from WalletService on EACH action
+* Called from WalletService
 */
 export const observe = (prevState: ReducersState, action: Action): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    // ignore not listed actions
+    if (actions.indexOf(action.type) < 0) return;
+
     const currentState = getState();
     // do not proceed if it's not "send" url
     if (!currentState.router.location.state.send) return;
@@ -75,16 +87,9 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
 
     let shouldUpdate: boolean = false;
     // check if "selectedAccount" reducer changed
-    const selectedAccountChanged = reducerUtils.observeChanges(prevState.selectedAccount, currentState.selectedAccount, ['account', 'tokens', 'pending']);
-    if (selectedAccountChanged) {
-        // double check
-        // there are only few fields that we are interested in
-        // check them to avoid unnecessary calculation and validation
-        const accountChanged = reducerUtils.observeChanges(prevState.selectedAccount.account, currentState.selectedAccount.account, ['balance', 'nonce']);
-        const tokensChanged = reducerUtils.observeChanges(prevState.selectedAccount.tokens, currentState.selectedAccount.tokens);
-        const pendingChanged = reducerUtils.observeChanges(prevState.selectedAccount.pending, currentState.selectedAccount.pending);
-        shouldUpdate = accountChanged || tokensChanged || pendingChanged;
-    }
+    shouldUpdate = reducerUtils.observeChanges(prevState.selectedAccount, currentState.selectedAccount, {
+        account: ['balance', 'nonce'],
+    });
 
     // check if "sendForm" reducer changed
     if (!shouldUpdate) {
