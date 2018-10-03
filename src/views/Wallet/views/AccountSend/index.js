@@ -13,7 +13,6 @@ import colors from 'config/colors';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import Content from 'views/Wallet/components/Content';
-import SelectedAccount from 'views/Wallet/components/SelectedAccount';
 import type { Token } from 'flowtype';
 import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from './components/PendingTransactions';
@@ -176,6 +175,7 @@ const AccountSend = (props: Props) => {
         network,
         discovery,
         tokens,
+        shouldRender,
     } = props.selectedAccount;
     const {
         address,
@@ -205,7 +205,7 @@ const AccountSend = (props: Props) => {
         onSend,
     } = props.sendFormActions;
 
-    if (!device || !account || !discovery || !network) return null;
+    if (!device || !account || !discovery || !network || !shouldRender) return null;
 
     let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
     let sendButtonText: string = 'Send';
@@ -230,152 +230,150 @@ const AccountSend = (props: Props) => {
     const isAdvancedSettingsHidden = !advanced;
 
     return (
-        <SelectedAccount {...props}>
-            <Content>
-                <Wrapper>
-                    <H2>Send Ethereum or tokens</H2>
-                    <InputRow>
-                        <Input
-                            state={getAddressInputState(address, errors.address, warnings.address)}
-                            autoComplete="off"
-                            autoCorrect="off"
-                            autoCapitalize="off"
-                            spellCheck="false"
-                            topLabel="Address"
-                            bottomText={errors.address || warnings.address || infos.address}
-                            value={address}
-                            onChange={event => onAddressChange(event.target.value)}
-                        />
-                    </InputRow>
+        <Content>
+            <Wrapper>
+                <H2>Send Ethereum or tokens</H2>
+                <InputRow>
+                    <Input
+                        state={getAddressInputState(address, errors.address, warnings.address)}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck="false"
+                        topLabel="Address"
+                        bottomText={errors.address || warnings.address || infos.address}
+                        value={address}
+                        onChange={event => onAddressChange(event.target.value)}
+                    />
+                </InputRow>
 
-                    <InputRow>
-                        <Input
-                            state={getAmountInputState(errors.amount, warnings.amount)}
-                            autoComplete="off"
-                            autoCorrect="off"
-                            autoCapitalize="off"
-                            spellCheck="false"
-                            topLabel="Amount"
-                            value={amount}
-                            onChange={event => onAmountChange(event.target.value)}
-                            bottomText={errors.amount || warnings.amount || infos.amount}
-                            sideAddons={[
-                                (
-                                    <SetMaxAmountButton
-                                        key="icon"
-                                        onClick={() => onSetMax()}
-                                        isActive={setMax}
-                                    >
-                                        {!setMax && (
-                                            <Icon
-                                                icon={ICONS.TOP}
-                                                size={25}
-                                                color={colors.TEXT_SECONDARY}
-                                            />
-                                        )}
-                                        {setMax && (
-                                            <Icon
-                                                icon={ICONS.CHECKED}
-                                                size={25}
-                                                color={colors.WHITE}
-                                            />
-                                        )}
-                                    Set max
-                                    </SetMaxAmountButton>
-                                ),
-                                (
-                                    <CurrencySelect
-                                        key="currency"
-                                        isSearchable={false}
-                                        isClearable={false}
-                                        defaultValue={tokensSelectData[0]}
-                                        isDisabled={tokensSelectData.length < 2}
-                                        onChange={onCurrencyChange}
-                                        options={tokensSelectData}
-                                    />
-                                ),
-                            ]}
-                        />
-                    </InputRow>
+                <InputRow>
+                    <Input
+                        state={getAmountInputState(errors.amount, warnings.amount)}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck="false"
+                        topLabel="Amount"
+                        value={amount}
+                        onChange={event => onAmountChange(event.target.value)}
+                        bottomText={errors.amount || warnings.amount || infos.amount}
+                        sideAddons={[
+                            (
+                                <SetMaxAmountButton
+                                    key="icon"
+                                    onClick={() => onSetMax()}
+                                    isActive={setMax}
+                                >
+                                    {!setMax && (
+                                        <Icon
+                                            icon={ICONS.TOP}
+                                            size={25}
+                                            color={colors.TEXT_SECONDARY}
+                                        />
+                                    )}
+                                    {setMax && (
+                                        <Icon
+                                            icon={ICONS.CHECKED}
+                                            size={25}
+                                            color={colors.WHITE}
+                                        />
+                                    )}
+                                Set max
+                                </SetMaxAmountButton>
+                            ),
+                            (
+                                <CurrencySelect
+                                    key="currency"
+                                    isSearchable={false}
+                                    isClearable={false}
+                                    defaultValue={tokensSelectData[0]}
+                                    isDisabled={tokensSelectData.length < 2}
+                                    onChange={onCurrencyChange}
+                                    options={tokensSelectData}
+                                />
+                            ),
+                        ]}
+                    />
+                </InputRow>
 
-                    <InputRow>
-                        <FeeLabelWrapper>
-                            <FeeLabel>Fee</FeeLabel>
-                            {gasPriceNeedsUpdate && (
-                                <UpdateFeeWrapper>
-                                    <Icon
-                                        icon={ICONS.WARNING}
-                                        color={colors.WARNING_PRIMARY}
-                                        size={20}
-                                    />
-                                Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
-                                </UpdateFeeWrapper>
-                            )}
-                        </FeeLabelWrapper>
-                        <Select
-                            isSearchable={false}
-                            isClearable={false}
-                            value={selectedFeeLevel}
-                            onChange={onFeeLevelChange}
-                            options={feeLevels}
-                            formatOptionLabel={option => (
-                                <FeeOptionWrapper>
-                                    <P>{option.value}</P>
-                                    <P>{option.label}</P>
-                                </FeeOptionWrapper>
-                            )}
-                        />
-                    </InputRow>
-
-                    <ToggleAdvancedSettingsWrapper
-                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-                    >
-                        <ToggleAdvancedSettingsButton
-                            isTransparent
-                            onClick={toggleAdvanced}
-                        >
-                        Advanced settings
-                            <AdvancedSettingsIcon
-                                icon={ICONS.ARROW_DOWN}
-                                color={colors.TEXT_SECONDARY}
-                                size={24}
-                                isActive={advanced}
-                                canAnimate
-                            />
-                        </ToggleAdvancedSettingsButton>
-
-                        {isAdvancedSettingsHidden && (
-                            <SendButton
-                                isDisabled={isSendButtonDisabled}
-                                isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-                                onClick={() => onSend()}
-                            >
-                                {sendButtonText}
-                            </SendButton>
+                <InputRow>
+                    <FeeLabelWrapper>
+                        <FeeLabel>Fee</FeeLabel>
+                        {gasPriceNeedsUpdate && (
+                            <UpdateFeeWrapper>
+                                <Icon
+                                    icon={ICONS.WARNING}
+                                    color={colors.WARNING_PRIMARY}
+                                    size={20}
+                                />
+                            Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
+                            </UpdateFeeWrapper>
                         )}
-                    </ToggleAdvancedSettingsWrapper>
+                    </FeeLabelWrapper>
+                    <Select
+                        isSearchable={false}
+                        isClearable={false}
+                        value={selectedFeeLevel}
+                        onChange={onFeeLevelChange}
+                        options={feeLevels}
+                        formatOptionLabel={option => (
+                            <FeeOptionWrapper>
+                                <P>{option.value}</P>
+                                <P>{option.label}</P>
+                            </FeeOptionWrapper>
+                        )}
+                    />
+                </InputRow>
 
-                    {advanced && (
-                        <AdvancedForm {...props}>
-                            <SendButton
-                                isDisabled={isSendButtonDisabled}
-                                onClick={() => onSend()}
-                            >
-                                {sendButtonText}
-                            </SendButton>
-                        </AdvancedForm>
-                    )}
-
-                    {props.selectedAccount.pending.length > 0 && (
-                        <PendingTransactions
-                            pending={props.selectedAccount.pending}
-                            tokens={props.selectedAccount.tokens}
-                            network={network}
+                <ToggleAdvancedSettingsWrapper
+                    isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                >
+                    <ToggleAdvancedSettingsButton
+                        isTransparent
+                        onClick={toggleAdvanced}
+                    >
+                    Advanced settings
+                        <AdvancedSettingsIcon
+                            icon={ICONS.ARROW_DOWN}
+                            color={colors.TEXT_SECONDARY}
+                            size={24}
+                            isActive={advanced}
+                            canAnimate
                         />
+                    </ToggleAdvancedSettingsButton>
+
+                    {isAdvancedSettingsHidden && (
+                        <SendButton
+                            isDisabled={isSendButtonDisabled}
+                            isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                            onClick={() => onSend()}
+                        >
+                            {sendButtonText}
+                        </SendButton>
                     )}
-                </Wrapper>
-            </Content>
-        </SelectedAccount>
+                </ToggleAdvancedSettingsWrapper>
+
+                {advanced && (
+                    <AdvancedForm {...props}>
+                        <SendButton
+                            isDisabled={isSendButtonDisabled}
+                            onClick={() => onSend()}
+                        >
+                            {sendButtonText}
+                        </SendButton>
+                    </AdvancedForm>
+                )}
+
+                {props.selectedAccount.pending.length > 0 && (
+                    <PendingTransactions
+                        pending={props.selectedAccount.pending}
+                        tokens={props.selectedAccount.tokens}
+                        network={network}
+                    />
+                )}
+            </Wrapper>
+        </Content>
     );
 };
 
