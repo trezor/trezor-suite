@@ -144,10 +144,6 @@ export const observeChanges = (prev: ?Object, current: ?Object, filter?: {[k: st
         const prevDifference = prevKeys.find(k => currentKeys.indexOf(k) < 0);
         if (prevDifference) return true;
 
-        // 7. "current" has keys which "prev" doesn't have
-        const currentDifference = currentKeys.find(k => prevKeys.indexOf(k) < 0);
-        if (currentDifference) return true;
-
         // 8. observe every key recursive
         for (let i = 0; i < currentKeys.length; i++) {
             const key = currentKeys[i];

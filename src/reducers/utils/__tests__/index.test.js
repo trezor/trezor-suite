@@ -65,7 +65,7 @@ describe('reducers utils', () => {
                 current: {},
             },
             {
-                previous: { one: 1 },
+                previous: { one: 1, three: 3 },
                 current: { one: 1, two: 2 },
             },
             {
@@ -79,6 +79,10 @@ describe('reducers utils', () => {
             {
                 previous: 'a',
                 current: 'b',
+            },
+            {
+                previous: ['a'],
+                current: ['b'],
             },
             {
                 previous: 1,
@@ -125,12 +129,12 @@ describe('reducers utils', () => {
         const data = [
             {
                 previous: { one: { two: 2, three: 3 } },
-                current: { one: { two: 2 } },
+                current: { one: { two: 2, three: 4 } },
                 filter: { one: ['two'] },
             },
             {
                 previous: { one: { two: 2, three: 3 } },
-                current: { one: { two: 1 } },
+                current: { one: { two: 1, three: 3 } },
                 filter: { one: ['two'] },
             },
         ];
