@@ -43,6 +43,7 @@ const App = () => (
                             <Route exact path={getPattern('wallet-unreadable')} component={WalletUnreadableDevice} />
                             <Route exact path={getPattern('wallet-bootloader')} component={WalletBootloader} />
                             <Route exact path={getPattern('wallet-initialize')} component={WalletInitialize} />
+                            <Route exact path={getPattern('wallet-firmware-update')} component={WalletFirmwareUpdate} />
                             <Route exact path={getPattern('wallet-device-settings')} component={WalletDeviceSettings} />
                             <Route exact path={getPattern('wallet-account-summary')} component={AccountSummary} />
                             <Route path={getPattern('wallet-account-send')} component={AccountSend} />
