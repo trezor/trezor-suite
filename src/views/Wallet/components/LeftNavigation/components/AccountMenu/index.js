@@ -187,7 +187,7 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
             } else {
                 discoveryStatus = (
                     <Tooltip
-                        maxWidth={300}
+                        maxWidth={200}
                         content={<TooltipContent>To add a new account, last account must have some transactions.</TooltipContent>}
                         placement="bottom"
                     >
