@@ -52,21 +52,21 @@ const baseStyles = () => injectGlobal`
 
     @font-face {
         font-family: 'Roboto Zero';
-        src: url('./fonts/roboto/RobotoZero.eot') format('embedded-opentype'),
-            url('./fonts/roboto/RobotoZero.eot?#iefix') format('embedded-opentype'),
-            url('./fonts/roboto/RobotoZero.woff') format('woff'),
-            url('./fonts/roboto/RobotoZero.ttf') format('truetype');
+        src: url('/fonts/roboto/RobotoZero.eot') format('embedded-opentype'),
+            url('/fonts/roboto/RobotoZero.eot?#iefix') format('embedded-opentype'),
+            url('/fonts/roboto/RobotoZero.woff') format('woff'),
+            url('/fonts/roboto/RobotoZero.ttf') format('truetype');
     }
 
     @font-face {
         font-family: 'Roboto Mono';
         font-style: normal;
-        src: url('./fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.eot') format('embedded-opentype'), /* IE9 Compat Modes */
-            url('./fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-            url('./fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.woff2') format('woff2'), /* Super Modern Browsers */
-            url('./fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.woff') format('woff'), /* Modern Browsers */
-            url('./fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-            url('./fonts/roboto/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regular.svg#RobotoMono') format('svg'); /* Legacy iOS */
+        src:url('/fonts/roboto/RobotoMonoRegular.eot') format('embedded-opentype'), /* IE9 Compat Modes */
+            url('/fonts/roboto/RobotoMonoRegular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+            url('/fonts/roboto/RobotoMonoRegular.woff2') format('woff2'), /* Super Modern Browsers */
+            url('/fonts/roboto/RobotoMonoRegular.woff') format('woff'), /* Modern Browsers */
+            url('/fonts/roboto/RobotoMonoRegular.ttf') format('truetype'), /* Safari, Android, iOS */
+            url('/fonts/roboto/RobotoMonoRegular.svg#RobotoMono') format('svg'); /* Legacy iOS */
     }
 
     .slide-left-enter {

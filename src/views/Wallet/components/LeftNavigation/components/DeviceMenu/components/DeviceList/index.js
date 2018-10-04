@@ -31,14 +31,14 @@ class DeviceList extends Component {
                         device !== selectedDevice && (
                             <DeviceHeader
                                 key={device.state || device.path}
-                                isBootloader={device.features.bootloader_mode}
+                                isBootloader={device.features && device.features.bootloader_mode}
                                 onClickWrapper={() => {
                                     if (device.features) {
                                         if (device.features.bootloader_mode) {
                                             this.redirectToBootloader(selectedDevice);
                                         }
-                                        onSelectDevice(device);
                                     }
+                                    onSelectDevice(device);
                                 }}
                                 onClickIcon={() => forgetDevice(device)}
                                 icon={(
