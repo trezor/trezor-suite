@@ -24,10 +24,6 @@ class CoinMenu extends Component {
         return baseUrl;
     }
 
-    getCoinUrl(coinId) {
-        return `https://wallet.trezor.io/#/coin/${coinId}`;
-    }
-
     render() {
         const { config } = this.props.localStorage;
         return (
@@ -51,7 +47,7 @@ class CoinMenu extends Component {
                     hasBorder
                 />
                 {coins.map(coin => (
-                    <a key={this.getCoinUrl(coin.id)} href={this.getCoinUrl(coin.id)}>
+                    <a key={this.getCoinUrl(coin.id)} href={coin.url}>
                         <RowCoin
                             coin={{
                                 name: coin.coinName,
