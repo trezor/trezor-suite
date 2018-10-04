@@ -5,6 +5,7 @@ import { DEVICE } from 'trezor-connect';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as WALLET from 'actions/constants/wallet';
 import * as reducerUtils from 'reducers/utils';
+import * as deviceUtils from 'utils/device';
 
 import type {
     Device,
@@ -104,7 +105,7 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
 
     // handle devices state change (from trezor-connect events or location change)
     if (locationChanged || selectedDeviceChanged) {
-        if (device && reducerUtils.isSelectedDevice(state.wallet.selectedDevice, device)) {
+        if (device && deviceUtils.isSelectedDevice(state.wallet.selectedDevice, device)) {
             dispatch({
                 type: WALLET.UPDATE_SELECTED_DEVICE,
                 device,

@@ -98,7 +98,7 @@ const DeviceHeader = ({
     device,
     isHoverable = true,
     onClickWrapper,
-    isBootloader = false,
+    isAccessible = true,
     disabled = false,
     isSelected = false,
 }) => {
@@ -123,7 +123,7 @@ const DeviceHeader = ({
                     <Status>{getStatusName(status)}</Status>
                 </LabelWrapper>
                 <IconWrapper>
-                    {icon && !disabled && !isBootloader && icon}
+                    {icon && !disabled && isAccessible && icon}
                 </IconWrapper>
             </ClickWrapper>
         </Wrapper>
@@ -131,7 +131,7 @@ const DeviceHeader = ({
 };
 
 DeviceHeader.propTypes = {
-    isBootloader: PropTypes.bool,
+    isAccessible: PropTypes.bool,
     device: PropTypes.object,
     icon: PropTypes.element,
     isHoverable: PropTypes.bool,

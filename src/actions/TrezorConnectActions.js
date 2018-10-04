@@ -154,50 +154,50 @@ export const postInit = (): ThunkAction => (dispatch: Dispatch): void => {
 
 export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
-    if (selected
-            && selected.connected
-            && (selected.features && !selected.features.bootloader_mode && selected.features.initialized)
-            && !selected.state) {
-        const response = await TrezorConnect.getDeviceState({
-            device: {
-                path: selected.path,
-                instance: selected.instance,
-                state: selected.state,
-            },
-            useEmptyPassphrase: !selected.instance,
-        });
+    if (!selected) return;
+    const isDeviceReady = selected.connected && selected.features && !selected.state && selected.mode === 'normal' && selected.firmware !== 'required';
+    if (!isDeviceReady) return;
 
-        if (response && response.success) {
-            dispatch({
-                type: CONNECT.AUTH_DEVICE,
-                device: selected,
-                state: response.payload.state,
-            });
-        } else {
-            dispatch({
-                type: NOTIFICATION.ADD,
-                payload: {
-                    devicePath: selected.path,
-                    type: 'error',
-                    title: 'Authentication error',
-                    message: response.payload.error,
-                    cancelable: false,
-                    actions: [
-                        {
-                            label: 'Try again',
-                            callback: () => {
-                                dispatch({
-                                    type: NOTIFICATION.CLOSE,
-                                    payload: { devicePath: selected.path },
-                                });
-                                dispatch(getSelectedDeviceState());
-                            },
+    const response = await TrezorConnect.getDeviceState({
+        device: {
+            path: selected.path,
+            instance: selected.instance,
+            state: selected.state,
+        },
+        useEmptyPassphrase: !selected.instance,
+    });
+
+    if (response && response.success) {
+        dispatch({
+            type: CONNECT.AUTH_DEVICE,
+            device: selected,
+            state: response.payload.state,
+        });
+    } else {
+        dispatch({
+            type: NOTIFICATION.ADD,
+            payload: {
+                devicePath: selected.path,
+                type: 'error',
+                title: 'Authentication error',
+                message: response.payload.error,
+                cancelable: false,
+                actions: [
+                    {
+                        label: 'Try again',
+                        callback: () => {
+                            dispatch({
+                                type: NOTIFICATION.CLOSE,
+                                payload: { devicePath: selected.path },
+                            });
+                            dispatch(getSelectedDeviceState());
                         },
-                    ],
-                },
-            });
-        }
+                    },
+                ],
+            },
+        });
     }
+
 };
 
 export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
 import Button from 'components/Button';
-import { isWebUSB } from 'utils/device';
+import * as deviceUtils from 'utils/device';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
 
@@ -28,10 +28,6 @@ type DeviceMenuItem = {
 }
 
 class DeviceMenu extends Component<Props> {
-    mouseDownHandler: (event: MouseEvent) => void;
-
-    blurHandler: (event: FocusEvent) => void;
-
     constructor(props: Props) {
         super(props);
         this.mouseDownHandler = this.mouseDownHandler.bind(this);
@@ -42,12 +38,33 @@ class DeviceMenu extends Component<Props> {
         window.addEventListener('mousedown', this.mouseDownHandler, false);
         // window.addEventListener('blur', this.blurHandler, false);
         const { transport } = this.props.connect;
-        if (transport && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
+        if (transport.type && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
     }
 
     componentDidUpdate() {
         const { transport } = this.props.connect;
-        if (isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
+        if (deviceUtils.isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
+    }
+
+    componentWillUnmount(): void {
+        window.removeEventListener('mousedown', this.mouseDownHandler, false);
+    }
+
+    onDeviceMenuClick(item: DeviceMenuItem, device: TrezorDevice): void {
+        if (item.type === 'reload') {
+            this.props.acquireDevice();
+        } else if (item.type === 'forget') {
+            this.props.forgetDevice(device);
+        } else if (item.type === 'clone') {
+            this.props.duplicateDevice(device);
+        } else if (item.type === 'settings') {
+            this.props.toggleDeviceDropdown(false);
+            this.props.gotoDeviceSettings(device);
+        }
+    }
+
+    blurHandler(): void {
+        this.props.toggleDeviceDropdown(false);
     }
 
     mouseDownHandler(event: MouseEvent): void {
@@ -67,34 +84,16 @@ class DeviceMenu extends Component<Props> {
         }
     }
 
-    blurHandler(): void {
-        this.props.toggleDeviceDropdown(false);
-    }
+    mouseDownHandler: (event: MouseEvent) => void;
 
-    onDeviceMenuClick(item: DeviceMenuItem, device: TrezorDevice): void {
-        if (item.type === 'reload') {
-            this.props.acquireDevice();
-        } else if (item.type === 'forget') {
-            this.props.forgetDevice(device);
-        } else if (item.type === 'clone') {
-            this.props.duplicateDevice(device);
-        } else if (item.type === 'settings') {
-            this.props.toggleDeviceDropdown(false);
-            this.props.gotoDeviceSettings(device);
-        }
-    }
-
-    componentWillUnmount(): void {
-        window.removeEventListener('mousedown', this.mouseDownHandler, false);
-    }
+    blurHandler: (event: FocusEvent) => void;
 
     showDivider() {
         return this.props.devices.length > 1;
     }
 
     showMenuItems() {
-        const { selectedDevice } = this.props.wallet;
-        return selectedDevice && selectedDevice.features;
+        return deviceUtils.isDeviceAccessible(this.props.wallet.selectedDevice);
     }
 
     render() {
@@ -113,7 +112,7 @@ class DeviceMenu extends Component<Props> {
                     forgetDevice={forgetDevice}
                 />
                 <ButtonWrapper>
-                    {isWebUSB(transport) && (
+                    {deviceUtils.isWebUSB(transport) && (
                         <StyledButton isWebUsb>Check for devices</StyledButton>
                     )}
                 </ButtonWrapper>

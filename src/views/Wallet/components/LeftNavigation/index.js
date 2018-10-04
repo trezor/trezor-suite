@@ -1,3 +1,5 @@
+/* @flow */
+
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
@@ -6,10 +8,13 @@ import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
+import * as deviceUtils from 'utils/device';
+
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
 import StickyContainer from './components/StickyContainer';
+
 import type { Props } from './components/common';
 
 const Header = styled(DeviceHeader)`
@@ -105,6 +110,7 @@ const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGro
 type State = {
     animationType: ?string;
     shouldRenderDeviceSelection: boolean;
+    clicked: boolean;
 }
 
 class LeftNavigation extends React.PureComponent<Props, State> {
@@ -119,11 +125,11 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: Props) {
         const { dropdownOpened, selectedDevice } = nextProps.wallet;
-        const hasNetwork = nextProps.location.state && nextProps.location.state.network;
-        const hasFeatures = selectedDevice && selectedDevice.features;
-        const deviceReady = hasFeatures && !selectedDevice.features.bootloader_mode && selectedDevice.features.initialized;
+        const { location } = nextProps.router;
+        const hasNetwork = location && location.state.network;
+        const deviceReady = selectedDevice && selectedDevice.features && selectedDevice.mode === 'normal';
         if (dropdownOpened) {
             this.setState({ shouldRenderDeviceSelection: true });
         } else if (hasNetwork) {
@@ -176,22 +182,23 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             );
         }
 
-        const isDeviceInBootloader = this.props.wallet.selectedDevice.features && this.props.wallet.selectedDevice.features.bootloader_mode;
+        const { selectedDevice } = props.wallet;
+        const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
         return (
             <StickyContainer
-                location={this.props.location.pathname}
+                location={props.router.location.pathname}
                 deviceSelection={this.props.wallet.dropdownOpened}
             >
                 <Header
                     isSelected
                     isHoverable={false}
                     onClickWrapper={() => {
-                        if (!isDeviceInBootloader || this.props.devices.length > 1) {
+                        if (isDeviceAccessible || this.props.devices.length > 1) {
                             this.handleOpen();
                         }
                     }}
                     device={this.props.wallet.selectedDevice}
-                    disabled={isDeviceInBootloader && this.props.devices.length === 1}
+                    disabled={!isDeviceAccessible && this.props.devices.length === 1}
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
@@ -211,7 +218,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                 />
                 <Body>
                     {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
-                    {!isDeviceInBootloader && menu}
+                    {isDeviceAccessible && menu}
                 </Body>
                 <Footer key="sticky-footer">
                     <Help>
@@ -241,8 +248,12 @@ LeftNavigation.propTypes = {
     pending: PropTypes.array,
 
     toggleDeviceDropdown: PropTypes.func,
-    selectedDevice: PropTypes.object,
+    addAccount: PropTypes.func,
+    acquireDevice: PropTypes.func,
+    forgetDevice: PropTypes.func,
+    duplicateDevice: PropTypes.func,
+    gotoDeviceSettings: PropTypes.func,
+    onSelectDevice: PropTypes.func,
 };
-
 
 export default LeftNavigation;
