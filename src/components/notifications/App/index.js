@@ -7,6 +7,7 @@ import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 
 import * as NotificationActions from 'actions/NotificationActions';
+import * as RouterActions from 'actions/RouterActions';
 
 import OnlineStatus from './components/OnlineStatus';
 import UpdateBridge from './components/UpdateBridge';
@@ -20,6 +21,7 @@ export type StateProps = {
 
 export type DispatchProps = {
     close: typeof NotificationActions.close;
+    routerActions: typeof RouterActions;
 }
 
 export type Props = StateProps & DispatchProps;
@@ -41,6 +43,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
     close: bindActionCreators(NotificationActions.close, dispatch),
+    routerActions: bindActionCreators(RouterActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

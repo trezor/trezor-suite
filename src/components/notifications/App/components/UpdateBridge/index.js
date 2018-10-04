@@ -5,18 +5,19 @@ import { Notification } from 'components/Notification';
 import type { Props } from '../../index';
 
 export default (props: Props) => {
-    return (
-        <Notification
-            type="warning"
-            title="New Trezor Bridge available"
-            actions={
-                [{
-                    label: 'Read more',
-                    callback: async () => {
-                        
-                    },
-                }]
-            }
-        />
-    );
+    if (props.connect.transport && props.connect.transport.outdated) {
+        return (
+            <Notification
+                type="warning"
+                title="New Trezor Bridge is available"
+                actions={
+                    [{
+                        label: 'Update',
+                        callback: props.routerActions.gotoBridgeUpdate,
+                    }]
+                }
+            />
+        );
+    }
+    return null;
 };
