@@ -1,22 +1,31 @@
+/* @flow */
+
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
 import DeviceHeader from 'components/DeviceHeader';
+import * as deviceUtils from 'utils/device';
 import icons from 'config/icons';
 import colors from 'config/colors';
-import { withRouter } from 'react-router-dom';
+
+import type { TrezorDevice } from 'flowtype';
+import type { Props as CommonProps } from '../../../common';
+
 
 const Wrapper = styled.div``;
 const IconClick = styled.div``;
 
-class DeviceList extends Component {
-    sortByInstance(a, b) {
+type Props = {
+    devices: $ElementType<CommonProps, 'devices'>;
+    selectedDevice: $ElementType<$ElementType<CommonProps, 'wallet'>, 'selectedDevice'>;
+    onSelectDevice: $ElementType<CommonProps, 'onSelectDevice'>;
+    forgetDevice: $ElementType<CommonProps, 'forgetDevice'>;
+};
+
+class DeviceList extends Component<Props> {
+    sortByInstance(a: TrezorDevice, b: TrezorDevice) {
         if (!a.instance || !b.instance) return -1;
         return a.instance > b.instance ? 1 : -1;
-    }
-
-    redirectToBootloader(selectedDevice) {
-        this.props.history.push(`/device/${selectedDevice.features.device_id}/bootloader`);
     }
 
     render() {
@@ -28,16 +37,11 @@ class DeviceList extends Component {
                 {devices
                     .sort(this.sortByInstance)
                     .map(device => (
-                        device !== selectedDevice && (
+                        !deviceUtils.isSelectedDevice(selectedDevice, device) && (
                             <DeviceHeader
                                 key={device.state || device.path}
-                                isBootloader={device.features && device.features.bootloader_mode}
+                                isAccessible={deviceUtils.isDeviceAccessible(device)}
                                 onClickWrapper={() => {
-                                    if (device.features) {
-                                        if (device.features.bootloader_mode) {
-                                            this.redirectToBootloader(selectedDevice);
-                                        }
-                                    }
                                     onSelectDevice(device);
                                 }}
                                 onClickIcon={() => forgetDevice(device)}
@@ -69,4 +73,4 @@ class DeviceList extends Component {
     }
 }
 
-export default withRouter(DeviceList);
+export default DeviceList;
