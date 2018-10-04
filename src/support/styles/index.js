@@ -2,6 +2,9 @@ import { injectGlobal } from 'styled-components';
 import colors from 'config/colors';
 import normalize from 'styled-normalize';
 
+import tooltipStyles from './Tooltip';
+import animationStyles from './Animations';
+
 const baseStyles = () => injectGlobal`
     ${normalize};
 
@@ -69,44 +72,8 @@ const baseStyles = () => injectGlobal`
             url('/fonts/roboto/RobotoMonoRegular.svg#RobotoMono') format('svg'); /* Legacy iOS */
     }
 
-    .slide-left-enter {
-        transform: translate(100%);
-        pointer-events: none;
-    }
-    
-    .slide-left-enter.slide-left-enter-active {
-        transform: translate(0%);
-        transition: transform 300ms ease-in-out;
-    }
-    
-    .slide-left-exit {
-        transform: translate(-100%);
-    }
-    
-    .slide-left-exit.slide-left-exit-active {
-        transform: translate(0%);
-        transition: transform 300ms ease-in-out;
-    }
-    
-    .slide-right-enter {
-        transform: translate(-100%);
-        pointer-events: none;
-    }
-    
-    .slide-right-enter.slide-right-enter-active {
-        transform: translate(0%);
-        transition: transform 300ms ease-in-out;
-    }
-    
-    .slide-right-exit {
-        transform: translate(-100%);
-    }
-    
-    .slide-right-exit.slide-right-exit-active {
-        transform: translate(-200%);
-        transition: transform 300ms ease-in-out;
-    }
-
+    ${animationStyles};
+    ${tooltipStyles};
 `;
 
 export default baseStyles;

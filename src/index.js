@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import { render } from 'react-dom';
-import baseStyles from 'support/BaseStyles';
+import baseStyles from 'support/styles';
 import { onBeforeUnload } from 'actions/WalletActions';
 import App from 'views/index';
 import store from './store';
