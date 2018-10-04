@@ -74,7 +74,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
 
     // account not found (yet). checking why...
     if (!account) {
-        if (!discovery || discovery.waitingForDevice) {
+        if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
             if (device.connected) {
                 // case 1: device is connected but discovery not started yet (probably waiting for auth)
                 if (device.available) {
@@ -156,7 +156,7 @@ const actions = [
     SEND.TX_COMPLETE,
     WALLET.SET_SELECTED_DEVICE,
     WALLET.UPDATE_SELECTED_DEVICE,
-    ...Object.values(ACCOUNT).filter(v => typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT), // exported values got unwanted "__esModule: true" as first element
+    ...Object.values(ACCOUNT).filter(v => typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE), // exported values got unwanted "__esModule: true" as first element
     ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
     ...Object.values(TOKEN).filter(v => typeof v === 'string'),
     ...Object.values(PENDING).filter(v => typeof v === 'string'),
