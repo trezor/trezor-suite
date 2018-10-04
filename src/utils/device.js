@@ -1,64 +1,99 @@
+/* @flow */
+
 import colors from 'config/colors';
 
-const getStatus = (device) => {
-    let status = 'connected';
-    if (device.features && device.features.bootloader_mode) {
-        status = 'connected-bootloader';
-    } else if (!device.connected) {
-        status = 'disconnected';
-    } else if (!device.available) {
-        status = 'unavailable';
-    } else if (device.type === 'acquired') {
-        if (device.status === 'occupied') {
-            status = 'used-in-other-window';
+import type {
+    TrezorDevice,
+    State,
+} from 'flowtype';
+
+type Transport = $ElementType<$ElementType<State, 'connect'>, 'transport'>;
+
+export const getStatus = (device: TrezorDevice): string => {
+    if (!device.connected) {
+        return 'disconnected';
+    }
+    if (device.type === 'acquired') {
+        if (device.mode === 'bootloader') {
+            return 'bootloader';
         }
-    } else if (device.type === 'unacquired') {
-        status = 'unacquired';
+        if (device.mode === 'initialize') {
+            return 'initialize';
+        }
+        if (device.firmware === 'required') {
+            return 'firmware-required';
+        }
+        if (device.status === 'occupied') {
+            return 'used-in-other-window';
+        }
+        if (device.status === 'used') {
+            return 'used-in-other-window';
+        }
+        if (device.firmware === 'outdated') {
+            return 'firmware-recommended';
+        }
+        return 'connected';
     }
-
-    return status;
+    if (!device.available) { // deprecated
+        return 'unavailable';
+    }
+    if (device.type === 'unacquired') {
+        return 'unacquired';
+    }
+    if (device.type === 'unreadable') {
+        return 'unreadable';
+    }
+    return 'unknown';
 };
 
-const getStatusName = (deviceStatus) => {
-    let statusName;
+export const getStatusName = (deviceStatus: string): string => {
     switch (deviceStatus) {
-        case 'used-in-other-window':
-            statusName = 'Used in other window';
-            break;
         case 'connected':
-            statusName = 'Connected';
-            break;
-        case 'connected-bootloader':
-            statusName = 'Connected (bootloader mode)';
-            break;
+            return 'Connected';
         case 'disconnected':
-            statusName = 'Disconnected';
-            break;
+            return 'Disconnected';
+        case 'bootloader':
+            return 'Connected (bootloader mode)';
+        case 'initialize':
+            return 'Connected (not initialized)';
+        case 'firmware-required':
+            return 'Connected (update required)';
+        case 'firmware-recommended':
+            return 'Connected (update recommended)';
+        case 'used-in-other-window':
+            return 'Used in other window';
         case 'unacquired':
-            statusName = 'Used in other window';
-            break;
+            return 'Used in other window';
         case 'unavailable':
-            statusName = 'Unavailable';
-            break;
+            return 'Unavailable';
+        case 'unreadable':
+            return 'Unreadable';
         default:
-            statusName = 'Status unknown';
+            return 'Status unknown';
     }
-    return statusName;
 };
 
-const isWebUSB = transport => !!((transport && transport.version.indexOf('webusb') >= 0));
+export const isWebUSB = (transport: Transport) => !!((transport.type && transport.version.indexOf('webusb') >= 0));
 
-const isDisabled = (selectedDevice, devices, transport) => {
+export const isDisabled = (selectedDevice: TrezorDevice, devices: Array<TrezorDevice>, transport: Transport) => {
     if (isWebUSB(transport)) return false; // always enabled if webusb
     if (devices.length < 1) return true; // no devices
     if (devices.length === 1) {
         if (!selectedDevice.features) return true; // unacquired, unreadable
-        if (selectedDevice.features.bootloader_mode || !selectedDevice.features.initialized) return true; // bootlader, not initialized
+        if (selectedDevice.mode !== 'normal') return true; // bootloader, not initialized
+        if (selectedDevice.firmware === 'required') return true; // bootloader, not initialized
     }
     return false; // default
 };
 
-const getVersion = (device) => {
+export const isDeviceAccessible = (device: ?TrezorDevice): boolean => {
+    if (!device || !device.features) return false;
+    return device.mode === 'normal' && device.firmware !== 'required';
+};
+
+export const isSelectedDevice = (current: ?TrezorDevice, device: ?TrezorDevice): boolean => !!((current && device && (current.path === device.path && current.instance === device.instance)));
+
+export const getVersion = (device: TrezorDevice): string => {
     let version;
     if (device.features && device.features.major_version > 1) {
         version = 'T';
@@ -68,38 +103,23 @@ const getVersion = (device) => {
     return version;
 };
 
-const getStatusColor = (deviceStatus) => {
-    let color;
+export const getStatusColor = (deviceStatus: string): string => {
     switch (deviceStatus) {
-        case 'used-in-other-window':
-            color = colors.WARNING_PRIMARY;
-            break;
         case 'connected':
-            color = colors.GREEN_PRIMARY;
-            break;
-        case 'connected-bootloader':
-            color = colors.WARNING_PRIMARY;
-            break;
-        case 'unacquired':
-            color = colors.WARNING_PRIMARY;
-            break;
+            return colors.GREEN_PRIMARY;
         case 'disconnected':
-            color = colors.ERROR_PRIMARY;
-            break;
+            return colors.ERROR_PRIMARY;
+        case 'bootloader':
+        case 'initialize':
+        case 'firmware-recommended':
+        case 'used-in-other-window':
+        case 'unacquired':
+            return colors.WARNING_PRIMARY;
+        case 'firmware-required':
         case 'unavailable':
-            color = colors.ERROR_PRIMARY;
-            break;
+        case 'unreadable':
+            return colors.ERROR_PRIMARY;
         default:
-            color = colors.TEXT_PRIMARY;
+            return colors.TEXT_PRIMARY;
     }
-    return color;
-};
-
-export {
-    isWebUSB,
-    getStatus,
-    isDisabled,
-    getStatusName,
-    getVersion,
-    getStatusColor,
 };
