@@ -10,6 +10,7 @@ import * as LocalStorageActions from 'actions/LocalStorageActions';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as SelectedAccountActions from 'actions/SelectedAccountActions';
 import * as SendFormActionActions from 'actions/SendFormActions';
+import * as DiscoveryActions from 'actions/DiscoveryActions';
 
 import type {
     Middleware,
@@ -77,6 +78,12 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                     network: currentLocation.state.network,
                 },
             });
+
+            // try to stop currently running discovery on previous network
+            api.dispatch(DiscoveryActions.stop());
+
+            // try to start new discovery on new network
+            api.dispatch(DiscoveryActions.restore());
         }
 
         // watch for account change
@@ -95,6 +102,18 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             // if "selectedAccount" didn't change observe send form props changes
             api.dispatch(SendFormActionActions.observe(prevState, action));
         }
+    } else if (action.type === CONNECT.AUTH_DEVICE) {
+        // selected device did changed
+        // try to restore discovery after device authentication
+        api.dispatch(DiscoveryActions.restore());
+    }
+
+    // even if "selectedDevice" didn't change because it was updated on DEVICE.CHANGED before DEVICE.CONNECT action
+    // try to restore discovery
+    if (action.type === DEVICE.CONNECT) {
+        api.dispatch(DiscoveryActions.restore());
+    } else if (action.type === DEVICE.DISCONNECT) {
+        api.dispatch(DiscoveryActions.stop());
     }
 
     return action;
