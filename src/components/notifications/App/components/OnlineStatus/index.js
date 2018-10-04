@@ -6,6 +6,6 @@ import type { Props } from '../../index';
 
 export default (props: Props) => {
     const { online } = props.wallet;
-    // if (online) return null;
+    if (online) return null;
     return (<Notification type="error" title="Wallet is offline" />);
 };
