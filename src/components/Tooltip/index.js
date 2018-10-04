@@ -9,12 +9,13 @@ const Wrapper = styled.div``;
 
 const Content = styled.div`
     max-width: ${props => `${props.maxWidth}px` || 'auto'};
-    padding-bottom: 10px;
     text-align: justify;
 `;
 
 const ContentWrapper = styled.div``;
+
 const ReadMore = styled.div`
+    margin-top: 15px;
     padding: 10px 0 5px 0;
     text-align: center;
     width: 100%;
