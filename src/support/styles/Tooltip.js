@@ -4,7 +4,6 @@ import colors from 'config/colors';
 const tooltipStyles = css`
     .rc-tooltip {
         min-width: 200px;
-        max-width: ${props => `${props.maxWidth}px` || 'auto'};
         position: absolute;
         z-index: 1070;
         visibility: visible;
