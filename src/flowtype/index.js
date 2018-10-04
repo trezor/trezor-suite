@@ -38,6 +38,7 @@ import type {
     Features,
     DeviceStatus,
     DeviceFirmwareStatus,
+    DeviceMode,
     DeviceMessageType,
     TransportMessageType,
     BlockchainMessageType,
@@ -53,6 +54,7 @@ export type AcquiredDevice = $Exact<{
     +features: Features,
     +firmware: DeviceFirmwareStatus,
     status: DeviceStatus,
+    +mode: DeviceMode,
     state: ?string,
 
     remember: boolean; // device should be remembered
