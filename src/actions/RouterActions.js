@@ -304,6 +304,20 @@ export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (dispat
 };
 
 /*
+* Go to UpdateBridge page
+*/
+export const gotoBridgeUpdate = (): ThunkAction => (dispatch: Dispatch): void => {
+    dispatch(goto('/bridge'));
+};
+
+/*
+* Go to UpdateFirmware page
+*/
+export const gotoFirmwareUpdate = (): ThunkAction => (dispatch: Dispatch): void => {
+    dispatch(goto('/firmware-update'));
+};
+
+/*
 * Try to redirect to initial url
 */
 export const setInitialUrl = (): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
