@@ -167,34 +167,34 @@ const AccountReceive = (props: Props) => {
                         <AddressInfoText>Confirm address on TREZOR</AddressInfoText>
                     )}
                     {((addressVerified || addressUnverified) && !isAddressVerifying) && (
-                        <Tooltip
-                            placement="bottomRight"
-                            content={(
-                                <React.Fragment>
-                                    {addressUnverified ? (
-                                        <React.Fragment>
-                                        Unverified address.
-                                            <br />
-                                            {device.connected && device.available ? 'Show on TREZOR' : 'Connect your TREZOR to verify it.'}
-                                        </React.Fragment>
-                                    ) : (
-                                        <React.Fragment>
-                                            {device.connected ? 'Show on TREZOR' : 'Connect your TREZOR to verify address.'}
-                                        </React.Fragment>
-                                    )}
-                                </React.Fragment>
-                            )}
+
+                        <EyeButton
+                            isTransparent
+                            onClick={() => props.showAddress(account.addressPath)}
                         >
-                            <EyeButton
-                                isTransparent
-                                onClick={() => props.showAddress(account.addressPath)}
+                            <Tooltip
+                                placement="bottom"
+                                content={(
+                                    <React.Fragment>
+                                        {addressUnverified ? (
+                                            <React.Fragment>
+                                        Unverified address.
+                                                {device.connected && device.available ? 'Show on TREZOR' : 'Connect your TREZOR to verify it.'}
+                                            </React.Fragment>
+                                        ) : (
+                                            <React.Fragment>
+                                                {device.connected ? 'Show on TREZOR' : 'Connect your TREZOR to verify address.'}
+                                            </React.Fragment>
+                                        )}
+                                    </React.Fragment>
+                                )}
                             >
                                 <Icon
                                     icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
                                     color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
                                 />
-                            </EyeButton>
-                        </Tooltip>
+                            </Tooltip>
+                        </EyeButton>
                     )}
                     <ValueWrapper
                         isHidden={isAddressHidden}
