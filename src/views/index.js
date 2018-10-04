@@ -11,10 +11,10 @@ import LandingContainer from 'views/Landing/Container';
 
 // wallet views
 import WalletContainer from 'views/Wallet';
-import AccountSummary from 'views/Wallet/views/AccountSummary/Container';
-import AccountSend from 'views/Wallet/views/AccountSend/Container';
-import AccountReceive from 'views/Wallet/views/AccountReceive/Container';
-import AccountSignVerify from 'views/Wallet/views/AccountSignVerify';
+import AccountSummary from 'views/Wallet/views/Account/Summary/Container';
+import AccountSend from 'views/Wallet/views/Account/Send/Container';
+import AccountReceive from 'views/Wallet/views/Account/Receive/Container';
+import AccountSignVerify from 'views/Wallet/views/Account/SignVerify';
 
 import WalletDashboard from 'views/Wallet/views/Dashboard';
 import WalletDeviceSettings from 'views/Wallet/views/DeviceSettings';
