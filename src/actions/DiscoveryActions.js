@@ -5,8 +5,15 @@ import EthereumjsUtil from 'ethereumjs-util';
 import * as DISCOVERY from 'actions/constants/discovery';
 import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
+
 import type {
-    ThunkAction, AsyncAction, PromiseAction, Action, GetState, Dispatch, TrezorDevice,
+    ThunkAction,
+    AsyncAction,
+    PromiseAction,
+    PayloadAction,
+    GetState,
+    Dispatch,
+    TrezorDevice,
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
 import * as BlockchainActions from './BlockchainActions';
@@ -26,11 +33,6 @@ export type DiscoveryWaitingAction = {
     network: string
 }
 
-export type DiscoveryStopAction = {
-    type: typeof DISCOVERY.STOP,
-    device: TrezorDevice
-}
-
 export type DiscoveryCompleteAction = {
     type: typeof DISCOVERY.COMPLETE,
     device: TrezorDevice,
@@ -40,12 +42,28 @@ export type DiscoveryCompleteAction = {
 export type DiscoveryAction = {
     type: typeof DISCOVERY.FROM_STORAGE,
     payload: State
+} | {
+    type: typeof DISCOVERY.STOP,
+    device: TrezorDevice
 } | DiscoveryStartAction
   | DiscoveryWaitingAction
-  | DiscoveryStopAction
   | DiscoveryCompleteAction;
 
-export const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+// There are multiple async methods during discovery process (trezor-connect and blockchain actions)
+// This method will check after each of async action if process was interrupted (for example by network change or device disconnect)
+const isProcessInterrupted = (process?: Discovery): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+    if (!process) {
+        return false;
+    }
+    const { deviceState, network } = process;
+    const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === deviceState && d.network === network);
+    if (!discoveryProcess) return false;
+    return discoveryProcess.interrupted;
+};
+
+// Private action
+// Called from "this.begin", "this.restore", "this.addAccount"
+const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) {
         // TODO: throw error
@@ -150,8 +168,10 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => async (dis
     }
 
     // check for interruption
-    const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === device.state && d.network === network);
-    if (discoveryProcess && discoveryProcess.interrupted) return;
+    // corner case: DISCOVERY.START wasn't called yet, but Discovery exists in reducer created by DISCOVERY.WAITING_FOR_DEVICE action
+    // this is why we need to get process instance directly from reducer
+    const discoveryProcess = getState().discovery.find(d => d.deviceState === device.state && d.network === network);
+    if (dispatch(isProcessInterrupted(discoveryProcess))) return;
 
     const basePath: Array<number> = response.payload.path;
 
@@ -181,7 +201,8 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
     // TODO: check if address was created before
     try {
         const account = await dispatch(BlockchainActions.discoverAccount(device, ethAddress, network));
-        if (discoveryProcess.interrupted) return;
+        // check for interruption
+        if (dispatch(isProcessInterrupted(discoveryProcess))) return;
 
         // const accountIsEmpty = account.transactions <= 0 && account.nonce <= 0 && account.balance === '0';
         const accountIsEmpty = account.nonce <= 0 && account.balance === '0';
@@ -248,7 +269,7 @@ const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction 
 
     await dispatch(BlockchainActions.subscribe(discoveryProcess.network));
 
-    if (discoveryProcess.interrupted) return;
+    if (dispatch(isProcessInterrupted(discoveryProcess))) return;
 
     dispatch({
         type: DISCOVERY.COMPLETE,
@@ -262,34 +283,43 @@ export const reconnect = (network: string): PromiseAction<void> => async (dispat
     dispatch(restore());
 };
 
+// Called after DEVICE.CONNECT ('trezor-connect') or CONNECT.AUTH_DEVICE actions in WalletService
+// OR after BlockchainSubscribe in this.reconnect
 export const restore = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const selected = getState().wallet.selectedDevice;
-    if (selected && selected.connected && selected.features) {
-        const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && (d.interrupted || d.waitingForDevice || d.waitingForBlockchain));
-        if (discoveryProcess) {
-            dispatch(start(selected, discoveryProcess.network));
-        }
-    }
-};
+    // check if current url has "network" parameter
+    const urlParams = getState().router.location.state;
+    if (!urlParams.network) return;
 
-// TODO: rename method to something intuitive
-// there is no discovery process but it should be
-// this is possible race condition when "network" was changed in url but device was not authenticated yet
-// try to start discovery after CONNECT.AUTH_DEVICE action
-export const check = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    // make sure that "selectedDevice" exists
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
 
-    const urlParams = getState().router.location.state;
-    if (urlParams.network) {
-        const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && d.network === urlParams.network);
-        if (!discoveryProcess) {
-            dispatch(start(selected, urlParams.network));
-        }
+    // find discovery process for requested network
+    const discoveryProcess: ?Discovery = getState().discovery.find(d => d.deviceState === selected.state && d.network === urlParams.network);
+
+    // if there was no process befor OR process was interrupted/waiting
+    const shouldStart = !discoveryProcess || (discoveryProcess.interrupted || discoveryProcess.waitingForDevice || discoveryProcess.waitingForBlockchain);
+    if (shouldStart) {
+        dispatch(start(selected, urlParams.network));
     }
 };
 
-export const stop = (device: TrezorDevice): Action => ({
-    type: DISCOVERY.STOP,
-    device,
-});
+export const stop = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const device: ?TrezorDevice = getState().wallet.selectedDevice;
+    if (!device) return;
+
+    // get all uncompleted discovery processes which assigned to selected device
+    const discoveryProcesses = getState().discovery.filter(d => d.deviceState === device.state && !d.completed);
+    if (discoveryProcesses.length > 0) {
+        dispatch({
+            type: DISCOVERY.STOP,
+            device,
+        });
+    }
+};
+
+export const addAccount = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const selected = getState().wallet.selectedDevice;
+    if (!selected) return;
+    dispatch(start(selected, getState().router.location.state.network, true));
+};

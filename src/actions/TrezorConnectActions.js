@@ -27,7 +27,6 @@ import type {
     Device,
     TrezorDevice,
 } from 'flowtype';
-import * as DiscoveryActions from './DiscoveryActions';
 
 
 export type TrezorConnectAction = {
@@ -202,13 +201,7 @@ export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispat
 };
 
 export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const selected: ?TrezorDevice = getState().wallet.selectedDevice;
-
     if (device.features) {
-        if (selected && selected.features && selected.features.device_id === device.features.device_id) {
-            dispatch(DiscoveryActions.stop(selected));
-        }
-
         const instances = getState().devices.filter(d => d.features && device.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
         if (instances.length > 0) {
             dispatch({
@@ -221,17 +214,6 @@ export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch
         }
     } else {
         dispatch(RouterActions.selectFirstAvailableDevice());
-    }
-};
-
-export const coinChanged = (network: ?string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const selected: ?TrezorDevice = getState().wallet.selectedDevice;
-    if (!selected) return;
-
-    dispatch(DiscoveryActions.stop(selected));
-
-    if (network) {
-        dispatch(DiscoveryActions.start(selected, network));
     }
 };
 
@@ -301,12 +283,3 @@ export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dis
         device: { ...device, ...extended },
     });
 };
-
-
-export function addAccount(): ThunkAction {
-    return (dispatch: Dispatch, getState: GetState): void => {
-        const selected = getState().wallet.selectedDevice;
-        if (!selected) return;
-        dispatch(DiscoveryActions.start(selected, getState().router.location.state.network, true)); // TODO: network nicer
-    };
-}

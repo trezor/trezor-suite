@@ -2,6 +2,7 @@
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import { DEVICE } from 'trezor-connect';
+import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as WALLET from 'actions/constants/wallet';
 import * as reducerUtils from 'reducers/utils';
 
@@ -84,6 +85,7 @@ export const clearUnavailableDevicesData = (prevState: State, device: Device): T
 // other actions will be ignored
 const actions = [
     LOCATION_CHANGE,
+    CONNECT.AUTH_DEVICE,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 

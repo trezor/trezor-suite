@@ -4,7 +4,6 @@ import {
     TRANSPORT, DEVICE, BLOCKCHAIN,
 } from 'trezor-connect';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
-import * as DiscoveryActions from 'actions/DiscoveryActions';
 import * as BlockchainActions from 'actions/BlockchainActions';
 import * as RouterActions from 'actions/RouterActions';
 import * as ModalActions from 'actions/ModalActions';
@@ -55,14 +54,9 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
             api.dispatch(RouterActions.selectFirstAvailableDevice());
         }
     } else if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
-        api.dispatch(DiscoveryActions.restore());
         api.dispatch(ModalActions.onDeviceConnect(action.device));
-    } else if (action.type === CONNECT.AUTH_DEVICE) {
-        api.dispatch(DiscoveryActions.check());
     } else if (action.type === CONNECT.DUPLICATE) {
         api.dispatch(RouterActions.selectDevice(action.device));
-    } else if (action.type === CONNECT.COIN_CHANGED) {
-        api.dispatch(TrezorConnectActions.coinChanged(action.payload.network));
     } else if (action.type === BLOCKCHAIN.BLOCK) {
         api.dispatch(BlockchainActions.onBlockMined(action.payload.coin));
     } else if (action.type === BLOCKCHAIN.NOTIFICATION) {

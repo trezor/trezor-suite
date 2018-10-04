@@ -187,10 +187,9 @@ const changeDevice = (state: State, device: Device | TrezorDevice, extended: Obj
 const authDevice = (state: State, device: TrezorDevice, deviceState: string): State => {
     const affectedDevice: ?TrezorDevice = state.find(d => d.path === device.path && d.instance === device.instance);
     // device could already have own state from trezor-connect, do not override it
-    if (affectedDevice && !affectedDevice.state) {
+    if (affectedDevice && !affectedDevice.state && affectedDevice.type === 'acquired') {
         const otherDevices: Array<TrezorDevice> = state.filter(d => d !== affectedDevice);
-        affectedDevice.state = deviceState;
-        return otherDevices.concat([affectedDevice]);
+        return otherDevices.concat([{ ...affectedDevice, state: deviceState }]);
     }
     return state;
 };

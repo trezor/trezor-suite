@@ -12,7 +12,6 @@ import type { Action, TrezorDevice } from 'flowtype';
 import type {
     DiscoveryStartAction,
     DiscoveryWaitingAction,
-    DiscoveryStopAction,
     DiscoveryCompleteAction,
 } from 'actions/DiscoveryActions';
 
@@ -40,8 +39,8 @@ const findIndex = (state: State, network: string, deviceState: string): number =
 const start = (state: State, action: DiscoveryStartAction): State => {
     const deviceState: string = action.device.state || '0';
     const hdKey: HDKey = new HDKey();
-    hdKey.publicKey = new Buffer(action.publicKey, 'hex');
-    hdKey.chainCode = new Buffer(action.chainCode, 'hex');
+    hdKey.publicKey = Buffer.from(action.publicKey, 'hex');
+    hdKey.chainCode = Buffer.from(action.chainCode, 'hex');
     const instance: Discovery = {
         network: action.network,
         publicKey: action.publicKey,
@@ -90,16 +89,17 @@ const clear = (state: State, devices: Array<TrezorDevice>): State => {
     return newState;
 };
 
-const stop = (state: State, action: DiscoveryStopAction): State => {
-    const newState: State = [...state];
-    return newState.map((d: Discovery) => {
-        if (d.deviceState === action.device.state && !d.completed) {
-            d.interrupted = true;
-            d.waitingForDevice = false;
-            d.waitingForBlockchain = false;
-        }
-        return d;
-    });
+const stop = (state: State, device: TrezorDevice): State => {
+    const affectedProcesses = state.filter(d => d.deviceState === device.state && !d.completed);
+    const otherProcesses = state.filter(d => affectedProcesses.indexOf(d) === -1);
+    const changedProcesses = affectedProcesses.map(d => ({
+        ...d,
+        interrupted: true,
+        waitingForDevice: false,
+        waitingForBlockchain: false,
+    }));
+
+    return otherProcesses.concat(changedProcesses);
 };
 
 const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State => {
@@ -163,7 +163,7 @@ export default function discovery(state: State = initialState, action: Action): 
         case ACCOUNT.CREATE:
             return accountCreate(state, action.payload);
         case DISCOVERY.STOP:
-            return stop(state, action);
+            return stop(state, action.device);
         case DISCOVERY.COMPLETE:
             return complete(state, action);
         case DISCOVERY.WAITING_FOR_DEVICE:
@@ -173,8 +173,8 @@ export default function discovery(state: State = initialState, action: Action): 
         case DISCOVERY.FROM_STORAGE:
             return action.payload.map((d) => {
                 const hdKey: HDKey = new HDKey();
-                hdKey.publicKey = new Buffer(d.publicKey, 'hex');
-                hdKey.chainCode = new Buffer(d.chainCode, 'hex');
+                hdKey.publicKey = Buffer.from(d.publicKey, 'hex');
+                hdKey.chainCode = Buffer.from(d.chainCode, 'hex');
                 return {
                     ...d,
                     hdKey,

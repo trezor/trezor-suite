@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
+import * as DiscoveryActions from 'actions/DiscoveryActions';
 import * as RouterActions from 'actions/RouterActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
@@ -31,7 +32,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
     toggleDeviceDropdown: bindActionCreators(toggleDeviceDropdown, dispatch),
-    addAccount: bindActionCreators(TrezorConnectActions.addAccount, dispatch),
+    addAccount: bindActionCreators(DiscoveryActions.addAccount, dispatch),
     acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
     forgetDevice: bindActionCreators(TrezorConnectActions.forget, dispatch),
     duplicateDevice: bindActionCreators(TrezorConnectActions.duplicateDevice, dispatch),
