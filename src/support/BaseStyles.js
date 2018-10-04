@@ -1,4 +1,5 @@
 import { injectGlobal } from 'styled-components';
+import colors from 'config/colors';
 import normalize from 'styled-normalize';
 
 const baseStyles = () => injectGlobal`
@@ -11,6 +12,7 @@ const baseStyles = () => injectGlobal`
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
         font-weight: 400;
         font-size: 14px;
+        color: ${colors.TEXT};
     }
 
     * , *:before , *:after {

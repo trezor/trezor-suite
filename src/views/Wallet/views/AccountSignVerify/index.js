@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import Input from 'components/inputs/Input';
+import Textarea from 'components/Textarea';
+import Content from 'views/Wallet/components/Content';
 
 import { H2 } from 'components/Heading';
 import colors from 'config/colors';
@@ -9,7 +12,6 @@ const Wrapper = styled.div`
     flex: 1;
     flex-direction: row;
     background: ${colors.WHITE};
-    padding: 50px;
 `;
 
 const StyledH2 = styled(H2)`
@@ -33,34 +35,29 @@ const Label = styled.div`
     padding: 5px 0px;
 `;
 
-const Textarea = styled.textarea`
-    resize: vertical;
-    width: 100%;
-`;
-
-const Input = styled.input``;
-
 const AccountSignVerify = () => (
-    <Wrapper>
-        <Sign>
-            <StyledH2>Sign message</StyledH2>
-            <Label>Message</Label>
-            <Textarea rows="4" maxLength="255" />
-            <Label>Address</Label>
-            <Input type="text" />
-            <Label>Signature</Label>
-            <Textarea rows="4" maxLength="255" readOnly="readonly" />
-        </Sign>
-        <Verify>
-            <StyledH2>Verify message</StyledH2>
-            <Label>Message</Label>
-            <Textarea rows="4" maxLength="255" />
-            <Label>Address</Label>
-            <Input type="text" />
-            <Label>Signature</Label>
-            <Textarea rows="4" maxLength="255" />
-        </Verify>
-    </Wrapper>
+    <Content>
+        <Wrapper>
+            <Sign>
+                <StyledH2>Sign message</StyledH2>
+                <Label>Message</Label>
+                <Textarea rows="4" maxLength="255" />
+                <Label>Address</Label>
+                <Input type="text" />
+                <Label>Signature</Label>
+                <Textarea rows="4" maxLength="255" readOnly="readonly" />
+            </Sign>
+            <Verify>
+                <StyledH2>Verify message</StyledH2>
+                <Label>Message</Label>
+                <Textarea rows="4" maxLength="255" />
+                <Label>Address</Label>
+                <Input type="text" />
+                <Label>Signature</Label>
+                <Textarea rows="4" maxLength="255" />
+            </Verify>
+        </Wrapper>
+    </Content>
 );
 
 export default AccountSignVerify;

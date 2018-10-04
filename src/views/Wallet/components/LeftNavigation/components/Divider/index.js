@@ -12,20 +12,17 @@ const Wrapper = styled.div`
     font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
     background: ${colors.LANDING};
-    ${props => props.borderTop && css`
-        border-top: 1px solid ${colors.DIVIDER};
-    `}
-    ${props => props.borderBottom && css`
-        border-bottom: 1px solid ${colors.DIVIDER};
+    ${props => props.hasBorder && css`
+        border-top: 1px solid ${colors.BODY};
+        border-bottom: 1px solid ${colors.BODY};
     `}
 `;
 
 const Divider = ({
-    textLeft, textRight, borderTop = false, borderBottom = false,
+    textLeft, textRight, hasBorder = false,
 }) => (
     <Wrapper
-        borderTop={borderTop}
-        borderBottom={borderBottom}
+        hasBorder={hasBorder}
     >
         <p>{textLeft}</p>
         <p>{textRight}</p>
@@ -35,8 +32,7 @@ const Divider = ({
 Divider.propTypes = {
     textLeft: PropTypes.string,
     textRight: PropTypes.string,
-    borderTop: PropTypes.bool,
-    borderBottom: PropTypes.bool,
+    hasBorder: PropTypes.bool,
 };
 
 export default Divider;

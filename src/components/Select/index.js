@@ -13,7 +13,7 @@ const styles = isSearchable => ({
     control: (base, { isDisabled }) => ({
         ...base,
         minHeight: 'initial',
-        height: '100%',
+        height: '40px',
         borderRadius: '2px',
         borderColor: colors.DIVIDER,
         boxShadow: 'none',

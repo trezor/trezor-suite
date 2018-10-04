@@ -24,6 +24,10 @@ class CoinMenu extends Component {
         return baseUrl;
     }
 
+    getCoinUrl(coinId) {
+        return `https://wallet.trezor.io/#/coin/${coinId}`;
+    }
+
     render() {
         const { config } = this.props.localStorage;
         return (
@@ -44,15 +48,14 @@ class CoinMenu extends Component {
                 <Divider
                     textLeft="Other coins"
                     textRight="(You will be redirected)"
-                    borderTop
-                    borderBottom
+                    hasBorder
                 />
                 {coins.map(coin => (
-                    <a key={coin.url} href={coin.url}>
+                    <a key={this.getCoinUrl(coin.id)} href={this.getCoinUrl(coin.id)}>
                         <RowCoin
                             coin={{
                                 name: coin.coinName,
-                                img: coin.image,
+                                id: coin.id,
                             }}
                             iconRight={{
                                 type: ICONS.SKIP,

@@ -2,6 +2,8 @@ export default {
     WHITE: '#FFFFFF',
     BACKGROUND: '#EBEBEB',
 
+    TEXT: '#333333',
+
     HEADER: '#1A1A1A',
     BODY: '#E3E3E3',
     MAIN: '#FBFBFB',

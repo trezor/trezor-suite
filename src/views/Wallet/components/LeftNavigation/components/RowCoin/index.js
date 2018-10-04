@@ -37,10 +37,6 @@ const IconWrapper = styled.div`
     margin-right: 10px;
 `;
 
-const LogoWrapper = styled.div`
-    margin-right: 3px;
-`;
-
 const RowCoin = ({
     coin, iconLeft, iconRight,
 }) => (
@@ -57,12 +53,10 @@ const RowCoin = ({
                     </IconWrapper>
                 )}
                 <CoinNameWrapper>
-                    <LogoWrapper>
-                        <CoinLogo
-                            coinNetwork={coin.network}
-                            coinImg={coin.img}
-                        />
-                    </LogoWrapper>
+                    <CoinLogo
+                        coinNetwork={coin.network}
+                        coinId={coin.id}
+                    />
                     <p>{coin.name}</p>
                 </CoinNameWrapper>
             </Left>
@@ -86,7 +80,7 @@ RowCoin.propTypes = {
     coin: PropTypes.shape({
         name: PropTypes.string.isRequired,
         network: PropTypes.string,
-        img: PropTypes.string,
+        id: PropTypes.string,
     }).isRequired,
     iconLeft: PropTypes.shape(iconShape),
     iconRight: PropTypes.shape(iconShape),

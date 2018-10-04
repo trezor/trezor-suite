@@ -7,6 +7,7 @@ import Icon from 'components/Icon';
 import {
     FONT_SIZE,
     FONT_WEIGHT,
+    FONT_FAMILY,
     TRANSITION,
 } from 'config/variables';
 
@@ -28,18 +29,19 @@ const InputIconWrapper = styled.div`
 `;
 
 const TopLabel = styled.span`
-    padding-bottom: 4px;
+    padding-bottom: 10px;
     color: ${colors.TEXT_SECONDARY};
 `;
 
 const StyledInput = styled.input`
     width: 100%;
-    padding: 6px ${props => (props.hasIcon ? '32px' : '12px')} 6px 12px;
+    height: 40px;
+    padding: 5px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
 
     line-height: 1.42857143;
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.BASE};
-    color: ${colors.TEXT_PRIMARY};
+    color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 
     border-radius: 2px;
     ${props => props.hasAddon && css`
@@ -61,7 +63,8 @@ const StyledInput = styled.input`
 const StyledIcon = styled(Icon)`
     position: absolute;
     left: auto;
-    right: 3px;
+    top: 3px;
+    right: 10px;
 `;
 
 const BottomText = styled.span`
@@ -116,6 +119,7 @@ class Input extends Component {
                             innerRef={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
+                            color={this.getColor(this.props.state)}
                             placeholder={this.props.placeholder}
                             autocomplete={this.props.autocomplete}
                             autocorrect={this.props.autocorrect}

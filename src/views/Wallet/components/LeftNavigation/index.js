@@ -12,7 +12,9 @@ import DeviceMenu from './components/DeviceMenu';
 import StickyContainer from './components/StickyContainer';
 import type { Props } from './components/common';
 
-const Header = styled(DeviceHeader)``;
+const Header = styled(DeviceHeader)`
+    border-right: 1px solid ${colors.BACKGROUND};
+`;
 
 const Counter = styled.div`
     border: 1px solid ${colors.DIVIDER};
@@ -44,7 +46,7 @@ const Footer = styled.div.attrs({
     width: 320px;
     bottom: 0;
     background: ${colors.MAIN};
-    border-right: 1px solid ${colors.DIVIDER};
+    border-right: 1px solid ${colors.BACKGROUND};
 `;
 
 const Body = styled.div`
@@ -58,7 +60,7 @@ const Help = styled.div`
     text-align: center;
     width: 319px;
     padding: 8px 0px;
-    border-top: 1px solid ${colors.DIVIDER};
+    border-top: 1px solid ${colors.BACKGROUND};
 `;
 
 const A = styled.a`

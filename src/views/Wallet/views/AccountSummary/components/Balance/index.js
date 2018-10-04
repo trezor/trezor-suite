@@ -22,7 +22,7 @@ type State = {
 };
 
 const Wrapper = styled.div`
-    padding: 0 48px 25px;
+    padding: 10px 0 25px 0;
     position: relative;
     display: flex;
 
@@ -52,10 +52,29 @@ const HideBalanceIconWrapper = styled.div`
 `;
 
 const FiatValue = styled.div`
-    font-size: ${FONT_SIZE.BASE};
-    font-weight: ${FONT_WEIGHT.BASE};
+    font-weight: ${FONT_WEIGHT.BIGGER};
+    font-size: ${FONT_SIZE.BIG};
     margin: 7px 0;
+    min-height: 25px;
     color: ${colors.TEXT_PRIMARY};
+`;
+
+const FiatValueRate = styled.div`
+    font-weight: ${FONT_WEIGHT.BIGGER};
+    font-size: ${FONT_SIZE.BASE};
+    min-height: 25px;
+    margin: 7px 0;
+    display: flex;
+    align-items: center;
+    color: ${colors.TEXT_PRIMARY};
+`;
+
+const BalanceWrapper = styled.div`
+    margin-right: 48px;
+`;
+
+const BalanceRateWrapper = styled(BalanceWrapper)`
+    padding-left: 50px;
 `;
 
 const CoinBalace = styled.div`
@@ -68,9 +87,6 @@ const Label = styled.div`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const BalanceWrapper = styled.div`
-    margin-right: 48px;
-`;
 
 class AccountBalance extends Component<Props, State> {
     constructor(props: Props) {
@@ -125,11 +141,11 @@ class AccountBalance extends Component<Props, State> {
                             <CoinBalace>{this.props.balance} {selectedCoin.symbol}</CoinBalace>
                         </BalanceWrapper>
                         {fiatRate && (
-                            <BalanceWrapper>
+                            <BalanceRateWrapper>
                                 <Label>Rate</Label>
-                                <FiatValue>${fiatRateValue}</FiatValue>
+                                <FiatValueRate>${fiatRateValue}</FiatValueRate>
                                 <CoinBalace>1.00 {selectedCoin.symbol}</CoinBalace>
-                            </BalanceWrapper>
+                            </BalanceRateWrapper>
                         )}
                     </React.Fragment>
                 )}

@@ -1,9 +1,12 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import Link from 'components/Link';
 import Button from 'components/Button';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
+
+import ChromeImage from 'images/browser-chrome.png';
+import FirefoxImage from 'images/browser-firefox.png';
 
 const Wrapper = styled.div``;
 
@@ -12,16 +15,10 @@ const ChooseBrowserWrapper = styled.div`
     justify-content: space-between;
 `;
 
-const BrowserLogo = styled.div`
+const BrowserLogo = styled.img`
     margin-bottom: 10px;
     width: 43px;
     height: 43px;
-    ${props => props.isChrome && css`
-        background-image: url('../images/browser-chrome.png');
-    `}
-    ${props => props.isFirefox && css`
-        background-image: url('../images/browser-firefox.png');
-    `}
 `;
 
 const Browser = styled.div`
@@ -37,7 +34,7 @@ const BrowserNotSupported = () => (
         <P>Please choose one of the supported browsers</P>
         <ChooseBrowserWrapper>
             <Browser>
-                <BrowserLogo isChrome />
+                <BrowserLogo src={ChromeImage} />
                 <P isSmaller>Google Chrome</P>
                 <Link
                     href="https://www.google.com/chrome/"
@@ -48,7 +45,7 @@ const BrowserNotSupported = () => (
                 </Link>
             </Browser>
             <Browser>
-                <BrowserLogo isFirefox />
+                <BrowserLogo src={FirefoxImage} />
                 <P isSmaller>Mozzila Firefox</P>
                 <Link
                     href="https://www.mozilla.org/en-US/firefox/new/"

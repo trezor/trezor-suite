@@ -12,7 +12,7 @@ import colors from 'config/colors';
 
 const Wrapper = styled.div`
     position: relative;
-    height: 64px;
+    height: 70px;
     width: 320px;
     display: flex;
     align-items: center;

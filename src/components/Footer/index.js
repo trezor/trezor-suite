@@ -16,6 +16,7 @@ const Wrapper = styled.div`
     color: ${colors.TEXT_SECONDARY};
     padding: 22px 48px;
     display: flex;
+    border-top: 1px solid ${colors.BACKGROUND};
 `;
 
 const StyledLink = styled(Link)`
