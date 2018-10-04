@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import installers from 'constants/bridge';
 import { Select } from 'components/Select';
 import Link from 'components/Link';
 import Button from 'components/Button';
@@ -13,24 +12,28 @@ import P from 'components/Paragraph';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 
+import type { State as TrezorConnectState } from 'reducers/TrezorConnectReducer';
+
 type InstallTarget = {
-    id: string;
     value: string;
     label: string;
+    signature: ?string;
+    preferred: boolean;
 }
 
+// { id: 'Windows', value: 'trezor-bridge-2.0.11-win32-install.exe', label: 'Windows' },
 type State = {
-    version: string;
-    target: ?InstallTarget;
-    url: string;
+    currentVersion: string;
+    latestVersion: string;
+    installers: Array<InstallTarget>;
+    target: InstallTarget;
+    uri: string;
 }
 
 // import type { Props } from './index';
 
 type Props = {
-    browserState: {
-        osname: string,
-    };
+    transport: $ElementType<TrezorConnectState, 'transport'>;
 }
 
 const InstallBridgeWrapper = styled.div`
@@ -85,21 +88,21 @@ export default class InstallBridge extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const currentTarget: ?InstallTarget = installers.find(i => i.id === props.browserState.osname);
-        this.state = {
-            version: '2.0.12',
-            url: 'https://wallet.trezor.io/data/bridge/2.0.12/',
-            target: currentTarget,
-        };
-    }
+        const installers = props.transport.bridge.packages.map(p => ({
+            label: p.name,
+            value: p.url,
+            signature: p.signature,
+            preferred: p.preferred,
+        }));
 
-    componentWillUpdate() {
-        if (this.props.browserState.osname && !this.state.target) {
-            const currentTarget: ?InstallTarget = installers.find(i => i.id === this.props.browserState.osname);
-            this.setState({
-                target: currentTarget,
-            });
-        }
+        const currentTarget: ?InstallTarget = installers.find(i => i.preferred === true);
+        this.state = {
+            currentVersion: props.transport.type ? `Your version ${props.transport.version}` : 'Not installed',
+            latestVersion: props.transport.bridge.version.join('.'),
+            installers,
+            target: currentTarget || installers[0],
+            uri: 'https://wallet.trezor.io/data/',
+        };
     }
 
     onChange(value: InstallTarget) {
@@ -112,20 +115,18 @@ export default class InstallBridge extends Component<Props, State> {
         if (!this.state.target) {
             return <Loader text="Loading" size={100} />;
         }
-        const { label } = this.state.target;
-        const url = `${this.state.url}${this.state.target.value}`;
-
+        const url = `${this.state.uri}${this.state.target.value}`;
         return (
             <InstallBridgeWrapper>
-                <TitleHeader>TREZOR Bridge.<BridgeVersion>Version {this.state.version}</BridgeVersion></TitleHeader>
+                <TitleHeader>TREZOR Bridge.<BridgeVersion>{this.state.currentVersion}</BridgeVersion></TitleHeader>
                 <P>New communication tool to facilitate the connection between your TREZOR and your internet browser.</P>
                 <DownloadBridgeWrapper>
                     <SelectWrapper
                         isSearchable={false}
                         isClearable={false}
                         value={this.state.target}
-                        onChange={val => this.onChange(val)}
-                        options={installers}
+                        onChange={v => this.onChange(v)}
+                        options={this.state.installers}
                     />
                     <Link href={url}>
                         <DownloadBridgeButton>
@@ -134,7 +135,7 @@ export default class InstallBridge extends Component<Props, State> {
                                 color={colors.WHITE}
                                 size={30}
                             />
-                            Download for {label}
+                            Download latest Bridge {this.state.latestVersion}
                         </DownloadBridgeButton>
                     </Link>
                 </DownloadBridgeWrapper>
@@ -148,6 +149,14 @@ export default class InstallBridge extends Component<Props, State> {
                     >Changelog
                     </Link>
                 </P>
+
+                <P>
+                    No, i dont want to upgrade Bridge now,
+                </P>
+                <P>
+                    Take me <Link href="#/">back to the wallet</Link>
+                </P>
+
             </InstallBridgeWrapper>
         );
     }
