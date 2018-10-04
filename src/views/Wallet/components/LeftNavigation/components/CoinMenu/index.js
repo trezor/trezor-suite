@@ -47,7 +47,7 @@ class CoinMenu extends Component {
                     hasBorder
                 />
                 {coins.map(coin => (
-                    <a key={this.getCoinUrl(coin.id)} href={coin.url}>
+                    <a key={coin.id} href={coin.url}>
                         <RowCoin
                             coin={{
                                 name: coin.coinName,
