@@ -21,7 +21,7 @@ export const getSelectedDevice = (state: State): ?TrezorDevice => {
     return state.devices.find((d) => {
         if (!d.features && d.path === locationState.device) {
             return true;
-        } if (d.features && d.features.bootloader_mode && d.path === locationState.device) {
+        } if (d.mode === 'bootloader' && d.path === locationState.device) {
             return true;
         } if (d.features && d.features.device_id === locationState.device && d.instance === instance) {
             return true;
@@ -29,9 +29,6 @@ export const getSelectedDevice = (state: State): ?TrezorDevice => {
         return false;
     });
 };
-
-//
-export const isSelectedDevice = (current: ?TrezorDevice, device: ?TrezorDevice): boolean => !!((current && device && (current.path === device.path && current.instance === device.instance)));
 
 // find device by id and state
 export const findDevice = (devices: Array<TrezorDevice>, deviceId: string, deviceState: string /*, instance: ?number*/): ?TrezorDevice => devices.find((d) => {
