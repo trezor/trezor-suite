@@ -250,10 +250,14 @@ export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dis
 /*
 * Redirect to first device or landing page
 */
-export const selectFirstAvailableDevice = (): ThunkAction => (dispatch: Dispatch): void => {
+export const selectFirstAvailableDevice = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const url = dispatch(getFirstAvailableDeviceUrl());
     if (url) {
-        dispatch(goto(url));
+        const currentParams = getState().router.location.state;
+        const requestedParams = dispatch(pathToParams(url));
+        if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
+            dispatch(goto(url));
+        }
     } else {
         dispatch(gotoLandingPage());
     }
