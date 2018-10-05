@@ -58,14 +58,14 @@ class MenuItems extends Component {
         if (!this.showDeviceMenu()) return null;
         return (
             <Wrapper>
-                <Item onClick={() => this.onDeviceMenuClick('settings', this.props.device)}>
+                {/* <Item onClick={() => this.onDeviceMenuClick('settings', this.props.device)}>
                     <Icon
                         icon={icons.COG}
                         size={25}
                         color={colors.TEXT_SECONDARY}
                     />
                     <Label>Device settings</Label>
-                </Item>
+                </Item> */}
                 <Item onClick={() => this.onDeviceMenuClick('forget', this.props.device)}>
                     <Icon
                         icon={icons.EJECT}
@@ -81,7 +81,7 @@ class MenuItems extends Component {
                             size={25}
                             color={colors.TEXT_SECONDARY}
                         />
-                        <Label>Create hidden wallet</Label>
+                        <Label>Change wallet type</Label>
                     </Item>
                 )}
                 {this.showRenewSession() && (
