@@ -56,6 +56,7 @@ export type AcquiredDevice = $Exact<{
     status: DeviceStatus,
     +mode: DeviceMode,
     state: ?string,
+    useEmptyPassphrase: boolean,
 
     remember: boolean; // device should be remembered
     connected: boolean; // device is connected
@@ -73,6 +74,7 @@ export type UnknownDevice = $Exact<{
     +label: string,
     +features: null,
     state: ?string,
+    useEmptyPassphrase: boolean,
 
     remember: boolean; // device should be remembered
     connected: boolean; // device is connected

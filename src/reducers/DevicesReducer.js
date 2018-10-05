@@ -39,6 +39,7 @@ const mergeDevices = (current: TrezorDevice, upcoming: Device | TrezorDevice): T
         instanceName: typeof upcoming.instanceName === 'string' ? upcoming.instanceName : current.instanceName,
         state: current.state,
         ts: typeof upcoming.ts === 'number' ? upcoming.ts : current.ts,
+        useEmptyPassphrase: typeof upcoming.useEmptyPassphrase === 'boolean' ? upcoming.useEmptyPassphrase : current.useEmptyPassphrase,
     };
 
     if (upcoming.type === 'acquired') {
@@ -89,6 +90,7 @@ const addDevice = (state: State, device: Device): State => {
         instanceLabel: device.label,
         instanceName: null,
         ts: new Date().getTime(),
+        useEmptyPassphrase: true,
     };
 
 
@@ -260,6 +262,22 @@ const onSelectedDevice = (state: State, device: ?TrezorDevice): State => {
     return otherDevices.concat([extended]);
 };
 
+const onChangeWalletType = (state: State, device: TrezorDevice, hidden: boolean): State => {
+    const affectedDevices: State = state.filter(d => d.path === device.path || (d.features && device.features && d.features.device_id === device.features.device_id));
+    const otherDevices: State = state.filter(d => affectedDevices.indexOf(d) === -1);
+    if (affectedDevices.length > 0) {
+        const changedDevices = affectedDevices.map((d) => { // eslint-disable-line arrow-body-style
+            return d.type === 'acquired' ? {
+                ...d,
+                state: null,
+                useEmptyPassphrase: !hidden,
+            } : d;
+        });
+        return otherDevices.concat(changedDevices);
+    }
+    return state;
+};
+
 export default function devices(state: State = initialState, action: Action): State {
     switch (action.type) {
         case CONNECT.DEVICE_FROM_STORAGE:
@@ -295,6 +313,9 @@ export default function devices(state: State = initialState, action: Action): St
 
         case WALLET.SET_SELECTED_DEVICE:
             return onSelectedDevice(state, action.device);
+
+        case CONNECT.RECEIVE_WALLET_TYPE:
+            return onChangeWalletType(state, action.device, action.hidden);
 
         default:
             return state;
