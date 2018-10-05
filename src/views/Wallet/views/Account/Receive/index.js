@@ -12,6 +12,7 @@ import Tooltip from 'components/Tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
+import VerifyAddressTooltip from './components/VerifyAddressTooltip';
 
 import type { Props } from './Container';
 
@@ -173,20 +174,13 @@ const AccountReceive = (props: Props) => {
                             onClick={() => props.showAddress(account.addressPath)}
                         >
                             <Tooltip
-                                placement="bottom"
+                                placement="bottomRight"
                                 content={(
-                                    <React.Fragment>
-                                        {addressUnverified ? (
-                                            <React.Fragment>
-                                        Unverified address.
-                                                {device.connected && device.available ? 'Show on TREZOR' : 'Connect your TREZOR to verify it.'}
-                                            </React.Fragment>
-                                        ) : (
-                                            <React.Fragment>
-                                                {device.connected ? 'Show on TREZOR' : 'Connect your TREZOR to verify address.'}
-                                            </React.Fragment>
-                                        )}
-                                    </React.Fragment>
+                                    <VerifyAddressTooltip
+                                        isConnected={device.connected}
+                                        isAvailable={device.available}
+                                        addressUnverified={addressUnverified}
+                                    />
                                 )}
                             >
                                 <Icon

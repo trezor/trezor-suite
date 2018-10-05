@@ -9,10 +9,11 @@ const Wrapper = styled.div``;
 
 const Content = styled.div`
     max-width: ${props => `${props.maxWidth}px` || 'auto'};
-    text-align: justify;
 `;
 
-const ContentWrapper = styled.div``;
+const ContentWrapper = styled.div`
+    display: block;
+`;
 
 const ReadMore = styled.div`
     margin-top: 15px;
