@@ -16,6 +16,7 @@ export const REMEMBER_REQUEST: 'connect__remember_request' = 'connect__remember_
 export const FORGET_REQUEST: 'connect__forget_request' = 'connect__forget_request';
 export const FORGET: 'connect__forget' = 'connect__forget';
 export const FORGET_SINGLE: 'connect__forget_single' = 'connect__forget_single';
+export const FORGET_SILENT: 'connect__forget_silent' = 'connect__forget_silent';
 export const DISCONNECT_REQUEST: 'connect__disconnect_request' = 'connect__disconnect_request';
 export const REMEMBER: 'connect__remember' = 'connect__remember';
 

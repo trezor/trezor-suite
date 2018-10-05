@@ -6,6 +6,7 @@ import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as NOTIFICATION from 'actions/constants/notification';
 import { getDuplicateInstanceNumber } from 'reducers/utils';
 import * as RouterActions from 'actions/RouterActions';
+import * as deviceUtils from 'utils/device';
 
 import type {
     DeviceMessage,
@@ -58,7 +59,7 @@ export type TrezorConnectAction = {
     type: typeof CONNECT.FORGET,
     device: TrezorDevice
 } | {
-    type: typeof CONNECT.FORGET_SINGLE,
+    type: typeof CONNECT.FORGET_SINGLE | typeof CONNECT.FORGET_SILENT,
     device: TrezorDevice
 } | {
     type: typeof CONNECT.REMEMBER,
@@ -222,11 +223,19 @@ export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch
     if (device.features) {
         const instances = getState().devices.filter(d => d.features && device.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
         if (instances.length > 0) {
-            dispatch({
-                type: CONNECT.REMEMBER_REQUEST,
-                device: instances[0],
-                instances,
-            });
+            const isSelected = deviceUtils.isSelectedDevice(getState().wallet.selectedDevice, instances[0]);
+            if (!isSelected && getState().modal.opened) {
+                dispatch({
+                    type: CONNECT.FORGET_SILENT,
+                    device: instances[0],
+                });
+            } else {
+                dispatch({
+                    type: CONNECT.REMEMBER_REQUEST,
+                    device: instances[0],
+                    instances,
+                });
+            }
         } else {
             dispatch(RouterActions.selectFirstAvailableDevice());
         }
@@ -291,12 +300,7 @@ export const forget = (device: TrezorDevice): Action => ({
     device,
 });
 
-export const duplicateDevice1 = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    // dispatch({
-    //     type: CONNECT.TRY_TO_DUPLICATE,
-    //     device,
-    // });
-
+export const duplicateDeviceOld = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const instance: number = getDuplicateInstanceNumber(getState().devices, device);
     const extended: Object = { instance };
     dispatch({
@@ -305,12 +309,7 @@ export const duplicateDevice1 = (device: TrezorDevice): AsyncAction => async (di
     });
 };
 
-export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    // dispatch({
-    //     type: CONNECT.TRY_TO_DUPLICATE,
-    //     device,
-    // });
-
+export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
     dispatch({
         type: CONNECT.REQUEST_WALLET_TYPE,
         device,

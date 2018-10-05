@@ -271,6 +271,7 @@ const onChangeWalletType = (state: State, device: TrezorDevice, hidden: boolean)
                 ...d,
                 state: null,
                 useEmptyPassphrase: !hidden,
+                ts: new Date().getTime(),
             } : d;
         });
         return otherDevices.concat(changedDevices);
@@ -296,6 +297,7 @@ export default function devices(state: State = initialState, action: Action): St
         case CONNECT.FORGET:
             return forgetDevice(state, action.device);
         case CONNECT.FORGET_SINGLE:
+        case CONNECT.FORGET_SILENT:
             return forgetSingleDevice(state, action.device);
 
         case DEVICE.CONNECT:
