@@ -48,13 +48,15 @@ class ForgetDevice extends Component<Props> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     foo(hidden: boolean) {
-        this.props.modalActions.onWalletTypeRequest(this.props.modal.device, hidden);
+        const { modal } = this.props;
+        if (!modal.opened) return;
+        this.props.modalActions.onWalletTypeRequest(modal.device, hidden);
     }
 
     render() {
         if (!this.props.modal.opened) return null;
         const { device } = this.props.modal;
-        const { onCancel } = this.props.modalActions;
+        // const { onCancel } = this.props.modalActions;
         return (
             <Wrapper>
                 <H3>RequestWalletType for { device.instanceLabel }?</H3>
