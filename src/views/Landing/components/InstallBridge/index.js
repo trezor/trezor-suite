@@ -115,6 +115,10 @@ export default class InstallBridge extends Component<Props, State> {
         if (!this.state.target) {
             return <Loader text="Loading" size={100} />;
         }
+
+        const changelog = this.props.transport.bridge.changelog.map(entry => (
+            <li key={entry}>{entry}</li>
+        ));
         const url = `${this.state.uri}${this.state.target.value}`;
         return (
             <InstallBridgeWrapper>
@@ -140,7 +144,8 @@ export default class InstallBridge extends Component<Props, State> {
                     </Link>
                 </DownloadBridgeWrapper>
                 <P>
-                    <LearnMoreText>Learn more about latest version in</LearnMoreText>
+                    { changelog }
+                    <LearnMoreText>Learn more about latest versions in</LearnMoreText>
                     <Link
                         href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
                         target="_blank"
@@ -149,14 +154,16 @@ export default class InstallBridge extends Component<Props, State> {
                     >Changelog
                     </Link>
                 </P>
-
-                <P>
-                    No, i dont want to upgrade Bridge now,
-                </P>
-                <P>
-                    Take me <Link href="#/">back to the wallet</Link>
-                </P>
-
+                {this.props.transport.type && (
+                    <React.Fragment>
+                        <P>
+                            No, i dont want to upgrade Bridge now,
+                        </P>
+                        <P>
+                            Take me <Link href="#/">back to the wallet</Link>
+                        </P>
+                    </React.Fragment>
+                )}
             </InstallBridgeWrapper>
         );
     }

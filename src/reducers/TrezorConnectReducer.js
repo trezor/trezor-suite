@@ -13,7 +13,7 @@ export type LatestBridge = {
     version: Array<number>;
     directory: string;
     packages: Array<{ name: string; url: string; signature?: string; preferred: boolean; }>;
-    changelog: string;
+    changelog: Array<string>;
 }
 
 export type State = {
@@ -48,7 +48,7 @@ const initialState: State = {
             version: [],
             directory: '',
             packages: [],
-            changelog: '',
+            changelog: [],
         },
     },
     browserState: {},
