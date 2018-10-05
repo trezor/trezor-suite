@@ -21,7 +21,6 @@ type InstallTarget = {
     preferred: boolean;
 }
 
-// { id: 'Windows', value: 'trezor-bridge-2.0.11-win32-install.exe', label: 'Windows' },
 type State = {
     currentVersion: string;
     latestVersion: string;
@@ -29,8 +28,6 @@ type State = {
     target: InstallTarget;
     uri: string;
 }
-
-// import type { Props } from './index';
 
 type Props = {
     transport: $ElementType<TrezorConnectState, 'transport'>;
