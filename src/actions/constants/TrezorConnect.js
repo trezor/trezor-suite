@@ -26,3 +26,6 @@ export const DEVICE_STATE_EXCEPTION: 'connect__device_state_exception' = 'connec
 
 export const START_ACQUIRING: 'connect__start_acquiring' = 'connect__start_acquiring';
 export const STOP_ACQUIRING: 'connect__stop_acquiring' = 'connect__stop_acquiring';
+
+export const REQUEST_WALLET_TYPE: 'connect__request_wallet_type' = 'connect__request_wallet_type';
+export const RECEIVE_WALLET_TYPE: 'connect__receive_wallet_type' = 'connect__receive_wallet_type';

@@ -49,10 +49,9 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             api.dispatch(LocalStorageActions.loadData());
             break;
         case WALLET.SET_SELECTED_DEVICE:
-            if (action.device) {
-                // try to authorize device
-                api.dispatch(TrezorConnectActions.getSelectedDeviceState());
-            }
+            // try to authorize device
+            // api.dispatch(TrezorConnectActions.authorizeDevice());
+            api.dispatch(TrezorConnectActions.requestWalletType());
             break;
         case DEVICE.CONNECT:
             api.dispatch(WalletActions.clearUnavailableDevicesData(prevState, action.device));
@@ -102,10 +101,18 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             // if "selectedAccount" didn't change observe send form props changes
             api.dispatch(SendFormActionActions.observe(prevState, action));
         }
-    } else if (action.type === CONNECT.AUTH_DEVICE) {
-        // selected device did changed
-        // try to restore discovery after device authentication
-        api.dispatch(DiscoveryActions.restore());
+    } else {
+        switch (action.type) {
+            case CONNECT.AUTH_DEVICE:
+                // selected device did changed
+                // try to restore discovery after device authentication
+                api.dispatch(DiscoveryActions.restore());
+                break;
+            case CONNECT.RECEIVE_WALLET_TYPE:
+                api.dispatch(TrezorConnectActions.authorizeDevice());
+                break;
+            default: break;
+        }
     }
 
     // even if "selectedDevice" didn't change because it was updated on DEVICE.CHANGED before DEVICE.CONNECT action

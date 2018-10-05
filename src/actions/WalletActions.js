@@ -87,6 +87,7 @@ export const clearUnavailableDevicesData = (prevState: State, device: Device): T
 const actions = [
     LOCATION_CHANGE,
     CONNECT.AUTH_DEVICE,
+    CONNECT.RECEIVE_WALLET_TYPE,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 

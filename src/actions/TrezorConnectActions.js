@@ -71,6 +71,13 @@ export type TrezorConnectAction = {
     payload: Array<TrezorDevice>
 } | {
     type: typeof CONNECT.START_ACQUIRING | typeof CONNECT.STOP_ACQUIRING,
+} | {
+    type: typeof CONNECT.REQUEST_WALLET_TYPE,
+    device: TrezorDevice
+} | {
+    type: typeof CONNECT.RECEIVE_WALLET_TYPE,
+    device: TrezorDevice,
+    hidden: boolean,
 };
 
 export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -152,7 +159,19 @@ export const postInit = (): ThunkAction => (dispatch: Dispatch): void => {
     }
 };
 
-export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const requestWalletType = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const selected = getState().wallet.selectedDevice;
+    if (!selected) return;
+    const isDeviceReady = selected.connected && selected.features && !selected.state && selected.mode === 'normal' && selected.firmware !== 'required';
+    if (!isDeviceReady) return;
+
+    dispatch({
+        type: CONNECT.REQUEST_WALLET_TYPE,
+        device: selected,
+    });
+};
+
+export const authorizeDevice = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
     const isDeviceReady = selected.connected && selected.features && !selected.state && selected.mode === 'normal' && selected.firmware !== 'required';
@@ -164,7 +183,7 @@ export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispat
             instance: selected.instance,
             state: selected.state,
         },
-        useEmptyPassphrase: !selected.instance,
+        useEmptyPassphrase: selected.useEmptyPassphrase,
     });
 
     if (response && response.success) {
@@ -190,14 +209,13 @@ export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispat
                                 type: NOTIFICATION.CLOSE,
                                 payload: { devicePath: selected.path },
                             });
-                            dispatch(getSelectedDeviceState());
+                            dispatch(authorizeDevice());
                         },
                     },
                 ],
             },
         });
     }
-
 };
 
 export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -231,11 +249,14 @@ export function acquire(): AsyncAction {
             type: CONNECT.START_ACQUIRING,
         });
 
+        // this is the only place where useEmptyPassphrase should be used every time
+        // the goal here is to acquire device and get his features
+        // authentication (passphrase) is not needed here yet
         const response = await TrezorConnect.getFeatures({
             device: {
                 path: selected.path,
             },
-            useEmptyPassphrase: !selected.instance,
+            useEmptyPassphrase: true,
         });
 
         if (!response.success) {
@@ -270,7 +291,7 @@ export const forget = (device: TrezorDevice): Action => ({
     device,
 });
 
-export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const duplicateDevice1 = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     // dispatch({
     //     type: CONNECT.TRY_TO_DUPLICATE,
     //     device,
@@ -281,5 +302,17 @@ export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dis
     dispatch({
         type: CONNECT.DUPLICATE,
         device: { ...device, ...extended },
+    });
+};
+
+export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    // dispatch({
+    //     type: CONNECT.TRY_TO_DUPLICATE,
+    //     device,
+    // });
+
+    dispatch({
+        type: CONNECT.REQUEST_WALLET_TYPE,
+        device,
     });
 };
