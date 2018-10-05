@@ -320,9 +320,13 @@ export const gotoBridgeUpdate = (): ThunkAction => (dispatch: Dispatch): void =>
 
 /*
 * Go to UpdateFirmware page
+* Called from App notification
 */
-export const gotoFirmwareUpdate = (): ThunkAction => (dispatch: Dispatch): void => {
-    dispatch(goto('/firmware-update'));
+export const gotoFirmwareUpdate = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const { selectedDevice } = getState().wallet;
+    if (!selectedDevice || !selectedDevice.features) return;
+    const devUrl: string = `${selectedDevice.features.device_id}${selectedDevice.instance ? `:${selectedDevice.instance}` : ''}`;
+    dispatch(goto(`/device/${devUrl}/firmware-update`));
 };
 
 /*

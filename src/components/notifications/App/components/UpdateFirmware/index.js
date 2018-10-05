@@ -14,10 +14,8 @@ export default (props: Props) => {
             title="Firmware update"
             actions={
                 [{
-                    label: 'Read more',
-                    callback: async () => {
-                        
-                    },
+                    label: 'Update',
+                    callback: props.routerActions.gotoFirmwareUpdate,
                 }]
             }
         />
