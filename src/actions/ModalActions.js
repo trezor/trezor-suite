@@ -112,6 +112,17 @@ export const onDeviceConnect = (device: Device): ThunkAction => (dispatch: Dispa
     }
 };
 
+export const onWalletTypeRequest = (device: TrezorDevice, hidden: boolean): ThunkAction => (dispatch: Dispatch): void => {
+    dispatch({
+        type: MODAL.CLOSE,
+    });
+    dispatch({
+        type: CONNECT.RECEIVE_WALLET_TYPE,
+        device,
+        hidden,
+    });
+};
+
 export default {
     onPinSubmit,
     onPassphraseSubmit,
@@ -121,4 +132,5 @@ export default {
     onForgetSingleDevice,
     onCancel,
     onDuplicateDevice,
+    onWalletTypeRequest,
 };

@@ -32,6 +32,13 @@ export default function modal(state: State = initialState, action: Action): Stat
                 windowType: action.type,
             };
 
+        case CONNECT.REQUEST_WALLET_TYPE:
+            return {
+                opened: true,
+                device: action.device,
+                windowType: action.type,
+            };
+
         case CONNECT.REMEMBER_REQUEST:
             return {
                 opened: true,
