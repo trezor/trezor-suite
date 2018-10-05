@@ -1,13 +1,32 @@
+/* @flow */
+
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
 import P from 'components/Paragraph';
 import colors from 'config/colors';
 import Link from 'components/Link';
 import Button from 'components/Button';
-import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+
 import { FONT_SIZE } from 'config/variables';
+import * as deviceUtils from 'utils/device';
+
+import * as RouterActions from 'actions/RouterActions';
+
+import type {
+    TrezorDevice,
+    State,
+    Dispatch,
+} from 'flowtype';
+
+type Props = {
+    device: ?TrezorDevice;
+    cancel: typeof RouterActions.selectFirstAvailableDevice,
+}
 
 const Wrapper = styled.section`
     display: flex;
@@ -31,7 +50,7 @@ const StyledP = styled(P)`
     padding: 0 0 15px 0;
 `;
 
-const FirmwareUpdate = () => (
+const FirmwareUpdate = (props: Props) => (
     <Wrapper>
         <Image>
             <svg width="181px" height="134px" viewBox="0 0 181 134" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -114,10 +133,19 @@ const FirmwareUpdate = () => (
         <Link href="https://wallet.trezor.io" target="_blank">
             <Button>Take me to the old wallet</Button>
         </Link>
-        <StyledNavLink to="/">
-            I’ll do that later.
-        </StyledNavLink>
+        {deviceUtils.isDeviceAccessible(props.device) && (
+            <StyledNavLink to="/">
+                I’ll do that later.
+            </StyledNavLink>
+        )}
     </Wrapper>
 );
 
-export default connect(null, null)(FirmwareUpdate);
+export default connect(
+    (state: State) => ({
+        device: state.wallet.selectedDevice,
+    }),
+    (dispatch: Dispatch) => ({
+        cancel: bindActionCreators(RouterActions.selectFirstAvailableDevice, dispatch),
+    }),
+)(FirmwareUpdate);

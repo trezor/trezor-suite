@@ -1,9 +1,12 @@
 /* @flow */
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as RouterActions from 'actions/RouterActions';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 import LandingPage from './index';
+
 
 export type StateProps = {
     localStorage: $ElementType<State, 'localStorage'>,
@@ -34,8 +37,8 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     devices: state.devices,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (/* dispatch: Dispatch */): DispatchProps => ({
-
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+    selectFirstAvailableDevice: bindActionCreators(RouterActions.selectFirstAvailableDevice, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);

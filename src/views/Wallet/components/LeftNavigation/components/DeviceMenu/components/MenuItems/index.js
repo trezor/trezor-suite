@@ -42,8 +42,8 @@ class MenuItems extends Component {
     }
 
     showDeviceMenu() {
-        const device = this.props.device;
-        return device && device.features && !device.features.bootloader_mode && device.features.initialized;
+        const { device } = this.props;
+        return device && device.mode === 'normal';
     }
 
     showClone() {

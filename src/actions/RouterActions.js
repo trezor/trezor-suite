@@ -2,6 +2,7 @@
 
 import { push, LOCATION_CHANGE } from 'react-router-redux';
 import { routes } from 'support/routes';
+import * as deviceUtils from 'utils/device';
 
 import type {
     RouterLocationState,
@@ -59,6 +60,11 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
         }
 
         if (!device) return false;
+
+        if (!deviceUtils.isDeviceAccessible(device)) {
+            // TODO: there should be no access to deep links if device has incorrect mode/firmware
+            // if (params.hasOwnProperty('network') || params.hasOwnProperty('account')) return false;
+        }
     }
 
     // validate requested network
@@ -177,10 +183,12 @@ const getDeviceUrl = (device: TrezorDevice | Device): PayloadAction<?string> => 
     let url: ?string;
     if (!device.features) {
         url = `/device/${device.path}/${device.type === 'unreadable' ? 'unreadable' : 'acquire'}`;
-    } else if (device.features.bootloader_mode) {
+    } else if (device.mode === 'bootloader') { // device in bootloader doesn't have device_id
         url = `/device/${device.path}/bootloader`;
-    } else if (!device.features.initialized) {
+    } else if (device.mode === 'initialize') {
         url = `/device/${device.features.device_id}/initialize`;
+    } else if (device.firmware === 'required') {
+        url = `/device/${device.features.device_id}/firmware-update`;
     } else if (typeof device.instance === 'number') {
         url = `/device/${device.features.device_id}:${device.instance}`;
     } else {
@@ -301,6 +309,24 @@ export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (dispat
         const devUrl: string = `${device.features.device_id}${device.instance ? `:${device.instance}` : ''}`;
         dispatch(goto(`/device/${devUrl}/settings`));
     }
+};
+
+/*
+* Go to UpdateBridge page
+*/
+export const gotoBridgeUpdate = (): ThunkAction => (dispatch: Dispatch): void => {
+    dispatch(goto('/bridge'));
+};
+
+/*
+* Go to UpdateFirmware page
+* Called from App notification
+*/
+export const gotoFirmwareUpdate = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const { selectedDevice } = getState().wallet;
+    if (!selectedDevice || !selectedDevice.features) return;
+    const devUrl: string = `${selectedDevice.features.device_id}${selectedDevice.instance ? `:${selectedDevice.instance}` : ''}`;
+    dispatch(goto(`/device/${devUrl}/firmware-update`));
 };
 
 /*

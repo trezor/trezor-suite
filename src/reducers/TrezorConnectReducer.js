@@ -9,12 +9,24 @@ export type SelectedDevice = {
     instance: ?number;
 }
 
+export type LatestBridge = {
+    version: Array<number>;
+    directory: string;
+    packages: Array<{ name: string; url: string; signature?: string; preferred: boolean; }>;
+    changelog: Array<string>;
+}
+
 export type State = {
     initialized: boolean;
     error: ?string;
-    transport: ?{
+    transport: {
         type: string;
         version: string;
+        outdated: boolean;
+        bridge: LatestBridge;
+    } | {
+        type: null,
+        bridge: LatestBridge;
     };
     // browserState: {
     //     name: string;
@@ -30,7 +42,15 @@ export type State = {
 const initialState: State = {
     initialized: false,
     error: null,
-    transport: null,
+    transport: {
+        type: null,
+        bridge: {
+            version: [],
+            directory: '',
+            packages: [],
+            changelog: [],
+        },
+    },
     browserState: {},
     acquiringDevice: false,
 };
@@ -63,9 +83,12 @@ export default function connect(state: State = initialState, action: Action): St
         case TRANSPORT.ERROR:
             return {
                 ...state,
-                // error: action.payload, // message is wrapped in "device" field. It's dispatched from TrezorConnect.on(DEVICE_EVENT...) in TrezorConnectService
+                // error: action.payload.error, // message is wrapped in "device" field. It's dispatched from TrezorConnect.on(DEVICE_EVENT...) in TrezorConnectService
                 error: 'Transport is missing',
-                transport: null,
+                transport: {
+                    type: null,
+                    bridge: action.payload.bridge,
+                },
             };
 
         case CONNECT.START_ACQUIRING:

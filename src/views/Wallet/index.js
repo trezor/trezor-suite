@@ -12,6 +12,7 @@ import type { State } from 'flowtype';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import ModalContainer from 'components/modals';
+import AppNotifications from 'components/notifications/App';
 import ContextNotifications from 'components/notifications/Context';
 
 import Log from 'components/Log';
@@ -84,6 +85,7 @@ const Body = styled.div`
 const Wallet = (props: WalletContainerProps) => (
     <AppWrapper>
         <Header />
+        <AppNotifications />
         <WalletWrapper>
             {props.wallet.selectedDevice && <LeftNavigation />}
             <MainContent>
