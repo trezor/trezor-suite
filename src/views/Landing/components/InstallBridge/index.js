@@ -109,14 +109,15 @@ export default class InstallBridge extends Component<Props, State> {
     }
 
     render() {
-        if (!this.state.target) {
+        const { target } = this.state;
+        if (!target) {
             return <Loader text="Loading" size={100} />;
         }
 
         const changelog = this.props.transport.bridge.changelog.map(entry => (
             <li key={entry}>{entry}</li>
         ));
-        const url = `${this.state.uri}${this.state.target.value}`;
+        const url = `${this.state.uri}${target.value}`;
         return (
             <InstallBridgeWrapper>
                 <TitleHeader>TREZOR Bridge.<BridgeVersion>{this.state.currentVersion}</BridgeVersion></TitleHeader>
@@ -125,7 +126,7 @@ export default class InstallBridge extends Component<Props, State> {
                     <SelectWrapper
                         isSearchable={false}
                         isClearable={false}
-                        value={this.state.target}
+                        value={target}
                         onChange={v => this.onChange(v)}
                         options={this.state.installers}
                     />
@@ -140,6 +141,17 @@ export default class InstallBridge extends Component<Props, State> {
                         </DownloadBridgeButton>
                     </Link>
                 </DownloadBridgeWrapper>
+                {target.signature && (
+                    <P>
+                        <Link
+                            href={this.state.uri + target.signature}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            isGreen
+                        >Check PGP signature
+                        </Link>
+                    </P>
+                )}
                 <P>
                     { changelog }
                     <LearnMoreText>Learn more about latest versions in</LearnMoreText>
