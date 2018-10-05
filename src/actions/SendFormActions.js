@@ -458,7 +458,8 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             instance: selected.instance,
             state: selected.state,
         },
-        useEmptyPassphrase: !selected.instance,
+        // useEmptyPassphrase: !selected.instance,
+        useEmptyPassphrase: selected.useEmptyPassphrase,
         path: account.addressPath,
         transaction: txData,
     });
