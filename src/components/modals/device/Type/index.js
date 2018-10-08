@@ -51,13 +51,13 @@ class WalletType extends Component<Props> {
     keyboardHandler(event: KeyboardEvent): void {
         if (event.keyCode === 13) {
             event.preventDefault();
-            this.foo(false);
+            this.changeType(false);
         }
     }
 
     keyboardHandler: (event: KeyboardEvent) => void;
 
-    foo(hidden: boolean) {
+    changeType(hidden: boolean) {
         const { modal } = this.props;
         if (!modal.opened) return;
         this.props.modalActions.onWalletTypeRequest(modal.device, hidden);
@@ -82,14 +82,14 @@ class WalletType extends Component<Props> {
                         Standard Wallet
                     </span>
                     <P isSmaller>Continue to access your standard wallet.</P>
-                    <StyledButton onClick={() => this.foo(false)}>Go to your standard wallet</StyledButton>
+                    <StyledButton onClick={() => this.changeType(false)}>Go to your standard wallet</StyledButton>
                     <Icon size={20} color={colors.TEXT_SECONDARY} icon={icons.HELP} />
                     <span>
                         <WalletTypeIcon type="hidden" size={24} color={colors.TEXT_SECONDARY} />
                         Hidden Wallet
                     </span>
                     <P isSmaller>You will be asked to enter your passphrase to unlock your hidden wallet.</P>
-                    <StyledButton isWhite onClick={() => this.foo(true)}>Go to your hidden wallet</StyledButton>
+                    <StyledButton isWhite onClick={() => this.changeType(true)}>Go to your hidden wallet</StyledButton>
                 </Row>
             </Wrapper>
         );
