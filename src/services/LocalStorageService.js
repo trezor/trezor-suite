@@ -102,6 +102,8 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
 
         case CONNECT.FORGET:
         case CONNECT.FORGET_SINGLE:
+        case CONNECT.FORGET_SILENT:
+        case CONNECT.RECEIVE_WALLET_TYPE:
         case DEVICE.CHANGED:
         case DEVICE.DISCONNECT:
         case CONNECT.AUTH_DEVICE:

@@ -185,6 +185,8 @@ export default function discovery(state: State = initialState, action: Action): 
             });
         case CONNECT.FORGET:
         case CONNECT.FORGET_SINGLE:
+        case CONNECT.FORGET_SILENT:
+        case CONNECT.RECEIVE_WALLET_TYPE:
             return forgetDiscovery(state, action.device);
         case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA:
             return clear(state, action.devices);
