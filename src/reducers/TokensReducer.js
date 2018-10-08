@@ -71,6 +71,8 @@ export default (state: State = initialState, action: Action): State => {
 
         case CONNECT.FORGET:
         case CONNECT.FORGET_SINGLE:
+        case CONNECT.FORGET_SILENT:
+        case CONNECT.RECEIVE_WALLET_TYPE:
             return forget(state, action.device);
 
         case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA:
