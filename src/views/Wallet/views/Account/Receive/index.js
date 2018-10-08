@@ -80,7 +80,7 @@ const ValueWrapper = styled.div`
 
 const ArrowUp = styled.div`
     position: absolute;
-    top: 30px;
+    top: 35px;
     left: 70px;
     width: 0;
     height: 0;
@@ -97,7 +97,7 @@ const AddressInfoText = styled.div`
     margin: 0px 2px;
     padding: 0 14px 0 5px;
     position: absolute;
-    top: 39px;
+    top: 45px;
     background: black;
     color: ${colors.WHITE};
     border-radius: 5px;
@@ -127,10 +127,10 @@ const ShowAddressIcon = styled(Icon)`
 const EyeButton = styled(Button)`
     z-index: 10001;
     padding: 0;
+    width: 30px;
+    top: 5px;
     position: absolute;
-    left: auto;
     right: 10px;
-    top: 6px;
 `;
 
 const AccountReceive = (props: Props) => {
@@ -159,81 +159,73 @@ const AccountReceive = (props: Props) => {
 
     return (
         <Content>
-            <React.Fragment>
-                <H2>Receive Ethereum or tokens</H2>
-                <AddressWrapper
-                    isShowingQrCode={addressVerified || addressUnverified}
-                >
-                    {isAddressVerifying && (
-                        <AddressInfoText>Confirm address on TREZOR</AddressInfoText>
-                    )}
-                    {((addressVerified || addressUnverified) && !isAddressVerifying) && (
-
+            <H2>Receive Ethereum or tokens</H2>
+            <AddressWrapper
+                isShowingQrCode={addressVerified || addressUnverified}
+            >
+                {isAddressVerifying && (
+                    <AddressInfoText>Confirm address on TREZOR</AddressInfoText>
+                )}
+                {((addressVerified || addressUnverified) && !isAddressVerifying) && (
+                    <Tooltip
+                        placement="left"
+                        content={(
+                            <VerifyAddressTooltip
+                                isConnected={device.connected}
+                                isAvailable={device.available}
+                                addressUnverified={addressUnverified}
+                            />
+                        )}
+                    >
                         <EyeButton
                             isTransparent
                             onClick={() => props.showAddress(account.addressPath)}
                         >
-                            <Tooltip
-                                placement="bottomRight"
-                                content={(
-                                    <VerifyAddressTooltip
-                                        isConnected={device.connected}
-                                        isAvailable={device.available}
-                                        addressUnverified={addressUnverified}
-                                    />
-                                )}
-                            >
-                                <Icon
-                                    icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
-                                    color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
-                                />
-                            </Tooltip>
-                        </EyeButton>
-                    )}
-                    <ValueWrapper
-                        isHidden={isAddressHidden}
-                        isVerifying={isAddressVerifying}
-                    >
-                        {address}
-                    </ValueWrapper>
-                    {isAddressVerifying && (
-                        <React.Fragment>
-                            <ArrowUp />
-                            <AddressInfoText>
-                                <Icon
-                                    icon={ICONS.T1}
-                                    color={colors.WHITE}
-                                />
-                                Check address on your Trezor
-                            </AddressInfoText>
-                        </React.Fragment>
-                    )}
-                    {(addressVerified || addressUnverified) && (
-                        <React.Fragment>
-                            <Label>QR code</Label>
-                            <StyledQRCode
-                                bgColor="#FFFFFF"
-                                fgColor="#000000"
-                                level="Q"
-                                style={{ width: 150 }}
-                                value={account.address}
+
+                            <Icon
+                                icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
+                                color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
                             />
-                        </React.Fragment>
-                    )}
-                    {!(addressVerified || addressUnverified) && (
-                        <ShowAddressButton
-                            onClick={() => props.showAddress(account.addressPath)}
-                            isDisabled={device.connected && !discovery.completed}
-                        >
-                            <ShowAddressIcon
-                                icon={ICONS.EYE}
+
+                        </EyeButton>
+                    </Tooltip>
+                )}
+                <ValueWrapper
+                    isHidden={isAddressHidden}
+                    isVerifying={isAddressVerifying}
+                >
+                    {address}
+                </ValueWrapper>
+                {isAddressVerifying && (
+                    <React.Fragment>
+                        <ArrowUp />
+                        <AddressInfoText>
+                            <Icon
+                                icon={ICONS.T1}
                                 color={colors.WHITE}
                             />
-                        Show full address
-                        </ShowAddressButton>
-                    )}
-                </AddressWrapper>
-            </React.Fragment>
+                                Check address on your Trezor
+                        </AddressInfoText>
+                    </React.Fragment>
+                )}
+                {(addressVerified || addressUnverified) && (
+                    <React.Fragment>
+                        <Label>QR code</Label>
+                        <StyledQRCode
+                            bgColor="#FFFFFF"
+                            fgColor="#000000"
+                            level="Q"
+                            style={{ width: 150 }}
+                            value={account.address}
+                        />
+                    </React.Fragment>
+                )}
+                {!(addressVerified || addressUnverified) && (
+                    <ShowAddressButton onClick={() => props.showAddress(account.addressPath)} isDisabled={device.connected && !discovery.completed}>
+                        <ShowAddressIcon icon={ICONS.EYE} color={colors.WHITE} />Show full address
+                    </ShowAddressButton>
+                )}
+            </AddressWrapper>
         </Content>
     );
 };
