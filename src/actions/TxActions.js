@@ -30,7 +30,7 @@ type EthereumTxRequest = {
 export const prepareEthereumTx = (tx: EthereumTxRequest): PromiseAction<EthereumTransaction> => async (dispatch: Dispatch): Promise<EthereumTransaction> => {
     const instance = await dispatch(initWeb3(tx.network));
     const { token } = tx;
-    let data: string = ethUtils.sanitizeHex(tx.data); // TODO: check if already prefixed
+    let data: string = ethUtils.sanitizeHex(tx.data);
     let value: string = toHex(EthereumjsUnits.convert(tx.amount, 'ether', 'wei'));
     let to: string = tx.to; // eslint-disable-line prefer-destructuring
     if (token) {
