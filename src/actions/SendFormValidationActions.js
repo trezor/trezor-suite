@@ -19,7 +19,7 @@ const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?
 const UPPERCASE_RE = new RegExp('^(.*[A-Z].*)$');
 const ABS_RE = new RegExp('^[0-9]+$');
 const ETH_18_RE = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
-const HEX_RE = new RegExp('^[0-9A-Fa-f]+$');
+const HEX_RE = new RegExp('^(0x|0X)?[0-9A-Fa-f]+$');
 const dynamicRegexp = (decimals: number): RegExp => {
     if (decimals > 0) {
         return new RegExp(`^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?|\\.[0-9]{1,${decimals}})$`);

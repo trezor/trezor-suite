@@ -397,7 +397,7 @@ const estimateGasPrice = (): AsyncAction => async (dispatch: Dispatch, getState:
     }
 
     const requestedData = state.data;
-    const re = /^[0-9A-Fa-f]+$/g; // TODO: allow "0x" prefix
+    const re = /^(0x|0X)?[0-9A-Fa-f]+$/g;
     if (!re.test(requestedData)) {
         // stop "calculatingGasLimit" process
         dispatch(onGasLimitChange(requestedData.length > 0 ? state.gasLimit : network.defaultGasLimit.toString()));
