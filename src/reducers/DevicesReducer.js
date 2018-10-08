@@ -269,6 +269,7 @@ const onChangeWalletType = (state: State, device: TrezorDevice, hidden: boolean)
         const changedDevices = affectedDevices.map((d) => { // eslint-disable-line arrow-body-style
             return d.type === 'acquired' ? {
                 ...d,
+                remember: false,
                 state: null,
                 useEmptyPassphrase: !hidden,
                 ts: new Date().getTime(),
