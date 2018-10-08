@@ -26,7 +26,7 @@ const Confirmation = (props: Props) => {
             <Header>
                 <Icon icon={icons.T1} size={60} color={colors.TEXT_SECONDARY} />
                 <H3>Complete the action on { device.label } device</H3>
-                <P isSmaller>TODO: add detailed text here. Explain passphrase/hidden wallet...</P>
+                <P isSmaller>If you enter a wrong passphrase, you will not unlock the desired hidden wallet.</P>
             </Header>
         </Wrapper>
     );
