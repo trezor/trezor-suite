@@ -11,6 +11,7 @@ import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as SelectedAccountActions from 'actions/SelectedAccountActions';
 import * as SendFormActionActions from 'actions/SendFormActions';
 import * as DiscoveryActions from 'actions/DiscoveryActions';
+import * as RouterActions from 'actions/RouterActions';
 
 import type {
     Middleware,
@@ -109,6 +110,7 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                 api.dispatch(DiscoveryActions.restore());
                 break;
             case CONNECT.RECEIVE_WALLET_TYPE:
+                api.dispatch(RouterActions.selectFirstAvailableDevice(true));
                 api.dispatch(TrezorConnectActions.authorizeDevice());
                 break;
             default: break;
