@@ -85,6 +85,19 @@ views/
     - If the are some elements -->
 
 
+## trezor-connect
+If you are implementing a new feature from 'trezor-connect' which is not on npm yet follow these steps:
 
+1. Build trezor-connect npm module locally:
+- go to trezor-connect project
+- call `yarn build:npm`
+- `cd npm`
+2. Call `yarn link` to register this module
+3. go to trezor-wallet project
+4. Call `yarn link trezor-connect` to link registered module with trezor-wallet
+
+Additionally publish trezor-connect to dev server (sisyfos):
+1. go to trezor-connect project
+2. call `make build-test`
 
 
