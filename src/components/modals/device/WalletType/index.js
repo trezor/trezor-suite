@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
+import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import colors from 'config/colors';
@@ -28,10 +29,37 @@ const StyledButton = styled(Button)`
     margin: 0 0 10px 0;
 `;
 
+const StyledTooltip = styled(Tooltip)`
+    position: absolute;
+    right: 0px;
+    top: 1px;
+`;
+
+const StyledIcon = styled(Icon)`
+    position: relative;
+    top: -1px;
+    &:hover {
+        cursor: pointer;
+    }
+`;
+
 const Row = styled.div`
     display: flex;
     flex-direction: column;
     padding: 10px 0;
+`;
+
+const Span = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+`;
+
+const Divider = styled.div`
+    margin: 20px 0;
+    border-top: 1px solid ${colors.DIVIDER};
 `;
 
 class WalletType extends Component<Props> {
@@ -77,17 +105,29 @@ class WalletType extends Component<Props> {
                 )}
                 <H3>RequestWalletType for { device.instanceLabel }?</H3>
                 <Row>
-                    <span>
+                    <Span>
                         <WalletTypeIcon type="standard" size={24} color={colors.TEXT_SECONDARY} />
                         Standard Wallet
-                    </span>
+                    </Span>
                     <P isSmaller>Continue to access your standard wallet.</P>
                     <StyledButton onClick={() => this.changeType(false)}>Go to your standard wallet</StyledButton>
-                    <Icon size={20} color={colors.TEXT_SECONDARY} icon={icons.HELP} />
-                    <span>
+                    <Divider />
+                    <Span>
                         <WalletTypeIcon type="hidden" size={24} color={colors.TEXT_SECONDARY} />
                         Hidden Wallet
-                    </span>
+                        <StyledTooltip
+                            maxWidth={285}
+                            placement="top"
+                            content="Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet."
+                            readMoreLink="https://wiki.trezor.io/Passphrase"
+                        >
+                            <StyledIcon
+                                icon={icons.HELP}
+                                color={colors.TEXT_SECONDARY}
+                                size={24}
+                            />
+                        </StyledTooltip>
+                    </Span>
                     <P isSmaller>You will be asked to enter your passphrase to unlock your hidden wallet.</P>
                     <StyledButton isWhite onClick={() => this.changeType(true)}>Go to your hidden wallet</StyledButton>
                 </Row>

@@ -4,7 +4,7 @@ import colors from 'config/colors';
 const tooltipStyles = css`
     .rc-tooltip {
         position: absolute;
-        z-index: 1070;
+        z-index: 10070;
         visibility: visible;
         border: none;
         border-radius: 3px;
