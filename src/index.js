@@ -2,9 +2,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import baseStyles from 'support/styles';
-import { onBeforeUnload } from 'actions/WalletActions';
 import App from 'views/index';
-import store from './store';
 
 const root: ?HTMLElement = document.getElementById('root');
 if (root) {
@@ -13,7 +11,8 @@ if (root) {
 }
 
 window.onbeforeunload = () => {
-    store.dispatch(onBeforeUnload());
+    // $FlowIssue: render empty component
+    render(null, root);
 };
 
 // Application life cycle starts in services/WalletService.js
