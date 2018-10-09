@@ -3,44 +3,40 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import { reconnect } from 'actions/DiscoveryActions';
 import * as TokenActions from 'actions/TokenActions';
 
 import type { State, Dispatch } from 'flowtype';
-import type { StateProps as BaseStateProps, DispatchProps as BaseDispatchProps } from 'views/Wallet/components/SelectedAccount';
 import Summary from './index';
 
 type OwnProps = { }
 
-type StateProps = BaseStateProps & {
-    tokens: $ElementType<State, 'tokens'>,
+type StateProps = {
+    selectedAccount: $ElementType<State, 'selectedAccount'>,
     summary: $ElementType<State, 'summary'>,
+    wallet: $ElementType<State, 'wallet'>,
+    tokens: $ElementType<State, 'tokens'>,
     fiat: $ElementType<State, 'fiat'>,
     localStorage: $ElementType<State, 'localStorage'>,
 };
 
-type DispatchProps = BaseDispatchProps & {
+type DispatchProps = {
     addToken: typeof TokenActions.add,
     loadTokens: typeof TokenActions.load,
     removeToken: typeof TokenActions.remove,
 }
 
-export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
+export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
-    className: 'summary',
     selectedAccount: state.selectedAccount,
-    wallet: state.wallet,
-    blockchain: state.blockchain,
-
-    tokens: state.tokens,
     summary: state.summary,
+    wallet: state.wallet,
+    tokens: state.tokens,
     fiat: state.fiat,
     localStorage: state.localStorage,
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    blockchainReconnect: bindActionCreators(reconnect, dispatch),
     addToken: bindActionCreators(TokenActions.add, dispatch),
     loadTokens: bindActionCreators(TokenActions.load, dispatch),
     removeToken: bindActionCreators(TokenActions.remove, dispatch),

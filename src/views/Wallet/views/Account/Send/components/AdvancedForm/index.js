@@ -1,6 +1,6 @@
 /* @flow */
 
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 
@@ -8,10 +8,13 @@ import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
 import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';
-import Link from 'components/Link';
 import ICONS from 'config/icons';
 
-import type { Props } from '../../Container';
+import type { Props as BaseProps } from '../../Container';
+
+type Props = BaseProps & {
+    children: React.Node,
+}
 
 // TODO: Decide on a small screen width for the whole app
 // and put it inside config/variables.js
