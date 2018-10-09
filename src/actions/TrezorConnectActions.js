@@ -120,9 +120,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         });
     });
 
-    /* global LOCAL */
-    // $FlowIssue LOCAL not declared
-    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
+    window.__TREZOR_CONNECT_SRC = typeof window.LOCAL === 'string' ? window.LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
     // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/'; // eslint-disable-line no-underscore-dangle
 
     try {

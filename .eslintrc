@@ -5,6 +5,7 @@
         "plugin:jest/recommended"
     ],
     "globals": {
+        "LOCAL": true,
         "COMMITHASH": true
     },
     "env": {

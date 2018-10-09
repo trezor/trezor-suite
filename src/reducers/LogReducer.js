@@ -1,13 +1,11 @@
 /* @flow */
 
-
 import * as LOG from 'actions/constants/log';
 import type { Action } from 'flowtype';
 
 export type LogEntry = {
     time: number;
     type: string;
-    // message: string;
     message: any;
 }
 

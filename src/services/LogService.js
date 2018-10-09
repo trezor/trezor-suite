@@ -1,9 +1,7 @@
 /* @flow */
 import * as LogActions from 'actions/LogActions';
-// import * as STORAGE from 'actions/constants/localStorage';
-// import * as SEND from 'actions/constants/send';
-// import { OPEN, CLOSE, ADD } from 'actions/constants/log';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
+import * as DISCOVERY from 'actions/constants/discovery';
 
 import type {
     Middleware,
@@ -12,17 +10,11 @@ import type {
     Action,
 } from 'flowtype';
 
-// const exclude: Array<string> = [
-//     ADD, OPEN, CLOSE,
-//     STORAGE.READY,
-//     SEND.TX_COMPLETE,
-//     'web3__create',
-// ];
-
-const include: Array<string> = [
+const actions: Array<string> = [
     TRANSPORT.START,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
+    DISCOVERY.START,
 ];
 
 /**
@@ -31,16 +23,29 @@ const include: Array<string> = [
 const LogService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
     next(action);
 
-    // if (exclude.indexOf(action.type) < 0) {
-    if (include.indexOf(action.type) >= 0) {
-        // api.dispatch(LogActions.add(action.type, JSON.stringify( action )));
+    if (actions.indexOf(action.type) < 0) return action;
 
-        if (action.type === TRANSPORT.START) {
-            api.dispatch(LogActions.add('Transport', action.payload));
-        } else if (action.type === DEVICE.CONNECT) {
-            api.dispatch(LogActions.add(action.type, action));
-        }
+    switch (action.type) {
+        case TRANSPORT.START:
+            api.dispatch(LogActions.add('Transport', { type: action.payload.type, version: action.payload.version }));
+            break;
+        case DEVICE.CONNECT:
+            api.dispatch(LogActions.add('Device connected', action.device));
+            break;
+        case DEVICE.DISCONNECT:
+            api.dispatch(LogActions.add('Device disconnected', action.device));
+            break;
+        case DISCOVERY.START:
+            api.dispatch(LogActions.add('Discovery started', action));
+            break;
+        default: break;
     }
+
+    // if (action.type === TRANSPORT.START) {
+    //     api.dispatch(LogActions.add('Transport', action.payload));
+    // } else if (action.type === DEVICE.CONNECT) {
+    //     api.dispatch(LogActions.add(action.type, action));
+    // }
 
     return action;
 };
