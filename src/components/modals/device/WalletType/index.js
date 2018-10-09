@@ -116,7 +116,7 @@ class WalletType extends Component<Props> {
                         Standard Wallet
                     </Header>
                     <P isSmaller>Continue to access your standard wallet.</P>
-                    <StyledButton onClick={() => this.changeType(true)}>Go to your standard wallet</StyledButton>
+                    <StyledButton onClick={() => this.changeType(false)}>Go to your standard wallet</StyledButton>
                 </Content>
                 <Content>
                     <Tooltip
