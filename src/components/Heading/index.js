@@ -6,13 +6,14 @@ const baseStyles = css`
     text-rendering: optimizeLegibility;
     color: ${colors.TEXT_PRIMARY};
     font-weight: bold;
-    padding: 0;
     margin: 0;
+    padding: 0;
 `;
 
 const H1 = styled.h1`
     ${baseStyles};
     font-size: 18px;
+    padding-bottom: 10px;
 `;
 
 const H2 = styled.h2`
@@ -23,16 +24,20 @@ const H2 = styled.h2`
         font-size: 36px;
         padding-bottom: 24px
     `}
+    padding-bottom: 10px;
 `;
 
 const H3 = styled.h3`
     ${baseStyles};
     font-size: 14px;
+    border: 1px solid red;
+    margin-bottom: 10px;
 `;
 
 const H4 = styled.h4`
     ${baseStyles};
     font-size: 12px;
+    padding-bottom: 10px;
 `;
 
 export {

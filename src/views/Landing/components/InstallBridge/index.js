@@ -3,9 +3,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
+import PropTypes from 'prop-types';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { Select } from 'components/Select';
 import Link from 'components/Link';
+import { H1 } from 'components/Heading';
 import Button from 'components/Button';
 import Loader from 'components/Loader';
 import P from 'components/Paragraph';
@@ -30,26 +32,39 @@ type State = {
 }
 
 type Props = {
+    selectFirstAvailableDevice: typeof RouterActions.selectFirstAvailableDevice,
     transport: $ElementType<TrezorConnectState, 'transport'>;
 }
 
-const InstallBridgeWrapper = styled.div`
+const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 0px;
+    align-items: center;
     max-width: 500px;
 `;
 
-const TitleHeader = styled.h3`
-    font-size: ${FONT_SIZE.BIGGEST};
+const Top = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    margin-bottom: 24px;
+    max-width: 500px;
+    flex: 1;
+    padding-top: 30px;
 `;
 
-const BridgeVersion = styled.span`
+const Bottom = styled.div`
+    padding-bottom: 20px;
+`;
+
+const TitleHeader = styled(H1)`
+    display: flex;
+    font-size: ${FONT_SIZE.BIGGEST};
+    justify-content: center;
+    align-items: center;
+`;
+
+const Version = styled.span`
     color: ${colors.GREEN_PRIMARY};
     padding: 6px 10px;
     border: 1px solid ${colors.GREEN_PRIMARY};
@@ -68,7 +83,7 @@ const SelectWrapper = styled(Select)`
     width: 180px;
 `;
 
-const DownloadBridgeWrapper = styled.div`
+const Download = styled.div`
     margin: 24px auto;
     display: flex;
     align-items: center;
@@ -81,7 +96,29 @@ const DownloadBridgeButton = styled(Button)`
     align-items: center;
 `;
 
-export default class InstallBridge extends Component<Props, State> {
+const GoBack = styled.span`
+    color: ${colors.GREEN_PRIMARY};
+    text-decoration: underline;
+
+    &:hover {
+        cursor: pointer;
+        text-decoration: none;
+    }
+`;
+
+const Ol = styled.ul`
+    margin: 0 auto;
+    color: ${colors.TEXT_SECONDARY};
+    font-size: ${FONT_SIZE.BASE};
+    padding: 10px 0 15px 25px;
+    text-align: left;
+`;
+
+const Li = styled.li`
+    text-align: justify;
+`;
+
+class InstallBridge extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -113,67 +150,68 @@ export default class InstallBridge extends Component<Props, State> {
         if (!target) {
             return <Loader text="Loading" size={100} />;
         }
-
-        const changelog = this.props.transport.bridge.changelog.map(entry => (
-            <li key={entry}>{entry}</li>
-        ));
-        const url = `${this.state.uri}${target.value}`;
         return (
-            <InstallBridgeWrapper>
-                <TitleHeader>TREZOR Bridge.<BridgeVersion>{this.state.currentVersion}</BridgeVersion></TitleHeader>
-                <P>New communication tool to facilitate the connection between your TREZOR and your internet browser.</P>
-                <DownloadBridgeWrapper>
-                    <SelectWrapper
-                        isSearchable={false}
-                        isClearable={false}
-                        value={target}
-                        onChange={v => this.onChange(v)}
-                        options={this.state.installers}
-                    />
-                    <Link href={url}>
-                        <DownloadBridgeButton>
-                            <Icon
-                                icon={ICONS.DOWNLOAD}
-                                color={colors.WHITE}
-                                size={30}
-                            />
+            <Wrapper>
+                <Top>
+                    <TitleHeader>TREZOR Bridge<Version>{this.state.currentVersion}</Version></TitleHeader>
+                    <P>New communication tool to facilitate the connection between your TREZOR and your internet browser.</P>
+                    <Download>
+                        <SelectWrapper
+                            isSearchable={false}
+                            isClearable={false}
+                            value={target}
+                            onChange={v => this.onChange(v)}
+                            options={this.state.installers}
+                        />
+                        <Link href={`${this.state.uri}${target.value}`}>
+                            <DownloadBridgeButton>
+                                <Icon
+                                    icon={ICONS.DOWNLOAD}
+                                    color={colors.WHITE}
+                                    size={30}
+                                />
                             Download latest Bridge {this.state.latestVersion}
-                        </DownloadBridgeButton>
-                    </Link>
-                </DownloadBridgeWrapper>
-                {target.signature && (
-                    <P>
+                            </DownloadBridgeButton>
+                        </Link>
+                    </Download>
+                    <Ol>
+                        {this.props.transport.bridge.changelog.map(entry => (
+                            <Li key={entry}>{entry}</Li>
+                        ))}
+                    </Ol>
+                    <P isSmaller>
+                        <LearnMoreText>Learn more about latest versions in</LearnMoreText>
                         <Link
-                            href={this.state.uri + target.signature}
+                            href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
                             target="_blank"
                             rel="noreferrer noopener"
                             isGreen
-                        >Check PGP signature
+                        >Changelog
                         </Link>
                     </P>
-                )}
-                <P>
-                    { changelog }
-                    <LearnMoreText>Learn more about latest versions in</LearnMoreText>
-                    <Link
-                        href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        isGreen
-                    >Changelog
-                    </Link>
-                </P>
-                {this.props.transport.type && (
-                    <React.Fragment>
+                    <P>
+                        {target.signature && (
+                            <Link
+                                href={this.state.uri + target.signature}
+                                target="_blank"
+                                rel="noreferrer noopener"
+                                isGreen
+                            >Check PGP signature
+                            </Link>
+                        )}
+                    </P>
+                </Top>
+                <Bottom>
+                    {this.props.transport.type && (
                         <P>
-                            No, i dont want to upgrade Bridge now,
+                            No, i dont want to upgrade Bridge now<br />
+                            Take me <GoBack onClick={() => this.props.selectFirstAvailableDevice()}>back to the wallet</GoBack>
                         </P>
-                        <P>
-                            Take me <Link href="#/">back to the wallet</Link>
-                        </P>
-                    </React.Fragment>
-                )}
-            </InstallBridgeWrapper>
+                    )}
+                </Bottom>
+            </Wrapper>
         );
     }
 }
+
+export default InstallBridge;
