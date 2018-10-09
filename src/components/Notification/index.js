@@ -33,6 +33,7 @@ type NProps = {
 };
 
 const Wrapper = styled.div`
+    width: 100%;
     position: relative;
     color: ${colors.TEXT_PRIMARY};
     background: ${colors.TEXT_SECONDARY};
