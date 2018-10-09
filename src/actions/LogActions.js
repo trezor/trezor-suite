@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import * as LOG from 'actions/constants/log';
 
 import type {
@@ -31,7 +30,6 @@ export const toggle = (): ThunkAction => (dispatch: Dispatch, getState: GetState
     }
 };
 
-// export const add = (type: string, message: string): Action => {
 export const add = (type: string, message: any): Action => ({
     type: LOG.ADD,
     payload: {

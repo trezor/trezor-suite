@@ -1,3 +1,5 @@
+/* @flow */
+
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -28,21 +30,26 @@ const Copy = styled.div`
     margin-right: 20px;
 `;
 
-const Footer = ({ toggle }) => (
+const Footer = ({ opened, toggle }) => (
     <Wrapper>
-        <Copy title={COMMITHASH}>&copy; {getYear(new Date())}</Copy>
+        <Copy title={window.COMMITHASH}>&copy; {getYear(new Date())}</Copy>
         <StyledLink href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" isGreen>SatoshiLabs</StyledLink>
         <StyledLink href="/assets/tos.pdf" target="_blank" rel="noreferrer noopener" isGreen>Terms</StyledLink>
-        <StyledLink onClick={toggle} isGreen>Show Log</StyledLink>
+        <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>
     </Wrapper>
 );
 
 Footer.propTypes = {
+    opened: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+    opened: state.log.opened,
+});
 
 const mapDispatchToProps = dispatch => ({
     toggle: bindActionCreators(LogActions.toggle, dispatch),
 });
 
-export default connect(null, mapDispatchToProps)(Footer);
+export default connect(mapStateToProps, mapDispatchToProps)(Footer);
