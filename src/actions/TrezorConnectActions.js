@@ -167,10 +167,19 @@ export const requestWalletType = (): AsyncAction => async (dispatch: Dispatch, g
     const isDeviceReady = selected.connected && selected.features && !selected.state && selected.mode === 'normal' && selected.firmware !== 'required';
     if (!isDeviceReady) return;
 
-    dispatch({
-        type: CONNECT.REQUEST_WALLET_TYPE,
-        device: selected,
-    });
+    if (selected.features && selected.features.passphrase_protection) {
+        dispatch({
+            type: CONNECT.REQUEST_WALLET_TYPE,
+            device: selected,
+        });
+    } else {
+        dispatch({
+            type: CONNECT.RECEIVE_WALLET_TYPE,
+            device: selected,
+            hidden: false,
+            state: selected.state,
+        });
+    }
 };
 
 export const authorizeDevice = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
