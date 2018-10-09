@@ -59,6 +59,7 @@ const Content = styled.div`
     align-items: center;
 
     ${props => props.isTop && css`
+        padding-top: 40px;
         border-bottom: 1px solid ${colors.DIVIDER};
     `}
 `;
