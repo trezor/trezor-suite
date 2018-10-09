@@ -25,7 +25,6 @@ import type {
 
 type Props = {
     device: ?TrezorDevice;
-    cancel: typeof RouterActions.selectFirstAvailableDevice,
 }
 
 const Wrapper = styled.section`

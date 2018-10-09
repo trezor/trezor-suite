@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
-import PropTypes from 'prop-types';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { Select } from 'components/Select';
 import Link from 'components/Link';

@@ -11,7 +11,7 @@ import services from 'services';
 import Raven from 'raven-js';
 import RavenMiddleware from 'redux-raven-middleware';
 
-import type { Action, GetState, Store } from 'flowtype';
+import type { Action, GetState } from 'flowtype';
 
 export const history: History = createHistory({ queryKey: false });
 
@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === 'development') {
         collapsed: true,
     });
 
-    const devToolsExtension: ?Function = window.devToolsExtension;
+    const { devToolsExtension }: ?Function = window;
     if (typeof devToolsExtension === 'function') {
         enhancers.push(devToolsExtension());
     }

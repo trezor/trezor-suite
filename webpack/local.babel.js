@@ -3,7 +3,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import MiniCssExtractPlugin from '../../trezor-connect/node_modules/mini-css-extract-plugin';
+import MiniCssExtractPlugin from '../../trezor-connect/node_modules/mini-css-extract-plugin'; // eslint-disable-line
 
 import {
     TREZOR_CONNECT_ROOT,
