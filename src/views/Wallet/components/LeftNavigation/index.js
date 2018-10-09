@@ -4,6 +4,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import Icon from 'components/Icon';
+import WalletTypeIcon from 'components/images/WalletType';
 import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
@@ -197,11 +198,12 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                             this.handleOpen();
                         }
                     }}
-                    device={this.props.wallet.selectedDevice}
+                    device={selectedDevice}
                     disabled={!isDeviceAccessible && this.props.devices.length === 1}
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
+                            <WalletTypeIcon type={selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard'} size={25} color={colors.TEXT_SECONDARY} />
                             {this.props.devices.length > 1 && (
                                 <Counter>{this.props.devices.length}</Counter>
                             )}

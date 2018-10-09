@@ -6,6 +6,7 @@ import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as NOTIFICATION from 'actions/constants/notification';
 import { getDuplicateInstanceNumber } from 'reducers/utils';
 import * as RouterActions from 'actions/RouterActions';
+import * as deviceUtils from 'utils/device';
 
 import type {
     DeviceMessage,
@@ -58,7 +59,7 @@ export type TrezorConnectAction = {
     type: typeof CONNECT.FORGET,
     device: TrezorDevice
 } | {
-    type: typeof CONNECT.FORGET_SINGLE,
+    type: typeof CONNECT.FORGET_SINGLE | typeof CONNECT.FORGET_SILENT,
     device: TrezorDevice
 } | {
     type: typeof CONNECT.REMEMBER,
@@ -71,6 +72,13 @@ export type TrezorConnectAction = {
     payload: Array<TrezorDevice>
 } | {
     type: typeof CONNECT.START_ACQUIRING | typeof CONNECT.STOP_ACQUIRING,
+} | {
+    type: typeof CONNECT.REQUEST_WALLET_TYPE,
+    device: TrezorDevice
+} | {
+    type: typeof CONNECT.RECEIVE_WALLET_TYPE,
+    device: TrezorDevice,
+    hidden: boolean,
 };
 
 export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -152,7 +160,19 @@ export const postInit = (): ThunkAction => (dispatch: Dispatch): void => {
     }
 };
 
-export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const requestWalletType = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const selected = getState().wallet.selectedDevice;
+    if (!selected) return;
+    const isDeviceReady = selected.connected && selected.features && !selected.state && selected.mode === 'normal' && selected.firmware !== 'required';
+    if (!isDeviceReady) return;
+
+    dispatch({
+        type: CONNECT.REQUEST_WALLET_TYPE,
+        device: selected,
+    });
+};
+
+export const authorizeDevice = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
     const isDeviceReady = selected.connected && selected.features && !selected.state && selected.mode === 'normal' && selected.firmware !== 'required';
@@ -164,7 +184,7 @@ export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispat
             instance: selected.instance,
             state: selected.state,
         },
-        useEmptyPassphrase: !selected.instance,
+        useEmptyPassphrase: selected.useEmptyPassphrase,
     });
 
     if (response && response.success) {
@@ -190,25 +210,32 @@ export const getSelectedDeviceState = (): AsyncAction => async (dispatch: Dispat
                                 type: NOTIFICATION.CLOSE,
                                 payload: { devicePath: selected.path },
                             });
-                            dispatch(getSelectedDeviceState());
+                            dispatch(authorizeDevice());
                         },
                     },
                 ],
             },
         });
     }
-
 };
 
 export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     if (device.features) {
         const instances = getState().devices.filter(d => d.features && device.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
         if (instances.length > 0) {
-            dispatch({
-                type: CONNECT.REMEMBER_REQUEST,
-                device: instances[0],
-                instances,
-            });
+            const isSelected = deviceUtils.isSelectedDevice(getState().wallet.selectedDevice, instances[0]);
+            if (!isSelected && getState().modal.opened) {
+                dispatch({
+                    type: CONNECT.FORGET_SILENT,
+                    device: instances[0],
+                });
+            } else {
+                dispatch({
+                    type: CONNECT.REMEMBER_REQUEST,
+                    device: instances[0],
+                    instances,
+                });
+            }
         } else {
             dispatch(RouterActions.selectFirstAvailableDevice());
         }
@@ -231,11 +258,14 @@ export function acquire(): AsyncAction {
             type: CONNECT.START_ACQUIRING,
         });
 
+        // this is the only place where useEmptyPassphrase should be used every time
+        // the goal here is to acquire device and get his features
+        // authentication (passphrase) is not needed here yet
         const response = await TrezorConnect.getFeatures({
             device: {
                 path: selected.path,
             },
-            useEmptyPassphrase: !selected.instance,
+            useEmptyPassphrase: true,
         });
 
         if (!response.success) {
@@ -270,16 +300,18 @@ export const forget = (device: TrezorDevice): Action => ({
     device,
 });
 
-export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    // dispatch({
-    //     type: CONNECT.TRY_TO_DUPLICATE,
-    //     device,
-    // });
-
+export const duplicateDeviceOld = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const instance: number = getDuplicateInstanceNumber(getState().devices, device);
     const extended: Object = { instance };
     dispatch({
         type: CONNECT.DUPLICATE,
         device: { ...device, ...extended },
+    });
+};
+
+export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
+    dispatch({
+        type: CONNECT.REQUEST_WALLET_TYPE,
+        device,
     });
 };

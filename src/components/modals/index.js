@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -29,6 +29,7 @@ import ConfirmUnverifiedAddress from 'components/modals/confirm/UnverifiedAddres
 import ForgetDevice from 'components/modals/device/Forget';
 import RememberDevice from 'components/modals/device/Remember';
 import DuplicateDevice from 'components/modals/device/Duplicate';
+import WalletType from 'components/modals/device/WalletType';
 
 type OwnProps = { }
 
@@ -51,13 +52,13 @@ type DispatchProps = {
 
 export type Props = StateProps & DispatchProps;
 
-const Fade = ({ children, ...props }) => (
+const Fade = (props: { children: React.Node}) => (
     <CSSTransition
         {...props}
         timeout={1000}
         classNames="fade"
     >
-        { children }
+        { props.children }
     </CSSTransition>
 );
 
@@ -84,7 +85,7 @@ const ModalWindow = styled.div`
     text-align: center;
 `;
 
-class Modal extends Component<Props> {
+class Modal extends React.Component<Props> {
     render() {
         if (!this.props.modal.opened) return null;
 
@@ -121,6 +122,10 @@ class Modal extends Component<Props> {
 
             case CONNECT.TRY_TO_DUPLICATE:
                 component = (<DuplicateDevice {...this.props} />);
+                break;
+
+            case CONNECT.REQUEST_WALLET_TYPE:
+                component = (<WalletType {...this.props} />);
                 break;
 
             default:

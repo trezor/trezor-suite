@@ -212,7 +212,7 @@ class Passphrase extends Component<Props, State> {
         return (
             <Wrapper>
                 <H2>Enter {this.state.deviceLabel} passphrase</H2>
-                <P isSmaller>Note that passphrase is case-sensitive.</P>
+                <P isSmaller>Note that passphrase is case-sensitive. If you enter a wrong passphrase, you will not unlock the desired hidden wallet.</P>
                 <Row>
                     <Label>Passphrase</Label>
                     <Input
@@ -228,7 +228,7 @@ class Passphrase extends Component<Props, State> {
                 </Row>
                 {!this.state.shouldShowSingleInput && (
                     <Row>
-                        <Label>Re-enter passphrase</Label>
+                        <Label>Confirm passphrase</Label>
                         <Input
                             name="passphraseCheckInputValue"
                             type={this.state.isPassphraseHidden ? 'password' : 'text'}
@@ -263,12 +263,12 @@ class Passphrase extends Component<Props, State> {
                 </Row>
 
                 <Footer>
-                    <P isSmaller>If you want to access your default account</P>
                     <P isSmaller>
+                        Changed your mind? &nbsp;
                         <LinkButton
                             isGreen
                             onClick={() => this.submitPassphrase(true)}
-                        >Leave passphrase blank
+                        >Go to your standard wallet
                         </LinkButton>
                     </P>
                 </Footer>

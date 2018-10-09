@@ -142,7 +142,8 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => async (dis
         },
         path: coinToDiscover.bip44,
         keepSession: true, // acquire and hold session
-        useEmptyPassphrase: !device.instance,
+        //useEmptyPassphrase: !device.instance,
+        useEmptyPassphrase: device.useEmptyPassphrase,
     });
 
     // handle TREZOR response error
@@ -264,7 +265,8 @@ const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction 
             state: device.state,
         },
         keepSession: false,
-        useEmptyPassphrase: !device.instance,
+        // useEmptyPassphrase: !device.instance,
+        useEmptyPassphrase: device.useEmptyPassphrase,
     });
 
     await dispatch(BlockchainActions.subscribe(discoveryProcess.network));

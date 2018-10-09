@@ -16,6 +16,7 @@ export const REMEMBER_REQUEST: 'connect__remember_request' = 'connect__remember_
 export const FORGET_REQUEST: 'connect__forget_request' = 'connect__forget_request';
 export const FORGET: 'connect__forget' = 'connect__forget';
 export const FORGET_SINGLE: 'connect__forget_single' = 'connect__forget_single';
+export const FORGET_SILENT: 'connect__forget_silent' = 'connect__forget_silent';
 export const DISCONNECT_REQUEST: 'connect__disconnect_request' = 'connect__disconnect_request';
 export const REMEMBER: 'connect__remember' = 'connect__remember';
 
@@ -26,3 +27,6 @@ export const DEVICE_STATE_EXCEPTION: 'connect__device_state_exception' = 'connec
 
 export const START_ACQUIRING: 'connect__start_acquiring' = 'connect__start_acquiring';
 export const STOP_ACQUIRING: 'connect__stop_acquiring' = 'connect__stop_acquiring';
+
+export const REQUEST_WALLET_TYPE: 'connect__request_wallet_type' = 'connect__request_wallet_type';
+export const RECEIVE_WALLET_TYPE: 'connect__receive_wallet_type' = 'connect__receive_wallet_type';
