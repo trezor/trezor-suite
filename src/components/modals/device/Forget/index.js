@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 `;
 
 const StyledP = styled(P)`
-    padding: 14px 0px;
+    padding: 7px 0px;
 `;
 
 const StyledButton = styled(Button)`
