@@ -27,8 +27,6 @@ export type WalletAction = {
     type: typeof WALLET.TOGGLE_DEVICE_DROPDOWN,
     opened: boolean
 } | {
-    type: typeof WALLET.ON_BEFORE_UNLOAD
-} | {
     type: typeof WALLET.ONLINE_STATUS,
     online: boolean
 } | {
@@ -52,10 +50,6 @@ export const init = (): ThunkAction => (dispatch: Dispatch): void => {
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
 };
-
-export const onBeforeUnload = (): WalletAction => ({
-    type: WALLET.ON_BEFORE_UNLOAD,
-});
 
 export const toggleDeviceDropdown = (opened: boolean): WalletAction => ({
     type: WALLET.TOGGLE_DEVICE_DROPDOWN,

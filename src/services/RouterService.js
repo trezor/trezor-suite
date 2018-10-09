@@ -16,7 +16,7 @@ import type {
 
 const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
     // make sure that middleware should process this action
-    if (action.type !== LOCATION_CHANGE || api.getState().wallet.unloading) {
+    if (action.type !== LOCATION_CHANGE) {
         // pass action
         return next(action);
     }
