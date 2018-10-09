@@ -79,6 +79,7 @@ export type TrezorConnectAction = {
     type: typeof CONNECT.RECEIVE_WALLET_TYPE,
     device: TrezorDevice,
     hidden: boolean,
+    state: ?string,
 };
 
 export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {

@@ -85,10 +85,10 @@ class WalletType extends Component<Props> {
 
     keyboardHandler: (event: KeyboardEvent) => void;
 
-    changeType(hidden: boolean) {
+    changeType(hidden: boolean, state: ?string) {
         const { modal } = this.props;
         if (!modal.opened) return;
-        this.props.modalActions.onWalletTypeRequest(modal.device, hidden);
+        this.props.modalActions.onWalletTypeRequest(modal.device, hidden, state);
     }
 
     render() {
@@ -110,7 +110,7 @@ class WalletType extends Component<Props> {
                         Standard Wallet
                     </Span>
                     <P isSmaller>Continue to access your standard wallet.</P>
-                    <StyledButton onClick={() => this.changeType(false)}>Go to your standard wallet</StyledButton>
+                    <StyledButton onClick={() => this.changeType(false, device.state)}>Go to your standard wallet</StyledButton>
                     <Divider />
                     <Span>
                         <WalletTypeIcon type="hidden" size={24} color={colors.TEXT_SECONDARY} />
@@ -129,7 +129,7 @@ class WalletType extends Component<Props> {
                         </StyledTooltip>
                     </Span>
                     <P isSmaller>You will be asked to enter your passphrase to unlock your hidden wallet.</P>
-                    <StyledButton isWhite onClick={() => this.changeType(true)}>Go to your hidden wallet</StyledButton>
+                    <StyledButton isWhite onClick={() => this.changeType(true, device.state)}>Go to your hidden wallet</StyledButton>
                 </Row>
             </Wrapper>
         );
