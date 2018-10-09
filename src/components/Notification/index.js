@@ -155,7 +155,7 @@ export const Notification = (props: NProps): React$Element<string> => {
                     <Title>{ props.title }</Title>
                     { props.message && (
                         <Message>
-                            <p dangerouslySetInnerHTML={{ __html: props.message }} />
+                            <p dangerouslySetInnerHTML={{ __html: props.message }} /> { /* eslint-disable-line */ }
                         </Message>
                     ) }
                 </Texts>

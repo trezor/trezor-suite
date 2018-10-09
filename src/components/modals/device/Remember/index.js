@@ -48,23 +48,12 @@ const StyledLoader = styled(Loader)`
 `;
 
 export default class RememberDevice extends Component<Props, State> {
-    keyboardHandler: (event: KeyboardEvent) => void;
-
-    state: State;
-
     constructor(props: Props) {
         super(props);
 
         this.state = {
             countdown: 10,
         };
-    }
-
-    keyboardHandler(event: KeyboardEvent): void {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            this.forget();
-        }
     }
 
     componentDidMount(): void {
@@ -98,6 +87,15 @@ export default class RememberDevice extends Component<Props, State> {
             window.clearInterval(this.state.ticker);
         }
     }
+
+    keyboardHandler(event: KeyboardEvent): void {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            this.forget();
+        }
+    }
+
+    keyboardHandler: (event: KeyboardEvent) => void;
 
     forget() {
         if (this.props.modal.opened) {

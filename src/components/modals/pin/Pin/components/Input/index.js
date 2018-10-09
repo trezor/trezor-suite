@@ -1,3 +1,5 @@
+/* @flow */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -5,6 +7,11 @@ import colors from 'config/colors';
 import Icon from 'components/Icon';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import icons from 'config/icons';
+
+type Props = {
+    value: string;
+    onDeleteClick: () => void;
+};
 
 const Wrapper = styled.div`
     position: relative;
@@ -28,11 +35,7 @@ const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
-const Input = ({
-    onChange,
-    onDeleteClick,
-    value,
-}) => (
+const Input = ({ value, onDeleteClick }: Props) => (
     <Wrapper>
         <StyledInput
             disabled
@@ -40,16 +43,14 @@ const Input = ({
             maxLength="9"
             autoComplete="off"
             value={value}
-            onChange={onChange}
         />
-        <StyledIcon onClick={() => onDeleteClick()} color={colors.TEXT_PRIMARY} icon={icons.BACK} />
+        <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon={icons.BACK} />
     </Wrapper>
 );
 
 Input.propTypes = {
     onDeleteClick: PropTypes.func.isRequired,
     value: PropTypes.string.isRequired,
-    onChange: PropTypes.func,
 };
 
 export default Input;
