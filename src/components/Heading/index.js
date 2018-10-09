@@ -30,7 +30,6 @@ const H2 = styled.h2`
 const H3 = styled.h3`
     ${baseStyles};
     font-size: 14px;
-    border: 1px solid red;
     margin-bottom: 10px;
 `;
 
