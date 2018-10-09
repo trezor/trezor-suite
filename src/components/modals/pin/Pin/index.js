@@ -40,16 +40,21 @@ const Footer = styled.div`
 `;
 
 class Pin extends Component<Props, State> {
-    keyboardHandler: (event: KeyboardEvent) => void;
-
-    state: State;
-
     constructor(props: Props) {
         super(props);
 
         this.state = {
             pin: '',
         };
+    }
+
+    componentWillMount(): void {
+        this.keyboardHandler = this.keyboardHandler.bind(this);
+        window.addEventListener('keydown', this.keyboardHandler, false);
+    }
+
+    componentWillUnmount(): void {
+        window.removeEventListener('keydown', this.keyboardHandler, false);
     }
 
     onPinAdd = (input: number): void => {
@@ -120,18 +125,11 @@ class Pin extends Component<Props, State> {
             case 105:
                 this.onPinAdd(9);
                 break;
+            default: break;
         }
     }
 
-
-    componentWillMount(): void {
-        this.keyboardHandler = this.keyboardHandler.bind(this);
-        window.addEventListener('keydown', this.keyboardHandler, false);
-    }
-
-    componentWillUnmount(): void {
-        window.removeEventListener('keydown', this.keyboardHandler, false);
-    }
+    keyboardHandler: (event: KeyboardEvent) => void;
 
     render() {
         if (!this.props.modal.opened) return null;
@@ -165,7 +163,7 @@ class Pin extends Component<Props, State> {
                     <StyledP isSmaller>Not sure how PIN works?
                         <StyledLink
                             isGreen
-                            href="http://doc.satoshilabs.com/trezor-user/enteringyourpin.html"
+                            href="https://wiki.trezor.io/User_manual:Entering_PIN"
                             target="_blank"
                             rel="noreferrer noopener"
                         >Learn more
