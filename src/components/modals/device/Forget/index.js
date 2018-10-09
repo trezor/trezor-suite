@@ -1,8 +1,12 @@
+/* @flow */
+
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
+
+import type { Props } from '../../index';
 
 const Wrapper = styled.div`
     width: 360px;
@@ -23,7 +27,7 @@ const Row = styled.div`
     padding: 10px 0;
 `;
 
-class ForgetDevice extends Component {
+class ForgetDevice extends Component<Props> {
     componentDidMount() {
         this.keyboardHandler = this.keyboardHandler.bind(this);
         window.addEventListener('keydown', this.keyboardHandler, false);
@@ -33,12 +37,14 @@ class ForgetDevice extends Component {
         window.removeEventListener('keydown', this.keyboardHandler, false);
     }
 
-    keyboardHandler(event) {
+    keyboardHandler(event: KeyboardEvent) {
         if (event.keyCode === 13) {
             event.preventDefault();
             this.forget();
         }
     }
+
+    keyboardHandler: (event: KeyboardEvent) => void;
 
     forget() {
         if (this.props.modal.opened) {
@@ -56,7 +62,7 @@ class ForgetDevice extends Component {
                 <StyledP isSmaller>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your TREZOR again.</StyledP>
                 <Row>
                     <StyledButton onClick={() => this.forget()}>Forget</StyledButton>
-                    <StyledButton isWhite onClick={onCancel}>Don't forget</StyledButton>
+                    <StyledButton isWhite onClick={onCancel}>Don&apos;t forget</StyledButton>
                 </Row>
             </Wrapper>
         );

@@ -79,12 +79,6 @@ export default class DuplicateDevice extends Component<Props, State> {
         };
     }
 
-    state: State;
-
-    input: ?HTMLInputElement;
-
-    keyboardHandler: (event: KeyboardEvent) => void;
-
     componentDidMount(): void {
         // one time autofocus
         if (this.input) this.input.focus();
@@ -108,12 +102,16 @@ export default class DuplicateDevice extends Component<Props, State> {
         });
     }
 
+    input: ?HTMLInputElement;
+
     keyboardHandler(event: KeyboardEvent): void {
         if (event.keyCode === 13 && !this.state.isUsed) {
             event.preventDefault();
             this.submit();
         }
     }
+
+    keyboardHandler: (event: KeyboardEvent) => void;
 
     submit() {
         if (!this.props.modal.opened) return;

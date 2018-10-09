@@ -57,9 +57,8 @@ class ConfirmUnverifiedAddress extends Component<Props> {
 
     verifyAddress() {
         if (!this.props.modal.opened) return;
-        const {
-            account,
-        } = this.props.selectedAccount;
+        const { account } = this.props.selectedAccount;
+        if (!account) return;
         this.props.modalActions.onCancel();
         this.props.receiveActions.showAddress(account.addressPath);
     }
