@@ -11,6 +11,7 @@ import * as ValidationActions from 'actions/SendFormValidationActions';
 import { initialState } from 'reducers/SendFormReducer';
 import { findToken } from 'reducers/TokensReducer';
 import * as reducerUtils from 'reducers/utils';
+import * as ethUtils from 'utils/ethUtils';
 
 import type {
     Dispatch,
@@ -397,8 +398,7 @@ const estimateGasPrice = (): AsyncAction => async (dispatch: Dispatch, getState:
     }
 
     const requestedData = state.data;
-    const re = /^[0-9A-Fa-f]+$/g; // TODO: allow "0x" prefix
-    if (!re.test(requestedData)) {
+    if (!ethUtils.isHex(requestedData)) {
         // stop "calculatingGasLimit" process
         dispatch(onGasLimitChange(requestedData.length > 0 ? state.gasLimit : network.defaultGasLimit.toString()));
         return;

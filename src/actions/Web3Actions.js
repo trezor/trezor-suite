@@ -7,6 +7,7 @@ import EthereumjsUnits from 'ethereumjs-units';
 import type { EstimateGasOptions } from 'web3';
 import * as WEB3 from 'actions/constants/web3';
 import * as PENDING from 'actions/constants/pendingTx';
+import * as ethUtils from 'utils/ethUtils';
 
 import type {
     Dispatch,
@@ -272,8 +273,7 @@ export const updateGasPrice = (network: string): PromiseAction<void> => async (d
 
 export const estimateGasLimit = (network: string, $options: EstimateGasOptions): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => {
     const instance = await dispatch(initWeb3(network));
-    // TODO: allow data starting with 0x ...
-    const data = `0x${$options.data.length % 2 === 0 ? $options.data : `0${$options.data}`}`;
+    const data = ethUtils.sanitizeHex($options.data);
     const options = {
         ...$options,
         to: '0x0000000000000000000000000000000000000000',
