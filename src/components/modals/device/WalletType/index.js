@@ -22,6 +22,8 @@ const Header = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    color: ${colors.TEXT_PRIMARY};
 `;
 
 const StyledHeading = styled(H3)`
@@ -99,13 +101,17 @@ class WalletType extends Component<Props> {
             <Wrapper>
                 { device.state && (
                     <StyledLink onClick={onCancel}>
-                        <Icon size={20} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                        <Icon
+                            size={20}
+                            color={colors.TEXT_SECONDARY}
+                            icon={icons.CLOSE}
+                        />
                     </StyledLink>
                 )}
                 <StyledHeading>Change wallet type for { device.instanceLabel }</StyledHeading>
                 <Content isTop>
                     <Header>
-                        <WalletTypeIcon type="standard" size={24} color={colors.TEXT_SECONDARY} />
+                        <WalletTypeIcon type="standard" size={32} color={colors.TEXT_PRIMARY} />
                         Standard Wallet
                     </Header>
                     <P isSmaller>Continue to access your standard wallet.</P>
@@ -121,14 +127,14 @@ class WalletType extends Component<Props> {
                         <StyledIcon
                             icon={icons.HELP}
                             color={colors.TEXT_SECONDARY}
-                            size={24}
+                            size={26}
                         />
                     </Tooltip>
                     <Header>
                         <WalletTypeIcon
                             type="hidden"
-                            size={24}
-                            color={colors.TEXT_SECONDARY}
+                            size={32}
+                            color={colors.TEXT_PRIMARY}
                         />
                         Hidden Wallet
                     </Header>
