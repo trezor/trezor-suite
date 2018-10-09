@@ -1,11 +1,15 @@
+/* @flow */
+
 import React from 'react';
-import colors from 'config/colors';
 import styled from 'styled-components';
+import colors from 'config/colors';
 import P from 'components/Paragraph';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { H3 } from 'components/Heading';
 import { LINE_HEIGHT } from 'config/variables';
+
+import type { Props } from '../../index';
 
 const Wrapper = styled.div`
     width: 390px;
@@ -25,7 +29,7 @@ const Content = styled.div`
 const StyledP = styled(P)`
     word-wrap: break-word;
     padding: 5px 0;
-    line-height: ${LINE_HEIGHT.SMALL}
+    line-height: ${LINE_HEIGHT.SMALL};
 `;
 
 const Label = styled.div`
@@ -34,7 +38,7 @@ const Label = styled.div`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const ConfirmSignTx = (props) => {
+const ConfirmSignTx = (props: Props) => {
     if (!props.modal.opened) return null;
     const { device } = props.modal;
 

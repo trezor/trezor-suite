@@ -1,7 +1,14 @@
-import React from 'react';
+/* @flow */
+
+import * as React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
+
+type Props = {
+    onClick: () => void;
+    children: React.Node;
+};
 
 const Wrapper = styled.button`
     width: 80px;
@@ -32,19 +39,13 @@ const Wrapper = styled.button`
     }
 `;
 
-const PinButton = ({
-    children, className, onClick,
-}) => (
-    <Wrapper
-        className={className}
-        onClick={onClick}
-    >
-        {children}
+const PinButton = ({ children, onClick }: Props) => (
+    <Wrapper onClick={onClick}>
+        { children }
     </Wrapper>
 );
 
 PinButton.propTypes = {
-    className: PropTypes.string,
     children: PropTypes.string.isRequired,
     onClick: PropTypes.func,
 };

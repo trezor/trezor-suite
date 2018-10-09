@@ -1,9 +1,13 @@
+/* @flow */
+
+import React from 'react';
 import styled from 'styled-components';
 import H3 from 'components/Heading';
 import colors from 'config/colors';
 import P from 'components/Paragraph';
 import { FONT_SIZE } from 'config/variables';
-import React from 'react';
+
+import type { Props } from '../../index';
 
 const Wrapper = styled.div`
     width: 390px;
@@ -24,7 +28,7 @@ const Label = styled.div`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const ConfirmAddress = (props) => {
+const ConfirmAddress = (props: Props) => {
     const {
         account,
         network,
