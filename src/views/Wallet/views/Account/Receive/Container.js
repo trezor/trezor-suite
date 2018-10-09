@@ -2,41 +2,34 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { reconnect } from 'actions/DiscoveryActions';
 import { showAddress } from 'actions/ReceiveActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
-import type {
-    StateProps as BaseStateProps,
-    DispatchProps as BaseDispatchProps,
-} from 'views/Wallet/components/SelectedAccount';
 import Receive from './index';
 
 type OwnProps = { }
 
-type StateProps = BaseStateProps & {
+type StateProps = {
+    selectedAccount: $ElementType<State, 'selectedAccount'>,
     receive: $ElementType<State, 'receive'>,
     modal: $ElementType<State, 'modal'>,
+    wallet: $ElementType<State, 'wallet'>,
 }
 
-type DispatchProps = BaseDispatchProps & {
+type DispatchProps = {
     showAddress: typeof showAddress
 };
 
-export type Props = StateProps & BaseStateProps & DispatchProps & BaseDispatchProps;
+export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
-    className: 'receive',
     selectedAccount: state.selectedAccount,
-    wallet: state.wallet,
-    blockchain: state.blockchain,
-
     receive: state.receive,
     modal: state.modal,
+    wallet: state.wallet,
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    blockchainReconnect: bindActionCreators(reconnect, dispatch),
     showAddress: bindActionCreators(showAddress, dispatch),
 });
 
