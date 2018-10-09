@@ -110,7 +110,9 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
                 api.dispatch(DiscoveryActions.restore());
                 break;
             case CONNECT.RECEIVE_WALLET_TYPE:
-                api.dispatch(RouterActions.selectFirstAvailableDevice(true));
+                if (action.state) {
+                    api.dispatch(RouterActions.selectFirstAvailableDevice(true));
+                }
                 api.dispatch(TrezorConnectActions.authorizeDevice());
                 break;
             default: break;

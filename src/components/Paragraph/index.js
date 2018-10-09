@@ -9,6 +9,7 @@ const Wrapper = styled.p`
     line-height: ${LINE_HEIGHT.BASE};
     color: ${colors.TEXT_SECONDARY};
     padding: 0;
+    margin: 0;
 
     ${props => props.isSmaller && css`
         font-size: ${FONT_SIZE.SMALLER};

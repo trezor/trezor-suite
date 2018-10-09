@@ -112,7 +112,7 @@ export const onDeviceConnect = (device: Device): ThunkAction => (dispatch: Dispa
     }
 };
 
-export const onWalletTypeRequest = (device: TrezorDevice, hidden: boolean): ThunkAction => (dispatch: Dispatch): void => {
+export const onWalletTypeRequest = (device: TrezorDevice, hidden: boolean, state: ?string): ThunkAction => (dispatch: Dispatch): void => {
     dispatch({
         type: MODAL.CLOSE,
     });
@@ -120,6 +120,7 @@ export const onWalletTypeRequest = (device: TrezorDevice, hidden: boolean): Thun
         type: CONNECT.RECEIVE_WALLET_TYPE,
         device,
         hidden,
+        state,
     });
 };
 

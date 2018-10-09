@@ -6,6 +6,7 @@ import EthereumjsUnits from 'ethereumjs-units';
 import { findToken } from 'reducers/TokensReducer';
 import { findDevice, getPendingAmount } from 'reducers/utils';
 import * as SEND from 'actions/constants/send';
+import * as ethUtils from 'utils/ethUtils';
 
 import type {
     Dispatch,
@@ -19,7 +20,6 @@ const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?
 const UPPERCASE_RE = new RegExp('^(.*[A-Z].*)$');
 const ABS_RE = new RegExp('^[0-9]+$');
 const ETH_18_RE = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
-const HEX_RE = new RegExp('^[0-9A-Fa-f]+$');
 const dynamicRegexp = (decimals: number): RegExp => {
     if (decimals > 0) {
         return new RegExp(`^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?|\\.[0-9]{1,${decimals}})$`);
@@ -326,7 +326,7 @@ export const nonceValidation = ($state: State): PayloadAction<State> => (dispatc
 export const dataValidation = ($state: State): PayloadAction<State> => (): State => {
     const state = { ...$state };
     if (!state.touched.data || state.data.length === 0) return state;
-    if (!HEX_RE.test(state.data)) {
+    if (!ethUtils.isHex(state.data)) {
         state.errors.data = 'Data is not valid hexadecimal';
     }
     return state;

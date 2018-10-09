@@ -5,6 +5,7 @@ import EthereumjsUnits from 'ethereumjs-units';
 import BigNumber from 'bignumber.js';
 import { toHex } from 'web3-utils'; // eslint-disable-line import/no-extraneous-dependencies
 import { initWeb3 } from 'actions/Web3Actions';
+import * as ethUtils from 'utils/ethUtils';
 
 import type {
     Dispatch,
@@ -29,10 +30,9 @@ type EthereumTxRequest = {
 export const prepareEthereumTx = (tx: EthereumTxRequest): PromiseAction<EthereumTransaction> => async (dispatch: Dispatch): Promise<EthereumTransaction> => {
     const instance = await dispatch(initWeb3(tx.network));
     const { token } = tx;
-    let data: string = `0x${tx.data}`; // TODO: check if already prefixed
+    let data: string = ethUtils.sanitizeHex(tx.data);
     let value: string = toHex(EthereumjsUnits.convert(tx.amount, 'ether', 'wei'));
     let to: string = tx.to; // eslint-disable-line prefer-destructuring
-
     if (token) {
         // smart contract transaction
         const contract = instance.erc20.clone();

@@ -18,6 +18,7 @@ const StyledInput = styled.input`
     padding: 5px 31px 10px 20px;
     color: ${colors.TEXT_PRIMARY};
     background: transparent;
+    border: 1px solid ${colors.DIVIDER};
 `;
 
 const StyledIcon = styled(Icon)`

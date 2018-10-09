@@ -6,12 +6,11 @@ import type { Props } from '../../index';
 
 // There could be only one account notification
 export default (props: Props) => {
-    const { notification } = props.selectedAccount;
-    if (notification) {
+    const { network, notification } = props.selectedAccount;
+    if (network && notification) {
         if (notification.type === 'backend') {
             // special case: backend is down
             // TODO: this is a different component with "auto resolve" button
-            
             return (
                 <Notification
                     type="error"
@@ -21,14 +20,12 @@ export default (props: Props) => {
                         [{
                             label: 'Connect',
                             callback: async () => {
-                                await props.blockchainReconnect('trop');
+                                await props.blockchainReconnect(network.network);
                             },
                         }]
                     }
                 />
             );
-          
-           // return (<Notification type="error" title={notification.title} message={notification.message} />);
         }
         return (<Notification type={notification.type} title={notification.title} message={notification.message} />);
     }

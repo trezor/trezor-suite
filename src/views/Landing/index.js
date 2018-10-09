@@ -36,7 +36,6 @@ const LandingWrapper = styled.div`
 const LandingContent = styled.div`
     flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
 `;
 
@@ -85,6 +84,7 @@ export default (props: Props) => {
     const shouldShowUnsupportedBrowser = browserState.supported === false;
 
     const isLoading = !shouldShowInitializationError && !shouldShowInstallBridge && !shouldShowConnectDevice && !shouldShowUnsupportedBrowser && !localStorageError;
+
     return (
         <LandingWrapper>
             {isLoading && <LandingLoader text="Loading" size={100} />}
@@ -103,7 +103,7 @@ export default (props: Props) => {
                     <Log />
                     <LandingContent>
                         {shouldShowUnsupportedBrowser && <BrowserNotSupported />}
-                        {shouldShowInstallBridge && <InstallBridge transport={transport} />}
+                        {shouldShowInstallBridge && <InstallBridge selectFirstAvailableDevice={props.selectFirstAvailableDevice} transport={transport} />}
 
                         {(shouldShowConnectDevice || shouldShowDisconnectDevice) && (
                             <div>
