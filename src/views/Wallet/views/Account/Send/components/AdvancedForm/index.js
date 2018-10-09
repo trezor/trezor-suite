@@ -8,7 +8,6 @@ import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
 import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';
-import Link from 'components/Link';
 import ICONS from 'config/icons';
 
 import type { Props } from '../../Container';

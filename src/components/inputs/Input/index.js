@@ -7,7 +7,6 @@ import Icon from 'components/Icon';
 import {
     FONT_SIZE,
     FONT_WEIGHT,
-    FONT_FAMILY,
     TRANSITION,
 } from 'config/variables';
 

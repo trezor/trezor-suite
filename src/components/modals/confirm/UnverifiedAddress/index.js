@@ -60,8 +60,6 @@ class ConfirmUnverifiedAddress extends Component<Props> {
         const {
             account,
         } = this.props.selectedAccount;
-        if (!account) return null;
-
         this.props.modalActions.onCancel();
         this.props.receiveActions.showAddress(account.addressPath);
     }
@@ -104,7 +102,7 @@ class ConfirmUnverifiedAddress extends Component<Props> {
                 <H2>{ deviceStatus }</H2>
                 <StyledP isSmaller>To prevent phishing attacks, you should verify the address on your TREZOR first. { claim } to continue with the verification process.</StyledP>
                 <Row>
-                    <StyledButton onClick={() => this.verifyAddress()}>Try again</StyledButton>
+                    <StyledButton onClick={() => (!this.props.selectedAccount.account ? this.verifyAddress() : 'false')}>Try again</StyledButton>
                     <StyledButton isWhite onClick={() => this.showUnverifiedAddress()}>Show unverified address</StyledButton>
                 </Row>
             </Wrapper>
