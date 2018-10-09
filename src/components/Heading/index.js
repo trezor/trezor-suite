@@ -19,12 +19,12 @@ const H1 = styled.h1`
 const H2 = styled.h2`
     ${baseStyles};
     font-size: 16px;
- 
+    padding-bottom: 10px;
+
     ${props => props.claim && css`
         font-size: 36px;
         padding-bottom: 24px
     `}
-    padding-bottom: 10px;
 `;
 
 const H3 = styled.h3`
