@@ -88,6 +88,8 @@ export function update(event: StorageEvent): AsyncAction {
     };
 }
 
+const VERSION: string = '1';
+
 export function loadTokensFromJSON(): AsyncAction {
     return async (dispatch: Dispatch): Promise<void> => {
         if (typeof window.localStorage === 'undefined') return;
@@ -99,6 +101,13 @@ export function loadTokensFromJSON(): AsyncAction {
             window.addEventListener('storage', (event) => {
                 dispatch(update(event));
             });
+
+            // validate version
+            const version: ?string = get('version');
+            if (version !== VERSION) {
+                window.localStorage.clear();
+                dispatch(save('version', VERSION));
+            }
 
             // load tokens
             const tokens = await config.coins.reduce(async (promise: Promise<TokensCollection>, coin: Coin): Promise<TokensCollection> => {
