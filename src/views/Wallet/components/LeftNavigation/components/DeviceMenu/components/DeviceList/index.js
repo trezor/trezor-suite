@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
 import DeviceHeader from 'components/DeviceHeader';
@@ -22,7 +22,7 @@ type Props = {
     forgetDevice: $ElementType<CommonProps, 'forgetDevice'>;
 };
 
-class DeviceList extends Component<Props> {
+class DeviceList extends PureComponent<Props> {
     sortByInstance(a: TrezorDevice, b: TrezorDevice) {
         if (!a.instance || !b.instance) return -1;
         return a.instance > b.instance ? 1 : -1;

@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
@@ -88,7 +88,7 @@ const Label = styled.div`
 `;
 
 
-class AccountBalance extends Component<Props, State> {
+class AccountBalance extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {

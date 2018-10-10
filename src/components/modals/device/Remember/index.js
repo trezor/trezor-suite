@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
@@ -47,7 +47,7 @@ const StyledLoader = styled(Loader)`
     left: 200px;
 `;
 
-export default class RememberDevice extends Component<Props, State> {
+export default class RememberDevice extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 

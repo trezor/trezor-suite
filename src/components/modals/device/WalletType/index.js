@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
@@ -64,7 +64,7 @@ const Content = styled.div`
     `}
 `;
 
-class WalletType extends Component<Props> {
+class WalletType extends PureComponent<Props> {
     constructor(props: Props) {
         super(props);
         this.keyboardHandler = this.keyboardHandler.bind(this);

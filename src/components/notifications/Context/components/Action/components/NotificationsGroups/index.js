@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -6,7 +6,7 @@ import Group from './components/Group';
 
 const Wrapper = styled.div``;
 
-class NotificationsGroup extends Component {
+class NotificationsGroup extends PureComponent {
     groupNotifications = notifications => notifications
         .reduce((acc, obj) => {
             const key = obj.type;

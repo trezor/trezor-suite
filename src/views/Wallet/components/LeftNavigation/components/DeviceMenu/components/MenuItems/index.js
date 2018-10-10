@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
@@ -27,7 +27,7 @@ const Label = styled.div`
     padding-left: 15px;
 `;
 
-class MenuItems extends Component {
+class MenuItems extends PureComponent {
     onDeviceMenuClick(action, device) {
         if (action === 'reload') {
             this.props.acquireDevice();

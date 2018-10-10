@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
@@ -118,7 +118,7 @@ const Li = styled.li`
     text-align: justify;
 `;
 
-class InstallBridge extends Component<Props, State> {
+class InstallBridge extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 

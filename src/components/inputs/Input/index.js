@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
@@ -72,7 +72,7 @@ const BottomText = styled.span`
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 `;
 
-class Input extends Component {
+class Input extends PureComponent {
     getIcon(inputState) {
         let icon = [];
         if (inputState === 'success') {

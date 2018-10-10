@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
@@ -50,7 +50,7 @@ const RemoveTokenButton = styled(Button)`
     padding: 0 0 0 10px;
 `;
 
-class AddedToken extends Component<> {
+class AddedToken extends PureComponent {
     getTokenBalance(token) {
         const pendingAmount = stateUtils.getPendingAmount(this.props.pending, token.symbol, true);
         const balance = new BigNumber(token.balance).minus(pendingAmount).toString(10);

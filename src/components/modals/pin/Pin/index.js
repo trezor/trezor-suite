@@ -1,7 +1,7 @@
 /* @flow */
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Link from 'components/Link';
 import styled from 'styled-components';
 
@@ -39,7 +39,7 @@ const Footer = styled.div`
     flex-direction: column;
 `;
 
-class Pin extends Component<Props, State> {
+class Pin extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 

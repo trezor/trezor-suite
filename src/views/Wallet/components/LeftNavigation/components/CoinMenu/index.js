@@ -3,14 +3,14 @@ import coins from 'constants/coins';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { NavLink } from 'react-router-dom';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';
 
 const Wrapper = styled.div``;
 
-class CoinMenu extends Component {
+class CoinMenu extends PureComponent {
     getBaseUrl() {
         const { selectedDevice } = this.props.wallet;
         let baseUrl = '';

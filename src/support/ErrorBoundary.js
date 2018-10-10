@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import RedBox from 'redbox-react';
 
-class ErrorBoundary extends Component {
+class ErrorBoundary extends PureComponent {
     constructor(props) {
         super(props);
         this.state = { hasError: false, error: false };

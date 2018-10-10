@@ -85,7 +85,7 @@ const ModalWindow = styled.div`
     text-align: center;
 `;
 
-class Modal extends React.Component<Props> {
+class Modal extends React.PureComponent<Props> {
     render() {
         if (!this.props.modal.opened) return null;
 

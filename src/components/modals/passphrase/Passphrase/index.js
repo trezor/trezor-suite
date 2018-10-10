@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 import { FONT_SIZE, TRANSITION } from 'config/variables';
@@ -76,7 +76,7 @@ const LinkButton = styled(Button)`
     }
 `;
 
-class Passphrase extends Component<Props, State> {
+class Passphrase extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 
