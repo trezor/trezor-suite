@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { FONT_SIZE, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
+import { NavLink } from 'react-router-dom';
 
 const A = styled.a`
     text-decoration: none;
@@ -34,20 +35,44 @@ const A = styled.a`
     }
 `;
 
-const Link = ({
-    children, className, href, target, rel, onClick, isGreen = false, isGray = false,
-}) => (
-    <A
-        className={className}
-        href={href}
-        target={target}
-        rel={rel}
-        onClick={onClick}
-        isGreen={isGreen}
-        isGray={isGray}
-    >{children}
-    </A>
-);
+const StyledNavLink = styled(NavLink)`
+    ${props => props.isGreen && css`
+            color: ${colors.GREEN_PRIMARY};
+    `}
+
+    ${props => props.isGray && css`
+        color: ${colors.TEXT_SECONDARY};
+    `}
+`;
+
+class Link extends Component {
+    render() {
+        const shouldRenderRouterLink = !!this.this.to;
+        let LinkComponent;
+        if (shouldRenderRouterLink) {
+            LinkComponent = (
+                <StyledNavLink
+                    isGreen={this.props.isGreen}
+                    isGray={this.props.isGray}
+                    to={this.props.to}
+                />);
+        } else {
+            LinkComponent = (
+                <A
+                    className={this.props.className}
+                    href={this.props.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    onClick={this.props.onClick}
+                    isGreen={this.props.isGreen}
+                    isGray={this.props.isGray}
+                >{this.props.children}
+                </A>
+            );
+        }
+        return (<LinkComponent />);
+    }
+}
 
 Link.propTypes = {
     children: PropTypes.oneOfType([
@@ -57,11 +82,15 @@ Link.propTypes = {
     ]).isRequired,
     className: PropTypes.string,
     href: PropTypes.string,
-    target: PropTypes.string,
-    rel: PropTypes.string,
+    to: PropTypes.string,
     onClick: PropTypes.func,
     isGreen: PropTypes.bool,
     isGray: PropTypes.bool,
+};
+
+Link.defaultProps = {
+    isGreen: false,
+    isGray: false,
 };
 
 export default Link;
