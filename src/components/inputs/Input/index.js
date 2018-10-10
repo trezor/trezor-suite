@@ -129,6 +129,7 @@ class Input extends Component {
                             borderColor={this.getColor(this.props.state)}
                             disabled={this.props.isDisabled}
                             name={this.props.name}
+                            data-lpignore="true"
                         />
                     </InputIconWrapper>
                     {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
