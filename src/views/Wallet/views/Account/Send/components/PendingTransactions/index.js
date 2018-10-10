@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 import ColorHash from 'color-hash';
@@ -67,7 +67,7 @@ const TransactionAmount = styled.div`
     color: colors.TEXT_SECONDARY;
 `;
 
-class PendingTransactions extends Component<Props> {
+class PendingTransactions extends PureComponent<Props> {
     getPendingTransactions() {
         return this.props.pending.filter(tx => !tx.rejected);
     }

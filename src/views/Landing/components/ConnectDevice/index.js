@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import P from 'components/Paragraph';
@@ -14,7 +14,7 @@ type Props = {
     showWebUsb: boolean,
     showDisconnect: boolean,
 };
-class ConnectDevice extends Component<Props> {
+class ConnectDevice extends PureComponent<Props> {
     componentDidMount() {
         if (this.props.showWebUsb) {
             TrezorConnect.renderWebUSBButton();

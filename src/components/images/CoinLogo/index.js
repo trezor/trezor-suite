@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -13,7 +13,7 @@ const Logo = styled.img`
     display: block;
 `;
 
-class CoinLogo extends Component {
+class CoinLogo extends PureComponent {
     constructor() {
         super();
         this.longIcons = ['etc', 'eth', 'trop'];

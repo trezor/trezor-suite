@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
@@ -27,7 +27,7 @@ type DeviceMenuItem = {
     label: string;
 }
 
-class DeviceMenu extends Component<Props> {
+class DeviceMenu extends PureComponent<Props> {
     constructor(props: Props) {
         super(props);
         this.mouseDownHandler = this.mouseDownHandler.bind(this);

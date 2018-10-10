@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import colors from 'config/colors';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 type Props = {
 
@@ -25,7 +25,7 @@ const Wrapper = styled.div`
     transition: all 0.3s ease-in-out;
 `;
 
-class Indicator extends Component<Props, State> {
+class Indicator extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 

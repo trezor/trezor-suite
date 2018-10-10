@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
@@ -62,7 +62,7 @@ const ErrorMessage = styled.div`
     width: 100%;
 `;
 
-export default class DuplicateDevice extends Component<Props, State> {
+export default class DuplicateDevice extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 

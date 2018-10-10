@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { H2 } from 'components/Heading';
 import P from 'components/Paragraph';
 import styled from 'styled-components';
@@ -36,7 +36,7 @@ const StyledButton = styled(Button)`
     margin: 0 0 10px 0;
 `;
 
-class ConfirmUnverifiedAddress extends Component<Props> {
+class ConfirmUnverifiedAddress extends PureComponent<Props> {
     componentDidMount(): void {
         this.keyboardHandler = this.keyboardHandler.bind(this);
         window.addEventListener('keydown', this.keyboardHandler, false);

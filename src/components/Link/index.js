@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { FONT_SIZE, TRANSITION } from 'config/variables';
@@ -45,7 +45,7 @@ const StyledNavLink = styled(NavLink)`
     `}
 `;
 
-class Link extends Component {
+class Link extends PureComponent {
     render() {
         const shouldRenderRouterLink = this.props.to;
         let LinkComponent;

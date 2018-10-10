@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
@@ -32,7 +32,7 @@ const Title = styled.div`
     color: ${props => props.color};
 `;
 
-class Group extends Component {
+class Group extends PureComponent {
     constructor() {
         super();
         this.state = {

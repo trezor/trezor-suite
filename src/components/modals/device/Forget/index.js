@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
@@ -27,7 +27,7 @@ const Row = styled.div`
     padding: 10px 0;
 `;
 
-class ForgetDevice extends Component<Props> {
+class ForgetDevice extends PureComponent<Props> {
     componentDidMount() {
         this.keyboardHandler = this.keyboardHandler.bind(this);
         window.addEventListener('keydown', this.keyboardHandler, false);
