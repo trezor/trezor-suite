@@ -32,6 +32,8 @@ import RememberDevice from 'components/modals/device/Remember';
 import DuplicateDevice from 'components/modals/device/Duplicate';
 import WalletType from 'components/modals/device/WalletType';
 
+import NemWallet from 'components/modals/external/NemWallet';
+
 type OwnProps = { }
 
 type StateProps = {
@@ -128,6 +130,9 @@ class Modal extends React.PureComponent<Props> {
                 component = (<WalletType {...this.props} />);
                 break;
 
+            case 'xem':
+                component = (<NemWallet {...this.props} />);
+                break;
             default:
                 component = null;
         }
