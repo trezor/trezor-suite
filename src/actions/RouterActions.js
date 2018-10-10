@@ -152,7 +152,8 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
     const shouldBeLandingPage = getState().devices.length < 1 || !getState().wallet.ready || getState().connect.error !== null;
     const landingPageUrl = dispatch(isLandingPageUrl(requestedUrl));
     if (shouldBeLandingPage) {
-        return !landingPageUrl ? '/' : requestedUrl;
+        const landingPageRoute = dispatch(isLandingPageUrl(requestedUrl, true));
+        return !landingPageRoute ? '/' : requestedUrl;
     }
 
     // Disallow displaying landing page
@@ -283,10 +284,16 @@ const goto = (url: string): ThunkAction => (dispatch: Dispatch, getState: GetSta
 /*
 * Check if requested OR current url is landing page
 */
-export const isLandingPageUrl = ($url?: string): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+export const isLandingPageUrl = ($url?: string, checkRoutes: boolean = false): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
     let url: ?string = $url;
     if (typeof url !== 'string') {
         url = getState().router.location.pathname;
+    }
+    if (checkRoutes) {
+        const isLandingRoute = routes.find(r => r.pattern === url && r.name.indexOf('landing') >= 0);
+        if (isLandingRoute) {
+            return true;
+        }
     }
     return url === '/';
 };
@@ -334,7 +341,7 @@ export const gotoFirmwareUpdate = (): ThunkAction => (dispatch: Dispatch, getSta
 */
 export const setInitialUrl = (): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
     const { initialPathname } = getState().wallet;
-    if (typeof initialPathname === 'string' && !dispatch(isLandingPageUrl(initialPathname))) {
+    if (typeof initialPathname === 'string' && !dispatch(isLandingPageUrl(initialPathname, true))) {
         const valid = dispatch(getValidUrl({
             type: LOCATION_CHANGE,
             payload: {
