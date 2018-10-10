@@ -9,7 +9,7 @@ import { TRANSITION, FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 type Props = {
     children: React.Node,
     className?: string,
-    onClick: () => any,
+    onClick?: () => any,
     onMouseEnter?: () => void,
     onMouseLeave?: () => void,
     onFocus?: () => void,
