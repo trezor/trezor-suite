@@ -5,7 +5,7 @@ import colors from 'config/colors';
 import React, { Component } from 'react';
 
 type Props = {
-    pathname: string;
+
 }
 
 type State = {
@@ -79,7 +79,7 @@ class Indicator extends Component<Props, State> {
 
     render() {
         return (
-            <Wrapper style={this.state.style}>{ this.props.pathname }</Wrapper>
+            <Wrapper style={this.state.style} />
         );
     }
 }
