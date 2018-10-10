@@ -1,9 +1,22 @@
-import React from 'react';
+/* @flow */
+
+import * as React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import { TRANSITION } from 'config/variables';
+
+type Props = {
+    type: string;
+    icon?: {
+        type: Array<string>;
+        color: string;
+        size: number;
+    };
+    onClick: () => void;
+    children: React.Node;
+};
 
 const Wrapper = styled.button`
     padding: 12px 58px;
@@ -62,10 +75,9 @@ const IconWrapper = styled.span`
 `;
 
 const NotificationButton = ({
-    children, className, icon, onClick = () => { }, type = null,
-}) => (
+    type, icon, onClick, children,
+}: Props) => (
     <Wrapper
-        className={className}
         icon={icon}
         onClick={onClick}
         type={type}
@@ -84,15 +96,14 @@ const NotificationButton = ({
 );
 
 NotificationButton.propTypes = {
-    children: PropTypes.node.isRequired,
     type: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    onClick: PropTypes.func,
     icon: PropTypes.shape({
         type: PropTypes.arrayOf(PropTypes.string).isRequired,
         color: PropTypes.string,
         size: PropTypes.number,
     }),
+    onClick: PropTypes.func,
+    children: PropTypes.node.isRequired,
 };
 
 export default NotificationButton;

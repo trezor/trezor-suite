@@ -1,6 +1,6 @@
 /* @flow */
 import * as React from 'react';
-import { Notification } from 'components/Notification';
+import Notification from 'components/Notification';
 
 import type { Props } from '../../index';
 
@@ -10,6 +10,7 @@ export default (props: Props) => {
     if (!outdated) return null;
     return (
         <Notification
+            key="update-firmware"
             type="warning"
             title="Firmware update"
             actions={

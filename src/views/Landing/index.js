@@ -7,7 +7,8 @@ import Footer from 'components/Footer';
 import Log from 'components/Log';
 import Link from 'components/Link';
 import Loader from 'components/Loader';
-import Notifications, { Notification } from 'components/Notification';
+import Notification from 'components/Notification';
+import ContextNotifications from 'components/notifications/Context';
 import colors from 'config/colors';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
@@ -98,7 +99,7 @@ export default (props: Props) => {
                             type="error"
                         />
                     )}
-                    <Notifications />
+                    <ContextNotifications />
                     {shouldShowInitializationError && <InitializationError error={connectError} />}
                     <Log />
                     <LandingContent>

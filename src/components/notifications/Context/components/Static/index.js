@@ -1,5 +1,7 @@
 /* @flow */
-import { Notification } from 'components/Notification';
+
+import * as React from 'react';
+import Notification from 'components/Notification';
 
 import type { Props } from '../../index';
 
@@ -8,9 +10,14 @@ export default (props: Props) => {
     if (!location) return null;
 
     const notifications: Array<Notification> = [];
+    // Example:
     // if (location.state.device) {
     //     notifications.push(<Notification key="example" type="info" title="Static example" />);
     // }
 
-    return notifications;
+    return (
+        <React.Fragment>
+            {notifications}
+        </React.Fragment>
+    );
 };

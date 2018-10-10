@@ -1,6 +1,6 @@
 /* @flow */
 import * as React from 'react';
-import { Notification } from 'components/Notification';
+import Notification from 'components/Notification';
 
 import type { Props } from '../../index';
 

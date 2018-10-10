@@ -13,6 +13,7 @@ export type CallbackAction = {
 }
 
 export type NotificationEntry = {
+    +key: string; // React.Key
     +id: ?string;
     +devicePath: ?string;
     +type: string;
@@ -38,6 +39,7 @@ const initialState: State = [
 const addNotification = (state: State, payload: any): State => {
     const newState: State = state.filter(e => !e.cancelable);
     newState.push({
+        key: new Date().getTime().toString(),
         id: payload.id,
         devicePath: payload.devicePath,
         type: payload.type,
