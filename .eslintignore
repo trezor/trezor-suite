@@ -4,3 +4,4 @@ build-devel
 coverage
 node_modules
 src/flowtype/npm
+**/_old/*

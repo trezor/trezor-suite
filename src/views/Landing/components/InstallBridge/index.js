@@ -12,6 +12,7 @@ import Loader from 'components/Loader';
 import P from 'components/Paragraph';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
+import * as RouterActions from 'actions/RouterActions';
 
 import type { State as TrezorConnectState } from 'reducers/TrezorConnectReducer';
 

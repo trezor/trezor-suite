@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import colors from 'config/colors';
-import { Notification } from 'components/Notification';
+import Notification from 'components/Notification';
 import { getIcon, getColor } from 'utils/notification';
 
 const Wrapper = styled.div``;

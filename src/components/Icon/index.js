@@ -1,7 +1,23 @@
+/* @flow */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import styled, { keyframes } from 'styled-components';
+
+type Props = {
+    icon: Array<string>,
+    className?: string,
+    hoverColor?: string,
+    canAnimate?: boolean,
+    size?: number,
+    isActive?: boolean,
+    color?: string,
+    onMouseEnter?: () => void,
+    onMouseLeave?: () => void,
+    onFocus?: () => void,
+    onClick?: () => void,
+}
 
 const chooseIconAnimationType = (canAnimate, isActive) => {
     if (canAnimate) {
@@ -58,7 +74,7 @@ const Icon = ({
     onMouseLeave,
     onFocus,
     onClick,
-}) => (
+}: Props) => (
     <SvgWrapper
         className={className}
         canAnimate={canAnimate}
@@ -100,6 +116,5 @@ Icon.propTypes = {
     onFocus: PropTypes.func,
     onClick: PropTypes.func,
 };
-
 
 export default Icon;

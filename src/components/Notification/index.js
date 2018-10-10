@@ -1,9 +1,8 @@
 /* @flow */
 
-import React from 'react';
+import * as React from 'react';
+import PropTypes from 'prop-types';
 import media from 'styled-media-query';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
 import { getColor, getIcon } from 'utils/notification';
@@ -13,21 +12,17 @@ import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 import * as NotificationActions from 'actions/NotificationActions';
 import Loader from 'components/Loader';
-import type { Action, State } from 'flowtype';
+import type { CallbackAction } from 'reducers/NotificationReducer';
+
 import NotificationButton from './components/NotificationButton';
 
-type Props = {
-    key?: number,
-    notifications: $ElementType<State, 'notifications'>,
-    close: (notif?: any) => Action,
-};
 
-type NProps = {
+type Props = {
     type: string,
     cancelable?: boolean;
     title: string;
     message?: string;
-    actions?: Array<any>;
+    actions?: Array<CallbackAction>;
     close?: typeof NotificationActions.close,
     loading?: boolean
 };
@@ -128,9 +123,8 @@ const ActionContent = styled.div`
     `}
 `;
 
-export const Notification = (props: NProps): React$Element<string> => {
+const Notification = (props: Props): React$Element<string> => {
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
-
 
     return (
         <Wrapper type={props.type}>
@@ -167,7 +161,6 @@ export const Notification = (props: NProps): React$Element<string> => {
                             <NotificationButton
                                 key={action.label}
                                 type={props.type}
-                                text={action.label}
                                 onClick={() => { close(); action.callback(); }}
                             >{action.label}
                             </NotificationButton>
@@ -179,26 +172,14 @@ export const Notification = (props: NProps): React$Element<string> => {
     );
 };
 
-export const NotificationGroup = (props: Props) => {
-    const { notifications, close } = props;
-    return notifications.map(n => (
-        <Notification
-            key={n.title}
-            type={n.type}
-            title={n.title}
-            message={n.message}
-            cancelable={n.cancelable}
-            actions={n.actions}
-            close={close}
-        />
-    ));
+Notification.propTypes = {
+    type: PropTypes.string.isRequired,
+    cancelable: PropTypes.bool,
+    title: PropTypes.string.isRequired,
+    message: PropTypes.string,
+    actions: PropTypes.arrayOf(PropTypes.object),
+    close: PropTypes.func,
+    loading: PropTypes.bool,
 };
 
-export default connect(
-    state => ({
-        notifications: state.notifications,
-    }),
-    dispatch => ({
-        close: bindActionCreators(NotificationActions.close, dispatch),
-    }),
-)(NotificationGroup);
+export default Notification;

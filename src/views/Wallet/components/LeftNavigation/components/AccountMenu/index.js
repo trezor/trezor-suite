@@ -107,7 +107,7 @@ const DiscoveryLoadingText = styled.span`
 `;
 
 // TODO: Refactorize deviceStatus & selectedAccounts
-const AccountMenu = (props: Props): ?React$Element<string> => {
+const AccountMenu = (props: Props) => {
     const selected = props.wallet.selectedDevice;
     const { location } = props.router;
     const urlParams = location.state;
@@ -117,7 +117,7 @@ const AccountMenu = (props: Props): ?React$Element<string> => {
     const { config } = props.localStorage;
     const selectedCoin = config.coins.find(c => c.network === location.state.network);
 
-    if (!selected || !selectedCoin) return;
+    if (!selected || !selectedCoin) return null;
 
     const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
 

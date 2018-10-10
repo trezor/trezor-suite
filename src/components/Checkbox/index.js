@@ -1,3 +1,5 @@
+/* @flow */
+
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
@@ -5,6 +7,12 @@ import colors from 'config/colors';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { FONT_SIZE } from 'config/variables';
+
+type Props = {
+    onClick: (event: KeyboardEvent) => void,
+    isChecked: boolean,
+    children: string,
+}
 
 const Wrapper = styled.div`
     display: flex;
@@ -54,10 +62,10 @@ const Label = styled.div`
     }
 `;
 
-class Checkbox extends PureComponent {
-    handleKeyboard(e) {
-        if (e.keyCode === 32) {
-            this.props.onClick(e);
+class Checkbox extends PureComponent<Props> {
+    handleKeyboard(event: KeyboardEvent) {
+        if (event.keyCode === 32) {
+            this.props.onClick(event);
         }
     }
 
@@ -70,7 +78,7 @@ class Checkbox extends PureComponent {
         return (
             <Wrapper
                 onClick={onClick}
-                onKeyUp={e => this.handleKeyboard(e)}
+                onKeyUp={event => this.handleKeyboard(event)}
                 tabIndex={0}
             >
                 <IconWrapper isChecked={isChecked}>

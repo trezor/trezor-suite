@@ -46,9 +46,8 @@ if (process.env.NODE_ENV === 'development') {
         collapsed: true,
     });
 
-    const { devToolsExtension }: ?Function = window;
-    if (typeof devToolsExtension === 'function') {
-        enhancers.push(devToolsExtension());
+    if (window && typeof window.devToolsExtension === 'function') {
+        enhancers.push(window.devToolsExtension());
     }
 
     composedEnhancers = compose(
@@ -67,9 +66,3 @@ export default createStore(
     initialState,
     composedEnhancers,
 );
-
-// if (process.env.NODE_ENV === 'production') {
-//     module.exports = require('./store.dev'); // eslint-disable-line global-require
-// } else {
-//     module.exports = require('./store.dev'); // eslint-disable-line global-require
-// }

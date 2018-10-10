@@ -11,6 +11,11 @@ import { connect } from 'react-redux';
 import colors from 'config/colors';
 import * as LogActions from 'actions/LogActions';
 
+type Props = {
+    opened: boolean,
+    toggle: () => any,
+}
+
 const Wrapper = styled.div`
     width: 100%;
     font-size: 12px;
@@ -30,7 +35,7 @@ const Copy = styled.div`
     margin-right: 20px;
 `;
 
-const Footer = ({ opened, toggle }) => (
+const Footer = ({ opened, toggle }: Props) => (
     <Wrapper>
         <Copy title={window.COMMITHASH}>&copy; {getYear(new Date())}</Copy>
         <StyledLink href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" isGreen>SatoshiLabs</StyledLink>
