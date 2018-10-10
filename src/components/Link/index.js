@@ -47,7 +47,7 @@ const StyledNavLink = styled(NavLink)`
 
 class Link extends Component {
     render() {
-        const shouldRenderRouterLink = !!this.this.to;
+        const shouldRenderRouterLink = this.props.to;
         let LinkComponent;
         if (shouldRenderRouterLink) {
             LinkComponent = (
@@ -55,7 +55,8 @@ class Link extends Component {
                     isGreen={this.props.isGreen}
                     isGray={this.props.isGray}
                     to={this.props.to}
-                />);
+                >{this.props.children}
+                </StyledNavLink>);
         } else {
             LinkComponent = (
                 <A
@@ -70,7 +71,8 @@ class Link extends Component {
                 </A>
             );
         }
-        return (<LinkComponent />);
+
+        return LinkComponent;
     }
 }
 
