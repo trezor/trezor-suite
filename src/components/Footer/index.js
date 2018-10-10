@@ -11,6 +11,8 @@ import { connect } from 'react-redux';
 import colors from 'config/colors';
 import * as LogActions from 'actions/LogActions';
 
+declare var COMMITHASH: string;
+
 type Props = {
     opened: boolean,
     toggle: () => any,
@@ -37,7 +39,7 @@ const Copy = styled.div`
 
 const Footer = ({ opened, toggle }: Props) => (
     <Wrapper>
-        <Copy title={window.COMMITHASH}>&copy; {getYear(new Date())}</Copy>
+        <Copy title={COMMITHASH}>&copy; {getYear(new Date())}</Copy>
         <StyledLink href="http://satoshilabs.com" isGreen>SatoshiLabs</StyledLink>
         <StyledLink href="/assets/tos.pdf" isGreen>Terms</StyledLink>
         <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>

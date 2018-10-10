@@ -82,6 +82,8 @@ export type TrezorConnectAction = {
     state: ?string,
 };
 
+declare var LOCAL: ?string;
+
 export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     // set listeners
     TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
@@ -120,7 +122,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         });
     });
 
-    window.__TREZOR_CONNECT_SRC = typeof window.LOCAL === 'string' ? window.LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
+    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
     // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/'; // eslint-disable-line no-underscore-dangle
 
     try {

@@ -174,6 +174,3 @@ export type PromiseAction<R> = ReduxPromiseAction<State, Action, R>;
 
 export type Store = ReduxStore<State, Action>;
 export type GetState = () => State;
-
-declare var LOCAL: string;
-declare var COMMITHASH: string;
