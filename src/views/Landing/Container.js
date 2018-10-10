@@ -19,7 +19,7 @@ export type StateProps = {
 }
 
 type DispatchProps = {
-
+    selectFirstAvailableDevice: typeof RouterActions.selectFirstAvailableDevice,
 }
 
 type OwnProps = {
