@@ -32,6 +32,14 @@ const Title = styled.div`
     color: ${props => props.color};
 `;
 
+const StyledNotification = styled(Notification)`
+    border-bottom: 1px solid ${props => getColor(props.type)};
+
+    &:last-child {
+        border: 0;
+    }
+`;
+
 class Group extends PureComponent {
     constructor() {
         super();
@@ -87,7 +95,7 @@ class Group extends PureComponent {
                     {groupNotifications
                         .slice(0, this.state.visibleCount)
                         .map(notification => (
-                            <Notification
+                            <StyledNotification
                                 key={notification.key}
                                 type={notification.type}
                                 title={notification.title}

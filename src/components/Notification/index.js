@@ -21,6 +21,7 @@ type Props = {
     type: string,
     cancelable?: boolean;
     title: string;
+    className: string;
     message?: string;
     actions?: Array<CallbackAction>;
     close?: typeof NotificationActions.close,
@@ -127,7 +128,7 @@ const Notification = (props: Props): React$Element<string> => {
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
 
     return (
-        <Wrapper type={props.type}>
+        <Wrapper className={props.className} type={props.type}>
             {props.loading && <Loader size={50} /> }
             {props.cancelable && (
                 <CloseClick onClick={() => close()}>
