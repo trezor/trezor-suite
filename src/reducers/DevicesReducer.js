@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import { DEVICE } from 'trezor-connect';
 import type { Device } from 'trezor-connect';
 import * as CONNECT from 'actions/constants/TrezorConnect';

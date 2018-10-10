@@ -1,9 +1,18 @@
+/* @flow */
+
 import styled from 'styled-components';
 import React from 'react';
 import { FONT_SIZE } from 'config/variables';
 import { NavLink } from 'react-router-dom';
 import colors from 'config/colors';
+
+import type { Location } from 'react-router';
+
 import Indicator from './components/Indicator';
+
+type Props = {
+    location: Location;
+};
 
 const Wrapper = styled.div`
     position: relative;
@@ -39,9 +48,11 @@ const StyledNavLink = styled(NavLink)`
 `;
 
 
-const TopNavigationAccount = (props) => {
-    const urlParams = props.match.params;
-    const basePath = `/device/${urlParams.device}/network/${urlParams.network}/account/${urlParams.account}`;
+const TopNavigationAccount = (props: Props) => {
+    const { state, pathname } = props.location;
+    if (!state) return null;
+
+    const basePath = `/device/${state.device}/network/${state.network}/account/${state.account}`;
 
     return (
         <Wrapper className="account-tabs">
@@ -49,7 +60,7 @@ const TopNavigationAccount = (props) => {
             <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
             <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
             {/* <StyledNavLink to={`${basePath}/signverify`}>Sign & Verify</StyledNavLink> */}
-            <Indicator pathname={props.match.pathname} />
+            <Indicator pathname={pathname} />
         </Wrapper>
     );
 };

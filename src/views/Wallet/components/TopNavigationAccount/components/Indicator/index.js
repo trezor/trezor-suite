@@ -1,6 +1,19 @@
+/* @flow */
+
 import styled from 'styled-components';
 import colors from 'config/colors';
 import React, { Component } from 'react';
+
+type Props = {
+    pathname: string;
+}
+
+type State = {
+    style: {
+        width: number;
+        left: number;
+    }
+}
 
 const Wrapper = styled.div`
     position: absolute;
@@ -13,8 +26,6 @@ const Wrapper = styled.div`
 `;
 
 class Indicator extends Component<Props, State> {
-    reposition: () => void;
-
     constructor(props: Props) {
         super(props);
 
@@ -28,23 +39,17 @@ class Indicator extends Component<Props, State> {
         this.reposition = this.reposition.bind(this);
     }
 
-    state: State;
-
-    handleResize() {
-        this.reposition();
-    }
-
     componentDidMount() {
         this.reposition();
         window.addEventListener('resize', this.reposition, false);
     }
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.reposition, false);
-    }
-
     componentDidUpdate() {
         this.reposition();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.reposition, false);
     }
 
     reposition() {
@@ -64,6 +69,12 @@ class Indicator extends Component<Props, State> {
                 },
             });
         }
+    }
+
+    reposition: () => void;
+
+    handleResize() {
+        this.reposition();
     }
 
     render() {
