@@ -1,8 +1,23 @@
-import React from 'react';
+/* @flow */
+
+import * as React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import { TRANSITION, FONT_WEIGHT, FONT_SIZE } from 'config/variables';
+
+type Props = {
+    children: React.Node,
+    className?: string,
+    onClick: () => any,
+    onMouseEnter?: () => void,
+    onMouseLeave?: () => void,
+    onFocus?: () => void,
+    isDisabled?: boolean,
+    isWhite?: boolean,
+    isWebUsb?: boolean,
+    isTransparent?: boolean,
+}
 
 const Wrapper = styled.button`
     padding: ${props => (props.icon ? '4px 24px 4px 15px' : '11px 24px')};
@@ -108,8 +123,8 @@ const Wrapper = styled.button`
 
 const Button = ({
     children,
-    className,
-    onClick = () => { },
+    className = '',
+    onClick,
     onMouseEnter,
     onMouseLeave,
     onFocus,
@@ -117,7 +132,7 @@ const Button = ({
     isWhite = false,
     isWebUsb = false,
     isTransparent = false,
-}) => {
+}: Props) => {
     const newClassName = isWebUsb ? `${className} trezor-webusb-button` : className;
     return (
         <Wrapper
