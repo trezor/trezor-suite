@@ -141,7 +141,7 @@ export default class StickyContainer extends React.PureComponent<Props, State> {
                 state.footerFixed = false;
             }
         } else if (footerBounds.bottom < viewportHeight) {
-            state.footerFixed = true;
+            state.footerFixed = asideBounds.height > wrapperBounds.height;
         }
 
         state.prevScrollY = scrollY;
