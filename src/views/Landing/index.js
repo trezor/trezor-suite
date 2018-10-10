@@ -106,7 +106,7 @@ export default (props: Props) => {
                         {shouldShowUnsupportedBrowser && <BrowserNotSupported />}
                         {shouldShowInstallBridge && <InstallBridge selectFirstAvailableDevice={props.selectFirstAvailableDevice} transport={transport} />}
 
-                        {(shouldShowConnectDevice || shouldShowDisconnectDevice) && (
+                        {!shouldShowInstallBridge && (shouldShowConnectDevice || shouldShowDisconnectDevice) && (
                             <div>
                                 <TitleWrapper>
                                     <H2 claim>The private bank in your hands.</H2>

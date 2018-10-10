@@ -131,7 +131,7 @@ class InstallBridge extends Component<Props, State> {
 
         const currentTarget: ?InstallTarget = installers.find(i => i.preferred === true);
         this.state = {
-            currentVersion: props.transport.type ? `Your version ${props.transport.version}` : 'Not installed',
+            currentVersion: props.transport.type && props.transport.type === 'bridge' ? `Your version ${props.transport.version}` : 'Not installed',
             latestVersion: props.transport.bridge.version.join('.'),
             installers,
             target: currentTarget || installers[0],
