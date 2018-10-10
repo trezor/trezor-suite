@@ -12,16 +12,17 @@ import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 import * as NotificationActions from 'actions/NotificationActions';
 import Loader from 'components/Loader';
+import type { CallbackAction } from 'reducers/NotificationReducer';
 
 import NotificationButton from './components/NotificationButton';
 
+
 type Props = {
-    key?: React.Key,
     type: string,
     cancelable?: boolean;
     title: string;
     message?: string;
-    actions?: Array<any>;
+    actions?: Array<CallbackAction>;
     close?: typeof NotificationActions.close,
     loading?: boolean
 };
@@ -126,7 +127,7 @@ const Notification = (props: Props): React$Element<string> => {
     const close: Function = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
 
     return (
-        <Wrapper key={props.key} type={props.type}>
+        <Wrapper type={props.type}>
             {props.loading && <Loader size={50} /> }
             {props.cancelable && (
                 <CloseClick onClick={() => close()}>
@@ -172,12 +173,11 @@ const Notification = (props: Props): React$Element<string> => {
 };
 
 Notification.propTypes = {
-    key: PropTypes.string,
     type: PropTypes.string.isRequired,
     cancelable: PropTypes.bool,
     title: PropTypes.string.isRequired,
     message: PropTypes.string,
-    actions: PropTypes.arrayOf(PropTypes.func),
+    actions: PropTypes.arrayOf(PropTypes.object),
     close: PropTypes.func,
     loading: PropTypes.bool,
 };
