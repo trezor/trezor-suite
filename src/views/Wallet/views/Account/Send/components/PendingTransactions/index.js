@@ -155,8 +155,6 @@ class PendingTransactions extends Component<Props> {
                         <TransactionName>
                             <StyledLink
                                 href={`${this.props.network.explorer.tx}${tx.id}`}
-                                target="_blank"
-                                rel="noreferrer noopener"
                                 isGray
                             >
                                 {this.getTransactionName(tx)}

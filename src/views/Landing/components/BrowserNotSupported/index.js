@@ -36,22 +36,14 @@ const BrowserNotSupported = () => (
             <Browser>
                 <BrowserLogo src={ChromeImage} />
                 <P isSmaller>Google Chrome</P>
-                <Link
-                    href="https://www.google.com/chrome/"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                >
+                <Link href="https://www.google.com/chrome/">
                     <Button>Get Chrome</Button>
                 </Link>
             </Browser>
             <Browser>
                 <BrowserLogo src={FirefoxImage} />
                 <P isSmaller>Mozzila Firefox</P>
-                <Link
-                    href="https://www.mozilla.org/en-US/firefox/new/"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                >
+                <Link href="https://www.mozilla.org/en-US/firefox/new/">
                     <Button>Get Firefox</Button>
                 </Link>
 

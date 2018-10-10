@@ -183,8 +183,6 @@ class InstallBridge extends Component<Props, State> {
                         <LearnMoreText>Learn more about latest versions in</LearnMoreText>
                         <Link
                             href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
-                            target="_blank"
-                            rel="noreferrer noopener"
                             isGreen
                         >Changelog
                         </Link>
@@ -193,8 +191,6 @@ class InstallBridge extends Component<Props, State> {
                         {target.signature && (
                             <Link
                                 href={this.state.uri + target.signature}
-                                target="_blank"
-                                rel="noreferrer noopener"
                                 isGreen
                             >Check PGP signature
                             </Link>

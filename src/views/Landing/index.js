@@ -126,11 +126,9 @@ export default (props: Props) => {
                                     <LandingFooterWrapper>
                                         {isWebUSB(transport) && (
                                             <P>
-                                                <LandingFooterTextWrapper>
-                                                    Device not recognized?
-                                                </LandingFooterTextWrapper>
+                                                <LandingFooterTextWrapper>Device not recognized?</LandingFooterTextWrapper>
                                                 <StyledLink
-                                                    href="#/bridge"
+                                                    to="/bridge"
                                                     isGreen
                                                 >Try installing the TREZOR Bridge.
                                                 </StyledLink>
@@ -142,8 +140,6 @@ export default (props: Props) => {
                                             </LandingFooterTextWrapper>
                                             <StyledLink
                                                 href="https://trezor.io/"
-                                                target="_blank"
-                                                rel="noreferrer noopener"
                                                 isGreen
                                             >Get one
                                             </StyledLink>

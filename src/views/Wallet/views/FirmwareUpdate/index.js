@@ -35,7 +35,7 @@ const Wrapper = styled.section`
     height: 100%;
 `;
 
-const StyledNavLink = styled(NavLink)`
+const StyledNavLink = styled(Link)`
     color: ${colors.TEXT_SECONDARY};
     padding-top: 20px;
     font-size: ${FONT_SIZE.SMALL};
@@ -129,13 +129,11 @@ const FirmwareUpdate = (props: Props) => (
         </Image>
         <H1>It’s time to update your firmware</H1>
         <StyledP>Please use the old wallet to do that.</StyledP>
-        <Link href="https://wallet.trezor.io" target="_blank">
+        <Link href="https://wallet.trezor.io">
             <Button>Take me to the old wallet</Button>
         </Link>
         {deviceUtils.isDeviceAccessible(props.device) && (
-            <StyledNavLink to="/">
-                I’ll do that later.
-            </StyledNavLink>
+            <StyledNavLink to="/">I’ll do that later.</StyledNavLink>
         )}
     </Wrapper>
 );

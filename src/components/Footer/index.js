@@ -38,8 +38,8 @@ const Copy = styled.div`
 const Footer = ({ opened, toggle }: Props) => (
     <Wrapper>
         <Copy title={window.COMMITHASH}>&copy; {getYear(new Date())}</Copy>
-        <StyledLink href="http://satoshilabs.com" target="_blank" rel="noreferrer noopener" isGreen>SatoshiLabs</StyledLink>
-        <StyledLink href="/assets/tos.pdf" target="_blank" rel="noreferrer noopener" isGreen>Terms</StyledLink>
+        <StyledLink href="http://satoshilabs.com" isGreen>SatoshiLabs</StyledLink>
+        <StyledLink href="/assets/tos.pdf" isGreen>Terms</StyledLink>
         <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>
     </Wrapper>
 );

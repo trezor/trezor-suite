@@ -84,13 +84,7 @@ const AccountSummary = (props: Props) => {
                         <StyledCoinLogo coinNetwork={account.network} />
                         <H2>Account #{parseInt(account.index, 10) + 1}</H2>
                     </AccountName>
-                    <Link
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        href={explorerLink}
-                        isGray
-                    >See full transaction history
-                    </Link>
+                    <Link href={explorerLink} isGray>See full transaction history</Link>
                 </AccountHeading>
                 <AccountBalance
                     coin={network}

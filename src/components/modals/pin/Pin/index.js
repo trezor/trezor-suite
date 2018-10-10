@@ -164,8 +164,6 @@ class Pin extends Component<Props, State> {
                         <StyledLink
                             isGreen
                             href="https://wiki.trezor.io/User_manual:Entering_PIN"
-                            target="_blank"
-                            rel="noreferrer noopener"
                         >Learn more
                         </StyledLink>
                     </StyledP>
