@@ -11,6 +11,7 @@ import Link from 'components/Link';
 import colors from 'config/colors';
 import icons from 'config/icons';
 import WalletTypeIcon from 'components/images/WalletType';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import type { Props } from 'components/modals/index';
 
@@ -89,12 +90,12 @@ class WalletType extends PureComponent<Props> {
 
     changeType(hidden: boolean, state: ?string) {
         const { modal } = this.props;
-        if (!modal.opened) return;
+        if (modal.context !== CONTEXT_DEVICE) return;
         this.props.modalActions.onWalletTypeRequest(modal.device, hidden, state);
     }
 
     render() {
-        if (!this.props.modal.opened) return null;
+        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
         const { device } = this.props.modal;
         const { onCancel } = this.props.modalActions;
 

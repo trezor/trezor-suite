@@ -8,6 +8,7 @@ import colors from 'config/colors';
 import icons from 'config/icons';
 import Button from 'components/Button';
 import Link from 'components/Link';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import type { Props } from '../../index';
 
@@ -56,7 +57,6 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
     }
 
     verifyAddress() {
-        if (!this.props.modal.opened) return;
         const { account } = this.props.selectedAccount;
         if (!account) return;
         this.props.modalActions.onCancel();
@@ -64,17 +64,13 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
     }
 
     showUnverifiedAddress() {
-        if (!this.props.modal.opened) return;
-
         this.props.modalActions.onCancel();
         this.props.receiveActions.showUnverifiedAddress();
     }
 
     render() {
-        if (!this.props.modal.opened) return null;
-        const {
-            device,
-        } = this.props.modal;
+        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
+        const { device } = this.props.modal;
 
         const {
             onCancel,

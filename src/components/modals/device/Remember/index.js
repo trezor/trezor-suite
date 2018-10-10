@@ -5,6 +5,7 @@ import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Loader from 'components/Loader';
 import Button from 'components/Button';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import type { Props } from '../../index';
 
@@ -62,9 +63,8 @@ export default class RememberDevice extends PureComponent<Props, State> {
                 // TODO: possible race condition,
                 // device could be already connected but it didn't emit Device.CONNECT event yet
                 window.clearInterval(this.state.ticker);
-                if (this.props.modal.opened) {
-                    this.props.modalActions.onForgetDevice(this.props.modal.device);
-                }
+                if (this.props.modal.context !== CONTEXT_DEVICE) return;
+                this.props.modalActions.onForgetDevice(this.props.modal.device);
             } else {
                 this.setState(previousState => ({
                     countdown: previousState.countdown - 1,
@@ -98,13 +98,12 @@ export default class RememberDevice extends PureComponent<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     forget() {
-        if (this.props.modal.opened) {
-            this.props.modalActions.onForgetDevice(this.props.modal.device);
-        }
+        if (this.props.modal.context !== CONTEXT_DEVICE) return;
+        this.props.modalActions.onForgetDevice(this.props.modal.device);
     }
 
     render() {
-        if (!this.props.modal.opened) return null;
+        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
         const { device, instances } = this.props.modal;
         const { onRememberDevice } = this.props.modalActions;
 

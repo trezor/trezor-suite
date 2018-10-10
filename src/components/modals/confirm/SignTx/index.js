@@ -8,6 +8,7 @@ import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { H3 } from 'components/Heading';
 import { LINE_HEIGHT } from 'config/variables';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import type { Props } from '../../index';
 
@@ -39,7 +40,7 @@ const Label = styled.div`
 `;
 
 const ConfirmSignTx = (props: Props) => {
-    if (!props.modal.opened) return null;
+    if (props.modal.context !== CONTEXT_DEVICE) return null;
     const { device } = props.modal;
 
     const {

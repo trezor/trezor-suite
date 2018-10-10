@@ -4,10 +4,11 @@ import { H2 } from 'components/Heading';
 import React, { PureComponent } from 'react';
 import Link from 'components/Link';
 import styled from 'styled-components';
-
 import Button from 'components/Button';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 import PinButton from './components/Button';
 import PinInput from './components/Input';
+
 import type { Props } from '../../index';
 
 type State = {
@@ -132,7 +133,7 @@ class Pin extends PureComponent<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     render() {
-        if (!this.props.modal.opened) return null;
+        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
         const { onPinSubmit } = this.props.modalActions;
         const { device } = this.props.modal;
         const { pin } = this.state;

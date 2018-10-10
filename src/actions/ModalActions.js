@@ -13,8 +13,9 @@ import type { State } from 'reducers/ModalReducer';
 export type ModalAction = {
     type: typeof MODAL.CLOSE
 } | {
-    type: typeof MODAL.REMEMBER,
-    device: TrezorDevice
+    type: typeof MODAL.OPEN_EXTERNAL_WALLET,
+    id: string,
+    url: string,
 };
 
 export const onPinSubmit = (value: string): Action => {
@@ -37,13 +38,6 @@ export const onPassphraseSubmit = (passphrase: string): AsyncAction => async (di
         type: MODAL.CLOSE,
     });
 };
-
-// export const askForRemember = (device: TrezorDevice): Action => {
-//     return {
-//         type: MODAL.REMEMBER,
-//         device
-//     }
-// }
 
 export const onRememberDevice = (device: TrezorDevice): Action => ({
     type: CONNECT.REMEMBER,
@@ -77,9 +71,9 @@ export const onRememberRequest = (prevState: State): ThunkAction => (dispatch: D
     const state: State = getState().modal;
     // handle case where forget modal is already opened
     // TODO: 2 modals at once (two devices disconnected in the same time)
-    if (prevState.opened && prevState.windowType === CONNECT.REMEMBER_REQUEST) {
+    if (prevState.context === MODAL.CONTEXT_DEVICE && prevState.windowType === CONNECT.REMEMBER_REQUEST) {
         // forget current (new)
-        if (state.opened) {
+        if (state.context === MODAL.CONTEXT_DEVICE) {
             dispatch({
                 type: CONNECT.FORGET,
                 device: state.device,
@@ -98,7 +92,7 @@ export const onDeviceConnect = (device: Device): ThunkAction => (dispatch: Dispa
     // interrupt process of remembering device (force forget)
     // TODO: the same for disconnect more than 1 device at once
     const { modal } = getState();
-    if (modal.opened && modal.windowType === CONNECT.REMEMBER_REQUEST) {
+    if (modal.context === MODAL.CONTEXT_DEVICE && modal.windowType === CONNECT.REMEMBER_REQUEST) {
         if (device.features && modal.device && modal.device.features && modal.device.features.device_id === device.features.device_id) {
             dispatch({
                 type: MODAL.CLOSE,
@@ -124,6 +118,16 @@ export const onWalletTypeRequest = (device: TrezorDevice, hidden: boolean, state
     });
 };
 
+export const gotoExternalWallet = (id: string, url: string): ThunkAction => (dispatch: Dispatch): void => {
+    console.warn('OPEN', id, url);
+    dispatch({
+        type: MODAL.OPEN_EXTERNAL_WALLET,
+        id,
+        url,
+    });
+};
+
+
 export default {
     onPinSubmit,
     onPassphraseSubmit,
@@ -134,4 +138,5 @@ export default {
     onCancel,
     onDuplicateDevice,
     onWalletTypeRequest,
+    gotoExternalWallet,
 };

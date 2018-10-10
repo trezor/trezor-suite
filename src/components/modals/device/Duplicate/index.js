@@ -11,6 +11,7 @@ import Icon from 'components/Icon';
 import icons from 'config/icons';
 import colors from 'config/colors';
 import Link from 'components/Link';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import type { Props } from 'components/modals/index';
 
@@ -66,8 +67,8 @@ export default class DuplicateDevice extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const device = props.modal.opened ? props.modal.device : null;
-        if (!device) return;
+        if (props.modal.context !== CONTEXT_DEVICE) return;
+        const { device } = props.modal;
 
         const instance = getDuplicateInstanceNumber(props.devices, device);
 
@@ -114,13 +115,13 @@ export default class DuplicateDevice extends PureComponent<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     submit() {
-        if (!this.props.modal.opened) return;
+        if (this.props.modal.context !== CONTEXT_DEVICE) return;
         const extended: Object = { instanceName: this.state.instanceName, instance: this.state.instance };
         this.props.modalActions.onDuplicateDevice({ ...this.props.modal.device, ...extended });
     }
 
     render() {
-        if (!this.props.modal.opened) return null;
+        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
 
         const { device } = this.props.modal;
         const { onCancel } = this.props.modalActions;

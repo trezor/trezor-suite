@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import type { Props } from '../../index';
 
@@ -47,13 +48,12 @@ class ForgetDevice extends PureComponent<Props> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     forget() {
-        if (this.props.modal.opened) {
-            this.props.modalActions.onForgetSingleDevice(this.props.modal.device);
-        }
+        if (this.props.modal.context !== CONTEXT_DEVICE) return;
+        this.props.modalActions.onForgetSingleDevice(this.props.modal.device);
     }
 
     render() {
-        if (!this.props.modal.opened) return null;
+        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
         const { device } = this.props.modal;
         const { onCancel } = this.props.modalActions;
         return (

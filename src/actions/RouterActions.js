@@ -1,6 +1,7 @@
 /* @flow */
 
 import { push, LOCATION_CHANGE } from 'react-router-redux';
+import { CONTEXT_NONE } from 'actions/constants/modal';
 import { routes } from 'support/routes';
 import * as deviceUtils from 'utils/device';
 
@@ -138,7 +139,7 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
 
     // Modal is opened
     // redirect to previous url
-    if (getState().modal.opened) {
+    if (getState().modal.context !== CONTEXT_NONE) {
         // Corner case: modal is opened and currentParams are still valid
         // example 1 (valid blocking): url changed while passphrase modal opened but device is still connected (we want user to finish this action)
         // example 2 (invalid blocking): url changes while passphrase modal opened because device disconnect

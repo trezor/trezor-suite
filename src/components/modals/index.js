@@ -12,6 +12,7 @@ import { UI } from 'trezor-connect';
 import ModalActions from 'actions/ModalActions';
 import ReceiveActions from 'actions/ReceiveActions';
 
+import * as MODAL from 'actions/constants/modal';
 import * as RECEIVE from 'actions/constants/receive';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
@@ -87,9 +88,9 @@ const ModalWindow = styled.div`
 
 class Modal extends React.PureComponent<Props> {
     render() {
-        if (!this.props.modal.opened) return null;
+        if (this.props.modal.context === MODAL.CONTEXT_NONE) return null;
 
-        const { opened, windowType } = this.props.modal;
+        const { windowType } = this.props.modal;
         let component = null;
         switch (windowType) {
             case UI.REQUEST_PIN:
@@ -131,20 +132,15 @@ class Modal extends React.PureComponent<Props> {
                 component = null;
         }
 
-        let ch = null;
-        if (opened) {
-            ch = (
-                <Fade key="1">
-                    <ModalContainer>
-                        <ModalWindow>
-                            { component }
-                        </ModalWindow>
-                    </ModalContainer>
-                </Fade>
-            );
-        }
-
-        return ch;
+        return (
+            <Fade key="1">
+                <ModalContainer>
+                    <ModalWindow>
+                        { component }
+                    </ModalWindow>
+                </ModalContainer>
+            </Fade>
+        );
     }
 }
 

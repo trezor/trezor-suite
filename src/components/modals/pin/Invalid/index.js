@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import type { Props } from '../../index';
 
@@ -12,7 +13,7 @@ const Wrapper = styled.div`
 `;
 
 const InvalidPin = (props: Props) => {
-    if (!props.modal.opened) return null;
+    if (props.modal.context !== CONTEXT_DEVICE) return null;
 
     const { device } = props.modal;
     return (

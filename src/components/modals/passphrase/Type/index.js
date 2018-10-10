@@ -7,6 +7,7 @@ import icons from 'config/icons';
 import styled from 'styled-components';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import type { Props } from 'components/modals/index';
 
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
 const Header = styled.div``;
 
 const Confirmation = (props: Props) => {
-    if (!props.modal.opened) return null;
+    if (props.modal.context !== CONTEXT_DEVICE) return null;
     const { device } = props.modal;
 
     return (

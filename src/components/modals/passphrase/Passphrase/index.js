@@ -8,6 +8,7 @@ import P from 'components/Paragraph';
 import Checkbox from 'components/Checkbox';
 import Button from 'components/Button';
 import Input from 'components/inputs/Input';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import type { Props } from '../../index';
 
@@ -80,10 +81,8 @@ class Passphrase extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const device = props.modal.opened ? props.modal.device : null;
-        if (!device) {
-            return;
-        }
+        if (props.modal.context !== CONTEXT_DEVICE) return;
+        const { device } = props.modal;
 
         // Check if this device is already known
         // if device is already known then only one input is presented
@@ -197,7 +196,6 @@ class Passphrase extends PureComponent<Props, State> {
     handleKeyPress(event: KeyboardEvent) {
         if (event.key === 'Enter') {
             event.preventDefault();
-            console.warn('ENTER', this.state);
             if (this.state.doPassphraseInputsMatch) {
                 this.submitPassphrase();
             }
@@ -205,9 +203,7 @@ class Passphrase extends PureComponent<Props, State> {
     }
 
     render() {
-        if (!this.props.modal.opened) {
-            return null;
-        }
+        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
 
         return (
             <Wrapper>
