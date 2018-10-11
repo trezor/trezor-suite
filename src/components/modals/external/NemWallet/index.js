@@ -13,7 +13,7 @@ import Button from 'components/Button';
 import { H3, H4 } from 'components/Heading';
 import P from 'components/Paragraph';
 
-import NemImage from './components/NemImage';
+import NemImage from './images/nem-download.png';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
@@ -37,6 +37,12 @@ const StyledLink = styled(Link)`
     top: 10px;
 `;
 
+const Img = styled.img`
+    display: block;
+    width: 100%;
+    height: auto;
+`;
+
 const NemWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
@@ -49,7 +55,7 @@ const NemWallet = (props: Props) => (
         <H3>NEM Wallet</H3>
         <P isSmaller>We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.</P>
         <H4>Make sure you download the Universal Client for TREZOR support.</H4>
-        <NemImage />
+        <Img src={NemImage} />
         <StyledButton>Go to nem.io</StyledButton>
     </Wrapper>
 );
