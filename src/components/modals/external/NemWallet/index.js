@@ -3,15 +3,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
 import colors from 'config/colors';
 import icons from 'config/icons';
-
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Button from 'components/Button';
 import { H3, H4 } from 'components/Heading';
 import P from 'components/Paragraph';
+import coins from 'constants/coins';
 
 import NemImage from './images/nem-download.png';
 import type { Props as BaseProps } from '../../Container';
@@ -56,7 +55,9 @@ const NemWallet = (props: Props) => (
         <P isSmaller>We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.</P>
         <H4>Make sure you download the Universal Client for TREZOR support.</H4>
         <Img src={NemImage} />
-        <StyledButton>Go to nem.io</StyledButton>
+        <Link href={coins.find(i => i.id === 'xem').url}>
+            <StyledButton>Go to nem.io</StyledButton>
+        </Link>
     </Wrapper>
 );
 
