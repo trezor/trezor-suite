@@ -8,6 +8,7 @@ import * as DISCOVERY from 'actions/constants/discovery';
 import * as STORAGE from 'actions/constants/localStorage';
 import * as PENDING from 'actions/constants/pendingTx';
 import { httpRequest } from 'utils/networkUtils';
+import * as buildUtils from 'utils/build';
 
 import type {
     ThunkAction, AsyncAction, /* GetState, */ Dispatch,
@@ -96,6 +97,12 @@ export function loadTokensFromJSON(): AsyncAction {
 
         try {
             const config: Config = await httpRequest(AppConfigJSON, 'json');
+
+            if (!buildUtils.isDev()) {
+                const index = config.coins.findIndex(c => c.network === 'trop');
+                delete config.coins[index];
+            }
+
             const ERC20Abi = await httpRequest(Erc20AbiJSON, 'json');
 
             window.addEventListener('storage', (event) => {

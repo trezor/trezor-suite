@@ -10,6 +10,7 @@ import services from 'services';
 
 import Raven from 'raven-js';
 import RavenMiddleware from 'redux-raven-middleware';
+import * as buildUtils from 'utils/build';
 
 import type { Action, GetState } from 'flowtype';
 
@@ -23,8 +24,8 @@ const middlewares = [
     routerMiddleware(history),
 ];
 
-// sentry io middleware only in dev build
-if (process.env.BUILD === 'development') {
+// sentry io middleware only in dev and beta build
+if (buildUtils.isDev() || buildUtils.isBeta()) {
     const RAVEN_KEY = 'https://34b8c09deb6c4cd2a4dc3f0029cd02d8@sentry.io/1279550';
     const ravenMiddleware = RavenMiddleware(RAVEN_KEY);
     Raven.config(RAVEN_KEY).install();
@@ -32,7 +33,7 @@ if (process.env.BUILD === 'development') {
 }
 
 let composedEnhancers: any;
-if (process.env.NODE_ENV === 'development') {
+if (buildUtils.isDev()) {
     const excludeLogger = (getState: GetState, action: Action): boolean => {
         //'@@router/LOCATION_CHANGE'
         const excluded: Array<?string> = ['LOG_TO_EXCLUDE', 'log__add', undefined];
