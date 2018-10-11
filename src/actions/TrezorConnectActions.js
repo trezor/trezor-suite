@@ -237,7 +237,7 @@ export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch
     if (device.features) {
         const instances = getState().devices.filter(d => d.features && device.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
         if (instances.length > 0) {
-            const isSelected = deviceUtils.isSelectedDevice(getState().wallet.selectedDevice, instances[0]);
+            const isSelected = deviceUtils.isSelectedDevice(getState().wallet.selectedDevice, device);
             if (!isSelected && getState().modal.context !== CONTEXT_NONE) {
                 dispatch({
                     type: CONNECT.FORGET_SILENT,
