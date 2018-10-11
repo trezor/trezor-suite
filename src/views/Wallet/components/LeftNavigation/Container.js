@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as DiscoveryActions from 'actions/DiscoveryActions';
 import * as RouterActions from 'actions/RouterActions';
+import * as ModalActions from 'actions/ModalActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 
@@ -38,6 +39,7 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     duplicateDevice: bindActionCreators(TrezorConnectActions.duplicateDevice, dispatch),
     gotoDeviceSettings: bindActionCreators(RouterActions.gotoDeviceSettings, dispatch),
     onSelectDevice: bindActionCreators(RouterActions.selectDevice, dispatch),
+    gotoExternalWallet: bindActionCreators(ModalActions.gotoExternalWallet, dispatch),
 });
 
 export default withRouter(

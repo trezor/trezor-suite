@@ -2,6 +2,7 @@
 
 import colors from 'config/colors';
 
+import type { Device } from 'trezor-connect';
 import type {
     TrezorDevice,
     State,
@@ -91,7 +92,7 @@ export const isDeviceAccessible = (device: ?TrezorDevice): boolean => {
     return device.mode === 'normal' && device.firmware !== 'required';
 };
 
-export const isSelectedDevice = (current: ?TrezorDevice, device: ?TrezorDevice): boolean => !!((current && device && (current.path === device.path && current.instance === device.instance)));
+export const isSelectedDevice = (selected: ?TrezorDevice, device: ?(TrezorDevice | Device)): boolean => !!((selected && device && (selected.path === device.path && (device.ts && selected.instance === device.instance))));
 
 export const getVersion = (device: TrezorDevice): string => {
     let version;

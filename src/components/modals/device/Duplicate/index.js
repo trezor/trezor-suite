@@ -1,18 +1,30 @@
 /* @flow */
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+
+import icons from 'config/icons';
+import colors from 'config/colors';
+import { FONT_SIZE } from 'config/variables';
+
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
 import Input from 'components/inputs/Input';
-import { getDuplicateInstanceNumber } from 'reducers/utils';
-import { FONT_SIZE } from 'config/variables';
 import Icon from 'components/Icon';
-import icons from 'config/icons';
-import colors from 'config/colors';
 import Link from 'components/Link';
 
-import type { Props } from 'components/modals/index';
+import { getDuplicateInstanceNumber } from 'reducers/utils';
+
+import type { TrezorDevice } from 'flowtype';
+import type { Props as BaseProps } from '../../Container';
+
+type Props = {
+    device: TrezorDevice;
+    devices: $ElementType<BaseProps, 'devices'>;
+    onDuplicateDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onDuplicateDevice'>;
+    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
+}
 
 type State = {
     defaultName: string;
@@ -62,17 +74,14 @@ const ErrorMessage = styled.div`
     width: 100%;
 `;
 
-export default class DuplicateDevice extends PureComponent<Props, State> {
+class DuplicateDevice extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const device = props.modal.opened ? props.modal.device : null;
-        if (!device) return;
-
-        const instance = getDuplicateInstanceNumber(props.devices, device);
+        const instance = getDuplicateInstanceNumber(props.devices, props.device);
 
         this.state = {
-            defaultName: `${device.label} (${instance.toString()})`,
+            defaultName: `${props.device.label} (${instance.toString()})`,
             instance,
             instanceName: null,
             isUsed: false,
@@ -114,16 +123,12 @@ export default class DuplicateDevice extends PureComponent<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     submit() {
-        if (!this.props.modal.opened) return;
         const extended: Object = { instanceName: this.state.instanceName, instance: this.state.instance };
-        this.props.modalActions.onDuplicateDevice({ ...this.props.modal.device, ...extended });
+        this.props.onDuplicateDevice({ ...this.props.device, ...extended });
     }
 
     render() {
-        if (!this.props.modal.opened) return null;
-
-        const { device } = this.props.modal;
-        const { onCancel } = this.props.modalActions;
+        const { device, onCancel } = this.props;
         const {
             defaultName,
             instanceName,
@@ -168,3 +173,12 @@ export default class DuplicateDevice extends PureComponent<Props, State> {
         );
     }
 }
+
+DuplicateDevice.propTypes = {
+    device: PropTypes.object.isRequired,
+    devices: PropTypes.array.isRequired,
+    onDuplicateDevice: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+};
+
+export default DuplicateDevice;

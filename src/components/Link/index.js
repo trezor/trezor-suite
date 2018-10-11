@@ -62,7 +62,7 @@ class Link extends PureComponent {
                 <A
                     className={this.props.className}
                     href={this.props.href}
-                    target="_blank"
+                    target={this.props.target || '_blank'}
                     rel="noreferrer noopener"
                     onClick={this.props.onClick}
                     isGreen={this.props.isGreen}
@@ -84,6 +84,7 @@ Link.propTypes = {
     ]).isRequired,
     className: PropTypes.string,
     href: PropTypes.string,
+    target: PropTypes.string,
     to: PropTypes.string,
     onClick: PropTypes.func,
     isGreen: PropTypes.bool,

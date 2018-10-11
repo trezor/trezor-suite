@@ -1,15 +1,27 @@
 /* @flow */
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
+import icons from 'config/icons';
+import colors from 'config/colors';
+
 import { H2 } from 'components/Heading';
 import P from 'components/Paragraph';
-import styled from 'styled-components';
 import Icon from 'components/Icon';
-import colors from 'config/colors';
-import icons from 'config/icons';
 import Button from 'components/Button';
 import Link from 'components/Link';
 
-import type { Props } from '../../index';
+import type { TrezorDevice } from 'flowtype';
+import type { Props as BaseProps } from '../../Container';
+
+type Props = {
+    device: TrezorDevice;
+    account: $ElementType<$ElementType<BaseProps, 'selectedAccount'>, 'account'>;
+    showAddress: $ElementType<$ElementType<BaseProps, 'receiveActions'>, 'showAddress'>;
+    showUnverifiedAddress: $ElementType<$ElementType<BaseProps, 'receiveActions'>, 'showUnverifiedAddress'>;
+    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
+}
 
 const StyledLink = styled(Link)`
     position: absolute;
@@ -56,29 +68,20 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
     }
 
     verifyAddress() {
-        if (!this.props.modal.opened) return;
-        const { account } = this.props.selectedAccount;
+        const { account, onCancel, showAddress } = this.props;
         if (!account) return;
-        this.props.modalActions.onCancel();
-        this.props.receiveActions.showAddress(account.addressPath);
+        onCancel();
+        showAddress(account.addressPath);
     }
 
     showUnverifiedAddress() {
-        if (!this.props.modal.opened) return;
-
-        this.props.modalActions.onCancel();
-        this.props.receiveActions.showUnverifiedAddress();
+        const { onCancel, showUnverifiedAddress } = this.props;
+        onCancel();
+        showUnverifiedAddress();
     }
 
     render() {
-        if (!this.props.modal.opened) return null;
-        const {
-            device,
-        } = this.props.modal;
-
-        const {
-            onCancel,
-        } = this.props.modalActions;
+        const { device, account, onCancel } = this.props;
 
         let deviceStatus: string;
         let claim: string;
@@ -101,12 +104,20 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                 <H2>{ deviceStatus }</H2>
                 <StyledP isSmaller>To prevent phishing attacks, you should verify the address on your TREZOR first. { claim } to continue with the verification process.</StyledP>
                 <Row>
-                    <StyledButton onClick={() => (!this.props.selectedAccount.account ? this.verifyAddress() : 'false')}>Try again</StyledButton>
+                    <StyledButton onClick={() => (!account ? this.verifyAddress() : 'false')}>Try again</StyledButton>
                     <StyledButton isWhite onClick={() => this.showUnverifiedAddress()}>Show unverified address</StyledButton>
                 </Row>
             </Wrapper>
         );
     }
 }
+
+ConfirmUnverifiedAddress.propTypes = {
+    device: PropTypes.object.isRequired,
+    account: PropTypes.object.isRequired,
+    showAddress: PropTypes.func.isRequired,
+    showUnverifiedAddress: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+};
 
 export default ConfirmUnverifiedAddress;
