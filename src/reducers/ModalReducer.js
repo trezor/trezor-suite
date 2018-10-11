@@ -52,6 +52,15 @@ export default function modal(state: State = initialState, action: Action): Stat
             }
             return state;
 
+        // device connected
+        // close modal if modal context is not 'device'
+        case DEVICE.CONNECT:
+        case DEVICE.CONNECT_UNACQUIRED:
+            if (state.context !== MODAL.CONTEXT_DEVICE) {
+                return initialState;
+            }
+            return state;
+
         // device with context assigned to modal was disconnected
         // close modal
         case DEVICE.DISCONNECT:
