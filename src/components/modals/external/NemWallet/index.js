@@ -1,6 +1,7 @@
 /* @flow */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import colors from 'config/colors';
@@ -8,9 +9,11 @@ import icons from 'config/icons';
 
 import Icon from 'components/Icon';
 import Link from 'components/Link';
-import { H3 } from 'components/Heading';
+import Button from 'components/Button';
+import { H3, H4 } from 'components/Heading';
 import P from 'components/Paragraph';
 
+import NemImage from './components/NemImage';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
@@ -18,11 +21,15 @@ type Props = {
 }
 
 const Wrapper = styled.div`
-    width: 360px;
+    width: 100%;
+    max-width: 620px;
     padding: 24px 48px;
 `;
 
-const Header = styled.div``;
+const StyledButton = styled(Button)`
+    margin: 0 0 10px 0;
+    width: 100%;
+`;
 
 const StyledLink = styled(Link)`
     position: absolute;
@@ -30,7 +37,7 @@ const StyledLink = styled(Link)`
     top: 10px;
 `;
 
-const Confirmation = (props: Props) => (
+const NemWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
             <Icon
@@ -39,12 +46,16 @@ const Confirmation = (props: Props) => (
                 icon={icons.CLOSE}
             />
         </StyledLink>
-        <Header>
-            <Icon icon={icons.T1} size={60} color={colors.TEXT_SECONDARY} />
-            <H3>NEM Wallet</H3>
-            <P isSmaller>If you enter a wrong passphrase, you will not unlock the desired hidden wallet.</P>
-        </Header>
+        <H3>NEM Wallet</H3>
+        <P isSmaller>We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.</P>
+        <H4>Make sure you download the Universal Client for TREZOR support.</H4>
+        <NemImage />
+        <StyledButton>Go to nem.io</StyledButton>
     </Wrapper>
 );
 
-export default Confirmation;
+NemWallet.propTypes = {
+    onCancel: PropTypes.func.isRequired,
+};
+
+export default NemWallet;
