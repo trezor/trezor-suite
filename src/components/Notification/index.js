@@ -30,7 +30,7 @@ const Wrapper = styled.div`
     position: relative;
     color: ${colors.TEXT_PRIMARY};
     background: ${colors.TEXT_SECONDARY};
-    padding: 24px 48px 24px 24px;
+    padding: 24px 48px 9px 24px;
     display: flex;
     flex-direction: row;
     text-align: left;
@@ -63,12 +63,13 @@ const Body = styled.div`
 `;
 
 const Message = styled.div`
+    padding-bottom: 13px;
     font-size: ${FONT_SIZE.SMALLER};
 `;
 
 const Title = styled.div`
     padding-bottom: 5px;
-    line-height: 12px;
+    padding-top: 1px;
     font-weight: ${FONT_WEIGHT.BIGGER};
 `;
 
@@ -93,7 +94,6 @@ const Texts = styled.div`
     display: flex;
     padding: 0 10px 0 0;
     flex-direction: column;
-    flex: 1;
 `;
 
 const AdditionalContent = styled.div`
@@ -107,6 +107,7 @@ const ActionContent = styled.div`
     display: flex;
     justify-content: right;
     align-items: flex-end;
+    padding-bottom: 14px;
 `;
 
 const Notification = (props: Props): React$Element<string> => {

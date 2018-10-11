@@ -53,11 +53,17 @@ class NotificationsGroup extends PureComponent {
         //     {
         //         key: 5,
         //         title: 'this is a title of warning notification as',
+        //         type: 'success',
+        //         message: <Link href="link" isGreen>See transaction detail</Link>,
+        //     },
+        //     {
+        //         key: 6,
+        //         title: 'this is a title of warning notification as',
         //         type: 'info',
         //         message: 'this is a message of warning notification',
         //     },
         //     {
-        //         key: 6,
+        //         key: 7,
         //         title: 'this is a title of info notification s ',
         //         type: 'info',
         //         message: 'this is a message of info notification',
