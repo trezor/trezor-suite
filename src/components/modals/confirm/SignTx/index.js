@@ -1,16 +1,24 @@
 /* @flow */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+
+import icons from 'config/icons';
 import colors from 'config/colors';
+import { LINE_HEIGHT } from 'config/variables';
+
 import P from 'components/Paragraph';
 import Icon from 'components/Icon';
-import icons from 'config/icons';
 import { H3 } from 'components/Heading';
-import { LINE_HEIGHT } from 'config/variables';
-import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
-import type { Props } from '../../index';
+import type { TrezorDevice } from 'flowtype';
+import type { Props as BaseProps } from '../../Container';
+
+type Props = {
+    device: TrezorDevice;
+    sendForm: $ElementType<BaseProps, 'sendForm'>;
+}
 
 const Wrapper = styled.div`
     width: 390px;
@@ -40,9 +48,6 @@ const Label = styled.div`
 `;
 
 const ConfirmSignTx = (props: Props) => {
-    if (props.modal.context !== CONTEXT_DEVICE) return null;
-    const { device } = props.modal;
-
     const {
         amount,
         address,
@@ -54,7 +59,7 @@ const ConfirmSignTx = (props: Props) => {
         <Wrapper>
             <Header>
                 <Icon icon={icons.T1} size={60} color={colors.TEXT_SECONDARY} />
-                <H3>Confirm transaction on { device.label } device</H3>
+                <H3>Confirm transaction on { props.device.label } device</H3>
                 <P isSmaller>Details are shown on display</P>
             </Header>
             <Content>
@@ -67,6 +72,11 @@ const ConfirmSignTx = (props: Props) => {
             </Content>
         </Wrapper>
     );
+};
+
+ConfirmSignTx.propTypes = {
+    device: PropTypes.object.isRequired,
+    sendForm: PropTypes.object.isRequired,
 };
 
 export default ConfirmSignTx;

@@ -11,7 +11,7 @@ import type { State } from 'flowtype';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import ModalContainer from 'components/modals';
+import ModalContainer from 'components/modals/Container';
 import AppNotifications from 'components/notifications/App';
 import ContextNotifications from 'components/notifications/Context';
 

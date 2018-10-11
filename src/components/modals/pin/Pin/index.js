@@ -1,15 +1,24 @@
 /* @flow */
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
-import React, { PureComponent } from 'react';
 import Link from 'components/Link';
-import styled from 'styled-components';
 import Button from 'components/Button';
-import { CONTEXT_DEVICE } from 'actions/constants/modal';
+
+import type { TrezorDevice } from 'flowtype';
+
 import PinButton from './components/Button';
 import PinInput from './components/Input';
 
-import type { Props } from '../../index';
+import type { Props as BaseProps } from '../../Container';
+
+type Props = {
+    device: TrezorDevice;
+    onPinSubmit: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onPinSubmit'>;
+}
 
 type State = {
     pin: string;
@@ -75,7 +84,7 @@ class Pin extends PureComponent<Props, State> {
     }
 
     keyboardHandler(event: KeyboardEvent): void {
-        const { onPinSubmit } = this.props.modalActions;
+        const { onPinSubmit } = this.props;
         const { pin } = this.state;
 
         event.preventDefault();
@@ -133,9 +142,7 @@ class Pin extends PureComponent<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     render() {
-        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
-        const { onPinSubmit } = this.props.modalActions;
-        const { device } = this.props.modal;
+        const { device, onPinSubmit } = this.props;
         const { pin } = this.state;
         return (
             <Wrapper>
@@ -173,5 +180,10 @@ class Pin extends PureComponent<Props, State> {
         );
     }
 }
+
+Pin.propTypes = {
+    device: PropTypes.object.isRequired,
+    onPinSubmit: PropTypes.func.isRequired,
+};
 
 export default Pin;

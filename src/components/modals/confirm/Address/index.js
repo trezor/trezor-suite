@@ -1,13 +1,16 @@
 /* @flow */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import H3 from 'components/Heading';
+
 import colors from 'config/colors';
-import P from 'components/Paragraph';
 import { FONT_SIZE } from 'config/variables';
 
-import type { Props } from '../../index';
+import H3 from 'components/Heading';
+import P from 'components/Paragraph';
+
+import type { Props } from '../../Container';
 
 const Wrapper = styled.div`
     width: 390px;
@@ -47,6 +50,10 @@ const ConfirmAddress = (props: Props) => {
             </Content>
         </Wrapper>
     );
+};
+
+ConfirmAddress.propTypes = {
+    selectedAccount: PropTypes.object.isRequired,
 };
 
 export default ConfirmAddress;

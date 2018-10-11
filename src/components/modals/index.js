@@ -1,67 +1,39 @@
 /* @flow */
+
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
-import colors from 'config/colors';
 import { CSSTransition } from 'react-transition-group';
 
+import styled from 'styled-components';
+import colors from 'config/colors';
+
 import { UI } from 'trezor-connect';
-
-import ModalActions from 'actions/ModalActions';
-import ReceiveActions from 'actions/ReceiveActions';
-
 import * as MODAL from 'actions/constants/modal';
 import * as RECEIVE from 'actions/constants/receive';
 import * as CONNECT from 'actions/constants/TrezorConnect';
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from 'flowtype';
 
+// device context
 import Pin from 'components/modals/pin/Pin';
 import InvalidPin from 'components/modals/pin/Invalid';
-
 import Passphrase from 'components/modals/passphrase/Passphrase';
 import PassphraseType from 'components/modals/passphrase/Type';
-
 import ConfirmSignTx from 'components/modals/confirm/SignTx';
 import ConfirmUnverifiedAddress from 'components/modals/confirm/UnverifiedAddress';
-
 import ForgetDevice from 'components/modals/device/Forget';
 import RememberDevice from 'components/modals/device/Remember';
 import DuplicateDevice from 'components/modals/device/Duplicate';
 import WalletType from 'components/modals/device/WalletType';
 
+// external context
 import NemWallet from 'components/modals/external/NemWallet';
 
-type OwnProps = { }
-
-type StateProps = {
-    modal: $ElementType<State, 'modal'>,
-    accounts: $ElementType<State, 'accounts'>,
-    devices: $ElementType<State, 'devices'>,
-    connect: $ElementType<State, 'connect'>,
-    selectedAccount: $ElementType<State, 'selectedAccount'>,
-    sendForm: $ElementType<State, 'sendForm'>,
-    receive: $ElementType<State, 'receive'>,
-    localStorage: $ElementType<State, 'localStorage'>,
-    wallet: $ElementType<State, 'wallet'>,
-}
-
-type DispatchProps = {
-    modalActions: typeof ModalActions,
-    receiveActions: typeof ReceiveActions,
-}
-
-export type Props = StateProps & DispatchProps;
+import type { Props } from './Container';
 
 const Fade = (props: { children: React.Node}) => (
     <CSSTransition
         {...props}
         timeout={1000}
         classNames="fade"
-    >
-        { props.children }
+    >{ props.children }
     </CSSTransition>
 );
 
@@ -88,85 +60,124 @@ const ModalWindow = styled.div`
     text-align: center;
 `;
 
-class Modal extends React.PureComponent<Props> {
-    render() {
-        if (this.props.modal.context === MODAL.CONTEXT_NONE) return null;
+// get modal component with device context
+const getDeviceContextModal = (props: Props) => {
+    const { modal, modalActions } = props;
+    if (modal.context !== MODAL.CONTEXT_DEVICE) return null;
 
-        const { windowType } = this.props.modal;
-        let component = null;
-        switch (windowType) {
-            case UI.REQUEST_PIN:
-                component = (<Pin {...this.props} />);
-                break;
-            case UI.INVALID_PIN:
-                component = (<InvalidPin {...this.props} />);
-                break;
-            case UI.REQUEST_PASSPHRASE:
-                component = (<Passphrase {...this.props} />);
-                break;
-            case 'ButtonRequest_SignTx':
-                component = (<ConfirmSignTx {...this.props} />);
-                break;
-            case 'ButtonRequest_PassphraseType':
-                component = (<PassphraseType {...this.props} />);
-                break;
-            case RECEIVE.REQUEST_UNVERIFIED:
-                component = (<ConfirmUnverifiedAddress {...this.props} />);
-                break;
+    switch (modal.windowType) {
+        case UI.REQUEST_PIN:
+            return (
+                <Pin
+                    device={modal.device}
+                    onPinSubmit={modalActions.onPinSubmit}
+                />);
 
-            case CONNECT.REMEMBER_REQUEST:
-                component = (<RememberDevice {...this.props} />);
-                break;
+        case UI.INVALID_PIN:
+            return <InvalidPin device={modal.device} />;
 
-            case CONNECT.FORGET_REQUEST:
-                component = (<ForgetDevice {...this.props} />);
-                break;
+        case UI.REQUEST_PASSPHRASE:
+            return (
+                <Passphrase
+                    device={modal.device}
+                    selectedDevice={props.wallet.selectedDevice}
+                    onPassphraseSubmit={modalActions.onPassphraseSubmit}
+                />);
 
-            case CONNECT.TRY_TO_DUPLICATE:
-                component = (<DuplicateDevice {...this.props} />);
-                break;
+        case 'ButtonRequest_PassphraseType':
+            return <PassphraseType device={modal.device} />;
 
-            case CONNECT.REQUEST_WALLET_TYPE:
-                component = (<WalletType {...this.props} />);
-                break;
+        case 'ButtonRequest_SignTx':
+            return <ConfirmSignTx device={modal.device} sendForm={props.sendForm} />;
 
-            case 'xem':
-                component = (<NemWallet {...this.props} />);
-                break;
-            default:
-                component = null;
-        }
+        case RECEIVE.REQUEST_UNVERIFIED:
+            return (
+                <ConfirmUnverifiedAddress
+                    device={modal.device}
+                    account={props.selectedAccount.account}
+                    onCancel={modalActions.onCancel}
+                    showAddress={props.receiveActions.showAddress}
+                    showUnverifiedAddress={props.receiveActions.showUnverifiedAddress}
+                />);
 
-        return (
-            <Fade key="1">
-                <ModalContainer>
-                    <ModalWindow>
-                        { component }
-                    </ModalWindow>
-                </ModalContainer>
-            </Fade>
-        );
+        case CONNECT.REMEMBER_REQUEST:
+            return (
+                <RememberDevice
+                    device={modal.device}
+                    instances={modal.instances}
+                    onRememberDevice={modalActions.onRememberDevice}
+                    onForgetDevice={modalActions.onForgetDevice}
+                />);
+
+        case CONNECT.FORGET_REQUEST:
+            return (
+                <ForgetDevice
+                    device={modal.device}
+                    onForgetSingleDevice={modalActions.onForgetSingleDevice}
+                    onCancel={modalActions.onCancel}
+                />);
+
+        case CONNECT.TRY_TO_DUPLICATE:
+            return (
+                <DuplicateDevice
+                    device={modal.device}
+                    devices={props.devices}
+                    onDuplicateDevice={modalActions.onDuplicateDevice}
+                    onCancel={modalActions.onCancel}
+                />);
+
+        case CONNECT.REQUEST_WALLET_TYPE:
+            return (
+                <WalletType
+                    device={modal.device}
+                    onWalletTypeRequest={modalActions.onWalletTypeRequest}
+                    onCancel={modalActions.onCancel}
+                />);
+
+        default:
+            return null;
     }
-}
+};
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
-    modal: state.modal,
-    accounts: state.accounts,
-    devices: state.devices,
-    connect: state.connect,
-    selectedAccount: state.selectedAccount,
-    sendForm: state.sendForm,
-    receive: state.receive,
-    localStorage: state.localStorage,
-    wallet: state.wallet,
-});
+// get modal component with external context
+const getExternalContextModal = (props: Props) => {
+    const { modal, modalActions } = props;
+    if (modal.context !== MODAL.CONTEXT_EXTERNAL_WALLET) return null;
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    modalActions: bindActionCreators(ModalActions, dispatch),
-    receiveActions: bindActionCreators(ReceiveActions, dispatch),
-});
+    switch (modal.windowType) {
+        case 'xem':
+            return (<NemWallet onCancel={modalActions.onCancel} />);
+        default:
+            return null;
+    }
+};
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Modal);
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(Modal),
-);
+// modal container component
+const Modal = (props: Props) => {
+    const { modal } = props;
+    if (modal.context === MODAL.CONTEXT_NONE) return null;
+
+    let component = null;
+    switch (modal.context) {
+        case MODAL.CONTEXT_DEVICE:
+            component = getDeviceContextModal(props);
+            break;
+        case MODAL.CONTEXT_EXTERNAL_WALLET:
+            component = getExternalContextModal(props);
+            break;
+        default:
+            break;
+    }
+
+    return (
+        <Fade key="modal-fade">
+            <ModalContainer>
+                <ModalWindow>
+                    { component }
+                </ModalWindow>
+            </ModalContainer>
+        </Fade>
+    );
+};
+
+export default Modal;

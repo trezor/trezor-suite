@@ -1,15 +1,21 @@
 /* @flow */
 
 import React from 'react';
-import Icon from 'components/Icon';
-import colors from 'config/colors';
-import icons from 'config/icons';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+
+import icons from 'config/icons';
+import colors from 'config/colors';
+
+import Icon from 'components/Icon';
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
-import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
-import type { Props } from 'components/modals/index';
+import type { TrezorDevice } from 'flowtype';
+
+type Props = {
+    device: TrezorDevice;
+}
 
 const Wrapper = styled.div`
     width: 360px;
@@ -18,19 +24,18 @@ const Wrapper = styled.div`
 
 const Header = styled.div``;
 
-const Confirmation = (props: Props) => {
-    if (props.modal.context !== CONTEXT_DEVICE) return null;
-    const { device } = props.modal;
+const PassphraseType = (props: Props) => (
+    <Wrapper>
+        <Header>
+            <Icon icon={icons.T1} size={60} color={colors.TEXT_SECONDARY} />
+            <H3>Complete the action on { props.device.label } device</H3>
+            <P isSmaller>If you enter a wrong passphrase, you will not unlock the desired hidden wallet.</P>
+        </Header>
+    </Wrapper>
+);
 
-    return (
-        <Wrapper>
-            <Header>
-                <Icon icon={icons.T1} size={60} color={colors.TEXT_SECONDARY} />
-                <H3>Complete the action on { device.label } device</H3>
-                <P isSmaller>If you enter a wrong passphrase, you will not unlock the desired hidden wallet.</P>
-            </Header>
-        </Wrapper>
-    );
+PassphraseType.propTypes = {
+    device: PropTypes.object.isRequired,
 };
 
-export default Confirmation;
+export default PassphraseType;

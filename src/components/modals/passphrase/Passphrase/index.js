@@ -1,16 +1,25 @@
 /* @flow */
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+
 import colors from 'config/colors';
 import { FONT_SIZE, TRANSITION } from 'config/variables';
+
 import { H2 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Checkbox from 'components/Checkbox';
 import Button from 'components/Button';
 import Input from 'components/inputs/Input';
-import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
-import type { Props } from '../../index';
+import type { TrezorDevice } from 'flowtype';
+import type { Props as BaseProps } from '../../Container';
+
+type Props = {
+    device: TrezorDevice;
+    selectedDevice: ?TrezorDevice;
+    onPassphraseSubmit: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onPassphraseSubmit'>;
+}
 
 type State = {
     deviceLabel: string,
@@ -80,13 +89,10 @@ const LinkButton = styled(Button)`
 class Passphrase extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
-
-        if (props.modal.context !== CONTEXT_DEVICE) return;
-        const { device } = props.modal;
+        const { device, selectedDevice } = props;
 
         // Check if this device is already known
         // if device is already known then only one input is presented
-        const { selectedDevice } = props.wallet;
         let deviceLabel = device.label;
         let shouldShowSingleInput = false;
         if (selectedDevice && selectedDevice.path === device.path) {
@@ -103,8 +109,6 @@ class Passphrase extends PureComponent<Props, State> {
             isPassphraseHidden: true,
         };
     }
-
-    state: State;
 
     componentDidMount() {
         this.passphraseInput.focus();
@@ -179,7 +183,7 @@ class Passphrase extends PureComponent<Props, State> {
     }
 
     submitPassphrase(shouldLeavePassphraseBlank: boolean = false) {
-        const { onPassphraseSubmit } = this.props.modalActions;
+        const { onPassphraseSubmit } = this.props;
         const passphrase = this.state.passphraseInputValue;
 
         // Reset state so same passphrase isn't filled when the modal will be visible again
@@ -203,8 +207,6 @@ class Passphrase extends PureComponent<Props, State> {
     }
 
     render() {
-        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
-
         return (
             <Wrapper>
                 <H2>Enter {this.state.deviceLabel} passphrase</H2>
@@ -272,5 +274,11 @@ class Passphrase extends PureComponent<Props, State> {
         );
     }
 }
+
+Passphrase.propTypes = {
+    device: PropTypes.object.isRequired,
+    selectedDevice: PropTypes.object.isRequired,
+    onPassphraseSubmit: PropTypes.func.isRequired,
+};
 
 export default Passphrase;

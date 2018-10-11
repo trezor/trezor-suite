@@ -1,19 +1,28 @@
 /* @flow */
 
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+
+import icons from 'config/icons';
+import colors from 'config/colors';
+
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
-import colors from 'config/colors';
-import icons from 'config/icons';
 import WalletTypeIcon from 'components/images/WalletType';
-import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
-import type { Props } from 'components/modals/index';
+import type { TrezorDevice } from 'flowtype';
+import type { Props as BaseProps } from '../../Container';
+
+type Props = {
+    device: TrezorDevice;
+    onWalletTypeRequest: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onWalletTypeRequest'>;
+    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
+}
 
 const Wrapper = styled.div`
     width: 360px;
@@ -89,15 +98,11 @@ class WalletType extends PureComponent<Props> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     changeType(hidden: boolean, state: ?string) {
-        const { modal } = this.props;
-        if (modal.context !== CONTEXT_DEVICE) return;
-        this.props.modalActions.onWalletTypeRequest(modal.device, hidden, state);
+        this.props.onWalletTypeRequest(this.props.device, hidden, state);
     }
 
     render() {
-        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
-        const { device } = this.props.modal;
-        const { onCancel } = this.props.modalActions;
+        const { device, onCancel } = this.props;
 
         return (
             <Wrapper>
@@ -110,7 +115,7 @@ class WalletType extends PureComponent<Props> {
                         />
                     </StyledLink>
                 )}
-                <StyledHeading>Change wallet type for { device.instanceLabel }</StyledHeading>
+                <StyledHeading>{ device.state ? 'Change' : 'Select' } wallet type for { device.instanceLabel }</StyledHeading>
                 <Content isTop>
                     <Header>
                         <WalletTypeIcon type="standard" size={32} color={colors.TEXT_PRIMARY} />
@@ -147,5 +152,11 @@ class WalletType extends PureComponent<Props> {
         );
     }
 }
+
+WalletType.propTypes = {
+    device: PropTypes.object.isRequired,
+    onWalletTypeRequest: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+};
 
 export default WalletType;

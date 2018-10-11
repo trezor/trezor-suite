@@ -1,13 +1,21 @@
 /* @flow */
 
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
-import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
-import type { Props } from '../../index';
+import type { TrezorDevice } from 'flowtype';
+import type { Props as BaseProps } from '../../Container';
+
+type Props = {
+    device: TrezorDevice;
+    onForgetSingleDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onForgetSingleDevice'>;
+    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
+}
 
 const Wrapper = styled.div`
     width: 360px;
@@ -48,25 +56,27 @@ class ForgetDevice extends PureComponent<Props> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     forget() {
-        if (this.props.modal.context !== CONTEXT_DEVICE) return;
-        this.props.modalActions.onForgetSingleDevice(this.props.modal.device);
+        this.props.onForgetSingleDevice(this.props.device);
     }
 
     render() {
-        if (this.props.modal.context !== CONTEXT_DEVICE) return null;
-        const { device } = this.props.modal;
-        const { onCancel } = this.props.modalActions;
         return (
             <Wrapper>
-                <H3>Forget { device.instanceLabel }?</H3>
+                <H3>Forget { this.props.device.instanceLabel }?</H3>
                 <StyledP isSmaller>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your TREZOR again.</StyledP>
                 <Row>
                     <StyledButton onClick={() => this.forget()}>Forget</StyledButton>
-                    <StyledButton isWhite onClick={onCancel}>Don&apos;t forget</StyledButton>
+                    <StyledButton isWhite onClick={this.props.onCancel}>Don&apos;t forget</StyledButton>
                 </Row>
             </Wrapper>
         );
     }
 }
+
+ForgetDevice.propTypes = {
+    device: PropTypes.object.isRequired,
+    onForgetSingleDevice: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+};
 
 export default ForgetDevice;
