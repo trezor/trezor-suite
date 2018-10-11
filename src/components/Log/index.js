@@ -25,6 +25,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     text-align: left;
+    width: 100%;
 `;
 
 const Click = styled.div`
