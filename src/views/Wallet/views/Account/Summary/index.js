@@ -47,7 +47,7 @@ const StyledCoinLogo = styled(CoinLogo)`
 
 const StyledIcon = styled(Icon)`
     position: relative;
-    top: -1px;
+    top: -6px;
     &:hover {
         cursor: pointer;
     }
