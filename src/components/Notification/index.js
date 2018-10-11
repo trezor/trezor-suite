@@ -8,14 +8,13 @@ import colors from 'config/colors';
 import { getColor, getIcon } from 'utils/notification';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 
 import * as NotificationActions from 'actions/NotificationActions';
 import Loader from 'components/Loader';
 import type { CallbackAction } from 'reducers/NotificationReducer';
 
 import NotificationButton from './components/NotificationButton';
-
 
 type Props = {
     type: string,
@@ -35,7 +34,6 @@ const Wrapper = styled.div`
     background: ${colors.TEXT_SECONDARY};
     padding: 24px 48px 24px 24px;
     display: flex;
-    min-height: 90px;
     flex-direction: row;
     text-align: left;
 
@@ -73,6 +71,10 @@ const Body = styled.div`
     `}
 `;
 
+const Message = styled.div`
+    font-size: ${FONT_SIZE.SMALLER};
+`;
+
 const Title = styled.div`
     padding-bottom: 5px;
     font-weight: ${FONT_WEIGHT.BIGGER};
@@ -83,10 +85,6 @@ const CloseClick = styled.div`
     right: 0;
     top: 0;
     padding: 20px 10px 0 0;
-`;
-
-const Message = styled.div`
-    font-size: ${FONT_SIZE.SMALLER};
 `;
 
 const StyledIcon = styled(Icon)`
@@ -148,11 +146,7 @@ const Notification = (props: Props): React$Element<string> => {
                 </IconWrapper>
                 <Texts>
                     <Title>{ props.title }</Title>
-                    { props.message && (
-                        <Message>
-                            <p dangerouslySetInnerHTML={{ __html: props.message }} /> { /* eslint-disable-line */ }
-                        </Message>
-                    ) }
+                    { props.message ? <Message>{props.message}</Message> : '' }
                 </Texts>
             </Body>
             <AdditionalContent>
@@ -174,10 +168,14 @@ const Notification = (props: Props): React$Element<string> => {
 };
 
 Notification.propTypes = {
+    className: PropTypes.string,
     type: PropTypes.string.isRequired,
     cancelable: PropTypes.bool,
     title: PropTypes.string.isRequired,
-    message: PropTypes.string,
+    message: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.element,
+    ]).isRequired,
     actions: PropTypes.arrayOf(PropTypes.object),
     close: PropTypes.func,
     loading: PropTypes.bool,

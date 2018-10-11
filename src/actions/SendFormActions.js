@@ -1,5 +1,6 @@
 /* @flow */
-
+import React from 'react';
+import Link from 'components/Link';
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as ACCOUNT from 'actions/constants/account';
@@ -513,13 +514,12 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         // reset form
         dispatch(init());
 
-
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
                 type: 'success',
                 title: 'Transaction success',
-                message: `<a href="${network.explorer.tx}${txid}" class="green" target="_blank" rel="noreferrer noopener">See transaction detail</a>`,
+                message: <Link href={`${network.explorer.tx}${txid}`} isGreen>See transaction detail</Link>,
                 cancelable: true,
                 actions: [],
             },

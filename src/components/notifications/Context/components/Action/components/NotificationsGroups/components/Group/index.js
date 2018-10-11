@@ -33,7 +33,7 @@ const Title = styled.div`
 `;
 
 const StyledNotification = styled(Notification)`
-    border-bottom: 1px solid ${props => getColor(props.type)};
+    border-bottom: 1px solid ${colors.WHITE};
 
     &:last-child {
         border: 0;
