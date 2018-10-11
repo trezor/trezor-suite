@@ -8,6 +8,7 @@ import * as NOTIFICATION from 'actions/constants/notification';
 import { getDuplicateInstanceNumber } from 'reducers/utils';
 import * as RouterActions from 'actions/RouterActions';
 import * as deviceUtils from 'utils/device';
+import * as buildUtils from 'utils/build';
 
 import type {
     DeviceMessage,
@@ -123,9 +124,9 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         });
     });
 
-    window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
-    // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/'; // eslint-disable-line no-underscore-dangle
-    if (process.env.BUILD === 'development' || process.env.NODE_ENV === 'development') {
+    if (buildUtils.isDev()) {
+        window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
+        // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/'; // eslint-disable-line no-underscore-dangle
         window.TrezorConnect = TrezorConnect;
     }
 
