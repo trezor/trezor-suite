@@ -3,7 +3,6 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';

@@ -1,8 +1,6 @@
 /* @flow */
 
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import media from 'styled-media-query';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
 import { getColor, getIcon } from 'utils/notification';
@@ -20,7 +18,7 @@ type Props = {
     type: string,
     cancelable?: boolean;
     title: string;
-    className: string;
+    className?: string;
     message?: string;
     actions?: Array<CallbackAction>;
     close?: typeof NotificationActions.close,
@@ -36,6 +34,8 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
     text-align: left;
+    justify-content: center;
+    align-items: center;
 
     ${props => props.type === 'info' && css`
         color: ${colors.INFO_PRIMARY};
@@ -56,19 +56,10 @@ const Wrapper = styled.div`
         color: ${colors.ERROR_PRIMARY};
         background: ${colors.ERROR_SECONDARY};
     `}
-
-    ${media.lessThan('610px')`
-        flex-direction: column;
-    `}
 `;
 
 const Body = styled.div`
     display: flex;
-    width: 60%;
-
-    ${media.lessThan('610px')`
-        width: 100%;
-    `}
 `;
 
 const Message = styled.div`
@@ -77,6 +68,7 @@ const Message = styled.div`
 
 const Title = styled.div`
     padding-bottom: 5px;
+    line-height: 12px;
     font-weight: ${FONT_WEIGHT.BIGGER};
 `;
 
@@ -99,6 +91,7 @@ const IconWrapper = styled.div`
 
 const Texts = styled.div`
     display: flex;
+    padding: 0 10px 0 0;
     flex-direction: column;
     flex: 1;
 `;
@@ -114,12 +107,6 @@ const ActionContent = styled.div`
     display: flex;
     justify-content: right;
     align-items: flex-end;
-
-    ${media.lessThan('610px')`
-        width: 100%;
-        padding: 10px 0 0 30px;
-        align-items: flex-start;
-    `}
 `;
 
 const Notification = (props: Props): React$Element<string> => {
@@ -165,20 +152,6 @@ const Notification = (props: Props): React$Element<string> => {
             </AdditionalContent>
         </Wrapper>
     );
-};
-
-Notification.propTypes = {
-    className: PropTypes.string,
-    type: PropTypes.string.isRequired,
-    cancelable: PropTypes.bool,
-    title: PropTypes.string.isRequired,
-    message: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.element,
-    ]).isRequired,
-    actions: PropTypes.arrayOf(PropTypes.object),
-    close: PropTypes.func,
-    loading: PropTypes.bool,
 };
 
 export default Notification;

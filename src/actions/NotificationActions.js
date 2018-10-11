@@ -1,6 +1,5 @@
 /* @flow */
-
-
+import * as React from 'react';
 import * as NOTIFICATION from 'actions/constants/notification';
 
 import type {
@@ -13,7 +12,7 @@ export type NotificationAction = {
     payload: {
         +type: string,
         +title: string,
-        +message?: string,
+        +message?: React.Node | string,
         +cancelable: boolean,
         actions?: Array<CallbackAction>
     }
