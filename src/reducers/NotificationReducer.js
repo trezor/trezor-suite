@@ -1,6 +1,6 @@
 /* @flow */
 
-
+import * as React from 'react';
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as NOTIFICATION from 'actions/constants/notification';
 import { DEVICE } from 'trezor-connect';
@@ -17,8 +17,8 @@ export type NotificationEntry = {
     +id: ?string;
     +devicePath: ?string;
     +type: string;
-    +title: string;
-    +message: string;
+    +title: React.Node | string;
+    +message: ?(React.Node | string);
     +cancelable: boolean;
     +actions: Array<CallbackAction>;
 }
@@ -43,8 +43,8 @@ const addNotification = (state: State, payload: any): State => {
         id: payload.id,
         devicePath: payload.devicePath,
         type: payload.type,
-        title: payload.title.toString(),
-        message: payload.message.toString(),
+        title: payload.title,
+        message: payload.message,
         cancelable: payload.cancelable,
         actions: payload.actions,
     });

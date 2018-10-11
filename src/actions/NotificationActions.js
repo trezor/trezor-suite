@@ -11,8 +11,8 @@ export type NotificationAction = {
     type: typeof NOTIFICATION.ADD,
     payload: {
         +type: string,
-        +title: string,
-        +message?: React.Node | string,
+        +title: React.Node | string,
+        +message?: ?(React.Node | string),
         +cancelable: boolean,
         actions?: Array<CallbackAction>
     }
