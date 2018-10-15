@@ -9,92 +9,79 @@ import * as CONNECT from 'actions/constants/TrezorConnect';
 import type { Action, TrezorDevice } from 'flowtype';
 
 export type State = {
-    opened: false;
+    context: typeof MODAL.CONTEXT_NONE;
 } | {
-    opened: true;
+    context: typeof MODAL.CONTEXT_DEVICE,
     device: TrezorDevice;
     instances?: Array<TrezorDevice>;
+    windowType?: string;
+} | {
+    context: typeof MODAL.CONTEXT_EXTERNAL_WALLET,
     windowType?: string;
 }
 
 const initialState: State = {
-    opened: false,
-    // instances: null,
-    // windowType: null
+    context: MODAL.CONTEXT_NONE,
 };
 
 export default function modal(state: State = initialState, action: Action): State {
     switch (action.type) {
         case RECEIVE.REQUEST_UNVERIFIED:
-            return {
-                opened: true,
-                device: action.device,
-                windowType: action.type,
-            };
-
+        case CONNECT.FORGET_REQUEST:
+        case CONNECT.TRY_TO_DUPLICATE:
         case CONNECT.REQUEST_WALLET_TYPE:
             return {
-                opened: true,
+                context: MODAL.CONTEXT_DEVICE,
                 device: action.device,
                 windowType: action.type,
             };
 
         case CONNECT.REMEMBER_REQUEST:
             return {
-                opened: true,
+                context: MODAL.CONTEXT_DEVICE,
                 device: action.device,
                 instances: action.instances,
                 windowType: action.type,
             };
-        case CONNECT.FORGET_REQUEST:
-            return {
-                opened: true,
-                device: action.device,
-                windowType: action.type,
-            };
 
-        case CONNECT.TRY_TO_DUPLICATE:
-            return {
-                opened: true,
-                device: action.device,
-                windowType: action.type,
-            };
-
+        // device acquired
+        // close modal
         case DEVICE.CHANGED:
-            if (state.opened && action.device.path === state.device.path && action.device.status === 'occupied') {
+            if (state.context === MODAL.CONTEXT_DEVICE && action.device.path === state.device.path && action.device.status === 'occupied') {
                 return initialState;
             }
-
             return state;
 
+        // device connected
+        // close modal if modal context is not 'device'
+        case DEVICE.CONNECT:
+        case DEVICE.CONNECT_UNACQUIRED:
+            if (state.context !== MODAL.CONTEXT_DEVICE) {
+                return initialState;
+            }
+            return state;
+
+        // device with context assigned to modal was disconnected
+        // close modal
         case DEVICE.DISCONNECT:
-            if (state.opened && action.device.path === state.device.path) {
+            if (state.context === MODAL.CONTEXT_DEVICE && action.device.path === state.device.path) {
                 return initialState;
             }
             return state;
 
-        // case DEVICE.CONNECT :
-        // case DEVICE.CONNECT_UNACQUIRED :
-        //     if (state.opened && state.windowType === CONNECT.TRY_TO_FORGET) {
-        //         return {
-        //             ...initialState,
-        //             passphraseCached: state.passphraseCached
-        //         }
-        //     }
-        //     return state;
 
         case UI.REQUEST_PIN:
         case UI.INVALID_PIN:
         case UI.REQUEST_PASSPHRASE:
             return {
-                opened: true,
+                context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.type,
             };
 
         case UI.REQUEST_BUTTON:
             return {
-                opened: true,
+                context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.payload.code,
             };
@@ -105,6 +92,12 @@ export default function modal(state: State = initialState, action: Action): Stat
         case CONNECT.FORGET_SINGLE:
         case CONNECT.REMEMBER:
             return initialState;
+
+        case MODAL.OPEN_EXTERNAL_WALLET:
+            return {
+                context: MODAL.CONTEXT_EXTERNAL_WALLET,
+                windowType: action.id,
+            };
 
         default:
             return state;

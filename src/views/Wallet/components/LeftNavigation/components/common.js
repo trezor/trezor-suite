@@ -2,6 +2,7 @@
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as DiscoveryActions from 'actions/DiscoveryActions';
 import * as RouterActions from 'actions/RouterActions';
+import * as ModalActions from 'actions/ModalActions';
 import { toggleDeviceDropdown } from 'actions/WalletActions';
 import type { State } from 'flowtype';
 
@@ -25,6 +26,7 @@ export type DispatchProps = {
     duplicateDevice: typeof TrezorConnectActions.duplicateDevice,
     gotoDeviceSettings: typeof RouterActions.gotoDeviceSettings,
     onSelectDevice: typeof RouterActions.selectDevice,
+    gotoExternalWallet: typeof ModalActions.gotoExternalWallet,
 }
 
 export type Props = StateProps & DispatchProps;

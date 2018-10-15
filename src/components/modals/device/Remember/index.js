@@ -1,12 +1,22 @@
 /* @flow */
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Loader from 'components/Loader';
 import Button from 'components/Button';
 
-import type { Props } from '../../index';
+import type { TrezorDevice } from 'flowtype';
+import type { Props as BaseProps } from '../../Container';
+
+type Props = {
+    device: TrezorDevice;
+    instances: ?Array<TrezorDevice>;
+    onRememberDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onRememberDevice'>;
+    onForgetDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onForgetDevice'>;
+}
 
 type State = {
     countdown: number;
@@ -47,7 +57,7 @@ const StyledLoader = styled(Loader)`
     left: 200px;
 `;
 
-export default class RememberDevice extends PureComponent<Props, State> {
+class RememberDevice extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -62,9 +72,7 @@ export default class RememberDevice extends PureComponent<Props, State> {
                 // TODO: possible race condition,
                 // device could be already connected but it didn't emit Device.CONNECT event yet
                 window.clearInterval(this.state.ticker);
-                if (this.props.modal.opened) {
-                    this.props.modalActions.onForgetDevice(this.props.modal.device);
-                }
+                this.props.onForgetDevice(this.props.device);
             } else {
                 this.setState(previousState => ({
                     countdown: previousState.countdown - 1,
@@ -98,15 +106,11 @@ export default class RememberDevice extends PureComponent<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     forget() {
-        if (this.props.modal.opened) {
-            this.props.modalActions.onForgetDevice(this.props.modal.device);
-        }
+        this.props.onForgetDevice(this.props.device);
     }
 
     render() {
-        if (!this.props.modal.opened) return null;
-        const { device, instances } = this.props.modal;
-        const { onRememberDevice } = this.props.modalActions;
+        const { device, instances, onRememberDevice } = this.props;
 
         let { label } = device;
         const devicePlural: string = instances && instances.length > 1 ? 'devices or to remember them' : 'device or to remember it';
@@ -145,3 +149,12 @@ export default class RememberDevice extends PureComponent<Props, State> {
         );
     }
 }
+
+RememberDevice.propTypes = {
+    device: PropTypes.object.isRequired,
+    instances: PropTypes.array.isRequired,
+    onRememberDevice: PropTypes.func.isRequired,
+    onForgetDevice: PropTypes.func.isRequired,
+};
+
+export default RememberDevice;

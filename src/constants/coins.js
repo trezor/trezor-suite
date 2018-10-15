@@ -48,5 +48,6 @@ export default [
         id: 'xem',
         coinName: 'NEM',
         url: 'https://nem.io/downloads/',
+        external: true,
     },
 ];

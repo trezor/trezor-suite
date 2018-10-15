@@ -2,6 +2,7 @@
 import TrezorConnect, {
     DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
+import { CONTEXT_NONE } from 'actions/constants/modal';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as NOTIFICATION from 'actions/constants/notification';
 import { getDuplicateInstanceNumber } from 'reducers/utils';
@@ -236,8 +237,8 @@ export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch
     if (device.features) {
         const instances = getState().devices.filter(d => d.features && device.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
         if (instances.length > 0) {
-            const isSelected = deviceUtils.isSelectedDevice(getState().wallet.selectedDevice, instances[0]);
-            if (!isSelected && getState().modal.opened) {
+            const isSelected = deviceUtils.isSelectedDevice(getState().wallet.selectedDevice, device);
+            if (!isSelected && getState().modal.context !== CONTEXT_NONE) {
                 dispatch({
                     type: CONNECT.FORGET_SILENT,
                     device: instances[0],

@@ -148,14 +148,13 @@ const AccountReceive = (props: Props) => {
         addressUnverified,
     } = props.receive;
 
+    const isAddressVerifying = props.modal.context === 'device' && props.modal.windowType === 'ButtonRequest_Address';
+    const isAddressHidden = !isAddressVerifying && !addressVerified && !addressUnverified;
+
     let address = `${account.address.substring(0, 20)}...`;
-    if (addressVerified
-        || addressUnverified
-        || (props.modal.opened && props.modal.windowType === 'ButtonRequest_Address')) {
+    if (addressVerified || addressUnverified || isAddressVerifying) {
         ({ address } = account);
     }
-    const isAddressVerifying = props.modal.opened && props.modal.windowType === 'ButtonRequest_Address';
-    const isAddressHidden = !isAddressVerifying && !addressVerified && !addressUnverified;
 
     return (
         <Content>
