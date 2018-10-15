@@ -92,7 +92,7 @@ const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean)
         return;
     }
 
-    const blockchain = getState().blockchain.find(b => b.name === network);
+    const blockchain = getState().blockchain.find(b => b.shortcut === network);
     if (blockchain && !blockchain.connected && (!discoveryProcess || !discoveryProcess.completed)) {
         dispatch({
             type: DISCOVERY.WAITING_FOR_BLOCKCHAIN,
@@ -124,8 +124,8 @@ const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean)
 // start discovery process
 const begin = (device: TrezorDevice, network: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { config } = getState().localStorage;
-    const coinToDiscover = config.coins.find(c => c.network === network);
-    if (!coinToDiscover) return;
+    const networkData = config.networks.find(c => c.shortcut === network);
+    if (!networkData) return;
 
     dispatch({
         type: DISCOVERY.WAITING_FOR_DEVICE,
@@ -140,7 +140,7 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => async (dis
             instance: device.instance,
             state: device.state,
         },
-        path: coinToDiscover.bip44,
+        path: networkData.bip44,
         keepSession: true, // acquire and hold session
         //useEmptyPassphrase: !device.instance,
         useEmptyPassphrase: device.useEmptyPassphrase,
@@ -179,7 +179,7 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => async (dis
     // send data to reducer
     dispatch({
         type: DISCOVERY.START,
-        network: coinToDiscover.network,
+        network,
         device,
         publicKey: response.payload.publicKey,
         chainCode: response.payload.chainCode,

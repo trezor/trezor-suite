@@ -16,5 +16,11 @@
     "name": "Trezor13",
     "symbol": "T013",
     "decimals": 13
+  },
+  {
+    "address": "0x58cda554935e4a1f2acbe15f8757400af275e084",
+    "name": "LahodCoin",
+    "symbol": "LAHOD",
+    "decimals": 13
   }
 ]

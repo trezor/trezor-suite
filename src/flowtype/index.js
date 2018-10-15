@@ -150,7 +150,7 @@ export type Action =
 export type State = ReducersState;
 
 // reexport reduces types
-export type { Coin } from 'reducers/LocalStorageReducer';
+export type { Network } from 'reducers/LocalStorageReducer';
 export type { Account } from 'reducers/AccountsReducer';
 export type { Discovery } from 'reducers/DiscoveryReducer';
 export type { Token } from 'reducers/TokensReducer';

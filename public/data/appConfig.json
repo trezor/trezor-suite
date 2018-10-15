@@ -1,9 +1,9 @@
 {
-    "coins": [
+    "networks": [
         {
             "name": "Ethereum",
             "symbol": "ETH",
-            "network": "eth",
+            "shortcut": "eth",
             "bip44": "m/44'/60'/0'/0",
             "chainId": 1,
             "defaultGasPrice": 64,
@@ -21,7 +21,7 @@
         {
             "name": "Ethereum Classic",
             "symbol": "ETC",
-            "network": "etc",
+            "shortcut": "etc",
             "chainId": 61,
             "bip44": "m/44'/61'/0'/0",
             "defaultGasPrice": 64,
@@ -39,7 +39,7 @@
         { 
             "name": "Ethereum Ropsten",
             "symbol": "tROP",
-            "network": "trop",
+            "shortcut": "trop",
             "chainId": 3,
             "bip44": "m/44'/60'/0'/0",
             "defaultGasPrice": 64,

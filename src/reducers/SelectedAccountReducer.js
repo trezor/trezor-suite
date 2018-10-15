@@ -4,7 +4,7 @@ import * as ACCOUNT from 'actions/constants/account';
 import type {
     Action,
     Account,
-    Coin,
+    Network,
     Token,
     PendingTx,
     Discovery,
@@ -13,7 +13,7 @@ import type {
 export type State = {
     location: string;
     account: ?Account;
-    network: ?Coin;
+    network: ?Network;
     tokens: Array<Token>,
     pending: Array<PendingTx>,
     discovery: ?Discovery,

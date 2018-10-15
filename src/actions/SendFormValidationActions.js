@@ -174,7 +174,7 @@ export const addressLabel = ($state: State): PayloadAction<State> => (dispatch: 
     const savedAccounts = getState().accounts.filter(a => a.address.toLowerCase() === address.toLowerCase());
     if (savedAccounts.length > 0) {
         // check if found account belongs to this network
-        const currentNetworkAccount = savedAccounts.find(a => a.network === network.network);
+        const currentNetworkAccount = savedAccounts.find(a => a.network === network.shortcut);
         if (currentNetworkAccount) {
             const device = findDevice(getState().devices, currentNetworkAccount.deviceID, currentNetworkAccount.deviceState);
             if (device) {
@@ -184,8 +184,8 @@ export const addressLabel = ($state: State): PayloadAction<State> => (dispatch: 
             // corner-case: the same derivation path is used on different networks
             const otherNetworkAccount = savedAccounts[0];
             const device = findDevice(getState().devices, otherNetworkAccount.deviceID, otherNetworkAccount.deviceState);
-            const { coins } = getState().localStorage.config;
-            const otherNetwork = coins.find(c => c.network === otherNetworkAccount.network);
+            const { networks } = getState().localStorage.config;
+            const otherNetwork = networks.find(c => c.shortcut === otherNetworkAccount.network);
             if (device && otherNetwork) {
                 state.warnings.address = `Looks like it's ${device.instanceLabel} Account #${(otherNetworkAccount.index + 1)} address of ${otherNetwork.name} network`;
             }

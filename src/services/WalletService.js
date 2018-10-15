@@ -70,10 +70,10 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     const prevLocation = prevState.router.location;
     const currentLocation = api.getState().router.location;
     if (action.type === LOCATION_CHANGE && prevLocation.pathname !== currentLocation.pathname) {
-        // watch for coin change
+        // watch for network change
         if (prevLocation.state.network !== currentLocation.state.network) {
             api.dispatch({
-                type: CONNECT.COIN_CHANGED,
+                type: CONNECT.NETWORK_CHANGED,
                 payload: {
                     network: currentLocation.state.network,
                 },

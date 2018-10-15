@@ -10,7 +10,7 @@ export const INITIALIZATION_ERROR: 'connect__init_error' = 'connect__init_error'
 
 export const DEVICE_FROM_STORAGE: 'connect__device_from_storage' = 'connect__device_from_storage';
 export const AUTH_DEVICE: 'connect__auth_device' = 'connect__auth_device';
-export const COIN_CHANGED: 'connect__coin_changed' = 'connect__coin_changed';
+export const NETWORK_CHANGED: 'connect__network_changed' = 'connect__network_changed';
 
 export const REMEMBER_REQUEST: 'connect__remember_request' = 'connect__remember_request';
 export const FORGET_REQUEST: 'connect__forget_request' = 'connect__forget_request';

@@ -7,14 +7,14 @@ import { H2 } from 'components/Heading';
 import Link from 'components/Link';
 import ScaleText from 'react-scale-text';
 
-import type { Coin } from 'reducers/LocalStorageReducer';
+import type { Network } from 'reducers/LocalStorageReducer';
 import type { Token } from 'reducers/TokensReducer';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
     pending: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'pending'>,
     tokens: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'tokens'>,
-    network: Coin
+    network: Network
 }
 
 const Wrapper = styled.div`

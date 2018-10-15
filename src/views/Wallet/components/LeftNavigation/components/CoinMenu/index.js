@@ -37,9 +37,9 @@ class CoinMenu extends PureComponent<Props> {
         return coins.map((coin) => {
             const row = (
                 <RowCoin
-                    coin={{
+                    network={{
                         name: coin.coinName,
-                        id: coin.id,
+                        shortcut: coin.id,
                     }}
                     iconRight={{
                         type: ICONS.SKIP,
@@ -58,15 +58,15 @@ class CoinMenu extends PureComponent<Props> {
         const { config } = this.props.localStorage;
         return (
             <Wrapper>
-                {config.coins.map(item => (
+                {config.networks.map(item => (
                     <NavLink
-                        key={item.network}
-                        to={`${this.getBaseUrl()}/network/${item.network}/account/0`}
+                        key={item.shortcut}
+                        to={`${this.getBaseUrl()}/network/${item.shortcut}/account/0`}
                     >
                         <RowCoin
-                            coin={{
+                            network={{
                                 name: item.name,
-                                network: item.network,
+                                shortcut: item.shortcut,
                             }}
                         />
                     </NavLink>

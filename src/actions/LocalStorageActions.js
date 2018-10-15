@@ -13,7 +13,7 @@ import * as buildUtils from 'utils/build';
 import type {
     ThunkAction, AsyncAction, /* GetState, */ Dispatch,
 } from 'flowtype';
-import type { Config, Coin, TokensCollection } from 'reducers/LocalStorageReducer';
+import type { Config, Network, TokensCollection } from 'reducers/LocalStorageReducer';
 
 import Erc20AbiJSON from 'public/data/ERC20Abi.json';
 import AppConfigJSON from 'public/data/appConfig.json';
@@ -99,8 +99,8 @@ export function loadTokensFromJSON(): AsyncAction {
             const config: Config = await httpRequest(AppConfigJSON, 'json');
 
             if (!buildUtils.isDev()) {
-                const index = config.coins.findIndex(c => c.network === 'trop');
-                delete config.coins[index];
+                const index = config.networks.findIndex(c => c.shortcut === 'trop');
+                delete config.networks[index];
             }
 
             const ERC20Abi = await httpRequest(Erc20AbiJSON, 'json');
@@ -117,10 +117,10 @@ export function loadTokensFromJSON(): AsyncAction {
             }
 
             // load tokens
-            const tokens = await config.coins.reduce(async (promise: Promise<TokensCollection>, coin: Coin): Promise<TokensCollection> => {
+            const tokens = await config.networks.reduce(async (promise: Promise<TokensCollection>, network: Network): Promise<TokensCollection> => {
                 const collection: TokensCollection = await promise;
-                const json = await httpRequest(coin.tokens, 'json');
-                collection[coin.network] = json;
+                const json = await httpRequest(network.tokens, 'json');
+                collection[network.shortcut] = json;
                 return collection;
             }, Promise.resolve({}));
 
@@ -194,41 +194,6 @@ export const loadData = (): ThunkAction => (dispatch: Dispatch): void => {
 
     dispatch(loadTokensFromJSON());
 };
-
-// const parseConfig = (json: JSON): Config => {
-
-//     if (json['coins']) {
-
-//     }
-
-//     for (let key in json) {
-//         if (key === 'coins') {
-
-//         }
-//     }
-
-//     const coins: Array<Object> = json.coins || [];
-
-//     if ("coins" in json){
-//         json.coins
-//     }
-//     if (!json.hasOwnProperty("fiatValueTickers")) throw new Error(`Property "fiatValueTickers" is missing in appConfig.json`);
-//     if (json.config && json.hasOwnProperty('coins') && Array.isArray(json.coins)) {
-//         json.coins.map(c => {
-//             return {
-
-//             }
-//         })
-//     } else {
-//         throw new Error(`Property "coins" is missing in appConfig.json`);
-//     }
-
-
-//     return {
-//         coins: [],
-//         fiatValueTickers: []
-//     }
-// }
 
 export const save = (key: string, value: string): ThunkAction => (): void => {
     if (typeof window.localStorage !== 'undefined') {

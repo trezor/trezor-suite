@@ -115,11 +115,11 @@ const AccountMenu = (props: Props) => {
     const baseUrl: string = urlParams.deviceInstance ? `/device/${urlParams.device}:${urlParams.deviceInstance}` : `/device/${urlParams.device}`;
 
     const { config } = props.localStorage;
-    const selectedCoin = config.coins.find(c => c.network === location.state.network);
+    const network = config.networks.find(c => c.shortcut === location.state.network);
 
-    if (!selected || !selectedCoin) return null;
+    if (!selected || !network) return null;
 
-    const fiatRate = props.fiat.find(f => f.network === selectedCoin.network);
+    const fiatRate = props.fiat.find(f => f.network === network.shortcut);
 
     const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);
 
@@ -130,14 +130,14 @@ const AccountMenu = (props: Props) => {
         let balance: string = 'Loading...';
         if (account.balance !== '') {
             const pending = stateUtils.getAccountPendingTx(props.pending, account);
-            const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, selectedCoin.symbol);
+            const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
             const availableBalance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
 
-            balance = `${availableBalance} ${selectedCoin.symbol}`;
+            balance = `${availableBalance} ${network.symbol}`;
             if (fiatRate) {
                 const accountBalance = new BigNumber(availableBalance);
                 const fiat = accountBalance.times(fiatRate.value).toFixed(2);
-                balance = `${availableBalance} ${selectedCoin.symbol} / $${fiat}`;
+                balance = `${availableBalance} ${network.symbol} / $${fiat}`;
             }
         }
 
@@ -233,21 +233,19 @@ const AccountMenu = (props: Props) => {
 
     return (
         <Wrapper>
-            {selectedCoin && (
-                <NavLink to={baseUrl}>
-                    <RowCoin
-                        coin={{
-                            name: selectedCoin.name,
-                            network: selectedCoin.network,
-                        }}
-                        iconLeft={{
-                            type: ICONS.ARROW_LEFT,
-                            color: colors.TEXT_PRIMARY,
-                            size: 20,
-                        }}
-                    />
-                </NavLink>
-            )}
+            <NavLink to={baseUrl}>
+                <RowCoin
+                    network={{
+                        name: network.name,
+                        shortcut: network.shortcut,
+                    }}
+                    iconLeft={{
+                        type: ICONS.ARROW_LEFT,
+                        color: colors.TEXT_PRIMARY,
+                        size: 20,
+                    }}
+                />
+            </NavLink>
             <Wrapper>
                 {selectedAccounts}
             </Wrapper>
