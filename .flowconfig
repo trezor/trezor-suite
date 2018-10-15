@@ -11,7 +11,6 @@
 .*/_old/.*
 .*/public/solidity/.*
 .*/build/.*
-.*/build-devel/.*
 
 [libs]
 ./src/flowtype/npm/redux_v3.x.x.js
