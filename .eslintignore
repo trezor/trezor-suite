@@ -1,7 +1,6 @@
 public
 build
-build-dev
-build-beta
+build-devel
 coverage
 node_modules
 src/flowtype/npm

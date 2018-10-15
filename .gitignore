@@ -1,6 +1,5 @@
 build
-build-dev
-build-beta
+build-devel
 
 # Dependency directory
 node_modules
