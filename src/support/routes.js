@@ -23,7 +23,7 @@ export const routes: Array<Route> = [
         fields: ['import'],
     },
     {
-        name: 'wallet-setting',
+        name: 'wallet-settings',
         pattern: '/settings',
         fields: ['settings'],
     },

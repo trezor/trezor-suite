@@ -5,15 +5,62 @@ import styled, { keyframes } from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
+import { H2 } from 'components/Heading';
 import { PULSATE } from 'config/animations';
 import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import CaseImage from 'images/case.png';
+import Link from 'components/Link';
 
 type Props = {
     deviceLabel: string,
     showWebUsb: boolean,
     showDisconnect: boolean,
 };
+
+const Title = styled.div`
+    margin-top: 60px;
+`;
+
+const Wrapper = styled.div`
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 400px;
+    margin: 0 auto;
+    padding: 36px 0;
+`;
+
+const ConnectTrezorWrapper = styled.div`
+    position: relative;
+    top: 1px;
+    animation: ${PULSATE} 1.3s ease-out infinite;
+    color: ${colors.GREEN_PRIMARY};
+    font-size: ${FONT_SIZE.BASE};
+    font-weight: ${FONT_WEIGHT.BASE};
+`;
+
+const Image = styled.img`
+    width: 777px;
+    min-height: 500px;
+    margin: auto;
+    background-repeat: no-repeat;
+    background-position: center 0px;
+    background-size: contain;
+`;
+
+const Footer = styled.div`
+    margin-bottom: 32px;
+`;
+
+const FooterText = styled.span`
+    margin-right: 4px;
+`;
+
+const StyledLink = styled(Link)`
+    font-size: ${FONT_SIZE.BASE};
+`;
+
 class ConnectDevice extends PureComponent<Props> {
     componentDidMount() {
         if (this.props.showWebUsb) {
@@ -57,44 +104,59 @@ class ConnectDevice extends PureComponent<Props> {
     }
 
     render() {
-        const Wrapper = styled.div`
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            width: 400px;
-            margin: 0 auto;
-            padding: 36px 0;
-        `;
-
-        const ConnectTrezorWrapper = styled.div`
-            position: relative;
-            top: 1px;
-            animation: ${PULSATE} 1.3s ease-out infinite;
-            color: ${colors.GREEN_PRIMARY};
-            font-size: ${FONT_SIZE.BASE};
-            font-weight: ${FONT_WEIGHT.BASE};
-        `;
-
         return (
-            <Wrapper>
-                <ConnectTrezorWrapper>
-                    {this.props.showDisconnect && `Unplug "${this.props.deviceLabel}" device`}
-                    {!this.props.showDisconnect && (
+            <div>
+                <Title>
+                    <H2 claim>The private bank in your hands.</H2>
+                    <P>TREZOR Wallet is an easy-to-use interface for your TREZOR.</P>
+                    <P>TREZOR Wallet allows you to easily control your funds, manage your balance and initiate transfers.</P>
+                </Title>
+
+                <Wrapper>
+                    <ConnectTrezorWrapper>
+                        {this.props.showDisconnect && `Unplug "${this.props.deviceLabel}" device`}
+                        {!this.props.showDisconnect && (
+                            <React.Fragment>
+                                {this.getTrezorDeviceImage()}
+                                Connect TREZOR
+                            </React.Fragment>
+                        )}
+                    </ConnectTrezorWrapper>
+                    {this.props.showWebUsb && !this.props.showDisconnect && (
                         <React.Fragment>
-                            {this.getTrezorDeviceImage()}
-                            Connect TREZOR
+                            <P>and</P>
+                            <Button isWebUsb>
+                                Check for devices
+                            </Button>
                         </React.Fragment>
                     )}
-                </ConnectTrezorWrapper>
-                {this.props.showWebUsb && !this.props.showDisconnect && (
-                    <React.Fragment>
-                        <P>and</P>
-                        <Button isWebUsb>
-                            Check for devices
-                        </Button>
-                    </React.Fragment>
-                )}
-            </Wrapper>
+                </Wrapper>
+
+                <Image src={CaseImage} />
+
+                <Footer>
+                    {this.props.showWebUsb && (
+                        <P>
+                            <FooterText>Device not recognized?</FooterText>
+                            <StyledLink
+                                to="/bridge"
+                                isGreen
+                            >Try installing the TREZOR Bridge.
+                            </StyledLink>
+                        </P>
+                    )}
+                    <P>
+                        <FooterText>
+                            Don&apos;t have TREZOR?
+                        </FooterText>
+                        <StyledLink
+                            href="https://trezor.io/"
+                            isGreen
+                        >Get one
+                        </StyledLink>
+                    </P>
+                </Footer>
+            </div>
         );
     }
 }

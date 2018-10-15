@@ -37,7 +37,7 @@ const A = styled.a`
 
 const StyledNavLink = styled(NavLink)`
     ${props => props.isGreen && css`
-            color: ${colors.GREEN_PRIMARY};
+        color: ${colors.GREEN_PRIMARY};
     `}
 
     ${props => props.isGray && css`
@@ -51,12 +51,7 @@ class Link extends PureComponent {
         let LinkComponent;
         if (shouldRenderRouterLink) {
             LinkComponent = (
-                <StyledNavLink
-                    isGreen={this.props.isGreen}
-                    isGray={this.props.isGray}
-                    to={this.props.to}
-                >{this.props.children}
-                </StyledNavLink>);
+                <StyledNavLink {...this.props}>{this.props.children}</StyledNavLink>);
         } else {
             LinkComponent = (
                 <A
@@ -81,6 +76,7 @@ Link.propTypes = {
         PropTypes.string,
         PropTypes.object,
         PropTypes.array,
+        PropTypes.node,
     ]).isRequired,
     className: PropTypes.string,
     href: PropTypes.string,
@@ -89,11 +85,6 @@ Link.propTypes = {
     onClick: PropTypes.func,
     isGreen: PropTypes.bool,
     isGray: PropTypes.bool,
-};
-
-Link.defaultProps = {
-    isGreen: false,
-    isGray: false,
 };
 
 export default Link;

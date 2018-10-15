@@ -7,7 +7,11 @@ import { ConnectedRouter } from 'react-router-redux';
 // general
 import ErrorBoundary from 'support/ErrorBoundary';
 import { getPattern } from 'support/routes';
-import LandingContainer from 'views/Landing/Container';
+
+// landing views
+import RootView from 'views/Landing/views/Root/Container';
+import InstallBridge from 'views/Landing/views/InstallBridge/Container';
+import ImportView from 'views/Landing/views/Import/Container';
 
 // wallet views
 import WalletContainer from 'views/Wallet';
@@ -31,13 +35,13 @@ const App = () => (
     <Provider store={store}>
         <ConnectedRouter history={history}>
             <Switch>
-                <Route exact path={getPattern('landing-home')} component={LandingContainer} />
-                <Route exact path={getPattern('landing-bridge')} component={LandingContainer} />
-                <Route exact path={getPattern('landing-import')} component={LandingContainer} />
+                <Route exact path={getPattern('landing-home')} component={RootView} />
+                <Route exact path={getPattern('landing-bridge')} component={InstallBridge} />
+                <Route exact path={getPattern('landing-import')} component={ImportView} />
                 <Route>
                     <ErrorBoundary>
                         <WalletContainer>
-                            <Route exact path={getPattern('wallet-setting')} component={WalletSettings} />
+                            <Route exact path={getPattern('wallet-settings')} component={WalletSettings} />
                             <Route exact path={getPattern('wallet-dashboard')} component={WalletDashboard} />
                             <Route exact path={getPattern('wallet-acquire')} component={WalletAcquire} />
                             <Route exact path={getPattern('wallet-unreadable')} component={WalletUnreadableDevice} />
