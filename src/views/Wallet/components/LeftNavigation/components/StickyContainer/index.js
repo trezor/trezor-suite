@@ -130,7 +130,7 @@ export default class StickyContainer extends React.PureComponent<Props, State> {
             // make sure that wrapper will not be over scrolled
             if (state.wrapperTopOffset > 0) state.wrapperTopOffset = 0;
             const maxScrollTop = viewportHeight - wrapperBounds.height;
-            if (state.wrapperTopOffset < maxScrollTop) state.wrapperTopOffset = maxScrollTop;
+            if (maxScrollTop < 0 && state.wrapperTopOffset < maxScrollTop) state.wrapperTopOffset = maxScrollTop;
         } else {
             // update wrapper "top" to be same as "aside" element
             state.wrapperTopOffset = asideBounds.top;
