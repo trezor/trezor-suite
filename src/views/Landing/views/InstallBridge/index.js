@@ -8,10 +8,10 @@ import { Select } from 'components/Select';
 import Link from 'components/Link';
 import { H1 } from 'components/Heading';
 import Button from 'components/Button';
-import Loader from 'components/Loader';
 import P from 'components/Paragraph';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
+import LandingWrapper from 'views/Landing/components/LandingWrapper';
 import * as RouterActions from 'actions/RouterActions';
 
 import type { State as TrezorConnectState } from 'reducers/TrezorConnectReducer';
@@ -148,64 +148,66 @@ class InstallBridge extends PureComponent<Props, State> {
     render() {
         const { target } = this.state;
         if (!target) {
-            return <Loader text="Loading" size={100} />;
+            return <LandingWrapper />;
         }
         return (
-            <Wrapper>
-                <Top>
-                    <TitleHeader>TREZOR Bridge<Version>{this.state.currentVersion}</Version></TitleHeader>
-                    <P>New communication tool to facilitate the connection between your TREZOR and your internet browser.</P>
-                    <Download>
-                        <SelectWrapper
-                            isSearchable={false}
-                            isClearable={false}
-                            value={target}
-                            onChange={v => this.onChange(v)}
-                            options={this.state.installers}
-                        />
-                        <Link href={`${this.state.uri}${target.value}`}>
-                            <DownloadBridgeButton>
-                                <Icon
-                                    icon={ICONS.DOWNLOAD}
-                                    color={colors.WHITE}
-                                    size={30}
-                                />
-                            Download latest Bridge {this.state.latestVersion}
-                            </DownloadBridgeButton>
-                        </Link>
-                    </Download>
-                    <Ol>
-                        {this.props.transport.bridge.changelog.map(entry => (
-                            <Li key={entry}>{entry}</Li>
-                        ))}
-                    </Ol>
-                    <P isSmaller>
-                        <LearnMoreText>Learn more about latest versions in</LearnMoreText>
-                        <Link
-                            href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
-                            isGreen
-                        >Changelog
-                        </Link>
-                    </P>
-                    <P>
-                        {target.signature && (
-                            <Link
-                                href={this.state.uri + target.signature}
-                                isGreen
-                            >Check PGP signature
+            <LandingWrapper loading={!target}>
+                <Wrapper>
+                    <Top>
+                        <TitleHeader>TREZOR Bridge<Version>{this.state.currentVersion}</Version></TitleHeader>
+                        <P>New communication tool to facilitate the connection between your TREZOR and your internet browser.</P>
+                        <Download>
+                            <SelectWrapper
+                                isSearchable={false}
+                                isClearable={false}
+                                value={target}
+                                onChange={v => this.onChange(v)}
+                                options={this.state.installers}
+                            />
+                            <Link href={`${this.state.uri}${target.value}`}>
+                                <DownloadBridgeButton>
+                                    <Icon
+                                        icon={ICONS.DOWNLOAD}
+                                        color={colors.WHITE}
+                                        size={30}
+                                    />
+                                Download latest Bridge {this.state.latestVersion}
+                                </DownloadBridgeButton>
                             </Link>
-                        )}
-                    </P>
-                </Top>
-                <Bottom>
-                    {this.props.transport.type && (
-                        <P>
-                            No, i dont want to upgrade Bridge now<br />
-                            Take me <GoBack onClick={() => this.props.selectFirstAvailableDevice()}>back to the wallet</GoBack>
+                        </Download>
+                        <Ol>
+                            {this.props.transport.bridge.changelog.map(entry => (
+                                <Li key={entry}>{entry}</Li>
+                            ))}
+                        </Ol>
+                        <P isSmaller>
+                            <LearnMoreText>Learn more about latest versions in</LearnMoreText>
+                            <Link
+                                href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
+                                isGreen
+                            >Changelog
+                            </Link>
                         </P>
-                    )}
-                </Bottom>
-            </Wrapper>
+                        <P>
+                            {target.signature && (
+                                <Link
+                                    href={this.state.uri + target.signature}
+                                    isGreen
+                                >Check PGP signature
+                                </Link>
+                            )}
+                        </P>
+                    </Top>
+                    <Bottom>
+                        {this.props.transport.type && (
+                            <P>
+                                No, i dont want to upgrade Bridge now<br />
+                                Take me <GoBack onClick={() => this.props.selectFirstAvailableDevice()}>back to the wallet</GoBack>
+                            </P>
+                        )}
+                    </Bottom>
+                </Wrapper>
+            </LandingWrapper>
         );
     }
 }

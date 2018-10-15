@@ -9,11 +9,11 @@ const Wrapper = styled.div`
     width: 100%;
 `;
 
-const InitializationError = (props: { error: ?string }) => (
+const InitializationError = (props: { error: string }) => (
     <Wrapper>
         <Notification
             title="Initialization error"
-            message={props.error || ''}
+            message={props.error}
             type="error"
             cancelable={false}
         />
