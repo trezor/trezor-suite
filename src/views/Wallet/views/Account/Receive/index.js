@@ -24,7 +24,6 @@ const Label = styled.div`
 const AddressWrapper = styled.div`
     position: relative;
     display: flex;
-    margin-top: 20px;
     flex-wrap: wrap;
     flex-direction: ${props => (props.isShowingQrCode ? 'column' : 'row')};
 `;

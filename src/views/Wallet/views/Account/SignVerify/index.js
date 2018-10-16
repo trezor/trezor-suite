@@ -10,12 +10,13 @@ import colors from 'config/colors';
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
+    margin-top: -5px;
     flex-direction: row;
     background: ${colors.WHITE};
 `;
 
 const Row = styled.div`
-    padding: 10px 0 10px 0;
+    padding: 0 0 10px 0;
 `;
 
 const RowButtons = styled(Row)`
