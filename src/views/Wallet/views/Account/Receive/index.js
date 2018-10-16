@@ -166,7 +166,7 @@ const AccountReceive = (props: Props) => {
                     isShowingQrCode={addressVerified || addressUnverified}
                 >
                     {isAddressVerifying && (
-                        <AddressInfoText>Confirm address on TREZOR</AddressInfoText>
+                        <AddressInfoText>Confirm address on Trezor</AddressInfoText>
                     )}
                     {((addressVerified || addressUnverified) && !isAddressVerifying) && (
                         <Tooltip

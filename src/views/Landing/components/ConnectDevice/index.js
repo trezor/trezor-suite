@@ -108,8 +108,8 @@ class ConnectDevice extends PureComponent<Props> {
             <div>
                 <Title>
                     <H2 claim>The private bank in your hands.</H2>
-                    <P>TREZOR Wallet is an easy-to-use interface for your TREZOR.</P>
-                    <P>TREZOR Wallet allows you to easily control your funds, manage your balance and initiate transfers.</P>
+                    <P>Trezor Wallet is an easy-to-use interface for your Trezor.</P>
+                    <P>Trezor Wallet allows you to easily control your funds, manage your balance and initiate transfers.</P>
                 </Title>
 
                 <Wrapper>
@@ -118,7 +118,7 @@ class ConnectDevice extends PureComponent<Props> {
                         {!this.props.showDisconnect && (
                             <React.Fragment>
                                 {this.getTrezorDeviceImage()}
-                                Connect TREZOR
+                                Connect Trezor
                             </React.Fragment>
                         )}
                     </ConnectTrezorWrapper>
@@ -141,13 +141,13 @@ class ConnectDevice extends PureComponent<Props> {
                             <StyledLink
                                 to="/bridge"
                                 isGreen
-                            >Try installing the TREZOR Bridge.
+                            >Try installing the Trezor Bridge.
                             </StyledLink>
                         </P>
                     )}
                     <P>
                         <FooterText>
-                            Don&apos;t have TREZOR?
+                            Don&apos;t have Trezor?
                         </FooterText>
                         <StyledLink
                             href="https://trezor.io/"

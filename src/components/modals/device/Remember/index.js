@@ -126,7 +126,7 @@ class RememberDevice extends PureComponent<Props, State> {
         return (
             <Wrapper>
                 <H3>Forget {label}?</H3>
-                <StyledP isSmaller>Would you like TREZOR Wallet to forget your { devicePlural }, so that it is still visible even while disconnected?</StyledP>
+                <StyledP isSmaller>Would you like Trezor Wallet to forget your { devicePlural }, so that it is still visible even while disconnected?</StyledP>
                 <Column>
                     <StyledButton onClick={() => this.forget()}>
                         <ButtonContent>

@@ -75,7 +75,7 @@ const Header = (): React$Element<string> => (
                 </NavLink>
             </Left>
             <Right>
-                <A href="https://trezor.io/" target="_blank" rel="noreferrer noopener">TREZOR</A>
+                <A href="https://trezor.io/" target="_blank" rel="noreferrer noopener">Trezor</A>
                 <A href="https://wiki.trezor.io/" target="_blank" rel="noreferrer noopener">Wiki</A>
                 <A href="https://blog.trezor.io/" target="_blank" rel="noreferrer noopener">Blog</A>
                 <A href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Support</A>
