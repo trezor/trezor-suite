@@ -59,7 +59,7 @@ const TopNavigationAccount = (props: Props) => {
             <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
             <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
             <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
-            {/* <StyledNavLink to={`${basePath}/signverify`}>Sign & Verify</StyledNavLink> */}
+            <StyledNavLink to={`${basePath}/signverify`}>Sign & Verify</StyledNavLink>
             <Indicator pathname={pathname} />
         </Wrapper>
     );

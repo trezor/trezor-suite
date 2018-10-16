@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
+import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
 
 import { H2 } from 'components/Heading';
@@ -14,8 +15,19 @@ const Wrapper = styled.div`
     background: ${colors.WHITE};
 `;
 
-const StyledH2 = styled(H2)`
-    padding-bottom: 10px;
+const Row = styled.div`
+    padding: 10px 0 10px 0;
+`;
+
+const RowButtons = styled(Row)`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+`;
+
+const StyledButton = styled(Button)`
+    margin-left: 10px;
+    width: 110px;
 `;
 
 const Column = styled.div`
@@ -31,30 +43,49 @@ const Verify = styled(Column)`
 `;
 
 const Label = styled.div`
-    color: ${colors.LABEL};
-    padding: 5px 0px;
+    color: ${colors.TEXT_SECONDARY};
+    padding: 5px 0px 10px 0;
 `;
 
 const AccountSignVerify = () => (
     <Content>
+        <H2>Sign & Verify</H2>
         <Wrapper>
             <Sign>
-                <StyledH2>Sign message</StyledH2>
-                <Label>Message</Label>
-                <Textarea rows="4" maxLength="255" />
-                <Label>Address</Label>
-                <Input type="text" />
-                <Label>Signature</Label>
-                <Textarea rows="4" maxLength="255" readOnly="readonly" />
+                <Row>
+                    <Label>Address</Label>
+                    <Input height={50} type="text" disabled />
+                </Row>
+                <Row>
+                    <Label>Message</Label>
+                    <Textarea rows="2" maxLength="255" />
+                </Row>
+                <Row>
+                    <Label>Signature</Label>
+                    <Textarea rows="2" maxLength="255" disabled />
+                </Row>
+                <RowButtons>
+                    <Button isWhite>Clear</Button>
+                    <StyledButton>Sign</StyledButton>
+                </RowButtons>
             </Sign>
             <Verify>
-                <StyledH2>Verify message</StyledH2>
-                <Label>Message</Label>
-                <Textarea rows="4" maxLength="255" />
-                <Label>Address</Label>
-                <Input type="text" />
-                <Label>Signature</Label>
-                <Textarea rows="4" maxLength="255" />
+                <Row>
+                    <Label>Address</Label>
+                    <Input type="text" />
+                </Row>
+                <Row>
+                    <Label>Message</Label>
+                    <Textarea rows="4" maxLength="255" />
+                </Row>
+                <Row>
+                    <Label>Signature</Label>
+                    <Textarea rows="4" maxLength="255" />
+                </Row>
+                <RowButtons>
+                    <Button isWhite>Clear</Button>
+                    <StyledButton>Verify</StyledButton>
+                </RowButtons>
             </Verify>
         </Wrapper>
     </Content>

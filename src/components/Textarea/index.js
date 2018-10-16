@@ -1,4 +1,5 @@
 import React from 'react';
+import Textarea from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import colors from 'config/colors';
@@ -13,11 +14,11 @@ const Wrapper = styled.div`
 
 const disabledColor = colors.TEXT_PRIMARY;
 
-const StyledTextarea = styled.textarea`
+const StyledTextarea = styled(Textarea)`
     width: 100%;
     min-height: 85px;
     margin-bottom: 10px;
-    padding: 6px 12px;
+    padding: 10px 12px;
     box-sizing: border-box;
     border: 1px solid ${props => (props.borderColor ? props.borderColor : colors.DIVIDER)};
     border-radius: 2px;
@@ -27,7 +28,7 @@ const StyledTextarea = styled.textarea`
     color: ${colors.TEXT_PRIMARY};
     background: ${colors.WHITE};
     font-weight: ${FONT_WEIGHT.BASE};
-    font-size: ${FONT_SIZE.BASE};
+    font-size: ${FONT_SIZE.SMALL};
     white-space: pre-wrap;       /* css-3 */
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
     white-space: -pre-wrap;      /* Opera 4-6 */
@@ -105,7 +106,7 @@ const getColor = (inputState) => {
     return color;
 };
 
-const Textarea = ({
+const TextArea = ({
     className,
     placeholder = '',
     value,
@@ -145,7 +146,7 @@ const Textarea = ({
     </Wrapper>
 );
 
-Textarea.propTypes = {
+TextArea.propTypes = {
     className: PropTypes.string,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
@@ -159,4 +160,4 @@ Textarea.propTypes = {
     bottomText: PropTypes.string,
 };
 
-export default Textarea;
+export default TextArea;

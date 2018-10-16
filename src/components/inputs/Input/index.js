@@ -34,7 +34,7 @@ const TopLabel = styled.span`
 
 const StyledInput = styled.input`
     width: 100%;
-    height: 40px;
+    height: ${props => (props.height ? `${props.height}px` : '40px')};
     padding: 5px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
 
     line-height: 1.42857143;
