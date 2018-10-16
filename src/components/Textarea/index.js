@@ -114,6 +114,7 @@ const TextArea = ({
     onFocus,
     onBlur,
     isDisabled,
+    name,
     onChange,
     topLabel,
     state = '',
@@ -128,6 +129,7 @@ const TextArea = ({
         <StyledTextarea
             className={className}
             disabled={isDisabled}
+            name={name}
             style={customStyle}
             onFocus={onFocus}
             onBlur={onBlur}
@@ -154,6 +156,7 @@ TextArea.propTypes = {
     customStyle: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.string,
+    name: PropTypes.string,
     isDisabled: PropTypes.bool,
     topLabel: PropTypes.node,
     state: PropTypes.string,

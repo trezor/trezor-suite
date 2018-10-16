@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from 'components/inputs/Input';
+import PropTypes from 'prop-types';
 import Textarea from 'components/Textarea';
 import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
@@ -47,48 +48,109 @@ const Label = styled.div`
     padding: 5px 0px 10px 0;
 `;
 
-const AccountSignVerify = () => (
-    <Content>
-        <Title>Sign & Verify</Title>
-        <Wrapper>
-            <Sign>
-                <Row>
-                    <Label>Address</Label>
-                    <Input height={50} type="text" disabled />
-                </Row>
-                <Row>
-                    <Label>Message</Label>
-                    <Textarea rows="2" maxLength="255" />
-                </Row>
-                <Row>
-                    <Label>Signature</Label>
-                    <Textarea rows="2" maxLength="255" disabled />
-                </Row>
-                <RowButtons>
-                    <Button isWhite>Clear</Button>
-                    <StyledButton>Sign</StyledButton>
-                </RowButtons>
-            </Sign>
-            <Verify>
-                <Row>
-                    <Label>Address</Label>
-                    <Input type="text" />
-                </Row>
-                <Row>
-                    <Label>Message</Label>
-                    <Textarea rows="4" maxLength="255" />
-                </Row>
-                <Row>
-                    <Label>Signature</Label>
-                    <Textarea rows="4" maxLength="255" />
-                </Row>
-                <RowButtons>
-                    <Button isWhite>Clear</Button>
-                    <StyledButton>Verify</StyledButton>
-                </RowButtons>
-            </Verify>
-        </Wrapper>
-    </Content>
-);
+class SignVerify extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            sign: {
+                address: '',
+                message: '',
+                signature: '',
+            },
+            verify: {
+                address: '',
+                message: '',
+                signature: '',
+            },
+        };
+    }
 
-export default AccountSignVerify;
+    handleSignInput = (e) => {
+        console.log('aaa', e.target);
+        this.setState({ sign: { [e.target.name]: e.target.value } });
+        console.log(this.state);
+    }
+
+    handleVerifyInput = (e) => {
+        this.setState({ verify: { [e.target.name]: e.target.value } });
+        console.log(this.state);
+    }
+
+    clearSign = () => {
+        this.setState({
+            sign: {
+                address: '',
+                message: '',
+                signature: '',
+            },
+        });
+    }
+
+    clearVerify = () => {
+        this.setState({
+            verify: {
+                address: '',
+                message: '',
+                signature: '',
+            },
+        });
+    }
+
+    getPath() {
+        const { account } = this.props;
+        return account.addressPath;
+    }
+
+    render() {
+        const { signVerifyActions } = this.props;
+        return (
+            <Content>
+                <Title>Sign & Verify</Title>{this.state.sign.message || 'no message'}
+                <Wrapper>
+                    <Sign>
+                        <Row>
+                            <Label>Address</Label>
+                            <Input name="address" value={this.state.sign.address} onChange={this.handleSignInput} height={50} type="text" disabled />
+                        </Row>
+                        <Row>
+                            <Label>Message</Label>
+                            <Textarea name="message" value={this.state.sign.message} onChange={this.handleSignInput} rows="2" maxLength="255" />
+                        </Row>
+                        <Row>
+                            <Label>Signature</Label>
+                            <Textarea name="signature" value={this.state.sign.signature} onChange={this.handleSign} rows="2" maxLength="255" disabled />
+                        </Row>
+                        <RowButtons>
+                            <Button onClick={this.clearVerify} isWhite>Clear</Button>
+                            <StyledButton onClick={() => signVerifyActions.sign(this.getPath(), this.state.sign.message)}>Sign</StyledButton>
+                        </RowButtons>
+                    </Sign>
+                    <Verify>
+                        <Row>
+                            <Label>Address</Label>
+                            <Input name="address" value={this.state.verify.address} onChange={this.handleVerifyInput} type="text" />
+                        </Row>
+                        <Row>
+                            <Label>Message</Label>
+                            <Textarea name="message" value={this.state.verify.message} onChange={this.handleVerifyInput} rows="4" maxLength="255" />
+                        </Row>
+                        <Row>
+                            <Label>Signature</Label>
+                            <Textarea name="signature" value={this.state.verify.signature} onChange={this.handleVerifyInput} rows="4" maxLength="255" />
+                        </Row>
+                        <RowButtons>
+                            <Button onClick={this.clearSign} isWhite>Clear</Button>
+                            <StyledButton>Verify</StyledButton>
+                        </RowButtons>
+                    </Verify>
+                </Wrapper>
+            </Content>
+        );
+    }
+}
+
+SignVerify.propTypes = {
+    sign: PropTypes.func.isRequired,
+};
+
+export default SignVerify;
