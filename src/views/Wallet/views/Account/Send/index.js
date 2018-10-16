@@ -10,8 +10,8 @@ import Link from 'components/Link';
 import ICONS from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
+import Title from 'views/Wallet/components/Title';
 import P from 'components/Paragraph';
-import { H2 } from 'components/Heading';
 import Content from 'views/Wallet/components/Content';
 import type { Token } from 'flowtype';
 import AdvancedForm from './components/AdvancedForm';
@@ -248,7 +248,7 @@ const AccountSend = (props: Props) => {
     return (
         <Content>
             <React.Fragment>
-                <H2>Send Ethereum or tokens</H2>
+                <Title>Send Ethereum or tokens</Title>
                 <InputRow>
                     <Input
                         state={getAddressInputState(address, errors.address, warnings.address)}

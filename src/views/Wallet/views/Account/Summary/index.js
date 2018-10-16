@@ -7,6 +7,7 @@ import Icon from 'components/Icon';
 import { AsyncSelect } from 'components/Select';
 import ICONS from 'config/icons';
 import colors from 'config/colors';
+import Title from 'views/Wallet/components/Title';
 import Tooltip from 'components/Tooltip';
 import Content from 'views/Wallet/components/Content';
 
@@ -82,7 +83,7 @@ const AccountSummary = (props: Props) => {
                 <AccountHeading>
                     <AccountName>
                         <StyledCoinLogo coinNetwork={account.network} />
-                        <H2>Account #{parseInt(account.index, 10) + 1}</H2>
+                        <Title>Account #{parseInt(account.index, 10) + 1}</Title>
                     </AccountName>
                     <Link href={explorerLink} isGray>See full transaction history</Link>
                 </AccountHeading>

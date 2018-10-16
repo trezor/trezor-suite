@@ -1,7 +1,6 @@
 /* @flow */
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { H2 } from 'components/Heading';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
@@ -12,6 +11,7 @@ import Tooltip from 'components/Tooltip';
 import { QRCode } from 'react-qr-svg';
 
 import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
+import Title from 'views/Wallet/components/Title';
 import VerifyAddressTooltip from './components/VerifyAddressTooltip';
 
 import type { Props } from './Container';
@@ -159,7 +159,7 @@ const AccountReceive = (props: Props) => {
     return (
         <Content>
             <React.Fragment>
-                <H2>Receive Ethereum or tokens</H2>
+                <Title>Receive Ethereum or tokens</Title>
                 <AddressWrapper
                     isShowingQrCode={addressVerified || addressUnverified}
                 >

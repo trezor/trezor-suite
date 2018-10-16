@@ -4,6 +4,7 @@ export const FONT_SIZE = {
     SMALL: '14px',
     BASE: '16px',
     TOP_MENU: '17px',
+    WALLET_TITLE: '18px',
     BIG: '21px',
     BIGGER: '32px',
     BIGGEST: '36px',

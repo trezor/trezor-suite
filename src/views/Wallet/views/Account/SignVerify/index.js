@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
+import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
-
-import { H2 } from 'components/Heading';
 import colors from 'config/colors';
 
 const Wrapper = styled.div`
@@ -49,7 +48,7 @@ const Label = styled.div`
 
 const AccountSignVerify = () => (
     <Content>
-        <H2>Sign & Verify</H2>
+        <Title>Sign & Verify</Title>
         <Wrapper>
             <Sign>
                 <Row>
