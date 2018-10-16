@@ -20,7 +20,7 @@ export default (props: Props) => {
                         [{
                             label: 'Connect',
                             callback: async () => {
-                                await props.blockchainReconnect(network.network);
+                                await props.blockchainReconnect(network.shortcut);
                             },
                         }]
                     }

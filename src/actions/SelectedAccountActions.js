@@ -63,7 +63,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         };
     }
 
-    const blockchain = state.blockchain.find(b => b.name === network.network);
+    const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
     if (blockchain && !blockchain.connected) {
         return {
             type: 'backend',

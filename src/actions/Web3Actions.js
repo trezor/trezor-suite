@@ -57,15 +57,15 @@ export const initWeb3 = (network: string, urlIndex: number = 0): PromiseAction<W
     // requested web3 wasn't initialized or is disconnected
     // initialize again
     const { config, ERC20Abi } = getState().localStorage;
-    const coin = config.coins.find(c => c.network === network);
-    if (!coin) {
-        // coin not found
+    const networkData = config.networks.find(c => c.shortcut === network);
+    if (!networkData) {
+        // network not found
         reject(new Error(`Network ${network} not found in application config.`));
         return;
     }
 
     // get first url
-    const url = coin.web3[urlIndex];
+    const url = networkData.web3[urlIndex];
     if (!url) {
         reject(new Error('Web3 backend is not responding'));
         return;
@@ -80,7 +80,7 @@ export const initWeb3 = (network: string, urlIndex: number = 0): PromiseAction<W
         const newInstance = {
             network,
             web3,
-            chainId: coin.chainId,
+            chainId: networkData.chainId,
             erc20: new web3.eth.Contract(ERC20Abi),
             latestBlock,
             gasPrice,

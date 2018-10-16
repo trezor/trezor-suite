@@ -71,8 +71,8 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
     // validate requested network
     if (params.hasOwnProperty('network')) {
         const { config } = getState().localStorage;
-        const coin = config.coins.find(c => c.network === params.network);
-        if (!coin) return false;
+        const network = config.networks.find(c => c.shortcut === params.network);
+        if (!network) return false;
         if (!params.account) return false;
     }
 

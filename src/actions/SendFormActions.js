@@ -130,7 +130,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         return;
     }
 
-    const gasPrice: BigNumber = await dispatch(BlockchainActions.getGasPrice(network.network, network.defaultGasPrice));
+    const gasPrice: BigNumber = await dispatch(BlockchainActions.getGasPrice(network.shortcut, network.defaultGasPrice));
     const gasLimit = network.defaultGasLimit.toString();
     const feeLevels = ValidationActions.getFeeLevels(network.symbol, gasPrice, gasLimit);
     const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, initialState.selectedFeeLevel);
@@ -139,7 +139,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         type: SEND.INIT,
         state: {
             ...initialState,
-            networkName: network.network,
+            networkName: network.shortcut,
             networkSymbol: network.symbol,
             currency: network.symbol,
             feeLevels,
@@ -411,7 +411,7 @@ const estimateGasPrice = (): AsyncAction => async (dispatch: Dispatch, getState:
         return;
     }
 
-    const gasLimit = await dispatch(BlockchainActions.estimateGasLimit(network.network, state.data, state.amount, state.gasPrice));
+    const gasLimit = await dispatch(BlockchainActions.estimateGasLimit(network.shortcut, state.data, state.amount, state.gasPrice));
 
     // double check "data" field
     // possible race condition when data changed before backend respond
@@ -439,7 +439,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     const nonce = pendingNonce > 0 && pendingNonce >= account.nonce ? pendingNonce : account.nonce;
 
     const txData = await dispatch(prepareEthereumTx({
-        network: network.network,
+        network: network.shortcut,
         token: isToken ? findToken(getState().tokens, account.address, currentState.currency, account.deviceState) : null,
         from: account.address,
         to: currentState.address,
@@ -487,7 +487,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         const serializedTx: string = await dispatch(serializeEthereumTx(txData));
         const push = await TrezorConnect.pushTransaction({
             tx: serializedTx,
-            coin: network.network,
+            coin: network.shortcut,
         });
 
         if (!push.success) {
