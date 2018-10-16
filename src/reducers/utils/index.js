@@ -6,7 +6,7 @@ import type {
     Device,
     TrezorDevice,
     Account,
-    Coin,
+    Network,
     Discovery,
     Token,
     PendingTx,
@@ -66,13 +66,13 @@ export const getSelectedAccount = (state: State): ?Account => {
     return state.accounts.find(a => a.deviceState === device.state && a.index === index && a.network === locationState.network);
 };
 
-export const getSelectedNetwork = (state: State): ?Coin => {
+export const getSelectedNetwork = (state: State): ?Network => {
     const device = state.wallet.selectedDevice;
-    const { coins } = state.localStorage.config;
+    const { networks } = state.localStorage.config;
     const locationState = state.router.location.state;
     if (!device || !locationState.network) return null;
 
-    return coins.find(c => c.network === locationState.network);
+    return networks.find(c => c.shortcut === locationState.network);
 };
 
 export const getDiscoveryProcess = (state: State): ?Discovery => {

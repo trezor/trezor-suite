@@ -19,32 +19,21 @@ class CoinLogo extends PureComponent {
         this.longIcons = ['etc', 'eth', 'trop'];
     }
 
-    getIcon() {
-        const { coinNetwork, coinId } = this.props;
-        let coinImgName = coinNetwork;
-        if (coinImgName === 'ethereum') {
-            coinImgName = 'eth';
-        } else if (coinImgName === 'ethereum-classic') {
-            coinImgName = 'etc';
-        }
-        return coinImgName || coinId;
-    }
-
-    hasLongIcon(coinImgName) {
+    hasLongIcon(network) {
         let hasLongIcon = false;
-        if (this.longIcons.includes(coinImgName)) {
+        if (this.longIcons.includes(network)) {
             hasLongIcon = true;
         }
         return hasLongIcon;
     }
 
     render() {
-        const iconName = this.getIcon();
+        const { network } = this.props;
         return (
             <Wrapper>
                 <Logo
-                    hasLongIcon={this.hasLongIcon(iconName)}
-                    src={require(`./images/${iconName}.png`)} // eslint-disable-line
+                    hasLongIcon={this.hasLongIcon(network)}
+                    src={require(`./images/${network}.png`)} // eslint-disable-line
                 />
             </Wrapper>
         );
@@ -52,8 +41,7 @@ class CoinLogo extends PureComponent {
 }
 
 CoinLogo.propTypes = {
-    coinId: PropTypes.string,
-    coinNetwork: PropTypes.string,
+    network: PropTypes.string,
 };
 
 export default CoinLogo;

@@ -7,11 +7,11 @@ import colors from 'config/colors';
 import ICONS from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
-import type { Coin } from 'reducers/LocalStorageReducer';
+import type { Network } from 'flowtype';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    coin: Coin,
+    network: Network,
     balance: string,
     fiat: $ElementType<BaseProps, 'fiat'>,
 }
@@ -77,7 +77,7 @@ const BalanceRateWrapper = styled(BalanceWrapper)`
     padding-left: 50px;
 `;
 
-const CoinBalace = styled.div`
+const CoinBalance = styled.div`
     font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
 `;
@@ -97,7 +97,7 @@ class AccountBalance extends PureComponent<Props, State> {
         };
     }
 
-    handleHideBallanceIconClick() {
+    handleHideBalanceIconClick() {
         this.setState(previousState => ({
             isHidden: !previousState.isHidden,
             canAnimateHideBalanceIcon: true,
@@ -105,8 +105,8 @@ class AccountBalance extends PureComponent<Props, State> {
     }
 
     render() {
-        const selectedCoin = this.props.coin;
-        const fiatRate: any = this.props.fiat.find(f => f.network === selectedCoin.network);
+        const { network } = this.props;
+        const fiatRate: any = this.props.fiat.find(f => f.network === network.shortcut);
 
         let accountBalance = '';
         let fiatRateValue = '';
@@ -121,7 +121,7 @@ class AccountBalance extends PureComponent<Props, State> {
         return (
             <Wrapper>
                 <HideBalanceIconWrapper
-                    onClick={() => this.handleHideBallanceIconClick()}
+                    onClick={() => this.handleHideBalanceIconClick()}
                 >
                     <Icon
                         canAnimate={this.state.canAnimateHideBalanceIcon}
@@ -138,13 +138,13 @@ class AccountBalance extends PureComponent<Props, State> {
                             {fiatRate && (
                                 <FiatValue>${fiat}</FiatValue>
                             )}
-                            <CoinBalace>{this.props.balance} {selectedCoin.symbol}</CoinBalace>
+                            <CoinBalance>{this.props.balance} {network.symbol}</CoinBalance>
                         </BalanceWrapper>
                         {fiatRate && (
                             <BalanceRateWrapper>
                                 <Label>Rate</Label>
                                 <FiatValueRate>${fiatRateValue}</FiatValueRate>
-                                <CoinBalace>1.00 {selectedCoin.symbol}</CoinBalace>
+                                <CoinBalance>1.00 {network.symbol}</CoinBalance>
                             </BalanceRateWrapper>
                         )}
                     </React.Fragment>
