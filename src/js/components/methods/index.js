@@ -32,3 +32,7 @@ export { default as LiskGetXpub } from './LiskGetXpub';
 export { default as LiskSignTx } from './LiskSignTx';
 export { default as LiskSignMessage } from './LiskSignMessage';
 export { default as LiskVerifyMessage } from './LiskVerifyMessage';
+
+export { default as TezosGetAddress } from './TezosGetAddress';
+export { default as TezosGetXpub } from './TezosGetXpub';
+export { default as TezosSignTx } from './TezosSignTx';

@@ -41,6 +41,10 @@ import lisksigntx from './methods/LiskSignTxReducer';
 import lisksignmessage from './methods/LiskSignMessageReducer';
 import liskverifymessage from './methods/LiskVerifyMessageReducer';
 
+import tezosgetaddress from './methods/TezosGetAddressReducer';
+import tezosgetxpub from './methods/TezosGetXpubReducer';
+import tezossigntx from './methods/TezosSignTxReducer';
+
 import custom from './methods/CustomMessageReducer';
 import login from './methods/RequestLoginReducer';
 import signtx from './methods/SignTxReducer';
@@ -84,6 +88,10 @@ export default combineReducers({
     lisksigntx,
     lisksignmessage,
     liskverifymessage,
+
+    tezosgetaddress,
+    tezosgetxpub,
+    tezossigntx,
     
     custom,
     login,

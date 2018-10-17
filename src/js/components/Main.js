@@ -50,6 +50,11 @@ export default class Main extends Component {
                     { navLink('/lisk-signtx', 'Lisk Sign Transaction') }
                     { navLink('/lisk-signmessage', 'Lisk Sign Message') }
                     { navLink('/lisk-verifymessage', 'Lisk Verify Message') }
+                    { navLink('/tezos-getaddress', 'Tezos Get Address') }
+                    { navLink('/tezos-getxpub', 'Tezos Get Public Key') }
+                    { navLink('/tezos-signtx', 'Tezos Sign Transaction') }
+
+                    
 
                     { navLink('/custom', 'Custom Message') }
                 </section>
