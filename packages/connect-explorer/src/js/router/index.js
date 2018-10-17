@@ -38,6 +38,9 @@ import {
     LiskSignTx,
     LiskSignMessage,
     LiskVerifyMessage,
+    TezosGetAddress,
+    TezosGetXpub,
+    TezosSignTx,
 } from '../components/methods';
 
 export default (
@@ -74,6 +77,9 @@ export default (
                     <Route exact path="/lisk-signtx" component={ LiskSignTx } />
                     <Route exact path="/lisk-signmessage" component={ LiskSignMessage } />
                     <Route exact path="/lisk-verifymessage" component={ LiskVerifyMessage } />
+                    <Route exact path="/tezos-getaddress" component={ TezosGetAddress } />
+                    <Route exact path="/tezos-getxpub" component={ TezosGetXpub } />
+                    <Route exact path="/tezos-signtx" component={ TezosSignTx } />
                 </AppContainer>
             </Switch>
         </ConnectedRouter>
