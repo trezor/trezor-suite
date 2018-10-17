@@ -20,7 +20,7 @@ const Title = ({
 );
 
 Title.propTypes = {
-    children: PropTypes.element,
+    children: PropTypes.string,
 };
 
 export default Title;
