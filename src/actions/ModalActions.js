@@ -119,14 +119,12 @@ export const onWalletTypeRequest = (device: TrezorDevice, hidden: boolean, state
 };
 
 export const gotoExternalWallet = (id: string, url: string): ThunkAction => (dispatch: Dispatch): void => {
-    console.warn('OPEN', id, url);
     dispatch({
         type: MODAL.OPEN_EXTERNAL_WALLET,
         id,
         url,
     });
 };
-
 
 export default {
     onPinSubmit,

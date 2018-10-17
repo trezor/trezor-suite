@@ -38,6 +38,8 @@ export type WalletAction = {
 } | {
     type: typeof WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA,
     devices: Array<TrezorDevice>
+} | {
+    type: typeof WALLET.SHOW_BETA_DISCLAIMER | typeof WALLET.HIDE_BETA_DISCLAIMER,
 }
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
@@ -50,6 +52,10 @@ export const init = (): ThunkAction => (dispatch: Dispatch): void => {
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
 };
+
+export const hideBetaDisclaimer = (): WalletAction => ({
+    type: WALLET.HIDE_BETA_DISCLAIMER,
+});
 
 export const toggleDeviceDropdown = (opened: boolean): WalletAction => ({
     type: WALLET.TOGGLE_DEVICE_DROPDOWN,
