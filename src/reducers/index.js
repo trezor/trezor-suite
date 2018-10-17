@@ -20,6 +20,7 @@ import fiat from 'reducers/FiatRateReducer';
 import wallet from 'reducers/WalletReducer';
 import devices from 'reducers/DevicesReducer';
 import blockchain from 'reducers/BlockchainReducer';
+import signVerifyReducer from 'reducers/SignVerifyReducer';
 
 const reducers = {
     router: routerReducer,
@@ -41,6 +42,7 @@ const reducers = {
     wallet,
     devices,
     blockchain,
+    signVerifyReducer,
 };
 
 export type Reducers = typeof reducers;

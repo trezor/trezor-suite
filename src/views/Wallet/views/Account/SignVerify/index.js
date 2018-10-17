@@ -69,13 +69,21 @@ class SignVerify extends Component {
         return this.props.selectedAccount.account.addressPath;
     }
 
+    getAddress() {
+        let result = null;
+        const { selectedAccount } = this.props;
+        if (selectedAccount.account && selectedAccount.account.address) {
+            result = selectedAccount.account.address;
+        }
+        return result || 'loading...';
+    }
+
     handleSignInput = (e) => {
         this.setState({ sign: { [e.target.name]: e.target.value } });
     }
 
     handleVerifyInput = (e) => {
         this.setState({ verify: { [e.target.name]: e.target.value } });
-        console.log(this.state);
     }
 
     clearSign = () => {
@@ -109,11 +117,12 @@ class SignVerify extends Component {
                             <Label>Address</Label>
                             <Input
                                 name="address"
-                                value={this.state.sign.address}
+                                value={this.getAddress()}
                                 onChange={this.handleSignInput}
                                 height={50}
                                 type="text"
-                                disabled
+                                isSmallText
+                                isDisabled
                             />
                         </Row>
                         <Row>
@@ -134,7 +143,7 @@ class SignVerify extends Component {
                                 onChange={this.handleSign}
                                 rows="2"
                                 maxLength="255"
-                                disabled
+                                isDisabled
                             />
                         </Row>
                         <RowButtons>
@@ -157,6 +166,7 @@ class SignVerify extends Component {
                                 value={this.state.verify.address}
                                 onChange={this.handleVerifyInput}
                                 type="text"
+                                isSmallText
                             />
                         </Row>
                         <Row>

@@ -6,7 +6,6 @@ import * as RECEIVE from 'actions/constants/receive';
 import * as ACCOUNT from 'actions/constants/account';
 import type { Action } from 'flowtype';
 
-
 export type State = {
     addressVerified: boolean;
     addressUnverified: boolean;

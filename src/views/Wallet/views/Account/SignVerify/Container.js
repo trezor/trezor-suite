@@ -22,7 +22,7 @@ export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     selectedAccount: state.selectedAccount,
-    sendForm: state.sendForm,
+    signature: state.signature,
     wallet: state.wallet,
     fiat: state.fiat,
     localStorage: state.localStorage,
