@@ -243,6 +243,7 @@ const AccountSend = (props: Props) => {
     }
 
     const tokensSelectData = getTokensSelectData(tokens, network);
+    const tokensSelectValue = tokensSelectData.find(t => t.value === currency)
     const isAdvancedSettingsHidden = !advanced;
 
     return (
@@ -310,7 +311,7 @@ const AccountSend = (props: Props) => {
                                     key="currency"
                                     isSearchable={false}
                                     isClearable={false}
-                                    defaultValue={tokensSelectData[0]}
+                                    value={tokensSelectValue}
                                     isDisabled={tokensSelectData.length < 2}
                                     onChange={onCurrencyChange}
                                     options={tokensSelectData}
