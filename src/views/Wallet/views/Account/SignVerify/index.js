@@ -76,6 +76,20 @@ class SignVerify extends Component {
         this.setState({ [event.target.name]: event.target.value });
     }
 
+    clearSign =() => {
+        this.setState({
+            signMessage: '',
+        });
+    }
+
+    clearVerify = () => {
+        this.setState({
+            verifyAddress: '',
+            verifyMessage: '',
+            verifySignature: '',
+        });
+    }
+
     render() {
         const {
             signVerifyActions,
@@ -120,7 +134,7 @@ class SignVerify extends Component {
                         </Row>
                         <RowButtons>
                             <Button
-                                onClick={() => this.clearSign()}
+                                onClick={this.clearSign}
                                 isWhite
                             >Clear
                             </Button>
@@ -163,7 +177,7 @@ class SignVerify extends Component {
                         </Row>
                         <RowButtons>
                             <Button
-                                onClick={() => this.clearVerify()}
+                                onClick={this.clearVerify}
                                 isWhite
                             >Clear
                             </Button>
