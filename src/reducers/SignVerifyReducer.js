@@ -3,7 +3,7 @@
 import type { Action } from 'flowtype';
 import type { NetworkToken } from './LocalStorageReducer';
 
-import { SIGN_SUCCESS } from '../actions/constants/signVerify';
+import * as SIGN_VERIFY from '../actions/constants/signVerify';
 
 export type State = {
     details: boolean;
@@ -16,10 +16,16 @@ export const initialState: State = {
 
 export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
-        case SIGN_SUCCESS:
+        case SIGN_VERIFY.SIGN_SUCCESS:
             return {
                 ...state,
-                signature: state.signature,
+                signature: action.signature,
+            };
+
+        case SIGN_VERIFY.VERIFY_SUCCESS:
+            return {
+                ...state,
+                signature: action.signature,
             };
 
         default:

@@ -12,20 +12,14 @@ type OwnProps = {}
 
 export type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-    sendForm: $ElementType<State, 'sendForm'>,
-    wallet: $ElementType<State, 'wallet'>,
-    fiat: $ElementType<State, 'fiat'>,
-    localStorage: $ElementType<State, 'localStorage'>,
 }
 
 export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     selectedAccount: state.selectedAccount,
-    signature: state.signature,
-    wallet: state.wallet,
-    fiat: state.fiat,
-    localStorage: state.localStorage,
+    signature: state.signVerifyReducer.signature,
+    isVerifySuccess: state.signVerifyReducer.isVerifySuccess,
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({

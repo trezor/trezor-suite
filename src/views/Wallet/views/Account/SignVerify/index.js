@@ -52,16 +52,10 @@ class SignVerify extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            sign: {
-                address: '',
-                message: '',
-                signature: '',
-            },
-            verify: {
-                address: '',
-                message: '',
-                signature: '',
-            },
+            signMessage: '',
+            verifyAddress: '',
+            verifyMessage: '',
+            verifySignature: '',
         };
     }
 
@@ -78,36 +72,16 @@ class SignVerify extends Component {
         return result || 'loading...';
     }
 
-    handleSignInput = (e) => {
-        this.setState({ sign: { [e.target.name]: e.target.value } });
-    }
-
-    handleVerifyInput = (e) => {
-        this.setState({ verify: { [e.target.name]: e.target.value } });
-    }
-
-    clearSign = () => {
-        this.setState({
-            sign: {
-                address: '',
-                message: '',
-                signature: '',
-            },
-        });
-    }
-
-    clearVerify = () => {
-        this.setState({
-            verify: {
-                address: '',
-                message: '',
-                signature: '',
-            },
-        });
+    handleInputChange = (event) => {
+        this.setState({ [event.target.name]: event.target.value });
     }
 
     render() {
-        const { signVerifyActions } = this.props;
+        const {
+            signVerifyActions,
+            signature,
+            isVerifySuccess,
+        } = this.props;
         return (
             <Content>
                 <Title>Sign & Verify</Title>
@@ -116,9 +90,8 @@ class SignVerify extends Component {
                         <Row>
                             <Label>Address</Label>
                             <Input
-                                name="address"
+                                name="signAddress"
                                 value={this.getAddress()}
-                                onChange={this.handleSignInput}
                                 height={50}
                                 type="text"
                                 isSmallText
@@ -128,9 +101,9 @@ class SignVerify extends Component {
                         <Row>
                             <Label>Message</Label>
                             <Textarea
-                                name="message"
-                                value={this.state.sign.message}
-                                onChange={this.handleSignInput}
+                                name="signMessage"
+                                value={this.state.signMessage}
+                                onChange={this.handleInputChange}
                                 rows="2"
                                 maxLength="255"
                             />
@@ -138,9 +111,8 @@ class SignVerify extends Component {
                         <Row>
                             <Label>Signature</Label>
                             <Textarea
-                                name="signature"
-                                value={this.state.sign.signature}
-                                onChange={this.handleSign}
+                                name="signSignature"
+                                value={this.props.signature}
                                 rows="2"
                                 maxLength="255"
                                 isDisabled
@@ -148,12 +120,12 @@ class SignVerify extends Component {
                         </Row>
                         <RowButtons>
                             <Button
-                                onClick={this.clearVerify}
+                                onClick={() => this.clearSign()}
                                 isWhite
                             >Clear
                             </Button>
                             <StyledButton
-                                onClick={() => signVerifyActions.sign(this.getPath(), this.state.sign.message)}
+                                onClick={() => signVerifyActions.sign(this.getPath(), this.state.signMessage)}
                             >Sign
                             </StyledButton>
                         </RowButtons>
@@ -162,9 +134,9 @@ class SignVerify extends Component {
                         <Row>
                             <Label>Address</Label>
                             <Input
-                                name="address"
-                                value={this.state.verify.address}
-                                onChange={this.handleVerifyInput}
+                                name="verifyAddress"
+                                value={this.state.verifyAddress}
+                                onChange={this.handleInputChange}
                                 type="text"
                                 isSmallText
                             />
@@ -172,9 +144,9 @@ class SignVerify extends Component {
                         <Row>
                             <Label>Message</Label>
                             <Textarea
-                                name="message"
-                                value={this.state.verify.message}
-                                onChange={this.handleVerifyInput}
+                                name="verifyMessage"
+                                value={this.state.verifyMessage}
+                                onChange={this.handleInputChange}
                                 rows="4"
                                 maxLength="255"
                             />
@@ -182,20 +154,27 @@ class SignVerify extends Component {
                         <Row>
                             <Label>Signature</Label>
                             <Textarea
-                                name="signature"
-                                value={this.state.verify.signature}
-                                onChange={this.handleVerifyInput}
+                                name="verifySignature"
+                                value={this.state.verifySignature}
+                                onChange={this.handleInputChange}
                                 rows="4"
                                 maxLength="255"
                             />
                         </Row>
                         <RowButtons>
                             <Button
-                                onClick={this.clearSign}
+                                onClick={() => this.clearVerify()}
                                 isWhite
                             >Clear
                             </Button>
-                            <StyledButton>Verify</StyledButton>
+                            <StyledButton
+                                onClick={() => signVerifyActions.verify(
+                                    this.state.verifyAddress,
+                                    this.state.verifyMessage,
+                                    this.state.verifySignature,
+                                )}
+                            >Verify
+                            </StyledButton>
                         </RowButtons>
                     </Verify>
                 </Wrapper>
@@ -205,7 +184,7 @@ class SignVerify extends Component {
 }
 
 SignVerify.propTypes = {
-    sign: PropTypes.func.isRequired,
+    isVerifySuccess: PropTypes.bool,
 };
 
 export default SignVerify;
