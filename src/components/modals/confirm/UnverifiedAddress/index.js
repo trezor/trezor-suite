@@ -102,7 +102,7 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                     <Icon size={20} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                 </StyledLink>
                 <H2>{ deviceStatus }</H2>
-                <StyledP isSmaller>To prevent phishing attacks, you should verify the address on your TREZOR first. { claim } to continue with the verification process.</StyledP>
+                <StyledP isSmaller>To prevent phishing attacks, you should verify the address on your Trezor first. { claim } to continue with the verification process.</StyledP>
                 <Row>
                     <StyledButton onClick={() => (!account ? this.verifyAddress() : 'false')}>Try again</StyledButton>
                     <StyledButton isWhite onClick={() => this.showUnverifiedAddress()}>Show unverified address</StyledButton>

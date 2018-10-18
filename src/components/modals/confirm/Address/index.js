@@ -41,7 +41,7 @@ const ConfirmAddress = (props: Props) => {
     return (
         <Wrapper>
             <Header>
-                <H3>Confirm address on TREZOR</H3>
+                <H3>Confirm address on Trezor</H3>
                 <P>Please compare your address on device with address shown bellow.</P>
             </Header>
             <Content>

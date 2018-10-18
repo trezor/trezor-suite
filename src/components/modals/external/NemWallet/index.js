@@ -53,7 +53,7 @@ const NemWallet = (props: Props) => (
         </StyledLink>
         <H3>NEM Wallet</H3>
         <P isSmaller>We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.</P>
-        <H4>Make sure you download the Universal Client for TREZOR support.</H4>
+        <H4>Make sure you download the Universal Client for Trezor support.</H4>
         <Img src={NemImage} />
         <Link href={coins.find(i => i.id === 'xem').url}>
             <StyledButton>Go to nem.io</StyledButton>
