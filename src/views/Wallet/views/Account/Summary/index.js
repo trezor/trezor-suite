@@ -13,10 +13,11 @@ import Content from 'views/Wallet/components/Content';
 import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import Link from 'components/Link';
+import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 import AccountBalance from './components/Balance';
 import AddedToken from './components/Token';
 
-import type { Props } from './Container';
+import { Props } from './Container';
 
 const AccountHeading = styled.div`
     padding: 0 0 30px 0;
@@ -38,7 +39,14 @@ const StyledTooltip = styled(Tooltip)`
 
 const AccountName = styled.div`
     display: flex;
+    justify-content: center;
     align-items: center;
+`;
+
+const AccountTitle = styled.div`
+    font-size: ${FONT_SIZE.WALLET_TITLE};
+    font-weight: ${FONT_WEIGHT.BASE};
+    color: ${colors.WALLET_TITLE};
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
@@ -82,7 +90,7 @@ const AccountSummary = (props: Props) => {
                 <AccountHeading>
                     <AccountName>
                         <StyledCoinLogo network={account.network} />
-                        <H2>Account #{parseInt(account.index, 10) + 1}</H2>
+                        <AccountTitle>Account #{parseInt(account.index, 10) + 1}</AccountTitle>
                     </AccountName>
                     <Link href={explorerLink} isGray>See full transaction history</Link>
                 </AccountHeading>
