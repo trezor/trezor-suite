@@ -243,7 +243,7 @@ const AccountSend = (props: Props) => {
     }
 
     const tokensSelectData = getTokensSelectData(tokens, network);
-    const tokensSelectValue = tokensSelectData.find(t => t.value === currency)
+    const tokensSelectValue = tokensSelectData.find(t => t.value === currency);
     const isAdvancedSettingsHidden = !advanced;
 
     return (
