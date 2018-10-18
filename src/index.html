@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Blockchain Link | Trezor</title>
+    <meta name="title" content="Blockchain Link" />
+    <meta name="description" content="Blockchain Link" />
+    <meta name="keywords" content="blockchain trezor" />
+    <meta name="author" content="satoshilabs s.r.o." />
+    <meta name="viewport" content="width=1024, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        h2 {
+            padding: 10px;
+        }
+        div {
+            padding: 10px;
+        }
+        label {
+            display: block;
+        }
+        button {
+            padding: 5px 10px;
+        }
+        input {
+            width: 300px;
+            padding: 5px 10px;
+        }
+
+        div#response {
+            padding: 5px 0px;
+        }
+    </style>
+</head>
+<body>
+    <h2>BlockchainLink test page</h2>
+    <div>
+        <label>Network type</label>
+        <select id="network-type">
+            <option value="ripple" selected>Ripple</option>
+            <option value="ethereum">Ethereum</option>
+            <option value="bitcoin">Bitcoin</option>
+        </select>
+    </div>
+    
+    <div>
+        <button id="get-info">Get network info</button>
+    </div>
+    <div>
+        <label>Address / xpub</label>
+        <input id="get-account-info-address" type="text" value="rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H" />
+        <button id="get-account-info">Get account info</button>
+    </div>
+    <div>
+        <label>Serialized transaction</label>
+        <input id="push-transaction-tx" type="text" value="304402202f0046af4147a8646a1c06ef63789698756cffb5e2e380cd2740688b71bd15a302201797d6b55175b6b326257737f331f701f1c9d8271fcc990644ef12d1bf3bdf80" />
+        <button id="push-transaction">Push transaction</button>
+    </div>
+    <div>
+        <label>Response</label>
+        <div id="response"></div>
+    </div>
+</body>
+</html>

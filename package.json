@@ -1,0 +1,51 @@
+{
+  "name": "blockchain-link",
+  "version": "0.0.1",
+  "author": "Trezor <info@trezor.io>",
+  "homepage": "https://github.com/trezor/blockchain-link",
+  "description": "High-level javascript interface for blockchain",
+  "license": "LGPL-3.0+",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/trezor/blockchain-link.git"
+  },
+  "bugs": {
+    "url": "https://github.com/trezor/blockchain-link/issues"
+  },
+  "keywords": [
+    "Trezor",
+    "blockchain",
+    "blockbook",
+    "javascript"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js --mode development"
+  },
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.7.0",
+    "eslint-loader": "^2.1.1",
+    "eslint-plugin-flowtype": "^3.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jest": "^21.25.1",
+    "flow-bin": "^0.83.0",
+    "flow-webpack-plugin": "^1.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "ripple-lib": "^1.0.2",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9",
+    "worker-loader": "^2.0.0"
+  },
+  "dependencies": {}
+}
