@@ -56,14 +56,16 @@ export const setBalance = (tokenAddress: string, ethAddress: string, balance: st
     const newState: Array<Token> = [...getState().tokens];
     const token: ?Token = newState.find(t => t.address === tokenAddress && t.ethAddress === ethAddress);
     if (token) {
-        token.loaded = true;
-        token.balance = balance;
+        const others = newState.filter(t => t !== token);
+        dispatch({
+            type: TOKEN.SET_BALANCE,
+            payload: others.concat([{
+                ...token,
+                loaded: true,
+                balance,
+            }]),
+        });
     }
-
-    dispatch({
-        type: TOKEN.SET_BALANCE,
-        payload: newState,
-    });
 };
 
 export const add = (token: NetworkToken, account: Account): AsyncAction => async (dispatch: Dispatch): Promise<void> => {

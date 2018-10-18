@@ -153,7 +153,7 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
     const shouldBeLandingPage = getState().devices.length < 1 || !getState().wallet.ready || getState().connect.error !== null;
     const landingPageUrl = dispatch(isLandingPageUrl(requestedUrl));
     if (shouldBeLandingPage) {
-        const landingPageRoute = dispatch(isLandingPageUrl(requestedUrl, true));
+        const landingPageRoute = dispatch(isLandingPageUrl(requestedUrl, getState().wallet.ready));
         return !landingPageRoute ? '/' : requestedUrl;
     }
 

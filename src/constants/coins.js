@@ -2,47 +2,47 @@ export default [
     {
         id: 'btc',
         coinName: 'Bitcoin',
-        url: 'https://wallet.trezor.io/#/?coin=btc',
+        url: '../#/?coin=btc',
     },
     {
         id: 'bch',
         coinName: 'Bitcoin Cash',
-        url: 'https://wallet.trezor.io/#/?coin=bch',
+        url: '../#/?coin=bch',
     },
     {
         id: 'btg',
         coinName: 'Bitcoin Gold',
-        url: 'https://wallet.trezor.io/#/?coin=btg',
+        url: '../#/?coin=btg',
     },
     {
         id: 'dash',
         coinName: 'Dash',
-        url: 'https://wallet.trezor.io/#/?coin=dash',
+        url: '../#/?coin=dash',
     },
     {
         id: 'doge',
         coinName: 'Dogecoin',
-        url: 'https://wallet.trezor.io/#/?coin=doge',
+        url: '../#/?coin=doge',
     },
     {
         id: 'ltc',
         coinName: 'Litecoin',
-        url: 'https://wallet.trezor.io/#/?coin=ltc',
+        url: '../#/?coin=ltc',
     },
     {
         id: 'nmc',
         coinName: 'Namecoin',
-        url: 'https://wallet.trezor.io/#/?coin=nmc',
+        url: '../#/?coin=nmc',
     },
     {
         id: 'vtc',
         coinName: 'Vertcoin',
-        url: 'https://wallet.trezor.io/#/?coin=vtc',
+        url: '../#/?coin=vtc',
     },
     {
         id: 'zec',
         coinName: 'Zcash',
-        url: 'https://wallet.trezor.io/#/?coin=zec',
+        url: '../#/?coin=zec',
     },
     {
         id: 'xem',
