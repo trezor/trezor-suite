@@ -62,7 +62,6 @@ export const verify = (
         signature,
         hex,
     };
-    console.log('input', input);
     const response = await TrezorConnect.ethereumVerifyMessage(input);
 
     if (response && response.success) {
@@ -89,4 +88,12 @@ export const verify = (
             },
         });
     }
+};
+
+
+export const clear = (): ThunkAction => (dispatch: Dispatch): void => {
+    dispatch({
+        type: SIGN_VERIFY.CLEAR,
+        signature: '',
+    });
 };

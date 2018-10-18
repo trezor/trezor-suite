@@ -11,7 +11,7 @@ export type State = {
 }
 
 export const initialState: State = {
-    signature: null,
+    signature: '',
 };
 
 export default (state: State = initialState, action: Action): State => {
@@ -26,6 +26,11 @@ export default (state: State = initialState, action: Action): State => {
             return {
                 ...state,
                 signature: action.signature,
+            };
+
+        case SIGN_VERIFY.CLEAR:
+            return {
+                ...initialState,
             };
 
         default:

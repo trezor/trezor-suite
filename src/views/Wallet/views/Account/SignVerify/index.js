@@ -80,6 +80,7 @@ class SignVerify extends Component {
         this.setState({
             signMessage: '',
         });
+        this.props.signVerifyActions.clear();
     }
 
     clearVerify = () => {
