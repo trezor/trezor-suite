@@ -17,7 +17,7 @@ import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 import AccountBalance from './components/Balance';
 import AddedToken from './components/Token';
 
-import { Props } from './Container';
+import type { Props } from './Container';
 
 const AccountHeading = styled.div`
     padding: 0 0 30px 0;
