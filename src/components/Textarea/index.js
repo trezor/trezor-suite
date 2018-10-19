@@ -89,6 +89,7 @@ const StyledTextarea = styled(Textarea)`
         border-width: 2px;
         transform: translate(-1px, -1px);
         background: ${colors.DIVIDER};
+        pointer-events: none;
     `}
 `;
 
