@@ -1,7 +1,7 @@
 import React from 'react';
 import Textarea from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
 
@@ -82,6 +82,14 @@ const StyledTextarea = styled(Textarea)`
             opacity: 1;
         }
     }
+
+    ${props => props.isInTrezorAction && css`
+        z-index: 10001; /* bigger than modal container */
+        border-color: ${colors.WHITE};
+        border-width: 2px;
+        transform: translate(-1px, -1px);
+        background: ${colors.DIVIDER};
+    `}
 `;
 
 const TopLabel = styled.span`
@@ -119,6 +127,7 @@ const TextArea = ({
     topLabel,
     state = '',
     bottomText = '',
+    isInTrezorAction = false,
 }) => (
     <Wrapper
         className={className}
@@ -137,6 +146,7 @@ const TextArea = ({
             placeholder={placeholder}
             onChange={onChange}
             borderColor={getColor(state)}
+            isInTrezorAction={isInTrezorAction}
         />
         {bottomText && (
             <BottomText
@@ -161,6 +171,7 @@ TextArea.propTypes = {
     topLabel: PropTypes.node,
     state: PropTypes.string,
     bottomText: PropTypes.string,
+    isInTrezorAction: PropTypes.bool,
 };
 
 export default TextArea;

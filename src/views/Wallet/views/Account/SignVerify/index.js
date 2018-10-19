@@ -121,6 +121,7 @@ class SignVerify extends Component {
                                 onChange={this.handleInputChange}
                                 rows="2"
                                 maxLength="255"
+                                isInTrezorAction={this.props.isSignProgress}
                             />
                         </Row>
                         <Row>

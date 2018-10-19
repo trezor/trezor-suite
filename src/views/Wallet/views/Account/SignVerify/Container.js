@@ -19,6 +19,7 @@ export type Props = StateProps & DispatchProps;
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     selectedAccount: state.selectedAccount,
     signature: state.signVerifyReducer.signature,
+    isSignProgress: state.signVerifyReducer.isSignProgress,
     isVerifySuccess: state.signVerifyReducer.isVerifySuccess,
 });
 

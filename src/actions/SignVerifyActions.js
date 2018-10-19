@@ -17,6 +17,8 @@ export const sign = (
         state: selected.state,
     };
 
+    dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: true });
+
     const response = await TrezorConnect.ethereumSignMessage({
         device,
         path,
@@ -24,6 +26,8 @@ export const sign = (
         message,
         useEmptyPassphrase: selected.useEmptyPassphrase,
     });
+
+    dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: false });
 
     if (response && response.success) {
         dispatch({

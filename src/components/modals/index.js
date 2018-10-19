@@ -17,6 +17,7 @@ import InvalidPin from 'components/modals/pin/Invalid';
 import Passphrase from 'components/modals/passphrase/Passphrase';
 import PassphraseType from 'components/modals/passphrase/Type';
 import ConfirmSignTx from 'components/modals/confirm/SignTx';
+import ConfirmSignMessage from 'components/modals/confirm/SignMessage';
 import ConfirmUnverifiedAddress from 'components/modals/confirm/UnverifiedAddress';
 import ForgetDevice from 'components/modals/device/Forget';
 import RememberDevice from 'components/modals/device/Remember';
@@ -89,6 +90,9 @@ const getDeviceContextModal = (props: Props) => {
 
         case 'ButtonRequest_SignTx':
             return <ConfirmSignTx device={modal.device} sendForm={props.sendForm} />;
+
+        case 'ButtonRequest_SignMessage':
+            return <ConfirmSignMessage device={modal.device} />;
 
         case RECEIVE.REQUEST_UNVERIFIED:
             return (
