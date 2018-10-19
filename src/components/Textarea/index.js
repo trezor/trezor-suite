@@ -126,6 +126,8 @@ const TextArea = ({
     name,
     onChange,
     topLabel,
+    rows,
+    maxRows,
     state = '',
     bottomText = '',
     isInTrezorAction = false,
@@ -137,6 +139,8 @@ const TextArea = ({
             <TopLabel>{topLabel}</TopLabel>
         )}
         <StyledTextarea
+            maxRows={maxRows}
+            rows={rows}
             className={className}
             disabled={isDisabled}
             name={name}
@@ -167,6 +171,8 @@ TextArea.propTypes = {
     customStyle: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.string,
+    maxRows: PropTypes.number,
+    rows: PropTypes.number,
     name: PropTypes.string,
     isDisabled: PropTypes.bool,
     topLabel: PropTypes.node,

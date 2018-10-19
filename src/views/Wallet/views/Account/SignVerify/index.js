@@ -155,7 +155,8 @@ class SignVerify extends Component {
                                 name="signMessage"
                                 value={this.state.signMessage}
                                 onChange={this.handleInputChange}
-                                rows="2"
+                                rows={4}
+                                maxRows={4}
                                 maxLength="255"
                                 isInTrezorAction={this.props.isSignProgress}
                             />
@@ -175,7 +176,8 @@ class SignVerify extends Component {
                             <Textarea
                                 name="signSignature"
                                 value={this.props.signature}
-                                rows="2"
+                                rows={4}
+                                maxRows={4}
                                 maxLength="255"
                                 isDisabled
                             />
@@ -209,7 +211,8 @@ class SignVerify extends Component {
                                 name="verifyMessage"
                                 value={this.state.verifyMessage}
                                 onChange={this.handleInputChange}
-                                rows="4"
+                                rows={4}
+                                maxRows={4}
                                 maxLength="255"
                             />
                         </Row>
@@ -219,7 +222,8 @@ class SignVerify extends Component {
                                 name="verifySignature"
                                 value={this.state.verifySignature}
                                 onChange={this.handleInputChange}
-                                rows="4"
+                                rows={4}
+                                maxRows={4}
                                 maxLength="255"
                             />
                         </Row>
