@@ -3,6 +3,7 @@ export const FONT_SIZE = {
     SMALLER: '12px',
     SMALL: '14px',
     BASE: '16px',
+    WALLET_TITLE: '18px',
     TOP_MENU: '17px',
     BIG: '21px',
     BIGGER: '32px',
