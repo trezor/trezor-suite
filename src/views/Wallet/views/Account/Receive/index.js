@@ -1,16 +1,17 @@
 /* @flow */
 import React from 'react';
+import { QRCode } from 'react-qr-svg';
 import styled, { css } from 'styled-components';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import ICONS from 'config/icons';
-import Content from 'views/Wallet/components/Content';
-import colors from 'config/colors';
-
 import Tooltip from 'components/Tooltip';
-import { QRCode } from 'react-qr-svg';
 
+import ICONS from 'config/icons';
+import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
+
+import Content from 'views/Wallet/components/Content';
 import Title from 'views/Wallet/components/Title';
 import VerifyAddressTooltip from './components/VerifyAddressTooltip';
 
@@ -147,7 +148,7 @@ const AccountReceive = (props: Props) => {
         addressUnverified,
     } = props.receive;
 
-    const isAddressVerifying = props.modal.context === 'device' && props.modal.windowType === 'ButtonRequest_Address';
+    const isAddressVerifying = props.modal.context === CONTEXT_DEVICE && props.modal.windowType === 'ButtonRequest_Address';
     const isAddressHidden = !isAddressVerifying && !addressVerified && !addressUnverified;
 
     let address = `${account.address.substring(0, 20)}...`;
@@ -163,7 +164,7 @@ const AccountReceive = (props: Props) => {
                     isShowingQrCode={addressVerified || addressUnverified}
                 >
                     {isAddressVerifying && (
-                        <AddressInfoText>Confirm address on TREZOR</AddressInfoText>
+                        <AddressInfoText>Confirm address on Trezor</AddressInfoText>
                     )}
                     {((addressVerified || addressUnverified) && !isAddressVerifying) && (
                         <Tooltip

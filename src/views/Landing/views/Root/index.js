@@ -4,6 +4,7 @@ import React from 'react';
 import { isWebUSB } from 'utils/device';
 
 import LandingWrapper from 'views/Landing/components/LandingWrapper';
+import BetaDisclaimer from 'views/Landing/components/BetaDisclaimer';
 import BrowserNotSupported from 'views/Landing/components/BrowserNotSupported';
 import ConnectDevice from 'views/Landing/components/ConnectDevice';
 import InstallBridge from 'views/Landing/views/InstallBridge/Container';
@@ -15,6 +16,8 @@ const Root = (props: Props) => {
     const { disconnectRequest } = props.wallet;
     const localStorageError = props.localStorage.error;
     const connectError = props.connect.error;
+
+    if (props.wallet.showBetaDisclaimer) return <BetaDisclaimer />;
 
     const error = !initialized ? (localStorageError || connectError) : null;
     const shouldShowUnsupportedBrowser = browserState.supported === false;

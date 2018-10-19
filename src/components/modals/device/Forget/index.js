@@ -63,7 +63,7 @@ class ForgetDevice extends PureComponent<Props> {
         return (
             <Wrapper>
                 <H3>Forget { this.props.device.instanceLabel }?</H3>
-                <StyledP isSmaller>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your TREZOR again.</StyledP>
+                <StyledP isSmaller>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your Trezor again.</StyledP>
                 <Row>
                     <StyledButton onClick={() => this.forget()}>Forget</StyledButton>
                     <StyledButton isWhite onClick={this.props.onCancel}>Don&apos;t forget</StyledButton>

@@ -7,13 +7,13 @@ import * as MODAL from 'actions/constants/modal';
 import * as WALLET from 'actions/constants/wallet';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 
-
 import type { Action, RouterLocationState, TrezorDevice } from 'flowtype';
 
 type State = {
     ready: boolean;
     online: boolean;
     dropdownOpened: boolean;
+    showBetaDisclaimer: boolean;
     initialParams: ?RouterLocationState;
     initialPathname: ?string;
     disconnectRequest: ?TrezorDevice;
@@ -24,6 +24,7 @@ const initialState: State = {
     ready: false,
     online: navigator.onLine,
     dropdownOpened: false,
+    showBetaDisclaimer: false,
     initialParams: null,
     initialPathname: null,
     disconnectRequest: null,
@@ -84,6 +85,17 @@ export default function wallet(state: State = initialState, action: Action): Sta
             return {
                 ...state,
                 selectedDevice: action.device,
+            };
+
+        case WALLET.SHOW_BETA_DISCLAIMER:
+            return {
+                ...state,
+                showBetaDisclaimer: true,
+            };
+        case WALLET.HIDE_BETA_DISCLAIMER:
+            return {
+                ...state,
+                showBetaDisclaimer: false,
             };
 
         default:

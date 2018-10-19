@@ -82,18 +82,15 @@ const AccountSummary = (props: Props) => {
             <React.Fragment>
                 <AccountHeading>
                     <AccountName>
-                        <StyledCoinLogo coinNetwork={account.network} />
+                        <StyledCoinLogo network={account.network} />
                         <H2>Account #{parseInt(account.index, 10) + 1}</H2>
                     </AccountName>
                     <Link href={explorerLink} isGray>See full transaction history</Link>
                 </AccountHeading>
                 <AccountBalance
-                    coin={network}
-                    summary={props.summary}
+                    network={network}
                     balance={balance}
-                    network={network.network}
                     fiat={props.fiat}
-                    localStorage={props.localStorage}
                 />
                 <H2Wrapper>
                     <H2>Tokens</H2>
@@ -109,11 +106,6 @@ const AccountSummary = (props: Props) => {
                         />
                     </StyledTooltip>
                 </H2Wrapper>
-                {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 Lahod */}
-                {/* 0x58cda554935e4a1f2acbe15f8757400af275e084 T01 */}
-
-                {/* TOOO: AsyncSelect is lagging when dropdown menu must show more than 200 items */}
-                {/* TODO: Input's box-shadow  */}
                 <AsyncSelectWrapper>
                     <AsyncSelect
                         isSearchable

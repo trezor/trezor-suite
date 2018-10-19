@@ -1,18 +1,20 @@
 /* @flow */
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import colors from 'config/colors';
 import React, { PureComponent } from 'react';
 
 type Props = {
-
+    pathname: string;
+    wrapper: ?HTMLElement;
 }
 
 type State = {
     style: {
         width: number;
         left: number;
-    }
+    },
+    shouldAnimate: boolean,
 }
 
 const Wrapper = styled.div`
@@ -22,7 +24,9 @@ const Wrapper = styled.div`
     width: 100px;
     height: 2px;
     background: ${colors.GREEN_PRIMARY};
-    transition: all 0.3s ease-in-out;
+    ${props => props.animation && css`
+        transition: all 0.3s ease-in-out;
+    `}
 `;
 
 class Indicator extends PureComponent<Props, State> {
@@ -34,52 +38,62 @@ class Indicator extends PureComponent<Props, State> {
                 width: 0,
                 left: 0,
             },
+            shouldAnimate: false,
         };
 
-        this.reposition = this.reposition.bind(this);
+        this.handleResize = this.handleResize.bind(this);
     }
 
     componentDidMount() {
-        this.reposition();
-        window.addEventListener('resize', this.reposition, false);
+        window.addEventListener('resize', this.handleResize, false);
     }
 
-    componentDidUpdate() {
-        this.reposition();
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.reposition, false);
-    }
-
-    reposition() {
-        const tabs = document.querySelector('.account-tabs');
-        if (!tabs) return;
-        const active = tabs.querySelector('.active');
-        if (!active) return;
-        const bounds = active.getBoundingClientRect();
-
-        const left = bounds.left - tabs.getBoundingClientRect().left;
-
-        if (this.state.style.left !== left) {
+    componentWillReceiveProps(newProps: Props) {
+        if (this.props.pathname !== newProps.pathname) {
             this.setState({
-                style: {
-                    width: bounds.width,
-                    left,
-                },
+                shouldAnimate: true,
             });
         }
     }
 
-    reposition: () => void;
+    componentDidUpdate() {
+        this.reposition(false);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleResize, false);
+    }
 
     handleResize() {
         this.reposition();
     }
 
+    handleResize: () => void;
+
+    reposition(resetAnimation: boolean = true) {
+        if (!this.props.wrapper) return;
+        const { wrapper } = this.props;
+        const active = wrapper.querySelector('.active');
+        if (!active) return;
+        const bounds = active.getBoundingClientRect();
+        const left = bounds.left - wrapper.getBoundingClientRect().left;
+        const { state } = this;
+
+        if (state.style.left !== left) {
+            this.setState({
+                style: {
+                    width: bounds.width,
+                    left,
+                },
+                shouldAnimate: resetAnimation ? false : state.shouldAnimate,
+            });
+        }
+    }
+
     render() {
+        if (!this.props.wrapper) return null;
         return (
-            <Wrapper style={this.state.style} />
+            <Wrapper style={this.state.style} animation={this.state.shouldAnimate} />
         );
     }
 }

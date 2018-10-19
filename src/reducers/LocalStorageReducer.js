@@ -5,9 +5,9 @@ import * as STORAGE from 'actions/constants/localStorage';
 
 import type { Action } from 'flowtype';
 
-export type Coin = {
+export type Network = {
     name: string;
-    network: string;
+    shortcut: string;
     symbol: string;
     bip44: string;
     defaultGasLimit: number;
@@ -57,13 +57,8 @@ export type FiatValueTicker = {
 }
 
 export type Config = {
-    coins: Array<Coin>;
+    networks: Array<Network>;
     fiatValueTickers: Array<FiatValueTicker>;
-}
-
-export type CustomBackend = {
-    name: string;
-    url: string;
 }
 
 export type State = {
@@ -72,25 +67,17 @@ export type State = {
     config: Config;
     ERC20Abi: Array<Object>;
     tokens: TokensCollection;
-    customBackend: Array<CustomBackend>;
 }
 
 const initialState: State = {
     initialized: false,
     error: null,
     config: {
-        coins: [],
+        networks: [],
         fiatValueTickers: [],
     },
     ERC20Abi: [],
     tokens: {},
-    customBackend: [
-        {
-            name: 'Custom1',
-            slug: 'custom1',
-            url: 'http://google.com',
-        },
-    ],
 };
 
 export default function localStorage(state: State = initialState, action: Action): State {

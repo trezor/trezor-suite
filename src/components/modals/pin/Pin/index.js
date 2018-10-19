@@ -147,7 +147,7 @@ class Pin extends PureComponent<Props, State> {
         return (
             <Wrapper>
                 <H2>Enter { device.label } PIN</H2>
-                <P isSmaller>The PIN layout is displayed on your TREZOR.</P>
+                <P isSmaller>The PIN layout is displayed on your Trezor.</P>
                 <InputRow>
                     <PinInput value={pin} onDeleteClick={() => this.onPinBackspace()} />
                 </InputRow>

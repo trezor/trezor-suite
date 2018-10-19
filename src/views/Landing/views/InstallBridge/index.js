@@ -154,8 +154,8 @@ class InstallBridge extends PureComponent<Props, State> {
             <LandingWrapper loading={!target}>
                 <Wrapper>
                     <Top>
-                        <TitleHeader>TREZOR Bridge<Version>{this.state.currentVersion}</Version></TitleHeader>
-                        <P>New communication tool to facilitate the connection between your TREZOR and your internet browser.</P>
+                        <TitleHeader>Trezor Bridge<Version>{this.state.currentVersion}</Version></TitleHeader>
+                        <P>New communication tool to facilitate the connection between your Trezor and your internet browser.</P>
                         <Download>
                             <SelectWrapper
                                 isSearchable={false}
