@@ -20,7 +20,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     selectedAccount: state.selectedAccount,
     signature: state.signVerifyReducer.signature,
     isSignProgress: state.signVerifyReducer.isSignProgress,
-    isVerifySuccess: state.signVerifyReducer.isVerifySuccess,
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({

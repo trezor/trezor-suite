@@ -70,8 +70,13 @@ export const verify = (
 
     if (response && response.success) {
         dispatch({
-            type: SIGN_VERIFY.VERIFY_SUCCESS,
-            signature: response.payload.success,
+            type: NOTIFICATION.ADD,
+            payload: {
+                type: 'success',
+                title: 'Verify success',
+                message: `${response.payload.signature} was verified`,
+                cancelable: true,
+            },
         });
     } else {
         dispatch({

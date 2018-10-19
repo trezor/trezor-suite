@@ -29,12 +29,6 @@ export default (state: State = initialState, action: Action): State => {
                 signature: action.signature,
             };
 
-        case SIGN_VERIFY.VERIFY_SUCCESS:
-            return {
-                ...state,
-                signature: action.signature,
-            };
-
         case SIGN_VERIFY.CLEAR:
             return {
                 ...initialState,

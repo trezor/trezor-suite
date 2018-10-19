@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from 'components/inputs/Input';
-import PropTypes from 'prop-types';
 import Textarea from 'components/Textarea';
 import ICONS from 'config/icons';
 import Icon from 'components/Icon';
@@ -133,7 +132,6 @@ class SignVerify extends Component {
         const {
             signVerifyActions,
             signature,
-            isVerifySuccess,
         } = this.props;
         return (
             <Content>
@@ -246,9 +244,5 @@ class SignVerify extends Component {
         );
     }
 }
-
-SignVerify.propTypes = {
-    isVerifySuccess: PropTypes.bool,
-};
 
 export default SignVerify;
