@@ -6,7 +6,7 @@
     "bin": {
         "flow": "./node_modules/flow-bin"
     },
-    "license": "T-RSL",
+    "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
         "dev": "npx webpack-dev-server --config webpack/dev.babel.js",
         "dev:local": "npx webpack-dev-server --config webpack/local.babel.js",
