@@ -59,13 +59,16 @@ export const verify = (
     message: string,
     signature: string,
     hex: boolean = false,
-): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
+): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const selected = getState().wallet.selectedDevice;
     const input = {
         address,
         message,
         signature,
         hex,
+        useEmptyPassphrase: selected.useEmptyPassphrase,
     };
+
     const response = await TrezorConnect.ethereumVerifyMessage(input);
 
     if (response && response.success) {
@@ -74,7 +77,7 @@ export const verify = (
             payload: {
                 type: 'success',
                 title: 'Verify success',
-                message: `${response.payload.signature} was verified`,
+                message: 'signature is valid',
                 cancelable: true,
             },
         });
