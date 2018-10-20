@@ -341,9 +341,9 @@ const AccountSend = (props: Props) => {
                     options={feeLevels}
                     formatOptionLabel={option => (
                         <FeeOptionWrapper>
-                                <P>{option.value}</P>
-                                <P>{option.label}</P>
-                            </FeeOptionWrapper>
+                            <P>{option.value}</P>
+                            <P>{option.label}</P>
+                        </FeeOptionWrapper>
                     )}
                 />
             </InputRow>

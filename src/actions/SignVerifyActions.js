@@ -1,8 +1,22 @@
 /* @flow */
 import TrezorConnect from 'trezor-connect';
-import type { GetState, Dispatch } from 'flowtype';
+import type {
+    GetState, Dispatch, ThunkAction, AsyncAction,
+} from 'flowtype';
+import type { State } from 'reducers/SignVerifyReducer';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SIGN_VERIFY from './constants/signVerify';
+
+export type SignVerifyAction = {
+    type: typeof SIGN_VERIFY.SIGN_SUCCESS,
+    signature: string
+} | {
+    type: typeof SIGN_VERIFY.SIGN_PROGRESS,
+    isSignProgress: boolean
+} | {
+    type: typeof SIGN_VERIFY.CLEAR,
+    state: State
+}
 
 export const sign = (
     path: Array<number>,
@@ -45,7 +59,7 @@ export const sign = (
                 actions: [{
                     label: 'Try again',
                     callback: () => {
-                        dispatch(() => {});
+                        dispatch(sign(path, message, hex));
                     },
                 },
                 ],
@@ -93,7 +107,7 @@ export const verify = (
                     {
                         label: 'Try again',
                         callback: () => {
-                            dispatch(() => {});
+                            dispatch(verify(address, message, signature, hex));
                         },
                     },
                 ],
@@ -106,6 +120,5 @@ export const verify = (
 export const clear = (): ThunkAction => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.CLEAR,
-        signature: '',
     });
 };

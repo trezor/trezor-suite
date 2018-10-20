@@ -1,13 +1,10 @@
 /* @flow */
-
 import type { Action } from 'flowtype';
-import type { NetworkToken } from './LocalStorageReducer';
-
 import * as SIGN_VERIFY from '../actions/constants/signVerify';
 
 export type State = {
-    details: boolean;
-    selectedToken: ?NetworkToken;
+    signature: string;
+    isSignProgress: boolean;
 }
 
 export const initialState: State = {

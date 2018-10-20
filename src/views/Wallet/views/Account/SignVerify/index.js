@@ -83,7 +83,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 const ConfirmText = styled.div`
-    color: white;   
+    color: white;
 `;
 
 class SignVerify extends Component {

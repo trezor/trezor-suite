@@ -12,6 +12,12 @@ type OwnProps = {}
 
 export type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
+    signature: string,
+    isSignProgress: boolean
+}
+
+export type DispatchProps = {
+    signVerifyActions: typeof SignVerifyActions,
 }
 
 export type Props = StateProps & DispatchProps;
