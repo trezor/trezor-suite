@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
 import ICONS from 'config/icons';
+import { validateAddress } from 'utils/ethUtils';
 import Icon from 'components/Icon';
 import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
@@ -202,6 +203,8 @@ class SignVerify extends Component {
                                 value={this.state.verifyAddress}
                                 onChange={this.handleInputChange}
                                 type="text"
+                                state={(this.state.verifyAddress && validateAddress(this.state.verifyAddress)) ? 'error' : null}
+                                bottomText={this.state.verifyAddress !== '' ? validateAddress(this.state.verifyAddress) : null}
                                 isSmallText
                             />
                         </Row>
