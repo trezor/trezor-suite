@@ -11,21 +11,21 @@ export const sign = (
 ): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     const devicePath = selected.path;
-    const device = {
-        path: devicePath,
-        instance: selected.instance,
-        state: selected.state,
-    };
-
-    dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: true });
-
-    const response = await TrezorConnect.ethereumSignMessage({
-        device,
+    const input = {
+        device: {
+            path: devicePath,
+            instance: selected.instance,
+            state: selected.state,
+        },
         path,
         hex,
         message,
         useEmptyPassphrase: selected.useEmptyPassphrase,
-    });
+    };
+
+    dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: true });
+
+    const response = await TrezorConnect.ethereumSignMessage(input);
 
     dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: false });
 
