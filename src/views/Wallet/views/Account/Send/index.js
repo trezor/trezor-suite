@@ -105,6 +105,7 @@ const UpdateFeeWrapper = styled.span`
 
 const StyledLink = styled(Link)`
     margin-left: 4px;
+    white-space: nowrap;
 `;
 
 const ToggleAdvancedSettingsWrapper = styled.div`
