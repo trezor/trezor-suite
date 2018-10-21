@@ -3,7 +3,6 @@ import TrezorConnect from 'trezor-connect';
 import type {
     GetState, Dispatch, ThunkAction, AsyncAction,
 } from 'flowtype';
-import type { State } from 'reducers/SignVerifyReducer';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SIGN_VERIFY from './constants/signVerify';
 

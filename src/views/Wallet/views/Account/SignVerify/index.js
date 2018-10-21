@@ -1,3 +1,4 @@
+/* @flow */
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from 'components/inputs/Input';
@@ -9,6 +10,8 @@ import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
 import colors from 'config/colors';
+
+import type { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -86,8 +89,15 @@ const ConfirmText = styled.div`
     color: white;
 `;
 
-class SignVerify extends Component {
-    constructor(props) {
+type State = {
+    signMessage: string,
+    verifyAddress: string,
+    verifyMessage: string,
+    verifySignature: string
+}
+
+class SignVerify extends Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             signMessage: '',
@@ -110,7 +120,7 @@ class SignVerify extends Component {
         return result || 'loading...';
     }
 
-    handleInputChange = (event) => {
+    handleInputChange = (event: SyntheticInputEvent<Text>) => {
         this.setState({ [event.target.name]: event.target.value });
     }
 
@@ -176,7 +186,7 @@ class SignVerify extends Component {
                             <Label>Signature</Label>
                             <Textarea
                                 name="signSignature"
-                                value={this.props.signature}
+                                value={signature}
                                 rows={4}
                                 maxRows={4}
                                 maxLength="255"
