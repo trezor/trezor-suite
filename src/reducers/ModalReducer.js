@@ -44,14 +44,6 @@ export default function modal(state: State = initialState, action: Action): Stat
                 windowType: action.type,
             };
 
-        // device acquired
-        // close modal
-        case DEVICE.CHANGED:
-            if (state.context === MODAL.CONTEXT_DEVICE && action.device.path === state.device.path && action.device.status === 'occupied') {
-                return initialState;
-            }
-            return state;
-
         // device connected
         // close modal if modal context is not 'device'
         case DEVICE.CONNECT:
