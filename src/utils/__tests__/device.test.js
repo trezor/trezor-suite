@@ -40,9 +40,9 @@ describe('device utils', () => {
 
     it('isWebUSB', () => {
         const data = [
-            { transport: { version: ['webusb'] } },
-            { transport: { version: ['aaaaaa'] } },
-            { transport: { version: ['webusb', 'test'] } },
+            { transport: { version: 'webusb' } },
+            { transport: { version: 'aaaaaa' } },
+            { transport: { version: 'webusb' } },
         ];
 
         data.forEach((item) => {
@@ -52,8 +52,8 @@ describe('device utils', () => {
 
     it('isDisabled', () => {
         const data = [
-            { selectedDevice: { features: null }, devices: [1, 2, 3], transport: { version: ['webusb', 'test'] } },
-            { selectedDevice: { features: null }, devices: [], transport: { version: ['test'] } },
+            { selectedDevice: { features: null }, devices: [1, 2, 3], transport: { version: 'webusb' } },
+            { selectedDevice: { features: null }, devices: [], transport: { version: 'test' } },
         ];
 
         data.forEach((item) => {
