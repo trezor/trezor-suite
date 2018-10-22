@@ -3,6 +3,16 @@ image: node:8
 before_script:
   - yarn install
 
+build site:
+  stage: build
+  script:
+    - yarn install --progress=false
+    - yarn run build
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build
+
 cache:
   paths:
     - node_modules/
