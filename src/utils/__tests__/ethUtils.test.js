@@ -27,7 +27,7 @@ describe('eth utils', () => {
     });
 
     it('sanitizeHex', () => {
-        const input = ['0x2540be3ff', '1', '2', '100', 999, ''];
+        const input = ['0x2540be3ff', '1', '2', '100', '999', ''];
 
         input.forEach((entry) => {
             expect(ethUtils.sanitizeHex(entry)).toMatchSnapshot();
