@@ -6,7 +6,7 @@ import React, { PureComponent } from 'react';
 
 type Props = {
     pathname: string;
-    wrapper: ?HTMLElement;
+    wrapper: () => ?HTMLElement;
 }
 
 type State = {
@@ -71,8 +71,8 @@ class Indicator extends PureComponent<Props, State> {
     handleResize: () => void;
 
     reposition(resetAnimation: boolean = true) {
-        if (!this.props.wrapper) return;
-        const { wrapper } = this.props;
+        const wrapper = this.props.wrapper();
+        if (!wrapper) return;
         const active = wrapper.querySelector('.active');
         if (!active) return;
         const bounds = active.getBoundingClientRect();
