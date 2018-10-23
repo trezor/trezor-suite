@@ -52,4 +52,4 @@ build-production:
   artifacts:
     expire_in: 1 month
     paths:
-      - build/production
+      - build/prod
