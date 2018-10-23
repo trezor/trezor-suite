@@ -27,29 +27,42 @@ test:
   script:
     - yarn run test
 
-build-development:
+build development:
   stage: build
   script:
     - yarn run build:dev
   artifacts:
     expire_in: 1 month
     paths:
-      - build/dev
+      - /build
 
-build-beta:
+build beta:
   stage: build
   script:
     - yarn run build:beta
   artifacts:
     expire_in: 1 month
     paths:
-      - build/beta
+      - /build
 
-build-production:
+build production:
   stage: build
   script:
     - yarn run build:prod
   artifacts:
     expire_in: 1 month
     paths:
-      - build/prod
+      - /build
+
+# deploy
+deploy review:
+  stage: deploy
+  script:
+    - echo "Deploy a review app"
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
+  only:
+    - branches
+  except:
+    - master
