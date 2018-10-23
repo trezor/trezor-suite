@@ -53,10 +53,3 @@ build-production:
     expire_in: 1 month
     paths:
       - build/production
-
-deploy_dev:
-  stage: echo "Deploy dev"
-
-deploy_staging:
-  stage: deploy
-  script: echo "Deploy staging"
