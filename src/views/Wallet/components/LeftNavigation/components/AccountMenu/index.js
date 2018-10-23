@@ -228,7 +228,6 @@ const AccountMenu = (props: Props) => {
             </Row>
         );
     }
-    
 
     return (
         <Wrapper>
