@@ -34,7 +34,7 @@ build development:
   artifacts:
     expire_in: 1 month
     paths:
-      - /build
+      - /build/dev
 
 build beta:
   stage: build
@@ -43,7 +43,7 @@ build beta:
   artifacts:
     expire_in: 1 month
     paths:
-      - /build
+      - /build/beta
 
 build production:
   stage: build
@@ -52,7 +52,7 @@ build production:
   artifacts:
     expire_in: 1 month
     paths:
-      - /build
+      - /build/prod
 
 # deploy
 deploy review:
