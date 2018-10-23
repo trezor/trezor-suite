@@ -22,7 +22,7 @@ flow:
   script:
     - yarn run flow
 
-test:
+unit:
   stage: test
   script:
     - yarn run test
