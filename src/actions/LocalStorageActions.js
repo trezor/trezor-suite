@@ -10,13 +10,13 @@ import * as PENDING from 'actions/constants/pendingTx';
 import * as WALLET from 'actions/constants/wallet';
 import { httpRequest } from 'utils/networkUtils';
 import * as buildUtils from 'utils/build';
+import * as storageUtils from 'utils/storage';
 
 import { findAccountTokens } from 'reducers/TokensReducer';
 import type { Account } from 'reducers/AccountsReducer';
 import type { Token } from 'reducers/TokensReducer';
 import type { PendingTx } from 'reducers/PendingTxReducer';
 import type { Discovery } from 'reducers/DiscoveryReducer';
-
 
 import type {
     TrezorDevice,
@@ -43,22 +43,15 @@ export type StorageAction = {
     error: string,
 };
 
-const get = (key: string): ?string => {
-    try {
-        return window.localStorage.getItem(key);
-    } catch (error) {
-        // available = false;
-        return null;
-    }
-};
-
-const set = (key: string, value: string | boolean): void => {
-    try {
-        window.localStorage.setItem(key, value);
-    } catch (error) {
-        console.error(`Local Storage ERROR: ${error}`);
-    }
-};
+const TYPE: 'local' = 'local';
+const { STORAGE_PATH } = storageUtils;
+const KEY_VERSION: string = `${STORAGE_PATH}version`;
+const KEY_DEVICES: string = `${STORAGE_PATH}devices`;
+const KEY_ACCOUNTS: string = `${STORAGE_PATH}accounts`;
+const KEY_DISCOVERY: string = `${STORAGE_PATH}discovery`;
+const KEY_TOKENS: string = `${STORAGE_PATH}tokens`;
+const KEY_PENDING: string = `${STORAGE_PATH}pending`;
+const KEY_BETA_MODAL: string = '/betaModalPrivacy'; // this key needs to be compatible with "parent" (old) wallet
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js
 // or
@@ -80,25 +73,25 @@ export const save = (): ThunkAction => (dispatch: Dispatch, getState: GetState):
     const discovery: Array<Discovery> = findDiscovery(devices, getState().discovery);
 
     // save devices
-    set('devices', JSON.stringify(devices));
+    storageUtils.set(TYPE, KEY_DEVICES, JSON.stringify(devices));
 
     // save already preloaded accounts
-    set('accounts', JSON.stringify(accounts));
+    storageUtils.set(TYPE, KEY_ACCOUNTS, JSON.stringify(accounts));
 
     // save discovery state
-    set('discovery', JSON.stringify(discovery));
+    storageUtils.set(TYPE, KEY_DISCOVERY, JSON.stringify(discovery));
 
     // tokens
-    set('tokens', JSON.stringify(tokens));
+    storageUtils.set(TYPE, KEY_TOKENS, JSON.stringify(tokens));
 
     // pending transactions
-    set('pending', JSON.stringify(pending));
+    storageUtils.set(TYPE, KEY_PENDING, JSON.stringify(pending));
 };
 
 export const update = (event: StorageEvent): ThunkAction => (dispatch: Dispatch): void => {
     if (!event.newValue) return;
 
-    if (event.key === 'devices') {
+    if (event.key === KEY_DEVICES) {
         // check if device was added/ removed
         // const newDevices: Array<TrezorDevice> = JSON.parse(event.newValue);
         // const myDevices: Array<TrezorDevice> = getState().connect.devices.filter(d => d.features);
@@ -113,28 +106,28 @@ export const update = (event: StorageEvent): ThunkAction => (dispatch: Dispatch)
         // const diff = oldDevices.filter(d => newDevices.indexOf())
     }
 
-    if (event.key === 'accounts') {
+    if (event.key === KEY_ACCOUNTS) {
         dispatch({
             type: ACCOUNT.FROM_STORAGE,
             payload: JSON.parse(event.newValue),
         });
     }
 
-    if (event.key === 'tokens') {
+    if (event.key === KEY_TOKENS) {
         dispatch({
             type: TOKEN.FROM_STORAGE,
             payload: JSON.parse(event.newValue),
         });
     }
 
-    if (event.key === 'pending') {
+    if (event.key === KEY_PENDING) {
         dispatch({
             type: PENDING.FROM_STORAGE,
             payload: JSON.parse(event.newValue),
         });
     }
 
-    if (event.key === 'discovery') {
+    if (event.key === KEY_DISCOVERY) {
         dispatch({
             type: DISCOVERY.FROM_STORAGE,
             payload: JSON.parse(event.newValue),
@@ -142,14 +135,13 @@ export const update = (event: StorageEvent): ThunkAction => (dispatch: Dispatch)
     }
 };
 
-const VERSION: string = '1';
-
 const loadJSON = (): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
     if (typeof window.localStorage === 'undefined') return;
 
     try {
         const config: Config = await httpRequest(AppConfigJSON, 'json');
 
+        // remove ropsten testnet from config networks
         if (!buildUtils.isDev()) {
             const index = config.networks.findIndex(c => c.shortcut === 'trop');
             delete config.networks[index];
@@ -160,18 +152,6 @@ const loadJSON = (): AsyncAction => async (dispatch: Dispatch): Promise<void> =>
         window.addEventListener('storage', (event) => {
             dispatch(update(event));
         });
-
-        // validate version
-        const version: ?string = get('version');
-        if (version !== VERSION) {
-            try {
-                window.localStorage.clear();
-                window.sessionStorage.clear();
-            } catch (error) {
-                // empty
-            }
-            set('version', VERSION);
-        }
 
         // load tokens
         const tokens = await config.networks.reduce(async (promise: Promise<TokensCollection>, network: Network): Promise<TokensCollection> => {
@@ -195,9 +175,17 @@ const loadJSON = (): AsyncAction => async (dispatch: Dispatch): Promise<void> =>
     }
 };
 
+const VERSION: string = '1';
 
 const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
-    const devices: ?string = get('devices');
+    // validate version
+    const version: ?string = storageUtils.get(TYPE, KEY_VERSION);
+    if (version && version !== VERSION) {
+        storageUtils.clearAll();
+    }
+    storageUtils.set(TYPE, KEY_VERSION, VERSION);
+
+    const devices: ?string = storageUtils.get(TYPE, KEY_DEVICES);
     if (devices) {
         dispatch({
             type: CONNECT.DEVICE_FROM_STORAGE,
@@ -205,7 +193,7 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
         });
     }
 
-    const accounts: ?string = get('accounts');
+    const accounts: ?string = storageUtils.get(TYPE, KEY_ACCOUNTS);
     if (accounts) {
         dispatch({
             type: ACCOUNT.FROM_STORAGE,
@@ -213,7 +201,7 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
         });
     }
 
-    const userTokens: ?string = get('tokens');
+    const userTokens: ?string = storageUtils.get(TYPE, KEY_TOKENS);
     if (userTokens) {
         dispatch({
             type: TOKEN.FROM_STORAGE,
@@ -221,7 +209,7 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
         });
     }
 
-    const pending: ?string = get('pending');
+    const pending: ?string = storageUtils.get(TYPE, KEY_PENDING);
     if (pending) {
         dispatch({
             type: PENDING.FROM_STORAGE,
@@ -229,7 +217,7 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
         });
     }
 
-    const discovery: ?string = get('discovery');
+    const discovery: ?string = storageUtils.get(TYPE, KEY_DISCOVERY);
     if (discovery) {
         dispatch({
             type: DISCOVERY.FROM_STORAGE,
@@ -238,7 +226,7 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
     }
 
     if (buildUtils.isDev() || buildUtils.isBeta()) {
-        const betaModal = get('/betaModalPrivacy');
+        const betaModal = Object.keys(window.localStorage).find(key => key.indexOf(KEY_BETA_MODAL) >= 0);
         if (!betaModal) {
             dispatch({
                 type: WALLET.SHOW_BETA_DISCLAIMER,
@@ -258,6 +246,6 @@ export const loadData = (): ThunkAction => (dispatch: Dispatch, getState: GetSta
 };
 
 export const hideBetaDisclaimer = (): ThunkAction => (dispatch: Dispatch): void => {
-    set('/betaModalPrivacy', true);
+    storageUtils.set(TYPE, KEY_BETA_MODAL, true);
     dispatch(loadJSON());
 };
