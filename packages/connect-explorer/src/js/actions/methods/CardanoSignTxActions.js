@@ -5,11 +5,18 @@ import TrezorConnect from 'trezor-connect';
 import { onResponse } from './CommonActions';
 
 const PREFIX: string = 'cardano_signtx';
+export const NETWORK_CHANGE: string = `${PREFIX}_network_@change`;
 export const INPUTS_CHANGE: string = `${PREFIX}_inputs_@change`;
 export const OUTPUTS_CHANGE: string = `${PREFIX}_outputs_@change`;
 export const TXS_CHANGE: string = `${PREFIX}_txs_@change`;
 
 
+export function onNetworkChange(network: string): any {
+    return {
+        type: NETWORK_CHANGE,
+        network,
+    }
+}
 
 export function onInputsChange(inputs: string): any {
     return {
@@ -34,12 +41,13 @@ export function onTransactionsChange(transactions: string): any {
 
 export function onSignTx(): any {
     return async function (dispatch, getState) {
-        const { inputs, outputs, transactions } = getState().cardanosigntx;
+        const { network, inputs, outputs, transactions } = getState().cardanosigntx;
 
         const response = await TrezorConnect.cardanoSignTransaction({
+            network: parseInt(network),
             inputs: eval(inputs),
             outputs: eval(outputs),
-            transactions: eval(transactions)
+            transactions: eval(transactions),
         });
 
         dispatch( onResponse(response) );

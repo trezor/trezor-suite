@@ -2,12 +2,13 @@
 'use strict';
 
 import { LOCATION_CHANGE } from 'react-router-redux';
-import { INPUTS_CHANGE, OUTPUTS_CHANGE, TXS_CHANGE } from '../../actions/methods/CardanoSignTxActions';
+import { NETWORK_CHANGE, INPUTS_CHANGE, OUTPUTS_CHANGE, TXS_CHANGE } from '../../actions/methods/CardanoSignTxActions';
 
 type MethodState = {
     +js: string;
     +fields: Array<string>;
 
+    network: number;
     inputs: string;
     outputs: number;
     transactions: string;
@@ -48,11 +49,13 @@ const defaultTxs: string =
 
 const initialState: MethodState = {
     js: 'TrezorConnect.cardanoSignTransaction',
-    fields: ['inputs', 'outputs', 'transactions'],
+    fields: ['network', 'inputs', 'outputs', 'transactions'],
 
+    network: 1,
     inputs: defaultInputs,
     outputs: defaultOutputs,
     transactions: defaultTxs,
+    
 };
 
 export default function method(state: MethodState = initialState, action: any): any {
@@ -61,6 +64,12 @@ export default function method(state: MethodState = initialState, action: any): 
 
         case LOCATION_CHANGE :
             return initialState;
+
+        case NETWORK_CHANGE :
+            return {
+                ...state,
+                network: action.network
+            };
 
         case INPUTS_CHANGE :
             return {
