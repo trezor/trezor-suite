@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:9.3
 
 ARG BUILD_TYPE=prod
 
