@@ -13,7 +13,7 @@ if [[ "$1" == "dev" || "$1" == "beta" || "$1" == "stable" ]]
         docker stop trezor-wallet
         docker rm trezor-wallet
         echo "DONE!"
-        echo "Build directory: "$1
+        echo "Build directory: build/"$1
     else
         echo "invalid parameters... valid parameters are (dev, beta, stable)"
 fi
