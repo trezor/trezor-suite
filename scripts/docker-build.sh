@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-if [[ "$1" == "dev" || "$1" == 'beta' || "$1" == 'prod' ]]
+if [[ "$1" == "dev" || "$1" == "beta" || "$1" == "stable" ]]
     then
         mkdir -p ../build
         rm -rf ../build/$1
@@ -12,6 +12,8 @@ if [[ "$1" == "dev" || "$1" == 'beta' || "$1" == 'prod' ]]
         docker cp trezor-wallet:/trezor-wallet-app/build/$1 ../build/$1
         docker stop trezor-wallet
         docker rm trezor-wallet
+        echo "DONE!"
+        echo "Build directory: "$1
     else
-        echo "invalid parameters... valid parameters are (beta, dev, prod)"
+        echo "invalid parameters... valid parameters are (dev, beta, stable)"
 fi

@@ -1,6 +1,6 @@
 FROM node:9.3
 
-ARG BUILD_TYPE=prod
+ARG BUILD_TYPE=stable
 
 WORKDIR /trezor-wallet-app
 
