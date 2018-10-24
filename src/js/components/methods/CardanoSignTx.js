@@ -20,6 +20,7 @@ const CardanoSignTx = (props): any => {
     } = props.common;
 
     const {
+        network,
         inputs,
         outputs,
         transactions,
@@ -27,6 +28,7 @@ const CardanoSignTx = (props): any => {
 
     const {
         onSignTx,
+        onNetworkChange,
         onInputsChange,
         onOutputsChange,
         onTransactionsChange
@@ -40,6 +42,11 @@ const CardanoSignTx = (props): any => {
         <section className="method-content">
 
             <div className="method-params">
+
+                <div className="row">
+                    <label>Network</label>
+                    <input type="text" className="small" value={ network } onChange={ event => onNetworkChange(event.target.value) } />
+                </div>
 
                 <div className="row">
                     <label>Inputs</label>
