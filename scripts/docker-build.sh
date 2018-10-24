@@ -4,6 +4,7 @@ cd "$(dirname "$0")"
 
 if [[ "$1" == "dev" || "$1" == 'beta' || "$1" == 'prod' ]]
     then
+        mkdir -p ../build
         rm -rf ../build/$1
         docker ps -q --filter "name=trezor-wallet" | grep -q . && docker stop trezor-wallet && docker rm -fv trezor-wallet
         docker build -t trezor-wallet ../ --build-arg BUILD_TYPE=$1
