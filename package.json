@@ -21,13 +21,15 @@
         "test": "run-s test:*",
         "test:unit": "npx jest",
         "test-unit:watch": "npx jest -o --watch",
-        "prod-server": "node ./server/index.js"
+        "server:beta": "node ./server/index.js --buildType=beta",
+        "server:prod": "node ./server/index.js --buildType=prod"
     },
     "dependencies": {
         "babel": "^6.23.0",
         "babel-core": "^6.26.3",
         "bignumber.js": "2.4.0",
         "color-hash": "^1.0.3",
+        "commander": "^2.19.0",
         "copy-webpack-plugin": "^4.5.2",
         "cross-env": "^5.2.0",
         "date-fns": "^1.29.0",
