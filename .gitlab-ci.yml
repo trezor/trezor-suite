@@ -48,11 +48,11 @@ build beta:
 build production:
   stage: build
   script:
-    - yarn run build:prod
+    - yarn run build:stable
   artifacts:
     expire_in: 1 month
     paths:
-      - build/prod
+      - build/stable
 
 # deploy
 deploy review:
