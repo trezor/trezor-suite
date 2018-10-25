@@ -87,7 +87,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 const IconWrapper = styled.div`
-    min-width: 20px;
+    min-width: 30px;
 `;
 
 const Texts = styled.div`
