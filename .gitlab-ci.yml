@@ -32,7 +32,7 @@ build development:
     - yarn install
     - yarn run build:dev
   artifacts:
-    expire_in: 1 month
+    expire_in: 1 week
     paths:
       - build/dev
 
@@ -42,7 +42,7 @@ build beta:
     - yarn install
     - yarn run build:beta
   artifacts:
-    expire_in: 1 month
+    expire_in: 1 week
     paths:
       - build/beta
       - scripts/s3sync.sh
@@ -53,7 +53,7 @@ build stable:
     - yarn install
     - yarn run build:stable
   artifacts:
-    expire_in: 1 month
+    expire_in: 1 week
     paths:
       - build/stable
       - scripts/s3sync.sh
