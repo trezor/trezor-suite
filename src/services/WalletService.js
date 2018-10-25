@@ -47,7 +47,9 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
 
     switch (action.type) {
         case WALLET.SET_INITIAL_URL:
-            api.dispatch(LocalStorageActions.loadData());
+            if (action.pathname) {
+                api.dispatch(LocalStorageActions.loadData());
+            }
             break;
         case WALLET.SET_SELECTED_DEVICE:
             // try to authorize device
