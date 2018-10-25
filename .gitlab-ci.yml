@@ -40,6 +40,7 @@ build beta:
   stage: build
   script:
     - yarn run build:beta
+  when: manual
   artifacts:
     expire_in: 1 month
     paths:
@@ -49,20 +50,26 @@ build production:
   stage: build
   script:
     - yarn run build:stable
+  when: manual
   artifacts:
     expire_in: 1 month
     paths:
       - build/stable
 
-# deploy
 deploy review:
   stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  dependencies:
+    - build development
   script:
     - echo "Deploy a review app"
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    - '[ -z "${DEPLOY_BASE_DIR}" ] && echo "Deploy base dir cannot be empty" && exit 255'
+    - env
+    - mkdir -p "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}"
+    - echo "Copy dev build to web server ${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}..."
+    - rsync --delete -va build/dev/ "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}/"
   only:
     - branches
-  except:
-    - master
+  tags:
+    - deploy
