@@ -84,7 +84,7 @@ deploy stage beta:
   dependencies:
     - build beta
   script:
-    - scripts/s3sync.sh beta
+    - scripts/s3sync.sh stage beta
   only:
     - beta
   tags:
@@ -100,7 +100,7 @@ deploy stage stable:
   dependencies:
     - build stable
   script:
-    - scripts/s3sync.sh stable
+    - scripts/s3sync.sh stage stable
   only:
     - stable
   tags:
