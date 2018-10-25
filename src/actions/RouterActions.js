@@ -2,6 +2,7 @@
 
 import { push, LOCATION_CHANGE } from 'react-router-redux';
 import { CONTEXT_NONE } from 'actions/constants/modal';
+import { SET_INITIAL_URL } from 'actions/constants/wallet';
 import { routes } from 'support/routes';
 import * as deviceUtils from 'utils/device';
 
@@ -57,7 +58,7 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
         if (params.hasOwnProperty('deviceInstance')) {
             device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === parseInt(params.deviceInstance, 10));
         } else {
-            device = devices.find(d => d.path === params.device || (d.features && d.features.device_id === params.device));
+            device = devices.find(d => ((!d.features || d.mode === 'bootloader') && d.path === params.device) || (d.features && d.features.device_id === params.device));
         }
 
         if (!device) return false;
@@ -247,6 +248,8 @@ const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => devic
 * Redirect to requested device
 */
 export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    if (dispatch(setInitialUrl())) return;
+
     const url: ?string = dispatch(getDeviceUrl(device));
     if (!url) return;
 
@@ -352,7 +355,12 @@ export const setInitialUrl = (): PayloadAction<boolean> => (dispatch: Dispatch, 
                 state: {},
             },
         }));
+
         if (valid === initialPathname) {
+            // reset initial url
+            dispatch({
+                type: SET_INITIAL_URL,
+            });
             dispatch(goto(valid));
             return true;
         }

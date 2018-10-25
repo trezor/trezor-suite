@@ -1,5 +1,5 @@
 /* @flow */
-
+import * as storageUtils from 'utils/storage';
 
 import type { State as SendFormState } from 'reducers/SendFormReducer';
 import type {
@@ -9,52 +9,39 @@ import type {
     Dispatch,
 } from 'flowtype';
 
-const TX_PREFIX: string = 'trezor:draft-tx:';
+const TYPE: 'session' = 'session';
+const { STORAGE_PATH } = storageUtils;
+const KEY_TX_DRAFT: string = `${STORAGE_PATH}txdraft`;
+
+const getTxDraftKey = (getState: GetState): string => {
+    const { pathname } = getState().router.location;
+    return `${KEY_TX_DRAFT}${pathname}`;
+};
 
 export const saveDraftTransaction = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    if (typeof window.localStorage === 'undefined') return;
-
     const state = getState().sendForm;
     if (state.untouched) return;
 
-    const location = getState().router.location.pathname;
-    try {
-        // save state as it is
-        // "loadDraftTransaction" will do the validation
-        window.sessionStorage.setItem(`${TX_PREFIX}${location}`, JSON.stringify(state));
-    } catch (error) {
-        console.error(`Saving sessionStorage error: ${error}`);
-    }
+    const key = getTxDraftKey(getState);
+    storageUtils.set(TYPE, key, JSON.stringify(state));
 };
 
 export const loadDraftTransaction = (): PayloadAction<?SendFormState> => (dispatch: Dispatch, getState: GetState): ?SendFormState => {
-    if (typeof window.localStorage === 'undefined') return null;
-
-    try {
-        const location = getState().router.location.pathname;
-        const value: string = window.sessionStorage.getItem(`${TX_PREFIX}${location}`);
-        const state: ?SendFormState = JSON.parse(value);
-        if (state) {
-            // decide if draft is valid and should be returned
-            // ignore this draft if has any error
-            if (Object.keys(state.errors).length > 0) {
-                window.sessionStorage.removeItem(`${TX_PREFIX}${location}`);
-                return null;
-            }
-            return state;
-        }
-    } catch (error) {
-        console.error(`Loading sessionStorage error: ${error}`);
+    const key = getTxDraftKey(getState);
+    const value: ?string = storageUtils.get(TYPE, key);
+    if (!value) return null;
+    const state: ?SendFormState = JSON.parse(value);
+    if (!state) return null;
+    // decide if draft is valid and should be returned
+    // ignore this draft if has any error
+    if (Object.keys(state.errors).length > 0) {
+        storageUtils.remove(TYPE, key);
+        return null;
     }
-    return null;
+    return state;
 };
 
 export const clear = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    if (typeof window.localStorage === 'undefined') return;
-    const location = getState().router.location.pathname;
-    try {
-        window.sessionStorage.removeItem(`${TX_PREFIX}${location}`);
-    } catch (error) {
-        console.error(`Clearing sessionStorage error: ${error}`);
-    }
+    const key = getTxDraftKey(getState);
+    storageUtils.remove(TYPE, key);
 };

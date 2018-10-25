@@ -2,47 +2,47 @@ export default [
     {
         id: 'btc',
         coinName: 'Bitcoin',
-        url: '../#/?coin=btc',
+        url: '../?coin=btc',
     },
     {
         id: 'bch',
         coinName: 'Bitcoin Cash',
-        url: '../#/?coin=bch',
+        url: '../?coin=bch',
     },
     {
         id: 'btg',
         coinName: 'Bitcoin Gold',
-        url: '../#/?coin=btg',
+        url: '../?coin=btg',
     },
     {
         id: 'dash',
         coinName: 'Dash',
-        url: '../#/?coin=dash',
+        url: '../?coin=dash',
     },
     {
         id: 'doge',
         coinName: 'Dogecoin',
-        url: '../#/?coin=doge',
+        url: '../?coin=doge',
     },
     {
         id: 'ltc',
         coinName: 'Litecoin',
-        url: '../#/?coin=ltc',
+        url: '../?coin=ltc',
     },
     {
         id: 'nmc',
         coinName: 'Namecoin',
-        url: '../#/?coin=nmc',
+        url: '../?coin=nmc',
     },
     {
         id: 'vtc',
         coinName: 'Vertcoin',
-        url: '../#/?coin=vtc',
+        url: '../?coin=vtc',
     },
     {
         id: 'zec',
         coinName: 'Zcash',
-        url: '../#/?coin=zec',
+        url: '../?coin=zec',
     },
     {
         id: 'xem',

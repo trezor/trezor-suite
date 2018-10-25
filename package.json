@@ -6,12 +6,12 @@
     "bin": {
         "flow": "./node_modules/flow-bin"
     },
-    "license": "T-RSL",
+    "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
         "dev": "npx webpack-dev-server --config webpack/dev.babel.js",
         "dev:local": "npx webpack-dev-server --config webpack/local.babel.js",
         "build": "rimraf build && run-s build:*",
-        "build:prod": "rimraf build/prod && npx webpack --config webpack/production.babel.js --output-path build/prod --progress --bail",
+        "build:stable": "rimraf build/stable && npx webpack --config webpack/production.babel.js --output-path build/stable --progress --bail",
         "build:beta": "rimraf build/beta && cross-env BUILD=beta npx webpack --config webpack/production.babel.js --output-path build/beta --progress --bail",
         "build:dev": "rimraf build.dev && cross-env BUILD=development npx webpack --config webpack/production.babel.js --output-path build/dev --progress --bail",
         "flow": "flow check src",
@@ -21,13 +21,15 @@
         "test": "run-s test:*",
         "test:unit": "npx jest",
         "test-unit:watch": "npx jest -o --watch",
-        "prod-server": "node ./server/index.js"
+        "server:beta": "node ./server/index.js --buildType=beta",
+        "server:stable": "node ./server/index.js --buildType=stable"
     },
     "dependencies": {
         "babel": "^6.23.0",
         "babel-core": "^6.26.3",
         "bignumber.js": "2.4.0",
         "color-hash": "^1.0.3",
+        "commander": "^2.19.0",
         "copy-webpack-plugin": "^4.5.2",
         "cross-env": "^5.2.0",
         "date-fns": "^1.29.0",
@@ -67,7 +69,7 @@
         "styled-components": "^3.4.9",
         "styled-media-query": "^2.0.2",
         "styled-normalize": "^8.0.0",
-        "trezor-connect": "^5.0.32",
+        "trezor-connect": "6.0.0",
         "web3": "1.0.0-beta.35",
         "webpack": "^4.16.3",
         "webpack-build-notifier": "^0.1.29",

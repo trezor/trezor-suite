@@ -1,20 +1,109 @@
 image: node:8
 
-before_script:
-  - yarn install
-
 cache:
   paths:
-    - node_modules/
+  - node_modules
+
+stages:
+  - test
+  - build
+  - deploy
+
+lint:
+  stage: test
+  script:
+    - yarn install
+    - yarn run lint
 
 flow:
+  stage: test
   script:
     - yarn run flow
 
-test:lint:
+unit:
+  stage: test
   script:
-    - yarn run lint
-
-test:unit:
-  script:
+    - yarn install
     - yarn run test
+
+build development:
+  stage: build
+  script:
+    - yarn install
+    - yarn run build:dev
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build/dev
+
+build beta:
+  stage: build
+  script:
+    - yarn install
+    - yarn run build:beta
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build/beta
+      - scripts/s3sync.sh
+
+build stable:
+  stage: build
+  script:
+    - yarn install
+    - yarn run build:stable
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build/stable
+      - scripts/s3sync.sh
+
+deploy review:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  dependencies:
+    - build development
+  script:
+    - echo "Deploy a review app"
+    - '[ -z "${DEPLOY_BASE_DIR}" ] && echo "Deploy base dir cannot be empty" && exit 255'
+    - env
+    - mkdir -p "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}"
+    - echo "Copy dev build to web server ${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}..."
+    - rsync --delete -va build/dev/ "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}/"
+  only:
+    - branches
+  tags:
+    - deploy
+
+deploy stage beta:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    AWS_ACCESS_KEY_ID: $STAGE_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $STAGE_AWS_SECRET_ACCESS_KEY
+  when: manual
+  dependencies:
+    - build beta
+  script:
+    - scripts/s3sync.sh stage beta
+  only:
+    - beta
+  tags:
+    - deploy
+
+deploy stage stable:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    AWS_ACCESS_KEY_ID: $STAGE_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $STAGE_AWS_SECRET_ACCESS_KEY
+  when: manual
+  dependencies:
+    - build stable
+  script:
+    - scripts/s3sync.sh stage stable
+  only:
+    - stable
+  tags:
+    - deploy
