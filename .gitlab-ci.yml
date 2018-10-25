@@ -4,9 +4,6 @@ cache:
   paths:
   - node_modules
 
-before_script:
-  - yarn install
-
 stages:
   - test
   - build
@@ -15,6 +12,7 @@ stages:
 lint:
   stage: test
   script:
+    - yarn install
     - yarn run lint
 
 flow:
@@ -25,36 +23,40 @@ flow:
 unit:
   stage: test
   script:
+    - yarn install
     - yarn run test
 
 build development:
   stage: build
   script:
+    - yarn install
     - yarn run build:dev
   artifacts:
-    expire_in: 1 month
+    expire_in: 1 week
     paths:
       - build/dev
 
 build beta:
   stage: build
   script:
+    - yarn install
     - yarn run build:beta
-  when: manual
   artifacts:
-    expire_in: 1 month
+    expire_in: 1 week
     paths:
       - build/beta
+      - scripts/s3sync.sh
 
-build production:
+build stable:
   stage: build
   script:
+    - yarn install
     - yarn run build:stable
-  when: manual
   artifacts:
-    expire_in: 1 month
+    expire_in: 1 week
     paths:
       - build/stable
+      - scripts/s3sync.sh
 
 deploy review:
   stage: deploy
@@ -71,5 +73,37 @@ deploy review:
     - rsync --delete -va build/dev/ "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}/"
   only:
     - branches
+  tags:
+    - deploy
+
+deploy stage beta:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    AWS_ACCESS_KEY_ID: $STAGE_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $STAGE_AWS_SECRET_ACCESS_KEY
+  when: manual
+  dependencies:
+    - build beta
+  script:
+    - scripts/s3sync.sh stage beta
+  only:
+    - beta
+  tags:
+    - deploy
+
+deploy stage stable:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    AWS_ACCESS_KEY_ID: $STAGE_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $STAGE_AWS_SECRET_ACCESS_KEY
+  when: manual
+  dependencies:
+    - build stable
+  script:
+    - scripts/s3sync.sh stage stable
+  only:
+    - stable
   tags:
     - deploy
