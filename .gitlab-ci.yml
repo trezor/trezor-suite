@@ -44,6 +44,7 @@ build beta:
     expire_in: 1 month
     paths:
       - build/beta
+      - scripts/s3sync.sh
 
 build stable:
   stage: build
@@ -53,6 +54,7 @@ build stable:
     expire_in: 1 month
     paths:
       - build/stable
+      - scripts/s3sync.sh
 
 deploy review:
   stage: deploy
@@ -76,11 +78,13 @@ deploy stage beta:
   stage: deploy
   variables:
     GIT_STRATEGY: none
+    AWS_ACCESS_KEY_ID: $STAGE_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $STAGE_AWS_SECRET_ACCESS_KEY
   when: manual
   dependencies:
     - build beta
   script:
-    - echo "Deploy staging beta version"
+    - scripts/s3sync.sh beta
   only:
     - beta
   tags:
@@ -90,11 +94,13 @@ deploy stage stable:
   stage: deploy
   variables:
     GIT_STRATEGY: none
+    AWS_ACCESS_KEY_ID: $STAGE_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $STAGE_AWS_SECRET_ACCESS_KEY
   when: manual
   dependencies:
     - build stable
   script:
-    - echo "Deploy staging stable version"
+    - scripts/s3sync.sh stable
   only:
     - stable
   tags:
