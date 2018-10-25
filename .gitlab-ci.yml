@@ -4,9 +4,6 @@ cache:
   paths:
   - node_modules
 
-before_script:
-  - yarn install
-
 stages:
   - test
   - build
@@ -15,6 +12,7 @@ stages:
 lint:
   stage: test
   script:
+    - yarn install
     - yarn run lint
 
 flow:
@@ -25,11 +23,13 @@ flow:
 unit:
   stage: test
   script:
+    - yarn install
     - yarn run test
 
 build development:
   stage: build
   script:
+    - yarn install
     - yarn run build:dev
   artifacts:
     expire_in: 1 month
@@ -39,6 +39,7 @@ build development:
 build beta:
   stage: build
   script:
+    - yarn install
     - yarn run build:beta
   artifacts:
     expire_in: 1 month
@@ -49,6 +50,7 @@ build beta:
 build stable:
   stage: build
   script:
+    - yarn install
     - yarn run build:stable
   artifacts:
     expire_in: 1 month
