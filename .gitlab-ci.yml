@@ -40,17 +40,15 @@ build beta:
   stage: build
   script:
     - yarn run build:beta
-  when: manual
   artifacts:
     expire_in: 1 month
     paths:
       - build/beta
 
-build production:
+build stable:
   stage: build
   script:
     - yarn run build:stable
-  when: manual
   artifacts:
     expire_in: 1 month
     paths:
@@ -71,5 +69,35 @@ deploy review:
     - rsync --delete -va build/dev/ "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}/"
   only:
     - branches
+  tags:
+    - deploy
+
+deploy stage beta:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  when:
+    - manual
+  dependencies:
+    - build beta
+  script:
+    - echo "Deploy staging beta version"
+  only:
+    - beta
+  tags:
+    - deploy
+
+deploy stage stable:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  when:
+    - manual
+  dependencies:
+    - build stable
+  script:
+    - echo "Deploy staging stable version"
+  only:
+    - stable
   tags:
     - deploy
