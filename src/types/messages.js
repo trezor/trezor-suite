@@ -15,6 +15,12 @@ export type Message = {
         +type: 'blockbook',
         +xpub: string,
     }
+} | {
+    +type: typeof MESSAGES.SUBSCRIBE,
+    +payload: {
+        +addresses: Array<string>,
+        +notificationHandler: (any) => void,
+    }
 };
 
 export type Response = {

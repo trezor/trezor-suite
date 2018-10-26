@@ -10,7 +10,7 @@ declare function postMessage(data: Response): void;
 
 // WebWorker message handling
 // eslint-disable-next-line no-undef
-onmessage = (event: {data: Message}) => {
+onmessage = (event: { data: Message }) => {
     if (!event.data) return;
 
     console.log('RippleWorker:onmessage', event);
@@ -26,6 +26,9 @@ onmessage = (event: {data: Message}) => {
             break;
         case MESSAGES.PUSH_TRANSACTION:
             pushTransaction(event.data);
+            break;
+        case MESSAGES.SUBSCRIBE:
+            subscribe(event.data);
             break;
     }
 };
@@ -88,12 +91,39 @@ const pushTransaction = async (data: any) => {
         const info = await api.submit(data.tx.toUpperCase());
         postMessage({
             id: data.id,
-            type: RESPONSES.INFO,
+            type: RESPONSES.PUSH_TRANSACTION,
             info
         });
     } catch (error) {
         handleError({ id: data.id, error });
     }
+}
+
+const subscribe = async (data: any) => {
+    try {
+        // subscribe to new blocks, confirmed transactions for given addresses and mempoool transactions for given addresses
+        const info = await api.request('subscribe', {
+            "streams": ["ledger"],
+            "accounts": data.addresses,
+            "accounts_proposed": data.addresses,
+        });
+        postMessage({
+            id: data.id,
+            type: RESPONSES.SUBSCRIBE,
+            info
+        });
+        api.connection.on('ledgerClosed', notificationHandler)
+        api.connection.on('transaction', notificationHandler)
+    } catch (error) {
+        handleError({ id: data.id, error });
+    }
+}
+
+const notificationHandler = (event) => {
+    postMessage({
+        type: RESPONSES.NOTIFICATION,
+        event
+    });
 }
 
 // // Testnet account
@@ -106,14 +136,14 @@ const pushTransaction = async (data: any) => {
 // api.connect().then(() => {
 //     /* begin custom code ------------------------------------ */
 //     
-  
+
 //     console.log('getting account info for', myAddress);
 //     return api.getAccountInfo(myAddress);
-  
+
 // }).then(info => {
 //     console.log(info);
 //     console.log('getAccountInfo done');
-  
+
 //     /* end custom code -------------------------------------- */
 // }).then(() => {
 //     return api.disconnect();

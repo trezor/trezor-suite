@@ -26,6 +26,12 @@ class BlockchainLink {
     async pushTransaction(params: any) {
         return await send({ type: MESSAGES.PUSH_TRANSACTION, ...params });
     }
+
+    async subscribe(params: any) {
+        return await send({ type: MESSAGES.SUBSCRIBE, ...params });
+    }
+
+    
 }
 
 export default BlockchainLink;

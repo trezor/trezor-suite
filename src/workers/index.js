@@ -6,7 +6,7 @@
 import RippleWorker from 'worker-loader?name=js/ripple-worker.[hash].js!./ripple/index.js';
 import { create as createDeferred } from '../utils/deffered';
 
-import { MESSAGES } from '../constants';
+import { MESSAGES, RESPONSES } from '../constants';
 import type { Message, Response, Deferred } from '../types';
 
 const sockets: Array<Socket> = [];
@@ -29,6 +29,7 @@ class Socket {
     network: string;
     worker: Worker;
     deferred: Array<Deferred<any>> = [];
+    notificationHandler: (event: any) => void = null;
 
     constructor(network: string) {
         this.network = network;
@@ -42,6 +43,11 @@ class Socket {
     }
 
     async send(message: Message) {
+        if (message.type === MESSAGES.SUBSCRIBE && message.notificationHandler) {
+            this.notificationHandler = message.notificationHandler;
+            // handler must not be passed to the worker
+            message.notificationHandler = undefined;
+        }
         const dfd = createDeferred(this.messageId);
         this.deferred.push(dfd);
         this.worker.postMessage({ id: this.messageId, ...message });
@@ -49,11 +55,17 @@ class Socket {
         return await dfd.promise;
     }
 
-    onMessage(event: {data: Response}) {
+    onMessage(event: { data: Response }) {
         if (!event.data) return;
-        const dfd = this.deferred.find(d => d.id === event.data.id);
-        if (!dfd) return;
-        dfd.resolve(event.data);
+        if (event.data.type == RESPONSES.NOTIFICATION) {
+            if (this.notificationHandler) {
+                this.notificationHandler(event.data.event);
+            }
+        } else {
+            const dfd = this.deferred.find(d => d.id === event.data.id);
+            if (!dfd) return;
+            dfd.resolve(event.data);
+        }
     }
 
     onError() {
