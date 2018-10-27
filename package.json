@@ -49,7 +49,7 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "bchaddrjs": "^0.2.1",
-    "bitcoinjs-lib-zcash": "^3.4.1",
+    "bitcoinjs-lib-zcash": "^3.5.2",
     "queue": "^4.4.2",
     "socket.io-client": "^1.7.3",
     "whatwg-fetch": "^0.11.0"
