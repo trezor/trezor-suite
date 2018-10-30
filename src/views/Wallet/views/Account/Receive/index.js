@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import { QRCode } from 'react-qr-svg';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import media from 'styled-media-query';
 
 import { H2 } from 'components/Heading';
