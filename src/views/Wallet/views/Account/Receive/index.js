@@ -12,7 +12,6 @@ import Input from 'components/inputs/Input';
 
 import ICONS from 'config/icons';
 import colors from 'config/colors';
-import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
 import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import Content from 'views/Wallet/components/Content';
@@ -40,6 +39,7 @@ const StyledQRCode = styled(QRCode)`
 const ShowAddressButton = styled(Button)`
     min-width: 195px;
     padding: 0;
+    white-space: nowrap;
     display: flex;
     height: 40px;
     align-items: center;
@@ -67,6 +67,10 @@ const EyeButton = styled(Button)`
     top: 5px;
     position: absolute;
     right: 10px;
+
+    &:hover {
+        background: white;
+    }
 `;
 
 const Row = styled.div`
@@ -128,7 +132,7 @@ const AccountReceive = (props: Props) => {
                             ) : null}
                             icon={((addressVerified || addressUnverified) && !isAddressVerifying) && (
                                 <Tooltip
-                                    placement="bottom"
+                                    placement="left"
                                     content={(
                                         <VerifyAddressTooltip
                                             isConnected={device.connected}
@@ -137,16 +141,11 @@ const AccountReceive = (props: Props) => {
                                         />
                                     )}
                                 >
-                                    <EyeButton
-                                        isTransparent
-                                        onClick={() => props.showAddress(account.addressPath)}
-                                    >
-
+                                    <EyeButton onClick={() => props.showAddress(account.addressPath)}>
                                         <Icon
                                             icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
                                             color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
                                         />
-
                                     </EyeButton>
                                 </Tooltip>
                             )}
