@@ -45,18 +45,6 @@ const Click = styled.div`
     }
 `;
 
-const Textarea = styled.textarea`
-    width: 100%;
-    height: 200px;
-    min-height: 200px;
-    resize: vertical;
-    font-size: 10px;
-
-    &:focus {
-        box-shadow: none;
-    }
-`;
-
 const StyledParagraph = styled(P)`
     margin: 10px 0;
 `;
@@ -64,7 +52,7 @@ const StyledParagraph = styled(P)`
 const LogWrapper = styled.div`
     background: white;
     padding: 25px;
-    height: 500px;
+    height: 300px;
     overflow: scroll;
 `;
 
