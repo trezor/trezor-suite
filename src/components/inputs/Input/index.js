@@ -79,6 +79,7 @@ const Overlay = styled.div`
     ${props => props.isPartiallyHidden && css`
         bottom: 0;
         border: 1px solid ${colors.DIVIDER};
+        border-radius: 2px;
         position: absolute;
         width: 100%;
         height: 100%;
