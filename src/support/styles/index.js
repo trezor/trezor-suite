@@ -44,7 +44,7 @@ const baseStyles = () => injectGlobal`
         outline: 0;
     }
 
-    #root {
+    #trezor-wallet-root {
         height: 100%;
     }
 
