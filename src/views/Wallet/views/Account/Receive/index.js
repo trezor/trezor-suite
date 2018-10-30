@@ -37,45 +37,6 @@ const StyledQRCode = styled(QRCode)`
     border: 1px solid ${colors.BODY};
 `;
 
-const StyledInput = styled.div`
-
-    ${props => props.isVerifying && css`
-        z-index: 10001; /* bigger than modal container */
-        border-color: ${colors.WHITE};
-        border-width: 2px;
-        transform: translate(-1px, -1px);
-        background: ${colors.DIVIDER};
-    `};
-`;
-
-const ArrowUp = styled.div`
-    position: absolute;
-    top: 35px;
-    left: 70px;
-    width: 0;
-    height: 0;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 9px solid black;
-    z-index: 10001;
-`;
-
-const AddressInfoText = styled.div`
-    display: flex;
-    align-items: center;
-    height: 37px;
-    margin: 0px 2px;
-    padding: 0 14px 0 5px;
-    position: absolute;
-    top: 45px;
-    background: black;
-    color: ${colors.WHITE};
-    border-radius: 5px;
-    line-height: 37px;
-    z-index: 10001;
-    transform: translate(-1px, -1px);
-`;
-
 const ShowAddressButton = styled(Button)`
     min-width: 195px;
     padding: 0;
@@ -156,18 +117,15 @@ const AccountReceive = (props: Props) => {
                             type="text"
                             value={address}
                             isPartiallyHidden={isAddressHidden}
-                            trezorAction={(
+                            trezorAction={isAddressVerifying ? (
                                 <React.Fragment>
-                                    <ArrowUp />
-                                    <AddressInfoText>
-                                        <Icon
-                                            icon={ICONS.T1}
-                                            color={colors.WHITE}
-                                        />
+                                    <Icon
+                                        icon={ICONS.T1}
+                                        color={colors.WHITE}
+                                    />
                                     Check address on your Trezor
-                                    </AddressInfoText>
                                 </React.Fragment>
-                            )}
+                            ) : null}
                             icon={((addressVerified || addressUnverified) && !isAddressVerifying) && (
                                 <Tooltip
                                     placement="bottom"
@@ -199,7 +157,7 @@ const AccountReceive = (props: Props) => {
                             </ShowAddressButton>
                         )}
                     </Row>
-                    {(addressVerified || addressUnverified) && (
+                    {(addressVerified || addressUnverified) && !isAddressVerifying && (
                         <QrWrapper>
                             <Label>QR code</Label>
                             <StyledQRCode
