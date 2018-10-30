@@ -52,6 +52,7 @@
         "react": "^16.4.2",
         "react-dom": "^16.2.0",
         "react-hot-loader": "^4.3.4",
+        "react-json-view": "^1.19.1",
         "react-qr-svg": "^2.1.0",
         "react-redux": "^5.0.7",
         "react-router-dom": "^4.2.2",

@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import colors from 'config/colors';
 import { H2 } from 'components/Heading';
+import ReactJson from 'react-json-view';
 import Icon from 'components/Icon';
 import P from 'components/Paragraph';
 
@@ -60,6 +61,13 @@ const StyledParagraph = styled(P)`
     margin: 10px 0;
 `;
 
+const LogWrapper = styled.div`
+    background: white;
+    padding: 25px;
+    height: 500px;
+    overflow: scroll;
+`;
+
 const Log = (props: Props): ?React$Element<string> => {
     if (!props.log.opened) return null;
     return (
@@ -69,7 +77,9 @@ const Log = (props: Props): ?React$Element<string> => {
             </Click>
             <H2>Log</H2>
             <StyledParagraph isSmaller>Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.</StyledParagraph>
-            <Textarea value={JSON.stringify(props.log.entries)} readOnly />
+            <LogWrapper>
+                <ReactJson src={props.log.entries} />
+            </LogWrapper>
         </Wrapper>
     );
 };
