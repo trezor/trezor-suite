@@ -25,6 +25,7 @@ const InputIconWrapper = styled.div`
     flex: 1;
     position: relative;
     display: inline-block;
+    background: white;
 `;
 
 const TopLabel = styled.span`
@@ -43,10 +44,12 @@ const StyledInput = styled.input`
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 
     border-radius: 2px;
+    
     ${props => props.hasAddon && css`
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
     `}
+
     border: 1px solid ${colors.DIVIDER};
     border-color: ${props => props.borderColor};
 
@@ -70,6 +73,20 @@ const BottomText = styled.span`
     margin-top: 10px;
     font-size: ${FONT_SIZE.SMALLER};
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
+`;
+
+const Overlay = styled.div`
+    ${props => props.isPartiallyHidden && css`
+        bottom: 0;
+        border: 1px solid ${colors.DIVIDER};
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(to right, 
+            rgba(0,0,0, 0) 0%,
+            rgba(255,255,255, 1) 220px
+        );
+    `}
 `;
 
 class Input extends PureComponent {
@@ -113,6 +130,8 @@ class Input extends PureComponent {
                                 color={this.getColor(this.props.state)}
                             />
                         )}
+                        <Overlay isPartiallyHidden={this.props.isPartiallyHidden} />
+                        {this.props.icon}
                         <StyledInput
                             hasIcon={this.getIcon(this.props.state).length > 0}
                             innerRef={this.props.innerRef}
@@ -131,6 +150,7 @@ class Input extends PureComponent {
                             name={this.props.name}
                             data-lpignore="true"
                         />
+
                     </InputIconWrapper>
                     {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
                 </InputWrapper>
@@ -154,6 +174,7 @@ Input.propTypes = {
     autocomplete: PropTypes.string,
     autocorrect: PropTypes.string,
     autocapitalize: PropTypes.string,
+    icon: PropTypes.node,
     spellCheck: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func,
@@ -163,6 +184,7 @@ Input.propTypes = {
     sideAddons: PropTypes.arrayOf(PropTypes.node),
     isDisabled: PropTypes.bool,
     name: PropTypes.string,
+    isPartiallyHidden: PropTypes.bool,
 };
 
 Input.defaultProps = {

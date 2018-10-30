@@ -7,6 +7,7 @@ import { H2 } from 'components/Heading';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
+import Input from 'components/inputs/Input';
 
 import ICONS from 'config/icons';
 import colors from 'config/colors';
@@ -37,39 +38,7 @@ const StyledQRCode = styled(QRCode)`
     border: 1px solid ${colors.BODY};
 `;
 
-const ValueWrapper = styled.div`
-    font-size: ${FONT_SIZE.SMALL};
-    height: 40px;
-    font-weight: ${FONT_WEIGHT.SMALLEST};
-    line-height: 1.42857143;
-    font-family: ${FONT_FAMILY.MONOSPACE};
-    color: ${colors.TEXT_PRIMARY};
-    border: 1px solid ${colors.DIVIDER};
-    border-radius: 3px;
-    padding: 10px 12px;
-    padding-right: 38px;
-    position: relative;
-    flex: 1;
-    user-select: all;
-
-    ${props => props.isHidden && css`
-        padding-right: 6px;
-        user-select: none;
-        border-radius: 3px 0px 0px 3px;
-        &:after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(to right,
-                rgba(255,255,255, 0) 0%,
-                rgba(255,255,255, 1) 220px
-            );
-            pointer-events: none; /* so the text is still selectable */
-        }
-    `};
+const StyledInput = styled.div`
 
     ${props => props.isVerifying && css`
         z-index: 10001; /* bigger than modal container */
@@ -130,6 +99,7 @@ const EyeButton = styled(Button)`
     z-index: 10001;
     padding: 0;
     width: 30px;
+    background: white;
     top: 5px;
     position: absolute;
     right: 10px;
@@ -168,36 +138,37 @@ const AccountReceive = (props: Props) => {
                     {isAddressVerifying && (
                         <AddressInfoText>Confirm address on Trezor</AddressInfoText>
                     )}
-                    {((addressVerified || addressUnverified) && !isAddressVerifying) && (
-                        <Tooltip
-                            placement="left"
-                            content={(
-                                <VerifyAddressTooltip
-                                    isConnected={device.connected}
-                                    isAvailable={device.available}
-                                    addressUnverified={addressUnverified}
-                                />
-                            )}
-                        >
-                            <EyeButton
-                                isTransparent
-                                onClick={() => props.showAddress(account.addressPath)}
-                            >
-
-                                <Icon
-                                    icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
-                                    color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
-                                />
-
-                            </EyeButton>
-                        </Tooltip>
-                    )}
-                    <ValueWrapper
-                        isHidden={isAddressHidden}
+                    <Label>Address</Label>
+                    <Input
+                        type="text"
+                        value={address}
+                        isPartiallyHidden={isAddressHidden}
                         isVerifying={isAddressVerifying}
-                    >
-                        {address}
-                    </ValueWrapper>
+                        icon={((addressVerified || addressUnverified) && !isAddressVerifying) && (
+                            <Tooltip
+                                placement="bottom"
+                                content={(
+                                    <VerifyAddressTooltip
+                                        isConnected={device.connected}
+                                        isAvailable={device.available}
+                                        addressUnverified={addressUnverified}
+                                    />
+                                )}
+                            >
+                                <EyeButton
+                                    isTransparent
+                                    onClick={() => props.showAddress(account.addressPath)}
+                                >
+
+                                    <Icon
+                                        icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
+                                        color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
+                                    />
+
+                                </EyeButton>
+                            </Tooltip>
+                        )}
+                    />
                     {isAddressVerifying && (
                         <React.Fragment>
                             <ArrowUp />
