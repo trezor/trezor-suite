@@ -36,8 +36,8 @@
             padding: 5px 10px;
         }
 
-        div#response {
-            padding: 5px 0px;
+        pre#response {
+            margin: 5px;
         }
     </style>
 </head>
@@ -66,8 +66,14 @@
         <button id="push-transaction">Push transaction</button>
     </div>
     <div>
-        <label>Response</label>
-        <div id="response"></div>
+        <label>Addresses</label>
+        <input id="subscribe-addresses" type="text" value="rBdHGo5fksQotC4x5t7BtaR8vMW5EDqk6S,rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H,rBKz5MC2iXdoS3XgnNSYmF69K1Yo4NS3Ws" />
+        <button id="subscribe">Subscribe</button>
     </div>
+    <div>
+        <span>Response</span>
+        <button id="clear-response">Clear response</button>
+    </div>
+    <pre id="response"></pre>
 </body>
 </html>

@@ -13,4 +13,10 @@ export type Response = {
 } | {
     +type: typeof RESPONSES.ACCOUNT_INFO,
     +info: any,
+} | {
+    +type: typeof RESPONSES.SUBSCRIBE,
+    +info: any,
+} | {
+    +type: typeof RESPONSES.NOTIFICATION,
+    +info: any,
 };
