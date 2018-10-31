@@ -110,13 +110,6 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
                 shouldRender: false,
             };
         }
-
-        // case 6: discovery is not completed yet
-        return {
-            type: 'info',
-            title: 'Loading accounts...',
-            shouldRender: false,
-        };
     }
 
     // Additional status: account does exists and it's visible but shouldn't be active
@@ -132,15 +125,6 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
             type: 'info',
             title: `Device ${device.instanceLabel} is unavailable`,
             message: 'Change passphrase settings to use this device',
-            shouldRender: true,
-        };
-    }
-
-    // Additional status: account does exists, but waiting for discovery to complete
-    if (discovery && !discovery.completed) {
-        return {
-            type: 'info',
-            title: 'Loading accounts...',
             shouldRender: true,
         };
     }

@@ -248,7 +248,7 @@ const AccountSend = (props: Props) => {
     const isAdvancedSettingsHidden = !advanced;
 
     return (
-        <Content>
+        <Content isLoading={!discovery.completed}>
             <React.Fragment>
                 <H2>Send Ethereum or tokens</H2>
                 <InputRow>
