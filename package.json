@@ -12,7 +12,7 @@
     "unit-discovery": "make unit-discovery",
     "test-bitcore": "make test-bitcore",
     "coverage-html": "make coverage-html",
-    "coverage": "make coverage",
+    "coverage": "make run-coverage",
     "flow": "make flow",
     "eslint": "make eslint",
     "karma-firefox": "make karma-firefox",
