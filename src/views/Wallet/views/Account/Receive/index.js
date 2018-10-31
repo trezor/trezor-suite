@@ -111,7 +111,7 @@ const AccountReceive = (props: Props) => {
     }
 
     return (
-        <Content>
+        <Content isLoading={!discovery.completed}>
             <React.Fragment>
                 <H2>Receive Ethereum or tokens</H2>
                 <AddressWrapper isShowingQrCode={addressVerified || addressUnverified}>
