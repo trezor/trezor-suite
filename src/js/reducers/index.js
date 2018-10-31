@@ -4,7 +4,7 @@
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 
-import DOM from './DomReducer';
+import DOM from './DOMReducer';
 import connect from './TrezorConnectReducer';
 import modal from './ModalReducer';
 
