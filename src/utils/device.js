@@ -21,6 +21,9 @@ export const getStatus = (device: TrezorDevice): string => {
         if (device.mode === 'initialize') {
             return 'initialize';
         }
+        if (device.mode === 'seedless') {
+            return 'seedless';
+        }
         if (device.firmware === 'required') {
             return 'firmware-required';
         }
@@ -57,6 +60,8 @@ export const getStatusName = (deviceStatus: string): string => {
             return 'Connected (bootloader mode)';
         case 'initialize':
             return 'Connected (not initialized)';
+        case 'seedless':
+            return 'Connected (seedless mode)';
         case 'firmware-required':
             return 'Connected (update required)';
         case 'firmware-recommended':
@@ -81,8 +86,8 @@ export const isDisabled = (selectedDevice: TrezorDevice, devices: Array<TrezorDe
     if (devices.length < 1) return true; // no devices
     if (devices.length === 1) {
         if (!selectedDevice.features) return true; // unacquired, unreadable
-        if (selectedDevice.mode !== 'normal') return true; // bootloader, not initialized
-        if (selectedDevice.firmware === 'required') return true; // bootloader, not initialized
+        if (selectedDevice.mode !== 'normal') return true; // bootloader, not initialized, seedless
+        if (selectedDevice.firmware === 'required') return true;
     }
     return false; // default
 };
@@ -112,6 +117,7 @@ export const getStatusColor = (deviceStatus: string): string => {
             return colors.ERROR_PRIMARY;
         case 'bootloader':
         case 'initialize':
+        case 'seedless':
         case 'firmware-recommended':
         case 'used-in-other-window':
         case 'unacquired':
