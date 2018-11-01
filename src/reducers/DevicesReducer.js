@@ -317,6 +317,7 @@ export default function devices(state: State = initialState, action: Action): St
             return onSelectedDevice(state, action.device);
 
         case CONNECT.RECEIVE_WALLET_TYPE:
+        case CONNECT.UPDATE_WALLET_TYPE:
             return onChangeWalletType(state, action.device, action.hidden);
 
         default:
