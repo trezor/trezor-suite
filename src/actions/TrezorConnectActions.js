@@ -78,10 +78,9 @@ export type TrezorConnectAction = {
     type: typeof CONNECT.REQUEST_WALLET_TYPE,
     device: TrezorDevice
 } | {
-    type: typeof CONNECT.RECEIVE_WALLET_TYPE,
+    type: typeof CONNECT.RECEIVE_WALLET_TYPE | typeof CONNECT.UPDATE_WALLET_TYPE,
     device: TrezorDevice,
     hidden: boolean,
-    state: ?string,
 };
 
 declare var LOCAL: ?string;

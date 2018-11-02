@@ -30,3 +30,4 @@ export const STOP_ACQUIRING: 'connect__stop_acquiring' = 'connect__stop_acquirin
 
 export const REQUEST_WALLET_TYPE: 'connect__request_wallet_type' = 'connect__request_wallet_type';
 export const RECEIVE_WALLET_TYPE: 'connect__receive_wallet_type' = 'connect__receive_wallet_type';
+export const UPDATE_WALLET_TYPE: 'connect__update_wallet_type' = 'connect__update_wallet_type';
