@@ -127,6 +127,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
             shouldRender: true,
         };
     }
+
     if (!device.available) {
         return {
             type: 'info',

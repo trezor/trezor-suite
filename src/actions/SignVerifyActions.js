@@ -23,10 +23,13 @@ export const sign = (
     hex: boolean = false,
 ): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
-    const devicePath = selected.path;
-    const input = {
+    if (!selected) return;
+
+    dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: true });
+
+    const response = await TrezorConnect.ethereumSignMessage({
         device: {
-            path: devicePath,
+            path: selected.path,
             instance: selected.instance,
             state: selected.state,
         },
@@ -34,11 +37,7 @@ export const sign = (
         hex,
         message,
         useEmptyPassphrase: selected.useEmptyPassphrase,
-    };
-
-    dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: true });
-
-    const response = await TrezorConnect.ethereumSignMessage(input);
+    });
 
     dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: false });
 
@@ -74,15 +73,19 @@ export const verify = (
     hex: boolean = false,
 ): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
-    const input = {
+    if (!selected) return;
+    const response = await TrezorConnect.ethereumVerifyMessage({
+        device: {
+            path: selected.path,
+            instance: selected.instance,
+            state: selected.state,
+        },
         address,
         message,
         signature,
         hex,
         useEmptyPassphrase: selected.useEmptyPassphrase,
-    };
-
-    const response = await TrezorConnect.ethereumVerifyMessage(input);
+    });
 
     if (response && response.success) {
         dispatch({
