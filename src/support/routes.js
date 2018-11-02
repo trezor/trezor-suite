@@ -48,6 +48,11 @@ export const routes: Array<Route> = [
         fields: ['device', 'initialize'],
     },
     {
+        name: 'wallet-seedless',
+        pattern: '/device/:device/seedless',
+        fields: ['device', 'seedless'],
+    },
+    {
         name: 'wallet-firmware-update',
         pattern: '/device/:device/firmware-update',
         fields: ['device', 'firmware-update'],

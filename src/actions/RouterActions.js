@@ -64,8 +64,8 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
         if (!device) return false;
 
         if (!deviceUtils.isDeviceAccessible(device)) {
-            // TODO: there should be no access to deep links if device has incorrect mode/firmware
-            // if (params.hasOwnProperty('network') || params.hasOwnProperty('account')) return false;
+            // no access to deep links if device has incorrect mode/firmware
+            if (params.hasOwnProperty('network') || params.hasOwnProperty('account')) return false;
         }
     }
 
@@ -190,6 +190,8 @@ const getDeviceUrl = (device: TrezorDevice | Device): PayloadAction<?string> => 
         url = `/device/${device.path}/bootloader`;
     } else if (device.mode === 'initialize') {
         url = `/device/${device.features.device_id}/initialize`;
+    } else if (device.mode === 'seedless') {
+        url = `/device/${device.features.device_id}/seedless`;
     } else if (device.firmware === 'required') {
         url = `/device/${device.features.device_id}/firmware-update`;
     } else if (typeof device.instance === 'number') {
