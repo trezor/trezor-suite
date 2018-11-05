@@ -29,7 +29,6 @@ export default (state: State = initialState, action: Action): State => {
             };
 
         case SIGN_VERIFY.VERIFY_PROGRESS:
-            console.log('action', action);
             return {
                 ...state,
                 isVerifyProgress: action.isVerifyProgress,

@@ -116,9 +116,7 @@ class SignVerify extends Component<Props, State> {
         const {
             signVerifyActions,
             signature,
-            modal,
         } = this.props;
-        console.log('modal', modal);
         return (
             <Content>
                 <Title>Sign & Verify</Title>
