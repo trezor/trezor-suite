@@ -116,7 +116,9 @@ class SignVerify extends Component<Props, State> {
         const {
             signVerifyActions,
             signature,
+            modal,
         } = this.props;
+        console.log('modal', modal);
         return (
             <Content>
                 <Title>Sign & Verify</Title>
@@ -187,6 +189,15 @@ class SignVerify extends Component<Props, State> {
                                 state={(this.state.verifyAddress && validateAddress(this.state.verifyAddress)) ? 'error' : null}
                                 bottomText={this.state.verifyAddress !== '' ? validateAddress(this.state.verifyAddress) : null}
                                 isSmallText
+                                trezorAction={this.props.isVerifyProgress ? (
+                                    <ActionWrapper>
+                                        <StyledIcon
+                                            icon={ICONS.T1}
+                                            color={colors.WHITE}
+                                        />
+                                        Check address on your Trezor
+                                    </ActionWrapper>
+                                ) : null}
                             />
                         </Row>
                         <Row>
@@ -198,6 +209,15 @@ class SignVerify extends Component<Props, State> {
                                 rows={4}
                                 maxRows={4}
                                 maxLength="255"
+                                trezorAction={this.props.isVerifyProgress ? (
+                                    <ActionWrapper>
+                                        <StyledIcon
+                                            icon={ICONS.T1}
+                                            color={colors.WHITE}
+                                        />
+                                        Check address on your Trezor
+                                    </ActionWrapper>
+                                ) : null}
                             />
                         </Row>
                         <Row>

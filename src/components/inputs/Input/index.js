@@ -112,7 +112,7 @@ const TrezorAction = styled.div`
     color: ${colors.WHITE};
     border-radius: 5px;
     line-height: 37px;
-    z-index: 10001;
+    z-index: 10002;
     transform: translate(-1px, -1px);
 `;
 

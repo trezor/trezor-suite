@@ -117,6 +117,7 @@ const getColor = (inputState) => {
 };
 
 const TrezorAction = styled.div`
+    display: ${props => (props.action ? 'flex' : 'none')};
     align-items: center;
     margin: 0px 10px;
     padding: 0 14px 0 5px;
@@ -126,7 +127,7 @@ const TrezorAction = styled.div`
     color: ${colors.WHITE};
     border-radius: 5px;
     line-height: 37px;
-    z-index: 10001;
+    z-index: 10002;
     transform: translate(-1px, -1px);
 `;
 
@@ -164,6 +165,9 @@ const TextArea = ({
             <TopLabel>{topLabel}</TopLabel>
         )}
         <StyledTextarea
+            spellCheck="false"
+            autoCorrect="off"
+            autoCapitalize="off"
             maxRows={maxRows}
             rows={rows}
             className={className}
@@ -178,11 +182,9 @@ const TextArea = ({
             borderColor={getColor(state)}
             trezorAction={trezorAction}
         />
-        {trezorAction && (
-            <TrezorAction>
-                <ArrowUp />{trezorAction}
-            </TrezorAction>
-        )}
+        <TrezorAction action={trezorAction}>
+            <ArrowUp />{trezorAction}
+        </TrezorAction>
         {bottomText && (
             <BottomText
                 color={getColor(state)}
