@@ -1,37 +1,42 @@
 /* @flow */
 
 import { MESSAGES } from './constants';
-import { send } from './workers';
+import { getInstance } from './workers/blockchain';
+import * as $T from './types';
+
+// TODO: global scope
+// not set by default
+let network: ?string; 
 
 class BlockchainLink {
-    constructor(options: any) {
-        if (!window.Worker) return;
-        if (!options) {
-            // const worker = new Worker('workers/ripple/index.js');
-            // workers.push(worker);
-            // postMessage({
-            //     type: MESSAGES.INFO
-            // });
-        }
+
+    static getInfo: $T.GetInfo = async (params) => {
+        return await getInstance(network || params.network)
+            .getInfo({ 
+                type: MESSAGES.GET_INFO, 
+                payload: params 
+            });
     }
 
-    async getInfo(params: any) {
-        return await send({ type: MESSAGES.GET_INFO, ...params });
+    static getAccountInfo: $T.GetAccountInfo = async (params) => {
+        return await getInstance(network || params.network)
+            .getAccountInfo({ 
+                type: MESSAGES.GET_ACCOUNT_INFO,
+                payload: params 
+            });
     }
 
-    async getAccountInfo(params: any) {
-        return await send({ type: MESSAGES.GET_ACCOUNT_INFO, ...params });
+    static subscribe: $T.Subscribe = async (params) => {
+        return await getInstance(network || params.network).subscribe({ type: MESSAGES.SUBSCRIBE, payload: params });
     }
 
-    async pushTransaction(params: any) {
-        return await send({ type: MESSAGES.PUSH_TRANSACTION, ...params });
+    static unsubscribe: $T.Subscribe = async (params) => {
+        return await getInstance(network || params.network).unsubscribe({ type: MESSAGES.SUBSCRIBE, payload: params });
     }
 
-    async subscribe(params: any) {
-        return await send({ type: MESSAGES.SUBSCRIBE, ...params });
+    static pushTransaction: $T.PushTransaction = async (params) => {
+        return await getInstance(network || params.network).pushTransaction({ type: MESSAGES.PUSH_TRANSACTION, payload: params });
     }
-
-    
 }
 
 export default BlockchainLink;

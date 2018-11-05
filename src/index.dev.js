@@ -2,46 +2,70 @@
 
 import BlockchainLink from './index';
 
+import { NETWORKS } from './constants';
 
-const blockchain = new BlockchainLink();
+type Network = typeof NETWORKS.RIPPLE | typeof NETWORKS.BLOCKBOOK;
+
+const getNetwork = (): Network => {
+    const value: string = getInputValue('network-type');
+    switch (value) {
+        case NETWORKS.RIPPLE:
+            return NETWORKS.RIPPLE;
+        case NETWORKS.BLOCKBOOK:
+            return NETWORKS.BLOCKBOOK;
+        default:
+            return NETWORKS.BLOCKBOOK;
+    }
+}
+
+const getInputValue = (id: string): string => {
+    const value: string = (document.getElementById(id): any).value;
+    return value;
+}
 
 
 const handleClick = (event: MouseEvent) => {
-    if (event.target.nodeName !== 'BUTTON') return;
+    const target: HTMLElement = (event.target: any);
+    if (target.nodeName !== 'BUTTON') return;
+    const network: Network = getNetwork();
 
-    const networkType = document.getElementById('network-type').value;
-
-    switch (event.target.id) {
+    switch (target.id) {
         case 'get-info':
-            blockchain.getInfo({
-                network: networkType,
+            BlockchainLink.getInfo({
+                network,
             }).then(handleResponse).catch(handleError);
             break;
 
-        case 'get-account-info':
-            blockchain.getAccountInfo({
-                address: document.getElementById('get-account-info-address').value,
-                network: networkType,
-            }).then(handleResponse).catch(handleError);
+        case 'get-account-info': {
+            const params = network === 'ripple' ? {
+                network,
+                address: getInputValue('get-account-info-address'),
+            } : {
+                network,
+                xpub: getInputValue('get-account-info-address'),
+            }
+            BlockchainLink.getAccountInfo(params).then(handleResponse).catch(handleError);
             break;
+        }
+            
 
         case 'push-transaction':
-            blockchain.pushTransaction({
-                tx: document.getElementById('push-transaction-tx').value,
-                network: networkType,
+            BlockchainLink.pushTransaction({
+                network,
+                tx: getInputValue('push-transaction-tx'),
             }).then(handleResponse).catch(handleError);
             break;
 
         case 'subscribe':
-            blockchain.subscribe({
-                addresses: document.getElementById('subscribe-addresses').value.split(","),
+            BlockchainLink.subscribe({
+                network,
+                addresses: getInputValue('subscribe-addresses').split(","),
                 notificationHandler: handleNotification,
-                network: networkType,
             }).then(handleResponse).catch(handleError);
             break;
 
         case 'clear-response':
-            document.getElementById('response').innerHTML = "";
+            handleResponse('');
             break;
 
         default: break;
@@ -50,7 +74,8 @@ const handleClick = (event: MouseEvent) => {
 
 const handleResponse = (response: any) => {
     console.log("Response", response);
-    document.getElementById('response').innerHTML = JSON.stringify(response, null, 2) + '\n' + document.getElementById('response').innerHTML;
+    const element = (document.getElementById('response'): any);
+    element.innerHTML = JSON.stringify(response, null , 2);
 }
 
 const handleNotification = (response: any) => {
@@ -64,12 +89,16 @@ const handleNotification = (response: any) => {
     } else {
         d = JSON.stringify(response, null, 2);
     }
-    document.getElementById('response').innerHTML = d + '\n' + document.getElementById('response').innerHTML;
+
+    const element = (document.getElementById('response'): any);
+    element.innerHTML = d + '\n' + element.innerHTML;
 }
 
 
 const handleError = (error: any) => {
     console.error(error);
+    const element = (document.getElementById('response'): any);
+    element.innerHTML = JSON.stringify(error.message, null , 2);
 }
 
 document.addEventListener('click', handleClick);

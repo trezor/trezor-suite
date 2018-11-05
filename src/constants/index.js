@@ -7,3 +7,11 @@ export {
     MESSAGES,
     RESPONSES,
 };
+
+export const NETWORKS: {
+    RIPPLE: 'ripple',
+    BLOCKBOOK: 'blockbook',
+} = {
+    RIPPLE: 'ripple',
+    BLOCKBOOK: 'blockbook',
+};
