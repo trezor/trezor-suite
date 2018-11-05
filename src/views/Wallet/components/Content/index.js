@@ -33,7 +33,7 @@ const Message = styled.div`
 
 const Row = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 `;
 
 const Content = ({
