@@ -13,7 +13,7 @@ const Header = styled.div`
 const ConfirmAction = () => (
     <Wrapper>
         <Header>
-            <H3>Confirm Action on your Trezor</H3>
+            <H3>Confirm action on your Trezor</H3>
         </Header>
     </Wrapper>
 );
