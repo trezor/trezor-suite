@@ -5,6 +5,7 @@ import * as SIGN_VERIFY from '../actions/constants/signVerify';
 export type State = {
     signature: string;
     isSignProgress: boolean;
+    isVerifyProgress: boolean;
 }
 
 export const initialState: State = {

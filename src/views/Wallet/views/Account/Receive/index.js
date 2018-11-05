@@ -11,7 +11,6 @@ import Tooltip from 'components/Tooltip';
 import Input from 'components/inputs/Input';
 
 import ICONS from 'config/icons';
-import TrezorConfirm from 'components/trezorActions/Confirm';
 import colors from 'config/colors';
 import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
