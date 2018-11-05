@@ -185,6 +185,7 @@ const AccountSend = (props: Props) => {
         discovery,
         tokens,
         shouldRender,
+        notification,
     } = props.selectedAccount;
     const {
         address,
@@ -213,8 +214,8 @@ const AccountSend = (props: Props) => {
         updateFeeLevels,
         onSend,
     } = props.sendFormActions;
-
-    if (!device || !account || !discovery || !network || !shouldRender) return null;
+    const { type, title, message } = notification;
+    if (!device || !account || !discovery || !network || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
 
     const isCurrentCurrencyToken = networkSymbol !== currency;
 
@@ -248,7 +249,7 @@ const AccountSend = (props: Props) => {
     const isAdvancedSettingsHidden = !advanced;
 
     return (
-        <Content isLoading={!discovery.completed}>
+        <Content>
             <React.Fragment>
                 <H2>Send Ethereum or tokens</H2>
                 <InputRow>

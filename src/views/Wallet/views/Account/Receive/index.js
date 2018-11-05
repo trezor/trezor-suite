@@ -93,9 +93,10 @@ const AccountReceive = (props: Props) => {
         account,
         discovery,
         shouldRender,
+        notification,
     } = props.selectedAccount;
-
-    if (!device || !account || !discovery || !shouldRender) return null;
+    const { type, title, message } = notification;
+    if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
 
     const {
         addressVerified,
@@ -111,7 +112,7 @@ const AccountReceive = (props: Props) => {
     }
 
     return (
-        <Content isLoading={!discovery.completed}>
+        <Content>
             <React.Fragment>
                 <H2>Receive Ethereum or tokens</H2>
                 <AddressWrapper isShowingQrCode={addressVerified || addressUnverified}>
