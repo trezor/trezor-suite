@@ -1,25 +1,21 @@
 /* @flow */
 import React from 'react';
 import { QRCode } from 'react-qr-svg';
-<<<<<<< HEAD
-import styled, { css } from 'styled-components';
-=======
 import styled from 'styled-components';
 import media from 'styled-media-query';
 
 import { H2 } from 'components/Heading';
->>>>>>> master
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import Input from 'components/inputs/Input';
 
 import ICONS from 'config/icons';
+import TrezorConfirm from 'components/trezorActions/Confirm';
 import colors from 'config/colors';
 import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import Content from 'views/Wallet/components/Content';
-import Title from 'views/Wallet/components/Title';
 import VerifyAddressTooltip from './components/VerifyAddressTooltip';
 
 import type { Props } from './Container';
@@ -126,15 +122,7 @@ const AccountReceive = (props: Props) => {
                             type="text"
                             value={address}
                             isPartiallyHidden={isAddressHidden}
-                            trezorAction={isAddressVerifying ? (
-                                <React.Fragment>
-                                    <Icon
-                                        icon={ICONS.T1}
-                                        color={colors.WHITE}
-                                    />
-                                    Check address on your Trezor
-                                </React.Fragment>
-                            ) : null}
+                            trezorAction={isAddressVerifying ? <TrezorConfirm /> : null}
                             icon={((addressVerified || addressUnverified) && !isAddressVerifying) && (
                                 <Tooltip
                                     placement="left"
