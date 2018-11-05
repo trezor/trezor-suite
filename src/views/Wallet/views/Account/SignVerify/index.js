@@ -53,40 +53,13 @@ const Label = styled.div`
     padding: 5px 0px 10px 0;
 `;
 
-const ConfirmTooltip = styled.div`
-    position: absolute;
-    z-index: 10001;
-    padding: 3px 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 250px;
-    background: black;
-    border: 0;
-    color: ${colors.WHITE};
-    border-radius: 5px;
-    transform: translate(-1px, -1px);
-`;
-
-const ArrowUp = styled.div`
-    position: absolute;
-    top: -9px;
-    left: 20px;
-    width: 0;
-    height: 0;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 9px solid black;
-    z-index: 10001;
-`;
-
 const StyledIcon = styled(Icon)`
     position: relative;
     left: 0;
 `;
 
-const ConfirmText = styled.div`
-    color: white;
+const ActionWrapper = styled.div`
+    white-space: nowrap
 `;
 
 type State = {
@@ -169,18 +142,16 @@ class SignVerify extends Component<Props, State> {
                                 rows={4}
                                 maxRows={4}
                                 maxLength="255"
-                                isInTrezorAction={this.props.isSignProgress}
+                                trezorAction={this.props.isSignProgress ? (
+                                    <ActionWrapper>
+                                        <StyledIcon
+                                            icon={ICONS.T1}
+                                            color={colors.WHITE}
+                                        />
+                                        Check address on your Trezor
+                                    </ActionWrapper>
+                                ) : null}
                             />
-                            {this.props.isSignProgress && (
-                                <ConfirmTooltip>
-                                    <ArrowUp />
-                                    <StyledIcon
-                                        icon={ICONS.T1}
-                                        color={colors.WHITE}
-                                    />
-                                    <ConfirmText>Check address on your Trezor</ConfirmText>
-                                </ConfirmTooltip>
-                            )}
                         </Row>
                         <Row>
                             <Label>Signature</Label>

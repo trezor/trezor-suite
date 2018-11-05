@@ -7,6 +7,7 @@ import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
 
 const Wrapper = styled.div`
     width: 100%;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -83,7 +84,7 @@ const StyledTextarea = styled(Textarea)`
         }
     }
 
-    ${props => props.isInTrezorAction && css`
+    ${props => props.trezorAction && css`
         z-index: 10001; /* bigger than modal container */
         border-color: ${colors.WHITE};
         border-width: 2px;
@@ -115,6 +116,32 @@ const getColor = (inputState) => {
     return color;
 };
 
+const TrezorAction = styled.div`
+    align-items: center;
+    margin: 0px 10px;
+    padding: 0 14px 0 5px;
+    position: absolute;
+    background: black;
+    bottom: -25px;
+    color: ${colors.WHITE};
+    border-radius: 5px;
+    line-height: 37px;
+    z-index: 10001;
+    transform: translate(-1px, -1px);
+`;
+
+const ArrowUp = styled.div`
+    position: absolute;
+    top: -9px;
+    left: 12px;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 9px solid black;
+    z-index: 10001;
+`;
+
 const TextArea = ({
     className,
     placeholder = '',
@@ -130,11 +157,9 @@ const TextArea = ({
     maxRows,
     state = '',
     bottomText = '',
-    isInTrezorAction = false,
+    trezorAction = null,
 }) => (
-    <Wrapper
-        className={className}
-    >
+    <Wrapper className={className}>
         {topLabel && (
             <TopLabel>{topLabel}</TopLabel>
         )}
@@ -151,8 +176,13 @@ const TextArea = ({
             placeholder={placeholder}
             onChange={onChange}
             borderColor={getColor(state)}
-            isInTrezorAction={isInTrezorAction}
+            trezorAction={trezorAction}
         />
+        {trezorAction && (
+            <TrezorAction>
+                <ArrowUp />{trezorAction}
+            </TrezorAction>
+        )}
         {bottomText && (
             <BottomText
                 color={getColor(state)}
@@ -178,7 +208,7 @@ TextArea.propTypes = {
     topLabel: PropTypes.node,
     state: PropTypes.string,
     bottomText: PropTypes.string,
-    isInTrezorAction: PropTypes.bool,
+    trezorAction: PropTypes.node,
 };
 
 export default TextArea;
