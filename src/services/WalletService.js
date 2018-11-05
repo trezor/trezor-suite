@@ -105,21 +105,21 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             api.dispatch(SendFormActionActions.observe(prevState, action));
         }
     } else {
-        switch (action.type) {
-            case CONNECT.AUTH_DEVICE:
-                // selected device did changed
-                // try to restore discovery after device authentication
-                api.dispatch(DiscoveryActions.restore());
-                break;
-            case CONNECT.RECEIVE_WALLET_TYPE:
-                if (action.state) {
-                    api.dispatch(RouterActions.selectFirstAvailableDevice(true));
-                }
-                api.dispatch(TrezorConnectActions.authorizeDevice());
-                break;
-            default: break;
+        // no changes in common values
+        if (action.type === CONNECT.RECEIVE_WALLET_TYPE) {
+            if (action.device.state) {
+                // redirect to root view (Dashboard) if device was authenticated before
+                api.dispatch(RouterActions.selectFirstAvailableDevice(true));
+            }
+            api.dispatch(TrezorConnectActions.authorizeDevice());
+        }
+        if (action.type === CONNECT.AUTH_DEVICE) {
+            // selected device did changed
+            // try to restore discovery after device authentication
+            api.dispatch(DiscoveryActions.restore());
         }
     }
+
 
     // even if "selectedDevice" didn't change because it was updated on DEVICE.CHANGED before DEVICE.CONNECT action
     // try to restore discovery

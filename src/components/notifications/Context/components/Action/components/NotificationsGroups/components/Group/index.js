@@ -5,7 +5,7 @@ import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import colors from 'config/colors';
 import Notification from 'components/Notification';
-import { getIcon, getColor } from 'utils/notification';
+import { getIcon, getPrimaryColor } from 'utils/notification';
 
 const Wrapper = styled.div``;
 
@@ -65,7 +65,7 @@ class Group extends PureComponent {
 
     render() {
         const { type, groupNotifications, close } = this.props;
-        const color = getColor(type);
+        const color = getPrimaryColor(type);
         return (
             <Wrapper>
                 {groupNotifications.length > 1 && (

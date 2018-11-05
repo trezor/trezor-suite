@@ -26,6 +26,12 @@ export default (state: State = initialState, action: Action): State => {
                 signature: action.signature,
             };
 
+        case SIGN_VERIFY.VERIFY_PROGRESS:
+            return {
+                ...state,
+                isVerifyProgress: action.isVerifyProgress,
+            };
+
         case SIGN_VERIFY.CLEAR:
             return {
                 ...initialState,

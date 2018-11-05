@@ -25,7 +25,19 @@ export const onPinSubmit = (value: string): Action => {
     };
 };
 
-export const onPassphraseSubmit = (passphrase: string): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
+export const onPassphraseSubmit = (passphrase: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { modal } = getState();
+    if (modal.context !== MODAL.CONTEXT_DEVICE) return;
+
+    if (passphrase === '') {
+        // set standard wallet type if passphrase is blank
+        dispatch({
+            type: CONNECT.UPDATE_WALLET_TYPE,
+            device: modal.device,
+            hidden: false,
+        });
+    }
+
     await TrezorConnect.uiResponse({
         type: UI.RECEIVE_PASSPHRASE,
         payload: {
@@ -106,15 +118,16 @@ export const onDeviceConnect = (device: Device): ThunkAction => (dispatch: Dispa
     }
 };
 
-export const onWalletTypeRequest = (device: TrezorDevice, hidden: boolean, state: ?string): ThunkAction => (dispatch: Dispatch): void => {
+export const onWalletTypeRequest = (hidden: boolean): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const { modal } = getState();
+    if (modal.context !== MODAL.CONTEXT_DEVICE) return;
     dispatch({
         type: MODAL.CLOSE,
     });
     dispatch({
         type: CONNECT.RECEIVE_WALLET_TYPE,
-        device,
+        device: modal.device,
         hidden,
-        state,
     });
 };
 
@@ -129,7 +142,6 @@ export const gotoExternalWallet = (id: string, url: string): ThunkAction => (dis
 export default {
     onPinSubmit,
     onPassphraseSubmit,
-    // askForRemember,
     onRememberDevice,
     onForgetDevice,
     onForgetSingleDevice,

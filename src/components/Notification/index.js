@@ -1,9 +1,7 @@
 /* @flow */
-
 import * as React from 'react';
-import styled, { css } from 'styled-components';
-import colors from 'config/colors';
-import { getColor, getIcon } from 'utils/notification';
+import styled from 'styled-components';
+import { getPrimaryColor, getSecondaryColor, getIcon } from 'utils/notification';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
@@ -28,34 +26,14 @@ type Props = {
 const Wrapper = styled.div`
     width: 100%;
     position: relative;
-    color: ${colors.TEXT_PRIMARY};
-    background: ${colors.TEXT_SECONDARY};
     padding: 24px 48px 9px 24px;
     display: flex;
     flex-direction: row;
     text-align: left;
     justify-content: center;
     align-items: center;
-
-    ${props => props.type === 'info' && css`
-        color: ${colors.INFO_PRIMARY};
-        background: ${colors.INFO_SECONDARY};
-    `}
-
-    ${props => props.type === 'success' && css`
-        color: ${colors.SUCCESS_PRIMARY};
-        background: ${colors.SUCCESS_SECONDARY};
-    `}
-
-    ${props => props.type === 'warning' && css`
-        color: ${colors.WARNING_PRIMARY};
-        background: ${colors.WARNING_SECONDARY};
-    `}
-
-    ${props => props.type === 'error' && css`
-        color: ${colors.ERROR_PRIMARY};
-        background: ${colors.ERROR_SECONDARY};
-    `}
+    color: ${props => getPrimaryColor(props.type)};
+    background: ${props => getSecondaryColor(props.type)};
 `;
 
 const Body = styled.div`
@@ -119,7 +97,7 @@ const Notification = (props: Props): React$Element<string> => {
             {props.cancelable && (
                 <CloseClick onClick={() => close()}>
                     <Icon
-                        color={getColor(props.type)}
+                        color={getPrimaryColor(props.type)}
                         icon={icons.CLOSE}
                         size={20}
                     />
@@ -128,7 +106,7 @@ const Notification = (props: Props): React$Element<string> => {
             <Body>
                 <IconWrapper>
                     <StyledIcon
-                        color={getColor(props.type)}
+                        color={getPrimaryColor(props.type)}
                         icon={getIcon(props.type)}
                     />
                 </IconWrapper>

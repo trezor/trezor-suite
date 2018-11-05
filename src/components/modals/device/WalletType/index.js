@@ -91,18 +91,14 @@ class WalletType extends PureComponent<Props> {
     keyboardHandler(event: KeyboardEvent): void {
         if (event.keyCode === 13) {
             event.preventDefault();
-            this.changeType(false);
+            this.props.onWalletTypeRequest(false);
         }
     }
 
     keyboardHandler: (event: KeyboardEvent) => void;
 
-    changeType(hidden: boolean, state: ?string) {
-        this.props.onWalletTypeRequest(this.props.device, hidden, state);
-    }
-
     render() {
-        const { device, onCancel } = this.props;
+        const { device, onCancel, onWalletTypeRequest } = this.props;
 
         return (
             <Wrapper>
@@ -122,7 +118,7 @@ class WalletType extends PureComponent<Props> {
                         Standard Wallet
                     </Header>
                     <P isSmaller>Continue to access your standard wallet.</P>
-                    <StyledButton onClick={() => this.changeType(false, device.state)}>Go to your standard wallet</StyledButton>
+                    <StyledButton onClick={() => onWalletTypeRequest(false)}>Go to your standard wallet</StyledButton>
                 </Content>
                 <Content>
                     <Tooltip
@@ -146,7 +142,7 @@ class WalletType extends PureComponent<Props> {
                         Hidden Wallet
                     </Header>
                     <P isSmaller>You will be asked to enter your passphrase to unlock your hidden wallet.</P>
-                    <StyledButton isWhite onClick={() => this.changeType(true, device.state)}>Go to your hidden wallet</StyledButton>
+                    <StyledButton isWhite onClick={() => onWalletTypeRequest(true)}>Go to your hidden wallet</StyledButton>
                 </Content>
             </Wrapper>
         );

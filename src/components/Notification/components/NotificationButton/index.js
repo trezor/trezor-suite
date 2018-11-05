@@ -1,10 +1,12 @@
 /* @flow */
 
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
+import { getPrimaryColor, getSecondaryColor } from 'utils/notification';
+import Loader from 'components/Loader';
 import { TRANSITION } from 'config/variables';
 
 type Props = {
@@ -15,59 +17,39 @@ type Props = {
         size: number;
     };
     onClick: () => void;
+    isLoading?: boolean;
     children: React.Node;
 };
+
+const LoaderContent = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+    background: ${props => getSecondaryColor(props.type)};
+`;
 
 const Wrapper = styled.button`
     padding: 12px 58px;
     border-radius: 3px;
     background: transparent;
     font-size: 14px;
+    position: relative;
     font-weight: 300;
     cursor: pointer;
-    color: ${colors.WHITE};
-    border: 0;
+    color: ${props => getPrimaryColor(props.type)};
+    border: 1px solid ${props => getPrimaryColor(props.type)};
     transition: ${TRANSITION.HOVER};
 
-    ${props => props.type === 'info' && css`
-        border: 1px solid ${colors.INFO_PRIMARY};
-        color: ${colors.INFO_PRIMARY};
-
-        &:hover {
-            color: ${colors.WHITE};
-            background: ${colors.INFO_PRIMARY};
-        }
-    `}
-
-    ${props => props.type === 'success' && css`
-        border: 1px solid ${colors.SUCCESS_PRIMARY};
-        color: ${colors.SUCCESS_PRIMARY};
-
-        &:hover {
-            color: ${colors.WHITE};
-            background: ${colors.SUCCESS_PRIMARY};
-        }
-    `}
-
-    ${props => props.type === 'error' && css`
-        border: 1px solid ${colors.ERROR_PRIMARY};
-        color: ${colors.ERROR_PRIMARY};
-
-        &:hover {
-            color: ${colors.WHITE};
-            background: ${colors.ERROR_PRIMARY};
-        }
-    `}
-
-    ${props => props.type === 'warning' && css`
-        border: 1px solid ${colors.WARNING_PRIMARY};
-        color: ${colors.WARNING_PRIMARY};
-
-        &:hover {
-            color: ${colors.WHITE};
-            background: ${colors.WARNING_PRIMARY};
-        }
-    `}
+    &:hover {
+        color: ${colors.WHITE};
+        background: ${props => getPrimaryColor(props.type)};
+    }
 `;
 
 const IconWrapper = styled.span`
@@ -75,13 +57,18 @@ const IconWrapper = styled.span`
 `;
 
 const NotificationButton = ({
-    type, icon, onClick, children,
+    type, icon, onClick, children, isLoading,
 }: Props) => (
     <Wrapper
         icon={icon}
         onClick={onClick}
         type={type}
     >
+        {isLoading && (
+            <LoaderContent type={type}>
+                <Loader size={30} />
+            </LoaderContent>
+        )}
         {icon && (
             <IconWrapper>
                 <Icon
@@ -102,6 +89,7 @@ NotificationButton.propTypes = {
         color: PropTypes.string,
         size: PropTypes.number,
     }),
+    isLoading: PropTypes.bool,
     onClick: PropTypes.func,
     children: PropTypes.node.isRequired,
 };

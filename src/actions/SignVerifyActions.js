@@ -74,6 +74,9 @@ export const verify = (
 ): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
+
+    dispatch({ type: SIGN_VERIFY.VERIFY_PROGRESS, isVerifyProgress: true });
+
     const response = await TrezorConnect.ethereumVerifyMessage({
         device: {
             path: selected.path,
@@ -86,6 +89,8 @@ export const verify = (
         hex,
         useEmptyPassphrase: selected.useEmptyPassphrase,
     });
+
+    dispatch({ type: SIGN_VERIFY.VERIFY_PROGRESS, isVerifyProgress: false });
 
     if (response && response.success) {
         dispatch({

@@ -161,24 +161,18 @@ class Passphrase extends PureComponent<Props, State> {
     }
 
     handleCheckboxClick() {
-        // If passphrase was visible and now shouldn't be --> delete the value of passphraseCheckInputValue
-        // doPassphraseInputsMatch
-        // - if passphrase was visible and now shouldn't be --> doPassphraseInputsMatch = false
-        //  - because passphraseCheckInputValue will be empty string
-        // - if passphrase wasn't visibe and now should be --> doPassphraseInputsMatch = true
-        //  - because passphraseCheckInputValue will be same as passphraseInputValue
-        let doInputsMatch = false;
+        let match = false;
         if (this.state.shouldShowSingleInput || this.state.passphraseInputValue === this.state.passphraseCheckInputValue) {
-            doInputsMatch = true;
+            match = true;
         } else {
-            doInputsMatch = !!this.state.isPassphraseHidden;
+            match = !!this.state.isPassphraseHidden;
         }
 
         this.setState(previousState => ({
             isPassphraseHidden: !previousState.isPassphraseHidden,
-            passphraseInputValue: previousState.isPassphraseHidden ? previousState.passphraseInputValue : '',
-            passphraseCheckInputValue: previousState.isPassphraseHidden ? previousState.passphraseInputValue : '',
-            doPassphraseInputsMatch: doInputsMatch,
+            passphraseInputValue: previousState.passphraseInputValue,
+            passphraseCheckInputValue: previousState.passphraseCheckInputValue,
+            doPassphraseInputsMatch: match,
         }));
     }
 
@@ -239,11 +233,9 @@ class Passphrase extends PureComponent<Props, State> {
                         />
                     </Row>
                 )}
-
                 {!this.state.doPassphraseInputsMatch && (
                     <PassphraseError>Passphrases do not match</PassphraseError>
                 )}
-
                 <Row>
                     <Checkbox
                         isChecked={!this.state.isPassphraseHidden}
@@ -259,10 +251,8 @@ class Passphrase extends PureComponent<Props, State> {
                     >Enter
                     </Button>
                 </Row>
-
                 <Footer>
-                    <P isSmaller>
-                        Changed your mind? &nbsp;
+                    <P isSmaller>Changed your mind? &nbsp;
                         <LinkButton
                             isGreen
                             onClick={() => this.submitPassphrase(true)}
