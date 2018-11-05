@@ -31,6 +31,7 @@ const StyledNavLink = styled(NavLink)`
     color: ${colors.TEXT_SECONDARY};
     margin: 0px 4px;
     padding: 20px;
+    white-space: nowrap;
     
     &.active,
     &:hover {
