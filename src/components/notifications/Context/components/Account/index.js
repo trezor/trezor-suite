@@ -7,7 +7,7 @@ import type { Props } from '../../index';
 // There could be only one account notification
 export default (props: Props) => {
     const { network, notification } = props.selectedAccount;
-    if (network && notification) {
+    if (network && notification.type && notification.type !== 'loader-progress' && notification.type !== 'loader-info') {
         if (notification.type === 'backend') {
             // special case: backend is down
             // TODO: this is a different component with "auto resolve" button

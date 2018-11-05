@@ -42,7 +42,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
     const device = state.wallet.selectedDevice;
     if (!device || !device.state) {
         return {
-            type: 'info',
+            type: 'loader-progress',
             title: 'Loading device...',
             shouldRender: false,
         };
@@ -57,7 +57,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
     // corner case: accountState didn't finish loading state after LOCATION_CHANGE action
     if (!network) {
         return {
-            type: 'info',
+            type: 'loader-progress',
             title: 'Loading account state...',
             shouldRender: false,
         };
@@ -79,14 +79,14 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
                 // case 1: device is connected but discovery not started yet (probably waiting for auth)
                 if (device.available) {
                     return {
-                        type: 'info',
+                        type: 'loader-progress',
                         title: 'Authenticating device...',
                         shouldRender: false,
                     };
                 }
                 // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
                 return {
-                    type: 'info',
+                    type: 'loader-info',
                     title: `Device ${device.instanceLabel} is unavailable`,
                     message: 'Change passphrase settings to use this device',
                     shouldRender: false,
@@ -95,7 +95,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
 
             // case 3: device is disconnected
             return {
-                type: 'info',
+                type: 'loader-info',
                 title: `Device ${device.instanceLabel} is disconnected`,
                 message: 'Connect device to load accounts',
                 shouldRender: false,
@@ -105,7 +105,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         if (discovery.completed) {
             // case 4: account not found and discovery is completed
             return {
-                type: 'warning',
+                type: 'loader-info',
                 title: 'Account does not exist',
                 shouldRender: false,
             };
@@ -154,6 +154,11 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
     if (actions.indexOf(action.type) < 0) return false;
 
     const state: State = getState();
+    const notification = {
+        type: null,
+        message: null,
+        title: null,
+    };
     const { location } = state.router;
     // displayed route is not an account route
     if (!location.state.account) return false;
@@ -173,13 +178,13 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
         discovery,
         tokens,
         pending,
-        notification: null,
+        notification,
         shouldRender: false,
     };
 
     // get "selectedAccount" status from newState
     const status = getAccountStatus(state, newState);
-    newState.notification = status || null;
+    newState.notification = status || notification;
     newState.shouldRender = status ? status.shouldRender : true;
     // check if newState is different than previous state
     const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, {

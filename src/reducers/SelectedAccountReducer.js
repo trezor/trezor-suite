@@ -17,10 +17,10 @@ export type State = {
     tokens: Array<Token>,
     pending: Array<PendingTx>,
     discovery: ?Discovery,
-    notification: ?{
-        type: string,
-        title: string,
-        message?: string,
+    notification: {
+        type: ?string,
+        title: ?string,
+        message: ?string,
     },
     shouldRender: boolean,
 };
@@ -32,7 +32,11 @@ export const initialState: State = {
     tokens: [],
     pending: [],
     discovery: null,
-    notification: null,
+    notification: {
+        type: null,
+        title: null,
+        message: null,
+    },
     shouldRender: false,
 };
 
