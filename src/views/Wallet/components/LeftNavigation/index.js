@@ -248,7 +248,6 @@ LeftNavigation.propTypes = {
     wallet: PropTypes.object,
     devices: PropTypes.array,
     pending: PropTypes.array,
-
     toggleDeviceDropdown: PropTypes.func,
     addAccount: PropTypes.func,
     acquireDevice: PropTypes.func,
