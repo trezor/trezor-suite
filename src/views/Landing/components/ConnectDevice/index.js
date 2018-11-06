@@ -9,7 +9,7 @@ import { H2 } from 'components/Heading';
 import { PULSATE } from 'config/animations';
 import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import CaseImage from 'images/case.png';
+import CaseImage from 'images/macbook.png';
 import Link from 'components/Link';
 
 type Props = {
