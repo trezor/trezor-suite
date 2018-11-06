@@ -6,6 +6,7 @@ import { ConnectedRouter } from 'react-router-redux';
 
 // general
 import ErrorBoundary from 'support/ErrorBoundary';
+import ImagesPreloader from 'support/ImagesPreloader';
 import { getPattern } from 'support/routes';
 
 // landing views
@@ -41,6 +42,7 @@ const App = () => (
                 <Route exact path={getPattern('landing-import')} component={ImportView} />
                 <Route>
                     <ErrorBoundary>
+                        <ImagesPreloader />
                         <WalletContainer>
                             <Route exact path={getPattern('wallet-settings')} component={WalletSettings} />
                             <Route exact path={getPattern('wallet-dashboard')} component={WalletDashboard} />
