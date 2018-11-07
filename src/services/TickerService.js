@@ -28,7 +28,7 @@ const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: G
 
     try {
         config.fiatValueTickers.forEach(async (ticker) => {
-            const response: ?Array<any> = await httpRequest(`${ticker.url}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, 'json');
+            const response = await httpRequest(`${ticker.url}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, 'json');
             if (response) {
                 dispatch({
                     type: RATE_UPDATE,
