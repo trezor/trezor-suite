@@ -48,8 +48,8 @@ const handleClick = (event: MouseEvent) => {
     if (target.nodeName !== 'BUTTON') return;
     const network: string = getInputValue('network-type');
 
-    // const blockchain: Blockchain<Ripple> = BlockchainLink.get('Ripple Testnet');
-    const blockchain: Blockchain<Ripple> = BlockchainLink.get('Bitcoin Testnet');
+    const blockchain: Blockchain<Ripple> = BlockchainLink.get('Ripple Testnet');
+    //const blockchain: Blockchain<Ripple> = BlockchainLink.get('Bitcoin Testnet');
     if (blockchain.listenerCount('block') < 1) {
         blockchain.on('block', handleNotification);
         blockchain.on('address', handleNotification);
