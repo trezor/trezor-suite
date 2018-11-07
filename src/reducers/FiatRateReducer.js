@@ -1,9 +1,9 @@
 /* @flow */
 
-import { RATE_UPDATE } from 'services/TickerService';
+import { RATE_UPDATE } from 'services/CoingeckoService';
 
 import type { Action } from 'flowtype';
-import type { FiatRateAction } from 'services/TickerService';
+import type { FiatRateAction } from 'services/CoingeckoService';
 
 export type Fiat = {
     +network: string;

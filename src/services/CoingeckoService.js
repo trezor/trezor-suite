@@ -47,7 +47,7 @@ const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: G
 /**
  * Middleware
  */
-const TickerService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
+const CoingeckoService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
     next(action);
 
     if (action.type === READY) {
@@ -57,4 +57,4 @@ const TickerService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     return action;
 };
 
-export default TickerService;
+export default CoingeckoService;
