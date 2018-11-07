@@ -2,7 +2,7 @@ import WalletService from './WalletService';
 import LogService from './LogService';
 import RouterService from './RouterService';
 import LocalStorageService from './LocalStorageService';
-import CoinmarketcapService from './CoinmarketcapService';
+import TickerService from './TickerService';
 import TrezorConnectService from './TrezorConnectService';
 
 export default [
@@ -11,5 +11,5 @@ export default [
     RouterService,
     LocalStorageService,
     TrezorConnectService,
-    CoinmarketcapService,
+    TickerService,
 ];

@@ -31,7 +31,7 @@ import type { TokenAction } from 'actions/TokenActions';
 import type { TrezorConnectAction } from 'actions/TrezorConnectActions';
 import type { WalletAction } from 'actions/WalletActions';
 import type { Web3Action } from 'actions/Web3Actions';
-import type { FiatRateAction } from 'services/CoinmarketcapService'; // this service has no action file, all is written inside one file
+import type { FiatRateAction } from 'services/TickerService'; // this service has no action file, all is written inside one file
 
 import type {
     Device,

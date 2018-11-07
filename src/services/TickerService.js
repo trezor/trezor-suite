@@ -28,14 +28,12 @@ const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: G
 
     try {
         config.fiatValueTickers.forEach(async (ticker) => {
-            // const rate: ?Array<any> = await JSONRequest(`${ticker.url}?convert=USD`, 'json');
-            const rate: ?Array<any> = await httpRequest(`${ticker.url}?convert=USD`, 'json');
-            console.log('rate');
-            if (rate) {
-                dispatch({
+            const response: ?Array<any> = await httpRequest(`${ticker.url}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, 'json');
+            if (response) {
+                console.log({
                     type: RATE_UPDATE,
-                    network: ticker.network,
-                    rate: rate[0],
+                    network: response.symbol,
+                    rate: response.market_data,
                 });
             }
         });
@@ -49,7 +47,7 @@ const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: G
 /**
  * Middleware
  */
-const CoinmarketcapService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
+const TickerService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
     next(action);
 
     if (action.type === READY) {
@@ -59,4 +57,4 @@ const CoinmarketcapService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     return action;
 };
 
-export default CoinmarketcapService;
+export default TickerService;

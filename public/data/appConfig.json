@@ -59,11 +59,11 @@
     "fiatValueTickers": [
         { 
             "network": "eth",
-            "url": "https://api.coinmarketcap.com/v1/ticker/ethereum/"
+            "url": "https://api.coingecko.com/api/v3/coins/ethereum"
         },
         { 
             "network": "etc",
-            "url": "https://api.coinmarketcap.com/v1/ticker/ethereum-classic/"
+            "url": "https://api.coingecko.com/api/v3/coins/ethereum-classic"
         }
     ],
 
