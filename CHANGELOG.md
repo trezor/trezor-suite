@@ -2,6 +2,7 @@
 __added__
 - DigiByte in coin menu
 - blocking device with seedless setup
+
 __fixed__
 - token input in "Account/Summary" (https://github.com/trezor/trezor-wallet/issues/235)
 - "Go to your standard wallet" button in passphrase modal (https://github.com/trezor/trezor-wallet/issues/222)
