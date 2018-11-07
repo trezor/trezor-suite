@@ -33,6 +33,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
+    "es6-promise": "^4.2.5",
     "eslint": "^5.7.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-flowtype": "^3.0.0",
@@ -47,5 +48,7 @@
     "webpack-dev-server": "^3.1.9",
     "worker-loader": "^2.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "events": "^3.0.0"
+  }
 }
