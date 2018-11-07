@@ -36,19 +36,28 @@
             padding: 5px 10px;
         }
 
-        pre#response {
-            margin: 5px;
+        .response-container {
+            width: 100%;
+            display: flex;
+            background: grey;
+        }
+
+        pre#response, pre#notification {
+            width: 50%;
+            flex: 1;
+            padding: 5px;
         }
     </style>
 </head>
 <body>
     <h2>BlockchainLink test page</h2>
     <div>
-        <label>Network type</label>
+        <label>Network</label>
         <select id="network-type">
-            <option value="ripple" selected>Ripple</option>
-            <option value="ethereum">Ethereum</option>
-            <option value="bitcoin">Bitcoin</option>
+            <option value="Ripple Testnet" selected>Ripple Testnet</option>
+            <option value="Ripple Mainnet">Ripple Mainnet</option>
+            <option value="Bitcoin Testnet">Bitcoin Testnet</option>
+            <option value="Ethereum Ropsten">Ethereum Ropsten</option>
         </select>
     </div>
     
@@ -68,12 +77,22 @@
     <div>
         <label>Addresses</label>
         <input id="subscribe-addresses" type="text" value="rBdHGo5fksQotC4x5t7BtaR8vMW5EDqk6S,rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H,rBKz5MC2iXdoS3XgnNSYmF69K1Yo4NS3Ws" />
-        <button id="subscribe">Subscribe</button>
+        <button id="subscribe-address">Subscribe</button>
+        <button id="unsubscribe-address">Unsubscribe</button>
+    </div>
+    <div>
+        <label>Blocks</label>
+        <button id="subscribe-block">Subscribe</button>
+        <button id="unsubscribe-block">Unsubscribe</button>
     </div>
     <div>
         <span>Response</span>
         <button id="clear-response">Clear response</button>
+        <button id="clear-notification">Clear notifications</button>
     </div>
-    <pre id="response"></pre>
+    <div style="display: flex">
+        <pre id="response"></pre>
+        <pre id="notification"></pre>
+    </div>
 </body>
 </html>

@@ -13,7 +13,7 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
-        indexDev: [`${SRC}/index.dev.js`],
+        indexUI: [`${SRC}/ui/index.ui.js`],
         index: [`${SRC}/index.js`],
         // ripple: [`${SRC}/workers/ripple/index.js`],
     },
@@ -59,8 +59,8 @@ module.exports = {
         //     reportingSeverity: 'warning',
         // }),
         new HtmlWebpackPlugin({
-            chunks: ['indexDev'],
-            template: `${SRC}index.html`,
+            chunks: ['indexUI'],
+            template: `${SRC}ui/index.html`,
             filename: 'index.html',
             inject: true,
         }),
