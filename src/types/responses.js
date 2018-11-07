@@ -1,12 +1,9 @@
 /* @flow */
 
+import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
 
 // messages sent from worker to blockchain.js
-
-export type Init = {
-    +type: typeof RESPONSES.INIT,
-}
 
 export type Error = {
     +type: typeof RESPONSES.ERROR,
@@ -22,8 +19,32 @@ export type GetInfo = {
 export type GetAccountInfo = {
     +type: typeof RESPONSES.GET_ACCOUNT_INFO;
     // +payload: RIPPLE.GetAccountInfo$;
-    +payload: any;
+    +payload: any,
 };
+
+export type Subscribe = {
+    +type: typeof RESPONSES.SUBSCRIBE,
+    +payload: boolean,
+};
+
+export type Notification = {
+    +type: typeof RESPONSES.NOTIFICATION,
+    +payload: {
+        type: 'block',
+        data: {
+            block: string,
+            hash: string,
+        },
+    } | {
+        type: 'address',
+        data: any,
+    }
+};
+
+export type Unsubscribe = {
+    +type: typeof RESPONSES.UNSUBSCRIBE,
+    +payload: boolean,
+}
 
 export type PushTransaction = {
     +type: typeof RESPONSES.PUSH_TRANSACTION;
@@ -31,30 +52,13 @@ export type PushTransaction = {
     +payload: any;
 }
 
-export type Subscribe = {
-    +type: typeof RESPONSES.SUBSCRIBE,
-    +info: any,
-};
-
-export type Unsubscribe = {
-    +type: typeof RESPONSES.UNSUBSCRIBE,
-    +payload: {
-        +addresses: Array<string>,
-        notificationHandler: ?(event: any) => void,
-    };
-}
-
-export type Notification = {
-    +type: typeof RESPONSES.NOTIFICATION,
-    +event: any,
-};
-
 // extended
 export type Response = 
-    { id: number } & Init |
+    { id: number, +type: typeof HANDSHAKE } |
     { id: number } & Error |
     { id: number } & GetInfo |
     { id: number } & GetAccountInfo |
     { id: number } & Subscribe |
+    { id: number } & Unsubscribe |
     { id: number } & Notification |
     { id: number } & PushTransaction;

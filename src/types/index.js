@@ -10,20 +10,73 @@ export type Deferred<T> = {
 export { Message } from './messages';
 export { Response } from './responses';
 
-import * as MessageTypes from './messages';
-import * as ResponseTypes from './responses';
-
-type Network = {
-    network?: string;
+export type BlockchainSettings = {
+    name: string;
+    worker: string;
+    server: Array<string>;
+    debug?: boolean;
 }
 
-/* eslint-disable no-redeclare */
-export type GetInfo = (params: Network) => Promise<ResponseTypes.GetInfo>;
-declare function F_GetAccountInfo(params: { network: 'blockbook' } & MessageTypes.BlockbookAccountInfo): Promise<ResponseTypes.GetAccountInfo>;
-declare function F_GetAccountInfo(params: { network: 'ripple' } & MessageTypes.RippleAccountInfo): Promise<ResponseTypes.GetAccountInfo>;
-export type GetAccountInfo = typeof F_GetAccountInfo;
-export type Subscribe = (params: Network & $ElementType<MessageTypes.Subscribe, 'payload'>) => Promise<ResponseTypes.Subscribe>;
-export type Unsubscribe = (params: Network & $ElementType<MessageTypes.Unsubscribe, 'payload'>) => Promise<ResponseTypes.Unsubscribe>;
-export type PushTransaction = (params: Network & $ElementType<MessageTypes.PushTransaction, 'payload'>) => Promise<ResponseTypes.PushTransaction>;
-/* eslint-disable no-redeclare */
+type Blockchain = {
+
+    +getInfo: () => Promise<{
+        name: string;
+        id: string;
+        currentBlock: number;
+    }>;
+
+    +getAccountInfo: (params: {
+        descriptor: string;
+    }) => Promise<{
+        addresses: Array<string>;
+        balance: number;
+        availableBalance: number;
+    }>;
+
+    subscribe: (params: {
+        type: 'block',
+    } | {
+        type: 'address',
+        addresses: Array<string>,
+    }) => Promise<boolean>;
+
+    unsubscribe: (params: {
+        type: 'block',
+    } | {
+        type: 'address',
+        addresses: Array<string>,
+    }) => Promise<boolean>;
+
+    pushTransaction: (tx: string) => Promise<string>;
+}
+
+export type Blockbook = {
+    getInfo: $ElementType<Blockchain, 'getInfo'>;
+    getAccountInfo: $ElementType<Blockchain, 'getAccountInfo'>;
+    subscribe: $ElementType<Blockchain, 'subscribe'>;
+    unsubscribe: $ElementType<Blockchain, 'unsubscribe'>;
+    pushTransaction: $ElementType<Blockchain, 'pushTransaction'>;
+}
+
+export type Ripple = {
+    getInfo: $ElementType<Blockchain, 'getInfo'>;
+    // getAccountInfo: (params: string) => Promise<boolean>; // custom method
+    getAccountInfo: $ElementType<Blockchain, 'getAccountInfo'>;
+    subscribe: $ElementType<Blockchain, 'subscribe'>;
+    unsubscribe: $ElementType<Blockchain, 'unsubscribe'>;
+    pushTransaction: $ElementType<Blockchain, 'pushTransaction'>;
+}
+
+
+// /* eslint-disable no-redeclare */
+// export type Init = (params: BlockchainInstance | Array<BlockchainInstance>) => void;
+// export type GetInfo = (params: Network) => Promise<ResponseTypes.GetInfo>;
+// declare function F_GetAccountInfo(params: { network: 'blockbook' } & MessageTypes.BlockbookAccountInfo): Promise<ResponseTypes.GetAccountInfo>;
+// declare function F_GetAccountInfo(params: { network: 'ripple' } & MessageTypes.RippleAccountInfo): Promise<ResponseTypes.GetAccountInfo>;
+// export type GetAccountInfo = typeof F_GetAccountInfo;
+// export type Subscribe = (params: Network & $ElementType<MessageTypes.Subscribe, 'payload'>) => Promise<ResponseTypes.Subscribe>;
+// export type Unsubscribe = (params: Network & $ElementType<MessageTypes.Unsubscribe, 'payload'>) => Promise<ResponseTypes.Unsubscribe>;
+// export type PushTransaction = (params: Network & $ElementType<MessageTypes.PushTransaction, 'payload'>) => Promise<ResponseTypes.PushTransaction>;
+// /* eslint-disable no-redeclare */
+
 

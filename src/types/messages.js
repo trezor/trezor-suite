@@ -1,12 +1,9 @@
 /* @flow */
 
 import * as MESSAGES from '../constants/messages';
+import type { BlockchainSettings } from './index';
 
 // messages sent from blockchain.js to worker
-
-export type Init = {
-    +type: typeof MESSAGES.INIT,
-};
 
 export type GetInfo = {
     +type: typeof MESSAGES.GET_INFO,
@@ -14,7 +11,9 @@ export type GetInfo = {
 
 export type GetAccountInfo = {
     +type: typeof MESSAGES.GET_ACCOUNT_INFO,
-    +payload: BlockbookAccountInfo | RippleAccountInfo,
+    +payload: {
+        +descriptor: string,
+    },
 };
 
 // GetAccountInfo custom payload
@@ -31,28 +30,31 @@ export type RippleAccountInfo = {
 export type Subscribe = {
     +type: typeof MESSAGES.SUBSCRIBE,
     +payload: {
-        +addresses: Array<string>,
-        notificationHandler: ?(event: any) => void,
+        type: 'block',
+    } | {
+        type: 'address',
+        addresses: Array<string>,
+        mempool?: boolean,
     };
 }
 
 export type Unsubscribe = {
     +type: typeof MESSAGES.UNSUBSCRIBE,
     +payload: {
-        +addresses: Array<string>,
-        notificationHandler: ?(event: any) => void,
+        type: 'block',
+    } | {
+        type: 'address',
+        addresses: Array<string>,
     };
 }
 
 export type PushTransaction = {
     +type: typeof MESSAGES.PUSH_TRANSACTION,
-    +payload: {
-        +tx: string;
-    },
+    +payload: string;
 }
 
 export type Message =
-    { id: number } & Init |
+    { id: number, +type: typeof MESSAGES.HANDSHAKE, settings: BlockchainSettings } |
     { id: number } & GetInfo |
     { id: number } & GetAccountInfo |
     { id: number } & Subscribe |
