@@ -1,5 +1,6 @@
 /* @flow */
 
+export const HANDSHAKE: 'm_handshake' = 'm_handshake';
 export const INIT: 'm_init' = 'm_init';
 export const DISCONNECT: 'm_disconnect' = 'm_disconnect';
 export const GET_INFO: 'm_get_info' = 'm_get_info';
