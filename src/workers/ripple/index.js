@@ -1,8 +1,8 @@
 /* @flow */
 
 import { RippleAPI } from 'ripple-lib';
-import * as MESSAGES from '../../constants/messages';
-import * as RESPONSES from '../../constants/responses';
+import { MESSAGES, RESPONSES } from '../../constants';
+import * as common from '../common';
 
 import type { Message, Response } from '../../types';
 import * as MessageTypes from '../../types/messages';
@@ -14,11 +14,11 @@ declare function onmessage(event: { data: Message }): void;
 onmessage = (event) => {
     if (!event.data) return;
     const { data } = event;
-
-    console.log('RippleWorker:onmessage', event);
+    
+    common.debug('onmessage', data);
     switch (data.type) {
-        case MESSAGES.INIT:
-            init(data);
+        case MESSAGES.HANDSHAKE:
+            common.setSettings(data.settings);
             break;
         case MESSAGES.GET_INFO:
             getInfo(data);
@@ -32,8 +32,11 @@ onmessage = (event) => {
         case MESSAGES.SUBSCRIBE:
             subscribe(data);
             break;
+        case MESSAGES.UNSUBSCRIBE:
+            unsubscribe(data);
+            break;
         default:
-            handleError({
+            common.errorHandler({
                 id: data.id,
                 error: new Error(`Unknown message type ${data.type}`)
             });
@@ -41,41 +44,54 @@ onmessage = (event) => {
     }
 };
 
-const handleError = ({ id, error }: { id: number, error: Error}) => {
-    postMessage({
-        id,
-        type: RESPONSES.ERROR,
-        error: error.message
-    });
-}
-
 let api: RippleAPI;
-
-const init = async (data: { id: number } & MessageTypes.Init): Promise<void> => {
-    api = new RippleAPI({
-        server: 'wss://s.altnet.rippletest.net'
-    });
-    try {
-        await api.connect();
-        postMessage({
-            id: data.id,
-            type: RESPONSES.INIT,
-        });
-    } catch (error) {
-        handleError(error);
-    }
-}
+let _endpoints: Array<string> = [];
 
 const connect = async (): Promise<RippleAPI> => {
     if (api) {
+        // socket is already connected
         if (api.isConnected) return api;
     }
 
-    api = new RippleAPI({
-        server: 'wss://s.altnet.rippletest.net'
-    });
+    // validate endpoints
+    if (common.getSettings().server.length < 1) {
+        throw new Error('No servers');
+    }
 
-    await api.connect();
+    if (_endpoints.length < 1) {
+        _endpoints = common.getSettings().server.slice(0);
+    }
+
+    common.debug('Connecting to', _endpoints[0]);
+    api = new RippleAPI({
+        server: _endpoints[0]
+    });
+   
+    try {
+        await api.connect();
+    } catch (error) {
+        common.debug('Websocket connection failed');
+        api = undefined;
+        // connection error. remove endpoint
+        _endpoints.splice(0, 1);
+        // and try another one or throw error
+        if (_endpoints.length < 1) {
+            throw new Error('All backends are down');
+        }
+        return await connect();
+    }
+
+    common.debug('Connected');
+
+    // api.on('disconnected', () => {
+    //     console.warn("DISCONNECTED evt");
+    // });
+    // api.on('error', () => {
+    //     console.warn("ERROR evt");
+    // });
+    // api.on('ledger', (ev) => {
+    //     console.warn("LEDGER evt", ev);
+    // });
     return api;
 }
 
@@ -90,26 +106,32 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
             payload: info
         });
     } catch (error) {
-        handleError({ id: data.id, error });
+        console.warn("GET IFO ERROR", typeof error, Object.keys(error), error.toString() )
+        common.errorHandler({ id: data.id, error });
     }
 }
 
 const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo): Promise<void> => {
     const { payload } = data;
-    if (payload.network !== 'ripple') {
-        handleError({ id: data.id, error: new Error(`Invalid network ${payload.network}`) });
-        return;
-    }
     try {
         await connect();
-        const info = await api.getAccountInfo(payload.address);
+        const info = await api.getAccountInfo(payload.descriptor);
+        // https://github.com/ripple/ripple-lib/issues/879#issuecomment-377576063
+        const transactions = await api.getTransactions(payload.descriptor, { 
+            minLedgerVersion: 12748434,
+            maxLedgerVersion: 14143636,
+        });
+
         postMessage({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
-            payload: info,
+            payload: {
+                info,
+                transactions,
+            }
         });
     } catch (error) {
-        handleError({ id: data.id, error });
+        common.errorHandler({ id: data.id, error });
     }
 }
 
@@ -117,52 +139,114 @@ const pushTransaction = async (data: { id: number } & MessageTypes.PushTransacti
     try {
         await connect();
         // tx_blob hex must be in upper case
-        const info = await api.submit(data.payload.tx.toUpperCase());
+        const info = await api.submit(data.payload.toUpperCase());
         postMessage({
             id: data.id,
             type: RESPONSES.PUSH_TRANSACTION,
             payload: info,
         });
     } catch (error) {
-        handleError({ id: data.id, error });
+        common.errorHandler({ id: data.id, error });
     }
 }
 
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
-    try {
-        await connect();
+    await connect();
+    const { payload } = data;
 
-        // subscribe to new blocks, confirmed transactions for given addresses and mempool transactions for given addresses
-        if (api.connection.listenerCount('transaction') < 1) {
-            api.connection.on('ledgerClosed', notificationHandler)
-            api.connection.on('transaction', notificationHandler)
+    if (payload.type === 'address') {
+        await subscribeAddresses(payload.addresses, payload.mempool);
+    } else if (payload.type === 'block') {
+        if (api.listenerCount('ledger') < 1) {
+            api.on('ledger', onNewBlock);
         }
-        // TODO: send unique addresses only...
-        // test if different values will remove previous values
-        // TODO: pair data.id with notificationHandler
-        const info = await api.request('subscribe', {
-            'streams': ['ledger'],
-            'accounts': data.payload.addresses,
-            'accounts_proposed': data.payload.addresses,
-        });
-
-        postMessage({
-            id: data.id,
-            type: RESPONSES.SUBSCRIBE,
-            info
-        });
-    } catch (error) {
-        handleError({ id: data.id, error });
     }
+
+    postMessage({
+        id: data.id,
+        type: RESPONSES.SUBSCRIBE,
+        payload: true,
+    });
 }
 
-const notificationHandler = (event: any): void => {
+const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
+    await connect();
+    const { payload } = data;
+
+    if (payload.type === 'address') {
+        // await subscribeAddresses(payload.addresses, payload.mempool);
+    } else if (payload.type === 'block') {
+        if (api.listenerCount('ledger') > 0) {
+            api.off('ledger', onNewBlock);
+        }
+    }
+
+    postMessage({
+        id: data.id,
+        type: RESPONSES.SUBSCRIBE,
+        payload: true,
+    });
+
+}
+
+const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = true) => {
+    // subscribe to new blocks, confirmed transactions for given addresses and mempool transactions for given addresses
+    if (api.connection.listenerCount('transaction') < 1) {
+        api.connection.on('transaction', onTransaction);
+        api.connection.on('ledgerClosed', onLedgerClosed);
+    }
+
+    const request: { accounts: Array<string>, accounts_proposed?: Array<string> } = {
+        accounts: addresses,
+    };
+    if (mempool) {
+        request.accounts_proposed = addresses;
+    }
+
+    await api.request('subscribe', request);
+}
+
+const onNewBlock = (event: any) => {
     postMessage({
         id: -1,
         type: RESPONSES.NOTIFICATION,
-        event
+        payload: {
+            type: 'block',
+            data: {
+                block: event.ledgerVersion,
+                hash: event.ledgerHash,
+            }
+        }
     });
 }
+
+const onTransaction = (event: any) => {
+    postMessage({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'address',
+            data: event
+        }
+    });
+}
+
+const onLedgerClosed = (event: any) => {
+    postMessage({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'address',
+            data: event
+        }
+    });
+}
+
+// postMessage(1/x); // Intentional error.
+common.handshake();
+
+
+
 
 // // Testnet account
 // // addr: rGz6kFcejym5ZEWnzUCwPjxcfwEPRUPXXG

@@ -1,125 +1,167 @@
 /* @flow */
 
-// WebWorkers manager
+import EventEmitter from 'events';
 
-/* $FlowIssue loader notation */
-import BlockbookWorker from 'worker-loader?name=js/blockbook-worker.[hash].js!./blockbook/index.js';
-/* $FlowIssue loader notation */
-import RippleWorker from 'worker-loader?name=js/ripple-worker.[hash].js!./ripple/index.js';
+import { create as createDeferred } from '../utils/deferred';
 
-import { NETWORKS, RESPONSES } from '../constants';
-import type { Response, Deferred } from '../types';
-import * as MessageTypes from '../types/messages';
-import * as ResponseTypes from '../types/responses';
+import { MESSAGES, RESPONSES } from '../constants';
+import type { 
+    BlockchainSettings,
+    Response,
+    Deferred,
+} from '../types';
 
-const instances: Array<Blockchain> = [];
-
-export const getInstance = (network: ?string): Blockchain => {
-    if (typeof network !== 'string') throw new Error('Message network not found');
-    const instance = instances.find(s => s.network === network);
-    if (instance) return instance;
-
-    let newInstance: ?Blockchain;
-    console.warn("new INSTANCE!")
-    switch (network) {
-        case NETWORKS.BLOCKBOOK:
-        case NETWORKS.RIPPLE:
-            newInstance = new Blockchain(network);
-            break;
-        default:
-            break;
-    }
-
-    if(!newInstance)
-        throw new Error(`Instance of "${network}" not found`);
-
-    instances.push(newInstance);
-    return newInstance;
+// extend settings, allow user to pass string OR array
+type ExtendedBlockchainSettings = {
+    name: string,
+    worker: string,
+    server: string | Array<string>;
+    debug?: boolean,
 }
 
-function send<M, R>(instance: Blockchain, message: M): Promise<R> {
-    let localResolve: (t: R) => void = () => {};
-    let localReject: (e: Error) => void = () => {};
+const instances: Array<Blockchain<any>> = [];
 
-    const promise: Promise<R> = new Promise(async (resolve, reject) => {
-        localResolve = resolve;
-        localReject = reject;
-    });
+const __createInstance = (settings: ExtendedBlockchainSettings) => {
+    const transformedSettings: BlockchainSettings = {
+        name: settings.name,
+        worker: settings.worker,
+        server: typeof settings.server === 'string' ? [ settings.server ] : settings.server,
+        debug: settings.debug,
+    }
+    const instance = instances.find(i => i.settings.name === settings.name);
+    if (!instance) {
+        const i: Blockchain<any> = new Blockchain(transformedSettings)
+        instances.push(i);
+    } else {
+        console.warn(`Blockchain instance with name: ${settings.name} already exists.`)
+    }
+}
 
-    const dfd: Deferred<R> = {
-        id: instance.messageId,
-        resolve: localResolve,
-        reject: localReject,
-        promise,
+export const createInstance = (settings: ExtendedBlockchainSettings | Array<ExtendedBlockchainSettings>): void => {
+    if (Array.isArray(settings)) {
+        settings.forEach(__createInstance)
+    } else {
+        __createInstance(settings);
+    }
+}
+
+export const getInstance: <T: Object>(name: string) => Blockchain<T> = (name) => {
+    const instance = instances.find(i => i.settings.name === name);
+    if (!instance) throw new Error(`Instance for "${name}" not found`);
+    return instance;
+}
+
+const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
+    const dfd: Deferred<Worker> = createDeferred(-1);
+    const worker = new Worker(settings.worker);
+    worker.onmessage = (message: any) => {
+        if (message.data.type !== MESSAGES.HANDSHAKE) return;
+        worker.postMessage({
+            type: MESSAGES.HANDSHAKE,
+            settings,
+        });
+        dfd.resolve(worker);
     }
 
-    instance.deferred.push(dfd);
-    instance.worker.postMessage({ id: instance.messageId, ...message });
-    instance.messageId++;
-
+    worker.onerror = (error: any) => {
+        worker.onmessage = null;
+        worker.onerror = null;
+        const msg = error.message ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}` : 'Worker handshake error';
+        dfd.reject(new Error(msg));
+    }
+    
     return dfd.promise;
 }
 
-// export class Blockchain implements BlockchainInterface {
-export class Blockchain {
+// function send<M, R>(instance: Blockchain<any>, message: any): Promise<any> {
+// // const send: <M, R>(instance: Blockchain<any>, message: M) => Promise<R> = (instance, message) => {
+//     const dfd: Deferred<R> = createDeferred(instance.messageId);
+//     instance.deferred.push(dfd);
+//     instance.worker.postMessage({ id: instance.messageId, ...message });
+//     instance.messageId++;
+//     return dfd.promise;
+// }
+
+export class Blockchain<Instance: Object> extends EventEmitter {
+    settings: BlockchainSettings;
     messageId: number = 0;
-    network: string;
     worker: Worker;
     deferred: Array<Deferred<any>> = [];
     notificationHandler: (event: any) => void;
 
-    constructor(network: string) {
-        this.network = network;
-        switch (this.network) {
-            case NETWORKS.BLOCKBOOK:
-                this.worker = new BlockbookWorker();
-                break;
-            case NETWORKS.RIPPLE:
-                this.worker = new RippleWorker();
-                break;
+    constructor(settings: BlockchainSettings) {
+        super();
+        this.settings = settings;
+    }
+
+    async getWorker(): Promise<Worker> {
+        if (!this.worker) {
+            this.worker = await initWorker(this.settings);
+            // $FlowIssue MessageEvent type
+            this.worker.onmessage = this.onMessage.bind(this);
+            // $FlowIssue ErrorEvent type
+            this.worker.onerror = this.onError.bind(this);
         }
-        this.worker = new RippleWorker();
-        // this.onMessage = this.onMessage.bind(this);
-        this.worker.onmessage = this.onMessage;
-        this.worker.onerror = this.onError.bind(this);
+        return this.worker;
     }
 
-    async getInfo(message: MessageTypes.GetInfo): Promise<ResponseTypes.GetInfo> {
-        return await send(this, message);
+    // Sending messages to worker
+    // this needs to be written in different syntax because of flow has issue with passing generic type down into function body [Deferred<R>]
+    // __send = async function<R>(message: any): Promise<R> {
+    __send: <R>(message: any) => Promise<R> = async (message) => {
+        await this.getWorker();
+        const dfd: Deferred<any> = createDeferred(this.messageId);
+        this.deferred.push(dfd);
+        this.worker.postMessage({ id: this.messageId, ...message });
+        this.messageId++;
+        return dfd.promise;
     }
 
-    async getAccountInfo(message: MessageTypes.GetAccountInfo): Promise<ResponseTypes.GetAccountInfo> {
-        return await send(this, message);
+    getInfo: $ElementType<Instance, 'getInfo'> = async () => {
+        return await this.__send({
+            type: MESSAGES.GET_INFO,
+        });
     }
 
-    async subscribe(message: MessageTypes.Subscribe): Promise<ResponseTypes.Subscribe> {
-        
-        delete message.payload.notificationHandler;
-        return await send(this, message);
+    getAccountInfo: $ElementType<Instance, 'getAccountInfo'> = async (payload) => {
+        return await this.__send({
+            type: MESSAGES.GET_ACCOUNT_INFO,
+            payload
+        });
     }
 
-    async unsubscribe(message: MessageTypes.Subscribe): Promise<ResponseTypes.Subscribe> {
-        return await send(this, message);
+    subscribe: $ElementType<Instance, 'subscribe'> = async (payload) => {
+        // delete message.payload.notificationHandler;
+        return await this.__send({
+            type: MESSAGES.SUBSCRIBE,
+            payload
+        });
     }
 
-    async pushTransaction(message: MessageTypes.PushTransaction): Promise<ResponseTypes.PushTransaction> {
-        return await send(this, message);
+    unsubscribe: $ElementType<Instance, 'unsubscribe'> = async (payload) => {
+        return await this.__send({
+            type: MESSAGES.UNSUBSCRIBE,
+            payload
+        });
     }
 
-    onMessage = (event: {data: Response}): void => {
-        if (!event.data) {
-            console.warn('Event data not found in:', event);
-            return;
-        }
+    pushTransaction: $ElementType<Instance, 'pushTransaction'> = async (payload) => {
+        return await this.__send({
+            type: MESSAGES.PUSH_TRANSACTION,
+            payload
+        });
+    }
 
-        if (event.data.type == RESPONSES.NOTIFICATION) {
-            // if (this.notificationHandler) {
-            //     this.notificationHandler(event.data.event);
-            // }
+    onMessage: (event: {data: Response}) => void = (event) => {
+        if (!event.data) return;
+        const { data } = event;
+
+        if (data.type === RESPONSES.NOTIFICATION) {
+            this.onNotification(data.payload);
         } else {
-            const dfd = this.deferred.find(d => d.id === event.data.id);
+            const dfd = this.deferred.find(d => d.id === data.id);
             if (!dfd) {
-                console.warn(`Message promise with id ${event.data.id} not found`);
+                console.warn(`Message with id ${data.id} not found`);
                 return;
             }
             dfd.resolve(event.data);
@@ -127,13 +169,17 @@ export class Blockchain {
         }
     }
 
-    
-
-    onError = () => {
-
+    onNotification: (notification: any) => void = (notification) => {
+        this.emit(notification.type, notification.data);
     }
-
-    // close() {
-
-    // }
+    
+    onError: (error: { message: ?string, lineno: number, filename: string }) => void = (error) => {
+        const message = error.message ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}` : 'Worker handshake error';
+        const e = new Error(message);
+        // reject all pending responses
+        this.deferred.forEach(d => {
+            d.reject(e);
+        });
+        this.deferred = [];
+    }
 }
