@@ -8,7 +8,7 @@ import type { FiatRateAction } from 'services/TickerService';
 export type Fiat = {
     +network: string;
     value: string;
-}
+};
 
 export const initialState: Array<Fiat> = [];
 
@@ -18,7 +18,6 @@ const update = (state: Array<Fiat>, action: FiatRateAction): Array<Fiat> => {
         network: action.network,
         value: action.rate.current_price.usd,
     });
-    console.log('newState', newState);
     return newState;
 };
 

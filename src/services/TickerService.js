@@ -30,7 +30,7 @@ const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: G
         config.fiatValueTickers.forEach(async (ticker) => {
             const response: ?Array<any> = await httpRequest(`${ticker.url}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, 'json');
             if (response) {
-                console.log({
+                dispatch({
                     type: RATE_UPDATE,
                     network: response.symbol,
                     rate: response.market_data,
