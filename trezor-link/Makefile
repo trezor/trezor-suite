@@ -21,7 +21,6 @@ build: node_modules
 	find lib/ -name '*.js' | xargs -I {} mv {} {}.flow
 	`npm bin`/babel src --out-dir lib
 	rm -r lib/flow-test
-	rm -r lib/flow_fake_node_modules
 
 .version: yarn git-clean git-ancestor flow eslint build
 	npm version ${TYPE}
