@@ -6,11 +6,9 @@ import EventEmitter from 'events';
 
 import {debugInOut} from '../debug-decorator';
 
-type TrezorDeviceInfo = {path: string};
+type TrezorDeviceInfoDebug = {path: string, debug: boolean};
 
 const TREZOR_DESCS = [
-  // TREZOR v1
-  { vendorId: 0x534c, productId: 0x0001 },
   // TREZOR v2 Bootloader
   { vendorId: 0x1209, productId: 0x53c0 },
   // TREZOR v2 Firmware
@@ -20,6 +18,8 @@ const TREZOR_DESCS = [
 const CONFIGURATION_ID = 1;
 const INTERFACE_ID = 0;
 const ENDPOINT_ID = 1;
+const DEBUG_INTERFACE_ID = 1;
+const DEBUG_ENDPOINT_ID = 2;
 
 export default class WebUsbPlugin {
   name: string = `WebUsbPlugin`;
@@ -32,8 +32,10 @@ export default class WebUsbPlugin {
   allowsWriteAndEnumerate: boolean = true;
 
   configurationId: number = CONFIGURATION_ID;
-  interfaceId: number = INTERFACE_ID;
-  endpointId: number = ENDPOINT_ID;
+  normalInterfaceId: number = INTERFACE_ID;
+  normalEndpointId: number = ENDPOINT_ID;
+  debugInterfaceId: number = DEBUG_INTERFACE_ID;
+  debugEndpointId: number = DEBUG_ENDPOINT_ID;
 
   unreadableHidDevice: boolean = false;
 
@@ -51,6 +53,15 @@ export default class WebUsbPlugin {
     }
   }
 
+  _deviceHasDebugLink(device: USBDevice): boolean {
+    try {
+      const iface = device.configurations[0].interfaces[1].alternates[0];
+      return iface.interfaceClass === 255 && iface.endpoints[0].endpointNumber === 2;
+    } catch (e) {
+      return false;
+    }
+  }
+
   _deviceIsHid(device: USBDevice): boolean {
     try {
       return device.configurations[0].interfaces[0].alternates[0].interfaceClass === 3;
@@ -59,7 +70,7 @@ export default class WebUsbPlugin {
     }
   }
 
-  async _listDevices(): Promise<Array<{path: string, device: USBDevice}>> {
+  async _listDevices(): Promise<Array<{path: string, device: USBDevice, debug: boolean}>> {
     let bootloaderId = 0;
     const devices = await this.usb.getDevices();
     const trezorDevices = devices.filter(dev => {
@@ -80,7 +91,8 @@ export default class WebUsbPlugin {
         bootloaderId++;
         path = path + bootloaderId;
       }
-      return {path, device};
+      const debug = this._deviceHasDebugLink(device);
+      return {path, device, debug};
     });
 
     const oldUnreadableHidDevice = this.unreadableHidDevice;
@@ -93,10 +105,10 @@ export default class WebUsbPlugin {
     return this._lastDevices;
   }
 
-  _lastDevices: Array<{path: string, device: USBDevice}> = [];
+  _lastDevices: Array<{path: string, device: USBDevice, debug: boolean}> = [];
 
-  async enumerate(): Promise<Array<TrezorDeviceInfo>> {
-    return (await this._listDevices()).map(info => ({path: info.path}));
+  async enumerate(): Promise<Array<TrezorDeviceInfoDebug>> {
+    return (await this._listDevices()).map(info => ({path: info.path, debug: info.debug}));
   }
 
   async _findDevice(path: string): Promise<USBDevice> {
@@ -107,7 +119,7 @@ export default class WebUsbPlugin {
     return deviceO.device;
   }
 
-  async send(path: string, data: ArrayBuffer): Promise<void> {
+  async send(path: string, data: ArrayBuffer, debug: boolean): Promise<void> {
     const device: USBDevice = await this._findDevice(path);
 
     const newArray: Uint8Array = new Uint8Array(64);
@@ -115,23 +127,26 @@ export default class WebUsbPlugin {
     newArray.set(new Uint8Array(data), 1);
 
     if (!device.opened) {
-      await this.connect(path);
+      await this.connect(path, debug, false);
     }
 
-    return device.transferOut(this.endpointId, newArray).then(() => {});
+    const endpoint = debug ? this.debugEndpointId : this.normalEndpointId;
+
+    return device.transferOut(endpoint, newArray).then(() => {});
   }
 
-  async receive(path: string): Promise<ArrayBuffer> {
+  async receive(path: string, debug: boolean): Promise<ArrayBuffer> {
     const device: USBDevice = await this._findDevice(path);
+    const endpoint = debug ? this.debugEndpointId : this.normalEndpointId;
 
     try {
       if (!device.opened) {
-        await this.connect(path);
+        await this.connect(path, debug, false);
       }
 
-      const res = await device.transferIn(this.endpointId, 64);
+      const res = await device.transferIn(endpoint, 64);
       if (res.data.byteLength === 0) {
-        return this.receive(path);
+        return this.receive(path, debug);
       }
       return res.data.buffer.slice(1);
     } catch (e) {
@@ -144,13 +159,13 @@ export default class WebUsbPlugin {
   }
 
   @debugInOut
-  async connect(path: string): Promise<void> {
+  async connect(path: string, debug: boolean, first: boolean): Promise<void> {
     for (let i = 0; i < 5; i++) {
       if (i > 0) {
         await new Promise((resolve) => setTimeout(() => resolve(), i * 200));
       }
       try {
-        return await this._connectIn(path);
+        return await this._connectIn(path, debug, first);
       } catch (e) {
         // ignore
         if (i === 4) {
@@ -160,24 +175,28 @@ export default class WebUsbPlugin {
     }
   }
 
-  async _connectIn(path: string): Promise<void> {
+  async _connectIn(path: string, debug: boolean, first: boolean): Promise<void> {
     const device: USBDevice = await this._findDevice(path);
     await device.open();
 
-    await device.selectConfiguration(this.configurationId);
-    // always resetting -> I don't want to fail when other tab quits before release
-    await device.reset();
+    if (first) {
+      await device.selectConfiguration(this.configurationId);
+      await device.reset();
+    }
 
-    await device.claimInterface(this.interfaceId);
+    const interfaceId = debug ? this.debugInterfaceId : this.normalInterfaceId;
+    await device.claimInterface(interfaceId);
   }
 
   @debugInOut
-  async disconnect(path: string): Promise<void> {
+  async disconnect(path: string, debug: boolean, last: boolean): Promise<void> {
     const device: USBDevice = await this._findDevice(path);
 
-    await device.releaseInterface(this.interfaceId);
-    await device.reset();
-    await device.close();
+    const interfaceId = debug ? this.debugInterfaceId : this.normalInterfaceId;
+    await device.releaseInterface(interfaceId);
+    if (last) {
+      await device.close();
+    }
   }
 
   async requestDevice(): Promise<void> {
