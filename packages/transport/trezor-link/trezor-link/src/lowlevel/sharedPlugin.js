@@ -1,13 +1,16 @@
 /* @flow */
 
-import type {TrezorDeviceInfo} from '../transport';
+export type TrezorDeviceInfoDebug = {
+  path: string;
+  debug: boolean;
+}
 
 export type LowlevelTransportSharedPlugin = {
-  +enumerate: () => Promise<Array<TrezorDeviceInfo>>;
-  +send: (path: string, data: ArrayBuffer) => Promise<void>;
-  +receive: (path: string) => Promise<ArrayBuffer>;
-  +connect: (path: string) => Promise<void>;
-  +disconnect: (path: string) => Promise<void>;
+  +enumerate: () => Promise<Array<TrezorDeviceInfoDebug>>;
+  +send: (path: string, data: ArrayBuffer, debug: boolean) => Promise<void>;
+  +receive: (path: string, debug: boolean) => Promise<ArrayBuffer>;
+  +connect: (path: string, debug: boolean, first: boolean) => Promise<void>;
+  +disconnect: (path: string, debug: boolean, last: boolean) => Promise<void>;
 
   // webusb has a different model, where you have to
   // request device connection
