@@ -1,3 +1,5 @@
+/* @flow weak */
+
 /*
  re-build this by:
 

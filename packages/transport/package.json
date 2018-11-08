@@ -58,11 +58,10 @@
     "eslint-plugin-flowtype": "^2.42.0",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
-    "flow-bin": "0.59.0"
+    "flow-bin": "0.78.0"
   },
   "dependencies": {
     "bigi": "^1.4.1",
-    "bitcoinjs-lib-zcash": "^3.0.0",
     "ecurve": "^1.0.3",
     "json-stable-stringify": "^1.0.1",
     "node-fetch": "^1.6.0",
