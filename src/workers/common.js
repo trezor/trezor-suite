@@ -43,15 +43,17 @@ export const errorHandler = ({ id, error }: { id: number, error: Error}): void =
     });
 }
 
-export const addAddresses = (addresses: Array<string>): void => {
+export const addAddresses = (addresses: Array<string>): Array<string> => {
     const unique = addresses.filter(a => _addresses.indexOf(a) < 0);
-    _addresses.concat(unique);
+    _addresses = _addresses.concat(unique);
+    return unique;
 }
 
 export const getAddresses = (): Array<string> => {
     return _addresses;
 }
 
-export const removeAddresses = (addresses: Array<string>): void => {
+export const removeAddresses = (addresses: Array<string>): Array<string> => {
     _addresses = _addresses.filter(a => addresses.indexOf(a) < 0);
+    return _addresses;
 }

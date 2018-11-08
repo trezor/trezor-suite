@@ -122,6 +122,12 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
             maxLedgerVersion: 14143636,
         });
 
+        // https://developers.ripple.com/rippled-api.html#markers-and-pagination
+        if (api.hasNextPage(transactions)) {
+            // https://developers.ripple.com/rippleapi-reference.html#parameters
+            // const nextPage = api.requestNextPage('getTransactions', transactions);
+        }
+
         postMessage({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
@@ -174,7 +180,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
     const { payload } = data;
 
     if (payload.type === 'address') {
-        // await subscribeAddresses(payload.addresses, payload.mempool);
+        await unsubscribeAddresses(payload.addresses);
     } else if (payload.type === 'block') {
         if (api.listenerCount('ledger') > 0) {
             api.off('ledger', onNewBlock);
@@ -190,20 +196,39 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
 }
 
 const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = true) => {
-    // subscribe to new blocks, confirmed transactions for given addresses and mempool transactions for given addresses
+    // subscribe to new blocks, confirmed and mempool transactions for given addresses
     if (api.connection.listenerCount('transaction') < 1) {
         api.connection.on('transaction', onTransaction);
-        api.connection.on('ledgerClosed', onLedgerClosed);
+        // api.connection.on('ledgerClosed', onLedgerClosed);
     }
 
-    const request: { accounts: Array<string>, accounts_proposed?: Array<string> } = {
+    const uniqueAddresses = common.addAddresses(addresses);
+    if (uniqueAddresses.length > 0) {
+        const request = {
+            // stream: ['transactions', 'transactions_proposed'],
+            accounts: uniqueAddresses,
+            accounts_proposed: mempool ? uniqueAddresses : [],
+        };
+    
+        await api.request('subscribe', request);
+    }
+}
+
+const unsubscribeAddresses = async (addresses: Array<string>) => {
+    const subscribed = common.removeAddresses(addresses);
+    const request = {
+        // stream: ['transactions', 'transactions_proposed'],
         accounts: addresses,
+        accounts_proposed: addresses,
     };
-    if (mempool) {
-        request.accounts_proposed = addresses;
-    }
+    await api.request('unsubscribe', request);
 
-    await api.request('subscribe', request);
+    if (subscribed.length < 1) {
+        // there are no subscribed addresses left
+        // remove listeners
+        api.connection.off('transaction', onTransaction);
+        // api.connection.off('ledgerClosed', onLedgerClosed);
+    }
 }
 
 const onNewBlock = (event: any) => {
@@ -231,16 +256,16 @@ const onTransaction = (event: any) => {
     });
 }
 
-const onLedgerClosed = (event: any) => {
-    postMessage({
-        id: -1,
-        type: RESPONSES.NOTIFICATION,
-        payload: {
-            type: 'address',
-            data: event
-        }
-    });
-}
+// const onLedgerClosed = (event: any) => {
+//     postMessage({
+//         id: -1,
+//         type: RESPONSES.NOTIFICATION,
+//         payload: {
+//             type: 'address',
+//             data: event
+//         }
+//     });
+// }
 
 // postMessage(1/x); // Intentional error.
 common.handshake();
