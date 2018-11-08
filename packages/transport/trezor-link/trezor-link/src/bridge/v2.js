@@ -125,14 +125,14 @@ export default class BridgeTransport {
   }
 
   @debugInOut
-  async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
+  async call(session: string, name: string, data: Object, debugLink: boolean): Promise<MessageFromTrezor> {
     if (this._messages == null) {
       throw new Error(`Transport not configured.`);
     }
     const messages = this._messages;
     const outData = buildOne(messages, name, data).toString(`hex`);
     const resData = await this._post({
-      url: `/call/` + session,
+      url: (debugLink ? `/debug` : ``) + `/call/` + session,
       body: outData,
     });
     if (typeof resData !== `string`) {
@@ -141,6 +141,22 @@ export default class BridgeTransport {
     const jsonData = receiveOne(messages, new Buffer(resData, `hex`));
     return check.call(jsonData);
   }
+
+  @debugInOut
+  async post(session: string, name: string, data: Object, debugLink: boolean): Promise<void> {
+    if (this._messages == null) {
+      throw new Error(`Transport not configured.`);
+    }
+    const messages = this._messages;
+    const outData = buildOne(messages, name, data).toString(`hex`);
+    const res = await this._post({
+      url: (debugLink ? `/debug` : ``) + `/post/` + session,
+      body: outData,
+    });
+    return;
+  }
+
+
 
   static setFetch(fetch: any, isNode?: boolean) {
     rSetFetch(fetch, isNode);
