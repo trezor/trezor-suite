@@ -8,10 +8,15 @@ import {debugInOut} from '../debug-decorator';
 
 type TrezorDeviceInfoDebug = {path: string, debug: boolean};
 
+const T1HID_VENDOR = 0x534c;
+
 const TREZOR_DESCS = [
-  // TREZOR v2 Bootloader
+  // TREZOR v1
+  // won't get opened, but we can show error at least
+  { vendorId: 0x534c, productId: 0x0001 },
+  // TREZOR webusb Bootloader
   { vendorId: 0x1209, productId: 0x53c0 },
-  // TREZOR v2 Firmware
+  // TREZOR webusb Firmware
   { vendorId: 0x1209, productId: 0x53c1 },
 ];
 
@@ -55,19 +60,15 @@ export default class WebUsbPlugin {
 
   _deviceHasDebugLink(device: USBDevice): boolean {
     try {
-      const iface = device.configurations[0].interfaces[1].alternates[0];
-      return iface.interfaceClass === 255 && iface.endpoints[0].endpointNumber === 2;
+      const iface = device.configurations[0].interfaces[DEBUG_INTERFACE_ID].alternates[0];
+      return iface.interfaceClass === 255 && iface.endpoints[0].endpointNumber === DEBUG_ENDPOINT_ID;
     } catch (e) {
       return false;
     }
   }
 
   _deviceIsHid(device: USBDevice): boolean {
-    try {
-      return device.configurations[0].interfaces[0].alternates[0].interfaceClass === 3;
-    } catch (e) {
-      return true;
-    }
+    return device.vendorId === T1HID_VENDOR;
   }
 
   async _listDevices(): Promise<Array<{path: string, device: USBDevice, debug: boolean}>> {
