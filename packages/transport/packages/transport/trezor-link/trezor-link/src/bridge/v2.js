@@ -99,25 +99,21 @@ export default class BridgeTransport {
     return devices;
   }
 
-  async _acquireMixed(input: AcquireInput): Promise<mixed> {
-    const checkPrevious = input.checkPrevious;
-    if (!checkPrevious) {
-      throw new Error(`Bridge v2 does not support acquire without checking.`);
-    }
+  async _acquireMixed(input: AcquireInput, debugLink: boolean): Promise<mixed> {
     const previousStr = input.previous == null ? `null` : input.previous;
-    const url = `/acquire/` + input.path + `/` + previousStr;
+    const url = (debugLink ? `/debug` : ``) + `/acquire/` + input.path + `/` + previousStr;
     return this._post({url: url});
   }
 
   @debugInOut
-  async acquire(input: AcquireInput): Promise<string> {
-    const acquireS = await this._acquireMixed(input);
+  async acquire(input: AcquireInput, debugLink: boolean): Promise<string> {
+    const acquireS = await this._acquireMixed(input, debugLink);
     return check.acquire(acquireS);
   }
 
   @debugInOut
-  async release(session: string, onclose: boolean): Promise<void> {
-    const res = this._post({url: `/release/` + session});
+  async release(session: string, onclose: boolean, debugLink: boolean): Promise<void> {
+    const res = this._post({url: (debugLink ? `/debug` : ``) + `/release/` + session});
     if (onclose) {
       return;
     }
@@ -125,15 +121,45 @@ export default class BridgeTransport {
   }
 
   @debugInOut
-  async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
+  async call(session: string, name: string, data: Object, debugLink: boolean): Promise<MessageFromTrezor> {
     if (this._messages == null) {
       throw new Error(`Transport not configured.`);
     }
     const messages = this._messages;
     const outData = buildOne(messages, name, data).toString(`hex`);
     const resData = await this._post({
-      url: `/call/` + session,
+      url: (debugLink ? `/debug` : ``) + `/call/` + session,
       body: outData,
+    });
+    if (typeof resData !== `string`) {
+      throw new Error(`Returning data is not string.`);
+    }
+    const jsonData = receiveOne(messages, new Buffer(resData, `hex`));
+    return check.call(jsonData);
+  }
+
+  @debugInOut
+  async post(session: string, name: string, data: Object, debugLink: boolean): Promise<void> {
+    if (this._messages == null) {
+      throw new Error(`Transport not configured.`);
+    }
+    const messages = this._messages;
+    const outData = buildOne(messages, name, data).toString(`hex`);
+    await this._post({
+      url: (debugLink ? `/debug` : ``) + `/post/` + session,
+      body: outData,
+    });
+    return;
+  }
+
+  @debugInOut
+  async read(session: string, debugLink: boolean): Promise<MessageFromTrezor> {
+    if (this._messages == null) {
+      throw new Error(`Transport not configured.`);
+    }
+    const messages = this._messages;
+    const resData = await this._post({
+      url: (debugLink ? `/debug` : ``) + `/read/` + session,
     });
     if (typeof resData !== `string`) {
       throw new Error(`Returning data is not string.`);

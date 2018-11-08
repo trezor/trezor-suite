@@ -7,12 +7,13 @@ export type TrezorDeviceInfo = {
 
 export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
   session: ?string;
+  debugSession: ?string;
+  debug: boolean;
 }
 
 export type AcquireInput = {
   path: string;
   previous: ?string;
-  checkPrevious: boolean;
 }
 
 export type MessageFromTrezor = {type: string, message: Object};
@@ -20,10 +21,12 @@ export type MessageFromTrezor = {type: string, message: Object};
 export type Transport = {
   enumerate(): Promise<Array<TrezorDeviceInfoWithSession>>;
   listen(old: ?Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>>;
-  acquire(input: AcquireInput): Promise<string>;
-  release(session: string, onclose: boolean): Promise<void>;
+  acquire(input: AcquireInput, debugLink: boolean): Promise<string>;
+  release(session: string, onclose: boolean, debugLink: boolean): Promise<void>;
   configure(signedData: string): Promise<void>;
-  call(session: string, name: string, data: Object): Promise<MessageFromTrezor>;
+  call(session: string, name: string, data: Object, debugLink: boolean): Promise<MessageFromTrezor>;
+  post(session: string, name: string, data: Object, debugLink: boolean): Promise<void>;
+  read(session: string, debugLink: boolean): Promise<MessageFromTrezor>;
 
   // resolves when the transport can be used; rejects when it cannot
   init(debug: ?boolean): Promise<void>;

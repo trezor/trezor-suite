@@ -23,6 +23,16 @@ export function version(version: mixed): string {
   return version.trim();
 }
 
+function convertSession(r: mixed): ?string {
+  if (r == null) {
+    return null;
+  }
+  if (typeof r !== `string`) {
+    throw new Error(`Wrong result type.`);
+  }
+  return r;
+}
+
 export function devices(res: mixed): Array<TrezorDeviceInfoWithSession> {
   if (typeof res !== `object`) {
     throw new Error(`Wrong result type.`);
@@ -35,29 +45,18 @@ export function devices(res: mixed): Array<TrezorDeviceInfoWithSession> {
       throw new Error(`Wrong result type.`);
     }
     const path = o.path;
-    if (typeof path !== `number` && typeof path !== `string`) {
+    if (typeof path !== `string`) {
       throw new Error(`Wrong result type.`);
     }
     const pathS = path.toString();
-    const session = o.session;
-    if (session == null) {
-      return {
-        path: pathS,
-        session: null,
-        product: o.product,
-        vendor: o.vendor,
-      };
-    } else {
-      if (typeof session !== `number` && typeof session !== `string`) {
-        throw new Error(`Wrong result type.`);
-      }
-      return {
-        path: pathS,
-        session: session.toString(),
-        product: o.product,
-        vendor: o.vendor,
-      };
-    }
+    return {
+      path: pathS,
+      session: convertSession(o.session),
+      debugSession: convertSession(o.debugSession),
+      product: o.product,
+      vendor: o.vendor,
+      debug: !!o.debug,
+    };
   });
 }
 
