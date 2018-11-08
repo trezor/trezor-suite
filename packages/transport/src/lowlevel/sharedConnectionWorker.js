@@ -21,11 +21,12 @@ if (typeof onconnect !== `undefined`) {
 import {create as createDefered} from '../defered';
 import type {Defered} from '../defered';
 
+import type {TrezorDeviceInfoDebug} from './sharedPlugin';
 import type {MessageFromSharedWorker, MessageToSharedWorker} from './withSharedConnections';
-import type {TrezorDeviceInfo} from '../transport';
 
 // path => session
-const state: {[path: string]: string} = {};
+const normalSessions: {[path: string]: string} = {};
+const debugSessions: {[path: string]: string} = {};
 
 let lock: ?Defered<Object> = null;
 let waitPromise: Promise<void> = Promise.resolve();
@@ -62,9 +63,9 @@ function waitInQueue(fn: () => Promise<void>) {
 function handleMessage({id, message}: {id: number, message: MessageToSharedWorker}, port: PortObject) {
   if (message.type === `acquire-intent`) {
     const path: string = message.path;
-    const checkPrevious: boolean = message.checkPrevious;
     const previous: ?string = message.previous;
-    waitInQueue(() => handleAcquireIntent(path, checkPrevious, previous, id, port));
+    const debug: boolean = message.debug;
+    waitInQueue(() => handleAcquireIntent(path, previous, debug, id, port));
   }
   if (message.type === `acquire-done`) {
     handleAcquireDone(id); // port is the same as original
@@ -88,7 +89,8 @@ function handleMessage({id, message}: {id: number, message: MessageToSharedWorke
 
   if (message.type === `release-intent`) {
     const session: string = message.session;
-    waitInQueue(() => handleReleaseIntent(session, id, port));
+    const debug: bool = message.debug;
+    waitInQueue(() => handleReleaseIntent(session, debug, id, port));
   }
   if (message.type === `release-done`) {
     handleReleaseDone(id); // port is the same as original
@@ -124,8 +126,8 @@ function handleReleaseOnClose(
   session: string,
 ): Promise<void> {
   let path_: ?string = null;
-  Object.keys(state).forEach(kpath => {
-    if (state[kpath] === session) {
+  Object.keys(normalSessions).forEach(kpath => {
+    if (normalSessions[kpath] === session) {
       path_ = kpath;
     }
   });
@@ -134,18 +136,22 @@ function handleReleaseOnClose(
   }
 
   const path: string = path_;
-  delete state[path];
+  delete normalSessions[path];
+  delete debugSessions[path];
   return Promise.resolve();
 }
 
 function handleReleaseIntent(
   session: string,
+  debug: boolean,
   id: number,
   port: PortObject
 ): Promise<void> {
   let path_: ?string = null;
-  Object.keys(state).forEach(kpath => {
-    if (state[kpath] === session) {
+  const sessions = debug ? debugSessions : normalSessions;
+  const otherSessions = (!debug) ? debugSessions : normalSessions;
+  Object.keys(sessions).forEach(kpath => {
+    if (sessions[kpath] === session) {
       path_ = kpath;
     }
   });
@@ -156,13 +162,15 @@ function handleReleaseIntent(
 
   const path: string = path_;
 
+  const otherSession = otherSessions[path];
+
   startLock();
-  sendBack({type: `path`, path}, id, port);
+  sendBack({type: `path`, path, otherSession}, id, port);
 
   // if lock times out, promise rejects and queue goes on
   return waitForLock().then((obj: {id: number}) => {
     // failure => nothing happens, but still has to reply "ok"
-    delete state[path];
+    delete sessions[path];
     sendBack({type: `ok`}, obj.id, port);
   });
 }
@@ -170,18 +178,23 @@ function handleReleaseIntent(
 function handleGetSessions(
   id: number,
   port: PortObject,
-  devices: ?Array<TrezorDeviceInfo>
+  devices: ?Array<TrezorDeviceInfoDebug>
 ): Promise<void> {
   if (devices != null) {
     const connected: {[path: string]: boolean} = {};
     devices.forEach(d => { connected[d.path] = true; });
-    Object.keys(state).forEach(path => {
-      if (!connected[path]) {
-        delete state[path];
+    Object.keys(normalSessions).forEach(path => {
+      if (!normalSessions[path]) {
+        delete normalSessions[path];
+      }
+    });
+    Object.keys(debugSessions).forEach(path => {
+      if (!debugSessions[path]) {
+        delete debugSessions[path];
       }
     });
   }
-  sendBack({type: `sessions`, sessions: state}, id, port);
+  sendBack({type: `sessions`, debugSessions, normalSessions}, id, port);
   return Promise.resolve();
 }
 
@@ -200,33 +213,36 @@ function handleAcquireFailed(
 
 function handleAcquireIntent(
   path: string,
-  checkPrevious: boolean,
   previous: ?string,
+  debug: boolean,
   id: number,
   port: PortObject
 ): Promise<void> {
   let error = false;
-  if (checkPrevious) {
-    const realPrevious = state[path];
+  const thisTable = debug ? debugSessions : normalSessions;
+  const otherTable = (!debug) ? debugSessions : normalSessions;
+  const realPrevious = thisTable[path];
 
-    if (realPrevious == null) {
-      error = (previous != null);
-    } else {
-      error = (previous !== realPrevious);
-    }
+  if (realPrevious == null) {
+    error = (previous != null);
+  } else {
+    error = (previous !== realPrevious);
   }
   if (error) {
     sendBack({type: `wrong-previous-session`}, id, port);
     return Promise.resolve();
   } else {
     startLock();
-    sendBack({type: `ok`}, id, port);
+    sendBack({type: `other-session`, otherSession: otherTable[path]}, id, port);
     // if lock times out, promise rejects and queue goes on
     return waitForLock().then((obj: {good: boolean, id: number}) => {
       if (obj.good) {
         lastSession++;
-        const session = lastSession.toString();
-        state[path] = session;
+        let session = lastSession.toString();
+        if (debug) {
+          session = `debug` + session;
+        }
+        thisTable[path] = session;
         sendBack({type: `session-number`, number: session}, obj.id, port);
       } else {
         // failure => nothing happens, but still has to reply "ok"
