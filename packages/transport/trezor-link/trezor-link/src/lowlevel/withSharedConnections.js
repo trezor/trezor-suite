@@ -48,7 +48,6 @@ const ITER_DELAY = 500;
 export type MessageToSharedWorker = {
   type: 'acquire-intent',
   path: string,
-  checkPrevious: boolean,
   previous: ?string
 } | {
   type: 'acquire-done',
@@ -143,6 +142,8 @@ export default class LowlevelTransportWithSharedConnections {
       return {
         path: device.path,
         session: session,
+        debug: false,
+        debugSession: null,
       };
     });
 
@@ -190,7 +191,6 @@ export default class LowlevelTransportWithSharedConnections {
       type: `acquire-intent`,
       path: input.path,
       previous: input.previous,
-      checkPrevious: input.checkPrevious,
     });
     if (messBack.type === `wrong-previous-session`) {
       throw new Error(`wrong previous session`);
@@ -263,15 +263,18 @@ export default class LowlevelTransportWithSharedConnections {
     return () => this.plugin.receive(path);
   }
 
-  @debugInOut
-  async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
-    const sessionsM = await this.sendToWorker({type: `get-sessions`});
-
+  messages(): Messages {
     if (this._messages == null) {
       throw new Error(`Transport not configured.`);
     }
-    const messages = this._messages;
+    return this._messages;
+  }
 
+  async doWithSession<X>(session: string, debugLink: boolean, inside:(path: string) => Promise<X>): Promise<X> {
+    if (debugLink) {
+      throw new Error(`Not yet implemented`);
+    }
+    const sessionsM = await this.sendToWorker({type: `get-sessions`});
     if (sessionsM.type !== `sessions`) {
       throw new Error(`Wrong reply`);
     }
@@ -288,13 +291,42 @@ export default class LowlevelTransportWithSharedConnections {
     }
     const path: string = path_;
 
-    const resPromise: Promise<MessageFromTrezor> = (async () => {
+    const resPromise = await inside(path);
+
+    return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
+  }
+
+  @debugInOut
+  async call(session: string, name: string, data: Object, debugLink: boolean): Promise<MessageFromTrezor> {
+    const callInside: (path: string) => Promise<MessageFromTrezor> = async (path: string) => {
+      const messages = this.messages();
       await buildAndSend(messages, this._sendLowlevel(path), name, data);
       const message = await receiveAndParse(messages, this._receiveLowlevel(path));
       return message;
-    })();
+    };
 
-    return Promise.race([this.deferedOnRelease[session].rejectingPromise, resPromise]);
+    return this.doWithSession(session, debugLink, callInside);
+  }
+
+  @debugInOut
+  async post(session: string, name: string, data: Object, debugLink: boolean): Promise<void> {
+    const callInside: (path: string) => Promise<void> = async (path: string) => {
+      const messages = this.messages();
+      await buildAndSend(messages, this._sendLowlevel(path), name, data);
+    };
+
+    return this.doWithSession(session, debugLink, callInside);
+  }
+
+  @debugInOut
+  async read(session: string, debugLink: boolean): Promise<MessageFromTrezor> {
+    const callInside: (path: string) => Promise<MessageFromTrezor> = async (path: string) => {
+      const messages = this.messages();
+      const message = await receiveAndParse(messages, this._receiveLowlevel(path));
+      return message;
+    };
+
+    return this.doWithSession(session, debugLink, callInside);
   }
 
   @debugInOut
