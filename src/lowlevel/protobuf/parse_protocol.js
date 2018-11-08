@@ -6,7 +6,6 @@
 
 import * as ProtoBuf from "protobufjs-old-fixed-webpack";
 
-import {verifyHexBin} from '../verify';
 import {Messages} from "./messages.js";
 import {protocolToJSON} from "./to_json.js";
 import * as compiledConfigProto from "./config_proto_compiled.js";
@@ -20,7 +19,7 @@ export function parseConfigure(data: string): Messages {
   }
 
   // incoming data are in binary format
-  const buffer = verifyHexBin(data);
+  const buffer = new Buffer(data.slice(64 * 2), `hex`);
   const configBuilder = compiledConfigProto[`Configuration`];
   const loadedConfig = configBuilder.decode(buffer);
 
