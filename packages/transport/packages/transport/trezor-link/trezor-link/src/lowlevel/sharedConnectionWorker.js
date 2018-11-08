@@ -62,9 +62,8 @@ function waitInQueue(fn: () => Promise<void>) {
 function handleMessage({id, message}: {id: number, message: MessageToSharedWorker}, port: PortObject) {
   if (message.type === `acquire-intent`) {
     const path: string = message.path;
-    const checkPrevious: boolean = message.checkPrevious;
     const previous: ?string = message.previous;
-    waitInQueue(() => handleAcquireIntent(path, checkPrevious, previous, id, port));
+    waitInQueue(() => handleAcquireIntent(path, previous, id, port));
   }
   if (message.type === `acquire-done`) {
     handleAcquireDone(id); // port is the same as original
@@ -200,20 +199,17 @@ function handleAcquireFailed(
 
 function handleAcquireIntent(
   path: string,
-  checkPrevious: boolean,
   previous: ?string,
   id: number,
   port: PortObject
 ): Promise<void> {
   let error = false;
-  if (checkPrevious) {
-    const realPrevious = state[path];
+  const realPrevious = state[path];
 
-    if (realPrevious == null) {
-      error = (previous != null);
-    } else {
-      error = (previous !== realPrevious);
-    }
+  if (realPrevious == null) {
+    error = (previous != null);
+  } else {
+    error = (previous !== realPrevious);
   }
   if (error) {
     sendBack({type: `wrong-previous-session`}, id, port);
