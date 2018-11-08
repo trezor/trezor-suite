@@ -88,16 +88,24 @@ export default class FallbackTransport {
     return this.activeTransport.listen(old);
   }
 
-  async acquire(input: AcquireInput): Promise<string> {
-    return this.activeTransport.acquire(input);
+  async acquire(input: AcquireInput, debugLink: boolean): Promise<string> {
+    return this.activeTransport.acquire(input, debugLink);
   }
 
-  async release(session: string, onclose: boolean): Promise<void> {
-    return this.activeTransport.release(session, onclose);
+  async release(session: string, onclose: boolean, debugLink: boolean): Promise<void> {
+    return this.activeTransport.release(session, onclose, debugLink);
   }
 
-  async call(session: string, name: string, data: Object): Promise<MessageFromTrezor> {
-    return this.activeTransport.call(session, name, data);
+  async call(session: string, name: string, data: Object, debugLink: boolean): Promise<MessageFromTrezor> {
+    return this.activeTransport.call(session, name, data, debugLink);
+  }
+
+  async post(session: string, name: string, data: Object, debugLink: boolean): Promise<void> {
+    return this.activeTransport.post(session, name, data, debugLink);
+  }
+
+  async read(session: string, debugLink: boolean): Promise<MessageFromTrezor> {
+    return this.activeTransport.read(session, debugLink);
   }
 
   async requestDevice(): Promise<void> {
