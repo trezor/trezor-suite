@@ -6,10 +6,12 @@ import type { Response, BlockchainSettings } from '../types';
 declare function postMessage(data: Response): void;
 
 let _settings: BlockchainSettings;
+let _debugPrefix: string;
 let _addresses: Array<string> = [];
 
 export const setSettings = (s: BlockchainSettings): void => {
     _settings = s;
+    _debugPrefix = `[Worker "${s.name}"]:`;
 }
 
 export const getSettings = (): BlockchainSettings => {
@@ -17,8 +19,13 @@ export const getSettings = (): BlockchainSettings => {
 }
 
 export const debug = (...args: Array<any>): void => {
-    if (_settings && _settings.debug)
-        console.log('RippleWorker', ...args)
+    if (_settings && _settings.debug) {
+        if (args[0] === 'warn' || args[0] === 'error') {
+            console[args[0]](_debugPrefix, ...args.slice(1));
+        } else {
+            console.log(_debugPrefix, ...args)
+        }
+    }
 } 
 
 export const handshake = (): void => {
