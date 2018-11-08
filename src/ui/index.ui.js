@@ -1,13 +1,16 @@
 /* @flow */
 
 // Preload workers in webpack, force webpack to compile them
-/* $FlowIssue loader notation */
-import BlockbookWorker from 'worker-loader?name=js/blockbook-worker.js!../workers/blockbook/index.js'; // eslint-disable-line
-/* $FlowIssue loader notation */
-import RippleWorker from 'worker-loader?name=js/ripple-worker.js!../workers/ripple/index.js'; // eslint-disable-line
+// $FlowIssue loader notation
+import BlockbookWorker from 'worker-loader?name=js/blockbook-worker.js!../workers/blockbook/index.js'; // eslint-disable-line no-unused-vars
+// $FlowIssue loader notation
+import RippleWorker from 'worker-loader?name=js/ripple-worker.js!../workers/ripple/index.js'; // eslint-disable-line no-unused-vars
 
-import BlockchainLink, { Blockchain } from '../index';
-import type { Ripple } from '../index';
+
+
+import BlockchainLink from '../index';
+// import BlockchainLink, { Blockchain } from '../index';
+// import type { Ripple } from '../index';
 
 const getInputValue = (id: string): string => {
     const value: string = (document.getElementById(id): any).value;
@@ -25,19 +28,19 @@ const instances = [
         ],
         debug: true
     },
-    {
-        name: 'Ripple Mainnet',
-        worker: 'js/ripple-worker.js',
-        server: 'wss://s2.ripple.com:443',
-    },
+    // {
+    //     name: 'Ripple Mainnet',
+    //     worker: 'js/ripple-worker.js',
+    //     server: 'wss://s2.ripple.com:443',
+    // },
     {
         name: 'Bitcoin Testnet',
         worker: 'js/blockbook-worker.js',
-        //server: 'https://testnet-bitcore1.trezor.io',
-        server: 'wss://ropsten1.trezor.io/socket.io/?transport=websocket',
+        server: 'https://testnet-bitcore1.trezor.io',
+        // server: 'wss://ropsten1.trezor.io/socket.io/?transport=websocket',
         debug: true
     },
-]
+];
 
 BlockchainLink.create(instances);
 
@@ -48,8 +51,8 @@ const handleClick = (event: MouseEvent) => {
     if (target.nodeName !== 'BUTTON') return;
     const network: string = getInputValue('network-type');
 
-    const blockchain: Blockchain<Ripple> = BlockchainLink.get('Ripple Testnet');
-    //const blockchain: Blockchain<Ripple> = BlockchainLink.get('Bitcoin Testnet');
+    // const blockchain: Blockchain<Ripple> = BlockchainLink.get('Ripple Testnet');
+    const blockchain = BlockchainLink.get(network);
     if (blockchain.listenerCount('block') < 1) {
         blockchain.on('block', handleNotification);
         blockchain.on('address', handleNotification);
@@ -116,15 +119,13 @@ const handleResponse = (response: any) => {
     element.innerHTML = JSON.stringify(response, null , 2);
 }
 
-export const handleNotification = (notification: any) => {
+const handleNotification = (notification: any) => {
     const value = JSON.stringify(notification, null, 2);
     const element = (document.getElementById('notification'): any);
     element.innerHTML = `${value},\n${element.innerHTML}`;
 }
 
-
 const handleError = (error: any) => {
-    console.error("handleError", error);
     const element = (document.getElementById('response'): any);
     element.innerHTML = JSON.stringify(error.message, null , 2);
 }
@@ -133,5 +134,13 @@ const clear = (id: string) => {
     const element = (document.getElementById(id): any);
     element.innerHTML = '';
 }
+
+const prepareNetworkSelect = (instances: Array<any>) => {
+    const select = (document.getElementById('network-type'): any);
+    select.innerHTML = instances.map(i => {
+        return `<option value="${i.name}">${i.name}</option>`;
+    })
+}
+prepareNetworkSelect(instances);
 
 document.addEventListener('click', handleClick);
