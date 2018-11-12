@@ -19,7 +19,7 @@ export const RATE_UPDATE: 'rate__update' = 'rate__update';
 export type FiatRateAction = {
     type: typeof RATE_UPDATE;
     network: string;
-    rate: any;
+    rate: number;
 }
 
 const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -28,13 +28,12 @@ const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: G
 
     try {
         config.fiatValueTickers.forEach(async (ticker) => {
-            // const rate: ?Array<any> = await JSONRequest(`${ticker.url}?convert=USD`, 'json');
-            const rate: ?Array<any> = await httpRequest(`${ticker.url}?convert=USD`, 'json');
-            if (rate) {
+            const response = await httpRequest(`${ticker.url}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, 'json');
+            if (response) {
                 dispatch({
                     type: RATE_UPDATE,
-                    network: ticker.network,
-                    rate: rate[0],
+                    network: response.symbol,
+                    rate: response.market_data.current_price.usd,
                 });
             }
         });
@@ -48,7 +47,7 @@ const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: G
 /**
  * Middleware
  */
-const CoinmarketcapService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
+const CoingeckoService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
     next(action);
 
     if (action.type === READY) {
@@ -58,4 +57,4 @@ const CoinmarketcapService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     return action;
 };
 
-export default CoinmarketcapService;
+export default CoingeckoService;
