@@ -13,23 +13,14 @@ export type Fiat = {
 export const initialState: Array<Fiat> = [];
 
 const update = (state: Array<Fiat>, action: FiatRateAction): Array<Fiat> => {
-    const newState: Array<Fiat> = [...state];
-    let exists: ?Fiat = newState.find(f => f.network === action.network);
+    const affected = state.find(f => f.network === action.network);
+    const otherRates = state.filter(d => d !== affected);
     const { network, rate } = action;
 
-    if (exists) {
-        exists = {
-            network,
-            value: rate,
-        };
-    } else {
-        newState.push({
-            network,
-            value: rate,
-        });
-    }
-
-    return newState;
+    return otherRates.concat([{
+        network,
+        value: rate.toFixed(2),
+    }]);
 };
 
 export default (state: Array<Fiat> = initialState, action: Action): Array<Fiat> => {

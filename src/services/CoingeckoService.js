@@ -19,7 +19,7 @@ export const RATE_UPDATE: 'rate__update' = 'rate__update';
 export type FiatRateAction = {
     type: typeof RATE_UPDATE;
     network: string;
-    rate: any;
+    rate: number;
 }
 
 const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {

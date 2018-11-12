@@ -136,7 +136,7 @@ const AccountMenu = (props: Props) => {
             balance = `${availableBalance} ${network.symbol}`;
             if (fiatRate) {
                 const accountBalance = new BigNumber(availableBalance);
-                const fiat = accountBalance.times(parseInt(fiatRate.value, 10)).toFixed(2);
+                const fiat = accountBalance.times(fiatRate.value).toFixed(2);
                 balance = `${availableBalance} ${network.symbol} / $${fiat}`;
             }
         }
