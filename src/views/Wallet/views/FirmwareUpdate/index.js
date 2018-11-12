@@ -127,9 +127,9 @@ const FirmwareUpdate = (props: Props) => (
             </svg>
         </Image>
         <H1>It’s time to update your firmware</H1>
-        <StyledP>Please use the old wallet to do that.</StyledP>
-        <Link href="https://wallet.trezor.io">
-            <Button>Take me to the old wallet</Button>
+        <StyledP>Please use Bitcoin wallet interface to update your firmware.</StyledP>
+        <Link href="https://beta-wallet.trezor.io">
+            <Button>Take me to the Bitcoin wallet</Button>
         </Link>
         {deviceUtils.isDeviceAccessible(props.device) && (
             <StyledNavLink to="/">I’ll do that later.</StyledNavLink>
