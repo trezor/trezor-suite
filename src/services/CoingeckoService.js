@@ -33,7 +33,7 @@ const loadRateAction = (): AsyncAction => async (dispatch: Dispatch, getState: G
                 dispatch({
                     type: RATE_UPDATE,
                     network: response.symbol,
-                    rate: response.market_data,
+                    rate: response.market_data.current_price.usd,
                 });
             }
         });

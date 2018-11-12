@@ -14,10 +14,21 @@ export const initialState: Array<Fiat> = [];
 
 const update = (state: Array<Fiat>, action: FiatRateAction): Array<Fiat> => {
     const newState: Array<Fiat> = [...state];
-    newState.push({
-        network: action.network,
-        value: action.rate.current_price.usd,
-    });
+    let exists: ?Fiat = newState.find(f => f.network === action.network);
+    const { network, rate } = action;
+
+    if (exists) {
+        exists = {
+            network,
+            value: rate,
+        };
+    } else {
+        newState.push({
+            network,
+            value: rate,
+        });
+    }
+
     return newState;
 };
 
