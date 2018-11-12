@@ -25,24 +25,40 @@ const Wrapper = styled.div`
     color: ${colors.TEXT_SECONDARY};
     padding: 22px 48px;
     display: flex;
+    justify-content: space-between;
     border-top: 1px solid ${colors.BACKGROUND};
 `;
 
 const StyledLink = styled(Link)`
     margin: 0 6px;
     margin-right: 20px;
+    white-space: nowrap;
 `;
 
 const Copy = styled.div`
+    white-space: nowrap;
     margin-right: 20px;
+`;
+
+const Left = styled.div`
+    display: flex;
+`;
+
+const Right = styled.div`
+    white-space: nowrap;
 `;
 
 const Footer = ({ opened, toggle }: Props) => (
     <Wrapper>
-        <Copy title={COMMITHASH}>&copy; {getYear(new Date())}</Copy>
-        <StyledLink href="http://satoshilabs.com" isGreen>SatoshiLabs</StyledLink>
-        <StyledLink href="/assets/tos.pdf" isGreen>Terms</StyledLink>
-        <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>
+        <Left>
+            <Copy title={COMMITHASH}>&copy; {getYear(new Date())}</Copy>
+            <StyledLink href="http://satoshilabs.com" isGreen>SatoshiLabs</StyledLink>
+            <StyledLink href="/assets/tos.pdf" isGreen>Terms</StyledLink>
+            <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>
+        </Left>
+        <Right>
+            Exchange rates by<StyledLink href="https://www.coingecko.com" isGreen>Coingecko</StyledLink>
+        </Right>
     </Wrapper>
 );
 
