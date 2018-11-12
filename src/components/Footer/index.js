@@ -15,6 +15,7 @@ declare var COMMITHASH: string;
 
 type Props = {
     opened: boolean,
+    isLanding: boolean,
     toggle: () => any,
 }
 
@@ -48,7 +49,7 @@ const Right = styled.div`
     white-space: nowrap;
 `;
 
-const Footer = ({ opened, toggle }: Props) => (
+const Footer = ({ opened, toggle, isLanding }: Props) => (
     <Wrapper>
         <Left>
             <Copy title={COMMITHASH}>&copy; {getYear(new Date())}</Copy>
@@ -56,14 +57,17 @@ const Footer = ({ opened, toggle }: Props) => (
             <StyledLink href="/assets/tos.pdf" isGreen>Terms</StyledLink>
             <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>
         </Left>
-        <Right>
-            Exchange rates by<StyledLink href="https://www.coingecko.com" isGreen>Coingecko</StyledLink>
-        </Right>
+        {!isLanding && (
+            <Right>
+                Exchange rates by<StyledLink href="https://www.coingecko.com" isGreen>Coingecko</StyledLink>
+            </Right>
+        )}
     </Wrapper>
 );
 
 Footer.propTypes = {
     opened: PropTypes.bool.isRequired,
+    isLanding: PropTypes.bool,
     toggle: PropTypes.func.isRequired,
 };
 
