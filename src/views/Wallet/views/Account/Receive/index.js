@@ -119,6 +119,7 @@ const AccountReceive = (props: Props) => {
                     <Row>
                         <Input
                             type="text"
+                            readOnly
                             value={address}
                             isPartiallyHidden={isAddressHidden}
                             trezorAction={isAddressVerifying ? (

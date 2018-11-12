@@ -183,6 +183,7 @@ class Input extends PureComponent {
                             autocapitalize={this.props.autocapitalize}
                             spellCheck={this.props.spellCheck}
                             value={this.props.value}
+                            readOnly={this.props.readOnly}
                             onChange={this.props.onChange}
                             borderColor={this.getColor(this.props.state)}
                             disabled={this.props.isDisabled}
@@ -218,6 +219,7 @@ Input.propTypes = {
     icon: PropTypes.node,
     spellCheck: PropTypes.string,
     value: PropTypes.string,
+    readOnly: PropTypes.bool,
     onChange: PropTypes.func,
     state: PropTypes.string,
     bottomText: PropTypes.string,
