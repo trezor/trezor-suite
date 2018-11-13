@@ -18,6 +18,7 @@ lint:
 flow:
   stage: test
   script:
+    - yarn install
     - yarn run flow
 
 unit:
