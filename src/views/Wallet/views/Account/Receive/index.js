@@ -121,7 +121,15 @@ const AccountReceive = (props: Props) => {
                             type="text"
                             value={address}
                             isPartiallyHidden={isAddressHidden}
-                            trezorAction={isAddressVerifying ? <TrezorConfirm /> : null}
+                            trezorAction={isAddressVerifying ? (
+                                <React.Fragment>
+                                    <Icon
+                                        icon={ICONS.T1}
+                                        color={colors.WHITE}
+                                    />
+                                    Check address on your Trezor
+                                </React.Fragment>
+                            ) : null}
                             icon={((addressVerified || addressUnverified) && !isAddressVerifying) && (
                                 <Tooltip
                                     placement="left"

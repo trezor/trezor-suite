@@ -58,10 +58,6 @@ const StyledIcon = styled(Icon)`
     left: 0;
 `;
 
-const ActionWrapper = styled.div`
-    white-space: nowrap
-`;
-
 type State = {
     signMessage: string,
     verifyAddress: string,
