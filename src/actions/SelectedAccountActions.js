@@ -28,9 +28,9 @@ export type SelectedAccountAction = {
 };
 
 type AccountStatus = {
-    type: string; // notification type
-    title: string; // notification title
-    message?: string; // notification message
+    type: ?string; // notification type
+    title: ?string; // notification title
+    message?: ?string; // notification message
     shouldRender: boolean; // should render account page
 }
 
