@@ -98,8 +98,15 @@ class SignVerify extends Component<Props, State> {
     }
 
     render() {
-        if (!this.props.selectedAccount.account) return null;
-
+        const device = this.props.wallet.selectedDevice;
+        const {
+            account,
+            discovery,
+            shouldRender,
+            notification,
+        } = this.props.selectedAccount;
+        const { type, title, message } = notification;
+        if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
         const {
             signVerifyActions,
             signature,

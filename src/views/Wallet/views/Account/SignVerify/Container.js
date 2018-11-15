@@ -11,6 +11,7 @@ import Component from './index';
 type OwnProps = {}
 
 export type StateProps = {
+    wallet: $ElementType<State, 'wallet'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
     signature: string,
     isSignProgress: boolean,
@@ -24,6 +25,7 @@ export type DispatchProps = {
 export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+    wallet: state.wallet,
     selectedAccount: state.selectedAccount,
     signature: state.signVerifyReducer.signature,
     isSignProgress: state.signVerifyReducer.isSignProgress,
