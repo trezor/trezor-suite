@@ -7,14 +7,16 @@ import * as NOTIFICATION from 'actions/constants/notification';
 import * as SIGN_VERIFY from './constants/signVerify';
 
 export type SignVerifyAction = {
-    type: typeof SIGN_VERIFY.SIGN_SUCCESS,
-    signature: string
-} | {
     type: typeof SIGN_VERIFY.SIGN_PROGRESS,
     isSignProgress: boolean
 } | {
-    type: typeof SIGN_VERIFY.CLEAR,
-    state: State
+    type: typeof SIGN_VERIFY.SIGN_SUCCESS,
+    signature: string
+} | {
+    type: typeof SIGN_VERIFY.VERIFY_PROGRESS,
+    isVerifyProgress: boolean
+} | {
+    type: typeof SIGN_VERIFY.CLEAR
 }
 
 export const sign = (

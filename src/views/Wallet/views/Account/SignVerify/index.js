@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
 import { validateAddress } from 'utils/ethUtils';
-import Icon from 'components/Icon';
 import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
@@ -70,10 +69,6 @@ class SignVerify extends Component<Props, State> {
         };
     }
 
-    getPath() {
-        return this.props.selectedAccount.account.addressPath;
-    }
-
     getAddress() {
         let result = null;
         const { selectedAccount } = this.props;
@@ -103,6 +98,8 @@ class SignVerify extends Component<Props, State> {
     }
 
     render() {
+        if (!this.props.selectedAccount.account) return null;
+
         const {
             signVerifyActions,
             signature,
@@ -152,7 +149,7 @@ class SignVerify extends Component<Props, State> {
                             >Clear
                             </Button>
                             <StyledButton
-                                onClick={() => signVerifyActions.sign(this.getPath(), this.state.signMessage)}
+                                onClick={() => signVerifyActions.sign(this.props.selectedAccount.account.addressPath, this.state.signMessage)}
                             >Sign
                             </StyledButton>
                         </RowButtons>
