@@ -9,6 +9,7 @@ import Textarea from 'components/Textarea';
 import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
+import { FONT_SIZE } from 'config/variables';
 
 import type { Props as BaseProps } from '../../Container';
 
@@ -28,6 +29,7 @@ const InputRow = styled.div`
 const InputLabelWrapper = styled.div`
     display: flex;
     align-items: center;
+    justify-content: space-between;
 `;
 
 const GreenSpan = styled.span`
@@ -110,6 +112,18 @@ const getDataTextareaState = (dataError: string, dataWarning: string): string =>
     return state;
 };
 
+const Left = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const Right = styled.div`
+    display: flex;
+    flex-direction: row;
+    font-size: ${FONT_SIZE.SMALLER};
+    cursor: pointer;
+`;
+
 // stateless component
 const AdvancedForm = (props: Props) => {
     const {
@@ -155,25 +169,30 @@ const AdvancedForm = (props: Props) => {
                     spellCheck="false"
                     topLabel={(
                         <InputLabelWrapper>
+                            <Left>
                             Gas limit
-                            <Tooltip
-                                content={(
-                                    <React.Fragment>
+                                <Tooltip
+                                    content={(
+                                        <React.Fragment>
                                         Gas limit refers to the maximum amount of gas user is willing to spendon a particular transaction.{' '}
-                                        <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>.{' '}Increasing the gas limit will not get the transaction confirmed sooner.
+                                            <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>.{' '}Increasing the gas limit will not get the transaction confirmed sooner.
                                         Default value for sending {gasLimitTooltipCurrency} is <GreenSpan>{gasLimitTooltipValue}</GreenSpan>.
-                                    </React.Fragment>
-                                )}
-                                maxWidth={410}
-                                readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
-                                placement="top"
-                            >
-                                <Icon
-                                    icon={ICONS.HELP}
-                                    color={colors.TEXT_SECONDARY}
-                                    size={24}
-                                />
-                            </Tooltip>
+                                        </React.Fragment>
+                                    )}
+                                    maxWidth={410}
+                                    readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
+                                    placement="top"
+                                >
+                                    <Icon
+                                        icon={ICONS.HELP}
+                                        color={colors.TEXT_SECONDARY}
+                                        size={24}
+                                    />
+                                </Tooltip>
+                            </Left>
+                            <Right>
+                                    Set default
+                            </Right>
                         </InputLabelWrapper>
                     )}
                     bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit || (calculatingGasLimit ? 'Calculating...' : '')}
