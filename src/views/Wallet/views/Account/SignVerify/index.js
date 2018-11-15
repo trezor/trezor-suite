@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
-import ICONS from 'config/icons';
 import { validateAddress } from 'utils/ethUtils';
 import Icon from 'components/Icon';
 import Title from 'views/Wallet/components/Title';
@@ -51,11 +50,6 @@ const Verify = styled(Column)`
 const Label = styled.div`
     color: ${colors.TEXT_SECONDARY};
     padding: 5px 0px 10px 0;
-`;
-
-const StyledIcon = styled(Icon)`
-    position: relative;
-    left: 0;
 `;
 
 type State = {
