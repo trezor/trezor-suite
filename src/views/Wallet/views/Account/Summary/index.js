@@ -75,11 +75,12 @@ const AccountSummary = (props: Props) => {
         network,
         tokens,
         pending,
+        notification,
         shouldRender,
     } = props.selectedAccount;
 
-    // flow
-    if (!device || !account || !network || !shouldRender) return null;
+    const { type, title, message } = notification;
+    if (!device || !account || !network || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
 
     const explorerLink: string = `${network.explorer.address}${account.address}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
