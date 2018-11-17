@@ -384,6 +384,23 @@ export const onDataChange = (data: string): ThunkAction => (dispatch: Dispatch, 
     dispatch(estimateGasPrice());
 };
 
+export const setDefaultGasLimit = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const state: State = getState().sendForm;
+    const { network } = getState().selectedAccount;
+    if (!network) return;
+
+    dispatch({
+        type: SEND.CHANGE,
+        state: {
+            ...state,
+            calculatingGasLimit: false,
+            untouched: false,
+            touched: { ...state.touched, gasLimit: true },
+            gasLimit: network.defaultGasLimit.toString(),
+        },
+    });
+};
+
 /*
 * Internal method
 * Called from "onDataChange" action
@@ -548,6 +565,7 @@ export default {
     updateFeeLevels,
     onGasPriceChange,
     onGasLimitChange,
+    setDefaultGasLimit,
     onNonceChange,
     onDataChange,
     onSend,

@@ -143,11 +143,11 @@ const AdvancedForm = (props: Props) => {
         gasPrice,
     } = props.sendForm;
     const {
+        setDefaultGasLimit,
         onGasLimitChange,
         onGasPriceChange,
         onDataChange,
     } = props.sendFormActions;
-
     let gasLimitTooltipCurrency: string;
     let gasLimitTooltipValue: string;
     if (networkSymbol !== currency) {
@@ -190,8 +190,8 @@ const AdvancedForm = (props: Props) => {
                                     />
                                 </Tooltip>
                             </Left>
-                            <Right>
-                                    Set default
+                            <Right onClick={() => setDefaultGasLimit()}>
+                                Set default
                             </Right>
                         </InputLabelWrapper>
                     )}
