@@ -7,16 +7,10 @@ import * as NOTIFICATION from 'actions/constants/notification';
 import * as SIGN_VERIFY from './constants/signVerify';
 
 export type SignVerifyAction = {
-    type: typeof SIGN_VERIFY.SIGN_PROGRESS,
-    isSignProgress: boolean
-} | {
     type: typeof SIGN_VERIFY.SIGN_SUCCESS,
     signature: string
 } | {
-    type: typeof SIGN_VERIFY.VERIFY_PROGRESS,
-    isVerifyProgress: boolean
-} | {
-    type: typeof SIGN_VERIFY.CLEAR
+    type: typeof SIGN_VERIFY.CLEAR,
 }
 
 export const sign = (
@@ -26,8 +20,6 @@ export const sign = (
 ): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
-
-    dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: true });
 
     const response = await TrezorConnect.ethereumSignMessage({
         device: {
@@ -40,8 +32,6 @@ export const sign = (
         message,
         useEmptyPassphrase: selected.useEmptyPassphrase,
     });
-
-    dispatch({ type: SIGN_VERIFY.SIGN_PROGRESS, isSignProgress: false });
 
     if (response && response.success) {
         dispatch({
@@ -77,8 +67,6 @@ export const verify = (
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
 
-    dispatch({ type: SIGN_VERIFY.VERIFY_PROGRESS, isVerifyProgress: true });
-
     const response = await TrezorConnect.ethereumVerifyMessage({
         device: {
             path: selected.path,
@@ -91,8 +79,6 @@ export const verify = (
         hex,
         useEmptyPassphrase: selected.useEmptyPassphrase,
     });
-
-    dispatch({ type: SIGN_VERIFY.VERIFY_PROGRESS, isVerifyProgress: false });
 
     if (response && response.success) {
         dispatch({

@@ -69,15 +69,6 @@ class SignVerify extends Component<Props, State> {
         };
     }
 
-    getAddress() {
-        let result = null;
-        const { selectedAccount } = this.props;
-        if (selectedAccount.account && selectedAccount.account.address) {
-            result = selectedAccount.account.address;
-        }
-        return result || 'loading...';
-    }
-
     handleInputChange = (event: SyntheticInputEvent<Text>) => {
         this.setState({ [event.target.name]: event.target.value });
     }
@@ -120,7 +111,7 @@ class SignVerify extends Component<Props, State> {
                             <Label>Address</Label>
                             <Input
                                 name="signAddress"
-                                value={this.getAddress()}
+                                value={account.address}
                                 height={50}
                                 type="text"
                                 isSmallText
@@ -156,7 +147,7 @@ class SignVerify extends Component<Props, State> {
                             >Clear
                             </Button>
                             <StyledButton
-                                onClick={() => signVerifyActions.sign(this.props.selectedAccount.account.addressPath, this.state.signMessage)}
+                                onClick={() => signVerifyActions.sign(account.addressPath, this.state.signMessage)}
                             >Sign
                             </StyledButton>
                         </RowButtons>

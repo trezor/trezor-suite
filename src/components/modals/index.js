@@ -65,7 +65,7 @@ const ModalWindow = styled.div`
 const getDeviceContextModal = (props: Props) => {
     const { modal, modalActions } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE) return null;
-
+    console.log('modal.windowType', modal.windowType);
     switch (modal.windowType) {
         case UI.REQUEST_PIN:
             return (
@@ -90,6 +90,9 @@ const getDeviceContextModal = (props: Props) => {
 
         case 'ButtonRequest_SignTx':
             return <ConfirmSignTx device={modal.device} sendForm={props.sendForm} />;
+
+        case 'ButtonRequest_ProtectCall':
+            return <ConfirmAction />;
 
         case 'ButtonRequest_Other':
             return <ConfirmAction />;

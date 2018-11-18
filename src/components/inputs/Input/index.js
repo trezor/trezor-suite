@@ -228,7 +228,7 @@ Input.propTypes = {
     sideAddons: PropTypes.arrayOf(PropTypes.node),
     isDisabled: PropTypes.bool,
     name: PropTypes.string,
-    isSmallText: PropTypes.string,
+    isSmallText: PropTypes.bool,
     isPartiallyHidden: PropTypes.bool,
 };
 
