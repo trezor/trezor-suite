@@ -8,7 +8,7 @@ const Wrapper = styled.div`
     font-size: ${FONT_SIZE.WALLET_TITLE};
     font-weight: ${FONT_WEIGHT.BASE};
     color: ${colors.WALLET_TITLE};
-    padding-bottom: 25px;
+    padding-bottom: 35px;
 `;
 
 const Title = ({

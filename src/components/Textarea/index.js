@@ -18,10 +18,9 @@ const disabledColor = colors.TEXT_PRIMARY;
 const StyledTextarea = styled(Textarea)`
     width: 100%;
     min-height: 85px;
-    margin-bottom: 10px;
     padding: 10px 12px;
     box-sizing: border-box;
-    border: 1px solid ${props => (props.borderColor ? props.borderColor : colors.DIVIDER)};
+    border: 1px solid ${props => (props.colorBorder ? props.colorBorder : colors.DIVIDER)};
     border-radius: 2px;
     resize: none;
     outline: none;
@@ -95,7 +94,7 @@ const StyledTextarea = styled(Textarea)`
 `;
 
 const TopLabel = styled.span`
-    padding-bottom: 4px;
+    padding-bottom: 8px;
     color: ${colors.TEXT_SECONDARY};
 `;
 
@@ -159,6 +158,7 @@ const TextArea = ({
     state = '',
     bottomText = '',
     trezorAction = null,
+    ...rest
 }) => (
     <Wrapper className={className}>
         {topLabel && (
@@ -179,8 +179,7 @@ const TextArea = ({
             value={value}
             placeholder={placeholder}
             onChange={onChange}
-            borderColor={getColor(state)}
-            trezorAction={trezorAction}
+            {... rest}
         />
         <TrezorAction action={trezorAction}>
             <ArrowUp />{trezorAction}

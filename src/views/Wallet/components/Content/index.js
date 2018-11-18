@@ -58,7 +58,7 @@ const Content = ({
 );
 
 Content.propTypes = {
-    children: PropTypes.element,
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.array]),
     isLoading: PropTypes.bool,
     title: PropTypes.string,
     message: PropTypes.string,

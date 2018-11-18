@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 `;
 
 const Row = styled.div`
-    padding: 0 0 10px 0;
+    padding: 0 0 25px 0;
 `;
 
 const RowButtons = styled(Row)`
@@ -108,8 +108,8 @@ class SignVerify extends Component<Props, State> {
                 <Wrapper>
                     <Sign>
                         <Row>
-                            <Label>Address</Label>
                             <Input
+                                topLabel="Address"
                                 name="signAddress"
                                 value={account.address}
                                 height={50}
@@ -119,8 +119,8 @@ class SignVerify extends Component<Props, State> {
                             />
                         </Row>
                         <Row>
-                            <Label>Message</Label>
                             <Textarea
+                                topLabel="Message"
                                 name="signMessage"
                                 value={this.state.signMessage}
                                 onChange={this.handleInputChange}
@@ -130,8 +130,8 @@ class SignVerify extends Component<Props, State> {
                             />
                         </Row>
                         <Row>
-                            <Label>Signature</Label>
                             <Textarea
+                                topLabel="Signature"
                                 name="signSignature"
                                 value={signature}
                                 rows={4}
@@ -154,8 +154,8 @@ class SignVerify extends Component<Props, State> {
                     </Sign>
                     <Verify>
                         <Row>
-                            <Label>Address</Label>
                             <Input
+                                topLabel="Address"
                                 name="verifyAddress"
                                 value={this.state.verifyAddress}
                                 onChange={this.handleInputChange}
@@ -166,8 +166,8 @@ class SignVerify extends Component<Props, State> {
                             />
                         </Row>
                         <Row>
-                            <Label>Message</Label>
                             <Textarea
+                                topLabel="Message"
                                 name="verifyMessage"
                                 value={this.state.verifyMessage}
                                 onChange={this.handleInputChange}
@@ -177,8 +177,8 @@ class SignVerify extends Component<Props, State> {
                             />
                         </Row>
                         <Row>
-                            <Label>Signature</Label>
                             <Textarea
+                                topLabel="Signature"
                                 name="verifySignature"
                                 value={this.state.verifySignature}
                                 onChange={this.handleInputChange}
