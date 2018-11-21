@@ -1,6 +1,20 @@
 {
     "networks": [
         {
+            "type": "ripple",
+            "name": "Ripple Testnet",
+            "symbol": "XRP",
+            "shortcut": "xrp",
+            "bip44": "m/44'/144'/a'/0/0",
+            "explorer": {
+                "tx": "https://etherscan.io/tx/",
+                "address": "https://etherscan.io/address/"
+            }
+        }
+    ],
+    "networks2": [
+        {
+            "type": "ethereum",
             "name": "Ethereum",
             "symbol": "ETH",
             "shortcut": "eth",
@@ -19,6 +33,7 @@
             }
         },
         {
+            "type": "ethereum",
             "name": "Ethereum Classic",
             "symbol": "ETC",
             "shortcut": "etc",
@@ -37,6 +52,7 @@
             }
         },
         { 
+            "type": "ethereum",
             "name": "Ethereum Ropsten",
             "symbol": "tROP",
             "shortcut": "trop",
@@ -64,6 +80,10 @@
         { 
             "network": "etc",
             "url": "https://api.coingecko.com/api/v3/coins/ethereum-classic"
+        },
+        { 
+            "network": "xrp",
+            "url": "https://api.coingecko.com/api/v3/coins/ripple"
         }
     ],
 
