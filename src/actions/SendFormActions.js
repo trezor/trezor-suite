@@ -389,14 +389,17 @@ export const setDefaultGasLimit = (): ThunkAction => (dispatch: Dispatch, getSta
     const { network } = getState().selectedAccount;
     if (!network) return;
 
+    const isToken = state.currency !== state.networkSymbol;
+    const gasLimit = isToken ? network.defaultGasLimitTokens.toString() : network.defaultGasLimit.toString();
+
     dispatch({
         type: SEND.CHANGE,
         state: {
             ...state,
             calculatingGasLimit: false,
             untouched: false,
-            touched: { ...state.touched, gasLimit: true },
-            gasLimit: network.defaultGasLimit.toString(),
+            touched: { ...state.touched, gasLimit: false },
+            gasLimit,
         },
     });
 };
