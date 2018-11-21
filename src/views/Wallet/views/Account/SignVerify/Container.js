@@ -3,7 +3,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as SignVerifyActions from 'actions/SignVerifyActions';
+import SignVerifyActions from 'actions/SignVerifyActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 import Component from './index';

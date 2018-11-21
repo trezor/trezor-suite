@@ -13,7 +13,7 @@ export type SignVerifyAction = {
     type: typeof SIGN_VERIFY.CLEAR,
 }
 
-export const sign = (
+const sign = (
     path: Array<number>,
     message: string,
     hex: boolean = false,
@@ -58,7 +58,7 @@ export const sign = (
     }
 };
 
-export const verify = (
+const verify = (
     address: string,
     message: string,
     signature: string,
@@ -111,8 +111,14 @@ export const verify = (
     }
 };
 
-export const clear = (): ThunkAction => (dispatch: Dispatch): void => {
+const clear = (): ThunkAction => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.CLEAR,
     });
+};
+
+export default {
+    sign,
+    verify,
+    clear,
 };
