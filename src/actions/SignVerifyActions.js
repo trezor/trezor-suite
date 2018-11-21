@@ -123,15 +123,22 @@ const inputChange = (name, value): ThunkAction => (dispatch: Dispatch): void => 
     });
 };
 
-const clear = (): ThunkAction => (dispatch: Dispatch): void => {
+const clearSign = (): ThunkAction => (dispatch: Dispatch): void => {
     dispatch({
-        type: SIGN_VERIFY.CLEAR,
+        type: SIGN_VERIFY.CLEAR_SIGN,
+    });
+};
+
+const clearVerify = (): ThunkAction => (dispatch: Dispatch): void => {
+    dispatch({
+        type: SIGN_VERIFY.CLEAR_VERIFY,
     });
 };
 
 export default {
     sign,
     verify,
-    clear,
+    clearSign,
+    clearVerify,
     inputChange,
 };

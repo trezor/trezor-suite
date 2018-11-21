@@ -1,6 +1,6 @@
 /* @flow */
 import type { Action } from 'flowtype';
-import * as SIGN_VERIFY from 'actions/constants/signVerify';
+import * as ACTION from 'actions/constants/signVerify';
 
 export type State = {
     signAddress: string,
@@ -24,13 +24,13 @@ export const initialState: State = {
 
 export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
-        case SIGN_VERIFY.SIGN_SUCCESS:
+        case ACTION.SIGN_SUCCESS:
             return {
                 ...initialState,
                 signature: action.signature,
             };
 
-        case SIGN_VERIFY.TOUCH: {
+        case ACTION.TOUCH: {
             if (!state.touched.includes(action.name)) {
                 return {
                     ...state,
@@ -40,14 +40,25 @@ export default (state: State = initialState, action: Action): State => {
             return state;
         }
 
-        case SIGN_VERIFY.INPUT_CHANGE: {
+        case ACTION.INPUT_CHANGE: {
             const changes = { [action.name]: action.value };
             return { ...state, ...changes };
         }
 
-        case SIGN_VERIFY.CLEAR:
+        case ACTION.CLEAR_SIGN:
             return {
-                ...initialState,
+                ...state,
+                signAddress: '',
+                signMessage: '',
+                signSignature: '',
+            };
+
+        case ACTION.CLEAR_VERIFY:
+            return {
+                ...state,
+                verifyAddress: '',
+                verifyMessage: '',
+                verifySignature: '',
             };
 
         default:

@@ -56,12 +56,7 @@ type State = {
 
 class SignVerify extends Component<Props, State> {
     handleInputChange = (event: SyntheticInputEvent<Text>) => {
-        const touched = true;
-        this.props.signVerifyActions.inputChange(
-            event.target.name,
-            event.target.value,
-            touched,
-        );
+        this.props.signVerifyActions.inputChange(event.target.name, event.target.value);
     }
 
     render() {
@@ -73,19 +68,17 @@ class SignVerify extends Component<Props, State> {
         if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
         const {
             signVerifyActions,
-            signVerify,
+            signVerify: {
+                signAddress,
+                signMessage,
+                signSignature,
+                verifyAddress,
+                verifyMessage,
+                verifySignature,
+                touched,
+            },
         } = this.props;
 
-        const {
-            signAddress,
-            signMessage,
-            signSignature,
-            verifyAddress,
-            verifyMessage,
-            verifySignature,
-            touched,
-        } = signVerify;
-        console.log(touched);
         return (
             <Content>
                 <Title>Sign & Verify</Title>
