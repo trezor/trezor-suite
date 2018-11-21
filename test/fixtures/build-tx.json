@@ -1034,5 +1034,96 @@
       },
       "type": "final"
     }
+  },
+  {
+    "description": "builds a tx wit op-return and change",
+    "request": {
+      "basePath": [
+        44,
+        1
+      ],
+      "changeAddress": "1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT",
+      "changeId": 0,
+      "dustThreshold": 546,
+      "feeRate": 10,
+      "height": 100,
+      "inputAmounts": false,
+      "outputs": [
+        {
+          "dataHex": "deadbeef",
+          "type": "opreturn"
+        }
+      ],
+      "segwit": false,
+      "utxos": [
+        {
+          "addressPath": [
+            3,
+            4
+          ],
+          "coinbase": false,
+          "fee": 0,
+          "height": 100,
+          "index": 0,
+          "own": true,
+          "transactionHash": "b4dc0ffeee",
+          "tsize": 0,
+          "value": 102001,
+          "vsize": 0
+        }
+      ]
+    },
+    "result": {
+      "bytes": 210,
+      "fee": 2100,
+      "feePerByte": 10,
+      "max": -1,
+      "totalSpent": 2100,
+      "transaction": {
+        "PERM_outputs": {
+          "permutation": [
+            0,
+            1
+          ],
+          "sorted": [
+            {
+              "opReturnData": {
+                "type": "Buffer",
+                "data": [
+                  222,
+                  173,
+                  190,
+                  239
+                ]
+              }
+            },
+            {
+              "path": [
+                44,
+                1,
+                1,
+                0
+              ],
+              "segwit": false,
+              "value": 99901
+            }
+          ]
+        },
+        "inputs": [
+          {
+            "REV_hash": "b4dc0ffeee",
+            "index": 0,
+            "path": [
+              44,
+              1,
+              3,
+              4
+            ],
+            "segwit": false
+          }
+        ]
+      },
+      "type": "final"
+    }
   }
 ]

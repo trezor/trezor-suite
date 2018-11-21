@@ -18,7 +18,9 @@ describe('build tx', () => {
                     delete input.REV_hash;
                 });
                 const o = result.transaction.PERM_outputs;
-                result.transaction.outputs = new Permutation(o.sorted, o.permutation);
+                const sorted = JSON.parse(JSON.stringify(o.sorted));
+                sorted.forEach(s => { if (s.opReturnData != null) { s.opReturnData = new Buffer(s.opReturnData); } });
+                result.transaction.outputs = new Permutation(sorted, o.permutation);
                 delete result.transaction.PERM_outputs;
             }
             assert.deepEqual(buildTx(request), result);
