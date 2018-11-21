@@ -55,13 +55,10 @@ class Link extends PureComponent {
         } else {
             LinkComponent = (
                 <A
-                    className={this.props.className}
                     href={this.props.href}
                     target={this.props.target || '_blank'}
                     rel="noreferrer noopener"
-                    onClick={this.props.onClick}
-                    isGreen={this.props.isGreen}
-                    isGray={this.props.isGray}
+                    {...this.props}
                 >{this.props.children}
                 </A>
             );
