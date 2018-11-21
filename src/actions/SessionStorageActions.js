@@ -1,5 +1,6 @@
 /* @flow */
 import * as storageUtils from 'utils/storage';
+import { findToken } from 'reducers/TokensReducer';
 
 import type { State as SendFormState } from 'reducers/SendFormReducer';
 import type {
@@ -37,6 +38,16 @@ export const loadDraftTransaction = (): PayloadAction<?SendFormState> => (dispat
     if (Object.keys(state.errors).length > 0) {
         storageUtils.remove(TYPE, key);
         return null;
+    }
+    // check if selected currency is token and make sure that this token is added into account
+    if (state.currency !== state.networkSymbol) {
+        const { account, tokens } = getState().selectedAccount;
+        if (!account) return null;
+        const token = findToken(tokens, account.address, state.currency, account.deviceState);
+        if (!token) {
+            storageUtils.remove(TYPE, key);
+            return null;
+        }
     }
     return state;
 };

@@ -90,8 +90,20 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
     let shouldUpdate: boolean = false;
     // check if "selectedAccount" reducer changed
     shouldUpdate = reducerUtils.observeChanges(prevState.selectedAccount, currentState.selectedAccount, {
-        account: ['balance', 'nonce'],
+        account: ['balance', 'nonce', 'tokens'],
     });
+    if (shouldUpdate && currentState.sendForm.currency !== currentState.sendForm.networkSymbol) {
+        // make sure that this token is added into account
+        const { account, tokens } = getState().selectedAccount;
+        if (!account) return;
+        const token = findToken(tokens, account.address, currentState.sendForm.currency, account.deviceState);
+        if (!token) {
+            // token not found, re-init form
+            dispatch(init());
+            return;
+        }
+    }
+
 
     // check if "sendForm" reducer changed
     if (!shouldUpdate) {
