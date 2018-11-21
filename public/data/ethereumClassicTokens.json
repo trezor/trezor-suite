@@ -1,14 +1,14 @@
 [
   {
-    "address": "0x6F6DEb5db0C4994A8283A01D6CFeEB27Fc3bBe9C",
-    "name": "SmartBillions",
-    "symbol": "Smart",
-    "decimals": 0
+    "address": "0x085fb4f24031EAedbC2B611AA528f22343eB52Db",
+    "decimals": 8,
+    "name": "BEC",
+    "symbol": "BEC"
   },
   {
-   "address": "0x5ace17f87c7391e5792a7683069a8025b83bbd85",
-   "name": "SmartBillions Token",
-   "symbol": "PLAY",
-   "decimals": 0
+    "address": "0x6ADa6F48C815689502C43eC1a59F1b5DD3C04E1F",
+    "decimals": 18,
+    "name": "UniversalCoin",
+    "symbol": "UNV"
   }
 ]
