@@ -138,6 +138,7 @@ const AdvancedForm = (props: Props) => {
         errors,
         warnings,
         infos,
+        touched,
         data,
         gasLimit,
         gasPrice,
@@ -157,6 +158,8 @@ const AdvancedForm = (props: Props) => {
         gasLimitTooltipCurrency = networkSymbol;
         gasLimitTooltipValue = network.defaultGasLimit.toString(10);
     }
+
+    const showDefaultGasLimitButton = data.length === 0 && touched.gasLimit;
 
     return (
         <AdvancedSettingsWrapper>
@@ -190,13 +193,15 @@ const AdvancedForm = (props: Props) => {
                                     />
                                 </Tooltip>
                             </Left>
-                            <Right onClick={() => setDefaultGasLimit()}>
-                                Set default
-                            </Right>
+                            { showDefaultGasLimitButton && (
+                                <Right onClick={() => setDefaultGasLimit()}>
+                                    Set default
+                                </Right>)
+                            }
                         </InputLabelWrapper>
                     )}
-                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit || (calculatingGasLimit ? 'Calculating...' : '')}
-                    value={gasLimit}
+                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
+                    value={calculatingGasLimit ? 'Calculating...' : gasLimit}
                     isDisabled={networkSymbol === currency && data.length > 0}
                     onChange={event => onGasLimitChange(event.target.value)}
                 />
