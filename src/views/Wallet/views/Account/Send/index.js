@@ -185,7 +185,7 @@ const AccountSend = (props: Props) => {
         discovery,
         tokens,
         shouldRender,
-        notification,
+        loader,
     } = props.selectedAccount;
     const {
         address,
@@ -214,7 +214,7 @@ const AccountSend = (props: Props) => {
         updateFeeLevels,
         onSend,
     } = props.sendFormActions;
-    const { type, title, message } = notification;
+    const { type, title, message } = loader;
     if (!device || !account || !discovery || !network || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
 
     const isCurrentCurrencyToken = networkSymbol !== currency;

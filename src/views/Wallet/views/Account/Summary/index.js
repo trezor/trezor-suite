@@ -74,11 +74,12 @@ const AccountSummary = (props: Props) => {
         network,
         tokens,
         pending,
-        notification,
+        loader,
         shouldRender,
     } = props.selectedAccount;
 
-    const { type, title, message } = notification;
+    const { type, title, message } = loader;
+
     if (!device || !account || !network || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
 
     const explorerLink: string = `${network.explorer.address}${account.address}`;

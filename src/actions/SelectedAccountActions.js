@@ -38,36 +38,27 @@ export const dispose = (): Action => ({
     type: ACCOUNT.DISPOSE,
 });
 
-const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
+const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
     const device = state.wallet.selectedDevice;
-    if (!device || !device.state) {
-        return {
-            type: 'loader-progress',
-            title: 'Loading device...',
-            shouldRender: false,
-        };
-    }
-
     const {
         account,
         discovery,
         network,
     } = selectedAccount;
 
-    // corner case: accountState didn't finish loading state after LOCATION_CHANGE action
-    if (!network) {
+    if (!device || !device.state) {
         return {
-            type: 'loader-progress',
-            title: 'Loading account state...',
+            type: 'progress',
+            title: 'Loading device...',
             shouldRender: false,
         };
     }
 
-    const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
-    if (blockchain && !blockchain.connected) {
+    // corner case: accountState didn't finish loading state after LOCATION_CHANGE action
+    if (!network) {
         return {
-            type: 'backend',
-            title: `${network.name} backend is not connected`,
+            type: 'progress',
+            title: 'Loading account state...',
             shouldRender: false,
         };
     }
@@ -79,14 +70,14 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
                 // case 1: device is connected but discovery not started yet (probably waiting for auth)
                 if (device.available) {
                     return {
-                        type: 'loader-progress',
+                        type: 'progress',
                         title: 'Authenticating device...',
                         shouldRender: false,
                     };
                 }
                 // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
                 return {
-                    type: 'loader-info',
+                    type: 'info',
                     title: `Device ${device.instanceLabel} is unavailable`,
                     message: 'Change passphrase settings to use this device',
                     shouldRender: false,
@@ -95,7 +86,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
 
             // case 3: device is disconnected
             return {
-                type: 'loader-info',
+                type: 'info',
                 title: `Device ${device.instanceLabel} is disconnected`,
                 message: 'Connect device to load accounts',
                 shouldRender: false,
@@ -105,28 +96,46 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         if (discovery.completed) {
             // case 4: account not found and discovery is completed
             return {
-                type: 'loader-info',
+                type: 'info',
                 title: 'Account does not exist',
                 shouldRender: false,
             };
         }
     }
 
-    // Additional status: account does exists and it's visible but shouldn't be active
-    if (!device.connected) {
-        return {
-            type: 'info',
-            title: `Device ${device.instanceLabel} is disconnected`,
-            shouldRender: true,
-        };
-    }
-    if (!device.available) {
-        return {
-            type: 'info',
-            title: `Device ${device.instanceLabel} is unavailable`,
-            message: 'Change passphrase settings to use this device',
-            shouldRender: true,
-        };
+    return null;
+};
+
+const getAccountNotification = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
+    const device = state.wallet.selectedDevice;
+    const { network } = selectedAccount;
+
+    if (device && network) {
+        const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
+        if (blockchain && !blockchain.connected) {
+            return {
+                type: 'backend',
+                title: `${network.name} backend is not connected`,
+                shouldRender: false,
+            };
+        }
+
+        // Additional status: account does exists and it's visible but shouldn't be active
+        if (!device.connected) {
+            return {
+                type: 'info',
+                title: `Device ${device.instanceLabel} is disconnected`,
+                shouldRender: true,
+            };
+        }
+        if (!device.available) {
+            return {
+                type: 'info',
+                title: `Device ${device.instanceLabel} is unavailable`,
+                message: 'Change passphrase settings to use this device',
+                shouldRender: true,
+            };
+        }
     }
 
     return null;
@@ -152,13 +161,18 @@ const actions = [
 export const observe = (prevState: State, action: Action): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
     // ignore not listed actions
     if (actions.indexOf(action.type) < 0) return false;
-
     const state: State = getState();
     const notification = {
         type: null,
         message: null,
         title: null,
     };
+    const loader = {
+        type: null,
+        message: null,
+        title: null,
+    };
+
     const { location } = state.router;
     // displayed route is not an account route
     if (!location.state.account) return false;
@@ -179,13 +193,18 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
         tokens,
         pending,
         notification,
+        loader,
         shouldRender: false,
     };
 
     // get "selectedAccount" status from newState
-    const status = getAccountStatus(state, newState);
-    newState.notification = status || notification;
-    newState.shouldRender = status ? status.shouldRender : true;
+    const statusNotification = getAccountNotification(state, newState);
+    const statusLoader = getAccountLoader(state, newState);
+    const shouldRender = (statusNotification && statusLoader) ? (statusNotification.shouldRender || statusLoader.shouldRender) : true;
+
+    newState.notification = statusNotification || notification;
+    newState.shouldRender = shouldRender;
+    newState.loader = statusLoader || loader;
     // check if newState is different than previous state
     const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, {
         account: ['balance', 'nonce'],
