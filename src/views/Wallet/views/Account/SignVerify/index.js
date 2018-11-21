@@ -50,7 +50,8 @@ type State = {
     signMessage: string,
     verifyAddress: string,
     verifyMessage: string,
-    verifySignature: string
+    verifySignature: string,
+    touched: Array<string>
 }
 
 class SignVerify extends Component<Props, State> {
@@ -61,10 +62,22 @@ class SignVerify extends Component<Props, State> {
             verifyAddress: '',
             verifyMessage: '',
             verifySignature: '',
+            touched: [],
         };
     }
 
+    setTouchedInput = (inputName: string) => {
+        if (!this.state.touched.includes(inputName)) {
+            this.setState(prevState => ({
+                touched: [...prevState.touched, inputName],
+            }));
+        }
+    }
+
+    shouldValidate = (inputName: string) => this.state.touched.includes(inputName)
+
     handleInputChange = (event: SyntheticInputEvent<Text>) => {
+        this.setTouchedInput(event.target.name);
         this.setState({ [event.target.name]: event.target.value });
     }
 
@@ -155,8 +168,8 @@ class SignVerify extends Component<Props, State> {
                                 value={this.state.verifyAddress}
                                 onChange={this.handleInputChange}
                                 type="text"
-                                state={(this.state.verifyAddress && validateAddress(this.state.verifyAddress)) ? 'error' : null}
-                                bottomText={this.state.verifyAddress !== '' ? validateAddress(this.state.verifyAddress) : null}
+                                state={(this.shouldValidate('verifyAddress') && validateAddress(this.state.verifyAddress)) ? 'error' : null}
+                                bottomText={this.shouldValidate('verifyAddress') ? validateAddress(this.state.verifyAddress) : null}
                                 isSmallText
                             />
                         </Row>
