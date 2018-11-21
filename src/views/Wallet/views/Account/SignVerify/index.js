@@ -46,11 +46,6 @@ const Verify = styled(Column)`
     padding-left: 20px;
 `;
 
-const Label = styled.div`
-    color: ${colors.TEXT_SECONDARY};
-    padding: 5px 0px 10px 0;
-`;
-
 type State = {
     signMessage: string,
     verifyAddress: string,
