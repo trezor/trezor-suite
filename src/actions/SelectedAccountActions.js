@@ -121,7 +121,7 @@ const getAccountNotification = (state: State, selectedAccount: SelectedAccountSt
         }
 
         if (discovery) {
-            if (discovery && !discovery.completed) {
+            if (discovery && !discovery.completed && !discovery.waitingForDevice) {
                 return {
                     type: 'info',
                     title: 'Loading accounts...',
