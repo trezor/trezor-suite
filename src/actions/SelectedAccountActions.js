@@ -108,7 +108,7 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
 
 const getAccountNotification = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
     const device = state.wallet.selectedDevice;
-    const { network } = selectedAccount;
+    const { network, discovery } = selectedAccount;
 
     if (device && network) {
         const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
@@ -118,6 +118,16 @@ const getAccountNotification = (state: State, selectedAccount: SelectedAccountSt
                 title: `${network.name} backend is not connected`,
                 shouldRender: false,
             };
+        }
+
+        if (discovery) {
+            if (discovery && !discovery.completed) {
+                return {
+                    type: 'info',
+                    title: 'Loading accounts...',
+                    shouldRender: true,
+                };
+            }
         }
 
         // Additional status: account does exists and it's visible but shouldn't be active
