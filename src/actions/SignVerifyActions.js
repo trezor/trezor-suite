@@ -111,6 +111,18 @@ const verify = (
     }
 };
 
+const inputChange = (name, value): ThunkAction => (dispatch: Dispatch): void => {
+    dispatch({
+        type: SIGN_VERIFY.INPUT_CHANGE,
+        name,
+        value,
+    });
+    dispatch({
+        type: SIGN_VERIFY.TOUCH,
+        name,
+    });
+};
+
 const clear = (): ThunkAction => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.CLEAR,
@@ -121,4 +133,5 @@ export default {
     sign,
     verify,
     clear,
+    inputChange,
 };

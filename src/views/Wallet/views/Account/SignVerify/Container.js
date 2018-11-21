@@ -25,7 +25,7 @@ export type Props = StateProps & DispatchProps;
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     wallet: state.wallet,
     selectedAccount: state.selectedAccount,
-    signature: state.signVerifyReducer.signature,
+    signVerify: state.signVerifyReducer,
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({

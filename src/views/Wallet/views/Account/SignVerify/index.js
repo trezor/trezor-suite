@@ -55,61 +55,37 @@ type State = {
 }
 
 class SignVerify extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            signMessage: '',
-            verifyAddress: '',
-            verifyMessage: '',
-            verifySignature: '',
-            touched: [],
-        };
-    }
-
-    setTouchedInput = (inputName: string) => {
-        if (!this.state.touched.includes(inputName)) {
-            this.setState(prevState => ({
-                touched: [...prevState.touched, inputName],
-            }));
-        }
-    }
-
-    shouldValidate = (inputName: string) => this.state.touched.includes(inputName)
-
     handleInputChange = (event: SyntheticInputEvent<Text>) => {
-        this.setTouchedInput(event.target.name);
-        this.setState({ [event.target.name]: event.target.value });
-    }
-
-    clearSign =() => {
-        this.setState({
-            signMessage: '',
-        });
-        this.props.signVerifyActions.clear();
-    }
-
-    clearVerify = () => {
-        this.setState({
-            verifyAddress: '',
-            verifyMessage: '',
-            verifySignature: '',
-        });
+        const touched = true;
+        this.props.signVerifyActions.inputChange(
+            event.target.name,
+            event.target.value,
+            touched,
+        );
     }
 
     render() {
         const device = this.props.wallet.selectedDevice;
         const {
-            account,
-            discovery,
-            shouldRender,
-            notification,
+            account, discovery, shouldRender, notification,
         } = this.props.selectedAccount;
         const { type, title, message } = notification;
         if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
         const {
             signVerifyActions,
-            signature,
+            signVerify,
         } = this.props;
+
+        const {
+            signAddress,
+            signMessage,
+            signSignature,
+            verifyAddress,
+            verifyMessage,
+            verifySignature,
+            touched,
+        } = signVerify;
+        console.log(touched);
         return (
             <Content>
                 <Title>Sign & Verify</Title>
@@ -130,7 +106,7 @@ class SignVerify extends Component<Props, State> {
                             <Textarea
                                 topLabel="Message"
                                 name="signMessage"
-                                value={this.state.signMessage}
+                                value={signMessage}
                                 onChange={this.handleInputChange}
                                 rows={4}
                                 maxRows={4}
@@ -141,7 +117,7 @@ class SignVerify extends Component<Props, State> {
                             <Textarea
                                 topLabel="Signature"
                                 name="signSignature"
-                                value={signature}
+                                value={signSignature}
                                 rows={4}
                                 maxRows={4}
                                 maxLength="255"
@@ -150,12 +126,12 @@ class SignVerify extends Component<Props, State> {
                         </Row>
                         <RowButtons>
                             <Button
-                                onClick={this.clearSign}
+                                onClick={this.props.signVerifyActions.clearSign}
                                 isWhite
                             >Clear
                             </Button>
                             <StyledButton
-                                onClick={() => signVerifyActions.sign(account.addressPath, this.state.signMessage)}
+                                onClick={() => signVerifyActions.sign(signAddress, signMessage)}
                             >Sign
                             </StyledButton>
                         </RowButtons>
@@ -165,11 +141,11 @@ class SignVerify extends Component<Props, State> {
                             <Input
                                 topLabel="Address"
                                 name="verifyAddress"
-                                value={this.state.verifyAddress}
+                                value={verifyAddress}
                                 onChange={this.handleInputChange}
                                 type="text"
-                                state={(this.shouldValidate('verifyAddress') && validateAddress(this.state.verifyAddress)) ? 'error' : null}
-                                bottomText={this.shouldValidate('verifyAddress') ? validateAddress(this.state.verifyAddress) : null}
+                                state={(touched.includes('verifyAddress') && validateAddress(verifyAddress)) ? 'error' : null}
+                                bottomText={touched.includes('verifyAddress') ? validateAddress(verifyAddress) : null}
                                 isSmallText
                             />
                         </Row>
@@ -177,7 +153,7 @@ class SignVerify extends Component<Props, State> {
                             <Textarea
                                 topLabel="Message"
                                 name="verifyMessage"
-                                value={this.state.verifyMessage}
+                                value={verifyMessage}
                                 onChange={this.handleInputChange}
                                 rows={4}
                                 maxRows={4}
@@ -188,7 +164,7 @@ class SignVerify extends Component<Props, State> {
                             <Textarea
                                 topLabel="Signature"
                                 name="verifySignature"
-                                value={this.state.verifySignature}
+                                value={verifySignature}
                                 onChange={this.handleInputChange}
                                 rows={4}
                                 maxRows={4}
@@ -197,15 +173,15 @@ class SignVerify extends Component<Props, State> {
                         </Row>
                         <RowButtons>
                             <Button
-                                onClick={this.clearVerify}
+                                onClick={signVerifyActions.clearSign}
                                 isWhite
                             >Clear
                             </Button>
                             <StyledButton
                                 onClick={() => signVerifyActions.verify(
-                                    this.state.verifyAddress,
-                                    this.state.verifyMessage,
-                                    this.state.verifySignature,
+                                    verifyAddress,
+                                    verifyMessage,
+                                    verifySignature,
                                 )}
                             >Verify
                             </StyledButton>
