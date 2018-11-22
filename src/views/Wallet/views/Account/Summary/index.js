@@ -75,11 +75,12 @@ const AccountSummary = (props: Props) => {
         network,
         tokens,
         pending,
-        notification,
+        loader,
         shouldRender,
     } = props.selectedAccount;
 
-    const { type, title, message } = notification;
+    const { type, title, message } = loader;
+
     if (!device || !account || !network || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
 
     const explorerLink: string = `${network.explorer.address}${account.address}`;
@@ -125,9 +126,11 @@ const AccountSummary = (props: Props) => {
                         loadingMessage={() => 'Loading...'}
                         noOptionsMessage={() => 'Token not found'}
                         onChange={(token) => {
-                            const isAdded = tokens.find(t => t.symbol === token.symbol);
-                            if (!isAdded) {
-                                props.addToken(token, account);
+                            if (token.name) {
+                                const isAdded = tokens.find(t => t.symbol === token.symbol);
+                                if (!isAdded) {
+                                    props.addToken(token, account);
+                                }
                             }
                         }}
                         loadOptions={input => props.loadTokens(input, account.network)}
@@ -142,7 +145,6 @@ const AccountSummary = (props: Props) => {
                         getOptionValue={option => option.symbol}
                     />
                 </AsyncSelectWrapper>
-
                 <AddedTokensWrapper>
                     {tokens.map(token => (
                         <AddedToken

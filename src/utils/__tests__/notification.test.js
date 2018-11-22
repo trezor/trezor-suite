@@ -12,7 +12,7 @@ describe('device utils', () => {
         ];
 
         types.forEach((type) => {
-            expect(nUtils.getColor(type)).toMatchSnapshot();
+            expect(nUtils.getPrimaryColor(type)).toMatchSnapshot();
         });
     });
     it('get icon', () => {

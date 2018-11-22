@@ -53,7 +53,7 @@ const LandingWrapper = (props: Props) => (
                         { props.children }
                     </LandingContent>
                 )}
-                <Footer />
+                <Footer isLanding />
             </React.Fragment>
         )}
     </Wrapper>

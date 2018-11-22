@@ -45,10 +45,10 @@ const Content = ({
 }) => (
     <Wrapper>
         {(!isLoading) && children}
-        {isLoading && (type === 'loader-progress' || type === 'loader-info') && (
+        {isLoading && (type === 'progress' || type === 'info') && (
             <Loading>
                 <Row>
-                    {type === 'loader-progress' && <Loader size={30} />}
+                    {type === 'progress' && <Loader size={30} />}
                     <Text>{title || 'Initializing accounts'}</Text>
                 </Row>
                 {message && <Message>{message}</Message>}
@@ -58,7 +58,7 @@ const Content = ({
 );
 
 Content.propTypes = {
-    children: PropTypes.oneOfType([PropTypes.element, PropTypes.array]),
+    children: PropTypes.element,
     isLoading: PropTypes.bool,
     title: PropTypes.string,
     message: PropTypes.string,

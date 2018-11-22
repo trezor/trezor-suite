@@ -90,8 +90,20 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
     let shouldUpdate: boolean = false;
     // check if "selectedAccount" reducer changed
     shouldUpdate = reducerUtils.observeChanges(prevState.selectedAccount, currentState.selectedAccount, {
-        account: ['balance', 'nonce'],
+        account: ['balance', 'nonce', 'tokens'],
     });
+    if (shouldUpdate && currentState.sendForm.currency !== currentState.sendForm.networkSymbol) {
+        // make sure that this token is added into account
+        const { account, tokens } = getState().selectedAccount;
+        if (!account) return;
+        const token = findToken(tokens, account.address, currentState.sendForm.currency, account.deviceState);
+        if (!token) {
+            // token not found, re-init form
+            dispatch(init());
+            return;
+        }
+    }
+
 
     // check if "sendForm" reducer changed
     if (!shouldUpdate) {
@@ -384,6 +396,26 @@ export const onDataChange = (data: string): ThunkAction => (dispatch: Dispatch, 
     dispatch(estimateGasPrice());
 };
 
+export const setDefaultGasLimit = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const state: State = getState().sendForm;
+    const { network } = getState().selectedAccount;
+    if (!network) return;
+
+    const isToken = state.currency !== state.networkSymbol;
+    const gasLimit = isToken ? network.defaultGasLimitTokens.toString() : network.defaultGasLimit.toString();
+
+    dispatch({
+        type: SEND.CHANGE,
+        state: {
+            ...state,
+            calculatingGasLimit: false,
+            untouched: false,
+            touched: { ...state.touched, gasLimit: false },
+            gasLimit,
+        },
+    });
+};
+
 /*
 * Internal method
 * Called from "onDataChange" action
@@ -548,6 +580,7 @@ export default {
     updateFeeLevels,
     onGasPriceChange,
     onGasLimitChange,
+    setDefaultGasLimit,
     onNonceChange,
     onDataChange,
     onSend,

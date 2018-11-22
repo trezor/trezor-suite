@@ -93,9 +93,9 @@ const AccountReceive = (props: Props) => {
         account,
         discovery,
         shouldRender,
-        notification,
+        loader,
     } = props.selectedAccount;
-    const { type, title, message } = notification;
+    const { type, title, message } = loader;
     if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
 
     const {
@@ -120,6 +120,8 @@ const AccountReceive = (props: Props) => {
                     <Row>
                         <Input
                             type="text"
+                            readOnly
+                            autoSelect
                             value={address}
                             isPartiallyHidden={isAddressHidden}
                             trezorAction={isAddressVerifying ? (

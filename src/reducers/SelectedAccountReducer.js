@@ -22,6 +22,11 @@ export type State = {
         title: ?string,
         message: ?string,
     },
+    loader: {
+        type: ?string,
+        title: ?string,
+        message: ?string,
+    },
     shouldRender: boolean,
 };
 
@@ -37,6 +42,14 @@ export const initialState: State = {
         title: null,
         message: null,
     },
+<<<<<<< HEAD
+=======
+    loader: {
+        type: null,
+        title: null,
+        message: null,
+    },
+>>>>>>> master
     shouldRender: false,
 };
 

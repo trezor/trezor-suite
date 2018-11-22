@@ -38,31 +38,87 @@ export const dispose = (): Action => ({
     type: ACCOUNT.DISPOSE,
 });
 
-const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
+const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
     const device = state.wallet.selectedDevice;
-    if (!device || !device.state) {
-        return {
-            type: 'loader-progress',
-            title: 'Loading device...',
-            shouldRender: false,
-        };
-    }
-
     const {
         account,
         discovery,
         network,
     } = selectedAccount;
 
+    if (!device || !device.state) {
+        return {
+            type: 'progress',
+            title: 'Loading device...',
+            shouldRender: false,
+        };
+    }
+
     // corner case: accountState didn't finish loading state after LOCATION_CHANGE action
     if (!network) {
         return {
-            type: 'loader-progress',
+            type: 'progress',
             title: 'Loading account state...',
             shouldRender: false,
         };
     }
 
+
+    if (account) return null;
+    // account not found (yet). checking why...
+
+    if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
+        if (device.connected) {
+            // case 1: device is connected but discovery not started yet (probably waiting for auth)
+            if (device.available) {
+                return {
+                    type: 'progress',
+                    title: 'Authenticating device...',
+                    shouldRender: false,
+                };
+            }
+            // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
+            // this is related to device instance in url, it's not used for now (device clones are disabled)
+            return {
+                type: 'info',
+                title: `Device ${device.instanceLabel} is unavailable`,
+                message: 'Change passphrase settings to use this device',
+                shouldRender: false,
+            };
+        }
+
+        // case 3: device is disconnected
+        return {
+            type: 'info',
+            title: `Device ${device.instanceLabel} is disconnected`,
+            message: 'Connect device to load accounts',
+            shouldRender: false,
+        };
+    }
+
+    if (discovery.completed) {
+        // case 4: account not found and discovery is completed
+        return {
+            type: 'info',
+            title: 'Account does not exist',
+            shouldRender: false,
+        };
+    }
+
+    // case default: account information isn't loaded yet
+    return {
+        type: 'progress',
+        title: 'Loading account',
+        shouldRender: false,
+    };
+};
+
+const getAccountNotification = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
+    const device = state.wallet.selectedDevice;
+    const { account, network, discovery } = selectedAccount;
+    if (!device || !network) return null;
+
+    // case 1: backend status
     const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
     if (blockchain && !blockchain.connected) {
         return {
@@ -72,47 +128,16 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         };
     }
 
-    // account not found (yet). checking why...
-    if (!account) {
-        if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
-            if (device.connected) {
-                // case 1: device is connected but discovery not started yet (probably waiting for auth)
-                if (device.available) {
-                    return {
-                        type: 'loader-progress',
-                        title: 'Authenticating device...',
-                        shouldRender: false,
-                    };
-                }
-                // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
-                return {
-                    type: 'loader-info',
-                    title: `Device ${device.instanceLabel} is unavailable`,
-                    message: 'Change passphrase settings to use this device',
-                    shouldRender: false,
-                };
-            }
-
-            // case 3: device is disconnected
-            return {
-                type: 'loader-info',
-                title: `Device ${device.instanceLabel} is disconnected`,
-                message: 'Connect device to load accounts',
-                shouldRender: false,
-            };
-        }
-
-        if (discovery.completed) {
-            // case 4: account not found and discovery is completed
-            return {
-                type: 'loader-info',
-                title: 'Account does not exist',
-                shouldRender: false,
-            };
-        }
+    // case 2: account does exists and it's visible but shouldn't be active
+    if (account && discovery && !discovery.completed && !discovery.waitingForDevice) {
+        return {
+            type: 'info',
+            title: 'Loading other accounts...',
+            shouldRender: true,
+        };
     }
 
-    // Additional status: account does exists and it's visible but shouldn't be active
+    // case 3: account does exists and device is disconnected
     if (!device.connected) {
         return {
             type: 'info',
@@ -121,6 +146,8 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         };
     }
 
+    // case 4: account does exists and device is unavailable (created with different passphrase settings) account cannot be accessed
+    // this is related to device instance in url, it's not used for now (device clones are disabled)
     if (!device.available) {
         return {
             type: 'info',
@@ -130,6 +157,7 @@ const getAccountStatus = (state: State, selectedAccount: SelectedAccountState): 
         };
     }
 
+    // case default
     return null;
 };
 
@@ -153,13 +181,18 @@ const actions = [
 export const observe = (prevState: State, action: Action): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
     // ignore not listed actions
     if (actions.indexOf(action.type) < 0) return false;
-
     const state: State = getState();
     const notification = {
         type: null,
         message: null,
         title: null,
     };
+    const loader = {
+        type: null,
+        message: null,
+        title: null,
+    };
+
     const { location } = state.router;
     // displayed route is not an account route
     if (!location.state.account) return false;
@@ -180,13 +213,18 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
         tokens,
         pending,
         notification,
+        loader,
         shouldRender: false,
     };
 
     // get "selectedAccount" status from newState
-    const status = getAccountStatus(state, newState);
-    newState.notification = status || notification;
-    newState.shouldRender = status ? status.shouldRender : true;
+    const statusNotification = getAccountNotification(state, newState);
+    const statusLoader = getAccountLoader(state, newState);
+    const shouldRender = (statusNotification && statusLoader) ? (statusNotification.shouldRender || statusLoader.shouldRender) : true;
+
+    newState.notification = statusNotification || notification;
+    newState.shouldRender = shouldRender;
+    newState.loader = statusLoader || loader;
     // check if newState is different than previous state
     const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, {
         account: ['balance', 'nonce'],

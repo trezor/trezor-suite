@@ -41,6 +41,8 @@ build beta:
   script:
     - yarn install
     - yarn run build:beta
+  only:
+    - beta
   artifacts:
     expire_in: 1 week
     paths:
@@ -52,6 +54,8 @@ build stable:
   script:
     - yarn install
     - yarn run build:stable
+  only:
+    - stable
   artifacts:
     expire_in: 1 week
     paths:
@@ -64,6 +68,9 @@ deploy review:
     GIT_STRATEGY: none
   dependencies:
     - build development
+  environment:
+    name: $CI_BUILD_REF_NAME
+    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   script:
     - echo "Deploy a review app"
     - '[ -z "${DEPLOY_BASE_DIR}" ] && echo "Deploy base dir cannot be empty" && exit 255'

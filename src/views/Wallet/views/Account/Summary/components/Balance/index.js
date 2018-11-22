@@ -106,8 +106,7 @@ class AccountBalance extends PureComponent<Props, State> {
 
     render() {
         const { network } = this.props;
-        const fiatRate: any = this.props.fiat.find(f => f.network === network.shortcut);
-
+        const fiatRate = this.props.fiat.find(f => f.network === network.shortcut);
         let accountBalance = '';
         let fiatRateValue = '';
         let fiat = '';
@@ -116,7 +115,6 @@ class AccountBalance extends PureComponent<Props, State> {
             fiatRateValue = new BigNumber(fiatRate.value).toFixed(2);
             fiat = accountBalance.times(fiatRateValue).toFixed(2);
         }
-
 
         return (
             <Wrapper>

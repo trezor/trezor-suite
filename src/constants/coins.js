@@ -20,6 +20,11 @@ export default [
         url: '../?coin=dash',
     },
     {
+        id: 'dgb',
+        coinName: 'DigiByte',
+        url: '../?coin=dgb',
+    },
+    {
         id: 'doge',
         coinName: 'Dogecoin',
         url: '../?coin=doge',

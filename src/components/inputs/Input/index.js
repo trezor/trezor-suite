@@ -185,7 +185,9 @@ class Input extends PureComponent {
                             autocapitalize={this.props.autocapitalize}
                             spellCheck={this.props.spellCheck}
                             value={this.props.value}
+                            readOnly={this.props.readOnly}
                             onChange={this.props.onChange}
+                            onClick={this.props.autoSelect ? event => event.target.select() : null}
                             borderColor={this.getColor(this.props.state)}
                             disabled={this.props.isDisabled}
                             name={this.props.name}
@@ -220,6 +222,8 @@ Input.propTypes = {
     icon: PropTypes.node,
     spellCheck: PropTypes.string,
     value: PropTypes.string,
+    readOnly: PropTypes.bool,
+    autoSelect: PropTypes.bool,
     onChange: PropTypes.func,
     state: PropTypes.string,
     bottomText: PropTypes.string,
@@ -234,6 +238,7 @@ Input.propTypes = {
 
 Input.defaultProps = {
     type: 'text',
+    autoSelect: false,
 };
 
 export default Input;

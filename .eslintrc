@@ -43,7 +43,7 @@
     "settings": {
         "import/resolver": {
             "babel-module": {}
-          },
+        },
         "import/ignore": [
             "\\.(scss|less|css)$"
         ]
