@@ -9,7 +9,7 @@ import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
 import colors from 'config/colors';
 
-import type { Props } from './Container';
+import type { Props, SignVerifyState } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -46,15 +46,7 @@ const Verify = styled(Column)`
     padding-left: 20px;
 `;
 
-type State = {
-    signMessage: string,
-    verifyAddress: string,
-    verifyMessage: string,
-    verifySignature: string,
-    touched: Array<string>
-}
-
-class SignVerify extends Component<Props, State> {
+class SignVerify extends Component <Props, SignVerifyState> {
     handleInputChange = (event: SyntheticInputEvent<Text>) => {
         this.props.signVerifyActions.inputChange(event.target.name, event.target.value);
     }

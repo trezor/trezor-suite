@@ -15,7 +15,7 @@ export type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
 }
 
-type SignVerify = {
+export type SignVerifyState = {
     signSignature: string,
     signAddress: string,
     signMessage: string,
@@ -28,7 +28,7 @@ type SignVerify = {
 
 export type DispatchProps = {
     signVerifyActions: typeof SignVerifyActions,
-    signVerify: SignVerify
+    signVerify: SignVerifyState
 }
 
 export type Props = StateProps & DispatchProps;
