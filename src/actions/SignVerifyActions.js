@@ -8,9 +8,18 @@ import * as SIGN_VERIFY from './constants/signVerify';
 
 export type SignVerifyAction = {
     type: typeof SIGN_VERIFY.SIGN_SUCCESS,
-    signature: string
+    signSignature: string
 } | {
-    type: typeof SIGN_VERIFY.CLEAR,
+    type: typeof SIGN_VERIFY.CLEAR_SIGN,
+} | {
+    type: typeof SIGN_VERIFY.CLEAR_VERIFY,
+} | {
+    type: typeof SIGN_VERIFY.INPUT_CHANGE,
+    name: string,
+    value: string
+} | {
+    type: typeof SIGN_VERIFY.TOUCH,
+    name: string,
 }
 
 const sign = (
@@ -36,7 +45,7 @@ const sign = (
     if (response && response.success) {
         dispatch({
             type: SIGN_VERIFY.SIGN_SUCCESS,
-            signature: response.payload.signature,
+            signSignature: response.payload.signature,
         });
     } else {
         dispatch({
@@ -111,7 +120,7 @@ const verify = (
     }
 };
 
-const inputChange = (name, value): ThunkAction => (dispatch: Dispatch): void => {
+const inputChange = (name: string, value: string): ThunkAction => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.INPUT_CHANGE,
         name,

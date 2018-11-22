@@ -69,7 +69,6 @@ class SignVerify extends Component<Props, State> {
         const {
             signVerifyActions,
             signVerify: {
-                signAddress,
                 signMessage,
                 signSignature,
                 verifyAddress,
@@ -124,7 +123,7 @@ class SignVerify extends Component<Props, State> {
                             >Clear
                             </Button>
                             <StyledButton
-                                onClick={() => signVerifyActions.sign(signAddress, signMessage)}
+                                onClick={() => signVerifyActions.sign(account.addressPath, signMessage)}
                             >Sign
                             </StyledButton>
                         </RowButtons>
@@ -166,7 +165,7 @@ class SignVerify extends Component<Props, State> {
                         </Row>
                         <RowButtons>
                             <Button
-                                onClick={signVerifyActions.clearSign}
+                                onClick={signVerifyActions.clearVerify}
                                 isWhite
                             >Clear
                             </Button>

@@ -13,11 +13,22 @@ type OwnProps = {}
 export type StateProps = {
     wallet: $ElementType<State, 'wallet'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-    signature: string,
+}
+
+type SignVerify = {
+    signSignature: string,
+    signAddress: string,
+    signMessage: string,
+    signSignature: string,
+    verifyAddress: string,
+    verifyMessage: string,
+    verifySignature: string,
+    touched: Array<string>,
 }
 
 export type DispatchProps = {
     signVerifyActions: typeof SignVerifyActions,
+    signVerify: SignVerify
 }
 
 export type Props = StateProps & DispatchProps;
