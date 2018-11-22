@@ -42,14 +42,11 @@ export const initialState: State = {
         title: null,
         message: null,
     },
-<<<<<<< HEAD
-=======
     loader: {
         type: null,
         title: null,
         message: null,
     },
->>>>>>> master
     shouldRender: false,
 };
 
