@@ -155,10 +155,10 @@ const TextArea = ({
     topLabel,
     rows,
     maxRows,
+    autoSelect,
     state = '',
     bottomText = '',
     trezorAction = null,
-    ...rest
 }) => (
     <Wrapper className={className}>
         {topLabel && (
@@ -177,9 +177,9 @@ const TextArea = ({
             onFocus={onFocus}
             onBlur={onBlur}
             value={value}
+            onClick={autoSelect ? event => event.target.select() : null}
             placeholder={placeholder}
             onChange={onChange}
-            {... rest}
         />
         <TrezorAction action={trezorAction}>
             <ArrowUp />{trezorAction}
@@ -208,6 +208,7 @@ TextArea.propTypes = {
     isDisabled: PropTypes.bool,
     topLabel: PropTypes.node,
     state: PropTypes.string,
+    autoSelect: PropTypes.bool,
     bottomText: PropTypes.string,
     trezorAction: PropTypes.node,
 };

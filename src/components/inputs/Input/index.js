@@ -173,6 +173,7 @@ class Input extends PureComponent {
                         {this.props.icon}
                         <StyledInput
                             autoComplete="off"
+                            height={this.props.height}
                             trezorAction={this.props.trezorAction}
                             hasIcon={this.getIcon(this.props.state).length > 0}
                             innerRef={this.props.innerRef}
@@ -180,8 +181,8 @@ class Input extends PureComponent {
                             type={this.props.type}
                             color={this.getColor(this.props.state)}
                             placeholder={this.props.placeholder}
-                            autocorrect={this.props.autocorrect}
-                            autocapitalize={this.props.autocapitalize}
+                            autoCorrect={this.props.autocorrect}
+                            autoCapitalize={this.props.autocapitalize}
                             spellCheck={this.props.spellCheck}
                             isSmallText={this.props.isSmallText}
                             value={this.props.value}
@@ -216,7 +217,7 @@ Input.propTypes = {
     innerRef: PropTypes.func,
     placeholder: PropTypes.string,
     type: PropTypes.string,
-    autocomplete: PropTypes.string,
+    height: PropTypes.number,
     autocorrect: PropTypes.string,
     autocapitalize: PropTypes.string,
     icon: PropTypes.node,
@@ -239,7 +240,7 @@ Input.propTypes = {
 Input.defaultProps = {
     type: 'text',
     autoSelect: false,
-    autocomplete: 'off',
+    height: 40,
 };
 
 export default Input;

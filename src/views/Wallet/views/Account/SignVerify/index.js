@@ -80,9 +80,9 @@ class SignVerify extends Component <Props, SignVerifyState> {
                                 topLabel="Address"
                                 name="signAddress"
                                 value={account.address}
-                                height={50}
                                 type="text"
                                 isSmallText
+                                autoSelect
                                 isDisabled
                             />
                         </Row>
@@ -103,6 +103,7 @@ class SignVerify extends Component <Props, SignVerifyState> {
                                 name="signSignature"
                                 value={signSignature}
                                 rows={4}
+                                autoSelect
                                 maxRows={4}
                                 maxLength="255"
                                 isDisabled
@@ -124,6 +125,7 @@ class SignVerify extends Component <Props, SignVerifyState> {
                         <Row>
                             <Input
                                 topLabel="Address"
+                                autoSelect
                                 name="verifyAddress"
                                 value={verifyAddress}
                                 onChange={this.handleInputChange}
@@ -147,6 +149,7 @@ class SignVerify extends Component <Props, SignVerifyState> {
                         <Row>
                             <Textarea
                                 topLabel="Signature"
+                                autoSelect
                                 name="verifySignature"
                                 value={verifySignature}
                                 onChange={this.handleInputChange}
