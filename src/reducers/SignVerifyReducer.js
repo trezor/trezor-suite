@@ -1,6 +1,7 @@
 /* @flow */
 import type { Action } from 'flowtype';
 
+import * as ACCOUNT from 'actions/constants/account';
 import * as ACTION from 'actions/constants/signVerify';
 
 export type State = {
@@ -45,6 +46,9 @@ export default (state: State = initialState, action: Action): State => {
             const change = { [action.name]: action.value };
             return { ...state, ...change };
         }
+
+        case ACCOUNT.DISPOSE:
+            return initialState;
 
         case ACTION.CLEAR_SIGN:
             return {
