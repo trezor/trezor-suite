@@ -63,91 +63,101 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
         };
     }
 
+
+    if (account) return null;
     // account not found (yet). checking why...
-    if (!account) {
-        if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
-            if (device.connected) {
-                // case 1: device is connected but discovery not started yet (probably waiting for auth)
-                if (device.available) {
-                    return {
-                        type: 'progress',
-                        title: 'Authenticating device...',
-                        shouldRender: false,
-                    };
-                }
-                // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
+
+    if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
+        if (device.connected) {
+            // case 1: device is connected but discovery not started yet (probably waiting for auth)
+            if (device.available) {
                 return {
-                    type: 'info',
-                    title: `Device ${device.instanceLabel} is unavailable`,
-                    message: 'Change passphrase settings to use this device',
+                    type: 'progress',
+                    title: 'Authenticating device...',
                     shouldRender: false,
                 };
             }
-
-            // case 3: device is disconnected
-            return {
-                type: 'info',
-                title: `Device ${device.instanceLabel} is disconnected`,
-                message: 'Connect device to load accounts',
-                shouldRender: false,
-            };
-        }
-
-        if (discovery.completed) {
-            // case 4: account not found and discovery is completed
-            return {
-                type: 'info',
-                title: 'Account does not exist',
-                shouldRender: false,
-            };
-        }
-    }
-
-    return null;
-};
-
-const getAccountNotification = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
-    const device = state.wallet.selectedDevice;
-    const { network, discovery } = selectedAccount;
-
-    if (device && network) {
-        const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
-        if (blockchain && !blockchain.connected) {
-            return {
-                type: 'backend',
-                title: `${network.name} backend is not connected`,
-                shouldRender: false,
-            };
-        }
-
-        if (discovery) {
-            if (discovery && !discovery.completed && !discovery.waitingForDevice) {
-                return {
-                    type: 'info',
-                    title: 'Loading accounts...',
-                    shouldRender: true,
-                };
-            }
-        }
-
-        // Additional status: account does exists and it's visible but shouldn't be active
-        if (!device.connected) {
-            return {
-                type: 'info',
-                title: `Device ${device.instanceLabel} is disconnected`,
-                shouldRender: true,
-            };
-        }
-        if (!device.available) {
+            // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
+            // this is related to device instance in url, it's not used for now (device clones are disabled)
             return {
                 type: 'info',
                 title: `Device ${device.instanceLabel} is unavailable`,
                 message: 'Change passphrase settings to use this device',
-                shouldRender: true,
+                shouldRender: false,
             };
         }
+
+        // case 3: device is disconnected
+        return {
+            type: 'info',
+            title: `Device ${device.instanceLabel} is disconnected`,
+            message: 'Connect device to load accounts',
+            shouldRender: false,
+        };
     }
 
+    if (discovery.completed) {
+        // case 4: account not found and discovery is completed
+        return {
+            type: 'info',
+            title: 'Account does not exist',
+            shouldRender: false,
+        };
+    }
+
+    // case default: account information isn't loaded yet
+    return {
+        type: 'progress',
+        title: 'Loading account',
+        shouldRender: false,
+    };
+};
+
+const getAccountNotification = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
+    const device = state.wallet.selectedDevice;
+    const { account, network, discovery } = selectedAccount;
+    if (!device || !network) return null;
+
+    // case 1: backend status
+    const blockchain = state.blockchain.find(b => b.shortcut === network.shortcut);
+    if (blockchain && !blockchain.connected) {
+        return {
+            type: 'backend',
+            title: `${network.name} backend is not connected`,
+            shouldRender: false,
+        };
+    }
+
+    // case 2: account does exists and it's visible but shouldn't be active
+    if (account && discovery && !discovery.completed && !discovery.waitingForDevice) {
+        return {
+            type: 'info',
+            title: 'Loading other accounts...',
+            shouldRender: true,
+        };
+    }
+
+    // case 3: account does exists and device is disconnected
+    if (!device.connected) {
+        return {
+            type: 'info',
+            title: `Device ${device.instanceLabel} is disconnected`,
+            shouldRender: true,
+        };
+    }
+
+    // case 4: account does exists and device is unavailable (created with different passphrase settings) account cannot be accessed
+    // this is related to device instance in url, it's not used for now (device clones are disabled)
+    if (!device.available) {
+        return {
+            type: 'info',
+            title: `Device ${device.instanceLabel} is unavailable`,
+            message: 'Change passphrase settings to use this device',
+            shouldRender: true,
+        };
+    }
+
+    // case default
     return null;
 };
 
