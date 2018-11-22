@@ -55,7 +55,7 @@ build stable:
     - yarn install
     - yarn run build:stable
   only:
-    - beta
+    - stable
   artifacts:
     expire_in: 1 week
     paths:
