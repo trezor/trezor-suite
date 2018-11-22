@@ -172,6 +172,7 @@ class Input extends PureComponent {
                         <Overlay isPartiallyHidden={this.props.isPartiallyHidden} />
                         {this.props.icon}
                         <StyledInput
+                            autoComplete="off"
                             trezorAction={this.props.trezorAction}
                             hasIcon={this.getIcon(this.props.state).length > 0}
                             innerRef={this.props.innerRef}
@@ -179,10 +180,10 @@ class Input extends PureComponent {
                             type={this.props.type}
                             color={this.getColor(this.props.state)}
                             placeholder={this.props.placeholder}
-                            autocomplete={this.props.autocomplete}
                             autocorrect={this.props.autocorrect}
                             autocapitalize={this.props.autocapitalize}
                             spellCheck={this.props.spellCheck}
+                            isSmallText={this.props.isSmallText}
                             value={this.props.value}
                             readOnly={this.props.readOnly}
                             onChange={this.props.onChange}
@@ -238,6 +239,7 @@ Input.propTypes = {
 Input.defaultProps = {
     type: 'text',
     autoSelect: false,
+    autocomplete: 'off',
 };
 
 export default Input;
