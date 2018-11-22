@@ -121,6 +121,7 @@ const AccountReceive = (props: Props) => {
                         <Input
                             type="text"
                             readOnly
+                            autoSelect
                             value={address}
                             isPartiallyHidden={isAddressHidden}
                             trezorAction={isAddressVerifying ? (
