@@ -1,10 +1,11 @@
 # 1.0.2-beta
 - Fiat rates from coingecko (https://github.com/trezor/trezor-wallet/pull/242)
 - firmware update link to beta-wallet (https://github.com/trezor/trezor-wallet/commit/b9b7d2d076f2d4c59ae2e055dc140cda6aaa5512)
-- set default gas limit button
+- set default gas limit button (https://github.com/trezor/trezor-wallet/issues/184)
 - update list of ETH and ETC tokens
 - added 1 click to select value in input (https://github.com/trezor/trezor-wallet/issues/251)
 - added account loader (https://github.com/trezor/trezor-wallet/pull/225)
+- added message how to add ERC20 tokens (https://github.com/trezor/trezor-wallet/issues/238)
 
 # 1.0.1-beta
 __added__
