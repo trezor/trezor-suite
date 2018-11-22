@@ -41,6 +41,8 @@ build beta:
   script:
     - yarn install
     - yarn run build:beta
+  only:
+    - beta
   artifacts:
     expire_in: 1 week
     paths:
@@ -52,6 +54,8 @@ build stable:
   script:
     - yarn install
     - yarn run build:stable
+  only:
+    - beta
   artifacts:
     expire_in: 1 week
     paths:
