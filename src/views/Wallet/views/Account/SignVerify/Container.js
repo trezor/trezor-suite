@@ -10,11 +10,6 @@ import Component from './index';
 
 type OwnProps = {}
 
-export type StateProps = {
-    wallet: $ElementType<State, 'wallet'>,
-    selectedAccount: $ElementType<State, 'selectedAccount'>,
-}
-
 export type SignVerifyState = {
     signSignature: string,
     signAddress: string,
@@ -26,9 +21,14 @@ export type SignVerifyState = {
     touched: Array<string>,
 }
 
+export type StateProps = {
+    wallet: $ElementType<State, 'wallet'>,
+    selectedAccount: $ElementType<State, 'selectedAccount'>,
+    signVerify: SignVerifyState,
+}
+
 export type DispatchProps = {
     signVerifyActions: typeof SignVerifyActions,
-    signVerify: SignVerifyState
 }
 
 export type Props = StateProps & DispatchProps;
