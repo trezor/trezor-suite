@@ -154,8 +154,12 @@ class Input extends PureComponent {
 
     render() {
         return (
-            <Wrapper className={this.props.className}>
-                {this.props.topLabel && <TopLabel>{this.props.topLabel}</TopLabel>}
+            <Wrapper
+                className={this.props.className}
+            >
+                {this.props.topLabel && (
+                    <TopLabel>{this.props.topLabel}</TopLabel>
+                )}
                 <InputWrapper>
                     <InputIconWrapper>
                         {this.props.state && (
@@ -167,9 +171,11 @@ class Input extends PureComponent {
                         <Overlay isPartiallyHidden={this.props.isPartiallyHidden} />
                         {this.props.icon}
                         <StyledInput
+                            trezorAction={this.props.trezorAction}
                             hasIcon={this.getIcon(this.props.state).length > 0}
                             innerRef={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
+                            type={this.props.type}
                             color={this.getColor(this.props.state)}
                             placeholder={this.props.placeholder}
                             autocomplete={this.props.autocomplete}
@@ -177,13 +183,13 @@ class Input extends PureComponent {
                             autocapitalize={this.props.autocapitalize}
                             spellCheck={this.props.spellCheck}
                             value={this.props.value}
+                            readOnly={this.props.readOnly}
                             onChange={this.props.onChange}
                             onClick={this.props.autoSelect ? event => event.target.select() : null}
                             borderColor={this.getColor(this.props.state)}
                             disabled={this.props.isDisabled}
                             name={this.props.name}
                             data-lpignore="true"
-                            {...this.props}
                         />
                         <TrezorAction action={this.props.trezorAction}>
                             <ArrowUp />{this.props.trezorAction}
@@ -192,7 +198,9 @@ class Input extends PureComponent {
                     {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
                 </InputWrapper>
                 {this.props.bottomText && (
-                    <BottomText color={this.getColor(this.props.state)}>
+                    <BottomText
+                        color={this.getColor(this.props.state)}
+                    >
                         {this.props.bottomText}
                     </BottomText>
                 )}
@@ -227,7 +235,6 @@ Input.propTypes = {
 
 Input.defaultProps = {
     type: 'text',
-    autocomplete: false,
     autoSelect: false,
 };
 
