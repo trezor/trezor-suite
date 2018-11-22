@@ -65,7 +65,7 @@ const ModalWindow = styled.div`
 const getDeviceContextModal = (props: Props) => {
     const { modal, modalActions } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE) return null;
-    console.log('modal.windowType', modal.windowType);
+
     switch (modal.windowType) {
         case UI.REQUEST_PIN:
             return (
