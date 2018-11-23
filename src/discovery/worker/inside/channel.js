@@ -41,14 +41,12 @@ function askPromise(request: PromiseRequestType): Promise<any> {
     });
     const dfd = deferred();
     messageEmitter.attach((message, detach) => {
-        if (message.type === 'promiseResponseSuccess') {
-            if (message.id === id) {
+        if (message.id === id) {
+            if (message.type === 'promiseResponseSuccess') {
                 detach();
                 dfd.resolve(message.response.response);
             }
-        }
-        if (message.type === 'promiseResponseFailure') {
-            if (message.id === id) {
+            if (message.type === 'promiseResponseFailure') {
                 detach();
                 dfd.reject(new Error(message.failure));
             }
@@ -69,15 +67,11 @@ function askStream(request: StreamRequestType): Stream<any> {
         let emitterDetach = () => {};
         messageEmitter.attach((message: InMessage, detach) => {
             emitterDetach = detach;
-            if (message.type === 'streamResponseUpdate') {
-                if (message.update.type === request.type) {
-                    if (message.id === id) {
-                        update(message.update.response);
-                    }
+            if (message.id === id) {
+                if (message.type === 'streamResponseUpdate') {
+                    update(message.update.response);
                 }
-            }
-            if (message.type === 'streamResponseFinish') {
-                if (message.id === id) {
+                if (message.type === 'streamResponseFinish') {
                     detach();
                     finish();
                 }
