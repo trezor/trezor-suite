@@ -19,9 +19,6 @@ import type { Account } from './AccountsReducer';
 
 export type Discovery = {
     network: string;
-    publicKey: string;
-    chainCode: string;
-    hdKey: HDKey;
     basePath: Array<number>;
     deviceState: string;
     accountIndex: number;
@@ -29,7 +26,11 @@ export type Discovery = {
     completed: boolean;
     waitingForDevice: boolean;
     waitingForBlockchain: boolean;
-}
+
+    publicKey: string; // used in ethereum only
+    chainCode: string; // used in ethereum only
+    hdKey: HDKey; // used in ethereum only
+};
 
 export type State = Array<Discovery>;
 const initialState: State = [];
@@ -38,14 +39,16 @@ const findIndex = (state: State, network: string, deviceState: string): number =
 
 const start = (state: State, action: DiscoveryStartAction): State => {
     const deviceState: string = action.device.state || '0';
-    const hdKey: HDKey = new HDKey();
-    hdKey.publicKey = Buffer.from(action.publicKey, 'hex');
-    hdKey.chainCode = Buffer.from(action.chainCode, 'hex');
+
+    let hdKey: ?HDKey;
+    if (action.network.type === 'ethereum') {
+        hdKey = new HDKey();
+        hdKey.publicKey = Buffer.from(action.publicKey, 'hex');
+        hdKey.chainCode = Buffer.from(action.chainCode, 'hex');
+    }
+
     const instance: Discovery = {
-        network: action.network,
-        publicKey: action.publicKey,
-        chainCode: action.chainCode,
-        hdKey,
+        network: action.network.shortcut,
         basePath: action.basePath,
         deviceState,
         accountIndex: 0,
@@ -53,10 +56,14 @@ const start = (state: State, action: DiscoveryStartAction): State => {
         completed: false,
         waitingForDevice: false,
         waitingForBlockchain: false,
+
+        publicKey: action.publicKey,
+        chainCode: action.chainCode,
+        hdKey,
     };
 
     const newState: State = [...state];
-    const index: number = findIndex(state, action.network, deviceState);
+    const index: number = findIndex(state, action.network.shortcut, deviceState);
     if (index >= 0) {
         newState[index] = instance;
     } else {
@@ -107,15 +114,16 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
     const instance: Discovery = {
         network: action.network,
         deviceState,
-        publicKey: '',
-        chainCode: '',
-        hdKey: null,
         basePath: [],
         accountIndex: 0,
         interrupted: false,
         completed: false,
         waitingForDevice: true,
         waitingForBlockchain: false,
+
+        publicKey: '',
+        chainCode: '',
+        hdKey: null,
     };
 
     const index: number = findIndex(state, action.network, deviceState);
@@ -134,15 +142,16 @@ const waitingForBlockchain = (state: State, action: DiscoveryWaitingAction): Sta
     const instance: Discovery = {
         network: action.network,
         deviceState,
-        publicKey: '',
-        chainCode: '',
-        hdKey: null,
         basePath: [],
         accountIndex: 0,
         interrupted: false,
         completed: false,
         waitingForDevice: false,
         waitingForBlockchain: true,
+
+        publicKey: '',
+        chainCode: '',
+        hdKey: null,
     };
 
     const index: number = findIndex(state, action.network, deviceState);
