@@ -42,11 +42,9 @@ function askPromise(request: PromiseRequestType): Promise<any> {
     const dfd = deferred();
     messageEmitter.attach((message, detach) => {
         if (message.type === 'promiseResponseSuccess') {
-            if (message.response.type === request.type) {
-                if (message.id === id) {
-                    detach();
-                    dfd.resolve(message.response.response);
-                }
+            if (message.id === id) {
+                detach();
+                dfd.resolve(message.response.response);
             }
         }
         if (message.type === 'promiseResponseFailure') {
