@@ -9384,5 +9384,35 @@
         }
       }
     ]
+  },
+  {
+    "name": "Error in bitcore call propagates out of discovery",
+    "start": null,
+    "xpub": "tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U",
+    "endError": "Error in lookup",
+    "network": {
+      "messagePrefix": "N/A",
+      "bip32": {
+        "public": 70617039,
+        "private": 0
+      },
+      "pubKeyHash": 111,
+      "scriptHash": 196,
+      "bech32": "tb",
+      "wif": 0
+    },
+    "segwit": "off",
+    "cashaddr": false,
+    "gap": 3,
+    "timeOffset": -120,
+    "spec": [
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupSyncStatus",
+          "result": "Error in lookup"
+        }
+      }
+    ]
   }
 ]
