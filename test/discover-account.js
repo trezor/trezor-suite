@@ -12,7 +12,8 @@ discoverAccount(false);
 function discoverAccount(enableWebassembly) {
     const desc = enableWebassembly ? ' wasm' : ' no wasm';
     describe('discover account' + desc, () => {
-        fixtures.forEach(fixture => {
+        fixtures.forEach(fixture_orig => {
+            const fixture = JSON.parse(JSON.stringify(fixture_orig));
             it(fixture.name, function (done_orig) {
                 this.timeout(30 * 1000);
                 let wasm_old;
@@ -24,7 +25,7 @@ function discoverAccount(enableWebassembly) {
                     if (!enableWebassembly) {
                         WebAssembly = wasm_old;
                     }
-										done_orig(x);
+                    done_orig(x);
                 };
                 const blockchain = new MockBitcore(fixture.spec, done);
                 const discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain);
