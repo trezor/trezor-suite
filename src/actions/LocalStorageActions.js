@@ -156,8 +156,10 @@ const loadJSON = (): AsyncAction => async (dispatch: Dispatch): Promise<void> =>
         // load tokens
         const tokens = await config.networks.reduce(async (promise: Promise<TokensCollection>, network: Network): Promise<TokensCollection> => {
             const collection: TokensCollection = await promise;
-            const json = await httpRequest(network.tokens, 'json');
-            collection[network.shortcut] = json;
+            if (network.tokens) {
+                const json = await httpRequest(network.tokens, 'json');
+                collection[network.shortcut] = json;
+            }
             return collection;
         }, Promise.resolve({}));
 
@@ -175,7 +177,7 @@ const loadJSON = (): AsyncAction => async (dispatch: Dispatch): Promise<void> =>
     }
 };
 
-const VERSION: string = '1';
+const VERSION: string = '2';
 
 const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
     // validate version
