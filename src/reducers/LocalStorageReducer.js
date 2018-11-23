@@ -6,6 +6,7 @@ import * as STORAGE from 'actions/constants/localStorage';
 import type { Action } from 'flowtype';
 
 export type Network = {
+    type: string;
     name: string;
     shortcut: string;
     symbol: string;
