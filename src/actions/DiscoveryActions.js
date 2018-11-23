@@ -1,7 +1,6 @@
 /* @flow */
 
 import TrezorConnect from 'trezor-connect';
-import EthereumjsUtil from 'ethereumjs-util';
 import * as DISCOVERY from 'actions/constants/discovery';
 import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
@@ -14,29 +13,25 @@ import type {
     GetState,
     Dispatch,
     TrezorDevice,
+    Account,
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
 import * as BlockchainActions from './BlockchainActions';
+import * as EthereumDiscoveryActions from './ethereum/EthereumDiscoveryActions';
+import * as RippleDiscoveryActions from './ripple/RippleDiscoveryActions';
 
-export type DiscoveryStartAction = {
-    type: typeof DISCOVERY.START,
-    device: TrezorDevice,
-    network: string,
-    publicKey: string,
-    chainCode: string,
-    basePath: Array<number>,
-}
+export type DiscoveryStartAction = EthereumDiscoveryActions.DiscoveryStartAction | RippleDiscoveryActions.DiscoveryStartAction;
 
 export type DiscoveryWaitingAction = {
     type: typeof DISCOVERY.WAITING_FOR_DEVICE | typeof DISCOVERY.WAITING_FOR_BLOCKCHAIN,
     device: TrezorDevice,
-    network: string
+    network: string,
 }
 
 export type DiscoveryCompleteAction = {
     type: typeof DISCOVERY.COMPLETE,
     device: TrezorDevice,
-    network: string
+    network: string,
 }
 
 export type DiscoveryAction = {
@@ -122,44 +117,40 @@ const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean)
 // first iteration
 // generate public key for this account
 // start discovery process
-const begin = (device: TrezorDevice, network: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+const begin = (device: TrezorDevice, networkName: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { config } = getState().localStorage;
-    const networkData = config.networks.find(c => c.shortcut === network);
-    if (!networkData) return;
+    const network = config.networks.find(c => c.shortcut === networkName);
+    if (!network) return;
 
     dispatch({
         type: DISCOVERY.WAITING_FOR_DEVICE,
         device,
-        network,
+        network: networkName,
     });
 
-    // get xpub from TREZOR
-    const response = await TrezorConnect.getPublicKey({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: device.state,
-        },
-        path: networkData.bip44,
-        keepSession: true, // acquire and hold session
-        //useEmptyPassphrase: !device.instance,
-        useEmptyPassphrase: device.useEmptyPassphrase,
-    });
+    let startAction: DiscoveryStartAction;
 
-    // handle TREZOR response error
-    if (!response.success) {
+    try {
+        if (network.type === 'ethereum') {
+            startAction = await dispatch(EthereumDiscoveryActions.begin(device, network));
+        } else if (network.type === 'ripple') {
+            startAction = await dispatch(RippleDiscoveryActions.begin(device, network));
+        } else {
+            throw new Error(`DiscoveryActions.begin: Unknown network type: ${network.type}`);
+        }
+    } catch (error) {
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
                 type: 'error',
                 title: 'Discovery error',
-                message: response.payload.error,
+                message: error.message,
                 cancelable: true,
                 actions: [
                     {
                         label: 'Try again',
                         callback: () => {
-                            dispatch(start(device, network));
+                            dispatch(start(device, networkName));
                         },
                     },
                 ],
@@ -174,62 +165,27 @@ const begin = (device: TrezorDevice, network: string): AsyncAction => async (dis
     const discoveryProcess = getState().discovery.find(d => d.deviceState === device.state && d.network === network);
     if (dispatch(isProcessInterrupted(discoveryProcess))) return;
 
-    const basePath: Array<number> = response.payload.path;
-
     // send data to reducer
-    dispatch({
-        type: DISCOVERY.START,
-        network,
-        device,
-        publicKey: response.payload.publicKey,
-        chainCode: response.payload.chainCode,
-        basePath,
-    });
+    dispatch(startAction);
 
     // next iteration
-    dispatch(start(device, network));
+    dispatch(start(device, networkName));
 };
 
-const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
-    const { completed } = discoveryProcess;
+const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { config } = getState().localStorage;
+    const network = config.networks.find(c => c.shortcut === discoveryProcess.network);
+    if (!network) return;
 
-    const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
-    const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
-    const publicAddress: string = EthereumjsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex');
-    const ethAddress: string = EthereumjsUtil.toChecksumAddress(publicAddress);
-    const { network } = discoveryProcess;
-
-    // TODO: check if address was created before
+    const { completed, accountIndex } = discoveryProcess;
+    let account: Account;
     try {
-        const account = await dispatch(BlockchainActions.discoverAccount(device, ethAddress, network));
-        // check for interruption
-        if (dispatch(isProcessInterrupted(discoveryProcess))) return;
-
-        // const accountIsEmpty = account.transactions <= 0 && account.nonce <= 0 && account.balance === '0';
-        const accountIsEmpty = account.nonce <= 0 && account.balance === '0';
-        if (!accountIsEmpty || (accountIsEmpty && completed) || (accountIsEmpty && discoveryProcess.accountIndex === 0)) {
-            dispatch({
-                type: ACCOUNT.CREATE,
-                payload: {
-                    index: discoveryProcess.accountIndex,
-                    loaded: true,
-                    network,
-                    deviceID: device.features ? device.features.device_id : '0',
-                    deviceState: device.state || '0',
-                    addressPath: path,
-                    address: ethAddress,
-                    balance: account.balance,
-                    nonce: account.nonce,
-                    block: account.block,
-                    transactions: account.transactions,
-                },
-            });
-        }
-
-        if (accountIsEmpty) {
-            dispatch(finish(device, discoveryProcess));
-        } else if (!completed) {
-            dispatch(discoverAccount(device, discoveryProcess));
+        if (network.type === 'ethereum') {
+            account = await dispatch(EthereumDiscoveryActions.discoverAccount(device, discoveryProcess));
+        } else if (network.type === 'ripple') {
+            account = await dispatch(RippleDiscoveryActions.discoverAccount(device, discoveryProcess));
+        } else {
+            throw new Error(`DiscoveryActions.discoverAccount: Unknown network type: ${network.type}`);
         }
     } catch (error) {
         dispatch({
@@ -254,6 +210,23 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
                 ],
             },
         });
+        return;
+    }
+
+    if (dispatch(isProcessInterrupted(discoveryProcess))) return;
+
+    const accountIsEmpty = account.empty;
+    if (!accountIsEmpty || (accountIsEmpty && completed) || (accountIsEmpty && accountIndex === 0)) {
+        dispatch({
+            type: ACCOUNT.CREATE,
+            payload: account,
+        });
+    }
+
+    if (accountIsEmpty) {
+        dispatch(finish(device, discoveryProcess));
+    } else if (!completed) {
+        dispatch(discoverAccount(device, discoveryProcess));
     }
 };
 
@@ -269,7 +242,7 @@ const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction 
         useEmptyPassphrase: device.useEmptyPassphrase,
     });
 
-    await dispatch(BlockchainActions.subscribe(discoveryProcess.network));
+    // await dispatch(BlockchainActions.subscribe(discoveryProcess.network));
 
     if (dispatch(isProcessInterrupted(discoveryProcess))) return;
 

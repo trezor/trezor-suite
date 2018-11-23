@@ -23,6 +23,7 @@ export type Account = {
     nonce: number;
     block: number;
     transactions: number;
+    empty: boolean;
 }
 
 export type State = Array<Account>;
