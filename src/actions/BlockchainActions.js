@@ -170,10 +170,9 @@ export const onNotification = (payload: any): PromiseAction<void> => async (disp
 
 
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const addresses: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.address); // eslint-disable-line no-unused-vars
+    const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.address); // eslint-disable-line no-unused-vars
     await TrezorConnect.blockchainSubscribe({
-        // accounts: addresses,
-        accounts: [],
+        accounts,
         coin: network,
     });
 
