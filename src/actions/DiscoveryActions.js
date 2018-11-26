@@ -242,7 +242,7 @@ const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction 
         useEmptyPassphrase: device.useEmptyPassphrase,
     });
 
-    // await dispatch(BlockchainActions.subscribe(discoveryProcess.network));
+    await dispatch(BlockchainActions.subscribe(discoveryProcess.network));
 
     if (dispatch(isProcessInterrupted(discoveryProcess))) return;
 
