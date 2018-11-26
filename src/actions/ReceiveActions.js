@@ -50,7 +50,9 @@ export const showUnverifiedAddress = (): Action => ({
 //export const showAddress = (address_n: string): AsyncAction => {
 export const showAddress = (path: Array<number>): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
-    if (!selected) return;
+    const { network } = getState().selectedAccount;
+
+    if (!selected || !network) return;
 
     if (selected && (!selected.connected || !selected.available)) {
         dispatch({
@@ -60,16 +62,22 @@ export const showAddress = (path: Array<number>): AsyncAction => async (dispatch
         return;
     }
 
-    const response = await TrezorConnect.ethereumGetAddress({
+    const params = {
         device: {
             path: selected.path,
             instance: selected.instance,
             state: selected.state,
         },
         path,
-        // useEmptyPassphrase: !selected.instance,
         useEmptyPassphrase: selected.useEmptyPassphrase,
-    });
+    };
+
+    let response;
+    if (network.type === 'ethereum') {
+        response = await TrezorConnect.ethereumGetAddress(params);
+    } else {
+        response = await TrezorConnect.rippleGetAddress(params);
+    }
 
     if (response && response.success) {
         dispatch({
