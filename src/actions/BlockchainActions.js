@@ -93,6 +93,7 @@ export const onBlockMined = (coinInfo: any): PromiseAction<void> => async (dispa
     // incoming "coinInfo" from TrezorConnect is CoinInfo | EthereumNetwork type
     const network: string = coinInfo.shortcut.toLowerCase();
 
+    if (network !== 'ethereum') return;
     // try to resolve pending transactions
     await dispatch(Web3Actions.resolvePendingTransactions(network));
 
@@ -175,8 +176,11 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
         accounts: [],
         coin: network,
     });
-    // init web3 instance if not exists
-    await dispatch(Web3Actions.initWeb3(network));
+
+    if (network === 'ethereum') {
+        // init web3 instance if not exists
+        await dispatch(Web3Actions.initWeb3(network));
+    }
 };
 
 // Conditionally subscribe to blockchain backend
