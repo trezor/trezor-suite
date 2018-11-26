@@ -26,6 +26,7 @@ export type Discovery = {
     completed: boolean;
     waitingForDevice: boolean;
     waitingForBlockchain: boolean;
+    notSupported: boolean;
 
     publicKey: string; // used in ethereum only
     chainCode: string; // used in ethereum only
@@ -43,6 +44,7 @@ const defaultDiscovery: Discovery = {
     completed: false,
     waitingForDevice: false,
     waitingForBlockchain: false,
+    notSupported: false,
 
     publicKey: '',
     chainCode: '',
@@ -156,6 +158,26 @@ const waitingForBlockchain = (state: State, action: DiscoveryWaitingAction): Sta
     return newState;
 };
 
+const notSupported = (state: State, action: DiscoveryWaitingAction): State => {
+    const deviceState: string = action.device.state || '0';
+    const instance: Discovery = {
+        ...defaultDiscovery,
+        network: action.network,
+        deviceState,
+        notSupported: true,
+    };
+
+    const index: number = findIndex(state, action.network, deviceState);
+    const newState: State = [...state];
+    if (index >= 0) {
+        newState[index] = instance;
+    } else {
+        newState.push(instance);
+    }
+
+    return newState;
+};
+
 export default function discovery(state: State = initialState, action: Action): State {
     switch (action.type) {
         case DISCOVERY.START:
@@ -170,6 +192,8 @@ export default function discovery(state: State = initialState, action: Action): 
             return waitingForDevice(state, action);
         case DISCOVERY.WAITING_FOR_BLOCKCHAIN:
             return waitingForBlockchain(state, action);
+        case DISCOVERY.NOT_SUPPORTED:
+            return notSupported(state, action);
         case DISCOVERY.FROM_STORAGE:
             return action.payload.map((d) => {
                 const hdKey: HDKey = new HDKey();
