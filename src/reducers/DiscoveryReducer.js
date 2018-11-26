@@ -34,33 +34,40 @@ export type Discovery = {
 
 export type State = Array<Discovery>;
 const initialState: State = [];
+const defaultDiscovery: Discovery = {
+    network: '',
+    deviceState: '',
+    basePath: [],
+    accountIndex: 0,
+    interrupted: false,
+    completed: false,
+    waitingForDevice: false,
+    waitingForBlockchain: false,
+
+    publicKey: '',
+    chainCode: '',
+    hdKey: null,
+};
 
 const findIndex = (state: State, network: string, deviceState: string): number => state.findIndex(d => d.network === network && d.deviceState === deviceState);
 
 const start = (state: State, action: DiscoveryStartAction): State => {
     const deviceState: string = action.device.state || '0';
+    const instance: Discovery = {
+        ...defaultDiscovery,
+        network: action.network.shortcut,
+        deviceState,
+    };
 
-    let hdKey: ?HDKey;
-    if (action.network.type === 'ethereum') {
-        hdKey = new HDKey();
+    if (action.networkType === 'ethereum') {
+        const hdKey = new HDKey();
         hdKey.publicKey = Buffer.from(action.publicKey, 'hex');
         hdKey.chainCode = Buffer.from(action.chainCode, 'hex');
+
+        instance.hdKey = hdKey;
+        instance.publicKey = action.publicKey;
+        instance.chainCode = action.chainCode;
     }
-
-    const instance: Discovery = {
-        network: action.network.shortcut,
-        basePath: action.basePath,
-        deviceState,
-        accountIndex: 0,
-        interrupted: false,
-        completed: false,
-        waitingForDevice: false,
-        waitingForBlockchain: false,
-
-        publicKey: action.publicKey,
-        chainCode: action.chainCode,
-        hdKey,
-    };
 
     const newState: State = [...state];
     const index: number = findIndex(state, action.network.shortcut, deviceState);
@@ -112,18 +119,10 @@ const stop = (state: State, device: TrezorDevice): State => {
 const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State => {
     const deviceState: string = action.device.state || '0';
     const instance: Discovery = {
+        ...defaultDiscovery,
         network: action.network,
         deviceState,
-        basePath: [],
-        accountIndex: 0,
-        interrupted: false,
-        completed: false,
         waitingForDevice: true,
-        waitingForBlockchain: false,
-
-        publicKey: '',
-        chainCode: '',
-        hdKey: null,
     };
 
     const index: number = findIndex(state, action.network, deviceState);
@@ -140,18 +139,10 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
 const waitingForBlockchain = (state: State, action: DiscoveryWaitingAction): State => {
     const deviceState: string = action.device.state || '0';
     const instance: Discovery = {
+        ...defaultDiscovery,
         network: action.network,
         deviceState,
-        basePath: [],
-        accountIndex: 0,
-        interrupted: false,
-        completed: false,
-        waitingForDevice: false,
         waitingForBlockchain: true,
-
-        publicKey: '',
-        chainCode: '',
-        hdKey: null,
     };
 
     const index: number = findIndex(state, action.network, deviceState);
