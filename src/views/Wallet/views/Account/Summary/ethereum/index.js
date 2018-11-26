@@ -14,9 +14,9 @@ import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import Link from 'components/Link';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
-import AccountBalance from '../../components/Balance';
-import AddedToken from '../../components/Token';
-import AddTokenMessage from '../../components/AddTokenMessage';
+import AccountBalance from '../components/Balance';
+import AddedToken from '../components/Token';
+import AddTokenMessage from '../components/AddTokenMessage';
 
 import type { Props } from './Container';
 
