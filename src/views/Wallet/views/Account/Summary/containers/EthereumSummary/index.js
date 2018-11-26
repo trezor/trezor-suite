@@ -16,6 +16,7 @@ import Link from 'components/Link';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 import AccountBalance from '../../components/Balance';
 import AddedToken from '../../components/Token';
+import AddTokenMessage from '../../components/AddTokenMessage';
 
 import type { Props } from './Container';
 
@@ -74,11 +75,13 @@ const AccountSummary = (props: Props) => {
         network,
         tokens,
         pending,
+        loader,
         shouldRender,
     } = props.selectedAccount;
 
-    // flow
-    if (!device || !account || !network || !shouldRender) return null;
+    const { type, title, message } = loader;
+
+    if (!device || !account || !network || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
 
     const explorerLink: string = `${network.explorer.address}${account.address}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
@@ -143,6 +146,7 @@ const AccountSummary = (props: Props) => {
                     />
                 </AsyncSelectWrapper>
                 <AddedTokensWrapper>
+                    { tokens.length < 1 && (<AddTokenMessage />) }
                     {tokens.map(token => (
                         <AddedToken
                             key={token.symbol}
