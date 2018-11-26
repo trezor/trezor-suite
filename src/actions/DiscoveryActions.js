@@ -23,7 +23,7 @@ import * as RippleDiscoveryActions from './ripple/RippleDiscoveryActions';
 export type DiscoveryStartAction = EthereumDiscoveryActions.DiscoveryStartAction | RippleDiscoveryActions.DiscoveryStartAction;
 
 export type DiscoveryWaitingAction = {
-    type: typeof DISCOVERY.WAITING_FOR_DEVICE | typeof DISCOVERY.WAITING_FOR_BLOCKCHAIN | typeof DISCOVERY.NOT_SUPPORTED,
+    type: typeof DISCOVERY.WAITING_FOR_DEVICE | typeof DISCOVERY.WAITING_FOR_BLOCKCHAIN | typeof DISCOVERY.FIRMWARE_NOT_SUPPORTED | typeof DISCOVERY.FIRMWARE_OUTDATED,
     device: TrezorDevice,
     network: string,
 }
@@ -77,10 +77,6 @@ const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean)
 
     const { discovery } = getState();
     const discoveryProcess: ?Discovery = discovery.find(d => d.deviceState === device.state && d.network === network);
-
-    if (discoveryProcess && discoveryProcess.notSupported) {
-        return;
-    }
 
     if (!selected.connected && (!discoveryProcess || !discoveryProcess.completed)) {
         dispatch({
@@ -192,10 +188,20 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
             throw new Error(`DiscoveryActions.discoverAccount: Unknown network type: ${network.type}`);
         }
     } catch (error) {
-        // handle unsupported firmware error
+        // handle not supported firmware error
         if (error.message === UI.FIRMWARE_NOT_SUPPORTED) {
             dispatch({
-                type: DISCOVERY.NOT_SUPPORTED,
+                type: DISCOVERY.FIRMWARE_NOT_SUPPORTED,
+                device,
+                network: discoveryProcess.network,
+            });
+            return;
+        }
+
+        // handle outdated firmware error
+        if (error.message === UI.FIRMWARE) {
+            dispatch({
+                type: DISCOVERY.FIRMWARE_OUTDATED,
                 device,
                 network: discoveryProcess.network,
             });

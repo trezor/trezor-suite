@@ -67,6 +67,24 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
     if (account) return null;
     // account not found (yet). checking why...
 
+    if (discovery && discovery.fwOutdated) {
+        return {
+            type: 'info',
+            title: `Device ${device.instanceLabel} firmware is outdated`,
+            message: 'TODO: update firmware explanation',
+            shouldRender: false,
+        };
+    }
+
+    if (discovery && discovery.fwNotSupported) {
+        return {
+            type: 'info',
+            title: `Device ${device.instanceLabel} is not supported`,
+            message: 'TODO: model T1 not supported explanation',
+            shouldRender: false,
+        };
+    }
+
     if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
         if (device.connected) {
             // case 1: device is connected but discovery not started yet (probably waiting for auth)

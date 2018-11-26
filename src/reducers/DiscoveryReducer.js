@@ -26,7 +26,8 @@ export type Discovery = {
     completed: boolean;
     waitingForDevice: boolean;
     waitingForBlockchain: boolean;
-    notSupported: boolean;
+    fwNotSupported: boolean;
+    fwOutdated: boolean;
 
     publicKey: string; // used in ethereum only
     chainCode: string; // used in ethereum only
@@ -44,7 +45,8 @@ const defaultDiscovery: Discovery = {
     completed: false,
     waitingForDevice: false,
     waitingForBlockchain: false,
-    notSupported: false,
+    fwNotSupported: false,
+    fwOutdated: false,
 
     publicKey: '',
     chainCode: '',
@@ -159,23 +161,16 @@ const waitingForBlockchain = (state: State, action: DiscoveryWaitingAction): Sta
 };
 
 const notSupported = (state: State, action: DiscoveryWaitingAction): State => {
-    const deviceState: string = action.device.state || '0';
-    const instance: Discovery = {
-        ...defaultDiscovery,
-        network: action.network,
-        deviceState,
-        notSupported: true,
-    };
+    const affectedProcesses = state.filter(d => d.deviceState === action.device.state && d.network === action.network);
+    const otherProcesses = state.filter(d => affectedProcesses.indexOf(d) === -1);
 
-    const index: number = findIndex(state, action.network, deviceState);
-    const newState: State = [...state];
-    if (index >= 0) {
-        newState[index] = instance;
-    } else {
-        newState.push(instance);
-    }
+    const changedProcesses = affectedProcesses.map(d => ({
+        ...d,
+        fwOutdated: action.type === DISCOVERY.FIRMWARE_OUTDATED,
+        fwNotSupported: action.type === DISCOVERY.FIRMWARE_NOT_SUPPORTED,
+    }));
 
-    return newState;
+    return otherProcesses.concat(changedProcesses);
 };
 
 export default function discovery(state: State = initialState, action: Action): State {
@@ -192,7 +187,9 @@ export default function discovery(state: State = initialState, action: Action): 
             return waitingForDevice(state, action);
         case DISCOVERY.WAITING_FOR_BLOCKCHAIN:
             return waitingForBlockchain(state, action);
-        case DISCOVERY.NOT_SUPPORTED:
+        case DISCOVERY.FIRMWARE_NOT_SUPPORTED:
+            return notSupported(state, action);
+        case DISCOVERY.FIRMWARE_OUTDATED:
             return notSupported(state, action);
         case DISCOVERY.FROM_STORAGE:
             return action.payload.map((d) => {
