@@ -10,9 +10,7 @@
                 "tx": "https://etherscan.io/tx/",
                 "address": "https://etherscan.io/address/"
             }
-        }
-    ],
-    "networks2": [
+        },
         {
             "type": "ethereum",
             "name": "Ethereum",
