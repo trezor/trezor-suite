@@ -7,13 +7,12 @@ import colors from 'config/colors';
 import ICONS from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
-import type { Network } from 'flowtype';
-import type { Props as BaseProps } from '../../Container';
+import type { Network, State as ReducersState } from 'flowtype';
 
 type Props = {
     network: Network,
     balance: string,
-    fiat: $ElementType<BaseProps, 'fiat'>,
+    fiat: $ElementType<ReducersState, 'fiat'>,
 }
 
 type State = {
