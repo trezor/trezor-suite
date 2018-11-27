@@ -3,6 +3,7 @@ import TrezorConnect from 'trezor-connect';
 import type {
     GetState, Dispatch, ThunkAction, AsyncAction,
 } from 'flowtype';
+import { validateAddress } from 'utils/ethUtils';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SIGN_VERIFY from './constants/signVerify';
 
@@ -15,11 +16,19 @@ export type SignVerifyAction = {
     type: typeof SIGN_VERIFY.CLEAR_VERIFY,
 } | {
     type: typeof SIGN_VERIFY.INPUT_CHANGE,
-    name: string,
+    inputName: string,
     value: string
 } | {
     type: typeof SIGN_VERIFY.TOUCH,
-    name: string,
+    inputName: string,
+} | {
+    type: typeof SIGN_VERIFY.ERROR,
+    inputName: string,
+    message: ?string
+} | {
+    type: typeof SIGN_VERIFY.ERROR,
+    inputName: string,
+    message: ?string
 }
 
 const sign = (
@@ -55,13 +64,6 @@ const sign = (
                 title: 'Sign error',
                 message: response.payload.error,
                 cancelable: true,
-                actions: [{
-                    label: 'Try again',
-                    callback: () => {
-                        dispatch(sign(path, message, hex));
-                    },
-                },
-                ],
             },
         });
     }
@@ -75,61 +77,71 @@ const verify = (
 ): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
+    const hasError = validateAddress(address);
 
-    const response = await TrezorConnect.ethereumVerifyMessage({
-        device: {
-            path: selected.path,
-            instance: selected.instance,
-            state: selected.state,
-        },
-        address,
-        message,
-        signature,
-        hex,
-        useEmptyPassphrase: selected.useEmptyPassphrase,
-    });
+    if (hasError) {
+        dispatch({
+            type: SIGN_VERIFY.ERROR,
+            inputName: 'verifyAddress',
+            message: validateAddress(address),
+        });
+    }
 
-    if (response && response.success) {
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                type: 'success',
-                title: 'Verify success',
-                message: 'signature is valid',
-                cancelable: true,
+    if (!hasError) {
+        const response = await TrezorConnect.ethereumVerifyMessage({
+            device: {
+                path: selected.path,
+                instance: selected.instance,
+                state: selected.state,
             },
+            address,
+            message,
+            signature,
+            hex,
+            useEmptyPassphrase: selected.useEmptyPassphrase,
         });
-    } else {
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                type: 'error',
-                title: 'Verify error',
-                message: response.payload.error,
-                cancelable: true,
-                actions: [
-                    {
-                        label: 'Try again',
-                        callback: () => {
-                            dispatch(verify(address, message, signature, hex));
-                        },
-                    },
-                ],
-            },
-        });
+
+        if (response && response.success) {
+            dispatch({
+                type: NOTIFICATION.ADD,
+                payload: {
+                    type: 'success',
+                    title: 'Verify success',
+                    message: 'signature is valid',
+                    cancelable: true,
+                },
+            });
+        } else {
+            dispatch({
+                type: NOTIFICATION.ADD,
+                payload: {
+                    type: 'error',
+                    title: 'Verify error',
+                    message: response.payload.error,
+                    cancelable: true,
+                },
+            });
+        }
     }
 };
 
-const inputChange = (name: string, value: string): ThunkAction => (dispatch: Dispatch): void => {
+const inputChange = (inputName: string, value: string): ThunkAction => (dispatch: Dispatch): void => {
     dispatch({
         type: SIGN_VERIFY.INPUT_CHANGE,
-        name,
+        inputName,
         value,
     });
     dispatch({
         type: SIGN_VERIFY.TOUCH,
-        name,
+        inputName,
     });
+    if (inputName === 'verifyAddress' && validateAddress(value) !== null) {
+        dispatch({
+            type: SIGN_VERIFY.ERROR,
+            inputName,
+            message: validateAddress(value),
+        });
+    }
 };
 
 const clearSign = (): ThunkAction => (dispatch: Dispatch): void => {

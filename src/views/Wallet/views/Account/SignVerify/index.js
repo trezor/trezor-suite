@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
-import { validateAddress } from 'utils/ethUtils';
 import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
@@ -47,6 +46,11 @@ const Verify = styled(Column)`
 `;
 
 class SignVerify extends Component <Props, SignVerifyState> {
+    getError(inputName: string) {
+        if (!this.props.signVerify) return null;
+        return this.props.signVerify.errors.find(e => e.inputName === inputName);
+    }
+
     handleInputChange = (event: SyntheticInputEvent<Text>) => {
         this.props.signVerifyActions.inputChange(event.target.name, event.target.value);
     }
@@ -66,10 +70,10 @@ class SignVerify extends Component <Props, SignVerifyState> {
                 verifyAddress,
                 verifyMessage,
                 verifySignature,
-                touched,
+                errors,
             },
         } = this.props;
-
+        const verifyAddressError = this.getError('verifyAddress');
         return (
             <Content>
                 <Title>Sign & Verify</Title>
@@ -130,8 +134,8 @@ class SignVerify extends Component <Props, SignVerifyState> {
                                 value={verifyAddress}
                                 onChange={this.handleInputChange}
                                 type="text"
-                                state={(touched.includes('verifyAddress') && validateAddress(verifyAddress)) ? 'error' : null}
-                                bottomText={touched.includes('verifyAddress') ? validateAddress(verifyAddress) : null}
+                                state={verifyAddressError ? 'error' : null}
+                                bottomText={verifyAddressError ? verifyAddressError.message : null}
                                 isSmallText
                             />
                         </Row>
@@ -165,11 +169,17 @@ class SignVerify extends Component <Props, SignVerifyState> {
                             >Clear
                             </Button>
                             <StyledButton
-                                onClick={() => signVerifyActions.verify(
-                                    verifyAddress,
-                                    verifyMessage,
-                                    verifySignature,
-                                )}
+                                onClick={
+                                    () => {
+                                        if (errors.length <= 0) {
+                                            signVerifyActions.verify(
+                                                verifyAddress,
+                                                verifyMessage,
+                                                verifySignature,
+                                            );
+                                        }
+                                    }
+                                }
                             >Verify
                             </StyledButton>
                         </RowButtons>

@@ -4,6 +4,11 @@ import type { Action } from 'flowtype';
 import * as ACCOUNT from 'actions/constants/account';
 import * as ACTION from 'actions/constants/signVerify';
 
+export type Error = {
+    inputName: string,
+    message: ?string,
+};
+
 export type State = {
     signAddress: string,
     signMessage: string,
@@ -11,7 +16,8 @@ export type State = {
     verifyAddress: string,
     verifyMessage: string,
     verifySignature: string,
-    touched: Array<string>
+    touched: Array<string>,
+    errors: Array<Error>
 }
 
 export const initialState: State = {
@@ -22,6 +28,7 @@ export const initialState: State = {
     verifyMessage: '',
     verifySignature: '',
     touched: [],
+    errors: [],
 };
 
 export default (state: State = initialState, action: Action): State => {
@@ -32,18 +39,34 @@ export default (state: State = initialState, action: Action): State => {
                 signSignature: action.signSignature,
             };
 
-        case ACTION.TOUCH: {
-            if (!state.touched.includes(action.name)) {
+        case ACTION.ERROR: {
+            const { inputName } = action;
+            if (!state.errors.some(e => e.inputName === inputName)) {
+                const error = { inputName, message: action.message };
                 return {
                     ...state,
-                    touched: [...state.touched, action.name],
+                    errors: [...state.errors, error],
                 };
             }
             return state;
         }
 
+        case ACTION.TOUCH: {
+            const { inputName } = action;
+            if (!state.touched.includes(inputName)) {
+                return {
+                    ...state,
+                    touched: [...state.touched, action.inputName],
+                };
+            }
+            return {
+                ...state,
+                errors: state.errors.filter(error => error.inputName !== inputName),
+            };
+        }
+
         case ACTION.INPUT_CHANGE: {
-            const change = { [action.name]: action.value };
+            const change = { [action.inputName]: action.value };
             return { ...state, ...change };
         }
 

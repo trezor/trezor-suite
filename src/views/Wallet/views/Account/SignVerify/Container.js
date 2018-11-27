@@ -10,6 +10,11 @@ import Component from './index';
 
 type OwnProps = {}
 
+export type Error = {
+    inputName: string,
+    message: ?string,
+};
+
 export type SignVerifyState = {
     signSignature: string,
     signAddress: string,
@@ -19,6 +24,7 @@ export type SignVerifyState = {
     verifyMessage: string,
     verifySignature: string,
     touched: Array<string>,
+    errors: Array<Error>
 }
 
 export type StateProps = {
