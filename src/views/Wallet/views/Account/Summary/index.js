@@ -3,8 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import type { State } from 'flowtype';
-import EthereumSummary from './ethereum/Container';
-import RippleSummary from './ripple/Container';
+import EthereumTypeSummary from './ethereum/Container';
+import RippleTypeSummary from './ripple/Container';
 
 type WrapperProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
@@ -19,9 +19,9 @@ export default connect((state: State): WrapperProps => ({
 
     switch (network.type) {
         case 'ethereum':
-            return <EthereumSummary />;
+            return <EthereumTypeSummary />;
         case 'ripple':
-            return <RippleSummary />;
+            return <RippleTypeSummary />;
         default:
             return null;
     }

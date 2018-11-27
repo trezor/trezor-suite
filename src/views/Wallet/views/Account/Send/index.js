@@ -405,8 +405,8 @@ export default AccountSend;
 import { connect } from 'react-redux';
 
 import type { State } from 'flowtype';
-import EthereumSend from './ethereum/Container';
-import RippleSend from './ripple/Container';
+import EthereumTypeSendForm from './ethereum/Container';
+import RippleTypeSendForm from './ripple/Container';
 
 export type BaseProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
@@ -421,9 +421,9 @@ export default connect((state: State): BaseProps => ({
 
     switch (network.type) {
         case 'ethereum':
-            return <EthereumSend />;
+            return <EthereumTypeSendForm />;
         case 'ripple':
-            return <RippleSend />;
+            return <RippleTypeSendForm />;
         default:
             return null;
     }
