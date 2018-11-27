@@ -16,6 +16,7 @@ import Link from 'components/Link';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 import AccountBalance from './components/Balance';
 import AddedToken from './components/Token';
+import AddTokenMessage from './components/AddTokenMessage';
 
 import type { Props } from './Container';
 
@@ -146,6 +147,7 @@ const AccountSummary = (props: Props) => {
                     />
                 </AsyncSelectWrapper>
                 <AddedTokensWrapper>
+                    { tokens.length < 1 && (<AddTokenMessage />) }
                     {tokens.map(token => (
                         <AddedToken
                             key={token.symbol}
