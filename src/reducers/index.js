@@ -11,6 +11,7 @@ import web3 from 'reducers/Web3Reducer';
 import accounts from 'reducers/AccountsReducer';
 import selectedAccount from 'reducers/SelectedAccountReducer';
 import sendForm from 'reducers/SendFormReducer';
+import rippleSendForm from 'reducers/RippleSendFormReducer';
 import receive from 'reducers/ReceiveReducer';
 import summary from 'reducers/SummaryReducer';
 import tokens from 'reducers/TokensReducer';
@@ -33,6 +34,7 @@ const reducers = {
     accounts,
     selectedAccount,
     sendForm,
+    rippleSendForm,
     receive,
     summary,
     tokens,
