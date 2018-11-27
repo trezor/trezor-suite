@@ -9,7 +9,7 @@ import ScaleText from 'react-scale-text';
 
 import type { Network } from 'reducers/LocalStorageReducer';
 import type { Token } from 'reducers/TokensReducer';
-import type { Props as BaseProps } from '../../Container';
+import type { BaseProps } from '../../index';
 
 type Props = {
     pending: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'pending'>,
