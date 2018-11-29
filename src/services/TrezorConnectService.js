@@ -58,9 +58,9 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     } else if (action.type === CONNECT.DUPLICATE) {
         api.dispatch(RouterActions.selectDevice(action.device));
     } else if (action.type === BLOCKCHAIN.BLOCK) {
-        api.dispatch(BlockchainActions.onBlockMined(action.payload.coin));
+        api.dispatch(BlockchainActions.onBlockMined(action.payload));
     } else if (action.type === BLOCKCHAIN.NOTIFICATION) {
-        // api.dispatch(BlockchainActions.onNotification(action.payload));
+        api.dispatch(BlockchainActions.onNotification(action.payload));
     } else if (action.type === BLOCKCHAIN.ERROR) {
         api.dispatch(BlockchainActions.error(action.payload));
     }
