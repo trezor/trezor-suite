@@ -14,6 +14,7 @@ export type FeeLevel = {
 export type State = {
     +networkName: string;
     +networkSymbol: string;
+    currency: string;
 
     // form fields
     advanced: boolean;
@@ -24,7 +25,13 @@ export type State = {
     setMax: boolean;
     feeLevels: Array<FeeLevel>;
     selectedFeeLevel: FeeLevel;
-    sequence: string;
+    recommendedGasPrice: string;
+    gasPriceNeedsUpdate: boolean;
+    gasLimit: string;
+    calculatingGasLimit: boolean;
+    gasPrice: string;
+    data: string;
+    nonce: string;
     total: string;
 
     errors: {[k: string]: string};
@@ -53,7 +60,13 @@ export const initialState: State = {
         gasPrice: '0',
         value: 'Normal',
     },
-    sequence: '0',
+    recommendedGasPrice: '0',
+    gasPriceNeedsUpdate: false,
+    gasLimit: '0',
+    calculatingGasLimit: false,
+    gasPrice: '0',
+    data: '',
+    nonce: '0',
     total: '0',
     sending: false,
     errors: {},
@@ -62,16 +75,14 @@ export const initialState: State = {
 };
 
 export default (state: State = initialState, action: Action): State => {
+    if (action.type === ACCOUNT.DISPOSE) return initialState;
+    if (!action.networkType || action.networkType !== 'ethereum') return state;
+
     switch (action.type) {
         case SEND.INIT:
         case SEND.CHANGE:
         case SEND.VALIDATION:
-            // return action.state;
-            return state;
-
-        case ACCOUNT.DISPOSE:
-            return initialState;
-
+            return action.state;
 
         case SEND.TOGGLE_ADVANCED:
             return {
