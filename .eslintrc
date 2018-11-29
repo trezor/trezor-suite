@@ -1,0 +1,22 @@
+{
+    "extends": [
+        "eslint-config-airbnb-base",
+        "plugin:jest/recommended"
+    ],
+    "env": {
+        "browser": true,
+        "jest": true
+    },
+    "rules": {
+        "indent": ["error", 4],
+        "import/prefer-default-export": 0
+    },
+    "plugins": [
+        "import",
+        "jest"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "module"
+    }
+}
