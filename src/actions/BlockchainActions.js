@@ -10,7 +10,7 @@ import type {
     GetState,
     PromiseAction,
 } from 'flowtype';
-import type { EthereumAccount } from 'trezor-connect';
+import type { EthereumAccount, BlockchainBlock, BlockchainNotification } from 'trezor-connect';
 import type { Token } from 'reducers/TokensReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
 import * as Web3Actions from './Web3Actions';
@@ -18,6 +18,9 @@ import * as AccountsActions from './AccountsActions';
 
 export type BlockchainAction = {
     type: typeof BLOCKCHAIN.READY,
+} | {
+    type: typeof BLOCKCHAIN.UPDATE_FEE,
+    fee: string,
 }
 
 export const discoverAccount = (device: TrezorDevice, address: string, network: string): PromiseAction<EthereumAccount> => async (dispatch: Dispatch): Promise<EthereumAccount> => {
@@ -89,11 +92,24 @@ export const estimateGasLimit = (network: string, data: string, value: string, g
     return result;
 };
 
-export const onBlockMined = (coinInfo: any): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    // incoming "coinInfo" from TrezorConnect is CoinInfo | EthereumNetwork type
-    const network: string = coinInfo.shortcut.toLowerCase();
+export const onBlockMined = (payload: $ElementType<BlockchainBlock, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const network: string = payload.coin.shortcut.toLowerCase();
+    if (payload.coin.type === 'misc') {
+        if (getState().router.location.state.network === network) {
+            const fee = await TrezorConnect.blockchainGetFee({
+                coin: network,
+            });
 
-    if (network !== 'ethereum') return;
+            if (!fee.success) return;
+
+            dispatch({
+                type: BLOCKCHAIN.UPDATE_FEE,
+                fee: fee.payload,
+            });
+        }
+        return;
+    }
+
     // try to resolve pending transactions
     await dispatch(Web3Actions.resolvePendingTransactions(network));
 
@@ -127,46 +143,45 @@ export const onBlockMined = (coinInfo: any): PromiseAction<void> => async (dispa
 
 
 // not used for now, waiting for fix in blockbook
-/*
-export const onNotification = (payload: any): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (/*dispatch: Dispatch, getState: GetState*/): Promise<void> => {
+    console.warn('OnBL', payload);
     // this event can be triggered multiple times
-    // 1. check if pair [txid + address] is already in reducer
-    const network: string = payload.coin.shortcut.toLowerCase();
-    const address: string = EthereumjsUtil.toChecksumAddress(payload.tx.address);
-    const txInfo = await dispatch(Web3Actions.getPendingInfo(network, payload.tx.txid));
+    // // 1. check if pair [txid + address] is already in reducer
+    // const network: string = payload.coin.shortcut.toLowerCase();
+    // const address: string = EthereumjsUtil.toChecksumAddress(payload.tx.address);
+    // const txInfo = await dispatch(Web3Actions.getPendingInfo(network, payload.tx.txid));
 
-    // const exists = getState().pending.filter(p => p.id === payload.tx.txid && p.address === address);
-    const exists = getState().pending.filter(p => p.address === address);
-    if (exists.length < 1) {
-        if (txInfo) {
-            dispatch({
-                type: PENDING.ADD,
-                payload: {
-                    type: 'send',
-                    id: payload.tx.txid,
-                    network,
-                    currency: 'tETH',
-                    amount: txInfo.value,
-                    total: '0',
-                    tx: {},
-                    nonce: txInfo.nonce,
-                    address,
-                    rejected: false,
-                },
-            });
-        } else {
-            // tx info not found (yet?)
-            // dispatch({
-            //     type: PENDING.ADD_UNKNOWN,
-            //     payload: {
-            //         network,
-            //         ...payload.tx,
-            //     }
-            // });
-        }
-    }
+    // // const exists = getState().pending.filter(p => p.id === payload.tx.txid && p.address === address);
+    // const exists = getState().pending.filter(p => p.address === address);
+    // if (exists.length < 1) {
+    //     if (txInfo) {
+    //         dispatch({
+    //             type: PENDING.ADD,
+    //             payload: {
+    //                 type: 'send',
+    //                 id: payload.tx.txid,
+    //                 network,
+    //                 currency: 'tETH',
+    //                 amount: txInfo.value,
+    //                 total: '0',
+    //                 tx: {},
+    //                 nonce: txInfo.nonce,
+    //                 address,
+    //                 rejected: false,
+    //             },
+    //         });
+    //     } else {
+    //         // tx info not found (yet?)
+    //         // dispatch({
+    //         //     type: PENDING.ADD_UNKNOWN,
+    //         //     payload: {
+    //         //         network,
+    //         //         ...payload.tx,
+    //         //     }
+    //         // });
+    //     }
+    // }
 };
-*/
 
 
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
