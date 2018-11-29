@@ -17,8 +17,8 @@ import type {
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
 import * as BlockchainActions from './BlockchainActions';
-import * as EthereumDiscoveryActions from './ethereum/EthereumDiscoveryActions';
-import * as RippleDiscoveryActions from './ripple/RippleDiscoveryActions';
+import * as EthereumDiscoveryActions from './ethereum/DiscoveryActions';
+import * as RippleDiscoveryActions from './ripple/DiscoveryActions';
 
 export type DiscoveryStartAction = EthereumDiscoveryActions.DiscoveryStartAction | RippleDiscoveryActions.DiscoveryStartAction;
 

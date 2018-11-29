@@ -13,7 +13,7 @@ import type {
     GetState,
     PayloadAction,
 } from 'flowtype';
-import type { State, FeeLevel } from 'reducers/SendFormReducer';
+import type { State, FeeLevel } from 'reducers/SendFormRippleReducer';
 
 // general regular expressions
 const RIPPLE_ADDRESS_RE = new RegExp('^r[1-9A-HJ-NP-Za-km-z]{25,34}$');
@@ -39,7 +39,7 @@ export const onGasPriceUpdated = (network: string, gasPrice: string): PayloadAct
     // }
     // const newPrice = getRandomInt(10, 50).toString();
 
-    const state = getState().sendForm;
+    const state = getState().sendFormRipple;
     if (network === state.networkSymbol) return;
 
     // check if new price is different then currently recommended
@@ -82,7 +82,7 @@ export const onGasPriceUpdated = (network: string, gasPrice: string): PayloadAct
 export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
     // clone deep nested object
     // to avoid overrides across state history
-    let state: State = JSON.parse(JSON.stringify(getState().sendForm));
+    let state: State = JSON.parse(JSON.stringify(getState().sendFormRipple));
     // reset errors
     state.errors = {};
     state.warnings = {};
@@ -108,19 +108,11 @@ export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
     if (!account) return $state;
 
     const state = { ...$state };
-    const isToken = state.currency !== state.networkSymbol;
 
     if (state.setMax) {
-        const pendingAmount = getPendingAmount(pending, state.currency, isToken);
-        if (isToken) {
-            const token = findToken(tokens, account.address, state.currency, account.deviceState);
-            if (token) {
-                state.amount = new BigNumber(token.balance).minus(pendingAmount).toString(10);
-            }
-        } else {
-            const b = new BigNumber(account.balance).minus(pendingAmount);
-            state.amount = calculateMaxAmount(b, state.gasPrice, state.gasLimit);
-        }
+        const pendingAmount = getPendingAmount(pending, state.networkSymbol, false);
+        const b = new BigNumber(account.balance).minus(pendingAmount);
+        state.amount = calculateMaxAmount(b, state.gasPrice, state.gasLimit);
     }
 
     state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
@@ -153,11 +145,7 @@ export const addressValidation = ($state: State): PayloadAction<State> => (dispa
 
     if (address.length < 1) {
         state.errors.address = 'Address is not set';
-    } else if (network.type === 'ethereum' && !EthereumjsUtil.isValidAddress(address)) {
-        state.errors.address = 'Address is not valid';
-    } else if (network.type === 'ethereum' && address.match(UPPERCASE_RE) && !EthereumjsUtil.isValidChecksumAddress(address)) {
-        state.errors.address = 'Address is not a valid checksum';
-    } else if (network.type === 'ripple' && !address.match(RIPPLE_ADDRESS_RE)) {
+    } else if (!address.match(RIPPLE_ADDRESS_RE)) {
         state.errors.address = 'Address is not valid';
     }
     return state;
