@@ -2,7 +2,7 @@
 import * as storageUtils from 'utils/storage';
 import { findToken } from 'reducers/TokensReducer';
 
-import type { State as SendFormState } from 'reducers/SendFormReducer';
+import type { State as SendFormState } from 'reducers/SendFormEthereumReducer';
 import type {
     ThunkAction,
     PayloadAction,
@@ -20,7 +20,7 @@ const getTxDraftKey = (getState: GetState): string => {
 };
 
 export const saveDraftTransaction = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const state = getState().sendForm;
+    const state = getState().sendFormEthereum;
     if (state.untouched) return;
 
     const key = getTxDraftKey(getState);

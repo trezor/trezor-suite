@@ -3,7 +3,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import SendFormActions from 'actions/SendFormActions';
+import SendFormActions from 'actions/ripple/SendFormActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 import AccountSend from './index';
@@ -12,7 +12,7 @@ type OwnProps = { }
 
 export type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-    sendForm: $ElementType<State, 'sendForm'>,
+    sendForm: $ElementType<State, 'sendFormRipple'>,
     wallet: $ElementType<State, 'wallet'>,
     fiat: $ElementType<State, 'fiat'>,
     localStorage: $ElementType<State, 'localStorage'>,
@@ -26,7 +26,7 @@ export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     selectedAccount: state.selectedAccount,
-    sendForm: state.sendForm,
+    sendForm: state.sendFormRipple,
     wallet: state.wallet,
     fiat: state.fiat,
     localStorage: state.localStorage,
