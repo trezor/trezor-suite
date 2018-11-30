@@ -8,10 +8,5 @@
                 "root": ["./src"]
             }
         ]
-    ],
-    "env": {
-        "test": {
-            "presets": ["jest"]
-        }
-    }
+    ]
 }
