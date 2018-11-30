@@ -7,8 +7,8 @@
   "main": "./lib/index.js",
   "scripts": {
     "test": "jest",
-    "lint": "npx eslint .",
-    "build": "npx rimraf lib && npx webpack --progress --bail"
+    "lint": "eslint .",
+    "build": "rimraf lib && webpack --progress --bail"
   },
   "dependencies": {
     "jest": "^23.6.0",
