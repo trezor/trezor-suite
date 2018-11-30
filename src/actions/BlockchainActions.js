@@ -3,6 +3,7 @@
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as BLOCKCHAIN from 'actions/constants/blockchain';
+import * as PENDING from 'actions/constants/pendingTx';
 
 import type {
     TrezorDevice,
@@ -99,7 +100,6 @@ export const onBlockMined = (payload: $ElementType<BlockchainBlock, 'payload'>):
             const fee = await TrezorConnect.blockchainGetFee({
                 coin: network,
             });
-
             if (!fee.success) return;
 
             dispatch({
@@ -141,10 +141,52 @@ export const onBlockMined = (payload: $ElementType<BlockchainBlock, 'payload'>):
     }
 };
 
+export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { notification } = payload;
+    const account = getState().accounts.find(a => a.address === notification.address);
+    if (!account) return;
 
-// not used for now, waiting for fix in blockbook
-export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (/*dispatch: Dispatch, getState: GetState*/): Promise<void> => {
-    console.warn('OnBL', payload);
+    if (notification.status === 'pending') {
+        dispatch({
+            type: PENDING.ADD,
+            payload: {
+                type: notification.type,
+                hash: notification.hash,
+                network: account.network,
+                address: account.address,
+                currency: account.network,
+                amount: notification.amount,
+                total: notification.amount,
+                fee: notification.fee,
+            },
+        });
+
+        // todo: replace "send success" notification with link to explorer
+    } else if (notification.status === 'confirmed') {
+        dispatch({
+            type: PENDING.TX_RESOLVED,
+            hash: notification.hash,
+        });
+    }
+
+    const updatedAccount = await TrezorConnect.rippleGetAccountInfo({
+        account: {
+            address: account.address,
+            block: account.block,
+            history: false,
+        },
+    });
+    if (!updatedAccount.success) return;
+
+    dispatch(AccountsActions.update({
+        ...account,
+        balance: updatedAccount.payload.balance,
+        block: updatedAccount.payload.block,
+        sequence: updatedAccount.payload.sequence,
+    }));
+
+    // todo: get transaction history here
+    // console.warn("OnBlAccount", account);
     // this event can be triggered multiple times
     // // 1. check if pair [txid + address] is already in reducer
     // const network: string = payload.coin.shortcut.toLowerCase();

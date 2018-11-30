@@ -137,25 +137,24 @@ export const resolvePendingTransactions = (network: string): PromiseAction<void>
     const instance: Web3Instance = await dispatch(initWeb3(network));
     const pending = getState().pending.filter(p => p.network === network);
     pending.forEach(async (tx) => {
-        const status = await instance.web3.eth.getTransaction(tx.id);
+        const status = await instance.web3.eth.getTransaction(tx.hash);
         if (!status) {
             dispatch({
                 type: PENDING.TX_REJECTED,
-                tx,
+                hash: tx.hash,
             });
         } else {
-            const receipt = await instance.web3.eth.getTransactionReceipt(tx.id);
+            const receipt = await instance.web3.eth.getTransactionReceipt(tx.hash);
             if (receipt) {
                 if (status.gas !== receipt.gasUsed) {
                     dispatch({
                         type: PENDING.TX_TOKEN_ERROR,
-                        tx,
+                        hash: tx.hash,
                     });
                 }
                 dispatch({
                     type: PENDING.TX_RESOLVED,
-                    tx,
-                    receipt,
+                    hash: tx.hash,
                 });
             }
         }

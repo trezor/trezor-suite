@@ -140,7 +140,7 @@ class PendingTransactions extends PureComponent<Props> {
                 <H2>Pending transactions</H2>
                 {this.getPendingTransactions().map(tx => (
                     <TransactionWrapper
-                        key={tx.id}
+                        key={tx.hash}
                     >
                         <TransactionIcon
                             textColor={() => this.getTransactionIconColors(tx).textColor}
@@ -154,7 +154,7 @@ class PendingTransactions extends PureComponent<Props> {
 
                         <TransactionName>
                             <StyledLink
-                                href={`${this.props.network.explorer.tx}${tx.id}`}
+                                href={`${this.props.network.explorer.tx}${tx.hash}`}
                                 isGray
                             >
                                 {this.getTransactionName(tx)}
