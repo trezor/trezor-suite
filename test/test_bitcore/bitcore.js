@@ -6,8 +6,85 @@ import {BitcoreBlockchain} from '../../src/bitcore';
 import {Stream} from '../../src/utils/stream';
 import {Socket} from '../../src/socketio-worker/outside';
 
-import {startBitcore, stopBitcore, testStream, testStreamMultiple} from './test_helpers/common.js';
-import {run} from './test_helpers/_node_client.js';
+const myFetch = require('isomorphic-fetch');
+
+function run(stuff) {
+    return myFetch('http://localhost:1234', {
+        method: 'post',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(stuff),
+    }).then(res => res.json());
+}
+
+function startBitcore() {
+    return run('/start_bitcore.sh')
+        .then(() => promiseTimeout(15 * 1000));
+}
+
+function stopBitcore() {
+    return run('pkill bitcored')
+          .then(() => promiseTimeout(15 * 1000));
+}
+
+function reinstallBitcore() {
+    run('apt-get purge -y bitcore-regtest')
+          .then(() => promiseTimeout(15 * 1000))
+          .then(() => run('gdebi -n /bitcore.deb'))
+          .then(() => promiseTimeout(15 * 1000))
+}
+
+
+function promiseTimeout(time) {
+    return new Promise((resolve) => setTimeout(() => resolve(), time));
+}
+
+function testStreamMultiple(stream, test, timeout, done, times) {
+    let ended = false;
+    let i = 0;
+
+    const fun = (value, detach) => {
+        if (typeof value === 'object' && value instanceof Array) {
+            value.forEach(v => fun(v, detach));
+        } else {
+            if (!ended) {
+                try {
+                    test(value);
+                } catch (e) {
+                    if (!ended) {
+                        ended = true;
+                        done(e);
+                    }
+                    detach();
+                    throw e;
+                }
+                i++;
+                if (i === times) {
+                    if (!ended) {
+                        ended = true;
+                        done();
+                    }
+                    detach();
+                }
+            }
+        }
+    };
+    stream.values.attach(fun);
+    setTimeout(() => {
+        if (!ended) {
+            ended = true;
+            stream.values.detach(fun);
+            done(new Error('Timeout'));
+        }
+    }, timeout);
+}
+
+function testStream(stream, test, timeout, done) {
+    return testStreamMultiple(stream, test, timeout, done, 1);
+}
+
 
 import bitcoin from 'bitcoinjs-lib-zcash';
 
@@ -59,35 +136,6 @@ function getAddress() {
     i = i + 1;
     const addressNode = hdnode.derive(i);
     return addressNode.getAddress();
-}
-
-function makeTx(inTxHex, inTxOutputAddresses, outAddress) {
-    function findInput() {
-        for (let j = i; j >= 0; j--) {
-            const nodeaddress = hdnode.derive(j).getAddress();
-            for (let k = 0; k < inTxOutputAddresses.length; k++) {
-                if (inTxOutputAddresses[k] === nodeaddress) {
-                    return {
-                        ecpair: hdnode.derive(j).keyPair,
-                        outputid: k,
-                    };
-                }
-            }
-        }
-        throw new Error('Not found');
-    }
-
-    const input = findInput();
-    const transaction = bitcoin.Transaction.fromHex(inTxHex);
-    const builder = new bitcoin.TransactionBuilder(bitcoin.networks.testnet);
-    builder.addInput(transaction, input.outputid, 0);
-    builder.addOutput(outAddress, 50000000);
-    builder.sign(0, input.ecpair);
-    const newTx = builder.buildIncomplete();
-    return {
-        hex: newTx.toHex(),
-        id: newTx.getId(),
-    };
 }
 
 describe('bitcore', () => {
@@ -358,7 +406,7 @@ describe('bitcore', () => {
                 );
             }, done);
         });
-
+        /*
         it('socket registers outgoing tx', function (done) {
             this.timeout(30 * 1000);
             if (lastTx == null) {
@@ -375,9 +423,9 @@ describe('bitcore', () => {
                 });
             }, () => {
                 const outTx = makeTx(lastTx.hex, lastTx.outputAddresses, outAddress).hex;
-                run('bitcore-regtest-cli sendrawtransaction "' + outTx + '" true');
+                run('bitcore-regtest-cli sendrawtransaction "' + outTx + '" true').catch(err => console.error(err));
             }, done);
-        });
+        }); */
     });
 
     describe('lookupTransactionsStream', () => {
@@ -697,6 +745,7 @@ describe('bitcore', () => {
         });
     });
 
+    /*
     describe('lookupTransaction + sendTransaction', () => {
         let outTx;
 
@@ -726,7 +775,7 @@ describe('bitcore', () => {
                 }, err => done(err));
             }, () => {}, done);
         });
-    });
+    });*/
 
     describe('estimatetx fees', () => {
         it('estimates something', function (done) {
@@ -777,4 +826,13 @@ describe('bitcore', () => {
             }, () => stopBitcore(), done);
         });
     });
+    
+    // purge data in docker, to be able to run test again
+    describe('reinstallsBitcore', () => {
+        it('reinstalls bitcore', function () {
+            this.timeout(60 * 1000);
+            return reinstallBitcore();
+        });
+    });
+
 });

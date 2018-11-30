@@ -44,6 +44,10 @@ unit-build-tx:
 unit-discovery:
 	`npm bin`/mocha --compilers js:babel-register test/discover-account.js
 
+unit-bitcore:
+	`npm bin`/mocha --compilers js:babel-register test/test_bitcore/bitcore.js
+
+
 coverage-html:
 	NODE_ENV=test `npm bin`/nyc --reporter=html --check-coverage `npm bin`/mocha --compilers js:babel-register
 
@@ -89,4 +93,6 @@ version-major: .version
 git-clean:
 	test ! -n "$$(git status --porcelain)"
 
-
+bitcore-test-docker:
+	cd test/test_bitcore/test_helpers && docker build . -t bitcore_regtest
+	cd test/test_bitcore/test_helpers && docker run -d -p 3005:3005 -p 1234:1234 bitcore_regtest
