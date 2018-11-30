@@ -7,7 +7,7 @@
   "main": "./lib/index.js",
   "scripts": {
     "test": "jest",
-    "lint": "yarn eslint .",
+    "lint": "npx eslint .",
     "build": "npx rimraf lib && npx webpack --progress --bail"
   },
   "dependencies": {
