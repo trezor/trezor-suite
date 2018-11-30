@@ -1,5 +1,8 @@
 module.exports = {
     rootDir: '.',
+    transform: {
+        '^.+\\.(js|jsx|ts)$': 'babel-jest',
+    },
     automock: false,
     coverageDirectory: '../coverage',
     collectCoverage: true,
