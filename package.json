@@ -4,6 +4,7 @@
   "description": "",
   "main": "./lib/index.js",
   "scripts": {
+    "test": "jest",
     "lint": "yarn eslint .",
     "build": "npx rimraf lib && npx webpack --progress --bail"
   },
@@ -14,8 +15,14 @@
     "rimraf": "^2.6.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "babel-jest": "^23.6.0",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-jest": "^23.2.0",
     "eslint": "^5.9.0",
     "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-import-resolver-babel-module": "^4.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^22.1.0",
     "webpack": "^4.26.1",

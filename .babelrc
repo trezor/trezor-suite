@@ -1,3 +1,17 @@
 {
-    "presets": ["env"]
+    "presets": [
+        "env"
+    ],
+    "plugins": [
+        [
+            "module-resolver", {
+                "root": ["./src"]
+            }
+        ]
+    ],
+    "env": {
+        "test": {
+            "presets": ["jest"]
+        }
+    }
 }

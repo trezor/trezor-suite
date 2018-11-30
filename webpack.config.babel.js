@@ -1,8 +1,8 @@
-const path = require('path');
+import path from 'path';
 
 const OUTPUT_PATH = path.resolve(__dirname, 'lib');
 
-module.exports = {
+export default {
     entry: './src/index.js',
     mode: process.env.NODE_ENV || 'production',
     output: {
