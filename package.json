@@ -4,13 +4,14 @@
   "author": "TREZOR <info@trezor.io>",
   "license": "SEE LICENSE IN LICENSE.md",
   "description": "",
-  "main": "./lib/index.js",
+  "main": "./lib/trezor-update.js",
   "scripts": {
     "test": "jest",
     "lint": "eslint .",
-    "build": "yarn build:prod && yarn build:dev",
-    "build:prod": "rimraf lib/index.min.js && NODE_ENV=production webpack --progress --bail",
-    "build:dev": "rimraf lib/index.js && NODE_ENV=development webpack --progress --bail"
+    "clean": "rimraf lib",
+    "build": "yarn run clean && yarn build:prod && yarn build:dev",
+    "build:prod": "NODE_ENV=production webpack --progress --bail",
+    "build:dev": "NODE_ENV=development webpack --progress --bail"
   },
   "dependencies": {
     "jest": "^23.6.0",

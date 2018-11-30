@@ -7,7 +7,7 @@ const isProd = process.env.NODE_ENV === 'production';
 module.exports = {
     mode: isProd ? 'production' : 'development',
     output: {
-        filename: isProd ? 'index.min.js' : 'index.js',
+        filename: isProd ? 'trezor-update.min.js' : 'trezor-update.js',
         path: OUTPUT_PATH,
     },
     module: {
