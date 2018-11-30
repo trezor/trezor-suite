@@ -45,7 +45,6 @@ export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discover
         account: {
             path,
             block: 0,
-            transactions: 0,
         },
         keepSession: true, // acquire and hold session
         useEmptyPassphrase: device.useEmptyPassphrase,
