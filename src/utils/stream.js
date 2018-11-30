@@ -476,6 +476,8 @@ export class StreamWithEnding<UpdateT, EndingT> {
     dispose: (e: Error) => void;
 
     static fromStreamAndPromise(s: Stream<UpdateT>, ending: Promise<EndingT>): StreamWithEnding<UpdateT, EndingT> {
+        // idiocy to make node.js happy to stop showing stupid errors
+        ending.catch(()=>{});
         const res: StreamWithEnding<UpdateT, EndingT> = new StreamWithEnding();
         res.stream = s;
 

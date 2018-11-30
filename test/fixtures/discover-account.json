@@ -9469,5 +9469,27 @@
         }
       }
     ]
+  },
+  {
+    "name": "Nonsensical xpub",
+    "start": null,
+    "xpub": "tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431Vaaaaaaaaa",
+    "endError": "Invalid checksum",
+    "network": {
+      "messagePrefix": "N/A",
+      "bip32": {
+        "public": 70617039,
+        "private": 0
+      },
+      "pubKeyHash": 111,
+      "scriptHash": 196,
+      "bech32": "tb",
+      "wif": 0
+    },
+    "segwit": "off",
+    "cashaddr": false,
+    "gap": 3,
+    "timeOffset": -120,
+    "spec": []
   }
 ]

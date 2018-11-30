@@ -54,6 +54,9 @@ function discoverAccount(enableWebassembly) {
                         }
                     }
                 }, (err) => {
+                    if (err instanceof Error) {
+                        err = err.message;
+                    }
                     if (!(err.startsWith(fixture.endError))) {
                         console.log('Discovery result', JSON.stringify(err, null, 2));
                         console.log('Fixture', JSON.stringify(fixture.endError, null, 2));
