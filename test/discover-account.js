@@ -6,7 +6,10 @@ import fixtures from './fixtures/discover-account.json';
 
 import {discoveryWorkerFactory, xpubWorker, xpubFilePromise} from './_worker-helper';
 
-discoverAccount(true);
+const hasWasm = typeof WebAssembly !== 'undefined';
+if (hasWasm) {
+    discoverAccount(true);
+}
 discoverAccount(false);
 
 function discoverAccount(enableWebassembly) {
@@ -17,12 +20,12 @@ function discoverAccount(enableWebassembly) {
             it(fixture.name, function (done_orig) {
                 this.timeout(30 * 1000);
                 let wasm_old;
-                if (!enableWebassembly) {
+                if (!enableWebassembly && hasWasm) {
                     wasm_old = WebAssembly;
                     WebAssembly = undefined;
                 }
                 const done = (x) => {
-                    if (!enableWebassembly) {
+                    if (!enableWebassembly && hasWasm) {
                         WebAssembly = wasm_old;
                     }
                     done_orig(x);
