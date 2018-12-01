@@ -36,10 +36,19 @@ function reinstallBitcore() {
           .then(() => promiseTimeout(15 * 1000))
 }
 
-
 function promiseTimeout(time) {
     return new Promise((resolve) => setTimeout(() => resolve(), time));
 }
+
+run("echo foobar").then(a=>{
+  if (a !== "foobar\n") {
+    console.error(a)
+    console.error("Docker with bitcore not detected; run `make bitcore-test-docker`")
+  }
+}, err => {
+    console.error(err)
+    console.error("Docker with bitcore not detected; run `make bitcore-test-docker`")
+});
 
 function testStreamMultiple(stream, test, timeout, done, times) {
     let ended = false;
