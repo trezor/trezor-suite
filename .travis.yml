@@ -70,31 +70,19 @@ matrix:
 
 # ------------------- bitcore tests ---------------------
 
-    # bitcore test needs special configuration, since we need to run whole bitcore in background
-    - before_script:
-        - test/test_bitcore/test_helpers/install_nodejs4.sh
-        - sudo test/test_bitcore/test_helpers/install_regtest.sh
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
-        - nvm install 8
-      env: TEST_SUITE=test-bitcore 
-      language: generic
+    - env: TEST_SUITE=test-bitcore-with-docker
       sudo: required
-    # ...and we also need to run chrome / firefox in background, at the same time, with bitcore
     - before_script:
+        # we need to run xvfb fot the karma tests to work
         - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test/test_bitcore/test_helpers/install_nodejs4.sh
-        - sudo test/test_bitcore/test_helpers/install_regtest.sh
         - mv karma_confs/karma.conf.js-bitcore karma.conf.js
-      env: TEST_SUITE=karma-chrome TEST=bitcore
-      language: generic
+      env: TEST_SUITE=karma-chrome TEST=bitcore-with-docker
       sudo: required
     - before_script:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        - test/test_bitcore/test_helpers/install_nodejs4.sh
-        - sudo test/test_bitcore/test_helpers/install_regtest.sh
         - mv karma_confs/karma.conf.js-bitcore karma.conf.js
       env: TEST_SUITE=karma-firefox TEST=bitcore
       addons:
@@ -102,14 +90,13 @@ matrix:
       language: generic
       sudo: required
 
-
 env:
   - TEST_SUITE=eslint
   - TEST_SUITE=flow
   - TEST_SUITE=build-example
   - TEST_SUITE=unit-build-tx
   - TEST_SUITE=unit-discovery
-  - TEST_SUITE=coverage
+  - TEST_SUITE=coverage-with-docker
 script: npm run-script $TEST_SUITE
 
 notifications:

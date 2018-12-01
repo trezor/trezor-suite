@@ -21,12 +21,13 @@ You can also try it yourself here - http://trezor.github.io/hd-wallet/example.ht
 
 ## Running regtest tests
 
-Since running the tests require an installed regtest-bitcore *and* an empty regtest blockchain, there is a docker image for that (so you don't litter your system with that)
+Running the tests require an installed regtest-bitcore *and* an empty regtest blockchain, but there is a docker that runs the bitcore in background.
 
-* `cd docker_test`
-* `docker build -t hdwallet_docker_test .`
-* `docker run -v /path-to-hd-wallet/hd-wallet:/hd-wallet hdwallet_docker_test bash -c './do.sh && source ~/.nvm/nvm.sh && cd /hd-wallet/ && npm run coverage'`
-  * or any goal instead of coverage
+Before running coverage, do
+
+* `make bitcore-test-docker`
+
+And you can normally run coverage tests.
 
 ## License
 

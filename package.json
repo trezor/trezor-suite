@@ -17,7 +17,9 @@
     "eslint": "make eslint",
     "karma-firefox": "make karma-firefox",
     "karma-chrome": "make karma-chrome",
-    "bitcore-test-docker": "make bitcore-test-docker"
+    "bitcore-test-docker": "make bitcore-test-docker",
+    "test-bitcore-with-docker": "make bitcore-test-docker && make test-bitcore",
+    "coverage-with-docker": "make bitcore-test-docker && make run-coverage"
   },
   "author": "TREZOR <info@trezor.io>",
   "repository": "https://github.com/trezor/hd-wallet",
