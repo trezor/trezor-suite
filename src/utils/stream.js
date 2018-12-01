@@ -341,24 +341,6 @@ export class Stream<T> {
         });
     }
 
-    awaitLast(): Promise<T> {
-        return new Promise((resolve, reject) => {
-            let lastValue;
-            const onValue = (value) => { lastValue = value; };
-            const onFinish = (finish) => {
-                this.values.detach(onValue);
-                this.finish.detach(onFinish);
-                if (lastValue == null) {
-                    reject(new Error('No last value.'));
-                } else {
-                    resolve(lastValue);
-                }
-            };
-            this.values.attach(onValue);
-            this.finish.attach(onFinish);
-        });
-    }
-
     map<U>(fn: (value: T) => U): Stream<U> {
         return new Stream((update, finish) => {
             this.values.attach((value) => { update(fn(value)); });
