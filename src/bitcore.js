@@ -229,7 +229,7 @@ export class BitcoreBlockchain {
     destroy() {
         this.socket.promise.then(socket => {
             socket.close();
-        }, ()=>{/*node is stupid*/});
+        }, () => { /* node is stupid*/ });
     }
 
     // start/end are the block numbers, inclusive.

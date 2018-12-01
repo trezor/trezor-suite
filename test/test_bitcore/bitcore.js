@@ -33,21 +33,21 @@ function reinstallBitcore() {
     run('apt-get purge -y bitcore-regtest')
           .then(() => promiseTimeout(15 * 1000))
           .then(() => run('gdebi -n /bitcore.deb'))
-          .then(() => promiseTimeout(15 * 1000))
+          .then(() => promiseTimeout(15 * 1000));
 }
 
 function promiseTimeout(time) {
     return new Promise((resolve) => setTimeout(() => resolve(), time));
 }
 
-run("echo foobar").then(a=>{
-  if (a !== "foobar\n") {
-    console.error(a)
-    console.error("Docker with bitcore not detected; run `make bitcore-test-docker`")
-  }
+run('echo foobar').then(a => {
+    if (a !== 'foobar\n') {
+        console.error(a);
+        console.error('Docker with bitcore not detected; run `make bitcore-test-docker`');
+    }
 }, err => {
-    console.error(err)
-    console.error("Docker with bitcore not detected; run `make bitcore-test-docker`")
+    console.error(err);
+    console.error('Docker with bitcore not detected; run `make bitcore-test-docker`');
 });
 
 function testStreamMultiple(stream, test, timeout, done, times) {
@@ -93,7 +93,6 @@ function testStreamMultiple(stream, test, timeout, done, times) {
 function testStream(stream, test, timeout, done) {
     return testStreamMultiple(stream, test, timeout, done, 1);
 }
-
 
 import bitcoin from 'bitcoinjs-lib-zcash';
 
@@ -381,15 +380,15 @@ describe('bitcore', () => {
             }, () => run('bitcore-regtest-cli generatetoaddress 1 ' + saddress), done);
         });
 
-        let lastTx = null;
-        let lastAddress = null;
+        // let lastTx = null;
+        // let lastAddress = null;
 
         it('notifications register normal tx', function (done) {
             this.timeout(30 * 1000);
             const saddress = getAddress();
 
             // keep address for further tests
-            lastAddress = saddress;
+            // lastAddress = saddress;
 
             testBlockchain((blockchain, done) => {
                 const stream = blockchain.notifications;
@@ -406,7 +405,7 @@ describe('bitcore', () => {
                     assert(raddresses.findIndex((k) => k !== saddress) !== -1);
 
                     // keep tx for further tests
-                    lastTx = tx;
+                    // lastTx = tx;
                 },
                 20 * 1000, done);
             }, () => {
@@ -579,7 +578,7 @@ describe('bitcore', () => {
         });
     }
 
-    let lastTx = null;
+    // let lastTx = null;
 
     describe('lookupTransactions + lookupTransactionIds', () => {
         it('starts bitcore', function () {
@@ -699,7 +698,7 @@ describe('bitcore', () => {
                     assert(tx.timestamp != null);
 
                     // keep tx for further tests
-                    lastTx = tx;
+                    // lastTx = tx;
                 }, done);
             }, done);
         });
@@ -835,7 +834,7 @@ describe('bitcore', () => {
             }, () => stopBitcore(), done);
         });
     });
-    
+
     // purge data in docker, to be able to run test again
     describe('reinstallsBitcore', () => {
         it('reinstalls bitcore', function () {
@@ -843,5 +842,4 @@ describe('bitcore', () => {
             return reinstallBitcore();
         });
     });
-
 });
