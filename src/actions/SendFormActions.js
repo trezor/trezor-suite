@@ -12,23 +12,9 @@ import type {
 } from 'flowtype';
 import type { State as EthereumState } from 'reducers/SendFormEthereumReducer';
 import type { State as RippleState } from 'reducers/SendFormRippleReducer';
-import type { Account } from 'reducers/AccountsReducer';
 
 import * as EthereumSendFormActions from './ethereum/SendFormActions';
 import * as RippleSendFormActions from './ripple/SendFormActions';
-
-export type SendTxAction = {
-    type: typeof SEND.TX_COMPLETE,
-    //networkType: 'ethereum',
-    account: Account,
-    selectedCurrency: string,
-    amount: string,
-    total: string,
-    tx: any,
-    nonce: number,
-    txid: string,
-    txData: any,
-}
 
 export type SendFormAction = {
     type: typeof SEND.INIT | typeof SEND.VALIDATION | typeof SEND.CHANGE,
@@ -40,7 +26,9 @@ export type SendFormAction = {
     state: RippleState,
 } | {
     type: typeof SEND.TOGGLE_ADVANCED | typeof SEND.TX_SENDING | typeof SEND.TX_ERROR,
-} | SendTxAction;
+} | {
+    type: typeof SEND.TX_COMPLETE,
+};
 
 
 // list of all actions which has influence on "sendForm" reducer

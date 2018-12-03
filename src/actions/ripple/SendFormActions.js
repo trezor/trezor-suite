@@ -19,22 +19,9 @@ import type {
     TrezorDevice,
 } from 'flowtype';
 import type { State } from 'reducers/SendFormRippleReducer';
-import type { Account } from 'reducers/AccountsReducer';
 import * as SessionStorageActions from '../SessionStorageActions';
 
 import * as ValidationActions from './SendFormValidationActions';
-
-export type SendTxAction = {
-    type: typeof SEND.TX_COMPLETE,
-    account: Account,
-    selectedCurrency: string,
-    amount: string,
-    total: string,
-    tx: any,
-    nonce: number,
-    txid: string,
-    txData: any,
-};
 
 /*
 * Called from WalletService
@@ -251,17 +238,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
 
     const { txid } = push.payload;
 
-    dispatch({
-        type: SEND.TX_COMPLETE,
-        account,
-        selectedCurrency: currentState.networkSymbol,
-        amount: currentState.amount,
-        total: currentState.total,
-        tx: {},
-        nonce: account.nonce,
-        txid,
-        txData: {},
-    });
+    dispatch({ type: SEND.TX_COMPLETE });
 
     // clear session storage
     dispatch(SessionStorageActions.clear());

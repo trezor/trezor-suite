@@ -6,7 +6,6 @@ import * as ACCOUNT from 'actions/constants/account';
 import * as DISCOVERY from 'actions/constants/discovery';
 import * as TOKEN from 'actions/constants/token';
 import * as PENDING from 'actions/constants/pendingTx';
-import * as SEND from 'actions/constants/send';
 
 import * as reducerUtils from 'reducers/utils';
 
@@ -184,7 +183,6 @@ const getAccountNotification = (state: State, selectedAccount: SelectedAccountSt
 const actions = [
     LOCATION_CHANGE,
     ...Object.values(BLOCKCHAIN).filter(v => typeof v === 'string'),
-    SEND.TX_COMPLETE,
     WALLET.SET_SELECTED_DEVICE,
     WALLET.UPDATE_SELECTED_DEVICE,
     ...Object.values(ACCOUNT).filter(v => typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE), // exported values got unwanted "__esModule: true" as first element

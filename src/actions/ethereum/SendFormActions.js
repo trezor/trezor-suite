@@ -23,31 +23,11 @@ import type {
     TrezorDevice,
 } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormEthereumReducer';
-import type { Account } from 'reducers/AccountsReducer';
 import * as SessionStorageActions from '../SessionStorageActions';
 import { prepareEthereumTx, serializeEthereumTx } from '../TxActions';
 import * as BlockchainActions from './BlockchainActions';
 
 import * as ValidationActions from './SendFormValidationActions';
-
-export type SendTxAction = {
-    type: typeof SEND.TX_COMPLETE,
-    account: Account,
-    selectedCurrency: string,
-    amount: string,
-    total: string,
-    tx: any,
-    nonce: number,
-    txid: string,
-    txData: any,
-};
-
-export type sendFormEthereumAction = {
-    type: typeof SEND.INIT | typeof SEND.VALIDATION | typeof SEND.CHANGE,
-    state: State,
-} | {
-    type: typeof SEND.TOGGLE_ADVANCED | typeof SEND.TX_SENDING | typeof SEND.TX_ERROR,
-} | SendTxAction;
 
 // list of all actions which has influence on "sendFormEthereum" reducer
 // other actions will be ignored
@@ -542,17 +522,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
 
         const { txid } = push.payload;
 
-        dispatch({
-            type: SEND.TX_COMPLETE,
-            account,
-            selectedCurrency: currentState.currency,
-            amount: currentState.amount,
-            total: currentState.total,
-            tx: txData,
-            nonce,
-            txid,
-            txData,
-        });
+        dispatch({ type: SEND.TX_COMPLETE });
 
         dispatch({
             type: PENDING.ADD,
