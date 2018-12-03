@@ -1,6 +1,7 @@
 /* @flow */
 
-// TODO: chagne currency units
+import BigNumber from 'bignumber.js';
+
 const currencyUnitsConstant: string = 'mbtc2';
 
 export const formatAmount = (n: number, coinInfo: any, currencyUnits: string = currencyUnitsConstant): string => {
@@ -52,3 +53,7 @@ export const hexToString = (hex: string): string => {
     }
     return str;
 };
+
+export const toDecimalAmount = (amount: string, decimals: number): string => new BigNumber(amount).div(10 ** decimals).toString(10);
+
+export const toAbsoluteAmount = (amount: string, decimals: number): string => new BigNumber(amount).times(10 ** decimals).toString(10);
