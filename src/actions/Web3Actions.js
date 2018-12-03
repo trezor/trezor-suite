@@ -196,7 +196,11 @@ export const updateAccount = (account: Account, newAccount: EthereumAccount, net
     const balance = await instance.web3.eth.getBalance(account.address);
     const nonce = await instance.web3.eth.getTransactionCount(account.address);
     dispatch(AccountsActions.update({
-        ...account, ...newAccount, balance: EthereumjsUnits.convert(balance, 'wei', 'ether'), nonce,
+        ...account,
+        ...newAccount,
+        nonce,
+        balance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
+        availableBalance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
     }));
 
     // update tokens for this account

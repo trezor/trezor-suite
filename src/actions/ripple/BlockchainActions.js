@@ -4,6 +4,7 @@ import TrezorConnect from 'trezor-connect';
 import * as BLOCKCHAIN from 'actions/constants/blockchain';
 import * as PENDING from 'actions/constants/pendingTx';
 import * as AccountsActions from 'actions/AccountsActions';
+import { toDecimalAmount } from 'utils/formatUtils';
 
 import type { BlockchainNotification } from 'trezor-connect';
 import type {
@@ -75,7 +76,8 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
 
     dispatch(AccountsActions.update({
         ...account,
-        balance: updatedAccount.payload.balance,
+        balance: toDecimalAmount(updatedAccount.payload.balance, 6),
+        availableDevice: toDecimalAmount(updatedAccount.payload.availableBalance, 6),
         block: updatedAccount.payload.block,
         sequence: updatedAccount.payload.sequence,
     }));
