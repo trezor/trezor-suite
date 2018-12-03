@@ -96,7 +96,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     if (!account || !network) return;
 
-    const stateFromStorage = dispatch(SessionStorageActions.loadDraftTransaction());
+    const stateFromStorage = dispatch(SessionStorageActions.loadRippleDraftTransaction());
     if (stateFromStorage) {
         // TODO: consider if current gasPrice should be set here as "recommendedGasPrice"
         dispatch({
