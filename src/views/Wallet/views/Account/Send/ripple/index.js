@@ -14,7 +14,6 @@ import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import Content from 'views/Wallet/components/Content';
 import type { Token } from 'flowtype';
-import AdvancedForm from '../components/AdvancedForm';
 import PendingTransactions from '../components/PendingTransactions';
 
 import type { Props } from './Container';
@@ -122,14 +121,6 @@ const ToggleAdvancedSettingsWrapper = styled.div`
     }
 `;
 
-const ToggleAdvancedSettingsButton = styled(Button)`
-    min-height: 40px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    font-weight: ${FONT_WEIGHT.BIGGER};
-`;
-
 const SendButton = styled(Button)`
     min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
     font-size: 13px;
@@ -137,10 +128,6 @@ const SendButton = styled(Button)`
     @media screen and (max-width: ${SmallScreenWidth}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
     }
-`;
-
-const AdvancedSettingsIcon = styled(Icon)`
-    margin-left: 10px;
 `;
 
 // render helpers
@@ -192,10 +179,8 @@ const AccountSend = (props: Props) => {
         amount,
         setMax,
         networkSymbol,
-        currency,
         feeLevels,
         selectedFeeLevel,
-        gasPriceNeedsUpdate,
         total,
         errors,
         warnings,
@@ -205,7 +190,6 @@ const AccountSend = (props: Props) => {
     } = props.sendForm;
 
     const {
-        toggleAdvanced,
         onAddressChange,
         onAmountChange,
         onSetMax,
@@ -217,21 +201,8 @@ const AccountSend = (props: Props) => {
     const { type, title, message } = loader;
     if (!device || !account || !discovery || !network || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
 
-    const isCurrentCurrencyToken = networkSymbol !== currency;
-
-    let selectedTokenBalance = 0;
-    const selectedToken = tokens.find(t => t.symbol === currency);
-    if (selectedToken) {
-        selectedTokenBalance = selectedToken.balance;
-    }
-
     let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
-    let sendButtonText: string = 'Send';
-    if (networkSymbol !== currency && amount.length > 0 && !errors.amount) {
-        sendButtonText += ` ${amount} ${currency.toUpperCase()}`;
-    } else if (networkSymbol === currency && total !== '0') {
-        sendButtonText += ` ${total} ${network.symbol}`;
-    }
+    let sendButtonText: string = ` ${total} ${network.symbol}`;
 
     if (!device.connected) {
         sendButtonText = 'Device is not connected';
@@ -244,14 +215,16 @@ const AccountSend = (props: Props) => {
         isSendButtonDisabled = true;
     }
 
-    const tokensSelectData = getTokensSelectData(tokens, network);
-    const tokensSelectValue = tokensSelectData.find(t => t.value === currency);
+    isSendButtonDisabled = false;
+
+    const tokensSelectData: Array<{ value: string, label: string }> = [{ value: network.symbol, label: network.symbol }];
+    const tokensSelectValue = tokensSelectData[0];
     const isAdvancedSettingsHidden = !advanced;
 
     return (
         <Content>
             <React.Fragment>
-                <H2>Send Ethereum or tokens</H2>
+                <H2>Send Ripple</H2>
                 <InputRow>
                     <Input
                         state={getAddressInputState(address, errors.address, warnings.address)}
@@ -273,14 +246,6 @@ const AccountSend = (props: Props) => {
                         autoCorrect="off"
                         autoCapitalize="off"
                         spellCheck="false"
-                        topLabel={(
-                            <AmountInputLabelWrapper>
-                                <AmountInputLabel>Amount</AmountInputLabel>
-                                {(isCurrentCurrencyToken && selectedToken) && (
-                                    <AmountInputLabel>You have: {selectedTokenBalance} {selectedToken.symbol}</AmountInputLabel>
-                                )}
-                            </AmountInputLabelWrapper>
-                        )}
                         value={amount}
                         onChange={event => onAmountChange(event.target.value)}
                         bottomText={errors.amount || warnings.amount || infos.amount}
@@ -326,16 +291,6 @@ const AccountSend = (props: Props) => {
                 <InputRow>
                     <FeeLabelWrapper>
                         <FeeLabel>Fee</FeeLabel>
-                        {gasPriceNeedsUpdate && (
-                            <UpdateFeeWrapper>
-                                <Icon
-                                    icon={ICONS.WARNING}
-                                    color={colors.WARNING_PRIMARY}
-                                    size={20}
-                                />
-                            Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
-                            </UpdateFeeWrapper>
-                        )}
                     </FeeLabelWrapper>
                     <Select
                         isSearchable={false}
@@ -355,41 +310,15 @@ const AccountSend = (props: Props) => {
                 <ToggleAdvancedSettingsWrapper
                     isAdvancedSettingsHidden={isAdvancedSettingsHidden}
                 >
-                    <ToggleAdvancedSettingsButton
-                        isTransparent
-                        onClick={toggleAdvanced}
+                    <SendButton
+                        isDisabled={isSendButtonDisabled}
+                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                        onClick={() => onSend()}
                     >
-                    Advanced settings
-                        <AdvancedSettingsIcon
-                            icon={ICONS.ARROW_DOWN}
-                            color={colors.TEXT_SECONDARY}
-                            size={24}
-                            isActive={advanced}
-                            canAnimate
-                        />
-                    </ToggleAdvancedSettingsButton>
-
-                    {isAdvancedSettingsHidden && (
-                        <SendButton
-                            isDisabled={isSendButtonDisabled}
-                            isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-                            onClick={() => onSend()}
-                        >
-                            {sendButtonText}
-                        </SendButton>
-                    )}
+                        {sendButtonText}
+                    </SendButton>
                 </ToggleAdvancedSettingsWrapper>
 
-                {advanced && (
-                    <AdvancedForm {...props}>
-                        <SendButton
-                            isDisabled={isSendButtonDisabled}
-                            onClick={() => onSend()}
-                        >
-                            {sendButtonText}
-                        </SendButton>
-                    </AdvancedForm>
-                )}
 
                 {props.selectedAccount.pending.length > 0 && (
                     <PendingTransactions
