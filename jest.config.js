@@ -13,4 +13,7 @@ module.exports = {
         'src/**.js',
     ],
     testRegex: './test/.*.js$',
+    testPathIgnorePatterns: [
+        '/__utils__/',
+    ],
 };
