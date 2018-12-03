@@ -1,4 +1,4 @@
-import { Version } from '../index';
+import Version from '../Version';
 
 describe('Version class', () => {
     describe('toString()', () => {
@@ -11,7 +11,7 @@ describe('Version class', () => {
 
     describe('isNewer()', () => {
         it('it should return true for newer version', () => {
-            const version = new Version(1, 2, 3);
+            const version = new Version(null, 2, 3);
             const other = new Version(1, 0, 0);
             const result = version.isNewer(other);
             expect(result).toEqual(true);
@@ -84,12 +84,20 @@ describe('Version class', () => {
             expect(version.toString()).toEqual('1.2.3');
         });
 
+        it('should return error if input is null', () => {
+            try {
+                Version.fromArray(null);
+            } catch (err) {
+                expect(err.message).toEqual('Unexpected null.');
+            }
+        });
+
         it('should fail on incorrect number of params', () => {
             try {
                 Version.fromArray([1, 2]);
                 expect('foo').toEqual('boo');
             } catch (err) {
-                expect(err.message).toEqual('Array length isn\'t 3');
+                expect(err.message).toEqual("Array version length isn't 3");
             }
         });
     });
@@ -100,12 +108,20 @@ describe('Version class', () => {
             expect(version.toString()).toEqual('1.2.3');
         });
 
+        it('should return error if input is null', () => {
+            try {
+                Version.fromString(null);
+            } catch (err) {
+                expect(err.message).toEqual('Unexpected null.');
+            }
+        });
+
         it('should fail on incorrect number of params', () => {
             try {
                 Version.fromString('1.2');
                 expect('foo').toEqual('boo');
             } catch (err) {
-                expect(err.message).toEqual('Array length isn\'t 3');
+                expect(err.message).toEqual("Array version length isn't 3");
             }
         });
     });

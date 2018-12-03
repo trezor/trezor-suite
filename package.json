@@ -7,6 +7,7 @@
   "main": "lib/trezor-update.js",
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watch",
     "lint": "eslint .",
     "clean": "rimraf lib",
     "build": "yarn run clean && npx rollup -c rollup.config.js"

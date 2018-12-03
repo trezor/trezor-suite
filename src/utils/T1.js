@@ -1,19 +1,4 @@
-import fs from 'fs';
-
 import { FirmwareInfo, Version } from 'helpers';
-
-const models = {
-    1: {
-        firmwareList: JSON
-            .parse(fs.readFileSync('test/__data__/releases1.json', 'utf-8'))
-            .map(o => new FirmwareInfo(o)),
-    },
-    2: {
-        firmwareList: JSON
-            .parse(fs.readFileSync('test/__data__/releases2.json', 'utf-8'))
-            .map(o => new FirmwareInfo(o)),
-    },
-};
 
 class T1 {
     constructor({ fwVersion, blVersion }) {

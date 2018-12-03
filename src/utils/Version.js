@@ -31,14 +31,18 @@ class Version {
 
     isNewer(other) {
         let result;
-        if (this.major - other.major !== 0) {
-            result = this.major > other.major;
+        const { major, minor, patch } = other;
+        if (this.major - major !== 0) {
+            result = this.major > major;
         }
-        if (this.minor - other.minor !== 0) {
-            result = this.minor > other.minor;
+        if (this.minor - minor !== 0) {
+            result = this.minor > minor;
         }
-        if (this.patch - other.patch !== 0) {
-            result = this.patch > other.patch;
+        if (this.patch - patch !== 0) {
+            result = this.patch > patch;
+        }
+        if (this.major === major && this.minor === minor && this.patch === patch) {
+            result = false;
         }
         return result;
     }
