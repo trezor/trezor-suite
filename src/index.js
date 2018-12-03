@@ -1,15 +1,10 @@
 import { Version, FirmwareInfo } from 'helpers';
 
-const getLatestFw = (features) => {
-    const list = getListForModel(features.major_version);
-    return list[0];
-};
-
 const getListForModel = (model) => {
     const int = parseInt(model, 10);
     switch (int) {
-    case 1: return this.firmwareList1;
-    case 2: return this.firmwareList2;
+        case 1: return this.firmwareList1;
+        case 2: return this.firmwareList2;
     default:
         throw new Error('Wrong model param');
     }
@@ -62,12 +57,9 @@ const getLatestSafeFw = (features) => {
     // todo: na t2 sice jo, ale to nestaci, takze musime pouzite min_firmware_version
     }
 
-
     return list[0];
 };
 
 export {
-    getLatestFw,
-    getListForModel,
     getLatestSafeFw,
 };

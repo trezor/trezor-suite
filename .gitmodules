@@ -1,0 +1,3 @@
+[submodule "src/test/data/webwallet-data"]
+	path = src/test/data/webwallet-data
+	url = https://github.com/trezor/webwallet-data
