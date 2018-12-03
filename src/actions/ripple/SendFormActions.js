@@ -7,7 +7,7 @@ import * as SEND from 'actions/constants/send';
 import * as WEB3 from 'actions/constants/web3';
 import { initialState } from 'reducers/SendFormRippleReducer';
 import * as reducerUtils from 'reducers/utils';
-import * as ethUtils from 'utils/ethUtils';
+import { fromDecimalAmount } from 'utils/formatUtils';
 
 import type {
     Dispatch,
@@ -18,10 +18,9 @@ import type {
     AsyncAction,
     TrezorDevice,
 } from 'flowtype';
-import type { State, FeeLevel } from 'reducers/SendFormRippleReducer';
+import type { State } from 'reducers/SendFormRippleReducer';
 import type { Account } from 'reducers/AccountsReducer';
 import * as SessionStorageActions from '../SessionStorageActions';
-import * as BlockchainActions from '../BlockchainActions';
 
 import * as ValidationActions from './SendFormValidationActions';
 
@@ -52,7 +51,6 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
 
     // if send form was not initialized
     if (currentState.sendFormRipple.networkSymbol === '') {
-        console.warn("i should init myself!")
         dispatch(init());
         return;
     }
@@ -127,13 +125,6 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 };
 
 /*
-* Called from UI from "advanced" button
-*/
-export const toggleAdvanced = (): Action => ({
-    type: SEND.TOGGLE_ADVANCED,
-});
-
-/*
 * Called from UI on "address" field change
 */
 export const onAddressChange = (address: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
@@ -185,199 +176,10 @@ export const onSetMax = (): ThunkAction => (dispatch: Dispatch, getState: GetSta
     });
 };
 
-/*
-* Called from UI on "fee" selection change
-*/
-export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const state = getState().sendFormRipple;
-
-    const isCustom = feeLevel.value === 'Custom';
-    let newGasLimit = state.gasLimit;
-    let newGasPrice = state.gasPrice;
-    const advanced = isCustom ? true : state.advanced;
-
-    if (!isCustom) {
-        // if selected fee is not custom
-        // update gasLimit to default and gasPrice to selected value
-        const { network } = getState().selectedAccount;
-        if (!network) return;
-        const isToken = state.currency !== state.networkSymbol;
-        if (isToken) {
-            newGasLimit = network.defaultGasLimitTokens.toString();
-        } else {
-            // corner case: gas limit was changed by user OR by "estimateGasPrice" action
-            // leave gasLimit as it is
-            newGasLimit = state.touched.gasLimit ? state.gasLimit : network.defaultGasLimit.toString();
-        }
-        newGasPrice = feeLevel.gasPrice;
-    }
-
-    dispatch({
-        type: SEND.CHANGE,
-        networkType: 'ripple',
-        state: {
-            ...state,
-            advanced,
-            selectedFeeLevel: feeLevel,
-            gasLimit: newGasLimit,
-            gasPrice: newGasPrice,
-        },
-    });
-};
-
-/*
-* Called from UI from "update recommended fees" button
-*/
-export const updateFeeLevels = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const {
-        account,
-        network,
-    } = getState().selectedAccount;
-    if (!account || !network) return;
-
-    const state: State = getState().sendFormRipple;
-    const feeLevels = ValidationActions.getFeeLevels(network.symbol, state.recommendedGasPrice, state.gasLimit, state.selectedFeeLevel);
-    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, state.selectedFeeLevel);
-
-    dispatch({
-        type: SEND.CHANGE,
-        networkType: 'ripple',
-        state: {
-            ...state,
-            feeLevels,
-            selectedFeeLevel,
-            gasPrice: selectedFeeLevel.gasPrice,
-            gasPriceNeedsUpdate: false,
-        },
-    });
-};
-
-/*
-* Called from UI on "gas price" field change
-*/
-export const onGasPriceChange = (gasPrice: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const state: State = getState().sendFormRipple;
-    // switch to custom fee level
-    let newSelectedFeeLevel = state.selectedFeeLevel;
-    if (state.selectedFeeLevel.value !== 'Custom') newSelectedFeeLevel = state.feeLevels.find(f => f.value === 'Custom');
-
-    dispatch({
-        type: SEND.CHANGE,
-        networkType: 'ripple',
-        state: {
-            ...state,
-            untouched: false,
-            touched: { ...state.touched, gasPrice: true },
-            gasPrice,
-            selectedFeeLevel: newSelectedFeeLevel,
-        },
-    });
-};
-
-/*
-* Called from UI on "data" field change
-* OR from "estimateGasPrice" action
-*/
-export const onGasLimitChange = (gasLimit: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const { network } = getState().selectedAccount;
-    if (!network) return;
-    const state: State = getState().sendFormRipple;
-    // recalculate feeLevels with recommended gasPrice
-    const feeLevels = ValidationActions.getFeeLevels(network.symbol, state.recommendedGasPrice, gasLimit, state.selectedFeeLevel);
-    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, state.selectedFeeLevel);
-
-    dispatch({
-        type: SEND.CHANGE,
-        networkType: 'ripple',
-        state: {
-            ...state,
-            calculatingGasLimit: false,
-            untouched: false,
-            touched: { ...state.touched, gasLimit: true },
-            gasLimit,
-            feeLevels,
-            selectedFeeLevel,
-        },
-    });
-};
-
-/*
-* Called from UI on "nonce" field change
-*/
-export const onNonceChange = (nonce: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const state: State = getState().sendFormRipple;
-    dispatch({
-        type: SEND.CHANGE,
-        networkType: 'ripple',
-        state: {
-            ...state,
-            untouched: false,
-            touched: { ...state.touched, nonce: true },
-            nonce,
-        },
-    });
-};
-
-/*
-* Called from UI on "data" field change
-*/
-export const onDataChange = (data: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const state: State = getState().sendFormRipple;
-    dispatch({
-        type: SEND.CHANGE,
-        networkType: 'ripple',
-        state: {
-            ...state,
-            calculatingGasLimit: true,
-            untouched: false,
-            touched: { ...state.touched, data: true },
-            data,
-        },
-    });
-
-    dispatch(estimateGasPrice());
-};
-
-/*
-* Internal method
-* Called from "onDataChange" action
-* try to asynchronously download data from backend
-*/
-const estimateGasPrice = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const state: State = getState().sendFormRipple;
-    const { network } = getState().selectedAccount;
-    if (!network) {
-        // stop "calculatingGasLimit" process
-        dispatch(onGasLimitChange(state.gasLimit));
-        return;
-    }
-
-    const requestedData = state.data;
-    if (!ethUtils.isHex(requestedData)) {
-        // stop "calculatingGasLimit" process
-        dispatch(onGasLimitChange(requestedData.length > 0 ? state.gasLimit : network.defaultGasLimit.toString()));
-        return;
-    }
-
-    if (state.data.length < 1) {
-        // set default
-        dispatch(onGasLimitChange(network.defaultGasLimit.toString()));
-        return;
-    }
-
-    const gasLimit = await dispatch(BlockchainActions.estimateGasLimit(network.shortcut, state.data, state.amount, state.gasPrice));
-
-    // double check "data" field
-    // possible race condition when data changed before backend respond
-    if (getState().sendFormRipple.data === requestedData) {
-        dispatch(onGasLimitChange(gasLimit));
-    }
-};
 
 /*
 * Called from UI from "send" button
 */
-
 export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const {
         account,
@@ -390,6 +192,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     if (!account || !network) return;
 
     const currentState: State = getState().sendFormRipple;
+    const amount = fromDecimalAmount(currentState.amount, 6);
 
     const signedTransaction = await TrezorConnect.rippleSignTransaction({
         device: {
@@ -400,11 +203,12 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         useEmptyPassphrase: selected.useEmptyPassphrase,
         path: account.addressPath,
         transaction: {
-            fee: '100000',
+            // fee: '12',
+            fee: '10', // Fee must be in the range of 10 to 10,000 drops
             flags: 0x80000000,
-            sequence: account.nonce,
+            sequence: account.sequence,
             payment: {
-                amount: currentState.amount,
+                amount,
                 destination: currentState.address,
             },
         },
@@ -448,7 +252,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     dispatch({
         type: SEND.TX_COMPLETE,
         account,
-        selectedCurrency: currentState.currency,
+        selectedCurrency: currentState.networkSymbol,
         amount: currentState.amount,
         total: currentState.total,
         tx: {},
@@ -476,15 +280,8 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
 };
 
 export default {
-    toggleAdvanced,
     onAddressChange,
     onAmountChange,
     onSetMax,
-    onFeeLevelChange,
-    updateFeeLevels,
-    onGasPriceChange,
-    onGasLimitChange,
-    onNonceChange,
-    onDataChange,
     onSend,
 };
