@@ -4,7 +4,7 @@ import Link from 'components/Link';
 import TrezorConnect from 'trezor-connect';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SEND from 'actions/constants/send';
-import * as WEB3 from 'actions/constants/web3';
+import * as BLOCKCHAIN from 'actions/constants/blockchain';
 import { initialState } from 'reducers/SendFormRippleReducer';
 import * as reducerUtils from 'reducers/utils';
 import { fromDecimalAmount } from 'utils/formatUtils';
@@ -57,8 +57,8 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
 
     // handle gasPrice update from backend
     // recalculate fee levels if needed
-    if (action.type === WEB3.GAS_PRICE_UPDATED) {
-        dispatch(ValidationActions.onGasPriceUpdated(action.network, action.gasPrice));
+    if (action.type === BLOCKCHAIN.UPDATE_FEE) {
+        // dispatch(ValidationActions.onGasPriceUpdated(action.network, action.gasPrice));
         return;
     }
 
@@ -107,7 +107,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         return;
     }
 
-    const feeLevels = ValidationActions.getFeeLevels(network.symbol, '1', '1');
+    const feeLevels = ValidationActions.getFeeLevels(network.symbol);
     const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, initialState.selectedFeeLevel);
 
     dispatch({
@@ -191,6 +191,9 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
 
     if (!account || !network) return;
 
+    const blockchain = getState().blockchain.find(b => b.shortcut === account.network);
+    if (!blockchain) return;
+
     const currentState: State = getState().sendFormRipple;
     const amount = fromDecimalAmount(currentState.amount, 6);
 
@@ -203,8 +206,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         useEmptyPassphrase: selected.useEmptyPassphrase,
         path: account.addressPath,
         transaction: {
-            // fee: '12',
-            fee: '10', // Fee must be in the range of 10 to 10,000 drops
+            fee: blockchain.fee, // Fee must be in the range of 10 to 10,000 drops
             flags: 0x80000000,
             sequence: account.sequence,
             payment: {

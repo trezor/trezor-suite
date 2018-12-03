@@ -160,8 +160,6 @@ const AccountSend = (props: Props) => {
         isSendButtonDisabled = true;
     }
 
-    isSendButtonDisabled = false;
-
     const tokensSelectData: Array<{ value: string, label: string }> = [{ value: network.symbol, label: network.symbol }];
     const tokensSelectValue = tokensSelectData[0];
     const isAdvancedSettingsHidden = !advanced;
