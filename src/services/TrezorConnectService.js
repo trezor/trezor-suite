@@ -62,7 +62,7 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     } else if (action.type === BLOCKCHAIN.NOTIFICATION) {
         api.dispatch(BlockchainActions.onNotification(action.payload));
     } else if (action.type === BLOCKCHAIN.ERROR) {
-        api.dispatch(BlockchainActions.error(action.payload));
+        api.dispatch(BlockchainActions.onError(action.payload));
     }
 
     return action;

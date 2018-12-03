@@ -3,6 +3,7 @@
 import TrezorConnect from 'trezor-connect';
 import EthereumjsUtil from 'ethereumjs-util';
 import * as DISCOVERY from 'actions/constants/discovery';
+import * as BlockchainActions from 'actions/ethereum/BlockchainActions';
 
 import type {
     PromiseAction,
@@ -12,7 +13,7 @@ import type {
     Account,
 } from 'flowtype';
 import type { Discovery } from 'reducers/DiscoveryReducer';
-import * as BlockchainActions from '../BlockchainActions';
+
 
 export type DiscoveryStartAction = {
     type: typeof DISCOVERY.START,

@@ -1,21 +1,16 @@
 /* @flow */
 
-import TrezorConnect from 'trezor-connect';
-import BigNumber from 'bignumber.js';
 import * as BLOCKCHAIN from 'actions/constants/blockchain';
-import * as PENDING from 'actions/constants/pendingTx';
+import * as EthereumBlockchainActions from 'actions/ethereum/BlockchainActions';
+import * as RippleBlockchainActions from 'actions/ripple/BlockchainActions';
 
 import type {
-    TrezorDevice,
     Dispatch,
     GetState,
     PromiseAction,
 } from 'flowtype';
-import type { EthereumAccount, BlockchainBlock, BlockchainNotification } from 'trezor-connect';
-import type { Token } from 'reducers/TokensReducer';
-import type { NetworkToken } from 'reducers/LocalStorageReducer';
-import * as Web3Actions from './Web3Actions';
-import * as AccountsActions from './AccountsActions';
+import type { BlockchainBlock, BlockchainNotification, BlockchainError } from 'trezor-connect';
+
 
 export type BlockchainAction = {
     type: typeof BLOCKCHAIN.READY,
@@ -23,221 +18,6 @@ export type BlockchainAction = {
     type: typeof BLOCKCHAIN.UPDATE_FEE,
     fee: string,
 }
-
-export const discoverAccount = (device: TrezorDevice, address: string, network: string): PromiseAction<EthereumAccount> => async (dispatch: Dispatch): Promise<EthereumAccount> => {
-    // get data from connect
-    // Temporary disabled, enable after trezor-connect@5.0.32 release
-    const txs = await TrezorConnect.ethereumGetAccountInfo({
-        account: {
-            address,
-            block: 0,
-            transactions: 0,
-            balance: '0',
-            nonce: 0,
-        },
-        coin: network,
-    });
-
-    if (!txs.success) {
-        throw new Error(txs.payload.error);
-    }
-
-    // blockbook web3 fallback
-    const web3account = await dispatch(Web3Actions.discoverAccount(address, network));
-    // return { transactions: txs.payload, ...web3account };
-    return {
-        address,
-        transactions: txs.payload.transactions,
-        block: txs.payload.block,
-        balance: web3account.balance,
-        nonce: web3account.nonce,
-    };
-};
-
-export const getTokenInfo = (input: string, network: string): PromiseAction<NetworkToken> => async (dispatch: Dispatch): Promise<NetworkToken> => dispatch(Web3Actions.getTokenInfo(input, network));
-
-export const getTokenBalance = (token: Token): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => dispatch(Web3Actions.getTokenBalance(token));
-
-export const getGasPrice = (network: string, defaultGasPrice: number): PromiseAction<BigNumber> => async (dispatch: Dispatch): Promise<BigNumber> => {
-    try {
-        const gasPrice = await dispatch(Web3Actions.getCurrentGasPrice(network));
-        return gasPrice === '0' ? new BigNumber(defaultGasPrice) : new BigNumber(gasPrice);
-    } catch (error) {
-        return new BigNumber(defaultGasPrice);
-    }
-};
-
-const estimateProxy: Array<Promise<string>> = [];
-export const estimateGasLimit = (network: string, data: string, value: string, gasPrice: string): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => {
-    // Since this method could be called multiple times in short period of time
-    // check for pending calls in proxy and if there more than two (first is current running and the second is waiting for result of first)
-    // TODO: should reject second call immediately?
-    if (estimateProxy.length > 0) {
-        // wait for proxy result (but do not process it)
-        await estimateProxy[0];
-    }
-
-    const call = dispatch(Web3Actions.estimateGasLimit(network, {
-        to: '',
-        data,
-        value,
-        gasPrice,
-    }));
-    // add current call to proxy
-    estimateProxy.push(call);
-    // wait for result
-    const result = await call;
-    // remove current call from proxy
-    estimateProxy.splice(0, 1);
-    // return result
-    return result;
-};
-
-export const onBlockMined = (payload: $ElementType<BlockchainBlock, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const network: string = payload.coin.shortcut.toLowerCase();
-    if (payload.coin.type === 'misc') {
-        if (getState().router.location.state.network === network) {
-            const fee = await TrezorConnect.blockchainGetFee({
-                coin: network,
-            });
-            if (!fee.success) return;
-
-            dispatch({
-                type: BLOCKCHAIN.UPDATE_FEE,
-                fee: fee.payload,
-            });
-        }
-        return;
-    }
-
-    // try to resolve pending transactions
-    await dispatch(Web3Actions.resolvePendingTransactions(network));
-
-    await dispatch(Web3Actions.updateGasPrice(network));
-
-    const accounts: Array<any> = getState().accounts.filter(a => a.network === network);
-    if (accounts.length > 0) {
-        // find out which account changed
-        const response = await TrezorConnect.ethereumGetAccountInfo({
-            accounts,
-            coin: network,
-        });
-
-        if (response.success) {
-            response.payload.forEach((a, i) => {
-                if (a.transactions > 0) {
-                    // load additional data from Web3 (balance, nonce, tokens)
-                    dispatch(Web3Actions.updateAccount(accounts[i], a, network));
-                } else {
-                    // there are no new txs, just update block
-                    dispatch(AccountsActions.update({ ...accounts[i], block: a.block }));
-
-                    // HACK: since blockbook can't work with smart contracts for now
-                    // try to update tokens balances added to this account using Web3
-                    dispatch(Web3Actions.updateAccountTokens(accounts[i]));
-                }
-            });
-        }
-    }
-};
-
-export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const { notification } = payload;
-    const account = getState().accounts.find(a => a.address === notification.address);
-    if (!account) return;
-
-    if (notification.status === 'pending') {
-        dispatch({
-            type: PENDING.ADD,
-            payload: {
-                type: notification.type,
-                hash: notification.hash,
-                network: account.network,
-                address: account.address,
-                currency: account.network,
-                amount: notification.amount,
-                total: notification.amount,
-                fee: notification.fee,
-            },
-        });
-
-        // todo: replace "send success" notification with link to explorer
-    } else if (notification.status === 'confirmed') {
-        dispatch({
-            type: PENDING.TX_RESOLVED,
-            hash: notification.hash,
-        });
-    }
-
-    const updatedAccount = await TrezorConnect.rippleGetAccountInfo({
-        account: {
-            address: account.address,
-            block: account.block,
-            history: false,
-        },
-    });
-    if (!updatedAccount.success) return;
-
-    dispatch(AccountsActions.update({
-        ...account,
-        balance: updatedAccount.payload.balance,
-        block: updatedAccount.payload.block,
-        sequence: updatedAccount.payload.sequence,
-    }));
-
-    // todo: get transaction history here
-    // console.warn("OnBlAccount", account);
-    // this event can be triggered multiple times
-    // // 1. check if pair [txid + address] is already in reducer
-    // const network: string = payload.coin.shortcut.toLowerCase();
-    // const address: string = EthereumjsUtil.toChecksumAddress(payload.tx.address);
-    // const txInfo = await dispatch(Web3Actions.getPendingInfo(network, payload.tx.txid));
-
-    // // const exists = getState().pending.filter(p => p.id === payload.tx.txid && p.address === address);
-    // const exists = getState().pending.filter(p => p.address === address);
-    // if (exists.length < 1) {
-    //     if (txInfo) {
-    //         dispatch({
-    //             type: PENDING.ADD,
-    //             payload: {
-    //                 type: 'send',
-    //                 id: payload.tx.txid,
-    //                 network,
-    //                 currency: 'tETH',
-    //                 amount: txInfo.value,
-    //                 total: '0',
-    //                 tx: {},
-    //                 nonce: txInfo.nonce,
-    //                 address,
-    //                 rejected: false,
-    //             },
-    //         });
-    //     } else {
-    //         // tx info not found (yet?)
-    //         // dispatch({
-    //         //     type: PENDING.ADD_UNKNOWN,
-    //         //     payload: {
-    //         //         network,
-    //         //         ...payload.tx,
-    //         //     }
-    //         // });
-    //     }
-    // }
-};
-
-
-export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.address); // eslint-disable-line no-unused-vars
-    await TrezorConnect.blockchainSubscribe({
-        accounts,
-        coin: network,
-    });
-
-    if (network === 'ethereum') {
-        // init web3 instance if not exists
-        await dispatch(Web3Actions.initWeb3(network));
-    }
-};
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
@@ -265,8 +45,57 @@ export const init = (): PromiseAction<void> => async (dispatch: Dispatch, getSta
     });
 };
 
+export const subscribe = (networkName: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { config } = getState().localStorage;
+    const network = config.networks.find(c => c.shortcut === networkName);
+    if (!network) return;
+
+    if (network.type === 'ethereum') {
+        await dispatch(EthereumBlockchainActions.subscribe(networkName));
+    } else if (network.type === 'ripple') {
+        await dispatch(RippleBlockchainActions.subscribe(networkName));
+    }
+};
+
+export const onBlockMined = (payload: $ElementType<BlockchainBlock, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const shortcut = payload.coin.shortcut.toLowerCase();
+    if (getState().router.location.state.network !== shortcut) return;
+
+    const { config } = getState().localStorage;
+    const network = config.networks.find(c => c.shortcut === shortcut);
+    if (!network) return;
+
+    if (network.type === 'ethereum') {
+        await dispatch(EthereumBlockchainActions.onBlockMined(shortcut));
+    } else if (network.type === 'ripple') {
+        await dispatch(RippleBlockchainActions.onBlockMined(shortcut));
+    }
+};
+
+export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const shortcut = payload.coin.shortcut.toLowerCase();
+    const { config } = getState().localStorage;
+    const network = config.networks.find(c => c.shortcut === shortcut);
+    if (!network) return;
+
+    if (network.type === 'ethereum') {
+        await dispatch(EthereumBlockchainActions.onNotification());
+    } else if (network.type === 'ripple') {
+        await dispatch(RippleBlockchainActions.onNotification(payload));
+    }
+};
+
 // Handle BLOCKCHAIN.ERROR event from TrezorConnect
 // disconnect and remove Web3 webscocket instance if exists
-export const error = (payload: any): PromiseAction<void> => async (dispatch: Dispatch): Promise<void> => {
-    dispatch(Web3Actions.disconnect(payload.coin));
+export const onError = (payload: $ElementType<BlockchainError, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const shortcut = payload.coin.shortcut.toLowerCase();
+    const { config } = getState().localStorage;
+    const network = config.networks.find(c => c.shortcut === shortcut);
+    if (!network) return;
+
+    if (network.type === 'ethereum') {
+        await dispatch(EthereumBlockchainActions.onError(shortcut));
+    } else if (network.type === 'ripple') {
+        // await dispatch(RippleBlockchainActions.onError(shortcut));
+    }
 };

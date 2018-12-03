@@ -25,7 +25,7 @@ import type { State, FeeLevel } from 'reducers/SendFormEthereumReducer';
 import type { Account } from 'reducers/AccountsReducer';
 import * as SessionStorageActions from '../SessionStorageActions';
 import { prepareEthereumTx, serializeEthereumTx } from '../TxActions';
-import * as BlockchainActions from '../BlockchainActions';
+import * as BlockchainActions from './BlockchainActions';
 
 import * as ValidationActions from './SendFormValidationActions';
 
