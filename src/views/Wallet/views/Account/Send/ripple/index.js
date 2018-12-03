@@ -6,14 +6,11 @@ import { Select } from 'components/Select';
 import Button from 'components/Button';
 import Input from 'components/inputs/Input';
 import Icon from 'components/Icon';
-import Link from 'components/Link';
 import ICONS from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
-import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import Content from 'views/Wallet/components/Content';
-import type { Token } from 'flowtype';
 import PendingTransactions from '../components/PendingTransactions';
 
 import type { Props } from './Container';
@@ -21,16 +18,6 @@ import type { Props } from './Container';
 // TODO: Decide on a small screen width for the whole app
 // and put it inside config/variables.js
 const SmallScreenWidth = '850px';
-
-const AmountInputLabelWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const AmountInputLabel = styled.span`
-    text-align: right;
-    color: ${colors.TEXT_SECONDARY};
-`;
 
 const InputRow = styled.div`
     margin: 20px 0;
@@ -77,34 +64,6 @@ const CurrencySelect = styled(Select)`
     min-width: 77px;
     height: 40px;
     flex: 0.2;
-`;
-
-const FeeOptionWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const FeeLabelWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    margin-bottom: 4px;
-`;
-
-const FeeLabel = styled.span`
-    color: ${colors.TEXT_SECONDARY};
-`;
-
-const UpdateFeeWrapper = styled.span`
-    margin-left: 8px;
-    display: flex;
-    align-items: center;
-    font-size: ${FONT_SIZE.SMALLER};
-    color: ${colors.WARNING_PRIMARY};
-`;
-
-const StyledLink = styled(Link)`
-    margin-left: 4px;
-    white-space: nowrap;
 `;
 
 const ToggleAdvancedSettingsWrapper = styled.div`
@@ -156,13 +115,6 @@ const getAmountInputState = (amountErrors: string, amountWarnings: string): stri
     return state;
 };
 
-const getTokensSelectData = (tokens: Array<Token>, accountNetwork: any): Array<{ value: string, label: string }> => {
-    const tokensSelectData: Array<{ value: string, label: string }> = tokens.map(t => ({ value: t.symbol, label: t.symbol }));
-    tokensSelectData.unshift({ value: accountNetwork.symbol, label: accountNetwork.symbol });
-
-    return tokensSelectData;
-};
-
 // stateless component
 const AccountSend = (props: Props) => {
     const device = props.wallet.selectedDevice;
@@ -170,7 +122,6 @@ const AccountSend = (props: Props) => {
         account,
         network,
         discovery,
-        tokens,
         shouldRender,
         loader,
     } = props.selectedAccount;
@@ -178,9 +129,6 @@ const AccountSend = (props: Props) => {
         address,
         amount,
         setMax,
-        networkSymbol,
-        feeLevels,
-        selectedFeeLevel,
         total,
         errors,
         warnings,
@@ -193,9 +141,6 @@ const AccountSend = (props: Props) => {
         onAddressChange,
         onAmountChange,
         onSetMax,
-        onCurrencyChange,
-        onFeeLevelChange,
-        updateFeeLevels,
         onSend,
     } = props.sendFormActions;
     const { type, title, message } = loader;
@@ -279,31 +224,11 @@ const AccountSend = (props: Props) => {
                                     isSearchable={false}
                                     isClearable={false}
                                     value={tokensSelectValue}
-                                    isDisabled={tokensSelectData.length < 2}
-                                    onChange={onCurrencyChange}
+                                    isDisabled
                                     options={tokensSelectData}
                                 />
                             ),
                         ]}
-                    />
-                </InputRow>
-
-                <InputRow>
-                    <FeeLabelWrapper>
-                        <FeeLabel>Fee</FeeLabel>
-                    </FeeLabelWrapper>
-                    <Select
-                        isSearchable={false}
-                        isClearable={false}
-                        value={selectedFeeLevel}
-                        onChange={onFeeLevelChange}
-                        options={feeLevels}
-                        formatOptionLabel={option => (
-                            <FeeOptionWrapper>
-                                <P>{option.value}</P>
-                                <P>{option.label}</P>
-                            </FeeOptionWrapper>
-                        )}
                     />
                 </InputRow>
 
