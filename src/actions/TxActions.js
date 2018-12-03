@@ -12,7 +12,7 @@ import type {
     PromiseAction,
 } from 'flowtype';
 
-import type { EthereumTransaction, RippleTransaction } from 'trezor-connect';
+import type { EthereumTransaction } from 'trezor-connect';
 import type { Token } from 'reducers/TokensReducer';
 
 type EthereumTxRequest = {
