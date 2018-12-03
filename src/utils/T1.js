@@ -1,4 +1,4 @@
-import { FirmwareInfo, Version } from 'helpers';
+import Version from './Version';
 
 class T1 {
     constructor({ fwVersion, blVersion }) {

@@ -1,4 +1,4 @@
-import { Version, FirmwareInfo } from 'helpers';
+import { Version, FirmwareInfo } from './utils';
 
 const getListForModel = (model) => {
     const int = parseInt(model, 10);
@@ -19,8 +19,9 @@ const getLatestSafeFw = (features) => {
         const blVersion = new Version(
             features.major_version,
             features.minor_version,
-            features.patch_version,
+            features.patch_version
         );
+
         // incremental safety check. bootloader version must be higher
         // or equal then min_bootloader_version of firmware that is to be installed
         list = list.filter(fw => blVersion.isNewerOrEqual(fw.min_bootloader_version));
