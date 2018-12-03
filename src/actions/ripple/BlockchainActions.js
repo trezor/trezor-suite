@@ -44,6 +44,8 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
             type: PENDING.ADD,
             payload: {
                 type: notification.type,
+                deviceState: account.deviceState,
+                sequence: account.sequence,
                 hash: notification.hash,
                 network: account.network,
                 address: account.address,

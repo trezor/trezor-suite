@@ -71,6 +71,8 @@ const start = (state: State, action: DiscoveryStartAction): State => {
         instance.hdKey = hdKey;
         instance.publicKey = action.publicKey;
         instance.chainCode = action.chainCode;
+
+        instance.basePath = action.basePath;
     }
 
     const newState: State = [...state];

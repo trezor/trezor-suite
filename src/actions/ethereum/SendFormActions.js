@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SEND from 'actions/constants/send';
+import * as PENDING from 'actions/constants/pendingTx';
 import * as WEB3 from 'actions/constants/web3';
 import { initialState } from 'reducers/SendFormEthereumReducer';
 import { findToken } from 'reducers/TokensReducer';
@@ -480,7 +481,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     const currentState: State = getState().sendFormEthereum;
 
     const isToken: boolean = currentState.currency !== currentState.networkSymbol;
-    const pendingNonce: number = reducerUtils.getPendingNonce(pending);
+    const pendingNonce: number = reducerUtils.getPendingSequence(pending);
     const nonce = pendingNonce > 0 && pendingNonce >= account.nonce ? pendingNonce : account.nonce;
 
     const txData = await dispatch(prepareEthereumTx({
@@ -551,6 +552,22 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             nonce,
             txid,
             txData,
+        });
+
+        dispatch({
+            type: PENDING.ADD,
+            payload: {
+                type: 'send',
+                deviceState: account.deviceState,
+                sequence: nonce,
+                hash: txid,
+                network: account.network,
+                address: account.address,
+                currency: currentState.currency,
+                amount: currentState.amount,
+                total: currentState.total,
+                fee: '0', // TODO: calculate fee
+            },
         });
 
         // clear session storage
