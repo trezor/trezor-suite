@@ -1,8 +1,9 @@
-import Version from './version';
+import Version from './Version';
 
 /**
  * Helper class, telling all info about concrete firmware
  */
+
 export default class FirmwareInfo {
     constructor(o) {
         this.required = o.required;

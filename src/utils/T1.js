@@ -76,24 +76,22 @@ class T1 {
                     patch_version: this.internal.fwVersionPatch,
                 };
             }
+        } else if (this.internal.blMode) {
+            features = {
+                bootloader_mode: true,
+                firmware_present: false,
+                major_version: this.internal.blVersionMajor,
+                minor_version: this.internal.blVersionMinor,
+                patch_version: this.internal.blVersionPatch,
+            };
         } else {
-            if (this.internal.blMode) {
-                features = {
-                    bootloader_mode: true,
-                    firmware_present: false,
-                    major_version: this.internal.blVersionMajor,
-                    minor_version: this.internal.blVersionMinor,
-                    patch_version: this.internal.blVersionPatch,
-                };
-            } else {
-                features = {
-                    bootloader_mode: true, // no kidding
-                    firmware_present: false,
-                    major_version: this.internal.blVersionMajor,
-                    minor_version: this.internal.blVersionMinor,
-                    patch_version: this.internal.blVersionPatch,
-                };
-            }
+            features = {
+                bootloader_mode: true, // no kidding
+                firmware_present: false,
+                major_version: this.internal.blVersionMajor,
+                minor_version: this.internal.blVersionMinor,
+                patch_version: this.internal.blVersionPatch,
+            };
         }
         Object.assign(features, this.common);
         return features;

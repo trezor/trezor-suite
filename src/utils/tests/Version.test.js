@@ -1,4 +1,4 @@
-import Version from 'helpers/version';
+import { Version } from '../index';
 
 describe('Version class', () => {
     describe('toString()', () => {

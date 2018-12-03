@@ -4,24 +4,19 @@
   "author": "TREZOR <info@trezor.io>",
   "license": "SEE LICENSE IN LICENSE.md",
   "description": "",
-  "main": "./lib/trezor-update.js",
+  "main": "lib/trezor-update.js",
   "scripts": {
     "test": "jest",
     "lint": "eslint .",
     "clean": "rimraf lib",
-    "build": "yarn run clean && yarn build:prod",
-    "build:prod": "webpack --progress --bail"
+    "build": "yarn run clean && npx rollup -c rollup.config.js"
   },
-  "dependencies": {
-    "jest": "^23.6.0",
-    "rimraf": "^2.6.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.1.6",
     "@babel/preset-env": "^7.1.6",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
-    "babel-loader": "^8.0.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-jest": "^23.2.0",
@@ -30,8 +25,11 @@
     "eslint-import-resolver-babel-module": "5.0.0-beta.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^22.1.0",
+    "jest": "^23.6.0",
     "regenerator-runtime": "^0.13.1",
-    "webpack": "^4.26.1",
-    "webpack-cli": "^3.1.2"
+    "rimraf": "^2.6.2",
+    "rollup": "^0.67.4",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-includepaths": "^0.2.3"
   }
 }
