@@ -20,6 +20,8 @@ export type Account = {
     +addressPath: Array<number>;
     +address: string;
     balance: string;
+    availableBalance: string;
+    sequence: number;
     nonce: number;
     block: number;
     transactions: number;

@@ -2,6 +2,7 @@
 
 import TrezorConnect from 'trezor-connect';
 import * as DISCOVERY from 'actions/constants/discovery';
+import { toDecimalAmount } from 'utils/formatUtils';
 
 import type {
     PromiseAction,
@@ -64,9 +65,11 @@ export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discover
         network: network.shortcut,
         deviceID: device.features ? device.features.device_id : '0',
         deviceState: device.state || '0',
-        addressPath: account.path,
+        addressPath: account.path || [],
         address: account.address,
-        balance: account.balance,
+        balance: toDecimalAmount(account.balance, 6),
+        availableBalance: toDecimalAmount(account.availableBalance, 6),
+        sequence: account.sequence,
         nonce: account.sequence,
         block: account.block,
         transactions: account.transactions,

@@ -82,6 +82,8 @@ export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discover
         addressPath: path,
         address: ethAddress,
         balance: account.balance,
+        availableBalance: account.balance,
+        sequence: account.nonce,
         nonce: account.nonce,
         block: account.block,
         transactions: account.transactions,
