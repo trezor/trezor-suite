@@ -1,6 +1,6 @@
 
 import { getLatestSafeFw } from 'main';
-import { getItemFromList } from 'utils/list';
+import { getItemByVersion } from 'utils/list';
 
 import T2MOCK from 'test/mocks/T2.json';
 
@@ -15,6 +15,6 @@ describe('Get latest safe firmware', () => {
             score: null,
         });
 
-        expect(result).toEqual(getItemFromList(TEST_MOCK, [1, 4, 0]));
+        expect(result).toEqual(getItemByVersion(TEST_MOCK, [1, 4, 0]));
     });
 });
