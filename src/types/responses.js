@@ -7,7 +7,7 @@ import * as RESPONSES from '../constants/responses';
 
 export type Error = {
     +type: typeof RESPONSES.ERROR,
-    +error: string,
+    +payload: string,
 }
 
 export type GetInfo = {
@@ -20,6 +20,16 @@ export type GetAccountInfo = {
     +type: typeof RESPONSES.GET_ACCOUNT_INFO;
     // +payload: RIPPLE.GetAccountInfo$;
     +payload: any,
+};
+
+export type GetTransactions = {
+    +type: typeof RESPONSES.GET_ACCOUNT_INFO,
+    +payload: any,
+};
+
+export type GetFee = {
+    +type: typeof RESPONSES.GET_FEE,
+    +payload: string,
 };
 
 export type Subscribe = {
@@ -36,7 +46,7 @@ export type Notification = {
             hash: string,
         },
     } | {
-        type: 'address',
+        type: 'notification',
         data: any,
     }
 };
@@ -54,10 +64,12 @@ export type PushTransaction = {
 
 // extended
 export type Response = 
-    { id: number, +type: typeof HANDSHAKE } |
+    { id: number, +type: typeof HANDSHAKE, +payload?: any } |
+    { id: number, +type: typeof RESPONSES.CONNECTED } |
     { id: number } & Error |
     { id: number } & GetInfo |
     { id: number } & GetAccountInfo |
+    { id: number } & GetFee |
     { id: number } & Subscribe |
     { id: number } & Unsubscribe |
     { id: number } & Notification |

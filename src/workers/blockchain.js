@@ -21,7 +21,7 @@ type ExtendedBlockchainSettings = {
 
 const instances: Array<Blockchain<any>> = [];
 
-const __createInstance = (settings: ExtendedBlockchainSettings) => {
+const __createInstance = (settings: ExtendedBlockchainSettings): Blockchain<any> => {
     const transformedSettings: BlockchainSettings = {
         name: settings.name,
         worker: settings.worker,
@@ -32,8 +32,10 @@ const __createInstance = (settings: ExtendedBlockchainSettings) => {
     if (!instance) {
         const i: Blockchain<any> = new Blockchain(transformedSettings)
         instances.push(i);
+        return i;
     } else {
         console.warn(`Blockchain instance with name: ${settings.name} already exists.`)
+        return instance;
     }
 }
 
@@ -130,6 +132,13 @@ export class Blockchain<Instance: Object> extends EventEmitter {
         });
     }
 
+    getFee: $ElementType<Instance, 'getAccountInfo'> = async (payload) => {
+        return await this.__send({
+            type: MESSAGES.GET_FEE,
+            payload
+        });
+    }
+    
     subscribe: $ElementType<Instance, 'subscribe'> = async (payload) => {
         // delete message.payload.notificationHandler;
         return await this.__send({
@@ -152,11 +161,22 @@ export class Blockchain<Instance: Object> extends EventEmitter {
         });
     }
 
+    // disconnect: $ElementType<Instance, 'getAccountInfo'> = async (payload) => {
+
+    // }
+
+    // worker messages handler
+
     onMessage: (event: {data: Response}) => void = (event) => {
         if (!event.data) return;
         const { data } = event;
 
-        if (data.type === RESPONSES.NOTIFICATION) {
+        console.log('[Blockchain] on message', data)
+
+
+        if (data.type === RESPONSES.CONNECTED) {
+            this.emit('connect');
+        } else if (data.type === RESPONSES.NOTIFICATION) {
             this.onNotification(data.payload);
         } else {
             const dfd = this.deferred.find(d => d.id === data.id);
@@ -164,7 +184,11 @@ export class Blockchain<Instance: Object> extends EventEmitter {
                 console.warn(`Message with id ${data.id} not found`);
                 return;
             }
-            dfd.resolve(event.data);
+            if (data.type === RESPONSES.ERROR) {
+                dfd.reject(new Error(data.payload));
+            } else {
+                dfd.resolve(data.payload);
+            }
             this.deferred = this.deferred.filter(d => d !== dfd);
         }
     }

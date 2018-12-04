@@ -11,27 +11,31 @@ export { Message } from './messages';
 export { Response } from './responses';
 
 export type BlockchainSettings = {
-    name: string;
-    worker: string;
-    server: Array<string>;
-    debug?: boolean;
+    name: string,
+    worker: string,
+    server: Array<string>,
+    debug?: boolean,
 }
 
 type Blockchain = {
 
     +getInfo: () => Promise<{
-        name: string;
-        id: string;
-        currentBlock: number;
+        name: string,
+        id: string,
+        currentBlock: number,
     }>;
 
     +getAccountInfo: (params: {
-        descriptor: string;
+        descriptor: string,
+        mempool?: boolean, 
+        history?: boolean,
     }) => Promise<{
         addresses: Array<string>;
         balance: number;
         availableBalance: number;
     }>;
+
+    +getFee: () => Promise<string>;
 
     subscribe: (params: {
         type: 'block',
@@ -53,6 +57,7 @@ type Blockchain = {
 export type Blockbook = {
     getInfo: $ElementType<Blockchain, 'getInfo'>;
     getAccountInfo: $ElementType<Blockchain, 'getAccountInfo'>;
+    getFee: $ElementType<Blockchain, 'getFee'>;
     subscribe: $ElementType<Blockchain, 'subscribe'>;
     unsubscribe: $ElementType<Blockchain, 'unsubscribe'>;
     pushTransaction: $ElementType<Blockchain, 'pushTransaction'>;
@@ -62,6 +67,7 @@ export type Ripple = {
     getInfo: $ElementType<Blockchain, 'getInfo'>;
     // getAccountInfo: (params: string) => Promise<boolean>; // custom method
     getAccountInfo: $ElementType<Blockchain, 'getAccountInfo'>;
+    getFee: $ElementType<Blockchain, 'getFee'>;
     subscribe: $ElementType<Blockchain, 'subscribe'>;
     unsubscribe: $ElementType<Blockchain, 'unsubscribe'>;
     pushTransaction: $ElementType<Blockchain, 'pushTransaction'>;

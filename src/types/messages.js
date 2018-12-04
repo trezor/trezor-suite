@@ -13,6 +13,8 @@ export type GetAccountInfo = {
     +type: typeof MESSAGES.GET_ACCOUNT_INFO,
     +payload: {
         +descriptor: string,
+        +history?: boolean,
+        +mempool?: boolean,
     },
 };
 
@@ -27,12 +29,28 @@ export type RippleAccountInfo = {
     address: string,
 }
 
+export type GetTransactions = {
+    +type: typeof MESSAGES.GET_ACCOUNT_INFO,
+    +payload: {
+        +descriptor: string,
+        +from: {
+            txid: string,
+        },
+        +limit: number,
+    },
+};
+
+export type GetFee = {
+    +type: typeof MESSAGES.GET_FEE,
+    +payload: any,
+};
+
 export type Subscribe = {
     +type: typeof MESSAGES.SUBSCRIBE,
     +payload: {
         type: 'block',
     } | {
-        type: 'address',
+        type: 'notification',
         addresses: Array<string>,
         mempool?: boolean,
     };
@@ -43,7 +61,7 @@ export type Unsubscribe = {
     +payload: {
         type: 'block',
     } | {
-        type: 'address',
+        type: 'notification',
         addresses: Array<string>,
     };
 }
@@ -57,5 +75,6 @@ export type Message =
     { id: number, +type: typeof MESSAGES.HANDSHAKE, settings: BlockchainSettings } |
     { id: number } & GetInfo |
     { id: number } & GetAccountInfo |
+    { id: number } & GetFee |
     { id: number } & Subscribe |
     { id: number } & PushTransaction;
