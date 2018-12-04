@@ -91,8 +91,7 @@ class Passphrase extends PureComponent<Props, State> {
         super(props);
         const { device, selectedDevice } = props;
 
-        // Check if this device is already known
-        // if device is already known then only one input is presented
+        // if device is already remembered then only one input is presented
         let deviceLabel = device.label;
         let shouldShowSingleInput = false;
         if (selectedDevice && selectedDevice.path === device.path) {
@@ -171,7 +170,7 @@ class Passphrase extends PureComponent<Props, State> {
         this.setState(previousState => ({
             isPassphraseHidden: !previousState.isPassphraseHidden,
             passphraseInputValue: previousState.passphraseInputValue,
-            passphraseCheckInputValue: previousState.passphraseCheckInputValue,
+            passphraseCheckInputValue: previousState.passphraseInputValue,
             doPassphraseInputsMatch: match,
         }));
     }
