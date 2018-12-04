@@ -1,6 +1,5 @@
 
 import { getLatestSafeFw } from 'main';
-import { getVersionOfItem } from 'utils/list';
 
 import T1MOCK from 'test/mocks/T1.json';
 
@@ -15,7 +14,7 @@ describe('Get latest safe firmware', () => {
             bootloaderVersion: [1, 6, 0],
         });
 
-        expect(result.version).toEqual(getVersionOfItem(TEST_MOCK, [1, 7, 1]));
+        expect(result.version).toEqual([1, 7, 1]);
     });
 
     it('NO firmware in bootloader [1, 5, 1]', () => {
@@ -27,7 +26,7 @@ describe('Get latest safe firmware', () => {
             bootloaderVersion: [1, 5, 1],
         });
 
-        expect(result.version).toEqual(getVersionOfItem(TEST_MOCK, [1, 6, 3]));
+        expect(result.version).toEqual([1, 6, 3]);
     });
 
     it('NO firmware in bootloader [1, 4, 0]', () => {
@@ -39,7 +38,7 @@ describe('Get latest safe firmware', () => {
             bootloaderVersion: [1, 4, 0],
         });
 
-        expect(result.version).toEqual(getVersionOfItem(TEST_MOCK, [1, 6, 1]));
+        expect(result.version).toEqual([1, 6, 1]);
     });
 
 
@@ -55,7 +54,7 @@ describe('Get latest safe firmware', () => {
             score: null,
         });
 
-        expect(result.version).toEqual(getVersionOfItem(TEST_MOCK, [1, 4, 0]));
+        expect(result.version).toEqual([1, 4, 0]);
     });
 
 
@@ -71,6 +70,6 @@ describe('Get latest safe firmware', () => {
             score: null,
         });
 
-        expect(result.version).toEqual(getVersionOfItem(TEST_MOCK, [1, 7, 1]));
+        expect(result.version).toEqual([1, 7, 1]);
     });
 });

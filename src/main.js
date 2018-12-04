@@ -25,7 +25,7 @@ const getLatestSafeFw = (input) => {
     return [];
 };
 
-const getScore = (userAgent) => {
+const getScore = () => {
     const score = 'score';
     return score;
 };
