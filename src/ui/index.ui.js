@@ -36,7 +36,8 @@ const instances = [
     {
         name: 'Bitcoin Testnet',
         worker: 'js/blockbook-worker.js',
-        server: 'https://testnet-bitcore1.trezor.io',
+        server: 'wss://blockbook-dev.corp:19136',
+        // server: 'https://testnet-bitcore1.trezor.io',
         // server: 'wss://ropsten1.trezor.io/socket.io/?transport=websocket',
         debug: true
     },
@@ -72,6 +73,10 @@ const handleClick = (event: MouseEvent) => {
             blockchain.getAccountInfo(params).then(handleResponse).catch(handleError);
             break;
         }
+
+        case 'get-transactions':
+            blockchain.getTransactions(JSON.parse(getInputValue('get-transactions'))).then(handleResponse).catch(handleError);
+            break;
 
         case 'push-transaction':
             blockchain.pushTransaction(getInputValue('push-transaction-tx')).then(handleResponse).catch(handleError);
@@ -135,12 +140,16 @@ const clear = (id: string) => {
     element.innerHTML = '';
 }
 
-const prepareNetworkSelect = (instances: Array<any>) => {
+const prepareNetworkSelect = (instances: Array<any>, selected: string) => {
     const select = (document.getElementById('network-type'): any);
     select.innerHTML = instances.map(i => {
-        return `<option value="${i.name}">${i.name}</option>`;
+        if (i.name === selected) {
+            return `<option value="${i.name}" selected>${i.name}</option>`;
+        } else {
+            return `<option value="${i.name}">${i.name}</option>`;
+        }
     })
 }
-prepareNetworkSelect(instances);
+prepareNetworkSelect(instances, 'Ripple Testnet');
 
 document.addEventListener('click', handleClick);

@@ -8,7 +8,7 @@
     <meta name="title" content="Blockchain Link" />
     <meta name="description" content="Blockchain Link" />
     <meta name="keywords" content="blockchain trezor" />
-    <meta name="author" content="satoshilabs s.r.o." />
+    <meta name="author" content="SatoshiLabs s.r.o." />
     <meta name="viewport" content="width=1024, initial-scale=1">
     <style>
         * {
@@ -61,8 +61,19 @@
     </div>
     <div>
         <label>Address / xpub</label>
-        <input id="get-account-info-address" type="text" value="rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H" />
+        <!-- <input id="get-account-info-addressTREZOR" type="text" value="rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H" /> -->
+        <input id="get-account-info-address" type="text" value="rJb5KsHsDHF1YS5B5DU6QCkH5NsPaKQTcy" />
         <button id="get-account-info">Get account info</button>
+    </div>
+    <div>
+        <label>Account info</label>
+        <textarea>
+            {
+                start: '660371D3A9B15E9781EED508090962890B99C67277E9F9024E899430D47D3FFD',
+                limit: 10
+            }
+        </textarea>
+        <button id="get-transactions">Get transactions</button>
     </div>
     <div>
         <label>Serialized transaction</label>
