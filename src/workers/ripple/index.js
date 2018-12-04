@@ -1,7 +1,6 @@
 /* @flow */
 
 import { RippleAPI } from 'ripple-lib';
-import * as ripple from 'ripple-lib';
 import BigNumber from 'bignumber.js';
 import { MESSAGES, RESPONSES } from '../../constants';
 import * as common from '../common';
@@ -389,7 +388,7 @@ const onTransaction = (event: any) => {
         const amount = event.transaction.Amount;
         const fee = event.transaction.Fee;
         const total = new BigNumber(amount).plus(fee).toString();
-        
+
         if (sender >= 0) {
             postMessage({
                 id: -1,
