@@ -8,7 +8,7 @@ import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
 import colors from 'config/colors';
 
-import type { Props, SignVerifyState } from './Container';
+import type { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,7 +45,7 @@ const Verify = styled(Column)`
     padding-left: 20px;
 `;
 
-class SignVerify extends Component <Props, SignVerifyState> {
+class SignVerify extends Component <Props> {
     getError(inputName: string) {
         if (!this.props.signVerify) return null;
         return this.props.signVerify.errors.find(e => e.inputName === inputName);

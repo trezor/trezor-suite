@@ -15,22 +15,10 @@ export type Error = {
     message: ?string,
 };
 
-export type SignVerifyState = {
-    signSignature: string,
-    signAddress: string,
-    signMessage: string,
-    signSignature: string,
-    verifyAddress: string,
-    verifyMessage: string,
-    verifySignature: string,
-    touched: Array<string>,
-    errors: Array<Error>
-}
-
 export type StateProps = {
     wallet: $ElementType<State, 'wallet'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-    signVerify: SignVerifyState,
+    signVerify: $ElementType<State, 'signVerify'>,
 }
 
 export type DispatchProps = {
@@ -42,7 +30,7 @@ export type Props = StateProps & DispatchProps;
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     wallet: state.wallet,
     selectedAccount: state.selectedAccount,
-    signVerify: state.signVerifyReducer,
+    signVerify: state.signVerify,
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
