@@ -65,7 +65,7 @@ class TopNavigationAccount extends React.PureComponent<Props> {
                 <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
                 <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
                 <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
-                <StyledNavLink to={`${basePath}/signverify`}>Sign & Verify</StyledNavLink>
+                <StyledNavLink to={`${basePath}/signverify`}>Sign &amp; Verify</StyledNavLink>
                 <Indicator pathname={pathname} wrapper={() => this.wrapper} />
             </Wrapper>
         );
