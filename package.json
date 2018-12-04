@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Trezor <info@trezor.io>",
   "homepage": "https://github.com/trezor/blockchain-link",
-  "description": "High-level javascript interface for blockchain",
+  "description": "High-level javascript interface for blockchain communication",
   "license": "SEE LICENSE IN LICENSE.md",
   "repository": {
     "type": "git",
