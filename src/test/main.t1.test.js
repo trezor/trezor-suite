@@ -55,7 +55,7 @@ describe('Get latest safe firmware', () => {
             score: null,
         });
 
-        expect(result).toEqual(getItemByVersion(TEST_MOCK, [1, 4, 0]));
+        expect(result.version).toEqual(getVersionOfItem(TEST_MOCK, [1, 4, 0]));
     });
 
 
@@ -71,6 +71,6 @@ describe('Get latest safe firmware', () => {
             score: null,
         });
 
-        expect(result).toEqual(getItemByVersion(TEST_MOCK, [1, 7, 1]));
+        expect(result.version).toEqual(getVersionOfItem(TEST_MOCK, [1, 7, 1]));
     });
 });
