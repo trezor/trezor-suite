@@ -2,5 +2,9 @@ module.exports = {
     presets: [
         '@babel/preset-env',
     ],
-    plugins: [],
+    plugins: [
+        ['module-resolver', {
+            root: ['./src'],
+        }],
+    ],
 };

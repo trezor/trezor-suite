@@ -32,6 +32,6 @@
     "rimraf": "^2.6.2",
     "rollup": "^0.67.4",
     "rollup-plugin-babel": "^4.0.3",
-    "rollup-plugin-includepaths": "^0.2.3"
+    "yarn": "^1.12.3"
   }
 }

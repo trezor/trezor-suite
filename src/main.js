@@ -1,21 +1,25 @@
-import versionUtils from './utils/version';
+import versionUtils from 'utils/version';
 
 const getLatestSafeFw = (input) => {
-    let lastSafeFirmware;
     const {
         releasesList,
-        isBootloaderMode,
+        isInBootloader,
         firmwareVersion,
         bootloaderVersion,
     } = input;
 
-    const newestFirmware = releasesList[0];
+    // no firmware at all - get latest possible
+    if (!firmwareVersion) {
+        return releasesList[0];
+    }
 
-    // no firmware at all
-    lastSafeFirmware = newestFirmware;
+    // get latest possible version
+    if (isInBootloader) {
+        const filtered = releasesList.filter(listItem => versionUtils.isNewerOrEqual(bootloaderVersion, listItem.min_bootloader_version));
+        console.log(filtered);
+    }
 
-    return lastSafeFirmware;
-
+    return [];
 
     // // 1. handle if no firmware is present at all
     // if (!hasFirmware) {
