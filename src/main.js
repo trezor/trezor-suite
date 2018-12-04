@@ -1,9 +1,8 @@
-import versionUtils from 'utils/version';
+import versionUtils from './utils/version';
 
 const getLatestSafeFw = (input) => {
     let lastSafeFirmware;
     const {
-        hasFirmware,
         releasesList,
         isBootloaderMode,
         firmwareVersion,
@@ -16,6 +15,7 @@ const getLatestSafeFw = (input) => {
     lastSafeFirmware = newestFirmware;
 
     return lastSafeFirmware;
+
 
     // // 1. handle if no firmware is present at all
     // if (!hasFirmware) {
@@ -56,17 +56,6 @@ const getLatestSafeFw = (input) => {
     // return list[0];
 };
 
-const getScore = userAgentString =>
-    // let hash = 0;
-    // const probability = 0;
-    // for (let i = 0; i < userAgentString.length; i++) {
-    //     hash = (hash + userAgentString.charCodeAt(i)) % 256;
-    // }
-    // if (hash <= 256 * probability) {
-    //     return 'aaa';
-    // }
-    'score';
 export {
-    getScore,
     getLatestSafeFw,
 };

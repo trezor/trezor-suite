@@ -37,4 +37,5 @@ export default {
     isNewer,
     isNewerOrEqual,
     parse,
+    toString,
 };

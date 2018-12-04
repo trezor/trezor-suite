@@ -9,6 +9,7 @@
     },
     "rules": {
         "indent": ["error", 4],
+        "max-len": 0,
         "import/prefer-default-export": 0
     },
     "plugins": [
