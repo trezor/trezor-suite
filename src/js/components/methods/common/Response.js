@@ -48,6 +48,14 @@ const Response = (props): any => {
             );
         break;
 
+        case 'raw' :
+            currentTab = (
+                <pre className="raw-container">
+                    {props.response? JSON.stringify(props.response): null}
+                </pre>
+            );
+        break;
+
         case 'code' :
             currentTab = (
                 <pre className="code-container" dangerouslySetInnerHTML={{__html: props.code }}>
@@ -68,6 +76,7 @@ const Response = (props): any => {
         <div className={ `method-result ${ props.tab }` }>
             <div className="method-result-menu">
                 <div data-tab="response" onClick={ event => props.onTabChange('response') }>Response</div>
+                <div data-tab="raw" onClick={ event => props.onTabChange('raw') }>Raw response</div>
                 <div data-tab="code" onClick={ event => props.onTabChange('code') }>Javascript code</div>
                 {/* <div data-tab="tests" onClick={ event => props.onTabChange('tests') }>Tests</div> */}
             </div>
