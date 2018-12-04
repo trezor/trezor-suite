@@ -14,6 +14,7 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: {
         indexUI: [`${SRC}/ui/index.ui.js`],
+        indexRipple: [`${SRC}/ui/ripple.js`],
         index: [`${SRC}/index.js`],
         // ripple: [`${SRC}/workers/ripple/index.js`],
     },
@@ -62,6 +63,12 @@ module.exports = {
             chunks: ['indexUI'],
             template: `${SRC}ui/index.html`,
             filename: 'index.html',
+            inject: true,
+        }),
+        new HtmlWebpackPlugin({
+            chunks: ['indexRipple'],
+            template: `${SRC}ui/ripple.html`,
+            filename: 'ripple.html',
             inject: true,
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
