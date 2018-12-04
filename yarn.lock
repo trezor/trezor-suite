@@ -3931,6 +3931,10 @@ events@^1.0.0, events@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
 
+events@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/events/-/events-3.0.0.tgz#9a0a0dfaf62893d92b875b8f2698ca4114973e88"
+
 eventsource@0.1.6:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-0.1.6.tgz#0acede849ed7dd1ccc32c811bb11b944d4f29232"
@@ -10274,12 +10278,19 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
-trezor-connect@6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-6.0.2.tgz#a4ca892cc4a167b34b97644e1404a56f6a110379"
+trezor-blockchain-link@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/trezor-blockchain-link/-/trezor-blockchain-link-0.0.1.tgz#c272bf57838842cf1820adcd85dddf63b43f05ad"
+  dependencies:
+    events "^3.0.0"
+
+trezor-connect@^6.0.3-beta:
+  version "6.0.3-beta"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-6.0.3-beta.tgz#9662b0ae704b9e1a7f65419cb15cab43043f0690"
   dependencies:
     babel-runtime "^6.26.0"
     events "^1.1.1"
+    trezor-blockchain-link "^0.0.1"
     whatwg-fetch "^2.0.4"
 
 trim-newlines@^1.0.0:
