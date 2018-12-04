@@ -1,9 +1,10 @@
-import T1MOCK from './mocks/T1.json';
-import T2MOCK from './mocks/T2.json';
-import { getLatestSafeFw } from '../index';
-import { toString } from '../utils/version';
+import { getLatestSafeFw } from 'main';
+import versionUtils from 'utils/version';
 
-const getItemFromList = (list, version) => list.find(item => toString(item.version) === toString(version));
+import T1MOCK from 'test/mocks/T1.json';
+// import T2MOCK from 'test/mocks/T2.json';
+
+const getItemFromList = (list, version) => list.find(item => versionUtils.toString(item.version) === versionUtils.toString(version));
 
 describe('Get latest safe firmware', () => {
     it('bump firmware version from 1.6.3 to 1.7.1', () => {
