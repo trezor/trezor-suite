@@ -43,7 +43,7 @@
             }
         }
 
-        .response-container, 
+        .response-container,
         .code-container {
             background: @color_white;
             flex: 1;
@@ -59,6 +59,11 @@
             }
         }
 
+        .raw-container {
+            .code-container;
+            white-space: pre-wrap;
+        }
+
         &.response {
             [data-tab="response"] {
                 color: @color_green;
@@ -67,6 +72,18 @@
             }
 
             .response-container {
+                display: block;
+            }
+        }
+
+        &.raw {
+            [data-tab="raw"] {
+                color: @color_green;
+                background: @color_white;
+                border-color: @color_white;
+            }
+
+            .raw-container {
                 display: block;
             }
         }
