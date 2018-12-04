@@ -1,31 +1,53 @@
-import fs from 'fs';
-import TrezorUpdate from '../index';
+import { getLatestSafeFw } from '../index';
 
-const T1Releases = fs.readFileSync('./src/test/data/webwallet-data/firmware/1/releases.json', 'utf8');
-const T2Releases = fs.readFileSync('./src/test/data/webwallet-data/firmware/2/releases.json', 'utf8');
-
-describe('get latest safe firmware verzion for TREZOR 1', () => {
+describe('get latest safe firmware version for TREZOR 1', () => {
     it('trezor without firmware', () => {
-        const result = TrezorUpdate.getLatestSafeFw({
-            releasesJson: T1Releases,
-            bootloaderMode: true,
-            hasFirmware: true,
-            firmwareVersion: '1.2.3',
-            userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36',
+        const result = getLatestSafeFw({
+            releasesList: [
+                {
+                    required: false,
+                    version: [1, 6, 2],
+                    bootloader_version: [1, 5, 0],
+                    min_bridge_version: [1, 1, 5],
+                    min_firmware_version: [1, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                    url: 'data/firmware/1/trezor-1.6.2.bin.hex',
+                },
+                {
+                    required: true,
+                    version: [1, 6, 1],
+                    bootloader_version: [1, 4, 0],
+                    min_bridge_version: [1, 1, 5],
+                    min_firmware_version: [1, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                    url: 'data/firmware/1/trezor-1.6.1.bin.hex',
+                },
+                {
+                    required: false,
+                    version: [1, 6, 0],
+                    min_bridge_version: [1, 1, 5],
+                    min_firmware_version: [1, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                    url: 'data/firmware/1/trezor-1.6.0.bin.hex',
+                },
+            ],
+            isBootloader: true,
+            firmwareVersion: [1, 2, 3],
+            bootloaderVersion: [1, 2, 3],
+            score: null,
         });
-        expect(result).toBe('something');
+
+        expect(result).toEqual({
+            required: false,
+            version: [1, 6, 2],
+            isBootloader: true,
+            bootloader_version: [1, 5, 0],
+            min_bridge_version: [1, 1, 5],
+            min_firmware_version: [1, 0, 0],
+            min_bootloader_version: [1, 0, 0],
+            url: 'data/firmware/1/trezor-1.6.2.bin.hex',
+        });
     });
 });
 
-describe('get latest safe firmware verzion for TREZOR 2', () => {
-    it('trezor without firmware', () => {
-        const result = TrezorUpdate.getLatestSafeFw({
-            releasesJson: T2Releases,
-            bootloaderMode: true,
-            hasFirmware: true,
-            firmwareVersion: '1.2.3',
-            userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36',
-        });
-        expect(result).toBe('something');
-    });
-});
+// score

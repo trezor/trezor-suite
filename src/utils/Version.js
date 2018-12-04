@@ -1,61 +1,40 @@
-class Version {
-    constructor(major, minor, patch) {
-        this.major = major || 0;
-        this.minor = minor || 0;
-        this.patch = patch || 0;
+const parse = (versionArr) => {
+    if (versionArr.length !== 3) {
+        throw Error('Wrong version string');
+    } else {
+        return {
+            major: versionArr[0],
+            minor: versionArr[1],
+            patch: versionArr[2],
+        };
+    }
+};
+
+const toString = arr => `${arr[0]}.${arr[1]}.${arr[2]}`;
+
+const isNewer = (versionX, versionY) => {
+    const parsedX = parse(versionX);
+    const parsedY = parse(versionY);
+
+    if (parsedX.major - parsedY.major !== 0) {
+        return parsedX.major > parsedY.major;
+    }
+    if (parsedX.minor - parsedY.minor !== 0) {
+        return parsedX.minor > parsedY.minor;
+    }
+    if (parsedX.patch - parsedY.patch !== 0) {
+        return parsedX.patch > parsedY.patch;
     }
 
-    static fromArray(arr) {
-        if (arr == null) {
-            throw new Error('Unexpected null.');
-        }
-        if (arr.length !== 3) {
-            throw new Error("Array version length isn't 3");
-        }
-        return new Version(arr[0], arr[1], arr[2]);
-    }
+    return false;
+};
 
-    static fromString(str) {
-        if (str == null) {
-            throw new Error('Unexpected null.');
-        }
-        const strArr = str.split('.');
-        const numArr = strArr.map(n => parseInt(n, 10));
-        return Version.fromArray(numArr);
-    }
+const isEqual = (versionX, versionY) => toString(versionX) === toString(versionY);
+const isNewerOrEqual = (versionX, versionY) => isNewer(versionX, versionY) || isEqual(versionX, versionY);
 
-    toString() {
-        return [this.major.toString(), this.minor.toString(), this.patch.toString()]
-            .join('.');
-    }
-
-    isNewer(other) {
-        let result;
-        const { major, minor, patch } = other;
-        if (this.major - major !== 0) {
-            result = this.major > major;
-        }
-        if (this.minor - minor !== 0) {
-            result = this.minor > minor;
-        }
-        if (this.patch - patch !== 0) {
-            result = this.patch > patch;
-        }
-        if (this.major === major && this.minor === minor && this.patch === patch) {
-            result = false;
-        }
-        return result;
-    }
-
-    isEqual(version) {
-        return this.major === version.major
-            && this.minor === version.minor
-            && this.patch === version.patch;
-    }
-
-    isNewerOrEqual(version) {
-        return this.isNewer(version) || this.isEqual(version);
-    }
-}
-
-export default Version;
+export default {
+    isEqual,
+    isNewer,
+    isNewerOrEqual,
+    parse,
+};

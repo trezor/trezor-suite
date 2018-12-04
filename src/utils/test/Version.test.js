@@ -1,127 +1,101 @@
-import Version from '../Version';
+import versionUtils from '../version';
 
-describe('Version class', () => {
-    describe('toString()', () => {
-        it('should return version as string', () => {
-            const version = new Version(1, 2, 3);
-            const str = version.toString();
-            expect(str).toEqual('1.2.3');
+describe('Version Utils', () => {
+    describe('is newer', () => {
+        // older
+        it('it should return false [0, 0, 1] [0, 0, 2]', () => {
+            const result = versionUtils.isNewer([0, 0, 1], [0, 0, 2]);
+            expect(result).toBe(false);
+        });
+
+        it('it should return false [0, 1, 1] [0, 2, 1]', () => {
+            const result = versionUtils.isNewer([0, 1, 1], [0, 2, 1]);
+            expect(result).toBe(false);
+        });
+
+        it('it should return false [1, 1, 1] [2, 1, 1]', () => {
+            const result = versionUtils.isNewer([1, 1, 1], [2, 1, 1]);
+            expect(result).toBe(false);
+        });
+
+        it('it should return false [1, 0, 0], [1, 0, 1]', () => {
+            const result = versionUtils.isNewer([1, 0, 0], [1, 0, 1]);
+            expect(result).toBe(false);
+        });
+
+        // newer
+        it('it should return true [0, 0, 2] [0, 0, 1]', () => {
+            const result = versionUtils.isNewer([0, 0, 2], [0, 0, 1]);
+            expect(result).toBe(true);
+        });
+
+        it('it should return true [0, 2, 1] [0, 1, 1]', () => {
+            const result = versionUtils.isNewer([0, 2, 1], [0, 1, 1]);
+            expect(result).toBe(true);
+        });
+
+        it('it should return true [2, 1, 1] [1, 1, 1]', () => {
+            const result = versionUtils.isNewer([2, 1, 1], [1, 1, 1]);
+            expect(result).toBe(true);
+        });
+
+        it('it should return true [1, 0, 1], [1, 0, 0]', () => {
+            const result = versionUtils.isNewer([1, 0, 1], [1, 0, 0]);
+            expect(result).toBe(true);
+        });
+
+        // equal
+        it('it should return false [1, 1, 1] [1, 1, 1]', () => {
+            const result = versionUtils.isNewer([1, 1, 1], [1, 1, 1]);
+            expect(result).toEqual(false);
         });
     });
 
-    describe('isNewer()', () => {
-        it('it should return true for newer version', () => {
-            const version = new Version(null, 2, 3);
-            const other = new Version(1, 0, 0);
-            const result = version.isNewer(other);
-            expect(result).toEqual(true);
+    describe('is equal', () => {
+        it('it should return false [1, 0, 0], [1, 0, 1]', () => {
+            const result = versionUtils.isEqual([1, 0, 0], [1, 0, 1]);
+            expect(result).toBe(false);
         });
 
-        it('it should return false for older version', () => {
-            const version = new Version(1, 2, 3);
-            const other = new Version(6, 6, 6);
-            const result = version.isNewer(other);
-            expect(result).toEqual(false);
+        it('it should return false [1, 0, 1], [1, 0, 0]', () => {
+            const result = versionUtils.isEqual([1, 0, 1], [1, 0, 0]);
+            expect(result).toBe(false);
         });
 
-        it('it should return false for same version', () => {
-            const version = new Version(1, 2, 3);
-            const other = new Version(1, 2, 3);
-            const result = version.isNewer(other);
-            expect(result).toEqual(false);
+        it('it should return true [1, 1, 1], [1, 1, 1]', () => {
+            const result = versionUtils.isEqual([1, 1, 1], [1, 1, 1]);
+            expect(result).toBe(true);
         });
     });
 
-    describe('isEqual()', () => {
-        it('it should return false for newer version', () => {
-            const version = new Version(1, 2, 3);
-            const other = new Version(1, 0, 0);
-            const result = version.isEqual(other);
-            expect(result).toEqual(false);
+    describe('is newer or equal', () => {
+        it('it should return false [1, 0, 0], [1, 0, 1]', () => {
+            const result = versionUtils.isNewerOrEqual([1, 0, 0], [1, 0, 1]);
+            expect(result).toBe(false);
         });
 
-        it('it should return false for older version', () => {
-            const version = new Version(1, 2, 3);
-            const other = new Version(6, 6, 6);
-            const result = version.isEqual(other);
-            expect(result).toEqual(false);
+        it('it should return true [1, 0, 1], [1, 0, 0]', () => {
+            const result = versionUtils.isNewerOrEqual([1, 0, 1], [1, 0, 0]);
+            expect(result).toBe(true);
         });
 
-        it('it should return true for same version', () => {
-            const version = new Version(1, 2, 3);
-            const other = new Version(1, 2, 3);
-            const result = version.isEqual(other);
-            expect(result).toEqual(true);
+        it('it should return true [1, 1, 1], [1, 1, 1]', () => {
+            const result = versionUtils.isNewerOrEqual([1, 1, 1], [1, 1, 1]);
+            expect(result).toBe(true);
         });
     });
 
-    describe('isNewerOrEqual()', () => {
-        it('it should return true for newer version', () => {
-            const version = new Version(1, 2, 3);
-            const other = new Version(1, 0, 0);
-            const result = version.isNewerOrEqual(other);
-            expect(result).toEqual(true);
+    describe('parse', () => {
+        it('it should parse', () => {
+            const parsed = versionUtils.parse([1, 0, 1]);
+            expect(parsed).toEqual({ major: 1, minor: 0, patch: 1 });
         });
 
-        it('it should return false for older version', () => {
-            const version = new Version(1, 2, 3);
-            const other = new Version(6, 6, 6);
-            const result = version.isNewerOrEqual(other);
-            expect(result).toEqual(false);
-        });
-
-        it('it should return true for same version', () => {
-            const version = new Version(1, 2, 3);
-            const other = new Version(1, 2, 3);
-            const result = version.isNewerOrEqual(other);
-            expect(result).toEqual(true);
-        });
-    });
-
-    describe('static fromArray()', () => {
-        it('should create version instance from array', () => {
-            const version = Version.fromArray([1, 2, 3]);
-            expect(version.toString()).toEqual('1.2.3');
-        });
-
-        it('should return error if input is null', () => {
+        it('it shouldnt parse', () => {
             try {
-                Version.fromArray(null);
-            } catch (err) {
-                expect(err.message).toEqual('Unexpected null.');
-            }
-        });
-
-        it('should fail on incorrect number of params', () => {
-            try {
-                Version.fromArray([1, 2]);
-                expect('foo').toEqual('boo');
-            } catch (err) {
-                expect(err.message).toEqual("Array version length isn't 3");
-            }
-        });
-    });
-
-    describe('static fromString()', () => {
-        it('should create version instance from string', () => {
-            const version = Version.fromString('1.2.3');
-            expect(version.toString()).toEqual('1.2.3');
-        });
-
-        it('should return error if input is null', () => {
-            try {
-                Version.fromString(null);
-            } catch (err) {
-                expect(err.message).toEqual('Unexpected null.');
-            }
-        });
-
-        it('should fail on incorrect number of params', () => {
-            try {
-                Version.fromString('1.2');
-                expect('foo').toEqual('boo');
-            } catch (err) {
-                expect(err.message).toEqual("Array version length isn't 3");
+                versionUtils.parse([1, 0]);
+            } catch (e) {
+                expect(e.message).toBe('Wrong version string');
             }
         });
     });

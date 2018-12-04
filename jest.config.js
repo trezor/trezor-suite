@@ -5,7 +5,7 @@ module.exports = {
         '^.+\\.(js|jsx|ts)$': 'babel-jest',
     },
     automock: false,
-    coverageDirectory: '../coverage',
+    coverageDirectory: './coverage',
     collectCoverage: true,
     modulePaths: ['src'],
     modulePathIgnorePatterns: [
