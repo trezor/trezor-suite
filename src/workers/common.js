@@ -39,7 +39,7 @@ export const errorHandler = ({ id, error }: { id: number, error: Error}): void =
     postMessage({
         id,
         type: RESPONSES.ERROR,
-        error: error.message
+        payload: error.message
     });
 }
 
