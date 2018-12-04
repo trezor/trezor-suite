@@ -10,7 +10,7 @@ const parse = (versionArr) => {
     }
 };
 
-const convertToString = arr => `${arr[0]}.${arr[1]}.${arr[2]}`;
+const toString = arr => `${arr[0]}.${arr[1]}.${arr[2]}`;
 
 const isNewer = (versionX, versionY) => {
     const parsedX = parse(versionX);
@@ -37,5 +37,5 @@ export default {
     isNewer,
     isNewerOrEqual,
     parse,
-    convertToString,
+    toString,
 };
