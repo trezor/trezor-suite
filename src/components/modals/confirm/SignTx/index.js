@@ -12,12 +12,11 @@ import P from 'components/Paragraph';
 import Icon from 'components/Icon';
 import { H3 } from 'components/Heading';
 
-import type { TrezorDevice } from 'flowtype';
-import type { Props as BaseProps } from '../../Container';
+import type { TrezorDevice, State } from 'flowtype';
 
 type Props = {
     device: TrezorDevice;
-    sendForm: $ElementType<BaseProps, 'sendForm'>;
+    sendForm: $ElementType<State, 'sendFormEthereum'> | $ElementType<State, 'sendFormRipple'>;
 }
 
 const Wrapper = styled.div`
@@ -51,9 +50,10 @@ const ConfirmSignTx = (props: Props) => {
     const {
         amount,
         address,
-        currency,
         selectedFeeLevel,
     } = props.sendForm;
+
+    const currency: string = typeof props.sendForm.currency === 'string' ? props.sendForm.currency : props.sendForm.networkSymbol;
 
     return (
         <Wrapper>

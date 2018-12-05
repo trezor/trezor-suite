@@ -88,13 +88,16 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_PassphraseType':
             return <PassphraseType device={modal.device} />;
 
-        case 'ButtonRequest_SignTx':
-            return <ConfirmSignTx device={modal.device} sendForm={props.sendForm} />;
+        case 'ButtonRequest_SignTx': {
+            const sendForm = props.selectedAccount.network && props.selectedAccount.network.type === 'ethereum' ? props.sendFormEthereum : props.sendFormRipple;
+            return <ConfirmSignTx device={modal.device} sendForm={sendForm} />;
+        }
 
         case 'ButtonRequest_ProtectCall':
             return <ConfirmAction />;
 
         case 'ButtonRequest_Other':
+        case 'ButtonRequest_ConfirmOutput':
             return <ConfirmAction />;
 
         case RECEIVE.REQUEST_UNVERIFIED:
