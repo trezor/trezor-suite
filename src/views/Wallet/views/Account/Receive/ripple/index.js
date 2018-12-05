@@ -4,7 +4,7 @@ import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
 import media from 'styled-media-query';
 
-import { H2 } from 'components/Heading';
+import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
@@ -113,66 +113,64 @@ const AccountReceive = (props: Props) => {
 
     return (
         <Content>
-            <React.Fragment>
-                <H2>Receive Ripple</H2>
-                <AddressWrapper isShowingQrCode={addressVerified || addressUnverified}>
-                    <Label>Address</Label>
-                    <Row>
-                        <Input
-                            type="text"
-                            readOnly
-                            autoSelect
-                            value={address}
-                            isPartiallyHidden={isAddressHidden}
-                            trezorAction={isAddressVerifying ? (
-                                <React.Fragment>
-                                    <Icon
-                                        icon={ICONS.T1}
-                                        color={colors.WHITE}
+            <Title>Receive Ripple</Title>
+            <AddressWrapper isShowingQrCode={addressVerified || addressUnverified}>
+                <Label>Address</Label>
+                <Row>
+                    <Input
+                        type="text"
+                        readOnly
+                        autoSelect
+                        value={address}
+                        isPartiallyHidden={isAddressHidden}
+                        trezorAction={isAddressVerifying ? (
+                            <React.Fragment>
+                                <Icon
+                                    icon={ICONS.T1}
+                                    color={colors.WHITE}
+                                />
+                                Check address on your Trezor
+                            </React.Fragment>
+                        ) : null}
+                        icon={((addressVerified || addressUnverified) && !isAddressVerifying) && (
+                            <Tooltip
+                                placement="left"
+                                content={(
+                                    <VerifyAddressTooltip
+                                        isConnected={device.connected}
+                                        isAvailable={device.available}
+                                        addressUnverified={addressUnverified}
                                     />
-                                    Check address on your Trezor
-                                </React.Fragment>
-                            ) : null}
-                            icon={((addressVerified || addressUnverified) && !isAddressVerifying) && (
-                                <Tooltip
-                                    placement="left"
-                                    content={(
-                                        <VerifyAddressTooltip
-                                            isConnected={device.connected}
-                                            isAvailable={device.available}
-                                            addressUnverified={addressUnverified}
-                                        />
-                                    )}
-                                >
-                                    <EyeButton onClick={() => props.showAddress(account.addressPath)}>
-                                        <Icon
-                                            icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
-                                            color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
-                                        />
-                                    </EyeButton>
-                                </Tooltip>
-                            )}
-                        />
-                        {!(addressVerified || addressUnverified) && (
-                            <ShowAddressButton onClick={() => props.showAddress(account.addressPath)} isDisabled={device.connected && !discovery.completed}>
-                                <ShowAddressIcon icon={ICONS.EYE} color={colors.WHITE} />Show full address
-                            </ShowAddressButton>
+                                )}
+                            >
+                                <EyeButton onClick={() => props.showAddress(account.addressPath)}>
+                                    <Icon
+                                        icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
+                                        color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
+                                    />
+                                </EyeButton>
+                            </Tooltip>
                         )}
-                    </Row>
-                    {(addressVerified || addressUnverified) && !isAddressVerifying && (
-                        <QrWrapper>
-                            <Label>QR code</Label>
-                            <StyledQRCode
-                                bgColor="#FFFFFF"
-                                fgColor="#000000"
-                                level="Q"
-                                style={{ width: 150 }}
-                                value={account.address}
-                            />
-                        </QrWrapper>
+                    />
+                    {!(addressVerified || addressUnverified) && (
+                        <ShowAddressButton onClick={() => props.showAddress(account.addressPath)} isDisabled={device.connected && !discovery.completed}>
+                            <ShowAddressIcon icon={ICONS.EYE} color={colors.WHITE} />Show full address
+                        </ShowAddressButton>
                     )}
-                </AddressWrapper>
-            </React.Fragment>
+                </Row>
+                {(addressVerified || addressUnverified) && !isAddressVerifying && (
+                    <QrWrapper>
+                        <Label>QR code</Label>
+                        <StyledQRCode
+                            bgColor="#FFFFFF"
+                            fgColor="#000000"
+                            level="Q"
+                            style={{ width: 150 }}
+                            value={account.address}
+                        />
+                    </QrWrapper>
+                )}
+            </AddressWrapper>
         </Content>
     );
 };
