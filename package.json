@@ -1,16 +1,16 @@
 {
-  "name": "blockchain-link",
+  "name": "trezor-blockchain-link",
   "version": "0.0.1",
   "author": "Trezor <info@trezor.io>",
-  "homepage": "https://github.com/trezor/blockchain-link",
+  "homepage": "https://github.com/trezor/trezor-blockchain-link",
   "description": "High-level javascript interface for blockchain communication",
   "license": "SEE LICENSE IN LICENSE.md",
   "repository": {
     "type": "git",
-    "url": "git://github.com/trezor/blockchain-link.git"
+    "url": "git://github.com/trezor/trezor-blockchain-link.git"
   },
   "bugs": {
-    "url": "https://github.com/trezor/blockchain-link/issues"
+    "url": "https://github.com/trezor/trezor-blockchain-link/issues"
   },
   "keywords": [
     "Trezor",
