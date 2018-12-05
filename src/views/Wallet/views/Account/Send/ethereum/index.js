@@ -12,7 +12,6 @@ import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
 import Title from 'views/Wallet/components/Title';
 import P from 'components/Paragraph';
-import { H2 } from 'components/Heading';
 import Content from 'views/Wallet/components/Content';
 import type { Token } from 'flowtype';
 import AdvancedForm from '../components/AdvancedForm';
