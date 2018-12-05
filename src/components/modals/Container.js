@@ -11,7 +11,7 @@ import type { State, Dispatch } from 'flowtype';
 
 import Modal from './index';
 
-type OwnProps = { }
+type OwnProps = {};
 
 type StateProps = {
     modal: $ElementType<State, 'modal'>,
@@ -24,12 +24,12 @@ type StateProps = {
     receive: $ElementType<State, 'receive'>,
     localStorage: $ElementType<State, 'localStorage'>,
     wallet: $ElementType<State, 'wallet'>,
-}
+};
 
 type DispatchProps = {
     modalActions: typeof ModalActions,
     receiveActions: typeof ReceiveActions,
-}
+};
 
 export type Props = StateProps & DispatchProps;
 
