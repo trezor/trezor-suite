@@ -1,6 +1,7 @@
 /* @flow */
 
 import BigNumber from 'bignumber.js';
+import * as SEND from 'actions/constants/send';
 import { findDevice, getPendingAmount } from 'reducers/utils';
 import { toDecimalAmount } from 'utils/formatUtils';
 
@@ -15,6 +16,47 @@ import type { State, FeeLevel } from 'reducers/SendFormRippleReducer';
 const XRP_ADDRESS_RE = new RegExp('^r[1-9A-HJ-NP-Za-km-z]{25,34}$');
 const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
 const XRP_6_RE = new RegExp('^(0|0\\.([0-9]{0,6})?|[1-9][0-9]*\\.?([0-9]{0,6})?|\\.[0-9]{0,6})$');
+
+/*
+* Called from SendFormActions.observe
+* Reaction for BLOCKCHAIN.FEE_UPDATED action
+*/
+export const onFeeUpdated = (network: string, fee: string): PayloadAction<void> => (dispatch: Dispatch, getState: GetState): void => {
+    const state = getState().sendFormRipple;
+    if (network === state.networkSymbol) return;
+
+
+    if (!state.untouched) {
+        // if there is a transaction draft let the user know
+        // and let him update manually
+        dispatch({
+            type: SEND.CHANGE,
+            networkType: 'ripple',
+            state: {
+                ...state,
+                feeNeedsUpdate: true,
+                recommendedFee: fee,
+            },
+        });
+        return;
+    }
+
+    // automatically update feeLevels and gasPrice
+    const feeLevels = dispatch(getFeeLevels(state.networkSymbol));
+    const selectedFeeLevel = getSelectedFeeLevel(feeLevels, state.selectedFeeLevel);
+    dispatch({
+        type: SEND.CHANGE,
+        networkType: 'ripple',
+        state: {
+            ...state,
+            feeNeedsUpdate: false,
+            recommendedFee: fee,
+            gasPrice: selectedFeeLevel.gasPrice,
+            feeLevels,
+            selectedFeeLevel,
+        },
+    });
+};
 
 /*
 * Recalculate amount, total and fees
@@ -170,13 +212,34 @@ const calculateMaxAmount = (balance: BigNumber, fee: string): string => {
     }
 };
 
-export const getFeeLevels = (shortcut: string): Array<FeeLevel> => ([
-    {
+export const getFeeLevels = (symbol: string): PayloadAction<Array<FeeLevel>> => (dispatch: Dispatch, getState: GetState): Array<FeeLevel> => {
+    const blockchain = getState().blockchain.find(b => b.shortcut === symbol.toLowerCase());
+    if (!blockchain) {
+        // return default fee levels (TODO: get them from config)
+        return [{
+            value: 'Normal',
+            gasPrice: '0.000012',
+            label: `0.000012 ${symbol}`,
+        }];
+    }
+
+    const xrpDrops = toDecimalAmount(blockchain.fee, 6);
+
+    // TODO: calc fee levels
+    return [{
         value: 'Normal',
-        gasPrice: '1',
-        label: `1 ${shortcut}`,
-    },
-]);
+        gasPrice: xrpDrops,
+        label: `${xrpDrops} ${symbol}`,
+    }];
+};
+
+// export const getFeeLevels = (shortcut: string): Array<FeeLevel> => ([
+//     {
+//         value: 'Normal',
+//         gasPrice: '1',
+//         label: `1 ${shortcut}`,
+//     },
+// ]);
 
 
 export const getSelectedFeeLevel = (feeLevels: Array<FeeLevel>, selected: FeeLevel): FeeLevel => {

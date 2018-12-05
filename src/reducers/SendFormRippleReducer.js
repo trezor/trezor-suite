@@ -24,6 +24,8 @@ export type State = {
     setMax: boolean;
     feeLevels: Array<FeeLevel>;
     selectedFeeLevel: FeeLevel;
+    recommendedFee: string;
+    feeNeedsUpdate: boolean;
     sequence: string;
     total: string;
 
@@ -51,6 +53,8 @@ export const initialState: State = {
         gasPrice: '0',
         value: 'Normal',
     },
+    recommendedFee: '0',
+    feeNeedsUpdate: false,
     sequence: '0',
     total: '0',
 

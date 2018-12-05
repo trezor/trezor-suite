@@ -45,7 +45,7 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
     // handle gasPrice update from backend
     // recalculate fee levels if needed
     if (action.type === BLOCKCHAIN.UPDATE_FEE) {
-        // dispatch(ValidationActions.onGasPriceUpdated(action.network, action.gasPrice));
+        dispatch(ValidationActions.onFeeUpdated(action.shortcut, action.fee));
         return;
     }
 
@@ -94,7 +94,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         return;
     }
 
-    const feeLevels = ValidationActions.getFeeLevels(network.symbol);
+    const feeLevels = dispatch(ValidationActions.getFeeLevels(network.symbol));
     const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, initialState.selectedFeeLevel);
 
     dispatch({
