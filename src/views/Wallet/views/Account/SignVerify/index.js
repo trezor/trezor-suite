@@ -76,7 +76,7 @@ class SignVerify extends Component <Props> {
         const verifyAddressError = this.getError('verifyAddress');
         return (
             <Content>
-                <Title>Sign & Verify</Title>
+                <Title>Sign &amp; Verify</Title>
                 <Wrapper>
                     <Sign>
                         <Row>
