@@ -8,7 +8,7 @@ import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 import AccountSend from './index';
 
-type OwnProps = { }
+type OwnProps = {}
 
 export type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,

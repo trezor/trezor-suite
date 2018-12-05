@@ -10,6 +10,7 @@ import ICONS from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
 import { H2 } from 'components/Heading';
+import Title from 'views/Wallet/components/Title';
 import Content from 'views/Wallet/components/Content';
 import PendingTransactions from '../components/PendingTransactions';
 
@@ -20,7 +21,7 @@ import type { Props } from './Container';
 const SmallScreenWidth = '850px';
 
 const InputRow = styled.div`
-    margin: 20px 0;
+    padding: 0 0 15px 0;
 `;
 
 const SetMaxAmountButton = styled(Button)`
@@ -166,91 +167,89 @@ const AccountSend = (props: Props) => {
 
     return (
         <Content>
-            <React.Fragment>
-                <H2>Send Ripple</H2>
-                <InputRow>
-                    <Input
-                        state={getAddressInputState(address, errors.address, warnings.address)}
-                        autoComplete="off"
-                        autoCorrect="off"
-                        autoCapitalize="off"
-                        spellCheck="false"
-                        topLabel="Address"
-                        bottomText={errors.address || warnings.address || infos.address}
-                        value={address}
-                        onChange={event => onAddressChange(event.target.value)}
-                    />
-                </InputRow>
+            <Title>Send Ripple</Title>
+            <InputRow>
+                <Input
+                    state={getAddressInputState(address, errors.address, warnings.address)}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    topLabel="Address"
+                    bottomText={errors.address || warnings.address || infos.address}
+                    value={address}
+                    onChange={event => onAddressChange(event.target.value)}
+                />
+            </InputRow>
 
-                <InputRow>
-                    <Input
-                        state={getAmountInputState(errors.amount, warnings.amount)}
-                        autoComplete="off"
-                        autoCorrect="off"
-                        autoCapitalize="off"
-                        spellCheck="false"
-                        value={amount}
-                        onChange={event => onAmountChange(event.target.value)}
-                        bottomText={errors.amount || warnings.amount || infos.amount}
-                        sideAddons={[
-                            (
-                                <SetMaxAmountButton
-                                    key="icon"
-                                    onClick={() => onSetMax()}
-                                    isActive={setMax}
-                                >
-                                    {!setMax && (
-                                        <Icon
-                                            icon={ICONS.TOP}
-                                            size={25}
-                                            color={colors.TEXT_SECONDARY}
-                                        />
-                                    )}
-                                    {setMax && (
-                                        <Icon
-                                            icon={ICONS.CHECKED}
-                                            size={25}
-                                            color={colors.WHITE}
-                                        />
-                                    )}
-                                Set max
-                                </SetMaxAmountButton>
-                            ),
-                            (
-                                <CurrencySelect
-                                    key="currency"
-                                    isSearchable={false}
-                                    isClearable={false}
-                                    value={tokensSelectValue}
-                                    isDisabled
-                                    options={tokensSelectData}
-                                />
-                            ),
-                        ]}
-                    />
-                </InputRow>
+            <InputRow>
+                <Input
+                    state={getAmountInputState(errors.amount, warnings.amount)}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    value={amount}
+                    onChange={event => onAmountChange(event.target.value)}
+                    bottomText={errors.amount || warnings.amount || infos.amount}
+                    sideAddons={[
+                        (
+                            <SetMaxAmountButton
+                                key="icon"
+                                onClick={() => onSetMax()}
+                                isActive={setMax}
+                            >
+                                {!setMax && (
+                                    <Icon
+                                        icon={ICONS.TOP}
+                                        size={25}
+                                        color={colors.TEXT_SECONDARY}
+                                    />
+                                )}
+                                {setMax && (
+                                    <Icon
+                                        icon={ICONS.CHECKED}
+                                        size={25}
+                                        color={colors.WHITE}
+                                    />
+                                )}
+                            Set max
+                            </SetMaxAmountButton>
+                        ),
+                        (
+                            <CurrencySelect
+                                key="currency"
+                                isSearchable={false}
+                                isClearable={false}
+                                value={tokensSelectValue}
+                                isDisabled
+                                options={tokensSelectData}
+                            />
+                        ),
+                    ]}
+                />
+            </InputRow>
 
-                <ToggleAdvancedSettingsWrapper
+            <ToggleAdvancedSettingsWrapper
+                isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+            >
+                <SendButton
+                    isDisabled={isSendButtonDisabled}
                     isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                    onClick={() => onSend()}
                 >
-                    <SendButton
-                        isDisabled={isSendButtonDisabled}
-                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-                        onClick={() => onSend()}
-                    >
-                        {sendButtonText}
-                    </SendButton>
-                </ToggleAdvancedSettingsWrapper>
+                    {sendButtonText}
+                </SendButton>
+            </ToggleAdvancedSettingsWrapper>
 
 
-                {props.selectedAccount.pending.length > 0 && (
-                    <PendingTransactions
-                        pending={props.selectedAccount.pending}
-                        tokens={props.selectedAccount.tokens}
-                        network={network}
-                    />
-                )}
-            </React.Fragment>
+            {props.selectedAccount.pending.length > 0 && (
+                <PendingTransactions
+                    pending={props.selectedAccount.pending}
+                    tokens={props.selectedAccount.tokens}
+                    network={network}
+                />
+            )}
         </Content>
     );
 };
