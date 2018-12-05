@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
 
-import H3 from 'components/Heading';
+import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 
 import type { Props } from '../../Container';

@@ -59,6 +59,7 @@
         "react-router-redux": "next",
         "react-scale-text": "^1.2.2",
         "react-select": "2.0.0",
+        "react-textarea-autosize": "^7.0.4",
         "react-transition-group": "^2.4.0",
         "redbox-react": "^1.6.0",
         "redux": "4.0.0",

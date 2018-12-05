@@ -29,19 +29,19 @@ const InputIconWrapper = styled.div`
 `;
 
 const TopLabel = styled.span`
-    padding-bottom: 10px;
+    padding-bottom: 8px;
     color: ${colors.TEXT_SECONDARY};
 `;
 
 const StyledInput = styled.input`
     width: 100%;
-    height: 40px;
+    height: ${props => (props.height ? `${props.height}px` : '40px')};
     padding: 5px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
 
     line-height: 1.42857143;
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${props => (props.isSmallText ? `${FONT_SIZE.SMALLER}` : `${FONT_SIZE.SMALL}`)};
     font-weight: ${FONT_WEIGHT.BASE};
-    color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
+    color: ${props => (props.color ? props.color : colors.TEXT)};
 
     border-radius: 2px;
     
@@ -55,6 +55,7 @@ const StyledInput = styled.input`
 
     background-color: ${colors.WHITE};
     transition: ${TRANSITION.HOVER};
+
     &:disabled {
         pointer-events: none;
         background: ${colors.GRAY_LIGHT};
@@ -111,7 +112,7 @@ const TrezorAction = styled.div`
     color: ${colors.WHITE};
     border-radius: 5px;
     line-height: 37px;
-    z-index: 10001;
+    z-index: 10002;
     transform: translate(-1px, -1px);
 `;
 
@@ -171,6 +172,8 @@ class Input extends PureComponent {
                         <Overlay isPartiallyHidden={this.props.isPartiallyHidden} />
                         {this.props.icon}
                         <StyledInput
+                            autoComplete="off"
+                            height={this.props.height}
                             trezorAction={this.props.trezorAction}
                             hasIcon={this.getIcon(this.props.state).length > 0}
                             innerRef={this.props.innerRef}
@@ -178,10 +181,10 @@ class Input extends PureComponent {
                             type={this.props.type}
                             color={this.getColor(this.props.state)}
                             placeholder={this.props.placeholder}
-                            autocomplete={this.props.autocomplete}
-                            autocorrect={this.props.autocorrect}
-                            autocapitalize={this.props.autocapitalize}
+                            autoCorrect={this.props.autocorrect}
+                            autoCapitalize={this.props.autocapitalize}
                             spellCheck={this.props.spellCheck}
+                            isSmallText={this.props.isSmallText}
                             value={this.props.value}
                             readOnly={this.props.readOnly}
                             onChange={this.props.onChange}
@@ -214,7 +217,7 @@ Input.propTypes = {
     innerRef: PropTypes.func,
     placeholder: PropTypes.string,
     type: PropTypes.string,
-    autocomplete: PropTypes.string,
+    height: PropTypes.number,
     autocorrect: PropTypes.string,
     autocapitalize: PropTypes.string,
     icon: PropTypes.node,
@@ -230,12 +233,14 @@ Input.propTypes = {
     sideAddons: PropTypes.arrayOf(PropTypes.node),
     isDisabled: PropTypes.bool,
     name: PropTypes.string,
+    isSmallText: PropTypes.bool,
     isPartiallyHidden: PropTypes.bool,
 };
 
 Input.defaultProps = {
     type: 'text',
     autoSelect: false,
+    height: 40,
 };
 
 export default Input;

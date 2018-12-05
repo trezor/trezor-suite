@@ -3,6 +3,7 @@ export default {
     BACKGROUND: '#EBEBEB',
 
     TEXT: '#333333',
+    WALLET_VIEW_TITLE: '#505050',
 
     HEADER: '#1A1A1A',
     BODY: '#E3E3E3',

@@ -31,6 +31,7 @@ const StyledNavLink = styled(NavLink)`
     color: ${colors.TEXT_SECONDARY};
     margin: 0px 4px;
     padding: 20px;
+    white-space: nowrap;
     
     &.active,
     &:hover {
@@ -64,7 +65,7 @@ class TopNavigationAccount extends React.PureComponent<Props> {
                 <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
                 <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
                 <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
-                {/* <StyledNavLink to={`${basePath}/signverify`}>Sign & Verify</StyledNavLink> */}
+                <StyledNavLink to={`${basePath}/signverify`}>Sign &amp; Verify</StyledNavLink>
                 <Indicator pathname={pathname} wrapper={() => this.wrapper} />
             </Wrapper>
         );

@@ -3,37 +3,38 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import SendFormActions from 'actions/SendFormActions';
+import SignVerifyActions from 'actions/SignVerifyActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
-import AccountSend from './index';
+import Component from './index';
 
 type OwnProps = {}
 
+export type Error = {
+    inputName: string,
+    message: ?string,
+};
+
 export type StateProps = {
-    selectedAccount: $ElementType<State, 'selectedAccount'>,
-    sendForm: $ElementType<State, 'sendForm'>,
     wallet: $ElementType<State, 'wallet'>,
-    fiat: $ElementType<State, 'fiat'>,
-    localStorage: $ElementType<State, 'localStorage'>,
+    selectedAccount: $ElementType<State, 'selectedAccount'>,
+    signVerify: $ElementType<State, 'signVerify'>,
 }
 
 export type DispatchProps = {
-    sendFormActions: typeof SendFormActions,
+    signVerifyActions: typeof SignVerifyActions,
 }
 
 export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
-    selectedAccount: state.selectedAccount,
-    sendForm: state.sendForm,
     wallet: state.wallet,
-    fiat: state.fiat,
-    localStorage: state.localStorage,
+    selectedAccount: state.selectedAccount,
+    signVerify: state.signVerify,
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    sendFormActions: bindActionCreators(SendFormActions, dispatch),
+    signVerifyActions: bindActionCreators(SignVerifyActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountSend);
+export default connect(mapStateToProps, mapDispatchToProps)(Component);

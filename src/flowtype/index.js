@@ -25,6 +25,7 @@ import type { ModalAction } from 'actions/ModalActions';
 import type { NotificationAction } from 'actions/NotificationActions';
 import type { PendingTxAction } from 'actions/PendingTxActions';
 import type { ReceiveAction } from 'actions/ReceiveActions';
+import type { SignVerifyAction } from 'actions/SignVerifyActions';
 import type { SendFormAction } from 'actions/SendFormActions';
 import type { SummaryAction } from 'actions/SummaryActions';
 import type { TokenAction } from 'actions/TokenActions';
@@ -135,6 +136,7 @@ export type Action =
     | DiscoveryAction
     | StorageAction
     | LogAction
+    | SignVerifyAction
     | ModalAction
     | NotificationAction
     | PendingTxAction

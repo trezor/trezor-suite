@@ -19,7 +19,7 @@ import WalletContainer from 'views/Wallet';
 import AccountSummary from 'views/Wallet/views/Account/Summary/Container';
 import AccountSend from 'views/Wallet/views/Account/Send/Container';
 import AccountReceive from 'views/Wallet/views/Account/Receive/Container';
-import AccountSignVerify from 'views/Wallet/views/Account/SignVerify';
+import AccountSignVerify from 'views/Wallet/views/Account/SignVerify/Container';
 
 import WalletDashboard from 'views/Wallet/views/Dashboard';
 import WalletDeviceSettings from 'views/Wallet/views/DeviceSettings';
