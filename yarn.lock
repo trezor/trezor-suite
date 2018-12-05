@@ -8504,15 +8504,15 @@ react-select@2.0.0:
     react-input-autosize "^2.2.1"
     react-transition-group "^2.2.1"
 
-<<<<<<< HEAD
-react-textarea-autosize@^7.0.4:
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-7.0.4.tgz#4e4be649b544a88713e7b5043f76950f35d3d503"
-=======
 react-textarea-autosize@^6.1.0:
   version "6.1.0"
   resolved "http://registry.npmjs.org/react-textarea-autosize/-/react-textarea-autosize-6.1.0.tgz#df91387f8a8f22020b77e3833c09829d706a09a5"
->>>>>>> master
+  dependencies:
+    prop-types "^15.6.0"
+
+react-textarea-autosize@^7.0.4:
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-7.0.4.tgz#4e4be649b544a88713e7b5043f76950f35d3d503"
   dependencies:
     prop-types "^15.6.0"
 
