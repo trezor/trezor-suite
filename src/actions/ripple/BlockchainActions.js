@@ -23,16 +23,22 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
 };
 
 
-export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch): Promise<void> => {
+export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const fee = await TrezorConnect.blockchainGetFee({
         coin: network,
     });
     if (!fee.success) return;
 
-    dispatch({
-        type: BLOCKCHAIN.UPDATE_FEE,
-        fee: fee.payload,
-    });
+    const blockchain = getState().blockchain.find(b => b.shortcut === network);
+    if (!blockchain) return;
+
+    if (fee.payload !== blockchain.fee) {
+        dispatch({
+            type: BLOCKCHAIN.UPDATE_FEE,
+            shortcut: network,
+            fee: fee.payload,
+        });
+    }
 };
 
 export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {

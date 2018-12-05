@@ -16,6 +16,7 @@ export type BlockchainAction = {
     type: typeof BLOCKCHAIN.READY,
 } | {
     type: typeof BLOCKCHAIN.UPDATE_FEE,
+    shortcut: string,
     fee: string,
 }
 
