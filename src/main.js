@@ -1,4 +1,5 @@
 import { getSafeBootloaderVersions, getSafeFirmwareVersions } from 'utils/list';
+import versionUtils from 'utils/version';
 
 const getLatestSafeFw = (input) => {
     const {
@@ -12,8 +13,9 @@ const getLatestSafeFw = (input) => {
 
     // select newest firmware by bootloader version
     if (isInBootloader) {
-        const safeBootloadersList = getSafeBootloaderVersions(releasesList, bootloaderVersion);
-        return safeBootloadersList[0];
+        const safeBootloadersList = getSafeBootloaderVersions(releasesList, bootloaderVersion)
+            .filter(item => versionUtils.isNewerOrEqual((item.bootloader_version || [1, 7, 0], bootloaderVersion)));
+        return safeBootloadersList[0] || [];
     }
 
     // select newest firmware by firmware version
