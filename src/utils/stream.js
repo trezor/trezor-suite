@@ -142,7 +142,7 @@ export class Stream<T> {
 
     static fromPromise<T>(
         promise: Promise<Stream<T>>
-    ): Stream<T> {
+    ): Stream<Error | T> {
         return new Stream((update, finish) => {
             let stream_;
             let disposed = false;
@@ -152,9 +152,10 @@ export class Stream<T> {
                     stream.finish.attach(() => finish());
                     stream_ = stream;
                 }
-            }, () => {
+            }, (error) => {
+                update(error);
                 setTimeout(
-                  () => finish(), 1
+                  () => finish(), 10
                 );
             });
             return () => {
@@ -287,6 +288,20 @@ export class Stream<T> {
             return () => {
                 streams.forEach((s) => s.dispose());
             };
+        });
+    }
+
+    static filterError<T>(
+        stream: Stream<Error | T>
+    ): Stream<T> {
+        return new Stream((update, finish) => {
+            stream.values.attach((value) => {
+                if (!(value instanceof Error)) {
+                    update(value);
+                }
+            });
+            stream.finish.attach(finish);
+            return stream.dispose;
         });
     }
 
@@ -478,7 +493,8 @@ export class StreamWithEnding<UpdateT, EndingT> {
 
     static fromPromise<U, E>(p: Promise<StreamWithEnding<U, E>>): StreamWithEnding<U, E> {
         const res: StreamWithEnding<U, E> = new StreamWithEnding();
-        res.stream = Stream.fromPromise(p.then(s => s.stream));
+        // the rejection will come to the ending promise
+        res.stream = Stream.filterError(Stream.fromPromise(p.then(s => s.stream)));
         res.ending = p.then(s => s.ending);
         let resolved = null;
         p.then(s => {

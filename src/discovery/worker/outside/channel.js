@@ -83,7 +83,7 @@ export class WorkerChannel {
                     });
                 }
                 if (message.type === 'error') {
-                    reject(message.error);
+                    reject(new Error(message.error));
                     detach();
                     onFinish();
                     this.w.then(w => {

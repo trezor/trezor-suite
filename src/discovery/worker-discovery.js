@@ -137,7 +137,7 @@ export class WorkerDiscovery {
     }
 
     monitorAccountActivity(
-        initial: AccountInfo,
+        initial: ?AccountInfo,
         xpub: string,
         network: BitcoinJsNetwork,
         segwit: 'off' | 'p2sh',
@@ -164,7 +164,10 @@ export class WorkerDiscovery {
                     this.createWorkerAddressSource(internal, network, segwit),
                 ];
 
-                function allAddresses(info: AccountInfo): Set<string> {
+                function allAddresses(info: ?AccountInfo): Set<string> {
+                    if (info == null) {
+                        return new Set([]);
+                    }
                     return new Set(
                         info.usedAddresses.map(a => a.address)
                         .concat(info.unusedAddresses)
@@ -193,9 +196,10 @@ export class WorkerDiscovery {
 
                 // we need to do updates on blocks, if there are unconfs
                 const blockStream: Stream<'block' | TransactionWithHeight> = this.chain.blocks.map(() => 'block');
+                const reloads: Stream<'block' | TransactionWithHeight> = blockStream.concat(txNotifs).concat(this.forceAddedTransactionsStream);
 
-                const resNull: Stream<?(AccountInfo | Error)> = blockStream.concat(txNotifs).concat(this.forceAddedTransactionsStream).mapPromiseError(() => {
-                    const out = new WorkerDiscoveryHandler(
+                const res: Stream<(AccountInfo | Error)> = reloads.mapPromiseError((): Promise<AccountInfo> => {
+                    const out: WorkerDiscoveryHandler = new WorkerDiscoveryHandler(
                         this.discoveryWorkerFactory,
                         this.chain,
                         sources,
@@ -203,13 +207,16 @@ export class WorkerDiscovery {
                         cashAddress || false,
                         this.forceAddedTransactions
                     );
-                    return out.discovery(currentState, xpub, segwit === 'p2sh', gap, timeOffset).ending.then(res => {
+                    const discovery: StreamWithEnding<AccountLoadStatus, AccountInfo> = out.discovery(currentState, xpub, segwit === 'p2sh', gap, timeOffset);
+
+                    const ending: Promise<AccountInfo> = discovery.ending;
+                    const res: Promise<AccountInfo> = ending.then(res => {
                         currentState = res;
                         return res;
                     });
+                    return res;
                 });
 
-                const res: Stream<AccountInfo | Error> = Stream.filterNull(resNull);
                 return res;
             })
         );
