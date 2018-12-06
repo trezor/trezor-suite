@@ -47,8 +47,17 @@ export const response = (data: Response): void => {
     postMessage(data);
 };
 
+const getUniqueInput = (addresses: Array<string>): Array<string> => {
+    if (!Array.isArray(addresses)) return [];
+    const seen = {};
+    return addresses.filter(a => {
+        if (typeof a !== 'string') return false;
+        return (seen.hasOwnProperty(a) ? false : (seen[a] = true));
+    });
+}
+
 export const addAddresses = (addresses: Array<string>): Array<string> => {
-    const unique = addresses.filter(a => _addresses.indexOf(a) < 0);
+    const unique = getUniqueInput(addresses).filter(a => _addresses.indexOf(a) < 0);
     _addresses = _addresses.concat(unique);
     return unique;
 }
@@ -58,6 +67,7 @@ export const getAddresses = (): Array<string> => {
 }
 
 export const removeAddresses = (addresses: Array<string>): Array<string> => {
-    _addresses = _addresses.filter(a => addresses.indexOf(a) < 0);
+    const unique = getUniqueInput(addresses);
+    _addresses = _addresses.filter(a => unique.indexOf(a) < 0);
     return _addresses;
 }
