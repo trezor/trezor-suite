@@ -54,7 +54,7 @@ describe('Get latest safe firmware', () => {
     });
 
 
-    // bootloader
+    // bootloader mode
 
     // it('bump firmware version from 1.3.6 to 1.4.0', () => {
     //     const TEST_MOCK = T1MOCK;
@@ -70,7 +70,7 @@ describe('Get latest safe firmware', () => {
     // });
 
 
-    // // NOT bootloader
+    // // NOT bootloader mode
 
     // it('bump firmware version from 1.6.3 to 1.7.1', () => {
     //     const TEST_MOCK = T1MOCK;

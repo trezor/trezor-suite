@@ -93,7 +93,7 @@ describe('Version Utils', () => {
 
         it('it shouldnt parse', () => {
             try {
-                versionUtils.parse([1, 0]);
+                versionUtils.parse([1]);
             } catch (e) {
                 expect(e.message).toBe('Wrong version string');
             }
