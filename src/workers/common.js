@@ -43,6 +43,10 @@ export const errorHandler = ({ id, error }: { id: number, error: Error}): void =
     });
 }
 
+export const response = (data: Response): void => {
+    postMessage(data);
+};
+
 export const addAddresses = (addresses: Array<string>): Array<string> => {
     const unique = addresses.filter(a => _addresses.indexOf(a) < 0);
     _addresses = _addresses.concat(unique);
