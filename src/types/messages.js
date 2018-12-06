@@ -18,17 +18,6 @@ export type GetAccountInfo = {
     },
 };
 
-// GetAccountInfo custom payload
-export type BlockbookAccountInfo = {
-    network: 'blockbook',
-    xpub: string,
-}
-
-export type RippleAccountInfo = {
-    network: 'ripple',
-    address: string,
-}
-
 export type GetTransactions = {
     +type: typeof MESSAGES.GET_ACCOUNT_INFO,
     +payload: {
@@ -42,7 +31,6 @@ export type GetTransactions = {
 
 export type GetFee = {
     +type: typeof MESSAGES.GET_FEE,
-    +payload: any,
 };
 
 export type Subscribe = {

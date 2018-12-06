@@ -62,10 +62,16 @@ export type PushTransaction = {
     +payload: any;
 }
 
+type WithoutPayload = {
+    id: number,
+    +type: typeof HANDSHAKE | typeof RESPONSES.CONNECTED,
+    +payload?: any, // just for flow
+}
+
 // extended
 export type Response = 
-    { id: number, +type: typeof HANDSHAKE, +payload?: any } |
-    { id: number, +type: typeof RESPONSES.CONNECTED } |
+    WithoutPayload |
+    { id: number, +type: typeof RESPONSES.DISCONNECTED, +payload: boolean } |
     { id: number } & Error |
     { id: number } & GetInfo |
     { id: number } & GetAccountInfo |
