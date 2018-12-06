@@ -87,7 +87,7 @@ class SignVerify extends Component <Props> {
                                 type="text"
                                 isSmallText
                                 autoSelect
-                                isDisabled
+                                readOnly
                             />
                         </Row>
                         <Row>
@@ -110,7 +110,7 @@ class SignVerify extends Component <Props> {
                                 autoSelect
                                 maxRows={4}
                                 maxLength="255"
-                                isDisabled
+                                readOnly
                             />
                         </Row>
                         <RowButtons>
