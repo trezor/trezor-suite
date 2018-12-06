@@ -120,6 +120,7 @@ const AccountReceive = (props: Props) => {
                     <Row>
                         <Input
                             type="text"
+                            isReceiveAddress
                             readOnly
                             autoSelect
                             value={address}
