@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Common: add unique address 1`] = `Array []`;
+
+exports[`Common: add unique address 2`] = `Array []`;
+
+exports[`Common: add unique address 3`] = `Array []`;
+
+exports[`Common: add unique address 4`] = `
+Array [
+  "A",
+]
+`;
+
+exports[`Common: add unique address 5`] = `
+Array [
+  "B",
+]
+`;
+
+exports[`Common: add unique address 6`] = `
+Array [
+  "C",
+  "D",
+]
+`;
+
+exports[`Common: remove address from the list 1`] = `
+Array [
+  "A",
+  "B",
+  "C",
+  "D",
+]
+`;
+
+exports[`Common: remove address from the list 2`] = `
+Array [
+  "B",
+  "C",
+  "D",
+]
+`;
+
+exports[`Common: remove address from the list 3`] = `
+Array [
+  "C",
+  "D",
+]
+`;
+
+exports[`Common: remove address from the list 4`] = `Array []`;
