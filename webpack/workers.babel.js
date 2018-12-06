@@ -1,11 +1,10 @@
 import {
     SRC,
     BUILD,
-    LIB_NAME,
 } from './constants';
 
-import webpack from 'webpack';
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+// import webpack from 'webpack';
+// import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 
 module.exports = {
     mode: 'production',
