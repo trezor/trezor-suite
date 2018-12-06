@@ -1,27 +1,9 @@
 [include]
 
 [ignore]
-.*/node_modules/fbjs/.*
-.*/node_modules/rc-util/.*
-.*/node_modules/react-redux/.*
-.*/node_modules/redux/.*
-.*/node_modules/react-router/.*
-.*/node_modules/react-router-redux/.*
-.*/node_modules/oboe/test/.*
 .*/_old/.*
-.*/public/solidity/.*
-.*/build/.*
 
 [libs]
-./src/flowtype/npm/redux_v3.x.x.js
-./src/flowtype/npm/react-redux_v5.x.x.js
-./src/flowtype/npm/react-router_v4.x.x.js
-./src/flowtype/npm/react-router-dom_v4.x.x.js
-./src/flowtype/npm/react-router-redux.js
-./src/flowtype/npm/bignumber.js
-./src/flowtype/npm/ethereum-types.js
-./src/flowtype/npm/web3.js
-./src/flowtype/css.js
 
 [options]
 esproposal.class_static_fields=enable
@@ -29,20 +11,4 @@ esproposal.class_instance_fields=enable
 esproposal.export_star_as=enable
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
 esproposal.decorators=ignore
-module.name_mapper='.*\(.less\)' -> 'CSSModule'
-module.name_mapper='^\(~/\)' -> '<PROJECT_ROOT>/src/'
-module.name_mapper='^universal' -> '<PROJECT_ROOT>/src/'
-module.name_mapper='^flowtype' -> '<PROJECT_ROOT>/src/flowtype'
-module.name_mapper='^components' -> '<PROJECT_ROOT>/src/components'
-module.name_mapper='^config' -> '<PROJECT_ROOT>/src/config'
-module.name_mapper='^constants' -> '<PROJECT_ROOT>/src/constants'
-module.name_mapper='^utils' -> '<PROJECT_ROOT>/src/utils'
-module.name_mapper='^reducers' -> '<PROJECT_ROOT>/src/reducers'
-module.name_mapper='^actions' -> '<PROJECT_ROOT>/src/actions'
-module.name_mapper='^views' -> '<PROJECT_ROOT>/src/views'
-module.name_mapper='^data' -> '<PROJECT_ROOT>/src/data'
-module.name_mapper='^services' -> '<PROJECT_ROOT>/src/services'
-module.name_mapper='^support' -> '<PROJECT_ROOT>/src/support'
-module.name_mapper='^public' -> '<PROJECT_ROOT>/public'
-module.name_mapper='^images' -> '<PROJECT_ROOT>/src/images'
 module.system=haste
