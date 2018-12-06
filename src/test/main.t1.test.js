@@ -1,4 +1,3 @@
-
 import { getLatestSafeFw } from 'main';
 
 import T1MOCK from 'test/mocks/T1.json';
