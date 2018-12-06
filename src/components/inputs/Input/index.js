@@ -62,6 +62,13 @@ const StyledInput = styled.input`
         color: ${colors.TEXT_SECONDARY};
     }
 
+    &:read-only  {
+        ${props => !props.isReceiveAddress && css`
+            background: ${colors.GRAY_LIGHT};
+            color: ${colors.TEXT_SECONDARY};
+        `}
+    }
+
     ${props => props.trezorAction && css`
         z-index: 10001;
         position: relative; /* bigger than modal container */
@@ -184,6 +191,7 @@ class Input extends PureComponent {
                             autoCorrect={this.props.autocorrect}
                             autoCapitalize={this.props.autocapitalize}
                             spellCheck={this.props.spellCheck}
+                            isReceiveAddress={this.props.isReceiveAddress}
                             isSmallText={this.props.isSmallText}
                             value={this.props.value}
                             readOnly={this.props.readOnly}
@@ -235,12 +243,14 @@ Input.propTypes = {
     name: PropTypes.string,
     isSmallText: PropTypes.bool,
     isPartiallyHidden: PropTypes.bool,
+    isReceiveAddress: PropTypes.bool,
 };
 
 Input.defaultProps = {
     type: 'text',
     autoSelect: false,
     height: 40,
+    isReceiveAddress: false,
 };
 
 export default Input;
