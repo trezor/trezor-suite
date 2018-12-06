@@ -22,87 +22,129 @@
         h2 {
             padding: 10px;
         }
-        div {
+        div.row {
             padding: 10px;
         }
         label {
             display: block;
+            text-transform: uppercase;
+            font-size: 14px;
         }
         button {
             padding: 5px 10px;
         }
-        input {
+        input, textarea {
             width: 300px;
             padding: 5px 10px;
         }
-
-        .response-container {
-            width: 100%;
-            display: flex;
-            background: grey;
+        textarea {
+            display: block;
+            height: 200px;
         }
 
-        pre#response, pre#notification {
-            width: 50%;
-            flex: 1;
-            padding: 5px;
+        #get-account-info-advanced {
+            padding-top: 4px;
+            display: none;
         }
+
+        .response {
+            display: block;
+            position: relative;
+        }
+
+        .response .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .response .close::after {
+            /* content: '🗑'; */
+            content: '×';
+        }
+        
+
+        .response pre {
+            font-size: 12px;
+            margin: 4px 0px;
+            padding: 4px;
+            border: 1px solid green;
+            min-height: 24px;
+        }
+        .response pre.error {
+            border: 1px solid red;
+        }
+
+        #clear {
+            position: fixed;
+            cursor: pointer;
+            padding: 4px;
+            border-left: 1px solid black;
+            border-bottom: 1px solid black;
+            border-bottom-left-radius: 4px;
+            width: 28px;
+            height: 28px;
+            right: 0;
+            top: 0;
+            z-index: 1;
+            background: #fff;
+        }
+        
     </style>
 </head>
 <body>
-    <h2>BlockchainLink test page</h2>
-    <div>
+    <h2>Trezor BlockchainLink test page</h2>
+
+    <div class="row" id="notification-status"></div>
+
+    <div class="row">
         <label>Network</label>
         <select id="network-type"></select>
-    </div>
-
-    <div>
         <button id="disconnect">Disconnect</button>
     </div>
     
-    <div>
+    <div class="row">
         <button id="get-info">Get network info</button>
     </div>
-    <div>
-        <label>Address / xpub</label>
-        <!-- <input id="get-account-info-addressTREZOR" type="text" value="rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H" /> -->
-        <input id="get-account-info-address" type="text" value="rJb5KsHsDHF1YS5B5DU6QCkH5NsPaKQTcy" />
+    <div class="row">
+        <label>Address</label>
+        <input id="get-account-info-address" type="text" />
+        <select id="get-account-info-mode">
+            <option value="none">Basic</option>
+            <option value="block">Advanced</option>
+        </select>
         <button id="get-account-info">Get account info</button>
+        <div id="get-account-info-advanced">
+            <textarea id="get-account-info-account"></textarea>
+        </div>
     </div>
-    <div>
-        <label>Account info</label>
-        <textarea>
-            {
-                start: '660371D3A9B15E9781EED508090962890B99C67277E9F9024E899430D47D3FFD',
-                limit: 10
-            }
-        </textarea>
-        <button id="get-transactions">Get transactions</button>
-    </div>
-    <div>
+    <div class="row">
         <label>Serialized transaction</label>
-        <input id="push-transaction-tx" type="text" value="304402202f0046af4147a8646a1c06ef63789698756cffb5e2e380cd2740688b71bd15a302201797d6b55175b6b326257737f331f701f1c9d8271fcc990644ef12d1bf3bdf80" />
+        <input id="push-transaction-tx" type="text" />
         <button id="push-transaction">Push transaction</button>
     </div>
-    <div>
-        <label>Addresses</label>
-        <input id="subscribe-addresses" type="text" value="rBdHGo5fksQotC4x5t7BtaR8vMW5EDqk6S,rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H,rBKz5MC2iXdoS3XgnNSYmF69K1Yo4NS3Ws" />
+    <div class="row" id="notification-address">
+        <label>Subscribe Addresses</label>
+        <input id="subscribe-addresses" type="text" />
         <button id="subscribe-address">Subscribe</button>
         <button id="unsubscribe-address">Unsubscribe</button>
     </div>
-    <div>
+    <div class="row" id="notification-block">
         <label>Blocks</label>
         <button id="subscribe-block">Subscribe</button>
         <button id="unsubscribe-block">Unsubscribe</button>
     </div>
-    <div>
-        <span>Response</span>
-        <button id="clear-response">Clear response</button>
-        <button id="clear-notification">Clear notifications</button>
-    </div>
-    <div style="display: flex">
-        <pre id="response"></pre>
-        <pre id="notification"></pre>
+    <div id="clear">
+        <svg width="100%" height="100%" viewBox="0 0 774.266 774.266" style="enable-background:new 0 0 774.266 774.266;" xml:space="preserve">
+           <g>
+               <path d="M640.35,91.169H536.971V23.991C536.971,10.469,526.064,0,512.543,0c-1.312,0-2.187,0.438-2.614,0.875 C509.491,0.438,508.616,0,508.179,0H265.212h-1.74h-1.75c-13.521,0-23.99,10.469-23.99,23.991v67.179H133.916 c-29.667,0-52.783,23.116-52.783,52.783v38.387v47.981h45.803v491.6c0,29.668,22.679,52.346,52.346,52.346h415.703 c29.667,0,52.782-22.678,52.782-52.346v-491.6h45.366v-47.981v-38.387C693.133,114.286,670.008,91.169,640.35,91.169z M285.713,47.981h202.84v43.188h-202.84V47.981z M599.349,721.922c0,3.061-1.312,4.363-4.364,4.363H179.282 c-3.052,0-4.364-1.303-4.364-4.363V230.32h424.431V721.922z M644.715,182.339H129.551v-38.387c0-3.053,1.312-4.802,4.364-4.802 H640.35c3.053,0,4.365,1.749,4.365,4.802V182.339z"/>
+               <rect x="475.031" y="286.593" width="48.418" height="396.942"/>
+               <rect x="363.361" y="286.593" width="48.418" height="396.942"/>
+               <rect x="251.69" y="286.593" width="48.418" height="396.942"/>
+           </g>
+        </svg>
     </div>
 </body>
 </html>
