@@ -5,11 +5,9 @@ import BigNumber from 'bignumber.js';
 import { MESSAGES, RESPONSES } from '../../constants';
 import * as common from '../common';
 
-import type { FormattedGetAccountInfoResponse } from 'ripple-lib';
-import type { Message, Response } from '../../types';
+import type { Message } from '../../types';
 import * as MessageTypes from '../../types/messages';
 
-declare function postMessage(data: Response): void;
 declare function onmessage(event: { data: Message }): void;
 
 // WebWorker message handling
@@ -43,6 +41,9 @@ onmessage = (event) => {
         case MESSAGES.UNSUBSCRIBE:
             unsubscribe(data);
             break;
+        case MESSAGES.DISCONNECT:
+            disconnect(data);
+            break;
         default:
             common.errorHandler({
                 id: data.id,
@@ -52,14 +53,26 @@ onmessage = (event) => {
     }
 };
 
-let api: RippleAPI;
+let _api: ?RippleAPI;
+let _pingTimeout: TimeoutID;
 let _minLedgerVersion: number = 0;
 let _endpoints: Array<string> = [];
 
+const timeoutHandler = async () => {
+    if (_api && _api.isConnected) {
+        try {
+            await _api.getServerInfo();
+            _pingTimeout = setTimeout(timeoutHandler, 5000);
+        } catch (error) {
+            common.debug(`Error in timeout ping request: ${error}`)
+        }
+    }
+}
+
 const connect = async (): Promise<RippleAPI> => {
-    if (api) {
+    if (_api) {
         // socket is already connected
-        if (api.isConnected) return api;
+        if (_api.isConnected) return _api;
     }
 
     // validate endpoints
@@ -72,18 +85,18 @@ const connect = async (): Promise<RippleAPI> => {
     }
 
     common.debug('Connecting to', _endpoints[0]);
-    api = new RippleAPI({
-        server: _endpoints[0]
-        //server: "wss://s1.ripple.com"
+    _api = new RippleAPI({
+        server: _endpoints[0],
+        // server: "wss://s1.ripple.com"
         // server: "wss://s-east.ripple.com"
         // server: "wss://s-west.ripple.com"
     });
    
     try {
-        await api.connect();
+        await _api.connect();
     } catch (error) {
         common.debug('Websocket connection failed');
-        api = undefined;
+        _api = undefined;
         // connection error. remove endpoint
         _endpoints.splice(0, 1);
         // and try another one or throw error
@@ -93,31 +106,54 @@ const connect = async (): Promise<RippleAPI> => {
         return await connect();
     }
 
-    postMessage({
+    // disable reconnecting
+    // workaround: RippleApi which doesn't have possibility to disable reconnection
+    // override private method and return never ending promise
+    _api.connection._retryConnect = () => {
+        return new Promise(() => {});
+    };
+
+    _api.on('ledger', () => {
+        clearTimeout(_pingTimeout);
+        _pingTimeout = setTimeout(timeoutHandler, 5000);
+    });
+
+    _api.on('disconnected', () => {
+        clearTimeout(_pingTimeout);
+        cleanup();
+        common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
+    });
+
+    // mocking
+    // setTimeout(() => {
+    //     console.warn("KOLLIN!")
+    //     api.connection._ws._ws.close()
+    // }, 6000);
+
+    common.response({
         id: -1,
         type: RESPONSES.CONNECTED,
     });
 
-    const info = await api.getServerInfo();
+    const info = await _api.getServerInfo();
     _minLedgerVersion = parseInt(info.completeLedgers.split('-')[0]);
 
-    // api.on('disconnected', () => {
-    //     console.warn("DISCONNECTED evt");
-    // });
-    // api.on('error', () => {
-    //     console.warn("ERROR evt");
-    // });
-    // api.on('ledger', (ev) => {
-    //     console.warn("LEDGER evt", ev);
-    // });
-    return api;
+    return _api;
+}
+
+const cleanup = () => {
+    if (_api) {
+        _api.removeAllListeners();
+        _api = undefined;
+    }
+    common.removeAddresses(common.getAddresses());
 }
 
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
     try {
-        await connect();
+        const api = await connect();
         const info = await api.getServerInfo();
-        postMessage({
+        common.response({
             id: data.id,
             type: RESPONSES.GET_INFO,
             payload: info
@@ -127,7 +163,8 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     }
 }
 
-const getRawAccountInfo = async (account: string): Promise<FormattedGetAccountInfoResponse> => {
+const getRawAccountInfo = async (account: string): Promise<{ xrpBalance: string, sequence: number }> => {
+    const api = await connect();
     const info = await api.request('account_info', {
         account,
         ledger_index: 'current',
@@ -151,7 +188,7 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
     };
 
     try {
-        await connect();
+        const api = await connect();
         const info = await api.getAccountInfo(payload.descriptor);
         account.balance = api.xrpToDrops(info.xrpBalance);
         account.availableBalance = account.balance;
@@ -160,7 +197,7 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
         if (error.message === 'actNotFound') {
-            postMessage({
+            common.response({
                 id: data.id,
                 type: RESPONSES.GET_ACCOUNT_INFO,
                 payload: account,
@@ -182,7 +219,7 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
     }
 
     if (!payload.history) {
-        postMessage({
+        common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: account,
@@ -192,6 +229,7 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
     try {
         // https://github.com/ripple/ripple-lib/issues/879#issuecomment-377576063
         // 42856666
+        const api = await connect();
         const transactions = await api.getTransactions(payload.descriptor, {
             minLedgerVersion: _minLedgerVersion,
             // start: '660371D3A9B15E9781EED508090962890B99C67277E9F9024E899430D47D3FFD',
@@ -211,7 +249,7 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
         // const xrpDrops = new BigNumber(info.xrpBalance).multipliedBy('1000000').toString();
         //console.warn("ACCount drops", xrpDrops)
 
-        postMessage({
+        common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: {
@@ -221,7 +259,6 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
             }
         });
     } catch (error) {
-        console.log("HANDLE ERROR", error, typeof error)
         common.errorHandler({ id: data.id, error });
     }
 }
@@ -229,14 +266,14 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
 const getTransactions = async (data: { id: number } & MessageTypes.GetTransactions): Promise<void> => {
     const { payload } = data;
     try {
-        await connect();
+        const api = await connect();
         const transactions = await api.getTransactions(payload.descriptor, {
             minLedgerVersion: _minLedgerVersion,
             start: 0,
             limit: 10,
             // maxLedgerVersion: 14143636,
         });
-        postMessage({
+        common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: transactions
@@ -248,12 +285,12 @@ const getTransactions = async (data: { id: number } & MessageTypes.GetTransactio
 
 const getFee = async (data: { id: number } & MessageTypes.GetFee): Promise<void> => {
     try {
-        await connect();
+        const api = await connect();
         const fee = await api.getFee();
         // const converted = new BigNumber(fee).multipliedBy('1000000');
         const drops = api.xrpToDrops(fee);
         // convert value to satoshi: * 1000000
-        postMessage({
+        common.response({
             id: data.id,
             type: RESPONSES.GET_FEE,
             payload: drops,
@@ -265,12 +302,12 @@ const getFee = async (data: { id: number } & MessageTypes.GetFee): Promise<void>
 
 const pushTransaction = async (data: { id: number } & MessageTypes.PushTransaction): Promise<void> => {
     try {
-        await connect();
+        const api = await connect();
         // tx_blob hex must be in upper case
         const info = await api.submit(data.payload.toUpperCase());
 
         if (info.resultCode === 'tesSUCCESS') {
-            postMessage({
+            common.response({
                 id: data.id,
                 type: RESPONSES.PUSH_TRANSACTION,
                 payload: info.resultMessage,
@@ -287,7 +324,7 @@ const pushTransaction = async (data: { id: number } & MessageTypes.PushTransacti
 }
 
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
-    await connect();
+    const api = await connect();
     const { payload } = data;
 
     if (payload.type === 'notification') {
@@ -298,7 +335,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
         }
     }
 
-    postMessage({
+    common.response({
         id: data.id,
         type: RESPONSES.SUBSCRIBE,
         payload: true,
@@ -306,7 +343,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
 }
 
 const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
-    await connect();
+    const api = await connect();
     const { payload } = data;
 
     if (payload.type === 'address') {
@@ -317,7 +354,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
         }
     }
 
-    postMessage({
+    common.response({
         id: data.id,
         type: RESPONSES.SUBSCRIBE,
         payload: true,
@@ -327,6 +364,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
 
 const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = true) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
+    const api = await connect();
     if (api.connection.listenerCount('transaction') < 1) {
         api.connection.on('transaction', onTransaction);
         // api.connection.on('ledgerClosed', onLedgerClosed);
@@ -352,6 +390,7 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
         accounts: addresses,
         accounts_proposed: addresses,
     };
+    const api = await connect();
     await api.request('unsubscribe', request);
 
     if (subscribed.length < 1) {
@@ -362,8 +401,21 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
     }
 }
 
+const disconnect = async (data: { id: number }) => {
+    if (!_api) {
+        common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
+        return;
+    }
+    try {
+        await _api.disconnect();
+        common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+}
+
 const onNewBlock = (event: any) => {
-    postMessage({
+    common.response({
         id: -1,
         type: RESPONSES.NOTIFICATION,
         payload: {
@@ -377,7 +429,6 @@ const onNewBlock = (event: any) => {
 }
 
 const onTransaction = (event: any) => {
-    
     if (event.type === 'transaction') {
         const subscribed = common.getAddresses();
         const sender = subscribed.indexOf(event.transaction.Account);
@@ -390,7 +441,7 @@ const onTransaction = (event: any) => {
         const total = new BigNumber(amount).plus(fee).toString();
 
         if (sender >= 0) {
-            postMessage({
+            common.response({
                 id: -1,
                 type: RESPONSES.NOTIFICATION,
                 payload: {
@@ -410,7 +461,7 @@ const onTransaction = (event: any) => {
         }
 
         if (receiver >= 0) {
-            postMessage({
+            common.response({
                 id: -1,
                 type: RESPONSES.NOTIFICATION,
                 payload: {
@@ -430,17 +481,6 @@ const onTransaction = (event: any) => {
         }
     }
 }
-
-// const onLedgerClosed = (event: any) => {
-//     postMessage({
-//         id: -1,
-//         type: RESPONSES.NOTIFICATION,
-//         payload: {
-//             type: 'address',
-//             data: event
-//         }
-//     });
-// }
 
 // postMessage(1/x); // Intentional error.
 common.handshake();
