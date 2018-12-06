@@ -4,7 +4,7 @@
   "author": "TREZOR <info@trezor.io>",
   "license": "SEE LICENSE IN LICENSE.md",
   "description": "",
-  "main": "lib/trezor-update.js",
+  "main": "lib/trezor-rollup.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",

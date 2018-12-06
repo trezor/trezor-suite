@@ -1,4 +1,4 @@
-import { getSafeBlVersions, getSafeFwVersions, getLastOrEmpty } from 'utils/list';
+import { getSafeBlVersions, getSafeFwVersions } from 'utils/list';
 
 const getLatestSafeFw = (input) => {
     const {
@@ -12,16 +12,20 @@ const getLatestSafeFw = (input) => {
 
     // select newest firmware by bootloader version
     if (isInBootloader) {
-        const safeBlVersionsList = getSafeBlVersions(releasesList, bootloaderVersion);
-        const result = getLastOrEmpty(safeBlVersionsList);
-        return result;
+        const filteredList = getSafeBlVersions(releasesList, bootloaderVersion);
+        if (filteredList.length > 0) {
+            return filteredList[filteredList.length - 1];
+        }
+        return filteredList;
     }
 
     // select newest firmware by firmware version
     if (!isInBootloader) {
-        const safeFwVersionsList = getSafeFwVersions(releasesList, firmwareVersion);
-        const result = getLastOrEmpty(safeFwVersionsList);
-        return result;
+        const filteredList = getSafeFwVersions(releasesList, firmwareVersion);
+        if (filteredList.length > 0) {
+            return filteredList[filteredList.length - 1];
+        }
+        return filteredList;
     }
 
     return [];

@@ -5,7 +5,7 @@ import cleanup from 'rollup-plugin-cleanup';
 export default {
     input: 'src/main.js',
     output: {
-        file: 'lib/trezor-update.js',
+        file: 'lib/trezor-rollup.js',
         format: 'cjs',
     },
     plugins: [
