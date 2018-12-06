@@ -1,26 +1,37 @@
 /* @flow */
+import EventEmitter from 'events';
 import socketIO from 'socket.io-client';
 import Promise from 'es6-promise';
 
 import type { Socket } from 'socket.io-client';
 
-class Connection {
+class Connection extends EventEmitter {
     _url: string;
     _socket: Socket;
 
     constructor(url: string) {
+        super();
         this._url = url
     }
 
     connect() {
         return new Promise((resolve, reject) => {
-            this._socket = socketIO(this._url, {
+            const socket = socketIO(this._url, {
                 transports: ['websocket'],
                 reconnection: false,
             });
 
-            this._socket.on('connect', resolve);
-            this._socket.on('connect_error', reject);
+            socket.on('connect', () => {
+                socket.removeAllListeners('connect_error');
+                socket.removeAllListeners('connect_timeout');
+                socket.on('disconnect', () => {
+                    this.emit('disconnected');
+                })
+                resolve();
+            });
+            socket.on('connect_timeout', reject);
+            socket.on('connect_error', reject);
+            this._socket = socket;
         });
     }
 
@@ -33,7 +44,38 @@ class Connection {
             this._socket.send({
                 method: 'getInfo',
                 params: []
-            }, resolve);
+            }, response => {
+                resolve({
+                    block: response.result.blocks,
+                    network: response.result.network,
+                    networkName: response.result.coin_name,
+                });
+            });
+        });
+    }
+
+    getAccountInfo(descriptor: string) {
+        return new Promise((resolve) => {
+            this._socket.send({
+                method: 'getAccountInfo',
+                params: {
+                    descriptor,
+                    details: 'txs', // 'basic', // 'balance', 'txs'
+                    page: 0,
+                    pageSize: 40,
+                },
+            }, response => {
+                console.log("ACC", response)
+                const nonce = parseInt(response.nonce, 10);
+                resolve({
+                    balance: response.balanceSat,
+                    // availableBalance: response.unconfirmedBalanceSat,
+                    availableBalance: response.balanceSat,
+                    fresh: !(response.txApperances > 0),
+                    sequence: isNaN(nonce) ? 0 : nonce,
+                    erc20tokens: response.erc20tokens,
+                });
+            });
         });
     }
 
@@ -50,6 +92,10 @@ class Connection {
         return new Promise((resolve) => {
             this._socket.on('bitcoind/hashblock', (result) => {
                 console.warn("BLOCK!", result)
+                this.emit('block', {
+                    block: 0,
+                    hash: result,
+                })
             });
             this._socket.emit('subscribe', 'bitcoind/hashblock', resolve);
         });
@@ -60,6 +106,13 @@ class Connection {
         //         params: [2, false]
         //     }, resolve);
         // });
+    }
+
+    disconnect() {
+        return new Promise(() => {
+            this._socket.disconnect();
+            // this._socket.emit('subscribe', 'bitcoind/hashblock', resolve);
+        });
     }
 
 }

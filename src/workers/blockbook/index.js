@@ -21,9 +21,9 @@ onmessage = (event) => {
         case MESSAGES.GET_INFO:
             getInfo(data);
             break;
-        // case MESSAGES.GET_ACCOUNT_INFO:
-        //     getAccountInfo(data);
-        //     break;
+        case MESSAGES.GET_ACCOUNT_INFO:
+            getAccountInfo(data);
+            break;
         // case MESSAGES.PUSH_TRANSACTION:
         //     pushTransaction(data);
         //     break;
@@ -33,6 +33,9 @@ onmessage = (event) => {
         // case MESSAGES.UNSUBSCRIBE:
         //     unsubscribe(data);
         //     break;
+        case MESSAGES.DISCONNECT:
+            disconnect(data);
+            break;
         default:
             common.errorHandler({
                 id: data.id,
@@ -42,12 +45,12 @@ onmessage = (event) => {
     }
 };
 
-let connection: ?Connection;
+let _connection: ?Connection;
 let _endpoints: Array<string> = [];
 
 const connect = async (): Promise<Connection> => {
-    if (connection) {
-        if (connection.isConnected()) return connection;
+    if (_connection) {
+        if (_connection.isConnected()) return _connection;
     }
 
     // validate endpoints
@@ -60,13 +63,13 @@ const connect = async (): Promise<Connection> => {
     }
 
     common.debug('Connecting to', _endpoints[0]);
-    connection = new Connection(_endpoints[0]);
+    _connection = new Connection(_endpoints[0]);
    
     try {
-        await connection.connect();
+        await _connection.connect();
     } catch (error) {
         common.debug('Websocket connection failed');
-        connection = null;
+        _connection = undefined;
         // connection error. remove endpoint
         _endpoints.splice(0, 1);
         // and try another one or throw error
@@ -76,14 +79,32 @@ const connect = async (): Promise<Connection> => {
         return await connect();
     }
 
+    _connection.on('disconnected', () => {
+        cleanup();
+        common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
+    });
+
+    common.response({
+        id: -1,
+        type: RESPONSES.CONNECTED,
+    });
+
     common.debug('Connected');
-    return connection;
+    return _connection;
+}
+
+const cleanup = () => {
+    if (_connection) {
+        _connection.removeAllListeners();
+        _connection = undefined;
+    }
+    common.removeAddresses(common.getAddresses());
 }
 
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
     try {
-        const c = await connect();
-        const info = await c.getServerInfo();
+        const socket = await connect();
+        const info = await socket.getServerInfo();
         console.warn("info", info, data)
         postMessage({
             id: data.id,
@@ -91,28 +112,75 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
             payload: info
         });
     } catch (error) {
-        console.warn("GET IFO ERROR", typeof error, Object.keys(error), error.toString() )
         common.errorHandler({ id: data.id, error });
     }
 }
 
+const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo): Promise<void> => {
+    const { payload } = data;
+    // const account = {
+    //     address: payload.descriptor,
+    //     transactions: 0,
+    //     block: 0,
+    //     balance: '0',
+    //     availableBalance: '0',
+    //     sequence: 0,
+    // };
+
+    const socket = await connect();
+    try {
+        const info = await socket.getAccountInfo(payload.descriptor);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_ACCOUNT_INFO,
+            payload: info,
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
     const c = await connect();
     c.subscribe();
-    // const { payload } = data;
+    const { payload } = data;
 
-    // if (payload.type === 'address') {
-    //     await subscribeAddresses(payload.addresses, payload.mempool);
-    // } else if (payload.type === 'block') {
-    //     if (api.listenerCount('ledger') < 1) {
-    //         api.on('ledger', onNewBlock);
-    //     }
-    // }
+    if (payload.type === 'notification') {
+        // await subscribeAddresses(payload.addresses, payload.mempool);
+    } else if (payload.type === 'block') {
+        if (c.listenerCount('block') < 1) {
+            c.on('block', onNewBlock);
+        }
+    }
 
     postMessage({
         id: data.id,
         type: RESPONSES.SUBSCRIBE,
         payload: true,
+    });
+}
+
+const disconnect = async (data: { id: number }) => {
+    if (!_connection) {
+        common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
+        return;
+    }
+    try {
+        await _connection.disconnect();
+        common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+}
+
+const onNewBlock = (data: any) => {
+    common.response({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'block',
+            data,
+        }
     });
 }
 
