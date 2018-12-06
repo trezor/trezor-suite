@@ -24,6 +24,8 @@
     "build": "rm -rf ./build && yarn build:lib && yarn build:workers",
     "build:lib": "babel-node ./scripts/build.js && babel ./build/lib --out-dir ./build/lib",
     "build:workers": "webpack --config ./webpack/workers.babel.js --progress",
+    "eslint": "npx eslint ./src ./webpack",
+    "flow": "flow check ./src",
     "test": "npx jest",
     "test:watch": "npx jest -o --watch"
   },
