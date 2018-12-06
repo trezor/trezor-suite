@@ -1,6 +1,7 @@
 /* @flow */
 
 export const CONNECTED: 'r_connected' = 'r_connected';
+export const DISCONNECTED: 'r_disconnected' = 'r_disconnected';
 export const ERROR: 'r_error' = 'r_error';
 export const GET_INFO: 'r_info' = 'r_info';
 export const GET_ACCOUNT_INFO: 'r_account_info' = 'r_account_info';
