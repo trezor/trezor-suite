@@ -14,18 +14,18 @@ module.exports = function (config) {
         browserify: {
             debug: true,
             transform: [
-                ['babelify', {
-                    'presets': [
-                        'es2015',
+                ['babelify', 
+                  {
+                    "presets": [
+                      "@babel/preset-env"
                     ],
-                    'plugins': [
-                        'transform-flow-strip-types',
-                        'transform-class-properties',
-                        'transform-object-rest-spread',
-                        'add-module-exports',
-                        'istanbul',
-                    ],
-                }],
+                    "plugins": [
+                      "@babel/plugin-transform-flow-strip-types",
+                      "@babel/plugin-proposal-class-properties",
+                      "@babel/plugin-proposal-object-rest-spread"
+                    ]
+                  }
+                ],
                 ['workerify'],
                 ['browserify-shim'],
             ],
@@ -34,6 +34,7 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'test/discover-account.js',
+            'test/monitor-account.js',
             {pattern: 'fastxpub/build/fastxpub.js', included: false},
             {pattern: 'fastxpub/build/fastxpub.wasm', included: false}
 
@@ -46,8 +47,8 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'test/bitcore.js': [ 'browserify' ],
             'test/discover-account.js': [ 'browserify' ],
+            'test/monitor-account.js': [ 'browserify' ],
         },
 
         // test results reporter to use

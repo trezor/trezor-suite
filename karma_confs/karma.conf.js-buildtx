@@ -14,18 +14,18 @@ module.exports = function (config) {
         browserify: {
             debug: true,
             transform: [
-                ['babelify', {
-                    'presets': [
-                        'es2015',
+                ['babelify', 
+                  {
+                    "presets": [
+                      "@babel/preset-env"
                     ],
-                    'plugins': [
-                        'transform-flow-strip-types',
-                        'transform-class-properties',
-                        'transform-object-rest-spread',
-                        'add-module-exports',
-                        'istanbul',
-                    ],
-                }],
+                    "plugins": [
+                      "@babel/plugin-transform-flow-strip-types",
+                      "@babel/plugin-proposal-class-properties",
+                      "@babel/plugin-proposal-object-rest-spread"
+                    ]
+                  }
+                ],
                 ['workerify'],
                 ['browserify-shim'],
             ],

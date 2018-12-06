@@ -5,13 +5,13 @@ export const discoveryWorkerFactory = () => {
         const TinyWorker = require('tiny-worker');
 
         return new TinyWorker(() => {
-            require('babel-register');
             // Terrible hack
             // Browserify throws error if I don't do this
             // Maybe it could be fixed with noParse instead of eval, but I don't know how,
             // since this is all pretty hacky anyway
             // eslint-disable-next-line no-eval
             const requireHack = eval('req' + 'uire');
+            requireHack('@babel/register')({cache: true});
             requireHack('../../../src/discovery/worker/inside/index.js');
         });
     } else {
