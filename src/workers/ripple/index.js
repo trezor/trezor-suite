@@ -147,6 +147,7 @@ const cleanup = () => {
         _api = undefined;
     }
     common.removeAddresses(common.getAddresses());
+    common.clearSubscriptions();
 }
 
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
@@ -324,15 +325,16 @@ const pushTransaction = async (data: { id: number } & MessageTypes.PushTransacti
 }
 
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
-    const api = await connect();
     const { payload } = data;
-
-    if (payload.type === 'notification') {
-        await subscribeAddresses(payload.addresses, payload.mempool);
-    } else if (payload.type === 'block') {
-        if (api.listenerCount('ledger') < 1) {
-            api.on('ledger', onNewBlock);
+    try {
+        if (payload.type === 'notification') {
+            await subscribeAddresses(payload.addresses, payload.mempool);
+        } else if (payload.type === 'block') {
+            await subscribeBlock();
         }
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+        return;
     }
 
     common.response({
@@ -340,39 +342,19 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
         type: RESPONSES.SUBSCRIBE,
         payload: true,
     });
-}
-
-const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
-    const api = await connect();
-    const { payload } = data;
-
-    if (payload.type === 'address') {
-        await unsubscribeAddresses(payload.addresses);
-    } else if (payload.type === 'block') {
-        if (api.listenerCount('ledger') > 0) {
-            api.off('ledger', onNewBlock);
-        }
-    }
-
-    common.response({
-        id: data.id,
-        type: RESPONSES.SUBSCRIBE,
-        payload: true,
-    });
-
 }
 
 const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = true) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const api = await connect();
-    if (api.connection.listenerCount('transaction') < 1) {
+    if (!common.getSubscription('transaction')) {
         api.connection.on('transaction', onTransaction);
         // api.connection.on('ledgerClosed', onLedgerClosed);
+        common.addSubscription('transaction');
     }
 
     const uniqueAddresses = common.addAddresses(addresses);
     if (uniqueAddresses.length > 0) {
-        console.warn("SET REQUEST", uniqueAddresses, mempool);
         const request = {
             // stream: ['transactions', 'transactions_proposed'],
             accounts: uniqueAddresses,
@@ -381,6 +363,33 @@ const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = t
     
         await api.request('subscribe', request);
     }
+}
+
+const subscribeBlock = async () => {
+    if (common.getSubscription('ledger')) return;
+    const api = await connect();
+    api.on('ledger', onNewBlock);
+    common.addSubscription('ledger');
+};
+
+const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
+    const { payload } = data;
+    try {
+        if (payload.type === 'address') {
+            await unsubscribeAddresses(payload.addresses);
+        } else if (payload.type === 'block') {
+            await unsubscribeBlock();
+        }
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+        return;
+    }
+
+    common.response({
+        id: data.id,
+        type: RESPONSES.SUBSCRIBE,
+        payload: true,
+    });
 }
 
 const unsubscribeAddresses = async (addresses: Array<string>) => {
@@ -398,7 +407,15 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
         // remove listeners
         api.connection.off('transaction', onTransaction);
         // api.connection.off('ledgerClosed', onLedgerClosed);
+        common.removeSubscription('transaction')
     }
+}
+
+const unsubscribeBlock = async () => {
+    if (!common.getSubscription('ledger')) return;
+    const api = await connect();
+    api.off('ledger', onNewBlock);
+    common.removeSubscription('ledger');
 }
 
 const disconnect = async (data: { id: number }) => {

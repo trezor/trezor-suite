@@ -8,6 +8,7 @@ declare function postMessage(data: Response): void;
 let _settings: BlockchainSettings;
 let _debugPrefix: string;
 let _addresses: Array<string> = [];
+const _subscription: {[key: string]: boolean} = {};
 
 export const setSettings = (s: BlockchainSettings): void => {
     _settings = s;
@@ -71,3 +72,19 @@ export const removeAddresses = (addresses: Array<string>): Array<string> => {
     _addresses = _addresses.filter(a => unique.indexOf(a) < 0);
     return _addresses;
 }
+
+export const addSubscription = (type: string): void => {
+    _subscription[type] = true;
+};
+
+export const getSubscription = (type: string): boolean => {
+    return _subscription[type];
+};
+
+export const removeSubscription = (type: string): void => {
+    delete _subscription[type];
+};
+
+export const clearSubscriptions = (): void => {
+    Object.keys(_subscription).forEach(key => _subscription[key] = false);
+};
