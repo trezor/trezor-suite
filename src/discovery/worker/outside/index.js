@@ -75,7 +75,10 @@ export class WorkerDiscoveryHandler {
         });
         this.workerChannel.postToWorker({type: 'startDiscovery'});
 
-        const promise = this.workerChannel.resPromise(() => this.counter.finisher.emit());
+        const promise = this.workerChannel.resPromise(() => {
+            this.counter.finisher.emit();
+            this.counter.stream.dispose();
+        });
 
         const stream: Stream<AccountLoadStatus> = this.counter.stream;
 

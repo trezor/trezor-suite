@@ -110,7 +110,7 @@ export class WorkerDiscovery {
     ): StreamWithEnding<AccountLoadStatus, AccountInfo> {
         const node = this.tryHDNode(xpub, network);
         if (node instanceof Error) {
-            return StreamWithEnding.fromStreamAndPromise(Stream.fromArray([]), Promise.reject(node));
+            return StreamWithEnding.fromStreamAndPromise(Stream.empty(), Promise.reject(node));
         }
 
         return StreamWithEnding.fromPromise(
