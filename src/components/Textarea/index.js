@@ -60,11 +60,6 @@ const StyledTextarea = styled(Textarea)`
     &:read-only {
         background: ${colors.GRAY_LIGHT};
         color: ${colors.TEXT_SECONDARY};
-
-        &::placeholder {
-            color: ${disabledColor};
-            opacity: 1;
-        }
     }
 
     &:disabled {
