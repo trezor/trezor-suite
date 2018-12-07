@@ -21,9 +21,7 @@ const getLatestSafeFw = (input) => {
         if (!next) {
             return [];
         }
-        console.log('next', next);
         const nextPossibleVersions = filterBootloader(releasesList, next.min_bootloader_version);
-        console.log('releasesList', releasesList, 'bootloaderVersion', bootloaderVersion, 'nextPossibleVersions', nextPossibleVersions);
         return nextPossibleVersions[0];
     }
 
