@@ -88,7 +88,7 @@ class Connection extends EventEmitter {
         });
     }
 
-    subscribe() {
+    subscribeBlock() {
         return new Promise((resolve) => {
             this._socket.on('bitcoind/hashblock', (result) => {
                 console.warn("BLOCK!", result)
@@ -106,6 +106,22 @@ class Connection extends EventEmitter {
         //         params: [2, false]
         //     }, resolve);
         // });
+    }
+
+    subscribeAddresses(addresses: Array<string>) {
+        return new Promise((resolve) => {
+            this._socket.on('bitcoind/addresstxid', (result) => {
+                this._socket.send({
+                    method: 'getDetailedTransaction',
+                    params: [
+                        result.txid
+                    ]
+                }, detail => {
+                    this.emit('notification', detail.result)
+                });
+            });
+            this._socket.emit('subscribe', 'bitcoind/addresstxid', addresses, resolve);
+        });
     }
 
     disconnect() {

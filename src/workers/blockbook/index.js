@@ -127,8 +127,8 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
     //     sequence: 0,
     // };
 
-    const socket = await connect();
     try {
+        const socket = await connect();
         const info = await socket.getAccountInfo(payload.descriptor);
         common.response({
             id: data.id,
@@ -140,17 +140,24 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
     }
 };
 
+let _subscription: {[key: string]: boolean} = {};
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
-    const c = await connect();
-    c.subscribe();
     const { payload } = data;
 
-    if (payload.type === 'notification') {
-        // await subscribeAddresses(payload.addresses, payload.mempool);
-    } else if (payload.type === 'block') {
-        if (c.listenerCount('block') < 1) {
-            c.on('block', onNewBlock);
+    try {
+        if (payload.type === 'notification') {
+            await subscribeAddresses(payload.addresses, payload.mempool);
+        } else if (payload.type === 'block') {
+            const socket = await connect();
+            if (!_subscription.block) {
+                _subscription.block = true;
+                socket.on('block', onNewBlock);
+            }
+            socket.subscribeBlock();
         }
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+        return;
     }
 
     postMessage({
@@ -158,6 +165,20 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
         type: RESPONSES.SUBSCRIBE,
         payload: true,
     });
+}
+
+const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = true) => {
+    console.warn("ELO?")
+    // subscribe to new blocks, confirmed and mempool transactions for given addresses
+    const socket = await connect();
+    if (!_subscription.notification) {
+        socket.on('notification', onTransaction);
+    }
+
+    const uniqueAddresses = common.addAddresses(addresses);
+    if (uniqueAddresses.length > 0) {
+        await socket.subscribeAddresses(uniqueAddresses);
+    }
 }
 
 const disconnect = async (data: { id: number }) => {
@@ -171,7 +192,7 @@ const disconnect = async (data: { id: number }) => {
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
-}
+};
 
 const onNewBlock = (data: any) => {
     common.response({
@@ -182,6 +203,17 @@ const onNewBlock = (data: any) => {
             data,
         }
     });
-}
+};
+
+const onTransaction = (event: any) => {
+    common.response({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'notification',
+            data: event,
+        }
+    });
+};
 
 common.handshake();
