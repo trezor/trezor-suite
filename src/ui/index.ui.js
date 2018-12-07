@@ -50,27 +50,27 @@ const handleClick = (event: MouseEvent) => {
         case 'subscribe-block':
             blockchain.subscribe({
                 type: 'block'
-            }).then(onResponse).catch(onError);
+            }).catch(onError);
             break;
 
         case 'unsubscribe-block':
             blockchain.unsubscribe({
                 type: 'block'
-            }).then(onResponse).catch(onError);
+            }).catch(onError);
             break;
 
         case 'subscribe-address':
             blockchain.subscribe({
                 type: 'notification',
                 addresses: getInputValue('subscribe-addresses').split(","),
-            }).then(onResponse).catch(onError);
+            }).catch(onError);
             break;
 
         case 'unsubscribe-address':
             blockchain.unsubscribe({
                 type: 'notification',
                 addresses: getInputValue('subscribe-addresses').split(","),
-            }).then(onResponse).catch(onError);
+            }).catch(onError);
             break;
 
         default: break;
@@ -111,7 +111,7 @@ const handleErrorEvent = (blockchain: BlockchainLink, message: any) => {
 
 const prepareResponse = (parent: HTMLElement, response, isError: boolean = false) => {
     const div = document.createElement('pre');
-    div.className = 'response';
+    div.className = isError ? 'response error' : 'response';
     const close = document.createElement('div');
     close.className = 'close';
     close.onclick = () => {
@@ -119,7 +119,6 @@ const prepareResponse = (parent: HTMLElement, response, isError: boolean = false
     }
     div.append(close);
     const pre = document.createElement('pre');
-    if (isError) pre.className = 'error';
     pre.innerHTML = JSON.stringify(response, null , 2);
     div.appendChild(pre);
 
