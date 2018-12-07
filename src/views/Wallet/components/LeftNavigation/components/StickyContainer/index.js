@@ -160,7 +160,7 @@ export default class StickyContainer extends React.PureComponent<Props, State> {
             <AsideWrapper
                 footerFixed={this.state.footerFixed}
                 minHeight={this.state.asideMinHeight}
-                innerRef={this.asideRefCallback}
+                ref={this.asideRefCallback}
                 onScroll={this.handleScroll}
                 onTouchStart={this.handleScroll}
                 onTouchMove={this.handleScroll}
@@ -170,11 +170,11 @@ export default class StickyContainer extends React.PureComponent<Props, State> {
                     paddingBottom={this.state.wrapperBottomPadding}
                     top={this.state.wrapperTopOffset}
                     left={this.state.wrapperLeftOffset}
-                    innerRef={this.wrapperRefCallback}
+                    ref={this.wrapperRefCallback}
                 >
                     {React.Children.map(this.props.children, (child) => { // eslint-disable-line arrow-body-style
                         return child.key === 'sticky-footer' ? React.cloneElement(child, {
-                            innerRef: this.footerRefCallback,
+                            ref: this.footerRefCallback,
                             position: this.state.footerFixed ? 'fixed' : 'relative',
                         }) : child;
                     })}

@@ -1,11 +1,11 @@
-import { injectGlobal } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import colors from 'config/colors';
 import normalize from 'styled-normalize';
 
 import tooltipStyles from './Tooltip';
 import animationStyles from './Animations';
 
-const baseStyles = () => injectGlobal`
+const baseStyles = createGlobalStyle`
     ${normalize};
 
     html, body {

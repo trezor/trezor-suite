@@ -61,7 +61,7 @@ class TopNavigationAccount extends React.PureComponent<Props> {
 
         const basePath = `/device/${state.device}/network/${state.network}/account/${state.account}`;
         return (
-            <Wrapper className="account-tabs" innerRef={this.wrapperRefCallback}>
+            <Wrapper className="account-tabs" ref={this.wrapperRefCallback}>
                 <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
                 <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
                 <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>

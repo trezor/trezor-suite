@@ -1,13 +1,18 @@
 /* @flow */
 import React from 'react';
 import { render } from 'react-dom';
-import baseStyles from 'support/styles';
+import BaseStyles from 'support/styles';
 import App from 'views/index';
 
 const root: ?HTMLElement = document.getElementById('trezor-wallet-root');
 if (root) {
-    baseStyles();
-    render(<App />, root);
+    render(
+        <React.Fragment>
+            <BaseStyles />
+            <App />
+        </React.Fragment>,
+        root,
+    );
 }
 
 window.onbeforeunload = () => {
