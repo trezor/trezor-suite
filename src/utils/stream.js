@@ -13,7 +13,6 @@ import { deferred } from './deferred';
 type Handler<T> = (value: T, detach: () => void) => void;
 type Listener<T> = {
     handler: Handler<T>,
-    detached: boolean,
 };
 
 // const MAX_LISTENERS = 50;
@@ -34,19 +33,15 @@ export class Emitter<T> {
     attach(handler: Handler<T>) {
         this.listeners = this.listeners.concat([{
             handler,
-            detached: false,
         }]);
         // if (this.listeners.length > MAX_LISTENERS) {
         //     throw new Error('Too many listeners. Memory leak?');
         // }
     }
 
-    // `detach` does affect the `emit` cycle, we mark the listener as `detached`
-    // so it can be ignored right away.
     detach(handler: Handler<T>) {
         this.listeners = this.listeners.filter((listener) => {
             if (listener.handler === handler) {
-                listener.detached = true;
                 return false;
             } else {
                 return true;
@@ -56,11 +51,9 @@ export class Emitter<T> {
 
     emit(value: T) {
         this.listeners.forEach((listener) => {
-            if (!listener.detached) {
-                listener.handler(value, () => {
-                    this.detach(listener.handler);
-                });
-            }
+            listener.handler(value, () => {
+                this.detach(listener.handler);
+            });
         });
     }
 }
@@ -121,16 +114,12 @@ export class Stream<T> {
         });
     }
 
-    static fromArray<T>(
-        array: Array<T>
+    static empty(
     ): Stream<T> {
         return new Stream((update, finish) => {
             let disposed = false;
             setTimeout(() => {
                 if (!disposed) {
-                    array.forEach(t => {
-                        update(t);
-                    });
                     finish();
                 }
             }, 0);
@@ -142,7 +131,7 @@ export class Stream<T> {
 
     static fromPromise<T>(
         promise: Promise<Stream<T>>
-    ): Stream<T> {
+    ): Stream<Error | T> {
         return new Stream((update, finish) => {
             let stream_;
             let disposed = false;
@@ -152,9 +141,10 @@ export class Stream<T> {
                     stream.finish.attach(() => finish());
                     stream_ = stream;
                 }
-            }, () => {
+            }, (error) => {
+                update(error);
                 setTimeout(
-                  () => finish(), 1
+                  () => finish(), 10
                 );
             });
             return () => {
@@ -244,32 +234,6 @@ export class Stream<T> {
         });
     }
 
-    static combine<T>(streams: Array<Stream<T>>): Stream<Array<T>> {
-        return new Stream((update, finish) => {
-            const combined = new Array(streams.length);
-            const updated = new Set();
-            const finished = new Set();
-            streams.forEach((s, i) => {
-                s.values.attach((v) => {
-                    combined[i] = v;
-                    updated.add(i);
-                    if (updated.size >= streams.length) {
-                        update(combined);
-                    }
-                });
-                s.finish.attach(() => {
-                    finished.add(i);
-                    if (finished.size >= streams.length) {
-                        finish();
-                    }
-                });
-            });
-            return () => {
-                streams.forEach((s) => s.dispose());
-            };
-        });
-    }
-
     static combineFlat<T>(streams: Array<Stream<T>>): Stream<T> {
         return new Stream((update, finish) => {
             const finished = new Set();
@@ -290,12 +254,12 @@ export class Stream<T> {
         });
     }
 
-    static filterNull<T>(
-        stream: Stream<?T>
+    static filterError<T>(
+        stream: Stream<Error | T>
     ): Stream<T> {
         return new Stream((update, finish) => {
             stream.values.attach((value) => {
-                if (value != null) {
+                if (!(value instanceof Error)) {
                     update(value);
                 }
             });
@@ -478,7 +442,8 @@ export class StreamWithEnding<UpdateT, EndingT> {
 
     static fromPromise<U, E>(p: Promise<StreamWithEnding<U, E>>): StreamWithEnding<U, E> {
         const res: StreamWithEnding<U, E> = new StreamWithEnding();
-        res.stream = Stream.fromPromise(p.then(s => s.stream));
+        // the rejection will come to the ending promise
+        res.stream = Stream.filterError(Stream.fromPromise(p.then(s => s.stream)));
         res.ending = p.then(s => s.ending);
         let resolved = null;
         p.then(s => {

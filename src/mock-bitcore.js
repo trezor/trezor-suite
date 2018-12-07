@@ -16,7 +16,7 @@ type EmitterSpec = {
 };
 
 type CallSpec = {
-    type: 'subsbscribe',
+    type: 'subscribe',
     addresses: Array<string>,
 } | {
     type: 'lookupTransactionsStream',
@@ -41,7 +41,7 @@ type CallSpec = {
 };
 
 type Spec = {
-    type: 'emitter',
+    type: 'emit',
     spec: EmitterSpec,
 } | {
     type: 'call',
@@ -80,7 +80,7 @@ export class MockBitcore {
     emit() {
         if (this.spec.length > 0) {
             const sspec = this.spec[0];
-            if (sspec.type === 'emitter') {
+            if (sspec.type === 'emit') {
                 this.specLock = true;
                 const spec: EmitterSpec = sspec.spec;
                 this.spec.shift();
@@ -104,22 +104,22 @@ export class MockBitcore {
     getCallSpec(type: string): CallSpec {
         if (this.spec.length === 0) {
             this.doneError(new Error('Call spec not defined, wanted ' + type));
-            throw new Error();
+            throw new Error('Call spec not defined, wanted ' + type);
         }
         if (this.specLock) {
             this.doneError(new Error('call spec out of order, is waiting but wanted ' + type));
-            throw new Error();
+            throw new Error('call spec out of order, is waiting but wanted ' + type);
         }
         const sspec = this.spec[0];
         if (sspec.type !== 'call') {
             this.doneError(new Error('call spec out of order, is emit but wanted ' + type));
-            throw new Error();
+            throw new Error('call spec out of order, is emit but wanted ' + type);
         }
         const {spec} = sspec;
         this.spec.shift();
         if (spec.type !== type) {
             this.doneError(new Error('call spec out of order, is ' + spec.type + ' but wanted ' + type));
-            throw new Error();
+            throw new Error('call spec out of order, is ' + spec.type + ' but wanted ' + type);
         }
         console.log('Succesful call spec type', type);
         return spec;
@@ -136,6 +136,9 @@ export class MockBitcore {
             console.error('Got:', addresses);
             this.doneError(new Error('wrong address set on subscribe'));
         }
+        setTimeout(() => {
+            this.emit();
+        }, TICK_MS);
     }
 
     lookupTransactionsStream(
@@ -179,8 +182,8 @@ export class MockBitcore {
             setTimeout(() => {
                 finisher.emit();
                 this.emit();
-            }, 10);
-        }, 10);
+            }, TICK_MS);
+        }, TICK_MS);
         return resultStream;
     }
 

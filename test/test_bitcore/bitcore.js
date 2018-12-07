@@ -101,7 +101,7 @@ const socketWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         const TinyWorker = require('tiny-worker');
         return new TinyWorker(() => {
-            require('babel-register');
+            require('@babel/register');
             require('../../../src/socketio-worker/inside.js');
         });
     } else {

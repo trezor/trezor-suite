@@ -75,7 +75,10 @@ export class WorkerDiscoveryHandler {
         });
         this.workerChannel.postToWorker({type: 'startDiscovery'});
 
-        const promise = this.workerChannel.resPromise(() => this.counter.finisher.emit());
+        const promise = this.workerChannel.resPromise(() => {
+            this.counter.finisher.emit();
+            this.counter.stream.dispose();
+        });
 
         const stream: Stream<AccountLoadStatus> = this.counter.stream;
 
@@ -146,7 +149,7 @@ export class WorkerDiscoveryHandler {
     ): Stream<ChunkDiscoveryInfo | string> {
         const addressPromise = WorkerDiscoveryHandler.deriveAddresses(source, addresses, firstIndex, lastIndex);
 
-        return Stream.fromPromise(
+        const errStream: Stream<ChunkDiscoveryInfo | string | Error> = Stream.fromPromise(
             addressPromise.then(addresses => {
                 if (this.cashAddress) {
                     addresses = addresses.map(a => bchaddrjs.toCashAddress(a));
@@ -195,6 +198,13 @@ export class WorkerDiscoveryHandler {
                 );
             })
         );
+        const resStream: Stream<ChunkDiscoveryInfo | string> = errStream.map((k: (ChunkDiscoveryInfo | string | Error)): (ChunkDiscoveryInfo | string) => {
+            if (k instanceof Error) {
+                return k.message;
+            }
+            return k;
+        });
+        return resStream;
     }
 }
 
