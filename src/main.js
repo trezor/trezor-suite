@@ -1,4 +1,9 @@
-import { getSafeBlVersions, getSafeFwVersions } from 'utils/list';
+import {
+    findNextBootloader,
+    findNextFirmware,
+    filterBootloader,
+    filterFirmware,
+} from 'utils/list';
 
 const getLatestSafeFw = (input) => {
     const {
@@ -10,25 +15,26 @@ const getLatestSafeFw = (input) => {
         return releasesList[0];
     }
 
-    // select newest firmware by bootloader version
+    // select safe firmware by bootloader version
     if (isInBootloader) {
-        const filteredList = getSafeBlVersions(releasesList, bootloaderVersion);
-        if (filteredList.length > 0) {
-            return filteredList[filteredList.length - 1];
+        const next = findNextBootloader(releasesList, bootloaderVersion);
+        if (!next) {
+            return [];
         }
-        return filteredList;
+        console.log('next', next);
+        const nextPossibleVersions = filterBootloader(releasesList, next.min_bootloader_version);
+        console.log('releasesList', releasesList, 'bootloaderVersion', bootloaderVersion, 'nextPossibleVersions', nextPossibleVersions);
+        return nextPossibleVersions[0];
     }
 
-    // select newest firmware by firmware version
-    if (!isInBootloader) {
-        const filteredList = getSafeFwVersions(releasesList, firmwareVersion);
-        if (filteredList.length > 0) {
-            return filteredList[filteredList.length - 1];
-        }
-        return filteredList;
+    // select safe firmware by firmware version
+    const next = findNextFirmware(releasesList, firmwareVersion);
+    if (!next) {
+        return [];
     }
 
-    return [];
+    const nextPossibleVersions = filterFirmware(releasesList, next.min_firmware_version);
+    return nextPossibleVersions[0];
 };
 
 const getScore = () => Math.random().toFixed(2);
