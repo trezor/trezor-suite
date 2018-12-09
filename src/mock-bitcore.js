@@ -1,4 +1,5 @@
 /* @flow */
+/* istanbul ignore file */
 
 import { Stream, Emitter } from './utils/stream';
 import type { Blockchain, SyncStatus, TransactionWithHeight, TxFees } from './bitcore';

@@ -47,6 +47,9 @@ unit-discovery:
 unit-bitcore:
 	`npm bin`/mocha --compilers js:@babel/register test/bitcore.js
 
+unit-utils:
+	`npm bin`/mocha --compilers js:@babel/register test/utils.js
+
 
 coverage-html:
 	NODE_ENV=test `npm bin`/nyc --cache --babel-cache=true --reporter=html --check-coverage `npm bin`/mocha --compilers js:@babel/register

@@ -25,14 +25,6 @@ function monitorAccount(enableWebassembly) {
                     WebAssembly = undefined;
                 }
                 const spec = fixture.spec;
-                /* const spec = [{
-                    type: "emitter",
-                    spec: {
-                      type: "block"
-                    }
-                },
-                ...fixture.spec
-                ];*/
                 const done_wasm = (x) => {
                     if (!enableWebassembly && hasWasm) {
                         WebAssembly = wasm_old;

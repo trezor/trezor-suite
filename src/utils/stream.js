@@ -7,41 +7,54 @@
 // ... well it got big over time. So here it is.
 //
 // We are probably reinventing the wheel here. But it is OUR wheel.
+//
+// TODO: get rid of `stream.dispose()` entirely. It is never really
+// clear what it actually does... for example, if you have
+// stream.map(()=>{...}), .dispose() also disposes the original
+// but stream.fromEmitter(..), .dispose does not destroy emitter
+// etc..... but we rely on it in mytrezor :( can't remove now
+//
+// Emitter -> something that emits things
+// Stream -> emits things and also emits (void) finish
+// StreamWithEnding -> emits things and also emits finish with different type
 
 import { deferred } from './deferred';
 
+// having detach function in the handler is actually very useful
+// because we don't have to name the function when attaching emitter
 type Handler<T> = (value: T, detach: () => void) => void;
-type Listener<T> = {
-    handler: Handler<T>,
-};
 
 // const MAX_LISTENERS = 50;
 export class Emitter<T> {
-    listeners: Array<Listener<T>>;
-
-    constructor() {
-        this.listeners = [];
-    }
+    listeners: Array<Handler<T>> = [];
+    destroyed: boolean = false;
 
     destroy() {
-        this.listeners.forEach(listener => this.detach(listener.handler));
+        this.listeners.forEach(handler => this.detach(handler));
         this.listeners = [];
+        this.destroyed = true;
     }
 
     // `attach` doesn't affect currently running `emit`, so listeners are not
     // modified in place.
     attach(handler: Handler<T>) {
-        this.listeners = this.listeners.concat([{
-            handler,
-        }]);
-        // if (this.listeners.length > MAX_LISTENERS) {
-        //     throw new Error('Too many listeners. Memory leak?');
-        // }
+        if (this.destroyed) {
+            throw new Error('Attaching on a destroyed emitter');
+        }
+        // this is to prevent possible unintended effects
+        // (not necessary, remove if you REALLY need to do this)
+        this.listeners.forEach(oldHandler => {
+            if (oldHandler === handler) {
+                throw new Error('Cannot attach the same listener twice');
+            }
+        });
+        this.listeners.push(handler);
     }
 
     detach(handler: Handler<T>) {
+        // if destroyed => let it be, let it be
         this.listeners = this.listeners.filter((listener) => {
-            if (listener.handler === handler) {
+            if (listener === handler) {
                 return false;
             } else {
                 return true;
@@ -50,9 +63,13 @@ export class Emitter<T> {
     }
 
     emit(value: T) {
+        if (this.destroyed) {
+            // if destroyed -> not really throwing error (nothing bad happens), just warn
+            console.warn(new Error('Emitting on a destroyed emitter'));
+        }
         this.listeners.forEach((listener) => {
-            listener.handler(value, () => {
-                this.detach(listener.handler);
+            listener(value, () => {
+                this.detach(listener);
             });
         });
     }
@@ -68,6 +85,8 @@ export class Stream<T> {
     finish: Emitter<void>;
     dispose: Disposer;
 
+    // note that this never "finishes"
+    // note that dispose does NOT destroy the emitter
     static fromEmitter<T>(
         emitter: Emitter<T>,
         dispose: () => void
@@ -75,15 +94,16 @@ export class Stream<T> {
         return new Stream((update, finish) => {
             let disposed = false;
             const handler = (t) => {
-                if (!disposed) {
-                    update(t);
-                }
+                // check for disposed not needed, handler is removed
+                update(t);
             };
             emitter.attach(handler);
             return () => {
-                disposed = true;
-                emitter.detach(handler);
-                dispose();
+                if (!disposed) {
+                    disposed = true;
+                    emitter.detach(handler);
+                    dispose();
+                }
             };
         });
     }
@@ -96,20 +116,25 @@ export class Stream<T> {
         return new Stream((update, finish) => {
             let disposed = false;
             const handler = (t) => {
-                if (!disposed) {
-                    update(t);
-                }
+                update(t);
             };
             emitter.attach(handler);
-            finisher.attach((nothing, detach) => {
+            const finishHandler = (nothing, detach) => {
                 finish();
                 detach();
                 emitter.detach(handler);
-            });
+            };
+            finisher.attach(finishHandler);
             return () => {
-                disposed = true;
-                emitter.detach(handler);
-                dispose();
+                // TODO - this is why dispose does not make much sense
+                // should dispose() be called when finish() has been called? or no?
+                // I want to get rid of dispose eventually
+                if (!disposed) {
+                    disposed = true;
+                    emitter.detach(handler);
+                    finisher.detach(finishHandler);
+                    dispose();
+                }
             };
         });
     }
@@ -271,10 +296,15 @@ export class Stream<T> {
     constructor(controller: Controller<T>) {
         this.values = new Emitter();
         this.finish = new Emitter();
-        this.dispose = controller(
+        const controllerDispose = controller(
             (value) => { this.values.emit(value); },
             () => { this.finish.emit(); }
         );
+        this.dispose = () => {
+            controllerDispose();
+            this.values.destroy();
+            this.finish.destroy();
+        };
     }
 
     awaitFirst(): Promise<T> {

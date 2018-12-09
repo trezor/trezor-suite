@@ -24,13 +24,13 @@ function discoverAccount(enableWebassembly) {
                     wasm_old = WebAssembly;
                     WebAssembly = undefined;
                 }
-                const done = (x) => {
+                const done_wasm = (x) => {
                     if (!enableWebassembly && hasWasm) {
                         WebAssembly = wasm_old;
                     }
                     done_orig(x);
                 };
-                const blockchain = new MockBitcore(fixture.spec, done);
+                const blockchain = new MockBitcore(fixture.spec, done_wasm);
                 const discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain);
                 const stream = discovery.discoverAccount(
                     fixture.start,
@@ -41,6 +41,10 @@ function discoverAccount(enableWebassembly) {
                     fixture.gap,
                     fixture.timeOffset,
                 );
+                const done = (x) => {
+                    stream.dispose();
+                    done_wasm(x);
+                };
                 stream.ending.then((res) => {
                     if (!blockchain.errored) {
                         if (JSON.stringify(res) !== JSON.stringify(fixture.end)) {
