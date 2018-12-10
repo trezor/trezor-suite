@@ -11,10 +11,17 @@ import type {
 import * as MessageTypes from './types/messages';
 import * as ResponseTypes from './types/responses';
 
+const workerWrapper = (factory: string | Function): Worker => {
+    if (typeof factory === 'string' && typeof Worker !== 'undefined') return new Worker(factory);
+    // use custom worker
+    if (typeof factory === 'function') return new factory();
+    throw new Error('Cannot use worker');
+};
+
 // initialize worker communication, raise error if worker not found
 const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
     const dfd: Deferred<Worker> = createDeferred(-1);
-    const worker = new Worker(settings.worker);
+    const worker = workerWrapper(settings.worker);
     worker.onmessage = (message: any) => {
         if (message.data.type !== MESSAGES.HANDSHAKE) return;
         worker.postMessage({
@@ -33,8 +40,7 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
 
     return dfd.promise;
 }
-
-export default class BlockchainLink extends EventEmitter {
+class BlockchainLink extends EventEmitter {
     settings: BlockchainSettings;
     messageId: number = 0;
     worker: Worker;
@@ -45,6 +51,11 @@ export default class BlockchainLink extends EventEmitter {
         super();
         this.settings = settings;
     }
+
+    // on: (type: 'block', cb: (event: ResponseTypes.BlockEvent) => void) => this;
+    // on: (type: 'notification', cb: (event: ResponseTypes.NotificationEvent) => void) => BlockchainLink;
+    // on: (type: 'connected', cb: (event: NotificationEvent) => void) => void;
+    // on: (type: 'disconnected', cb: (event: NotificationEvent) => void) => void;
 
     async getWorker(): Promise<Worker> {
         if (!this.worker) {
@@ -173,4 +184,19 @@ export default class BlockchainLink extends EventEmitter {
         });
         this.deferred = [];
     }
+
+    dispose() {
+        console.warn("DISPOSE!");
+        if (this.worker) {
+            this.worker.terminate();
+            delete this.worker;
+        }
+    }
 }
+
+
+export default BlockchainLink;
+
+// export type {
+
+// } from './types/responses';

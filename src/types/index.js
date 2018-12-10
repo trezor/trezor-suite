@@ -12,7 +12,7 @@ export { Response } from './responses';
 
 export type BlockchainSettings = {
     name: string,
-    worker: string,
+    worker: string | Function,
     server: Array<string>,
     debug?: boolean,
 };
