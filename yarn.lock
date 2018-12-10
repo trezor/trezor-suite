@@ -11424,10 +11424,10 @@ styled-components@^4.1.2:
     stylis-rule-sheet "^0.0.10"
     supports-color "^5.5.0"
 
-styled-normalize@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/styled-normalize/-/styled-normalize-8.0.0.tgz#54881c9389540bf9fb2a3d34dca2e2d4d68601f2"
-  integrity sha512-6cO9CNRLKkh3I1xq4cCkKEI2OS069hpDwmTharz/DozsFW+pmjYu4KF30wSvbsUkydpZXPzd9y18Tm5AF8xJLw==
+styled-normalize@^8.0.4:
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/styled-normalize/-/styled-normalize-8.0.4.tgz#6a0885dc16c61d88813dab8f5137da928fe0c947"
+  integrity sha512-dXkKPnT+JcpqYnS0iQiBhUCOdheDz9xEm3H+ZARJV7l4WCXmRkwCx20ujkIYfESoYaiefbuX+F+rbtF6Ku5kvA==
 
 stylelint-config-recommended@^2.1.0:
   version "2.1.0"
