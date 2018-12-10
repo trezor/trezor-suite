@@ -22,10 +22,6 @@ type Props = BaseProps & {
 // same variable also in "AccountSend/index.js"
 const SmallScreenWidth = '850px';
 
-const InputRow = styled.div`
-    padding-bottom: 28px;
-`;
-
 const InputLabelWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -45,7 +41,7 @@ const AdvancedSettingsWrapper = styled.div`
     border-top: 1px solid ${colors.DIVIDER};
 `;
 
-const GasInputRow = styled(InputRow)`
+const GasInputRow = styled.div`
     width: 100%;
     display: flex;
 
@@ -56,6 +52,7 @@ const GasInputRow = styled(InputRow)`
 
 const GasInput = styled(Input)`
     /* min-height: 85px; */
+    padding-bottom: 28px;
     &:first-child {
         padding-right: 20px;
     }
@@ -63,7 +60,6 @@ const GasInput = styled(Input)`
     @media screen and (max-width: ${SmallScreenWidth}) {
         &:first-child {
             padding-right: 0;
-            margin-bottom: 2px;
         }
     }
 `;
