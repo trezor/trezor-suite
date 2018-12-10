@@ -25,7 +25,9 @@ import DuplicateDevice from 'components/modals/device/Duplicate';
 import WalletType from 'components/modals/device/WalletType';
 
 // external context
-import NemWallet from 'components/modals/external/NemWallet';
+import Nem from 'components/modals/external/Nem';
+import Cardano from 'components/modals/external/Cardano';
+import Stellar from 'components/modals/external/Stellar';
 
 import type { Props } from './Container';
 
@@ -162,7 +164,11 @@ const getExternalContextModal = (props: Props) => {
 
     switch (modal.windowType) {
         case 'xem':
-            return (<NemWallet onCancel={modalActions.onCancel} />);
+            return (<Nem onCancel={modalActions.onCancel} />);
+        case 'xlm':
+            return (<Stellar onCancel={modalActions.onCancel} />);
+        case 'ada':
+            return (<Cardano onCancel={modalActions.onCancel} />);
         default:
             return null;
     }
