@@ -50,6 +50,8 @@ const ShowAddressButton = styled(Button)`
 
     @media screen and (max-width: 795px) {
         margin-top: 10px;
+        align-self: auto;
+        border-radius: 3px;
     }
 `;
 
