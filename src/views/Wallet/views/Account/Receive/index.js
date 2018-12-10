@@ -65,13 +65,13 @@ const EyeButton = styled(Button)`
     z-index: 10001;
     padding: 0;
     width: 30px;
-    background: white;
+    background: transparent;
     top: 5px;
     position: absolute;
     right: 10px;
 
     &:hover {
-        background: white;
+        background: transparent;
     }
 `;
 

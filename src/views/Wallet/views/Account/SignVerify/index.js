@@ -86,7 +86,7 @@ class SignVerify extends Component <Props> {
                                 type="text"
                                 isSmallText
                                 autoSelect
-                                isDisabled
+                                readOnly
                             />
                         </Row>
                         <Row>
@@ -97,7 +97,7 @@ class SignVerify extends Component <Props> {
                                 onChange={this.handleInputChange}
                                 rows={4}
                                 maxRows={4}
-                                maxLength="255"
+                                maxLength={255}
                             />
                         </Row>
                         <Row>
@@ -108,8 +108,8 @@ class SignVerify extends Component <Props> {
                                 rows={4}
                                 autoSelect
                                 maxRows={4}
-                                maxLength="255"
-                                isDisabled
+                                maxLength={255}
+                                readOnly
                             />
                         </Row>
                         <RowButtons>
@@ -146,7 +146,7 @@ class SignVerify extends Component <Props> {
                                 onChange={this.handleInputChange}
                                 rows={4}
                                 maxRows={4}
-                                maxLength="255"
+                                maxLength={255}
                             />
                         </Row>
                         <Row>
@@ -158,7 +158,7 @@ class SignVerify extends Component <Props> {
                                 onChange={this.handleInputChange}
                                 rows={4}
                                 maxRows={4}
-                                maxLength="255"
+                                maxLength={255}
                             />
                         </Row>
                         <RowButtons>

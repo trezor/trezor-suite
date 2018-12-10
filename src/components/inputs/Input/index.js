@@ -62,6 +62,11 @@ const StyledInput = styled.input`
         color: ${colors.TEXT_SECONDARY};
     }
 
+    &:read-only  {
+        background: ${colors.GRAY_LIGHT};
+        color: ${colors.TEXT_SECONDARY};
+    }
+
     ${props => props.trezorAction && css`
         z-index: 10001;
         position: relative; /* bigger than modal container */
@@ -95,7 +100,7 @@ const Overlay = styled.div`
         height: 100%;
         background-image: linear-gradient(to right, 
             rgba(0,0,0, 0) 0%,
-            rgba(255,255,255, 1) 220px
+            rgba(249,249,249, 1) 220px
         );
     `}
 `;
