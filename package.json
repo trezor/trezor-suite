@@ -26,8 +26,7 @@
     "build:workers": "webpack --config ./webpack/workers.babel.js --progress",
     "eslint": "npx eslint ./src ./webpack",
     "flow": "flow check ./src",
-    "test": "npx jest",
-    "test:watch": "npx jest -o --watch"
+    "test": "mocha --opts ./tests/mocha.opts ./tests/index.js"
   },
   "devDependencies": {
     "babel": "^6.23.0",
@@ -41,28 +40,30 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-jest": "^23.2.0",
+    "babel-register": "^6.26.0",
     "bignumber.js": "^8.0.1",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "es6-promise": "^4.2.5",
     "eslint": "^5.7.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-flowtype": "^3.0.0",
     "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jest": "^22.1.2",
     "flow-bin": "^0.83.0",
     "flow-webpack-plugin": "^1.2.0",
     "fs-extra": "^7.0.1",
     "html-webpack-plugin": "^3.2.0",
-    "jest": "^23.6.0",
-    "jest-worker": "^23.2.0",
+    "mocha": "^5.2.0",
     "ripple-lib": "^1.0.2",
     "socket.io-client": "^2.1.1",
+    "tiny-worker": "^2.1.2",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.9",
     "worker-loader": "^2.0.0"
   },
   "dependencies": {
+    "eslint-plugin-mocha": "^5.2.0",
     "events": "^3.0.0"
   }
 }

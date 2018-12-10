@@ -1,0 +1,2 @@
+--timeout 10000
+--require babel-register

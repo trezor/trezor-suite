@@ -13,10 +13,5 @@
             "polyfill": false,
             "regenerator": true
         }]
-    ],
-    "env": {
-        "test": {
-            "presets": ["jest"],
-        }
-    }
+    ]
 }
