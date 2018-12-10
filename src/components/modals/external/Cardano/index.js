@@ -44,7 +44,7 @@ const Img = styled.img`
     padding-bottom: 20px;
 `;
 
-const StellarWallet = (props: Props) => (
+const CardanoWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
             <Icon
@@ -63,8 +63,8 @@ const StellarWallet = (props: Props) => (
     </Wrapper>
 );
 
-StellarWallet.propTypes = {
+CardanoWallet.propTypes = {
     onCancel: PropTypes.func.isRequired,
 };
 
-export default StellarWallet;
+export default CardanoWallet;
