@@ -5,6 +5,8 @@ import {
     filterFirmware,
 } from 'utils/list';
 
+import { getScore, isInProbability } from 'utils/score';
+
 const getLatestSafeFw = (input) => {
     const {
         releasesList, isInBootloader, firmwareVersion, bootloaderVersion,
@@ -22,7 +24,14 @@ const getLatestSafeFw = (input) => {
             return [];
         }
         const nextPossibleVersions = filterBootloader(releasesList, next.min_bootloader_version);
-        return nextPossibleVersions[0];
+        const nextVersion = nextPossibleVersions[0];
+        const isBeta = nextVersion.channel === 'beta';
+
+        if (isInProbability(isBeta, nextVersion.rollout, getScore())) {
+            return nextVersion;
+        }
+
+        return [];
     }
 
     // select safe firmware by firmware version
@@ -32,10 +41,15 @@ const getLatestSafeFw = (input) => {
     }
 
     const nextPossibleVersions = filterFirmware(releasesList, next.min_firmware_version);
-    return nextPossibleVersions[0];
-};
+    const nextVersion = nextPossibleVersions[0];
+    const isBeta = nextVersion.channel === 'beta';
 
-const getScore = () => Math.random().toFixed(2);
+    if (isInProbability(isBeta, nextVersion.rollout, getScore())) {
+        return nextVersion;
+    }
+
+    return [];
+};
 
 export {
     getLatestSafeFw,
