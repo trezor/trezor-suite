@@ -176,7 +176,7 @@ class Input extends PureComponent {
                             height={this.props.height}
                             trezorAction={this.props.trezorAction}
                             hasIcon={this.getIcon(this.props.state).length > 0}
-                            innerRef={this.props.innerRef}
+                            ref={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
                             color={this.getColor(this.props.state)}

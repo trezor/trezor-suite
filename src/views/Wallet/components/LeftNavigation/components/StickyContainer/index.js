@@ -19,11 +19,8 @@ type State = {
     footerFixed: boolean,
 }
 
-const AsideWrapper = styled.aside.attrs({
-    style: ({ minHeight }) => ({
-        minHeight,
-    }),
-})`
+const AsideWrapper = styled.aside`
+    min-height: ${props => props.minHeight}px;
     position: relative;
     top: 0px;
     width: 320px;
@@ -33,13 +30,10 @@ const AsideWrapper = styled.aside.attrs({
     border-right: 1px solid ${colors.DIVIDER};
 `;
 
-const StickyContainerWrapper = styled.div.attrs({
-    style: ({ top, left, paddingBottom }) => ({
-        top,
-        left,
-        paddingBottom,
-    }),
-})`
+const StickyContainerWrapper = styled.div`
+    top: ${props => props.top}px;
+    left: ${props => props.left}px;
+    padding-bottom: ${props => props.paddingBottom}px;
     position: fixed;
     border-right: 1px solid ${colors.DIVIDER};
     width: 320px;
@@ -160,7 +154,7 @@ export default class StickyContainer extends React.PureComponent<Props, State> {
             <AsideWrapper
                 footerFixed={this.state.footerFixed}
                 minHeight={this.state.asideMinHeight}
-                innerRef={this.asideRefCallback}
+                ref={this.asideRefCallback}
                 onScroll={this.handleScroll}
                 onTouchStart={this.handleScroll}
                 onTouchMove={this.handleScroll}
@@ -170,11 +164,11 @@ export default class StickyContainer extends React.PureComponent<Props, State> {
                     paddingBottom={this.state.wrapperBottomPadding}
                     top={this.state.wrapperTopOffset}
                     left={this.state.wrapperLeftOffset}
-                    innerRef={this.wrapperRefCallback}
+                    ref={this.wrapperRefCallback}
                 >
                     {React.Children.map(this.props.children, (child) => { // eslint-disable-line arrow-body-style
                         return child.key === 'sticky-footer' ? React.cloneElement(child, {
-                            innerRef: this.footerRefCallback,
+                            ref: this.footerRefCallback,
                             position: this.state.footerFixed ? 'fixed' : 'relative',
                         }) : child;
                     })}
