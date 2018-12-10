@@ -375,33 +375,27 @@ function lookupAllAddressHistories(
     ]);
 }
 
+type LookupAddressRes = (BcHistories & { from: number, to: number })
 function lookupAddressHistoriesMempool(
     socket: Socket,
     addresses: Array<string>,
     mempool: boolean,
     start: number,
     end: number,
-): Stream<(BcHistories & { from: number, to: number }) | Error> {
-    const initial = {
+): Stream<LookupAddressRes | Error> {
+    const initial: LookupAddressRes = {
         from: 0,
         to: 0,
         items: [],
         totalCount: 0,
     };
 
-    function _flow_typehack<X>(x: X | Error): X {
-        // $FlowIssue
-        return x;
-    }
-
     let pageLength = 1;
     let first = true;
 
     return Stream.generate(
         initial,
-        (previous_) => {
-            const previous = _flow_typehack(previous_);
-
+        (previous: LookupAddressRes): Promise<LookupAddressRes> => {
             // increasing the page size * 5, but only if the txs are small enough
             // (some users like to have giant transactions,
             // which causes trouble on both network and memory)
@@ -435,18 +429,9 @@ function lookupAddressHistoriesMempool(
                 ...result,
                 from,
                 to,
-            }), (error: mixed) => {
-                if (typeof error === 'object' && error != null && error instanceof Error) {
-                    return error;
-                } else {
-                    return new Error(JSON.stringify(error));
-                }
-            });
+            }));
         },
-        (state: (BcHistories & { from: number, to: number }) | Error) => {
-            if (state instanceof Error) {
-                return false;
-            }
+        (state: LookupAddressRes): boolean => {
             return state.to < state.totalCount;
         }
     );

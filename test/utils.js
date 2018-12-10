@@ -48,7 +48,6 @@ describe('emitter', () => {
         emitter.attach((v) => { value = v; });
         emitter.emit(3);
         assert.deepStrictEqual(value, 3);
-        emitter.destroy();
     });
 
     it('attach+emit works in next-ish tick', (done) => {
@@ -60,7 +59,6 @@ describe('emitter', () => {
         emitter.emit(3);
         setTimeout(() => {
             assert.deepEqual(value, 3);
-            emitter.destroy();
             done();
         }, 10);
     });
@@ -74,7 +72,6 @@ describe('emitter', () => {
         emitter.emit(3);
         setTimeout(() => {
             assert.deepEqual(value, 3);
-            emitter.destroy();
             done();
         }, 10);
     });
@@ -92,7 +89,6 @@ describe('emitter', () => {
             assert.ok(emitter.listeners instanceof Array);
             assert.deepStrictEqual(emitter.listeners.length, 0);
             assert.deepStrictEqual(emitter.destroyed, false);
-            emitter.destroy();
             done();
         }, 10);
     });
@@ -118,7 +114,6 @@ describe('emitter', () => {
             assert.ok(emitter.listeners instanceof Array);
             assert.deepStrictEqual(emitter.listeners.length, 0);
             assert.deepStrictEqual(emitter.destroyed, false);
-            emitter.destroy();
             done();
         }, 40);
     });
@@ -162,7 +157,6 @@ describe('emitter', () => {
             assert.ok(emitter.listeners instanceof Array);
             assert.deepStrictEqual(emitter.listeners.length, 1);
             assert.deepStrictEqual(emitter.destroyed, false);
-            emitter.destroy();
             done();
         }, 60);
     });
@@ -172,7 +166,6 @@ describe('emitter', () => {
         const fun = (v) => {};
         emitter.attach(fun);
         assert.throws(() => emitter.attach(fun), /Cannot attach the same listener twice/);
-        emitter.destroy();
     });
 });
 
@@ -185,7 +178,6 @@ describe('stream', () => {
             assert.ok(stream.values instanceof Emitter);
             assert.ok(stream.finish instanceof Emitter);
             assert.ok(typeof stream.dispose === 'function');
-            stream.dispose();
         });
 
         it('streams values on emit (this tick)', () => {
@@ -195,8 +187,6 @@ describe('stream', () => {
             stream.values.attach((v) => { value = v; });
             emitter.emit(3);
             assert.deepStrictEqual(value, 3);
-            emitter.destroy();
-            stream.dispose();
         });
 
         it('streams values on emit (delay)', (done) => {
@@ -209,8 +199,6 @@ describe('stream', () => {
             }, 10);
             setTimeout(() => {
                 assert.deepStrictEqual(value, 3);
-                stream.dispose();
-                emitter.destroy();
                 done();
             }, 20);
         });
@@ -246,8 +234,6 @@ describe('stream', () => {
             stream.dispose();
             emitter.emit(3);
             assert.deepStrictEqual(value, 6);
-            stream.dispose();
-            emitter.destroy();
         });
 
         it('stops emitting values after dispose (delay)', (done) => {
@@ -261,8 +247,6 @@ describe('stream', () => {
             setTimeout(() => emitter.emit(4), 40);
             setTimeout(() => {
                 assert.deepStrictEqual(value, 6);
-                emitter.destroy();
-                stream.dispose();
                 done();
             }, 50);
         });
@@ -277,7 +261,6 @@ describe('stream', () => {
             assert.ok(stream.values instanceof Emitter);
             assert.ok(stream.finish instanceof Emitter);
             assert.ok(typeof stream.dispose === 'function');
-            stream.dispose();
         });
 
         it('streams values on emit (this tick)', () => {
@@ -288,9 +271,6 @@ describe('stream', () => {
             stream.values.attach((v) => { value = v; });
             emitter.emit(3);
             assert.deepStrictEqual(value, 3);
-            emitter.destroy();
-            stream.dispose();
-            finish.destroy();
         });
 
         it('streams values on emit (delay)', (done) => {
@@ -304,9 +284,6 @@ describe('stream', () => {
             }, 10);
             setTimeout(() => {
                 assert.deepStrictEqual(value, 3);
-                stream.dispose();
-                emitter.destroy();
-                finish.destroy();
                 done();
             }, 20);
         });
@@ -345,9 +322,6 @@ describe('stream', () => {
             stream.dispose();
             emitter.emit(3);
             assert.deepStrictEqual(value, 6);
-            stream.dispose();
-            emitter.destroy();
-            finish.destroy();
         });
 
         it('stops emitting values after dispose (delay)', (done) => {
@@ -362,8 +336,6 @@ describe('stream', () => {
             setTimeout(() => emitter.emit(4), 40);
             setTimeout(() => {
                 assert.deepStrictEqual(value, 6);
-                emitter.destroy();
-                stream.dispose();
                 done();
             }, 50);
         });
@@ -379,8 +351,6 @@ describe('stream', () => {
             finish.emit();
             emitter.emit(3);
             assert.deepStrictEqual(value, 6);
-            stream.dispose();
-            emitter.destroy();
         });
 
         it('stops emitting values after finish (delay)', (done) => {
@@ -395,9 +365,6 @@ describe('stream', () => {
             setTimeout(() => emitter.emit(4), 40);
             setTimeout(() => {
                 assert.deepStrictEqual(value, 6);
-                emitter.destroy();
-                finish.destroy();
-                stream.dispose();
                 done();
             }, 50);
         });
@@ -489,7 +456,6 @@ describe('stream', () => {
             assert.ok(stream.values instanceof Emitter);
             assert.ok(stream.finish instanceof Emitter);
             assert.ok(typeof stream.dispose === 'function');
-            stream.dispose();
         });
         it('no value', (done) => {
             const stream = Stream.empty();
@@ -529,7 +495,6 @@ describe('stream', () => {
             assert.ok(stream.values instanceof Emitter);
             assert.ok(stream.finish instanceof Emitter);
             assert.ok(typeof stream.dispose === 'function');
-            stream.dispose();
         });
 
         it('stream emits as the promised stream emits', (done) => {
@@ -607,7 +572,8 @@ describe('stream', () => {
                 done();
             }, 60);
         });
-        it('ignores promise if disposed called before', (done) => {
+
+        it('ignores resolved promise if disposed called before', (done) => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
@@ -619,6 +585,7 @@ describe('stream', () => {
             const stream = Stream.fromPromise(promise);
             let seen = false;
             stream.values.attach(() => { seen = true; });
+            stream.finish.attach(() => { seen = true; });
             setTimeout(() => emitter.emit(), 70);
             setTimeout(() => stream.dispose(), 20);
             setTimeout(() => {
@@ -626,6 +593,7 @@ describe('stream', () => {
                 done();
             }, 90);
         });
+
         it('emits error that equals the rejection', (done) => {
             const e = new Error('rej');
             const promise = new Promise((resolve, reject) => {
@@ -640,6 +608,283 @@ describe('stream', () => {
                 assert.deepStrictEqual(seen, true);
                 done();
             }, 40);
+        });
+
+        it('ignores rejected promise if disposed called before', (done) => {
+            const promise = new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    reject(new Error('abc'));
+                }, 50);
+            });
+            const stream = Stream.fromPromise(promise);
+            let seen = false;
+            stream.values.attach(() => { seen = true; });
+            stream.finish.attach(() => { seen = true; });
+            setTimeout(() => stream.dispose(), 20);
+            setTimeout(() => {
+                assert.deepStrictEqual(seen, false);
+                done();
+            }, 90);
+        });
+    });
+
+    describe('setLater', () => {
+        it('creates a stream', () => {
+            const sstream = Stream.setLater();
+            assert.ok(sstream);
+            assert.ok(sstream.stream.values instanceof Emitter);
+            assert.ok(sstream.stream.finish instanceof Emitter);
+            assert.ok(typeof sstream.stream.dispose === 'function');
+            assert.ok(typeof sstream.setter === 'function');
+        });
+
+        it('stream emits as the set stream emits', (done) => {
+            const emitter = new Emitter();
+            const finish = new Emitter();
+            const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
+            const sstream = Stream.setLater();
+            setTimeout(() => {
+                sstream.setter(ostream);
+            }, 10);
+            let seen = false;
+            sstream.stream.values.attach(() => { seen = true; });
+            setTimeout(() => emitter.emit(), 30);
+            setTimeout(() => {
+                assert.deepStrictEqual(seen, true);
+                done();
+            }, 60);
+        });
+
+        it('stream emits, twice, as the setLater stream emits', (done) => {
+            const emitter = new Emitter();
+            const finish = new Emitter();
+            const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
+            const sstream = Stream.setLater();
+            setTimeout(() => {
+                sstream.setter(ostream);
+            }, 10);
+            let seen = 0;
+            sstream.stream.values.attach(() => { seen++; });
+            setTimeout(() => emitter.emit(), 30);
+            setTimeout(() => emitter.emit(), 50);
+            setTimeout(() => {
+                assert.deepStrictEqual(seen, 2);
+                done();
+            }, 70);
+        });
+
+        it('calls provided dispose function of set stream', (done) => {
+            const emitter = new Emitter();
+            const finish = new Emitter();
+            let disposed = false;
+            const ostream = Stream.fromEmitterFinish(emitter, finish, () => { disposed = true; });
+            const sstream = Stream.setLater();
+            setTimeout(() => {
+                sstream.setter(ostream);
+            }, 10);
+            setTimeout(() => sstream.stream.dispose(), 50);
+            setTimeout(() => {
+                assert.deepStrictEqual(disposed, true);
+                done();
+            }, 70);
+        });
+
+        it('stream finishes as the set stream finishes', (done) => {
+            const emitter = new Emitter();
+            const finish = new Emitter();
+            const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
+            const sstream = Stream.setLater();
+            setTimeout(() => {
+                sstream.setter(ostream);
+            }, 10);
+
+            let seen = false;
+            sstream.stream.finish.attach(() => { seen = true; });
+            setTimeout(() => finish.emit(), 30);
+            setTimeout(() => {
+                assert.deepStrictEqual(seen, true);
+                done();
+            }, 60);
+        });
+
+        it('ignores set stream if disposed called before', (done) => {
+            const emitter = new Emitter();
+            const finish = new Emitter();
+            const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
+            const sstream = Stream.setLater();
+            setTimeout(() => {
+                sstream.setter(ostream);
+            }, 10);
+
+            let seen = false;
+            sstream.stream.values.attach(() => { seen = true; });
+            sstream.stream.finish.attach(() => { seen = true; });
+            setTimeout(() => emitter.emit(), 70);
+            setTimeout(() => sstream.stream.dispose(), 20);
+            setTimeout(() => {
+                assert.deepStrictEqual(seen, false);
+                done();
+            }, 90);
+        });
+
+        it('throws error if set two times', () => {
+            const ostream = Stream.empty();
+            const sstream = Stream.setLater();
+            sstream.setter(ostream);
+            assert.throws(() => sstream.setter(ostream), /Setting stream twice/);
+        });
+    });
+
+    describe('generate', () => {
+        it('creates a stream', () => {
+            const stream = Stream.generate(null, () => Promise.resolve(2), () => false);
+            assert.ok(stream);
+            assert.ok(stream.values instanceof Emitter);
+            assert.ok(stream.finish instanceof Emitter);
+            assert.ok(typeof stream.dispose === 'function');
+        });
+
+        it('iterates through three states (this tick)', (done) => {
+            const stream = Stream.generate(0, (state) => {
+                return Promise.resolve(state + 1);
+            }, state => state < 3);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.finish.attach((nothing, detach) => {
+                assert.deepEqual(res, [1, 2, 3]);
+                done();
+            });
+        });
+
+        it('iterates through three states (next tick)', (done) => {
+            const stream = Stream.generate(0, (state) => {
+                return new Promise(resolve => {
+                    setTimeout(() => resolve(state + 1), 10);
+                });
+            }, state => state < 3);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.finish.attach((nothing, detach) => {
+                assert.deepEqual(res, [1, 2, 3]);
+                done();
+            });
+        });
+
+        it('emits error in the generating function and finishes', (done) => {
+            const foobar = new Error('Foobar');
+            const stream = Stream.generate(0, (state) => {
+                throw foobar;
+            }, state => state < 3);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.finish.attach((nothing, detach) => {
+                assert.deepEqual(res, [foobar]);
+                done();
+            });
+        });
+
+        it('emits formatted error in the generating function and finishes', (done) => {
+            const foobar = 'Foobar';
+            const stream = Stream.generate(0, (state) => {
+                throw foobar;
+            }, state => state < 3);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.finish.attach((nothing, detach) => {
+                assert.deepEqual(res[0].message, '"Foobar"');
+                done();
+            });
+        });
+
+        it('ignores error if disposed first', (done) => {
+            const foobar = new Error('Foobar');
+            const stream = Stream.generate(0, (state) => {
+                throw foobar;
+            }, state => state < 3);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.dispose();
+            setTimeout(() => {
+                assert.deepEqual(res, []);
+                done();
+            }, 10);
+        });
+
+        it('ignores value if disposed first', (done) => {
+            const stream = Stream.generate(0, (state) => {
+                return new Promise(resolve => {
+                    setTimeout(() => resolve(state + 1), 10);
+                });
+            }, state => state < 3);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.dispose();
+            setTimeout(() => {
+                assert.deepEqual(res, []);
+                done();
+            }, 10);
+        });
+
+        it('emits promise rejection and finishes', (done) => {
+            const foobar = new Error('Foobar');
+            const stream = Stream.generate(0, (state) => {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => reject(foobar), 10);
+                });
+            }, state => state < 3);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.finish.attach((nothing, detach) => {
+                assert.deepEqual(res, [foobar]);
+                done();
+            });
+        });
+
+        it('ignores promise rejection if disposed first', (done) => {
+            const foobar = new Error('Foobar');
+            const stream = Stream.generate(0, (state) => {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => reject(foobar), 10);
+                });
+            }, state => state < 3);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.dispose();
+            setTimeout(() => {
+                assert.deepEqual(res, []);
+                done();
+            }, 10);
+        });
+    });
+
+    describe('simple', () => {
+        it('creates a stream', () => {
+            const stream = Stream.simple(1);
+            assert.ok(stream);
+            assert.ok(stream.values instanceof Emitter);
+            assert.ok(stream.finish instanceof Emitter);
+            assert.ok(typeof stream.dispose === 'function');
+        });
+
+        it('emits value', (done) => {
+            const stream = Stream.simple(0);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.finish.attach((nothing, detach) => {
+                assert.deepEqual(res, [0]);
+                done();
+            });
+        });
+
+        it('ignores value if disposed first', (done) => {
+            const stream = Stream.simple(0);
+            const res = [];
+            stream.values.attach((v) => res.push(v));
+            stream.dispose();
+            setTimeout(() => {
+                assert.deepEqual(res, []);
+                done();
+            }, 10);
         });
     });
 });

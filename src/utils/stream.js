@@ -20,6 +20,15 @@
 
 import { deferred } from './deferred';
 
+// making sure that Error from a promise is an Error object
+function formatError(error: mixed): Error {
+    if (typeof error === 'object' && error != null && error instanceof Error) {
+        return error;
+    } else {
+        return new Error(JSON.stringify(error));
+    }
+}
+
 // having detach function in the handler is actually very useful
 // because we don't have to name the function when attaching emitter
 type Handler<T> = (value: T, detach: () => void) => void;
@@ -167,10 +176,12 @@ export class Stream<T> {
                     stream_ = stream;
                 }
             }, (error) => {
-                update(error);
-                setTimeout(
-                  () => finish(), 10
-                );
+                if (!disposed) {
+                    update(formatError(error));
+                    setTimeout(
+                    () => finish(), 10
+                  );
+                }
             });
             return () => {
                 disposed = true;
@@ -178,32 +189,6 @@ export class Stream<T> {
                     stream_.dispose();
                 }
             };
-        });
-    }
-
-    static generate<T>(
-        initial: T,
-        generate: (state: T) => Promise<T>,
-        condition: (state: T) => boolean
-    ): Stream<T> {
-        return new Stream((update, finish) => {
-            let disposed = false;
-            const iterate = (state) => {
-                generate(state).then((state) => {
-                    if (disposed) {
-                        // stop the iteration
-                    } else {
-                        update(state);
-                        if (condition(state)) {
-                            iterate(state);
-                        } else {
-                            finish();
-                        }
-                    }
-                });
-            };
-            iterate(initial);
-            return () => { disposed = true; };
         });
     }
 
@@ -220,46 +205,77 @@ export class Stream<T> {
             set = true;
             df.resolve(s);
         };
-        const stream = new Stream((update, finish) => {
-            let s: ?Stream<T> = null;
-            df.promise.then(ns => {
-                s = ns;
-                ns.values.attach((v) => {
-                    update(v);
-                });
-                ns.finish.attach(() => {
-                    finish();
-                });
-            });
-            return () => {
-                if (s != null) {
-                    s.dispose();
-                }
-            };
-        });
+        const stream = Stream.filterError(Stream.fromPromise(df.promise));
         return {stream, setter};
     }
 
-    static simple<T>(value: T): Stream<T> {
+    // note - when generate() ends with error,
+    // the stream emits the error as a value and then finishes
+    // note - condition is for CONTINUING
+    // the last value will always NOT satisfy the condition
+    static generate<T>(
+        initial: T,
+        generate: (state: T) => Promise<T>,
+        condition: (state: T) => boolean
+    ): Stream<T | Error> {
         return new Stream((update, finish) => {
             let disposed = false;
-            setTimeout(() => {
-                if (!disposed) {
-                    update(value);
-                    setTimeout(() => {
-                        if (!disposed) {
+            const iterate = (state) => {
+                let promise;
+                try {
+                    // catch error in generate, if it happens
+                    promise = generate(state);
+                } catch (error) {
+                    if (disposed) {
+                        // stop the iteration
+                    } else {
+                        update(formatError(error));
+                        finish();
+                    }
+                    return;
+                }
+                promise.then((state) => {
+                    if (disposed) {
+                        // stop the iteration
+                    } else {
+                        update(state);
+                        if (condition(state)) {
+                            iterate(state);
+                        } else {
                             finish();
                         }
-                    }, 1);
-                }
-            }, 1);
-            return () => {
-                disposed = true;
+                    }
+                }, (error) => {
+                    if (disposed) {
+                        // stop the iteration
+                    } else {
+                        update(formatError(error));
+                        finish();
+                    }
+                });
             };
+            setTimeout(() => iterate(initial), 1);
+            return () => { disposed = true; };
         });
     }
 
+    static simple<T>(value: T): Stream<T> {
+        const values: Emitter<T> = new Emitter();
+        const finish: Emitter<void> = new Emitter();
+        const stream = Stream.fromEmitterFinish(values, finish, () => {});
+        setTimeout(() => {
+            values.emit(value);
+            setTimeout(() => {
+                finish.emit();
+            }, 1);
+        }, 1);
+        return stream;
+    }
+
     static combineFlat<T>(streams: Array<Stream<T>>): Stream<T> {
+        if (streams.length === 0) {
+            return Stream.empty();
+        }
         return new Stream((update, finish) => {
             const finished = new Set();
             streams.forEach((s, i) => {
@@ -415,33 +431,6 @@ export class Stream<T> {
             let state = initial;
             this.values.attach((value) => { state = fn(state, value); });
             this.finish.attach(() => { resolve(state); });
-        });
-    }
-
-    concat(other: Stream<T>): Stream<T> {
-        return new Stream((update, finish) => {
-            let finished = 0;
-            this.values.attach((value) => {
-                update(value);
-            });
-            other.values.attach((value) => {
-                update(value);
-            });
-
-            const finishOne = () => {
-                finished++;
-                if (finished === 2) {
-                    finish();
-                }
-            };
-
-            this.finish.attach(finishOne);
-            other.finish.attach(finishOne);
-
-            return () => {
-                this.dispose();
-                other.dispose();
-            };
         });
     }
 }

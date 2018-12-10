@@ -196,7 +196,11 @@ export class WorkerDiscovery {
 
                 // we need to do updates on blocks, if there are unconfs
                 const blockStream: Stream<'block' | TransactionWithHeight> = this.chain.blocks.map(() => 'block');
-                const reloads: Stream<'block' | TransactionWithHeight> = blockStream.concat(txNotifs).concat(this.forceAddedTransactionsStream);
+                const reloads: Stream<'block' | TransactionWithHeight> = Stream.combineFlat([
+                    blockStream,
+                    txNotifs,
+                    this.forceAddedTransactionsStream,
+                ]);
 
                 const res: Stream<(AccountInfo | Error)> = reloads.mapPromiseError((): Promise<AccountInfo> => {
                     const out: WorkerDiscoveryHandler = new WorkerDiscoveryHandler(
