@@ -29,7 +29,7 @@ const InputIconWrapper = styled.div`
 `;
 
 const TopLabel = styled.span`
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     color: ${colors.TEXT_SECONDARY};
 `;
 

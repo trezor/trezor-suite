@@ -22,7 +22,7 @@ type State = {
 };
 
 const Wrapper = styled.div`
-    padding: 10px 0 25px 0;
+    padding-bottom: 28px;
     position: relative;
     display: flex;
 
