@@ -19,7 +19,6 @@ describe('Ripple call', () => {
     
     beforeEach(async () => {
         server = await createServer();
-        // console.log("Server", server.options.port, `ws://localhost:${server.options.port}`)
         blockchain = new BlockchainLink({
             name: 'Tests:Ripple',
             worker: rippleWorkerFactory,

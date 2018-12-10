@@ -1,6 +1,8 @@
+/* @flow */
+
 import TinyWorker from 'tiny-worker';
 
-export const rippleWorkerFactory = () => {
+export const rippleWorkerFactory = (): Worker => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker(() => {
             const requireHack = eval('req' + 'uire');

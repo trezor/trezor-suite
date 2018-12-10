@@ -1,3 +1,5 @@
+/* @flow */
+
 import { Server } from 'ws';
 import assert from 'assert';
 import getFreePort from './freePort';
@@ -14,7 +16,7 @@ const createResponse = (request, response, overrides = {}) => {
     return JSON.stringify(result);
 }
 
-const create = async (port2) => {
+const create = async () => {
 
     const port = await getFreePort();
     

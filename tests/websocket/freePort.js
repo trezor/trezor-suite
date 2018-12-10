@@ -1,7 +1,9 @@
+/* @flow */
+
 import net from 'net';
 
 // using a free port instead of a constant port enables parallelization
-const getFreePort = async () => {
+const getFreePort = async (): Promise<number> => {
     return new Promise((resolve, reject) => {
         const server = net.createServer();
         let port;
