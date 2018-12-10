@@ -13,13 +13,12 @@ import type { Props } from './Container';
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
-    margin-top: -5px;
     flex-direction: row;
     background: ${colors.WHITE};
 `;
 
 const Row = styled.div`
-    padding: 0 0 25px 0;
+    padding-bottom: 28px;
 `;
 
 const RowButtons = styled(Row)`

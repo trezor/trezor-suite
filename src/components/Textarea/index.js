@@ -99,7 +99,7 @@ const StyledTextarea = styled(Textarea)`
 `;
 
 const TopLabel = styled.span`
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     color: ${colors.TEXT_SECONDARY};
 `;
 

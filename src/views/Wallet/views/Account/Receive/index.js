@@ -2,9 +2,8 @@
 import React from 'react';
 import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
-import media from 'styled-media-query';
 
-import { H2 } from 'components/Heading';
+import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
@@ -20,7 +19,7 @@ import VerifyAddressTooltip from './components/VerifyAddressTooltip';
 import type { Props } from './Container';
 
 const Label = styled.div`
-    padding: 25px 0 5px 0;
+    padding-bottom: 10px;
     color: ${colors.TEXT_SECONDARY};
 `;
 
@@ -43,14 +42,17 @@ const ShowAddressButton = styled(Button)`
     display: flex;
     height: 40px;
     align-items: center;
+    align-self: flex-end;
     justify-content: center;
 
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 
-    ${media.lessThan('795px')`
+    @media screen and (max-width: 795px) {
         margin-top: 10px;
-    `}
+        align-self: auto;
+        border-radius: 3px;
+    }
 `;
 
 const ShowAddressIcon = styled(Icon)`
@@ -76,10 +78,11 @@ const EyeButton = styled(Button)`
 const Row = styled.div`
     display: flex;
     width: 100%;
+    padding-bottom: 28px;
 
-    ${media.lessThan('795px')`
+    @media screen and (max-width: 795px) {
         flex-direction: column;
-    `}
+    }
 `;
 
 const QrWrapper = styled.div`
@@ -114,15 +117,15 @@ const AccountReceive = (props: Props) => {
     return (
         <Content>
             <React.Fragment>
-                <H2>Receive Ethereum or tokens</H2>
+                <Title>Receive Ethereum or tokens</Title>
                 <AddressWrapper isShowingQrCode={addressVerified || addressUnverified}>
-                    <Label>Address</Label>
                     <Row>
                         <Input
                             type="text"
                             isReceiveAddress
                             readOnly
                             autoSelect
+                            topLabel="Address"
                             value={address}
                             isPartiallyHidden={isAddressHidden}
                             trezorAction={isAddressVerifying ? (
