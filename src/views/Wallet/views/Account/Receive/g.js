@@ -2,7 +2,6 @@
 import React from 'react';
 import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
-import media from 'styled-media-query';
 
 import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
@@ -49,11 +48,9 @@ const ShowAddressButton = styled(Button)`
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 
-    ${media.lessThan('795px')`
+    @media screen and (max-width: 795px) {
         margin-top: 10px;
-        align-self: auto;
-        border-radius: 3px;
-    `}
+    }
 `;
 
 const ShowAddressIcon = styled(Icon)`
@@ -81,9 +78,9 @@ const Row = styled.div`
     width: 100%;
     padding-bottom: 28px;
 
-    ${media.lessThan('795px')`
+    @media screen and (max-width: 795px) {
         flex-direction: column;
-    `}
+    }
 `;
 
 const QrWrapper = styled.div`
