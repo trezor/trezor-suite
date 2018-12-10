@@ -4,7 +4,7 @@ import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
 import media from 'styled-media-query';
 
-import { H2 } from 'components/Heading';
+import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
@@ -20,7 +20,7 @@ import VerifyAddressTooltip from './components/VerifyAddressTooltip';
 import type { Props } from './Container';
 
 const Label = styled.div`
-    padding: 25px 0 5px 0;
+    padding-bottom: 8px;
     color: ${colors.TEXT_SECONDARY};
 `;
 
@@ -43,6 +43,7 @@ const ShowAddressButton = styled(Button)`
     display: flex;
     height: 40px;
     align-items: center;
+    align-self: flex-end;
     justify-content: center;
 
     border-top-left-radius: 0;
@@ -76,6 +77,7 @@ const EyeButton = styled(Button)`
 const Row = styled.div`
     display: flex;
     width: 100%;
+    padding-bottom: 25px;
 
     ${media.lessThan('795px')`
         flex-direction: column;
@@ -114,14 +116,14 @@ const AccountReceive = (props: Props) => {
     return (
         <Content>
             <React.Fragment>
-                <H2>Receive Ethereum or tokens</H2>
+                <Title>Receive Ethereum or tokens</Title>
                 <AddressWrapper isShowingQrCode={addressVerified || addressUnverified}>
-                    <Label>Address</Label>
                     <Row>
                         <Input
                             type="text"
                             readOnly
                             autoSelect
+                            topLabel="Address"
                             value={address}
                             isPartiallyHidden={isAddressHidden}
                             trezorAction={isAddressVerifying ? (
