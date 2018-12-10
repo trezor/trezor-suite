@@ -1,7 +1,7 @@
-trezor-rollup
+trezor-rollout
 =========
 
-Small javascript library to get latest safe firmware version for update
+Small javascript library to get latest safe firmware version for trezor update.
 
 Install
 -----
