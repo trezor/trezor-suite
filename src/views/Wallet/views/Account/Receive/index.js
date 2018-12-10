@@ -51,6 +51,8 @@ const ShowAddressButton = styled(Button)`
 
     ${media.lessThan('795px')`
         margin-top: 10px;
+        align-self: auto;
+        border-radius: 3px;
     `}
 `;
 
