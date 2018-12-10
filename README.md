@@ -6,9 +6,14 @@ Small javascript library to get latest safe firmware version for trezor update.
 Install
 -----
 
+#### Npm 
 ```npm install trezor-rollup --save```
 
+#### Yarn
 ```yarn add trezor-rollup```
+
+Commands
+-----
 
 #### Build 
 to build a bundle run `yarn build`
