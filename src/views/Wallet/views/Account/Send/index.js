@@ -34,7 +34,7 @@ const AmountInputLabel = styled.span`
 `;
 
 const InputRow = styled.div`
-    padding: 0 0 25px 0;
+    padding-bottom: 28px;
 `;
 
 const SetMaxAmountButton = styled(Button)`
@@ -88,7 +88,7 @@ const FeeOptionWrapper = styled.div`
 const FeeLabelWrapper = styled.div`
     display: flex;
     align-items: center;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
 `;
 
 const FeeLabel = styled.span`

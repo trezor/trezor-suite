@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const Row = styled.div`
-    padding-bottom: 25px;
+    padding-bottom: 28px;
 `;
 
 const RowButtons = styled(Row)`

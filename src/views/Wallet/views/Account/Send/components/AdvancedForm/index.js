@@ -23,7 +23,7 @@ type Props = BaseProps & {
 const SmallScreenWidth = '850px';
 
 const InputRow = styled.div`
-    padding-bottom: 25px;
+    padding-bottom: 28px;
 `;
 
 const InputLabelWrapper = styled.div`
@@ -69,7 +69,7 @@ const GasInput = styled(Input)`
 `;
 
 const StyledTextarea = styled(Textarea)`
-    padding-bottom: 25px;
+    padding-bottom: 28px;
     min-height: 80px;
 `;
 

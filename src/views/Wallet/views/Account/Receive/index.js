@@ -20,7 +20,7 @@ import VerifyAddressTooltip from './components/VerifyAddressTooltip';
 import type { Props } from './Container';
 
 const Label = styled.div`
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     color: ${colors.TEXT_SECONDARY};
 `;
 
@@ -77,7 +77,7 @@ const EyeButton = styled(Button)`
 const Row = styled.div`
     display: flex;
     width: 100%;
-    padding-bottom: 25px;
+    padding-bottom: 28px;
 
     ${media.lessThan('795px')`
         flex-direction: column;
