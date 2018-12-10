@@ -63,10 +63,8 @@ const StyledInput = styled.input`
     }
 
     &:read-only  {
-        ${props => !props.isReceiveAddress && css`
-            background: ${colors.GRAY_LIGHT};
-            color: ${colors.TEXT_SECONDARY};
-        `}
+        background: ${colors.GRAY_LIGHT};
+        color: ${colors.TEXT_SECONDARY};
     }
 
     ${props => props.trezorAction && css`
@@ -102,7 +100,7 @@ const Overlay = styled.div`
         height: 100%;
         background-image: linear-gradient(to right, 
             rgba(0,0,0, 0) 0%,
-            rgba(255,255,255, 1) 220px
+            rgba(249,249,249, 1) 220px
         );
     `}
 `;
@@ -191,7 +189,6 @@ class Input extends PureComponent {
                             autoCorrect={this.props.autocorrect}
                             autoCapitalize={this.props.autocapitalize}
                             spellCheck={this.props.spellCheck}
-                            isReceiveAddress={this.props.isReceiveAddress}
                             isSmallText={this.props.isSmallText}
                             value={this.props.value}
                             readOnly={this.props.readOnly}
@@ -243,14 +240,12 @@ Input.propTypes = {
     name: PropTypes.string,
     isSmallText: PropTypes.bool,
     isPartiallyHidden: PropTypes.bool,
-    isReceiveAddress: PropTypes.bool,
 };
 
 Input.defaultProps = {
     type: 'text',
     autoSelect: false,
     height: 40,
-    isReceiveAddress: false,
 };
 
 export default Input;
