@@ -89,9 +89,9 @@ export const getAccountPendingTx = (pending: Array<PendingTx>, account: ?Account
     return pending.filter(p => p.network === a.network && p.address === a.address);
 };
 
-export const getPendingNonce = (pending: Array<PendingTx>): number => pending.reduce((value: number, tx: PendingTx) => {
+export const getPendingSequence = (pending: Array<PendingTx>): number => pending.reduce((value: number, tx: PendingTx) => {
     if (tx.rejected) return value;
-    return Math.max(value, tx.nonce + 1);
+    return Math.max(value, tx.sequence + 1);
 }, 0);
 
 export const getPendingAmount = (pending: Array<PendingTx>, currency: string, token: boolean = false): BigNumber => pending.reduce((value: BigNumber, tx: PendingTx) => {

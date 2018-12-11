@@ -13,12 +13,11 @@ export type PendingTxAction = {
     payload: PendingTx
 } | {
     type: typeof PENDING.TX_RESOLVED,
-    tx: PendingTx,
-    receipt?: Object,
+    hash: string,
 } | {
     type: typeof PENDING.TX_REJECTED,
-    tx: PendingTx,
+    hash: string,
 } | {
     type: typeof PENDING.TX_TOKEN_ERROR,
-    tx: PendingTx,
+    hash: string,
 }

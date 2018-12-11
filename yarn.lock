@@ -11896,10 +11896,9 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
-trezor-connect@6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-6.0.2.tgz#a4ca892cc4a167b34b97644e1404a56f6a110379"
-  integrity sha512-oSYTPnQD9ZT3vO2hBRdgealHG7t8Wu3oTZXX/U4eRxJZ0WqdEcXG7Nvqe1BL6Rl3VTuj7ALT9DL1Uq3QFYAc3g==
+trezor-connect@6.0.3-beta.4:
+  version "6.0.3-beta.4"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-6.0.3-beta.4.tgz#c0b3dfe809756b455e5b5b34fb2a104846da4f72"
   dependencies:
     babel-runtime "^6.26.0"
     events "^1.1.1"

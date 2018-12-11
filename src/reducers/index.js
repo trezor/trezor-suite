@@ -10,7 +10,8 @@ import modal from 'reducers/ModalReducer';
 import web3 from 'reducers/Web3Reducer';
 import accounts from 'reducers/AccountsReducer';
 import selectedAccount from 'reducers/SelectedAccountReducer';
-import sendForm from 'reducers/SendFormReducer';
+import sendFormEthereum from 'reducers/SendFormEthereumReducer';
+import sendFormRipple from 'reducers/SendFormRippleReducer';
 import receive from 'reducers/ReceiveReducer';
 import summary from 'reducers/SummaryReducer';
 import tokens from 'reducers/TokensReducer';
@@ -32,7 +33,8 @@ const reducers = {
     web3,
     accounts,
     selectedAccount,
-    sendForm,
+    sendFormEthereum,
+    sendFormRipple,
     receive,
     summary,
     tokens,

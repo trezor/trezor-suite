@@ -75,15 +75,14 @@ export const initialState: State = {
 };
 
 export default (state: State = initialState, action: Action): State => {
+    if (action.type === ACCOUNT.DISPOSE) return initialState;
+    if (!action.networkType || action.networkType !== 'ethereum') return state;
+
     switch (action.type) {
         case SEND.INIT:
         case SEND.CHANGE:
         case SEND.VALIDATION:
             return action.state;
-
-        case ACCOUNT.DISPOSE:
-            return initialState;
-
 
         case SEND.TOGGLE_ADVANCED:
             return {

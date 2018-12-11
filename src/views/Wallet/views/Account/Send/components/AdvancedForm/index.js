@@ -11,7 +11,7 @@ import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import { FONT_SIZE } from 'config/variables';
 
-import type { Props as BaseProps } from '../../Container';
+import type { Props as BaseProps } from '../../ethereum/Container';
 
 type Props = BaseProps & {
     children: React.Node,

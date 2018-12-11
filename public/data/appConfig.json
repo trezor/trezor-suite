@@ -1,6 +1,19 @@
 {
     "networks": [
         {
+            "type": "ripple",
+            "name": "Ripple Testnet",
+            "testnet": true,
+            "symbol": "XRP",
+            "shortcut": "xrp",
+            "bip44": "m/44'/144'/a'/0/0",
+            "explorer": {
+                "tx": "https://sisyfos.trezor.io/ripple-testnet-explorer/tx/",
+                "address": "https://sisyfos.trezor.io/ripple-testnet-explorer/address/"
+            }
+        },
+        {
+            "type": "ethereum",
             "name": "Ethereum",
             "symbol": "ETH",
             "shortcut": "eth",
@@ -19,6 +32,7 @@
             }
         },
         {
+            "type": "ethereum",
             "name": "Ethereum Classic",
             "symbol": "ETC",
             "shortcut": "etc",
@@ -37,7 +51,9 @@
             }
         },
         { 
+            "type": "ethereum",
             "name": "Ethereum Ropsten",
+            "testnet": true,
             "symbol": "tROP",
             "shortcut": "trop",
             "chainId": 3,
@@ -64,6 +80,10 @@
         { 
             "network": "etc",
             "url": "https://api.coingecko.com/api/v3/coins/ethereum-classic"
+        },
+        { 
+            "network": "xrp",
+            "url": "https://api.coingecko.com/api/v3/coins/ripple"
         }
     ],
 
