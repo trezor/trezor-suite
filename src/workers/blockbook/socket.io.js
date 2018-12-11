@@ -108,6 +108,10 @@ class Connection extends EventEmitter {
         // });
     }
 
+    unsubscribeBlock() {
+
+    }
+
     subscribeAddresses(addresses: Array<string>) {
         return new Promise((resolve) => {
             this._socket.on('bitcoind/addresstxid', (result) => {
@@ -122,6 +126,10 @@ class Connection extends EventEmitter {
             });
             this._socket.emit('subscribe', 'bitcoind/addresstxid', addresses, resolve);
         });
+    }
+
+    unsubscribeAddresses(addresses: Array<string>) {
+        
     }
 
     disconnect() {

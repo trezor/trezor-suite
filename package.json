@@ -19,6 +19,9 @@
     "javascript"
   ],
   "main": "index.js",
+  "browser": {
+    "ws": "./lib/ws.js"
+  },
   "scripts": {
     "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js --mode development",
     "build": "rm -rf ./build && yarn build:lib && yarn build:workers",

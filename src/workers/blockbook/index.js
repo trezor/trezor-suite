@@ -1,7 +1,8 @@
 /* @flow */
 import { MESSAGES, RESPONSES } from '../../constants';
 import * as common from '../common';
-import Connection from './socket';
+import Connection from './socket.io';
+// import Socket from './websocket';
 
 import type { Message, Response } from '../../types';
 import * as MessageTypes from '../../types/messages';
@@ -49,6 +50,11 @@ let _connection: ?Connection;
 let _endpoints: Array<string> = [];
 
 const connect = async (): Promise<Connection> => {
+
+    // const s = new Socket();
+    // const ss = await s.connect();
+    // console.warn("NativeWS", ss);
+
     if (_connection) {
         if (_connection.isConnected()) return _connection;
     }
@@ -206,12 +212,12 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
 const unsubscribeAddresses = async (addresses: Array<string>) => {
     const subscribed = common.removeAddresses(addresses);
     const socket = await connect();
-    await socket.unsubscribe(addresses);
+    // socket.unsubscribeAddresses(addresses);
 
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
         // remove listeners
-        socket.off('notification', onTransaction);
+        // socket.off('notification', onTransaction);
         common.removeSubscription('notification');
     }
 }
@@ -219,7 +225,7 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
 const unsubscribeBlock = async () => {
     if (!common.getSubscription('ledger')) return;
     const socket = await connect();
-    socket.off('block', onNewBlock);
+    // socket.off('block', onNewBlock);
     common.removeSubscription('block');
 }
 

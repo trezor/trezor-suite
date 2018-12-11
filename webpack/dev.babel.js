@@ -28,7 +28,7 @@ module.exports = {
         hot: false,
         https: false,
         port: PORT,
-        stats: 'minimal',
+        stats: 'normal',
         inline: true,
     },
     module: {
@@ -50,11 +50,15 @@ module.exports = {
     },
     resolve: {
         modules: [SRC, 'node_modules'],
+        alias: {
+            'ws-browser': `${SRC}/utils/ws.js`,
+        },
     },
     performance: {
         hints: false,
     },
     plugins: [
+        new webpack.NormalModuleReplacementPlugin(/^ws$/, 'ws-browser'),
         // new FlowWebpackPlugin({
         //     reportingSeverity: 'warning',
         // }),
@@ -72,6 +76,6 @@ module.exports = {
     node: {
         net: 'empty',
         tls: 'empty',
-        dns: 'empty'
+        dns: 'empty',
     }
 };
