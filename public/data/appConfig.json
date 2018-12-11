@@ -8,8 +8,8 @@
             "shortcut": "xrp",
             "bip44": "m/44'/144'/a'/0/0",
             "explorer": {
-                "tx": "https://etherscan.io/tx/",
-                "address": "https://etherscan.io/address/"
+                "tx": "https://sisyfos.trezor.io/ripple-testnet-explorer/tx/",
+                "address": "https://sisyfos.trezor.io/ripple-testnet-explorer/address/"
             }
         },
         {
