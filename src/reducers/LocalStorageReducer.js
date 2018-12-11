@@ -8,6 +8,7 @@ import type { Action } from 'flowtype';
 export type Network = {
     type: string;
     name: string;
+    testnet?: boolean;
     shortcut: string;
     symbol: string;
     bip44: string;

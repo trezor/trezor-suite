@@ -3,6 +3,7 @@
         {
             "type": "ripple",
             "name": "Ripple Testnet",
+            "testnet": true,
             "symbol": "XRP",
             "shortcut": "xrp",
             "bip44": "m/44'/144'/a'/0/0",
@@ -52,6 +53,7 @@
         { 
             "type": "ethereum",
             "name": "Ethereum Ropsten",
+            "testnet": true,
             "symbol": "tROP",
             "shortcut": "trop",
             "chainId": 3,

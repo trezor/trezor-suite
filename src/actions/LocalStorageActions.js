@@ -141,10 +141,9 @@ const loadJSON = (): AsyncAction => async (dispatch: Dispatch): Promise<void> =>
     try {
         const config: Config = await httpRequest(AppConfigJSON, 'json');
 
-        // remove ropsten testnet from config networks
+        // remove testnets from config networks
         if (!buildUtils.isDev()) {
-            const index = config.networks.findIndex(c => c.shortcut === 'trop');
-            delete config.networks[index];
+            config.networks = config.networks.filter(n => !n.testnet);
         }
 
         const ERC20Abi = await httpRequest(Erc20AbiJSON, 'json');
