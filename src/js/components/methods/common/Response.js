@@ -69,7 +69,7 @@ const Response = (props): any => {
             <div className="method-result-menu">
                 <div data-tab="response" onClick={ event => props.onTabChange('response') }>Response</div>
                 <div data-tab="code" onClick={ event => props.onTabChange('code') }>Javascript code</div>
-                <div data-tab="tests" onClick={ event => props.onTabChange('tests') }>Tests</div>
+                {/* <div data-tab="tests" onClick={ event => props.onTabChange('tests') }>Tests</div> */}
             </div>
             { currentTab }
         </div>
