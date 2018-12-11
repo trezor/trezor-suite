@@ -46,7 +46,7 @@ const AccountName = styled.div`
 
 const AccountTitle = styled.div`
     font-size: ${FONT_SIZE.WALLET_TITLE};
-    font-weight: ${FONT_WEIGHT.BASE};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${colors.WALLET_TITLE};
 `;
 

@@ -40,7 +40,7 @@ const StyledInput = styled.input`
 
     line-height: 1.42857143;
     font-size: ${props => (props.isSmallText ? `${FONT_SIZE.SMALLER}` : `${FONT_SIZE.SMALL}`)};
-    font-weight: ${FONT_WEIGHT.BASE};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${props => (props.color ? props.color : colors.TEXT)};
 
     border-radius: 2px;

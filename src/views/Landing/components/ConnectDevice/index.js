@@ -37,7 +37,7 @@ const ConnectTrezorWrapper = styled.div`
     animation: ${PULSATE} 1.3s ease-out infinite;
     color: ${colors.GREEN_PRIMARY};
     font-size: ${FONT_SIZE.BASE};
-    font-weight: ${FONT_WEIGHT.BASE};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
 `;
 
 const Image = styled.img`

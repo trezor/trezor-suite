@@ -45,7 +45,7 @@ const SetMaxAmountButton = styled(Button)`
     justify-content: center;
 
     font-size: ${FONT_SIZE.SMALLER};
-    font-weight: ${FONT_WEIGHT.SMALLEST};
+    font-weight: ${FONT_WEIGHT.LIGHT};
     color: ${colors.TEXT_SECONDARY};
 
     border-radius: 0;
@@ -127,7 +127,7 @@ const ToggleAdvancedSettingsButton = styled(Button)`
     padding: 0;
     display: flex;
     align-items: center;
-    font-weight: ${FONT_WEIGHT.BIGGER};
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
 `;
 
 const SendButton = styled(Button)`

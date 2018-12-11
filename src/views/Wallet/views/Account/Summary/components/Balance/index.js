@@ -52,7 +52,7 @@ const HideBalanceIconWrapper = styled.div`
 `;
 
 const FiatValue = styled.div`
-    font-weight: ${FONT_WEIGHT.BIGGER};
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
     font-size: ${FONT_SIZE.BIG};
     margin: 7px 0;
     min-height: 25px;
@@ -60,7 +60,7 @@ const FiatValue = styled.div`
 `;
 
 const FiatValueRate = styled.div`
-    font-weight: ${FONT_WEIGHT.BIGGER};
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
     font-size: ${FONT_SIZE.BASE};
     min-height: 25px;
     margin: 7px 0;

@@ -48,7 +48,7 @@ const Message = styled.div`
 const Title = styled.div`
     padding-bottom: 5px;
     padding-top: 1px;
-    font-weight: ${FONT_WEIGHT.BIGGER};
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
 `;
 
 const CloseClick = styled.div`

@@ -16,10 +16,10 @@ export const FONT_SIZE = {
 };
 
 export const FONT_WEIGHT = {
-    SMALLEST: '300',
-    SMALL: '400',
-    BASE: '500',
-    BIGGER: '600',
+    LIGHT: '300',
+    NORMAL: '400',
+    MEDIUM: '500',
+    SEMIBOLD: '600',
 };
 
 export const FONT_FAMILY = {

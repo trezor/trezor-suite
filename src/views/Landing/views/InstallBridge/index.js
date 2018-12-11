@@ -70,7 +70,7 @@ const Version = styled.span`
     border: 1px solid ${colors.GREEN_PRIMARY};
     border-radius: 3px;
     font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.SMALLEST};
+    font-weight: ${FONT_WEIGHT.LIGHT};
     margin-left: 24px;
 `;
 
