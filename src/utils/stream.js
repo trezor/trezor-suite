@@ -166,21 +166,30 @@ export class Stream<T> {
     static fromPromise<T>(
         promise: Promise<Stream<T>>
     ): Stream<Error | T> {
-        return new Stream((update, finish) => {
+        const nstream = new Stream((update, finish) => {
             let stream_;
             let disposed = false;
             promise.then(stream => {
                 if (!disposed) {
-                    stream.values.attach(v => update(v));
-                    stream.finish.attach(() => finish());
-                    stream_ = stream;
+                    if (!stream.disposed) {
+                        stream.values.attach(v => update(v));
+                        stream.finish.attach(() => finish());
+                        stream_ = stream;
+                    } else {
+                        // uhhh I donno
+                        nstream.dispose();
+                    }
                 }
             }, (error) => {
                 if (!disposed) {
                     update(formatError(error));
                     setTimeout(
-                    () => finish(), 10
-                  );
+                      () => {
+                        if (!disposed) {
+                          finish();
+                        }
+                      }, 10
+                    );
                 }
             });
             return () => {
@@ -190,6 +199,7 @@ export class Stream<T> {
                 }
             };
         });
+        return nstream;
     }
 
     static setLater<T>(): {
@@ -310,6 +320,7 @@ export class Stream<T> {
     }
 
     constructor(controller: Controller<T>) {
+        this.disposed = false;
         this.values = new Emitter();
         this.finish = new Emitter();
         const controllerDispose = controller(
@@ -320,6 +331,7 @@ export class Stream<T> {
             controllerDispose();
             this.values.destroy();
             this.finish.destroy();
+            this.disposed = true;
         };
     }
 

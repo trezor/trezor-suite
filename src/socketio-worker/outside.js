@@ -96,7 +96,9 @@ class SocketWorkerHandler {
                 worker.onmessage = (message) => {
                     const data = message.data;
                     if (typeof data === 'string') {
-                        emitter.emit(JSON.parse(data));
+                        if (!this.stopped) {
+                            emitter.emit(JSON.parse(data));
+                        }
                     }
                 };
                 this._emitter = emitter;
@@ -118,10 +120,18 @@ class SocketWorkerHandler {
             });
     }
 
+    stopped: boolean = false;
+
     close() {
+        this.stopped = true;
         this._sendMessage({
             type: 'close',
         });
+        setTimeout(() => {
+            if (this._worker != null) {
+                this._worker.terminate();
+            }
+        }, 10);
         if (this._emitter != null) {
             this._emitter.destroy();
             this._emitter = null;
