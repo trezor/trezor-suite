@@ -24,7 +24,7 @@ describe('Get fixed random', () => {
                 { version: [2, 0, 0], min_bootloader_version: [2, 0, 0] },
             ],
             isInBootloader: true,
-            bootloaderVersion: [2, 0, 0],
+            bootloaderVersion: [3, 0, 0],
         });
 
         expect(result).toEqual([]);
@@ -43,7 +43,7 @@ describe('Get fixed random', () => {
             bootloaderVersion: [3, 0, 0],
         });
 
-        expect(result).toEqual([]);
+        expect(result.version).toEqual([3, 0, 0]);
     });
 
     it('is safe to update but is not in probability in normal mode', () => {
@@ -54,7 +54,7 @@ describe('Get fixed random', () => {
                 { version: [2, 0, 0], min_firmware_version: [2, 0, 0] },
             ],
             isInBootloader: false,
-            firmwareVersion: [2, 0, 0],
+            firmwareVersion: [3, 0, 0],
         });
 
         expect(result).toEqual([]);
@@ -73,7 +73,7 @@ describe('Get fixed random', () => {
             firmwareVersion: [3, 0, 0],
         });
 
-        expect(result).toEqual([]);
+        expect(result.version).toEqual([3, 0, 0]);
     });
 
     it('empty case', () => {

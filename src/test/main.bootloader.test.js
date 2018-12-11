@@ -26,7 +26,7 @@ describe('Get latest safe firmware version for T1 in bootloader mode', () => {
             bootloaderVersion: [1, 0, 0],
         });
 
-        expect(result.version).toEqual([2, 0, 0]);
+        expect(result.version).toEqual([1, 0, 0]);
     });
 
     it('test bootloader in the middle - single version', () => {
@@ -40,21 +40,22 @@ describe('Get latest safe firmware version for T1 in bootloader mode', () => {
             bootloaderVersion: [2, 0, 0],
         });
 
-        expect(result.version).toEqual([3, 0, 0]);
+        expect(result.version).toEqual([2, 0, 0]);
     });
 
     it('test bootloader multiple versions', () => {
         const result = getLatestSafeFw({
             releasesList: [
+                { version: [4, 0, 0], min_bootloader_version: [2, 0, 0] },
                 { version: [3, 0, 0], min_bootloader_version: [2, 0, 0] },
-                { version: [2, 0, 0], min_bootloader_version: [2, 0, 0] },
+                { version: [2, 0, 0], min_bootloader_version: [1, 0, 0] },
                 { version: [1, 0, 0], min_bootloader_version: [1, 0, 0] },
             ],
             isInBootloader: true,
             bootloaderVersion: [2, 0, 0],
         });
 
-        expect(result).toEqual([]);
+        expect(result.version).toEqual([3, 0, 0]);
     });
 
     it('test bootloader lower version', () => {
