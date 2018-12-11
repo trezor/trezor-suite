@@ -50,6 +50,9 @@ import login from './methods/RequestLoginReducer';
 import signtx from './methods/SignTxReducer';
 import pushtx from './methods/PushTxReducer';
 
+import resetdevice from './methods/ResetDeviceReducer';
+import wipedevice from './methods/WipeDeviceReducer';
+
 export default combineReducers({
     router: routerReducer,
     DOM,
@@ -96,5 +99,8 @@ export default combineReducers({
     custom,
     login,
     signtx,
-    pushtx
+    pushtx,
+
+    resetdevice,
+    wipedevice,
 });
