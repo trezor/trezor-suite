@@ -57,3 +57,12 @@ export const PULSATE = keyframes`
         opacity: 1.0;
     }
 `;
+
+export const FADE_IN = keyframes`
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+`;
