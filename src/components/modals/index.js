@@ -89,8 +89,14 @@ const getDeviceContextModal = (props: Props) => {
             return <PassphraseType device={modal.device} />;
 
         case 'ButtonRequest_SignTx': {
-            const sendForm = props.selectedAccount.network && props.selectedAccount.network.type === 'ethereum' ? props.sendFormEthereum : props.sendFormRipple;
-            return <ConfirmSignTx device={modal.device} sendForm={sendForm} />;
+            if (!props.selectedAccount.network) return null;
+            switch (props.selectedAccount.network.type) {
+                case 'ethereum':
+                    return <ConfirmSignTx device={modal.device} sendForm={props.sendFormEthereum} />;
+                case 'ripple':
+                    return <ConfirmSignTx device={modal.device} sendForm={props.sendFormRipple} />;
+                default: return null;
+            }
         }
 
         case 'ButtonRequest_ProtectCall':

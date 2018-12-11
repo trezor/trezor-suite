@@ -131,12 +131,15 @@ const begin = (device: TrezorDevice, networkName: string): AsyncAction => async 
     let startAction: DiscoveryStartAction;
 
     try {
-        if (network.type === 'ethereum') {
-            startAction = await dispatch(EthereumDiscoveryActions.begin(device, network));
-        } else if (network.type === 'ripple') {
-            startAction = await dispatch(RippleDiscoveryActions.begin(device, network));
-        } else {
-            throw new Error(`DiscoveryActions.begin: Unknown network type: ${network.type}`);
+        switch (network.type) {
+            case 'ethereum':
+                startAction = await dispatch(EthereumDiscoveryActions.begin(device, network));
+                break;
+            case 'ripple':
+                startAction = await dispatch(RippleDiscoveryActions.begin(device, network));
+                break;
+            default:
+                throw new Error(`DiscoveryActions.begin: Unknown network type: ${network.type}`);
         }
     } catch (error) {
         dispatch({
@@ -180,12 +183,15 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
     const { completed, accountIndex } = discoveryProcess;
     let account: Account;
     try {
-        if (network.type === 'ethereum') {
-            account = await dispatch(EthereumDiscoveryActions.discoverAccount(device, discoveryProcess));
-        } else if (network.type === 'ripple') {
-            account = await dispatch(RippleDiscoveryActions.discoverAccount(device, discoveryProcess));
-        } else {
-            throw new Error(`DiscoveryActions.discoverAccount: Unknown network type: ${network.type}`);
+        switch (network.type) {
+            case 'ethereum':
+                account = await dispatch(EthereumDiscoveryActions.discoverAccount(device, discoveryProcess));
+                break;
+            case 'ripple':
+                account = await dispatch(RippleDiscoveryActions.discoverAccount(device, discoveryProcess));
+                break;
+            default:
+                throw new Error(`DiscoveryActions.discoverAccount: Unknown network type: ${network.type}`);
         }
     } catch (error) {
         // handle not supported firmware error

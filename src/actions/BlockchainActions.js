@@ -51,10 +51,14 @@ export const subscribe = (networkName: string): PromiseAction<void> => async (di
     const network = config.networks.find(c => c.shortcut === networkName);
     if (!network) return;
 
-    if (network.type === 'ethereum') {
-        await dispatch(EthereumBlockchainActions.subscribe(networkName));
-    } else if (network.type === 'ripple') {
-        await dispatch(RippleBlockchainActions.subscribe(networkName));
+    switch (network.type) {
+        case 'ethereum':
+            await dispatch(EthereumBlockchainActions.subscribe(networkName));
+            break;
+        case 'ripple':
+            await dispatch(RippleBlockchainActions.subscribe(networkName));
+            break;
+        default: break;
     }
 };
 
@@ -66,10 +70,14 @@ export const onBlockMined = (payload: $ElementType<BlockchainBlock, 'payload'>):
     const network = config.networks.find(c => c.shortcut === shortcut);
     if (!network) return;
 
-    if (network.type === 'ethereum') {
-        await dispatch(EthereumBlockchainActions.onBlockMined(shortcut));
-    } else if (network.type === 'ripple') {
-        await dispatch(RippleBlockchainActions.onBlockMined(shortcut));
+    switch (network.type) {
+        case 'ethereum':
+            await dispatch(EthereumBlockchainActions.onBlockMined(shortcut));
+            break;
+        case 'ripple':
+            await dispatch(RippleBlockchainActions.onBlockMined(shortcut));
+            break;
+        default: break;
     }
 };
 
@@ -79,10 +87,15 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     const network = config.networks.find(c => c.shortcut === shortcut);
     if (!network) return;
 
-    if (network.type === 'ethereum') {
-        await dispatch(EthereumBlockchainActions.onNotification());
-    } else if (network.type === 'ripple') {
-        await dispatch(RippleBlockchainActions.onNotification(payload));
+    switch (network.type) {
+        case 'ethereum':
+            // this is not working until blockchain-link will start support blockbook backends
+            await dispatch(EthereumBlockchainActions.onNotification());
+            break;
+        case 'ripple':
+            await dispatch(RippleBlockchainActions.onNotification(payload));
+            break;
+        default: break;
     }
 };
 
@@ -94,9 +107,14 @@ export const onError = (payload: $ElementType<BlockchainError, 'payload'>): Prom
     const network = config.networks.find(c => c.shortcut === shortcut);
     if (!network) return;
 
-    if (network.type === 'ethereum') {
-        await dispatch(EthereumBlockchainActions.onError(shortcut));
-    } else if (network.type === 'ripple') {
-        // await dispatch(RippleBlockchainActions.onError(shortcut));
+    switch (network.type) {
+        case 'ethereum':
+            await dispatch(EthereumBlockchainActions.onError(shortcut));
+            break;
+        case 'ripple':
+            // this error is handled in BlockchainReducer
+            // await dispatch(RippleBlockchainActions.onBlockMined(shortcut));
+            break;
+        default: break;
     }
 };

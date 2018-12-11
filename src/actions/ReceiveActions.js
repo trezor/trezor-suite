@@ -73,13 +73,19 @@ export const showAddress = (path: Array<number>): AsyncAction => async (dispatch
     };
 
     let response;
-    if (network.type === 'ethereum') {
-        response = await TrezorConnect.ethereumGetAddress(params);
-    } else {
-        response = await TrezorConnect.rippleGetAddress(params);
+    switch (network.type) {
+        case 'ethereum':
+            response = await TrezorConnect.ethereumGetAddress(params);
+            break;
+        case 'ripple':
+            response = await TrezorConnect.rippleGetAddress(params);
+            break;
+        default:
+            response = { payload: { error: `ReceiveActions.showAddress: Unknown network type: ${network.type}` } };
+            break;
     }
 
-    if (response && response.success) {
+    if (response.success) {
         dispatch({
             type: RECEIVE.SHOW_ADDRESS,
         });
