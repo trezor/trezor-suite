@@ -72,7 +72,7 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
 
 /*
 * Called from "observe" action
-* Initialize "sendForm" reducer data
+* Initialize "sendFormRipple" reducer data
 * Get data either from session storage or "selectedAccount" reducer
 */
 export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -85,7 +85,6 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     const stateFromStorage = dispatch(SessionStorageActions.loadRippleDraftTransaction());
     if (stateFromStorage) {
-        // TODO: consider if current gasPrice should be set here as "recommendedGasPrice"
         dispatch({
             type: SEND.INIT,
             networkType: 'ripple',

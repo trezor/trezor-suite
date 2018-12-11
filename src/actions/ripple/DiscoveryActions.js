@@ -36,7 +36,6 @@ export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discover
     const { accountIndex } = discoveryProcess;
     const path = network.bip44.slice(0).replace('a', accountIndex.toString());
 
-    // $FlowIssue npm not released yet
     const response = await TrezorConnect.rippleGetAccountInfo({
         device: {
             path: device.path,

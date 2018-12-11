@@ -17,7 +17,6 @@ import * as AccountsActions from 'actions/AccountsActions';
 
 export const discoverAccount = (device: TrezorDevice, address: string, network: string): PromiseAction<EthereumAccount> => async (dispatch: Dispatch): Promise<EthereumAccount> => {
     // get data from connect
-    // Temporary disabled, enable after trezor-connect@5.0.32 release
     const txs = await TrezorConnect.ethereumGetAccountInfo({
         account: {
             address,
@@ -35,7 +34,6 @@ export const discoverAccount = (device: TrezorDevice, address: string, network: 
 
     // blockbook web3 fallback
     const web3account = await dispatch(Web3Actions.discoverAccount(address, network));
-    // return { transactions: txs.payload, ...web3account };
     return {
         address,
         transactions: txs.payload.transactions,

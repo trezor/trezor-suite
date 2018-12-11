@@ -61,26 +61,3 @@ export const serializeEthereumTx = (tx: EthereumTransaction): PromiseAction<stri
     const ethTx = new EthereumjsTx(tx);
     return `0x${ethTx.serialize().toString('hex')}`;
 };
-
-// type RippleTxRequest = {
-//     network: string;
-//     from: string;
-//     to: string;
-//     amount: string;
-//     data: string;
-//     gasLimit: string;
-//     gasPrice: string;
-//     nonce: number;
-// }
-
-// export const prepareRippleTx = (tx: RippleTxRequest): PromiseAction<RippleTransaction> => async (dispatch: Dispatch): Promise<RippleTransaction> => {
-//     // TODO: fetch account sequence
-//     return {
-//         fee: string,
-//         flags?: number,
-//         sequence?: number,
-//         maxLedgerVersion?: number, // Proto: "last_ledger_sequence"
-//         payment: Payment,
-//     }
-
-// };
