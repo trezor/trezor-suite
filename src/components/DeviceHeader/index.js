@@ -9,6 +9,7 @@ import {
 } from 'utils/device';
 import TrezorImage from 'components/images/TrezorImage';
 import colors from 'config/colors';
+import { FONT_SIZE } from 'config/variables';
 
 const Wrapper = styled.div`
     position: relative;
@@ -57,7 +58,6 @@ const Name = styled.div`
     overflow: hidden;
     white-space: nowrap;
     font-weight: 500;
-    font-size: 14px;
     color: ${colors.TEXT_PRIMARY};
 `;
 
@@ -66,7 +66,7 @@ const Status = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    font-size: 12px;
+    font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
 `;
 

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import icons from 'config/icons';
 import colors from 'config/colors';
-import { LINE_HEIGHT } from 'config/variables';
+import { LINE_HEIGHT, FONT_SIZE } from 'config/variables';
 
 import P from 'components/Paragraph';
 import Icon from 'components/Icon';
@@ -43,7 +43,7 @@ const StyledP = styled(P)`
 
 const Label = styled.div`
     padding-top: 5px;
-    font-size: 10px;
+    font-size: ${FONT_SIZE.SMALLER};
     color: ${colors.TEXT_SECONDARY};
 `;
 

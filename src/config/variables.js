@@ -8,6 +8,11 @@ export const FONT_SIZE = {
     BIG: '21px',
     BIGGER: '32px',
     BIGGEST: '36px',
+    H1: '18px',
+    H2: '16px',
+    H3: '14px',
+    H4: '12px',
+    COUNTER: '11px',
 };
 
 export const FONT_WEIGHT = {

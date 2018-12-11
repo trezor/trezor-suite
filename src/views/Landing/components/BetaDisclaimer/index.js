@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 
 import colors from 'config/colors';
 import icons from 'config/icons';
+import { FONT_SIZE } from 'config/variables';
 
 import Icon from 'components/Icon';
 import Button from 'components/Button';
@@ -40,7 +41,7 @@ const ModalWindow = styled.div`
 
 const StyledP = styled(P)`
     padding: 10px 0px;
-    font-size: 14px;
+    font-size: ${FONT_SIZE.SMALL};
 `;
 
 const StyledButton = styled(Button)`
