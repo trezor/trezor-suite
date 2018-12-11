@@ -41,6 +41,8 @@ import {
     TezosGetAddress,
     TezosGetXpub,
     TezosSignTx,
+    ResetDevice,
+    WipeDevice,
 } from '../components/methods';
 
 export default (
@@ -80,6 +82,8 @@ export default (
                     <Route exact path="/tezos-getaddress" component={ TezosGetAddress } />
                     <Route exact path="/tezos-getxpub" component={ TezosGetXpub } />
                     <Route exact path="/tezos-signtx" component={ TezosSignTx } />
+                    <Route exact path="/reset-device" component={ ResetDevice } />
+                    <Route exact path="/wipe-device" component={ WipeDevice } />
                 </AppContainer>
             </Switch>
         </ConnectedRouter>

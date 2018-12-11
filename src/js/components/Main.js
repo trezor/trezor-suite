@@ -21,6 +21,8 @@ export default class Main extends Component {
         return (
             <main>
                 <section className="methods">
+                    { navLink('/wipe-device', 'Wipe device') }
+                    { navLink('/reset-device', 'Reset device') }
                     { navLink('/cipherkv', 'Symmetrically encrypt / decrypt value') }
                     { navLink('/login', 'Login') }
                     { navLink('/', 'Get public key') }
