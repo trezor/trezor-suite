@@ -20,7 +20,7 @@ import type { Props } from './Container';
 const SmallScreenWidth = '850px';
 
 const InputRow = styled.div`
-    padding: 0 0 15px 0;
+    padding-bottom: 28px;
 `;
 
 const SetMaxAmountButton = styled(Button)`
@@ -180,7 +180,6 @@ const AccountSend = (props: Props) => {
                     onChange={event => onAddressChange(event.target.value)}
                 />
             </InputRow>
-
             <InputRow>
                 <Input
                     state={getAmountInputState(errors.amount, warnings.amount)}
@@ -212,7 +211,7 @@ const AccountSend = (props: Props) => {
                                         color={colors.WHITE}
                                     />
                                 )}
-                            Set max
+                                Set max
                             </SetMaxAmountButton>
                         ),
                         (

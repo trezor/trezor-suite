@@ -34,7 +34,7 @@ const AmountInputLabel = styled.span`
 `;
 
 const InputRow = styled.div`
-    padding: 0 0 15px 0;
+    padding-bottom: 28px;
 `;
 
 const SetMaxAmountButton = styled(Button)`
@@ -88,7 +88,7 @@ const FeeOptionWrapper = styled.div`
 const FeeLabelWrapper = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 4px;
+    padding-bottom: 10px;
 `;
 
 const FeeLabel = styled.span`
@@ -264,7 +264,6 @@ const AccountSend = (props: Props) => {
                     onChange={event => onAddressChange(event.target.value)}
                 />
             </InputRow>
-
             <InputRow>
                 <Input
                     state={getAmountInputState(errors.amount, warnings.amount)}
@@ -304,7 +303,7 @@ const AccountSend = (props: Props) => {
                                         color={colors.WHITE}
                                     />
                                 )}
-                            Set max
+                                Set max
                             </SetMaxAmountButton>
                         ),
                         (
@@ -332,7 +331,7 @@ const AccountSend = (props: Props) => {
                                 color={colors.WARNING_PRIMARY}
                                 size={20}
                             />
-                        Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
+                            Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
                         </UpdateFeeWrapper>
                     )}
                 </FeeLabelWrapper>
@@ -358,7 +357,7 @@ const AccountSend = (props: Props) => {
                     isTransparent
                     onClick={toggleAdvanced}
                 >
-                Advanced settings
+                    Advanced settings
                     <AdvancedSettingsIcon
                         icon={ICONS.ARROW_DOWN}
                         color={colors.TEXT_SECONDARY}

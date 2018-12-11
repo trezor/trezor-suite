@@ -21,7 +21,7 @@ import AddTokenMessage from '../components/AddTokenMessage';
 import type { Props } from './Container';
 
 const AccountHeading = styled.div`
-    padding: 0 0 30px 0;
+    padding-bottom: 35px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -57,6 +57,7 @@ const StyledCoinLogo = styled(CoinLogo)`
 const StyledIcon = styled(Icon)`
     position: relative;
     top: -7px;
+    
     &:hover {
         cursor: pointer;
     }
