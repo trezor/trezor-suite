@@ -57,6 +57,11 @@ const StyledTextarea = styled(Textarea)`
         opacity: 1;
     }
 
+    &:read-only {
+        background: ${colors.GRAY_LIGHT};
+        color: ${colors.TEXT_SECONDARY};
+    }
+
     &:disabled {
         pointer-events: none;
         background: ${colors.GRAY_LIGHT};
@@ -94,7 +99,7 @@ const StyledTextarea = styled(Textarea)`
 `;
 
 const TopLabel = styled.span`
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     color: ${colors.TEXT_SECONDARY};
 `;
 
@@ -150,11 +155,13 @@ const TextArea = ({
     onFocus,
     onBlur,
     isDisabled,
+    readOnly,
     name,
     onChange,
     topLabel,
     rows,
     maxRows,
+    maxLength,
     autoSelect,
     state = '',
     bottomText = '',
@@ -169,6 +176,7 @@ const TextArea = ({
             autoCorrect="off"
             autoCapitalize="off"
             maxRows={maxRows}
+            maxLength={maxLength}
             rows={rows}
             className={className}
             disabled={isDisabled}
@@ -177,6 +185,7 @@ const TextArea = ({
             onFocus={onFocus}
             onBlur={onBlur}
             value={value}
+            readOnly={readOnly}
             onClick={autoSelect ? event => event.target.select() : null}
             placeholder={placeholder}
             onChange={onChange}
@@ -202,7 +211,9 @@ TextArea.propTypes = {
     customStyle: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.string,
+    readOnly: PropTypes.bool,
     maxRows: PropTypes.number,
+    maxLength: PropTypes.number,
     rows: PropTypes.number,
     name: PropTypes.string,
     isDisabled: PropTypes.bool,

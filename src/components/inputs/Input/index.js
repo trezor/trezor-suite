@@ -29,7 +29,7 @@ const InputIconWrapper = styled.div`
 `;
 
 const TopLabel = styled.span`
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     color: ${colors.TEXT_SECONDARY};
 `;
 
@@ -58,6 +58,11 @@ const StyledInput = styled.input`
 
     &:disabled {
         pointer-events: none;
+        background: ${colors.GRAY_LIGHT};
+        color: ${colors.TEXT_SECONDARY};
+    }
+
+    &:read-only  {
         background: ${colors.GRAY_LIGHT};
         color: ${colors.TEXT_SECONDARY};
     }
@@ -95,7 +100,7 @@ const Overlay = styled.div`
         height: 100%;
         background-image: linear-gradient(to right, 
             rgba(0,0,0, 0) 0%,
-            rgba(255,255,255, 1) 220px
+            rgba(249,249,249, 1) 220px
         );
     `}
 `;
@@ -176,7 +181,7 @@ class Input extends PureComponent {
                             height={this.props.height}
                             trezorAction={this.props.trezorAction}
                             hasIcon={this.getIcon(this.props.state).length > 0}
-                            innerRef={this.props.innerRef}
+                            ref={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
                             color={this.getColor(this.props.state)}

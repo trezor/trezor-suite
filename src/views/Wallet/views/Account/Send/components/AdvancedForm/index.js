@@ -22,10 +22,6 @@ type Props = BaseProps & {
 // same variable also in "AccountSend/index.js"
 const SmallScreenWidth = '850px';
 
-const InputRow = styled.div`
-    margin-bottom: 20px;
-`;
-
 const InputLabelWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -45,7 +41,7 @@ const AdvancedSettingsWrapper = styled.div`
     border-top: 1px solid ${colors.DIVIDER};
 `;
 
-const GasInputRow = styled(InputRow)`
+const GasInputRow = styled.div`
     width: 100%;
     display: flex;
 
@@ -55,7 +51,8 @@ const GasInputRow = styled(InputRow)`
 `;
 
 const GasInput = styled(Input)`
-    min-height: 85px;
+    /* min-height: 85px; */
+    padding-bottom: 28px;
     &:first-child {
         padding-right: 20px;
     }
@@ -63,13 +60,12 @@ const GasInput = styled(Input)`
     @media screen and (max-width: ${SmallScreenWidth}) {
         &:first-child {
             padding-right: 0;
-            margin-bottom: 2px;
         }
     }
 `;
 
 const StyledTextarea = styled(Textarea)`
-    margin-bottom: 20px;
+    padding-bottom: 28px;
     min-height: 80px;
 `;
 
@@ -214,25 +210,27 @@ const AdvancedForm = (props: Props) => {
                     spellCheck="false"
                     topLabel={(
                         <InputLabelWrapper>
-                            Gas price
-                            <Tooltip
-                                content={(
-                                    <React.Fragment>
-                                        Gas price refers to the amount of ether you are willing to pay for every
-                                        unit of gas, and is usually measured in “Gwei”. <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>. Increasing the gas price will get the transaction confirmed sooner but
-                                        makes it more expensive. The recommended gas price is <GreenSpan>{recommendedGasPrice} GWEI</GreenSpan>.
-                                    </React.Fragment>
-                                )}
-                                maxWidth={400}
-                                readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
-                                placement="top"
-                            >
-                                <Icon
-                                    icon={ICONS.HELP}
-                                    color={colors.TEXT_SECONDARY}
-                                    size={24}
-                                />
-                            </Tooltip>
+                            <Left>
+                                Gas price
+                                <Tooltip
+                                    content={(
+                                        <React.Fragment>
+                                            Gas price refers to the amount of ether you are willing to pay for every
+                                            unit of gas, and is usually measured in “Gwei”. <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>. Increasing the gas price will get the transaction confirmed sooner but
+                                            makes it more expensive. The recommended gas price is <GreenSpan>{recommendedGasPrice} GWEI</GreenSpan>.
+                                        </React.Fragment>
+                                    )}
+                                    maxWidth={400}
+                                    readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
+                                    placement="top"
+                                >
+                                    <Icon
+                                        icon={ICONS.HELP}
+                                        color={colors.TEXT_SECONDARY}
+                                        size={24}
+                                    />
+                                </Tooltip>
+                            </Left>
                         </InputLabelWrapper>
                     )}
                     bottomText={errors.gasPrice || warnings.gasPrice || infos.gasPrice}
@@ -244,21 +242,23 @@ const AdvancedForm = (props: Props) => {
             <StyledTextarea
                 topLabel={(
                     <InputLabelWrapper>
-                        Data
-                        <Tooltip
-                            content={(
-                                <React.Fragment>
-                                    Data is usually used when you send transactions to contracts.
-                                </React.Fragment>
-                            )}
-                            placement="top"
-                        >
-                            <Icon
-                                icon={ICONS.HELP}
-                                color={colors.TEXT_SECONDARY}
-                                size={24}
-                            />
-                        </Tooltip>
+                        <Left>
+                            Data
+                            <Tooltip
+                                content={(
+                                    <React.Fragment>
+                                        Data is usually used when you send transactions to contracts.
+                                    </React.Fragment>
+                                )}
+                                placement="top"
+                            >
+                                <Icon
+                                    icon={ICONS.HELP}
+                                    color={colors.TEXT_SECONDARY}
+                                    size={24}
+                                />
+                            </Tooltip>
+                        </Left>
                     </InputLabelWrapper>
                 )}
                 state={getDataTextareaState(errors.data, warnings.data)}
