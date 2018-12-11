@@ -1,6 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
 import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
 
 import tooltipStyles from './Tooltip';
 import animationStyles from './Animations';
@@ -12,7 +11,7 @@ const baseStyles = createGlobalStyle`
         position: relative;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
         font-weight: 400;
-        font-size: ${FONT_SIZE.SMALL};
+        font-size: 14px;
         color: ${colors.TEXT};
     }
 
