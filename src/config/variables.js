@@ -10,7 +10,7 @@ export const FONT_SIZE = {
     BIGGEST: '2.5714rem',
     H1: '1.2857rem',
     H2: '1.1428rem',
-    H3: '14rem',
+    H3: '1rem',
     H4: '0.8571rem',
     COUNTER: '0.7857rem',
 };
