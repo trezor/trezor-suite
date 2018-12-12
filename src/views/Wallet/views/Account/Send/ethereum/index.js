@@ -132,7 +132,6 @@ const ToggleAdvancedSettingsButton = styled(Button)`
 
 const SendButton = styled(Button)`
     min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
-    font-size: 13px;
 
     @media screen and (max-width: ${SmallScreenWidth}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
