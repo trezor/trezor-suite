@@ -127,7 +127,7 @@ const ToggleAdvancedSettingsButton = styled(Button)`
     padding: 0;
     display: flex;
     align-items: center;
-    font-weight: ${FONT_WEIGHT.BIGGER};
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
 `;
 
 const SendButton = styled(Button)`
