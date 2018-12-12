@@ -9,7 +9,7 @@ import type {
 import type { State, Token } from 'reducers/TokensReducer';
 import type { Account } from 'reducers/AccountsReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
-import * as BlockchainActions from './BlockchainActions';
+import * as BlockchainActions from 'actions/ethereum/BlockchainActions';
 
 export type TokenAction = {
     type: typeof TOKEN.FROM_STORAGE,

@@ -6,7 +6,6 @@ import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as TOKEN from 'actions/constants/token';
 import * as ACCOUNT from 'actions/constants/account';
 import * as DISCOVERY from 'actions/constants/discovery';
-import * as SEND from 'actions/constants/send';
 import * as PENDING from 'actions/constants/pendingTx';
 import * as WALLET from 'actions/constants/wallet';
 
@@ -59,7 +58,7 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
             api.dispatch(LocalStorageActions.save());
             break;
 
-        case SEND.TX_COMPLETE:
+        case PENDING.ADD:
         case PENDING.TX_RESOLVED:
         case PENDING.TX_REJECTED:
             api.dispatch(LocalStorageActions.save());

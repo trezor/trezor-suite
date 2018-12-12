@@ -17,8 +17,7 @@ import type {
     UiMessageType,
     TransportMessage,
     TransportMessageType,
-    BlockchainMessage,
-    BlockchainMessageType,
+    BlockchainEvent,
 } from 'trezor-connect';
 
 import type {
@@ -114,13 +113,9 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         });
     });
 
-    TrezorConnect.on(BLOCKCHAIN_EVENT, (event: BlockchainMessage): void => {
-        // post event to reducers
-        const type: BlockchainMessageType = event.type; // eslint-disable-line prefer-destructuring
-        dispatch({
-            type,
-            payload: event.payload,
-        });
+    // post event to reducers
+    TrezorConnect.on(BLOCKCHAIN_EVENT, (event: BlockchainEvent): void => {
+        dispatch(event);
     });
 
     if (buildUtils.isDev()) {

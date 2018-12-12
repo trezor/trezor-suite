@@ -11,7 +11,7 @@ import type { State, Dispatch } from 'flowtype';
 
 import Modal from './index';
 
-type OwnProps = { }
+type OwnProps = {};
 
 type StateProps = {
     modal: $ElementType<State, 'modal'>,
@@ -19,16 +19,17 @@ type StateProps = {
     devices: $ElementType<State, 'devices'>,
     connect: $ElementType<State, 'connect'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-    sendForm: $ElementType<State, 'sendForm'>,
+    sendFormEthereum: $ElementType<State, 'sendFormEthereum'>,
+    sendFormRipple: $ElementType<State, 'sendFormRipple'>,
     receive: $ElementType<State, 'receive'>,
     localStorage: $ElementType<State, 'localStorage'>,
     wallet: $ElementType<State, 'wallet'>,
-}
+};
 
 type DispatchProps = {
     modalActions: typeof ModalActions,
     receiveActions: typeof ReceiveActions,
-}
+};
 
 export type Props = StateProps & DispatchProps;
 
@@ -38,7 +39,8 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     devices: state.devices,
     connect: state.connect,
     selectedAccount: state.selectedAccount,
-    sendForm: state.sendForm,
+    sendFormEthereum: state.sendFormEthereum,
+    sendFormRipple: state.sendFormRipple,
     receive: state.receive,
     localStorage: state.localStorage,
     wallet: state.wallet,

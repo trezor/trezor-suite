@@ -9,7 +9,7 @@ import * as NotificationActions from 'actions/NotificationActions';
 import * as LocalStorageActions from 'actions/LocalStorageActions';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as SelectedAccountActions from 'actions/SelectedAccountActions';
-import * as SendFormActionActions from 'actions/SendFormActions';
+import * as SendFormActions from 'actions/SendFormActions';
 import * as DiscoveryActions from 'actions/DiscoveryActions';
 import * as RouterActions from 'actions/RouterActions';
 
@@ -102,7 +102,7 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         // if "selectedDevice" didn't change observe common values in SelectedAccountReducer
         if (!await api.dispatch(SelectedAccountActions.observe(prevState, action))) {
             // if "selectedAccount" didn't change observe send form props changes
-            api.dispatch(SendFormActionActions.observe(prevState, action));
+            api.dispatch(SendFormActions.observe(prevState, action));
         }
     } else {
         // no changes in common values

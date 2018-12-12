@@ -79,6 +79,8 @@ deploy review:
     - mkdir -p "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}"
     - echo "Copy dev build to web server ${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}..."
     - rsync --delete -va build/dev/ "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}/"
+    - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=https://trezor-wallet-dev.trezor.io/${CI_BUILD_REF_NAME}"
+    - 'echo "Remove working dir, workaround for cache" && rm -r ./*'
   only:
     - branches
   tags:

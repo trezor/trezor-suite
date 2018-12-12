@@ -42,8 +42,8 @@ import type {
     DeviceMode,
     DeviceMessageType,
     TransportMessageType,
-    BlockchainMessageType,
     UiMessageType,
+    BlockchainEvent,
 } from 'trezor-connect';
 
 import type { RouterAction, LocationState } from 'react-router-redux';
@@ -111,11 +111,6 @@ type UiEventAction = {
     // },
 }
 
-type BlockchainEventAction = {
-    type: BlockchainMessageType,
-    payload: any,
-}
-
 // TODO: join this message with uiMessage
 type IFrameHandshake = {
     type: 'iframe_handshake',
@@ -128,7 +123,7 @@ export type Action =
     | TransportEventAction
     | DeviceEventAction
     | UiEventAction
-    | BlockchainEventAction
+    | BlockchainEvent
 
     | SelectedAccountAction
     | AccountAction

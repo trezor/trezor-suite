@@ -229,6 +229,10 @@ const AccountMenu = (props: Props) => {
         );
     }
 
+    if (discovery && (discovery.fwNotSupported || discovery.fwOutdated)) {
+        discoveryStatus = null;
+    }
+
     return (
         <Wrapper>
             <NavLink to={baseUrl}>

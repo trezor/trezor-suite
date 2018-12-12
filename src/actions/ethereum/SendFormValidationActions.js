@@ -13,7 +13,7 @@ import type {
     GetState,
     PayloadAction,
 } from 'flowtype';
-import type { State, FeeLevel } from 'reducers/SendFormReducer';
+import type { State, FeeLevel } from 'reducers/SendFormEthereumReducer';
 
 // general regular expressions
 const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
@@ -38,7 +38,7 @@ export const onGasPriceUpdated = (network: string, gasPrice: string): PayloadAct
     // }
     // const newPrice = getRandomInt(10, 50).toString();
 
-    const state = getState().sendForm;
+    const state = getState().sendFormEthereum;
     if (network === state.networkSymbol) return;
 
     // check if new price is different then currently recommended
@@ -50,6 +50,7 @@ export const onGasPriceUpdated = (network: string, gasPrice: string): PayloadAct
             // and let him update manually
             dispatch({
                 type: SEND.CHANGE,
+                networkType: 'ethereum',
                 state: {
                     ...state,
                     gasPriceNeedsUpdate: true,
@@ -62,6 +63,7 @@ export const onGasPriceUpdated = (network: string, gasPrice: string): PayloadAct
             const selectedFeeLevel = getSelectedFeeLevel(feeLevels, state.selectedFeeLevel);
             dispatch({
                 type: SEND.CHANGE,
+                networkType: 'ethereum',
                 state: {
                     ...state,
                     gasPriceNeedsUpdate: false,
@@ -81,7 +83,7 @@ export const onGasPriceUpdated = (network: string, gasPrice: string): PayloadAct
 export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
     // clone deep nested object
     // to avoid overrides across state history
-    let state: State = JSON.parse(JSON.stringify(getState().sendForm));
+    let state: State = JSON.parse(JSON.stringify(getState().sendFormEthereum));
     // reset errors
     state.errors = {};
     state.warnings = {};

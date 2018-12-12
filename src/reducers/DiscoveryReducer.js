@@ -19,9 +19,6 @@ import type { Account } from './AccountsReducer';
 
 export type Discovery = {
     network: string;
-    publicKey: string;
-    chainCode: string;
-    hdKey: HDKey;
     basePath: Array<number>;
     deviceState: string;
     accountIndex: number;
@@ -29,34 +26,57 @@ export type Discovery = {
     completed: boolean;
     waitingForDevice: boolean;
     waitingForBlockchain: boolean;
-}
+    fwNotSupported: boolean;
+    fwOutdated: boolean;
+
+    publicKey: string; // used in ethereum only
+    chainCode: string; // used in ethereum only
+    hdKey: HDKey; // used in ethereum only
+};
 
 export type State = Array<Discovery>;
 const initialState: State = [];
+const defaultDiscovery: Discovery = {
+    network: '',
+    deviceState: '',
+    basePath: [],
+    accountIndex: 0,
+    interrupted: false,
+    completed: false,
+    waitingForDevice: false,
+    waitingForBlockchain: false,
+    fwNotSupported: false,
+    fwOutdated: false,
+
+    publicKey: '',
+    chainCode: '',
+    hdKey: null,
+};
 
 const findIndex = (state: State, network: string, deviceState: string): number => state.findIndex(d => d.network === network && d.deviceState === deviceState);
 
 const start = (state: State, action: DiscoveryStartAction): State => {
     const deviceState: string = action.device.state || '0';
-    const hdKey: HDKey = new HDKey();
-    hdKey.publicKey = Buffer.from(action.publicKey, 'hex');
-    hdKey.chainCode = Buffer.from(action.chainCode, 'hex');
     const instance: Discovery = {
-        network: action.network,
-        publicKey: action.publicKey,
-        chainCode: action.chainCode,
-        hdKey,
-        basePath: action.basePath,
+        ...defaultDiscovery,
+        network: action.network.shortcut,
         deviceState,
-        accountIndex: 0,
-        interrupted: false,
-        completed: false,
-        waitingForDevice: false,
-        waitingForBlockchain: false,
     };
 
+    if (action.networkType === 'ethereum') {
+        const hdKey = new HDKey();
+        hdKey.publicKey = Buffer.from(action.publicKey, 'hex');
+        hdKey.chainCode = Buffer.from(action.chainCode, 'hex');
+
+        instance.hdKey = hdKey;
+        instance.publicKey = action.publicKey;
+        instance.chainCode = action.chainCode;
+
+        instance.basePath = action.basePath;
+    }
+
     const newState: State = [...state];
-    const index: number = findIndex(state, action.network, deviceState);
+    const index: number = findIndex(state, action.network.shortcut, deviceState);
     if (index >= 0) {
         newState[index] = instance;
     } else {
@@ -105,17 +125,10 @@ const stop = (state: State, device: TrezorDevice): State => {
 const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State => {
     const deviceState: string = action.device.state || '0';
     const instance: Discovery = {
+        ...defaultDiscovery,
         network: action.network,
         deviceState,
-        publicKey: '',
-        chainCode: '',
-        hdKey: null,
-        basePath: [],
-        accountIndex: 0,
-        interrupted: false,
-        completed: false,
         waitingForDevice: true,
-        waitingForBlockchain: false,
     };
 
     const index: number = findIndex(state, action.network, deviceState);
@@ -132,16 +145,9 @@ const waitingForDevice = (state: State, action: DiscoveryWaitingAction): State =
 const waitingForBlockchain = (state: State, action: DiscoveryWaitingAction): State => {
     const deviceState: string = action.device.state || '0';
     const instance: Discovery = {
+        ...defaultDiscovery,
         network: action.network,
         deviceState,
-        publicKey: '',
-        chainCode: '',
-        hdKey: null,
-        basePath: [],
-        accountIndex: 0,
-        interrupted: false,
-        completed: false,
-        waitingForDevice: false,
         waitingForBlockchain: true,
     };
 
@@ -154,6 +160,19 @@ const waitingForBlockchain = (state: State, action: DiscoveryWaitingAction): Sta
     }
 
     return newState;
+};
+
+const notSupported = (state: State, action: DiscoveryWaitingAction): State => {
+    const affectedProcesses = state.filter(d => d.deviceState === action.device.state && d.network === action.network);
+    const otherProcesses = state.filter(d => affectedProcesses.indexOf(d) === -1);
+
+    const changedProcesses = affectedProcesses.map(d => ({
+        ...d,
+        fwOutdated: action.type === DISCOVERY.FIRMWARE_OUTDATED,
+        fwNotSupported: action.type === DISCOVERY.FIRMWARE_NOT_SUPPORTED,
+    }));
+
+    return otherProcesses.concat(changedProcesses);
 };
 
 export default function discovery(state: State = initialState, action: Action): State {
@@ -170,6 +189,10 @@ export default function discovery(state: State = initialState, action: Action): 
             return waitingForDevice(state, action);
         case DISCOVERY.WAITING_FOR_BLOCKCHAIN:
             return waitingForBlockchain(state, action);
+        case DISCOVERY.FIRMWARE_NOT_SUPPORTED:
+            return notSupported(state, action);
+        case DISCOVERY.FIRMWARE_OUTDATED:
+            return notSupported(state, action);
         case DISCOVERY.FROM_STORAGE:
             return action.payload.map((d) => {
                 const hdKey: HDKey = new HDKey();
