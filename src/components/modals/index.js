@@ -32,16 +32,6 @@ import Stellar from 'components/modals/external/Stellar';
 
 import type { Props } from './Container';
 
-// TODO: animation not working
-const Fade = (props: { children: React.Node}) => (
-    <CSSTransition
-        {...props}
-        timeout={1000}
-        classNames="fade"
-    >{ props.children }
-    </CSSTransition>
-);
-
 const ModalContainer = styled.div`
     position: fixed;
     z-index: 10000;
@@ -195,13 +185,11 @@ const Modal = (props: Props) => {
     }
 
     return (
-        <Fade key="modal-fade">
-            <ModalContainer>
-                <ModalWindow>
-                    { component }
-                </ModalWindow>
-            </ModalContainer>
-        </Fade>
+        <ModalContainer>
+            <ModalWindow>
+                { component }
+            </ModalWindow>
+        </ModalContainer>
     );
 };
 
