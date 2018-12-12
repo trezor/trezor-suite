@@ -202,7 +202,7 @@ export class WorkerDiscovery {
                     this.forceAddedTransactionsStream,
                 ]);
 
-                const res: Stream<(AccountInfo | Error)> = reloads.mapPromiseError((): Promise<AccountInfo> => {
+                const res: Stream<(AccountInfo | Error)> = reloads.mapPromise((): Promise<AccountInfo> => {
                     const out: WorkerDiscoveryHandler = new WorkerDiscoveryHandler(
                         this.discoveryWorkerFactory,
                         this.chain,

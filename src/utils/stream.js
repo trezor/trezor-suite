@@ -164,8 +164,10 @@ export class Stream<T> {
     }
 
     static fromPromise<T>(
-        promise: Promise<Stream<T>>
+        promise: Promise<Stream<T>>,
+        ignoreRejectionError: ?boolean
     ): Stream<Error | T> {
+        const _ignoreRejectionError = ignoreRejectionError == null ? false : ignoreRejectionError;
         const nstream = new Stream((update, finish) => {
             let stream_;
             let disposed = false;
@@ -177,12 +179,13 @@ export class Stream<T> {
                         stream_ = stream;
                     } else {
                         // uhhh I donno
-                        nstream.dispose();
                     }
                 }
             }, (error) => {
                 if (!disposed) {
-                    update(formatError(error));
+                    if (!_ignoreRejectionError) {
+                        update(formatError(error));
+                    }
                     setTimeout(
                       () => {
                           if (!disposed) {
@@ -309,15 +312,11 @@ export class Stream<T> {
     static filterError<T>(
         stream: Stream<Error | T>
     ): Stream<T> {
-        return new Stream((update, finish) => {
-            stream.values.attach((value) => {
-                if (!(value instanceof Error)) {
-                    update(value);
-                }
-            });
-            stream.finish.attach(finish);
-            return stream.dispose;
-        });
+        const res_: Stream<Error | T> = stream.filter(v => !(v instanceof Error));
+
+        // $FlowIssue
+        const res: Stream<T> = res_;
+        return res;
     }
 
     disposed: boolean = false;
@@ -339,6 +338,7 @@ export class Stream<T> {
 
     awaitFirst(): Promise<T> {
         return new Promise((resolve, reject) => {
+            /* istanbul ignore next */
             let onFinish = () => {};
             const onValue = (value) => {
                 this.values.detach(onValue);
@@ -357,11 +357,10 @@ export class Stream<T> {
 
     awaitFinish(): Promise<void> {
         return new Promise((resolve) => {
-            const onFinish = (finish) => {
-                this.finish.detach(onFinish);
+            this.finish.attach((nothing, detach) => {
+                detach();
                 resolve();
-            };
-            this.finish.attach(onFinish);
+            });
         });
     }
 
@@ -374,44 +373,33 @@ export class Stream<T> {
     }
 
     // note: this DOES keep the order
-    mapPromise<U>(fn: (value: T) => Promise<U>): Stream<U> {
+    // note: it does not finish on rejected promise or error in fn
+    //       it just emits error and does the next
+    // note: even when it does keep order, functions are run as soon as the values come, but the values are emitted in the same order, no matter how long do the promise takes
+    //       so you can depend on RESULT order being the same, but there can be more promises running at the same time
+    // note: calling dispose IMMEDIATELY stops the streaming values
+    mapPromise<U>(fn: (value: T) => Promise<U>): Stream<U | Error> {
         return new Stream((update, finish) => {
             let previous: Promise<any> = Promise.resolve();
             let disposed = false;
             this.values.attach((value) => {
                 const previousNow = previous;
-                previous = fn(value).then(u => {
-                    previousNow.then(() => {
-                        if (!disposed) {
-                            update(u);
-                        }
-                    });
-                });
-            });
-            this.finish.attach(() => {
-                previous.then(() => finish());
-            });
-            return () => {
-                disposed = true;
-                this.dispose();
-            };
-        });
-    }
-
-    mapPromiseError<U>(fn: (value: T) => Promise<U>): Stream<U | Error> {
-        return new Stream((update, finish) => {
-            let previous: Promise<any> = Promise.resolve();
-            let disposed = false;
-            this.values.attach((value) => {
-                const previousNow = previous;
-                previous = fn(value).then(u => {
-                    previousNow.then(() => {
+                // Flow idiocy
+                const runFn: Promise<U> = (function () {
+                    try {
+                        return fn(value);
+                    } catch (e) {
+                        return Promise.reject(e);
+                    }
+                }());
+                previous = runFn.then(u => {
+                    return previousNow.then(() => {
                         if (!disposed) {
                             update(u);
                         }
                     });
                 }, error => {
-                    previousNow.then(() => {
+                    return previousNow.then(() => {
                         if (!disposed) {
                             update(error);
                         }
@@ -419,7 +407,11 @@ export class Stream<T> {
                 });
             });
             this.finish.attach(() => {
-                previous.then(() => finish());
+                previous.then(() => {
+                    if (!disposed) {
+                        finish();
+                    }
+                });
             });
             return () => {
                 disposed = true;
@@ -443,8 +435,13 @@ export class Stream<T> {
     reduce<U>(fn: (previous: U, value: T) => U, initial: U): Promise<U> {
         return new Promise((resolve, reject) => {
             let state = initial;
-            this.values.attach((value) => { state = fn(state, value); });
-            this.finish.attach(() => { resolve(state); });
+            const onValue = (value) => { state = fn(state, value); };
+            this.values.attach(onValue);
+            this.finish.attach((nothing, detach) => {
+                resolve(state);
+                detach();
+                this.values.detach(onValue);
+            });
         });
     }
 }
@@ -455,7 +452,9 @@ export class StreamWithEnding<UpdateT, EndingT> {
     dispose: (e: Error) => void;
 
     static fromStreamAndPromise(s: Stream<UpdateT>, ending: Promise<EndingT>): StreamWithEnding<UpdateT, EndingT> {
-        // idiocy to make node.js happy to stop showing stupid errors
+        // all these empty cathces
+        // are to make node.js happy to stop showing stupid errors
+        // on unhandled rejections
         ending.catch(() => {});
         const res: StreamWithEnding<UpdateT, EndingT> = new StreamWithEnding();
         res.stream = s;
@@ -463,6 +462,7 @@ export class StreamWithEnding<UpdateT, EndingT> {
         const def = deferred();
         res.dispose = (e: Error) => {
             def.reject(e);
+            def.promise.catch(() => {});
             s.dispose();
         };
         s.awaitFinish().then(() => {
@@ -470,19 +470,31 @@ export class StreamWithEnding<UpdateT, EndingT> {
         });
 
         res.ending = def.promise.then(() => ending);
+        res.ending.catch(() => {});
         return res;
     }
 
     static fromPromise<U, E>(p: Promise<StreamWithEnding<U, E>>): StreamWithEnding<U, E> {
         const res: StreamWithEnding<U, E> = new StreamWithEnding();
         // the rejection will come to the ending promise
-        res.stream = Stream.filterError(Stream.fromPromise(p.then(s => s.stream)));
+        // but if we use filterError, U can never include error
+        let disposed = false;
+        // $FlowIssue the error thing - unfortunately, flow cannot have different type based on true/false of second paramatere
+        res.stream = Stream.fromPromise(p.then(s => {
+            if (disposed) {
+                throw new Error('disposed'); // will be ignored
+            } else {
+                return s.stream;
+            }
+        }), true);
         res.ending = p.then(s => s.ending);
+        res.ending.catch(() => {});
         let resolved = null;
         p.then(s => {
             resolved = s;
         });
         res.dispose = (e: Error) => {
+            disposed = true;
             if (resolved != null) {
                 resolved.dispose(e);
             }

@@ -148,10 +148,10 @@ export class BitcoreBlockchain {
         this.zcash = false;
 
         const lookupTM = (socket: Socket): Stream<TransactionWithHeight> => {
-            return socket.observe('bitcoind/addresstxid').mapPromise(
+            return Stream.filterError(socket.observe('bitcoind/addresstxid').mapPromise(
                 ({txid}) =>
                     this.lookupTransaction(txid)
-            );
+            ));
         };
         const observeBlocks = (socket: Socket): Stream<void> => {
             socket.subscribe('bitcoind/hashblock');
