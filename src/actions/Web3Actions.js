@@ -137,25 +137,24 @@ export const resolvePendingTransactions = (network: string): PromiseAction<void>
     const instance: Web3Instance = await dispatch(initWeb3(network));
     const pending = getState().pending.filter(p => p.network === network);
     pending.forEach(async (tx) => {
-        const status = await instance.web3.eth.getTransaction(tx.id);
+        const status = await instance.web3.eth.getTransaction(tx.hash);
         if (!status) {
             dispatch({
                 type: PENDING.TX_REJECTED,
-                tx,
+                hash: tx.hash,
             });
         } else {
-            const receipt = await instance.web3.eth.getTransactionReceipt(tx.id);
+            const receipt = await instance.web3.eth.getTransactionReceipt(tx.hash);
             if (receipt) {
                 if (status.gas !== receipt.gasUsed) {
                     dispatch({
                         type: PENDING.TX_TOKEN_ERROR,
-                        tx,
+                        hash: tx.hash,
                     });
                 }
                 dispatch({
                     type: PENDING.TX_RESOLVED,
-                    tx,
-                    receipt,
+                    hash: tx.hash,
                 });
             }
         }
@@ -197,7 +196,11 @@ export const updateAccount = (account: Account, newAccount: EthereumAccount, net
     const balance = await instance.web3.eth.getBalance(account.address);
     const nonce = await instance.web3.eth.getTransactionCount(account.address);
     dispatch(AccountsActions.update({
-        ...account, ...newAccount, balance: EthereumjsUnits.convert(balance, 'wei', 'ether'), nonce,
+        ...account,
+        ...newAccount,
+        nonce,
+        balance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
+        availableBalance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
     }));
 
     // update tokens for this account

@@ -16,9 +16,9 @@ import ImportView from 'views/Landing/views/Import/Container';
 
 // wallet views
 import WalletContainer from 'views/Wallet';
-import AccountSummary from 'views/Wallet/views/Account/Summary/Container';
-import AccountSend from 'views/Wallet/views/Account/Send/Container';
-import AccountReceive from 'views/Wallet/views/Account/Receive/Container';
+import AccountSummary from 'views/Wallet/views/Account/Summary';
+import AccountSend from 'views/Wallet/views/Account/Send';
+import AccountReceive from 'views/Wallet/views/Account/Receive';
 import AccountSignVerify from 'views/Wallet/views/Account/SignVerify/Container';
 
 import WalletDashboard from 'views/Wallet/views/Dashboard';

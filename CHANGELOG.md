@@ -1,3 +1,11 @@
+## feature/ripple
+__changed__
+- Split code to coin specific components. actions and reducers
+- Use TrezorConnect to communicate with trezor-blockchain-link
+
+__added__
+- Ripple support
+
 ## 1.0.2-beta
 __changed__
 - Fiat rates from coingecko (https://github.com/trezor/trezor-wallet/pull/242)

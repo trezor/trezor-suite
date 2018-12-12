@@ -28,14 +28,14 @@ At the root of the `src/` folder are all files or folders that are shared.
 Component is what you'd intuitively think it is. It's a regular React component (doesn't matter whether statefull or stateless).
 
 ### **Global components**
-All global components are are stored in `src/views/components/` folder.
+All global components are stored in `src/views/components/` folder.
 Global components are such components that are shared across multiple different components or views.
 - For example there's a `Button` component that is used in both `ConnectDevice` and `AccountSend`. `ConnectDevice` and `AccountSend` are both placed accross different views so the `Button` component they're both using must be stored in the global `components` folder.
 
 ### **Naming & structure convention**
 Each component has it's own folder. Name of the folder is same as is the name of the component (camel case and first letter is capitalized, e.g.: *MyComponent*).
 
-If you want to create multiple components of the same type you should put them into a common folder with a lowercase name like this `views/componets/type/MyComponent`.
+If you want to create multiple components of the same type you should put them into a common folder with a lowercase name like this `views/components/type/MyComponent`.
 
 - For example there are different types of modals like `confirm` or `device`.
 Because the `confirm` and `device` modals are subtypes of modal the folder structure looks like this
@@ -64,7 +64,7 @@ Both naming and structure conventions are similar to components conventions.
 Each view has its own folder in `views/` folder. Name of this folder is same as is the view's name (camel case and first letter is capitalized, e.g.: *MyView*).
 Inside the view's folder is always an `index.js` file containing view's code itself.
 
-View may contain own components inside view's folder - in the `components/` folder. One of the differences between a component and a view is that view can hav another views. Of course those views may have their own components and views, etc.
+View may contain own components inside view's folder - in the `components/` folder. One of the differences between a component and a view is that view can have another views. Of course those views may have their own components and views, etc.
 
 ```
 views/

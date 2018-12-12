@@ -1,10 +1,10 @@
 /* @flow */
 
 import * as React from 'react';
-import { CSSTransition } from 'react-transition-group';
 
 import styled from 'styled-components';
 import colors from 'config/colors';
+import { FADE_IN } from 'config/animations';
 
 import { UI } from 'trezor-connect';
 import * as MODAL from 'actions/constants/modal';
@@ -25,18 +25,11 @@ import DuplicateDevice from 'components/modals/device/Duplicate';
 import WalletType from 'components/modals/device/WalletType';
 
 // external context
-import NemWallet from 'components/modals/external/NemWallet';
+import Nem from 'components/modals/external/Nem';
+import Cardano from 'components/modals/external/Cardano';
+import Stellar from 'components/modals/external/Stellar';
 
 import type { Props } from './Container';
-
-const Fade = (props: { children: React.Node}) => (
-    <CSSTransition
-        {...props}
-        timeout={1000}
-        classNames="fade"
-    >{ props.children }
-    </CSSTransition>
-);
 
 const ModalContainer = styled.div`
     position: fixed;
@@ -51,6 +44,7 @@ const ModalContainer = styled.div`
     align-items: center;
     overflow: auto;
     padding: 20px;
+    animation: ${FADE_IN} 0.3s;
 `;
 
 const ModalWindow = styled.div`
@@ -88,13 +82,22 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_PassphraseType':
             return <PassphraseType device={modal.device} />;
 
-        case 'ButtonRequest_SignTx':
-            return <ConfirmSignTx device={modal.device} sendForm={props.sendForm} />;
+        case 'ButtonRequest_SignTx': {
+            if (!props.selectedAccount.network) return null;
+            switch (props.selectedAccount.network.type) {
+                case 'ethereum':
+                    return <ConfirmSignTx device={modal.device} sendForm={props.sendFormEthereum} />;
+                case 'ripple':
+                    return <ConfirmSignTx device={modal.device} sendForm={props.sendFormRipple} />;
+                default: return null;
+            }
+        }
 
         case 'ButtonRequest_ProtectCall':
             return <ConfirmAction />;
 
         case 'ButtonRequest_Other':
+        case 'ButtonRequest_ConfirmOutput':
             return <ConfirmAction />;
 
         case RECEIVE.REQUEST_UNVERIFIED:
@@ -153,7 +156,11 @@ const getExternalContextModal = (props: Props) => {
 
     switch (modal.windowType) {
         case 'xem':
-            return (<NemWallet onCancel={modalActions.onCancel} />);
+            return (<Nem onCancel={modalActions.onCancel} />);
+        case 'xlm':
+            return (<Stellar onCancel={modalActions.onCancel} />);
+        case 'ada':
+            return (<Cardano onCancel={modalActions.onCancel} />);
         default:
             return null;
     }
@@ -177,13 +184,11 @@ const Modal = (props: Props) => {
     }
 
     return (
-        <Fade key="modal-fade">
-            <ModalContainer>
-                <ModalWindow>
-                    { component }
-                </ModalWindow>
-            </ModalContainer>
-        </Fade>
+        <ModalContainer>
+            <ModalWindow>
+                { component }
+            </ModalWindow>
+        </ModalContainer>
     );
 };
 

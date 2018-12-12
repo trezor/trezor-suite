@@ -1,39 +1,45 @@
 /* @flow */
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import SendFormActions from 'actions/SendFormActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import * as TokenActions from 'actions/TokenActions';
+
 import type { State, Dispatch } from 'flowtype';
-import AccountSend from './index';
+import Summary from './index';
 
-type OwnProps = {}
+type OwnProps = { }
 
-export type StateProps = {
+type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-    sendForm: $ElementType<State, 'sendForm'>,
+    summary: $ElementType<State, 'summary'>,
     wallet: $ElementType<State, 'wallet'>,
+    tokens: $ElementType<State, 'tokens'>,
     fiat: $ElementType<State, 'fiat'>,
     localStorage: $ElementType<State, 'localStorage'>,
-}
+};
 
-export type DispatchProps = {
-    sendFormActions: typeof SendFormActions,
+type DispatchProps = {
+    addToken: typeof TokenActions.add,
+    loadTokens: typeof TokenActions.load,
+    removeToken: typeof TokenActions.remove,
 }
 
 export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     selectedAccount: state.selectedAccount,
-    sendForm: state.sendForm,
+    summary: state.summary,
     wallet: state.wallet,
+    tokens: state.tokens,
     fiat: state.fiat,
     localStorage: state.localStorage,
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    sendFormActions: bindActionCreators(SendFormActions, dispatch),
+    addToken: bindActionCreators(TokenActions.add, dispatch),
+    loadTokens: bindActionCreators(TokenActions.load, dispatch),
+    removeToken: bindActionCreators(TokenActions.remove, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountSend);
+export default connect(mapStateToProps, mapDispatchToProps)(Summary);

@@ -55,4 +55,16 @@ export default [
         url: 'https://nem.io/downloads/',
         external: true,
     },
+    {
+        id: 'xlm',
+        coinName: 'Stellar',
+        url: 'https://trezor.io/stellar',
+        external: true,
+    },
+    {
+        id: 'ada',
+        coinName: 'Cardano',
+        url: 'https://adalite.io/app',
+        external: true,
+    },
 ];
