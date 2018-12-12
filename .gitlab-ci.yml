@@ -79,6 +79,7 @@ deploy review:
     - mkdir -p "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}"
     - echo "Copy dev build to web server ${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}..."
     - rsync --delete -va build/dev/ "${DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}/"
+    - 'echo "Remove working dir, workaround for cache" && rm -r ./*'
   only:
     - branches
   tags:
