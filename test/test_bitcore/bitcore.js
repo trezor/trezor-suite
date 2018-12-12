@@ -29,13 +29,6 @@ function stopBitcore() {
           .then(() => promiseTimeout(15 * 1000));
 }
 
-function reinstallBitcore() {
-    run('apt-get purge -y bitcore-regtest')
-          .then(() => promiseTimeout(15 * 1000))
-          .then(() => run('gdebi -n /bitcore.deb'))
-          .then(() => promiseTimeout(15 * 1000));
-}
-
 function promiseTimeout(time) {
     return new Promise((resolve) => setTimeout(() => resolve(), time));
 }
@@ -112,7 +105,7 @@ const socketWorkerFactory = () => {
 function testBlockchain(doFirst, doLater, done) {
     const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
     blockchain.socket.promise.then(() => {
-        const realDone = (anything) => { blockchain.destroy(); done(anything); };
+        const realDone = (anything) => { blockchain.destroy().then(() => done(anything)); };
 
         Promise.resolve(doFirst(blockchain, realDone)).then(() => {
             setTimeout(() => doLater(blockchain, realDone), 5 * 1000);
@@ -188,9 +181,9 @@ describe('bitcore', () => {
             it('returns Promise on lookupSyncStatus', () => {
                 assert.ok(blockchain.lookupSyncStatus().catch(() => {}) instanceof Promise);
             });
-            it('returns Promise on sendTransaction', () => {
+            it('returns Promise on sendTransaction', (done) => {
                 assert.ok(blockchain.sendTransaction('abcd').catch(() => {}) instanceof Promise);
-                blockchain.destroy();
+                blockchain.destroy().then(() => done());
             });
         });
 
@@ -199,12 +192,11 @@ describe('bitcore', () => {
 
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             blockchain.socket.promise.then(() => {
-                blockchain.destroy();
-                done(new Error('blockchain.socket should not resolve'));
+                blockchain.destroy().then(() =>
+                done(new Error('blockchain.socket should not resolve')));
             }, () => {
                 assert.ok(blockchain.workingUrl === 'none');
-                blockchain.destroy();
-                done();
+                blockchain.destroy().then(() => done());
             });
         });
 
@@ -217,8 +209,7 @@ describe('bitcore', () => {
                 (error) => assert(error.message === 'All backends are offline.'),
                 19 * 1000,
                 () => {
-                    blockchain.destroy();
-                    done();
+                    blockchain.destroy().then(() => done());
                 }
             );
         });
@@ -235,11 +226,10 @@ describe('bitcore', () => {
             blockchain.socket.promise.then((socket) => {
                 assert.ok(socket instanceof Socket);
                 assert.ok(blockchain.workingUrl === 'http://localhost:3005');
-                blockchain.destroy();
-                done();
+                blockchain.destroy().then(() => done());
             }, () => {
-                blockchain.destroy();
-                done(new Error('blockchain.socket rejected'));
+                blockchain.destroy().then(() =>
+                done(new Error('blockchain.socket rejected')));
             });
         });
 
@@ -252,15 +242,15 @@ describe('bitcore', () => {
             const fun = (value, detach) => {
                 ended = true;
                 detach();
-                blockchain.destroy();
-                done(new Error('Emitted error.'));
+                blockchain.destroy().then(() =>
+                done(new Error('Emitted error.')));
             };
             blockchain.errors.values.attach(fun);
             setTimeout(() => {
                 if (!ended) {
                     blockchain.errors.values.detach(fun);
-                    blockchain.destroy();
-                    done();
+                    blockchain.destroy().then(() =>
+                    done());
                 }
             }, 19 * 1000);
         });
@@ -284,7 +274,7 @@ describe('bitcore', () => {
             blockchain._silent = true;
             return blockchain.hardStatusCheck().then((res) => {
                 assert.ok(res);
-                blockchain.destroy();
+                return blockchain.destroy();
             });
         });
 
@@ -299,8 +289,8 @@ describe('bitcore', () => {
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
             blockchain._silent = true;
             return blockchain.hardStatusCheck().then((res) => {
-                blockchain.destroy();
                 assert.ok(!res);
+                return blockchain.destroy();
             });
         });
     });
@@ -322,7 +312,7 @@ describe('bitcore', () => {
                     assert(true);
                 }
             }
-            blockchain.destroy();
+            return blockchain.destroy();
         });
 
         it('socket registers tx mined to address', function (done) {
@@ -827,19 +817,11 @@ describe('bitcore', () => {
 
     describe('disconnect errors', () => {
         it('throws error on disconnect', function (done) {
-            this.timeout(30 * 1000);
+            this.timeout(50 * 1000);
 
             testBlockchain((blockchain, done) => {
                 testStream(blockchain.errors, a => a instanceof Error, 20 * 1000, done);
             }, () => stopBitcore(), done);
-        });
-    });
-
-    // purge data in docker, to be able to run test again
-    describe('reinstallsBitcore', () => {
-        it('reinstalls bitcore', function () {
-            this.timeout(60 * 1000);
-            return reinstallBitcore();
         });
     });
 });

@@ -226,10 +226,13 @@ export class BitcoreBlockchain {
         }, () => {});
     }
 
-    destroy() {
-        this.socket.promise.then(socket => {
-            socket.close();
-        }, () => { /* node is stupid*/ });
+    destroy(): Promise<void> {
+        const res = new Promise(resolve => {
+            setTimeout(() => resolve(), 1000);
+        });
+        return Promise.race([res, this.socket.promise.then(socket => {
+            return socket.close();
+        }, () => { /* node is stupid*/ })]);
     }
 
     // start/end are the block numbers, inclusive.

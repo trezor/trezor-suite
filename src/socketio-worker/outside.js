@@ -122,20 +122,23 @@ class SocketWorkerHandler {
 
     stopped: boolean = false;
 
-    close() {
+    close(): Promise<void> {
         this.stopped = true;
         this._sendMessage({
             type: 'close',
         });
-        setTimeout(() => {
-            if (this._worker != null) {
-                this._worker.terminate();
-            }
-        }, 10);
         if (this._emitter != null) {
             this._emitter.destroy();
             this._emitter = null;
         }
+        return new Promise(resolve => {
+            setTimeout(() => {
+                if (this._worker != null) {
+                    this._worker.terminate();
+                }
+                resolve();
+            }, 10);
+        });
     }
 
     send(message: Object): Promise<any> {

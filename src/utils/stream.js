@@ -185,9 +185,9 @@ export class Stream<T> {
                     update(formatError(error));
                     setTimeout(
                       () => {
-                        if (!disposed) {
-                          finish();
-                        }
+                          if (!disposed) {
+                              finish();
+                          }
                       }, 10
                     );
                 }
@@ -215,7 +215,8 @@ export class Stream<T> {
             set = true;
             df.resolve(s);
         };
-        const stream = Stream.filterError(Stream.fromPromise(df.promise));
+        // $FlowIssue the promise is never rejected, so the type can be Stream<T>
+        const stream: Stream<T> = Stream.fromPromise(df.promise);
         return {stream, setter};
     }
 
@@ -319,8 +320,9 @@ export class Stream<T> {
         });
     }
 
+    disposed: boolean = false;
+
     constructor(controller: Controller<T>) {
-        this.disposed = false;
         this.values = new Emitter();
         this.finish = new Emitter();
         const controllerDispose = controller(
