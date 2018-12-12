@@ -1,3 +1,18 @@
+//  OLD UNITS
+// SMALLEST: '10px',
+// SMALLER: '12px',
+// SMALL: '14px',
+// BASE: '16px',
+// TOP_MENU: '17px',
+// WALLET_TITLE: '18px',
+// BIG: '21px',
+// BIGGER: '32px',
+// BIGGEST: '36px',
+// H1: '18px',
+// H2: '16px',
+// H3: '14px',
+// H4: '12px',
+// COUNTER: '11px',
 export const FONT_SIZE = {
     SMALLEST: '0.7142rem',
     SMALLER: '0.8571rem',
