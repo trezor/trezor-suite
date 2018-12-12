@@ -1,7 +1,6 @@
 /* @flow */
 
 import * as React from 'react';
-import { CSSTransition } from 'react-transition-group';
 
 import styled from 'styled-components';
 import colors from 'config/colors';
