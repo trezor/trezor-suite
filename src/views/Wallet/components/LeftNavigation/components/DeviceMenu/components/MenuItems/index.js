@@ -18,7 +18,6 @@ const Item = styled.div`
     display: flex;
     align-items: center;
     font-size: ${FONT_SIZE.BASE};
-    line-height: 24px;
     cursor: pointer;
     color: ${colors.TEXT_SECONDARY};    
 `;

@@ -3,7 +3,12 @@ import Textarea from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
-import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
+import {
+    FONT_SIZE,
+    FONT_WEIGHT,
+    LINE_HEIGHT,
+    FONT_FAMILY,
+} from 'config/variables';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -130,7 +135,7 @@ const TrezorAction = styled.div`
     bottom: -25px;
     color: ${colors.WHITE};
     border-radius: 5px;
-    line-height: 37px;
+    line-height: ${LINE_HEIGHT.TREZOR_ACTION};
     z-index: 10002;
     transform: translate(-1px, -1px);
 `;

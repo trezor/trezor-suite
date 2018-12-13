@@ -7,6 +7,7 @@ import Icon from 'components/Icon';
 import {
     FONT_SIZE,
     FONT_WEIGHT,
+    LINE_HEIGHT,
     TRANSITION,
 } from 'config/variables';
 
@@ -38,7 +39,7 @@ const StyledInput = styled.input`
     height: ${props => (props.height ? `${props.height}px` : '40px')};
     padding: 5px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
 
-    line-height: 1.42857143;
+    line-height: ${LINE_HEIGHT.SMALL};
     font-size: ${props => (props.isSmallText ? `${FONT_SIZE.SMALL}` : `${FONT_SIZE.BASE}`)};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${props => (props.color ? props.color : colors.TEXT)};
@@ -116,7 +117,7 @@ const TrezorAction = styled.div`
     background: black;
     color: ${colors.WHITE};
     border-radius: 5px;
-    line-height: 37px;
+    line-height: ${LINE_HEIGHT.TREZOR_ACTION};
     z-index: 10002;
     transform: translate(-1px, -1px);
 `;
