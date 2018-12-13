@@ -1,6 +1,7 @@
 /* global it:false, describe:false */
 
 import {Emitter, Stream, StreamWithEnding} from '../src/utils/stream.js';
+import {uniqueRandom} from '../src/utils/unique-random.js';
 import assert from 'assert';
 
 function test_console_warn(fun, test) {
@@ -1616,7 +1617,7 @@ describe('stream', () => {
     describe('reduce', () => {
         it('creates a promise', () => {
             const stream = Stream.simple(1);
-            const promise = stream.reduce();
+            const promise = stream.reduce(() => {}, 0);
             assert.ok(promise instanceof Promise);
         });
 
@@ -1902,4 +1903,103 @@ describe('stream with ending', () => {
             }, 90);
         });
     });
+});
+
+// this mocks all the window and process properties
+// so it works in both karma and in mocha or whatever we use
+function mockProcessNavigatorOffset(processVersion, navigatorLanguage, navigatorLanguages, navigatorUserAgent, offset, fun) {
+    const originalOffset = Date.prototype.getTimezoneOffset;
+    let funAfter;
+    if (typeof global.process !== 'undefined') {
+        // node
+        const originalProcessVersion = global.process.version;
+        Object.defineProperty(global.process, 'version', {value: processVersion, configurable: true});
+
+        global.process = process;
+        global.navigator = {
+            language: navigatorLanguage,
+            languages: navigatorLanguages,
+            userAgent: navigatorUserAgent,
+        };
+
+        // eslint-disable-next-line no-extend-native
+        Date.prototype.getTimezoneOffset = () => offset;
+        funAfter = () => {
+            Object.defineProperty(global.process, 'version', {value: originalProcessVersion, configurable: true});
+            global.navigator = undefined;
+            // eslint-disable-next-line no-extend-native
+            Date.prototype.getTimezoneOffset = originalOffset;
+        };
+    } else {
+        // we are in karma, it injects its own process, but without version
+        Object.defineProperty(process, 'version', {value: processVersion, configurable: true});
+        const originalNavigatorLanguage = navigator.language;
+        const originalNavigatorLanguages = navigator.languages;
+        const originalNavigatorUserAgent = navigator.userAgent;
+        Object.defineProperty(window.navigator, 'language', {value: navigatorLanguage, configurable: true});
+        Object.defineProperty(window.navigator, 'languages', {value: navigatorLanguages, configurable: true});
+        Object.defineProperty(window.navigator, 'userAgent', {value: navigatorUserAgent, configurable: true});
+        // eslint-disable-next-line no-extend-native
+        Date.prototype.getTimezoneOffset = () => offset;
+        funAfter = () => {
+            Object.defineProperty(process, 'version', {value: undefined, configurable: true});
+            Object.defineProperty(window.navigator, 'language', {value: originalNavigatorLanguage, configurable: true});
+            Object.defineProperty(window.navigator, 'languages', {value: originalNavigatorLanguages, configurable: true});
+            Object.defineProperty(window.navigator, 'userAgent', {value: originalNavigatorUserAgent, configurable: true});
+            // eslint-disable-next-line no-extend-native
+            Date.prototype.getTimezoneOffset = originalOffset;
+        };
+    }
+    try {
+        fun();
+    } finally {
+        funAfter();
+    }
+}
+
+describe('random', () => {
+    it('works in node', () => {
+        mockProcessNavigatorOffset(
+            'foo', // version
+            undefined, // language
+            undefined, // languages
+            undefined, // userAgent
+            -123, // offset
+            () => {
+                assert.deepStrictEqual(uniqueRandom(3), 1);
+                assert.deepStrictEqual(uniqueRandom(3), 1);
+                assert.deepStrictEqual(uniqueRandom(300), 31);
+                assert.deepStrictEqual(uniqueRandom(300), 31);
+            });
+    });
+
+    it('works in browser (language)', () => {
+        mockProcessNavigatorOffset(
+            undefined, // version
+            'foo', // language
+            undefined, // languages
+            'JamesBond', // agent
+            -123,
+            () => {
+                assert.deepStrictEqual(uniqueRandom(3), 2);
+                assert.deepStrictEqual(uniqueRandom(3), 2);
+                assert.deepStrictEqual(uniqueRandom(300), 89);
+                assert.deepStrictEqual(uniqueRandom(300), 89);
+            });
+    });
+    it('works in browser (languages)', () => {
+        mockProcessNavigatorOffset(
+            undefined, // version
+            'foo', // language
+            ['foo', 'bar'], // languages
+            'JamesBond', // agent
+            -123,
+            () => {
+                assert.deepStrictEqual(uniqueRandom(3), 2);
+                assert.deepStrictEqual(uniqueRandom(3), 2);
+                assert.deepStrictEqual(uniqueRandom(300), 23);
+                assert.deepStrictEqual(uniqueRandom(300), 23);
+            });
+    });
+
 });

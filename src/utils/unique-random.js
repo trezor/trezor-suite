@@ -5,12 +5,17 @@
 
 import crypto from 'crypto';
 
+function iisNode(): boolean {
+    return typeof process !== 'undefined' && !!process.version;
+}
+
 export function uniqueRandom(maxNonInclusive: number) {
-    const version = typeof navigator === 'undefined'
-        ? (process == null ? 'weird' : process.version)
+    const isNode = iisNode();
+    const version = isNode
+        ? process.version
         : navigator.userAgent;
     const offset = new Date().getTimezoneOffset();
-    const languages = typeof navigator === 'undefined'
+    const languages = isNode
         ? 'node'
         : (
             navigator.languages == null
