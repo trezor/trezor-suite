@@ -66,4 +66,5 @@ export const TRANSITION = {
 export const LINE_HEIGHT = {
     SMALL: '1.42857143',
     BASE: '1.8',
+    TREZOR_ACTION: '37px',
 };
