@@ -69,7 +69,7 @@ const Help = styled.div`
 
 const A = styled.a`
     color: ${colors.TEXT_SECONDARY};
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     display: inline-block;
     padding: 8px;
     height: auto;

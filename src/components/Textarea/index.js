@@ -28,7 +28,7 @@ const StyledTextarea = styled(Textarea)`
     color: ${colors.TEXT_PRIMARY};
     background: ${colors.WHITE};
     font-weight: ${FONT_WEIGHT.MEDIUM};
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
     white-space: pre-wrap;       /* css-3 */
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
     white-space: -pre-wrap;      /* Opera 4-6 */
@@ -104,7 +104,7 @@ const TopLabel = styled.span`
 `;
 
 const BottomText = styled.span`
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 `;
 

@@ -36,7 +36,7 @@ const ConnectTrezorWrapper = styled.div`
     top: 1px;
     animation: ${PULSATE} 1.3s ease-out infinite;
     color: ${colors.GREEN_PRIMARY};
-    font-size: ${FONT_SIZE.BASE};
+    font-size: ${FONT_SIZE.BIG};
     font-weight: ${FONT_WEIGHT.MEDIUM};
 `;
 
@@ -58,7 +58,7 @@ const FooterText = styled.span`
 `;
 
 const StyledLink = styled(Link)`
-    font-size: ${FONT_SIZE.BASE};
+    font-size: ${FONT_SIZE.BIG};
 `;
 
 class ConnectDevice extends PureComponent<Props> {

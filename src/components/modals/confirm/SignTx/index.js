@@ -42,7 +42,7 @@ const StyledP = styled(P)`
 
 const Label = styled.div`
     padding-top: 5px;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
 `;
 

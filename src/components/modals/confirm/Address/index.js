@@ -27,7 +27,7 @@ const Content = styled.div`
 `;
 
 const Label = styled.div`
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
 `;
 

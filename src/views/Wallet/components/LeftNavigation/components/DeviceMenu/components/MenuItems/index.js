@@ -17,7 +17,7 @@ const Item = styled.div`
     padding: 4px 2px;
     display: flex;
     align-items: center;
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
     line-height: 24px;
     cursor: pointer;
     color: ${colors.TEXT_SECONDARY};    

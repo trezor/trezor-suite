@@ -42,7 +42,7 @@ const Body = styled.div`
 
 const Message = styled.div`
     padding-bottom: 13px;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
 `;
 
 const Title = styled.div`

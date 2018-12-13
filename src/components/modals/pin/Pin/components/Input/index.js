@@ -21,7 +21,7 @@ const StyledInput = styled.input`
     letter-spacing: 7px;
     width: 100%;
     font-weight: ${FONT_WEIGHT.SEMIBOLD};
-    font-size: ${FONT_SIZE.BIGGER};
+    font-size: ${FONT_SIZE.BIGGEST};
     padding: 5px 31px 10px 20px;
     color: ${colors.TEXT_PRIMARY};
     background: transparent;

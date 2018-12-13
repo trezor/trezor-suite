@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 8px 28px 8px 24px;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
     background: ${colors.LANDING};
     ${props => props.hasBorder && css`

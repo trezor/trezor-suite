@@ -66,7 +66,7 @@ const Status = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
 `;
 

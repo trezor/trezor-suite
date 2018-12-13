@@ -38,7 +38,7 @@ const Wrapper = styled.button`
     padding: 12px 58px;
     border-radius: 3px;
     background: transparent;
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
     position: relative;
     font-weight: ${FONT_WEIGHT.LIGHT};
     cursor: pointer;

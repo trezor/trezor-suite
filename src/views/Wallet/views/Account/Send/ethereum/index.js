@@ -44,7 +44,7 @@ const SetMaxAmountButton = styled(Button)`
     align-items: center;
     justify-content: center;
 
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.SMALLEST};
     color: ${colors.TEXT_SECONDARY};
 
@@ -99,7 +99,7 @@ const UpdateFeeWrapper = styled.span`
     margin-left: 8px;
     display: flex;
     align-items: center;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.WARNING_PRIMARY};
 `;
 

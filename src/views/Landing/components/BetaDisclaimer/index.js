@@ -41,7 +41,7 @@ const ModalWindow = styled.div`
 
 const StyledP = styled(P)`
     padding: 10px 0px;
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
 `;
 
 const StyledButton = styled(Button)`

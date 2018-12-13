@@ -22,7 +22,7 @@ type Props = {
 
 const Wrapper = styled.div`
     width: 100%;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     background: ${colors.LANDING};
     color: ${colors.TEXT_SECONDARY};
     padding: 22px 48px;

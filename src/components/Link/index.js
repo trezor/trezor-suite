@@ -9,7 +9,7 @@ const A = styled.a`
     text-decoration: none;
     cursor: pointer;
     transition: ${TRANSITION.HOVER};
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
 
     ${props => props.isGreen && css`
         border-bottom: 1px solid ${colors.GREEN_PRIMARY};

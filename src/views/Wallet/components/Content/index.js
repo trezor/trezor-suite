@@ -21,13 +21,13 @@ const Loading = styled.div`
 `;
 
 const Text = styled.div`
-    font-size: ${FONT_SIZE.BIG};
+    font-size: ${FONT_SIZE.BIGGER};
     color: ${colors.TEXT_SECONDARY};
     margin-left: 10px;
 `;
 
 const Message = styled.div`
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
     color: ${colors.TEXT_PRIMARY};
 `;
 

@@ -24,7 +24,7 @@ const H2 = styled.h2`
 
     ${props => props.claim
         && css`
-            font-size: ${FONT_SIZE.BIGGEST};
+            font-size: ${FONT_SIZE.HUGE};
             padding-bottom: 24px;
         `};
 `;

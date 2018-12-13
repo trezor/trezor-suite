@@ -39,7 +39,7 @@ const StyledInput = styled.input`
     padding: 5px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
 
     line-height: 1.42857143;
-    font-size: ${props => (props.isSmallText ? `${FONT_SIZE.SMALLER}` : `${FONT_SIZE.SMALL}`)};
+    font-size: ${props => (props.isSmallText ? `${FONT_SIZE.SMALL}` : `${FONT_SIZE.BASE}`)};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${props => (props.color ? props.color : colors.TEXT)};
 
@@ -86,7 +86,7 @@ const StyledIcon = styled(Icon)`
 
 const BottomText = styled.span`
     margin-top: 10px;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 `;
 

@@ -19,7 +19,7 @@ const tooltipStyles = css`
     .rc-tooltip-inner {
         padding: 8px 10px;
         color: ${colors.WHITE};
-        font-size: ${FONT_SIZE.SMALLER};
+        font-size: ${FONT_SIZE.SMALL};
         line-height: 1.5;
         text-align: left;
         text-decoration: none;
