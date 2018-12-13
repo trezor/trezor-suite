@@ -151,6 +151,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 */
 export const toggleAdvanced = (): Action => ({
     type: SEND.TOGGLE_ADVANCED,
+    networkType: 'ethereum',
 });
 
 /*
