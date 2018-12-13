@@ -27,10 +27,6 @@ const Text = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const TooltipContent = styled.div`
-    font-size: ${FONT_SIZE.SMALLEST};
-`;
-
 const RowAccountWrapper = styled.div`
     width: 100%;
     display: flex;
@@ -187,7 +183,7 @@ const AccountMenu = (props: Props) => {
             discoveryStatus = (
                 <Tooltip
                     maxWidth={200}
-                    content={<TooltipContent>To add a new account, last account must have some transactions.</TooltipContent>}
+                    content="To add a new account, last account must have some transactions."
                     placement="bottom"
                 >
                     <Row>
