@@ -37,7 +37,7 @@ const Wrapper = styled.section`
 const StyledNavLink = styled(Link)`
     color: ${colors.TEXT_SECONDARY};
     padding-top: 20px;
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
 `;
 
 const Image = styled.div`

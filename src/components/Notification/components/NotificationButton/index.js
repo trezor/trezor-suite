@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import colors from 'config/colors';
 import { getPrimaryColor, getSecondaryColor } from 'utils/notification';
 import Loader from 'components/Loader';
-import { TRANSITION } from 'config/variables';
+import { TRANSITION, FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 type Props = {
     type: string;
@@ -38,9 +38,9 @@ const Wrapper = styled.button`
     padding: 12px 58px;
     border-radius: 3px;
     background: transparent;
-    font-size: 14px;
+    font-size: ${FONT_SIZE.BASE};
     position: relative;
-    font-weight: 300;
+    font-weight: ${FONT_WEIGHT.LIGHT};
     cursor: pointer;
     color: ${props => getPrimaryColor(props.type)};
     border: 1px solid ${props => getPrimaryColor(props.type)};

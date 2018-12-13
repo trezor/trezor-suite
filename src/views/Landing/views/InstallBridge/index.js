@@ -59,7 +59,7 @@ const Bottom = styled.div`
 
 const TitleHeader = styled(H1)`
     display: flex;
-    font-size: ${FONT_SIZE.BIGGEST};
+    font-size: ${FONT_SIZE.HUGE};
     justify-content: center;
     align-items: center;
 `;
@@ -69,8 +69,8 @@ const Version = styled.span`
     padding: 6px 10px;
     border: 1px solid ${colors.GREEN_PRIMARY};
     border-radius: 3px;
-    font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.SMALLEST};
+    font-size: ${FONT_SIZE.BASE};
+    font-weight: ${FONT_WEIGHT.LIGHT};
     margin-left: 24px;
 `;
 
@@ -109,7 +109,7 @@ const GoBack = styled.span`
 const Ol = styled.ul`
     margin: 0 auto;
     color: ${colors.TEXT_SECONDARY};
-    font-size: ${FONT_SIZE.BASE};
+    font-size: ${FONT_SIZE.BIG};
     padding: 10px 0 15px 25px;
     text-align: left;
 `;

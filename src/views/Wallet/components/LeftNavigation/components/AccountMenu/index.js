@@ -23,12 +23,8 @@ import RowCoin from '../RowCoin';
 const Wrapper = styled.div``;
 
 const Text = styled.span`
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
-`;
-
-const TooltipContent = styled.div`
-    font-size: ${FONT_SIZE.SMALLEST};
 `;
 
 const RowAccountWrapper = styled.div`
@@ -37,7 +33,7 @@ const RowAccountWrapper = styled.div`
     flex-direction: column;
     align-items: flex-start;
     padding: ${LEFT_NAVIGATION_ROW.PADDING};
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
     color: ${colors.TEXT_PRIMARY};
     border-left: ${BORDER_WIDTH.SELECTED} solid transparent;
     border-bottom: 1px solid ${colors.DIVIDER};
@@ -79,7 +75,7 @@ const DiscoveryStatusWrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
     padding: ${LEFT_NAVIGATION_ROW.PADDING};
     white-space: nowrap;
     border-top: 1px solid ${colors.DIVIDER};
@@ -87,7 +83,7 @@ const DiscoveryStatusWrapper = styled.div`
 
 const DiscoveryStatusText = styled.div`
     display: block;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
     overflow: hidden;
     text-overflow: ellipsis;
@@ -97,7 +93,7 @@ const DiscoveryLoadingWrapper = styled.div`
     display: flex;
     align-items: center;
     padding: ${LEFT_NAVIGATION_ROW.PADDING};
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
     white-space: nowrap;
     color: ${colors.TEXT_SECONDARY};
 `;
@@ -187,7 +183,7 @@ const AccountMenu = (props: Props) => {
             discoveryStatus = (
                 <Tooltip
                     maxWidth={200}
-                    content={<TooltipContent>To add a new account, last account must have some transactions.</TooltipContent>}
+                    content="To add a new account, last account must have some transactions."
                     placement="bottom"
                 >
                     <Row>

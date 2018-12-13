@@ -30,7 +30,7 @@ const SetMaxAmountButton = styled(Button)`
     align-items: center;
     justify-content: center;
 
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.SMALLEST};
     color: ${colors.TEXT_SECONDARY};
 
@@ -82,7 +82,6 @@ const ToggleAdvancedSettingsWrapper = styled.div`
 
 const SendButton = styled(Button)`
     min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
-    font-size: 13px;
 
     @media screen and (max-width: ${SmallScreenWidth}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};

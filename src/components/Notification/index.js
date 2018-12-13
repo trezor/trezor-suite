@@ -42,13 +42,13 @@ const Body = styled.div`
 
 const Message = styled.div`
     padding-bottom: 13px;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
 `;
 
 const Title = styled.div`
     padding-bottom: 5px;
     padding-top: 1px;
-    font-weight: ${FONT_WEIGHT.BIGGER};
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
 `;
 
 const CloseClick = styled.div`

@@ -116,7 +116,7 @@ const Left = styled.div`
 const Right = styled.div`
     display: flex;
     flex-direction: row;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     cursor: pointer;
 `;
 

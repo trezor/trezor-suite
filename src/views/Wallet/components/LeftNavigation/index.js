@@ -3,6 +3,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
+import { FONT_SIZE } from 'config/variables';
 import Icon from 'components/Icon';
 import WalletTypeIcon from 'components/images/WalletType';
 import icons from 'config/icons';
@@ -30,7 +31,7 @@ const Counter = styled.div`
     height: 24px;
     line-height: 22px;
     text-align: center;
-    font-size: 11px;
+    font-size: ${FONT_SIZE.COUNTER};
     margin-right: 8px;
 `;
 
@@ -68,7 +69,7 @@ const Help = styled.div`
 
 const A = styled.a`
     color: ${colors.TEXT_SECONDARY};
-    font-size: 12px;
+    font-size: ${FONT_SIZE.SMALL};
     display: inline-block;
     padding: 8px;
     height: auto;

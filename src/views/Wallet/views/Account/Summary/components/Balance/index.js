@@ -51,16 +51,16 @@ const HideBalanceIconWrapper = styled.div`
 `;
 
 const FiatValue = styled.div`
-    font-weight: ${FONT_WEIGHT.BIGGER};
-    font-size: ${FONT_SIZE.BIG};
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
+    font-size: ${FONT_SIZE.BIGGER};
     margin: 7px 0;
     min-height: 25px;
     color: ${colors.TEXT_PRIMARY};
 `;
 
 const FiatValueRate = styled.div`
-    font-weight: ${FONT_WEIGHT.BIGGER};
-    font-size: ${FONT_SIZE.BASE};
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
+    font-size: ${FONT_SIZE.BIG};
     min-height: 25px;
     margin: 7px 0;
     display: flex;
@@ -77,12 +77,12 @@ const BalanceRateWrapper = styled(BalanceWrapper)`
 `;
 
 const CoinBalance = styled.div`
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
 `;
 
 const Label = styled.div`
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
 `;
 

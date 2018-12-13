@@ -1,20 +1,40 @@
+//  OLD UNITS
+// SMALLEST: '10px',
+// SMALLER: '12px',
+// SMALL: '14px',
+// BASE: '16px',
+// TOP_MENU: '17px',
+// WALLET_TITLE: '18px',
+// BIG: '21px',
+// BIGGER: '32px',
+// BIGGEST: '36px',
+// H1: '18px',
+// H2: '16px',
+// H3: '14px',
+// H4: '12px',
+// COUNTER: '11px',
+
 export const FONT_SIZE = {
-    SMALLEST: '10px',
-    SMALLER: '12px',
-    SMALL: '14px',
-    BASE: '16px',
-    TOP_MENU: '17px',
-    WALLET_TITLE: '18px',
-    BIG: '21px',
-    BIGGER: '32px',
-    BIGGEST: '36px',
+    SMALL: '0.8571rem',
+    BASE: '1rem',
+    BIG: '1.1428rem',
+    BIGGER: '1.5rem',
+    BIGGEST: '2.2857rem',
+    HUGE: '2.5714rem',
+    TOP_MENU: '1.2142rem',
+    WALLET_TITLE: '1.2857rem',
+    H1: '1.2857rem',
+    H2: '1.1428rem',
+    H3: '1rem',
+    H4: '0.8571rem',
+    COUNTER: '0.7857rem',
 };
 
 export const FONT_WEIGHT = {
-    SMALLEST: '300',
-    SMALL: '400',
-    BASE: '500',
-    BIGGER: '600',
+    LIGHT: '300',
+    NORMAL: '400',
+    MEDIUM: '500',
+    SEMIBOLD: '600',
 };
 
 export const FONT_FAMILY = {
@@ -44,6 +64,7 @@ export const TRANSITION = {
 };
 
 export const LINE_HEIGHT = {
-    SMALL: '1.4',
+    SMALL: '1.42857143',
     BASE: '1.8',
+    TREZOR_ACTION: '37px',
 };

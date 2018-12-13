@@ -44,7 +44,7 @@ const SetMaxAmountButton = styled(Button)`
     align-items: center;
     justify-content: center;
 
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.SMALLEST};
     color: ${colors.TEXT_SECONDARY};
 
@@ -99,7 +99,7 @@ const UpdateFeeWrapper = styled.span`
     margin-left: 8px;
     display: flex;
     align-items: center;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${colors.WARNING_PRIMARY};
 `;
 
@@ -127,12 +127,11 @@ const ToggleAdvancedSettingsButton = styled(Button)`
     padding: 0;
     display: flex;
     align-items: center;
-    font-weight: ${FONT_WEIGHT.BIGGER};
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
 `;
 
 const SendButton = styled(Button)`
     min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
-    font-size: 13px;
 
     @media screen and (max-width: ${SmallScreenWidth}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};

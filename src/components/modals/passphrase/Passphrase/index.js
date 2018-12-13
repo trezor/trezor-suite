@@ -37,7 +37,7 @@ const Wrapper = styled.div`
 
 const Label = styled.div`
     ${colors.TEXT_SECONDARY};
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
     padding-bottom: 5px;
 `;
 
@@ -68,7 +68,7 @@ const LinkButton = styled(Button)`
     text-decoration: none;
     cursor: pointer;
     transition: ${TRANSITION.HOVER};
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     border-radius: 0;
     border-bottom: 1px solid ${colors.GREEN_PRIMARY};
     background: transparent;

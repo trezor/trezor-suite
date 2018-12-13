@@ -1,5 +1,6 @@
 import { css } from 'styled-components';
 import colors from 'config/colors';
+import { FONT_SIZE, LINE_HEIGHT } from 'config/variables';
 
 const tooltipStyles = css`
     .rc-tooltip {
@@ -18,8 +19,8 @@ const tooltipStyles = css`
     .rc-tooltip-inner {
         padding: 8px 10px;
         color: ${colors.WHITE};
-        font-size: 12px;
-        line-height: 1.5;
+        font-size: ${FONT_SIZE.SMALL};
+        line-height: ${LINE_HEIGHT.SMALL};
         text-align: left;
         text-decoration: none;
         background-color: ${colors.TOOLTIP_BACKGROUND};

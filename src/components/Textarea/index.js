@@ -3,7 +3,12 @@ import Textarea from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
-import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from 'config/variables';
+import {
+    FONT_SIZE,
+    FONT_WEIGHT,
+    LINE_HEIGHT,
+    FONT_FAMILY,
+} from 'config/variables';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -27,8 +32,8 @@ const StyledTextarea = styled(Textarea)`
     font-family: ${FONT_FAMILY.MONOSPACE};
     color: ${colors.TEXT_PRIMARY};
     background: ${colors.WHITE};
-    font-weight: ${FONT_WEIGHT.BASE};
-    font-size: ${FONT_SIZE.SMALL};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+    font-size: ${FONT_SIZE.BASE};
     white-space: pre-wrap;       /* css-3 */
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
     white-space: -pre-wrap;      /* Opera 4-6 */
@@ -104,7 +109,7 @@ const TopLabel = styled.span`
 `;
 
 const BottomText = styled.span`
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 `;
 
@@ -130,7 +135,7 @@ const TrezorAction = styled.div`
     bottom: -25px;
     color: ${colors.WHITE};
     border-radius: 5px;
-    line-height: 37px;
+    line-height: ${LINE_HEIGHT.TREZOR_ACTION};
     z-index: 10002;
     transform: translate(-1px, -1px);
 `;

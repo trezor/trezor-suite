@@ -54,7 +54,7 @@ const Label = styled.div`
     padding-left: 10px;
     justify-content: center;
     ${colors.TEXT_SECONDARY};
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BASE};
 
     &:hover,
     &:focus {

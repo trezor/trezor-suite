@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import colors from 'config/colors';
+import { FONT_SIZE } from 'config/variables';
 import * as LogActions from 'actions/LogActions';
 
 declare var COMMITHASH: string;
@@ -21,7 +22,7 @@ type Props = {
 
 const Wrapper = styled.div`
     width: 100%;
-    font-size: 12px;
+    font-size: ${FONT_SIZE.SMALL};
     background: ${colors.LANDING};
     color: ${colors.TEXT_SECONDARY};
     padding: 22px 48px;

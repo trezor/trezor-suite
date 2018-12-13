@@ -37,7 +37,7 @@ const CircleWrapper = styled.circle`
 `;
 
 const StyledParagraph = styled(Paragraph)`
-    font-size: ${props => (props.isSmallText ? FONT_SIZE.SMALLER : FONT_SIZE.BASE)};
+    font-size: ${props => (props.isSmallText ? FONT_SIZE.SMALL : FONT_SIZE.BIG)};
     color: ${props => (props.isWhiteText ? colors.WHITE : colors.TEXT_PRIMARY)};
 `;
 

@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import React from 'react';
-import { FONT_SIZE } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { NavLink } from 'react-router-dom';
 import colors from 'config/colors';
 
@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 `;
 
 const StyledNavLink = styled(NavLink)`
-    font-weight: 500;
+    font-weight: ${FONT_WEIGHT.MEDIUM};
     font-size: ${FONT_SIZE.TOP_MENU};
     color: ${colors.TEXT_SECONDARY};
     margin: 0px 4px;

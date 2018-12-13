@@ -61,14 +61,14 @@ const StyledButton = styled(Button)`
 const Label = styled.div`
     display: flex;
     text-align: left;
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     flex-direction: column;
     padding-bottom: 5px;
 `;
 
 const ErrorMessage = styled.div`
     color: ${colors.ERROR_PRIMARY};
-    font-size: ${FONT_SIZE.SMALLER};
+    font-size: ${FONT_SIZE.SMALL};
     padding-top: 5px;
     text-align: center;
     width: 100%;
