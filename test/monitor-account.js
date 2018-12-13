@@ -1,6 +1,6 @@
 /* global it:false, describe:false, WebAssembly:true */
 
-import {MockBitcore} from '../src/mock-bitcore';
+import {MockBitcore} from './_mock-bitcore';
 import {WorkerDiscovery} from '../src/discovery/worker-discovery';
 import fixtures from './fixtures/monitor-account.json';
 
