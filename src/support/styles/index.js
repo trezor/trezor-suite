@@ -4,6 +4,7 @@ import { FONT_WEIGHT } from 'config/variables';
 
 import tooltipStyles from './Tooltip';
 import animationStyles from './Animations';
+import fontStyles from './Fonts';
 
 const baseStyles = createGlobalStyle`
     html, body {
@@ -70,6 +71,7 @@ const baseStyles = createGlobalStyle`
             url('/fonts/roboto/RobotoMonoRegular.svg#RobotoMono') format('svg'); /* Legacy iOS */
     }
 
+    ${fontStyles};
     ${animationStyles};
     ${tooltipStyles};
 `;
