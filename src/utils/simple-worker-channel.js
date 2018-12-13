@@ -38,8 +38,11 @@ export class WorkerChannel {
         const i: number = event.data.i;
         const dfd = this.pending[i];
         if (dfd) {
+            delete event.data.i;
             dfd(event.data);
             delete this.pending[i];
+        } else {
+            console.warn(new Error('Strange incoming message'));
         }
     }
 }

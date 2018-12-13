@@ -4,6 +4,9 @@ import {Emitter, Stream, StreamWithEnding} from '../src/utils/stream.js';
 import {uniqueRandom} from '../src/utils/unique-random.js';
 import assert from 'assert';
 
+import {MockWorker} from './_mock-worker.js';
+import {WorkerChannel} from '../src/utils/simple-worker-channel.js';
+
 function test_console_warn(fun, test) {
     const original = console.warn;
     let value;
@@ -2001,5 +2004,100 @@ describe('random', () => {
                 assert.deepStrictEqual(uniqueRandom(300), 23);
             });
     });
+});
 
+describe('simple worker channel', () => {
+    it('sends and receives message', (done) => {
+        const mockWorker = new MockWorker([{
+            type: 'in',
+            spec: {
+                i: 0,
+                foo: 'bar',
+            },
+        }, {
+            type: 'out',
+            spec: {
+                i: 0,
+                bar: 'baz',
+            },
+        }], done, false);
+        const channel = new WorkerChannel(mockWorker);
+        channel.postMessage({foo: 'bar'}).then(res => {
+            assert.deepStrictEqual(res, {bar: 'baz'});
+            done();
+        });
+    });
+
+    it('sends and receives message out of order', (done) => {
+        const mockWorker = new MockWorker([{
+            type: 'in',
+            spec: {
+                i: 0,
+                foo: 'bar',
+            },
+        }, {
+            type: 'in',
+            spec: {
+                i: 1,
+                foo: 'bar',
+            },
+        }, {
+            type: 'out',
+            spec: {
+                i: 1,
+                bar: 'one',
+            },
+        }, {
+            type: 'out',
+            spec: {
+                i: 0,
+                bar: 'zero',
+            },
+        }], done, false);
+        const channel = new WorkerChannel(mockWorker);
+        const zero = channel.postMessage({foo: 'bar'});
+        channel.postMessage({foo: 'bar'}).then(res => {
+            assert.deepStrictEqual(res, {bar: 'one'});
+            zero.then(res => {
+                assert.deepStrictEqual(res, {bar: 'zero'});
+                done();
+            });
+        });
+    });
+
+    it('console warns on wrong i', (done) => {
+        const mockWorker = new MockWorker([{
+            type: 'in',
+            spec: {
+                i: 0,
+                foo: 'bar',
+            },
+        }, {
+            type: 'out',
+            spec: {
+                i: 3,
+                bar: 'baz',
+            },
+        }, {
+            type: 'out',
+            spec: {
+                i: 0,
+                bar: 'baz',
+            },
+        }], done, false);
+
+        const original = console.warn;
+        let value;
+        console.warn = (something) => {
+            value = something;
+        };
+
+        const channel = new WorkerChannel(mockWorker);
+        channel.postMessage({foo: 'bar'}).then(res => {
+            assert.deepStrictEqual(res, {bar: 'baz'});
+            console.warn = original;
+            assert.deepStrictEqual(value.message, 'Strange incoming message');
+            done();
+        });
+    });
 });
