@@ -4,7 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
-import { FONT_WEIGHT } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 type Props = {
     onClick: () => void;
@@ -16,7 +16,7 @@ const Wrapper = styled.button`
     height: 80px;
     margin-top: 15px;
     margin-left: 10px;
-    font-size: 22px;
+    font-size: ${FONT_SIZE.BIGGER};
     font-weight: ${FONT_WEIGHT.SEMIBOLD};
     color: ${colors.TEXT_PRIMARY};
     border: 1px solid ${colors.DIVIDER};
