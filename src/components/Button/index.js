@@ -22,7 +22,7 @@ type Props = {
 const Wrapper = styled.button`
     padding: ${props => (props.icon ? '4px 24px 4px 15px' : '11px 24px')};
     border-radius: 3px;
-    font-size: ${FONT_SIZE.BASE};
+    font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.LIGHT};
     cursor: pointer;
     background: ${colors.GREEN_PRIMARY};
