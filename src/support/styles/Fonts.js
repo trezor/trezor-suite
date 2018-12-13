@@ -28,7 +28,26 @@ import KFOlCnqEu92Fr1MmWUlfCxc4AMP6lbBP from '../fonts/roboto/regular/KFOlCnqEu9
 import KFOlCnqEu92Fr1MmWUlfChc4AMP6lbBP from '../fonts/roboto/regular/KFOlCnqEu92Fr1MmWUlfChc4AMP6lbBP.woff2';
 import KFOlCnqEu92Fr1MmWUlfBBc4AMP6lQ from '../fonts/roboto/regular/KFOlCnqEu92Fr1MmWUlfBBc4AMP6lQ.woff2';
 
+import RobotoZero from '../fonts/roboto/RobotoZero.woff';
+import RobotoMono from '../fonts/roboto/RobotoMonoRegular.woff2';
+
 const fontStyles = css`
+    /* 
+        custom Roboto with Zero without the thing inside, so it's more readable as number
+        since 0 doesn't look too similar to 8
+    */
+
+    @font-face {
+        font-family: 'Roboto Zero';
+        src: url(${RobotoZero}) format('woff');
+    }
+
+    @font-face {
+        font-family: 'Roboto Mono';
+        font-style: normal;
+        src: url(${RobotoMono}) format('woff2'), /* Super Modern Browsers */
+    }
+
     /* cyrillic-ext */
     
     @font-face {
