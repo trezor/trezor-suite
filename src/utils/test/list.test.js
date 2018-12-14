@@ -1,5 +1,4 @@
-import { findNextBootloader, filterSafeList } from 'utils/list';
-import {filterSafeListByBootloader, filterSafeListByFirmware} from '../list';
+import { filterSafeListByBootloader, filterSafeListByFirmware } from '../list';
 
 describe('List Utils', () => {
     describe('filterSafeListByBootloader()', () => {
