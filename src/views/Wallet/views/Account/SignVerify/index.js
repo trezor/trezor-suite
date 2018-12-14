@@ -84,7 +84,6 @@ class SignVerify extends Component <Props> {
                                 name="signAddress"
                                 value={account.address}
                                 type="text"
-                                isSmallText
                                 autoSelect
                                 readOnly
                             />
@@ -135,7 +134,6 @@ class SignVerify extends Component <Props> {
                                 type="text"
                                 state={verifyAddressError ? 'error' : null}
                                 bottomText={verifyAddressError ? verifyAddressError.message : null}
-                                isSmallText
                             />
                         </Row>
                         <Row>
