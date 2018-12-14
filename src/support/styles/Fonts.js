@@ -28,19 +28,9 @@ import RobotoBoldVietnamese from '../fonts/roboto/regular/RobotoBoldVietnamese.w
 import RobotoBoldLatinExt from '../fonts/roboto/regular/RobotoBoldLatinExt.woff2';
 import RobotoBoldLatin from '../fonts/roboto/regular/RobotoBoldLatin.woff2';
 
-import RobotoZero from '../fonts/roboto/RobotoZero.woff';
 import RobotoMono from '../fonts/roboto/RobotoMonoRegular.woff2';
 
 const fontStyles = css`
-    /* 
-        custom Roboto with Zero without the thing inside, so it's more readable as number
-        since 0 doesn't look too similar to 8
-    */
-
-    @font-face {
-        font-family: 'Roboto Zero';
-        src: url(${RobotoZero}) format('woff');
-    }
 
     @font-face {
         font-family: 'Roboto Mono';
