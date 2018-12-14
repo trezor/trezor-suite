@@ -4,7 +4,7 @@
 
 import 'whatwg-fetch';
 
-import { Stream } from './utils/stream';
+import { Emitter, Stream } from './utils/stream';
 import { Socket } from './socketio-worker/outside';
 import { deferred } from './utils/deferred';
 import { uniqueRandom } from './utils/unique-random';
@@ -121,7 +121,8 @@ export class BitcoreBlockchain {
     static _tryEndpoint(
         endpoints: Array<string>,
         socketWorkerFactory: SocketWorkerFactory,
-        tried: {[k: string]: boolean}
+        tried: {[k: string]: boolean},
+        closeOnInit: Emitter<void>
     ): Promise<{socket: Socket, url: string}> {
         const untriedEndpoints = endpoints.filter((e, i) => !tried[i.toString()]);
 
@@ -130,15 +131,17 @@ export class BitcoreBlockchain {
         }
 
         const random = uniqueRandom(untriedEndpoints.length);
-        return onlineStatusCheck(socketWorkerFactory, untriedEndpoints[random]).then(socket => {
+        return onlineStatusCheck(socketWorkerFactory, untriedEndpoints[random], closeOnInit).then(socket => {
             if (socket) {
                 return {socket, url: untriedEndpoints[random]};
             } else {
                 tried[random.toString()] = true;
-                return BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried);
+                return BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried, closeOnInit);
             }
         });
     }
+
+    closeOnInit: Emitter<void> = new Emitter();
 
     constructor(endpoints: Array<string>, socketWorkerFactory: SocketWorkerFactory) {
         this.addresses = new Set();
@@ -166,7 +169,8 @@ export class BitcoreBlockchain {
         this.blocks = blocks.stream;
 
         const tried = {'-1': true};
-        BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried).then(({socket, url}) => {
+        BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried, this.closeOnInit).then(({socket, url}) => {
+            this.closeOnInit.destroy();
             const trySmartFee = estimateSmartTxFee(socket, 2, false).then(
                 () => {
                     this.hasSmartTxFees = true;
@@ -184,17 +188,18 @@ export class BitcoreBlockchain {
             });
         }, () => {
             errors.setter(Stream.simple(new Error('All backends are offline.')));
-            if (!this._silent) {
-                this.socket.reject(new Error('All backends are offline.'));
-                this.socket.promise.catch((e) => console.error(e));
-            }
+            this.socket.reject(new Error('All backends are offline.'));
+            this.socket.promise.catch((e) => {
+                if (!this._silent) {
+                    console.error(e);
+                }
+            });
         });
     }
-
     // this creates ANOTHER socket!
     // this is for repeated checks after one failure
     hardStatusCheck(): Promise<boolean> {
-        return Promise.all(this.endpoints.map(endpoint => onlineStatusCheck(this.socketWorkerFactory, endpoint)))
+        return Promise.all(this.endpoints.map(endpoint => onlineStatusCheck(this.socketWorkerFactory, endpoint, new Emitter())))
         .then((statuschecks) => {
             statuschecks.forEach(s => {
                 if (s != null) {
@@ -227,6 +232,12 @@ export class BitcoreBlockchain {
     }
 
     destroy(): Promise<void> {
+        if (!this.closeOnInit.destroyed) {
+            this.closeOnInit.emit();
+        }
+        this.errors.dispose();
+        this.notifications.dispose();
+        this.blocks.dispose();
         const res = new Promise(resolve => {
             setTimeout(() => resolve(), 1000);
         });
@@ -535,8 +546,8 @@ function estimateTxFee(socket: Socket, blocks: number): Promise<number> {
     return socket.send({method, params});
 }
 
-function onlineStatusCheck(socketWorkerFactory: SocketWorkerFactory, endpoint: string): Promise<?Socket> {
-    const socket = new Socket(socketWorkerFactory, endpoint);
+function onlineStatusCheck(socketWorkerFactory: SocketWorkerFactory, endpoint: string, closeOnInit: Emitter<void>): Promise<?Socket> {
+    const socket = new Socket(socketWorkerFactory, endpoint, closeOnInit);
     const conn = new Promise((resolve) => {
         observeErrors(socket).awaitFirst().then(() => resolve(false)).catch(() => resolve(false));
         // we try to get the first block

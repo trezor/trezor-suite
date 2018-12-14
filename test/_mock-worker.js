@@ -14,6 +14,7 @@ export class MockWorker {
         this.spec = spec;
         this.doneError = doneError;
         this.doneError = (f) => {
+            console.error(f);
             if (!this.errored) {
                 doneError(f);
             }
@@ -33,13 +34,28 @@ export class MockWorker {
                 setTimeout(() => {
                     this.specLock = false;
                     if (this.serialize) {
-                        this.onmessage({data: JSON.serialize(spec)});
+                        this.onmessage({data: JSON.stringify(spec)});
                     } else {
                         this.onmessage({data: spec});
                     }
                     this.sendOut();
                 }, TICK_MS);
             }
+        }
+    }
+
+    terminated = false;
+    terminate() {
+        if (this.terminated) {
+            const error = new Error('Terminate twice');
+            this.doneError(error);
+            throw error;
+        }
+        this.terminated = true;
+        if (this.spec.length !== 0) {
+            const error = new Error('Spec left on terminate');
+            this.doneError(error);
+            throw error;
         }
     }
 
