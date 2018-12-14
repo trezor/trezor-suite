@@ -28,9 +28,9 @@ class CoinLogo extends PureComponent {
     }
 
     render() {
-        const { network } = this.props;
+        const { network, className } = this.props;
         return (
-            <Wrapper>
+            <Wrapper className={className}>
                 <Logo
                     hasLongIcon={this.hasLongIcon(network)}
                     src={require(`./images/${network}.png`)} // eslint-disable-line
@@ -42,6 +42,7 @@ class CoinLogo extends PureComponent {
 
 CoinLogo.propTypes = {
     network: PropTypes.string,
+    className: PropTypes.string,
 };
 
 export default CoinLogo;
