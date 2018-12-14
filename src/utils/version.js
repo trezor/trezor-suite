@@ -1,6 +1,6 @@
 const parse = (versionArr) => {
-    if (versionArr.length !== 3) {
-        throw Error('Wrong version string');
+    if (!versionArr || versionArr.length !== 3) {
+        throw Error('Wrong version arr');
     } else {
         return {
             major: versionArr[0],

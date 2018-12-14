@@ -92,11 +92,9 @@ describe('Version Utils', () => {
         });
 
         it('it shouldnt parse', () => {
-            try {
+            expect(() => {
                 versionUtils.parse([1]);
-            } catch (e) {
-                expect(e.message).toBe('Wrong version string');
-            }
+            }).toThrow('Wrong version arr');
         });
     });
 });
