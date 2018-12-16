@@ -152,9 +152,9 @@ export class BitcoreBlockchain {
 
         const lookupTM = (socket: Socket): Stream<TransactionWithHeight> => {
             return Stream.filterError(socket.observe('bitcoind/addresstxid').mapPromise(
-                ({txid}) =>
-                    this.lookupTransaction(txid)
-            ));
+                ({txid}) => {
+                    return this.lookupTransaction(txid);
+                }));
         };
         const observeBlocks = (socket: Socket): Stream<void> => {
             socket.subscribe('bitcoind/hashblock');
@@ -199,15 +199,11 @@ export class BitcoreBlockchain {
     // this creates ANOTHER socket!
     // this is for repeated checks after one failure
     hardStatusCheck(): Promise<boolean> {
-        return Promise.all(this.endpoints.map(endpoint => onlineStatusCheck(this.socketWorkerFactory, endpoint, new Emitter())))
-        .then((statuschecks) => {
-            statuschecks.forEach(s => {
-                if (s != null) {
-                    s.close();
-                }
-            });
-            const on = statuschecks.filter(i => i != null);
-            return on.length > 0;
+        const newOne = new BitcoreBlockchain(this.endpoints, this.socketWorkerFactory);
+        return newOne.socket.promise.then(() => {
+            return newOne.destroy().then(() => true);
+        }, () => {
+            return newOne.destroy().then(() => false);
         });
     }
 
@@ -232,18 +228,22 @@ export class BitcoreBlockchain {
     }
 
     destroy(): Promise<void> {
-        if (!this.closeOnInit.destroyed) {
-            this.closeOnInit.emit();
-        }
-        this.errors.dispose();
-        this.notifications.dispose();
-        this.blocks.dispose();
-        const res = new Promise(resolve => {
-            setTimeout(() => resolve(), 1000);
+        // give socket 1 second to either resolve or reject
+        // if it doesn't happen, just destroy
+        const oneSecond = new Promise(resolve => setTimeout(resolve, 1000));
+        const inited = this.socket.promise.catch(() => {});
+        const sooner = Promise.race([oneSecond, inited]);
+        return sooner.then((socket) => {
+            if (!this.closeOnInit.destroyed) {
+                this.closeOnInit.emit();
+            }
+            this.errors.dispose();
+            this.notifications.dispose();
+            this.blocks.dispose();
+            if (socket != null) {
+                return socket.close();
+            }
         });
-        return Promise.race([res, this.socket.promise.then(socket => {
-            return socket.close();
-        }, () => { /* node is stupid*/ })]);
     }
 
     // start/end are the block numbers, inclusive.
@@ -466,7 +466,7 @@ function lookupTransactionsIdsMempool(
     } : {
         start,
         end,
-        queryMempol: false,
+        queryMempool: false,
     };
     const params = [
         addresses,
@@ -549,7 +549,7 @@ function estimateTxFee(socket: Socket, blocks: number): Promise<number> {
 function onlineStatusCheck(socketWorkerFactory: SocketWorkerFactory, endpoint: string, closeOnInit: Emitter<void>): Promise<?Socket> {
     const socket = new Socket(socketWorkerFactory, endpoint, closeOnInit);
     const conn = new Promise((resolve) => {
-        observeErrors(socket).awaitFirst().then(() => resolve(false)).catch(() => resolve(false));
+        observeErrors(socket).awaitFirst().then(() => resolve(false));
         // we try to get the first block
         // if it returns something, it probably works
         Promise.race([
@@ -585,7 +585,7 @@ function convertTx(zcash: boolean, bcTx: BcDetailedTransaction): TransactionWith
         zcash,
         hex: bcTx.hex,
         height: bcTx.height === -1 ? null : bcTx.height,
-        timestamp: bcTx.blockTimestamp,
+        timestamp: bcTx.blockTimestamp == null ? null : bcTx.blockTimestamp,
         hash: bcTx.hash,
         inputAddresses: bcTx.inputs.map(input => input.address),
         outputAddresses: bcTx.outputs.map(output => output.address),

@@ -202,7 +202,19 @@ class SocketWorkerHandler {
         return dfd.promise;
     }
 
+    observers: {[name: string]: Stream<any>} = {}
+
     observe(event: string): Stream<any> {
+        if (this.observers[event] != null) {
+            return this.observers[event];
+        } else {
+            const observer = this._newObserve(event);
+            this.observers[event] = observer;
+            return observer;
+        }
+    }
+
+    _newObserve(event: string): Stream<any> {
         this.counter++;
         const counter = this.counter;
         this._sendMessage({
@@ -222,6 +234,7 @@ class SocketWorkerHandler {
                     event: event,
                     id: counter,
                 });
+                delete this.observers[event];
             }
         )
         .filter((message) => message.type === 'emit' && message.event === event)

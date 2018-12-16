@@ -1,5 +1,4 @@
 const TICK_MS = 10;
-
 import assert from 'assert';
 export class MockWorker {
 
@@ -11,7 +10,7 @@ export class MockWorker {
         this.specLock = false;
         this.onmessage = () => {};
         this.errored = false;
-        this.spec = spec;
+        this.spec = JSON.parse(JSON.stringify(spec));
         this.doneError = doneError;
         this.doneError = (f) => {
             console.error(f);
@@ -60,11 +59,14 @@ export class MockWorker {
     }
 
     postMessage(message) {
+        const omessage = this.serialize ? JSON.parse(message) : message;
         let error = null;
         if (this.spec.length === 0) {
+            assert.deepStrictEqual(omessage, null);
+            /* console.warn
             error = new Error('In spec not defined');
             this.doneError(error);
-            throw error;
+            throw error;*/
         }
         if (this.specLock) {
             error = new Error('Got postMessage while waiting');
@@ -79,7 +81,6 @@ export class MockWorker {
         }
         const {spec} = sspec;
         this.spec.shift();
-        const omessage = this.serialize ? JSON.parse(message) : message;
         try {
             assert.deepStrictEqual(omessage, spec);
         } catch (e) {

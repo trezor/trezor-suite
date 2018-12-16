@@ -25,6 +25,9 @@ function formatError(error: mixed): Error {
     if (typeof error === 'object' && error != null && error instanceof Error) {
         return error;
     } else {
+        if (typeof error === 'object' && error != null && error.message != null) {
+            return new Error(error.message);
+        }
         return new Error(JSON.stringify(error));
     }
 }
