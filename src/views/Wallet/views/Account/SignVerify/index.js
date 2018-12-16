@@ -57,10 +57,10 @@ class SignVerify extends Component <Props> {
     render() {
         const device = this.props.wallet.selectedDevice;
         const {
-            account, discovery, shouldRender, notification,
+            account, discovery, shouldRender, notification, network,
         } = this.props.selectedAccount;
         const { type, title, message } = notification;
-        if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
+        if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} networkShortcut={(network || {}).shortcut} isLoading />;
         const {
             signVerifyActions,
             signVerify: {

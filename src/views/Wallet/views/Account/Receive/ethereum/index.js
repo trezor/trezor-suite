@@ -97,9 +97,10 @@ const AccountReceive = (props: Props) => {
         discovery,
         shouldRender,
         loader,
+        network,
     } = props.selectedAccount;
     const { type, title, message } = loader;
-    if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
+    if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} networkShortcut={(network || {}).shortcut} isLoading />;
 
     const {
         addressVerified,

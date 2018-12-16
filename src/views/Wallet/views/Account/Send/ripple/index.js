@@ -143,7 +143,7 @@ const AccountSend = (props: Props) => {
         onSend,
     } = props.sendFormActions;
     const { type, title, message } = loader;
-    if (!device || !account || !discovery || !network || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
+    if (!device || !account || !discovery || !network || !shouldRender) return <Content type={type} title={title} message={message} networkShortcut={(network || {}).shortcut} isLoading />;
 
     let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
     let sendButtonText: string = ` ${total} ${network.symbol}`;
