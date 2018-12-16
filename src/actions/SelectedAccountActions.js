@@ -77,9 +77,9 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
 
     if (discovery && discovery.fwNotSupported) {
         return {
-            type: 'info',
-            title: `Device ${device.instanceLabel} is not supported`,
-            message: 'TODO: model T1 not supported explanation',
+            type: 'fwNotSupported',
+            title: `${network.name} is not supported with Trezor ${(device.features || {}).model}`,
+            message: 'Find more information on Trezor Wiki.',
             shouldRender: false,
         };
     }

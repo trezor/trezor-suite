@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Loader from 'components/Loader';
 import { FONT_SIZE } from 'config/variables';
 import colors from 'config/colors';
+import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 const Wrapper = styled.div`
     display: flex;
@@ -41,6 +42,7 @@ const Content = ({
     title,
     message,
     type,
+    networkShortcut,
     isLoading = false,
 }) => (
     <Wrapper>
@@ -54,6 +56,9 @@ const Content = ({
                 {message && <Message>{message}</Message>}
             </Loading>
         )}
+        {isLoading && (type === 'fwNotSupported') && (
+            <FirmwareUnsupported title={title} message={message} networkShortcut={networkShortcut} />
+        )}
     </Wrapper>
 );
 
@@ -63,6 +68,7 @@ Content.propTypes = {
     title: PropTypes.string,
     message: PropTypes.string,
     type: PropTypes.string,
+    networkShortcut: PropTypes.string,
 };
 
 export default Content;
