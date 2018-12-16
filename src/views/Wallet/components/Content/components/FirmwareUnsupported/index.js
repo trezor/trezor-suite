@@ -48,7 +48,7 @@ const Message = styled.div`
 `;
 
 // eslint-disable-next-line arrow-body-style
-const UnsupportedCoin = (props: Props) => {
+const FirmwareUnsupported = (props: Props) => {
     return (
         <Wrapper>
             <Row>
@@ -63,4 +63,4 @@ const UnsupportedCoin = (props: Props) => {
     );
 };
 
-export default UnsupportedCoin;
+export default FirmwareUnsupported;
