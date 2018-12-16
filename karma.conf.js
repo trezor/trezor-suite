@@ -33,9 +33,13 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'test/test_bitcore/bitcore.js',
-            {pattern: 'src/trezor-crypto/emscripten/trezor-crypto.js', included: false},
-            {pattern: 'src/trezor-crypto/emscripten/trezor-crypto.wasm', included: false}
+            'test/utils.js',
+            'test/bitcore.js',
+            'test/build-tx.js',
+            'test/discover-account.js',
+            'test/monitor-account.js',
+            {pattern: 'fastxpub/build/fastxpub.js', included: false},
+            {pattern: 'fastxpub/build/fastxpub.wasm', included: false}
 
         ],
 
@@ -46,8 +50,12 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'test/test_bitcore/bitcore.js': [ 'browserify' ],
-            'test/discovery.js': [ 'browserify' ],
+            'test/utils.js': [ 'browserify' ],
+            'test/utils.js': [ 'browserify' ],
+            'test/bitcore.js': [ 'browserify' ],
+            'test/build-tx.js': [ 'browserify' ],
+            'test/discover-account.js': [ 'browserify' ],
+            'test/monitor-account.js': [ 'browserify' ],
         },
 
         // test results reporter to use

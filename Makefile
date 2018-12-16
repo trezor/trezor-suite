@@ -92,7 +92,3 @@ version-major: .version
 
 git-clean:
 	test ! -n "$$(git status --porcelain)"
-
-bitcore-test-docker:
-	cd test/test_bitcore/test_helpers && docker build . -t bitcore_regtest
-	cd test/test_bitcore/test_helpers && docker run -d -p 3005:3005 -p 1234:1234 bitcore_regtest
