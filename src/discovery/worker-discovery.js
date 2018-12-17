@@ -41,6 +41,13 @@ export class WorkerDiscovery {
         this.chain = chain;
     }
 
+    // this is used only for testing
+    destroy() {
+        if (this.addressWorkerChannel != null) {
+            this.addressWorkerChannel.destroy();
+        }
+    }
+
     tryHDNode(xpub: string, network: BitcoinJsNetwork): BitcoinJsHDNode | Error {
         try {
             const node = BitcoinJsHDNode.fromBase58(xpub, network, true);

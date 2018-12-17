@@ -43,6 +43,7 @@ function discoverAccount(enableWebassembly) {
                 );
                 const done = (x) => {
                     stream.dispose();
+                    discovery.destroy();
                     done_wasm(x);
                 };
                 stream.ending.then((res) => {

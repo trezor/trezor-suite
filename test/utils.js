@@ -162,7 +162,7 @@ describe('emitter', () => {
             assert.deepStrictEqual(emitter.listeners.length, 1);
             assert.deepStrictEqual(emitter.destroyed, false);
             done();
-        }, 60);
+        }, 100);
     });
 
     it('attaching the same fuction twice errors', () => {

@@ -23,7 +23,12 @@ export class WorkerChannel {
     }
 
     open() {
-        this.worker.addEventListener('message', this.onMessage);
+        this.worker.onmessage = this.onMessage;
+    }
+
+    // this is used only for testing
+    destroy() {
+        this.worker.onmessage = () => {};
     }
 
     postMessage(msg: Object): Promise<any> {
