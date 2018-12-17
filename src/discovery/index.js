@@ -166,13 +166,6 @@ export type Discovery = {
         timeOffset: number
     ) => StreamWithEnding<AccountLoadStatus, AccountInfo>,
 
-    +detectUsedAccount: (
-        xpub: string,
-        network: BitcoinJsNetwork,
-        segwit: 'off' | 'p2sh',
-        gap?: number
-    ) => Promise<boolean>,
-
     +monitorAccountActivity: (
         initial: AccountInfo,
         xpub: string,

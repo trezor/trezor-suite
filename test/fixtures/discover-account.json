@@ -9491,5 +9491,1033 @@
     "gap": 3,
     "timeOffset": -120,
     "spec": []
+  },
+  {
+    "name": "Initializes empty account out of xpub (segwit)",
+    "start": null,
+    "xpub": "tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U",
+    "end": {
+      "utxos": [],
+      "transactions": [],
+      "usedAddresses": [],
+      "unusedAddresses": [
+        "2N6UeBoqYEEnybg4cReFYDammpsyDw8R2Mc",
+        "2Mx5NvJE7LRhhvLg9hFaJ4188Bf3dwV2ua4",
+        "2MtWicipUHCRQ4mv34jrPY2L9bdse665T3Q"
+      ],
+      "lastConfirmedMain": -1,
+      "lastConfirmedChange": -1,
+      "changeIndex": 0,
+      "balance": 0,
+      "lastBlock": {
+        "hash": "0000000000001b3afd3d78092bfa239e212585aaf99cce5f39c407989ff6352f",
+        "height": 100
+      },
+      "sentAddresses": {},
+      "changeAddresses": [
+        "2MscDigUPM2z1pMdmE31u5oPWswF3UGvAoh",
+        "2NAPceakJc8xeLqCr4S8ZpbarLF7o6Mai8x",
+        "2N4yuJ4cSjB99q8BN3FaDPXPeZeSTDfjXiy"
+      ],
+      "allowChange": true,
+      "version": 5
+    },
+    "network": {
+      "messagePrefix": "N/A",
+      "bip32": {
+        "public": 70617039,
+        "private": 0
+      },
+      "pubKeyHash": 111,
+      "scriptHash": 196,
+      "bech32": "tb",
+      "wif": 0
+    },
+    "segwit": "p2sh",
+    "cashaddr": false,
+    "gap": 3,
+    "timeOffset": -120,
+    "spec": [
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupSyncStatus",
+          "result": {
+            "height": 100
+          }
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupBlockHash",
+          "height": 100,
+          "resultError": false,
+          "result": "0000000000001b3afd3d78092bfa239e212585aaf99cce5f39c407989ff6352f"
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "2N6UeBoqYEEnybg4cReFYDammpsyDw8R2Mc",
+            "2Mx5NvJE7LRhhvLg9hFaJ4188Bf3dwV2ua4",
+            "2MtWicipUHCRQ4mv34jrPY2L9bdse665T3Q"
+          ],
+          "start": 100,
+          "end": 0,
+          "result": []
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "2MscDigUPM2z1pMdmE31u5oPWswF3UGvAoh",
+            "2NAPceakJc8xeLqCr4S8ZpbarLF7o6Mai8x",
+            "2N4yuJ4cSjB99q8BN3FaDPXPeZeSTDfjXiy"
+          ],
+          "start": 100,
+          "end": 0,
+          "result": []
+        }
+      }
+    ]
+  },
+  {
+    "name": "Initializes empty account out of xpub (cashaddr)",
+    "start": null,
+    "xpub": "tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U",
+    "end": {
+      "utxos": [],
+      "transactions": [],
+      "usedAddresses": [],
+      "unusedAddresses": [
+        "bchtest:pzgjx03y4xlcmwcecyv84krk4yuqcyh8suamsrsfly",
+        "bchtest:pq60hm9uj7r0v2y5854tlp7kd9tmk6e46qhn37qwr6",
+        "bchtest:pqx7vs62muhnjynn9nwzpke7y9z6qrnpay2sy0rszh"
+      ],
+      "lastConfirmedMain": -1,
+      "lastConfirmedChange": -1,
+      "changeIndex": 0,
+      "balance": 0,
+      "lastBlock": {
+        "hash": "0000000000001b3afd3d78092bfa239e212585aaf99cce5f39c407989ff6352f",
+        "height": 100
+      },
+      "sentAddresses": {},
+      "changeAddresses": [
+        "bchtest:pqpl3q4eggjkqy5n0usp0ftpygp8afhmzun2eydxus",
+        "bchtest:pz7pqcwyvueptnyeeqd6f0n9qa5424zeggycydv2v5",
+        "bchtest:pzqth2jm4r9rrs280dschacnnwf525vvmu5hwt7uuh"
+      ],
+      "allowChange": true,
+      "version": 5
+    },
+    "network": {
+      "messagePrefix": "N/A",
+      "bip32": {
+        "public": 70617039,
+        "private": 0
+      },
+      "pubKeyHash": 111,
+      "scriptHash": 196,
+      "bech32": "tb",
+      "wif": 0
+    },
+    "segwit": "p2sh",
+    "cashaddr": true,
+    "gap": 3,
+    "timeOffset": -120,
+    "spec": [
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupSyncStatus",
+          "result": {
+            "height": 100
+          }
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupBlockHash",
+          "height": 100,
+          "resultError": false,
+          "result": "0000000000001b3afd3d78092bfa239e212585aaf99cce5f39c407989ff6352f"
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "bchtest:pzgjx03y4xlcmwcecyv84krk4yuqcyh8suamsrsfly",
+            "bchtest:pq60hm9uj7r0v2y5854tlp7kd9tmk6e46qhn37qwr6",
+            "bchtest:pqx7vs62muhnjynn9nwzpke7y9z6qrnpay2sy0rszh"
+          ],
+          "start": 100,
+          "end": 0,
+          "result": []
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "bchtest:pqpl3q4eggjkqy5n0usp0ftpygp8afhmzun2eydxus",
+            "bchtest:pz7pqcwyvueptnyeeqd6f0n9qa5424zeggycydv2v5",
+            "bchtest:pzqth2jm4r9rrs280dschacnnwf525vvmu5hwt7uuh"
+          ],
+          "start": 100,
+          "end": 0,
+          "result": []
+        }
+      }
+    ]
+  },
+  {
+    "name": "One unconfirmed tx, from initialized (cashaddr)",
+    "start": {
+      "utxos": [],
+      "transactions": [],
+      "usedAddresses": [],
+      "unusedAddresses": [
+        "bchtest:qzjhjwyzykp8m8e0ayq54htygjrcprrft5n3kq6p7f",
+        "bchtest:qpd327n83ggqyyjrxplyhdv0xcm442qwzqwd4j5xjp",
+        "bchtest:qq80qdje4yawrugxgn5htgjnaqgga69s5ursa0ashw"
+      ],
+      "lastConfirmedMain": -1,
+      "lastConfirmedChange": -1,
+      "changeIndex": 0,
+      "balance": 0,
+      "lastBlock": {
+        "hash": "0000000000001b3afd3d78092bfa239e212585aaf99cce5f39c407989ff6352f",
+        "height": 100
+      },
+      "sentAddresses": {},
+      "changeAddresses": [
+        "bchtest:qq7nejjk0cq2qjqews4jrf5k5e7609jf3v0ezdkna2",
+        "bchtest:qq4lusevxr0f5334j97wec3w3fae82r0xyn0e0yapp",
+        "bchtest:qz5dnxmkr2aawut0w3459fplsqzdv7m9gq876z2zzl"
+      ],
+      "allowChange": true,
+      "version": 5
+    },
+    "xpub": "tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U",
+    "end": {
+      "utxos": [
+        {
+          "index": 0,
+          "value": 130000000,
+          "transactionHash": "778a2656159c9542d3c3d8182e866e08c58bde08a9acd188de6cc450b2d48fb7",
+          "height": null,
+          "coinbase": false,
+          "addressPath": [
+            0,
+            0
+          ],
+          "vsize": 226,
+          "tsize": 226,
+          "own": false
+        }
+      ],
+      "transactions": [
+        {
+          "isCoinbase": false,
+          "timestamp": null,
+          "dateInfoDayFormat": null,
+          "dateInfoTimeFormat": null,
+          "height": null,
+          "confirmations": null,
+          "hash": "778a2656159c9542d3c3d8182e866e08c58bde08a9acd188de6cc450b2d48fb7",
+          "targets": [
+            {
+              "address": "bchtest:qzjhjwyzykp8m8e0ayq54htygjrcprrft5n3kq6p7f",
+              "value": 130000000,
+              "i": 0
+            }
+          ],
+          "type": "recv",
+          "value": 130000000,
+          "myOutputs": {
+            "0": {
+              "address": "bchtest:qzjhjwyzykp8m8e0ayq54htygjrcprrft5n3kq6p7f",
+              "value": 130000000,
+              "i": 0
+            }
+          },
+          "inputs": [
+            {
+              "id": "3c8570194b4ab720d1a726e92b9cfc18104d2256e11ee7af2efe37167274ba0a",
+              "index": 1
+            }
+          ],
+          "tsize": 226,
+          "vsize": 226,
+          "balance": 130000000
+        }
+      ],
+      "usedAddresses": [
+        {
+          "address": "bchtest:qzjhjwyzykp8m8e0ayq54htygjrcprrft5n3kq6p7f",
+          "received": 130000000
+        }
+      ],
+      "unusedAddresses": [
+        "bchtest:qpd327n83ggqyyjrxplyhdv0xcm442qwzqwd4j5xjp",
+        "bchtest:qq80qdje4yawrugxgn5htgjnaqgga69s5ursa0ashw"
+      ],
+      "lastConfirmedMain": -1,
+      "lastConfirmedChange": -1,
+      "changeIndex": 0,
+      "balance": 130000000,
+      "lastBlock": {
+        "hash": "000000000000deadbeef",
+        "height": 101
+      },
+      "sentAddresses": {},
+      "changeAddresses": [
+        "bchtest:qq7nejjk0cq2qjqews4jrf5k5e7609jf3v0ezdkna2",
+        "bchtest:qq4lusevxr0f5334j97wec3w3fae82r0xyn0e0yapp",
+        "bchtest:qz5dnxmkr2aawut0w3459fplsqzdv7m9gq876z2zzl"
+      ],
+      "allowChange": true,
+      "version": 5
+    },
+    "network": {
+      "messagePrefix": "N/A",
+      "bip32": {
+        "public": 70617039,
+        "private": 0
+      },
+      "pubKeyHash": 111,
+      "scriptHash": 196,
+      "bech32": "tb",
+      "wif": 0
+    },
+    "segwit": "off",
+    "cashaddr": true,
+    "gap": 3,
+    "timeOffset": -120,
+    "spec": [
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupSyncStatus",
+          "result": {
+            "height": 101
+          }
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupBlockHash",
+          "height": 101,
+          "resultError": false,
+          "result": "000000000000deadbeef"
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupBlockHash",
+          "height": 100,
+          "resultError": false,
+          "result": "0000000000001b3afd3d78092bfa239e212585aaf99cce5f39c407989ff6352f"
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "bchtest:qzjhjwyzykp8m8e0ayq54htygjrcprrft5n3kq6p7f",
+            "bchtest:qpd327n83ggqyyjrxplyhdv0xcm442qwzqwd4j5xjp",
+            "bchtest:qq80qdje4yawrugxgn5htgjnaqgga69s5ursa0ashw"
+          ],
+          "start": 101,
+          "end": 100,
+          "result": [
+            {
+              "hex": "02000000010aba74721637fe2eafe71ee156224d1018fc9c2be926a7d120b74a4b1970853c010000006b48304502210081495507441c4288798e0923224e376995f09600e81c43c68ff72286ae5b4c7002202b57356a40b7163ec9466a933dd18fd9abd786fdac608f9dd5d9cda5d54386be012103e63afb430725f25643ec3d94516bc4dc4cacebd6dfcbf91083dedcfdcfa9014efeffffff0280a4bf07000000001976a914a579388225827d9f2fe9014add644487808c695d88ac4c070436000000001976a9148785ac61c65f2e02f97231d817c4542572d0fbff88ac39971400",
+              "zcash": false,
+              "height": null,
+              "timestamp": null,
+              "hash": "778a2656159c9542d3c3d8182e866e08c58bde08a9acd188de6cc450b2d48fb7",
+              "inputAddresses": [
+                "n27f1mtCMZAJbauRVmzbNKQptc5istpJoi"
+              ],
+              "outputAddresses": [
+                "bchtest:qzjhjwyzykp8m8e0ayq54htygjrcprrft5n3kq6p7f",
+                "bchtest:qzrcttrpce0juqhewgcas97y2sjh958mlurycwa2xs"
+              ],
+              "vsize": 226
+            }
+          ]
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "bchtest:qq7nejjk0cq2qjqews4jrf5k5e7609jf3v0ezdkna2",
+            "bchtest:qq4lusevxr0f5334j97wec3w3fae82r0xyn0e0yapp",
+            "bchtest:qz5dnxmkr2aawut0w3459fplsqzdv7m9gq876z2zzl"
+          ],
+          "start": 101,
+          "end": 100,
+          "result": []
+        }
+      }
+    ]
+  },
+  {
+    "name": "One incoming one outgoing confirmed, both with OP_RETURN (short OP_return)",
+    "start": null,
+    "xpub": "tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U",
+    "end": {
+      "utxos": [],
+      "transactions": [
+        {
+          "isCoinbase": false,
+          "timestamp": 1525483226,
+          "dateInfoDayFormat": "2018-05-05",
+          "dateInfoTimeFormat": "03:20:26",
+          "height": 150,
+          "confirmations": 51,
+          "hash": "830644c41caaa050d777a25a132082b37b939bc47eb90f205812cd3a7e6c8f8b",
+          "targets": [
+            {
+              "address": "OP_RETURN ()",
+              "value": 0,
+              "i": 0
+            },
+            {
+              "address": "mpaXJ6yWNAeJuEVuFReoTfMGn4VyPSiEbK",
+              "value": 49867600,
+              "i": 1
+            }
+          ],
+          "type": "sent",
+          "value": -49870130,
+          "myOutputs": {},
+          "inputs": [
+            {
+              "id": "45d093731ae556580da86dfc0924fdbb12fb60386b7c6e91699316a9fe49e562",
+              "index": 1
+            }
+          ],
+          "tsize": 202,
+          "vsize": 208,
+          "balance": 0
+        },
+        {
+          "isCoinbase": false,
+          "timestamp": 1525483226,
+          "dateInfoDayFormat": "2018-05-05",
+          "dateInfoTimeFormat": "03:20:26",
+          "height": 150,
+          "confirmations": 51,
+          "hash": "45d093731ae556580da86dfc0924fdbb12fb60386b7c6e91699316a9fe49e562",
+          "targets": [
+            {
+              "address": "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+              "value": 49870130,
+              "i": 1
+            }
+          ],
+          "type": "recv",
+          "value": 49870130,
+          "myOutputs": {
+            "1": {
+              "address": "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+              "value": 49870130,
+              "i": 1
+            }
+          },
+          "inputs": [
+            {
+              "id": "4ee68db5da52df37330657a07154582d739b3d4acce90a964b6452a39a5fef26",
+              "index": 1
+            }
+          ],
+          "tsize": 166,
+          "vsize": 166,
+          "balance": 49870130
+        }
+      ],
+      "usedAddresses": [
+        {
+          "address": "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+          "received": 49870130
+        }
+      ],
+      "unusedAddresses": [
+        "mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b",
+        "mgswWyysmViMqYmn5XEj1pVz7rVUftVEBP",
+        "momtnzR3XqXgDSsFmd8gkGxUiHZLde3RmA"
+      ],
+      "lastConfirmedMain": 0,
+      "lastConfirmedChange": -1,
+      "changeIndex": 0,
+      "balance": 0,
+      "lastBlock": {
+        "hash": "000000000000dead200",
+        "height": 200
+      },
+      "sentAddresses": {
+        "830644c41caaa050d777a25a132082b37b939bc47eb90f205812cd3a7e6c8f8b:0": "OP_RETURN ()",
+        "830644c41caaa050d777a25a132082b37b939bc47eb90f205812cd3a7e6c8f8b:1": "mpaXJ6yWNAeJuEVuFReoTfMGn4VyPSiEbK"
+      },
+      "changeAddresses": [
+        "mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ",
+        "mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6",
+        "mvukVu96xM1QJ971w4Z5cdX4tsJwDyQy2L"
+      ],
+      "allowChange": true,
+      "version": 5
+    },
+    "network": {
+      "messagePrefix": "N/A",
+      "bip32": {
+        "public": 70617039,
+        "private": 0
+      },
+      "pubKeyHash": 111,
+      "scriptHash": 196,
+      "bech32": "tb",
+      "wif": 0
+    },
+    "segwit": "off",
+    "cashaddr": false,
+    "gap": 3,
+    "timeOffset": -120,
+    "spec": [
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupSyncStatus",
+          "result": {
+            "height": 200
+          }
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupBlockHash",
+          "height": 200,
+          "resultError": false,
+          "result": "000000000000dead200"
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+            "mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b",
+            "mgswWyysmViMqYmn5XEj1pVz7rVUftVEBP"
+          ],
+          "start": 200,
+          "end": 0,
+          "result": [
+            {
+              "hex": "010000000126ef5f9aa352644b960ae9cc4a3d9b732d585471a057063337df52dab58de64e01000000171600145183a8cd6827ed3249d2c667df4f5ce94ca88918ffffffff0300000000000000000f6a0d626974636f696e207375636b7332f5f802000000001976a914a579388225827d9f2fe9014add644487808c695d88ac80f0fa02000000001976a91454bd837a7dc2ea7f2b52ca0e1dcb07808e8acba988ac00000000",
+              "zcash": false,
+              "height": 150,
+              "timestamp": 1525483226,
+              "hash": "45d093731ae556580da86dfc0924fdbb12fb60386b7c6e91699316a9fe49e562",
+              "inputAddresses": [
+                "2N4BrUeq26v13gGDRNNWd6Q3L7ADp75Lqzp"
+              ],
+              "outputAddresses": [
+                null,
+                "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+                "moF25oWYTeN6V5USsvHFEkZp8CR2KimVdu"
+              ],
+              "vsize": 166
+            },
+            {
+              "hex": "010000000162e549fea9169369916e7c6b3860fb12bbfd2409fc6da80d5856e51a7393d045010000006a473044022016caa29c3cfd6b51393cb231aff14d4dc939f09d1969ed6c195a360bda98e5e6022012426456c411a9a5cc6aeae6168471cf71ca23da6462db2d92d13423fe1ea99e0121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff020000000000000000026a0050ebf802000000001976a9146365ed7bb4a092937ba40e502ace1f8fe71f2cd488ac00000000",
+              "zcash": false,
+              "height": 150,
+              "timestamp": 1525483226,
+              "hash": "830644c41caaa050d777a25a132082b37b939bc47eb90f205812cd3a7e6c8f8b",
+              "inputAddresses": [
+                "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q"
+              ],
+              "outputAddresses": [
+                null,
+                "mpaXJ6yWNAeJuEVuFReoTfMGn4VyPSiEbK"
+              ],
+              "vsize": 208
+            }
+          ]
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "momtnzR3XqXgDSsFmd8gkGxUiHZLde3RmA"
+          ],
+          "start": 200,
+          "end": 0,
+          "result": []
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ",
+            "mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6",
+            "mvukVu96xM1QJ971w4Z5cdX4tsJwDyQy2L"
+          ],
+          "start": 200,
+          "end": 0,
+          "result": []
+        }
+      }
+    ]
+  },
+  {
+    "name": "One incoming one outgoing confirmed, both with OP_RETURN (non-ascii OP_return)",
+    "start": null,
+    "xpub": "tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U",
+    "end": {
+      "utxos": [],
+      "transactions": [
+        {
+          "isCoinbase": false,
+          "timestamp": 1525483226,
+          "dateInfoDayFormat": "2018-05-05",
+          "dateInfoTimeFormat": "03:20:26",
+          "height": 150,
+          "confirmations": 51,
+          "hash": "260eebc72ce7a11f8e579b26469818ecc744296a71d0c52c039f34252adcc5be",
+          "targets": [
+            {
+              "address": "OP_RETURN (0x62c3ba2063e1bab763)",
+              "value": 0,
+              "i": 0
+            },
+            {
+              "address": "mpaXJ6yWNAeJuEVuFReoTfMGn4VyPSiEbK",
+              "value": 49867600,
+              "i": 1
+            }
+          ],
+          "type": "sent",
+          "value": -49870130,
+          "myOutputs": {},
+          "inputs": [
+            {
+              "id": "45d093731ae556580da86dfc0924fdbb12fb60386b7c6e91699316a9fe49e562",
+              "index": 1
+            }
+          ],
+          "tsize": 211,
+          "vsize": 208,
+          "balance": 0
+        },
+        {
+          "isCoinbase": false,
+          "timestamp": 1525483226,
+          "dateInfoDayFormat": "2018-05-05",
+          "dateInfoTimeFormat": "03:20:26",
+          "height": 150,
+          "confirmations": 51,
+          "hash": "45d093731ae556580da86dfc0924fdbb12fb60386b7c6e91699316a9fe49e562",
+          "targets": [
+            {
+              "address": "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+              "value": 49870130,
+              "i": 1
+            }
+          ],
+          "type": "recv",
+          "value": 49870130,
+          "myOutputs": {
+            "1": {
+              "address": "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+              "value": 49870130,
+              "i": 1
+            }
+          },
+          "inputs": [
+            {
+              "id": "4ee68db5da52df37330657a07154582d739b3d4acce90a964b6452a39a5fef26",
+              "index": 1
+            }
+          ],
+          "tsize": 166,
+          "vsize": 166,
+          "balance": 49870130
+        }
+      ],
+      "usedAddresses": [
+        {
+          "address": "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+          "received": 49870130
+        }
+      ],
+      "unusedAddresses": [
+        "mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b",
+        "mgswWyysmViMqYmn5XEj1pVz7rVUftVEBP",
+        "momtnzR3XqXgDSsFmd8gkGxUiHZLde3RmA"
+      ],
+      "lastConfirmedMain": 0,
+      "lastConfirmedChange": -1,
+      "changeIndex": 0,
+      "balance": 0,
+      "lastBlock": {
+        "hash": "000000000000dead200",
+        "height": 200
+      },
+      "sentAddresses": {
+        "260eebc72ce7a11f8e579b26469818ecc744296a71d0c52c039f34252adcc5be:0": "OP_RETURN (0x62c3ba2063e1bab763)",
+        "260eebc72ce7a11f8e579b26469818ecc744296a71d0c52c039f34252adcc5be:1": "mpaXJ6yWNAeJuEVuFReoTfMGn4VyPSiEbK"
+      },
+      "changeAddresses": [
+        "mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ",
+        "mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6",
+        "mvukVu96xM1QJ971w4Z5cdX4tsJwDyQy2L"
+      ],
+      "allowChange": true,
+      "version": 5
+    },
+    "network": {
+      "messagePrefix": "N/A",
+      "bip32": {
+        "public": 70617039,
+        "private": 0
+      },
+      "pubKeyHash": 111,
+      "scriptHash": 196,
+      "bech32": "tb",
+      "wif": 0
+    },
+    "segwit": "off",
+    "cashaddr": false,
+    "gap": 3,
+    "timeOffset": -120,
+    "spec": [
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupSyncStatus",
+          "result": {
+            "height": 200
+          }
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupBlockHash",
+          "height": 200,
+          "resultError": false,
+          "result": "000000000000dead200"
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+            "mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b",
+            "mgswWyysmViMqYmn5XEj1pVz7rVUftVEBP"
+          ],
+          "start": 200,
+          "end": 0,
+          "result": [
+            {
+              "hex": "010000000126ef5f9aa352644b960ae9cc4a3d9b732d585471a057063337df52dab58de64e01000000171600145183a8cd6827ed3249d2c667df4f5ce94ca88918ffffffff0300000000000000000f6a0d626974636f696e207375636b7332f5f802000000001976a914a579388225827d9f2fe9014add644487808c695d88ac80f0fa02000000001976a91454bd837a7dc2ea7f2b52ca0e1dcb07808e8acba988ac00000000",
+              "zcash": false,
+              "height": 150,
+              "timestamp": 1525483226,
+              "hash": "45d093731ae556580da86dfc0924fdbb12fb60386b7c6e91699316a9fe49e562",
+              "inputAddresses": [
+                "2N4BrUeq26v13gGDRNNWd6Q3L7ADp75Lqzp"
+              ],
+              "outputAddresses": [
+                null,
+                "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+                "moF25oWYTeN6V5USsvHFEkZp8CR2KimVdu"
+              ],
+              "vsize": 166
+            },
+            {
+              "hex": "010000000162e549fea9169369916e7c6b3860fb12bbfd2409fc6da80d5856e51a7393d045010000006a473044022016caa29c3cfd6b51393cb231aff14d4dc939f09d1969ed6c195a360bda98e5e6022012426456c411a9a5cc6aeae6168471cf71ca23da6462db2d92d13423fe1ea99e0121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff0200000000000000000b6a0962c3ba2063e1bab76350ebf802000000001976a9146365ed7bb4a092937ba40e502ace1f8fe71f2cd488ac00000000",
+              "zcash": false,
+              "height": 150,
+              "timestamp": 1525483226,
+              "hash": "260eebc72ce7a11f8e579b26469818ecc744296a71d0c52c039f34252adcc5be",
+              "inputAddresses": [
+                "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q"
+              ],
+              "outputAddresses": [
+                null,
+                "mpaXJ6yWNAeJuEVuFReoTfMGn4VyPSiEbK"
+              ],
+              "vsize": 208
+            }
+          ]
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "momtnzR3XqXgDSsFmd8gkGxUiHZLde3RmA"
+          ],
+          "start": 200,
+          "end": 0,
+          "result": []
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ",
+            "mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6",
+            "mvukVu96xM1QJ971w4Z5cdX4tsJwDyQy2L"
+          ],
+          "start": 200,
+          "end": 0,
+          "result": []
+        }
+      }
+    ]
+  },
+  {
+    "name": "One incoming one outgoing confirmed, outgoing nonstandard",
+    "start": null,
+    "xpub": "tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U",
+    "end": {
+      "utxos": [],
+      "transactions": [
+        {
+          "isCoinbase": false,
+          "timestamp": 1525483226,
+          "dateInfoDayFormat": "2018-05-05",
+          "dateInfoTimeFormat": "03:20:26",
+          "height": 150,
+          "confirmations": 51,
+          "hash": "a2d278f29815ba6204b816bcc57b5af11945ec10926a7fccc9a31ae46aee0999",
+          "targets": [
+            {
+              "address": "UNKNOWN",
+              "value": 0,
+              "i": 0
+            },
+            {
+              "address": "mpaXJ6yWNAeJuEVuFReoTfMGn4VyPSiEbK",
+              "value": 49867600,
+              "i": 1
+            }
+          ],
+          "type": "sent",
+          "value": -49870130,
+          "myOutputs": {},
+          "inputs": [
+            {
+              "id": "45d093731ae556580da86dfc0924fdbb12fb60386b7c6e91699316a9fe49e562",
+              "index": 1
+            }
+          ],
+          "tsize": 210,
+          "vsize": 208,
+          "balance": 0
+        },
+        {
+          "isCoinbase": false,
+          "timestamp": 1525483226,
+          "dateInfoDayFormat": "2018-05-05",
+          "dateInfoTimeFormat": "03:20:26",
+          "height": 150,
+          "confirmations": 51,
+          "hash": "45d093731ae556580da86dfc0924fdbb12fb60386b7c6e91699316a9fe49e562",
+          "targets": [
+            {
+              "address": "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+              "value": 49870130,
+              "i": 1
+            }
+          ],
+          "type": "recv",
+          "value": 49870130,
+          "myOutputs": {
+            "1": {
+              "address": "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+              "value": 49870130,
+              "i": 1
+            }
+          },
+          "inputs": [
+            {
+              "id": "4ee68db5da52df37330657a07154582d739b3d4acce90a964b6452a39a5fef26",
+              "index": 1
+            }
+          ],
+          "tsize": 166,
+          "vsize": 166,
+          "balance": 49870130
+        }
+      ],
+      "usedAddresses": [
+        {
+          "address": "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+          "received": 49870130
+        }
+      ],
+      "unusedAddresses": [
+        "mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b",
+        "mgswWyysmViMqYmn5XEj1pVz7rVUftVEBP",
+        "momtnzR3XqXgDSsFmd8gkGxUiHZLde3RmA"
+      ],
+      "lastConfirmedMain": 0,
+      "lastConfirmedChange": -1,
+      "changeIndex": 0,
+      "balance": 0,
+      "lastBlock": {
+        "hash": "000000000000dead200",
+        "height": 200
+      },
+      "sentAddresses": {
+        "a2d278f29815ba6204b816bcc57b5af11945ec10926a7fccc9a31ae46aee0999:0": "UNKNOWN",
+        "a2d278f29815ba6204b816bcc57b5af11945ec10926a7fccc9a31ae46aee0999:1": "mpaXJ6yWNAeJuEVuFReoTfMGn4VyPSiEbK"
+      },
+      "changeAddresses": [
+        "mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ",
+        "mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6",
+        "mvukVu96xM1QJ971w4Z5cdX4tsJwDyQy2L"
+      ],
+      "allowChange": true,
+      "version": 5
+    },
+    "network": {
+      "messagePrefix": "N/A",
+      "bip32": {
+        "public": 70617039,
+        "private": 0
+      },
+      "pubKeyHash": 111,
+      "scriptHash": 196,
+      "bech32": "tb",
+      "wif": 0
+    },
+    "segwit": "off",
+    "cashaddr": false,
+    "gap": 3,
+    "timeOffset": -120,
+    "spec": [
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupSyncStatus",
+          "result": {
+            "height": 200
+          }
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupBlockHash",
+          "height": 200,
+          "resultError": false,
+          "result": "000000000000dead200"
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+            "mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b",
+            "mgswWyysmViMqYmn5XEj1pVz7rVUftVEBP"
+          ],
+          "start": 200,
+          "end": 0,
+          "result": [
+            {
+              "hex": "010000000126ef5f9aa352644b960ae9cc4a3d9b732d585471a057063337df52dab58de64e01000000171600145183a8cd6827ed3249d2c667df4f5ce94ca88918ffffffff0300000000000000000f6a0d626974636f696e207375636b7332f5f802000000001976a914a579388225827d9f2fe9014add644487808c695d88ac80f0fa02000000001976a91454bd837a7dc2ea7f2b52ca0e1dcb07808e8acba988ac00000000",
+              "zcash": false,
+              "height": 150,
+              "timestamp": 1525483226,
+              "hash": "45d093731ae556580da86dfc0924fdbb12fb60386b7c6e91699316a9fe49e562",
+              "inputAddresses": [
+                "2N4BrUeq26v13gGDRNNWd6Q3L7ADp75Lqzp"
+              ],
+              "outputAddresses": [
+                null,
+                "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q",
+                "moF25oWYTeN6V5USsvHFEkZp8CR2KimVdu"
+              ],
+              "vsize": 166
+            },
+            {
+              "hex": "010000000162e549fea9169369916e7c6b3860fb12bbfd2409fc6da80d5856e51a7393d045010000006a473044022016caa29c3cfd6b51393cb231aff14d4dc939f09d1969ed6c195a360bda98e5e6022012426456c411a9a5cc6aeae6168471cf71ca23da6462db2d92d13423fe1ea99e0121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff0200000000000000000a090a0f141e2832ffe9c850ebf802000000001976a9146365ed7bb4a092937ba40e502ace1f8fe71f2cd488ac00000000",
+              "zcash": false,
+              "height": 150,
+              "timestamp": 1525483226,
+              "hash": "a2d278f29815ba6204b816bcc57b5af11945ec10926a7fccc9a31ae46aee0999",
+              "inputAddresses": [
+                "mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q"
+              ],
+              "outputAddresses": [
+                null,
+                "mpaXJ6yWNAeJuEVuFReoTfMGn4VyPSiEbK"
+              ],
+              "vsize": 208
+            }
+          ]
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "momtnzR3XqXgDSsFmd8gkGxUiHZLde3RmA"
+          ],
+          "start": 200,
+          "end": 0,
+          "result": []
+        }
+      },
+      {
+        "type": "call",
+        "spec": {
+          "type": "lookupTransactionsStream",
+          "addresses": [
+            "mm6kLYbGEL1tGe4ZA8xacfgRPdW1NLjCbZ",
+            "mjXZwmEi1z1MzveZrKUAo4DBgbdq4sBYT6",
+            "mvukVu96xM1QJ971w4Z5cdX4tsJwDyQy2L"
+          ],
+          "start": 200,
+          "end": 0,
+          "result": []
+        }
+      }
+    ]
   }
 ]
