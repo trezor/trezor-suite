@@ -28,13 +28,23 @@ class CoinLogo extends PureComponent {
     }
 
     render() {
-        const { network, className } = this.props;
+        const { network, className, standalone } = this.props;
+
+        const logo = (
+            <Logo
+                className={className}
+                hasLongIcon={this.hasLongIcon(network)}
+                src={require(`./images/${network}.png`)} // eslint-disable-line
+            />
+        );
+
+        if (standalone) {
+            return logo;
+        }
+
         return (
             <Wrapper className={className}>
-                <Logo
-                    hasLongIcon={this.hasLongIcon(network)}
-                    src={require(`./images/${network}.png`)} // eslint-disable-line
-                />
+                {logo}
             </Wrapper>
         );
     }
@@ -43,6 +53,7 @@ class CoinLogo extends PureComponent {
 CoinLogo.propTypes = {
     network: PropTypes.string,
     className: PropTypes.string,
+    standalone: PropTypes.bool,
 };
 
 export default CoinLogo;
