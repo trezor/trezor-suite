@@ -9,7 +9,6 @@ import colors from 'config/colors';
 
 import type { State } from 'flowtype';
 
-// import FirmwareOutdated from './components/FirmwareOutdated';
 import FirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
 
