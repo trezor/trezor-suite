@@ -184,7 +184,6 @@ const AccountSend = (props: Props) => {
         discovery,
         tokens,
         shouldRender,
-        loader,
     } = props.selectedAccount;
     const {
         address,
@@ -213,8 +212,11 @@ const AccountSend = (props: Props) => {
         updateFeeLevels,
         onSend,
     } = props.sendFormActions;
-    const { type, title, message } = loader;
-    if (!device || !account || !discovery || !network || !shouldRender) return <Content type={type} title={title} message={message} networkShortcut={(network || {}).shortcut} isLoading />;
+
+    if (!device || !account || !discovery || !network || !shouldRender) {
+        const { loader, exceptionPage } = props.selectedAccount;
+        return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
+    }
 
     const isCurrentCurrencyToken = networkSymbol !== currency;
 
