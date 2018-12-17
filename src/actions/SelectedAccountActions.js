@@ -76,7 +76,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'progress',
             title: 'Loading device...',
-            shouldRender: false,
         };
     }
 
@@ -85,7 +84,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'progress',
             title: 'Loading account',
-            shouldRender: false,
         };
     }
 
@@ -100,7 +98,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
                 return {
                     type: 'progress',
                     title: 'Authenticating device...',
-                    shouldRender: false,
                 };
             }
             // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
@@ -109,7 +106,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
                 type: 'info',
                 title: `Device ${device.instanceLabel} is unavailable`,
                 message: 'Change passphrase settings to use this device',
-                shouldRender: false,
             };
         }
 
@@ -118,7 +114,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
             type: 'info',
             title: `Device ${device.instanceLabel} is disconnected`,
             message: 'Connect device to load accounts',
-            shouldRender: false,
         };
     }
 
@@ -127,7 +122,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'info',
             title: 'Account does not exist',
-            shouldRender: false,
         };
     }
 
@@ -135,7 +129,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
     return {
         type: 'progress',
         title: 'Loading account',
-        shouldRender: false,
     };
 };
 
