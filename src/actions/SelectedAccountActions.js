@@ -43,6 +43,7 @@ const getExceptionPage = (state: State, selectedAccount: SelectedAccountState): 
     if (!device || !device.features || !network || !discovery) return null;
 
     if (discovery.fwOutdated) {
+        // those values are not used because in this case views/Wallet/views/FirmwareUpdate component will be displayed and it already has text content
         return {
             type: 'fwOutdated',
             title: 'not-used',
