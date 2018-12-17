@@ -9,7 +9,8 @@ import colors from 'config/colors';
 
 import type { State } from 'flowtype';
 
-import FirmwareOutdated from './components/FirmwareOutdated';
+// import FirmwareOutdated from './components/FirmwareOutdated';
+import FirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 type Props = {
@@ -54,7 +55,7 @@ const getExceptionPage = (exceptionPage) => {
     const { title, message, shortcut } = exceptionPage;
     switch (exceptionPage.type) {
         case 'fwOutdated':
-            return <FirmwareOutdated title={title} message={message} networkShortcut={shortcut} />;
+            return <FirmwareUpdate />;
         case 'fwNotSupported':
             return <FirmwareUnsupported title={title} message={message} networkShortcut={shortcut} />;
         default: return null;
