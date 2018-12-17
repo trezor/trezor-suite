@@ -19,11 +19,10 @@ type State = {
     footerFixed: boolean,
 }
 
-const AsideWrapper = styled.aside.attrs({
-    style: ({ minHeight }) => ({
-        minHeight,
-    }),
-})`
+const AsideWrapper = styled.aside.attrs(props => ({
+    style: { minHeight: props.minHeight },
+}))`
+
     position: relative;
     top: 0px;
     width: 320px;
@@ -33,13 +32,13 @@ const AsideWrapper = styled.aside.attrs({
     border-right: 1px solid ${colors.DIVIDER};
 `;
 
-const StickyContainerWrapper = styled.div.attrs({
-    style: ({ top, left, paddingBottom }) => ({
-        top,
-        left,
-        paddingBottom,
-    }),
-})`
+const StickyContainerWrapper = styled.div.attrs(props => ({
+    style: {
+        top: props.top,
+        left: props.left,
+        paddingBottom: props.paddingBottom,
+    },
+}))`
     position: fixed;
     border-right: 1px solid ${colors.DIVIDER};
     width: 320px;

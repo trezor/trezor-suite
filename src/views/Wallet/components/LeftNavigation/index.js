@@ -45,11 +45,9 @@ const TransitionContentWrapper = styled.div`
     vertical-align: top;
 `;
 
-const Footer = styled.div.attrs({
-    style: ({ position }) => ({
-        position,
-    }),
-})`
+const Footer = styled.div.attrs(props => ({
+    style: { position: props.position },
+}))`
     width: 320px;
     bottom: 0;
     background: ${colors.MAIN};
