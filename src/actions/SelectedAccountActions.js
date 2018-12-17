@@ -44,10 +44,10 @@ const getExceptionPage = (state: State, selectedAccount: SelectedAccountState): 
 
     if (discovery.fwOutdated) {
         return {
-            type: 'info',
-            title: `Device ${device.instanceLabel} firmware is outdated`,
-            message: 'TODO: update firmware explanation',
-            shortcut: network.shortcut,
+            type: 'fwOutdated',
+            title: 'not-used',
+            message: 'not-used',
+            shortcut: 'not-used',
         };
     }
     if (discovery.fwNotSupported) {
