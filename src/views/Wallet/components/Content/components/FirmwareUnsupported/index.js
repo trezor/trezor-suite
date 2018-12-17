@@ -9,6 +9,14 @@ import Button from 'components/Button';
 import Link from 'components/Link';
 import CoinLogo from 'components/images/CoinLogo';
 
+const getInfoUrl = (networkShortcut: ?string) => {
+    const urls = {
+        default: 'https://wiki.trezor.io',
+        xrp: 'https://wiki.trezor.io/Ripple_(XRP)',
+    };
+
+    return networkShortcut ? urls[networkShortcut] : urls.default;
+};
 
 type Props = {
     networkShortcut: ?string,
@@ -23,10 +31,12 @@ const Wrapper = styled.div`
     flex: 1;
 `;
 
-const StyledCoinLogo = styled(CoinLogo)`
+const CoinLogoWrapper = styled.div`
     margin: 10px 0;
-    padding: 0;
-    width: auto;
+`;
+
+const StyledCoinLogo = styled(CoinLogo)`
+    width: 32px;
 `;
 
 const StyledLink = styled(Link)`
@@ -52,10 +62,10 @@ const FirmwareUnsupported = (props: Props) => {
     return (
         <Wrapper>
             <Row>
-                {props.networkShortcut && <StyledCoinLogo network={props.networkShortcut} />}
+                {props.networkShortcut && <CoinLogoWrapper><StyledCoinLogo standalone network={props.networkShortcut} /></CoinLogoWrapper>}
                 <H2>{props.title}</H2>
                 <Message>{props.message}</Message>
-                <StyledLink href="https://wiki.trezor.io/">
+                <StyledLink href={getInfoUrl(props.networkShortcut)}>
                     <Button>Find out more info</Button>
                 </StyledLink>
             </Row>
