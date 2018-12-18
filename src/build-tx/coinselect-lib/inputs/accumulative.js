@@ -1,13 +1,11 @@
-const utils = require('../utils');
+import * as utils from '../utils';
 
 // add inputs until we reach or surpass the target value (or deplete)
 // worst-case: O(n)
-module.exports = function accumulative(utxos, outputs, feeRate, options) {
-    const inputLength = options.inputLength;
-    const changeOutputLength = options.changeOutputLength;
-    const explicitDustThreshold = options.dustThreshold;
+export default function accumulative(utxos, outputs, feeRate, options) {
+    const { changeOutputLength, dustThreshold: explicitDustThreshold, inputLength } = options;
 
-    if (!isFinite(utils.uintOrNaN(feeRate))) return {};
+    if (!Number.isFinite(utils.uintOrNaN(feeRate))) return {};
     let bytesAccum = utils.transactionBytes([], outputs);
 
     let inAccum = 0;
@@ -23,20 +21,26 @@ module.exports = function accumulative(utxos, outputs, feeRate, options) {
         // skip detrimental input
         if (utxoFee > utxo.value) {
             if (i === utxos.length - 1) return { fee: feeRate * (bytesAccum + utxoBytes) };
-            continue;
+        } else {
+            bytesAccum += utxoBytes;
+            inAccum += utxoValue;
+            inputs.push(utxo);
+
+            const fee = feeRate * bytesAccum;
+
+            // go again?
+            if (!(inAccum < outAccum + fee)) {
+                return utils.finalize(
+                    inputs,
+                    outputs,
+                    feeRate,
+                    inputLength,
+                    changeOutputLength,
+                    explicitDustThreshold,
+                );
+            }
         }
-
-        bytesAccum += utxoBytes;
-        inAccum += utxoValue;
-        inputs.push(utxo);
-
-        const fee = feeRate * bytesAccum;
-
-        // go again?
-        if (inAccum < outAccum + fee) continue;
-
-        return utils.finalize(inputs, outputs, feeRate, inputLength, changeOutputLength, explicitDustThreshold);
     }
 
     return { fee: feeRate * bytesAccum };
-};
+}

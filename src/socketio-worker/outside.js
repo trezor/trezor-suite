@@ -1,5 +1,7 @@
 /* @flow */
 
+/* global Worker:false */
+
 import { Stream, Emitter } from '../utils/stream';
 
 import type {
@@ -17,14 +19,20 @@ export function setLogCommunication() {
 
 export class Socket {
     endpoint: string;
+
     socket: SocketWorkerHandler;
+
     _socketInited: Promise<void>;
 
     streams: Array<Stream<any>> = [];
 
     destroyerOnInit: Emitter<void>;
 
-    constructor(workerFactory: SocketWorkerFactory, endpoint: string, destroyerOnInit: Emitter<void>) {
+    constructor(
+        workerFactory: SocketWorkerFactory,
+        endpoint: string,
+        destroyerOnInit: Emitter<void>,
+    ) {
         this.endpoint = endpoint;
         this.socket = new SocketWorkerHandler(workerFactory, destroyerOnInit);
         this._socketInited = this.socket.init(this.endpoint);
@@ -52,7 +60,9 @@ export class Socket {
     }
 
     subscribe(event: string, ...values: Array<any>) {
-        return this._socketInited.then(() => this.socket.subscribe(event, ...values)).catch(() => {});
+        return this._socketInited.then(
+            () => this.socket.subscribe(event, ...values),
+        ).catch(() => {});
     }
 }
 
@@ -61,8 +71,11 @@ const disconnectErrorTypes = ['connect_error', 'reconnect_error', 'close', 'disc
 
 class SocketWorkerHandler {
     _worker: ?Worker;
+
     workerFactory: () => Worker;
+
     _emitter: ?Emitter<SocketWorkerOutMessage>;
+
     counter: number;
 
     destroyerOnInit: Emitter<void>;
@@ -86,8 +99,7 @@ class SocketWorkerHandler {
         };
         this.destroyerOnInit.attach(funOnDestroy);
 
-        worker.onmessage = (message) => {
-            const data = message.data;
+        worker.onmessage = ({ data }) => {
             this.destroyerOnInit.detach(funOnDestroy);
             if (typeof data === 'string') {
                 const parsed = JSON.parse(data);
@@ -104,7 +116,7 @@ class SocketWorkerHandler {
 
         worker.postMessage(JSON.stringify({
             type: 'init',
-            endpoint: endpoint,
+            endpoint,
             connectionType: type,
         }));
         return dfd.promise;
@@ -114,10 +126,10 @@ class SocketWorkerHandler {
         return this._tryWorker(endpoint, 'websocket')
             .catch(() => this._tryWorker(endpoint, 'polling'))
             .then((worker) => {
-                this._worker = worker;
+                const cworker = worker;
+                this._worker = cworker;
                 const emitter = new Emitter();
-                worker.onmessage = (message) => {
-                    const data = message.data;
+                cworker.onmessage = ({ data }) => {
                     if (typeof data === 'string') {
                         if (!this.stopped) {
                             emitter.emit(JSON.parse(data));
@@ -126,7 +138,7 @@ class SocketWorkerHandler {
                 };
                 this._emitter = emitter;
 
-                disconnectErrorTypes.forEach(type => {
+                disconnectErrorTypes.forEach((type) => {
                     this.observe(type).map(() => {
                         // almost the same as this.close(),
                         // but doesn't call destroy()
@@ -136,10 +148,9 @@ class SocketWorkerHandler {
                             type: 'close',
                         });
                         this._emitter = null;
+                        return null;
                     });
                 });
-
-                return;
             });
     }
 
@@ -154,7 +165,7 @@ class SocketWorkerHandler {
             this._emitter.destroy();
             this._emitter = null;
         }
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             setTimeout(() => {
                 if (this._worker != null) {
                     this._worker.terminate();
@@ -164,12 +175,12 @@ class SocketWorkerHandler {
         });
     }
 
-    send(message: Object): Promise<any> {
+    send(imessage: Object): Promise<any> {
         this.counter++;
-        const counter = this.counter;
+        const { counter } = this;
         this._sendMessage({
             type: 'send',
-            message: message,
+            message: imessage,
             id: counter,
         });
         const dfd = deferred();
@@ -182,7 +193,7 @@ class SocketWorkerHandler {
             }
 
             if (message.type === 'sendReply' && message.id === counter) {
-                const {result, error} = message.reply;
+                const { result, error } = message.reply;
                 if (error != null) {
                     dfd.reject(error);
                 } else {
@@ -207,48 +218,46 @@ class SocketWorkerHandler {
     observe(event: string): Stream<any> {
         if (this.observers[event] != null) {
             return this.observers[event];
-        } else {
-            const observer = this._newObserve(event);
-            this.observers[event] = observer;
-            return observer;
         }
+        const observer = this._newObserve(event);
+        this.observers[event] = observer;
+        return observer;
     }
 
     _newObserve(event: string): Stream<any> {
         this.counter++;
-        const counter = this.counter;
+        const { counter } = this;
         this._sendMessage({
             type: 'observe',
-            event: event,
+            event,
             id: counter,
         });
 
         // $FlowIssue - this can't be null if used from bitcore.js
         const emitter: Emitter<SocketWorkerOutMessage> = this._emitter;
 
-        return Stream.fromEmitter(
+        const r = Stream.fromEmitter(
             emitter,
             () => {
                 this._sendMessage({
                     type: 'unobserve',
-                    event: event,
+                    event,
                     id: counter,
                 });
                 delete this.observers[event];
-            }
+            },
         )
-        .filter((message) => message.type === 'emit' && message.event === event)
-        .map((message) => {
-            // $FlowIssue it always have data because of the filtering
-            return message.data;
-        });
+            .filter(message => (message.type === 'emit' && message.event === event))
+            // $FlowIssue
+            .map((message: SocketWorkerOutMessage) => message.data);
+        return r;
     }
 
     subscribe(event: string, ...values: Array<any>) {
         this._sendMessage({
             type: 'subscribe',
-            event: event,
-            values: values,
+            event,
+            values,
         });
     }
 

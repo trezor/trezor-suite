@@ -2,13 +2,12 @@
  * Derivation of addresses from HD nodes
  */
 
-import type { HDNode } from 'bitcoinjs-lib-zcash';
-import type { Network } from 'bitcoinjs-lib-zcash';
-import type { WorkerChannel } from './utils/simple-worker-channel';
+import type { HDNode, Network } from 'bitcoinjs-lib-zcash';
 import {
     crypto,
     address,
 } from 'bitcoinjs-lib-zcash';
+import type { WorkerChannel } from './utils/simple-worker-channel';
 
 export type AddressSource = {
     derive(
@@ -21,6 +20,7 @@ export class BrowserAddressSource {
     network: Network;
 
     segwit: boolean;
+
     node: HDNode;
 
     constructor(hdnode: HDNode, network: Network, segwit: boolean) {
@@ -31,7 +31,7 @@ export class BrowserAddressSource {
 
     derive(
         first: number,
-        last: number
+        last: number,
     ): Promise<Array<string>> {
         const addresses: Array<string> = [];
         // const chainNode = HDNode.fromBase58(this.xpub, this.network).derive(this.chainId);
@@ -45,7 +45,7 @@ export class BrowserAddressSource {
                 // see https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
                 // address derivation + test vectors
                 const pkh = addressNode.getIdentifier();
-                const scriptSig = new Buffer(pkh.length + 2);
+                const scriptSig = Buffer.alloc(pkh.length + 2);
                 scriptSig[0] = 0;
                 scriptSig[1] = 0x14;
                 pkh.copy(scriptSig, 2);
@@ -60,14 +60,17 @@ export class BrowserAddressSource {
 
 export class WorkerAddressSource {
     channel: WorkerChannel;
+
     node: {
         depth: number,
         child_num: number,
         fingerprint: number,
-        chain_code: $ReadOnlyArray<number>,
-        public_key: $ReadOnlyArray<number>,
+        chain_code: Array<number>,
+        public_key: Array<number>,
     };
+
     version: number;
+
     segwit: 'p2sh' | 'off';
 
     constructor(channel: WorkerChannel, node: HDNode, version: number, segwit: 'p2sh' | 'off') {
@@ -93,6 +96,6 @@ export class WorkerAddressSource {
             addressFormat: this.segwit === 'p2sh' ? 1 : 0,
         };
         return this.channel.postMessage(request)
-            .then(({addresses}) => addresses);
+            .then(({ addresses }) => addresses);
     }
 }

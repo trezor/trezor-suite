@@ -10,9 +10,9 @@ export function deferred<T>(): Deferred<T> {
     // ignoring coverage on functions that are just for
     // type correctness
     /* istanbul ignore next */
-    let outResolve = (t: T) => {};
+    let outResolve = () => {};
     /* istanbul ignore next */
-    let outReject = (e: Error) => {};
+    let outReject = () => {};
     const promise = new Promise((resolve, reject) => {
         outResolve = resolve;
         outReject = reject;

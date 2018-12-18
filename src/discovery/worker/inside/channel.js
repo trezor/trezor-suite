@@ -1,5 +1,6 @@
 /* @flow */
 
+import type { Network as BitcoinJsNetwork } from 'bitcoinjs-lib-zcash';
 import { deferred } from '../../../utils/deferred';
 import { Emitter, Stream } from '../../../utils/stream';
 import type {
@@ -13,7 +14,6 @@ import type {
 import type {
     AccountInfo,
 } from '../../index';
-import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
 
 // Code for all communication with outside
 
@@ -84,11 +84,11 @@ function askStream(request: StreamRequestType): Stream<any> {
 }
 
 export function lookupSyncStatus(): Promise<number> {
-    return askPromise({type: 'lookupSyncStatus'});
+    return askPromise({ type: 'lookupSyncStatus' });
 }
 
 export function lookupBlockHash(height: number): Promise<string> {
-    return askPromise({type: 'lookupBlockHash', height});
+    return askPromise({ type: 'lookupBlockHash', height });
 }
 
 export function chunkTransactions(
@@ -98,7 +98,7 @@ export function chunkTransactions(
     startBlock: number,
     endBlock: number,
     pseudoCount: number,
-    addresses: ?Array<string>
+    addresses: ?Array<string>,
 ): Stream<ChunkDiscoveryInfo | Error> {
     return askStream({
         type: 'chunkTransactions',
@@ -118,23 +118,24 @@ export function chunkTransactions(
 }
 
 export function returnSuccess(result: AccountInfo): void {
-    doPostMessage({type: 'result', result});
+    doPostMessage({ type: 'result', result });
 }
 
 export function returnError(error: Error | string): void {
     const errorMessage: string = error instanceof Error ? error.message : error.toString();
-    doPostMessage({type: 'error', error: errorMessage});
+    doPostMessage({ type: 'error', error: errorMessage });
 }
 
 function doPostMessage(data: OutMessage) {
+    // eslint-disable-next-line no-undef,no-restricted-globals
     self.postMessage(
-        data
+        data,
     );
 }
 
-// eslint-disable-next-line no-undef
-self.onmessage = function (event: {data: InMessage}) {
-    const data: InMessage = event.data;
+// eslint-disable-next-line no-undef,no-restricted-globals
+self.onmessage = (event: {data: InMessage}) => {
+    const { data } = event;
     messageEmitter.emit(data);
 };
 

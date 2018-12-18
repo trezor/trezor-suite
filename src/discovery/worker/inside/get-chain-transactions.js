@@ -15,6 +15,14 @@
 //  so we have the logic of asking things out from the worker by requests,
 //  and the main thread returning things back
 
+import {
+    Transaction as BitcoinJsTransaction,
+    address as BitcoinJsAddress,
+    HDNode as BitcoinJsHDNode,
+    script as BitcoinJsScript,
+} from 'bitcoinjs-lib-zcash';
+import type { Network as BitcoinJsNetwork } from 'bitcoinjs-lib-zcash';
+import bchaddrjs from 'bchaddrjs';
 import { deferred } from '../../../utils/deferred';
 import type { Deferred } from '../../../utils/deferred';
 import type {
@@ -25,20 +33,13 @@ import type {
     ChunkDiscoveryInfo,
 } from '../types';
 import { Stream } from '../../../utils/stream';
-import {
-    Transaction as BitcoinJsTransaction,
-    address as BitcoinJsAddress,
-    HDNode as BitcoinJsHDNode,
-    script as BitcoinJsScript,
-} from 'bitcoinjs-lib-zcash';
-import type {Network as BitcoinJsNetwork} from 'bitcoinjs-lib-zcash';
-import type {TransactionInfo} from '../../index';
+import type { TransactionInfo } from '../../index';
 import { BrowserAddressSource } from '../../../address-source';
-import bchaddrjs from 'bchaddrjs';
 
 export class GetChainTransactions {
     // all seen addresses, including the gap addresses
     allAddresses: Array<string>;
+
     allCheckedAddresses: Array<string> = [];
 
     // address -> number map
@@ -68,18 +69,19 @@ export class GetChainTransactions {
     dfd: Deferred<ChainNewInfo> = deferred();
 
     chainId: number;
+
     network: BitcoinJsNetwork;
 
     xpub: string;
+
     segwit: boolean;
 
     range: BlockRange;
 
     nullRange(): BlockRange {
-        const range = this.range;
         return {
             firstHeight: 0,
-            last: range.last,
+            last: this.range.last,
         };
     }
 
@@ -97,6 +99,7 @@ export class GetChainTransactions {
     ) => Stream<ChunkDiscoveryInfo | Error>;
 
     webassembly: boolean;
+
     source: BrowserAddressSource; // used only if not webassembly
 
     gap: number;
@@ -139,7 +142,13 @@ export class GetChainTransactions {
         this.segwit = segwit;
         this.webassembly = webassembly;
         if (!this.webassembly) {
-            this.source = new BrowserAddressSource(BitcoinJsHDNode.fromBase58(this.xpub, this.network).derive(this.chainId), this.network, this.segwit);
+            this.source = new BrowserAddressSource(
+                BitcoinJsHDNode
+                    .fromBase58(this.xpub, this.network)
+                    .derive(this.chainId),
+                this.network,
+                this.segwit,
+            );
         }
     }
 
@@ -163,13 +172,11 @@ export class GetChainTransactions {
         let addressesP: Promise<?Array<string>> = Promise.resolve(null);
         if (this.allAddresses.length - 1 >= last) {
             addressesP = Promise.resolve(this.allAddresses.slice(first, last + 1));
-        } else {
-            if (!this.webassembly) {
-                addressesP = this.source.derive(first, last);
-            }
+        } else if (!this.webassembly) {
+            addressesP = this.source.derive(first, last);
         }
 
-        addressesP.then(addresses => {
+        addressesP.then((addresses) => {
             const stream = this.getStream(
                 this.chainId,
                 first,
@@ -177,7 +184,7 @@ export class GetChainTransactions {
                 range.firstHeight,
                 range.last.height,
                 this.txids.size,
-                addresses
+                addresses,
             );
 
             stream.values.attach((value_) => {
@@ -191,9 +198,8 @@ export class GetChainTransactions {
                 try {
                     this.handleTransactions(value, first);
                 } catch (error) {
-                    this.dfd.reject('Error transaction parsing: ' + error.message || error.toString());
+                    this.dfd.reject(new Error(`Error transaction parsing: ${error.message || error.toString()}`));
                     stream.dispose();
-                    return;
                 }
             });
 
@@ -206,7 +212,7 @@ export class GetChainTransactions {
     // What to do with transactions?
     handleTransactions(
         value: ChunkDiscoveryInfo,
-        first: number
+        first: number,
     ) {
         // save the addresses
         value.addresses.forEach((address, i) => {
@@ -215,7 +221,7 @@ export class GetChainTransactions {
             this.backSearch[address] = i + first;
         });
 
-        value.transactions.forEach(transaction => {
+        value.transactions.forEach((transaction) => {
             // parse txs (error in here is handled in iterate)
             const parsed = BitcoinJsTransaction.fromHex(transaction.hex, transaction.zcash);
             const outputAddresses = [];
@@ -255,11 +261,11 @@ export class GetChainTransactions {
                                 const ascii = buffer.toString('ascii');
                                 text = ascii.slice(0, 40);
                             } else {
-                                const hex = '0x' + buffer.toString('hex');
+                                const hex = `0x${buffer.toString('hex')}`;
                                 text = hex.slice(0, 40);
                             }
                         }
-                        address = 'OP_RETURN (' + text + ')';
+                        address = `OP_RETURN (${text})`;
                     } else {
                         address = 'UNKNOWN';
                     }
@@ -285,15 +291,14 @@ export class GetChainTransactions {
 
     // when stream finishes, we have to decide if we want try more addresses or not
     handleFinish(
-        last: number
+        last: number,
     ) {
         this.lastSearched = last;
 
         // look at which is the next thing we want
         const shouldSearchLast = this.lastConfirmed + this.gap;
         const nextChunkEnd = this.lastSearched + this.gap;
-        const nextLast =
-            shouldSearchLast < nextChunkEnd
+        const nextLast = shouldSearchLast < nextChunkEnd
             ? shouldSearchLast
             : nextChunkEnd;
         const nextFirst = this.lastSearched + 1;
@@ -309,7 +314,7 @@ export class GetChainTransactions {
                 this.iterate(
                     nextFirst,
                     nextLast,
-                    this.nullRange()
+                    this.nullRange(),
                 );
             } else {
                 // old addresses, just new blocks
@@ -334,9 +339,8 @@ function deriveTxidSet(
 ): Set<string> {
     const res = new Set();
 
-    transactions.forEach(t => {
+    transactions.forEach((t) => {
         res.add(t.hash);
     });
     return res;
 }
-

@@ -1,5 +1,6 @@
 /* @flow */
 
+import queue from 'queue';
 import type {
     InMessage,
     OutMessage,
@@ -13,8 +14,7 @@ import type {
 import { Emitter, Stream } from '../../../utils/stream';
 import type { AccountInfo } from '../../index';
 
-import queue from 'queue';
-
+// eslint-disable-next-line no-undef
 type WorkerFactory = () => Worker;
 
 // will get injected
@@ -22,19 +22,22 @@ type GetPromise = (p: PromiseRequestType) => Promise<any>;
 type GetStream = (p: StreamRequestType) => Stream<any>;
 
 const CONCURRENT_WORKERS = 4;
-const q = queue({concurrency: CONCURRENT_WORKERS, autostart: true});
+const q = queue({ concurrency: CONCURRENT_WORKERS, autostart: true });
 
 export class WorkerChannel {
+    // eslint-disable-next-line no-undef
     w: Promise<{worker: Worker, finish: () => void}>;
+
     messageEmitter: Emitter<OutMessage> = new Emitter();
 
     getPromise: GetPromise;
+
     getStream: GetStream;
 
     constructor(
         f: WorkerFactory,
         getPromise: GetPromise,
-        getStream: GetStream
+        getStream: GetStream,
     ) {
         this.getPromise = getPromise;
         this.getStream = getStream;
@@ -46,11 +49,12 @@ export class WorkerChannel {
 
                 // $FlowIssue
                 worker.onmessage = (event: {data: OutMessage}) => {
+                    // eslint-disable-next-line
                     const data: OutMessage = event.data;
                     this.messageEmitter.emit(data);
                 };
 
-                resolve({worker, finish});
+                resolve({ worker, finish });
             });
         });
 
@@ -65,7 +69,7 @@ export class WorkerChannel {
     }
 
     postToWorker(m: InMessage) {
-        this.w.then(w => {
+        this.w.then((w) => {
             w.worker.postMessage(m);
         });
     }
@@ -77,7 +81,7 @@ export class WorkerChannel {
                     resolve(message.result);
                     detach();
                     onFinish();
-                    this.w.then(w => {
+                    this.w.then((w) => {
                         w.worker.terminate();
                         w.finish();
                     });
@@ -86,7 +90,7 @@ export class WorkerChannel {
                     reject(new Error(message.error));
                     detach();
                     onFinish();
-                    this.w.then(w => {
+                    this.w.then((w) => {
                         w.worker.terminate();
                         w.finish();
                     });
@@ -98,7 +102,7 @@ export class WorkerChannel {
     handlePromiseRequest(request: PromiseRequestOutMessage) {
         const promise = this.getPromise(request.request);
 
-        promise.then(result => {
+        promise.then((result) => {
             // $FlowIssue I overload Flow logic a bit here
             const r: PromiseResponseType = {
                 type: request.request.type,
@@ -109,7 +113,7 @@ export class WorkerChannel {
                 id: request.id,
                 response: r,
             });
-        }, error => {
+        }, (error) => {
             const message = error.message == null ? error.toString() : error.message.toString();
             this.postToWorker({
                 type: 'promiseResponseFailure',
@@ -122,7 +126,7 @@ export class WorkerChannel {
     handleStreamRequest(request: StreamRequestOutMessage) {
         const stream = this.getStream(request.request);
 
-        stream.values.attach(value => {
+        stream.values.attach((value) => {
             this.postToWorker({
                 type: 'streamResponseUpdate',
                 id: request.id,
@@ -132,7 +136,7 @@ export class WorkerChannel {
                 },
             });
         });
-        stream.finish.attach(value => {
+        stream.finish.attach(() => {
             this.postToWorker({
                 type: 'streamResponseFinish',
                 id: request.id,

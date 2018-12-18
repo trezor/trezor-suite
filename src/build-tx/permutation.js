@@ -15,7 +15,7 @@ export class Permutation<X> {
         this._permutation = permutation;
     }
 
-    static fromFunction<X>(original: Array<X>, sort: ((a: X, b: X) => number)): Permutation<X> {
+    static fromFunction<Y>(original: Array<Y>, sort: ((a: Y, b: Y) => number)): Permutation<Y> {
         const range = [...original.keys()];
 
         // I am "sorting range" - (0,1,2,3,...)

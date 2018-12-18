@@ -99,19 +99,29 @@ type BcTransactionInfo = {
 type BcHistory = { addresses: { [address: string]: Object } } & BcTransactionInfo;
 type BcHistories = { items: Array<BcHistory>, totalCount: number };
 
+// eslint-disable-next-line no-undef
 type SocketWorkerFactory = () => Worker;
 
 export class BitcoreBlockchain {
-    errors: Stream<Error>; // socket errors
-    notifications: Stream<TransactionWithHeight>; // activity on subscribed addresses
+    errors: Stream<Error>;
+
+    // socket errors
+    notifications: Stream<TransactionWithHeight>;
+
+    // activity on subscribed addresses
     blocks: Stream<void>;
 
-    addresses: Set<string>; // subscribed addresses
+    addresses: Set<string>;
+
+    // subscribed addresses
     socket: Deferred<Socket> = deferred();
 
     socketWorkerFactory: SocketWorkerFactory;
+
     endpoints: Array<string>;
+
     workingUrl: string = 'none';
+
     zcash: boolean;
 
     hasSmartTxFees: boolean; // does server support estimatesmartfee
@@ -122,8 +132,9 @@ export class BitcoreBlockchain {
         endpoints: Array<string>,
         socketWorkerFactory: SocketWorkerFactory,
         tried: {[k: string]: boolean},
-        closeOnInit: Emitter<void>
+        closeOnInit: Emitter<void>,
     ): Promise<{socket: Socket, url: string}> {
+        const triedCopy = tried;
         const untriedEndpoints = endpoints.filter((e, i) => !tried[i.toString()]);
 
         if (untriedEndpoints.length === 0) {
@@ -131,13 +142,21 @@ export class BitcoreBlockchain {
         }
 
         const random = uniqueRandom(untriedEndpoints.length);
-        return onlineStatusCheck(socketWorkerFactory, untriedEndpoints[random], closeOnInit).then(socket => {
+        return onlineStatusCheck(
+            socketWorkerFactory,
+            untriedEndpoints[random],
+            closeOnInit,
+        ).then((socket) => {
             if (socket) {
-                return {socket, url: untriedEndpoints[random]};
-            } else {
-                tried[random.toString()] = true;
-                return BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried, closeOnInit);
+                return { socket, url: untriedEndpoints[random] };
             }
+            triedCopy[random.toString()] = true;
+            return BitcoreBlockchain._tryEndpoint(
+                endpoints,
+                socketWorkerFactory,
+                triedCopy,
+                closeOnInit,
+            );
         });
     }
 
@@ -150,12 +169,9 @@ export class BitcoreBlockchain {
         this.endpoints = endpoints;
         this.zcash = false;
 
-        const lookupTM = (socket: Socket): Stream<TransactionWithHeight> => {
-            return Stream.filterError(socket.observe('bitcoind/addresstxid').mapPromise(
-                ({txid}) => {
-                    return this.lookupTransaction(txid);
-                }));
-        };
+        const lookupTM = (socket: Socket): Stream<TransactionWithHeight> => Stream.filterError(socket.observe('bitcoind/addresstxid').mapPromise(
+            ({ txid }) => this.lookupTransaction(txid),
+        ));
         const observeBlocks = (socket: Socket): Stream<void> => {
             socket.subscribe('bitcoind/hashblock');
             return socket.observe('bitcoind/hashblock');
@@ -168,8 +184,13 @@ export class BitcoreBlockchain {
         this.notifications = notifications.stream;
         this.blocks = blocks.stream;
 
-        const tried = {'-1': true};
-        BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried, this.closeOnInit).then(({socket, url}) => {
+        const tried = { '-1': true };
+        BitcoreBlockchain._tryEndpoint(
+            endpoints,
+            socketWorkerFactory,
+            tried,
+            this.closeOnInit,
+        ).then(({ socket, url }) => {
             this.closeOnInit.destroy();
             const trySmartFee = estimateSmartTxFee(socket, 2, false).then(
                 () => {
@@ -177,7 +198,7 @@ export class BitcoreBlockchain {
                 },
                 () => {
                     this.hasSmartTxFees = false;
-                }
+                },
             );
             trySmartFee.then(() => {
                 this.workingUrl = url;
@@ -196,28 +217,32 @@ export class BitcoreBlockchain {
             });
         });
     }
+
     // this creates ANOTHER socket!
     // this is for repeated checks after one failure
     hardStatusCheck(): Promise<boolean> {
         const newOne = new BitcoreBlockchain(this.endpoints, this.socketWorkerFactory);
-        return newOne.socket.promise.then(() => {
-            return newOne.destroy().then(() => true);
-        }, () => {
-            return newOne.destroy().then(() => false);
-        });
+        return newOne.socket.promise.then(
+            () => newOne.destroy().then(() => true),
+            () => newOne.destroy().then(() => false),
+        );
     }
 
     subscribe(inAddresses: Set<string>) {
         if (!(inAddresses instanceof Set)) {
             throw new Error('Input not a set of strings.');
         }
-        for (const address of inAddresses) {
+        let notString = false;
+        inAddresses.forEach((address) => {
             if (typeof address !== 'string') {
-                throw new Error('Input not a set of strings.');
+                notString = true;
             }
+        });
+        if (notString) {
+            throw new Error('Input not a set of strings.');
         }
-        this.socket.promise.then(socket => {
-            const newAddresses = [...inAddresses].filter((a) => !(this.addresses.has(a)));
+        this.socket.promise.then((socket) => {
+            const newAddresses = [...inAddresses].filter(a => !(this.addresses.has(a)));
             newAddresses.forEach(a => this.addresses.add(a));
             if (newAddresses.length !== 0) {
                 for (let i = 0; i < newAddresses.length; i += 20) {
@@ -243,6 +268,7 @@ export class BitcoreBlockchain {
             if (socket != null) {
                 return socket.close();
             }
+            return Promise.resolve();
         });
     }
 
@@ -252,22 +278,22 @@ export class BitcoreBlockchain {
     lookupTransactionsStream(
         addresses: Array<string>,
         start: number,
-        end: number
+        end: number,
     ): Stream<Array<TransactionWithHeight> | Error> {
         const res = Stream.fromPromise(
-            this.socket.promise.then(socket => {
-                return lookupAllAddressHistories(
-                    socket,
-                    addresses,
-                    start,
-                    end
-                ).map((r) => {
-                    if (r instanceof Error) {
-                        return r;
-                    }
-                    return r.items.map((item: BcTransactionInfo): TransactionWithHeight => convertTx(this.zcash, item.tx));
-                });
-            })
+            this.socket.promise.then(socket => lookupAllAddressHistories(
+                socket,
+                addresses,
+                start,
+                end,
+            ).map((r) => {
+                if (r instanceof Error) {
+                    return r;
+                }
+                return r.items.map(
+                    (i: BcTransactionInfo): TransactionWithHeight => convertTx(this.zcash, i.tx),
+                );
+            })),
         );
         return res;
     }
@@ -278,15 +304,16 @@ export class BitcoreBlockchain {
     lookupTransactions(
         addresses: Array<string>,
         start: number,
-        end: number
+        end: number,
     ): Promise<Array<TransactionWithHeight>> {
-        const maybeRes: Promise<Array<TransactionWithHeight> | Error> = this.lookupTransactionsStream(
+        type Ts = Array<TransactionWithHeight> | Error;
+        const maybeRes: Promise<Ts> = this.lookupTransactionsStream(
             addresses,
             start,
-            end
+            end,
         ).reduce((
-            previous: Array<TransactionWithHeight> | Error,
-            current: Array<TransactionWithHeight> | Error
+            previous: Ts,
+            current: Ts,
         ) => {
             if (previous instanceof Error) {
                 return previous;
@@ -307,50 +334,43 @@ export class BitcoreBlockchain {
     lookupTransactionsIds(
         addresses: Array<string>,
         start: number,
-        end: number
+        end: number,
     ): Promise<Array<string>> {
-        return this.socket.promise.then(socket =>
-            Promise.all([
-                lookupTransactionsIdsMempool(socket, addresses, true, start, end),
-                lookupTransactionsIdsMempool(socket, addresses, false, start, end),
-            ])
-        ).then(([a, b]) => a.concat(b));
+        return this.socket.promise.then(socket => Promise.all([
+            lookupTransactionsIdsMempool(socket, addresses, true, start, end),
+            lookupTransactionsIdsMempool(socket, addresses, false, start, end),
+        ])).then(([a, b]) => a.concat(b));
     }
 
     lookupTransaction(hash: string): Promise<TransactionWithHeight> {
-        return this.socket.promise.then(socket =>
-            lookupDetailedTransaction(socket, hash)
-                .then((info: BcDetailedTransaction): TransactionWithHeight => convertTx(this.zcash, info))
-        );
+        return this.socket.promise.then(socket => lookupDetailedTransaction(socket, hash)
+            .then((i: BcDetailedTransaction): TransactionWithHeight => convertTx(this.zcash, i)));
     }
 
     sendTransaction(hex: string): Promise<string> {
-        return this.socket.promise.then(socket =>
-            sendTransaction(socket, hex)
-        );
+        return this.socket.promise.then(socket => sendTransaction(socket, hex));
     }
 
     lookupBlockHash(height: number): Promise<string> {
-        return this.socket.promise.then(socket =>
-            lookupBlockHash(socket, height)
-        );
+        return this.socket.promise.then(socket => lookupBlockHash(socket, height));
     }
 
     lookupSyncStatus(): Promise<BcSyncStatus> {
-        return this.socket.promise.then(socket =>
-            lookupSyncStatus(socket)
-        );
+        return this.socket.promise.then(socket => lookupSyncStatus(socket));
     }
 
     estimateSmartTxFees(blocks: Array<number>, conservative: boolean): Promise<TxFees> {
-        return this.socket.promise.then(socket => {
+        return this.socket.promise.then((socket) => {
             let res: Promise<TxFees> = Promise.resolve({});
-            blocks.forEach(block => {
+            blocks.forEach((block) => {
                 res = res.then((previous: TxFees): TxFees => {
-                    const feePromise = this.hasSmartTxFees ? estimateSmartTxFee(socket, block, conservative) : Promise.resolve(-1);
-                    return feePromise.then(fee => {
-                        previous[block] = fee;
-                        return previous;
+                    const feePromise = this.hasSmartTxFees
+                        ? estimateSmartTxFee(socket, block, conservative)
+                        : Promise.resolve(-1);
+                    return feePromise.then((fee) => {
+                        const previousCopy = previous;
+                        previousCopy[block] = fee;
+                        return previousCopy;
                     });
                 });
             });
@@ -359,18 +379,17 @@ export class BitcoreBlockchain {
     }
 
     estimateTxFees(blocks: Array<number>, skipMissing: boolean): Promise<TxFees> {
-        return this.socket.promise.then(socket => {
+        return this.socket.promise.then((socket) => {
             let res: Promise<TxFees> = Promise.resolve({});
-            blocks.forEach(block => {
-                res = res.then((previous: TxFees): TxFees => {
-                    return estimateTxFee(socket, block).then(fee => {
-                        const add = skipMissing ? fee !== -1 : true;
-                        if (add) {
-                            previous[block] = fee;
-                        }
-                        return previous;
-                    });
-                });
+            blocks.forEach((block) => {
+                res = res.then((p: TxFees): TxFees => estimateTxFee(socket, block).then((fee) => {
+                    const previousCopy = p;
+                    const add = skipMissing ? fee !== -1 : true;
+                    if (add) {
+                        previousCopy[block] = fee;
+                    }
+                    return previousCopy;
+                }));
             });
             return res;
         });
@@ -381,7 +400,7 @@ function lookupAllAddressHistories(
     socket: Socket,
     addresses: Array<string>,
     start: number,
-    end: number
+    end: number,
 ): Stream<(BcHistories & { from: number, to: number }) | Error> {
     return Stream.combineFlat([
         lookupAddressHistoriesMempool(socket, addresses, true, start, end),
@@ -417,12 +436,12 @@ function lookupAddressHistoriesMempool(
             // * 5 is quite aggressive, but in reality, the transactions are either
             // all normal, <500 B (so 5 transactions is probably even maybe too cautious),
             // or are all giant (> 20 kB) so taking by 1 is the best
-            const previousTxLength = previous.items.reduce((total, history) => {
-                return total + history.tx.hex.length / 2;
-            }, 0);
+            const previousTxLength = previous.items.reduce(
+                (total, history) => total + history.tx.hex.length / 2, 0,
+            );
 
             if (previousTxLength <= 5000 && !first) {
-                pageLength = pageLength * 5;
+                pageLength *= 5;
                 pageLength = Math.min(50, pageLength);
             }
 
@@ -438,16 +457,14 @@ function lookupAddressHistoriesMempool(
                 to,
                 mempool,
                 start,
-                end
-            ).then((result) => ({
+                end,
+            ).then(result => ({
                 ...result,
                 from,
                 to,
             }));
         },
-        (state: LookupAddressRes): boolean => {
-            return state.to < state.totalCount;
-        }
+        (state: LookupAddressRes): boolean => state.to < state.totalCount,
     );
 }
 
@@ -456,7 +473,7 @@ function lookupTransactionsIdsMempool(
     addresses: Array<string>,
     mempool: boolean,
     start: number, // recent block height (inclusive)
-    end: number    // older block height (inclusive)
+    end: number, // older block height (inclusive)
 ): Promise<Array<string>> {
     const method = 'getAddressTxids';
     const rangeParam = mempool ? {
@@ -478,11 +495,11 @@ function lookupTransactionsIdsMempool(
 function lookupAddressHistories(
     socket: Socket,
     addresses: Array<string>,
-    from: number,   // pagination from index (inclusive)
-    to: number,     // pagination to index (not inclusive)
+    from: number, // pagination from index (inclusive)
+    to: number, // pagination to index (not inclusive)
     mempool: boolean,
     start: number, // recent block height (inclusive)
-    end: number    // older block height (inclusive)
+    end: number, // older block height (inclusive)
 ): Promise<BcHistories> {
     const method = 'getAddressHistory';
     const rangeParam = mempool ? {
@@ -525,39 +542,49 @@ function sendTransaction(socket: Socket, hex: string): Promise<string> {
 function lookupBlockHash(socket: Socket, height: number): Promise<string> {
     const method = 'getBlockHeader';
     const params = [height];
-    return socket.send({method, params}).then(res => res.hash);
+    return socket.send({ method, params }).then(res => res.hash);
 }
 
 function lookupSyncStatus(socket: Socket): Promise<BcSyncStatus> {
     const method = 'getInfo';
     const params = [];
-    return socket.send({method, params}).then(res => { return {height: res.blocks}; });
+    return socket.send({ method, params }).then(res => ({ height: res.blocks }));
 }
 
-function estimateSmartTxFee(socket: Socket, blocks: number, conservative: boolean): Promise<number> {
+function estimateSmartTxFee(
+    socket: Socket,
+    blocks: number,
+    conservative: boolean,
+): Promise<number> {
     const method = 'estimateSmartFee';
     const params = [blocks, conservative];
-    return socket.send({method, params});
+    return socket.send({ method, params });
 }
 
 function estimateTxFee(socket: Socket, blocks: number): Promise<number> {
     const method = 'estimateFee';
     const params = [blocks];
-    return socket.send({method, params});
+    return socket.send({ method, params });
 }
 
-function onlineStatusCheck(socketWorkerFactory: SocketWorkerFactory, endpoint: string, closeOnInit: Emitter<void>): Promise<?Socket> {
+function onlineStatusCheck(
+    socketWorkerFactory: SocketWorkerFactory,
+    endpoint: string,
+    closeOnInit: Emitter<void>,
+): Promise<?Socket> {
     const socket = new Socket(socketWorkerFactory, endpoint, closeOnInit);
     const conn = new Promise((resolve) => {
-        observeErrors(socket).awaitFirst().then(() => resolve(false));
+        observeErrors(socket).awaitFirst().then(() => {
+            resolve(false);
+        });
         // we try to get the first block
         // if it returns something, it probably works
         Promise.race([
-            new Promise((resolve, reject) => setTimeout(() => reject(), 30000)),
+            new Promise((tresolve, reject) => setTimeout(() => reject(), 30000)),
             lookupBlockHash(socket, 0),
         ]).then(
-            () => resolve(true),
-            () => resolve(false)
+            () => { resolve(true); },
+            () => { resolve(false); },
         );
     });
     return conn.then((res) => {
@@ -571,12 +598,13 @@ function onlineStatusCheck(socketWorkerFactory: SocketWorkerFactory, endpoint: s
 
 function observeErrors(socket: Socket): Stream<Error> {
     const errortypes = ['connect_error', 'reconnect_error', 'error', 'close', 'disconnect'];
+    const streams = errortypes.map((type) => {
+        const subs = socket.observe(type);
+        const cleaned = subs.map((k: mixed) => new Error(`${JSON.stringify(k)} (${type})`));
+        return cleaned;
+    });
 
-    const s = Stream.combineFlat(errortypes.map(type =>
-        socket.observe(type).map((k: mixed) =>
-            new Error(`${JSON.stringify(k)} (${type})`)
-        )
-    ));
+    const s = Stream.combineFlat(streams);
     return s;
 }
 

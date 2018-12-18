@@ -3,7 +3,7 @@ import type {
     Network as BitcoinJsNetwork,
 } from 'bitcoinjs-lib-zcash';
 
-import type {UtxoInfo} from '../discovery';
+import type { UtxoInfo } from '../discovery';
 // -------- Input to algoritm
 // array of Request, which is either
 //    - 'complete' - address + amount
@@ -44,7 +44,7 @@ export type Request = {
 };
 
 export function splitByCompleteness(
-    outputs: Array<OutputRequest>
+    outputs: Array<OutputRequest>,
 ): {
     complete: Array<OutputRequestWithAddress>,
     incomplete: Array<OutputRequest>,
@@ -57,7 +57,7 @@ export function splitByCompleteness(
         incomplete: [],
     };
 
-    outputs.forEach(output => {
+    outputs.forEach((output) => {
         if (output.type === 'complete' || output.type === 'send-max' || output.type === 'opreturn') {
             result.complete.push(output);
         } else {
@@ -69,7 +69,7 @@ export function splitByCompleteness(
 }
 
 export function getMax(
-    outputs: Array<OutputRequest>
+    outputs: Array<OutputRequest>,
 ): {
   exists: boolean,
   id: number,
@@ -89,4 +89,3 @@ export function getMax(
         id, exists,
     };
 }
-

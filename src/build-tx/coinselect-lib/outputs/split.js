@@ -1,7 +1,7 @@
-const utils = require('../utils');
+import * as utils from '../utils';
 
 function filterCoinbase(utxos, minConfCoinbase) {
-    return utxos.filter(function (utxo) {
+    return utxos.filter((utxo) => {
         if (utxo.coinbase) {
             return utxo.confirmations >= minConfCoinbase;
         }
@@ -10,51 +10,64 @@ function filterCoinbase(utxos, minConfCoinbase) {
 }
 
 // split utxos between each output, ignores outputs with .value defined
-module.exports = function split(utxos, outputs, feeRate, options) {
-    const inputLength = options.inputLength;
-    const changeOutputLength = options.changeOutputLength;
-    const explicitDustThreshold = options.dustThreshold;
+export default function split(utxosOrig, outputs, feeRate, options) {
+    const {
+        inputLength,
+        changeOutputLength,
+        dustThreshold: explicitDustThreshold,
+    } = options;
     const coinbase = options.coinbase || 100;
 
-    if (!isFinite(utils.uintOrNaN(feeRate))) return {};
+    if (!Number.isFinite(utils.uintOrNaN(feeRate))) return {};
 
-    utxos = filterCoinbase(utxos, coinbase);
+    const utxos = filterCoinbase(utxosOrig, coinbase);
 
     const bytesAccum = utils.transactionBytes(utxos, outputs);
     const fee = feeRate * bytesAccum;
-    if (outputs.length === 0) return { fee: fee };
+    if (outputs.length === 0) return { fee };
 
     const inAccum = utils.sumOrNaN(utxos);
     const outAccum = utils.sumForgiving(outputs);
     const remaining = inAccum - outAccum - fee;
-    if (!isFinite(remaining) || remaining < 0) return { fee: fee };
+    if (!Number.isFinite(remaining) || remaining < 0) return { fee };
 
-    const unspecified = outputs.reduce(function (a, x) {
-        return a + !isFinite(x.value);
-    }, 0);
+    const unspecified = outputs.reduce((a, x) => a + !Number.isFinite(x.value), 0);
 
-    if (remaining === 0 && unspecified === 0) return utils.finalize(utxos, outputs, feeRate, inputLength, changeOutputLength);
+    if (remaining === 0 && unspecified === 0) {
+        return utils.finalize(utxos, outputs, feeRate, inputLength, changeOutputLength);
+    }
 
-    const splitOutputsCount = outputs.reduce(function (a, x) {
-        return a + !isFinite(x.value);
-    }, 0);
+    const splitOutputsCount = outputs.reduce((a, x) => a + !Number.isFinite(x.value), 0);
     const splitValue = Math.floor(remaining / splitOutputsCount);
 
     // ensure every output is either user defined, or over the threshold
-    if (!outputs.every(function (x) {
-        return x.value !== undefined || (splitValue > utils.dustThreshold(feeRate, inputLength, changeOutputLength, explicitDustThreshold));
-    })) return { fee: fee };
+    if (!outputs.every(x => x.value !== undefined
+        || (
+            splitValue > utils.dustThreshold(
+                feeRate,
+                inputLength,
+                changeOutputLength,
+                explicitDustThreshold,
+            )
+        ))) return { fee };
 
     // assign splitValue to outputs not user defined
-    outputs = outputs.map(function (x) {
+    const outputsSplit = outputs.map((x) => {
         if (x.value !== undefined) return x;
 
         // not user defined, but still copy over any non-value fields
         const y = {};
-        for (const k in x) y[k] = x[k];
+        Object.keys(x).forEach((k) => { y[k] = x[k]; });
         y.value = splitValue;
         return y;
     });
 
-    return utils.finalize(utxos, outputs, feeRate, inputLength, changeOutputLength, explicitDustThreshold);
-};
+    return utils.finalize(
+        utxos,
+        outputsSplit,
+        feeRate,
+        inputLength,
+        changeOutputLength,
+        explicitDustThreshold,
+    );
+}

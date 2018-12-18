@@ -1,6 +1,6 @@
 /* @flow */
 
-import * as transaction from './transaction';
+import * as mtransaction from './transaction';
 import * as coinselect from './coinselect';
 
 // ---------- Output from algorigthm
@@ -24,7 +24,7 @@ export type Result = {
     fee: number,
     feePerByte: number,
     bytes: number,
-    transaction: transaction.Transaction,
+    transaction: mtransaction.Transaction,
 };
 
 export const empty: Result = {
@@ -33,11 +33,9 @@ export const empty: Result = {
 };
 
 export function getNonfinalResult(result: coinselect.CompleteResult): Result {
-    const max = result.result.max;
-    const fee = result.result.fee;
-    const feePerByte = result.result.feePerByte;
-    const bytes = result.result.bytes;
-    const totalSpent = result.result.totalSpent;
+    const {
+        max, fee, feePerByte, bytes, totalSpent,
+    } = result.result;
 
     return {
         type: 'nonfinal',
@@ -51,13 +49,11 @@ export function getNonfinalResult(result: coinselect.CompleteResult): Result {
 
 export function getFinalResult(
     result: coinselect.CompleteResult,
-    transaction: transaction.Transaction
+    transaction: mtransaction.Transaction,
 ): Result {
-    const max = result.result.max;
-    const fee = result.result.fee;
-    const feePerByte = result.result.feePerByte;
-    const bytes = result.result.bytes;
-    const totalSpent = result.result.totalSpent;
+    const {
+        max, fee, feePerByte, bytes, totalSpent,
+    } = result.result;
 
     return {
         type: 'final',
@@ -69,4 +65,3 @@ export function getFinalResult(
         totalSpent,
     };
 }
-

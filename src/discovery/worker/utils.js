@@ -2,9 +2,9 @@
 import type { Input as BitcoinJsInput } from 'bitcoinjs-lib-zcash';
 
 export function getInputId(
-    i: BitcoinJsInput
+    i: BitcoinJsInput,
 ): string {
-    const hash = i.hash;
+    const { hash } = i;
     Array.prototype.reverse.call(hash);
     const res = (hash.toString('hex'));
     Array.prototype.reverse.call(hash);
@@ -17,14 +17,12 @@ export function objectValues<T>(k: {[k: any]: T}): Array<T> {
 
 export function filterNull<T>(k: Array<?T>, throwErrorOnNull: boolean): Array<T> {
     const res: Array<T> = [];
-    for (const t of k) {
+    k.forEach((t) => {
         if (t != null) {
             res.push(t);
-        } else {
-            if (throwErrorOnNull) {
-                throw new Error('Unexpected null');
-            }
+        } else if (throwErrorOnNull) {
+            throw new Error('Unexpected null');
         }
-    }
+    });
     return res;
 }

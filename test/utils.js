@@ -1,13 +1,13 @@
-/* global it:false, describe:false */
+/* global it:false, describe:false, navigator:false, window:false */
 
-import {Emitter, Stream, StreamWithEnding} from '../src/utils/stream.js';
-import {uniqueRandom} from '../src/utils/unique-random.js';
 import assert from 'assert';
+import { Emitter, Stream, StreamWithEnding } from '../src/utils/stream';
+import { uniqueRandom } from '../src/utils/unique-random';
 
-import {MockWorker} from './_mock-worker.js';
-import {WorkerChannel} from '../src/utils/simple-worker-channel.js';
+import { MockWorker } from './_mock-worker';
+import { WorkerChannel } from '../src/utils/simple-worker-channel';
 
-function test_console_warn(fun, test) {
+function testConsoleWarn(fun, test) {
     const original = console.warn;
     let value;
     console.warn = (something) => {
@@ -43,7 +43,7 @@ describe('emitter', () => {
     it('emitting on a destroyed emitter writes warning', () => {
         const emitter = new Emitter();
         emitter.destroy();
-        test_console_warn(() => emitter.emit(), v => /Emitting on a destroyed emitter/.test(v));
+        testConsoleWarn(() => emitter.emit(), v => /Emitting on a destroyed emitter/.test(v));
     });
 
     it('attach+emit works in same tick', () => {
@@ -71,7 +71,7 @@ describe('emitter', () => {
         const emitter = new Emitter();
         let value = 0;
         emitter.attach((v) => {
-            setTimeout(() => { value = value + v; }, 1);
+            setTimeout(() => { value += v; }, 1);
         });
         emitter.emit(3);
         setTimeout(() => {
@@ -84,7 +84,7 @@ describe('emitter', () => {
         const emitter = new Emitter();
         let value = 0;
         const fun = (v) => {
-            setTimeout(() => { value = value + v; }, 1);
+            setTimeout(() => { value += v; }, 1);
         };
         emitter.attach(fun);
         emitter.detach(fun);
@@ -101,7 +101,7 @@ describe('emitter', () => {
         const emitter = new Emitter();
         let value = 0;
         const fun = (v) => {
-            value = value + v;
+            value += v;
         };
         emitter.attach(fun);
         setTimeout(() => {
@@ -126,7 +126,7 @@ describe('emitter', () => {
         const emitter = new Emitter();
         let value = 0;
         emitter.attach((v, detach) => {
-            value = value + v;
+            value += v;
             detach();
             emitter.emit(3);
         });
@@ -141,13 +141,13 @@ describe('emitter', () => {
 
         emitter.attach((v) => {
             setTimeout(() => {
-                value = value + v;
+                value += v;
             }, 10);
         });
 
         emitter.attach((v, detach) => {
             setTimeout(() => {
-                value = value + v;
+                value += v;
                 detach();
             }, 20);
         });
@@ -156,7 +156,7 @@ describe('emitter', () => {
             emitter.emit(3);
         }, 30);
         setTimeout(() => {
-          // first function runs twice, second runs once
+            // first function runs twice, second runs once
             assert.deepEqual(value, 9);
             assert.ok(emitter.listeners instanceof Array);
             assert.deepStrictEqual(emitter.listeners.length, 1);
@@ -167,7 +167,7 @@ describe('emitter', () => {
 
     it('attaching the same fuction twice errors', () => {
         const emitter = new Emitter();
-        const fun = (v) => {};
+        const fun = () => {};
         emitter.attach(fun);
         assert.throws(() => emitter.attach(fun), /Cannot attach the same listener twice/);
     });
@@ -235,7 +235,7 @@ describe('stream', () => {
             const emitter = new Emitter();
             const stream = Stream.fromEmitter(emitter, () => {});
             let value = 0;
-            stream.values.attach((v) => { value = value + v; });
+            stream.values.attach((v) => { value += v; });
             emitter.emit(3);
             emitter.emit(3);
             stream.dispose();
@@ -247,7 +247,7 @@ describe('stream', () => {
             const emitter = new Emitter();
             const stream = Stream.fromEmitter(emitter, () => {});
             let value = 0;
-            stream.values.attach((v) => { value = value + v; });
+            stream.values.attach((v) => { value += v; });
             setTimeout(() => emitter.emit(3), 10);
             setTimeout(() => emitter.emit(3), 20);
             setTimeout(() => stream.dispose(), 30);
@@ -327,7 +327,7 @@ describe('stream', () => {
             const finish = new Emitter();
             const stream = Stream.fromEmitterFinish(emitter, finish, () => {});
             let value = 0;
-            stream.values.attach((v) => { value = value + v; });
+            stream.values.attach((v) => { value += v; });
             emitter.emit(3);
             emitter.emit(3);
             stream.dispose();
@@ -340,7 +340,7 @@ describe('stream', () => {
             const finish = new Emitter();
             const stream = Stream.fromEmitterFinish(emitter, finish, () => {});
             let value = 0;
-            stream.values.attach((v) => { value = value + v; });
+            stream.values.attach((v) => { value += v; });
             setTimeout(() => emitter.emit(3), 10);
             setTimeout(() => emitter.emit(3), 20);
             setTimeout(() => stream.dispose(), 30);
@@ -356,7 +356,7 @@ describe('stream', () => {
             const finish = new Emitter();
             const stream = Stream.fromEmitterFinish(emitter, finish, () => {});
             let value = 0;
-            stream.values.attach((v) => { value = value + v; });
+            stream.values.attach((v) => { value += v; });
             emitter.emit(3);
             emitter.emit(3);
             finish.emit();
@@ -369,7 +369,7 @@ describe('stream', () => {
             const finish = new Emitter();
             const stream = Stream.fromEmitterFinish(emitter, finish, () => {});
             let value = 0;
-            stream.values.attach((v) => { value = value + v; });
+            stream.values.attach((v) => { value += v; });
             setTimeout(() => emitter.emit(3), 10);
             setTimeout(() => emitter.emit(3), 20);
             setTimeout(() => finish.emit(), 30);
@@ -818,26 +818,24 @@ describe('stream', () => {
         });
 
         it('iterates through three states (this tick)', (done) => {
-            const stream = Stream.generate(0, (state) => {
-                return Promise.resolve(state + 1);
-            }, state => state < 3);
+            const stream = Stream.generate(0,
+                state => Promise.resolve(state + 1),
+                state => state < 3);
             const res = [];
-            stream.values.attach((v) => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.values.attach(v => res.push(v));
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [1, 2, 3]);
                 done();
             });
         });
 
         it('iterates through three states (next tick)', (done) => {
-            const stream = Stream.generate(0, (state) => {
-                return new Promise(resolve => {
-                    setTimeout(() => resolve(state + 1), 10);
-                });
-            }, state => state < 3);
+            const stream = Stream.generate(0, state => new Promise((resolve) => {
+                setTimeout(() => resolve(state + 1), 10);
+            }), state => state < 3);
             const res = [];
-            stream.values.attach((v) => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.values.attach(v => res.push(v));
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [1, 2, 3]);
                 done();
             });
@@ -845,12 +843,12 @@ describe('stream', () => {
 
         it('emits error in the generating function and finishes', (done) => {
             const foobar = new Error('Foobar');
-            const stream = Stream.generate(0, (state) => {
+            const stream = Stream.generate(0, () => {
                 throw foobar;
             }, state => state < 3);
             const res = [];
-            stream.values.attach((v) => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.values.attach(v => res.push(v));
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [foobar]);
                 done();
             });
@@ -858,12 +856,12 @@ describe('stream', () => {
 
         it('emits formatted error in the generating function and finishes', (done) => {
             const foobar = 'Foobar';
-            const stream = Stream.generate(0, (state) => {
+            const stream = Stream.generate(0, () => {
                 throw foobar;
             }, state => state < 3);
             const res = [];
-            stream.values.attach((v) => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.values.attach(v => res.push(v));
+            stream.finish.attach(() => {
                 assert.deepEqual(res[0].message, '"Foobar"');
                 done();
             });
@@ -871,11 +869,11 @@ describe('stream', () => {
 
         it('ignores error if disposed first', (done) => {
             const foobar = new Error('Foobar');
-            const stream = Stream.generate(0, (state) => {
+            const stream = Stream.generate(0, () => {
                 throw foobar;
             }, state => state < 3);
             const res = [];
-            stream.values.attach((v) => res.push(v));
+            stream.values.attach(v => res.push(v));
             stream.dispose();
             setTimeout(() => {
                 assert.deepStrictEqual(stream.disposed, true);
@@ -885,13 +883,11 @@ describe('stream', () => {
         });
 
         it('ignores value if disposed first', (done) => {
-            const stream = Stream.generate(0, (state) => {
-                return new Promise(resolve => {
-                    setTimeout(() => resolve(state + 1), 10);
-                });
-            }, state => state < 3);
+            const stream = Stream.generate(0, state => new Promise((resolve) => {
+                setTimeout(() => resolve(state + 1), 10);
+            }), state => state < 3);
             const res = [];
-            stream.values.attach((v) => res.push(v));
+            stream.values.attach(v => res.push(v));
             stream.dispose();
             setTimeout(() => {
                 assert.deepStrictEqual(stream.disposed, true);
@@ -902,14 +898,12 @@ describe('stream', () => {
 
         it('emits promise rejection and finishes', (done) => {
             const foobar = new Error('Foobar');
-            const stream = Stream.generate(0, (state) => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => reject(foobar), 10);
-                });
-            }, state => state < 3);
+            const stream = Stream.generate(0, () => new Promise((resolve, reject) => {
+                setTimeout(() => reject(foobar), 10);
+            }), state => state < 3);
             const res = [];
-            stream.values.attach((v) => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.values.attach(v => res.push(v));
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [foobar]);
                 done();
             });
@@ -917,13 +911,11 @@ describe('stream', () => {
 
         it('ignores promise rejection if disposed first', (done) => {
             const foobar = new Error('Foobar');
-            const stream = Stream.generate(0, (state) => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => reject(foobar), 10);
-                });
-            }, state => state < 3);
+            const stream = Stream.generate(0, () => new Promise((resolve, reject) => {
+                setTimeout(() => reject(foobar), 10);
+            }), state => state < 3);
             const res = [];
-            stream.values.attach((v) => res.push(v));
+            stream.values.attach(v => res.push(v));
             stream.dispose();
             setTimeout(() => {
                 assert.deepEqual(res, []);
@@ -944,8 +936,8 @@ describe('stream', () => {
         it('emits value', (done) => {
             const stream = Stream.simple(0);
             const res = [];
-            stream.values.attach((v) => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.values.attach(v => res.push(v));
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [0]);
                 done();
             });
@@ -954,7 +946,7 @@ describe('stream', () => {
         it('ignores value if disposed first', (done) => {
             const stream = Stream.simple(0);
             const res = [];
-            stream.values.attach((v) => res.push(v));
+            stream.values.attach(v => res.push(v));
             stream.dispose();
             setTimeout(() => {
                 assert.deepStrictEqual(stream.disposed, true);
@@ -1000,7 +992,7 @@ describe('stream', () => {
             const stream = Stream.combineFlat([streamA, streamB]);
             const seen = [];
             let finished = 0;
-            stream.values.attach((v) => seen.push(v));
+            stream.values.attach(v => seen.push(v));
             stream.finish.attach(() => finished++);
             setTimeout(() => emitterB.emit(1), 10);
             setTimeout(() => finishB.emit(), 20);
@@ -1115,7 +1107,7 @@ describe('stream', () => {
         it('resolves with first one on simple', (done) => {
             const stream = Stream.simple(1);
             const promise = stream.awaitFirst();
-            promise.then(r => {
+            promise.then((r) => {
                 assert.deepStrictEqual(r, 1);
                 done();
             });
@@ -1124,7 +1116,7 @@ describe('stream', () => {
         it('rejects on empty', (done) => {
             const stream = Stream.empty();
             const promise = stream.awaitFirst();
-            promise.catch(r => {
+            promise.catch((r) => {
                 assert.deepStrictEqual(r.message, 'No first value.');
                 done();
             });
@@ -1139,7 +1131,7 @@ describe('stream', () => {
             setTimeout(() => {
                 emitter.emit(2);
             }, 20);
-            stream.awaitFirst().then(r => {
+            stream.awaitFirst().then((r) => {
                 assert.deepStrictEqual(r, 1);
                 done();
             });
@@ -1157,7 +1149,7 @@ describe('stream', () => {
             const stream = Stream.simple(1);
             const promise = stream.awaitFinish();
             let finished = false;
-            promise.then(r => {
+            promise.then(() => {
                 finished = true;
             });
             setTimeout(() => {
@@ -1170,7 +1162,7 @@ describe('stream', () => {
             const stream = Stream.empty();
             const promise = stream.awaitFinish();
             let finished = false;
-            promise.then(r => {
+            promise.then(() => {
                 finished = true;
             });
             setTimeout(() => {
@@ -1185,7 +1177,7 @@ describe('stream', () => {
             const promise = stream.awaitFinish();
             let finished = false;
             // this promise hangs forever
-            promise.then(r => {
+            promise.then(() => {
                 finished = true;
             });
             setTimeout(() => {
@@ -1285,13 +1277,11 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(k * 2);
-                    }, k);
-                });
-            });
+            const stream = ostream.mapPromise(k => new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(k * 2);
+                }, k);
+            }));
             const seen = [];
             stream.values.attach((v) => { seen.push(v); });
             setTimeout(() => emitter.emit(30), 10);
@@ -1308,13 +1298,11 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(k * 2);
-                    }, k);
-                });
-            });
+            const stream = ostream.mapPromise(k => new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(k * 2);
+                }, k);
+            }));
             const seen = [];
             stream.values.attach((v) => { seen.push(v); });
             setTimeout(() => emitter.emit(10), 10);
@@ -1345,11 +1333,11 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => {
+            const stream = ostream.mapPromise((k) => {
                 if (k === 20) {
                     throw new Error('40');
                 }
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     setTimeout(() => {
                         resolve(k * 2);
                     }, k);
@@ -1372,11 +1360,11 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => {
+            const stream = ostream.mapPromise((k) => {
                 if (k === 20) {
                     throw new Error('40');
                 }
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     setTimeout(() => {
                         resolve(k * 2);
                     }, k);
@@ -1399,17 +1387,15 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        if (k === 20) {
-                            reject(new Error('40'));
-                        } else {
-                            resolve(k * 2);
-                        }
-                    }, k);
-                });
-            });
+            const stream = ostream.mapPromise(k => new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (k === 20) {
+                        reject(new Error('40'));
+                    } else {
+                        resolve(k * 2);
+                    }
+                }, k);
+            }));
             const seen = [];
             stream.values.attach((v) => { seen.push(v); });
             setTimeout(() => emitter.emit(30), 10);
@@ -1428,17 +1414,15 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        if (k === 20) {
-                            reject(new Error('40'));
-                        } else {
-                            resolve(k * 2);
-                        }
-                    }, k);
-                });
-            });
+            const stream = ostream.mapPromise(k => new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (k === 20) {
+                        reject(new Error('40'));
+                    } else {
+                        resolve(k * 2);
+                    }
+                }, k);
+            }));
 
             const seen = [];
             stream.values.attach((v) => { seen.push(v); });
@@ -1458,13 +1442,11 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        resolve(k * 2);
-                    }, 30);
-                });
-            });
+            const stream = ostream.mapPromise(k => new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(k * 2);
+                }, 30);
+            }));
             const seen = [];
             stream.values.attach((v) => { seen.push(v); });
             setTimeout(() => emitter.emit(30), 1);
@@ -1489,13 +1471,11 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        reject(new Error('foo'));
-                    }, 30);
-                });
-            });
+            const stream = ostream.mapPromise(() => new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    reject(new Error('foo'));
+                }, 30);
+            }));
             const seen = [];
             stream.values.attach((v) => { seen.push(v); });
             setTimeout(() => emitter.emit(30), 1);
@@ -1520,13 +1500,11 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        reject(new Error('foo'));
-                    }, 30);
-                });
-            });
+            const stream = ostream.mapPromise(() => new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    reject(new Error('foo'));
+                }, 30);
+            }));
             const seen = [];
             stream.values.attach((v) => { seen.push(v); });
             setTimeout(() => emitter.emit(30), 1);
@@ -1620,7 +1598,7 @@ describe('stream', () => {
     describe('reduce', () => {
         it('creates a promise', () => {
             const stream = Stream.simple(1);
-            const promise = stream.reduce(() => {}, 0);
+            const promise = stream.reduce(() => null, 0);
             assert.ok(promise instanceof Promise);
         });
 
@@ -1632,10 +1610,8 @@ describe('stream', () => {
             setTimeout(() => emitter.emit(40), 20);
             setTimeout(() => emitter.emit(50), 30);
             setTimeout(() => finish.emit(), 40);
-            const res = stream.reduce((prev, value) => {
-                return [...prev, value];
-            }, []);
-            res.then(v => {
+            const res = stream.reduce((prev, value) => [...prev, value], []);
+            res.then((v) => {
                 assert.deepStrictEqual(v, [30, 40, 50]);
                 done();
             });
@@ -1648,11 +1624,9 @@ describe('stream', () => {
             setTimeout(() => emitter.emit(30), 10);
             setTimeout(() => emitter.emit(40), 20);
             setTimeout(() => emitter.emit(50), 30);
-            const res = stream.reduce((prev, value) => {
-                return [...prev, value];
-            }, []);
+            const res = stream.reduce((prev, value) => [...prev, value], []);
             let resolved = false;
-            res.then(v => {
+            res.then(() => {
                 resolved = true;
             });
             setTimeout(() => {
@@ -1754,7 +1728,7 @@ describe('stream with ending', () => {
             const error = new Error('FOO');
             let rejected = false;
             let resolved = false;
-            streame.ending.then((v) => { resolved = v; }, e => { rejected = e; });
+            streame.ending.then((v) => { resolved = v; }, (e) => { rejected = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(rejected, false);
                 assert.deepStrictEqual(resolved, false);
@@ -1868,7 +1842,7 @@ describe('stream with ending', () => {
             const error = new Error('FOO');
             let rejected = false;
             let resolved = false;
-            streame.ending.then((v) => { resolved = v; }, e => { rejected = e; });
+            streame.ending.then((v) => { resolved = v; }, (e) => { rejected = e; });
             setTimeout(() => {
                 assert.deepStrictEqual(rejected, false);
                 assert.deepStrictEqual(resolved, false);
@@ -1910,13 +1884,20 @@ describe('stream with ending', () => {
 
 // this mocks all the window and process properties
 // so it works in both karma and in mocha or whatever we use
-function mockProcessNavigatorOffset(processVersion, navigatorLanguage, navigatorLanguages, navigatorUserAgent, offset, fun) {
+function mockProcessNavigatorOffset(
+    processVersion,
+    navigatorLanguage,
+    navigatorLanguages,
+    navigatorUserAgent,
+    offset,
+    fun,
+) {
     const originalOffset = Date.prototype.getTimezoneOffset;
     let funAfter;
     if (typeof global.process !== 'undefined') {
         // node
         const originalProcessVersion = global.process.version;
-        Object.defineProperty(global.process, 'version', {value: processVersion, configurable: true});
+        Object.defineProperty(global.process, 'version', { value: processVersion, configurable: true });
 
         global.process = process;
         global.navigator = {
@@ -1928,27 +1909,27 @@ function mockProcessNavigatorOffset(processVersion, navigatorLanguage, navigator
         // eslint-disable-next-line no-extend-native
         Date.prototype.getTimezoneOffset = () => offset;
         funAfter = () => {
-            Object.defineProperty(global.process, 'version', {value: originalProcessVersion, configurable: true});
+            Object.defineProperty(global.process, 'version', { value: originalProcessVersion, configurable: true });
             global.navigator = undefined;
             // eslint-disable-next-line no-extend-native
             Date.prototype.getTimezoneOffset = originalOffset;
         };
     } else {
         // we are in karma, it injects its own process, but without version
-        Object.defineProperty(process, 'version', {value: processVersion, configurable: true});
+        Object.defineProperty(process, 'version', { value: processVersion, configurable: true });
         const originalNavigatorLanguage = navigator.language;
         const originalNavigatorLanguages = navigator.languages;
         const originalNavigatorUserAgent = navigator.userAgent;
-        Object.defineProperty(window.navigator, 'language', {value: navigatorLanguage, configurable: true});
-        Object.defineProperty(window.navigator, 'languages', {value: navigatorLanguages, configurable: true});
-        Object.defineProperty(window.navigator, 'userAgent', {value: navigatorUserAgent, configurable: true});
+        Object.defineProperty(window.navigator, 'language', { value: navigatorLanguage, configurable: true });
+        Object.defineProperty(window.navigator, 'languages', { value: navigatorLanguages, configurable: true });
+        Object.defineProperty(window.navigator, 'userAgent', { value: navigatorUserAgent, configurable: true });
         // eslint-disable-next-line no-extend-native
         Date.prototype.getTimezoneOffset = () => offset;
         funAfter = () => {
-            Object.defineProperty(process, 'version', {value: undefined, configurable: true});
-            Object.defineProperty(window.navigator, 'language', {value: originalNavigatorLanguage, configurable: true});
-            Object.defineProperty(window.navigator, 'languages', {value: originalNavigatorLanguages, configurable: true});
-            Object.defineProperty(window.navigator, 'userAgent', {value: originalNavigatorUserAgent, configurable: true});
+            Object.defineProperty(process, 'version', { value: undefined, configurable: true });
+            Object.defineProperty(window.navigator, 'language', { value: originalNavigatorLanguage, configurable: true });
+            Object.defineProperty(window.navigator, 'languages', { value: originalNavigatorLanguages, configurable: true });
+            Object.defineProperty(window.navigator, 'userAgent', { value: originalNavigatorUserAgent, configurable: true });
             // eslint-disable-next-line no-extend-native
             Date.prototype.getTimezoneOffset = originalOffset;
         };
@@ -1973,7 +1954,8 @@ describe('random', () => {
                 assert.deepStrictEqual(uniqueRandom(3), 1);
                 assert.deepStrictEqual(uniqueRandom(300), 31);
                 assert.deepStrictEqual(uniqueRandom(300), 31);
-            });
+            },
+        );
     });
 
     it('works in browser (language)', () => {
@@ -1988,7 +1970,8 @@ describe('random', () => {
                 assert.deepStrictEqual(uniqueRandom(3), 2);
                 assert.deepStrictEqual(uniqueRandom(300), 89);
                 assert.deepStrictEqual(uniqueRandom(300), 89);
-            });
+            },
+        );
     });
     it('works in browser (languages)', () => {
         mockProcessNavigatorOffset(
@@ -2002,7 +1985,8 @@ describe('random', () => {
                 assert.deepStrictEqual(uniqueRandom(3), 2);
                 assert.deepStrictEqual(uniqueRandom(300), 23);
                 assert.deepStrictEqual(uniqueRandom(300), 23);
-            });
+            },
+        );
     });
 });
 
@@ -2022,8 +2006,8 @@ describe('simple worker channel', () => {
             },
         }], done, false);
         const channel = new WorkerChannel(mockWorker);
-        channel.postMessage({foo: 'bar'}).then(res => {
-            assert.deepStrictEqual(res, {bar: 'baz'});
+        channel.postMessage({ foo: 'bar' }).then((res) => {
+            assert.deepStrictEqual(res, { bar: 'baz' });
             done();
         });
     });
@@ -2055,11 +2039,11 @@ describe('simple worker channel', () => {
             },
         }], done, false);
         const channel = new WorkerChannel(mockWorker);
-        const zero = channel.postMessage({foo: 'bar'});
-        channel.postMessage({foo: 'bar'}).then(res => {
-            assert.deepStrictEqual(res, {bar: 'one'});
-            zero.then(res => {
-                assert.deepStrictEqual(res, {bar: 'zero'});
+        const zero = channel.postMessage({ foo: 'bar' });
+        channel.postMessage({ foo: 'bar' }).then((res) => {
+            assert.deepStrictEqual(res, { bar: 'one' });
+            zero.then((rres) => {
+                assert.deepStrictEqual(rres, { bar: 'zero' });
                 done();
             });
         });
@@ -2093,8 +2077,8 @@ describe('simple worker channel', () => {
         };
 
         const channel = new WorkerChannel(mockWorker);
-        channel.postMessage({foo: 'bar'}).then(res => {
-            assert.deepStrictEqual(res, {bar: 'baz'});
+        channel.postMessage({ foo: 'bar' }).then((res) => {
+            assert.deepStrictEqual(res, { bar: 'baz' });
             console.warn = original;
             assert.deepStrictEqual(value.message, 'Strange incoming message');
             done();

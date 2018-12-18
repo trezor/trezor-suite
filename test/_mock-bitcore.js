@@ -4,7 +4,9 @@
 // Note - this mocks the Bitcore OBJECT, not Bitcore SERVER
 
 import { Stream, Emitter } from '../src/utils/stream';
-import type { Blockchain, SyncStatus, TransactionWithHeight, TxFees } from '../src/bitcore';
+import type {
+    Blockchain, SyncStatus, TransactionWithHeight, TxFees,
+} from '../src/bitcore';
 
 const TICK_MS = 50;
 
@@ -53,22 +55,30 @@ type Spec = {
 
 export class MockBitcore {
     errorsEmitter: Emitter<Error> = new Emitter();
+
     errors: Stream<Error> = Stream.fromEmitter(this.errorsEmitter, () => {});
 
     notificationsEmitter: Emitter<TransactionWithHeight> = new Emitter();
-    notifications: Stream<TransactionWithHeight> = Stream.fromEmitter(this.notificationsEmitter, () => {});
+
+    notifications: Stream<TransactionWithHeight> = Stream
+        .fromEmitter(this.notificationsEmitter, () => {});
 
     blocksEmitter: Emitter<void> = new Emitter();
+
     blocks: Stream<void> = Stream.fromEmitter(this.blocksEmitter, () => {});
 
     workingUrl: string = 'url';
 
     specLock: boolean = false;
+
     spec: Array<Spec>;
 
     doneError: (f: Error) => any;
+
     deepEqual: (a: any, b: any) => any;
+
     errored: boolean = false;
+
     constructor(spec: Array<Spec>, doneError: (f: Error) => any) {
         this.spec = spec;
         this.doneError = (f: Error) => {
@@ -85,7 +95,7 @@ export class MockBitcore {
             const sspec = this.spec[0];
             if (sspec.type === 'emit') {
                 this.specLock = true;
-                const spec: EmitterSpec = sspec.spec;
+                const { spec } = sspec;
                 this.spec.shift();
                 setTimeout(() => {
                     this.specLock = false;
@@ -106,25 +116,24 @@ export class MockBitcore {
 
     getCallSpec(type: string): CallSpec {
         if (this.spec.length === 0) {
-            this.doneError(new Error('Call spec not defined, wanted ' + type));
-            throw new Error('Call spec not defined, wanted ' + type);
+            this.doneError(new Error(`Call spec not defined, wanted ${type}`));
+            throw new Error(`Call spec not defined, wanted ${type}`);
         }
         if (this.specLock) {
-            this.doneError(new Error('call spec out of order, is waiting but wanted ' + type));
-            throw new Error('call spec out of order, is waiting but wanted ' + type);
+            this.doneError(new Error(`call spec out of order, is waiting but wanted ${type}`));
+            throw new Error(`call spec out of order, is waiting but wanted ${type}`);
         }
         const sspec = this.spec[0];
         if (sspec.type !== 'call') {
-            this.doneError(new Error('call spec out of order, is emit but wanted ' + type));
-            throw new Error('call spec out of order, is emit but wanted ' + type);
+            this.doneError(new Error(`call spec out of order, is emit but wanted ${type}`));
+            throw new Error(`call spec out of order, is emit but wanted ${type}`);
         }
-        const {spec} = sspec;
+        const { spec } = sspec;
         this.spec.shift();
         if (spec.type !== type) {
-            this.doneError(new Error('call spec out of order, is ' + spec.type + ' but wanted ' + type));
-            throw new Error('call spec out of order, is ' + spec.type + ' but wanted ' + type);
+            this.doneError(new Error(`call spec out of order, is ${spec.type} but wanted ${type}`));
+            throw new Error(`call spec out of order, is ${spec.type} but wanted ${type}`);
         }
-        console.log('Succesful call spec type', type);
         return spec;
     }
 
@@ -147,7 +156,7 @@ export class MockBitcore {
     lookupTransactionsStream(
         addresses: Array<string>,
         start: number,
-        end: number
+        end: number,
     ): Stream<Array<TransactionWithHeight> | Error> {
         const spec = this.getCallSpec('lookupTransactionsStream');
         if (spec.type !== 'lookupTransactionsStream') {
@@ -174,8 +183,7 @@ export class MockBitcore {
             throw new Error();
         }
 
-        const result: Array<TransactionWithHeight> | Error =
-            typeof spec.result === 'string' ? new Error(spec.result) : spec.result;
+        const result: Array<TransactionWithHeight> | Error = typeof spec.result === 'string' ? new Error(spec.result) : spec.result;
 
         const emitter: Emitter<Array<TransactionWithHeight> | Error> = new Emitter();
         const finisher: Emitter<void> = new Emitter();
@@ -193,7 +201,7 @@ export class MockBitcore {
     lookupTransactionsIds(
         addresses: Array<string>,
         start: number,
-        end: number
+        end: number,
     ): Promise<Array<string>> {
         const spec = this.getCallSpec('lookupTransactionsIds');
         if (spec.type !== 'lookupTransactionsIds') {
@@ -223,13 +231,12 @@ export class MockBitcore {
         if (typeof spec.result === 'string') {
             this.emit();
             return Promise.reject(new Error(spec.result));
-        } else {
-            const result_: Array<string> = spec.result;
-            return new Promise((resolve) => setTimeout(() => {
-                this.emit();
-                resolve(result_);
-            }, TICK_MS));
         }
+        const result_: Array<string> = spec.result;
+        return new Promise(resolve => setTimeout(() => {
+            this.emit();
+            resolve(result_);
+        }, TICK_MS));
     }
 
     lookupBlockHash(height: number): Promise<string> {
@@ -247,12 +254,11 @@ export class MockBitcore {
         if (spec.resultError) {
             this.emit();
             return Promise.reject(new Error(spec.result));
-        } else {
-            return new Promise((resolve) => setTimeout(() => {
-                this.emit();
-                resolve(spec.result);
-            }, TICK_MS));
         }
+        return new Promise(resolve => setTimeout(() => {
+            this.emit();
+            resolve(spec.result);
+        }, TICK_MS));
     }
 
     lookupSyncStatus(): Promise<SyncStatus> {
@@ -264,29 +270,32 @@ export class MockBitcore {
         if (typeof spec.result === 'string') {
             this.emit();
             return Promise.reject(new Error(spec.result));
-        } else {
-            const result_: SyncStatus = spec.result;
-            return new Promise((resolve) => setTimeout(() => {
-                this.emit();
-                resolve(result_);
-            }, TICK_MS));
         }
+        const result_: SyncStatus = spec.result;
+        return new Promise(resolve => setTimeout(() => {
+            this.emit();
+            resolve(result_);
+        }, TICK_MS));
     }
 
+    // eslint-disable-next-line class-methods-use-this,no-unused-vars
     sendTransaction(hex: string): Promise<string> {
-        return Promise.reject('Not mocked');
+        return Promise.reject(new Error('Not mocked'));
     }
 
+    // eslint-disable-next-line class-methods-use-this
     hardStatusCheck(): Promise<boolean> {
-        return Promise.reject('Not mocked');
+        return Promise.reject(new Error('Not mocked'));
     }
 
+    // eslint-disable-next-line class-methods-use-this,no-unused-vars
     lookupTransaction(hash: string): Promise<TransactionWithHeight> {
-        return Promise.reject('Not mocked');
+        return Promise.reject(new Error('Not mocked'));
     }
 
+    // eslint-disable-next-line class-methods-use-this,no-unused-vars
     estimateTxFees(blocks: Array<number>, skipMissing: boolean): Promise<TxFees> {
-        return Promise.reject('Not mocked');
+        return Promise.reject(new Error('Not mocked'));
     }
 }
 
@@ -294,12 +303,13 @@ function arrayEqSet<X>(array: Array<X>, set: Set<X>) {
     if (array.length !== set.size) {
         return false;
     }
-    for (const a of array) {
+    let is = true;
+    array.forEach((a) => {
         if (!set.has(a)) {
-            return false;
+            is = false;
         }
-    }
-    return true;
+    });
+    return is;
 }
 
 // eslint-disable-next-line  no-unused-vars

@@ -1,74 +1,110 @@
 // baseline estimates, used to improve performance
-const TX_EMPTY_SIZE = 4 + 1 + 1 + 4 + 1; // 8 bytes start, 2 times 1 byte count in/out, 1 extra byte for segwit start
+const TX_EMPTY_SIZE = 4 + 1 + 1 + 4 + 1;
+// 8 bytes start, 2 times 1 byte count in/out, 1 extra byte for segwit start
+
 const TX_INPUT_BASE = 32 + 4 + 1 + 4;
 const TX_OUTPUT_BASE = 8 + 1;
 
-function inputBytes(input) {
+export function inputBytes(input) {
     if (input.script.length == null) {
         throw new Error('Null script length');
     }
     return TX_INPUT_BASE + input.script.length;
 }
 
-function outputBytes(output) {
+export function outputBytes(output) {
     if (output.script.length == null) {
         throw new Error('Null script length');
     }
     return TX_OUTPUT_BASE + output.script.length;
 }
 
-function dustThreshold(feeRate, inputLength, outputLength, explicitDustThreshold) {
-    const size = transactionBytes([{script: {length: inputLength}}], [{script: {length: outputLength}}]);
+export function dustThreshold(
+    feeRate,
+    inputLength,
+    outputLength,
+    explicitDustThreshold,
+) {
+    const size = transactionBytes([
+        {
+            script: {
+                length: inputLength,
+            },
+        },
+    ], [
+        {
+            script: {
+                length: outputLength,
+            },
+        },
+    ]);
     const price = size * feeRate;
     const threshold = Math.max(explicitDustThreshold, price);
     return threshold;
 }
 
-function transactionBytes(inputs, outputs) {
-    return TX_EMPTY_SIZE +
-    inputs.reduce(function (a, x) { return a + inputBytes(x); }, 0) +
-    outputs.reduce(function (a, x) { return a + outputBytes(x); }, 0);
+export function transactionBytes(inputs, outputs) {
+    return TX_EMPTY_SIZE
+    + inputs.reduce((a, x) => a + inputBytes(x), 0)
+    + outputs.reduce((a, x) => a + outputBytes(x), 0);
 }
 
-function uintOrNaN(v) {
+export function uintOrNaN(v) {
     if (typeof v !== 'number') return NaN;
-    if (!isFinite(v)) return NaN;
+    if (!Number.isFinite(v)) return NaN;
     if (Math.floor(v) !== v) return NaN;
     if (v < 0) return NaN;
     return v;
 }
 
-function sumForgiving(range) {
-    return range.reduce(function (a, x) { return a + (isFinite(x.value) ? x.value : 0); }, 0);
+export function sumForgiving(range) {
+    return range.reduce((a, x) => a + (Number.isFinite(x.value) ? x.value : 0), 0);
 }
 
-function sumOrNaN(range) {
-    return range.reduce(function (a, x) { return a + uintOrNaN(x.value); }, 0);
+export function sumOrNaN(range) {
+    return range.reduce((a, x) => a + uintOrNaN(x.value), 0);
 }
 
-function finalize(inputs, outputs, feeRate, inputLength, changeOutputLength, explicitDustThreshold) {
+export function finalize(
+    inputs,
+    outputsO,
+    feeRate,
+    inputLength,
+    changeOutputLength,
+    explicitDustThreshold,
+) {
+    let outputs = outputsO;
     const bytesAccum = transactionBytes(inputs, outputs);
-    const blankOutputBytes = outputBytes({script: {length: changeOutputLength}});
+    const blankOutputBytes = outputBytes({ script: { length: changeOutputLength } });
     const feeAfterExtraOutput = feeRate * (bytesAccum + blankOutputBytes);
     const remainderAfterExtraOutput = sumOrNaN(inputs) - (sumOrNaN(outputs) + feeAfterExtraOutput);
 
     // is it worth a change output?
-    if (remainderAfterExtraOutput > dustThreshold(feeRate, inputLength, changeOutputLength, explicitDustThreshold)) {
-        outputs = outputs.concat({ value: remainderAfterExtraOutput, script: {length: changeOutputLength} });
+    if (remainderAfterExtraOutput > dustThreshold(
+        feeRate,
+        inputLength,
+        changeOutputLength,
+        explicitDustThreshold,
+    )) {
+        outputs = outputs.concat({
+            value: remainderAfterExtraOutput,
+            script: {
+                length: changeOutputLength,
+            },
+        });
     }
 
     const fee = sumOrNaN(inputs) - sumOrNaN(outputs);
-    if (!isFinite(fee)) return { fee: feeRate * bytesAccum };
-
+    if (!Number.isFinite(fee)) return { fee: feeRate * bytesAccum };
     return {
-        inputs: inputs,
-        outputs: outputs,
-        fee: fee,
+        inputs,
+        outputs,
+        fee,
     };
 }
 
-function anyOf(algorithms) {
-    return function (utxos, outputs, feeRate, inputLength, outputLength) {
+export function anyOf(algorithms) {
+    return (utxos, outputs, feeRate, inputLength, outputLength) => {
         let result = { fee: Infinity };
 
         for (let i = 0; i < algorithms.length; i++) {
@@ -83,19 +119,6 @@ function anyOf(algorithms) {
     };
 }
 
-function utxoScore(x, feeRate) {
+export function utxoScore(x, feeRate) {
     return x.value - (feeRate * inputBytes(x));
 }
-
-module.exports = {
-    dustThreshold: dustThreshold,
-    finalize: finalize,
-    inputBytes: inputBytes,
-    outputBytes: outputBytes,
-    sumOrNaN: sumOrNaN,
-    sumForgiving: sumForgiving,
-    transactionBytes: transactionBytes,
-    uintOrNaN: uintOrNaN,
-    anyOf: anyOf,
-    utxoScore: utxoScore,
-};

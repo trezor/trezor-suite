@@ -2,7 +2,7 @@
 // TODO import Point from 'ecurve'
 // For now, I just copy-paste the definition from there
 
-// ---------- copypasta start ---- 
+// ---------- copypasta start ----
 declare class $npm$bigi$BigInteger {
   constructor(input: string|Array<number>, base?: number): void;
   static (input: string|Array<number>, base?: number): $npm$bigi$BigInteger;
@@ -68,7 +68,7 @@ declare class $npm$ecurve$Point {
     y: $npm$bigi$BigInteger,
     z: $npm$bigi$BigInteger
   ): void;
-  
+
   x: $npm$bigi$BigInteger;
   y: $npm$bigi$BigInteger;
   z: $npm$bigi$BigInteger;
@@ -87,22 +87,20 @@ declare class $npm$ecurve$Point {
 
   static decodeFrom(curve: $npm$ecurve$Curve, buffer: Buffer): $npm$ecurve$Point;
   getEncoded(compressed: boolean): Buffer;
-  
+
   toString(): string;
 }
 
 declare module 'ecurve' {
-  
   declare var Point: typeof $npm$ecurve$Point;
-  
+
   declare var Curve: typeof $npm$ecurve$Curve;
-  
+
   declare function getCurveByName(name: string): ?Curve;
 }
-// ---------- copypasta end ---- 
+// ---------- copypasta end ----
 
 declare module 'bitcoinjs-lib-zcash' {
-
     declare type Network = {
         messagePrefix: string;
         bip32: {
@@ -197,7 +195,7 @@ declare module 'bitcoinjs-lib-zcash' {
         hash160(buffer: Buffer): Buffer;
         ripemd160(buffer: Buffer): Buffer;
     }
-    
+
     declare class ECPair {
         d: ?$npm$bigi$BigInteger;
         Q: $npm$ecurve$Point;
@@ -291,7 +289,7 @@ declare module 'bitcoinjs-lib-zcash' {
         build(): Transaction;
         buildIncomplete(): Transaction;
         sign(index: number, keyPair: ECPair, redeemScript: Buffer, hashType: number): void;
-        
+
         static fromTransaction(transaction: Transaction, network: ?Network): TransactionBuilder;
 
     }
@@ -336,7 +334,7 @@ declare module 'bitcoinjs-lib-zcash' {
       toHex(headersOnly?: boolean): string;
       calculateTarget(bits: number): Buffer;
       checkProofOfWork(): boolean;
-      
+
       static fromBuffer(buffer: Buffer): Block;
       static fromHex(hex: string): Block;
     }
