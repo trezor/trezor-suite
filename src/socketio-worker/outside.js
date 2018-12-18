@@ -248,7 +248,8 @@ class SocketWorkerHandler {
             },
         )
             .filter(message => (message.type === 'emit' && message.event === event))
-            .map(message => message.data);
+            // $FlowIssue
+            .map((message: SocketWorkerOutMessage) => message.data);
         return r;
     }
 

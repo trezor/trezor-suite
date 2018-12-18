@@ -193,7 +193,7 @@ export class WorkerDiscovery {
                         );
                         const discovery: StreamWithEnding<AccountLoadStatus, AccountInfo> = out.discovery(currentState, xpub, segwit === 'p2sh', gap, timeOffset);
 
-                        const { ending }: Promise<AccountInfo> = discovery;
+                        const { ending } = discovery;
                         const pres: Promise<AccountInfo> = ending.then((eres) => {
                             currentState = eres;
                             return eres;

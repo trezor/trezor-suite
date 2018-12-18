@@ -198,7 +198,7 @@ export class GetChainTransactions {
                 try {
                     this.handleTransactions(value, first);
                 } catch (error) {
-                    this.dfd.reject(`Error transaction parsing: ${error.message}` || error.toString());
+                    this.dfd.reject(new Error(`Error transaction parsing: ${error.message || error.toString()}`));
                     stream.dispose();
                 }
             });

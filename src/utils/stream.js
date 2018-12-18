@@ -276,7 +276,7 @@ export class Stream<T> {
         });
     }
 
-    static simple<U>(value: U): Stream<T> {
+    static simple<U>(value: U): Stream<U> {
         const values: Emitter<U> = new Emitter();
         const finish: Emitter<void> = new Emitter();
         const stream = Stream.fromEmitterFinish(values, finish, () => {});

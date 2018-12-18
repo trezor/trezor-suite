@@ -19,11 +19,11 @@ function discoverAccount(enableWebassembly) {
         fixtures.forEach((fixtureOrig) => {
             const fixture = JSON.parse(JSON.stringify(fixtureOrig));
             it(fixture.name, function f(doneOrig) {
-                if (typeof jest !== "undefined") {
-                    console.warn(fixture.name)
+                if (typeof jest !== 'undefined') {
+                    console.warn(fixture.name);
                     jest.setTimeout(30 * 1000);
                 } else {
-                    this.setTimeout(30 * 1000);
+                    this.timeout(30 * 1000);
                 }
                 let wasmOld;
                 if (!enableWebassembly && hasWasm) {
@@ -62,7 +62,7 @@ function discoverAccount(enableWebassembly) {
                         if (JSON.stringify(res) !== JSON.stringify(fixture.end)) {
                             console.log('Discovery result', JSON.stringify(res, null, 2));
                             console.log('Fixture', JSON.stringify(fixture.end, null, 2));
-                            assert.deepStrictEqual(res, fixture.end)
+                            assert.deepStrictEqual(res, fixture.end);
                             done(new Error('Result not the same'));
                         } else if (blockchain.spec.length > 0) {
                             console.log(JSON.stringify(blockchain.spec));
