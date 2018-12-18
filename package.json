@@ -52,7 +52,6 @@
   "dependencies": {
     "bchaddrjs": "^0.2.1",
     "bitcoinjs-lib-zcash": "^3.5.2",
-    "jest": "^23.4.1",
     "queue": "^4.4.2",
     "socket.io-client": "^1.7.3",
     "whatwg-fetch": "^0.11.0"
@@ -65,7 +64,9 @@
     "@babel/plugin-transform-flow-strip-types": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
     "@babel/register": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^8.2.6",
+    "babel-jest": "^23.6.0",
     "babel-plugin-istanbul": "^5.1.0",
     "babelify": "^10.0.0",
     "browserify": "^14.0.0",
@@ -81,6 +82,7 @@
     "exorcist": "0.4.0",
     "flow-bin": "0.59.0",
     "isomorphic-fetch": "^2.2.1",
+    "jest": "^23.4.1",
     "karma": "^1.6.0",
     "karma-browserify": "^5.1.1",
     "karma-chai": "^0.1.0",

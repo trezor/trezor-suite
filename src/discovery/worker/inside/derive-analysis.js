@@ -248,7 +248,7 @@ function getTargetsFromTransaction(
         currentOutputs.forEach((oinfo, i) => {
             const { address, value: ovalue } = oinfo;
             if (filterFunction(address)) {
-                res.push({ address, ovalue, i });
+                res.push({ address, value: ovalue, i });
             }
         });
         return res;

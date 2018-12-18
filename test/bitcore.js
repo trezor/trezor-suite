@@ -427,7 +427,12 @@ describe('bitcore', () => {
         });
 
         it('interprets hanging on getBlock for 30s as non-working', function r(done) {
-            this.timeout(60 * 1000);
+            if (typeof jest !== "undefined") {
+                console.warn(fixture.name)
+                jest.setTimeout(60 * 1000);
+            } else {
+                this.setTimeout(60 * 1000);
+            }
             console.info('(note - this test takes 50s)');
             const specsA = [{
                 type: 'in',
@@ -2761,3 +2766,4 @@ describe('bitcore', () => {
         });
     });
 });
+

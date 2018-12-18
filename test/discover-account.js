@@ -1,5 +1,6 @@
 /* global it:false, describe:false, WebAssembly:true */
 
+import assert from 'assert';
 import { MockBitcore } from './_mock-bitcore';
 import { WorkerDiscovery } from '../src/discovery/worker-discovery';
 import fixtures from './fixtures/discover-account.json';
@@ -18,7 +19,12 @@ function discoverAccount(enableWebassembly) {
         fixtures.forEach((fixtureOrig) => {
             const fixture = JSON.parse(JSON.stringify(fixtureOrig));
             it(fixture.name, function f(doneOrig) {
-                this.timeout(30 * 1000);
+                if (typeof jest !== "undefined") {
+                    console.warn(fixture.name)
+                    jest.setTimeout(30 * 1000);
+                } else {
+                    this.setTimeout(30 * 1000);
+                }
                 let wasmOld;
                 if (!enableWebassembly && hasWasm) {
                     wasmOld = WebAssembly;
@@ -56,6 +62,7 @@ function discoverAccount(enableWebassembly) {
                         if (JSON.stringify(res) !== JSON.stringify(fixture.end)) {
                             console.log('Discovery result', JSON.stringify(res, null, 2));
                             console.log('Fixture', JSON.stringify(fixture.end, null, 2));
+                            assert.deepStrictEqual(res, fixture.end)
                             done(new Error('Result not the same'));
                         } else if (blockchain.spec.length > 0) {
                             console.log(JSON.stringify(blockchain.spec));

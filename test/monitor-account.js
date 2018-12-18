@@ -18,7 +18,12 @@ function monitorAccount(enableWebassembly) {
         fixtures.forEach((fixtureOrig) => {
             const fixture = JSON.parse(JSON.stringify(fixtureOrig));
             it(fixture.name, function f(doneOrig) {
-                this.timeout(30 * 1000);
+                if (typeof jest !== "undefined") {
+                    console.warn(fixture.name)
+                    jest.setTimeout(30 * 1000);
+                } else {
+                    this.setTimeout(30 * 1000);
+                }
                 let wasmOld;
                 if (!enableWebassembly && hasWasm) {
                     wasmOld = WebAssembly;
