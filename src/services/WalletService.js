@@ -25,10 +25,9 @@ import type {
  */
 const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => async (action: Action): Promise<Action> => {
     const prevState = api.getState();
-
     // Application live cycle starts HERE!
     // when first LOCATION_CHANGE is called router does not have "location" set yet
-    if (action.type === LOCATION_CHANGE && !prevState.router.location) {
+    if (action.type === LOCATION_CHANGE && prevState.wallet.firstLocationChange) {
         // initialize wallet
         api.dispatch(WalletActions.init());
         // set initial url

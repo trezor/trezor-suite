@@ -105,7 +105,6 @@ export const paramsToPath = (params: RouterLocationState): PayloadAction<?string
             break;
         }
     }
-
     // pattern not found, redirect back
     if (!patternToUse) return null;
 
@@ -129,12 +128,14 @@ export const paramsToPath = (params: RouterLocationState): PayloadAction<?string
 
 export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dispatch: Dispatch, getState: GetState): string => {
     const { location } = getState().router;
-
+    const { firstLocationChange } = getState().wallet;
     // redirect to landing page (loading screen)
     // and wait until application is ready
-    if (!location) return '/';
+    if (firstLocationChange) return '/';
 
-    const requestedUrl = action.payload.pathname;
+    console.log('action', action);
+
+    const requestedUrl = action.payload.location.pathname;
     // Corner case: LOCATION_CHANGE was called but pathname didn't changed (redirect action from RouterService)
     if (requestedUrl === location.pathname) return requestedUrl;
 
@@ -269,6 +270,7 @@ export const selectFirstAvailableDevice = (gotoRoot: boolean = false): ThunkActi
     const url = dispatch(getFirstAvailableDeviceUrl());
     if (url) {
         const currentParams = getState().router.location.state;
+        console.log('currentParams', currentParams);
         const requestedParams = dispatch(pathToParams(url));
         if (gotoRoot || currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
             dispatch(goto(url));
@@ -351,10 +353,12 @@ export const setInitialUrl = (): PayloadAction<boolean> => (dispatch: Dispatch, 
         const valid = dispatch(getValidUrl({
             type: LOCATION_CHANGE,
             payload: {
-                pathname: initialPathname,
-                hash: '',
-                search: '',
-                state: {},
+                location: {
+                    pathname: initialPathname,
+                    hash: '',
+                    search: '',
+                    state: {},
+                },
             },
         }));
 

@@ -16,6 +16,7 @@ type State = {
     showBetaDisclaimer: boolean;
     initialParams: ?RouterLocationState;
     initialPathname: ?string;
+    firstLocationChange: boolean;
     disconnectRequest: ?TrezorDevice;
     selectedDevice: ?TrezorDevice;
 }
@@ -24,6 +25,7 @@ const initialState: State = {
     ready: false,
     online: navigator.onLine,
     dropdownOpened: false,
+    firstLocationChange: true,
     showBetaDisclaimer: false,
     initialParams: null,
     initialPathname: null,
@@ -38,6 +40,7 @@ export default function wallet(state: State = initialState, action: Action): Sta
                 ...state,
                 initialParams: action.state,
                 initialPathname: action.pathname,
+                firstLocationChange: false,
             };
 
         case TRANSPORT.START:
