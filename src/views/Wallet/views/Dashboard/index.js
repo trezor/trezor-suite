@@ -9,16 +9,14 @@ import DashboardImg from 'images/dashboard.png';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1;
 `;
 
 const Row = styled.div`
     flex: 1;
     display: flex;
-    padding: 0px 48px;
+    padding: 100px 48px;
     
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 `;
 
