@@ -90,7 +90,7 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     switch (network.type) {
         case 'ethereum':
             // this is not working until blockchain-link will start support blockbook backends
-            await dispatch(EthereumBlockchainActions.onNotification());
+            await dispatch(EthereumBlockchainActions.onNotification(payload));
             break;
         case 'ripple':
             await dispatch(RippleBlockchainActions.onNotification(payload));
