@@ -23,7 +23,12 @@ export class WorkerChannel {
     }
 
     open() {
-        this.worker.addEventListener('message', this.onMessage);
+        this.worker.onmessage = this.onMessage;
+    }
+
+    // this is used only for testing
+    destroy() {
+        this.worker.onmessage = () => {};
     }
 
     postMessage(msg: Object): Promise<any> {
@@ -38,8 +43,11 @@ export class WorkerChannel {
         const i: number = event.data.i;
         const dfd = this.pending[i];
         if (dfd) {
+            delete event.data.i;
             dfd(event.data);
             delete this.pending[i];
+        } else {
+            console.warn(new Error('Strange incoming message'));
         }
     }
 }

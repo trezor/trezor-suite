@@ -4,7 +4,7 @@
 
 import 'whatwg-fetch';
 
-import { Stream } from './utils/stream';
+import { Emitter, Stream } from './utils/stream';
 import { Socket } from './socketio-worker/outside';
 import { deferred } from './utils/deferred';
 import { uniqueRandom } from './utils/unique-random';
@@ -121,7 +121,8 @@ export class BitcoreBlockchain {
     static _tryEndpoint(
         endpoints: Array<string>,
         socketWorkerFactory: SocketWorkerFactory,
-        tried: {[k: string]: boolean}
+        tried: {[k: string]: boolean},
+        closeOnInit: Emitter<void>
     ): Promise<{socket: Socket, url: string}> {
         const untriedEndpoints = endpoints.filter((e, i) => !tried[i.toString()]);
 
@@ -130,15 +131,17 @@ export class BitcoreBlockchain {
         }
 
         const random = uniqueRandom(untriedEndpoints.length);
-        return onlineStatusCheck(socketWorkerFactory, untriedEndpoints[random]).then(socket => {
+        return onlineStatusCheck(socketWorkerFactory, untriedEndpoints[random], closeOnInit).then(socket => {
             if (socket) {
                 return {socket, url: untriedEndpoints[random]};
             } else {
                 tried[random.toString()] = true;
-                return BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried);
+                return BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried, closeOnInit);
             }
         });
     }
+
+    closeOnInit: Emitter<void> = new Emitter();
 
     constructor(endpoints: Array<string>, socketWorkerFactory: SocketWorkerFactory) {
         this.addresses = new Set();
@@ -148,10 +151,10 @@ export class BitcoreBlockchain {
         this.zcash = false;
 
         const lookupTM = (socket: Socket): Stream<TransactionWithHeight> => {
-            return socket.observe('bitcoind/addresstxid').mapPromise(
-                ({txid}) =>
-                    this.lookupTransaction(txid)
-            );
+            return Stream.filterError(socket.observe('bitcoind/addresstxid').mapPromise(
+                ({txid}) => {
+                    return this.lookupTransaction(txid);
+                }));
         };
         const observeBlocks = (socket: Socket): Stream<void> => {
             socket.subscribe('bitcoind/hashblock');
@@ -166,7 +169,8 @@ export class BitcoreBlockchain {
         this.blocks = blocks.stream;
 
         const tried = {'-1': true};
-        BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried).then(({socket, url}) => {
+        BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried, this.closeOnInit).then(({socket, url}) => {
+            this.closeOnInit.destroy();
             const trySmartFee = estimateSmartTxFee(socket, 2, false).then(
                 () => {
                     this.hasSmartTxFees = true;
@@ -184,25 +188,22 @@ export class BitcoreBlockchain {
             });
         }, () => {
             errors.setter(Stream.simple(new Error('All backends are offline.')));
-            if (!this._silent) {
-                this.socket.reject(new Error('All backends are offline.'));
-                this.socket.promise.catch((e) => console.error(e));
-            }
+            this.socket.reject(new Error('All backends are offline.'));
+            this.socket.promise.catch((e) => {
+                if (!this._silent) {
+                    console.error(e);
+                }
+            });
         });
     }
-
     // this creates ANOTHER socket!
     // this is for repeated checks after one failure
     hardStatusCheck(): Promise<boolean> {
-        return Promise.all(this.endpoints.map(endpoint => onlineStatusCheck(this.socketWorkerFactory, endpoint)))
-        .then((statuschecks) => {
-            statuschecks.forEach(s => {
-                if (s != null) {
-                    s.close();
-                }
-            });
-            const on = statuschecks.filter(i => i != null);
-            return on.length > 0;
+        const newOne = new BitcoreBlockchain(this.endpoints, this.socketWorkerFactory);
+        return newOne.socket.promise.then(() => {
+            return newOne.destroy().then(() => true);
+        }, () => {
+            return newOne.destroy().then(() => false);
         });
     }
 
@@ -226,10 +227,23 @@ export class BitcoreBlockchain {
         }, () => {});
     }
 
-    destroy() {
-        this.socket.promise.then(socket => {
-            socket.close();
-        }, () => { /* node is stupid*/ });
+    destroy(): Promise<void> {
+        // give socket 1 second to either resolve or reject
+        // if it doesn't happen, just destroy
+        const oneSecond = new Promise(resolve => setTimeout(resolve, 1000));
+        const inited = this.socket.promise.catch(() => {});
+        const sooner = Promise.race([oneSecond, inited]);
+        return sooner.then((socket) => {
+            if (!this.closeOnInit.destroyed) {
+                this.closeOnInit.emit();
+            }
+            this.errors.dispose();
+            this.notifications.dispose();
+            this.blocks.dispose();
+            if (socket != null) {
+                return socket.close();
+            }
+        });
     }
 
     // start/end are the block numbers, inclusive.
@@ -375,33 +389,27 @@ function lookupAllAddressHistories(
     ]);
 }
 
+type LookupAddressRes = (BcHistories & { from: number, to: number })
 function lookupAddressHistoriesMempool(
     socket: Socket,
     addresses: Array<string>,
     mempool: boolean,
     start: number,
     end: number,
-): Stream<(BcHistories & { from: number, to: number }) | Error> {
-    const initial = {
+): Stream<LookupAddressRes | Error> {
+    const initial: LookupAddressRes = {
         from: 0,
         to: 0,
         items: [],
         totalCount: 0,
     };
 
-    function _flow_typehack<X>(x: X | Error): X {
-        // $FlowIssue
-        return x;
-    }
-
     let pageLength = 1;
     let first = true;
 
     return Stream.generate(
         initial,
-        (previous_) => {
-            const previous = _flow_typehack(previous_);
-
+        (previous: LookupAddressRes): Promise<LookupAddressRes> => {
             // increasing the page size * 5, but only if the txs are small enough
             // (some users like to have giant transactions,
             // which causes trouble on both network and memory)
@@ -435,18 +443,9 @@ function lookupAddressHistoriesMempool(
                 ...result,
                 from,
                 to,
-            }), (error: mixed) => {
-                if (typeof error === 'object' && error != null && error instanceof Error) {
-                    return error;
-                } else {
-                    return new Error(JSON.stringify(error));
-                }
-            });
+            }));
         },
-        (state: (BcHistories & { from: number, to: number }) | Error) => {
-            if (state instanceof Error) {
-                return false;
-            }
+        (state: LookupAddressRes): boolean => {
             return state.to < state.totalCount;
         }
     );
@@ -467,7 +466,7 @@ function lookupTransactionsIdsMempool(
     } : {
         start,
         end,
-        queryMempol: false,
+        queryMempool: false,
     };
     const params = [
         addresses,
@@ -547,10 +546,10 @@ function estimateTxFee(socket: Socket, blocks: number): Promise<number> {
     return socket.send({method, params});
 }
 
-function onlineStatusCheck(socketWorkerFactory: SocketWorkerFactory, endpoint: string): Promise<?Socket> {
-    const socket = new Socket(socketWorkerFactory, endpoint);
+function onlineStatusCheck(socketWorkerFactory: SocketWorkerFactory, endpoint: string, closeOnInit: Emitter<void>): Promise<?Socket> {
+    const socket = new Socket(socketWorkerFactory, endpoint, closeOnInit);
     const conn = new Promise((resolve) => {
-        observeErrors(socket).awaitFirst().then(() => resolve(false)).catch(() => resolve(false));
+        observeErrors(socket).awaitFirst().then(() => resolve(false));
         // we try to get the first block
         // if it returns something, it probably works
         Promise.race([
@@ -586,7 +585,7 @@ function convertTx(zcash: boolean, bcTx: BcDetailedTransaction): TransactionWith
         zcash,
         hex: bcTx.hex,
         height: bcTx.height === -1 ? null : bcTx.height,
-        timestamp: bcTx.blockTimestamp,
+        timestamp: bcTx.blockTimestamp == null ? null : bcTx.blockTimestamp,
         hash: bcTx.hash,
         inputAddresses: bcTx.inputs.map(input => input.address),
         outputAddresses: bcTx.outputs.map(output => output.address),

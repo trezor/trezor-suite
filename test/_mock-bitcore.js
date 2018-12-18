@@ -1,7 +1,10 @@
 /* @flow */
+/* istanbul ignore file */
 
-import { Stream, Emitter } from './utils/stream';
-import type { Blockchain, SyncStatus, TransactionWithHeight, TxFees } from './bitcore';
+// Note - this mocks the Bitcore OBJECT, not Bitcore SERVER
+
+import { Stream, Emitter } from '../src/utils/stream';
+import type { Blockchain, SyncStatus, TransactionWithHeight, TxFees } from '../src/bitcore';
 
 const TICK_MS = 50;
 

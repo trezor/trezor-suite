@@ -14,91 +14,28 @@ matrix:
       install: true
       compiler: true
 
-# ------------------- karma tests ---------------------
-# karma tests run a browser in headless mode and try
-# to run the tests there
 
     - before_script:
         # we need to run xvfb fot the karma tests to work
         - export CHROME_BIN=chromium-browser
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        # karma needs special conf for each test
-        - mv karma_confs/karma.conf.js-buildtx karma.conf.js
-      sudo: required
-      env: TEST_SUITE=karma-chrome TEST=build-tx
+      env: TEST_SUITE=karma-chrome
 
     - before_script:
         # we need to run xvfb fot the karma tests to work
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
-        # karma needs special conf for each test
-        - mv karma_confs/karma.conf.js-buildtx karma.conf.js
-      env: TEST_SUITE=karma-firefox TEST=build-tx
+      env: TEST_SUITE=karma-firefox
       addons:
         firefox: latest
-
-    - before_script:
-        # we need to run xvfb fot the karma tests to work
-        - export CHROME_BIN=chromium-browser
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - mv karma_confs/karma.conf.js-discovery karma.conf.js
-      sudo: required
-      env: TEST_SUITE=karma-chrome TEST=discovery
-
-    - before_script:
-        # we need to run xvfb fot the karma tests to work
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        # karma needs special conf for each test
-        - mv karma_confs/karma.conf.js-discovery karma.conf.js
-      env: TEST_SUITE=karma-firefox TEST=discovery
-      addons:
-        firefox: latest
-
-    - before_script:
-        # we need to run xvfb fot the karma tests to work
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        # karma needs special conf for each test
-        - mv karma_confs/karma.conf.js-discovery karma.conf.js
-      env: TEST_SUITE=karma-firefox TEST=discovery-no-webasm
-      addons:
-        firefox: "50.0"
-
-
-# ------------------- bitcore tests ---------------------
-
-    - env: TEST_SUITE=unit-bitcore-with-docker
-      sudo: required
-
-    - before_script:
-        # we need to run xvfb fot the karma tests to work
-        - export CHROME_BIN=chromium-browser
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - mv karma_confs/karma.conf.js-bitcore karma.conf.js
-        - make bitcore-test-docker
-      env: TEST_SUITE=karma-chrome TEST=bitcore-with-docker
-      sudo: required
-    - before_script:
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - mv karma_confs/karma.conf.js-bitcore karma.conf.js
-        - make bitcore-test-docker
-      env: TEST_SUITE=karma-firefox TEST=bitcore-with-docker
-      addons:
-        firefox: latest
-      sudo: required
 
 env:
   - TEST_SUITE=eslint
   - TEST_SUITE=flow
   - TEST_SUITE=build-example
-  - TEST_SUITE=unit-build-tx
-  - TEST_SUITE=unit-discovery
-  - TEST_SUITE=coverage-with-docker
+  - TEST_SUITE=unit
+  - TEST_SUITE=coverage
 script: npm run-script $TEST_SUITE
 
 notifications:

@@ -22,10 +22,13 @@ export class Socket {
 
     streams: Array<Stream<any>> = [];
 
-    constructor(workerFactory: SocketWorkerFactory, endpoint: string) {
+    destroyerOnInit: Emitter<void>;
+
+    constructor(workerFactory: SocketWorkerFactory, endpoint: string, destroyerOnInit: Emitter<void>) {
         this.endpoint = endpoint;
-        this.socket = new SocketWorkerHandler(workerFactory);
+        this.socket = new SocketWorkerHandler(workerFactory, destroyerOnInit);
         this._socketInited = this.socket.init(this.endpoint);
+        this.destroyerOnInit = destroyerOnInit;
     }
 
     send(message: Object): Promise<any> {
@@ -33,10 +36,13 @@ export class Socket {
     }
 
     close() {
+        if (!this.destroyerOnInit.destroyed) {
+            this.destroyerOnInit.emit();
+        }
         this.streams.forEach(stream => stream.dispose());
-        this._socketInited.then(() =>
-            this.socket.close()
-        , () => {});
+        this._socketInited.then(() => {
+            this.socket.close();
+        }, () => {});
     }
 
     observe(event: string): Stream<any> {
@@ -59,21 +65,38 @@ class SocketWorkerHandler {
     _emitter: ?Emitter<SocketWorkerOutMessage>;
     counter: number;
 
-    constructor(workerFactory: () => Worker) {
+    destroyerOnInit: Emitter<void>;
+
+    constructor(workerFactory: () => Worker, destroyerOnInit: Emitter<void>) {
         this.workerFactory = workerFactory;
         this.counter = 0;
+        this.destroyerOnInit = destroyerOnInit;
     }
 
     _tryWorker(endpoint: string, type: string): Promise<Worker> {
         const worker = this.workerFactory();
         const dfd = deferred();
+
+        let destroyed = false;
+
+        const funOnDestroy = (n, detach) => {
+            destroyed = true;
+            worker.terminate();
+            detach();
+        };
+        this.destroyerOnInit.attach(funOnDestroy);
+
         worker.onmessage = (message) => {
             const data = message.data;
+            this.destroyerOnInit.detach(funOnDestroy);
             if (typeof data === 'string') {
                 const parsed = JSON.parse(data);
                 if (parsed.type === 'initDone') {
                     dfd.resolve(worker);
                 } else {
+                    if (!destroyed) {
+                        worker.terminate();
+                    }
                     dfd.reject(new Error('Connection failed.'));
                 }
             }
@@ -96,7 +119,9 @@ class SocketWorkerHandler {
                 worker.onmessage = (message) => {
                     const data = message.data;
                     if (typeof data === 'string') {
-                        emitter.emit(JSON.parse(data));
+                        if (!this.stopped) {
+                            emitter.emit(JSON.parse(data));
+                        }
                     }
                 };
                 this._emitter = emitter;
@@ -118,7 +143,10 @@ class SocketWorkerHandler {
             });
     }
 
-    close() {
+    stopped: boolean = false;
+
+    close(): Promise<void> {
+        this.stopped = true;
         this._sendMessage({
             type: 'close',
         });
@@ -126,6 +154,14 @@ class SocketWorkerHandler {
             this._emitter.destroy();
             this._emitter = null;
         }
+        return new Promise(resolve => {
+            setTimeout(() => {
+                if (this._worker != null) {
+                    this._worker.terminate();
+                }
+                resolve();
+            }, 10);
+        });
     }
 
     send(message: Object): Promise<any> {
@@ -166,7 +202,19 @@ class SocketWorkerHandler {
         return dfd.promise;
     }
 
+    observers: {[name: string]: Stream<any>} = {}
+
     observe(event: string): Stream<any> {
+        if (this.observers[event] != null) {
+            return this.observers[event];
+        } else {
+            const observer = this._newObserve(event);
+            this.observers[event] = observer;
+            return observer;
+        }
+    }
+
+    _newObserve(event: string): Stream<any> {
         this.counter++;
         const counter = this.counter;
         this._sendMessage({
@@ -186,6 +234,7 @@ class SocketWorkerHandler {
                     event: event,
                     id: counter,
                 });
+                delete this.observers[event];
             }
         )
         .filter((message) => message.type === 'emit' && message.event === event)

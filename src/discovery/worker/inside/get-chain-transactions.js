@@ -305,25 +305,14 @@ export class GetChainTransactions {
 
             // are there some new addresses?
             if (nextLast > this.originalLastSearched()) {
-                // "break" into two parts, one part only new addresses,
-                // other part only old addresses
-                if (nextFirst >= this.originalLastSearched() + 1) {
-                    // new addresses, all blocks
-                    this.iterate(
-                        nextFirst,
-                        nextLast,
-                        this.nullRange()
-                    );
-                } else {
-                    // old addresses, new blocks
-                    this.iterate(
-                        nextFirst,
-                        this.originalLastSearched(),
-                        this.range,
-                    );
-                }
+                // new addresses, all blocks
+                this.iterate(
+                    nextFirst,
+                    nextLast,
+                    this.nullRange()
+                );
             } else {
-                // old addresses, new blocks
+                // old addresses, just new blocks
                 this.iterate(
                     nextFirst,
                     nextLast,

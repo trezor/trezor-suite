@@ -47,12 +47,15 @@ unit-discovery:
 unit-bitcore:
 	`npm bin`/mocha --compilers js:@babel/register test/bitcore.js
 
+unit-utils:
+	`npm bin`/mocha --compilers js:@babel/register test/utils.js
+
 
 coverage-html:
-	NODE_ENV=test `npm bin`/nyc --cache --babel-cache=true --reporter=html --check-coverage `npm bin`/mocha --compilers js:@babel/register
+	NODE_ENV=test `npm bin`/nyc --cache --babel-cache=true --reporter=html --check-coverage --lines 97 --branches 94 `npm bin`/mocha --compilers js:@babel/register
 
 run-coverage:
-	NODE_ENV=test `npm bin`/nyc --check-coverage --babel-cache=true `npm bin`/mocha --compilers js:@babel/register
+	NODE_ENV=test `npm bin`/nyc --check-coverage --lines 97 --branches 94 --babel-cache=true `npm bin`/mocha --compilers js:@babel/register
 
 flow:
 	`npm bin`/flow check src
@@ -89,7 +92,3 @@ version-major: .version
 
 git-clean:
 	test ! -n "$$(git status --porcelain)"
-
-bitcore-test-docker:
-	cd test/test_bitcore/test_helpers && docker build . -t bitcore_regtest
-	cd test/test_bitcore/test_helpers && docker run -d -p 3005:3005 -p 1234:1234 bitcore_regtest

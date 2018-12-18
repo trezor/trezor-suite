@@ -12,8 +12,7 @@ import {HDNode as BitcoinJsHDNode} from 'bitcoinjs-lib-zcash';
 import {WorkerChannel as AddressWorkerChannel} from '../utils/simple-worker-channel';
 
 import type {Blockchain, TransactionWithHeight} from '../bitcore';
-import {BrowserAddressSource, WorkerAddressSource} from '../address-source';
-import type {AddressSource} from '../address-source';
+import {WorkerAddressSource} from '../address-source';
 
 import type {ForceAddedTransaction} from './index';
 
@@ -42,6 +41,13 @@ export class WorkerDiscovery {
         this.chain = chain;
     }
 
+    // this is used only for testing
+    destroy() {
+        if (this.addressWorkerChannel != null) {
+            this.addressWorkerChannel.destroy();
+        }
+    }
+
     tryHDNode(xpub: string, network: BitcoinJsNetwork): BitcoinJsHDNode | Error {
         try {
             const node = BitcoinJsHDNode.fromBase58(xpub, network, true);
@@ -64,34 +70,6 @@ export class WorkerDiscovery {
     ): void {
         this.forceAddedTransactions.push(transaction);
         this.forceAddedTransactionsEmitter.emit(true);
-    }
-
-    detectUsedAccount(
-        xpub: string,
-        network: BitcoinJsNetwork,
-        segwit: 'off' | 'p2sh',
-        gap_?: number
-    ): Promise<boolean> {
-        const gap: number = gap_ == null ? 20 : gap_;
-        const node = this.tryHDNode(xpub, network);
-        if (node instanceof Error) {
-            return Promise.reject(node);
-        }
-        const external = node.derive(0);
-        const internal = node.derive(1);
-
-        const sources = [
-            this.createAddressSource(external, network, segwit),
-            this.createAddressSource(internal, network, segwit),
-        ];
-        // I do not actually need to do any logic in the separate worker for discovery
-
-        return Promise.all([
-            WorkerDiscoveryHandler.deriveAddresses(sources[0], null, 0, gap - 1),
-            WorkerDiscoveryHandler.deriveAddresses(sources[1], null, 0, gap - 1),
-        ]).then(([addressesA, addressesB]) =>
-            this.chain.lookupTransactionsIds(addressesA.concat(addressesB), 100000000, 0)
-        ).then((ids) => ids.length !== 0);
     }
 
     discoverAccount(
@@ -196,9 +174,13 @@ export class WorkerDiscovery {
 
                 // we need to do updates on blocks, if there are unconfs
                 const blockStream: Stream<'block' | TransactionWithHeight> = this.chain.blocks.map(() => 'block');
-                const reloads: Stream<'block' | TransactionWithHeight> = blockStream.concat(txNotifs).concat(this.forceAddedTransactionsStream);
+                const reloads: Stream<'block' | TransactionWithHeight> = Stream.combineFlat([
+                    blockStream,
+                    txNotifs,
+                    this.forceAddedTransactionsStream,
+                ]);
 
-                const res: Stream<(AccountInfo | Error)> = reloads.mapPromiseError((): Promise<AccountInfo> => {
+                const res: Stream<(AccountInfo | Error)> = reloads.mapPromise((): Promise<AccountInfo> => {
                     const out: WorkerDiscoveryHandler = new WorkerDiscoveryHandler(
                         this.discoveryWorkerFactory,
                         this.chain,
@@ -220,14 +202,6 @@ export class WorkerDiscovery {
                 return res;
             })
         );
-    }
-
-    createAddressSource(node: BitcoinJsHDNode, network: BitcoinJsNetwork, segwit: 'off' | 'p2sh'): AddressSource {
-        const source = this.createWorkerAddressSource(node, network, segwit);
-        if (source == null) {
-            return new BrowserAddressSource(node, network, segwit === 'p2sh');
-        }
-        return source;
     }
 
     createWorkerAddressSource(node: BitcoinJsHDNode, network: BitcoinJsNetwork, segwit: 'off' | 'p2sh'): ?WorkerAddressSource {
