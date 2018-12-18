@@ -1,9 +1,23 @@
-import React from 'react';
+/* @flow */
+
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Loader from 'components/Loader';
 import { FONT_SIZE } from 'config/variables';
 import colors from 'config/colors';
+
+import type { State } from 'flowtype';
+
+import FirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
+import FirmwareUnsupported from './components/FirmwareUnsupported';
+
+type Props = {
+    children?: React.Node,
+    isLoading?: boolean,
+    loader?: $ElementType<$ElementType<State, 'selectedAccount'>, 'loader'>,
+    exceptionPage?: $ElementType<$ElementType<State, 'selectedAccount'>, 'exceptionPage'>,
+}
 
 const Wrapper = styled.div`
     display: flex;
@@ -36,22 +50,33 @@ const Row = styled.div`
     flex-direction: row;
 `;
 
+const getExceptionPage = (exceptionPage) => {
+    const { title, message, shortcut } = exceptionPage;
+    switch (exceptionPage.type) {
+        case 'fwOutdated':
+            return <FirmwareUpdate />;
+        case 'fwNotSupported':
+            return <FirmwareUnsupported title={title} message={message} networkShortcut={shortcut} />;
+        default: return null;
+    }
+};
+
 const Content = ({
     children,
-    title,
-    message,
-    type,
     isLoading = false,
-}) => (
+    loader,
+    exceptionPage,
+}: Props) => (
     <Wrapper>
         {(!isLoading) && children}
-        {isLoading && (type === 'progress' || type === 'info') && (
+        {isLoading && exceptionPage && getExceptionPage(exceptionPage)}
+        {isLoading && loader && (
             <Loading>
                 <Row>
-                    {type === 'progress' && <Loader size={30} />}
-                    <Text>{title || 'Initializing accounts'}</Text>
+                    {loader.type === 'progress' && <Loader size={30} />}
+                    <Text>{loader.title || 'Initializing accounts'}</Text>
                 </Row>
-                {message && <Message>{message}</Message>}
+                {loader.message && <Message>{loader.message}</Message>}
             </Loading>
         )}
     </Wrapper>
@@ -60,9 +85,8 @@ const Content = ({
 Content.propTypes = {
     children: PropTypes.oneOfType([PropTypes.element, PropTypes.array]),
     isLoading: PropTypes.bool,
-    title: PropTypes.string,
-    message: PropTypes.string,
-    type: PropTypes.string,
+    loader: PropTypes.object,
+    exceptionPage: PropTypes.object,
 };
 
 export default Content;

@@ -1,10 +1,15 @@
-## feature/ripple
+## 1.1.2-beta
+
+__added__
+- Stellar and Cardano external wallets
+
+# new feature/ripple
 __changed__
 - Split code to coin specific components. actions and reducers
 - Use TrezorConnect to communicate with trezor-blockchain-link
 
 __added__
-- Ripple support
+- Ripple support 
 
 ## 1.0.2-beta
 __changed__

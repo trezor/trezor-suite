@@ -47,9 +47,11 @@ if (buildUtils.isDev()) {
         collapsed: true,
     });
 
-    if (window && typeof window.devToolsExtension === 'function') {
-        enhancers.push(window.devToolsExtension());
+    /* eslint-disable no-underscore-dangle */
+    if (window && typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') {
+        enhancers.push(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__());
     }
+    /* eslint-enable */
 
     composedEnhancers = compose(
         applyMiddleware(logger, ...middlewares, ...services),

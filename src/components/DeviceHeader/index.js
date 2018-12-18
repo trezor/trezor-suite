@@ -101,6 +101,7 @@ const DeviceHeader = ({
     isAccessible = true,
     disabled = false,
     isSelected = false,
+    className,
 }) => {
     const status = getStatus(device);
     return (
@@ -109,6 +110,7 @@ const DeviceHeader = ({
             isOpen={isOpen}
             isHoverable={isHoverable}
             disabled={disabled}
+            className={className}
         >
             <ClickWrapper
                 disabled={disabled}
@@ -139,6 +141,7 @@ DeviceHeader.propTypes = {
     isOpen: PropTypes.bool,
     isSelected: PropTypes.bool,
     onClickWrapper: PropTypes.func.isRequired,
+    className: PropTypes.string,
 };
 
 export default DeviceHeader;

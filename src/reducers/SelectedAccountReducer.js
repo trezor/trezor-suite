@@ -10,23 +10,35 @@ import type {
     Discovery,
 } from 'flowtype';
 
+export type Loader = {
+    type: string,
+    title: string,
+    message?: string,
+}
+
+export type Notification = {
+    type: string,
+    title: string,
+    message?: string,
+}
+
+export type ExceptionPage = {
+    type: ?string,
+    title: ?string,
+    message: ?string,
+    shortcut: string,
+}
+
 export type State = {
-    location: string;
-    account: ?Account;
-    network: ?Network;
+    location: string,
+    account: ?Account,
+    network: ?Network,
     tokens: Array<Token>,
     pending: Array<PendingTx>,
     discovery: ?Discovery,
-    notification: {
-        type: ?string,
-        title: ?string,
-        message: ?string,
-    },
-    loader: {
-        type: ?string,
-        title: ?string,
-        message: ?string,
-    },
+    loader: ?Loader,
+    notification: ?Notification,
+    exceptionPage: ?ExceptionPage,
     shouldRender: boolean,
 };
 
@@ -37,16 +49,9 @@ export const initialState: State = {
     tokens: [],
     pending: [],
     discovery: null,
-    notification: {
-        type: null,
-        title: null,
-        message: null,
-    },
-    loader: {
-        type: null,
-        title: null,
-        message: null,
-    },
+    loader: null,
+    notification: null,
+    exceptionPage: null,
     shouldRender: false,
 };
 
