@@ -11,8 +11,7 @@ const baseStyles = createGlobalStyle`
         width: 100%;
         height: 100%;
         position: relative;
-        /* font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; */
-        font-family: "Roboto", Arial, sans-serif;
+        font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
         font-weight: ${FONT_WEIGHT.NORMAL};
         font-size: 14px;
         color: ${colors.TEXT};
