@@ -77,6 +77,7 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
             block: account.block,
             history: false,
         },
+        coin: account.network,
     });
     if (!updatedAccount.success) return;
 

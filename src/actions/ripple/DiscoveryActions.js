@@ -48,6 +48,7 @@ export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discover
         },
         keepSession: true, // acquire and hold session
         useEmptyPassphrase: device.useEmptyPassphrase,
+        coin: network.shortcut,
     });
 
     // handle TREZOR response error
