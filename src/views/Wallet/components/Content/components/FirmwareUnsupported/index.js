@@ -57,20 +57,17 @@ const Message = styled.div`
     text-align: center;
 `;
 
-// eslint-disable-next-line arrow-body-style
-const FirmwareUnsupported = (props: Props) => {
-    return (
-        <Wrapper>
-            <Row>
-                {props.networkShortcut && <CoinLogoWrapper><StyledCoinLogo standalone network={props.networkShortcut} /></CoinLogoWrapper>}
-                <H2>{props.title}</H2>
-                <Message>{props.message}</Message>
-                <StyledLink href={getInfoUrl(props.networkShortcut)}>
-                    <Button>Find out more info</Button>
-                </StyledLink>
-            </Row>
-        </Wrapper>
-    );
-};
+const FirmwareUnsupported = (props: Props) => (
+    <Wrapper>
+        <Row>
+            {props.networkShortcut && <CoinLogoWrapper><StyledCoinLogo standalone network={props.networkShortcut} /></CoinLogoWrapper>}
+            <H2>{props.title}</H2>
+            <Message>{props.message}</Message>
+            <StyledLink href={getInfoUrl(props.networkShortcut)}>
+                <Button>Find out more info</Button>
+            </StyledLink>
+        </Row>
+    </Wrapper>
+);
 
 export default FirmwareUnsupported;
