@@ -1,5 +1,5 @@
 /* @flow */
-import { LOCATION_CHANGE, replace } from 'react-router-redux';
+import { LOCATION_CHANGE, replace } from 'connected-react-router';
 import * as RouterActions from 'actions/RouterActions';
 
 import type {

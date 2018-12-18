@@ -1,11 +1,11 @@
 /* @flow */
 
 import { createStore, applyMiddleware, compose } from 'redux';
-import { routerMiddleware } from 'react-router-redux';
+import { routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import createHistory from 'history/createHashHistory';
 import { createLogger } from 'redux-logger';
-import reducers from 'reducers';
+import createRootReducer from 'reducers';
 import services from 'services';
 
 import Raven from 'raven-js';
@@ -65,7 +65,7 @@ if (buildUtils.isDev()) {
 }
 
 export default createStore(
-    reducers,
+    createRootReducer(history),
     initialState,
     composedEnhancers,
 );

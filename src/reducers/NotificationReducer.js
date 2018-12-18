@@ -1,7 +1,7 @@
 /* @flow */
 
 import * as React from 'react';
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import * as NOTIFICATION from 'actions/constants/notification';
 import { DEVICE } from 'trezor-connect';
 

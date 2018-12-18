@@ -3,7 +3,7 @@ import type {
     Location as RouterLocation,
 } from 'react-router';
 
-declare module 'react-router-redux' {
+declare module 'connected-react-router' {
     // custom state for location
     declare export type LocationState = {[key: string]: string};
 

@@ -1,6 +1,6 @@
 /* @flow */
 
-import { push, LOCATION_CHANGE } from 'react-router-redux';
+import { push, LOCATION_CHANGE } from 'connected-react-router';
 import { CONTEXT_NONE } from 'actions/constants/modal';
 import { SET_INITIAL_URL } from 'actions/constants/wallet';
 import { routes } from 'support/routes';
@@ -15,7 +15,7 @@ import type {
     Dispatch,
     GetState,
 } from 'flowtype';
-import type { RouterAction } from 'react-router-redux';
+import type { RouterAction } from 'connected-react-router';
 
 /*
 * Parse url string to RouterLocationState object (key/value)

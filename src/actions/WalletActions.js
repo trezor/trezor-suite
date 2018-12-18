@@ -1,6 +1,6 @@
 /* @flow */
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { DEVICE } from 'trezor-connect';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as WALLET from 'actions/constants/wallet';
