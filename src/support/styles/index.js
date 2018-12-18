@@ -4,14 +4,15 @@ import { FONT_WEIGHT } from 'config/variables';
 
 import tooltipStyles from './Tooltip';
 import animationStyles from './Animations';
-import fontStyles from './Fonts';
+import './fonts.css';
 
 const baseStyles = createGlobalStyle`
     html, body {
         width: 100%;
         height: 100%;
         position: relative;
-        font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        /* font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; */
+        font-family: "Roboto", Arial, sans-serif;
         font-weight: ${FONT_WEIGHT.NORMAL};
         font-size: 14px;
         color: ${colors.TEXT};
@@ -47,7 +48,6 @@ const baseStyles = createGlobalStyle`
         height: 100%;
     }
 
-    ${fontStyles};
     ${animationStyles};
     ${tooltipStyles};
 `;
