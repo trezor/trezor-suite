@@ -123,7 +123,7 @@ const AccountSummary = (props: Props) => {
                         defaultOptions
                         value={null}
                         isMulti={false}
-                        placeholder="Search for the token"
+                        placeholder="Type in a token name or paste a token address directly"
                         loadingMessage={() => 'Loading...'}
                         noOptionsMessage={() => 'Token not found'}
                         onChange={(token) => {
