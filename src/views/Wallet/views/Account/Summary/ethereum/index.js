@@ -76,13 +76,13 @@ const AccountSummary = (props: Props) => {
         network,
         tokens,
         pending,
-        loader,
         shouldRender,
     } = props.selectedAccount;
 
-    const { type, title, message } = loader;
-
-    if (!device || !account || !network || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
+    if (!device || !account || !network || !shouldRender) {
+        const { loader, exceptionPage } = props.selectedAccount;
+        return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
+    }
 
     const explorerLink: string = `${network.explorer.address}${account.address}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);

@@ -96,10 +96,12 @@ const AccountReceive = (props: Props) => {
         account,
         discovery,
         shouldRender,
-        loader,
     } = props.selectedAccount;
-    const { type, title, message } = loader;
-    if (!device || !account || !discovery || !shouldRender) return <Content type={type} title={title} message={message} isLoading />;
+
+    if (!device || !account || !discovery || !shouldRender) {
+        const { loader, exceptionPage } = props.selectedAccount;
+        return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
+    }
 
     const {
         addressVerified,

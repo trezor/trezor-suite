@@ -8,6 +8,7 @@ import * as TOKEN from 'actions/constants/token';
 import * as PENDING from 'actions/constants/pendingTx';
 
 import * as reducerUtils from 'reducers/utils';
+import { initialState } from 'reducers/SelectedAccountReducer';
 
 import type {
     PayloadAction,
@@ -17,7 +18,12 @@ import type {
     State,
 } from 'flowtype';
 
-type SelectedAccountState = $ElementType<State, 'selectedAccount'>;
+import type {
+    State as SelectedAccountState,
+    Loader,
+    Notification,
+    ExceptionPage,
+} from 'reducers/SelectedAccountReducer';
 
 export type SelectedAccountAction = {
     type: typeof ACCOUNT.DISPOSE,
@@ -26,18 +32,39 @@ export type SelectedAccountAction = {
     payload: SelectedAccountState,
 };
 
-type AccountStatus = {
-    type: ?string; // notification type
-    title: ?string; // notification title
-    message?: ?string; // notification message
-    shouldRender: boolean; // should render account page
-}
-
 export const dispose = (): Action => ({
     type: ACCOUNT.DISPOSE,
 });
 
-const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
+// display exception page instead of component body
+const getExceptionPage = (state: State, selectedAccount: SelectedAccountState): ?ExceptionPage => {
+    const device = state.wallet.selectedDevice;
+    const { discovery, network } = selectedAccount;
+    if (!device || !device.features || !network || !discovery) return null;
+
+    if (discovery.fwOutdated) {
+        // those values are not used because in this case views/Wallet/views/FirmwareUpdate component will be displayed and it already has text content
+        return {
+            type: 'fwOutdated',
+            title: 'not-used',
+            message: 'not-used',
+            shortcut: 'not-used',
+        };
+    }
+    if (discovery.fwNotSupported) {
+        return {
+            type: 'fwNotSupported',
+            title: `${network.name} is not supported with Trezor ${device.features.model}`,
+            message: 'Find more information on Trezor Wiki.',
+            shortcut: network.shortcut,
+        };
+    }
+
+    return null;
+};
+
+// display loader instead of component body
+const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): ?Loader => {
     const device = state.wallet.selectedDevice;
     const {
         account,
@@ -49,40 +76,20 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'progress',
             title: 'Loading device...',
-            shouldRender: false,
         };
     }
 
-    // corner case: accountState didn't finish loading state after LOCATION_CHANGE action
+    // corner case: SelectedAccountState didn't change after LOCATION_CHANGE action
     if (!network) {
         return {
             type: 'progress',
-            title: 'Loading account state...',
-            shouldRender: false,
+            title: 'Loading account',
         };
     }
 
 
     if (account) return null;
     // account not found (yet). checking why...
-
-    if (discovery && discovery.fwOutdated) {
-        return {
-            type: 'info',
-            title: `Device ${device.instanceLabel} firmware is outdated`,
-            message: 'TODO: update firmware explanation',
-            shouldRender: false,
-        };
-    }
-
-    if (discovery && discovery.fwNotSupported) {
-        return {
-            type: 'info',
-            title: `Device ${device.instanceLabel} is not supported`,
-            message: 'TODO: model T1 not supported explanation',
-            shouldRender: false,
-        };
-    }
 
     if (!discovery || (discovery.waitingForDevice || discovery.interrupted)) {
         if (device.connected) {
@@ -91,7 +98,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
                 return {
                     type: 'progress',
                     title: 'Authenticating device...',
-                    shouldRender: false,
                 };
             }
             // case 2: device is unavailable (created with different passphrase settings) account cannot be accessed
@@ -100,7 +106,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
                 type: 'info',
                 title: `Device ${device.instanceLabel} is unavailable`,
                 message: 'Change passphrase settings to use this device',
-                shouldRender: false,
             };
         }
 
@@ -109,7 +114,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
             type: 'info',
             title: `Device ${device.instanceLabel} is disconnected`,
             message: 'Connect device to load accounts',
-            shouldRender: false,
         };
     }
 
@@ -118,7 +122,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
         return {
             type: 'info',
             title: 'Account does not exist',
-            shouldRender: false,
         };
     }
 
@@ -126,11 +129,11 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
     return {
         type: 'progress',
         title: 'Loading account',
-        shouldRender: false,
     };
 };
 
-const getAccountNotification = (state: State, selectedAccount: SelectedAccountState): ?AccountStatus => {
+// display notification above the component, with or without component body
+const getAccountNotification = (state: State, selectedAccount: SelectedAccountState): ?(Notification & { shouldRender: boolean }) => {
     const device = state.wallet.selectedDevice;
     const { account, network, discovery } = selectedAccount;
     if (!device || !network) return null;
@@ -198,16 +201,6 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
     // ignore not listed actions
     if (actions.indexOf(action.type) < 0) return false;
     const state: State = getState();
-    const notification = {
-        type: null,
-        message: null,
-        title: null,
-    };
-    const loader = {
-        type: null,
-        message: null,
-        title: null,
-    };
 
     const { location } = state.router;
     // displayed route is not an account route
@@ -222,25 +215,29 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
 
     // prepare new state for "selectedAccount" reducer
     const newState: SelectedAccountState = {
+        ...initialState,
         location: state.router.location.pathname,
         account,
         network,
         discovery,
         tokens,
         pending,
-        notification,
-        loader,
-        shouldRender: false,
     };
 
     // get "selectedAccount" status from newState
-    const statusNotification = getAccountNotification(state, newState);
-    const statusLoader = getAccountLoader(state, newState);
-    const shouldRender = (statusNotification && statusLoader) ? (statusNotification.shouldRender || statusLoader.shouldRender) : true;
+    const exceptionPage = getExceptionPage(state, newState);
+    const loader = getAccountLoader(state, newState);
+    const notification = getAccountNotification(state, newState);
 
-    newState.notification = statusNotification || notification;
-    newState.shouldRender = shouldRender;
-    newState.loader = statusLoader || loader;
+    if (exceptionPage) {
+        newState.exceptionPage = exceptionPage;
+    } else {
+        newState.loader = loader;
+        newState.notification = notification;
+    }
+
+    newState.shouldRender = !(loader || exceptionPage || (notification && !notification.shouldRender));
+
     // check if newState is different than previous state
     const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, {
         account: ['balance', 'nonce'],
