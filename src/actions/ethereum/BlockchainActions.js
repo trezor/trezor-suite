@@ -2,6 +2,7 @@
 
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
+import * as PENDING from 'actions/constants/pendingTx';
 
 import type {
     TrezorDevice,
@@ -9,7 +10,7 @@ import type {
     GetState,
     PromiseAction,
 } from 'flowtype';
-import type { EthereumAccount } from 'trezor-connect';
+import type { EthereumAccount, BlockchainNotification } from 'trezor-connect';
 import type { Token } from 'reducers/TokensReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
 import * as Web3Actions from 'actions/Web3Actions';
@@ -125,7 +126,37 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
     }
 };
 
-export const onNotification = (/*network: string*/): PromiseAction<void> => async (): Promise<void> => {
+export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { notification } = payload;
+    const account = getState().accounts.find(a => a.address === notification.address);
+    if (!account) return;
+
+    if (notification.status === 'pending') {
+        dispatch({
+            type: PENDING.ADD,
+            payload: {
+                type: notification.type,
+                address: notification.address,
+                deviceState: account.deviceState,
+
+                inputs: notification.inputs,
+                outputs: notification.outputs,
+
+                sequence: notification.sequence,
+                hash: notification.hash,
+                network: account.network,
+
+                currency: notification.currency || account.network, // TODO: how to catch token?
+
+                amount: notification.amount,
+                total: notification.total,
+                fee: notification.fee,
+            },
+        });
+
+        // todo: replace "send success" notification with link to explorer
+    }
+
     // todo: get transaction history here
     // console.warn("OnBlAccount", account);
     // this event can be triggered multiple times

@@ -13,6 +13,7 @@ import type {
     PromiseAction,
 } from 'flowtype';
 
+const DECIMALS: number = 6;
 
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.address);
@@ -21,7 +22,6 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
         coin: network,
     });
 };
-
 
 export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const fee = await TrezorConnect.blockchainGetFee({
@@ -51,15 +51,22 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
             type: PENDING.ADD,
             payload: {
                 type: notification.type,
+                address: account.address,
                 deviceState: account.deviceState,
-                sequence: account.sequence,
+
+                inputs: notification.inputs,
+                outputs: notification.outputs,
+
+                sequence: notification.sequence,
                 hash: notification.hash,
                 network: account.network,
-                address: account.address,
+
                 currency: account.network,
-                amount: notification.amount,
-                total: notification.amount,
-                fee: notification.fee,
+                // amount: notification.amount,
+                // fee: notification.fee,
+                amount: toDecimalAmount(notification.amount, DECIMALS),
+                total: notification.type === 'send' ? toDecimalAmount(notification.total, DECIMALS) : toDecimalAmount(notification.amount, DECIMALS),
+                fee: toDecimalAmount(notification.fee, DECIMALS),
             },
         });
 
@@ -83,8 +90,8 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
 
     dispatch(AccountsActions.update({
         ...account,
-        balance: toDecimalAmount(updatedAccount.payload.balance, 6),
-        availableDevice: toDecimalAmount(updatedAccount.payload.availableBalance, 6),
+        balance: toDecimalAmount(updatedAccount.payload.balance, DECIMALS),
+        availableDevice: toDecimalAmount(updatedAccount.payload.availableBalance, DECIMALS),
         block: updatedAccount.payload.block,
         sequence: updatedAccount.payload.sequence,
     }));
