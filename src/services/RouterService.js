@@ -26,10 +26,10 @@ const RouterService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     // override action state (to be stored in RouterReducer)
     const override = action;
     override.payload.state = api.dispatch(RouterActions.pathToParams(validUrl));
-    const redirect = action.payload.pathname !== validUrl;
+    const redirect = action.payload.location.pathname !== validUrl;
     if (redirect) {
         // override action pathname
-        override.payload.pathname = validUrl;
+        override.payload.location.pathname = validUrl;
     }
 
     // pass action

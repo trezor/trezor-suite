@@ -34,7 +34,7 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         // TODO: validate if initial url is potentially correct
         api.dispatch({
             type: WALLET.SET_INITIAL_URL,
-            pathname: action.payload.pathname,
+            pathname: action.payload.location.pathname,
             state: {},
         });
         // pass action and break process
