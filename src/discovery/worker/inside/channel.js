@@ -127,14 +127,15 @@ export function returnError(error: Error | string): void {
 }
 
 function doPostMessage(data: OutMessage) {
+    // eslint-disable-next-line no-undef,no-restricted-globals
     self.postMessage(
         data,
     );
 }
 
-// eslint-disable-next-line no-undef
-self.onmessage = function (event: {data: InMessage}) {
-    const data: InMessage = event.data;
+// eslint-disable-next-line no-undef,no-restricted-globals
+self.onmessage = (event: {data: InMessage}) => {
+    const { data } = event;
     messageEmitter.emit(data);
 };
 

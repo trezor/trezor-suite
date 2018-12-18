@@ -1,9 +1,12 @@
 /* @flow */
+
+/* global Worker:false */
 import type { Network as BitcoinJsNetwork } from 'bitcoinjs-lib-zcash';
 import { HDNode as BitcoinJsHDNode } from 'bitcoinjs-lib-zcash';
 import type {
     AccountInfo,
     AccountLoadStatus,
+    ForceAddedTransaction,
 } from './index';
 import { Emitter, Stream, StreamWithEnding } from '../utils/stream';
 
@@ -14,9 +17,8 @@ import { WorkerChannel as AddressWorkerChannel } from '../utils/simple-worker-ch
 import type { Blockchain, TransactionWithHeight } from '../bitcore';
 import { WorkerAddressSource } from '../address-source';
 
-import type { ForceAddedTransaction } from './index';
-
 export class WorkerDiscovery {
+    // eslint-disable-next-line no-undef
     discoveryWorkerFactory: () => Worker;
 
     addressWorkerChannel: ?AddressWorkerChannel;
@@ -24,7 +26,9 @@ export class WorkerDiscovery {
     chain: Blockchain;
 
     constructor(
+        // eslint-disable-next-line no-undef
         discoveryWorkerFactory: () => Worker,
+        // eslint-disable-next-line no-undef
         fastXpubWorker: Worker,
         fastXpubWasmPromise: Promise<ArrayBuffer>,
         chain: Blockchain,
@@ -47,18 +51,6 @@ export class WorkerDiscovery {
     destroy() {
         if (this.addressWorkerChannel != null) {
             this.addressWorkerChannel.destroy();
-        }
-    }
-
-    tryHDNode(xpub: string, network: BitcoinJsNetwork): BitcoinJsHDNode | Error {
-        try {
-            const node = BitcoinJsHDNode.fromBase58(xpub, network, true);
-            if (!node.isNeutered()) {
-                throw new Error('XPRV entrered instead of XPUB. Exiting.');
-            }
-            return node;
-        } catch (e) {
-            return e;
         }
     }
 
@@ -90,13 +82,15 @@ export class WorkerDiscovery {
         // it's javascript, it's insane by default
         timeOffset: number,
     ): StreamWithEnding<AccountLoadStatus, AccountInfo> {
-        const node = this.tryHDNode(xpub, network);
+        const node = tryHDNode(xpub, network);
         if (node instanceof Error) {
             return StreamWithEnding.fromStreamAndPromise(Stream.empty(), Promise.reject(node));
         }
 
         return StreamWithEnding.fromPromise(
-            Promise.all([this.deriveXpub(xpub, network, 0), this.deriveXpub(xpub, network, 1)]).then(([externalXpub, internalXpub]) => {
+            Promise.all([
+                this.deriveXpub(xpub, network, 0),
+                this.deriveXpub(xpub, network, 1)]).then(([externalXpub, internalXpub]) => {
                 const internal = BitcoinJsHDNode.fromBase58(internalXpub, network, true);
                 const external = BitcoinJsHDNode.fromBase58(externalXpub, network, true);
 
@@ -132,12 +126,15 @@ export class WorkerDiscovery {
         // it's javascript, it's insane by default
         timeOffset: number,
     ): Stream<AccountInfo | Error> {
-        const node = this.tryHDNode(xpub, network);
+        const node = tryHDNode(xpub, network);
         if (node instanceof Error) {
             return Stream.simple(node);
         }
         return Stream.fromPromise(
-            Promise.all([this.deriveXpub(xpub, network, 0), this.deriveXpub(xpub, network, 1)]).then(([externalXpub, internalXpub]) => {
+            Promise.all([
+                this.deriveXpub(xpub, network, 0),
+                this.deriveXpub(xpub, network, 1),
+            ]).then(([externalXpub, internalXpub]) => {
                 const internal = BitcoinJsHDNode.fromBase58(internalXpub, network, true);
                 const external = BitcoinJsHDNode.fromBase58(externalXpub, network, true);
 
@@ -184,24 +181,25 @@ export class WorkerDiscovery {
                     this.forceAddedTransactionsStream,
                 ]);
 
-                const res: Stream<(AccountInfo | Error)> = reloads.mapPromise((): Promise<AccountInfo> => {
-                    const out: WorkerDiscoveryHandler = new WorkerDiscoveryHandler(
-                        this.discoveryWorkerFactory,
-                        this.chain,
-                        sources,
-                        network,
-                        cashAddress || false,
-                        this.forceAddedTransactions,
-                    );
-                    const discovery: StreamWithEnding<AccountLoadStatus, AccountInfo> = out.discovery(currentState, xpub, segwit === 'p2sh', gap, timeOffset);
+                const res: Stream<(AccountInfo | Error)> = reloads
+                    .mapPromise((): Promise<AccountInfo> => {
+                        const out: WorkerDiscoveryHandler = new WorkerDiscoveryHandler(
+                            this.discoveryWorkerFactory,
+                            this.chain,
+                            sources,
+                            network,
+                            cashAddress || false,
+                            this.forceAddedTransactions,
+                        );
+                        const discovery: StreamWithEnding<AccountLoadStatus, AccountInfo> = out.discovery(currentState, xpub, segwit === 'p2sh', gap, timeOffset);
 
-                    const ending: Promise<AccountInfo> = discovery.ending;
-                    const res: Promise<AccountInfo> = ending.then((res) => {
-                        currentState = res;
-                        return res;
+                        const { ending }: Promise<AccountInfo> = discovery;
+                        const pres: Promise<AccountInfo> = ending.then((eres) => {
+                            currentState = eres;
+                            return eres;
+                        });
+                        return pres;
                     });
-                    return res;
-                });
 
                 return res;
             }),
@@ -209,12 +207,11 @@ export class WorkerDiscovery {
     }
 
     createWorkerAddressSource(node: BitcoinJsHDNode, network: BitcoinJsNetwork, segwit: 'off' | 'p2sh'): ?WorkerAddressSource {
-        const addressWorkerChannel = this.addressWorkerChannel;
-        if (addressWorkerChannel == null) {
+        if (this.addressWorkerChannel == null) {
             return null;
         }
         const version = segwit === 'p2sh' ? network.scriptHash : network.pubKeyHash;
-        return new WorkerAddressSource(addressWorkerChannel, node, version, segwit);
+        return new WorkerAddressSource(this.addressWorkerChannel, node, version, segwit);
     }
 
     deriveXpub(
@@ -222,15 +219,31 @@ export class WorkerDiscovery {
         network: BitcoinJsNetwork,
         index: number,
     ): Promise<string> {
-        const addressWorkerChannel = this.addressWorkerChannel;
-        if (addressWorkerChannel == null) {
-            return Promise.resolve(BitcoinJsHDNode.fromBase58(xpub, network, true).derive(index).toBase58());
+        if (this.addressWorkerChannel == null) {
+            return Promise.resolve(
+                BitcoinJsHDNode
+                    .fromBase58(xpub, network, true)
+                    .derive(index)
+                    .toBase58(),
+            );
         }
-        return addressWorkerChannel.postMessage({
+        return this.addressWorkerChannel.postMessage({
             type: 'deriveNode',
             xpub,
             version: network.bip32.public,
             index,
         }).then(x => x.xpub);
+    }
+}
+
+function tryHDNode(xpub: string, network: BitcoinJsNetwork): BitcoinJsHDNode | Error {
+    try {
+        const node = BitcoinJsHDNode.fromBase58(xpub, network, true);
+        if (!node.isNeutered()) {
+            throw new Error('XPRV entrered instead of XPUB. Exiting.');
+        }
+        return node;
+    } catch (e) {
+        return e;
     }
 }

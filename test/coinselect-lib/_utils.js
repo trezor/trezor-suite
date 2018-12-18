@@ -1,5 +1,6 @@
 function addScriptLength(values, scriptLength) {
-    return values.map((x) => {
+    return values.map((xx) => {
+        const x = xx;
         if (x.script === undefined) {
             x.script = { length: scriptLength };
         }
@@ -7,7 +8,7 @@ function addScriptLength(values, scriptLength) {
     });
 }
 
-function addScriptLengthToExpected(expected, inputLength, outputLength) {
+export function addScriptLengthToExpected(expected, inputLength, outputLength) {
     const newExpected = Object.assign({}, expected);
 
     if (expected.inputs != null) {
@@ -33,21 +34,21 @@ function addScriptLengthToExpected(expected, inputLength, outputLength) {
     return newExpected;
 }
 
-function expand(values, indices, scriptLength) {
+export function expand(values, indices, scriptLength) {
     if (indices) {
         return addScriptLength(values.map((x, i) => {
             if (typeof x === 'number') return { i, value: x };
 
             const y = { i };
-            for (const k in x) y[k] = x[k];
+            Object.keys(x).forEach((k) => { y[k] = x[k]; });
             return y;
         }), scriptLength);
     }
 
-    return addScriptLength(values.map((x, i) => (typeof x === 'object' ? x : { value: x })), scriptLength);
+    return addScriptLength(values.map(x => (typeof x === 'object' ? x : { value: x })), scriptLength);
 }
 
-function testValues(t, actual, expected) {
+export function testValues(t, actual, expected) {
     t.equal(typeof actual, typeof expected, 'types match');
     if (!expected) return;
 
@@ -65,9 +66,3 @@ function testValues(t, actual, expected) {
         }
     });
 }
-
-module.exports = {
-    expand,
-    testValues,
-    addScriptLengthToExpected,
-};

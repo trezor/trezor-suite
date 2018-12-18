@@ -14,7 +14,7 @@ import type {
 import { Emitter, Stream } from '../../../utils/stream';
 import type { AccountInfo } from '../../index';
 
-
+// eslint-disable-next-line no-undef
 type WorkerFactory = () => Worker;
 
 // will get injected
@@ -25,6 +25,7 @@ const CONCURRENT_WORKERS = 4;
 const q = queue({ concurrency: CONCURRENT_WORKERS, autostart: true });
 
 export class WorkerChannel {
+    // eslint-disable-next-line no-undef
     w: Promise<{worker: Worker, finish: () => void}>;
 
     messageEmitter: Emitter<OutMessage> = new Emitter();

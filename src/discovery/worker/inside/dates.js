@@ -51,9 +51,11 @@ export function recomputeDateFormats(
     ts: Array<TransactionInfo>,
     wantedOffset: number,
 ) {
-    for (const t of ts) {
+    ts.forEach((t) => {
         const r = deriveDateFormats(t.timestamp, wantedOffset);
+        // eslint-disable-next-line no-param-reassign
         t.dateInfoDayFormat = r.dateInfoDayFormat;
+        // eslint-disable-next-line no-param-reassign
         t.dateInfoTimeFormat = r.dateInfoTimeFormat;
-    }
+    });
 }

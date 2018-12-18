@@ -30,19 +30,19 @@ function filterUtxos(utxos, minConfOwn, minConfOther) {
     };
 }
 
-module.exports = function tryConfirmed(algorithm, options) {
+export default function tryConfirmed(algorithm, options) {
     const own = options.own || 1;
     const other = options.other || 6;
     const coinbase = options.coinbase || 100;
 
-    return function (utxos, outputs, feeRate, optionsIn) {
-        utxos.forEach((utxo) => {
+    return (utxosO, outputs, feeRate, optionsIn) => {
+        utxosO.forEach((utxo) => {
             if (utxo.coinbase == null || utxo.own == null || utxo.confirmations == null) {
                 throw new Error('Missing information.');
             }
         });
 
-        utxos = filterCoinbase(utxos, coinbase);
+        const utxos = filterCoinbase(utxosO, coinbase);
 
         if (utxos.length === 0) {
             return {};
@@ -77,7 +77,8 @@ module.exports = function tryConfirmed(algorithm, options) {
             // and we can try the algorithm only if there are some newly usable utxos
             if (filterResult.usable.length > 0) {
                 usable = usable.concat(filterResult.usable);
-                unusable = filterResult.unusable;
+                const unusableH = filterResult.unusable;
+                unusable = unusableH;
 
                 const result = algorithm(usable, outputs, feeRate, optionsIn);
                 if (result.inputs) {
@@ -92,6 +93,6 @@ module.exports = function tryConfirmed(algorithm, options) {
         }
 
         // we should never end here
-        // throw new Error('Unexpected unreturned result')
+        throw new Error('Unexpected unreturned result');
     };
-};
+}

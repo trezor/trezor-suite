@@ -43,7 +43,7 @@ export function loadBlockRange(initialState: AccountInfo): Promise<BlockRange> {
             })
 
             : Promise.resolve(0);
-        return firstHeight.then(firstHeight => ({ firstHeight, last }));
+        return firstHeight.then(h => ({ firstHeight: h, last }));
     });
 }
 

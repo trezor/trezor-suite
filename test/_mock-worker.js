@@ -28,7 +28,7 @@ export class MockWorker {
             const sspec = this.spec[0];
             if (sspec.type === 'out') {
                 this.specLock = true;
-                const spec = sspec.spec;
+                const { spec } = sspec;
                 this.spec.shift();
                 setTimeout(() => {
                     this.specLock = false;

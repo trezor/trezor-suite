@@ -1,6 +1,6 @@
 /* @flow */
 
-import * as transaction from './transaction';
+import * as mtransaction from './transaction';
 import * as coinselect from './coinselect';
 
 // ---------- Output from algorigthm
@@ -24,7 +24,7 @@ export type Result = {
     fee: number,
     feePerByte: number,
     bytes: number,
-    transaction: transaction.Transaction,
+    transaction: mtransaction.Transaction,
 };
 
 export const empty: Result = {
@@ -49,7 +49,7 @@ export function getNonfinalResult(result: coinselect.CompleteResult): Result {
 
 export function getFinalResult(
     result: coinselect.CompleteResult,
-    transaction: transaction.Transaction,
+    transaction: mtransaction.Transaction,
 ): Result {
     const {
         max, fee, feePerByte, bytes, totalSpent,

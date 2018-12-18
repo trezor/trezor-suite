@@ -4,7 +4,7 @@ import assert from 'assert';
 
 import coinAccum from '../../src/build-tx/coinselect-lib/outputs/split';
 import fixtures from './fixtures/split';
-import utils from './_utils';
+import * as utils from './_utils';
 
 describe('coinselect split', () => {
     fixtures.forEach((f) => {

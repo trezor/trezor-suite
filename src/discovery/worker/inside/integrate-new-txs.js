@@ -48,7 +48,7 @@ function deleteTxs(
     const filteredTransactions = oldInfo.transactions.filter(tx => !set.has(tx.hash));
 
     const addedUtxos: Array<UtxoInfo> = [];
-    deletedTransactions.map((deletedTran) => {
+    deletedTransactions.forEach((deletedTran) => {
         // this is not efficient At ALL,
         // but it does not happen frequently
         // (usually not at all)
@@ -150,7 +150,11 @@ export function integrateNewTxs(
         wantedOffset,
     );
 
-    const { usedAddresses, unusedAddresses, lastConfirmed: lastConfirmedMain } = deriveUsedAddresses(
+    const {
+        usedAddresses,
+        unusedAddresses,
+        lastConfirmed: lastConfirmedMain,
+    } = deriveUsedAddresses(
         transactions,
         addressToPath,
         newInfo.main.allAddresses,
@@ -261,9 +265,7 @@ function deriveUsedAddresses(
     let lastConfirmed = -1;
 
     transactions.forEach((t) => {
-        objectValues(t.myOutputs).forEach((o) => {
-            const address = o.address;
-            const value = o.value;
+        objectValues(t.myOutputs).forEach(({ address, value }) => {
             const path = addressToPath[address];
             if (path[0] === chain) {
                 const id = path[1];

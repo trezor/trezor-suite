@@ -45,7 +45,7 @@ export type Input = {
 
 export type Transaction = {
     inputs: Array<Input>,
-		outputs: Permutation<Output>, // not in trezor.js, but needed for metadata saving
+    outputs: Permutation<Output>, // not in trezor.js, but needed for metadata saving
 };
 
 export function createTransaction(
@@ -61,7 +61,7 @@ export function createTransaction(
     network: BitcoinJsNetwork,
 ): Transaction {
     const convertedInputs = selectedInputs.map((input) => {
-        const id = input.id;
+        const { id } = input;
         const richInput = allInputs[id];
         return convertInput(
             richInput,
@@ -115,7 +115,7 @@ function convertInput(
     basePath: Array<number>,
 ): Input {
     const res = {
-        hash: reverseBuffer(new Buffer(utxo.transactionHash, 'hex')),
+        hash: reverseBuffer(Buffer.from(utxo.transactionHash, 'hex')),
         index: utxo.index,
         path: basePath.concat([...utxo.addressPath]),
         segwit,
@@ -135,7 +135,7 @@ function convertOpReturnOutput(
     output: Output,
     script: Buffer,
 } {
-    const opReturnDataBuffer = new Buffer(opReturnData, 'hex');
+    const opReturnDataBuffer = Buffer.from(opReturnData, 'hex');
     const output = {
         opReturnData: opReturnDataBuffer,
     };
@@ -175,7 +175,7 @@ function convertOutput(
 }
 
 function reverseBuffer(src: Buffer): Buffer {
-    const buffer = new Buffer(src.length);
+    const buffer = Buffer.alloc(src.length);
     for (let i = 0, j = src.length - 1; i <= j; ++i, --j) {
         buffer[i] = src[j];
         buffer[j] = src[i];

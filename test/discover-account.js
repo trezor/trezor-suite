@@ -15,23 +15,28 @@ discoverAccount(false);
 function discoverAccount(enableWebassembly) {
     const desc = enableWebassembly ? ' wasm' : ' no wasm';
     describe(`discover account${desc}`, () => {
-        fixtures.forEach((fixture_orig) => {
-            const fixture = JSON.parse(JSON.stringify(fixture_orig));
-            it(fixture.name, function (done_orig) {
+        fixtures.forEach((fixtureOrig) => {
+            const fixture = JSON.parse(JSON.stringify(fixtureOrig));
+            it(fixture.name, function f(doneOrig) {
                 this.timeout(30 * 1000);
-                let wasm_old;
+                let wasmOld;
                 if (!enableWebassembly && hasWasm) {
-                    wasm_old = WebAssembly;
+                    wasmOld = WebAssembly;
                     WebAssembly = undefined;
                 }
-                const done_wasm = (x) => {
+                const doneWasm = (x) => {
                     if (!enableWebassembly && hasWasm) {
-                        WebAssembly = wasm_old;
+                        WebAssembly = wasmOld;
                     }
-                    done_orig(x);
+                    doneOrig(x);
                 };
-                const blockchain = new MockBitcore(fixture.spec, done_wasm);
-                const discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain);
+                const blockchain = new MockBitcore(fixture.spec, doneWasm);
+                const discovery = new WorkerDiscovery(
+                    discoveryWorkerFactory,
+                    xpubWorker,
+                    xpubFilePromise,
+                    blockchain,
+                );
                 const stream = discovery.discoverAccount(
                     fixture.start,
                     fixture.xpub,
@@ -44,7 +49,7 @@ function discoverAccount(enableWebassembly) {
                 const done = (x) => {
                     stream.dispose();
                     discovery.destroy();
-                    done_wasm(x);
+                    doneWasm(x);
                 };
                 stream.ending.then((res) => {
                     if (!blockchain.errored) {
@@ -59,8 +64,9 @@ function discoverAccount(enableWebassembly) {
                             done();
                         }
                     }
-                }, (err) => {
-                    if (err instanceof Error) {
+                }, (oerr) => {
+                    let err = oerr;
+                    if (oerr instanceof Error) {
                         err = err.message;
                     }
                     if (!(err.startsWith(fixture.endError))) {

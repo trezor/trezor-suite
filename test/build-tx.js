@@ -22,17 +22,24 @@ import split from './coinselect-lib/split';
 import utils from './coinselect-lib/utils';
 
 describe('build tx', () => {
-    fixtures.forEach(({ description, request, result }) => {
+    fixtures.forEach(({ description, request, result: r }) => {
+        const result = r;
         it(description, () => {
             request.network = bitcoin.networks.bitcoin;
             if (result.transaction) {
-                result.transaction.inputs.forEach((input) => {
-                    input.hash = reverseBuffer(new Buffer(input.REV_hash, 'hex'));
+                result.transaction.inputs.forEach((oinput) => {
+                    const input = oinput;
+                    input.hash = reverseBuffer(Buffer.from(input.REV_hash, 'hex'));
                     delete input.REV_hash;
                 });
                 const o = result.transaction.PERM_outputs;
                 const sorted = JSON.parse(JSON.stringify(o.sorted));
-                sorted.forEach((s) => { if (s.opReturnData != null) { s.opReturnData = new Buffer(s.opReturnData); } });
+                sorted.forEach((ss) => {
+                    const s = ss;
+                    if (s.opReturnData != null) {
+                        s.opReturnData = Buffer.from(s.opReturnData);
+                    }
+                });
                 result.transaction.outputs = new Permutation(sorted, o.permutation);
                 delete result.transaction.PERM_outputs;
             }
@@ -42,7 +49,7 @@ describe('build tx', () => {
 });
 
 function reverseBuffer(src: Buffer): Buffer {
-    const buffer = new Buffer(src.length);
+    const buffer = Buffer.alloc(src.length);
     for (let i = 0, j = src.length - 1; i <= j; ++i, --j) {
         buffer[i] = src[j];
         buffer[j] = src[i];

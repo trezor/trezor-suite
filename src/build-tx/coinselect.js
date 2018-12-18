@@ -95,10 +95,14 @@ export function coinselect(
             type: 'false',
         };
     }
-    const fee = result.fee;
+    const { fee } = result;
     const max = countMaxId === -1 ? -1 : result.outputs[countMaxId].value;
 
-    const totalSpent = result.outputs.filter((output, i) => i !== rOutputs.length).map(o => o.value).reduce((a, b) => a + b, 0) + result.fee;
+    const totalSpent = (result.outputs
+        .filter((output, i) => i !== rOutputs.length)
+        .map(o => o.value)
+        .reduce((a, b) => a + b, 0)
+    ) + result.fee;
 
     const allSize = transactionBytes(result.inputs, result.outputs);
     const feePerByte = fee / allSize;
@@ -152,9 +156,11 @@ function getScriptAddress(address: string, network: BitcoinJsNetwork): {length: 
         pubkeyhash = decoded.data.length === 20;
     }
 
+    const becLength = pubkeyhash ? P2WPKH_OUTPUT_SCRIPT_LENGTH : P2WSH_OUTPUT_SCRIPT_LENGTH;
+    const norLength = pubkeyhash ? P2PKH_OUTPUT_SCRIPT_LENGTH : P2SH_OUTPUT_SCRIPT_LENGTH;
     const length = bech
-        ? (pubkeyhash ? P2WPKH_OUTPUT_SCRIPT_LENGTH : P2WSH_OUTPUT_SCRIPT_LENGTH)
-        : (pubkeyhash ? P2PKH_OUTPUT_SCRIPT_LENGTH : P2SH_OUTPUT_SCRIPT_LENGTH);
+        ? becLength
+        : norLength;
     return { length };
 }
 

@@ -1,13 +1,13 @@
-/* global it:false, describe:false */
+/* global it:false, describe:false, navigator:false, window:false */
 
 import assert from 'assert';
-import { Emitter, Stream, StreamWithEnding } from '../src/utils/stream.js';
-import { uniqueRandom } from '../src/utils/unique-random.js';
+import { Emitter, Stream, StreamWithEnding } from '../src/utils/stream';
+import { uniqueRandom } from '../src/utils/unique-random';
 
-import { MockWorker } from './_mock-worker.js';
-import { WorkerChannel } from '../src/utils/simple-worker-channel.js';
+import { MockWorker } from './_mock-worker';
+import { WorkerChannel } from '../src/utils/simple-worker-channel';
 
-function test_console_warn(fun, test) {
+function testConsoleWarn(fun, test) {
     const original = console.warn;
     let value;
     console.warn = (something) => {
@@ -43,7 +43,7 @@ describe('emitter', () => {
     it('emitting on a destroyed emitter writes warning', () => {
         const emitter = new Emitter();
         emitter.destroy();
-        test_console_warn(() => emitter.emit(), v => /Emitting on a destroyed emitter/.test(v));
+        testConsoleWarn(() => emitter.emit(), v => /Emitting on a destroyed emitter/.test(v));
     });
 
     it('attach+emit works in same tick', () => {
@@ -167,7 +167,7 @@ describe('emitter', () => {
 
     it('attaching the same fuction twice errors', () => {
         const emitter = new Emitter();
-        const fun = (v) => {};
+        const fun = () => {};
         emitter.attach(fun);
         assert.throws(() => emitter.attach(fun), /Cannot attach the same listener twice/);
     });
@@ -818,10 +818,12 @@ describe('stream', () => {
         });
 
         it('iterates through three states (this tick)', (done) => {
-            const stream = Stream.generate(0, state => Promise.resolve(state + 1), state => state < 3);
+            const stream = Stream.generate(0,
+                state => Promise.resolve(state + 1),
+                state => state < 3);
             const res = [];
             stream.values.attach(v => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [1, 2, 3]);
                 done();
             });
@@ -833,7 +835,7 @@ describe('stream', () => {
             }), state => state < 3);
             const res = [];
             stream.values.attach(v => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [1, 2, 3]);
                 done();
             });
@@ -841,12 +843,12 @@ describe('stream', () => {
 
         it('emits error in the generating function and finishes', (done) => {
             const foobar = new Error('Foobar');
-            const stream = Stream.generate(0, (state) => {
+            const stream = Stream.generate(0, () => {
                 throw foobar;
             }, state => state < 3);
             const res = [];
             stream.values.attach(v => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [foobar]);
                 done();
             });
@@ -854,12 +856,12 @@ describe('stream', () => {
 
         it('emits formatted error in the generating function and finishes', (done) => {
             const foobar = 'Foobar';
-            const stream = Stream.generate(0, (state) => {
+            const stream = Stream.generate(0, () => {
                 throw foobar;
             }, state => state < 3);
             const res = [];
             stream.values.attach(v => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.finish.attach(() => {
                 assert.deepEqual(res[0].message, '"Foobar"');
                 done();
             });
@@ -867,7 +869,7 @@ describe('stream', () => {
 
         it('ignores error if disposed first', (done) => {
             const foobar = new Error('Foobar');
-            const stream = Stream.generate(0, (state) => {
+            const stream = Stream.generate(0, () => {
                 throw foobar;
             }, state => state < 3);
             const res = [];
@@ -896,12 +898,12 @@ describe('stream', () => {
 
         it('emits promise rejection and finishes', (done) => {
             const foobar = new Error('Foobar');
-            const stream = Stream.generate(0, state => new Promise((resolve, reject) => {
+            const stream = Stream.generate(0, () => new Promise((resolve, reject) => {
                 setTimeout(() => reject(foobar), 10);
             }), state => state < 3);
             const res = [];
             stream.values.attach(v => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [foobar]);
                 done();
             });
@@ -909,7 +911,7 @@ describe('stream', () => {
 
         it('ignores promise rejection if disposed first', (done) => {
             const foobar = new Error('Foobar');
-            const stream = Stream.generate(0, state => new Promise((resolve, reject) => {
+            const stream = Stream.generate(0, () => new Promise((resolve, reject) => {
                 setTimeout(() => reject(foobar), 10);
             }), state => state < 3);
             const res = [];
@@ -935,7 +937,7 @@ describe('stream', () => {
             const stream = Stream.simple(0);
             const res = [];
             stream.values.attach(v => res.push(v));
-            stream.finish.attach((nothing, detach) => {
+            stream.finish.attach(() => {
                 assert.deepEqual(res, [0]);
                 done();
             });
@@ -1147,7 +1149,7 @@ describe('stream', () => {
             const stream = Stream.simple(1);
             const promise = stream.awaitFinish();
             let finished = false;
-            promise.then((r) => {
+            promise.then(() => {
                 finished = true;
             });
             setTimeout(() => {
@@ -1160,7 +1162,7 @@ describe('stream', () => {
             const stream = Stream.empty();
             const promise = stream.awaitFinish();
             let finished = false;
-            promise.then((r) => {
+            promise.then(() => {
                 finished = true;
             });
             setTimeout(() => {
@@ -1175,7 +1177,7 @@ describe('stream', () => {
             const promise = stream.awaitFinish();
             let finished = false;
             // this promise hangs forever
-            promise.then((r) => {
+            promise.then(() => {
                 finished = true;
             });
             setTimeout(() => {
@@ -1440,7 +1442,7 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => new Promise((resolve, reject) => {
+            const stream = ostream.mapPromise(k => new Promise((resolve) => {
                 setTimeout(() => {
                     resolve(k * 2);
                 }, 30);
@@ -1469,7 +1471,7 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => new Promise((resolve, reject) => {
+            const stream = ostream.mapPromise(() => new Promise((resolve, reject) => {
                 setTimeout(() => {
                     reject(new Error('foo'));
                 }, 30);
@@ -1498,7 +1500,7 @@ describe('stream', () => {
             const emitter = new Emitter();
             const finish = new Emitter();
             const ostream = Stream.fromEmitterFinish(emitter, finish, () => {});
-            const stream = ostream.mapPromise(k => new Promise((resolve, reject) => {
+            const stream = ostream.mapPromise(() => new Promise((resolve, reject) => {
                 setTimeout(() => {
                     reject(new Error('foo'));
                 }, 30);
@@ -1596,7 +1598,7 @@ describe('stream', () => {
     describe('reduce', () => {
         it('creates a promise', () => {
             const stream = Stream.simple(1);
-            const promise = stream.reduce(() => {}, 0);
+            const promise = stream.reduce(() => null, 0);
             assert.ok(promise instanceof Promise);
         });
 
@@ -1624,7 +1626,7 @@ describe('stream', () => {
             setTimeout(() => emitter.emit(50), 30);
             const res = stream.reduce((prev, value) => [...prev, value], []);
             let resolved = false;
-            res.then((v) => {
+            res.then(() => {
                 resolved = true;
             });
             setTimeout(() => {
@@ -1882,7 +1884,14 @@ describe('stream with ending', () => {
 
 // this mocks all the window and process properties
 // so it works in both karma and in mocha or whatever we use
-function mockProcessNavigatorOffset(processVersion, navigatorLanguage, navigatorLanguages, navigatorUserAgent, offset, fun) {
+function mockProcessNavigatorOffset(
+    processVersion,
+    navigatorLanguage,
+    navigatorLanguages,
+    navigatorUserAgent,
+    offset,
+    fun,
+) {
     const originalOffset = Date.prototype.getTimezoneOffset;
     let funAfter;
     if (typeof global.process !== 'undefined') {
@@ -2033,8 +2042,8 @@ describe('simple worker channel', () => {
         const zero = channel.postMessage({ foo: 'bar' });
         channel.postMessage({ foo: 'bar' }).then((res) => {
             assert.deepStrictEqual(res, { bar: 'one' });
-            zero.then((res) => {
-                assert.deepStrictEqual(res, { bar: 'zero' });
+            zero.then((rres) => {
+                assert.deepStrictEqual(rres, { bar: 'zero' });
                 done();
             });
         });

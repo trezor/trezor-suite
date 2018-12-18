@@ -79,10 +79,9 @@ export class GetChainTransactions {
     range: BlockRange;
 
     nullRange(): BlockRange {
-        const range = this.range;
         return {
             firstHeight: 0,
-            last: range.last,
+            last: this.range.last,
         };
     }
 
@@ -143,7 +142,13 @@ export class GetChainTransactions {
         this.segwit = segwit;
         this.webassembly = webassembly;
         if (!this.webassembly) {
-            this.source = new BrowserAddressSource(BitcoinJsHDNode.fromBase58(this.xpub, this.network).derive(this.chainId), this.network, this.segwit);
+            this.source = new BrowserAddressSource(
+                BitcoinJsHDNode
+                    .fromBase58(this.xpub, this.network)
+                    .derive(this.chainId),
+                this.network,
+                this.segwit,
+            );
         }
     }
 

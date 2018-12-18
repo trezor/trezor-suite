@@ -5,8 +5,8 @@
 import assert from 'assert';
 
 import { BitcoreBlockchain } from '../src/bitcore';
-import { MockWorker } from './_mock-worker.js';
-import { Stream } from '../src/utils/stream.js';
+import { MockWorker } from './_mock-worker';
+import { Stream } from '../src/utils/stream';
 import { Socket } from '../src/socketio-worker/outside';
 
 // this is here because the starting communication is always the same
@@ -426,7 +426,7 @@ describe('bitcore', () => {
             }, 50);
         });
 
-        it('interprets hanging on getBlock for 30s as non-working', function (done) {
+        it('interprets hanging on getBlock for 30s as non-working', function r(done) {
             this.timeout(60 * 1000);
             console.info('(note - this test takes 50s)');
             const specsA = [{
@@ -797,14 +797,14 @@ describe('bitcore', () => {
                 return mock;
             };
             const blockchain = new BitcoreBlockchain(['http://localhost:3005'], socketWorkerFactory);
-            for (const inputs of [['foo'], 'foo', [123], new Set([123])]) {
+            [['foo'], 'foo', [123], new Set([123])].forEach((inputs) => {
                 try {
                     blockchain.subscribe(inputs);
                     assert(false);
                 } catch (e) {
                     assert(true);
                 }
-            }
+            });
 
             blockchain.destroy().then(() => done());
         });

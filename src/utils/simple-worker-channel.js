@@ -1,6 +1,8 @@
 /* @flow
  */
 
+/* global Worker:false,Event:false */
+
 // Super simple webworker interface.
 
 // Used ONLY for the address generation;
@@ -42,8 +44,9 @@ export class WorkerChannel {
         });
     }
 
-    receiveMessage(event: any) {
-        const i: number = event.data.i;
+    receiveMessage(oevent: any) {
+        const event = oevent;
+        const { i } = event.data;
         const dfd = this.pending[i];
         if (dfd) {
             delete event.data.i;

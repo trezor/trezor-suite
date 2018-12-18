@@ -16,7 +16,7 @@ import type { AccountInfo, AccountLoadStatus, ForceAddedTransaction } from '../.
 
 import { WorkerChannel } from './channel';
 
-
+// eslint-disable-next-line no-undef
 type WorkerFactory = () => Worker;
 
 export class WorkerDiscoveryHandler {
@@ -84,9 +84,11 @@ export class WorkerDiscoveryHandler {
             this.counter.stream.dispose();
         });
 
-        const stream: Stream<AccountLoadStatus> = this.counter.stream;
-
-        const res: StreamWithEnding<AccountLoadStatus, AccountInfo> = StreamWithEnding.fromStreamAndPromise(stream, promise);
+        const res: StreamWithEnding<AccountLoadStatus, AccountInfo> = StreamWithEnding
+            .fromStreamAndPromise(
+                this.counter.stream,
+                promise,
+            );
         return res;
     }
 
@@ -147,15 +149,20 @@ export class WorkerDiscoveryHandler {
         startBlock: number,
         endBlock: number,
         add: boolean,
-        addresses: ?Array<string>,
+        oaddresses: ?Array<string>,
     ): Stream<ChunkDiscoveryInfo | string> {
-        const addressPromise = WorkerDiscoveryHandler.deriveAddresses(source, addresses, firstIndex, lastIndex);
+        const addressPromise = WorkerDiscoveryHandler.deriveAddresses(
+            source,
+            oaddresses,
+            firstIndex,
+            lastIndex,
+        );
 
         const errStream: Stream<ChunkDiscoveryInfo | string | Error> = Stream.fromPromise(
-            addressPromise.then((addresses) => {
-                if (this.cashAddress) {
-                    addresses = addresses.map(a => bchaddrjs.toCashAddress(a));
-                }
+            addressPromise.then((paddresses) => {
+                const addresses = this.cashAddress
+                    ? paddresses.map(a => bchaddrjs.toCashAddress(a))
+                    : paddresses;
 
                 return this.blockchain.lookupTransactionsStream(addresses, endBlock, startBlock)
                     .map(
@@ -173,16 +180,21 @@ export class WorkerDiscoveryHandler {
                                     height: null,
                                     timestamp: null,
                                 };
-                                if (transactions_.map(t => t.hash).some(hash => transaction.hash === hash)) {
+                                if (transactions_
+                                    .map(t => t.hash)
+                                    .some(hash => transaction.hash === hash)) {
                                     // transaction already came from blockchain again
                                     this.forceAddedTransactions.splice(i, 1);
                                 } else {
                                     const txAddresses = new Set();
-                                    transaction.inputAddresses.concat(transaction.outputAddresses).forEach((a) => {
-                                        if (a != null) {
-                                            txAddresses.add(a);
-                                        }
-                                    });
+                                    transaction
+                                        .inputAddresses
+                                        .concat(transaction.outputAddresses)
+                                        .forEach((a) => {
+                                            if (a != null) {
+                                                txAddresses.add(a);
+                                            }
+                                        });
                                     if (addresses.some(address => txAddresses.has(address))) {
                                         addedTransactions.push(transaction_);
                                     }
@@ -199,12 +211,15 @@ export class WorkerDiscoveryHandler {
                     );
             }),
         );
-        const resStream: Stream<ChunkDiscoveryInfo | string> = errStream.map((k: (ChunkDiscoveryInfo | string | Error)): (ChunkDiscoveryInfo | string) => {
-            if (k instanceof Error) {
-                return k.message;
-            }
-            return k;
-        });
+        const resStream: Stream<ChunkDiscoveryInfo | string> = errStream
+            .map(
+                (k: (ChunkDiscoveryInfo | string | Error)): (ChunkDiscoveryInfo | string) => {
+                    if (k instanceof Error) {
+                        return k.message;
+                    }
+                    return k;
+                },
+            );
         return resStream;
     }
 }
@@ -216,7 +231,12 @@ class TransactionCounter {
 
     finisher: Emitter<void> = new Emitter();
 
-    stream: Stream<AccountLoadStatus> = Stream.fromEmitterFinish(this.emitter, this.finisher, () => { });
+    stream: Stream<AccountLoadStatus> = Stream
+        .fromEmitterFinish(
+            this.emitter,
+            this.finisher,
+            () => { },
+        );
 
     setCount(i: number) {
         if (i > this.count) {

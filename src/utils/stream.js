@@ -100,11 +100,11 @@ export class Stream<T> {
 
     // note that this never "finishes"
     // note that dispose does NOT destroy the emitter
-    static fromEmitter<T>(
-        emitter: Emitter<T>,
+    static fromEmitter<U>(
+        emitter: Emitter<U>,
         dispose: () => void,
-    ): Stream<T> {
-        return new Stream((update, finish) => {
+    ): Stream<U> {
+        return new Stream((update) => {
             let disposed = false;
             const handler = (t) => {
                 // check for disposed not needed, handler is removed
@@ -121,11 +121,11 @@ export class Stream<T> {
         });
     }
 
-    static fromEmitterFinish<T>(
-        emitter: Emitter<T>,
+    static fromEmitterFinish<U>(
+        emitter: Emitter<U>,
         finisher: Emitter<void>,
         dispose: () => void,
-    ): Stream<T> {
+    ): Stream<U> {
         return new Stream((update, finish) => {
             let disposed = false;
             const handler = (t) => {
@@ -152,8 +152,7 @@ export class Stream<T> {
         });
     }
 
-    static empty(
-    ): Stream<T> {
+    static empty<U>(): Stream<U> {
         return new Stream((update, finish) => {
             let disposed = false;
             setTimeout(() => {
@@ -167,10 +166,10 @@ export class Stream<T> {
         });
     }
 
-    static fromPromise<T>(
-        promise: Promise<Stream<T>>,
+    static fromPromise<U>(
+        promise: Promise<Stream<U>>,
         ignoreRejectionError: ?boolean,
-    ): Stream<Error | T> {
+    ): Stream<Error | U> {
         const _ignoreRejectionError = ignoreRejectionError == null ? false : ignoreRejectionError;
         const nstream = new Stream((update, finish) => {
             let stream_;
@@ -209,13 +208,13 @@ export class Stream<T> {
         return nstream;
     }
 
-    static setLater<T>(): {
-        stream: Stream<T>,
-        setter: (s: Stream<T>) => void,
+    static setLater<U>(): {
+        stream: Stream<U>,
+        setter: (s: Stream<U>) => void,
         } {
         const df = deferred();
         let set = false;
-        const setter = (s: Stream<T>) => {
+        const setter = (s: Stream<U>) => {
             if (set) {
                 throw new Error('Setting stream twice.');
             }
@@ -223,7 +222,7 @@ export class Stream<T> {
             df.resolve(s);
         };
         // $FlowIssue the promise is never rejected, so the type can be Stream<T>
-        const stream: Stream<T> = Stream.fromPromise(df.promise);
+        const stream: Stream<U> = Stream.fromPromise(df.promise);
         return { stream, setter };
     }
 
@@ -231,11 +230,11 @@ export class Stream<T> {
     // the stream emits the error as a value and then finishes
     // note - condition is for CONTINUING
     // the last value will always NOT satisfy the condition
-    static generate<T>(
-        initial: T,
-        generate: (state: T) => Promise<T>,
-        condition: (state: T) => boolean,
-    ): Stream<T | Error> {
+    static generate<U>(
+        initial: U,
+        generate: (state: U) => Promise<U>,
+        condition: (state: U) => boolean,
+    ): Stream<U | Error> {
         return new Stream((update, finish) => {
             let disposed = false;
             const iterate = (state) => {
@@ -252,13 +251,13 @@ export class Stream<T> {
                     }
                     return;
                 }
-                promise.then((state) => {
+                promise.then((nstate) => {
                     if (disposed) {
                         // stop the iteration
                     } else {
-                        update(state);
-                        if (condition(state)) {
-                            iterate(state);
+                        update(nstate);
+                        if (condition(nstate)) {
+                            iterate(nstate);
                         } else {
                             finish();
                         }
@@ -277,8 +276,8 @@ export class Stream<T> {
         });
     }
 
-    static simple<T>(value: T): Stream<T> {
-        const values: Emitter<T> = new Emitter();
+    static simple<U>(value: U): Stream<T> {
+        const values: Emitter<U> = new Emitter();
         const finish: Emitter<void> = new Emitter();
         const stream = Stream.fromEmitterFinish(values, finish, () => {});
         setTimeout(() => {
@@ -290,7 +289,7 @@ export class Stream<T> {
         return stream;
     }
 
-    static combineFlat<T>(streams: Array<Stream<T>>): Stream<T> {
+    static combineFlat<U>(streams: Array<Stream<U>>): Stream<U> {
         if (streams.length === 0) {
             return Stream.empty();
         }
@@ -313,10 +312,10 @@ export class Stream<T> {
         });
     }
 
-    static filterError<T>(
-        stream: Stream<Error | T>,
-    ): Stream<T> {
-        const res_: Stream<Error | T> = stream.filter(v => !(v instanceof Error));
+    static filterError<U>(
+        stream: Stream<Error | U>,
+    ): Stream<U> {
+        const res_: Stream<Error | U> = stream.filter(v => !(v instanceof Error));
 
         // $FlowIssue
         const res: Stream<T> = res_;
@@ -379,8 +378,10 @@ export class Stream<T> {
     // note: this DOES keep the order
     // note: it does not finish on rejected promise or error in fn
     //       it just emits error and does the next
-    // note: even when it does keep order, functions are run as soon as the values come, but the values are emitted in the same order, no matter how long do the promise takes
-    //       so you can depend on RESULT order being the same, but there can be more promises running at the same time
+    // note: even when it does keep order, functions are run as soon as the values come,
+    //       but the values are emitted in the same order, no matter how long do the promise takes
+    //       so you can depend on RESULT order being the same, but there can be more promises
+    //       running at the same time
     // note: calling dispose IMMEDIATELY stops the streaming values
     mapPromise<U>(fn: (value: T) => Promise<U>): Stream<U | Error> {
         return new Stream((update, finish) => {
@@ -389,13 +390,13 @@ export class Stream<T> {
             this.values.attach((value) => {
                 const previousNow = previous;
                 // Flow idiocy
-                const runFn: Promise<U> = (function () {
+                const runFn: Promise<U> = ((() => {
                     try {
                         return fn(value);
                     } catch (e) {
                         return Promise.reject(e);
                     }
-                }());
+                })());
                 previous = runFn.then(u => previousNow.then(() => {
                     if (!disposed) {
                         update(u);
@@ -433,7 +434,7 @@ export class Stream<T> {
     }
 
     reduce<U>(fn: (previous: U, value: T) => U, initial: U): Promise<U> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let state = initial;
             const onValue = (value) => { state = fn(state, value); };
             this.values.attach(onValue);
@@ -454,12 +455,12 @@ export class StreamWithEnding<UpdateT, EndingT> {
     // ending never resolves before stream finishes
     dispose: (e: Error) => void;
 
-    static fromStreamAndPromise(s: Stream<UpdateT>, ending: Promise<EndingT>): StreamWithEnding<UpdateT, EndingT> {
+    static fromStreamAndPromise<U, E>(s: Stream<U>, ending: Promise<E>): StreamWithEnding<U, E> {
         // all these empty cathces
         // are to make node.js happy to stop showing stupid errors
         // on unhandled rejections
         ending.catch(() => {});
-        const res: StreamWithEnding<UpdateT, EndingT> = new StreamWithEnding();
+        const res: StreamWithEnding<U, E> = new StreamWithEnding();
         res.stream = s;
 
         const def = deferred();
@@ -482,7 +483,7 @@ export class StreamWithEnding<UpdateT, EndingT> {
         // the rejection will come to the ending promise
         // but if we use filterError, U can never include error
         let disposed = false;
-        // $FlowIssue the error thing - unfortunately, flow cannot have different type based on true/false of second paramatere
+        // $FlowIssue the error thing - flow cannot infer
         res.stream = Stream.fromPromise(p.then((s) => {
             if (disposed) {
                 throw new Error('disposed'); // will be ignored

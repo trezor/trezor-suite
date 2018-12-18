@@ -60,7 +60,8 @@ export class MockBitcore {
 
     notificationsEmitter: Emitter<TransactionWithHeight> = new Emitter();
 
-    notifications: Stream<TransactionWithHeight> = Stream.fromEmitter(this.notificationsEmitter, () => {});
+    notifications: Stream<TransactionWithHeight> = Stream
+        .fromEmitter(this.notificationsEmitter, () => {});
 
     blocksEmitter: Emitter<void> = new Emitter();
 
@@ -94,7 +95,7 @@ export class MockBitcore {
             const sspec = this.spec[0];
             if (sspec.type === 'emit') {
                 this.specLock = true;
-                const spec: EmitterSpec = sspec.spec;
+                const { spec } = sspec;
                 this.spec.shift();
                 setTimeout(() => {
                     this.specLock = false;
@@ -277,20 +278,24 @@ export class MockBitcore {
         }, TICK_MS));
     }
 
+    // eslint-disable-next-line class-methods-use-this,no-unused-vars
     sendTransaction(hex: string): Promise<string> {
-        return Promise.reject('Not mocked');
+        return Promise.reject(new Error('Not mocked'));
     }
 
+    // eslint-disable-next-line class-methods-use-this
     hardStatusCheck(): Promise<boolean> {
-        return Promise.reject('Not mocked');
+        return Promise.reject(new Error('Not mocked'));
     }
 
+    // eslint-disable-next-line class-methods-use-this,no-unused-vars
     lookupTransaction(hash: string): Promise<TransactionWithHeight> {
-        return Promise.reject('Not mocked');
+        return Promise.reject(new Error('Not mocked'));
     }
 
+    // eslint-disable-next-line class-methods-use-this,no-unused-vars
     estimateTxFees(blocks: Array<number>, skipMissing: boolean): Promise<TxFees> {
-        return Promise.reject('Not mocked');
+        return Promise.reject(new Error('Not mocked'));
     }
 }
 
@@ -298,12 +303,13 @@ function arrayEqSet<X>(array: Array<X>, set: Set<X>) {
     if (array.length !== set.size) {
         return false;
     }
-    for (const a of array) {
+    let is = true;
+    array.forEach((a) => {
         if (!set.has(a)) {
-            return false;
+            is = false;
         }
-    }
-    return true;
+    });
+    return is;
 }
 
 // eslint-disable-next-line  no-unused-vars

@@ -45,7 +45,7 @@ let socket: socketIO = null;
 const events: {[key: number]: Function} = {};
 
 // eslint-disable-next-line no-undef
-onmessage = function (event: {data: string}) {
+onmessage = (event: {data: string}) => {
     const data = JSON.parse(event.data);
 
     if (data.type === 'init') {
@@ -57,17 +57,19 @@ onmessage = function (event: {data: string}) {
         socket.on('connect', () => doPostMessage({
             type: 'initDone',
         }));
-        socket.on('connect_error', (e) => {
+        socket.on('connect_error', () => {
             doPostMessage({
                 type: 'initError',
             });
+            // eslint-disable-next-line no-restricted-globals,no-undef
             close();
         });
     }
 
     if (data.type === 'close') {
         // a hack to prevent Firefox errors in karma tests
-        // it doesn't break anything - since on closing the worker, no timeouts will ever happen anyway
+        // it doesn't break anything - since on closing the worker,
+        // no timeouts will ever happen anyway
         try {
             // eslint-disable-next-line no-global-assign,no-native-reassign
             setTimeout = function fun() {};
@@ -79,11 +81,12 @@ onmessage = function (event: {data: string}) {
             socket.disconnect(true);
         }
         socket = null;
+        // eslint-disable-next-line no-restricted-globals,no-undef
         close();
     }
 
     if (data.type === 'observe') {
-        const eventFunction = function (reply) {
+        const eventFunction = (reply) => {
             doPostMessage({
                 type: 'emit',
                 event: data.event,
@@ -118,7 +121,7 @@ onmessage = function (event: {data: string}) {
 };
 
 function doPostMessage(data: Object) {
-    /* $FlowIssue worker postMessage missing */
+    /* $FlowIssue worker postMessage missing */ // eslint-disable-next-line no-undef
     postMessage(
         JSON.stringify(data),
     );

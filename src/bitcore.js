@@ -99,6 +99,7 @@ type BcTransactionInfo = {
 type BcHistory = { addresses: { [address: string]: Object } } & BcTransactionInfo;
 type BcHistories = { items: Array<BcHistory>, totalCount: number };
 
+// eslint-disable-next-line no-undef
 type SocketWorkerFactory = () => Worker;
 
 export class BitcoreBlockchain {
@@ -133,6 +134,7 @@ export class BitcoreBlockchain {
         tried: {[k: string]: boolean},
         closeOnInit: Emitter<void>,
     ): Promise<{socket: Socket, url: string}> {
+        const triedCopy = tried;
         const untriedEndpoints = endpoints.filter((e, i) => !tried[i.toString()]);
 
         if (untriedEndpoints.length === 0) {
@@ -140,12 +142,21 @@ export class BitcoreBlockchain {
         }
 
         const random = uniqueRandom(untriedEndpoints.length);
-        return onlineStatusCheck(socketWorkerFactory, untriedEndpoints[random], closeOnInit).then((socket) => {
+        return onlineStatusCheck(
+            socketWorkerFactory,
+            untriedEndpoints[random],
+            closeOnInit,
+        ).then((socket) => {
             if (socket) {
                 return { socket, url: untriedEndpoints[random] };
             }
-            tried[random.toString()] = true;
-            return BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried, closeOnInit);
+            triedCopy[random.toString()] = true;
+            return BitcoreBlockchain._tryEndpoint(
+                endpoints,
+                socketWorkerFactory,
+                triedCopy,
+                closeOnInit,
+            );
         });
     }
 
@@ -174,7 +185,12 @@ export class BitcoreBlockchain {
         this.blocks = blocks.stream;
 
         const tried = { '-1': true };
-        BitcoreBlockchain._tryEndpoint(endpoints, socketWorkerFactory, tried, this.closeOnInit).then(({ socket, url }) => {
+        BitcoreBlockchain._tryEndpoint(
+            endpoints,
+            socketWorkerFactory,
+            tried,
+            this.closeOnInit,
+        ).then(({ socket, url }) => {
             this.closeOnInit.destroy();
             const trySmartFee = estimateSmartTxFee(socket, 2, false).then(
                 () => {
@@ -206,17 +222,24 @@ export class BitcoreBlockchain {
     // this is for repeated checks after one failure
     hardStatusCheck(): Promise<boolean> {
         const newOne = new BitcoreBlockchain(this.endpoints, this.socketWorkerFactory);
-        return newOne.socket.promise.then(() => newOne.destroy().then(() => true), () => newOne.destroy().then(() => false));
+        return newOne.socket.promise.then(
+            () => newOne.destroy().then(() => true),
+            () => newOne.destroy().then(() => false),
+        );
     }
 
     subscribe(inAddresses: Set<string>) {
         if (!(inAddresses instanceof Set)) {
             throw new Error('Input not a set of strings.');
         }
-        for (const address of inAddresses) {
+        let notString = false;
+        inAddresses.forEach((address) => {
             if (typeof address !== 'string') {
-                throw new Error('Input not a set of strings.');
+                notString = true;
             }
+        });
+        if (notString) {
+            throw new Error('Input not a set of strings.');
         }
         this.socket.promise.then((socket) => {
             const newAddresses = [...inAddresses].filter(a => !(this.addresses.has(a)));
@@ -245,6 +268,7 @@ export class BitcoreBlockchain {
             if (socket != null) {
                 return socket.close();
             }
+            return Promise.resolve();
         });
     }
 
@@ -266,7 +290,9 @@ export class BitcoreBlockchain {
                 if (r instanceof Error) {
                     return r;
                 }
-                return r.items.map((item: BcTransactionInfo): TransactionWithHeight => convertTx(this.zcash, item.tx));
+                return r.items.map(
+                    (i: BcTransactionInfo): TransactionWithHeight => convertTx(this.zcash, i.tx),
+                );
             })),
         );
         return res;
@@ -280,13 +306,14 @@ export class BitcoreBlockchain {
         start: number,
         end: number,
     ): Promise<Array<TransactionWithHeight>> {
-        const maybeRes: Promise<Array<TransactionWithHeight> | Error> = this.lookupTransactionsStream(
+        type Ts = Array<TransactionWithHeight> | Error;
+        const maybeRes: Promise<Ts> = this.lookupTransactionsStream(
             addresses,
             start,
             end,
         ).reduce((
-            previous: Array<TransactionWithHeight> | Error,
-            current: Array<TransactionWithHeight> | Error,
+            previous: Ts,
+            current: Ts,
         ) => {
             if (previous instanceof Error) {
                 return previous;
@@ -317,7 +344,7 @@ export class BitcoreBlockchain {
 
     lookupTransaction(hash: string): Promise<TransactionWithHeight> {
         return this.socket.promise.then(socket => lookupDetailedTransaction(socket, hash)
-            .then((info: BcDetailedTransaction): TransactionWithHeight => convertTx(this.zcash, info)));
+            .then((i: BcDetailedTransaction): TransactionWithHeight => convertTx(this.zcash, i)));
     }
 
     sendTransaction(hex: string): Promise<string> {
@@ -337,10 +364,13 @@ export class BitcoreBlockchain {
             let res: Promise<TxFees> = Promise.resolve({});
             blocks.forEach((block) => {
                 res = res.then((previous: TxFees): TxFees => {
-                    const feePromise = this.hasSmartTxFees ? estimateSmartTxFee(socket, block, conservative) : Promise.resolve(-1);
+                    const feePromise = this.hasSmartTxFees
+                        ? estimateSmartTxFee(socket, block, conservative)
+                        : Promise.resolve(-1);
                     return feePromise.then((fee) => {
-                        previous[block] = fee;
-                        return previous;
+                        const previousCopy = previous;
+                        previousCopy[block] = fee;
+                        return previousCopy;
                     });
                 });
             });
@@ -352,12 +382,13 @@ export class BitcoreBlockchain {
         return this.socket.promise.then((socket) => {
             let res: Promise<TxFees> = Promise.resolve({});
             blocks.forEach((block) => {
-                res = res.then((previous: TxFees): TxFees => estimateTxFee(socket, block).then((fee) => {
+                res = res.then((p: TxFees): TxFees => estimateTxFee(socket, block).then((fee) => {
+                    const previousCopy = p;
                     const add = skipMissing ? fee !== -1 : true;
                     if (add) {
-                        previous[block] = fee;
+                        previousCopy[block] = fee;
                     }
-                    return previous;
+                    return previousCopy;
                 }));
             });
             return res;
@@ -405,7 +436,9 @@ function lookupAddressHistoriesMempool(
             // * 5 is quite aggressive, but in reality, the transactions are either
             // all normal, <500 B (so 5 transactions is probably even maybe too cautious),
             // or are all giant (> 20 kB) so taking by 1 is the best
-            const previousTxLength = previous.items.reduce((total, history) => total + history.tx.hex.length / 2, 0);
+            const previousTxLength = previous.items.reduce(
+                (total, history) => total + history.tx.hex.length / 2, 0,
+            );
 
             if (previousTxLength <= 5000 && !first) {
                 pageLength *= 5;
@@ -518,7 +551,11 @@ function lookupSyncStatus(socket: Socket): Promise<BcSyncStatus> {
     return socket.send({ method, params }).then(res => ({ height: res.blocks }));
 }
 
-function estimateSmartTxFee(socket: Socket, blocks: number, conservative: boolean): Promise<number> {
+function estimateSmartTxFee(
+    socket: Socket,
+    blocks: number,
+    conservative: boolean,
+): Promise<number> {
     const method = 'estimateSmartFee';
     const params = [blocks, conservative];
     return socket.send({ method, params });
@@ -530,18 +567,24 @@ function estimateTxFee(socket: Socket, blocks: number): Promise<number> {
     return socket.send({ method, params });
 }
 
-function onlineStatusCheck(socketWorkerFactory: SocketWorkerFactory, endpoint: string, closeOnInit: Emitter<void>): Promise<?Socket> {
+function onlineStatusCheck(
+    socketWorkerFactory: SocketWorkerFactory,
+    endpoint: string,
+    closeOnInit: Emitter<void>,
+): Promise<?Socket> {
     const socket = new Socket(socketWorkerFactory, endpoint, closeOnInit);
     const conn = new Promise((resolve) => {
-        observeErrors(socket).awaitFirst().then(() => resolve(false));
+        observeErrors(socket).awaitFirst().then(() => {
+            resolve(false);
+        });
         // we try to get the first block
         // if it returns something, it probably works
         Promise.race([
-            new Promise((resolve, reject) => setTimeout(() => reject(), 30000)),
+            new Promise((tresolve, reject) => setTimeout(() => reject(), 30000)),
             lookupBlockHash(socket, 0),
         ]).then(
-            () => resolve(true),
-            () => resolve(false),
+            () => { resolve(true); },
+            () => { resolve(false); },
         );
     });
     return conn.then((res) => {
@@ -555,8 +598,13 @@ function onlineStatusCheck(socketWorkerFactory: SocketWorkerFactory, endpoint: s
 
 function observeErrors(socket: Socket): Stream<Error> {
     const errortypes = ['connect_error', 'reconnect_error', 'error', 'close', 'disconnect'];
+    const streams = errortypes.map((type) => {
+        const subs = socket.observe(type);
+        const cleaned = subs.map((k: mixed) => new Error(`${JSON.stringify(k)} (${type})`));
+        return cleaned;
+    });
 
-    const s = Stream.combineFlat(errortypes.map(type => socket.observe(type).map((k: mixed) => new Error(`${JSON.stringify(k)} (${type})`))));
+    const s = Stream.combineFlat(streams);
     return s;
 }
 

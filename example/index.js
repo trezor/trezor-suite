@@ -1,9 +1,14 @@
+/* global Worker:false, fetch:false, window:false, document:false */
 import { networks } from 'bitcoinjs-lib-zcash';
 
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import h from 'virtual-dom/h';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import diff from 'virtual-dom/diff';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import patch from 'virtual-dom/patch';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import createElement from 'virtual-dom/create-element';
 import { BitcoreBlockchain } from '../src/bitcore';
 import { WorkerDiscovery } from '../src/discovery/worker-discovery';
@@ -11,7 +16,7 @@ import { WorkerDiscovery } from '../src/discovery/worker-discovery';
 // setting up workers
 const fastXpubWorker = new Worker('fastxpub.js');
 const fastXpubWasmFilePromise = fetch('fastxpub.wasm')
-    .then(response => (response.ok ? response.arrayBuffer() : Promise.reject('failed to load')));
+    .then(response => (response.ok ? response.arrayBuffer() : Promise.reject(new Error('failed to load'))));
 
 const socketWorkerFactory = () => new Worker('./socket-worker.js');
 const discoveryWorkerFactory = () => new Worker('./discovery-worker.js');
@@ -87,7 +92,11 @@ window.run = () => {
 
     const blockchain = new BitcoreBlockchain(BITCORE_URLS, socketWorkerFactory);
 
-    const discovery = new WorkerDiscovery(discoveryWorkerFactory, fastXpubWorker, fastXpubWasmFilePromise, blockchain);
+    const discovery = new WorkerDiscovery(
+    discoveryWorkerFactory,
+    fastXpubWorker,
+    fastXpubWasmFilePromise,
+    blockchain);
     const network = networks.bitcoin;
     discover(XPUBS, discovery, network);
 };

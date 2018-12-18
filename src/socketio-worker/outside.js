@@ -1,5 +1,7 @@
 /* @flow */
 
+/* global Worker:false */
+
 import { Stream, Emitter } from '../utils/stream';
 
 import type {
@@ -26,7 +28,11 @@ export class Socket {
 
     destroyerOnInit: Emitter<void>;
 
-    constructor(workerFactory: SocketWorkerFactory, endpoint: string, destroyerOnInit: Emitter<void>) {
+    constructor(
+        workerFactory: SocketWorkerFactory,
+        endpoint: string,
+        destroyerOnInit: Emitter<void>,
+    ) {
         this.endpoint = endpoint;
         this.socket = new SocketWorkerHandler(workerFactory, destroyerOnInit);
         this._socketInited = this.socket.init(this.endpoint);
@@ -54,7 +60,9 @@ export class Socket {
     }
 
     subscribe(event: string, ...values: Array<any>) {
-        return this._socketInited.then(() => this.socket.subscribe(event, ...values)).catch(() => {});
+        return this._socketInited.then(
+            () => this.socket.subscribe(event, ...values),
+        ).catch(() => {});
     }
 }
 
@@ -91,8 +99,7 @@ class SocketWorkerHandler {
         };
         this.destroyerOnInit.attach(funOnDestroy);
 
-        worker.onmessage = (message) => {
-            const data = message.data;
+        worker.onmessage = ({ data }) => {
             this.destroyerOnInit.detach(funOnDestroy);
             if (typeof data === 'string') {
                 const parsed = JSON.parse(data);
@@ -119,10 +126,10 @@ class SocketWorkerHandler {
         return this._tryWorker(endpoint, 'websocket')
             .catch(() => this._tryWorker(endpoint, 'polling'))
             .then((worker) => {
-                this._worker = worker;
+                const cworker = worker;
+                this._worker = cworker;
                 const emitter = new Emitter();
-                worker.onmessage = (message) => {
-                    const data = message.data;
+                cworker.onmessage = ({ data }) => {
                     if (typeof data === 'string') {
                         if (!this.stopped) {
                             emitter.emit(JSON.parse(data));
@@ -141,6 +148,7 @@ class SocketWorkerHandler {
                             type: 'close',
                         });
                         this._emitter = null;
+                        return null;
                     });
                 });
             });
@@ -167,12 +175,12 @@ class SocketWorkerHandler {
         });
     }
 
-    send(message: Object): Promise<any> {
+    send(imessage: Object): Promise<any> {
         this.counter++;
-        const counter = this.counter;
+        const { counter } = this;
         this._sendMessage({
             type: 'send',
-            message,
+            message: imessage,
             id: counter,
         });
         const dfd = deferred();
@@ -218,7 +226,7 @@ class SocketWorkerHandler {
 
     _newObserve(event: string): Stream<any> {
         this.counter++;
-        const counter = this.counter;
+        const { counter } = this;
         this._sendMessage({
             type: 'observe',
             event,
@@ -228,7 +236,7 @@ class SocketWorkerHandler {
         // $FlowIssue - this can't be null if used from bitcore.js
         const emitter: Emitter<SocketWorkerOutMessage> = this._emitter;
 
-        return Stream.fromEmitter(
+        const r = Stream.fromEmitter(
             emitter,
             () => {
                 this._sendMessage({
@@ -239,8 +247,9 @@ class SocketWorkerHandler {
                 delete this.observers[event];
             },
         )
-            .filter(message => message.type === 'emit' && message.event === event)
+            .filter(message => (message.type === 'emit' && message.event === event))
             .map(message => message.data);
+        return r;
     }
 
     subscribe(event: string, ...values: Array<any>) {

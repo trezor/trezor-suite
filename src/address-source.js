@@ -2,8 +2,7 @@
  * Derivation of addresses from HD nodes
  */
 
-import type { HDNode } from 'bitcoinjs-lib-zcash';
-import type { Network } from 'bitcoinjs-lib-zcash';
+import type { HDNode, Network } from 'bitcoinjs-lib-zcash';
 import {
     crypto,
     address,
@@ -46,7 +45,7 @@ export class BrowserAddressSource {
                 // see https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki
                 // address derivation + test vectors
                 const pkh = addressNode.getIdentifier();
-                const scriptSig = new Buffer(pkh.length + 2);
+                const scriptSig = Buffer.alloc(pkh.length + 2);
                 scriptSig[0] = 0;
                 scriptSig[1] = 0x14;
                 pkh.copy(scriptSig, 2);
@@ -66,8 +65,8 @@ export class WorkerAddressSource {
         depth: number,
         child_num: number,
         fingerprint: number,
-        chain_code: $ReadOnlyArray<number>,
-        public_key: $ReadOnlyArray<number>,
+        chain_code: Array<number>,
+        public_key: Array<number>,
     };
 
     version: number;

@@ -12,7 +12,17 @@ export { Transaction as BuildTxTransaction, Output as BuildTxOutput, Input as Bu
 
 export function buildTx(
     {
-        utxos, outputs, height, feeRate, segwit, inputAmounts, basePath, network, changeId, changeAddress, dustThreshold,
+        utxos,
+        outputs,
+        height,
+        feeRate,
+        segwit,
+        inputAmounts,
+        basePath,
+        network,
+        changeId,
+        changeAddress,
+        dustThreshold,
     }: request.Request,
 ): result.Result {
     if (outputs.length === 0) {
@@ -32,7 +42,17 @@ export function buildTx(
 
     let csResult: coinselect.Result = { type: 'false' };
     try {
-        csResult = coinselect.coinselect(utxos, outputs, height, feeRate, segwit, countMax.exists, countMax.id, dustThreshold, network);
+        csResult = coinselect.coinselect(
+            utxos,
+            outputs,
+            height,
+            feeRate,
+            segwit,
+            countMax.exists,
+            countMax.id,
+            dustThreshold,
+            network,
+        );
     } catch (e) {
         return { type: 'error', error: e.message };
     }

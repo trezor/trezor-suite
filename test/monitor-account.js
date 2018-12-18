@@ -15,24 +15,29 @@ monitorAccount(false);
 function monitorAccount(enableWebassembly) {
     const desc = enableWebassembly ? ' wasm' : ' no wasm';
     describe(`monitor account${desc}`, () => {
-        fixtures.forEach((fixture_orig) => {
-            const fixture = JSON.parse(JSON.stringify(fixture_orig));
-            it(fixture.name, function (done_orig) {
+        fixtures.forEach((fixtureOrig) => {
+            const fixture = JSON.parse(JSON.stringify(fixtureOrig));
+            it(fixture.name, function f(doneOrig) {
                 this.timeout(30 * 1000);
-                let wasm_old;
+                let wasmOld;
                 if (!enableWebassembly && hasWasm) {
-                    wasm_old = WebAssembly;
+                    wasmOld = WebAssembly;
                     WebAssembly = undefined;
                 }
-                const spec = fixture.spec;
-                const done_wasm = (x) => {
+                const { spec } = fixture;
+                const doneWasm = (x) => {
                     if (!enableWebassembly && hasWasm) {
-                        WebAssembly = wasm_old;
+                        WebAssembly = wasmOld;
                     }
-                    done_orig(x);
+                    doneOrig(x);
                 };
-                const blockchain = new MockBitcore(spec, done_wasm);
-                const discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubFilePromise, blockchain);
+                const blockchain = new MockBitcore(spec, doneWasm);
+                const discovery = new WorkerDiscovery(
+                    discoveryWorkerFactory,
+                    xpubWorker,
+                    xpubFilePromise,
+                    blockchain,
+                );
                 const stream = discovery.monitorAccountActivity(
                     fixture.start,
                     fixture.xpub,
@@ -44,7 +49,7 @@ function monitorAccount(enableWebassembly) {
                 );
                 const done = (x) => {
                     stream.dispose();
-                    done_wasm(x);
+                    doneWasm(x);
                 };
 
                 stream.values.attach((res) => {

@@ -96,8 +96,11 @@ channel.startDiscoveryPromise.then(() => {
             ? defaultInfo
             : initialState;
 
-        const lastConfirmedMain = oldState.lastConfirmedMain;
-        const lastConfirmedChange = oldState.lastConfirmedChange;
+        const {
+            changeAddresses,
+            lastConfirmedMain,
+            lastConfirmedChange,
+        } = oldState;
 
         const unconfirmedTxids = oldState.transactions
             .filter(t => t.height == null)
@@ -107,7 +110,6 @@ channel.startDiscoveryPromise.then(() => {
             .map(a => a.address)
             .concat(oldState.unusedAddresses);
 
-        const changeAddresses = oldState.changeAddresses;
 
         // get all the new info, then...
         return discoverAccount(

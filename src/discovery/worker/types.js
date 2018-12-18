@@ -4,8 +4,8 @@
 
 import type {
     Transaction as BitcoinJsTransaction,
+    Network as BitcoinJsNetwork,
 } from 'bitcoinjs-lib-zcash';
-import type { Network as BitcoinJsNetwork } from 'bitcoinjs-lib-zcash';
 import type {
     TransactionWithHeight,
 } from '../../bitcore';

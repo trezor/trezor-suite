@@ -83,7 +83,7 @@ function deriveOutputsForAnalysisMap(
     } {
         const outputs = [];
         Object.keys(t.myOutputs).forEach((i) => {
-            outputs[parseInt(i)] = t.myOutputs[parseInt(i)];
+            outputs[parseInt(i, 10)] = t.myOutputs[parseInt(i, 10)];
         });
         const txid = t.hash;
         return { txid, outputs };
@@ -148,7 +148,7 @@ function analyzeTransaction(
 
     const isCoinbase = t.tx.ins.some(i => BitcoinJsTransaction.isCoinbaseHash(i.hash));
 
-    const hash = t.hash;
+    const { hash } = t;
 
     // the main logic is here
     const targets = getTargetsFromTransaction(
@@ -212,9 +212,10 @@ function getTargetsFromTransaction(
 
     // Transaction is TAKING me my money,
     // if its input is mine
-    // == if its input belongs to a transaction that's mine AND the address of corresponding output is mine
-    inputIds.forEach(({ id, index }) => {
-        const info = outputs[id];
+    // == if its input belongs to a transaction
+    // that's mine AND the address of corresponding output is mine
+    inputIds.forEach(({ id: iid, index }) => {
+        const info = outputs[iid];
         if (info) {
             const output = info[index];
             if (output) {
@@ -244,10 +245,10 @@ function getTargetsFromTransaction(
 
     function filterTargets(filterFunction: (address: string) => boolean): Array<TargetInfo> {
         const res = [];
-        currentOutputs.forEach((info, i) => {
-            const { address, value } = info;
+        currentOutputs.forEach((oinfo, i) => {
+            const { address, value: ovalue } = oinfo;
             if (filterFunction(address)) {
-                res.push({ address, value, i });
+                res.push({ address, ovalue, i });
             }
         });
         return res;

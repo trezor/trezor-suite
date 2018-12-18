@@ -4,7 +4,7 @@ import assert from 'assert';
 
 import coinAccum from '../../src/build-tx/coinselect-lib/inputs/accumulative';
 import fixtures from './fixtures/accumulative';
-import utils from './_utils';
+import * as utils from './_utils';
 
 describe('coinselect accumulative', () => {
     fixtures.forEach((f) => {

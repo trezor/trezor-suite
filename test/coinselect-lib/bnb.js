@@ -4,7 +4,7 @@ import assert from 'assert';
 
 import coinAccum from '../../src/build-tx/coinselect-lib/inputs/bnb';
 import fixtures from './fixtures/bnb';
-import utils from './_utils';
+import * as utils from './_utils';
 
 describe('coinselect bnb', () => {
     fixtures.forEach((f) => {

@@ -1,7 +1,7 @@
-const utils = require('./utils');
+import * as utils from './utils';
 
-function score(feeRate) {
-    return function (a, b) {
+export function score(feeRate) {
+    return (a, b) => {
         const difference = utils.utxoScore(a, feeRate) - utils.utxoScore(b, feeRate);
         if (difference === 0) {
             return a.i - b.i;
@@ -9,7 +9,3 @@ function score(feeRate) {
         return -difference;
     };
 }
-
-module.exports = {
-    score,
-};
