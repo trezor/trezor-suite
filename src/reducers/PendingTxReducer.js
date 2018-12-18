@@ -4,13 +4,29 @@ import * as PENDING from 'actions/constants/pendingTx';
 
 import type { Action } from 'flowtype';
 
+
+// TODO: import them from trezor-connect
+type Input = {
+    addresses: Array<string>,
+    amount: string,
+    fee: string,
+    total: string,
+};
+
+type Output = {
+    addresses: Array<string>,
+    amount: string,
+}
+
 export type PendingTx = {
-    +type: 'send' | 'recv',
+    +type: 'send' | 'recv' | 'self',
+    +address: string,
     +deviceState: string,
+    +inputs: Array<Input>,
+    +outputs: Array<Output>,
     +sequence: number,
     +hash: string,
     +network: string,
-    +address: string,
     +currency: string,
     +amount: string,
     +total: string,
