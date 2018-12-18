@@ -35,6 +35,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto Mono';
         font-style: normal;
+        font-display: swap;
         src: url(${RobotoMono}) format('woff2'), /* Super Modern Browsers */
     }
 
@@ -43,6 +44,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 300;
         src: local('Roboto Light'), local('Roboto-Light'), url(${RobotoLightCyrillicExt}) format('woff2');
         unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
@@ -52,6 +54,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 300;
         src: local('Roboto Light'), local('Roboto-Light'), url(${RobotoLightCyrillic}) format('woff2');
         unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -61,6 +64,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 300;
         src: local('Roboto Light'), local('Roboto-Light'), url(${RobotoLightGreekExt}) format('woff2');
         unicode-range: U+1F00-1FFF;
@@ -70,6 +74,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 300;
         src: local('Roboto Light'), local('Roboto-Light'), url(${RobotoLightGreek}) format('woff2');
         unicode-range: U+0370-03FF;
@@ -79,6 +84,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 300;
         src: local('Roboto Light'), local('Roboto-Light'), url(${RobotoLightVietnamese}) format('woff2');
         unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
@@ -88,6 +94,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 300;
         src: local('Roboto Light'), local('Roboto-Light'), url(${RobotoLightLatinExt}) format('woff2');
         unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
@@ -97,6 +104,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 300;
         src: local('Roboto Light'), local('Roboto-Light'), url(${RobotoLightLatin}) format('woff2');
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -106,6 +114,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 400;
         src: local('Roboto'), local('Roboto-Regular'), url(${RobotoCyrillicExt}) format('woff2');
         unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
@@ -115,6 +124,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 400;
         src: local('Roboto'), local('Roboto-Regular'), url(${RobotoCyrillic}) format('woff2');
         unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -124,6 +134,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 400;
         src: local('Roboto'), local('Roboto-Regular'), url(${RobotoGreekExt}) format('woff2');
         unicode-range: U+1F00-1FFF;
@@ -133,6 +144,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 400;
         src: local('Roboto'), local('Roboto-Regular'), url(${RobotoGreek}) format('woff2');
         unicode-range: U+0370-03FF;
@@ -142,6 +154,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 400;
         src: local('Roboto'), local('Roboto-Regular'), url(${RobotoVietnamese}) format('woff2');
         unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
@@ -151,6 +164,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 400;
         src: local('Roboto'), local('Roboto-Regular'), url(${RobotoLatinExt}) format('woff2');
         unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
@@ -160,6 +174,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 400;
         src: local('Roboto'), local('Roboto-Regular'), url(${RobotoLatin}) format('woff2');
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -169,6 +184,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 500;
         src: local('Roboto Medium'), local('Roboto-Medium'), url(${RobotoMediumCyrillicExt}) format('woff2');
         unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
@@ -178,6 +194,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 500;
         src: local('Roboto Medium'), local('Roboto-Medium'), url(${RobotoMediumCyrillic}) format('woff2');
         unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -187,6 +204,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 500;
         src: local('Roboto Medium'), local('Roboto-Medium'), url(${RobotoMediumGreekExt}) format('woff2');
         unicode-range: U+1F00-1FFF;
@@ -196,6 +214,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 500;
         src: local('Roboto Medium'), local('Roboto-Medium'), url(${RobotoMediumGreek}) format('woff2');
         unicode-range: U+0370-03FF;
@@ -205,6 +224,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 500;
         src: local('Roboto Medium'), local('Roboto-Medium'), url(${RobotoMediumVietnamese}) format('woff2');
         unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
@@ -214,6 +234,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 500;
         src: local('Roboto Medium'), local('Roboto-Medium'), url(${RobotoMediumLatinExt}) format('woff2');
         unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
@@ -223,6 +244,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 500;
         src: local('Roboto Medium'), local('Roboto-Medium'), url(${RobotoMediumLatin}) format('woff2');
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -232,6 +254,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 700;
         src: local('Roboto Bold'), local('Roboto-Bold'), url(${RobotoBoldCyrillicExt}) format('woff2');
         unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
@@ -241,6 +264,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 700;
         src: local('Roboto Bold'), local('Roboto-Bold'), url(${RobotoBoldCyrillic}) format('woff2');
         unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -250,6 +274,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 700;
         src: local('Roboto Bold'), local('Roboto-Bold'), url(${RobotoBoldGreekExt}) format('woff2');
         unicode-range: U+1F00-1FFF;
@@ -259,6 +284,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 700;
         src: local('Roboto Bold'), local('Roboto-Bold'), url(${RobotoBoldGreek}) format('woff2');
         unicode-range: U+0370-03FF;
@@ -268,6 +294,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 700;
         src: local('Roboto Bold'), local('Roboto-Bold'), url(${RobotoBoldVietnamese}) format('woff2');
         unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
@@ -277,6 +304,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 700;
         src: local('Roboto Bold'), local('Roboto-Bold'), url(${RobotoBoldLatinExt}) format('woff2');
         unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
@@ -286,6 +314,7 @@ const fontStyles = css`
     @font-face {
         font-family: 'Roboto';
         font-style: normal;
+        font-display: swap;
         font-weight: 700;
         src: local('Roboto Bold'), local('Roboto-Bold'), url(${RobotoBoldLatin}) format('woff2');
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
