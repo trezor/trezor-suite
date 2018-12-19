@@ -21,6 +21,7 @@ export type Network = {
         address: string;
     };
     tokens: string;
+    decimals: number,
     backends: Array<{
         name: string;
         urls: Array<string>;
