@@ -135,66 +135,12 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
         dispatch({
             type: PENDING.ADD,
             payload: {
-                type: notification.type,
-                address: notification.address,
+                ...notification,
                 deviceState: account.deviceState,
-
-                inputs: notification.inputs,
-                outputs: notification.outputs,
-
-                sequence: notification.sequence,
-                hash: notification.hash,
                 network: account.network,
-
-                currency: notification.currency || account.network, // TODO: how to catch token?
-
-                amount: notification.amount,
-                total: notification.total,
-                fee: notification.fee,
             },
         });
-
-        // todo: replace "send success" notification with link to explorer
     }
-
-    // todo: get transaction history here
-    // console.warn("OnBlAccount", account);
-    // this event can be triggered multiple times
-    // // 1. check if pair [txid + address] is already in reducer
-    // const network: string = payload.coin.shortcut.toLowerCase();
-    // const address: string = EthereumjsUtil.toChecksumAddress(payload.tx.address);
-    // const txInfo = await dispatch(Web3Actions.getPendingInfo(network, payload.tx.txid));
-
-    // // const exists = getState().pending.filter(p => p.id === payload.tx.txid && p.address === address);
-    // const exists = getState().pending.filter(p => p.address === address);
-    // if (exists.length < 1) {
-    //     if (txInfo) {
-    //         dispatch({
-    //             type: PENDING.ADD,
-    //             payload: {
-    //                 type: 'send',
-    //                 id: payload.tx.txid,
-    //                 network,
-    //                 currency: 'tETH',
-    //                 amount: txInfo.value,
-    //                 total: '0',
-    //                 tx: {},
-    //                 nonce: txInfo.nonce,
-    //                 address,
-    //                 rejected: false,
-    //             },
-    //         });
-    //     } else {
-    //         // tx info not found (yet?)
-    //         // dispatch({
-    //         //     type: PENDING.ADD_UNKNOWN,
-    //         //     payload: {
-    //         //         network,
-    //         //         ...payload.tx,
-    //         //     }
-    //         // });
-    //     }
-    // }
 };
 
 export const onError = (network: string): PromiseAction<void> => async (dispatch: Dispatch): Promise<void> => {

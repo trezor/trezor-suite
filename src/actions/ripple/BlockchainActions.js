@@ -50,20 +50,10 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
         dispatch({
             type: PENDING.ADD,
             payload: {
-                type: notification.type,
-                address: account.address,
+                ...notification,
                 deviceState: account.deviceState,
-
-                inputs: notification.inputs,
-                outputs: notification.outputs,
-
-                sequence: notification.sequence,
-                hash: notification.hash,
                 network: account.network,
 
-                currency: account.network,
-                // amount: notification.amount,
-                // fee: notification.fee,
                 amount: toDecimalAmount(notification.amount, DECIMALS),
                 total: notification.type === 'send' ? toDecimalAmount(notification.total, DECIMALS) : toDecimalAmount(notification.amount, DECIMALS),
                 fee: toDecimalAmount(notification.fee, DECIMALS),

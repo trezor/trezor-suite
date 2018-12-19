@@ -532,7 +532,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         const blockchainNotification = {
             type: 'send',
             status: 'pending',
-            date: '',
+            confirmations: 0,
             address: account.address,
             inputs: [
                 {
@@ -554,7 +554,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             total: currentState.total,
 
             sequence: nonce,
-            currency: isToken ? currentState.currency : null,
+            currency: isToken ? currentState.currency : undefined,
         };
 
         dispatch(BlockchainActions.onNotification({
