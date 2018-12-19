@@ -61,7 +61,7 @@ const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): A
 
 const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => accounts.reduce((arr, account) => arr.concat(findAccountTokens(tokens, account)), []);
 
-const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => devices.reduce((arr, dev) => arr.concat(discovery.filter(a => a.deviceState === dev.state && a.publicKey.length > 0)), []);
+const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => devices.reduce((arr, dev) => arr.concat(discovery.filter(d => d.deviceState === dev.state && d.completed)), []);
 
 const findPendingTxs = (accounts: Array<Account>, pending: Array<Transaction>): Array<Transaction> => accounts.reduce((result, account) => result.concat(pending.filter(p => p.address === account.address && p.network === account.network)), []);
 
