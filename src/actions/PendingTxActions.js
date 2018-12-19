@@ -3,14 +3,15 @@
 
 import * as PENDING from 'actions/constants/pendingTx';
 
-import type { State, PendingTx } from 'reducers/PendingTxReducer';
+import type { Transaction } from 'flowtype';
+import type { State } from 'reducers/PendingTxReducer';
 
 export type PendingTxAction = {
     type: typeof PENDING.FROM_STORAGE,
     payload: State
 } | {
     type: typeof PENDING.ADD,
-    payload: PendingTx
+    payload: Transaction
 } | {
     type: typeof PENDING.TX_RESOLVED,
     hash: string,

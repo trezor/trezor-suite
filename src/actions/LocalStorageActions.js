@@ -15,7 +15,6 @@ import * as storageUtils from 'utils/storage';
 import { findAccountTokens } from 'reducers/TokensReducer';
 import type { Account } from 'reducers/AccountsReducer';
 import type { Token } from 'reducers/TokensReducer';
-import type { PendingTx } from 'reducers/PendingTxReducer';
 import type { Discovery } from 'reducers/DiscoveryReducer';
 
 import type {
@@ -24,6 +23,7 @@ import type {
     AsyncAction,
     GetState,
     Dispatch,
+    Transaction,
 } from 'flowtype';
 import type { Config, Network, TokensCollection } from 'reducers/LocalStorageReducer';
 
@@ -63,13 +63,13 @@ const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token
 
 const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => devices.reduce((arr, dev) => arr.concat(discovery.filter(a => a.deviceState === dev.state && a.publicKey.length > 0)), []);
 
-const findPendingTxs = (accounts: Array<Account>, pending: Array<PendingTx>): Array<PendingTx> => accounts.reduce((result, account) => result.concat(pending.filter(p => p.address === account.address && p.network === account.network)), []);
+const findPendingTxs = (accounts: Array<Account>, pending: Array<Transaction>): Array<Transaction> => accounts.reduce((result, account) => result.concat(pending.filter(p => p.address === account.address && p.network === account.network)), []);
 
 export const save = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const devices: Array<TrezorDevice> = getState().devices.filter(d => d.features && d.remember === true);
     const accounts: Array<Account> = findAccounts(devices, getState().accounts);
     const tokens: Array<Token> = findTokens(accounts, getState().tokens);
-    const pending: Array<PendingTx> = findPendingTxs(accounts, getState().pending);
+    const pending: Array<Transaction> = findPendingTxs(accounts, getState().pending);
     const discovery: Array<Discovery> = findDiscovery(devices, getState().discovery);
 
     // save devices
