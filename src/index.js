@@ -11,6 +11,10 @@ import type {
 import * as MessageTypes from './types/messages';
 import * as ResponseTypes from './types/responses';
 
+export type {
+    GetAccountInfoOptions
+} from './types/messages';
+
 const workerWrapper = (factory: string | Function): Worker => {
     if (typeof factory === 'string' && typeof Worker !== 'undefined') return new Worker(factory);
     // use custom worker
@@ -40,22 +44,17 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
 
     return dfd.promise;
 }
+
 class BlockchainLink extends EventEmitter {
     settings: BlockchainSettings;
     messageId: number = 0;
     worker: Worker;
     deferred: Array<Deferred<any>> = [];
-    notificationHandler: (event: any) => void;
 
     constructor(settings: BlockchainSettings) {
         super();
         this.settings = settings;
     }
-
-    // on: (type: 'block', cb: (event: ResponseTypes.BlockEvent) => void) => this;
-    // on: (type: 'notification', cb: (event: ResponseTypes.NotificationEvent) => void) => BlockchainLink;
-    // on: (type: 'connected', cb: (event: NotificationEvent) => void) => void;
-    // on: (type: 'disconnected', cb: (event: NotificationEvent) => void) => void;
 
     async getWorker(): Promise<Worker> {
         if (!this.worker) {
@@ -76,6 +75,12 @@ class BlockchainLink extends EventEmitter {
         this.worker.postMessage({ id: this.messageId, ...message });
         this.messageId++;
         return dfd.promise;
+    }
+
+    async connect(): Promise<boolean> {
+        return await this.__send({
+            type: MESSAGES.CONNECT,
+        });
     }
 
     async getInfo(): Promise<$ElementType<ResponseTypes.GetInfo, 'payload'>> {
@@ -102,7 +107,6 @@ class BlockchainLink extends EventEmitter {
     }
 
     async subscribe(payload: $ElementType<MessageTypes.Subscribe, 'payload'>): Promise<$ElementType<ResponseTypes.Subscribe, 'payload'>> {
-        // delete message.payload.notificationHandler;
         return await this.__send({
             type: MESSAGES.SUBSCRIBE,
             payload
@@ -167,12 +171,12 @@ class BlockchainLink extends EventEmitter {
         } else if (data.type === RESPONSES.ERROR) {
             this.emit('error', data.payload);
         } else if (data.type === RESPONSES.NOTIFICATION) {
-            this.emit(data.payload.type, data.payload.data);
+            this.emit(data.payload.type, data.payload.payload);
         }
     }
 
     onNotification: (notification: any) => void = (notification) => {
-        this.emit(notification.type, notification.data);
+        this.emit(notification.type, notification.payload);
     }
     
     onError: (error: { message: ?string, lineno: number, filename: string }) => void = (error) => {
@@ -186,7 +190,6 @@ class BlockchainLink extends EventEmitter {
     }
 
     dispose() {
-        console.warn("DISPOSE!");
         if (this.worker) {
             this.worker.terminate();
             delete this.worker;
@@ -194,9 +197,4 @@ class BlockchainLink extends EventEmitter {
     }
 }
 
-
 export default BlockchainLink;
-
-// export type {
-
-// } from './types/responses';

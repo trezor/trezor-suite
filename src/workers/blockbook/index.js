@@ -248,7 +248,7 @@ const onNewBlock = (data: any) => {
         type: RESPONSES.NOTIFICATION,
         payload: {
             type: 'block',
-            data,
+            payload: data,
         }
     });
 };
@@ -259,7 +259,7 @@ const onTransaction = (event: any) => {
         type: RESPONSES.NOTIFICATION,
         payload: {
             type: 'notification',
-            data: event,
+            payload: event,
         }
     });
 };

@@ -20,6 +20,12 @@ onmessage = (event) => {
         case MESSAGES.HANDSHAKE:
             common.setSettings(data.settings);
             break;
+        case MESSAGES.CONNECT:
+            connect().then(async (api) => {
+                const block = await api.connection.getLedgerVersion();
+                common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
+            }).catch(error => common.errorHandler({ id: data.id, error }));
+            break;
         case MESSAGES.GET_INFO:
             getInfo(data);
             break;
@@ -85,12 +91,7 @@ const connect = async (): Promise<RippleAPI> => {
     }
 
     common.debug('Connecting to', _endpoints[0]);
-    _api = new RippleAPI({
-        server: _endpoints[0],
-        // server: "wss://s1.ripple.com"
-        // server: "wss://s-east.ripple.com"
-        // server: "wss://s-west.ripple.com"
-    });
+    _api = new RippleAPI({ server: _endpoints[0] });
    
     try {
         await _api.connect();
@@ -130,13 +131,14 @@ const connect = async (): Promise<RippleAPI> => {
     //     api.connection._ws._ws.close()
     // }, 6000);
 
-    common.response({
-        id: -1,
-        type: RESPONSES.CONNECTED,
-    });
+    try {
+        _minLedgerVersion = parseInt(_api.connection._availableLedgerVersions.serialize().split('-')[0]);
+    } catch (error) {
+        const info = await _api.getServerInfo();
+        _minLedgerVersion = parseInt(info.completeLedgers.split('-')[0]);
+    }
 
-    const info = await _api.getServerInfo();
-    _minLedgerVersion = parseInt(info.completeLedgers.split('-')[0]);
+    common.response({ id: -1, type: RESPONSES.CONNECTED });
 
     return _api;
 }
@@ -154,17 +156,25 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     try {
         const api = await connect();
         const info = await api.getServerInfo();
+        const block = await api.getLedgerVersion();
         common.response({
             id: data.id,
             type: RESPONSES.GET_INFO,
-            payload: info
+            payload: {
+                name: 'Ripple',
+                shortcut: 'xrp',
+                decimals: 6,
+                block,
+                fee: '',
+                reserved: '0',
+            },
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
 }
 
-const getRawAccountInfo = async (account: string): Promise<{ xrpBalance: string, sequence: number }> => {
+const getMempoolAccountInfo = async (account: string): Promise<{ xrpBalance: string, sequence: number }> => {
     const api = await connect();
     const info = await api.request('account_info', {
         account,
@@ -179,6 +189,8 @@ const getRawAccountInfo = async (account: string): Promise<{ xrpBalance: string,
 
 const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo): Promise<void> => {
     const { payload } = data;
+    const options = payload.options || {};
+
     const account = {
         address: payload.descriptor,
         transactions: 0,
@@ -209,36 +221,35 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
         return;
     }
 
-    if (payload.mempool) {
-        try {
-            const mempoolInfo = await getRawAccountInfo(payload.descriptor);
-            account.availableBalance = mempoolInfo.xrpBalance;
-            account.sequence = mempoolInfo.sequence;
-        } catch (error) {
-            common.errorHandler({ id: data.id, error });
-        }
+    try {
+        const mempoolInfo = await getMempoolAccountInfo(payload.descriptor);
+        account.availableBalance = mempoolInfo.xrpBalance;
+        account.sequence = mempoolInfo.sequence;
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
     }
 
-    if (!payload.history) {
-        common.response({
-            id: data.id,
-            type: RESPONSES.GET_ACCOUNT_INFO,
-            payload: account,
-        });
-    }
+    // if (options.type !== 'transactions') {
+    //     common.response({
+    //         id: data.id,
+    //         type: RESPONSES.GET_ACCOUNT_INFO,
+    //         payload: account,
+    //     });
+    //     return;
+    // }
 
     try {
         // https://github.com/ripple/ripple-lib/issues/879#issuecomment-377576063
         // 42856666
         const api = await connect();
+        const block = await api.getLedgerVersion();
+        const minLedgerVersion = options.from ? Math.max(options.from, _minLedgerVersion) : _minLedgerVersion;
         const transactions = await api.getTransactions(payload.descriptor, {
-            minLedgerVersion: _minLedgerVersion,
+            minLedgerVersion,
             // start: '660371D3A9B15E9781EED508090962890B99C67277E9F9024E899430D47D3FFD',
-            limit: 20,
+            // limit: options.limit,
             // maxLedgerVersion: 14143636,
         });
-
-        const block = await api.getLedgerVersion();
 
         // https://developers.ripple.com/rippled-api.html#markers-and-pagination
         // if (api.hasNextPage(transactions)) {
@@ -255,7 +266,7 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: {
                 ...account,
-                transactions: transactions.length,
+                transactions,
                 block,
             }
         });
@@ -283,6 +294,10 @@ const getTransactions = async (data: { id: number } & MessageTypes.GetTransactio
         common.errorHandler({ id: data.id, error });
     }
 }
+
+const transformTransaction = (tx) => {
+
+};
 
 const getFee = async (data: { id: number } & MessageTypes.GetFee): Promise<void> => {
     try {
@@ -437,7 +452,7 @@ const onNewBlock = (event: any) => {
         type: RESPONSES.NOTIFICATION,
         payload: {
             type: 'block',
-            data: {
+            payload: {
                 block: event.ledgerVersion,
                 hash: event.ledgerHash,
             }
@@ -446,56 +461,62 @@ const onNewBlock = (event: any) => {
 }
 
 const onTransaction = (event: any) => {
-    if (event.type === 'transaction') {
-        const subscribed = common.getAddresses();
-        const sender = subscribed.indexOf(event.transaction.Account);
-        const receiver = subscribed.indexOf(event.transaction.Destination);
-        const status = event.validated ? 'confirmed' : 'pending';
-        const hash = event.transaction.hash;
-        const signature = event.transaction.TxnSignature;
-        const amount = event.transaction.Amount;
-        const fee = event.transaction.Fee;
-        const total = new BigNumber(amount).plus(fee).toString();
+    if (event.type !== 'transaction') return;
 
-        if (sender >= 0) {
-            common.response({
-                id: -1,
-                type: RESPONSES.NOTIFICATION,
-                payload: {
-                    type: 'notification',
-                    data: {
-                        type: 'send',
-                        address: event.transaction.Account,
-                        status,
-                        signature,
-                        hash,
-                        amount,
-                        fee,
-                        total,
-                    }
-                }
-            });
-        }
+    console.warn("ON TRANSAKTION!", event)
+    
+    const subscribed = common.getAddresses();
+    const sender = subscribed.indexOf(event.transaction.Account);
+    const receiver = subscribed.indexOf(event.transaction.Destination);
+    const status = event.validated ? 'confirmed' : 'pending';
+    const hash = event.transaction.hash;
+    const signature = event.transaction.TxnSignature;
+    const amount = event.transaction.Amount;
+    const fee = event.transaction.Fee;
+    const total = new BigNumber(amount).plus(fee).toString();
 
-        if (receiver >= 0) {
-            common.response({
-                id: -1,
-                type: RESPONSES.NOTIFICATION,
+    const txData = {
+        status,
+        timestamp: event.transaction.date,
+        confirmations: 0,
+
+        inputs: [{ addresses: [event.transaction.Account] }],
+        outputs: [{ addresses: [event.transaction.Destination] }],
+
+        hash,
+        amount,
+        fee,
+        total,
+    };
+
+    if (sender >= 0) {
+        common.response({
+            id: -1,
+            type: RESPONSES.NOTIFICATION,
+            payload: {
+                type: 'notification',
                 payload: {
-                    type: 'notification',
-                    data: {
-                        type: 'recv',
-                        address: event.transaction.Destination,
-                        status,
-                        signature,
-                        hash,
-                        amount,
-                        fee,
-                        total,
-                    }
+                    type: 'send',
+                    address: event.transaction.Account,
+                    ...txData,
                 }
-            });
-        }
+            }
+        });
+    }
+
+    if (receiver >= 0) {
+        common.response({
+            id: -1,
+            type: RESPONSES.NOTIFICATION,
+            payload: {
+                type: 'notification',
+                payload: {
+                    type: 'recv',
+                    address: event.transaction.Destination,
+                    ...txData,
+                }
+            }
+        });
     }
 }
 

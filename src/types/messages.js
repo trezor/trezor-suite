@@ -5,16 +5,25 @@ import type { BlockchainSettings } from './index';
 
 // messages sent from blockchain.js to worker
 
+export type Connect = {
+    +type: typeof MESSAGES.CONNECT,
+};
+
 export type GetInfo = {
     +type: typeof MESSAGES.GET_INFO,
 };
 
+export type GetAccountInfoOptions = {
+    +type?: string,
+    +page?: number,
+    +from?: number,
+    +to?: number,
+};
 export type GetAccountInfo = {
     +type: typeof MESSAGES.GET_ACCOUNT_INFO,
     +payload: {
         +descriptor: string,
-        +history?: boolean,
-        +mempool?: boolean,
+        +options?: GetAccountInfoOptions,
     },
 };
 
@@ -61,6 +70,7 @@ export type PushTransaction = {
 
 export type Message =
     { id: number, +type: typeof MESSAGES.HANDSHAKE, settings: BlockchainSettings } |
+    { id: number } & Connect |
     { id: number } & GetInfo |
     { id: number } & GetAccountInfo |
     { id: number } & GetFee |
