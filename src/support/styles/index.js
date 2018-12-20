@@ -4,7 +4,6 @@ import { FONT_WEIGHT } from 'config/variables';
 
 import tooltipStyles from './Tooltip';
 import animationStyles from './Animations';
-import './fonts.css';
 
 const baseStyles = createGlobalStyle`
     html, body {
