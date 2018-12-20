@@ -24,20 +24,47 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
 };
 
 export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const fee = await TrezorConnect.blockchainGetFee({
-        coin: network,
-    });
-    if (!fee.success) return;
-
     const blockchain = getState().blockchain.find(b => b.shortcut === network);
     if (!blockchain) return;
 
-    if (fee.payload !== blockchain.fee) {
-        dispatch({
-            type: BLOCKCHAIN.UPDATE_FEE,
-            shortcut: network,
-            fee: fee.payload,
-        });
+    // const fee = await TrezorConnect.blockchainGetFee({
+    //     coin: network,
+    // });
+    // if (!fee.success) return;
+
+
+    // if (fee.payload !== blockchain.fee) {
+    //     dispatch({
+    //         type: BLOCKCHAIN.UPDATE_FEE,
+    //         shortcut: network,
+    //         fee: fee.payload,
+    //     });
+    // }
+
+    const accounts: Array<any> = getState().accounts.filter(a => a.network === network);
+    // console.warn('ACCOUNTS', accounts);
+    if (accounts.length > 0) {
+        // const response = await TrezorConnect.rippleGetAccountInfo({
+        //     bundle: accounts,
+        //     level: 'transactions',
+        //     coin: network,
+        // });
+
+        // console.warn('APDEJT RESP', response);
+        // if (!response.success) return;
+
+        // response.payload.forEach((a, i) => {
+        //     if (a.transactions.length > 0) {
+        //         console.warn('APDEJTED!', a, i);
+        //         dispatch(AccountsActions.update({
+        //             ...accounts[i],
+        //             balance: toDecimalAmount(a.balance, DECIMALS),
+        //             availableBalance: toDecimalAmount(a.availableBalance, DECIMALS),
+        //             block: a.block,
+        //             sequence: a.sequence,
+        //         }));
+        //     }
+        // });
     }
 };
 
@@ -71,7 +98,7 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     const updatedAccount = await TrezorConnect.rippleGetAccountInfo({
         account: {
             address: account.address,
-            block: account.block,
+            from: account.block,
             history: false,
         },
         coin: account.network,
@@ -81,7 +108,7 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     dispatch(AccountsActions.update({
         ...account,
         balance: toDecimalAmount(updatedAccount.payload.balance, DECIMALS),
-        availableDevice: toDecimalAmount(updatedAccount.payload.availableBalance, DECIMALS),
+        availableBalance: toDecimalAmount(updatedAccount.payload.availableBalance, DECIMALS),
         block: updatedAccount.payload.block,
         sequence: updatedAccount.payload.sequence,
     }));

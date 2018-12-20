@@ -9,8 +9,9 @@ import type { BlockchainConnect, BlockchainError, BlockchainBlock } from 'trezor
 export type BlockchainNetwork = {
     +shortcut: string,
     connected: boolean,
-    fee: string,
     block: number,
+    reserved: string, // xrp specific
+    fee: string,
 };
 
 export type State = Array<BlockchainNetwork>;
@@ -34,8 +35,9 @@ const onConnect = (state: State, action: BlockchainConnect): State => {
     return state.concat([{
         shortcut,
         connected: true,
-        fee: info.fee,
         block: info.block,
+        fee: info.fee,
+        reserved: info.reserved || '0',
     }]);
 };
 
@@ -53,8 +55,9 @@ const onError = (state: State, action: BlockchainError): State => {
     return state.concat([{
         shortcut,
         connected: false,
-        fee: '0',
         block: 0,
+        fee: '0',
+        reserved: '0',
     }]);
 };
 
