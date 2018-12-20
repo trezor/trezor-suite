@@ -10,6 +10,10 @@ const styles = isSearchable => ({
         width: '100%',
         color: colors.TEXT_SECONDARY,
     }),
+    valueContainer: base => ({
+        ...base,
+        overflow: 'hidden',
+    }),
     control: (base, { isDisabled }) => ({
         ...base,
         minHeight: 'initial',
