@@ -2,6 +2,7 @@
 
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
+import * as PENDING from 'actions/constants/pendingTx';
 
 import type {
     TrezorDevice,
@@ -9,7 +10,7 @@ import type {
     GetState,
     PromiseAction,
 } from 'flowtype';
-import type { EthereumAccount } from 'trezor-connect';
+import type { EthereumAccount, BlockchainNotification } from 'trezor-connect';
 import type { Token } from 'reducers/TokensReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
 import * as Web3Actions from 'actions/Web3Actions';
@@ -85,10 +86,11 @@ export const estimateGasLimit = (network: string, data: string, value: string, g
 
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.address); // eslint-disable-line no-unused-vars
-    await TrezorConnect.blockchainSubscribe({
+    const response = await TrezorConnect.blockchainSubscribe({
         accounts,
         coin: network,
     });
+    if (!response.success) return;
     // init web3 instance if not exists
     await dispatch(Web3Actions.initWeb3(network));
 };
@@ -125,45 +127,21 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
     }
 };
 
-export const onNotification = (/*network: string*/): PromiseAction<void> => async (): Promise<void> => {
-    // todo: get transaction history here
-    // console.warn("OnBlAccount", account);
-    // this event can be triggered multiple times
-    // // 1. check if pair [txid + address] is already in reducer
-    // const network: string = payload.coin.shortcut.toLowerCase();
-    // const address: string = EthereumjsUtil.toChecksumAddress(payload.tx.address);
-    // const txInfo = await dispatch(Web3Actions.getPendingInfo(network, payload.tx.txid));
+export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { notification } = payload;
+    const account = getState().accounts.find(a => a.address === notification.address);
+    if (!account) return;
 
-    // // const exists = getState().pending.filter(p => p.id === payload.tx.txid && p.address === address);
-    // const exists = getState().pending.filter(p => p.address === address);
-    // if (exists.length < 1) {
-    //     if (txInfo) {
-    //         dispatch({
-    //             type: PENDING.ADD,
-    //             payload: {
-    //                 type: 'send',
-    //                 id: payload.tx.txid,
-    //                 network,
-    //                 currency: 'tETH',
-    //                 amount: txInfo.value,
-    //                 total: '0',
-    //                 tx: {},
-    //                 nonce: txInfo.nonce,
-    //                 address,
-    //                 rejected: false,
-    //             },
-    //         });
-    //     } else {
-    //         // tx info not found (yet?)
-    //         // dispatch({
-    //         //     type: PENDING.ADD_UNKNOWN,
-    //         //     payload: {
-    //         //         network,
-    //         //         ...payload.tx,
-    //         //     }
-    //         // });
-    //     }
-    // }
+    if (notification.status === 'pending') {
+        dispatch({
+            type: PENDING.ADD,
+            payload: {
+                ...notification,
+                deviceState: account.deviceState,
+                network: account.network,
+            },
+        });
+    }
 };
 
 export const onError = (network: string): PromiseAction<void> => async (dispatch: Dispatch): Promise<void> => {

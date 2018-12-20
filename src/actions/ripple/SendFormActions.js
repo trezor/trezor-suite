@@ -1,6 +1,4 @@
 /* @flow */
-import React from 'react';
-import Link from 'components/Link';
 import TrezorConnect from 'trezor-connect';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SEND from 'actions/constants/send';
@@ -250,7 +248,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         payload: {
             type: 'success',
             title: 'Transaction success',
-            message: <Link href={`${network.explorer.tx}${txid}`} isGreen>See transaction detail</Link>,
+            message: txid,
             cancelable: true,
             actions: [],
         },

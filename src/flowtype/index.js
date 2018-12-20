@@ -44,6 +44,7 @@ import type {
     TransportMessageType,
     UiMessageType,
     BlockchainEvent,
+    BlockchainLinkTransaction,
 } from 'trezor-connect';
 
 import type { RouterAction, LocationState } from 'react-router-redux';
@@ -84,10 +85,16 @@ export type UnknownDevice = $Exact<{
     instanceLabel: string;
     instanceName: ?string;
     ts: number;
-}>
+}>;
 
 export type { Device } from 'trezor-connect';
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
+
+export type Transaction = BlockchainLinkTransaction & {
+    deviceState: string,
+    network: string,
+    rejected?: boolean,
+};
 
 export type RouterLocationState = LocationState;
 
@@ -152,7 +159,6 @@ export type { Account } from 'reducers/AccountsReducer';
 export type { Discovery } from 'reducers/DiscoveryReducer';
 export type { Token } from 'reducers/TokensReducer';
 export type { Web3Instance } from 'reducers/Web3Reducer';
-export type { PendingTx } from 'reducers/PendingTxReducer';
 
 export type Accounts = $ElementType<State, 'accounts'>;
 export type LocalStorage = $ElementType<State, 'localStorage'>;

@@ -82,6 +82,7 @@ const ToggleAdvancedSettingsWrapper = styled.div`
 
 const SendButton = styled(Button)`
     min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
+    word-break: break-all;
 
     @media screen and (max-width: ${SmallScreenWidth}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};

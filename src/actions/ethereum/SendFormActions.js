@@ -6,7 +6,6 @@ import BigNumber from 'bignumber.js';
 import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SEND from 'actions/constants/send';
-import * as PENDING from 'actions/constants/pendingTx';
 import * as WEB3 from 'actions/constants/web3';
 import { initialState } from 'reducers/SendFormEthereumReducer';
 import { findToken } from 'reducers/TokensReducer';
@@ -525,21 +524,45 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
 
         dispatch({ type: SEND.TX_COMPLETE });
 
-        dispatch({
-            type: PENDING.ADD,
-            payload: {
-                type: 'send',
-                deviceState: account.deviceState,
-                sequence: nonce,
-                hash: txid,
-                network: account.network,
-                address: account.address,
-                currency: currentState.currency,
-                amount: currentState.amount,
-                total: currentState.total,
-                fee: '0', // TODO: calculate fee
-            },
-        });
+        // ugly blockbook workaround:
+        // since blockbook can't emit pending notifications
+        // need to trigger this event from here, where we know everything about this transaction
+        // blockchainNotification is 'trezor-connect' BlockchainLinkTransaction type
+        const fee = ValidationActions.calculateFee(currentState.gasLimit, currentState.gasPrice);
+        const blockchainNotification = {
+            type: 'send',
+            status: 'pending',
+            confirmations: 0,
+            address: account.address,
+            inputs: [
+                {
+                    addresses: [account.address],
+                    amount: currentState.amount,
+                    fee,
+                    total: currentState.total,
+                },
+            ],
+            outputs: [
+                {
+                    addresses: [currentState.address],
+                    amount: currentState.amount,
+                },
+            ],
+            hash: txid,
+            amount: currentState.amount,
+            fee,
+            total: currentState.total,
+
+            sequence: nonce,
+            currency: isToken ? currentState.currency : undefined,
+        };
+
+        dispatch(BlockchainActions.onNotification({
+            // $FlowIssue: missing coinInfo declaration
+            coin: {},
+            notification: blockchainNotification,
+        }));
+        // workaround end
 
         // clear session storage
         dispatch(SessionStorageActions.clear());

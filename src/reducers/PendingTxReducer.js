@@ -2,27 +2,13 @@
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as PENDING from 'actions/constants/pendingTx';
 
-import type { Action } from 'flowtype';
+import type { Action, Transaction } from 'flowtype';
 
-export type PendingTx = {
-    +type: 'send' | 'recv',
-    +deviceState: string,
-    +sequence: number,
-    +hash: string,
-    +network: string,
-    +address: string,
-    +currency: string,
-    +amount: string,
-    +total: string,
-    +fee: string,
-    rejected?: boolean,
-};
-
-export type State = Array<PendingTx>;
+export type State = Array<Transaction>;
 
 const initialState: State = [];
 
-const add = (state: State, payload: PendingTx): State => {
+const add = (state: State, payload: Transaction): State => {
     const newState = [...state];
     newState.push(payload);
     return newState;

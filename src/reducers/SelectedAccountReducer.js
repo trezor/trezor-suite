@@ -6,7 +6,7 @@ import type {
     Account,
     Network,
     Token,
-    PendingTx,
+    Transaction,
     Discovery,
 } from 'flowtype';
 
@@ -34,7 +34,7 @@ export type State = {
     account: ?Account,
     network: ?Network,
     tokens: Array<Token>,
-    pending: Array<PendingTx>,
+    pending: Array<Transaction>,
     discovery: ?Discovery,
     loader: ?Loader,
     notification: ?Notification,
