@@ -2,7 +2,7 @@
 
 import { push, LOCATION_CHANGE } from 'connected-react-router';
 import { CONTEXT_NONE } from 'actions/constants/modal';
-import { SET_INITIAL_URL } from 'actions/constants/wallet';
+import { SET_INITIAL_URL, SET_FIRST_LOCATION_CHANGE } from 'actions/constants/wallet';
 import { routes } from 'support/routes';
 import * as deviceUtils from 'utils/device';
 
@@ -133,7 +133,12 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
     const { firstLocationChange } = getState().wallet;
     // redirect to landing page (loading screen)
     // and wait until application is ready
-    if (firstLocationChange) return '/';
+    if (firstLocationChange) {
+        dispatch({
+            type: SET_FIRST_LOCATION_CHANGE,
+        });
+        return '/';
+    }
 
     console.log('action', action);
 

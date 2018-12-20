@@ -36,11 +36,14 @@ const initialState: State = {
 export default function wallet(state: State = initialState, action: Action): State {
     switch (action.type) {
         case WALLET.SET_INITIAL_URL:
-            console.log('action2', action);
             return {
                 ...state,
                 initialParams: action.state,
                 initialPathname: action.pathname,
+            };
+        case WALLET.SET_FIRST_LOCATION_CHANGE:
+            return {
+                ...state,
                 firstLocationChange: false,
             };
 

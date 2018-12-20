@@ -39,7 +39,7 @@ export type WalletAction = {
     type: typeof WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA,
     devices: Array<TrezorDevice>
 } | {
-    type: typeof WALLET.SHOW_BETA_DISCLAIMER | typeof WALLET.HIDE_BETA_DISCLAIMER,
+    type: typeof WALLET.SHOW_BETA_DISCLAIMER | typeof WALLET.HIDE_BETA_DISCLAIMER | typeof WALLET.SET_FIRST_LOCATION_CHANGE,
 }
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
