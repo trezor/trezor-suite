@@ -25,21 +25,27 @@ const Wrapper = styled.div`
     font-size: ${FONT_SIZE.SMALL};
     background: ${colors.LANDING};
     color: ${colors.TEXT_SECONDARY};
-    padding: 22px 48px;
+    padding: 10px 30px;
     display: flex;
+    height: 59px;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
     border-top: 1px solid ${colors.BACKGROUND};
+
+    @media all and (max-width: 850px) {
+        justify-content: center;
+    }
 `;
 
 const StyledLink = styled(Link)`
-    margin: 0 6px;
-    margin-right: 20px;
+    margin: 0 10px;
     white-space: nowrap;
 `;
 
 const Copy = styled.div`
     white-space: nowrap;
-    margin-right: 20px;
+    margin-right: 10px;
 `;
 
 const Left = styled.div`
@@ -48,6 +54,7 @@ const Left = styled.div`
 
 const Right = styled.div`
     white-space: nowrap;
+    margin: 0 10px;
 `;
 
 const Footer = ({ opened, toggle, isLanding }: Props) => (
@@ -60,7 +67,7 @@ const Footer = ({ opened, toggle, isLanding }: Props) => (
         </Left>
         {!isLanding && (
             <Right>
-                Exchange rates by<StyledLink href="https://www.coingecko.com" isGreen>Coingecko</StyledLink>
+                Exchange rates by <Link href="https://www.coingecko.com" isGreen>Coingecko</Link>
             </Right>
         )}
     </Wrapper>
