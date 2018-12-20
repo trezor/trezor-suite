@@ -86,10 +86,11 @@ export const estimateGasLimit = (network: string, data: string, value: string, g
 
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.address); // eslint-disable-line no-unused-vars
-    await TrezorConnect.blockchainSubscribe({
+    const response = await TrezorConnect.blockchainSubscribe({
         accounts,
         coin: network,
     });
+    if (!response.success) return;
     // init web3 instance if not exists
     await dispatch(Web3Actions.initWeb3(network));
 };

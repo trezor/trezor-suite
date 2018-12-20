@@ -50,7 +50,12 @@ const onError = (state: State, action: BlockchainError): State => {
         }]);
     }
 
-    return state;
+    return state.concat([{
+        shortcut,
+        connected: false,
+        fee: '0',
+        block: 0,
+    }]);
 };
 
 const onBlock = (state: State, action: BlockchainBlock): State => {
