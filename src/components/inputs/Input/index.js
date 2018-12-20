@@ -6,6 +6,7 @@ import ICONS from 'config/icons';
 import Icon from 'components/Icon';
 import {
     FONT_SIZE,
+    FONT_FAMILY,
     FONT_WEIGHT,
     LINE_HEIGHT,
     TRANSITION,
@@ -39,6 +40,7 @@ const StyledInput = styled.input`
     height: ${props => (props.height ? `${props.height}px` : '40px')};
     padding: 5px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
 
+    font-family: ${FONT_FAMILY.MONOSPACE};
     line-height: ${LINE_HEIGHT.SMALL};
     font-size: ${props => (props.isSmallText ? `${FONT_SIZE.SMALL}` : `${FONT_SIZE.BASE}`)};
     font-weight: ${FONT_WEIGHT.MEDIUM};
