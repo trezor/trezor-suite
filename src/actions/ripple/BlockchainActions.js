@@ -49,7 +49,6 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
         //     coin: network,
         // });
 
-        // console.warn('APDEJT RESP', response);
         // if (!response.success) return;
 
         // response.payload.forEach((a, i) => {
