@@ -32,7 +32,6 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
     // });
     // if (!fee.success) return;
 
-
     // if (fee.payload !== blockchain.fee) {
     //     dispatch({
     //         type: BLOCKCHAIN.UPDATE_FEE,
