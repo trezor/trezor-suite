@@ -189,6 +189,7 @@ const AccountSend = (props: Props) => {
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
+                    topLabel="Amount"
                     value={amount}
                     onChange={event => onAmountChange(event.target.value)}
                     bottomText={errors.amount || warnings.amount || infos.amount}
