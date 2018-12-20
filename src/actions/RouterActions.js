@@ -51,6 +51,8 @@ export const pathToParams = (path: string): PayloadAction<RouterLocationState> =
 */
 export const paramsValidation = (params: RouterLocationState): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
     // validate requested device
+
+    console.log('params', params);
     if (params.hasOwnProperty('device')) {
         const { devices } = getState();
 
