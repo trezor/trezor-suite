@@ -1,6 +1,6 @@
 /* @flow */
 import * as storageUtils from 'utils/storage';
-import { findToken } from 'reducers/TokensReducer';
+import { findToken } from 'reducers/utils';
 
 import type { State as EthereumSendFormState } from 'reducers/SendFormEthereumReducer';
 import type { State as RippleSendFormState } from 'reducers/SendFormRippleReducer';

@@ -12,7 +12,7 @@ import { httpRequest } from 'utils/networkUtils';
 import * as buildUtils from 'utils/build';
 import * as storageUtils from 'utils/storage';
 
-import { findAccountTokens } from 'reducers/TokensReducer';
+import { getAccountTokens } from 'reducers/utils';
 import type { Account } from 'reducers/AccountsReducer';
 import type { Token } from 'reducers/TokensReducer';
 import type { Discovery } from 'reducers/DiscoveryReducer';
@@ -59,7 +59,7 @@ const KEY_BETA_MODAL: string = '/betaModalPrivacy'; // this key needs to be comp
 
 const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): Array<Account> => devices.reduce((arr, dev) => arr.concat(accounts.filter(a => a.deviceState === dev.state)), []);
 
-const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => accounts.reduce((arr, account) => arr.concat(findAccountTokens(tokens, account)), []);
+const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => accounts.reduce((arr, account) => arr.concat(getAccountTokens(tokens, account)), []);
 
 const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => devices.reduce((arr, dev) => arr.concat(discovery.filter(d => d.deviceState === dev.state && d.completed)), []);
 

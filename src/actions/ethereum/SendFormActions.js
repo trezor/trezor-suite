@@ -8,7 +8,6 @@ import * as NOTIFICATION from 'actions/constants/notification';
 import * as SEND from 'actions/constants/send';
 import * as WEB3 from 'actions/constants/web3';
 import { initialState } from 'reducers/SendFormEthereumReducer';
-import { findToken } from 'reducers/TokensReducer';
 import * as reducerUtils from 'reducers/utils';
 import * as ethUtils from 'utils/ethUtils';
 
@@ -76,7 +75,7 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
         // make sure that this token is added into account
         const { account, tokens } = getState().selectedAccount;
         if (!account) return;
-        const token = findToken(tokens, account.descriptor, currentState.sendFormEthereum.currency, account.deviceState);
+        const token = reducerUtils.findToken(tokens, account.descriptor, currentState.sendFormEthereum.currency, account.deviceState);
         if (!token) {
             // token not found, re-init form
             dispatch(init());
@@ -466,7 +465,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
 
     const txData = await dispatch(prepareEthereumTx({
         network: network.shortcut,
-        token: isToken ? findToken(getState().tokens, account.descriptor, currentState.currency, account.deviceState) : null,
+        token: isToken ? reducerUtils.findToken(getState().tokens, account.descriptor, currentState.currency, account.deviceState) : null,
         from: account.descriptor,
         to: currentState.address,
         amount: currentState.amount,

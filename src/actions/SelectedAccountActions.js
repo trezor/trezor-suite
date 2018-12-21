@@ -210,7 +210,7 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
     const account = reducerUtils.getSelectedAccount(state);
     const network = reducerUtils.getSelectedNetwork(state);
     const discovery = reducerUtils.getDiscoveryProcess(state);
-    const tokens = reducerUtils.getAccountTokens(state, account);
+    const tokens = reducerUtils.getAccountTokens(state.tokens, account);
     const pending = reducerUtils.getAccountPendingTx(state.pending, account);
 
     // prepare new state for "selectedAccount" reducer

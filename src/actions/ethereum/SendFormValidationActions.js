@@ -3,8 +3,7 @@
 import BigNumber from 'bignumber.js';
 import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsUnits from 'ethereumjs-units';
-import { findToken } from 'reducers/TokensReducer';
-import { findDevice, getPendingAmount } from 'reducers/utils';
+import { findDevice, getPendingAmount, findToken } from 'reducers/utils';
 import * as SEND from 'actions/constants/send';
 import * as ethUtils from 'utils/ethUtils';
 
