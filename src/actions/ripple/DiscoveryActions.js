@@ -60,19 +60,22 @@ export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discover
     const empty = account.sequence <= 0 && account.balance === '0';
 
     return {
+        imported: false,
         index: discoveryProcess.accountIndex,
-        loaded: true,
         network: network.shortcut,
         deviceID: device.features ? device.features.device_id : '0',
         deviceState: device.state || '0',
-        addressPath: account.path || [],
-        address: account.address,
-        balance: toDecimalAmount(account.balance, 6),
-        availableBalance: toDecimalAmount(account.availableBalance, 6),
-        sequence: account.sequence,
-        nonce: account.sequence,
+        accountPath: account.path || [],
+        descriptor: account.address,
+
+        balance: toDecimalAmount(account.balance, network.decimals),
+        availableBalance: toDecimalAmount(account.availableBalance, network.decimals),
         block: account.block,
         transactions: account.transactions,
         empty,
+
+        networkType: 'ripple',
+        sequence: account.sequence,
+        reserve: '0',
     };
 };

@@ -44,7 +44,7 @@ export const loadEthereumDraftTransaction = (): PayloadAction<?EthereumSendFormS
     if (state.currency !== state.networkSymbol) {
         const { account, tokens } = getState().selectedAccount;
         if (!account) return null;
-        const token = findToken(tokens, account.address, state.currency, account.deviceState);
+        const token = findToken(tokens, account.descriptor, state.currency, account.deviceState);
         if (!token) {
             storageUtils.remove(TYPE, key);
             return null;

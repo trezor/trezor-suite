@@ -76,7 +76,7 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
         // make sure that this token is added into account
         const { account, tokens } = getState().selectedAccount;
         if (!account) return;
-        const token = findToken(tokens, account.address, currentState.sendFormEthereum.currency, account.deviceState);
+        const token = findToken(tokens, account.descriptor, currentState.sendFormEthereum.currency, account.deviceState);
         if (!token) {
             // token not found, re-init form
             dispatch(init());
@@ -456,7 +456,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         pending,
     } = getState().selectedAccount;
 
-    if (!account || !network) return;
+    if (!account || account.networkType !== 'ethereum' || !network) return;
 
     const currentState: State = getState().sendFormEthereum;
 
@@ -466,8 +466,8 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
 
     const txData = await dispatch(prepareEthereumTx({
         network: network.shortcut,
-        token: isToken ? findToken(getState().tokens, account.address, currentState.currency, account.deviceState) : null,
-        from: account.address,
+        token: isToken ? findToken(getState().tokens, account.descriptor, currentState.currency, account.deviceState) : null,
+        from: account.descriptor,
         to: currentState.address,
         amount: currentState.amount,
         data: currentState.data,
@@ -487,7 +487,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         },
         // useEmptyPassphrase: !selected.instance,
         useEmptyPassphrase: selected.useEmptyPassphrase,
-        path: account.addressPath,
+        path: account.accountPath,
         transaction: txData,
     });
 
@@ -533,10 +533,10 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             type: 'send',
             status: 'pending',
             confirmations: 0,
-            address: account.address,
+            address: account.descriptor,
             inputs: [
                 {
-                    addresses: [account.address],
+                    addresses: [account.descriptor],
                     amount: currentState.amount,
                     fee,
                     total: currentState.total,

@@ -114,7 +114,7 @@ export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
     if (state.setMax) {
         const pendingAmount = getPendingAmount(pending, state.currency, isToken);
         if (isToken) {
-            const token = findToken(tokens, account.address, state.currency, account.deviceState);
+            const token = findToken(tokens, account.descriptor, state.currency, account.deviceState);
             if (token) {
                 state.amount = new BigNumber(token.balance).minus(pendingAmount).toString(10);
             }
@@ -173,7 +173,7 @@ export const addressLabel = ($state: State): PayloadAction<State> => (dispatch: 
     if (!account || !network) return state;
     const { address } = state;
 
-    const savedAccounts = getState().accounts.filter(a => a.address.toLowerCase() === address.toLowerCase());
+    const savedAccounts = getState().accounts.filter(a => a.descriptor.toLowerCase() === address.toLowerCase());
     if (savedAccounts.length > 0) {
         // check if found account belongs to this network
         const currentNetworkAccount = savedAccounts.find(a => a.network === network.shortcut);
@@ -221,7 +221,7 @@ export const amountValidation = ($state: State): PayloadAction<State> => (dispat
         const pendingAmount: BigNumber = getPendingAmount(pending, state.currency, isToken);
 
         if (isToken) {
-            const token = findToken(tokens, account.address, state.currency, account.deviceState);
+            const token = findToken(tokens, account.descriptor, state.currency, account.deviceState);
             if (!token) return state;
             const decimalRegExp = dynamicRegexp(parseInt(token.decimals, 0));
 
@@ -304,7 +304,7 @@ export const nonceValidation = ($state: State): PayloadAction<State> => (dispatc
     const {
         account,
     } = getState().selectedAccount;
-    if (!account) return state;
+    if (!account || account.networkType !== 'ethereum') return state;
 
     const { nonce } = state;
     if (nonce.length < 1) {

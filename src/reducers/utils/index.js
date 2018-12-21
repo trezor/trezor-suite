@@ -86,7 +86,7 @@ export const getDiscoveryProcess = (state: State): ?Discovery => {
 export const getAccountPendingTx = (pending: Array<Transaction>, account: ?Account): Array<Transaction> => {
     const a = account;
     if (!a) return [];
-    return pending.filter(p => p.network === a.network && p.address === a.address);
+    return pending.filter(p => p.network === a.network && p.address === a.descriptor);
 };
 
 export const getPendingSequence = (pending: Array<Transaction>): number => pending.reduce((value: number, tx: Transaction) => {
@@ -104,7 +104,7 @@ export const getPendingAmount = (pending: Array<Transaction>, currency: string, 
 export const getAccountTokens = (state: State, account: ?Account): Array<Token> => {
     const a = account;
     if (!a) return [];
-    return state.tokens.filter(t => t.ethAddress === a.address && t.network === a.network && t.deviceState === a.deviceState);
+    return state.tokens.filter(t => t.ethAddress === a.descriptor && t.network === a.network && t.deviceState === a.deviceState);
 };
 
 export const getWeb3 = (state: State): ?Web3Instance => {
