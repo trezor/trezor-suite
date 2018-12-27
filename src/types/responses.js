@@ -39,9 +39,9 @@ export type GetTransactions = {
     +payload: any,
 };
 
-export type GetFee = {
-    +type: typeof RESPONSES.GET_FEE,
-    +payload: string,
+export type EstimateFee = {
+    +type: typeof RESPONSES.ESTIMATE_FEE,
+    +payload: any,
 };
 
 export type Subscribe = {
@@ -69,12 +69,17 @@ type Output = {
     // amount: string,
 }
 
-type Transaction = {
+type Token = {
+    name: string,
+    value: string,
+}
+
+export type Transaction = {
     type: 'send' | 'recv',
-    status: 'pending' | 'confirmed',
-    timestamp?: string,
-    confirmations: number,
-    address: string,
+    timestamp?: string | number,
+    blockHeight: number,
+    blockHash?: string,
+    descriptor: string,
     inputs: Array<Input>,
     outputs: Array<Output>,
     
@@ -82,11 +87,9 @@ type Transaction = {
     amount: string,
     fee: string,
     total: string,
-    
 
+    tokens?: Array<Token>,
     sequence?: number, // eth: nonce || ripple: sequence
-    signature?: string, // ripple: tx signature
-    currency?: string, // eth: tokens
 }
 
 export type NotificationEvent = {
@@ -124,7 +127,7 @@ export type Response =
     { id: number } & Connect |
     { id: number } & GetInfo |
     { id: number } & GetAccountInfo |
-    { id: number } & GetFee |
+    { id: number } & EstimateFee |
     { id: number } & Subscribe |
     { id: number } & Unsubscribe |
     { id: number } & Notification |

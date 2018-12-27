@@ -96,13 +96,10 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
-    async getTransactions(payload: any): any {
-        console.log("getTransactions", payload)
-    }
-
-    async getFee(): Promise<string> {
+    async estimateFee(payload: $ElementType<MessageTypes.EstimateFee, 'payload'>): Promise<$ElementType<ResponseTypes.EstimateFee, 'payload'>> {
         return await this.__send({
-            type: MESSAGES.GET_FEE,
+            type: MESSAGES.ESTIMATE_FEE,
+            payload
         });
     }
 

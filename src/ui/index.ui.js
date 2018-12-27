@@ -32,16 +32,19 @@ const handleClick = (event: MouseEvent) => {
             break;
         
         case 'get-account-info': {
+            const mode = getInputValue('get-account-info-mode');
             const params = {
                 descriptor: getInputValue('get-account-info-address'),
+                options: undefined,
             };
+            if (mode === 'advanced') {
+                const options = getInputValue('get-account-info-account');
+                params.options = JSON.parse(options)
+                console.warn("ADV", options, params)
+            }
             blockchain.getAccountInfo(params).then(onResponse).catch(onError);
             break;
         }
-
-        case 'get-transactions':
-            blockchain.getTransactions(JSON.parse(getInputValue('get-transactions'))).then(onResponse).catch(onError);
-            break;
 
         case 'push-transaction':
             blockchain.pushTransaction(getInputValue('push-transaction-tx')).then(onResponse).catch(onError);
@@ -163,7 +166,7 @@ const onSelectChange = (event) => {
 
 const onModeChange = (event) => {
     const advanced = (document.getElementById('get-account-info-advanced'): any);
-    advanced.style.display = event.target.value;
+    advanced.style.display = event.target.value === 'advanced' ? 'block' : 'none';
 }
 
 const fillValues = (data) => {

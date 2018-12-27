@@ -18,6 +18,7 @@ export type GetAccountInfoOptions = {
     +page?: number,
     +from?: number,
     +to?: number,
+    +limit?: number,
 };
 export type GetAccountInfo = {
     +type: typeof MESSAGES.GET_ACCOUNT_INFO,
@@ -27,19 +28,9 @@ export type GetAccountInfo = {
     },
 };
 
-export type GetTransactions = {
-    +type: typeof MESSAGES.GET_ACCOUNT_INFO,
-    +payload: {
-        +descriptor: string,
-        +from: {
-            txid: string,
-        },
-        +limit: number,
-    },
-};
-
-export type GetFee = {
-    +type: typeof MESSAGES.GET_FEE,
+export type EstimateFee = {
+    +type: typeof MESSAGES.ESTIMATE_FEE,
+    +payload: any,
 };
 
 export type Subscribe = {
@@ -73,6 +64,6 @@ export type Message =
     { id: number } & Connect |
     { id: number } & GetInfo |
     { id: number } & GetAccountInfo |
-    { id: number } & GetFee |
+    { id: number } & EstimateFee |
     { id: number } & Subscribe |
     { id: number } & PushTransaction;

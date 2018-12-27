@@ -163,10 +163,11 @@
         <label>Address</label>
         <input id="get-account-info-address" class="form-input" type="text" />
         <select id="get-account-info-mode" class="form-select">
-            <option value="none">Basic</option>
-            <option value="block">Advanced</option>
+            <option value="basic">Basic</option>
+            <option value="advanced">Advanced</option>
         </select>
         <button id="get-account-info" class="btn">Get account info</button>
+        <button id="get-account-info-2" class="btn">Get account info lazy</button>
         <div id="get-account-info-advanced">
             <textarea id="get-account-info-account" class="form-input"></textarea>
         </div>
@@ -197,5 +198,8 @@
            </g>
         </svg>
     </button>
+    <script>
+        (function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})();
+    </script>
 </body>
 </html>
