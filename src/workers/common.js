@@ -36,11 +36,23 @@ export const handshake = (): void => {
     });
 }
 
-export const errorHandler = ({ id, error }: { id: number, error: Error}): void => {
+export const errorHandler = ({ id, error }: { id: number, error: Object}): void => {
+    let message: string = '';
+    if (typeof error === 'string') {
+        message = error;
+    } else if (typeof error === 'object') {
+        const keys = Object.keys(error);
+        if (keys.indexOf('name') >= 0) {
+            message = error.name;
+        } else {
+            message = error.message;
+        }
+    }
+    
     postMessage({
         id,
         type: RESPONSES.ERROR,
-        payload: error.message
+        payload: message
     });
 }
 
