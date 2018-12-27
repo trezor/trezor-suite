@@ -4,9 +4,11 @@ import { RippleAPI } from 'ripple-lib';
 import BigNumber from 'bignumber.js';
 import { MESSAGES, RESPONSES } from '../../constants';
 import * as common from '../common';
+import * as utils from './utils';
 
 import type { Message } from '../../types';
 import * as MessageTypes from '../../types/messages';
+import * as ResponseTypes from '../../types/responses';
 
 declare function onmessage(event: { data: Message }): void;
 
@@ -32,11 +34,8 @@ onmessage = (event) => {
         case MESSAGES.GET_ACCOUNT_INFO:
             getAccountInfo(data);
             break;
-        case MESSAGES.GET_TRANSACTIONS:
-            getTransactions(data);
-            break;
-        case MESSAGES.GET_FEE:
-            getFee(data);
+        case MESSAGES.ESTIMATE_FEE:
+            estimateFee(data);
             break;
         case MESSAGES.PUSH_TRANSACTION:
             pushTransaction(data);
@@ -61,11 +60,19 @@ onmessage = (event) => {
 
 let _api: ?RippleAPI;
 let _pingTimeout: TimeoutID;
-let _minLedgerVersion: number = 0;
 let _endpoints: Array<string> = [];
+const RESERVE = {
+    BASE: '20000000',
+    OWNER: '5000000',
+};
+const BLOCKS = {
+    MIN: 0,
+    MAX: 0,
+};
+const TX_LIMIT: number = 100;
 
 const timeoutHandler = async () => {
-    if (_api && _api.isConnected) {
+    if (_api && _api.isConnected()) {
         try {
             await _api.getServerInfo();
             _pingTimeout = setTimeout(timeoutHandler, 5000);
@@ -78,7 +85,7 @@ const timeoutHandler = async () => {
 const connect = async (): Promise<RippleAPI> => {
     if (_api) {
         // socket is already connected
-        if (_api.isConnected) return _api;
+        if (_api.isConnected()) return _api;
     }
 
     // validate endpoints
@@ -91,10 +98,10 @@ const connect = async (): Promise<RippleAPI> => {
     }
 
     common.debug('Connecting to', _endpoints[0]);
-    _api = new RippleAPI({ server: _endpoints[0] });
+    const api = new RippleAPI({ server: _endpoints[0] });
    
     try {
-        await _api.connect();
+        await api.connect();
     } catch (error) {
         common.debug('Websocket connection failed');
         _api = undefined;
@@ -110,16 +117,23 @@ const connect = async (): Promise<RippleAPI> => {
     // disable reconnecting
     // workaround: RippleApi which doesn't have possibility to disable reconnection
     // override private method and return never ending promise
-    _api.connection._retryConnect = () => {
+    api.connection._retryConnect = () => {
         return new Promise(() => {});
     };
 
-    _api.on('ledger', () => {
+    api.on('ledger', ledger => {
         clearTimeout(_pingTimeout);
         _pingTimeout = setTimeout(timeoutHandler, 5000);
+
+        // store current block values
+        RESERVE.BASE = api.dropsToXrp(ledger.reserveBaseXRP);
+        RESERVE.OWNER = api.dropsToXrp(ledger.reserveIncrementXRP);
+        const availableBlocks = ledger.validatedLedgerVersions.split('-');
+        BLOCKS.MIN = parseInt(availableBlocks[0]);
+        BLOCKS.MAX = parseInt(availableBlocks[1]);
     });
 
-    _api.on('disconnected', () => {
+    api.on('disconnected', () => {
         clearTimeout(_pingTimeout);
         cleanup();
         common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
@@ -132,14 +146,22 @@ const connect = async (): Promise<RippleAPI> => {
     // }, 6000);
 
     try {
-        _minLedgerVersion = parseInt(_api.connection._availableLedgerVersions.serialize().split('-')[0]);
+        const availableBlocks = api.connection._availableLedgerVersions.serialize().split('-');
+        BLOCKS.MIN = parseInt(availableBlocks[0]);
+        BLOCKS.MAX = parseInt(availableBlocks[1]);
     } catch (error) {
-        const info = await _api.getServerInfo();
-        _minLedgerVersion = parseInt(info.completeLedgers.split('-')[0]);
+        const info = await api.getServerInfo();
+        const availableBlocks = info.completeLedgers.split('-');
+        BLOCKS.MIN = parseInt(availableBlocks[0]);
+        BLOCKS.MAX = parseInt(availableBlocks[1]);
     }
+
+    const ledger = await api.getLedger({ ledgerVersion: BLOCKS.MIN });
+    console.warn("1st Ledger", ledger, ledger.transactionHashes, ledger.transactions)
 
     common.response({ id: -1, type: RESPONSES.CONNECTED });
 
+    _api = api;
     return _api;
 }
 
@@ -172,7 +194,7 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
-}
+};
 
 const getMempoolAccountInfo = async (account: string): Promise<{ xrpBalance: string, sequence: number }> => {
     const api = await connect();
@@ -184,12 +206,25 @@ const getMempoolAccountInfo = async (account: string): Promise<{ xrpBalance: str
     return {
         xrpBalance: info.account_data.Balance,
         sequence: info.account_data.Sequence,
-    }
-}
+    };
+};
+
+
+// RippleApi returns parsed transactions, use own parsing
+const getRawTransactions = async (account, options): Promise<Array<ResponseTypes.Transaction>> => {
+    const api = await connect();
+    const raw = await api.request('account_tx', {
+        account,
+        ledger_index_max: options.maxLedgerVersion,
+        ledger_index_min: options.minLedgerVersion,
+        limit: options.limit,
+    });
+    return raw.transactions.map(tx => utils.transformTransactionHistory(account, tx));
+};
 
 const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo): Promise<void> => {
     const { payload } = data;
-    const options = payload.options || {};
+    const options: MessageTypes.GetAccountInfoOptions = payload.options || {};
 
     const account = {
         address: payload.descriptor,
@@ -198,14 +233,19 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
         balance: '0',
         availableBalance: '0',
         sequence: 0,
+        reserve: RESERVE.BASE,
     };
 
     try {
         const api = await connect();
+        account.block = BLOCKS.MAX;
+
         const info = await api.getAccountInfo(payload.descriptor);
+        const ownersReserve = info.ownerCount > 0 ? new BigNumber(info.ownerCount).multipliedBy(RESERVE.OWNER).toString() : '0';
         account.balance = api.xrpToDrops(info.xrpBalance);
         account.availableBalance = account.balance;
         account.sequence = info.sequence;
+        account.reserve = new BigNumber(RESERVE.BASE).plus(ownersReserve).toString();
     } catch (error) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
@@ -227,7 +267,10 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
         account.sequence = mempoolInfo.sequence;
     } catch (error) {
         common.errorHandler({ id: data.id, error });
+        return;
     }
+
+    // get the reserve
 
     // if (options.type !== 'transactions') {
     //     common.response({
@@ -239,27 +282,39 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
     // }
 
     try {
+        // Rippled has an issue with looking up outside of range of completed ledgers
         // https://github.com/ripple/ripple-lib/issues/879#issuecomment-377576063
-        // 42856666
+        // Always use "minLedgerVersion"
         const api = await connect();
         const block = await api.getLedgerVersion();
-        const minLedgerVersion = options.from ? Math.max(options.from, _minLedgerVersion) : _minLedgerVersion;
-        const transactions = await api.getTransactions(payload.descriptor, {
+        const minLedgerVersion = options.from ? Math.max(options.from, BLOCKS.MIN) : BLOCKS.MIN;
+        const maxLedgerVersion = options.to ? Math.max(options.to, BLOCKS.MAX) : undefined;
+        // determines if there is bottom limit
+        const fetchAll: boolean = typeof options.limit !== 'number';
+        const requestOptions = {
             minLedgerVersion,
-            // start: '660371D3A9B15E9781EED508090962890B99C67277E9F9024E899430D47D3FFD',
-            // limit: options.limit,
-            // maxLedgerVersion: 14143636,
-        });
+            maxLedgerVersion,
+            limit: fetchAll ? TX_LIMIT : options.limit,
+        }
 
-        // https://developers.ripple.com/rippled-api.html#markers-and-pagination
-        // if (api.hasNextPage(transactions)) {
-            
-        //     // https://developers.ripple.com/rippleapi-reference.html#parameters
-        //     // const nextPage = api.requestNextPage('getTransactions', transactions);
-        // }
-
-        // const xrpDrops = new BigNumber(info.xrpBalance).multipliedBy('1000000').toString();
-        //console.warn("ACCount drops", xrpDrops)
+        let transactions: Array<ResponseTypes.Transaction> = [];
+        if (!fetchAll) {
+            // get only one page
+            transactions = await getRawTransactions(payload.descriptor, requestOptions);
+        } else {
+            // get all pages at once
+            let hasNextPage: boolean = true;
+            while (hasNextPage) {
+                const response = await getRawTransactions(payload.descriptor, requestOptions);
+                transactions = utils.concatTransactions(transactions, response);
+                console.warn("next page", transactions.length, requestOptions);
+                // hasNextPage = response.length >= TX_LIMIT && transactions.length < 10000;
+                hasNextPage = response.length >= TX_LIMIT;
+                if (hasNextPage) {
+                    requestOptions.maxLedgerVersion = response[response.length - 1].blockHeight;
+                }
+            }
+        }
 
         common.response({
             id: data.id,
@@ -275,31 +330,7 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
     }
 }
 
-const getTransactions = async (data: { id: number } & MessageTypes.GetTransactions): Promise<void> => {
-    const { payload } = data;
-    try {
-        const api = await connect();
-        const transactions = await api.getTransactions(payload.descriptor, {
-            minLedgerVersion: _minLedgerVersion,
-            start: 0,
-            limit: 10,
-            // maxLedgerVersion: 14143636,
-        });
-        common.response({
-            id: data.id,
-            type: RESPONSES.GET_ACCOUNT_INFO,
-            payload: transactions
-        });
-    } catch (error) {
-        common.errorHandler({ id: data.id, error });
-    }
-}
-
-const transformTransaction = (tx) => {
-
-};
-
-const getFee = async (data: { id: number } & MessageTypes.GetFee): Promise<void> => {
+const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
         const api = await connect();
         const fee = await api.getFee();
@@ -308,7 +339,7 @@ const getFee = async (data: { id: number } & MessageTypes.GetFee): Promise<void>
         // convert value to satoshi: * 1000000
         common.response({
             id: data.id,
-            type: RESPONSES.GET_FEE,
+            type: RESPONSES.ESTIMATE_FEE,
             payload: drops,
         });
     } catch (error) {
@@ -468,6 +499,30 @@ const onTransaction = (event: any) => {
     const subscribed = common.getAddresses();
     const sender = subscribed.indexOf(event.transaction.Account);
     const receiver = subscribed.indexOf(event.transaction.Destination);
+
+
+    if (sender >= 0) {
+        common.response({
+            id: -1,
+            type: RESPONSES.NOTIFICATION,
+            payload: {
+                type: 'notification',
+                payload: utils.transformTransactionEvent(subscribed[sender], event),
+            }
+        });
+    }
+
+    if (receiver >= 0) {
+        common.response({
+            id: -1,
+            type: RESPONSES.NOTIFICATION,
+            payload: {
+                type: 'notification',
+                payload: utils.transformTransactionEvent(subscribed[receiver], event),
+            }
+        });
+    }
+    /*
     const status = event.validated ? 'confirmed' : 'pending';
     const hash = event.transaction.hash;
     const signature = event.transaction.TxnSignature;
@@ -478,7 +533,7 @@ const onTransaction = (event: any) => {
     const txData = {
         status,
         timestamp: event.transaction.date,
-        confirmations: 0,
+        blockHeight: 0,
 
         inputs: [{ addresses: [event.transaction.Account] }],
         outputs: [{ addresses: [event.transaction.Destination] }],
@@ -497,7 +552,7 @@ const onTransaction = (event: any) => {
                 type: 'notification',
                 payload: {
                     type: 'send',
-                    address: event.transaction.Account,
+                    descriptor: event.transaction.Account,
                     ...txData,
                 }
             }
@@ -512,12 +567,13 @@ const onTransaction = (event: any) => {
                 type: 'notification',
                 payload: {
                     type: 'recv',
-                    address: event.transaction.Destination,
+                    descriptor: event.transaction.Destination,
                     ...txData,
                 }
             }
         });
     }
+    */
 }
 
 // postMessage(1/x); // Intentional error.
