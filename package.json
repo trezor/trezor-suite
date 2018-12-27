@@ -20,7 +20,7 @@
   ],
   "main": "index.js",
   "browser": {
-    "ws": "./lib/ws.js"
+    "ws": "./lib/utils/ws.js"
   },
   "scripts": {
     "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js --mode development",
@@ -63,7 +63,8 @@
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.9",
-    "worker-loader": "^2.0.0"
+    "worker-loader": "^2.0.0",
+    "ws": "^6.1.2"
   },
   "dependencies": {
     "eslint-plugin-mocha": "^5.2.0",
