@@ -125,7 +125,7 @@ const connect = async (): Promise<RippleAPI> => {
         clearTimeout(_pingTimeout);
         _pingTimeout = setTimeout(timeoutHandler, 5000);
 
-        // store current block values
+        // store current block/ledger values
         RESERVE.BASE = api.dropsToXrp(ledger.reserveBaseXRP);
         RESERVE.OWNER = api.dropsToXrp(ledger.reserveIncrementXRP);
         const availableBlocks = ledger.validatedLedgerVersions.split('-');
@@ -196,6 +196,8 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     }
 };
 
+// Custom request
+// RippleApi doesn't support "ledger_index": "current", which will fetch data from mempool
 const getMempoolAccountInfo = async (account: string): Promise<{ xrpBalance: string, sequence: number }> => {
     const api = await connect();
     const info = await api.request('account_info', {
@@ -209,9 +211,9 @@ const getMempoolAccountInfo = async (account: string): Promise<{ xrpBalance: str
     };
 };
 
-
-// RippleApi returns parsed transactions, use own parsing
-const getRawTransactions = async (account, options): Promise<Array<ResponseTypes.Transaction>> => {
+// Custom request
+// RippleApi returns parsed/formatted transactions, use own parsing
+const getRawTransactions = async (account: string, options): Promise<Array<ResponseTypes.Transaction>> => {
     const api = await connect();
     const raw = await api.request('account_tx', {
         account,

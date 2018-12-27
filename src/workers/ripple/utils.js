@@ -50,7 +50,7 @@ export const transformTransactionEvent = (descriptor: string, event: any): Trans
     const fee = tx.Fee;
     const total = isPayment ? new BigNumber(amount).plus(fee).toString() : '0';
     const tokens = !isPayment ? [
-        { name: tx.TransactionType, value: '0' }
+        { name: tx.TransactionType, shortcut: '', value: '0' }
     ] : undefined;
 
     return {

@@ -71,6 +71,7 @@ type Output = {
 
 type Token = {
     name: string,
+    shortcut: string,
     value: string,
 }
 
