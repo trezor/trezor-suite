@@ -54,6 +54,18 @@ export const hexToString = (hex: string): string => {
     return str;
 };
 
-export const toDecimalAmount = (amount: string, decimals: number): string => new BigNumber(amount).div(10 ** decimals).toString(10);
+export const toDecimalAmount = (amount: string | number, decimals: number): string => {
+    try {
+        return new BigNumber(amount).div(10 ** decimals).toString(10);
+    } catch (error) {
+        return '0';
+    }
+};
 
-export const fromDecimalAmount = (amount: string, decimals: number): string => new BigNumber(amount).times(10 ** decimals).toString(10);
+export const fromDecimalAmount = (amount: string | number, decimals: number): string => {
+    try {
+        return new BigNumber(amount).times(10 ** decimals).toString(10);
+    } catch (error) {
+        return '0';
+    }
+};
