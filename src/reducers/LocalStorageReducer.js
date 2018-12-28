@@ -5,6 +5,14 @@ import * as STORAGE from 'actions/constants/localStorage';
 
 import type { Action } from 'flowtype';
 
+type NetworkFeeLevel = {
+    name: string,
+    value: string, // ETH: gasPrice in gwei, XRP: fee in drops, BTC: sat/b
+    multiplier: number, // ETH specific
+    blocks: number, // BTC specific
+    recommended: boolean,
+};
+
 export type Network = {
     type: string;
     name: string;
@@ -15,13 +23,21 @@ export type Network = {
     defaultGasLimit: number;
     defaultGasLimitTokens: number;
     defaultGasPrice: number;
-    chainId: number;
+    chainId: number; // ETH specific
     explorer: {
         tx: string;
         address: string;
     };
     tokens: string;
-    decimals: number,
+    decimals: number;
+    fee: {
+        defaultFee: string;
+        minFee: string;
+        maxFee: string;
+        defaultGasLimit: string; // ETH specific
+        defaultGasLimitTokens: string; // ETH specific
+        levels: Array<NetworkFeeLevel>;
+    },
     backends: Array<{
         name: string;
         urls: Array<string>;

@@ -52,6 +52,18 @@
             "defaultGasLimit": 21000,
             "defaultGasLimitTokens": 200000,
             "decimals": 18,
+            "fee": {
+                "defaultFee": "64",
+                "minFee": "10",
+                "maxFee": "10000",
+                "defaultGasLimit": "21000",
+                "defaultGasLimitTokens": "200000",
+                "levels": [
+                    { "name": "High", "value": "96", "multiplier": 1.5 },
+                    { "name": "Normal", "value": "64", "multiplier": 1, "recommended": true },
+                    { "name": "Low", "value": "48", "multiplier": 0.75 }
+                ]
+            },
             "tokens": "./data/ropstenTokens.json",
             "web3": [
                 "wss://ropsten1.trezor.io/geth"
@@ -68,6 +80,14 @@
             "shortcut": "xrp",
             "bip44": "m/44'/144'/a'/0/0",
             "decimals": 6,
+            "fee": {
+                "defaultFee": "12",
+                "minFee": "10",
+                "maxFee": "10000",
+                "levels": [
+                    {"name": "Normal", "value": "12", "recommended": true }
+                ]
+            },
             "explorer": {
                 "tx": "https://xrpcharts.ripple.com/#/transactions/",
                 "address": "https://xrpcharts.ripple.com/#/graph/"
@@ -81,6 +101,15 @@
             "shortcut": "txrp",
             "bip44": "m/44'/144'/a'/0/0",
             "decimals": 6,
+            "fee": {
+                "defaultFee": "12",
+                "minFee": "10",
+                "maxFee": "10000",
+                "levels": [
+                    {"name": "High", "value": "20" },
+                    {"name": "Normal", "value": "10", "recommended": true }
+                ]
+            },
             "explorer": {
                 "tx": "https://sisyfos.trezor.io/ripple-testnet-explorer/tx/",
                 "address": "https://sisyfos.trezor.io/ripple-testnet-explorer/address/"
