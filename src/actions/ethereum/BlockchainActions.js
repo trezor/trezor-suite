@@ -48,7 +48,6 @@ export const getTokenInfo = (input: string, network: string): PromiseAction<Netw
 
 export const getTokenBalance = (token: Token): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => dispatch(Web3Actions.getTokenBalance(token));
 
-
 export const getGasPrice = (network: string, defaultGasPrice: number): PromiseAction<BigNumber> => async (dispatch: Dispatch): Promise<BigNumber> => {
     try {
         const gasPrice = await dispatch(Web3Actions.getCurrentGasPrice(network));
@@ -96,6 +95,9 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
 };
 
 export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    // TODO: handle rollback,
+    // check latest saved transaction blockhash against blockhheight
+
     // try to resolve pending transactions
     await dispatch(Web3Actions.resolvePendingTransactions(network));
 
