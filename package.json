@@ -1,6 +1,6 @@
 {
   "name": "trezor-blockchain-link",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "author": "Trezor <info@trezor.io>",
   "homepage": "https://github.com/trezor/trezor-blockchain-link",
   "description": "High-level javascript interface for blockchain communication",
@@ -52,6 +52,7 @@
     "eslint-loader": "^2.1.1",
     "eslint-plugin-flowtype": "^3.0.0",
     "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-mocha": "^5.2.0",
     "flow-bin": "^0.83.0",
     "flow-webpack-plugin": "^1.2.0",
     "fs-extra": "^7.0.1",
@@ -67,7 +68,6 @@
     "ws": "^6.1.2"
   },
   "dependencies": {
-    "eslint-plugin-mocha": "^5.2.0",
     "events": "^3.0.0"
   }
 }
