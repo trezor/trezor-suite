@@ -6,12 +6,17 @@ import * as BLOCKCHAIN_ACTION from 'actions/constants/blockchain';
 import type { Action } from 'flowtype';
 import type { BlockchainConnect, BlockchainError, BlockchainBlock } from 'trezor-connect';
 
+export type BlockchainFeeLevel = {
+    name: string,
+    value: string,
+};
+
 export type BlockchainNetwork = {
     +shortcut: string,
+    feeTimestamp: number,
+    feeLevels: Array<BlockchainFeeLevel>,
     connected: boolean,
     block: number,
-    reserved: string, // xrp specific
-    fee: string,
 };
 
 export type State = Array<BlockchainNetwork>;
@@ -27,8 +32,6 @@ const onConnect = (state: State, action: BlockchainConnect): State => {
         return others.concat([{
             ...network,
             connected: true,
-            fee: info.fee,
-            block: info.block,
         }]);
     }
 
@@ -36,8 +39,8 @@ const onConnect = (state: State, action: BlockchainConnect): State => {
         shortcut,
         connected: true,
         block: info.block,
-        fee: info.fee,
-        reserved: info.reserved || '0',
+        feeTimestamp: 0,
+        feeLevels: [],
     }]);
 };
 
@@ -56,8 +59,8 @@ const onError = (state: State, action: BlockchainError): State => {
         shortcut,
         connected: false,
         block: 0,
-        fee: '0',
-        reserved: '0',
+        feeTimestamp: 0,
+        feeLevels: [],
     }]);
 };
 
@@ -75,14 +78,15 @@ const onBlock = (state: State, action: BlockchainBlock): State => {
     return state;
 };
 
-const updateFee = (state: State, shortcut: string, fee: string): State => {
+const updateFee = (state: State, shortcut: string, feeLevels: Array<BlockchainFeeLevel>): State => {
     const network = state.find(b => b.shortcut === shortcut);
     if (!network) return state;
 
     const others = state.filter(b => b !== network);
     return others.concat([{
         ...network,
-        fee,
+        feeTimestamp: new Date().getTime(),
+        feeLevels,
     }]);
 };
 
@@ -96,7 +100,7 @@ export default (state: State = initialState, action: Action): State => {
         case BLOCKCHAIN_EVENT.BLOCK:
             return onBlock(state, action);
         case BLOCKCHAIN_ACTION.UPDATE_FEE:
-            return updateFee(state, action.shortcut, action.fee);
+            return updateFee(state, action.shortcut, action.feeLevels);
 
         default:
             return state;

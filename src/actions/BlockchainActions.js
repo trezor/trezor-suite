@@ -8,6 +8,7 @@ import type {
     Dispatch,
     GetState,
     PromiseAction,
+    BlockchainFeeLevel,
 } from 'flowtype';
 import type { BlockchainBlock, BlockchainNotification, BlockchainError } from 'trezor-connect';
 
@@ -17,7 +18,7 @@ export type BlockchainAction = {
 } | {
     type: typeof BLOCKCHAIN.UPDATE_FEE,
     shortcut: string,
-    fee: string,
+    feeLevels: Array<BlockchainFeeLevel>,
 }
 
 // Conditionally subscribe to blockchain backend
@@ -100,7 +101,7 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
 };
 
 // Handle BLOCKCHAIN.ERROR event from TrezorConnect
-// disconnect and remove Web3 webscocket instance if exists
+// disconnect and remove Web3 websocket instance if exists
 export const onError = (payload: $ElementType<BlockchainError, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const shortcut = payload.coin.shortcut.toLowerCase();
     const { config } = getState().localStorage;
