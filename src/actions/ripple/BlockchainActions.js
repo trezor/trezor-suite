@@ -1,7 +1,7 @@
 /* @flow */
 
 import TrezorConnect from 'trezor-connect';
-// import * as BLOCKCHAIN from 'actions/constants/blockchain';
+import * as BLOCKCHAIN from 'actions/constants/blockchain';
 import * as PENDING from 'actions/constants/pendingTx';
 import * as AccountsActions from 'actions/AccountsActions';
 import { toDecimalAmount } from 'utils/formatUtils';
@@ -11,6 +11,9 @@ import type {
     Dispatch,
     GetState,
     PromiseAction,
+    PayloadAction,
+    Network,
+    BlockchainFeeLevel,
 } from 'flowtype';
 
 const DECIMALS: number = 6;
@@ -23,22 +26,40 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
     });
 };
 
+// Get current known fee
+// Use default values from appConfig.json if it wasn't downloaded from blockchain yet
+// update them later, after onBlockMined event
+export const getFeeLevels = (network: Network): PayloadAction<Array<BlockchainFeeLevel>> => (dispatch: Dispatch, getState: GetState): Array<BlockchainFeeLevel> => {
+    const blockchain = getState().blockchain.find(b => b.shortcut === network.shortcut);
+    if (!blockchain || blockchain.feeLevels.length < 1) {
+        return network.fee.levels.map(level => ({
+            name: level.name,
+            value: level.value,
+        }));
+    }
+    return blockchain.feeLevels;
+};
+
 export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const blockchain = getState().blockchain.find(b => b.shortcut === network);
-    if (!blockchain) return;
+    if (!blockchain) return; // flowtype fallback
 
-    // const fee = await TrezorConnect.blockchainGetFee({
-    //     coin: network,
-    // });
-    // if (!fee.success) return;
+    // if last update was more than 5 minutes ago
+    const now = new Date().getTime();
+    if (blockchain.feeTimestamp < now - 300000) {
+        const feeRequest = await TrezorConnect.blockchainEstimateFee({
+            coin: network,
+        });
+        if (feeRequest.success) {
+            dispatch({
+                type: BLOCKCHAIN.UPDATE_FEE,
+                shortcut: network,
+                feeLevels: feeRequest.payload,
+            });
+        }
+    }
 
-    // if (fee.payload !== blockchain.fee) {
-    //     dispatch({
-    //         type: BLOCKCHAIN.UPDATE_FEE,
-    //         shortcut: network,
-    //         fee: fee.payload,
-    //     });
-    // }
+    // TODO: check for blockchain rollbacks here!
 
     const accounts: Array<any> = getState().accounts.filter(a => a.network === network);
     // console.warn('ACCOUNTS', accounts);

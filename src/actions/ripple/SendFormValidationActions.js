@@ -9,11 +9,13 @@ import type {
     Dispatch,
     GetState,
     PayloadAction,
+    BlockchainFeeLevel,
 } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormRippleReducer';
 
 import AddressValidator from 'wallet-address-validator';
 // general regular expressions
+const ABS_RE = new RegExp('^[0-9]+$');
 const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
 const XRP_6_RE = new RegExp('^(0|0\\.([0-9]{0,6})?|[1-9][0-9]*\\.?([0-9]{0,6})?|\\.[0-9]{0,6})$');
 
@@ -21,10 +23,9 @@ const XRP_6_RE = new RegExp('^(0|0\\.([0-9]{0,6})?|[1-9][0-9]*\\.?([0-9]{0,6})?|
 * Called from SendFormActions.observe
 * Reaction for BLOCKCHAIN.FEE_UPDATED action
 */
-export const onFeeUpdated = (network: string, fee: string): PayloadAction<void> => (dispatch: Dispatch, getState: GetState): void => {
+export const onFeeUpdated = (network: string, feeLevels: Array<BlockchainFeeLevel>): PayloadAction<void> => (dispatch: Dispatch, getState: GetState): void => {
     const state = getState().sendFormRipple;
     if (network === state.networkSymbol) return;
-
 
     if (!state.untouched) {
         // if there is a transaction draft let the user know
@@ -35,24 +36,21 @@ export const onFeeUpdated = (network: string, fee: string): PayloadAction<void> 
             state: {
                 ...state,
                 feeNeedsUpdate: true,
-                recommendedFee: fee,
             },
         });
         return;
     }
 
-    // automatically update feeLevels and gasPrice
-    const feeLevels = dispatch(getFeeLevels(state.networkSymbol));
-    const selectedFeeLevel = getSelectedFeeLevel(feeLevels, state.selectedFeeLevel);
+    // automatically update feeLevels
+    const newFeeLevels = dispatch(getFeeLevels(feeLevels));
+    const selectedFeeLevel = getSelectedFeeLevel(newFeeLevels, state.selectedFeeLevel);
     dispatch({
         type: SEND.CHANGE,
         networkType: 'ripple',
         state: {
             ...state,
             feeNeedsUpdate: false,
-            recommendedFee: fee,
-            gasPrice: selectedFeeLevel.gasPrice,
-            feeLevels,
+            feeLevels: newFeeLevels,
             selectedFeeLevel,
         },
     });
@@ -70,9 +68,11 @@ export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getSt
     state.warnings = {};
     state.infos = {};
     state = dispatch(recalculateTotalAmount(state));
+    state = dispatch(updateCustomFeeLabel(state));
     state = dispatch(addressValidation(state));
     state = dispatch(addressLabel(state));
     state = dispatch(amountValidation(state));
+    state = dispatch(feeValidation(state));
     return state;
 };
 
@@ -83,19 +83,27 @@ const recalculateTotalAmount = ($state: State): PayloadAction<State> => (dispatc
     } = getState().selectedAccount;
     if (!account) return $state;
 
-    const blockchain = getState().blockchain.find(b => b.shortcut === account.network);
-    if (!blockchain) return $state;
-    const fee = toDecimalAmount(blockchain.fee, 6);
-
     const state = { ...$state };
 
     if (state.setMax) {
         const pendingAmount = getPendingAmount(pending, state.networkSymbol, false);
-        const b = new BigNumber(account.balance).minus(pendingAmount);
-        state.amount = calculateMaxAmount(b, fee);
+        const availableBalance = new BigNumber(account.balance).minus(pendingAmount);
+        state.amount = calculateMaxAmount(availableBalance, state.selectedFeeLevel.fee);
     }
 
-    state.total = calculateTotal(state.amount, fee);
+    state.total = calculateTotal(state.amount, state.selectedFeeLevel.fee);
+    return state;
+};
+
+const updateCustomFeeLabel = ($state: State): PayloadAction<State> => (): State => {
+    const state = { ...$state };
+    if ($state.selectedFeeLevel.value === 'Custom') {
+        state.selectedFeeLevel = {
+            ...state.selectedFeeLevel,
+            fee: state.fee,
+            label: `${toDecimalAmount(state.fee, 6)} ${state.networkSymbol}`,
+        };
+    }
     return state;
 };
 
@@ -190,6 +198,33 @@ const amountValidation = ($state: State): PayloadAction<State> => (dispatch: Dis
 };
 
 /*
+* Fee value validation
+*/
+export const feeValidation = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+    const state = { ...$state };
+    if (!state.touched.fee) return state;
+
+    const {
+        network,
+    } = getState().selectedAccount;
+    if (!network) return state;
+
+    const { fee } = state;
+    if (fee.length < 1) {
+        state.errors.fee = 'Fee is not set';
+    } else if (fee.length > 0 && !fee.match(ABS_RE)) {
+        state.errors.fee = 'Fee must be an absolute number';
+    } else {
+        const gl: BigNumber = new BigNumber(fee);
+        if (gl.lessThan(10)) {
+            state.errors.fee = 'Fee is below recommended';
+        }
+    }
+    return state;
+};
+
+
+/*
 * UTILITIES
 */
 
@@ -212,35 +247,31 @@ const calculateMaxAmount = (balance: BigNumber, fee: string): string => {
     }
 };
 
-export const getFeeLevels = (symbol: string): PayloadAction<Array<FeeLevel>> => (dispatch: Dispatch, getState: GetState): Array<FeeLevel> => {
-    const blockchain = getState().blockchain.find(b => b.shortcut === symbol.toLowerCase());
-    if (!blockchain) {
-        // return default fee levels (TODO: get them from config)
-        return [{
-            value: 'Normal',
-            gasPrice: '0.000012',
-            label: `0.000012 ${symbol}`,
-        }];
-    }
+// Generate FeeLevel dataset for "fee" select
+export const getFeeLevels = (feeLevels: Array<BlockchainFeeLevel>, selected?: FeeLevel): PayloadAction<Array<FeeLevel>> => (dispatch: Dispatch, getState: GetState): Array<FeeLevel> => {
+    const { network } = getState().selectedAccount;
+    if (!network) return []; // flowtype fallback
 
-    const xrpDrops = toDecimalAmount(blockchain.fee, 6);
+    // map BlockchainFeeLevel to SendFormReducer FeeLevel
+    const levels = feeLevels.map(level => ({
+        value: level.name,
+        fee: level.value,
+        label: `${toDecimalAmount(level.value, network.decimals)} ${network.symbol}`,
+    }));
 
-    // TODO: calc fee levels
-    return [{
-        value: 'Normal',
-        gasPrice: xrpDrops,
-        label: `${xrpDrops} ${symbol}`,
-    }];
+    // add "Custom" level
+    const customLevel = selected && selected.value === 'Custom' ? {
+        value: 'Custom',
+        fee: selected.fee,
+        label: `${toDecimalAmount(selected.fee, network.decimals)} ${network.symbol}`,
+    } : {
+        value: 'Custom',
+        fee: '0',
+        label: '',
+    };
+
+    return levels.concat([customLevel]);
 };
-
-// export const getFeeLevels = (shortcut: string): Array<FeeLevel> => ([
-//     {
-//         value: 'Normal',
-//         gasPrice: '1',
-//         label: `1 ${shortcut}`,
-//     },
-// ]);
-
 
 export const getSelectedFeeLevel = (feeLevels: Array<FeeLevel>, selected: FeeLevel): FeeLevel => {
     const { value } = selected;

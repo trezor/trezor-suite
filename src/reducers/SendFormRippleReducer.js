@@ -7,7 +7,7 @@ import type { Action } from 'flowtype';
 
 export type FeeLevel = {
     label: string;
-    gasPrice: string;
+    fee: string;
     value: string;
 }
 
@@ -24,7 +24,7 @@ export type State = {
     setMax: boolean;
     feeLevels: Array<FeeLevel>;
     selectedFeeLevel: FeeLevel;
-    recommendedFee: string;
+    fee: string;
     feeNeedsUpdate: boolean;
     sequence: string;
     total: string;
@@ -49,11 +49,11 @@ export const initialState: State = {
     setMax: false,
     feeLevels: [],
     selectedFeeLevel: {
-        label: 'Normal',
-        gasPrice: '0',
         value: 'Normal',
+        label: '',
+        fee: '0',
     },
-    recommendedFee: '0',
+    fee: '0',
     feeNeedsUpdate: false,
     sequence: '0',
     total: '0',
