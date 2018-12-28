@@ -28,9 +28,16 @@ export type GetAccountInfo = {
     },
 };
 
+export type EstimateFeeOptions = {
+    transaction?: any, // custom object, used in ethereum
+    levels?: Array<{
+        name: string,
+        value: string,
+    }>,
+};
 export type EstimateFee = {
     +type: typeof MESSAGES.ESTIMATE_FEE,
-    +payload: any,
+    +payload?: EstimateFeeOptions,
 };
 
 export type Subscribe = {

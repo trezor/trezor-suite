@@ -156,9 +156,6 @@ const connect = async (): Promise<RippleAPI> => {
         BLOCKS.MAX = parseInt(availableBlocks[1]);
     }
 
-    const ledger = await api.getLedger({ ledgerVersion: BLOCKS.MIN });
-    console.warn("1st Ledger", ledger, ledger.transactionHashes, ledger.transactions)
-
     common.response({ id: -1, type: RESPONSES.CONNECTED });
 
     _api = api;
@@ -336,18 +333,19 @@ const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Pro
     try {
         const api = await connect();
         const fee = await api.getFee();
-        // const converted = new BigNumber(fee).multipliedBy('1000000');
+        // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
+        // investigate more...
         const drops = api.xrpToDrops(fee);
-        // convert value to satoshi: * 1000000
+        const payload = data.payload && Array.isArray(data.payload.levels) ? data.payload.levels.map(l => ({ name: l.name, value: drops })) : [ { name: 'Normal', value: drops } ];
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,
-            payload: drops,
+            payload,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
-}
+};
 
 const pushTransaction = async (data: { id: number } & MessageTypes.PushTransaction): Promise<void> => {
     try {
@@ -365,8 +363,6 @@ const pushTransaction = async (data: { id: number } & MessageTypes.PushTransacti
             common.errorHandler({ id: data.id, error: new Error(info.resultMessage) });
             return;
         }
-
-        
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }

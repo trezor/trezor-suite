@@ -12,7 +12,8 @@ import * as MessageTypes from './types/messages';
 import * as ResponseTypes from './types/responses';
 
 export type {
-    GetAccountInfoOptions
+    GetAccountInfoOptions,
+    EstimateFeeOptions,
 } from './types/messages';
 
 const workerWrapper = (factory: string | Function): Worker => {
