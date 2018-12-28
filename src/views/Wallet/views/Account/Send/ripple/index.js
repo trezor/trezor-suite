@@ -6,12 +6,15 @@ import { Select } from 'components/Select';
 import Button from 'components/Button';
 import Input from 'components/inputs/Input';
 import Icon from 'components/Icon';
+import Link from 'components/Link';
 import ICONS from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
 import Title from 'views/Wallet/components/Title';
+import P from 'components/Paragraph';
 import Content from 'views/Wallet/components/Content';
 import PendingTransactions from '../components/PendingTransactions';
+import AdvancedForm from './components/AdvancedForm';
 
 import type { Props } from './Container';
 
@@ -66,6 +69,34 @@ const CurrencySelect = styled(Select)`
     flex: 0.2;
 `;
 
+const FeeOptionWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const FeeLabelWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+`;
+
+const FeeLabel = styled.span`
+    color: ${colors.TEXT_SECONDARY};
+`;
+
+const UpdateFeeWrapper = styled.span`
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+    font-size: ${FONT_SIZE.SMALL};
+    color: ${colors.WARNING_PRIMARY};
+`;
+
+const StyledLink = styled(Link)`
+    margin-left: 4px;
+    white-space: nowrap;
+`;
+
 const ToggleAdvancedSettingsWrapper = styled.div`
     min-height: 40px;
     margin-bottom: 20px;
@@ -80,6 +111,14 @@ const ToggleAdvancedSettingsWrapper = styled.div`
     }
 `;
 
+const ToggleAdvancedSettingsButton = styled(Button)`
+    min-height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    font-weight: ${FONT_WEIGHT.SEMIBOLD};
+`;
+
 const SendButton = styled(Button)`
     min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
     word-break: break-all;
@@ -87,6 +126,10 @@ const SendButton = styled(Button)`
     @media screen and (max-width: ${SmallScreenWidth}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
     }
+`;
+
+const AdvancedSettingsIcon = styled(Icon)`
+    margin-left: 10px;
 `;
 
 // render helpers
@@ -128,6 +171,9 @@ const AccountSend = (props: Props) => {
         address,
         amount,
         setMax,
+        feeLevels,
+        selectedFeeLevel,
+        feeNeedsUpdate,
         total,
         errors,
         warnings,
@@ -137,9 +183,12 @@ const AccountSend = (props: Props) => {
     } = props.sendForm;
 
     const {
+        toggleAdvanced,
         onAddressChange,
         onAmountChange,
         onSetMax,
+        onFeeLevelChange,
+        updateFeeLevels,
         onSend,
     } = props.sendFormActions;
 
@@ -231,17 +280,73 @@ const AccountSend = (props: Props) => {
                 />
             </InputRow>
 
+            <InputRow>
+                <FeeLabelWrapper>
+                    <FeeLabel>Fee</FeeLabel>
+                    {feeNeedsUpdate && (
+                        <UpdateFeeWrapper>
+                            <Icon
+                                icon={ICONS.WARNING}
+                                color={colors.WARNING_PRIMARY}
+                                size={20}
+                            />
+                            Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
+                        </UpdateFeeWrapper>
+                    )}
+                </FeeLabelWrapper>
+                <Select
+                    isSearchable={false}
+                    isClearable={false}
+                    value={selectedFeeLevel}
+                    onChange={onFeeLevelChange}
+                    options={feeLevels}
+                    formatOptionLabel={option => (
+                        <FeeOptionWrapper>
+                            <P>{option.value}</P>
+                            <P>{option.label}</P>
+                        </FeeOptionWrapper>
+                    )}
+                />
+            </InputRow>
+
             <ToggleAdvancedSettingsWrapper
                 isAdvancedSettingsHidden={isAdvancedSettingsHidden}
             >
-                <SendButton
-                    isDisabled={isSendButtonDisabled}
-                    isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-                    onClick={() => onSend()}
+                <ToggleAdvancedSettingsButton
+                    isTransparent
+                    onClick={toggleAdvanced}
                 >
-                    {sendButtonText}
-                </SendButton>
+                    Advanced settings
+                    <AdvancedSettingsIcon
+                        icon={ICONS.ARROW_DOWN}
+                        color={colors.TEXT_SECONDARY}
+                        size={24}
+                        isActive={advanced}
+                        canAnimate
+                    />
+                </ToggleAdvancedSettingsButton>
+
+                {isAdvancedSettingsHidden && (
+                    <SendButton
+                        isDisabled={isSendButtonDisabled}
+                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                        onClick={() => onSend()}
+                    >
+                        {sendButtonText}
+                    </SendButton>
+                )}
             </ToggleAdvancedSettingsWrapper>
+
+            {advanced && (
+                <AdvancedForm {...props}>
+                    <SendButton
+                        isDisabled={isSendButtonDisabled}
+                        onClick={() => onSend()}
+                    >
+                        {sendButtonText}
+                    </SendButton>
+                </AdvancedForm>
+            )}
 
 
             {props.selectedAccount.pending.length > 0 && (

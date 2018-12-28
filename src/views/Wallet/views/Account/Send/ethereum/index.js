@@ -14,7 +14,7 @@ import Title from 'views/Wallet/components/Title';
 import P from 'components/Paragraph';
 import Content from 'views/Wallet/components/Content';
 import type { Token } from 'flowtype';
-import AdvancedForm from '../components/AdvancedForm';
+import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from '../components/PendingTransactions';
 
 import type { Props } from './Container';
