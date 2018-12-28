@@ -54,6 +54,7 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
             dispatch({
                 type: BLOCKCHAIN.UPDATE_FEE,
                 shortcut: network,
+                // $FlowIssue: payload type from TrezorConnect
                 feeLevels: feeRequest.payload,
             });
         }
