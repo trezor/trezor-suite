@@ -76,7 +76,8 @@
             vertical-align: unset;
         }
 
-        #get-account-info-advanced {
+        #get-account-info-advanced,
+        #estimate-fee-advanced {
             padding-top: 4px;
             display: none;
         }
@@ -169,13 +170,24 @@
         <button id="get-account-info" class="btn">Get account info</button>
         <button id="get-account-info-2" class="btn">Get account info lazy</button>
         <div id="get-account-info-advanced">
-            <textarea id="get-account-info-account" class="form-input"></textarea>
+            <textarea id="get-account-info-options" class="form-input"></textarea>
         </div>
     </div>
     <div class="row">
-        <label>Serialized transaction</label>
-        <input id="push-transaction-tx" class="form-input" type="text" />
-        <button id="push-transaction" class="btn">Push transaction</button>
+        <label>Estimate Fee</label>
+        <select id="estimate-fee-mode" class="form-select">
+            <option value="basic">Basic</option>
+            <option value="advanced">Advanced</option>
+        </select>
+        <button id="estimate-fee" class="btn">Estimate fee</button>
+        <div id="estimate-fee-advanced">
+            <textarea id="estimate-fee-options" class="form-input"></textarea>
+        </div>
+    </div>
+    <div class="row" id="notification-block">
+        <label>Blocks</label>
+        <button id="subscribe-block" class="btn">Subscribe</button>
+        <button id="unsubscribe-block" class="btn">Unsubscribe</button>
     </div>
     <div class="row" id="notification-address">
         <label>Subscribe Addresses</label>
@@ -183,11 +195,12 @@
         <button id="subscribe-address" class="btn">Subscribe</button>
         <button id="unsubscribe-address" class="btn">Unsubscribe</button>
     </div>
-    <div class="row" id="notification-block">
-        <label>Blocks</label>
-        <button id="subscribe-block" class="btn">Subscribe</button>
-        <button id="unsubscribe-block" class="btn">Unsubscribe</button>
+    <div class="row">
+        <label>Serialized transaction</label>
+        <input id="push-transaction-tx" class="form-input" type="text" />
+        <button id="push-transaction" class="btn">Push transaction</button>
     </div>
+    
     <button id="clear" class="btn" title="Clear all outputs">
         <svg width="18px" height="18px" viewBox="0 0 774.266 774.266">
            <g fill="#5755d9">

@@ -46,6 +46,10 @@ const handleClick = (event: MouseEvent) => {
             break;
         }
 
+        case 'estimate-fee':
+            blockchain.estimateFee().then(onResponse).catch(onError);
+            break;
+
         case 'push-transaction':
             blockchain.pushTransaction(getInputValue('push-transaction-tx')).then(onResponse).catch(onError);
             break;
@@ -164,14 +168,20 @@ const onSelectChange = (event) => {
     onClear();
 }
 
-const onModeChange = (event) => {
+const onAccountInfoModeChange = (event) => {
     const advanced = (document.getElementById('get-account-info-advanced'): any);
+    advanced.style.display = event.target.value === 'advanced' ? 'block' : 'none';
+}
+
+const onEstimateFeeModeChange = (event) => {
+    const advanced = (document.getElementById('estimate-fee-advanced'): any);
     advanced.style.display = event.target.value === 'advanced' ? 'block' : 'none';
 }
 
 const fillValues = (data) => {
     setInputValue('get-account-info-address', data.address);
-    setInputValue('get-account-info-account', JSON.stringify(data.accountInfo, null, 2));
+    setInputValue('get-account-info-options', JSON.stringify(data.accountInfoOptions, null, 2));
+    setInputValue('estimate-fee-options', JSON.stringify(data.estimateFeeOptions, null, 2));
     setInputValue('push-transaction-tx', data.tx);
     setInputValue('subscribe-addresses', data.subscribe);
 }
@@ -193,7 +203,10 @@ const init = (instances: Array<any>) => {
     clear.onclick = onClear;
 
     const accountInfoMode = (document.getElementById('get-account-info-mode'): any);
-    accountInfoMode.onchange = onModeChange;
+    accountInfoMode.onchange = onAccountInfoModeChange;
+
+    const estimateFeeMode = (document.getElementById('estimate-fee-mode'): any);
+    estimateFeeMode.onchange = onEstimateFeeModeChange;
 }
 
 init(CONFIG);
