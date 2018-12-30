@@ -12,8 +12,8 @@ import type {
 } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormRippleReducer';
 
+import AddressValidator from 'wallet-address-validator';
 // general regular expressions
-const XRP_ADDRESS_RE = new RegExp('^r[1-9A-HJ-NP-Za-km-z]{25,34}$');
 const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
 const XRP_6_RE = new RegExp('^(0|0\\.([0-9]{0,6})?|[1-9][0-9]*\\.?([0-9]{0,6})?|\\.[0-9]{0,6})$');
 
@@ -113,7 +113,7 @@ const addressValidation = ($state: State): PayloadAction<State> => (dispatch: Di
 
     if (address.length < 1) {
         state.errors.address = 'Address is not set';
-    } else if (!address.match(XRP_ADDRESS_RE)) {
+    } else if (!AddressValidator.validate(address, 'XRP')) {
         state.errors.address = 'Address is not valid';
     } else if (address.toLowerCase() === account.address.toLowerCase()) {
         state.errors.address = 'Cannot send to myself';
