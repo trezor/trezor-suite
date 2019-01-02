@@ -2,8 +2,8 @@
 
 
 export const getViewportHeight = (): number => (
-    // $FlowIssue
-    document.documentElement.clientHeight || document.body.clientHeight // $FlowIssue
+    // $FlowIssue: "clientHeight" missing in null
+    document.documentElement.clientHeight || document.body.clientHeight
 );
 
 export const getScrollX = (): number => {
@@ -12,8 +12,8 @@ export const getScrollX = (): number => {
     } if (window.scrollLeft !== undefined) {
         return window.scrollLeft;
     }
-    // $FlowIssue
-    return (document.documentElement || document.body.parentNode || document.body).scrollLeft; // $FlowIssue
+    // $FlowIssue: parentNode || scrollLeft missing
+    return (document.documentElement || document.body.parentNode || document.body).scrollLeft;
 };
 
 export const getScrollY = (): number => {
@@ -22,6 +22,6 @@ export const getScrollY = (): number => {
     } if (window.scrollTop !== undefined) {
         return window.scrollTop;
     }
-    // $FlowIssue
-    return (document.documentElement || document.body.parentNode || document.body).scrollTop; // $FlowIssue
+    // $FlowIssue: parentNode || scrollTop missing
+    return (document.documentElement || document.body.parentNode || document.body).scrollTop;
 };
