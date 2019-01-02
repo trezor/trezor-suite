@@ -67,8 +67,8 @@ export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getSt
     state.errors = {};
     state.warnings = {};
     state.infos = {};
-    state = dispatch(recalculateTotalAmount(state));
     state = dispatch(updateCustomFeeLabel(state));
+    state = dispatch(recalculateTotalAmount(state));
     state = dispatch(addressValidation(state));
     state = dispatch(addressLabel(state));
     state = dispatch(amountValidation(state));
@@ -79,29 +79,34 @@ export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getSt
 const recalculateTotalAmount = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
     const {
         account,
+        network,
         pending,
     } = getState().selectedAccount;
-    if (!account) return $state;
+    if (!account || !network) return $state;
 
     const state = { ...$state };
+    const fee = toDecimalAmount(state.selectedFeeLevel.fee, network.decimals);
 
     if (state.setMax) {
         const pendingAmount = getPendingAmount(pending, state.networkSymbol, false);
         const availableBalance = new BigNumber(account.balance).minus(pendingAmount);
-        state.amount = calculateMaxAmount(availableBalance, state.selectedFeeLevel.fee);
+        state.amount = calculateMaxAmount(availableBalance, fee);
     }
 
-    state.total = calculateTotal(state.amount, state.selectedFeeLevel.fee);
+    state.total = calculateTotal(state.amount, fee);
     return state;
 };
 
-const updateCustomFeeLabel = ($state: State): PayloadAction<State> => (): State => {
+const updateCustomFeeLabel = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+    const { network } = getState().selectedAccount;
+    if (!network) return $state; // flowtype fallback
+
     const state = { ...$state };
     if ($state.selectedFeeLevel.value === 'Custom') {
         state.selectedFeeLevel = {
             ...state.selectedFeeLevel,
             fee: state.fee,
-            label: `${toDecimalAmount(state.fee, 6)} ${state.networkSymbol}`,
+            label: `${toDecimalAmount(state.fee, network.decimals)} ${state.networkSymbol}`,
         };
     }
     return state;
