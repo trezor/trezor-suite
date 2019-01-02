@@ -5,6 +5,7 @@ import * as BLOCKCHAIN from 'actions/constants/blockchain';
 import * as PENDING from 'actions/constants/pendingTx';
 import * as AccountsActions from 'actions/AccountsActions';
 import { toDecimalAmount } from 'utils/formatUtils';
+import { observeChanges } from 'reducers/utils';
 
 import type { BlockchainNotification } from 'trezor-connect';
 import type {
@@ -48,7 +49,8 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
         const feeRequest = await TrezorConnect.blockchainEstimateFee({
             coin: network,
         });
-        if (feeRequest.success) {
+        if (feeRequest.success && observeChanges(blockchain.feeLevels, feeRequest.payload)) {
+            // check if downloaded fee levels are different
             dispatch({
                 type: BLOCKCHAIN.UPDATE_FEE,
                 shortcut: network,

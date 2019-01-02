@@ -115,7 +115,7 @@ export const getWeb3 = (state: State): ?Web3Instance => {
     return state.web3.find(w3 => w3.network === locationState.network);
 };
 
-export const observeChanges = (prev: ?Object, current: ?Object, filter?: {[k: string]: Array<string>}): boolean => {
+export const observeChanges = (prev: ?any, current: ?any, filter?: {[k: string]: Array<string>}): boolean => {
     // 1. both objects are the same (solves simple types like string, boolean and number)
     if (prev === current) return false;
     // 2. one of the objects is null/undefined

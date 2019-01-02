@@ -106,8 +106,7 @@
                 "minFee": "10",
                 "maxFee": "10000",
                 "levels": [
-                    {"name": "High", "value": "20" },
-                    {"name": "Normal", "value": "10", "recommended": true }
+                    {"name": "Normal", "value": "12", "recommended": true }
                 ]
             },
             "explorer": {
