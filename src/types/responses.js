@@ -34,14 +34,9 @@ export type GetAccountInfo = {
     +payload: any,
 };
 
-export type GetTransactions = {
-    +type: typeof RESPONSES.GET_ACCOUNT_INFO,
-    +payload: any,
-};
-
 export type EstimateFee = {
     +type: typeof RESPONSES.ESTIMATE_FEE,
-    +payload: any,
+    +payload: Array<{ name: string, value: string }>,
 };
 
 export type Subscribe = {
