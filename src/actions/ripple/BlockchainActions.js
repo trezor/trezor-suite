@@ -16,8 +16,6 @@ import type {
     BlockchainFeeLevel,
 } from 'flowtype';
 
-const DECIMALS: number = 6;
-
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.descriptor);
     await TrezorConnect.blockchainSubscribe({
@@ -92,6 +90,8 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     const { notification } = payload;
     const account = getState().accounts.find(a => a.descriptor === notification.address);
     if (!account) return;
+    const { network } = getState().selectedAccount;
+    if (!network) return; // flowtype fallback
 
     if (notification.status === 'pending') {
         dispatch({
@@ -101,9 +101,9 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
                 deviceState: account.deviceState,
                 network: account.network,
 
-                amount: toDecimalAmount(notification.amount, DECIMALS),
-                total: notification.type === 'send' ? toDecimalAmount(notification.total, DECIMALS) : toDecimalAmount(notification.amount, DECIMALS),
-                fee: toDecimalAmount(notification.fee, DECIMALS),
+                amount: toDecimalAmount(notification.amount, network.decimals),
+                total: notification.type === 'send' ? toDecimalAmount(notification.total, network.decimals) : toDecimalAmount(notification.amount, network.decimals),
+                fee: toDecimalAmount(notification.fee, network.decimals),
             },
         });
 
@@ -128,8 +128,8 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     dispatch(AccountsActions.update({
         networkType: 'ripple',
         ...account,
-        balance: toDecimalAmount(updatedAccount.payload.balance, DECIMALS),
-        availableBalance: toDecimalAmount(updatedAccount.payload.availableBalance, DECIMALS),
+        balance: toDecimalAmount(updatedAccount.payload.balance, network.decimals),
+        availableBalance: toDecimalAmount(updatedAccount.payload.availableBalance, network.decimals),
         block: updatedAccount.payload.block,
         sequence: updatedAccount.payload.sequence,
         reserve: '0',
