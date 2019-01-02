@@ -96,7 +96,6 @@ const Wallet = (props: WalletContainerProps) => (
                 <ContextNotifications />
                 <Log />
                 <Body>
-                    {JSON.stringify(props.wallet)}
                     { props.children }
                 </Body>
                 <Footer />

@@ -6,7 +6,6 @@
 .*/node_modules/react-redux/.*
 .*/node_modules/redux/.*
 .*/node_modules/react-router/.*
-.*/node_modules/react-router-redux/.*
 .*/node_modules/oboe/test/.*
 .*/_old/.*
 .*/scripts/solidity/.*
@@ -17,7 +16,7 @@
 ./src/flowtype/npm/react-redux_v5.x.x.js
 ./src/flowtype/npm/react-router_v4.x.x.js
 ./src/flowtype/npm/react-router-dom_v4.x.x.js
-./src/flowtype/npm/react-router-redux.js
+./src/flowtype/npm/connected-react-router.js
 ./src/flowtype/npm/bignumber.js
 ./src/flowtype/npm/ethereum-types.js
 ./src/flowtype/npm/web3.js

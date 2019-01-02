@@ -42,5 +42,5 @@ declare module 'connected-react-router' {
 
     declare export class ConnectedRouter extends React$Component<{
         history: any
-      }> {}
+    }> {}
 }
