@@ -1,6 +1,6 @@
 {
   "name": "trezor-blockchain-link",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Trezor <info@trezor.io>",
   "homepage": "https://github.com/trezor/trezor-blockchain-link",
   "description": "High-level javascript interface for blockchain communication",
