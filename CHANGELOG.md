@@ -1,15 +1,18 @@
-## 1.1.2-beta
-
+## 1.0.3-beta
 __added__
+- Ethereum: sign & verify tab
 - Stellar and Cardano external wallets
+- UI: modal background fade in/ fade out
+- UI: fonts refactoring
+- Experimental Ripple support (disabled by default)
 
-# new feature/ripple
 __changed__
-- Split code to coin specific components. actions and reducers
+- Split code to coin specific types for components, actions and reducers (ripple/ethereum/...)
+- Update 
 - Use TrezorConnect to communicate with trezor-blockchain-link
 
-__added__
-- Ripple support 
+__fixed__
+- validation of token existence in send tx draft (https://github.com/trezor/trezor-wallet/pull/252)
 
 ## 1.0.2-beta
 __changed__
