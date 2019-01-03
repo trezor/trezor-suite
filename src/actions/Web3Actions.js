@@ -193,9 +193,10 @@ export const getTxInput = (): PromiseAction<void> => async (dispatch: Dispatch):
 
 export const updateAccount = (account: Account, newAccount: EthereumAccount, network: string): PromiseAction<void> => async (dispatch: Dispatch): Promise<void> => {
     const instance: Web3Instance = await dispatch(initWeb3(network));
-    const balance = await instance.web3.eth.getBalance(account.address);
-    const nonce = await instance.web3.eth.getTransactionCount(account.address);
+    const balance = await instance.web3.eth.getBalance(account.descriptor);
+    const nonce = await instance.web3.eth.getTransactionCount(account.descriptor);
     dispatch(AccountsActions.update({
+        networkType: 'ethereum',
         ...account,
         ...newAccount,
         nonce,
@@ -208,7 +209,7 @@ export const updateAccount = (account: Account, newAccount: EthereumAccount, net
 };
 
 export const updateAccountTokens = (account: Account): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const tokens = getState().tokens.filter(t => t.network === account.network && t.ethAddress === account.address);
+    const tokens = getState().tokens.filter(t => t.network === account.network && t.ethAddress === account.descriptor);
     tokens.forEach(async (token) => {
         const balance = await dispatch(getTokenBalance(token));
         // const newBalance: string = balance.dividedBy(Math.pow(10, token.decimals)).toString(10);

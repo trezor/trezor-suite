@@ -45,7 +45,7 @@ const ConfirmAddress = (props: Props) => {
                 <P>Please compare your address on device with address shown bellow.</P>
             </Header>
             <Content>
-                <P>{ account.address }</P>
+                <P>{ account.descriptor }</P>
                 <Label>{ network.symbol } account #{ (account.index + 1) }</Label>
             </Content>
         </Wrapper>

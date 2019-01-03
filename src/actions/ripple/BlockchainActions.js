@@ -16,7 +16,7 @@ import type {
 const DECIMALS: number = 6;
 
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.address);
+    const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.descriptor);
     await TrezorConnect.blockchainSubscribe({
         accounts,
         coin: network,
@@ -68,7 +68,7 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
 
 export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { notification } = payload;
-    const account = getState().accounts.find(a => a.address === notification.address);
+    const account = getState().accounts.find(a => a.descriptor === notification.address);
     if (!account) return;
 
     if (notification.status === 'pending') {
@@ -95,7 +95,7 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
 
     const updatedAccount = await TrezorConnect.rippleGetAccountInfo({
         account: {
-            address: account.address,
+            address: account.descriptor,
             from: account.block,
             history: false,
         },
@@ -104,10 +104,12 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     if (!updatedAccount.success) return;
 
     dispatch(AccountsActions.update({
+        networkType: 'ripple',
         ...account,
         balance: toDecimalAmount(updatedAccount.payload.balance, DECIMALS),
         availableBalance: toDecimalAmount(updatedAccount.payload.availableBalance, DECIMALS),
         block: updatedAccount.payload.block,
         sequence: updatedAccount.payload.sequence,
+        reserve: '0',
     }));
 };

@@ -6,27 +6,35 @@ import * as WALLET from 'actions/constants/wallet';
 import * as ACCOUNT from 'actions/constants/account';
 
 import type { Action, TrezorDevice } from 'flowtype';
-import type {
-    AccountSetBalanceAction,
-    AccountSetNonceAction,
-} from 'actions/AccountsActions';
 
-export type Account = {
-    loaded: boolean;
-    +network: string;
-    +deviceID: string;
-    +deviceState: string;
-    +index: number;
-    +addressPath: Array<number>;
-    +address: string;
-    balance: string;
-    availableBalance: string;
-    sequence: number;
-    nonce: number;
-    block: number;
-    transactions: number;
-    empty: boolean;
-}
+type AccountCommon = {
+    +imported: boolean,
+    +index: number,
+    +network: string, // network id (shortcut)
+    +deviceID: string, // empty for imported accounts
+    +deviceState: string, // empty for imported accounts
+    +accountPath: Array<number>, // empty for imported accounts
+    +descriptor: string, // address or xpub
+
+    balance: string,
+    availableBalance: string, // balance - pending
+    block: number, // last known (synchronized) block
+    empty: boolean, // account without transactions
+
+    transactions: number, // deprecated
+};
+
+export type Account = AccountCommon & {
+    networkType: 'ethereum',
+    nonce: number,
+} | AccountCommon & {
+    networkType: 'ripple',
+    sequence: number,
+    reserve: string,
+} | AccountCommon & {
+    networkType: 'bitcoin',
+    addressIndex: number,
+};
 
 export type State = Array<Account>;
 
@@ -44,7 +52,7 @@ export const findDeviceAccounts = (state: State, device: TrezorDevice, network: 
 const createAccount = (state: State, account: Account): State => {
     // TODO check with device_id
     // check if account was created before
-    const exist: ?Account = state.find(a => a.address === account.address && a.network === account.network && a.deviceState === account.deviceState);
+    const exist: ?Account = state.find(a => a.descriptor === account.descriptor && a.network === account.network && a.deviceState === account.deviceState);
     if (exist) {
         return state;
     }
@@ -55,7 +63,6 @@ const createAccount = (state: State, account: Account): State => {
 
 const removeAccounts = (state: State, device: TrezorDevice): State => state.filter(account => account.deviceState !== device.state);
 
-
 const clear = (state: State, devices: Array<TrezorDevice>): State => {
     let newState: State = [...state];
     devices.forEach((d) => {
@@ -65,26 +72,9 @@ const clear = (state: State, devices: Array<TrezorDevice>): State => {
 };
 
 const updateAccount = (state: State, account: Account): State => {
-    const index: number = state.findIndex(a => a.address === account.address && a.network === account.network && a.deviceState === account.deviceState);
+    const index: number = state.findIndex(a => a.descriptor === account.descriptor && a.network === account.network && a.deviceState === account.deviceState);
     const newState: State = [...state];
     newState[index] = account;
-    return newState;
-};
-
-const setBalance = (state: State, action: AccountSetBalanceAction): State => {
-    // const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
-    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network);
-    const newState: State = [...state];
-    newState[index].loaded = true;
-    newState[index].balance = action.balance;
-    return newState;
-};
-
-const setNonce = (state: State, action: AccountSetNonceAction): State => {
-    const index: number = state.findIndex(account => account.address === action.address && account.network === action.network && account.deviceState === action.deviceState);
-    const newState: State = [...state];
-    newState[index].loaded = true;
-    newState[index].nonce = action.nonce;
     return newState;
 };
 
@@ -107,11 +97,6 @@ export default (state: State = initialState, action: Action): State => {
 
         case ACCOUNT.UPDATE:
             return updateAccount(state, action.payload);
-
-        case ACCOUNT.SET_BALANCE:
-            return setBalance(state, action);
-        case ACCOUNT.SET_NONCE:
-            return setNonce(state, action);
 
         case ACCOUNT.FROM_STORAGE:
             return action.payload;

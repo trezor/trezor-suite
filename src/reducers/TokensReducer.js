@@ -6,7 +6,6 @@ import * as WALLET from 'actions/constants/wallet';
 import * as TOKEN from 'actions/constants/token';
 
 import type { Action, TrezorDevice } from 'flowtype';
-import type { Account } from './AccountsReducer';
 
 export type Token = {
     loaded: boolean;
@@ -23,21 +22,6 @@ export type Token = {
 export type State = Array<Token>;
 
 const initialState: State = [];
-
-// Helper for actions
-export const findToken = (state: Array<Token>, address: string, symbol: string, deviceState: string): ?Token => state.find(t => t.ethAddress === address && t.symbol === symbol && t.deviceState === deviceState);
-
-export const findAccountTokens = (state: Array<Token>, account: Account): Array<Token> => state.filter(t => t.ethAddress === account.address && t.network === account.network && t.deviceState === account.deviceState);
-
-// const setBalance = (state: State, payload: any): State => {
-//     const newState: Array<Token> = [ ...state ];
-//     let index: number = state.findIndex(t => t.address === payload.address && t.ethAddress === payload.ethAddress);
-//     if (index >= 0) {
-//         newState[index].loaded = true;
-//         newState[index].balance = payload.balance;
-//     }
-//     return newState;
-// }
 
 const create = (state: State, token: Token): State => {
     const newState: State = [...state];

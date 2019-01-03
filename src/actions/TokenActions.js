@@ -76,7 +76,7 @@ export const add = (token: NetworkToken, account: Account): AsyncAction => async
         name: token.name,
         symbol: token.symbol,
         address: token.address,
-        ethAddress: account.address,
+        ethAddress: account.descriptor,
         decimals: token.decimals,
         balance: '0',
     };
@@ -87,7 +87,7 @@ export const add = (token: NetworkToken, account: Account): AsyncAction => async
     });
 
     const tokenBalance = await dispatch(BlockchainActions.getTokenBalance(tkn));
-    dispatch(setBalance(token.address, account.address, tokenBalance));
+    dispatch(setBalance(token.address, account.descriptor, tokenBalance));
 };
 
 export const remove = (token: Token): Action => ({

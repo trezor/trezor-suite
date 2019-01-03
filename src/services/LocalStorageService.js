@@ -37,8 +37,7 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
             break;
 
         case ACCOUNT.CREATE:
-        case ACCOUNT.SET_BALANCE:
-        case ACCOUNT.SET_NONCE:
+        case ACCOUNT.UPDATE:
             api.dispatch(LocalStorageActions.save());
             break;
 
