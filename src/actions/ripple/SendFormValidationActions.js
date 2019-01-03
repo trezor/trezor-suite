@@ -221,8 +221,10 @@ export const feeValidation = ($state: State): PayloadAction<State> => (dispatch:
         state.errors.fee = 'Fee must be an absolute number';
     } else {
         const gl: BigNumber = new BigNumber(fee);
-        if (gl.lessThan(10)) {
+        if (gl.lessThan(network.fee.minFee)) {
             state.errors.fee = 'Fee is below recommended';
+        } else if (gl.greaterThan(network.fee.maxFee)) {
+            state.errors.fee = 'Fee is above recommended';
         }
     }
     return state;
