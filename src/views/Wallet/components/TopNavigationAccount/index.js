@@ -64,28 +64,17 @@ class TopNavigationAccount extends React.PureComponent<Props> {
 
         const basePath = `/device/${state.device}/network/${state.network}/account/${state.account}`;
 
-        switch (network.type) {
-            case 'ethereum':
-                return (
-                    <Wrapper className="account-tabs" ref={this.wrapperRefCallback}>
-                        <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
-                        <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
-                        <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
-                        <StyledNavLink to={`${basePath}/signverify`}>Sign &amp; Verify</StyledNavLink>
-                        <Indicator pathname={pathname} wrapper={() => this.wrapper} />
-                    </Wrapper>
-                );
-            case 'ripple':
-                return (
-                    <Wrapper className="account-tabs" ref={this.wrapperRefCallback}>
-                        <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
-                        <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
-                        <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
-                        <Indicator pathname={pathname} wrapper={() => this.wrapper} />
-                    </Wrapper>
-                );
-            default: return null;
-        }
+        return (
+            <Wrapper className="account-tabs" ref={this.wrapperRefCallback}>
+                <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
+                <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
+                <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
+                {network.type === 'ethereum'
+                    && <StyledNavLink to={`${basePath}/signverify`}>Sign &amp; Verify</StyledNavLink>
+                }
+                <Indicator pathname={pathname} wrapper={() => this.wrapper} />
+            </Wrapper>
+        );
     }
 }
 
