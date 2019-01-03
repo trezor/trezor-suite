@@ -33,10 +33,6 @@ const StyledNavLink = styled(NavLink)`
     padding: 20px 35px;
     white-space: nowrap;
 
-    @media screen and (max-width: 850px){
-        padding: 20px; 
-    }
-    
     &.active,
     &:hover {
         transition: all 0.3s ease-in-out;
