@@ -46,7 +46,9 @@ const reducers = {
     blockchain,
     signVerify,
     router: () => ({
-        location: {}, hash: {}, state: {}, network: {},
+        location: {
+            pathname: '', hash: '', search: '', state: {},
+        },
     }: State),
 };
 

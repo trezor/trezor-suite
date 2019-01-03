@@ -20,7 +20,6 @@ declare module 'connected-react-router' {
     declare export type RouterAction = {
         type: typeof LOCATION_CHANGE,
         payload: {
-            action: string,
             location: Location,
         },
     }
