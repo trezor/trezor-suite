@@ -68,8 +68,10 @@ const getLatestSafeFw = (input, score) => {
                 isNewer,
             };
         }
+
         return null;
     }
+
     return {
         firmware: releasesList[0],
         isLatest: versionUtils.isEqual(releasesList[0].version, latest.version),
