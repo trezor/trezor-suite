@@ -138,7 +138,6 @@ class BlockchainLink extends EventEmitter {
         if (!event.data) return;
         const { data } = event;
 
-        console.log('[Blockchain] on message', data)
         if (data.id === -1) {
             this.onEvent(event);
             return;
