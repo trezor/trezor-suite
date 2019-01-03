@@ -112,11 +112,11 @@ const AdvancedForm = (props: Props) => {
                                 <Tooltip
                                     content={(
                                         <React.Fragment>
-                                        TODO: explain fee in XRP drops
+                                        Transfer cost in XRP drops
                                         </React.Fragment>
                                     )}
                                     maxWidth={410}
-                                    readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
+                                    readMoreLink="https://developers.ripple.com/transaction-cost.html"
                                     placement="top"
                                 >
                                     <Icon
