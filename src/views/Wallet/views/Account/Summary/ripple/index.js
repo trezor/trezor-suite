@@ -78,6 +78,8 @@ const AccountSummary = (props: Props) => {
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
     const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
 
+    const TMP_SHOW_HISTORY = false;
+
     return (
         <Content>
             <React.Fragment>
@@ -93,20 +95,22 @@ const AccountSummary = (props: Props) => {
                     balance={balance}
                     fiat={props.fiat}
                 />
-                <H2Wrapper>
-                    <H2>History</H2>
-                    <StyledTooltip
-                        maxWidth={200}
-                        placement="top"
-                        content="Insert token name, symbol or address to be able to send it."
-                    >
-                        <StyledIcon
-                            icon={ICONS.HELP}
-                            color={colors.TEXT_SECONDARY}
-                            size={24}
-                        />
-                    </StyledTooltip>
-                </H2Wrapper>
+                { TMP_SHOW_HISTORY && (
+                    <H2Wrapper>
+                        <H2>History</H2>
+                        <StyledTooltip
+                            maxWidth={200}
+                            placement="top"
+                            content="Insert token name, symbol or address to be able to send it."
+                        >
+                            <StyledIcon
+                                icon={ICONS.HELP}
+                                color={colors.TEXT_SECONDARY}
+                                size={24}
+                            />
+                        </StyledTooltip>
+                    </H2Wrapper>)
+                }
             </React.Fragment>
         </Content>
     );
