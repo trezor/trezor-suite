@@ -1,6 +1,6 @@
 /* @flow */
 import * as storageUtils from 'utils/storage';
-import { findToken } from 'reducers/TokensReducer';
+import { findToken } from 'reducers/utils';
 
 import type { State as EthereumSendFormState } from 'reducers/SendFormEthereumReducer';
 import type { State as RippleSendFormState } from 'reducers/SendFormRippleReducer';
@@ -44,7 +44,7 @@ export const loadEthereumDraftTransaction = (): PayloadAction<?EthereumSendFormS
     if (state.currency !== state.networkSymbol) {
         const { account, tokens } = getState().selectedAccount;
         if (!account) return null;
-        const token = findToken(tokens, account.address, state.currency, account.deviceState);
+        const token = findToken(tokens, account.descriptor, state.currency, account.deviceState);
         if (!token) {
             storageUtils.remove(TYPE, key);
             return null;

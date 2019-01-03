@@ -173,7 +173,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     const selected: ?TrezorDevice = getState().wallet.selectedDevice;
     if (!selected) return;
 
-    if (!account || !network) return;
+    if (!account || account.networkType !== 'ripple' || !network) return;
 
     const blockchain = getState().blockchain.find(b => b.shortcut === account.network);
     if (!blockchain) return;
@@ -188,7 +188,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             state: selected.state,
         },
         useEmptyPassphrase: selected.useEmptyPassphrase,
-        path: account.addressPath,
+        path: account.accountPath,
         transaction: {
             fee: blockchain.fee, // Fee must be in the range of 10 to 10,000 drops
             flags: 0x80000000,

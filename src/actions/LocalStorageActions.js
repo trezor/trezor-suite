@@ -12,7 +12,7 @@ import { httpRequest } from 'utils/networkUtils';
 import * as buildUtils from 'utils/build';
 import * as storageUtils from 'utils/storage';
 
-import { findAccountTokens } from 'reducers/TokensReducer';
+import { getAccountTokens } from 'reducers/utils';
 import type { Account } from 'reducers/AccountsReducer';
 import type { Token } from 'reducers/TokensReducer';
 import type { Discovery } from 'reducers/DiscoveryReducer';
@@ -59,11 +59,11 @@ const KEY_BETA_MODAL: string = '/betaModalPrivacy'; // this key needs to be comp
 
 const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): Array<Account> => devices.reduce((arr, dev) => arr.concat(accounts.filter(a => a.deviceState === dev.state)), []);
 
-const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => accounts.reduce((arr, account) => arr.concat(findAccountTokens(tokens, account)), []);
+const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => accounts.reduce((arr, account) => arr.concat(getAccountTokens(tokens, account)), []);
 
 const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => devices.reduce((arr, dev) => arr.concat(discovery.filter(d => d.deviceState === dev.state && d.completed)), []);
 
-const findPendingTxs = (accounts: Array<Account>, pending: Array<Transaction>): Array<Transaction> => accounts.reduce((result, account) => result.concat(pending.filter(p => p.address === account.address && p.network === account.network)), []);
+const findPendingTxs = (accounts: Array<Account>, pending: Array<Transaction>): Array<Transaction> => accounts.reduce((result, account) => result.concat(pending.filter(p => p.address === account.descriptor && p.network === account.network)), []);
 
 export const save = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const devices: Array<TrezorDevice> = getState().devices.filter(d => d.features && d.remember === true);

@@ -74,7 +74,7 @@ const AccountSummary = (props: Props) => {
         return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
     }
 
-    const explorerLink: string = `${network.explorer.address}${account.address}`;
+    const explorerLink: string = `${network.explorer.address}${account.descriptor}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
     const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
 

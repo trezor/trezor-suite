@@ -71,7 +71,7 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
         const { account, onCancel, showAddress } = this.props;
         if (!account) return;
         onCancel();
-        showAddress(account.addressPath);
+        showAddress(account.accountPath);
     }
 
     showUnverifiedAddress() {

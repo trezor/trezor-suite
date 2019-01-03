@@ -161,10 +161,8 @@ const AccountMenu = (props: Props) => {
     const discovery = props.discovery.find(d => d.deviceState === selected.state && d.network === location.state.network);
 
     if (discovery && discovery.completed) {
-        // TODO: add only if last one is not empty
-        //if (selectedAccounts.length > 0 && selectedAccounts[selectedAccounts.length - 1])
         const lastAccount = deviceAccounts[deviceAccounts.length - 1];
-        if (lastAccount && (new BigNumber(lastAccount.balance).greaterThan(0) || lastAccount.nonce > 0)) {
+        if (lastAccount && !lastAccount.empty) {
             discoveryStatus = (
                 <Row onClick={props.addAccount}>
                     <RowAddAccountWrapper>
