@@ -104,7 +104,7 @@ class SignVerify extends Component <Props> {
                             <Input
                                 topLabel="Address"
                                 name="signAddress"
-                                value={account.address}
+                                value={account.descriptor}
                                 type="text"
                                 autoSelect
                                 readOnly
@@ -140,7 +140,7 @@ class SignVerify extends Component <Props> {
                             >Clear
                             </StyledButton>
                             <StyledButton
-                                onClick={() => signVerifyActions.sign(account.addressPath, signMessage)}
+                                onClick={() => signVerifyActions.sign(account.accountPath, signMessage)}
                             >Sign
                             </StyledButton>
                         </RowButtons>

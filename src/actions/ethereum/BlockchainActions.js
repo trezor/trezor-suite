@@ -85,7 +85,7 @@ export const estimateGasLimit = (network: string, data: string, value: string, g
 };
 
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.address); // eslint-disable-line no-unused-vars
+    const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.descriptor); // eslint-disable-line no-unused-vars
     const response = await TrezorConnect.blockchainSubscribe({
         accounts,
         coin: network,
@@ -129,7 +129,7 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
 
 export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { notification } = payload;
-    const account = getState().accounts.find(a => a.address === notification.address);
+    const account = getState().accounts.find(a => a.descriptor === notification.address);
     if (!account) return;
 
     if (notification.status === 'pending') {

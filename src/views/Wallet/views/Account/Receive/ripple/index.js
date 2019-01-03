@@ -111,9 +111,9 @@ const AccountReceive = (props: Props) => {
     const isAddressVerifying = props.modal.context === CONTEXT_DEVICE && props.modal.windowType === 'ButtonRequest_Address';
     const isAddressHidden = !isAddressVerifying && !addressVerified && !addressUnverified;
 
-    let address = `${account.address.substring(0, 20)}...`;
+    let address = `${account.descriptor.substring(0, 20)}...`;
     if (addressVerified || addressUnverified || isAddressVerifying) {
-        ({ address } = account);
+        address = account.descriptor;
     }
 
     return (
@@ -149,7 +149,7 @@ const AccountReceive = (props: Props) => {
                                         />
                                     )}
                                 >
-                                    <EyeButton onClick={() => props.showAddress(account.addressPath)}>
+                                    <EyeButton onClick={() => props.showAddress(account.accountPath)}>
                                         <Icon
                                             icon={addressUnverified ? ICONS.EYE_CROSSED : ICONS.EYE}
                                             color={addressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY}
@@ -159,7 +159,7 @@ const AccountReceive = (props: Props) => {
                             )}
                         />
                         {!(addressVerified || addressUnverified) && (
-                            <ShowAddressButton onClick={() => props.showAddress(account.addressPath)} isDisabled={device.connected && !discovery.completed}>
+                            <ShowAddressButton onClick={() => props.showAddress(account.accountPath)} isDisabled={device.connected && !discovery.completed}>
                                 <ShowAddressIcon icon={ICONS.EYE} color={colors.WHITE} />Show full address
                             </ShowAddressButton>
                         )}
@@ -172,7 +172,7 @@ const AccountReceive = (props: Props) => {
                                 fgColor="#000000"
                                 level="Q"
                                 style={{ width: 150 }}
-                                value={account.address}
+                                value={account.descriptor}
                             />
                         </QrWrapper>
                     )}

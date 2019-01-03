@@ -115,7 +115,7 @@ const addressValidation = ($state: State): PayloadAction<State> => (dispatch: Di
         state.errors.address = 'Address is not set';
     } else if (!AddressValidator.validate(address, 'XRP')) {
         state.errors.address = 'Address is not valid';
-    } else if (address.toLowerCase() === account.address.toLowerCase()) {
+    } else if (address.toLowerCase() === account.descriptor.toLowerCase()) {
         state.errors.address = 'Cannot send to myself';
     }
     return state;
@@ -135,7 +135,7 @@ const addressLabel = ($state: State): PayloadAction<State> => (dispatch: Dispatc
     if (!account || !network) return state;
     const { address } = state;
 
-    const savedAccounts = getState().accounts.filter(a => a.address.toLowerCase() === address.toLowerCase());
+    const savedAccounts = getState().accounts.filter(a => a.descriptor.toLowerCase() === address.toLowerCase());
     if (savedAccounts.length > 0) {
         // check if found account belongs to this network
         const currentNetworkAccount = savedAccounts.find(a => a.network === network.shortcut);

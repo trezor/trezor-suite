@@ -8,12 +8,12 @@ import * as BlockchainActions from 'actions/ethereum/BlockchainActions';
 import type {
     PromiseAction,
     Dispatch,
+    GetState,
     TrezorDevice,
     Network,
     Account,
 } from 'flowtype';
 import type { Discovery } from 'reducers/DiscoveryReducer';
-
 
 export type DiscoveryStartAction = {
     type: typeof DISCOVERY.START,
@@ -61,33 +61,38 @@ export const begin = (device: TrezorDevice, network: Network): PromiseAction<Dis
     };
 };
 
-export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): PromiseAction<Account> => async (dispatch: Dispatch): Promise<Account> => {
+export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): PromiseAction<Account> => async (dispatch: Dispatch, getState: GetState): Promise<Account> => {
+    const { config } = getState().localStorage;
+    const network = config.networks.find(c => c.shortcut === discoveryProcess.network);
+    if (!network) throw new Error('Discovery network not found');
+
     const derivedKey = discoveryProcess.hdKey.derive(`m/${discoveryProcess.accountIndex}`);
     const path = discoveryProcess.basePath.concat(discoveryProcess.accountIndex);
     const publicAddress: string = EthereumjsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex');
     const ethAddress: string = EthereumjsUtil.toChecksumAddress(publicAddress);
-    const { network } = discoveryProcess;
 
     // TODO: check if address was created before
-    const account = await dispatch(BlockchainActions.discoverAccount(device, ethAddress, network));
+    const account = await dispatch(BlockchainActions.discoverAccount(device, ethAddress, network.shortcut));
 
     // const accountIsEmpty = account.transactions <= 0 && account.nonce <= 0 && account.balance === '0';
     const empty = account.nonce <= 0 && account.balance === '0';
 
     return {
+        imported: false,
         index: discoveryProcess.accountIndex,
-        loaded: true,
-        network,
+        network: network.shortcut,
         deviceID: device.features ? device.features.device_id : '0',
         deviceState: device.state || '0',
-        addressPath: path,
-        address: ethAddress,
+        accountPath: path,
+        descriptor: ethAddress,
+
         balance: account.balance,
         availableBalance: account.balance,
-        sequence: account.nonce,
-        nonce: account.nonce,
         block: account.block,
         transactions: account.transactions,
         empty,
+
+        networkType: 'ethereum',
+        nonce: account.nonce,
     };
 };

@@ -1,8 +1,9 @@
 image: node:9.3
 
 cache:
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - node_modules
+  - node_modules/
 
 stages:
   - test
@@ -18,6 +19,7 @@ lint:
 flow:
   stage: test
   script:
+    - yarn install
     - yarn run flow
 
 unit:

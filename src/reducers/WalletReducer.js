@@ -1,7 +1,7 @@
 /* @flow */
 
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { DEVICE, TRANSPORT } from 'trezor-connect';
 import * as MODAL from 'actions/constants/modal';
 import * as WALLET from 'actions/constants/wallet';
@@ -16,6 +16,7 @@ type State = {
     showBetaDisclaimer: boolean;
     initialParams: ?RouterLocationState;
     initialPathname: ?string;
+    firstLocationChange: boolean;
     disconnectRequest: ?TrezorDevice;
     selectedDevice: ?TrezorDevice;
 }
@@ -24,6 +25,7 @@ const initialState: State = {
     ready: false,
     online: navigator.onLine,
     dropdownOpened: false,
+    firstLocationChange: true,
     showBetaDisclaimer: false,
     initialParams: null,
     initialPathname: null,
@@ -38,6 +40,11 @@ export default function wallet(state: State = initialState, action: Action): Sta
                 ...state,
                 initialParams: action.state,
                 initialPathname: action.pathname,
+            };
+        case WALLET.SET_FIRST_LOCATION_CHANGE:
+            return {
+                ...state,
+                firstLocationChange: false,
             };
 
         case TRANSPORT.START:

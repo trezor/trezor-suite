@@ -1,8 +1,8 @@
 /* @flow */
 
-import { push, LOCATION_CHANGE } from 'react-router-redux';
+import { push, LOCATION_CHANGE } from 'connected-react-router';
 import { CONTEXT_NONE } from 'actions/constants/modal';
-import { SET_INITIAL_URL } from 'actions/constants/wallet';
+import { SET_INITIAL_URL, SET_FIRST_LOCATION_CHANGE } from 'actions/constants/wallet';
 import { routes } from 'support/routes';
 import * as deviceUtils from 'utils/device';
 
@@ -15,7 +15,7 @@ import type {
     Dispatch,
     GetState,
 } from 'flowtype';
-import type { RouterAction } from 'react-router-redux';
+import type { RouterAction } from 'connected-react-router';
 
 /*
 * Parse url string to RouterLocationState object (key/value)
@@ -51,6 +51,7 @@ export const pathToParams = (path: string): PayloadAction<RouterLocationState> =
 */
 export const paramsValidation = (params: RouterLocationState): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
     // validate requested device
+
     if (params.hasOwnProperty('device')) {
         const { devices } = getState();
 
@@ -105,7 +106,6 @@ export const paramsToPath = (params: RouterLocationState): PayloadAction<?string
             break;
         }
     }
-
     // pattern not found, redirect back
     if (!patternToUse) return null;
 
@@ -129,12 +129,17 @@ export const paramsToPath = (params: RouterLocationState): PayloadAction<?string
 
 export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dispatch: Dispatch, getState: GetState): string => {
     const { location } = getState().router;
-
+    const { firstLocationChange } = getState().wallet;
     // redirect to landing page (loading screen)
     // and wait until application is ready
-    if (!location) return '/';
+    if (firstLocationChange) {
+        dispatch({
+            type: SET_FIRST_LOCATION_CHANGE,
+        });
+        return '/';
+    }
 
-    const requestedUrl = action.payload.pathname;
+    const requestedUrl = action.payload.location.pathname;
     // Corner case: LOCATION_CHANGE was called but pathname didn't changed (redirect action from RouterService)
     if (requestedUrl === location.pathname) return requestedUrl;
 
@@ -351,10 +356,12 @@ export const setInitialUrl = (): PayloadAction<boolean> => (dispatch: Dispatch, 
         const valid = dispatch(getValidUrl({
             type: LOCATION_CHANGE,
             payload: {
-                pathname: initialPathname,
-                hash: '',
-                search: '',
-                state: {},
+                location: {
+                    pathname: initialPathname,
+                    hash: '',
+                    search: '',
+                    state: {},
+                },
             },
         }));
 

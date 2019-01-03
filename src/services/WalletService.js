@@ -1,6 +1,6 @@
 /* @flow */
 import { DEVICE } from 'trezor-connect';
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import * as WALLET from 'actions/constants/wallet';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 
@@ -25,17 +25,16 @@ import type {
  */
 const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => async (action: Action): Promise<Action> => {
     const prevState = api.getState();
-
     // Application live cycle starts HERE!
     // when first LOCATION_CHANGE is called router does not have "location" set yet
-    if (action.type === LOCATION_CHANGE && !prevState.router.location) {
+    if (action.type === LOCATION_CHANGE && prevState.wallet.firstLocationChange) {
         // initialize wallet
         api.dispatch(WalletActions.init());
         // set initial url
         // TODO: validate if initial url is potentially correct
         api.dispatch({
             type: WALLET.SET_INITIAL_URL,
-            pathname: action.payload.pathname,
+            pathname: action.payload.location.pathname,
             state: {},
         });
         // pass action and break process

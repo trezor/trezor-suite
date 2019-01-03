@@ -1,6 +1,6 @@
 /* @flow */
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { DEVICE } from 'trezor-connect';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as WALLET from 'actions/constants/wallet';
@@ -39,7 +39,7 @@ export type WalletAction = {
     type: typeof WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA,
     devices: Array<TrezorDevice>
 } | {
-    type: typeof WALLET.SHOW_BETA_DISCLAIMER | typeof WALLET.HIDE_BETA_DISCLAIMER,
+    type: typeof WALLET.SHOW_BETA_DISCLAIMER | typeof WALLET.HIDE_BETA_DISCLAIMER | typeof WALLET.SET_FIRST_LOCATION_CHANGE,
 }
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {

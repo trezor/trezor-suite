@@ -3,7 +3,7 @@ import type {
     Location as RouterLocation,
 } from 'react-router';
 
-declare module 'react-router-redux' {
+declare module 'connected-react-router' {
     // custom state for location
     declare export type LocationState = {[key: string]: string};
 
@@ -19,7 +19,9 @@ declare module 'react-router-redux' {
 
     declare export type RouterAction = {
         type: typeof LOCATION_CHANGE,
-        payload: Location;
+        payload: {
+            location: Location,
+        },
     }
 
     declare export type State = {
@@ -35,8 +37,9 @@ declare module 'react-router-redux' {
     //declare export function routerReducer<S, A>(state?: S, action: A): S;
     declare export function routerReducer(state?: State, action: any): State;
     declare export function routerMiddleware(history: any): any;
+    declare export function connectRouter(history: any): any;
 
     declare export class ConnectedRouter extends React$Component<{
         history: any
-      }> {}
+    }> {}
 }

@@ -1,6 +1,7 @@
 /* @flow */
 import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
+import { connectRouter } from 'connected-react-router';
+import type { State } from 'connected-react-router';
 
 import log from 'reducers/LogReducer';
 import localStorage from 'reducers/LocalStorageReducer';
@@ -24,7 +25,6 @@ import blockchain from 'reducers/BlockchainReducer';
 import signVerify from 'reducers/SignVerifyReducer';
 
 const reducers = {
-    router: routerReducer,
     log,
     localStorage,
     connect,
@@ -45,10 +45,18 @@ const reducers = {
     devices,
     blockchain,
     signVerify,
+    router: () => ({
+        location: {
+            pathname: '', hash: '', search: '', state: {},
+        },
+    }: State),
 };
 
 export type Reducers = typeof reducers;
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;
 export type ReducersState = $ObjMap<Reducers, $ExtractFunctionReturn>;
 
-export default combineReducers(reducers);
+export default (history: any) => combineReducers({
+    ...reducers,
+    router: connectRouter(history),
+});
