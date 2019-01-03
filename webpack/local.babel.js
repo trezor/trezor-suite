@@ -50,7 +50,7 @@ module.exports = {
         rules: [
             {
                 test: /\.js?$/,
-                exclude: [/node_modules/, /trezor-blockchain-link\/build\/workers/],
+                exclude: [/node_modules/, /blockchain-link\/build\/workers/],
                 use: ['babel-loader'],
             },
             {

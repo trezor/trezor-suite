@@ -9,7 +9,7 @@ import type {
     Network,
     Discovery,
     Token,
-    PendingTx,
+    Transaction,
     Web3Instance,
 } from 'flowtype';
 
@@ -83,18 +83,18 @@ export const getDiscoveryProcess = (state: State): ?Discovery => {
     return state.discovery.find(d => d.deviceState === device.state && d.network === locationState.network);
 };
 
-export const getAccountPendingTx = (pending: Array<PendingTx>, account: ?Account): Array<PendingTx> => {
+export const getAccountPendingTx = (pending: Array<Transaction>, account: ?Account): Array<Transaction> => {
     const a = account;
     if (!a) return [];
     return pending.filter(p => p.network === a.network && p.address === a.address);
 };
 
-export const getPendingSequence = (pending: Array<PendingTx>): number => pending.reduce((value: number, tx: PendingTx) => {
+export const getPendingSequence = (pending: Array<Transaction>): number => pending.reduce((value: number, tx: Transaction) => {
     if (tx.rejected) return value;
     return Math.max(value, tx.sequence + 1);
 }, 0);
 
-export const getPendingAmount = (pending: Array<PendingTx>, currency: string, token: boolean = false): BigNumber => pending.reduce((value: BigNumber, tx: PendingTx) => {
+export const getPendingAmount = (pending: Array<Transaction>, currency: string, token: boolean = false): BigNumber => pending.reduce((value: BigNumber, tx: Transaction) => {
     if (tx.currency === currency && !tx.rejected) {
         return new BigNumber(value).plus(token ? tx.amount : tx.total);
     }

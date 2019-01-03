@@ -195,6 +195,9 @@ export default function discovery(state: State = initialState, action: Action): 
             return notSupported(state, action);
         case DISCOVERY.FROM_STORAGE:
             return action.payload.map((d) => {
+                if (d.publicKey.length < 1) return d;
+                // recreate ethereum discovery HDKey
+                // deprecated: will be removed after switching to blockbook
                 const hdKey: HDKey = new HDKey();
                 hdKey.publicKey = Buffer.from(d.publicKey, 'hex');
                 hdKey.chainCode = Buffer.from(d.chainCode, 'hex');

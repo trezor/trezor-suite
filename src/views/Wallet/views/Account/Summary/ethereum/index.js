@@ -46,7 +46,7 @@ const AccountName = styled.div`
 
 const AccountTitle = styled.div`
     font-size: ${FONT_SIZE.WALLET_TITLE};
-    font-weight: ${FONT_WEIGHT.BASE};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${colors.WALLET_TITLE};
 `;
 
@@ -123,7 +123,7 @@ const AccountSummary = (props: Props) => {
                         defaultOptions
                         value={null}
                         isMulti={false}
-                        placeholder="Search for the token"
+                        placeholder="Type in a token name or paste a token address directly"
                         loadingMessage={() => 'Loading...'}
                         noOptionsMessage={() => 'Token not found'}
                         onChange={(token) => {
