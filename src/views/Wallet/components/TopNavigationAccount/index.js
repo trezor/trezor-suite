@@ -20,10 +20,9 @@ const Wrapper = styled.div`
     height: 100%;
     flex: 1;
     align-items: center;
-    justify-content: space-between;
     padding: 0px 30px 0 35px;
-    max-width: 600px;
-    overflow-x: scroll;
+    overflow-y: hidden;
+    overflow-x: auto;
 `;
 
 const StyledNavLink = styled(NavLink)`
@@ -31,8 +30,12 @@ const StyledNavLink = styled(NavLink)`
     font-size: ${FONT_SIZE.TOP_MENU};
     color: ${colors.TEXT_SECONDARY};
     margin: 0px 4px;
-    padding: 20px;
+    padding: 20px 35px;
     white-space: nowrap;
+
+    @media screen and (max-width: 850px){
+        padding: 20px; 
+    }
     
     &.active,
     &:hover {
