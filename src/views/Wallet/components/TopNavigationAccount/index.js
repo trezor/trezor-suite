@@ -21,8 +21,9 @@ const Wrapper = styled.div`
     flex: 1;
     align-items: center;
     justify-content: space-between;
-    padding: 0px 30px 0 40px;
+    padding: 0px 30px 0 35px;
     max-width: 600px;
+    overflow-x: scroll;
 `;
 
 const StyledNavLink = styled(NavLink)`
