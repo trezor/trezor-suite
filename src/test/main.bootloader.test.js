@@ -11,6 +11,7 @@ describe('Get latest safe firmware version for T1 in bootloader mode', () => {
             isInBootloader: true,
             bootloaderVersion: [10, 10, 10],
         });
+
         expect(result).toEqual(null);
     });
 

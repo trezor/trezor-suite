@@ -19,34 +19,35 @@ Installation
 -----
 
 #### Npm 
-```npm install trezor-rollup --save```
+```npm install trezor-rollout --save```
 
 or
 
 #### Yarn
-```yarn add trezor-rollup```
-
+```yarn add trezor-rollout```
 
 Usage
 -----
 
-```import { getLatestSafeFw, getScore } from 'trezor-rollup';```
+```import { getLatestSafeFw, getScore } from 'trezor-rollout';```
 
 Functions
 -----
-#### getScore():Number
+
+#### getScore()
 - returns random number from 0 to 1 (0.21, 0.89, 0,45)
 
-#### getLatestSafeFw(parameters):Array (single item from releases list) or null (no new version found)
+
+#### getLatestSafeFw(parameters)
 - parameters: Object
 
 ```
 {
   releaseList: Array (list from https://github.com/trezor/webwallet-data/blob/master/firmware/{1 or 2}/releases.json),
   isInBootloader: boolean,
-  firmwareVersion: Array (for version 1.0.0 [1, 0, 0])
-  bootloaderVersion: Array (for version 1.0.0 [1, 0, 0])
+  firmwareVersion: Array ([1, 0, 0])
+  bootloaderVersion: Array ([1, 0, 0])
 }
-``` 
+```
 
-    
+- returns single item from a release list
