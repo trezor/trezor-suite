@@ -54,14 +54,10 @@ export type BlockEvent = {
 
 type Input = {
     addresses: Array<string>,
-    // amount: string,
-    // fee: string,
-    // total: string,
 }
 
 type Output = {
     addresses: Array<string>,
-    // amount: string,
 }
 
 type Token = {

@@ -141,7 +141,6 @@ const connect = async (): Promise<RippleAPI> => {
 
     // mocking
     // setTimeout(() => {
-    //     console.warn("KOLLIN!")
     //     api.connection._ws._ws.close()
     // }, 6000);
 
@@ -271,14 +270,14 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
 
     // get the reserve
 
-    // if (options.type !== 'transactions') {
-    //     common.response({
-    //         id: data.id,
-    //         type: RESPONSES.GET_ACCOUNT_INFO,
-    //         payload: account,
-    //     });
-    //     return;
-    // }
+    if (options.type !== 'transactions') {
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_ACCOUNT_INFO,
+            payload: account,
+        });
+        return;
+    }
 
     try {
         // Rippled has an issue with looking up outside of range of completed ledgers
@@ -306,7 +305,6 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
             while (hasNextPage) {
                 const response = await getRawTransactions(payload.descriptor, requestOptions);
                 transactions = utils.concatTransactions(transactions, response);
-                console.warn("next page", transactions.length, requestOptions);
                 // hasNextPage = response.length >= TX_LIMIT && transactions.length < 10000;
                 hasNextPage = response.length >= TX_LIMIT;
                 if (hasNextPage) {
@@ -492,8 +490,6 @@ const onNewBlock = (event: any) => {
 const onTransaction = (event: any) => {
     if (event.type !== 'transaction') return;
 
-    console.warn("ON TRANSAKTION!", event)
-    
     const subscribed = common.getAddresses();
     const sender = subscribed.indexOf(event.transaction.Account);
     const receiver = subscribed.indexOf(event.transaction.Destination);
@@ -586,24 +582,6 @@ common.handshake();
 
 // // Trezor account
 // // rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H
-
-// api.connect().then(() => {
-//     /* begin custom code ------------------------------------ */
-//     
-
-//     console.log('getting account info for', myAddress);
-//     return api.getAccountInfo(myAddress);
-
-// }).then(info => {
-//     console.log(info);
-//     console.log('getAccountInfo done');
-
-//     /* end custom code -------------------------------------- */
-// }).then(() => {
-//     return api.disconnect();
-// }).then(() => {
-//     console.log('done and disconnected.');
-// }).catch(console.error);
 
 // rpNqAwVKdyWxZoHerUzDfgEEobNQPnQgPU
 

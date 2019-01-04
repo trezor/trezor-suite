@@ -40,7 +40,6 @@ const handleClick = (event: MouseEvent) => {
             if (mode === 'advanced') {
                 const options = getInputValue('get-account-info-account');
                 params.options = JSON.parse(options)
-                console.warn("ADV", options, params)
             }
             blockchain.getAccountInfo(params).then(onResponse).catch(onError);
             break;
