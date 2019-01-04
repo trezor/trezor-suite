@@ -530,9 +530,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         const fee = ValidationActions.calculateFee(currentState.gasLimit, currentState.gasPrice);
         const blockchainNotification = {
             type: 'send',
-            status: 'pending',
-            confirmations: 0,
-            address: account.descriptor,
+            descriptor: account.descriptor,
             inputs: [
                 {
                     addresses: [account.descriptor],
@@ -553,7 +551,14 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             total: currentState.total,
 
             sequence: nonce,
-            currency: isToken ? currentState.currency : undefined,
+            tokens: isToken ? [{
+                name: currentState.currency,
+                shortcut: currentState.currency,
+                value: currentState.amount,
+            }] : undefined,
+
+            blockHeight: 0,
+            blockHash: undefined,
         };
 
         dispatch(BlockchainActions.onNotification({

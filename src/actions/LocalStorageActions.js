@@ -63,7 +63,7 @@ const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token
 
 const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => devices.reduce((arr, dev) => arr.concat(discovery.filter(d => d.deviceState === dev.state && d.completed)), []);
 
-const findPendingTxs = (accounts: Array<Account>, pending: Array<Transaction>): Array<Transaction> => accounts.reduce((result, account) => result.concat(pending.filter(p => p.address === account.descriptor && p.network === account.network)), []);
+const findPendingTxs = (accounts: Array<Account>, pending: Array<Transaction>): Array<Transaction> => accounts.reduce((result, account) => result.concat(pending.filter(p => p.descriptor === account.descriptor && p.network === account.network)), []);
 
 export const save = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const devices: Array<TrezorDevice> = getState().devices.filter(d => d.features && d.remember === true);

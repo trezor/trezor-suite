@@ -89,12 +89,12 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
 
 export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { notification } = payload;
-    const account = getState().accounts.find(a => a.descriptor === notification.address);
+    const account = getState().accounts.find(a => a.descriptor === notification.descriptor);
     if (!account) return;
     const { network } = getState().selectedAccount;
     if (!network) return; // flowtype fallback
 
-    if (notification.status === 'pending') {
+    if (!notification.blockHeight) {
         dispatch({
             type: PENDING.ADD,
             payload: {
@@ -109,7 +109,7 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
         });
 
         // todo: replace "send success" notification with link to explorer
-    } else if (notification.status === 'confirmed') {
+    } else {
         dispatch({
             type: PENDING.TX_RESOLVED,
             hash: notification.hash,

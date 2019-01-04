@@ -131,10 +131,10 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
 
 export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { notification } = payload;
-    const account = getState().accounts.find(a => a.descriptor === notification.address);
+    const account = getState().accounts.find(a => a.descriptor === notification.descriptor);
     if (!account) return;
 
-    if (notification.status === 'pending') {
+    if (!notification.blockHeight) {
         dispatch({
             type: PENDING.ADD,
             payload: {
