@@ -86,18 +86,27 @@ export const getDiscoveryProcess = (state: State): ?Discovery => {
 export const getAccountPendingTx = (pending: Array<Transaction>, account: ?Account): Array<Transaction> => {
     const a = account;
     if (!a) return [];
-    return pending.filter(p => p.network === a.network && p.address === a.descriptor);
+    return pending.filter(p => p.network === a.network && p.descriptor === a.descriptor);
 };
 
-export const getPendingSequence = (pending: Array<Transaction>): number => pending.reduce((value: number, tx: Transaction) => {
+export const getPendingSequence = (pending: Array<Transaction>): number => pending.reduce((value: number, tx: Transaction): number => {
     if (tx.rejected) return value;
     return Math.max(value, tx.sequence + 1);
 }, 0);
 
-export const getPendingAmount = (pending: Array<Transaction>, currency: string, token: boolean = false): BigNumber => pending.reduce((value: BigNumber, tx: Transaction) => {
-    if (tx.currency === currency && !tx.rejected) {
-        return new BigNumber(value).plus(token ? tx.amount : tx.total);
+export const getPendingAmount = (pending: Array<Transaction>, currency: string, token: boolean = false): BigNumber => pending.reduce((value: BigNumber, tx: Transaction): BigNumber => {
+    if (!token) {
+        // regular transactions
+        // add fees from token txs and amount from regular txs
+        return new BigNumber(value).plus(tx.tokens ? tx.fee : tx.total);
     }
+    if (tx.tokens) {
+        // token transactions
+        const allTokens = tx.tokens.filter(t => t.shortcut === currency);
+        const tokensValue: BigNumber = allTokens.reduce((tv, t) => new BigNumber(value).plus(t.value), new BigNumber('0'));
+        return new BigNumber(value).plus(tokensValue);
+    }
+    // default
     return value;
 }, new BigNumber('0'));
 
@@ -115,7 +124,7 @@ export const getWeb3 = (state: State): ?Web3Instance => {
     return state.web3.find(w3 => w3.network === locationState.network);
 };
 
-export const observeChanges = (prev: ?Object, current: ?Object, filter?: {[k: string]: Array<string>}): boolean => {
+export const observeChanges = (prev: ?any, current: ?any, filter?: {[k: string]: Array<string>}): boolean => {
     // 1. both objects are the same (solves simple types like string, boolean and number)
     if (prev === current) return false;
     // 2. one of the objects is null/undefined

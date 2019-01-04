@@ -66,7 +66,7 @@ export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discover
         deviceID: device.features ? device.features.device_id : '0',
         deviceState: device.state || '0',
         accountPath: account.path || [],
-        descriptor: account.address,
+        descriptor: account.descriptor,
 
         balance: toDecimalAmount(account.balance, network.decimals),
         availableBalance: toDecimalAmount(account.availableBalance, network.decimals),

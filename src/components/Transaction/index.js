@@ -70,26 +70,24 @@ const TransactionItem = ({
     network,
 }: Props) => {
     const url = `${network.explorer.tx}${tx.hash}`;
-    const date = typeof tx.timestamp === 'string' && tx.confirmations > 0 ? tx.timestamp : undefined; // TODO: format date
+    const date = typeof tx.timestamp === 'string' ? tx.timestamp : undefined; // TODO: format date
     const addresses = (tx.type === 'send' ? tx.outputs : tx.inputs).reduce((arr, item) => arr.concat(item.addresses), []);
 
-    const currency = tx.currency || tx.network;
-    const isToken = currency !== tx.network;
-    const amount = isToken ? `${tx.amount} ${currency}` : `${tx.total} ${network.symbol}`;
-    const fee = isToken && tx.type === 'send' ? `${tx.fee} ${network.symbol}` : undefined;
     const operation = tx.type === 'send' ? '-' : '+';
+    const amount = tx.tokens ? tx.tokens.map(t => (<Amount key={t.value}>{operation}{t.value} {t.shortcut}</Amount>)) : <Amount>{operation}{tx.total} {network.symbol}</Amount>;
+    const fee = tx.tokens && tx.type === 'send' ? `${tx.fee} ${network.symbol}` : undefined;
 
     return (
         <Wrapper>
             { date && (<Date href={url} isGray>{ date }</Date>)}
             <Addresses>
                 { addresses.map(addr => (<Address key={addr}>{addr}</Address>)) }
-                { tx.confirmations <= 0 && (
+                { !tx.blockHeight && (
                     <Date href={url} isGray>Transaction hash: {tx.hash}</Date>
                 )}
             </Addresses>
             <Value className={tx.type}>
-                <Amount>{operation}{amount}</Amount>
+                {amount}
                 { fee && (<Fee>{operation}{fee}</Fee>) }
             </Value>
         </Wrapper>

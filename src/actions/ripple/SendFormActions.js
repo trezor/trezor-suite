@@ -16,9 +16,10 @@ import type {
     AsyncAction,
     TrezorDevice,
 } from 'flowtype';
-import type { State } from 'reducers/SendFormRippleReducer';
+import type { State, FeeLevel } from 'reducers/SendFormRippleReducer';
 import * as SessionStorageActions from '../SessionStorageActions';
 
+import * as BlockchainActions from './BlockchainActions';
 import * as ValidationActions from './SendFormValidationActions';
 
 /*
@@ -43,14 +44,14 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
     // handle gasPrice update from backend
     // recalculate fee levels if needed
     if (action.type === BLOCKCHAIN.UPDATE_FEE) {
-        dispatch(ValidationActions.onFeeUpdated(action.shortcut, action.fee));
+        dispatch(ValidationActions.onFeeUpdated(action.shortcut, action.feeLevels));
         return;
     }
 
     let shouldUpdate: boolean = false;
     // check if "selectedAccount" reducer changed
     shouldUpdate = reducerUtils.observeChanges(prevState.selectedAccount, currentState.selectedAccount, {
-        account: ['balance', 'nonce'],
+        account: ['balance', 'sequence'],
     });
 
     // check if "sendForm" reducer changed
@@ -79,7 +80,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         network,
     } = getState().selectedAccount;
 
-    if (!account || !network) return;
+    if (!account || account.networkType !== 'ripple' || !network) return;
 
     const stateFromStorage = dispatch(SessionStorageActions.loadRippleDraftTransaction());
     if (stateFromStorage) {
@@ -91,7 +92,8 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         return;
     }
 
-    const feeLevels = dispatch(ValidationActions.getFeeLevels(network.symbol));
+    const blockchainFeeLevels = dispatch(BlockchainActions.getFeeLevels(network));
+    const feeLevels = dispatch(ValidationActions.getFeeLevels(blockchainFeeLevels));
     const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, initialState.selectedFeeLevel);
 
     dispatch({
@@ -103,10 +105,19 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
             networkSymbol: network.symbol,
             feeLevels,
             selectedFeeLevel,
+            fee: network.fee.defaultFee,
             sequence: '1',
         },
     });
 };
+
+/*
+* Called from UI from "advanced" button
+*/
+export const toggleAdvanced = (): Action => ({
+    type: SEND.TOGGLE_ADVANCED,
+    networkType: 'ripple',
+});
 
 /*
 * Called from UI on "address" field change
@@ -160,6 +171,78 @@ export const onSetMax = (): ThunkAction => (dispatch: Dispatch, getState: GetSta
     });
 };
 
+/*
+* Called from UI on "fee" selection change
+*/
+export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const state = getState().sendFormRipple;
+
+    const isCustom = feeLevel.value === 'Custom';
+    const advanced = isCustom ? true : state.advanced;
+
+    dispatch({
+        type: SEND.CHANGE,
+        networkType: 'ripple',
+        state: {
+            ...state,
+            advanced,
+            selectedFeeLevel: feeLevel,
+            fee: isCustom ? state.selectedFeeLevel.fee : feeLevel.fee,
+        },
+    });
+};
+
+/*
+* Called from UI from "update recommended fees" button
+*/
+export const updateFeeLevels = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const {
+        account,
+        network,
+    } = getState().selectedAccount;
+    if (!account || !network) return;
+
+    const blockchainFeeLevels = dispatch(BlockchainActions.getFeeLevels(network));
+    const state: State = getState().sendFormRipple;
+    const feeLevels = dispatch(ValidationActions.getFeeLevels(blockchainFeeLevels, state.selectedFeeLevel));
+    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, state.selectedFeeLevel);
+
+    dispatch({
+        type: SEND.CHANGE,
+        networkType: 'ripple',
+        state: {
+            ...state,
+            feeLevels,
+            selectedFeeLevel,
+            feeNeedsUpdate: false,
+        },
+    });
+};
+
+/*
+* Called from UI on "advanced / fee" field change
+*/
+export const onFeeChange = (fee: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const { network } = getState().selectedAccount;
+    if (!network) return;
+    const state: State = getState().sendFormRipple;
+
+    // switch to custom fee level
+    let newSelectedFeeLevel = state.selectedFeeLevel;
+    if (state.selectedFeeLevel.value !== 'Custom') newSelectedFeeLevel = state.feeLevels.find(f => f.value === 'Custom');
+
+    dispatch({
+        type: SEND.CHANGE,
+        networkType: 'ripple',
+        state: {
+            ...state,
+            untouched: false,
+            touched: { ...state.touched, fee: true },
+            selectedFeeLevel: newSelectedFeeLevel,
+            fee,
+        },
+    });
+};
 
 /*
 * Called from UI from "send" button
@@ -190,7 +273,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
         useEmptyPassphrase: selected.useEmptyPassphrase,
         path: account.accountPath,
         transaction: {
-            fee: blockchain.fee, // Fee must be in the range of 10 to 10,000 drops
+            fee: currentState.selectedFeeLevel.fee, // Fee must be in the range of 10 to 10,000 drops
             flags: 0x80000000,
             sequence: account.sequence,
             payment: {
@@ -256,8 +339,12 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
 };
 
 export default {
+    toggleAdvanced,
     onAddressChange,
     onAmountChange,
     onSetMax,
+    onFeeLevelChange,
+    updateFeeLevels,
+    onFeeChange,
     onSend,
 };

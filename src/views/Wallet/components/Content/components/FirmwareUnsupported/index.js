@@ -13,9 +13,9 @@ const getInfoUrl = (networkShortcut: ?string) => {
     const urls = {
         default: 'https://wiki.trezor.io',
         xrp: 'https://wiki.trezor.io/Ripple_(XRP)',
+        txrp: 'https://wiki.trezor.io/Ripple_(XRP)',
     };
-
-    return networkShortcut ? urls[networkShortcut] : urls.default;
+    return networkShortcut && urls[networkShortcut] ? urls[networkShortcut] : urls.default;
 };
 
 type Props = {

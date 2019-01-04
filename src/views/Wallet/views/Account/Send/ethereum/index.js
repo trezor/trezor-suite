@@ -1,6 +1,7 @@
 /* @flow */
 
 import React from 'react';
+import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
 import { Select } from 'components/Select';
 import Button from 'components/Button';
@@ -13,8 +14,9 @@ import colors from 'config/colors';
 import Title from 'views/Wallet/components/Title';
 import P from 'components/Paragraph';
 import Content from 'views/Wallet/components/Content';
+import * as stateUtils from 'reducers/utils';
 import type { Token } from 'flowtype';
-import AdvancedForm from '../components/AdvancedForm';
+import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from '../components/PendingTransactions';
 
 import type { Props } from './Container';
@@ -221,10 +223,11 @@ const AccountSend = (props: Props) => {
 
     const isCurrentCurrencyToken = networkSymbol !== currency;
 
-    let selectedTokenBalance = 0;
+    let selectedTokenBalance = '0';
     const selectedToken = tokens.find(t => t.symbol === currency);
     if (selectedToken) {
-        selectedTokenBalance = selectedToken.balance;
+        const pendingAmount: BigNumber = stateUtils.getPendingAmount(props.selectedAccount.pending, selectedToken.symbol, true);
+        selectedTokenBalance = new BigNumber(selectedToken.balance).minus(pendingAmount).toString(10);
     }
 
     let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;

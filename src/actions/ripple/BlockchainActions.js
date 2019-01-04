@@ -1,19 +1,21 @@
 /* @flow */
 
 import TrezorConnect from 'trezor-connect';
-// import * as BLOCKCHAIN from 'actions/constants/blockchain';
+import * as BLOCKCHAIN from 'actions/constants/blockchain';
 import * as PENDING from 'actions/constants/pendingTx';
 import * as AccountsActions from 'actions/AccountsActions';
 import { toDecimalAmount } from 'utils/formatUtils';
+import { observeChanges } from 'reducers/utils';
 
 import type { BlockchainNotification } from 'trezor-connect';
 import type {
     Dispatch,
     GetState,
     PromiseAction,
+    PayloadAction,
+    Network,
+    BlockchainFeeLevel,
 } from 'flowtype';
-
-const DECIMALS: number = 6;
 
 export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.descriptor);
@@ -23,22 +25,41 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
     });
 };
 
+// Get current known fee
+// Use default values from appConfig.json if it wasn't downloaded from blockchain yet
+// update them later, after onBlockMined event
+export const getFeeLevels = (network: Network): PayloadAction<Array<BlockchainFeeLevel>> => (dispatch: Dispatch, getState: GetState): Array<BlockchainFeeLevel> => {
+    const blockchain = getState().blockchain.find(b => b.shortcut === network.shortcut);
+    if (!blockchain || blockchain.feeLevels.length < 1) {
+        return network.fee.levels.map(level => ({
+            name: level.name,
+            value: level.value,
+        }));
+    }
+    return blockchain.feeLevels;
+};
+
 export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const blockchain = getState().blockchain.find(b => b.shortcut === network);
-    if (!blockchain) return;
+    if (!blockchain) return; // flowtype fallback
 
-    // const fee = await TrezorConnect.blockchainGetFee({
-    //     coin: network,
-    // });
-    // if (!fee.success) return;
+    // if last update was more than 5 minutes ago
+    const now = new Date().getTime();
+    if (blockchain.feeTimestamp < now - 300000) {
+        const feeRequest = await TrezorConnect.blockchainEstimateFee({
+            coin: network,
+        });
+        if (feeRequest.success && observeChanges(blockchain.feeLevels, feeRequest.payload)) {
+            // check if downloaded fee levels are different
+            dispatch({
+                type: BLOCKCHAIN.UPDATE_FEE,
+                shortcut: network,
+                feeLevels: feeRequest.payload,
+            });
+        }
+    }
 
-    // if (fee.payload !== blockchain.fee) {
-    //     dispatch({
-    //         type: BLOCKCHAIN.UPDATE_FEE,
-    //         shortcut: network,
-    //         fee: fee.payload,
-    //     });
-    // }
+    // TODO: check for blockchain rollbacks here!
 
     const accounts: Array<any> = getState().accounts.filter(a => a.network === network);
     // console.warn('ACCOUNTS', accounts);
@@ -68,10 +89,12 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
 
 export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { notification } = payload;
-    const account = getState().accounts.find(a => a.descriptor === notification.address);
+    const account = getState().accounts.find(a => a.descriptor === notification.descriptor);
     if (!account) return;
+    const { network } = getState().selectedAccount;
+    if (!network) return; // flowtype fallback
 
-    if (notification.status === 'pending') {
+    if (!notification.blockHeight) {
         dispatch({
             type: PENDING.ADD,
             payload: {
@@ -79,14 +102,14 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
                 deviceState: account.deviceState,
                 network: account.network,
 
-                amount: toDecimalAmount(notification.amount, DECIMALS),
-                total: notification.type === 'send' ? toDecimalAmount(notification.total, DECIMALS) : toDecimalAmount(notification.amount, DECIMALS),
-                fee: toDecimalAmount(notification.fee, DECIMALS),
+                amount: toDecimalAmount(notification.amount, network.decimals),
+                total: notification.type === 'send' ? toDecimalAmount(notification.total, network.decimals) : toDecimalAmount(notification.amount, network.decimals),
+                fee: toDecimalAmount(notification.fee, network.decimals),
             },
         });
 
         // todo: replace "send success" notification with link to explorer
-    } else if (notification.status === 'confirmed') {
+    } else {
         dispatch({
             type: PENDING.TX_RESOLVED,
             hash: notification.hash,
@@ -106,8 +129,8 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     dispatch(AccountsActions.update({
         networkType: 'ripple',
         ...account,
-        balance: toDecimalAmount(updatedAccount.payload.balance, DECIMALS),
-        availableBalance: toDecimalAmount(updatedAccount.payload.availableBalance, DECIMALS),
+        balance: toDecimalAmount(updatedAccount.payload.balance, network.decimals),
+        availableBalance: toDecimalAmount(updatedAccount.payload.availableBalance, network.decimals),
         block: updatedAccount.payload.block,
         sequence: updatedAccount.payload.sequence,
         reserve: '0',

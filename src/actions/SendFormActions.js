@@ -2,6 +2,7 @@
 import * as ACCOUNT from 'actions/constants/account';
 import * as SEND from 'actions/constants/send';
 import * as WEB3 from 'actions/constants/web3';
+import * as BLOCKCHAIN from 'actions/constants/blockchain';
 
 import type {
     Dispatch,
@@ -36,6 +37,7 @@ export type SendFormAction = {
 const actions = [
     ACCOUNT.UPDATE_SELECTED_ACCOUNT,
     WEB3.GAS_PRICE_UPDATED,
+    BLOCKCHAIN.UPDATE_FEE,
     ...Object.values(SEND).filter(v => typeof v === 'string'),
 ];
 

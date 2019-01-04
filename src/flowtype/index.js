@@ -159,6 +159,7 @@ export type { Account } from 'reducers/AccountsReducer';
 export type { Discovery } from 'reducers/DiscoveryReducer';
 export type { Token } from 'reducers/TokensReducer';
 export type { Web3Instance } from 'reducers/Web3Reducer';
+export type { BlockchainFeeLevel } from 'reducers/BlockchainReducer';
 
 export type Accounts = $ElementType<State, 'accounts'>;
 export type LocalStorage = $ElementType<State, 'localStorage'>;

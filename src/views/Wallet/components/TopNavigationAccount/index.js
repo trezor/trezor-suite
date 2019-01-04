@@ -4,14 +4,15 @@ import styled from 'styled-components';
 import React from 'react';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 import colors from 'config/colors';
-
-import type { Location } from 'react-router';
+import type { State } from 'flowtype';
 
 import Indicator from './components/Indicator';
 
 type Props = {
-    location: Location;
+    router: $ElementType<State, 'router'>,
+    selectedAccount: $ElementType<State, 'selectedAccount'>,
 };
 
 const Wrapper = styled.div`
@@ -56,20 +57,28 @@ class TopNavigationAccount extends React.PureComponent<Props> {
     wrapper: ?HTMLElement;
 
     render() {
-        const { state, pathname } = this.props.location;
+        const { state, pathname } = this.props.router.location;
         if (!state) return null;
+        const { network } = this.props.selectedAccount;
+        if (!network) return null;
 
         const basePath = `/device/${state.device}/network/${state.network}/account/${state.account}`;
+
         return (
             <Wrapper className="account-tabs" ref={this.wrapperRefCallback}>
                 <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
                 <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
                 <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
-                <StyledNavLink to={`${basePath}/signverify`}>Sign &amp; Verify</StyledNavLink>
+                {network.type === 'ethereum'
+                    && <StyledNavLink to={`${basePath}/signverify`}>Sign &amp; Verify</StyledNavLink>
+                }
                 <Indicator pathname={pathname} wrapper={() => this.wrapper} />
             </Wrapper>
         );
     }
 }
 
-export default TopNavigationAccount;
+export default connect((state: State): Props => ({
+    router: state.router,
+    selectedAccount: state.selectedAccount,
+}), null)(TopNavigationAccount);
