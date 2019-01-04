@@ -53,7 +53,6 @@ const WalletWrapper = styled.div`
     display: flex;
     flex-direction: row;
     border-radius: 4px 4px 0px 0px;
-    overflow: hidden;
     margin-top: 32px;
 
     @media screen and (max-width: 1170px) {
@@ -66,6 +65,7 @@ const MainContent = styled.article`
     flex: 1;
     display: flex;
     flex-direction: column;
+    overflow: auto;
 `;
 
 const Navigation = styled.nav`

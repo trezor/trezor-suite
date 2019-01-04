@@ -25,11 +25,29 @@ const RowButtons = styled(Row)`
     display: flex;
     align-items: center;
     justify-content: flex-end;
+
+    @media all and (max-width: 850px) {
+        flex-wrap: wrap;
+        margin: -5px;
+    }
 `;
 
 const StyledButton = styled(Button)`
-    margin-left: 10px;
     width: 110px;
+    margin-left: 10px;
+
+    &:first-child {
+        margin-left: 0;
+    }
+
+    @media all and (max-width: 850px) {
+        flex: 1;
+        margin: 5px;
+
+        &:first-child {
+            margin-left: 5px;
+        }
+    }
 `;
 
 const Column = styled.div`
@@ -116,11 +134,11 @@ class SignVerify extends Component <Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <Button
+                            <StyledButton
                                 onClick={this.props.signVerifyActions.clearSign}
                                 isWhite
                             >Clear
-                            </Button>
+                            </StyledButton>
                             <StyledButton
                                 onClick={() => signVerifyActions.sign(account.accountPath, signMessage)}
                             >Sign
@@ -164,11 +182,11 @@ class SignVerify extends Component <Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <Button
+                            <StyledButton
                                 onClick={signVerifyActions.clearVerify}
                                 isWhite
                             >Clear
-                            </Button>
+                            </StyledButton>
                             <StyledButton
                                 onClick={
                                     () => {

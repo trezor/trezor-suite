@@ -76,7 +76,7 @@ class Indicator extends PureComponent<Props, State> {
         const active = wrapper.querySelector('.active');
         if (!active) return;
         const bounds = active.getBoundingClientRect();
-        const left = bounds.left - wrapper.getBoundingClientRect().left;
+        const left = bounds.left - wrapper.getBoundingClientRect().left + wrapper.scrollLeft;
         const { state } = this;
 
         if (state.style.left !== left) {
