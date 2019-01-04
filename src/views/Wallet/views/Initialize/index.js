@@ -7,16 +7,14 @@ import { connect } from 'react-redux';
 
 const Wrapper = styled.div`
     display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
 `;
 
 const Row = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    padding: 100px 48px;
 `;
 
 const A = styled.a``;

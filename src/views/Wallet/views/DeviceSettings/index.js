@@ -12,17 +12,15 @@ import { connect } from 'react-redux';
 
 const Section = styled.section`
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+    flex-direction: column;
 `;
 
 const Row = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    padding: 100px 48px;
 `;
 
 const StyledP = styled(P)`
