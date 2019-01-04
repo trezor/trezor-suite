@@ -120,15 +120,16 @@ export const initWeb3 = (network: string, urlIndex: number = 0): PromiseAction<W
     web3.currentProvider.on('error', onEnd);
 });
 
-export const discoverAccount = (address: string, network: string): PromiseAction<EthereumAccount> => async (dispatch: Dispatch): Promise<EthereumAccount> => {
+export const discoverAccount = (descriptor: string, network: string): PromiseAction<EthereumAccount> => async (dispatch: Dispatch): Promise<EthereumAccount> => {
     const instance: Web3Instance = await dispatch(initWeb3(network));
-    const balance = await instance.web3.eth.getBalance(address);
-    const nonce = await instance.web3.eth.getTransactionCount(address);
+    const balance = await instance.web3.eth.getBalance(descriptor);
+    const nonce = await instance.web3.eth.getTransactionCount(descriptor);
     return {
-        address,
+        descriptor,
         transactions: 0,
         block: 0,
         balance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
+        availableBalance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
         nonce,
     };
 };

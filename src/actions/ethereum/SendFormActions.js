@@ -559,6 +559,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
 
             blockHeight: 0,
             blockHash: undefined,
+            timestamp: undefined,
         };
 
         dispatch(BlockchainActions.onNotification({

@@ -16,14 +16,15 @@ import type { NetworkToken } from 'reducers/LocalStorageReducer';
 import * as Web3Actions from 'actions/Web3Actions';
 import * as AccountsActions from 'actions/AccountsActions';
 
-export const discoverAccount = (device: TrezorDevice, address: string, network: string): PromiseAction<EthereumAccount> => async (dispatch: Dispatch): Promise<EthereumAccount> => {
+export const discoverAccount = (device: TrezorDevice, descriptor: string, network: string): PromiseAction<EthereumAccount> => async (dispatch: Dispatch): Promise<EthereumAccount> => {
     // get data from connect
     const txs = await TrezorConnect.ethereumGetAccountInfo({
         account: {
-            address,
+            descriptor,
             block: 0,
             transactions: 0,
             balance: '0',
+            availableBalance: '0',
             nonce: 0,
         },
         coin: network,
@@ -34,12 +35,13 @@ export const discoverAccount = (device: TrezorDevice, address: string, network: 
     }
 
     // blockbook web3 fallback
-    const web3account = await dispatch(Web3Actions.discoverAccount(address, network));
+    const web3account = await dispatch(Web3Actions.discoverAccount(descriptor, network));
     return {
-        address,
+        descriptor,
         transactions: txs.payload.transactions,
         block: txs.payload.block,
         balance: web3account.balance,
+        availableBalance: web3account.balance,
         nonce: web3account.nonce,
     };
 };
