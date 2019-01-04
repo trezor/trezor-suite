@@ -72,6 +72,47 @@
                 "tx": "https://ropsten.etherscan.io/tx/",
                 "address": "https://ropsten.etherscan.io/address/"
             }
+        },
+        {
+            "type": "ripple",
+            "name": "Ripple",
+            "symbol": "XRP",
+            "shortcut": "xrp",
+            "bip44": "m/44'/144'/a'/0/0",
+            "decimals": 6,
+            "fee": {
+                "defaultFee": "12",
+                "minFee": "10",
+                "maxFee": "10000",
+                "levels": [
+                    {"name": "Normal", "value": "12", "recommended": true }
+                ]
+            },
+            "explorer": {
+                "tx": "https://xrpcharts.ripple.com/#/transactions/",
+                "address": "https://xrpcharts.ripple.com/#/graph/"
+            }
+        },
+        {
+            "type": "ripple",
+            "name": "Ripple Testnet",
+            "testnet": true,
+            "symbol": "tXRP",
+            "shortcut": "txrp",
+            "bip44": "m/44'/144'/a'/0/0",
+            "decimals": 6,
+            "fee": {
+                "defaultFee": "12",
+                "minFee": "10",
+                "maxFee": "10000",
+                "levels": [
+                    {"name": "Normal", "value": "12", "recommended": true }
+                ]
+            },
+            "explorer": {
+                "tx": "https://sisyfos.trezor.io/ripple-testnet-explorer/tx/",
+                "address": "https://sisyfos.trezor.io/ripple-testnet-explorer/address/"
+            }
         }
     ],
 
