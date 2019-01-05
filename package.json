@@ -8,8 +8,8 @@
     },
     "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
-        "dev": "npx webpack-dev-server --config webpack/dev.babel.js",
-        "dev:local": "npx webpack-dev-server --config webpack/local.babel.js",
+        "dev": "yarn && npx webpack-dev-server --config webpack/dev.babel.js",
+        "dev:local": "yarn && npx webpack-dev-server --config webpack/local.babel.js",
         "build": "rimraf build && run-s build:*",
         "build:stable": "rimraf build/stable && npx webpack --config webpack/production.babel.js --output-path build/stable --progress --bail",
         "build:beta": "rimraf build/beta && cross-env BUILD=beta npx webpack --config webpack/production.babel.js --output-path build/beta --progress --bail",
