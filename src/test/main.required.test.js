@@ -4,19 +4,18 @@ describe('getLatestSafeFw', () => {
     describe('required', () => {
         it('bootloader mode, newest fw is required', () => {
             const result = getLatestSafeFw({
-                releasesList: [
-                    {
-                        version: [3, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                        required: true,
-                    }, {
-                        version: [2, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }],
+                releasesList: [{
+                    version: [3, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                    required: true,
+                }, {
+                    version: [2, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }],
                 isInBootloader: true,
                 bootloaderVersion: [2, 0, 0],
             });
@@ -27,24 +26,23 @@ describe('getLatestSafeFw', () => {
 
         it('bootloader mode, middle fw is required', () => {
             const result = getLatestSafeFw({
-                releasesList: [
-                    {
-                        version: [3, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }, {
-                        version: [2, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                        required: true,
-                    }, {
-                        version: [1, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }],
+                releasesList: [{
+                    version: [3, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }, {
+                    version: [2, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                    required: true,
+                }, {
+                    version: [1, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }],
                 isInBootloader: true,
                 bootloaderVersion: [1, 0, 0],
             });
@@ -55,24 +53,23 @@ describe('getLatestSafeFw', () => {
 
         it('bootloader mode, already installed fw is required', () => {
             const result = getLatestSafeFw({
-                releasesList: [
-                    {
-                        version: [3, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }, {
-                        version: [2, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [2, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }, {
-                        version: [1, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [1, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                        required: true,
-                    }],
+                releasesList: [{
+                    version: [3, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }, {
+                    version: [2, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [2, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }, {
+                    version: [1, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [1, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                    required: true,
+                }],
                 isInBootloader: true,
                 bootloaderVersion: [2, 0, 0],
             });
@@ -83,19 +80,18 @@ describe('getLatestSafeFw', () => {
 
         it('normal mode, newest fw is required', () => {
             const result = getLatestSafeFw({
-                releasesList: [
-                    {
-                        version: [3, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                        required: true,
-                    }, {
-                        version: [2, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }],
+                releasesList: [{
+                    version: [3, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                    required: true,
+                }, {
+                    version: [2, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }],
                 isInBootloader: false,
                 firmwareVersion: [2, 0, 0],
             });
@@ -106,24 +102,23 @@ describe('getLatestSafeFw', () => {
 
         it('normal mode, middle fw is required', () => {
             const result = getLatestSafeFw({
-                releasesList: [
-                    {
-                        version: [3, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }, {
-                        version: [2, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                        required: true,
-                    }, {
-                        version: [1, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }],
+                releasesList: [{
+                    version: [3, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }, {
+                    version: [2, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                    required: true,
+                }, {
+                    version: [1, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }],
                 isInBootloader: false,
                 firmwareVersion: [1, 0, 0],
             });
@@ -134,24 +129,23 @@ describe('getLatestSafeFw', () => {
 
         it('normal mode, already installed fw is required', () => {
             const result = getLatestSafeFw({
-                releasesList: [
-                    {
-                        version: [3, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [3, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }, {
-                        version: [2, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [2, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                    }, {
-                        version: [1, 0, 0],
-                        min_firmware_version: [1, 0, 0],
-                        bootloaderVersion: [1, 0, 0],
-                        min_bootloader_version: [1, 0, 0],
-                        required: true,
-                    }],
+                releasesList: [{
+                    version: [3, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [3, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }, {
+                    version: [2, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [2, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                }, {
+                    version: [1, 0, 0],
+                    min_firmware_version: [1, 0, 0],
+                    bootloader_version: [1, 0, 0],
+                    min_bootloader_version: [1, 0, 0],
+                    required: true,
+                }],
                 isInBootloader: false,
                 firmwareVersion: [2, 0, 0],
             });

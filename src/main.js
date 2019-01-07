@@ -9,10 +9,10 @@ const getBootloaderVersion = ({
         return bootloaderVersion;
     }
     const foundVersion = releasesList.find(item => versionUtils.isEqual(item.version, firmwareVersion));
-    if (!foundVersion || !foundVersion.bootloaderVersion) {
+    if (!foundVersion || !foundVersion.bootloader_version) {
         return null;
     }
-    return foundVersion.bootloaderVersion;
+    return foundVersion.bootloader_version;
 };
 
 const getLatestSafeFw = (input, score) => {
@@ -30,7 +30,7 @@ const getLatestSafeFw = (input, score) => {
         // increment between firmware releases
         const bootloaderVersion = getBootloaderVersion(input);
         releasesList = filterSafeListByBootloader({ releasesList, bootloaderVersion });
-        if (releasesList[0] && versionUtils.isNewer(releasesList[0].bootloaderVersion, bootloaderVersion)) {
+        if (releasesList[0] && releasesList[0].bootloader_version && versionUtils.isNewer(releasesList[0].bootloader_version, bootloaderVersion)) {
             isNewer = true;
         } else {
             isNewer = null;
@@ -59,16 +59,12 @@ const getLatestSafeFw = (input, score) => {
         };
     }
 
-    if (score) {
-        if (isInProbability(releasesList[0].rollout, score)) {
-            return {
-                firmware: releasesList[0],
-                isLatest: versionUtils.isEqual(releasesList[0].version, latest.version),
-                isRequired: releasesList.some(item => item.required),
-                isNewer,
-            };
-        }
+    if (score != null && !Number.isNaN(score)) {
+        releasesList = releasesList.filter(item => isInProbability(item.rollout, score));
+    }
 
+    if (!releasesList.length) {
+        // no new firmware
         return null;
     }
 

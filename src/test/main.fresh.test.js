@@ -5,9 +5,9 @@ describe('getLatestSafeFw', () => {
         it('it should respect bootloader rules and update incrementally by min_bootloader_version field', () => {
             const result = getLatestSafeFw({
                 releasesList: [
-                    { version: [3, 0, 0], min_bootloader_version: [3, 0, 0], bootloaderVersion: [4, 0, 0] },
-                    { version: [2, 0, 0], min_bootloader_version: [1, 0, 0], bootloaderVersion: [2, 0, 0] },
-                    { version: [1, 0, 0], min_bootloader_version: [1, 0, 0], bootloaderVersion: [1, 0, 0] },
+                    { version: [3, 0, 0], min_bootloader_version: [3, 0, 0], bootloader_version: [4, 0, 0] },
+                    { version: [2, 0, 0], min_bootloader_version: [1, 0, 0], bootloader_version: [2, 0, 0] },
+                    { version: [1, 0, 0], min_bootloader_version: [1, 0, 0], bootloader_version: [1, 0, 0] },
                 ],
                 isInBootloader: true,
                 firmwareVersion: null,
@@ -23,9 +23,9 @@ describe('getLatestSafeFw', () => {
         it('it should respect  bootloader rules and not allow downgrade', () => {
             const result = getLatestSafeFw({
                 releasesList: [
-                    { version: [3, 0, 0], min_bootloader_version: [3, 0, 0], bootloaderVersion: [4, 0, 0] },
-                    { version: [2, 0, 0], min_bootloader_version: [2, 0, 0], bootloaderVersion: [3, 0, 0] },
-                    { version: [1, 0, 0], min_bootloader_version: [1, 0, 0], bootloaderVersion: [2, 0, 0] },
+                    { version: [3, 0, 0], min_bootloader_version: [3, 0, 0], bootloader_version: [4, 0, 0] },
+                    { version: [2, 0, 0], min_bootloader_version: [2, 0, 0], bootloader_version: [3, 0, 0] },
+                    { version: [1, 0, 0], min_bootloader_version: [1, 0, 0], bootloader_version: [2, 0, 0] },
                 ],
                 isInBootloader: true,
                 firmwareVersion: null,

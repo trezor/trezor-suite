@@ -4,12 +4,11 @@ import { mockRandom } from 'jest-mock-random';
 describe('getLatestSafeFw', () => {
     describe('rollout', () => {
         it('bootloader mode - safe - probability not specified, skip rollout', () => {
-            mockRandom(0.512862123418226);
             const result = getLatestSafeFw({
                 releasesList: [{
-                    version: [3, 0, 0], min_bootloader_version: [2, 0, 0], bootloaderVersion: [3, 0, 0], rollout: 0.2,
+                    version: [3, 0, 0], min_bootloader_version: [2, 0, 0], bootloader_version: [3, 0, 0], rollout: 0.2,
                 }, {
-                    version: [2, 0, 0], min_bootloader_version: [2, 0, 0], bootloaderVersion: [2, 0, 0],
+                    version: [2, 0, 0], min_bootloader_version: [2, 0, 0], bootloader_version: [2, 0, 0],
                 }],
                 isInBootloader: true,
                 bootloaderVersion: [2, 0, 0],
@@ -19,7 +18,6 @@ describe('getLatestSafeFw', () => {
         });
 
         it('bootloader mode - safe - not in probability', () => {
-            mockRandom(0.512862123418226);
             const result = getLatestSafeFw({
                 releasesList: [
                     {
@@ -32,11 +30,11 @@ describe('getLatestSafeFw', () => {
                 bootloaderVersion: [2, 0, 0],
             }, 0.5);
 
-            expect(result).toEqual(null);
+            expect(result.firmware.version).toEqual([2, 0, 0]);
+            expect(result.isLatest).toEqual(false);
         });
 
         it('bootloader mode - safe - within probability', () => {
-            mockRandom(0.512862123418226);
             const result = getLatestSafeFw({
                 releasesList: [
                     {

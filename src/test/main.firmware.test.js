@@ -3,13 +3,15 @@ import { getLatestSafeFw } from 'main';
 describe('Get latest safe firmware version for T1 in normal mode', () => {
     it('for firmware version 10.10.10, there is no matching bootloaderVersion in list ', () => {
         const result = getLatestSafeFw({
-            releasesList: [{
-                version: [3, 0, 0], min_firmware_version: [2, 0, 0], bootloaderVersion: [3, 0, 0], min_bootloader_version: [2, 0, 0],
-            }, {
-                version: [2, 0, 0], min_firmware_version: [1, 0, 0], bootloaderVersion: [2, 0, 0], min_bootloader_version: [1, 0, 0],
-            }, {
-                version: [1, 0, 0], min_firmware_version: [0, 0, 0], bootloaderVersion: [1, 0, 0], min_bootloader_version: [0, 0, 0],
-            }],
+            releasesList: [
+                {
+                    version: [3, 0, 0], min_firmware_version: [2, 0, 0], bootloader_version: [3, 0, 0], min_bootloader_version: [2, 0, 0],
+                }, {
+                    version: [2, 0, 0], min_firmware_version: [1, 0, 0], bootloader_version: [2, 0, 0], min_bootloader_version: [1, 0, 0],
+                }, {
+                    version: [1, 0, 0], min_firmware_version: [0, 0, 0], bootloader_version: [1, 0, 0], min_bootloader_version: [0, 0, 0],
+                },
+            ],
             isInBootloader: false,
             firmwareVersion: [10, 10, 10],
         });
@@ -19,13 +21,15 @@ describe('Get latest safe firmware version for T1 in normal mode', () => {
 
     it('test single version bump', () => {
         const result = getLatestSafeFw({
-            releasesList: [{
-                version: [3, 0, 0], min_firmware_version: [2, 0, 0], bootloaderVersion: [3, 0, 0], min_bootloader_version: [2, 0, 0],
-            }, {
-                version: [2, 0, 0], min_firmware_version: [1, 0, 0], bootloaderVersion: [2, 0, 0], min_bootloader_version: [1, 0, 0],
-            }, {
-                version: [1, 0, 0], min_firmware_version: [0, 0, 0], bootloaderVersion: [1, 0, 0], min_bootloader_version: [0, 0, 0],
-            }],
+            releasesList: [
+                {
+                    version: [3, 0, 0], min_firmware_version: [2, 0, 0], bootloader_version: [3, 0, 0], min_bootloader_version: [2, 0, 0],
+                }, {
+                    version: [2, 0, 0], min_firmware_version: [1, 0, 0], bootloader_version: [2, 0, 0], min_bootloader_version: [1, 0, 0],
+                }, {
+                    version: [1, 0, 0], min_firmware_version: [0, 0, 0], bootloader_version: [1, 0, 0], min_bootloader_version: [0, 0, 0],
+                },
+            ],
             isInBootloader: false,
             firmwareVersion: [2, 0, 0],
         });
@@ -38,15 +42,17 @@ describe('Get latest safe firmware version for T1 in normal mode', () => {
 
     it('test firmware multiple version bump', () => {
         const result = getLatestSafeFw({
-            releasesList: [{
-                version: [4, 0, 0], min_firmware_version: [2, 0, 0], bootloaderVersion: [3, 0, 0], min_bootloader_version: [2, 0, 0],
-            }, {
-                version: [3, 0, 0], min_firmware_version: [2, 0, 0], bootloaderVersion: [3, 0, 0], min_bootloader_version: [2, 0, 0],
-            }, {
-                version: [2, 0, 0], min_firmware_version: [1, 0, 0], bootloaderVersion: [2, 0, 0], min_bootloader_version: [1, 0, 0],
-            }, {
-                version: [1, 0, 0], min_firmware_version: [0, 0, 0], bootloaderVersion: [1, 0, 0], min_bootloader_version: [0, 0, 0],
-            }],
+            releasesList: [
+                {
+                    version: [4, 0, 0], min_firmware_version: [2, 0, 0], bootloader_version: [3, 0, 0], min_bootloader_version: [2, 0, 0],
+                }, {
+                    version: [3, 0, 0], min_firmware_version: [2, 0, 0], bootloader_version: [3, 0, 0], min_bootloader_version: [2, 0, 0],
+                }, {
+                    version: [2, 0, 0], min_firmware_version: [1, 0, 0], bootloader_version: [2, 0, 0], min_bootloader_version: [1, 0, 0],
+                }, {
+                    version: [1, 0, 0], min_firmware_version: [0, 0, 0], bootloader_version: [1, 0, 0], min_bootloader_version: [0, 0, 0],
+                },
+            ],
             isInBootloader: false,
             firmwareVersion: [2, 0, 0],
         });
