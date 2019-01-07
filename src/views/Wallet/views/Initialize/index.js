@@ -28,7 +28,7 @@ const StyledParagraph = styled(Paragraph)`
 const Initialize = () => (
     <Wrapper>
         <Row>
-            <H1>Your device is in not initialized</H1>
+            <H1>Your device is not initialized</H1>
             <StyledParagraph>Please use Bitcoin wallet interface to start initialization process</StyledParagraph>
             <A href="https://beta-wallet.trezor.io/">
                 <Button>Take me to the Bitcoin wallet</Button>
