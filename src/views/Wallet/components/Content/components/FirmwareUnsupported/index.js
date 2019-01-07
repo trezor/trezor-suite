@@ -3,8 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 
-import { FONT_SIZE } from 'config/variables';
-import { H2 } from 'components/Heading';
+import { H1 } from 'components/Heading';
+import Paragraph from 'components/Paragraph';
 import Button from 'components/Button';
 import Link from 'components/Link';
 import CoinLogo from 'components/images/CoinLogo';
@@ -39,21 +39,17 @@ const StyledCoinLogo = styled(CoinLogo)`
     width: 32px;
 `;
 
-const StyledLink = styled(Link)`
-    padding-top: 24px;
-`;
-
 const Row = styled.div`
-    flex: 1;
     display: flex;
+    padding: 50px 0;
+    
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    text-align: center;
 `;
 
-const Message = styled.div`
-    font-size: ${FONT_SIZE.SMALL};
-    color: ${colors.TEXT_SECONDARY};
+const Message = styled(Paragraph)`
+    padding: 0 0 15px 0;
     text-align: center;
 `;
 
@@ -61,11 +57,11 @@ const FirmwareUnsupported = (props: Props) => (
     <Wrapper>
         <Row>
             {props.networkShortcut && <CoinLogoWrapper><StyledCoinLogo standalone network={props.networkShortcut} /></CoinLogoWrapper>}
-            <H2>{props.title}</H2>
+            <H1>{props.title}</H1>
             <Message>{props.message}</Message>
-            <StyledLink href={getInfoUrl(props.networkShortcut)}>
+            <Link href={getInfoUrl(props.networkShortcut)}>
                 <Button>Find out more info</Button>
-            </StyledLink>
+            </Link>
         </Row>
     </Wrapper>
 );

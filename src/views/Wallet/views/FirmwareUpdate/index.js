@@ -31,7 +31,7 @@ const Wrapper = styled.section`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 100px 48px;
+    padding: 90px 35px 40px 35px;
 `;
 
 const StyledNavLink = styled(Link)`

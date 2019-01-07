@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 const Row = styled.div`
     flex: 1;
     display: flex;
-    padding: 100px 48px;
+    padding: 50px 0;
     
     flex-direction: column;
     align-items: center;
