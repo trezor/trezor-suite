@@ -38,10 +38,12 @@ const Overlay = styled.div`
     background: white;
 `;
 
-const Image = styled.img``;
-
-const EthImage = styled(Image)`
+const Image = styled.img`
     margin-right: 10px;
+
+    &:last-child {
+        margin-right: 0px;
+    }
 `;
 
 const Dashboard = () => (
@@ -51,7 +53,7 @@ const Dashboard = () => (
                 <H1>Please select your coin</H1>
                 <StyledP>You will gain access to receiving &amp; sending selected coin</StyledP>
                 <Overlay>
-                    <EthImage src={EthIcon} width={20} />
+                    <Image src={EthIcon} width={20} />
                     <Image src={RippleIcon} width={25} />
                 </Overlay>
             </Row>
