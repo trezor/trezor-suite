@@ -6,15 +6,13 @@ import { connect } from 'react-redux';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1;
 `;
 
 const Row = styled.div`
-    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    padding: 100px 48px;
 `;
 
 const P = styled.p`

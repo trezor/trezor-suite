@@ -7,12 +7,9 @@ import colors from 'config/colors';
 const styles = isSearchable => ({
     singleValue: base => ({
         ...base,
+        maxWidth: 'calc(100% - 10px)', // 8px padding + 2px maring-left
         width: '100%',
         color: colors.TEXT_SECONDARY,
-    }),
-    valueContainer: base => ({
-        ...base,
-        overflow: 'hidden',
     }),
     control: (base, { isDisabled }) => ({
         ...base,
