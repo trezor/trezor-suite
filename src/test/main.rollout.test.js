@@ -51,8 +51,7 @@ describe('getLatestSafeFw', () => {
             expect(result.firmware.version).toEqual([3, 0, 0]);
         });
 
-        it('normal mode - safe - probability not specified, skip rollout', () => {
-            mockRandom(0.512862123418226);
+        it('normal mode - safe - score not specified, skip rollout', () => {
             const result = getLatestSafeFw({
                 releasesList: [
                     {
@@ -76,7 +75,6 @@ describe('getLatestSafeFw', () => {
         });
 
         it('normal mode - safe - not in probability', () => {
-            mockRandom(0.512862123418226);
             const result = getLatestSafeFw({
                 releasesList: [
                     {
@@ -100,7 +98,6 @@ describe('getLatestSafeFw', () => {
         });
 
         it('normal mode - safe - within probability', () => {
-            mockRandom(0.512862123418226);
             const result = getLatestSafeFw({
                 releasesList: [
                     {

@@ -79,5 +79,4 @@ const getLatestSafeFw = (input, score) => {
 export {
     getLatestSafeFw,
     getScore,
-    getBootloaderVersion,
 };
