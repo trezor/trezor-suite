@@ -6,7 +6,8 @@ import Content from 'views/Wallet/components/Content';
 import EthIcon from 'images/coins/eth.png';
 import RippleIcon from 'images/coins/xrp.png';
 
-import { H2 } from 'components/Heading';
+import { H1 } from 'components/Heading';
+import Paragraph from 'components/Paragraph';
 
 const Wrapper = styled.div`
     display: flex;
@@ -16,14 +17,14 @@ const Wrapper = styled.div`
 const Row = styled.div`
     flex: 1;
     display: flex;
-    padding: 100px 48px;
+    padding: 50px 0;
     
     flex-direction: column;
     align-items: center;
 `;
 
-const P = styled.p`
-    padding: 24px 0px;
+const StyledP = styled(Paragraph)`
+    padding: 0 0 15px 0;
     text-align: center;
 `;
 
@@ -46,10 +47,9 @@ const EthImage = styled(Image)`
 const Dashboard = () => (
     <Content>
         <Wrapper>
-            <H2>Dashboard</H2>
             <Row>
-                <H2>Please select your coin</H2>
-                <P>You will gain access to receiving &amp; sending selected coin</P>
+                <H1>Please select your coin</H1>
+                <StyledP>You will gain access to receiving &amp; sending selected coin</StyledP>
                 <Overlay>
                     <EthImage src={EthIcon} width={20} />
                     <Image src={RippleIcon} width={25} />
