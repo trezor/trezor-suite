@@ -10,10 +10,18 @@ export default (props: Props) => {
     if (!location) return null;
 
     const notifications: Array<Notification> = [];
-    // Example:
-    // if (location.state.device) {
-    //     notifications.push(<Notification key="example" type="info" title="Static example" />);
-    // }
+
+    if (location.pathname.includes('xrp')) {
+        notifications.push(
+            <Notification
+                key="example"
+                type="warning"
+                title="Minimum account reserve required"
+                message="The Base Reserve is a minimum amount of XRP that is required for every address in the ledger. Currently, this is 20 XRP."
+                cancelable
+            />,
+        );
+    }
 
     return (
         <React.Fragment>
