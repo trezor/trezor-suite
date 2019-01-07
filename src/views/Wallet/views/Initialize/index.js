@@ -2,13 +2,13 @@ import styled from 'styled-components';
 import { H1 } from 'components/Heading';
 import Button from 'components/Button';
 import Paragraph from 'components/Paragraph';
-import Content from 'views/Wallet/components/Content';
 import React from 'react';
 import { connect } from 'react-redux';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
+    padding: 40px 35px 40px 35px;
 `;
 
 const Row = styled.div`
@@ -26,17 +26,15 @@ const StyledParagraph = styled(Paragraph)`
 `;
 
 const Initialize = () => (
-    <Content>
-        <Wrapper>
-            <Row>
-                <H1>Your device is in not initialized</H1>
-                <StyledParagraph>Please use Bitcoin wallet interface to start initialization process</StyledParagraph>
-                <A href="https://beta-wallet.trezor.io/">
-                    <Button>Take me to the Bitcoin wallet</Button>
-                </A>
-            </Row>
-        </Wrapper>
-    </Content>
+    <Wrapper>
+        <Row>
+            <H1>Your device is in not initialized</H1>
+            <StyledParagraph>Please use Bitcoin wallet interface to start initialization process</StyledParagraph>
+            <A href="https://beta-wallet.trezor.io/">
+                <Button>Take me to the Bitcoin wallet</Button>
+            </A>
+        </Row>
+    </Wrapper>
 );
 
 export default connect(null, null)(Initialize);
