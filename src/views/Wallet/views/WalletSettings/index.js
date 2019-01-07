@@ -6,7 +6,7 @@ import colors from 'config/colors';
 import icons from 'config/icons';
 
 import Content from 'views/Wallet/components/Content';
-import { H2 } from 'components/Heading';
+import { H1 } from 'components/Heading';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Button from 'components/Button';
@@ -32,7 +32,7 @@ const WalletSettings = () => (
                     color={colors.WARNING_PRIMARY}
                     icon={icons.WARNING}
                 />
-                <H2>Wallet settings is under construction</H2>
+                <H1>Wallet settings is under construction</H1>
                 <Link to="/">
                     <Button>Take me back</Button>
                 </Link>

@@ -46,6 +46,7 @@ const Image = styled.div`
 
 const StyledP = styled(P)`
     padding: 0 0 15px 0;
+    text-align: center;
 `;
 
 const FirmwareUpdate = (props: Props) => (

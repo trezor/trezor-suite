@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2 } from 'components/Heading';
+import { H1 } from 'components/Heading';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import Button from 'components/Button';
@@ -24,7 +24,7 @@ const Row = styled.div`
 `;
 
 const StyledP = styled(P)`
-    padding: 10px 0 15px 0;
+    padding: 0 0 15px 0;
     text-align: center;
 `;
 
@@ -37,8 +37,8 @@ const DeviceSettings = () => (
                     color={colors.WARNING_PRIMARY}
                     icon={ICONS.WARNING}
                 />
-                <H2>Device settings is under construction</H2>
-                <StyledP isSmaller>Please use Bitcoin wallet interface to change your device settings</StyledP>
+                <H1>Device settings is under construction</H1>
+                <StyledP>Please use Bitcoin wallet interface to change your device settings</StyledP>
                 <Link href="https://beta-wallet.trezor.io/">
                     <Button>Take me to the Bitcoin wallet</Button>
                 </Link>

@@ -1,8 +1,10 @@
 import styled from 'styled-components';
-import { H2 } from 'components/Heading';
+import { H1 } from 'components/Heading';
 import Paragraph from 'components/Paragraph';
+import Content from 'views/Wallet/components/Content';
 import React from 'react';
 import { connect } from 'react-redux';
+
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,18 +19,19 @@ const Row = styled.div`
 `;
 
 const StyledParagraph = styled(Paragraph)`
-    margin: 10px 50px;
-    display: block;
+    padding: 0 0 15px 0;
     text-align: center;
 `;
 
 const Seedless = () => (
-    <Wrapper>
-        <Row>
-            <H2>Device is in seedless mode</H2>
-            <StyledParagraph>It&apos;s not suitable to use this service.</StyledParagraph>
-        </Row>
-    </Wrapper>
+    <Content>
+        <Wrapper>
+            <Row>
+                <H1>Device is in seedless mode</H1>
+                <StyledParagraph>It&apos;s not suitable to use this service.</StyledParagraph>
+            </Row>
+        </Wrapper>
+    </Content>
 );
 
 export default connect(null, null)(Seedless);
