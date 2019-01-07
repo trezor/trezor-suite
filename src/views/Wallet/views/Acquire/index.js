@@ -21,28 +21,27 @@ const Wrapper = styled.div`
     flex: 1;
 `;
 
-const Acquire = (props: Props) => {
-    const actions = props.acquiring ? [] : [
-        {
-            label: 'Acquire device',
-            callback: () => {
-                props.acquireDevice();
-            },
-        },
-    ];
-
-    return (
-        <Wrapper>
-            <Notification
-                title="Device is used in other window"
-                message="Do you want to use your device in this window?"
-                type="info"
-                cancelable={false}
-                actions={actions}
-            />
-        </Wrapper>
-    );
-};
+const Acquire = (props: Props) => (
+    <Wrapper>
+        <Notification
+            title="Device is used in other window"
+            message="Do you want to use your device in this window?"
+            type="info"
+            cancelable={false}
+            isActionInProgress={props.acquiring}
+            actions={
+                [
+                    {
+                        label: 'Acquire device',
+                        callback: () => {
+                            props.acquireDevice();
+                        },
+                    },
+                ]
+            }
+        />
+    </Wrapper>
+);
 
 export default connect(
     (state: State) => ({
