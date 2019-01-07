@@ -4,7 +4,9 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Loader from 'components/Loader';
-import { FONT_SIZE } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { H1 } from 'components/Heading';
+import P from 'components/Paragraph';
 import colors from 'config/colors';
 
 import type { State } from 'flowtype';
@@ -34,15 +36,15 @@ const Loading = styled.div`
     flex-direction: column;
 `;
 
-const Text = styled.div`
+const Title = styled(H1)`
     font-size: ${FONT_SIZE.BIGGER};
-    color: ${colors.TEXT_SECONDARY};
+    font-weight: ${FONT_WEIGHT.NORMAL};
+    color: ${props => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
     margin-left: 10px;
 `;
 
-const Message = styled.div`
-    font-size: ${FONT_SIZE.BASE};
-    color: ${colors.TEXT_PRIMARY};
+const Message = styled(P)`
+    text-align: center;
 `;
 
 const Row = styled.div`
@@ -74,7 +76,7 @@ const Content = ({
             <Loading>
                 <Row>
                     {loader.type === 'progress' && <Loader size={30} />}
-                    <Text>{loader.title || 'Initializing accounts'}</Text>
+                    <Title type={loader.type}>{loader.title || 'Initializing accounts'}</Title>
                 </Row>
                 {loader.message && <Message>{loader.message}</Message>}
             </Loading>
