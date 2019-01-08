@@ -115,7 +115,7 @@ export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
         if (isToken) {
             const token = findToken(tokens, account.descriptor, state.currency, account.deviceState);
             if (token) {
-                state.amount = new BigNumber(token.balance).minus(pendingAmount).toString(10);
+                state.amount = new BigNumber(token.balance).minus(pendingAmount).toFixed();
             }
         } else {
             const b = new BigNumber(account.balance).minus(pendingAmount);
@@ -339,7 +339,7 @@ export const dataValidation = ($state: State): PayloadAction<State> => (): State
 
 export const calculateFee = (gasPrice: string, gasLimit: string): string => {
     try {
-        return EthereumjsUnits.convert(new BigNumber(gasPrice).times(gasLimit), 'gwei', 'ether');
+        return EthereumjsUnits.convert(new BigNumber(gasPrice).times(gasLimit).toFixed(), 'gwei', 'ether');
     } catch (error) {
         return '0';
     }
@@ -347,7 +347,7 @@ export const calculateFee = (gasPrice: string, gasLimit: string): string => {
 
 export const calculateTotal = (amount: string, gasPrice: string, gasLimit: string): string => {
     try {
-        return new BigNumber(amount).plus(calculateFee(gasPrice, gasLimit)).toString(10);
+        return new BigNumber(amount).plus(calculateFee(gasPrice, gasLimit)).toFixed();
     } catch (error) {
         return '0';
     }
@@ -359,7 +359,7 @@ export const calculateMaxAmount = (balance: BigNumber, gasPrice: string, gasLimi
         const fee = calculateFee(gasPrice, gasLimit);
         const max = balance.minus(fee);
         if (max.lessThan(0)) return '0';
-        return max.toString(10);
+        return max.toFixed();
     } catch (error) {
         return '0';
     }
@@ -368,8 +368,8 @@ export const calculateMaxAmount = (balance: BigNumber, gasPrice: string, gasLimi
 export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLimit: string, selected?: FeeLevel): Array<FeeLevel> => {
     const price: BigNumber = typeof gasPrice === 'string' ? new BigNumber(gasPrice) : gasPrice;
     const quarter: BigNumber = price.dividedBy(4);
-    const high: string = price.plus(quarter.times(2)).toString(10);
-    const low: string = price.minus(quarter.times(2)).toString(10);
+    const high: string = price.plus(quarter.times(2)).toFixed();
+    const low: string = price.minus(quarter.times(2)).toFixed();
 
     const customLevel: FeeLevel = selected && selected.value === 'Custom' ? {
         value: 'Custom',
@@ -391,7 +391,7 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
         {
             value: 'Normal',
             gasPrice: gasPrice.toString(),
-            label: `${calculateFee(price.toString(10), gasLimit)} ${symbol}`,
+            label: `${calculateFee(price.toFixed(), gasLimit)} ${symbol}`,
         },
         {
             value: 'Low',
