@@ -237,7 +237,7 @@ export const feeValidation = ($state: State): PayloadAction<State> => (dispatch:
 
 const calculateTotal = (amount: string, fee: string): string => {
     try {
-        return new BigNumber(amount).plus(fee).toString(10);
+        return new BigNumber(amount).plus(fee).toFixed();
     } catch (error) {
         return '0';
     }
@@ -248,7 +248,7 @@ const calculateMaxAmount = (balance: BigNumber, fee: string): string => {
         // TODO - minus pendings
         const max = balance.minus(fee);
         if (max.lessThan(0)) return '0';
-        return max.toString(10);
+        return max.toFixed();
     } catch (error) {
         return '0';
     }
