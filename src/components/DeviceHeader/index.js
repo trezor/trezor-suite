@@ -48,8 +48,9 @@ const ClickWrapper = styled.div`
 `;
 
 const LabelWrapper = styled.div`
-    flex: 1;
+    flex: 1 1 auto;
     padding-left: 18px;
+    overflow: hidden;
 `;
 
 const Name = styled.div`
@@ -73,6 +74,8 @@ const Status = styled.div`
 const IconWrapper = styled.div`
     padding-right: 25px;
     display: flex;
+    flex: 1 0 0;
+    justify-content: flex-end;
 `;
 
 const ImageWrapper = styled.div`
@@ -122,7 +125,7 @@ const DeviceHeader = ({
                 </ImageWrapper>
                 <LabelWrapper>
                     <Name>{device.instanceLabel}</Name>
-                    <Status>{getStatusName(status)}</Status>
+                    <Status title={getStatusName(status)}>{getStatusName(status)}</Status>
                 </LabelWrapper>
                 <IconWrapper>
                     {icon && !disabled && isAccessible && icon}
