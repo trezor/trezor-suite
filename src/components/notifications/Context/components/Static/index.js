@@ -24,7 +24,7 @@ export default (props: Props) => {
                 key="xrp-warning"
                 type="warning"
                 title="Minimum account reserve required"
-                message={`The Base Reserve is a minimum amount of XRP that is required for every address in the ledger. Currently, this is ${account.reserve.toString()} XRP.`}
+                message={`The Base Reserve is a minimum amount of XRP that is required for every address in the ledger. Currently, this is ${bigReserve.toString()} XRP.`}
             />,
         );
     }
