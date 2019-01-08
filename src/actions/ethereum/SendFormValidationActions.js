@@ -339,7 +339,7 @@ export const dataValidation = ($state: State): PayloadAction<State> => (): State
 
 export const calculateFee = (gasPrice: string, gasLimit: string): string => {
     try {
-        return EthereumjsUnits.convert(new BigNumber(gasPrice).times(gasLimit), 'gwei', 'ether');
+        return EthereumjsUnits.convert(new BigNumber(gasPrice).times(gasLimit).toFixed(), 'gwei', 'ether');
     } catch (error) {
         return '0';
     }
