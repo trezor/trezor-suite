@@ -58,7 +58,7 @@ const CardanoWallet = (props: Props) => (
         <P isSmaller>You will be redirected to external wallet</P>
 
         <Link href={coins.find(i => i.id === 'ada').url}>
-            <StyledButton>Go to external wallet</StyledButton>
+            <StyledButton onClick={props.onCancel}>Go to external wallet</StyledButton>
         </Link>
     </Wrapper>
 );

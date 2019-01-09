@@ -34,7 +34,7 @@ class CoinLogo extends PureComponent {
             <Logo
                 className={className}
                 hasLongIcon={this.hasLongIcon(network)}
-                src={require(`./images/${network}.png`)} // eslint-disable-line
+                src={require(`images/coins/${network}.png`)} // eslint-disable-line
             />
         );
 
