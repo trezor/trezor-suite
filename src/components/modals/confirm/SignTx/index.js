@@ -45,7 +45,6 @@ const StyledP = styled(P)`
 
 const Address = styled(StyledP)`
     word-wrap: break-word;
-    padding-bottom: 26px;
     line-height: ${LINE_HEIGHT.SMALL};
 `;
 
