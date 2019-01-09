@@ -1,0 +1,15 @@
+image: node:9.3
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - node_modules/
+
+stages:
+  - test
+
+lint:
+  stage: test
+  script:
+    - yarn install
+    - yarn run lint
