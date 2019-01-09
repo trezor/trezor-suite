@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
-import { getPrimaryColor, getSecondaryColor } from 'utils/notification';
+import { getPrimaryColor } from 'utils/notification';
 import Loader from 'components/Loader';
 import { TRANSITION, FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
@@ -31,7 +31,8 @@ const LoaderContent = styled.div`
     justify-content: center;
     align-items: center;
     cursor: default;
-    background: ${props => getSecondaryColor(props.type)};
+    color: ${colors.WHITE};
+    background: ${props => getPrimaryColor(props.type)};
 `;
 
 const Wrapper = styled.button`
