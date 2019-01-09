@@ -75,7 +75,8 @@ const FeeOptionWrapper = styled.div`
 `;
 
 const OptionValue = styled(P)`
-    flex: 0 0 0;
+    flex: 1 0 auto;
+    min-width: 70px;
     margin-right: 5px;
 `;
 
