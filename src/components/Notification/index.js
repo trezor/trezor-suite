@@ -19,6 +19,7 @@ type Props = {
     className?: string;
     message?: ?string;
     actions?: Array<CallbackAction>;
+    isActionInProgress?: boolean;
     close?: typeof NotificationActions.close,
     loading?: boolean
 };
@@ -122,6 +123,7 @@ const Notification = (props: Props): React$Element<string> => {
                             <NotificationButton
                                 key={action.label}
                                 type={props.type}
+                                isLoading={props.isActionInProgress}
                                 onClick={() => { close(); action.callback(); }}
                             >{action.label}
                             </NotificationButton>

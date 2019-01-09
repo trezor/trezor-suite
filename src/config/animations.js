@@ -49,6 +49,12 @@ export const GREEN_COLOR = keyframes`
     }
 `;
 
+export const WHITE_COLOR = keyframes`
+    0%, 100% {
+        stroke: white;
+    }
+`;
+
 export const PULSATE = keyframes`
     0%, 100% {
         opacity: 0.5;
