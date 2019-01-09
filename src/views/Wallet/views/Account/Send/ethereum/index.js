@@ -87,6 +87,19 @@ const FeeOptionWrapper = styled.div`
     justify-content: space-between;
 `;
 
+const OptionValue = styled(P)`
+    flex: 0 0 0;
+    margin-right: 5px;
+`;
+
+const OptionLabel = styled(P)`
+    flex: 0 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+    word-break: break-all;
+`;
+
 const FeeLabelWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -348,8 +361,8 @@ const AccountSend = (props: Props) => {
                     options={feeLevels}
                     formatOptionLabel={option => (
                         <FeeOptionWrapper>
-                            <P>{option.value}</P>
-                            <P>{option.label}</P>
+                            <OptionValue>{option.value}</OptionValue>
+                            <OptionLabel>{option.label}</OptionLabel>
                         </FeeOptionWrapper>
                     )}
                 />
