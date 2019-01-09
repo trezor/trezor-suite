@@ -245,6 +245,23 @@ export const onFeeChange = (fee: string): ThunkAction => (dispatch: Dispatch, ge
 };
 
 /*
+* Called from UI on "advanced / destination tag" field change
+*/
+export const onDestinationTagChange = (destinationTag: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const state: State = getState().sendFormRipple;
+    dispatch({
+        type: SEND.CHANGE,
+        networkType: 'ripple',
+        state: {
+            ...state,
+            untouched: false,
+            touched: { ...state.touched, destinationTag: true },
+            destinationTag,
+        },
+    });
+};
+
+/*
 * Called from UI from "send" button
 */
 export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -262,7 +279,13 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     if (!blockchain) return;
 
     const currentState: State = getState().sendFormRipple;
-    const amount = fromDecimalAmount(currentState.amount, 6);
+    const payment: { amount: string, destination: string, destinationTag?: number } = {
+        amount: fromDecimalAmount(currentState.amount, network.decimals),
+        destination: currentState.address,
+    };
+    if (currentState.destinationTag.length > 0) {
+        payment.destinationTag = parseInt(currentState.destinationTag, 10);
+    }
 
     const signedTransaction = await TrezorConnect.rippleSignTransaction({
         device: {
@@ -276,10 +299,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             fee: currentState.selectedFeeLevel.fee, // Fee must be in the range of 10 to 10,000 drops
             flags: 0x80000000,
             sequence: account.sequence,
-            payment: {
-                amount,
-                destination: currentState.address,
-            },
+            payment,
         },
     });
 
@@ -346,5 +366,6 @@ export default {
     onFeeLevelChange,
     updateFeeLevels,
     onFeeChange,
+    onDestinationTagChange,
     onSend,
 };

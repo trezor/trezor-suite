@@ -95,6 +95,7 @@ export const getPendingSequence = (pending: Array<Transaction>): number => pendi
 }, 0);
 
 export const getPendingAmount = (pending: Array<Transaction>, currency: string, token: boolean = false): BigNumber => pending.reduce((value: BigNumber, tx: Transaction): BigNumber => {
+    if (tx.type !== 'send') return value;
     if (!token) {
         // regular transactions
         // add fees from token txs and amount from regular txs

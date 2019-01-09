@@ -73,6 +73,7 @@ export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getSt
     state = dispatch(addressLabel(state));
     state = dispatch(amountValidation(state));
     state = dispatch(feeValidation(state));
+    state = dispatch(destinationTagValidation(state));
     return state;
 };
 
@@ -226,6 +227,19 @@ export const feeValidation = ($state: State): PayloadAction<State> => (dispatch:
         } else if (gl.greaterThan(network.fee.maxFee)) {
             state.errors.fee = 'Fee is above recommended';
         }
+    }
+    return state;
+};
+/*
+* Destination Tag value validation
+*/
+export const destinationTagValidation = ($state: State): PayloadAction<State> => (): State => {
+    const state = { ...$state };
+    if (!state.touched.destinationTag) return state;
+
+    const { destinationTag } = state;
+    if (destinationTag.length > 0 && !destinationTag.match(ABS_RE)) {
+        state.errors.destinationTag = 'Destination tag must be an absolute number';
     }
     return state;
 };
