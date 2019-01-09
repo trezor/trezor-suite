@@ -38,6 +38,7 @@ export const transformTransactionHistory = (descriptor: string, raw: any): Trans
         total,
 
         blockHeight: tx.ledger_index,
+        blockHash: tx.ledger_hash,
     };
 };
 
