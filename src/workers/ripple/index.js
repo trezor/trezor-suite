@@ -230,8 +230,8 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
         block: 0,
         balance: '0',
         availableBalance: '0',
-        sequence: 0,
         reserve: RESERVE.BASE,
+        sequence: 0,
     };
 
     try {
