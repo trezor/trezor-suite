@@ -56,6 +56,10 @@ const Label = styled.div`
     color: ${colors.TEXT_SECONDARY};
 `;
 
+const FeeLevelName = styled(StyledP)`
+    padding-bottom: 0px;
+`;
+
 const ConfirmSignTx = (props: Props) => {
     const {
         amount,
@@ -78,6 +82,7 @@ const ConfirmSignTx = (props: Props) => {
                 <Label>To</Label>
                 <Address>{ address }</Address>
                 <Label>Fee</Label>
+                <FeeLevelName>{selectedFeeLevel.value}</FeeLevelName>
                 <StyledP>{ selectedFeeLevel.label }</StyledP>
             </Content>
         </Wrapper>
