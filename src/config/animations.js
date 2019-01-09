@@ -49,6 +49,21 @@ export const GREEN_COLOR = keyframes`
     }
 `;
 
+export const BLUE_COLOR = keyframes`
+    100%, 0% {
+        stroke: ${colors.WHITE};
+    }
+    40% {
+        stroke: ${colors.BLUE_SECONDARY};
+    }
+    66% {
+        stroke: ${colors.WHITE};
+    }
+    80%, 90% {
+        stroke: ${colors.WHITE};
+    }
+`;
+
 export const PULSATE = keyframes`
     0%, 100% {
         opacity: 0.5;

@@ -31,7 +31,7 @@ const CircleWrapper = styled.circle`
     ${props => props.isPath && css`
         stroke-dasharray: 1, 200;
         stroke-dashoffset: 0;
-        animation: ${DASH} 1.5s ease-in-out infinite, ${GREEN_COLOR} 6s ease-in-out infinite;
+        animation: ${DASH} 1.5s ease-in-out infinite, ${props.animationColor || GREEN_COLOR} 6s ease-in-out infinite;
         stroke-linecap: round;
     `};
 `;
@@ -42,12 +42,13 @@ const StyledParagraph = styled(Paragraph)`
 `;
 
 const Loader = ({
-    className, text, isWhiteText = false, isSmallText, size = 100,
+    className, text, isWhiteText = false, isSmallText, size = 100, animationColor,
 }) => (
     <Wrapper className={className} size={size}>
         <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>{text}</StyledParagraph>
         <SvgWrapper viewBox="25 25 50 50">
             <CircleWrapper
+                animationColor={animationColor}
                 cx="50"
                 cy="50"
                 r="20"
@@ -75,6 +76,7 @@ Loader.propTypes = {
     isSmallText: PropTypes.bool,
     className: PropTypes.string,
     text: PropTypes.string,
+    animationColor: PropTypes.string,
     size: PropTypes.number,
 };
 

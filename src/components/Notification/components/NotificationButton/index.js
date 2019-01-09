@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
+import { BLUE_COLOR } from 'config/animations';
 import { getPrimaryColor } from 'utils/notification';
 import Loader from 'components/Loader';
 import { TRANSITION, FONT_SIZE, FONT_WEIGHT } from 'config/variables';
@@ -67,7 +68,7 @@ const NotificationButton = ({
     >
         {isLoading && (
             <LoaderContent type={type}>
-                <Loader size={30} />
+                <Loader animationColor={BLUE_COLOR} size={30} />
             </LoaderContent>
         )}
         {icon && (
