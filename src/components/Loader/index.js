@@ -25,10 +25,11 @@ const SvgWrapper = styled.svg`
 
 const CircleWrapper = styled.circle`
     ${props => props.isRoute && css`
-        stroke: ${colors.GRAY_LIGHT};
+        stroke: ${props.transparentRoute ? 'transparent' : colors.GRAY_LIGHT};
     `}
 
     ${props => props.isPath && css`
+        stroke-width: ${props.transparentRoute ? '2px' : '1px'};
         stroke-dasharray: 1, 200;
         stroke-dashoffset: 0;
         animation: ${DASH} 1.5s ease-in-out infinite, ${props.animationColor || GREEN_COLOR} 6s ease-in-out infinite;
@@ -42,7 +43,7 @@ const StyledParagraph = styled(Paragraph)`
 `;
 
 const Loader = ({
-    className, text, isWhiteText = false, isSmallText, size = 100, animationColor,
+    className, text, isWhiteText = false, isSmallText, size = 100, animationColor, transparentRoute,
 }) => (
     <Wrapper className={className} size={size}>
         <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>{text}</StyledParagraph>
@@ -54,18 +55,19 @@ const Loader = ({
                 r="20"
                 fill="none"
                 stroke=""
-                strokeWidth="1"
                 strokeMiterlimit="10"
                 isRoute
+                transparentRoute={transparentRoute}
             />
             <CircleWrapper
+                animationColor={animationColor}
                 cx="50"
                 cy="50"
                 r="20"
                 fill="none"
-                strokeWidth="1"
                 strokeMiterlimit="10"
                 isPath
+                transparentRoute={transparentRoute}
             />
         </SvgWrapper>
     </Wrapper>
@@ -77,6 +79,7 @@ Loader.propTypes = {
     className: PropTypes.string,
     text: PropTypes.string,
     animationColor: PropTypes.string,
+    transparentRoute: PropTypes.bool,
     size: PropTypes.number,
 };
 
