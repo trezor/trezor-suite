@@ -1,0 +1,7 @@
+public
+build
+coverage
+node_modules
+src/flowtype/npm
+scripts/solidity/.*
+**/_old/*

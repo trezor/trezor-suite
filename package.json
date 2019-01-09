@@ -1,0 +1,24 @@
+{
+  "name": "trezor-ui-components",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/trezor/trezor-ui-components",
+  "author": "SatoshiLabs",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "storybook": "start-storybook -p 9001 -c .storybook"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@storybook/react": "^4.1.6",
+    "babel-loader": "^8.0.5",
+    "eslint": "^5.12.0",
+    "webpack": "^4.28.1"
+  },
+  "dependencies": {
+    "babel-plugin-module-resolver": "^3.1.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  }
+}
