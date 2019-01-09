@@ -245,6 +245,23 @@ export const onFeeChange = (fee: string): ThunkAction => (dispatch: Dispatch, ge
 };
 
 /*
+* Called from UI on "advanced / destination tag" field change
+*/
+export const onDestinationTagChange = (destinationTag: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const state: State = getState().sendFormRipple;
+    dispatch({
+        type: SEND.CHANGE,
+        networkType: 'ripple',
+        state: {
+            ...state,
+            untouched: false,
+            touched: { ...state.touched, destinationTag: true },
+            destinationTag,
+        },
+    });
+};
+
+/*
 * Called from UI from "send" button
 */
 export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
@@ -279,6 +296,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             payment: {
                 amount,
                 destination: currentState.address,
+                destinationTag: currentState.destinationTag.length ? parseInt(currentState.destinationTag, 10) : undefined,
             },
         },
     });
@@ -346,5 +364,6 @@ export default {
     onFeeLevelChange,
     updateFeeLevels,
     onFeeChange,
+    onDestinationTagChange,
     onSend,
 };

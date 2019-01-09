@@ -27,6 +27,7 @@ export type State = {
     fee: string;
     feeNeedsUpdate: boolean;
     sequence: string;
+    destinationTag: string;
     total: string;
 
     errors: {[k: string]: string};
@@ -56,6 +57,7 @@ export const initialState: State = {
     fee: '0',
     feeNeedsUpdate: false,
     sequence: '0',
+    destinationTag: '',
     total: '0',
 
     errors: {},

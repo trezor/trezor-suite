@@ -35,7 +35,7 @@ const AdvancedSettingsWrapper = styled.div`
     border-top: 1px solid ${colors.DIVIDER};
 `;
 
-const GasInputRow = styled.div`
+const InputRow = styled.div`
     width: 100%;
     display: flex;
 
@@ -44,7 +44,7 @@ const GasInputRow = styled.div`
     }
 `;
 
-const GasInput = styled(Input)`
+const StyledInput = styled(Input)`
     /* min-height: 85px; */
     padding-bottom: 28px;
     &:first-child {
@@ -75,6 +75,17 @@ const getFeeInputState = (feeErrors: string, feeWarnings: string): string => {
     return state;
 };
 
+const getDestinationTagInputState = (errors: string, warnings: string): string => {
+    let state = '';
+    if (warnings && !errors) {
+        state = 'warning';
+    }
+    if (errors) {
+        state = 'error';
+    }
+    return state;
+};
+
 const Left = styled.div`
     display: flex;
     align-items: center;
@@ -91,15 +102,17 @@ const AdvancedForm = (props: Props) => {
         warnings,
         infos,
         fee,
+        destinationTag,
     } = props.sendForm;
     const {
         onFeeChange,
+        onDestinationTagChange,
     } = props.sendFormActions;
 
     return (
         <AdvancedSettingsWrapper>
-            <GasInputRow>
-                <GasInput
+            <InputRow>
+                <StyledInput
                     state={getFeeInputState(errors.fee, warnings.fee)}
                     autoComplete="off"
                     autoCorrect="off"
@@ -132,7 +145,43 @@ const AdvancedForm = (props: Props) => {
                     value={fee}
                     onChange={event => onFeeChange(event.target.value)}
                 />
-            </GasInputRow>
+            </InputRow>
+
+            <InputRow>
+                <StyledInput
+                    state={getDestinationTagInputState(errors.destinationTag, warnings.destinationTag)}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    topLabel={(
+                        <InputLabelWrapper>
+                            <Left>
+                            Destination tag
+                                <Tooltip
+                                    content={(
+                                        <React.Fragment>
+                                        An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account.
+                                        </React.Fragment>
+                                    )}
+                                    maxWidth={410}
+                                    readMoreLink="https://developers.ripple.com/rippleapi-reference.html#payment"
+                                    placement="top"
+                                >
+                                    <Icon
+                                        icon={ICONS.HELP}
+                                        color={colors.TEXT_SECONDARY}
+                                        size={24}
+                                    />
+                                </Tooltip>
+                            </Left>
+                        </InputLabelWrapper>
+                    )}
+                    bottomText={errors.destinationTag || warnings.destinationTag || infos.destinationTag}
+                    value={destinationTag}
+                    onChange={event => onDestinationTagChange(event.target.value)}
+                />
+            </InputRow>
 
             <AdvancedSettingsSendButtonWrapper>
                 { props.children }
