@@ -128,7 +128,7 @@ const AdvancedForm = (props: Props) => {
                                         Transfer cost in XRP drops
                                         </React.Fragment>
                                     )}
-                                    maxWidth={410}
+                                    maxWidth={100}
                                     readMoreLink="https://developers.ripple.com/transaction-cost.html"
                                     placement="top"
                                 >
@@ -164,7 +164,7 @@ const AdvancedForm = (props: Props) => {
                                         An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account.
                                         </React.Fragment>
                                     )}
-                                    maxWidth={410}
+                                    maxWidth={200}
                                     readMoreLink="https://developers.ripple.com/rippleapi-reference.html#payment"
                                     placement="top"
                                 >
