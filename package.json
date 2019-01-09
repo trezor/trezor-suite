@@ -6,19 +6,36 @@
   "author": "SatoshiLabs",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
+    "lint": "run-s lint:*",
+    "lint:js": "npx eslint ./src",
+    "lint:css": "npx stylelint './src/**/*.js'",
     "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
-    "@storybook/react": "^4.1.6",
     "babel-loader": "^8.0.5",
+    "babel-plugin-styled-components": "^1.10.0",
     "eslint": "^5.12.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-import-resolver-babel-module": "5.0.0-beta.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.12.3",
+    "stylelint": "^9.9.0",
+    "stylelint-config-recommended": "^2.1.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-custom-processor-loader": "^0.6.0",
+    "stylelint-processor-styled-components": "^1.5.1",
     "webpack": "^4.28.1"
   },
   "dependencies": {
+    "@storybook/react": "^4.1.6",
     "babel-plugin-module-resolver": "^3.1.1",
+    "npm-run-all": "^4.1.5",
+    "prop-types": "^15.6.2",
     "react": "^16.7.0",
-    "react-dom": "^16.7.0"
+    "react-dom": "^16.7.0",
+    "styled-components": "^4.1.3"
   }
 }

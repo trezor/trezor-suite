@@ -1,0 +1,50 @@
+{
+    "extends": [
+        "eslint-config-airbnb"
+    ],
+    "env": {
+        "browser": true,
+        "jest": true
+    },
+    "rules": {
+        "import/prefer-default-export": 0,
+        "no-use-before-define": 0,
+        "no-plusplus": 0,
+        "class-methods-use-this": 0,
+        "react/require-default-props": 0,
+        "react/forbid-prop-types": 0,
+        "react/destructuring-assignment": 0,
+        "react/jsx-one-expression-per-line": 0,
+        "react/jsx-indent": [2, 4],
+        "react/jsx-indent-props": [2, 4],
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"]}],
+        "indent": [2, 4, { "SwitchCase": 1 }],
+        "no-confusing-arrow": [2,{ "allowParens": true }],
+        "no-console": 0,
+        "no-alert": 0,
+        "no-prototype-builtins": 0,
+        "new-cap": 0,
+        "max-len": 0,
+        "eol-last": 0,
+        "spaced-comment": 0
+    },
+    "plugins": [
+        "import",
+        "react"
+    ],
+    "settings": {
+        "import/resolver": {
+            "babel-module": {}
+        },
+        "import/ignore": [
+            "\\.(scss|less|css)$"
+        ]
+    },
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    }
+}
