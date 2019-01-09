@@ -18,7 +18,7 @@ export default (props: Props) => {
     const { reserve, balance } = account;
     const bigBalance = new Bignumber(balance);
     const bigReserve = new Bignumber(reserve);
-    if (location.pathname.includes('xrp') && bigBalance.lessThan(bigReserve)) {
+    if (location.pathname.includes('xrp') && (bigBalance.lessThan(bigReserve) || bigBalance.lessThanOrEqualTo(new Bignumber(0)))) {
         notifications.push(
             <Notification
                 key="xrp-warning"
