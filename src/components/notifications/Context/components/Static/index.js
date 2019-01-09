@@ -15,18 +15,20 @@ export default (props: Props) => {
     if (!location || !selectedAccount || !account) return null;
 
     // Ripple minimum reserve notification
-    const { reserve, balance } = account;
-    const bigBalance = new Bignumber(balance);
-    const bigReserve = new Bignumber(reserve);
-    if (location.pathname.includes('xrp') && (bigBalance.lessThan(bigReserve) || bigBalance.lessThanOrEqualTo(new Bignumber(0)))) {
-        notifications.push(
-            <Notification
-                key="xrp-warning"
-                type="warning"
-                title="Minimum account reserve required"
-                message={`The Base Reserve is a minimum amount of XRP that is required for every address in the ledger. Currently, this is ${bigReserve.toString()} XRP.`}
-            />,
-        );
+    if (account.networkType === 'ripple') {
+        const { reserve, balance } = account;
+        const bigBalance = new Bignumber(balance);
+        const bigReserve = new Bignumber(reserve);
+        if (bigBalance.lessThan(bigReserve)) {
+            notifications.push(
+                <Notification
+                    key="xrp-warning"
+                    type="warning"
+                    title="Minimum account reserve required"
+                    message={`The Base Reserve is a minimum amount of XRP that is required for every address in the ledger. Currently, this is ${bigReserve.toString()} XRP.`}
+                />,
+            );
+        }
     }
 
     return (
