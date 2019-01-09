@@ -279,7 +279,13 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
     if (!blockchain) return;
 
     const currentState: State = getState().sendFormRipple;
-    const amount = fromDecimalAmount(currentState.amount, 6);
+    const payment: { amount: string, destination: string, destinationTag?: number } = {
+        amount: fromDecimalAmount(currentState.amount, network.decimals),
+        destination: currentState.address,
+    };
+    if (currentState.destinationTag.length > 0) {
+        payment.destinationTag = parseInt(currentState.destinationTag, 10);
+    }
 
     const signedTransaction = await TrezorConnect.rippleSignTransaction({
         device: {
@@ -293,11 +299,7 @@ export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: Ge
             fee: currentState.selectedFeeLevel.fee, // Fee must be in the range of 10 to 10,000 drops
             flags: 0x80000000,
             sequence: account.sequence,
-            payment: {
-                amount,
-                destination: currentState.address,
-                destinationTag: currentState.destinationTag.length ? parseInt(currentState.destinationTag, 10) : undefined,
-            },
+            payment,
         },
     });
 
