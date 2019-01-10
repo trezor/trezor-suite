@@ -58,8 +58,8 @@ class AddedToken extends PureComponent {
     }
 
     render() {
-        const bgColor = new ColorHash({ lightness: 0.16 });
-        const textColor = new ColorHash();
+        const bgColor = new ColorHash({ lightness: 0.9 });
+        const textColor = new ColorHash({ lightness: 0.3, saturation: 1 });
 
         return (
             <TokenWrapper key={this.props.token.symbol}>
