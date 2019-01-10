@@ -78,7 +78,7 @@ Loader.propTypes = {
     isSmallText: PropTypes.bool,
     className: PropTypes.string,
     text: PropTypes.string,
-    animationColor: PropTypes.string,
+    animationColor: PropTypes.object,
     transparentRoute: PropTypes.bool,
     size: PropTypes.number,
 };
