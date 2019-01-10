@@ -50,10 +50,6 @@ const TokenName = styled(TokenText)`
     padding-right: 5px;
 `;
 
-const TokenSymbol = styled(TokenText)`
-    flex: 0 0 0;
-`;
-
 const TokenBalance = styled(TokenText)`
     flex: 1 0 0;
     word-break: break-all;
@@ -87,8 +83,7 @@ class AddedToken extends PureComponent {
                 </TokenIcon>
 
                 <TokenName>{this.props.token.name}</TokenName>
-                <TokenBalance>{this.getTokenBalance(this.props.token)}</TokenBalance>
-                <TokenSymbol>&nbsp;{this.props.token.symbol}</TokenSymbol>
+                <TokenBalance>{this.getTokenBalance(this.props.token)} {this.props.token.symbol}</TokenBalance>
                 <RemoveTokenButton
                     isTransparent
                     onClick={() => this.props.removeToken(this.props.token)}
