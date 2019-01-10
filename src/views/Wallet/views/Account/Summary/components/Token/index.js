@@ -56,8 +56,7 @@ const TokenSymbol = styled(TokenText)`
 
 const TokenBalance = styled(TokenText)`
     flex: 1 0 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-all;
     text-align: right;
 `;
 
