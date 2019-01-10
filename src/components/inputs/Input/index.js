@@ -183,7 +183,7 @@ class Input extends PureComponent {
                             autoComplete="off"
                             height={this.props.height}
                             trezorAction={this.props.trezorAction}
-                            hasIcon={this.getIcon(this.props.state).length > 0}
+                            hasIcon={this.props.icon || this.getIcon(this.props.state).length > 0}
                             ref={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
