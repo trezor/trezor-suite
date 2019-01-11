@@ -225,7 +225,7 @@ const amountValidation = ($state: State): PayloadAction<State> => (dispatch: Dis
         account,
         pending,
     } = getState().selectedAccount;
-    if (!account) return state;
+    if (!account || account.networkType !== 'ripple') return state;
 
     const { amount } = state;
     if (amount.length < 1) {
