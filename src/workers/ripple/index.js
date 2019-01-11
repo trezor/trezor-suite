@@ -126,8 +126,8 @@ const connect = async (): Promise<RippleAPI> => {
         _pingTimeout = setTimeout(timeoutHandler, 5000);
 
         // store current block/ledger values
-        RESERVE.BASE = api.dropsToXrp(ledger.reserveBaseXRP);
-        RESERVE.OWNER = api.dropsToXrp(ledger.reserveIncrementXRP);
+        RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
+        RESERVE.OWNER = api.xrpToDrops(ledger.reserveIncrementXRP);
         const availableBlocks = ledger.validatedLedgerVersions.split('-');
         BLOCKS.MIN = parseInt(availableBlocks[0]);
         BLOCKS.MAX = parseInt(availableBlocks[1]);
