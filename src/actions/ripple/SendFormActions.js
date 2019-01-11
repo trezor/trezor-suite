@@ -60,7 +60,7 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
     }
 
     if (shouldUpdate) {
-        const validated = dispatch(ValidationActions.validation());
+        const validated = dispatch(ValidationActions.validation(prevState.sendFormRipple));
         dispatch({
             type: SEND.VALIDATION,
             networkType: 'ripple',
