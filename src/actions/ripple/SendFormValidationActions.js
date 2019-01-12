@@ -87,14 +87,14 @@ const recalculateTotalAmount = ($state: State): PayloadAction<State> => (dispatc
         network,
         pending,
     } = getState().selectedAccount;
-    if (!account || !network) return $state;
+    if (!account || account.networkType !== 'ripple' || !network) return $state;
 
     const state = { ...$state };
     const fee = toDecimalAmount(state.selectedFeeLevel.fee, network.decimals);
 
     if (state.setMax) {
         const pendingAmount = getPendingAmount(pending, state.networkSymbol, false);
-        const availableBalance = new BigNumber(account.balance).minus(pendingAmount);
+        const availableBalance = new BigNumber(account.balance).minus(account.reserve).minus(pendingAmount);
         state.amount = calculateMaxAmount(availableBalance, fee);
     }
 
