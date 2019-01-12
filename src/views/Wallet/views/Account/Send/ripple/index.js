@@ -22,6 +22,16 @@ import type { Props } from './Container';
 // and put it inside config/variables.js
 const SmallScreenWidth = '850px';
 
+const AmountInputLabelWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const AmountInputLabel = styled.span`
+    text-align: right;
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 const InputRow = styled.div`
     padding-bottom: 28px;
 `;
@@ -228,6 +238,7 @@ const AccountSend = (props: Props) => {
     const tokensSelectData: Array<{ value: string, label: string }> = [{ value: network.symbol, label: network.symbol }];
     const tokensSelectValue = tokensSelectData[0];
     const isAdvancedSettingsHidden = !advanced;
+    const accountReserve: ?string = account.networkType === 'ripple' && !account.empty ? account.reserve : null;
 
     return (
         <Content>
@@ -252,7 +263,14 @@ const AccountSend = (props: Props) => {
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
-                    topLabel="Amount"
+                    topLabel={(
+                        <AmountInputLabelWrapper>
+                            <AmountInputLabel>Amount</AmountInputLabel>
+                            {accountReserve && (
+                                <AmountInputLabel>Reserve: {accountReserve} {network.symbol}</AmountInputLabel>
+                            )}
+                        </AmountInputLabelWrapper>
+                    )}
                     value={amount}
                     onChange={event => onAmountChange(event.target.value)}
                     bottomText={errors.amount || warnings.amount || infos.amount}
