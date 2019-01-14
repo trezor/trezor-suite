@@ -16,12 +16,33 @@ export type BlockchainNetwork = {
     feeTimestamp: number,
     feeLevels: Array<BlockchainFeeLevel>,
     connected: boolean,
+    connecting: boolean,
     block: number,
 };
 
 export type State = Array<BlockchainNetwork>;
 
 export const initialState: State = [];
+
+const onStartSubscribe = (state: State, shortcut: string): State => {
+    const network = state.find(b => b.shortcut === shortcut);
+    if (network) {
+        const others = state.filter(b => b !== network);
+        return others.concat([{
+            ...network,
+            connecting: true,
+        }]);
+    }
+
+    return state.concat([{
+        shortcut,
+        connected: false,
+        connecting: true,
+        block: 0,
+        feeTimestamp: 0,
+        feeLevels: [],
+    }]);
+};
 
 const onConnect = (state: State, action: BlockchainConnect): State => {
     const shortcut = action.payload.coin.shortcut.toLowerCase();
@@ -31,13 +52,16 @@ const onConnect = (state: State, action: BlockchainConnect): State => {
         const others = state.filter(b => b !== network);
         return others.concat([{
             ...network,
+            block: info.block,
             connected: true,
+            connecting: false,
         }]);
     }
 
     return state.concat([{
         shortcut,
         connected: true,
+        connecting: false,
         block: info.block,
         feeTimestamp: 0,
         feeLevels: [],
@@ -52,12 +76,14 @@ const onError = (state: State, action: BlockchainError): State => {
         return others.concat([{
             ...network,
             connected: false,
+            connecting: false,
         }]);
     }
 
     return state.concat([{
         shortcut,
         connected: false,
+        connecting: false,
         block: 0,
         feeTimestamp: 0,
         feeLevels: [],
@@ -93,6 +119,8 @@ const updateFee = (state: State, shortcut: string, feeLevels: Array<BlockchainFe
 
 export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
+        case BLOCKCHAIN_ACTION.START_SUBSCRIBE:
+            return onStartSubscribe(state, action.shortcut);
         case BLOCKCHAIN_EVENT.CONNECT:
             return onConnect(state, action);
         case BLOCKCHAIN_EVENT.ERROR:
