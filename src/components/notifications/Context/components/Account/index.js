@@ -8,6 +8,7 @@ import type { Props } from '../../index';
 export default (props: Props) => {
     const { network, notification } = props.selectedAccount;
     if (!network || !notification) return null;
+    const blockchain = props.blockchain.find(b => b.shortcut === network.shortcut);
 
     if (notification.type === 'backend') {
         // special case: backend is down
@@ -17,6 +18,7 @@ export default (props: Props) => {
                 type="error"
                 title={notification.title}
                 message={notification.message}
+                isActionInProgress={blockchain && blockchain.connecting}
                 actions={
                     [{
                         label: 'Connect',
