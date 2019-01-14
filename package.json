@@ -1,16 +1,16 @@
 {
   "name": "trezor-rollout",
   "version": "1.0.4",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trezor/trezor-rollout.git"
+  },
   "author": "Trezor <info@trezor.io>",
   "keywords": [
     "Trezor",
     "trezor-rollout",
     "javascript"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:trezor/trezor-rollout.git"
-  },
   "license": "SEE LICENSE IN LICENSE.md",
   "description": "Small javascript library to get latest safe firmware version for trezor update.",
   "main": "lib/trezor-rollout.js",
