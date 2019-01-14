@@ -27,14 +27,20 @@ type Props = {
 const Wrapper = styled.div`
     width: 100%;
     position: relative;
-    padding: 24px 48px 9px 24px;
+    display: flex;
+    justify-content: center;
+    color: ${props => getPrimaryColor(props.type)};
+    background: ${props => getSecondaryColor(props.type)};
+`;
+
+const Content = styled.div`
+    width: 100%;
+    max-width: 1170px;
+    padding: 24px;
     display: flex;
     flex-direction: row;
     text-align: left;
-    justify-content: center;
     align-items: center;
-    color: ${props => getPrimaryColor(props.type)};
-    background: ${props => getSecondaryColor(props.type)};
 `;
 
 const Body = styled.div`
@@ -42,7 +48,6 @@ const Body = styled.div`
 `;
 
 const Message = styled.div`
-    padding-bottom: 13px;
     font-size: ${FONT_SIZE.SMALL};
 `;
 
@@ -56,7 +61,9 @@ const CloseClick = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    padding: 20px 10px 0 0;
+    padding-right: inherit;
+    padding-top: inherit;
+    cursor: pointer;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -86,7 +93,6 @@ const ActionContent = styled.div`
     display: flex;
     justify-content: right;
     align-items: flex-end;
-    padding-bottom: 14px;
 `;
 
 const Notification = (props: Props): React$Element<string> => {
@@ -94,43 +100,45 @@ const Notification = (props: Props): React$Element<string> => {
 
     return (
         <Wrapper className={props.className} type={props.type}>
-            {props.loading && <Loader size={50} /> }
-            {props.cancelable && (
-                <CloseClick onClick={() => close()}>
-                    <Icon
-                        color={getPrimaryColor(props.type)}
-                        icon={icons.CLOSE}
-                        size={20}
-                    />
-                </CloseClick>
-            )}
-            <Body>
-                <IconWrapper>
-                    <StyledIcon
-                        color={getPrimaryColor(props.type)}
-                        icon={getIcon(props.type)}
-                    />
-                </IconWrapper>
-                <Texts>
-                    <Title>{ props.title }</Title>
-                    { props.message ? <Message>{props.message}</Message> : '' }
-                </Texts>
-            </Body>
-            <AdditionalContent>
-                {props.actions && props.actions.length > 0 && (
-                    <ActionContent>
-                        {props.actions.map(action => (
-                            <NotificationButton
-                                key={action.label}
-                                type={props.type}
-                                isLoading={props.isActionInProgress}
-                                onClick={() => { close(); action.callback(); }}
-                            >{action.label}
-                            </NotificationButton>
-                        ))}
-                    </ActionContent>
+            <Content>
+                {props.loading && <Loader size={50} /> }
+                {props.cancelable && (
+                    <CloseClick onClick={() => close()}>
+                        <Icon
+                            color={getPrimaryColor(props.type)}
+                            icon={icons.CLOSE}
+                            size={20}
+                        />
+                    </CloseClick>
                 )}
-            </AdditionalContent>
+                <Body>
+                    <IconWrapper>
+                        <StyledIcon
+                            color={getPrimaryColor(props.type)}
+                            icon={getIcon(props.type)}
+                        />
+                    </IconWrapper>
+                    <Texts>
+                        <Title>{ props.title }</Title>
+                        { props.message ? <Message>{props.message}</Message> : '' }
+                    </Texts>
+                </Body>
+                <AdditionalContent>
+                    {props.actions && props.actions.length > 0 && (
+                        <ActionContent>
+                            {props.actions.map(action => (
+                                <NotificationButton
+                                    key={action.label}
+                                    type={props.type}
+                                    isLoading={props.isActionInProgress}
+                                    onClick={() => { close(); action.callback(); }}
+                                >{action.label}
+                                </NotificationButton>
+                            ))}
+                        </ActionContent>
+                    )}
+                </AdditionalContent>
+            </Content>
         </Wrapper>
     );
 };
