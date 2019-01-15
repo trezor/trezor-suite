@@ -82,6 +82,7 @@ export default (state: State = initialState, action: Action): State => {
         case SEND.INIT:
         case SEND.CHANGE:
         case SEND.VALIDATION:
+        case SEND.CLEAR:
             return action.state;
 
         case SEND.TOGGLE_ADVANCED:
