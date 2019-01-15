@@ -142,17 +142,33 @@ const ToggleAdvancedSettingsButton = styled(Button)`
     min-height: 40px;
     padding: 0;
     display: flex;
+    flex: 1 1 0;
     align-items: center;
     font-weight: ${FONT_WEIGHT.SEMIBOLD};
 `;
 
-const SendButton = styled(Button)`
-    min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
-    word-break: break-all;
+const FormButtons = styled.div`
+    display: flex;
+    flex: 1 1;
 
+    
     @media screen and (max-width: ${SmallScreenWidth}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
     }
+
+    Button + Button {
+        margin-left: 5px;
+    }
+`;
+
+const SendButton = styled(Button)`
+    word-break: break-all;
+    flex: 1;
+
+`;
+
+const ClearButton = styled(Button)`
+
 `;
 
 const AdvancedSettingsIcon = styled(Icon)`
@@ -228,6 +244,7 @@ const AccountSend = (props: Props) => {
         onFeeLevelChange,
         updateFeeLevels,
         onSend,
+        onClear,
     } = props.sendFormActions;
 
     if (!device || !account || !discovery || !network || !shouldRender) {
@@ -387,24 +404,40 @@ const AccountSend = (props: Props) => {
                 </ToggleAdvancedSettingsButton>
 
                 {isAdvancedSettingsHidden && (
-                    <SendButton
-                        isDisabled={isSendButtonDisabled}
-                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-                        onClick={() => onSend()}
-                    >
-                        {sendButtonText}
-                    </SendButton>
+                    <FormButtons>
+                        <ClearButton
+                            isWhite
+                            onClick={() => onClear()}
+                        >
+                            Clear
+                        </ClearButton>
+                        <SendButton
+                            isDisabled={isSendButtonDisabled}
+                            isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                            onClick={() => onSend()}
+                        >
+                            {sendButtonText}
+                        </SendButton>
+                    </FormButtons>
                 )}
             </ToggleAdvancedSettingsWrapper>
 
             {advanced && (
                 <AdvancedForm {...props}>
-                    <SendButton
-                        isDisabled={isSendButtonDisabled}
-                        onClick={() => onSend()}
-                    >
-                        {sendButtonText}
-                    </SendButton>
+                    <FormButtons>
+                        <ClearButton
+                            isWhite
+                            onClick={() => onClear()}
+                        >
+                            Clear
+                        </ClearButton>
+                        <SendButton
+                            isDisabled={isSendButtonDisabled}
+                            onClick={() => onSend()}
+                        >
+                            {sendButtonText}
+                        </SendButton>
+                    </FormButtons>
                 </AdvancedForm>
             )}
 

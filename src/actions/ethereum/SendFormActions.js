@@ -53,6 +53,13 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
         return;
     }
 
+    // clear transaction draft from session storage and reinitialize send form
+    if (action.type === SEND.CLEAR) {
+        dispatch(SessionStorageActions.clear());
+        dispatch(init());
+        return;
+    }
+
     // if send form was not initialized
     if (currentState.sendFormEthereum.currency === '') {
         dispatch(init());
@@ -109,6 +116,8 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         network,
     } = getState().selectedAccount;
 
+    const { advanced } = getState().sendFormEthereum;
+
     if (!account || !network) return;
 
     const stateFromStorage = dispatch(SessionStorageActions.loadEthereumDraftTransaction());
@@ -140,6 +149,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
             recommendedGasPrice: gasPrice.toString(),
             gasLimit,
             gasPrice: gasPrice.toString(),
+            advanced,
         },
     });
 };
@@ -149,6 +159,14 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 */
 export const toggleAdvanced = (): Action => ({
     type: SEND.TOGGLE_ADVANCED,
+    networkType: 'ethereum',
+});
+
+/*
+* Called from UI from "clear" button
+*/
+export const onClear = (): Action => ({
+    type: SEND.CLEAR,
     networkType: 'ethereum',
 });
 
@@ -613,4 +631,5 @@ export default {
     onNonceChange,
     onDataChange,
     onSend,
+    onClear,
 };

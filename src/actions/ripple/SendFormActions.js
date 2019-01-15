@@ -35,6 +35,13 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
         return;
     }
 
+    // clear transaction draft from session storage and reinitialize send form
+    if (action.type === SEND.CLEAR) {
+        dispatch(SessionStorageActions.clear());
+        dispatch(init());
+        return;
+    }
+
     // if send form was not initialized
     if (currentState.sendFormRipple.networkSymbol === '') {
         dispatch(init());
@@ -80,6 +87,8 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
         network,
     } = getState().selectedAccount;
 
+    const { advanced } = getState().sendFormEthereum;
+
     if (!account || account.networkType !== 'ripple' || !network) return;
 
     const stateFromStorage = dispatch(SessionStorageActions.loadRippleDraftTransaction());
@@ -107,6 +116,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
             selectedFeeLevel,
             fee: network.fee.defaultFee,
             sequence: '1',
+            advanced,
         },
     });
 };
@@ -118,6 +128,15 @@ export const toggleAdvanced = (): Action => ({
     type: SEND.TOGGLE_ADVANCED,
     networkType: 'ripple',
 });
+
+/*
+* Called from UI from "clear" button
+*/
+export const onClear = (): Action => ({
+    type: SEND.CLEAR,
+    networkType: 'ripple',
+});
+
 
 /*
 * Called from UI on "address" field change
@@ -368,4 +387,5 @@ export default {
     onFeeChange,
     onDestinationTagChange,
     onSend,
+    onClear,
 };

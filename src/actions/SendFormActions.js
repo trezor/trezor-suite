@@ -29,6 +29,8 @@ export type SendFormAction = {
     type: typeof SEND.TOGGLE_ADVANCED | typeof SEND.TX_SENDING | typeof SEND.TX_ERROR,
 } | {
     type: typeof SEND.TX_COMPLETE,
+} | {
+    type: typeof SEND.CLEAR,
 };
 
 
