@@ -9,7 +9,8 @@
     "lint": "run-s lint:*",
     "lint:js": "npx eslint ./src",
     "lint:css": "npx stylelint './src/**/*.js'",
-    "storybook": "start-storybook -p 9001 -c .storybook"
+    "storybook": "start-storybook -p 9001 -c .storybook",
+    "build": "build-storybook -c .storybook -o ./docs/"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

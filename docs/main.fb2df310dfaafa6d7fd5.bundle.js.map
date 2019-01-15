@@ -1,0 +1,1 @@
+{"version":3,"file":"main.fb2df310dfaafa6d7fd5.bundle.js","sources":["webpack:///./src/config/colors.js"],"sourcesContent":["export default {\n    BLACK: '#000000',\n};"],"mappings":"AAAA","sourceRoot":""}
