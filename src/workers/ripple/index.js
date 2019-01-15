@@ -417,7 +417,7 @@ const subscribeBlock = async () => {
 const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
     const { payload } = data;
     try {
-        if (payload.type === 'address') {
+        if (payload.type === 'notification') {
             await unsubscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             await unsubscribeBlock();
@@ -447,7 +447,7 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
         // remove listeners
-        api.connection.off('transaction', onTransaction);
+        api.connection.removeListener('transaction', onTransaction);
         // api.connection.off('ledgerClosed', onLedgerClosed);
         common.removeSubscription('transaction')
     }
