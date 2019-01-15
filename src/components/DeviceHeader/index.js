@@ -38,6 +38,7 @@ const ClickWrapper = styled.div`
     width: 100%;
     display: flex;
     padding-left: 25px;
+    padding-right: 25px;
     height: 100%;
     align-items: center;
     cursor: pointer;
@@ -72,7 +73,6 @@ const Status = styled.div`
 `;
 
 const IconWrapper = styled.div`
-    padding-right: 25px;
     display: flex;
     flex: 1 0 0;
     justify-content: flex-end;
