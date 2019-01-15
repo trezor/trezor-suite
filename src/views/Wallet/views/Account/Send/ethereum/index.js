@@ -404,7 +404,9 @@ const AccountSend = (props: Props) => {
                 </ToggleAdvancedSettingsButton>
 
                 {isAdvancedSettingsHidden && (
-                    <FormButtons>
+                    <FormButtons
+                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                    >
                         <ClearButton
                             isWhite
                             onClick={() => onClear()}
@@ -413,7 +415,6 @@ const AccountSend = (props: Props) => {
                         </ClearButton>
                         <SendButton
                             isDisabled={isSendButtonDisabled}
-                            isAdvancedSettingsHidden={isAdvancedSettingsHidden}
                             onClick={() => onSend()}
                         >
                             {sendButtonText}
@@ -424,7 +425,9 @@ const AccountSend = (props: Props) => {
 
             {advanced && (
                 <AdvancedForm {...props}>
-                    <FormButtons>
+                    <FormButtons
+                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
+                    >
                         <ClearButton
                             isWhite
                             onClick={() => onClear()}
