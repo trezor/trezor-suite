@@ -21,6 +21,7 @@ export type State = {
     touched: {[k: string]: boolean};
     address: string;
     amount: string;
+    minAmount: string;
     setMax: boolean;
     feeLevels: Array<FeeLevel>;
     selectedFeeLevel: FeeLevel;
@@ -47,6 +48,7 @@ export const initialState: State = {
     touched: {},
     address: '',
     amount: '',
+    minAmount: '0',
     setMax: false,
     feeLevels: [],
     selectedFeeLevel: {
