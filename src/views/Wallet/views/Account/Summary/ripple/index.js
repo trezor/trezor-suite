@@ -13,7 +13,7 @@ import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import Link from 'components/Link';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
-import AccountBalance from '../components/Balance';
+import AccountBalance from './components/Balance';
 
 import type { Props } from './Container';
 
@@ -77,6 +77,7 @@ const AccountSummary = (props: Props) => {
     const explorerLink: string = `${network.explorer.address}${account.descriptor}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
     const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
+    const reserve: string = account.networkType === 'ripple' && !account.empty ? account.reserve : '0';
 
     const TMP_SHOW_HISTORY = false;
 
@@ -93,6 +94,7 @@ const AccountSummary = (props: Props) => {
                 <AccountBalance
                     network={network}
                     balance={balance}
+                    reserve={reserve}
                     fiat={props.fiat}
                 />
                 { TMP_SHOW_HISTORY && (
