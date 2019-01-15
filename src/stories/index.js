@@ -1,8 +1,11 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
-import Button from 'components/Button';
+import { setAddon, storiesOf } from '@storybook/react';
+import JSXAddon from 'storybook-addon-jsx';
+import ButtonText from 'components/buttons/ButtonText';
+
+setAddon(JSXAddon);
 
 storiesOf('Button', module)
-    .add('with text', () => (
-        <Button>Hello Button</Button>
+    .addWithJSX('with text', () => (
+        <ButtonText>Hello Button</ButtonText>
     ));

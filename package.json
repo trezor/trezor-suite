@@ -10,11 +10,16 @@
     "lint:js": "npx eslint ./src",
     "lint:css": "npx stylelint './src/**/*.js'",
     "storybook": "start-storybook -p 9001 -c .storybook",
+    "dev": "npm-run-all storybook",
     "build": "build-storybook -c .storybook -o ./docs/"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
+    "@storybook/addon-actions": "^4.1.6",
+    "@storybook/addon-links": "^4.1.6",
+    "@storybook/addon-notes": "^4.1.6",
+    "@storybook/addons": "^4.1.6",
     "babel-loader": "^8.0.5",
     "babel-plugin-styled-components": "^1.10.0",
     "eslint": "^5.12.0",
@@ -37,6 +42,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "storybook-addon-jsx": "^6.0.0",
     "styled-components": "^4.1.3"
   }
 }
