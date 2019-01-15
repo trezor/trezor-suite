@@ -456,7 +456,7 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
 const unsubscribeBlock = async () => {
     if (!common.getSubscription('ledger')) return;
     const api = await connect();
-    api.off('ledger', onNewBlock);
+    api.removeListener('ledger', onNewBlock);
     common.removeSubscription('ledger');
 }
 
