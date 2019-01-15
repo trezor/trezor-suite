@@ -184,6 +184,8 @@ class LeftNavigation extends React.PureComponent<Props, State> {
 
         const { selectedDevice } = props.wallet;
         const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
+        const walletType = selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard';
+
         return (
             <StickyContainer
                 location={props.router.location.pathname}
@@ -202,7 +204,13 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
-                            <WalletTypeIcon type={selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard'} size={25} color={colors.TEXT_SECONDARY} />
+                            {selectedDevice && selectedDevice.features.passphrase_protection ? (
+                                <WalletTypeIcon
+                                    type={walletType}
+                                    size={25}
+                                    color={colors.TEXT_SECONDARY}
+                                />) : null
+                            }
                             {this.props.devices.length > 1 && (
                                 <Counter>{this.props.devices.length}</Counter>
                             )}
