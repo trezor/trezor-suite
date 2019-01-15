@@ -115,26 +115,21 @@ const ButtonText = ({
     onFocus,
     isDisabled = false,
     isWhite = false,
-    isWebUsb = false,
     isTransparent = false,
-}) => {
-    const newClassName = isWebUsb ? `${className} trezor-webusb-button` : className;
-    return (
-        <Wrapper
-            className={newClassName}
-            onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onFocus={onFocus}
-            isDisabled={isDisabled}
-            isWhite={isWhite}
-            isWebUsb={isWebUsb}
-            isTransparent={isTransparent}
-        >
-            {children}
-        </Wrapper>
-    );
-};
+}) => (
+    <Wrapper
+        className={className}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onFocus={onFocus}
+        isDisabled={isDisabled}
+        isWhite={isWhite}
+        isTransparent={isTransparent}
+    >
+        {children}
+    </Wrapper>
+);
 
 ButtonText.propTypes = {
     children: PropTypes.node.isRequired,
@@ -145,7 +140,6 @@ ButtonText.propTypes = {
     onFocus: PropTypes.func,
     isDisabled: PropTypes.bool,
     isWhite: PropTypes.bool,
-    isWebUsb: PropTypes.bool,
     isTransparent: PropTypes.bool,
 };
 

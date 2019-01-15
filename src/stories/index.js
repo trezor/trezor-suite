@@ -5,7 +5,11 @@ import ButtonText from 'components/buttons/ButtonText';
 
 setAddon(JSXAddon);
 
-storiesOf('Button', module)
+storiesOf('Buttons', module)
     .addWithJSX('with text', () => (
         <ButtonText>Hello Button</ButtonText>
+    )).addWithJSX('with text (disabled)', () => (
+        <ButtonText isDisabled>Hello Button</ButtonText>
+    )).addWithJSX('transparent with text ', () => (
+        <ButtonText isTransparent>Hello Button</ButtonText>
     ));
