@@ -55,11 +55,60 @@ const Wrapper = styled.button`
             background: transparent;
         }
     `}
+
+    ${props => props.isWebUsb && css`
+        position: relative;
+        padding: 12px 24px 12px 40px;
+        background: transparent;
+        color: ${colors.GREEN_PRIMARY};
+        border: 1px solid ${colors.GREEN_PRIMARY};
+        transition: ${TRANSITION.HOVER};
+
+        &:before,
+        &:after {
+            content: '';
+            position: absolute;
+            background: ${colors.GREEN_PRIMARY};
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            transition: ${TRANSITION.HOVER};
+        }
+
+        &:before {
+            width: 12px;
+            height: 2px;
+            left: 18px;
+        }
+
+    &:after {
+            width: 2px;
+            height: 12px;
+            left: 23px;
+        }
+
+        &:hover {
+            background: ${colors.GREEN_PRIMARY};
+            color: ${colors.WHITE};
+
+            &:before,
+            &:after {
+                background: ${colors.WHITE};
+            }
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+    `}
 `;
 
-const ButtonText = ({
+const ButtonWebUSB = ({
     children,
-    className = '',
+    className = 'trezor-webusb-button',
     onClick,
     onMouseEnter,
     onMouseLeave,
@@ -82,7 +131,7 @@ const ButtonText = ({
     </Wrapper>
 );
 
-ButtonText.propTypes = {
+ButtonWebUSB.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
@@ -94,4 +143,4 @@ ButtonText.propTypes = {
     isTransparent: PropTypes.bool,
 };
 
-export default ButtonText;
+export default ButtonWebUSB;

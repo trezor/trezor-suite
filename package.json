@@ -10,7 +10,6 @@
     "lint:js": "npx eslint ./src",
     "lint:css": "npx stylelint './src/**/*.js'",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "dev": "npm-run-all storybook",
     "build": "build-storybook -c .storybook -o ./docs/"
   },
   "devDependencies": {
