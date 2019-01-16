@@ -60,7 +60,7 @@ class MenuItems extends PureComponent {
                 {this.showClone() && (
                     <Item onClick={() => this.props.duplicateDevice(device)}>
                         <Icon
-                            icon={icons.T1}
+                            icon={icons.WALLET_STANDARD}
                             size={25}
                             color={colors.TEXT_SECONDARY}
                         />
