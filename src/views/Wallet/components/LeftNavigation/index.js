@@ -229,7 +229,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     <WalletTypeIconWrapper>
                                         <WalletTypeIcon
                                             onClick={(e) => {
-                                                if (selectedDevice && isDeviceReady) {
+                                                if (isDeviceReady) {
                                                     this.props.duplicateDevice(selectedDevice);
                                                     e.stopPropagation();
                                                 }

@@ -6,7 +6,7 @@ import * as ModalActions from 'actions/ModalActions';
 import { toggleDeviceDropdown } from 'actions/WalletActions';
 import type { State } from 'flowtype';
 
-export type StateProps = {|
+export type StateProps = {
     connect: $ElementType<State, 'connect'>,
     accounts: $ElementType<State, 'accounts'>,
     router: $ElementType<State, 'router'>,
@@ -16,9 +16,9 @@ export type StateProps = {|
     wallet: $ElementType<State, 'wallet'>,
     devices: $ElementType<State, 'devices'>,
     pending: $ElementType<State, 'pending'>,
-|}
+}
 
-export type DispatchProps = {|
+export type DispatchProps = {
     toggleDeviceDropdown: typeof toggleDeviceDropdown,
     addAccount: typeof DiscoveryActions.addAccount,
     acquireDevice: typeof TrezorConnectActions.acquire,
@@ -27,6 +27,6 @@ export type DispatchProps = {|
     gotoDeviceSettings: typeof RouterActions.gotoDeviceSettings,
     onSelectDevice: typeof RouterActions.selectDevice,
     gotoExternalWallet: typeof ModalActions.gotoExternalWallet,
-|}
+}
 
-export type Props = {|...StateProps, ...DispatchProps|};
+export type Props = StateProps & DispatchProps;
