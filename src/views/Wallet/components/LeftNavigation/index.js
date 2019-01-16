@@ -189,7 +189,17 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         const { selectedDevice } = props.wallet;
         const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
         const walletType = selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard';
-        const passphraseEnabled = selectedDevice && selectedDevice.features && selectedDevice.features.passphrase_protection;
+        const showWalletType = selectedDevice && selectedDevice.features && selectedDevice.features.passphrase_protection;
+        const isDeviceReady = selectedDevice && selectedDevice.connected && selectedDevice.available;
+
+        let walletTooltipMsg = `You are in your ${walletType} wallet.`;
+        if (isDeviceReady) {
+            walletTooltipMsg = walletType === 'standard'
+                ? `${walletTooltipMsg} Click here to access your hidden wallet.`
+                : `${walletTooltipMsg} Click here to access your standard or another hidden wallet`;
+        } else {
+            walletTooltipMsg = `${walletTooltipMsg} To access other wallets please connect your device.`;
+        }
 
         return (
             <StickyContainer
@@ -209,12 +219,9 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
-                            {passphraseEnabled ? (
+                            {showWalletType ? (
                                 <Tooltip
-                                    content={walletType === 'standard'
-                                        ? 'You are in your standard wallet. Click here to access your hidden wallet.'
-                                        : 'You are in your hidden wallet. Click here to access your standard or another hidden wallet.'
-                                    }
+                                    content={walletTooltipMsg}
                                     maxWidth={200}
                                     placement="bottom"
                                     delayed
@@ -222,10 +229,12 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     <WalletTypeIconWrapper>
                                         <WalletTypeIcon
                                             onClick={(e) => {
-                                                this.props.duplicateDevice(selectedDevice);
-                                                e.stopPropagation();
+                                                if (isDeviceReady) {
+                                                    this.props.duplicateDevice(selectedDevice);
+                                                    e.stopPropagation();
+                                                }
                                             }}
-                                            hoverColor={colors.TEXT_PRIMARY}
+                                            hoverColor={isDeviceReady ? colors.TEXT_PRIMARY : colors.TEXT_SECONDARY}
                                             type={walletType}
                                             size={25}
                                             color={colors.TEXT_SECONDARY}
