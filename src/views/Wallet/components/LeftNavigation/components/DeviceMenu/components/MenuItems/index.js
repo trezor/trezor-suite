@@ -60,9 +60,8 @@ class MenuItems extends PureComponent {
                 {this.showClone() && (
                     <Item onClick={() => this.props.duplicateDevice(device)}>
                         <Icon
-                            icon={icons.WALLET_STANDARD}
+                            icon={icons.T1}
                             size={25}
-                            viewBox="0 0 32 32"
                             color={colors.TEXT_SECONDARY}
                         />
                         <Label>Change wallet type</Label>

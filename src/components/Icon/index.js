@@ -13,7 +13,6 @@ type Props = {
     size?: number,
     isActive?: boolean,
     color?: string,
-    viewBox?: string,
     onMouseEnter?: () => void,
     onMouseLeave?: () => void,
     onFocus?: () => void,
@@ -67,7 +66,6 @@ const Icon = ({
     icon,
     size = 32,
     color = colors.TEXT_SECONDARY,
-    viewBox = '0 0 1024 1024',
     isActive,
     canAnimate,
     hoverColor,
@@ -88,7 +86,7 @@ const Icon = ({
         }}
         width={`${size}`}
         height={`${size}`}
-        viewBox={viewBox}
+        viewBox="0 0 1024 1024"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onFocus={onFocus}
@@ -113,7 +111,6 @@ Icon.propTypes = {
     size: PropTypes.number,
     isActive: PropTypes.bool,
     color: PropTypes.string,
-    viewBox: PropTypes.string,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
     onFocus: PropTypes.func,
