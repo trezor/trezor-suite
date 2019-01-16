@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
 import * as deviceUtils from 'utils/device';
 
+import Tooltip from 'components/Tooltip';
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
@@ -21,6 +22,9 @@ import type { Props } from './components/common';
 
 const Header = styled(DeviceHeader)`
     border-right: 1px solid ${colors.BACKGROUND};
+`;
+
+const WalletTypeIconWrapper = styled.div`
 `;
 
 const Counter = styled.div`
@@ -185,6 +189,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         const { selectedDevice } = props.wallet;
         const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
         const walletType = selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard';
+        const passphraseEnabled = selectedDevice && selectedDevice.features && selectedDevice.features.passphrase_protection;
 
         return (
             <StickyContainer
@@ -204,15 +209,39 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
-                            {selectedDevice && selectedDevice.features.passphrase_protection ? (
-                                <WalletTypeIcon
-                                    type={walletType}
-                                    size={25}
-                                    color={colors.TEXT_SECONDARY}
-                                />) : null
+                            {passphraseEnabled ? (
+                                <Tooltip
+                                    content={walletType === 'standard'
+                                        ? 'You are in your standard wallet. Click here to access your hidden wallet.'
+                                        : 'You are in your hidden wallet. Click here to access your standard or another hidden wallet.'
+                                    }
+                                    maxWidth={200}
+                                    placement="bottom"
+                                    delayed
+                                >
+                                    <WalletTypeIconWrapper>
+                                        <WalletTypeIcon
+                                            onClick={(e) => {
+                                                this.props.duplicateDevice(selectedDevice);
+                                                e.stopPropagation();
+                                            }}
+                                            hoverColor={colors.TEXT_PRIMARY}
+                                            type={walletType}
+                                            size={25}
+                                            color={colors.TEXT_SECONDARY}
+                                        />
+                                    </WalletTypeIconWrapper>
+                                </Tooltip>) : null
                             }
                             {this.props.devices.length > 1 && (
-                                <Counter>{this.props.devices.length}</Counter>
+                                <Tooltip
+                                    content="Number of devices"
+                                    maxWidth={200}
+                                    placement="bottom"
+                                    delayed
+                                >
+                                    <Counter>{this.props.devices.length}</Counter>
+                                </Tooltip>
                             )}
                             <Icon
                                 canAnimate={this.state.clicked === true}
