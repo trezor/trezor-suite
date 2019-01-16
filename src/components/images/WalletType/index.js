@@ -27,7 +27,7 @@ const Icon = ({
         hoverColor={hoverColor}
         width={`${size}`}
         height={`${size}`}
-        viewBox="0 0 32 32"
+        viewBox="0 0 1024 1024"
         onClick={onClick}
     >
         <Path
