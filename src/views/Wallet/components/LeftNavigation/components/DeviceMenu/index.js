@@ -2,7 +2,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-import type { TrezorDevice } from 'flowtype';
 import Button from 'components/Button';
 import * as deviceUtils from 'utils/device';
 import MenuItems from './components/MenuItems';
@@ -21,11 +20,6 @@ const ButtonWrapper = styled.div`
 const StyledButton = styled(Button)`
     flex: 1;
 `;
-
-type DeviceMenuItem = {
-    type: string;
-    label: string;
-}
 
 class DeviceMenu extends PureComponent<Props> {
     constructor(props: Props) {
@@ -48,19 +42,6 @@ class DeviceMenu extends PureComponent<Props> {
 
     componentWillUnmount(): void {
         window.removeEventListener('mousedown', this.mouseDownHandler, false);
-    }
-
-    onDeviceMenuClick(item: DeviceMenuItem, device: TrezorDevice): void {
-        if (item.type === 'reload') {
-            this.props.acquireDevice();
-        } else if (item.type === 'forget') {
-            this.props.forgetDevice(device);
-        } else if (item.type === 'clone') {
-            this.props.duplicateDevice(device);
-        } else if (item.type === 'settings') {
-            this.props.toggleDeviceDropdown(false);
-            this.props.gotoDeviceSettings(device);
-        }
     }
 
     blurHandler(): void {
