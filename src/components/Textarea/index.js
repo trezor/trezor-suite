@@ -109,6 +109,7 @@ const TopLabel = styled.span`
 `;
 
 const BottomText = styled.span`
+    margin-top: 10px;
     font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 `;
