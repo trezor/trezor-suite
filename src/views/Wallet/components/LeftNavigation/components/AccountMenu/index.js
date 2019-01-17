@@ -71,24 +71,6 @@ const AddAccountIconWrapper = styled.div`
     margin-right: 12px;
 `;
 
-const DiscoveryStatusWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    font-size: ${FONT_SIZE.BASE};
-    padding: ${LEFT_NAVIGATION_ROW.PADDING};
-    white-space: nowrap;
-    border-top: 1px solid ${colors.DIVIDER};
-`;
-
-const DiscoveryStatusText = styled.div`
-    display: block;
-    font-size: ${FONT_SIZE.SMALL};
-    color: ${colors.TEXT_SECONDARY};
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
-
 const DiscoveryLoadingWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -162,7 +144,28 @@ const AccountMenu = (props: Props) => {
 
     if (discovery && discovery.completed) {
         const lastAccount = deviceAccounts[deviceAccounts.length - 1];
-        if (lastAccount && !lastAccount.empty) {
+        if (!selected.connected) {
+            discoveryStatus = (
+                <Tooltip
+                    maxWidth={200}
+                    content={`To add a new account, connect ${selected.instanceLabel} device.`}
+                    placement="bottom"
+                >
+                    <Row>
+                        <RowAddAccountWrapper disabled>
+                            <AddAccountIconWrapper>
+                                <Icon
+                                    icon={ICONS.PLUS}
+                                    size={24}
+                                    color={colors.TEXT_SECONDARY}
+                                />
+                            </AddAccountIconWrapper>
+                            Add account
+                        </RowAddAccountWrapper>
+                    </Row>
+                </Tooltip>
+            );
+        } else if (lastAccount && !lastAccount.empty) {
             discoveryStatus = (
                 <Row onClick={props.addAccount}>
                     <RowAddAccountWrapper>
@@ -199,17 +202,6 @@ const AccountMenu = (props: Props) => {
                 </Tooltip>
             );
         }
-    } else if (!selected.connected) {
-        discoveryStatus = (
-            <Row>
-                <DiscoveryStatusWrapper>
-                    Accounts could not be loaded
-                    <DiscoveryStatusText>
-                        {`Connect ${selected.instanceLabel} device`}
-                    </DiscoveryStatusText>
-                </DiscoveryStatusWrapper>
-            </Row>
-        );
     } else {
         discoveryStatus = (
             <Row>
