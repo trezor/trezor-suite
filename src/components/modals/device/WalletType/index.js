@@ -105,7 +105,7 @@ class WalletType extends PureComponent<Props> {
                 { device.state && (
                     <StyledLink onClick={onCancel}>
                         <Icon
-                            size={20}
+                            size={24}
                             color={colors.TEXT_SECONDARY}
                             icon={icons.CLOSE}
                         />

@@ -99,7 +99,7 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
         return (
             <Wrapper>
                 <StyledLink onClick={onCancel}>
-                    <Icon size={20} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                    <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                 </StyledLink>
                 <H2>{ deviceStatus }</H2>
                 <StyledP isSmaller>To prevent phishing attacks, you should verify the address on your Trezor first. { claim } to continue with the verification process.</StyledP>
