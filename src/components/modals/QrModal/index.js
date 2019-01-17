@@ -18,8 +18,8 @@ import type { parsedURI } from 'utils/cryptoUriParser';
 import type { Props as BaseProps } from '../Container';
 
 const Wrapper = styled.div`
-    width: 100%;
-    max-width: 620px;
+    width: 90vw;
+    max-width: 450px;
     padding: 40px 0px 20px 0px;
 `;
 
