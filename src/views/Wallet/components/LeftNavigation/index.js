@@ -24,13 +24,14 @@ const Header = styled(DeviceHeader)`
 `;
 
 const Counter = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 1px solid ${colors.DIVIDER};
     border-radius: 50%;
     color: ${colors.TEXT_SECONDARY};
     width: 24px;
     height: 24px;
-    line-height: 22px;
-    text-align: center;
     font-size: ${FONT_SIZE.COUNTER};
     margin-right: 8px;
 `;
