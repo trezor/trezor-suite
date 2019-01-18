@@ -59,6 +59,10 @@ const StyledInput = styled.input`
     background-color: ${colors.WHITE};
     transition: ${TRANSITION.HOVER};
 
+    &:focus {
+        border-color: ${colors.INPUT_BORDER_FOCUSED};
+    }
+
     &:disabled {
         pointer-events: none;
         background: ${colors.GRAY_LIGHT};

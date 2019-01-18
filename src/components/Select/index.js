@@ -11,17 +11,16 @@ const styles = isSearchable => ({
         width: '100%',
         color: colors.TEXT_SECONDARY,
     }),
-    control: (base, { isDisabled }) => ({
+    control: (base, { isDisabled, isFocused }) => ({
         ...base,
         minHeight: 'initial',
         height: '40px',
         borderRadius: '2px',
-        borderColor: colors.DIVIDER,
+        borderColor: isFocused ? colors.INPUT_BORDER_FOCUSED : colors.DIVIDER,
         boxShadow: 'none',
         background: isDisabled ? colors.LANDING : colors.WHITE,
         '&:hover': {
             cursor: isSearchable ? 'text' : 'pointer',
-            borderColor: colors.DIVIDER,
         },
     }),
     indicatorSeparator: () => ({

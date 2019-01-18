@@ -37,6 +37,10 @@ const Wrapper = styled.button`
         background: ${colors.GREEN_TERTIARY};
     }
 
+    &:focus {
+        border-color: ${colors.INPUT_BORDER_FOCUSED};
+    }
+
     ${props => props.isDisabled && css`
         pointer-events: none;
         color: ${colors.TEXT_SECONDARY};
@@ -47,6 +51,10 @@ const Wrapper = styled.button`
         background: ${colors.WHITE};
         color: ${colors.TEXT_SECONDARY};
         border: 1px solid ${colors.DIVIDER};
+
+        &:focus {
+            border-color: ${colors.INPUT_BORDER_FOCUSED};
+        }
 
         &:hover {
             color: ${colors.TEXT_PRIMARY};

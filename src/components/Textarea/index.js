@@ -67,6 +67,10 @@ const StyledTextarea = styled(Textarea)`
         color: ${colors.TEXT_SECONDARY};
     }
 
+    &:focus {
+        border-color: ${colors.INPUT_BORDER_FOCUSED};
+    }
+
     &:disabled {
         pointer-events: none;
         background: ${colors.GRAY_LIGHT};
