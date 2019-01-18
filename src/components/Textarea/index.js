@@ -68,7 +68,8 @@ const StyledTextarea = styled(Textarea)`
     }
 
     &:focus {
-        border-color: ${colors.INPUT_BORDER_FOCUSED};
+        border-color: ${colors.INPUT_FOCUSED_BORDER};
+        box-shadow: 0 0px 6px 0 ${colors.INPUT_FOCUSED_SHADOW};
     }
 
     &:disabled {

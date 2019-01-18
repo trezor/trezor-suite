@@ -16,8 +16,8 @@ const styles = isSearchable => ({
         minHeight: 'initial',
         height: '40px',
         borderRadius: '2px',
-        borderColor: isFocused ? colors.INPUT_BORDER_FOCUSED : colors.DIVIDER,
-        boxShadow: 'none',
+        borderColor: isFocused ? colors.INPUT_FOCUSED_BORDER : colors.DIVIDER,
+        boxShadow: isFocused ? `0 0px 6px 0 ${colors.INPUT_FOCUSED_SHADOW}` : 'none',
         background: isDisabled ? colors.LANDING : colors.WHITE,
         '&:hover': {
             cursor: isSearchable ? 'text' : 'pointer',

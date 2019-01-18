@@ -38,7 +38,8 @@ const Wrapper = styled.button`
     }
 
     &:focus {
-        border-color: ${colors.INPUT_BORDER_FOCUSED};
+        border-color: ${colors.INPUT_FOCUSED_BORDER};
+        box-shadow: 0 0px 6px 0 ${colors.INPUT_FOCUSED_SHADOW};
     }
 
     ${props => props.isDisabled && css`
@@ -53,7 +54,7 @@ const Wrapper = styled.button`
         border: 1px solid ${colors.DIVIDER};
 
         &:focus {
-            border-color: ${colors.INPUT_BORDER_FOCUSED};
+            border-color: ${colors.INPUT_FOCUSED_BORDER};
         }
 
         &:hover {
@@ -71,6 +72,11 @@ const Wrapper = styled.button`
         background: transparent;
         border: 0px;
         color: ${colors.TEXT_SECONDARY};
+
+        &:focus {
+            color: ${colors.TEXT_PRIMARY};
+            box-shadow: none;
+        }
 
         &:hover,
         &:active {
