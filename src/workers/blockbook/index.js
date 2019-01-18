@@ -50,11 +50,6 @@ let _connection: ?Connection;
 let _endpoints: Array<string> = [];
 
 const connect = async (): Promise<Connection> => {
-
-    // const s = new Socket();
-    // const ss = await s.connect();
-    // console.warn("NativeWS", ss);
-
     if (_connection) {
         if (_connection.isConnected()) return _connection;
     }
@@ -187,13 +182,13 @@ const subscribeBlock = async () => {
     const socket = await connect();
     common.addSubscription('block');
     socket.on('block', onNewBlock);
-    socket.subscribeBlock();
+    await socket.subscribeBlock();
 };
 
 const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
     const { payload } = data;
     try {
-        if (payload.type === 'address') {
+        if (payload.type === 'notification') {
             await unsubscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             await unsubscribeBlock();
@@ -224,10 +219,11 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
 }
 
 const unsubscribeBlock = async () => {
-    if (!common.getSubscription('ledger')) return;
+    if (!common.getSubscription('block')) return;
     const socket = await connect();
-    // socket.off('block', onNewBlock);
+    socket.removeListener('block', onNewBlock);
     common.removeSubscription('block');
+    await socket.unsubscribeBlock();
 }
 
 const disconnect = async (data: { id: number }) => {

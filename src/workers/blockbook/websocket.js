@@ -15,6 +15,8 @@ export default class Socket extends EventEmitter {
     _messageID: number = 0;
     _pendingMessages: { [string]: wscallback } = {};
     _subscriptions: { [string]: wscallback } = {};
+    _subscribeNewBlockId: string = '';
+    _subscribeAddressesId: string = '';
 
     _send(method: string, params: {}, callback: wscallback): string {
         const id = this._messageID.toString();
@@ -30,7 +32,7 @@ export default class Socket extends EventEmitter {
     }
 
     _subscribe(method: string, params: {}, callback: wscallback): string {
-        const id = _messageID.toString();
+        const id = this._messageID.toString();
         this._messageID++;
         this._subscriptions[id] = callback;
         const req = {
@@ -45,7 +47,7 @@ export default class Socket extends EventEmitter {
     _unsubscribe(method: string, id: string, params: {}, callback: wscallback): string {
         delete this._subscriptions[id];
         this._pendingMessages[id] = callback;
-        var req = {
+        const req = {
             id,
             method,
             params
@@ -67,7 +69,7 @@ export default class Socket extends EventEmitter {
                 s(resp.data);
             }
             else {
-                console.log("unkown response " + resp.id);
+                console.log('unkown response ' + resp.id);
             }
         }
     }
@@ -83,23 +85,23 @@ export default class Socket extends EventEmitter {
     }
 
     _onOpenError(err: Error) {
-        console.error("OpenError", err)
+        console.error('OpenError', err)
     }
 
     constructor(url: string) {
         super();
         this.setMaxListeners(Infinity);
-        if (url.startsWith("http")) {
-            url = url.replace("http", "ws");
+        if (url.startsWith('http')) {
+            url = url.replace('http', 'ws');
         }
-        if (!url.endsWith("/websocket")) {
-            url += "/websocket";
+        if (!url.endsWith('/websocket')) {
+            url += '/websocket';
         }
         this._url = url;
     }
 
 
-    connect() {
+    connect(): Promise {
         //this._clearReconnectTimer()
         return new Promise((resolve, reject) => {
             if (!this._url) {
@@ -124,14 +126,15 @@ export default class Socket extends EventEmitter {
                 this._messageID = 0;
                 this._pendingMessages = {};
                 this._subscriptions = {};
+                this._subscribeNewBlockId = '';
+                this._subscribeAddressesId = '';
             }
         });
     }
 
-    disconnect() {
+    disconnect(): Promise {
         return new Promise(() => {
             this._ws.close();
-            // this._socket.emit('subscribe', 'bitcoind/hashblock', resolve);
         });
     }
 
@@ -148,6 +151,32 @@ export default class Socket extends EventEmitter {
                     networkName: response.name,
                 });
             });
+        });
+    }
+
+    subscribeBlock(): Promise {
+        return new Promise((resolve) => {
+            if (this._subscribeNewBlockId) {
+                delete this._subscriptions[this._subscribeNewBlockId];
+                this._subscribeNewBlockId = '';
+            }
+            this._subscribeNewBlockId = this._subscribe('subscribeNewBlock', {}, result => {
+                console.log('newBlock', result)
+                this.emit('block', {
+                    block: result.height,
+                    hash: result.hash,
+                })
+            });
+        });
+    }
+
+    unsubscribeBlock(): Promise {
+        return new Promise((resolve) => {
+            if (this._subscribeNewBlockId) {
+                this._unsubscribe('unsubscribeNewBlock', this._subscribeNewBlockId, {}, result => {
+                    this._subscribeNewBlockId = '';
+                });
+            }
         });
     }
 
