@@ -30,8 +30,6 @@ class WS extends EventEmitter {
     constructor(url: string, _protocols: any, _websocketOptions: any) {
         super();
 
-        console.warn("WS FAKE", WebSocket)
-
         this._ws = new WebSocket(url);
 
         this._ws.onclose = () => {

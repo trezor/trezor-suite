@@ -51,7 +51,7 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         alias: {
-            // 'ws-browser': `${SRC}/utils/ws.js`,
+            'ws-browser': `${SRC}/utils/ws.js`,
             // 'ws-browser': 'node_modules/ripple-lib/dist/npm/common/wswrapper.js',
         },
     },
@@ -59,7 +59,7 @@ module.exports = {
         hints: false,
     },
     plugins: [
-        // new webpack.NormalModuleReplacementPlugin(/^ws$/, 'ws-browser'),
+        new webpack.NormalModuleReplacementPlugin(/^ws$/, 'ws-browser'),
         // new FlowWebpackPlugin({
         //     reportingSeverity: 'warning',
         // }),

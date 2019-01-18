@@ -1,8 +1,8 @@
 /* @flow */
 import { MESSAGES, RESPONSES } from '../../constants';
 import * as common from '../common';
-import Connection from './socket.io';
-// import Socket from './websocket';
+// import Connection from './socket.io';
+import Socket from './websocket';
 
 import type { Message, Response } from '../../types';
 import * as MessageTypes from '../../types/messages';
@@ -69,7 +69,8 @@ const connect = async (): Promise<Connection> => {
     }
 
     common.debug('Connecting to', _endpoints[0]);
-    _connection = new Connection(_endpoints[0]);
+    // _connection = new Connection(_endpoints[0]);
+    _connection = new Socket(_endpoints[0]);
    
     try {
         await _connection.connect();
