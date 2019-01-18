@@ -45,7 +45,8 @@ const Tooltip = ({
                         </Link>
                     )
                     }
-                </ContentWrapper>)}
+                </ContentWrapper>
+            )}
         >
             {children}
         </RcTooltip>

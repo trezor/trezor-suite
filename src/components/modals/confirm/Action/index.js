@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 const Wrapper = styled.div``;
 
 const Header = styled.div`
-    padding: 48px;
+	padding: 48px;
 `;
 
 const ConfirmAction = () => (

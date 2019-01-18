@@ -11,23 +11,27 @@ const A = styled.a`
     transition: ${TRANSITION.HOVER};
     font-size: ${FONT_SIZE.SMALL};
 
-    ${props => props.isGreen && css`
-        border-bottom: 1px solid ${colors.GREEN_PRIMARY};
-    `}
-    ${props => props.isGray && css`
-        border-bottom: 1px solid ${colors.TEXT_SECONDARY};
-    `}
+    ${props => props.isGreen
+        && css`
+            border-bottom: 1px solid ${colors.GREEN_PRIMARY};
+        `}
+    ${props => props.isGray
+        && css`
+            border-bottom: 1px solid ${colors.TEXT_SECONDARY};
+        `}
 
     &,
     &:visited,
     &:active,
     &:hover {
-        ${props => props.isGreen && css`
-            color: ${colors.GREEN_PRIMARY};
-        `}
-        ${props => props.isGray && css`
-            color: ${colors.TEXT_SECONDARY};
-        `}
+        ${props => props.isGreen
+            && css`
+                color: ${colors.GREEN_PRIMARY};
+            `}
+        ${props => props.isGray
+            && css`
+                color: ${colors.TEXT_SECONDARY};
+            `}
     }
 
     &:hover {
@@ -36,13 +40,15 @@ const A = styled.a`
 `;
 
 const StyledNavLink = styled(NavLink)`
-    ${props => props.isGreen && css`
-        color: ${colors.GREEN_PRIMARY};
-    `}
+    ${props => props.isGreen
+        && css`
+            color: ${colors.GREEN_PRIMARY};
+        `}
 
-    ${props => props.isGray && css`
-        color: ${colors.TEXT_SECONDARY};
-    `}
+    ${props => props.isGray
+        && css`
+            color: ${colors.TEXT_SECONDARY};
+        `}
 `;
 
 class Link extends PureComponent {
@@ -51,7 +57,10 @@ class Link extends PureComponent {
         let LinkComponent;
         if (shouldRenderRouterLink) {
             LinkComponent = (
-                <StyledNavLink {...this.props}>{this.props.children}</StyledNavLink>);
+                <StyledNavLink {...this.props}>
+                    {this.props.children}
+                </StyledNavLink>
+            );
         } else {
             LinkComponent = (
                 <A
@@ -59,7 +68,8 @@ class Link extends PureComponent {
                     target={this.props.target || '_blank'}
                     rel="noreferrer noopener"
                     {...this.props}
-                >{this.props.children}
+                >
+                    {this.props.children}
                 </A>
             );
         }

@@ -18,8 +18,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const Tick = styled.div`
-`;
+const Tick = styled.div``;
 
 const IconWrapper = styled.div`
     display: flex;
@@ -34,9 +33,10 @@ const IconWrapper = styled.div`
 
     &:hover,
     &:focus {
-        ${props => !props.isChecked && css`
-            border: 1px solid ${colors.GREEN_PRIMARY};
-        `}
+        ${props => !props.isChecked
+            && css`
+                border: 1px solid ${colors.GREEN_PRIMARY};
+            `}
         background: ${props => (props.isChecked ? colors.GREEN_PRIMARY : colors.WHITE)};
     }
 `;
@@ -62,11 +62,7 @@ class Checkbox extends PureComponent {
     }
 
     render() {
-        const {
-            isChecked,
-            children,
-            onClick,
-        } = this.props;
+        const { isChecked, children, onClick } = this.props;
         return (
             <Wrapper
                 onClick={onClick}
@@ -79,12 +75,15 @@ class Checkbox extends PureComponent {
                             <Icon
                                 hoverColor={colors.WHITE}
                                 size={26}
-                                color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
+                                color={
+                                    isChecked
+                                        ? colors.WHITE
+                                        : colors.GREEN_PRIMARY
+                                }
                                 icon={icons.SUCCESS}
                             />
                         </Tick>
-                    )
-                    }
+                    )}
                 </IconWrapper>
                 <Label isChecked={isChecked}>{children}</Label>
             </Wrapper>

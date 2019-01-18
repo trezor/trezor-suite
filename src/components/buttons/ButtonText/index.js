@@ -22,39 +22,42 @@ const Wrapper = styled.button`
         background: ${colors.GREEN_TERTIARY};
     }
 
-    ${props => props.isDisabled && css`
-        pointer-events: none;
-        color: ${colors.TEXT_SECONDARY};
-        background: ${colors.GRAY_LIGHT};
-    `}
+    ${props => props.isDisabled
+        && css`
+            pointer-events: none;
+            color: ${colors.TEXT_SECONDARY};
+            background: ${colors.GRAY_LIGHT};
+        `}
 
-    ${props => props.isWhite && css`
-        background: ${colors.WHITE};
-        color: ${colors.TEXT_SECONDARY};
-        border: 1px solid ${colors.DIVIDER};
+    ${props => props.isWhite
+        && css`
+            background: ${colors.WHITE};
+            color: ${colors.TEXT_SECONDARY};
+            border: 1px solid ${colors.DIVIDER};
 
-        &:hover {
-            color: ${colors.TEXT_PRIMARY};
-            background: ${colors.DIVIDER};
-        }
+            &:hover {
+                color: ${colors.TEXT_PRIMARY};
+                background: ${colors.DIVIDER};
+            }
 
-        &:active {
-            color: ${colors.TEXT_PRIMARY};
-            background: ${colors.DIVIDER};
-        }
-    `}
+            &:active {
+                color: ${colors.TEXT_PRIMARY};
+                background: ${colors.DIVIDER};
+            }
+        `}
 
-    ${props => props.isTransparent && css`
-        background: transparent;
-        border: 0px;
-        color: ${colors.TEXT_SECONDARY};
-
-        &:hover,
-        &:active {
-            color: ${colors.TEXT_PRIMARY};
+    ${props => props.isTransparent
+        && css`
             background: transparent;
-        }
-    `}
+            border: 0px;
+            color: ${colors.TEXT_SECONDARY};
+
+            &:hover,
+            &:active {
+                color: ${colors.TEXT_PRIMARY};
+                background: transparent;
+            }
+        `}
 `;
 
 const ButtonText = ({

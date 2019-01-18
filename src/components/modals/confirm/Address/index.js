@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
-import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
+import colors from "config/colors";
+import { FONT_SIZE } from "config/variables";
 
-import { H3 } from 'components/Heading';
-import P from 'components/Paragraph';
+import { H3 } from "components/Heading";
+import P from "components/Paragraph";
 
-import type { Props } from '../../Container';
+import type { Props } from "../../Container";
 
 const Wrapper = styled.div`
     width: 390px;
@@ -30,28 +30,30 @@ const Label = styled.div`
 `;
 
 const ConfirmAddress = (props: Props) => {
-    const {
-        account,
-        network,
-    } = props.selectedAccount;
+    const { account, network } = props.selectedAccount;
     if (!account || !network) return null;
 
     return (
         <Wrapper>
             <Header>
                 <H3>Confirm address on Trezor</H3>
-                <P>Please compare your address on device with address shown bellow.</P>
+                <P>
+                    Please compare your address on device with address shown
+                    bellow.
+                </P>
             </Header>
             <Content>
-                <P>{ account.descriptor }</P>
-                <Label>{ network.symbol } account #{ (account.index + 1) }</Label>
+                <P>{account.descriptor}</P>
+                <Label>
+                    {network.symbol} account #{account.index + 1}
+                </Label>
             </Content>
         </Wrapper>
     );
 };
 
 ConfirmAddress.propTypes = {
-    selectedAccount: PropTypes.object.isRequired,
+    selectedAccount: PropTypes.object.isRequired
 };
 
 export default ConfirmAddress;

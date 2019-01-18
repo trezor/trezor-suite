@@ -1,16 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import colors from 'config/colors';
-import { H2 } from 'components/Heading';
-import ReactJson from 'react-json-view';
-import Icon from 'components/Icon';
-import P from 'components/Paragraph';
+import React from "react";
+import styled from "styled-components";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import colors from "config/colors";
+import { H2 } from "components/Heading";
+import ReactJson from "react-json-view";
+import Icon from "components/Icon";
+import P from "components/Paragraph";
 
-import * as LogActions from 'actions/LogActions';
-import icons from 'config/icons';
-import type { State, Dispatch } from 'flowtype';
+import * as LogActions from "actions/LogActions";
+import icons from "config/icons";
+import type { State, Dispatch } from "flowtype";
 
 const Wrapper = styled.div`
     position: relative;
@@ -55,10 +55,17 @@ const Log = (props: Props): ?React$Element<string> => {
     return (
         <Wrapper>
             <Click onClick={props.toggle}>
-                <Icon size={25} color={colors.INFO_PRIMARY} icon={icons.CLOSE} />
+                <Icon
+                    size={25}
+                    color={colors.INFO_PRIMARY}
+                    icon={icons.CLOSE}
+                />
             </Click>
             <H2>Log</H2>
-            <StyledParagraph isSmaller>Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.</StyledParagraph>
+            <StyledParagraph isSmaller>
+                Attention: The log contains your XPUBs. Anyone with your XPUBs
+                can see your account history.
+            </StyledParagraph>
             <LogWrapper>
                 <ReactJson src={props.log.entries} />
             </LogWrapper>
@@ -68,9 +75,9 @@ const Log = (props: Props): ?React$Element<string> => {
 
 export default connect(
     (state: State) => ({
-        log: state.log,
+        log: state.log
     }),
     (dispatch: Dispatch) => ({
-        toggle: bindActionCreators(LogActions.toggle, dispatch),
-    }),
+        toggle: bindActionCreators(LogActions.toggle, dispatch)
+    })
 )(Log);

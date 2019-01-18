@@ -6,7 +6,7 @@ import styled from 'styled-components';
 const SvgWrapper = styled.svg`
     :hover {
         path {
-            fill: ${props => props.hoverColor}
+            fill: ${props => props.hoverColor};
         }
     }
 `;

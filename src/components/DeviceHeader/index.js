@@ -23,15 +23,18 @@ const Wrapper = styled.div`
     border-radius: 4px 0 0 0;
     box-shadow: ${props => (props.disabled ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.04)')};
 
-    ${props => (props.isOpen || !props.isSelected) && css`
-        box-shadow: none;
-    `}
+    ${props => (props.isOpen || !props.isSelected)
+        && css`
+            box-shadow: none;
+        `}
 
-    ${props => props.isHoverable && !props.disabled && css`
-        &:hover {
-            background: ${colors.GRAY_LIGHT};
-        }
-    `}
+    ${props => props.isHoverable
+        && !props.disabled
+        && css`
+            &:hover {
+                background: ${colors.GRAY_LIGHT};
+            }
+        `}
 `;
 
 const ClickWrapper = styled.div`
@@ -42,9 +45,10 @@ const ClickWrapper = styled.div`
     align-items: center;
     cursor: pointer;
 
-    ${props => props.disabled && css`
-        cursor: default;
-    `}
+    ${props => props.disabled
+        && css`
+            cursor: default;
+        `}
 `;
 
 const LabelWrapper = styled.div`
@@ -94,7 +98,6 @@ const Dot = styled.div`
     height: 10px;
 `;
 
-
 const DeviceHeader = ({
     isOpen,
     icon,
@@ -115,17 +118,16 @@ const DeviceHeader = ({
             disabled={disabled}
             className={className}
         >
-            <ClickWrapper
-                disabled={disabled}
-                onClick={onClickWrapper}
-            >
+            <ClickWrapper disabled={disabled} onClick={onClickWrapper}>
                 <ImageWrapper>
                     <Dot color={getStatusColor(status)} />
                     <TrezorImage model={getVersion(device)} />
                 </ImageWrapper>
                 <LabelWrapper>
                     <Name>{device.instanceLabel}</Name>
-                    <Status title={getStatusName(status)}>{getStatusName(status)}</Status>
+                    <Status title={getStatusName(status)}>
+                        {getStatusName(status)}
+                    </Status>
                 </LabelWrapper>
                 <IconWrapper>
                     {icon && !disabled && isAccessible && icon}
