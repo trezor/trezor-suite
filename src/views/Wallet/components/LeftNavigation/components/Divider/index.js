@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 const Wrapper = styled.div`
     display: flex;
@@ -18,13 +18,17 @@ const Wrapper = styled.div`
     `}
 `;
 
+const TextLeft = styled.p`
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+`;
+
 const Divider = ({
     textLeft, textRight, hasBorder = false,
 }) => (
     <Wrapper
         hasBorder={hasBorder}
     >
-        <p>{textLeft}</p>
+        <TextLeft>{textLeft}</TextLeft>
         <p>{textRight}</p>
     </Wrapper>
 );
