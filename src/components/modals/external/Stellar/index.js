@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-    margin: 10px 0 10px 0;
+    margin-top: 10px;
     width: 100%;
 `;
 

@@ -31,21 +31,20 @@ const StyledLink = styled(Link)`
 
 const Wrapper = styled.div`
     width: 370px;
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const StyledP = styled(P)`
-    padding: 10px 0px;
+    padding: 20px 0px;
 `;
 
 const Row = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 10px 0;
-`;
 
-const StyledButton = styled(Button)`
-    margin: 0 0 10px 0;
+    Button + Button {
+        margin-top: 10px;
+    }
 `;
 
 class ConfirmUnverifiedAddress extends PureComponent<Props> {
@@ -104,8 +103,8 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                 <H2>{ deviceStatus }</H2>
                 <StyledP isSmaller>To prevent phishing attacks, you should verify the address on your Trezor first. { claim } to continue with the verification process.</StyledP>
                 <Row>
-                    <StyledButton onClick={() => (!account ? this.verifyAddress() : 'false')}>Try again</StyledButton>
-                    <StyledButton isWhite onClick={() => this.showUnverifiedAddress()}>Show unverified address</StyledButton>
+                    <Button onClick={() => (!account ? this.verifyAddress() : 'false')}>Try again</Button>
+                    <Button isWhite onClick={() => this.showUnverifiedAddress()}>Show unverified address</Button>
                 </Row>
             </Wrapper>
         );

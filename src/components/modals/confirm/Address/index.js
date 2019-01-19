@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 `;
 
 const Header = styled.div`
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const Content = styled.div`

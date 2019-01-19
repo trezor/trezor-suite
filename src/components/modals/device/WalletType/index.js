@@ -37,7 +37,7 @@ const Header = styled.div`
 `;
 
 const StyledHeading = styled(H2)`
-    padding-top: 30px;
+    padding: 30px 48px 10px 48px;
 `;
 
 const StyledLink = styled(Link)`
