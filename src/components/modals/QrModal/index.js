@@ -20,7 +20,7 @@ import type { Props as BaseProps } from '../Container';
 const Wrapper = styled.div`
     width: 90vw;
     max-width: 450px;
-    padding: 40px 0px 20px 0px;
+    padding: 30px 0px;
 `;
 
 const Padding = styled.div`
