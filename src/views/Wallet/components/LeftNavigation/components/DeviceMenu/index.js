@@ -10,7 +10,7 @@ import DeviceList from './components/DeviceList';
 
 import type { Props } from '../common';
 
-import AsideDivider from '../Divider';
+import Divider from '../Divider';
 
 const Wrapper = styled.div``;
 const ButtonWrapper = styled.div`
@@ -104,7 +104,7 @@ class DeviceMenu extends PureComponent<Props> {
         return (
             <Wrapper>
                 {this.showMenuItems() && <MenuItems device={selectedDevice} {...this.props} />}
-                {this.showDivider() && <AsideDivider textLeft="Other devices" />}
+                {this.showDivider() && <Divider hasBorder textLeft="Other devices" />}
                 <DeviceList
                     devices={devices}
                     selectedDevice={selectedDevice}
