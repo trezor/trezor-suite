@@ -30,6 +30,11 @@ const AsideWrapper = styled.aside.attrs(props => ({
     overflow: hidden;
     background: ${colors.MAIN};
     border-right: 1px solid ${colors.DIVIDER};
+    border-top-left-radius: 4px;
+    
+    @media screen and (max-width: 1170px) {
+        border-top-left-radius: 0px;
+    }
 `;
 
 const StickyContainerWrapper = styled.div.attrs(props => ({
