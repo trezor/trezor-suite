@@ -132,14 +132,17 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         const deviceReady = selectedDevice && selectedDevice.features && selectedDevice.mode === 'normal';
         if (dropdownOpened) {
             this.setState({ shouldRenderDeviceSelection: true });
-        } else if (hasNetwork) {
+        } else {
+            this.setState({ shouldRenderDeviceSelection: false });
+        }
+        if (hasNetwork) {
             this.setState({
-                shouldRenderDeviceSelection: false,
+                // shouldRenderDeviceSelection: false,
                 animationType: 'slide-left',
             });
         } else {
             this.setState({
-                shouldRenderDeviceSelection: false,
+                // shouldRenderDeviceSelection: false,
                 animationType: deviceReady ? 'slide-right' : null,
             });
         }
@@ -152,7 +155,6 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             && location
             && location.state
             && location.state.network
-            && !this.state.shouldRenderDeviceSelection
             && this.state.animationType === 'slide-left';
     }
 
@@ -162,7 +164,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
     }
 
     shouldRenderCoins() {
-        return !this.state.shouldRenderDeviceSelection && this.state.animationType !== 'slide-left';
+        return this.state.animationType !== 'slide-left';
     }
 
     render() {

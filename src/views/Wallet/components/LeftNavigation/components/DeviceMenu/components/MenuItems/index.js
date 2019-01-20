@@ -9,7 +9,6 @@ import { FONT_SIZE } from 'config/variables';
 
 const Wrapper = styled.div`
     padding: 0px 24px 8px 19px;
-    border-bottom: 1px solid ${colors.DIVIDER};
     background: ${colors.WHITE};
 `;
 

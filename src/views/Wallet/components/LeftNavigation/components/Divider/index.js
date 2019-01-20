@@ -19,10 +19,11 @@ const Wrapper = styled.div`
 `;
 
 const Divider = ({
-    textLeft, textRight, hasBorder = false,
+    textLeft, textRight, hasBorder = false, className,
 }) => (
     <Wrapper
         hasBorder={hasBorder}
+        className={className}
     >
         <p>{textLeft}</p>
         <p>{textRight}</p>
@@ -30,6 +31,7 @@ const Divider = ({
 );
 
 Divider.propTypes = {
+    className: PropTypes.string,
     textLeft: PropTypes.string,
     textRight: PropTypes.string,
     hasBorder: PropTypes.bool,

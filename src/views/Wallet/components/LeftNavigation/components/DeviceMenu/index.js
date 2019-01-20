@@ -3,6 +3,10 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import type { TrezorDevice } from 'flowtype';
+
+import COLORS from 'config/colors';
+import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+
 import Button from 'components/Button';
 import * as deviceUtils from 'utils/device';
 import MenuItems from './components/MenuItems';
@@ -10,16 +14,29 @@ import DeviceList from './components/DeviceList';
 
 import type { Props } from '../common';
 
-import AsideDivider from '../Divider';
+import Divider from '../Divider';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    border-bottom: 1px solid #E3E3E3;
+    background: white;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+`;
+
 const ButtonWrapper = styled.div`
-    margin-top: 10px;
+    margin: 10px 0;
     padding: 0 10px;
     display: flex;
 `;
 const StyledButton = styled(Button)`
     flex: 1;
+`;
+
+const StyledDivider = styled(Divider)`
+    background: #fff;
+    color: ${COLORS.TEXT_PRIMARY};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+    font-size: ${FONT_SIZE.BASE};
+    border: none;
 `;
 
 type DeviceMenuItem = {
@@ -104,18 +121,18 @@ class DeviceMenu extends PureComponent<Props> {
         return (
             <Wrapper>
                 {this.showMenuItems() && <MenuItems device={selectedDevice} {...this.props} />}
-                {this.showDivider() && <AsideDivider textLeft="Other devices" />}
+                {this.showDivider() && <StyledDivider hasBorder textLeft="Other devices" />}
                 <DeviceList
                     devices={devices}
                     selectedDevice={selectedDevice}
                     onSelectDevice={onSelectDevice}
                     forgetDevice={forgetDevice}
                 />
-                <ButtonWrapper>
-                    {deviceUtils.isWebUSB(transport) && (
+                {deviceUtils.isWebUSB(transport) && (
+                    <ButtonWrapper>
                         <StyledButton isWebUsb>Check for devices</StyledButton>
-                    )}
-                </ButtonWrapper>
+                    </ButtonWrapper>
+                )}
             </Wrapper>
         );
     }
