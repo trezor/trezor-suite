@@ -208,7 +208,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
 const unsubscribeAddresses = async (addresses: Array<string>) => {
     const subscribed = common.removeAddresses(addresses);
     const socket = await connect();
-    // socket.unsubscribeAddresses(addresses);
+    await socket.unsubscribeAddresses(addresses);
 
     if (subscribed.length < 1) {
         // there are no subscribed addresses left

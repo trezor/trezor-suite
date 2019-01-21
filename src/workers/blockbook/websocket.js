@@ -165,7 +165,7 @@ export default class Socket extends EventEmitter {
                 this.emit('block', {
                     block: result.height,
                     hash: result.hash,
-                })
+                });
             });
         });
     }
@@ -180,4 +180,32 @@ export default class Socket extends EventEmitter {
         });
     }
 
+    subscribeAddresses(addresses: Array<string>): Promise {
+        return new Promise((resolve) => {
+            const method = 'subscribeAddresses';
+            const params = {
+                addresses
+            };
+            if (this._subscribeAddressesId) {
+                delete this._subscriptions[this._subscribeAddressesId];
+                this._subscribeAddressesId = "";
+            }
+            this._subscribeAddressesId = this._subscribe(method, params, result => {
+                console.log('newTxAddress', result)
+                this.emit('notification', {
+                    result: result,
+                });
+            });
+        });
+    }
+
+    unsubscribeAddresses(addresses: Array<string>): Promise {
+        return new Promise((resolve) => {
+            if (this._subscribeAddressesId) {
+                this._unsubscribe('unsubscribeAddresses', this._subscribeAddressesId, {}, result => {
+                    this._subscribeAddressesId = '';
+                });
+            }
+        });
+    }
 }
