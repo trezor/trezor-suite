@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { setAddon, storiesOf } from '@storybook/react';
-// import { action } from '@storybook/addon-actions';
-
+import { action } from '@storybook/addon-actions';
 import ICONS from 'config/icons';
 
 import JSXAddon from 'storybook-addon-jsx';
@@ -16,6 +15,11 @@ import {
 import CoinLogo from 'components/images/CoinLogo';
 import TrezorImage from 'components/images/TrezorImage';
 import WalletType from 'components/images/WalletType';
+import P from 'components/Paragraph';
+import Tooltip from 'components/Tooltip';
+import Loader from 'components/Loader';
+import Link from 'components/Link';
+import Input from 'components/inputs/Input';
 
 setAddon(JSXAddon);
 
@@ -38,6 +42,28 @@ storiesOf('Heading', module)
     .addWithJSX('H2', () => <H2>Hello World!</H2>)
     .addWithJSX('H3', () => <H3>Hello World!</H3>)
     .addWithJSX('H4', () => <H4>Hello World!</H4>);
+
+storiesOf('Link', module)
+    .addWithJSX('Default', () => <Link onClick={action('Link click')}>This is a link.</Link>);
+
+storiesOf('Input', module)
+    .addWithJSX('Default', () => (
+        <Input
+            type="text"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
+            placeholder="placeholder..."
+            innerRef="test-input"
+            onChange={action('Input change')}
+            value="Input value"
+        />
+    ));
+
+storiesOf('Paragraph', module)
+    .addWithJSX('Default', () => <P>This is a paragraph.</P>)
+    .addWithJSX('Smaller', () => <P isSmaller>This is a paragraph.</P>);
 
 storiesOf('Trezor image', module)
     .addWithJSX('Model One', () => <TrezorImage model="1" />)
@@ -68,6 +94,33 @@ storiesOf('Coin logo', module)
     .addWithJSX('XLM', () => <CoinLogo network="xlm" />)
     .addWithJSX('XRP', () => <CoinLogo network="xrp" />)
     .addWithJSX('ZEC', () => <CoinLogo network="zec" />);
+
+storiesOf('Loader', module)
+    .addWithJSX('Default', () => (
+        <Loader
+            size={36}
+        />
+    ))
+    .addWithJSX('In button', () => (
+        <ButtonText>
+            <Loader
+                size={36}
+            />
+            Loading Button...
+        </ButtonText>
+    ));
+
+storiesOf('Tooltip', module)
+    .addWithJSX('Default', () => (
+        <Tooltip
+            maxWidth={280}
+            placement="top"
+            content="Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet."
+            readMoreLink="https://wiki.trezor.io/Passphrase"
+        >
+            <Icon icon={ICONS.TOP} />
+        </Tooltip>
+    ));
 
 storiesOf('Modal', module)
     .addWithJSX('Hello world!', () => {

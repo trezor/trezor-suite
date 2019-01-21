@@ -5,6 +5,9 @@ import Link from 'components/Link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
+/* Tooltip CSS */
+import 'rc-tooltip/assets/bootstrap.css';
+
 const Wrapper = styled.div``;
 
 const Content = styled.div`
