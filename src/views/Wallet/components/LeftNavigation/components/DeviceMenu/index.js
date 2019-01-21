@@ -17,6 +17,7 @@ import type { Props } from '../common';
 import Divider from '../Divider';
 
 const Wrapper = styled.div`
+    position: absolute;
     border-bottom: 1px solid #E3E3E3;
     background: white;
     box-shadow: 0 3px 8px rgba(0,0,0,0.06);
