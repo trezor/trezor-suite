@@ -47,9 +47,7 @@ describe('reducers utils', () => {
         ];
 
         data.forEach((item) => {
-            expect(reducerUtils.observeChanges(
-                item.previous, item.current,
-            )).toMatchSnapshot();
+            expect(reducerUtils.observeChanges(item.previous, item.current)).toMatchSnapshot();
         });
     });
 
@@ -119,9 +117,7 @@ describe('reducers utils', () => {
         ];
 
         data.forEach((item) => {
-            expect(reducerUtils.observeChanges(
-                item.previous, item.current,
-            )).toMatchSnapshot();
+            expect(reducerUtils.observeChanges(item.previous, item.current)).toMatchSnapshot();
         });
     });
 
@@ -140,9 +136,7 @@ describe('reducers utils', () => {
         ];
 
         data.forEach((item) => {
-            expect(reducerUtils.observeChanges(
-                item.previous, item.current, item.filter,
-            )).toMatchSnapshot();
+            expect(reducerUtils.observeChanges(item.previous, item.current, item.filter)).toMatchSnapshot();
         });
     });
 });

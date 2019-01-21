@@ -1,29 +1,28 @@
 import React from 'react';
+
 import { setAddon, storiesOf } from '@storybook/react';
-import { action, actions, configureActions } from '@storybook/addon-actions';
+// import { action } from '@storybook/addon-actions';
 
 import ICONS from 'config/icons';
-import * as MODAL from '/actions/constants/modal';
-import * as RECEIVE from 'actions/constants/receive';
-import * as CONNECT from 'actions/constants/TrezorConnect';
-import { UI } from 'trezor-connect';
 
 import JSXAddon from 'storybook-addon-jsx';
 import ButtonText from 'components/buttons/ButtonText';
 import ButtonWebUSB from 'components/buttons/ButtonWebUSB';
 import Icon from 'components/Icon';
-import TransactionItem from 'components/Transaction';
-import Modal from 'components/modals';
-
-const device = {
-    label: 'Test',
-    path: 'test',
-};
+import Modal from 'components/Modal';
+import {
+    H1, H2, H3, H4,
+} from 'components/Heading';
+import CoinLogo from 'components/images/CoinLogo';
+import TrezorImage from 'components/images/TrezorImage';
+import WalletType from 'components/images/WalletType';
 
 setAddon(JSXAddon);
 
 storiesOf('Buttons', module)
-    .addWithJSX('with text', () => <ButtonText>Hello Button</ButtonText>)
+    .addWithJSX('with text', () => (
+        <ButtonText>Hello Button</ButtonText>
+    ))
     .addWithJSX('with text (disabled)', () => (
         <ButtonText isDisabled>Hello Button</ButtonText>
     ))
@@ -34,188 +33,53 @@ storiesOf('Buttons', module)
         <ButtonWebUSB>Hello Button</ButtonWebUSB>
     ));
 
-storiesOf('Modal', module)
-    .addWithJSX('Enter pin', () => (
-        <Modal
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: UI.REQUEST_PIN,
-            }}
-            modalActions={{
-                onPinSubmit: action('onPinSubmit'),
-            }}
-        />
-    ))
-    .addWithJSX('Request passphrase', () => (
-        <Modal
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: UI.REQUEST_PASSPHRASE,
-            }}
-            wallet={{
-                selectedDevice: device,
-            }}
-            modalActions={{
-                onPassphraseSubmit: action('onPassphraseSubmit'),
-            }}
-        />
-    ))
-    .addWithJSX('Request passphrase type', () => (
-        <Modal
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: 'ButtonRequest_PassphraseType',
-            }}
-        />
-    ))
-    .addWithJSX('Sign TX Ethereum', () => (
-        <Modal
-            selectedAccount={{
-                network: {
-                    type: 'ethereum',
-                },
-            }}
-            sendFormEthereum={{
-                amount: 100,
-                currency: 'BTC',
-                address: 'testaddress',
-                selectedFeeLevel: {
-                    value: 10,
-                },
-            }}
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: 'ButtonRequest_SignTx',
-            }}
-        />
-    ))
-    .addWithJSX('Sign TX Ripple', () => (
-        <Modal
-            selectedAccount={{
-                network: {
-                    type: 'ripple',
-                },
-            }}
-            sendFormRipple={{
-                amount: 100,
-                currency: 'BTC',
-                address: 'testaddress',
-                selectedFeeLevel: {
-                    value: 10,
-                },
-            }}
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: 'ButtonRequest_SignTx',
-            }}
-        />
-    ))
-    .addWithJSX('Confirm action', () => (
-        <Modal
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: 'ButtonRequest_ProtectCall',
-            }}
-        />
-    ))
-    .addWithJSX('Confirm unverified address', () => (
-        <Modal
-            selectedAccount={{
-                account: {
-                    accountPath: 'test',
-                },
-            }}
-            modalActions={{
-                onCancel: action('onCancel', event),
-            }}
-            receiveActions={{
-                showAddress: action('showAddress'),
-                showUnverifiedAddress: action('showUnverifiedAddress'),
-            }}
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: RECEIVE.REQUEST_UNVERIFIED,
-            }}
-        />
-    ))
-    .addWithJSX('Remember device', () => (
-        <Modal
-            modalActions={{
-                onRememberDevice: action('onRememberDevice'),
-                onForgetDevice: action('onForgetDevice'),
-            }}
-            modal={{
-                device,
-                instances: [
-                    {
-                        instanceLabel: 'test',
-                    },
-                ],
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: CONNECT.REMEMBER_REQUEST,
-            }}
-        />
-    ))
-    .addWithJSX('Forget device', () => (
-        <Modal
-            modalActions={{
-                onForgetSingleDevice: action('onForgetSingleDevice'),
-                onCancel: action('onCancel'),
-            }}
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: CONNECT.FORGET_REQUEST,
-            }}
-        />
-    ))
-    .addWithJSX('Try to duplicate', () => (
-        <Modal
-            modalActions={{
-                onDuplicateDevice: action('onDuplicateDevice'),
-                onCancel: action('onCancel'),
-            }}
-            devices={[device]}
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: CONNECT.TRY_TO_DUPLICATE,
-            }}
-        />
-    ))
-    .addWithJSX('Request wallet type', () => (
-        <Modal
-            modalActions={{
-                onWalletTypeRequest: action('onWalletTypeRequest'),
-                onCancel: action('onCancel'),
-            }}
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: CONNECT.REQUEST_WALLET_TYPE,
-            }}
-        />
-    ))
-    .addWithJSX('Invalid pin', () => (
-        <Modal
-            modal={{
-                device,
-                context: MODAL.CONTEXT_DEVICE,
-                windowType: UI.INVALID_PIN,
-            }}
-        />
-    ));
+storiesOf('Heading', module)
+    .addWithJSX('H1', () => <H1>Hello World!</H1>)
+    .addWithJSX('H2', () => <H2>Hello World!</H2>)
+    .addWithJSX('H3', () => <H3>Hello World!</H3>)
+    .addWithJSX('H4', () => <H4>Hello World!</H4>);
 
-storiesOf('Transaction', module).addWithJSX('with text', () => (
-    <TransactionItem />
-));
+storiesOf('Trezor image', module)
+    .addWithJSX('Model One', () => <TrezorImage model="1" />)
+    .addWithJSX('Model T', () => <TrezorImage model="T" />);
+
+storiesOf('Wallet type', module)
+    .addWithJSX('Model One', () => <WalletType type="standard" />)
+    .addWithJSX('Model T', () => <WalletType type="hidden" />);
+
+storiesOf('Coin logo', module)
+    .addWithJSX('ADA', () => <CoinLogo network="ada" />)
+    .addWithJSX('BCH', () => <CoinLogo network="bch" />)
+    .addWithJSX('BTC', () => <CoinLogo network="btc" />)
+    .addWithJSX('BTG', () => <CoinLogo network="btg" />)
+    .addWithJSX('DASH', () => <CoinLogo network="dash" />)
+    .addWithJSX('DGB', () => <CoinLogo network="dgb" />)
+    .addWithJSX('DOGE', () => <CoinLogo network="doge" />)
+    .addWithJSX('ETC', () => <CoinLogo network="etc" />)
+    .addWithJSX('ETH', () => <CoinLogo network="eth" />)
+    .addWithJSX('LTC', () => <CoinLogo network="ltc" />)
+    .addWithJSX('NEM', () => <CoinLogo network="nem" />)
+    .addWithJSX('NMC', () => <CoinLogo network="nmc" />)
+    .addWithJSX('RINKEBY', () => <CoinLogo network="rinkeby" />)
+    .addWithJSX('TROP', () => <CoinLogo network="trop" />)
+    .addWithJSX('TXRP', () => <CoinLogo network="txrp" />)
+    .addWithJSX('VTC', () => <CoinLogo network="vtc" />)
+    .addWithJSX('XEM', () => <CoinLogo network="xem" />)
+    .addWithJSX('XLM', () => <CoinLogo network="xlm" />)
+    .addWithJSX('XRP', () => <CoinLogo network="xrp" />)
+    .addWithJSX('ZEC', () => <CoinLogo network="zec" />);
+
+storiesOf('Modal', module)
+    .addWithJSX('Hello world!', () => {
+        const modal = {
+            content: <H1>Hello world!</H1>,
+        };
+        return (
+            <Modal
+                modal={modal}
+            />
+        );
+    });
 
 storiesOf('Icon', module)
     .addWithJSX('Top', () => <Icon icon={ICONS.TOP} />)
