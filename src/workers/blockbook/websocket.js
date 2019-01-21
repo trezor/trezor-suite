@@ -192,9 +192,7 @@ export default class Socket extends EventEmitter {
             }
             this._subscribeAddressesId = this._subscribe(method, params, result => {
                 console.log('newTxAddress', result)
-                this.emit('notification', {
-                    result: result,
-                });
+                this.emit('notification', result);
             });
         });
     }
@@ -208,4 +206,37 @@ export default class Socket extends EventEmitter {
             }
         });
     }
+
+    getAccountInfo(descriptor: string): Promise {
+        return new Promise((resolve) => {
+            this._send('getAccountInfo', {
+                descriptor,
+                details: 'txs', // 'basic', // 'balance', 'txs'
+                page: 0,
+                pageSize: 10,
+            }, response => {
+                resolve(response);
+            });
+        });
+    }
+
+    estimateFee(options: Any): Promise {
+        return new Promise((resolve) => {
+            this._send('estimateFee', {
+                blocks: [2, 5, 10, 20],
+                specific: undefined,
+            }, response => {
+                resolve(response);
+            });
+        });
+    }
+
+    pushTransaction(hex: string): Promise {
+        return new Promise((resolve) => {
+            this._send('sendTransaction', { hex }, response => {
+                resolve(response);
+            });
+        });
+    }
+
 }

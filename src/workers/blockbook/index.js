@@ -13,7 +13,7 @@ declare function onmessage(event: { data: Message }): void;
 onmessage = (event) => {
     if (!event.data) return;
     const { data } = event;
-    
+
     common.debug('onmessage', data);
     switch (data.type) {
         case MESSAGES.HANDSHAKE:
@@ -25,9 +25,12 @@ onmessage = (event) => {
         case MESSAGES.GET_ACCOUNT_INFO:
             getAccountInfo(data);
             break;
-        // case MESSAGES.PUSH_TRANSACTION:
-        //     pushTransaction(data);
-        //     break;
+        case MESSAGES.ESTIMATE_FEE:
+            estimateFee(data);
+            break;
+        case MESSAGES.PUSH_TRANSACTION:
+            pushTransaction(data);
+            break;
         case MESSAGES.SUBSCRIBE:
             subscribe(data);
             break;
@@ -66,7 +69,7 @@ const connect = async (): Promise<Connection> => {
     common.debug('Connecting to', _endpoints[0]);
     // _connection = new Connection(_endpoints[0]);
     _connection = new Socket(_endpoints[0]);
-   
+
     try {
         await _connection.connect();
     } catch (error) {
@@ -108,7 +111,7 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     try {
         const socket = await connect();
         const info = await socket.getServerInfo();
-        console.warn("info", info, data)
+        console.warn("getInfo", info, data)
         postMessage({
             id: data.id,
             type: RESPONSES.GET_INFO,
@@ -118,6 +121,37 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
         common.errorHandler({ id: data.id, error });
     }
 }
+
+const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
+    try {
+        const socket = await connect();
+        const resp = await socket.estimateFee(data);
+        console.warn("estimateFee", resp, data)
+        postMessage({
+            id: data.id,
+            type: RESPONSES.ESTIMATE_FEE,
+            payload: resp
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+}
+
+const pushTransaction = async (data: { id: number } & MessageTypes.PushTransaction): Promise<void> => {
+    try {
+        const socket = await connect();
+        const resp = await socket.pushTransaction(data.payload);
+        console.warn("pushTransaction", resp, data)
+        postMessage({
+            id: data.id,
+            type: RESPONSES.PUSH_TRANSACTION,
+            payload: resp
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+}
+
 
 const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo): Promise<void> => {
     const { payload } = data;
