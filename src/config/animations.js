@@ -72,3 +72,12 @@ export const FADE_IN = keyframes`
         opacity: 1;
     }
 `;
+
+export const SLIDE_DOWN = keyframes`
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+`;

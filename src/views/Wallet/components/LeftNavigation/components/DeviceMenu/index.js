@@ -6,6 +6,7 @@ import type { TrezorDevice } from 'flowtype';
 
 import COLORS from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { SLIDE_DOWN } from 'config/animations';
 
 import Button from 'components/Button';
 import * as deviceUtils from 'utils/device';
@@ -21,6 +22,7 @@ const Wrapper = styled.div`
     border-bottom: 1px solid #E3E3E3;
     background: white;
     box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    animation: ${SLIDE_DOWN} 0.25s cubic-bezier(0.17, 0.04, 0.03, 0.94) forwards;
 `;
 
 const ButtonWrapper = styled.div`
