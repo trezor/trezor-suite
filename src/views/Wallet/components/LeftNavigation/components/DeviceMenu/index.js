@@ -54,6 +54,7 @@ class DeviceMenu extends PureComponent<Props> {
         super(props);
         this.mouseDownHandler = this.mouseDownHandler.bind(this);
         this.blurHandler = this.blurHandler.bind(this);
+        this.myRef = React.createRef();
     }
 
     componentDidMount(): void {
@@ -83,6 +84,10 @@ class DeviceMenu extends PureComponent<Props> {
             this.props.toggleDeviceDropdown(false);
             this.props.gotoDeviceSettings(device);
         }
+    }
+
+    getMenuHeight(): number {
+        return this.myRef.current ? this.myRef.current.getBoundingClientRect().height : 0;
     }
 
     blurHandler(): void {
@@ -118,13 +123,15 @@ class DeviceMenu extends PureComponent<Props> {
         return deviceUtils.isDeviceAccessible(this.props.wallet.selectedDevice);
     }
 
+    myRef: { current: ?HTMLDivElement }
+
     render() {
         const { devices, onSelectDevice, forgetDevice } = this.props;
         const { transport } = this.props.connect;
         const { selectedDevice } = this.props.wallet;
 
         return (
-            <Wrapper>
+            <Wrapper ref={this.myRef}>
                 {this.showMenuItems() && <MenuItems device={selectedDevice} {...this.props} />}
                 {this.showDivider() && <StyledDivider hasBorder textLeft="Other devices" />}
                 <DeviceList
