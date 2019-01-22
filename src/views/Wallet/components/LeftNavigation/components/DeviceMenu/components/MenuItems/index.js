@@ -8,18 +8,21 @@ import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
 
 const Wrapper = styled.div`
-    padding: 0px 24px 8px 19px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
     background: ${colors.WHITE};
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
 `;
 
 const Item = styled.div`
-    padding: 4px 2px;
+    padding: 6px 24px;
     display: flex;
     align-items: center;
     font-size: ${FONT_SIZE.BASE};
     cursor: pointer;
-    color: ${colors.TEXT_SECONDARY};    
+    color: ${colors.TEXT_SECONDARY};
+
+    &:hover {
+        background: ${colors.GRAY_LIGHT};
+    }
 `;
 
 const Label = styled.div`

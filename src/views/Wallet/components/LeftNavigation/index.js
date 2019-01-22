@@ -57,6 +57,7 @@ const Footer = styled.div.attrs(props => ({
 
 const Body = styled.div`
     width: 320px;
+    min-height: ${props => (props.minHeight ? `${props.minHeight}px` : '0px')};
 `;
 
 const Help = styled.div`
@@ -110,40 +111,46 @@ const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGro
 
 type State = {
     animationType: ?string;
-    shouldRenderDeviceSelection: boolean;
     clicked: boolean;
+    bodyMinHeight: number;
 }
 
 class LeftNavigation extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
+        this.deviceMenuRef = React.createRef();
         const { location } = this.props.router;
         const hasNetwork = location && location.state && location.state.network;
         this.state = {
             animationType: hasNetwork ? 'slide-left' : null,
-            shouldRenderDeviceSelection: false,
             clicked: false,
+            bodyMinHeight: 0,
         };
     }
 
+    componentDidMount() {
+        this.recalculateBodyMinHeight();
+    }
+
     componentWillReceiveProps(nextProps: Props) {
-        const { dropdownOpened, selectedDevice } = nextProps.wallet;
+        const { selectedDevice } = nextProps.wallet;
         const { location } = nextProps.router;
         const hasNetwork = location && location.state.network;
         const deviceReady = selectedDevice && selectedDevice.features && selectedDevice.mode === 'normal';
-        if (dropdownOpened) {
-            this.setState({ shouldRenderDeviceSelection: true });
-        } else if (hasNetwork) {
+
+        if (hasNetwork) {
             this.setState({
-                shouldRenderDeviceSelection: false,
                 animationType: 'slide-left',
             });
         } else {
             this.setState({
-                shouldRenderDeviceSelection: false,
                 animationType: deviceReady ? 'slide-right' : null,
             });
         }
+    }
+
+    componentDidUpdate() {
+        this.recalculateBodyMinHeight();
     }
 
     shouldRenderAccounts() {
@@ -153,7 +160,6 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             && location
             && location.state
             && location.state.network
-            && !this.state.shouldRenderDeviceSelection
             && this.state.animationType === 'slide-left';
     }
 
@@ -163,8 +169,18 @@ class LeftNavigation extends React.PureComponent<Props, State> {
     }
 
     shouldRenderCoins() {
-        return !this.state.shouldRenderDeviceSelection && this.state.animationType !== 'slide-left';
+        return this.state.animationType !== 'slide-left';
     }
+
+    recalculateBodyMinHeight() {
+        if (this.deviceMenuRef.current) {
+            this.setState({
+                bodyMinHeight: this.deviceMenuRef.current.getMenuHeight(),
+            });
+        }
+    }
+
+    deviceMenuRef: { current: any };
 
     render() {
         const { props } = this;
@@ -183,7 +199,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             );
         }
 
-        const { selectedDevice } = props.wallet;
+        const { selectedDevice, dropdownOpened } = props.wallet;
         const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
         return (
             <StickyContainer
@@ -218,8 +234,8 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     )}
                     {...this.props}
                 />
-                <Body>
-                    {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
+                <Body minHeight={this.state.bodyMinHeight}>
+                    {dropdownOpened && <DeviceMenu ref={this.deviceMenuRef} {...this.props} />}
                     {isDeviceAccessible && menu}
                 </Body>
                 <Footer key="sticky-footer">
