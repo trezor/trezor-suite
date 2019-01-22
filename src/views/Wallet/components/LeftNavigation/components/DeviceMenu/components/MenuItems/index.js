@@ -9,7 +9,6 @@ import { FONT_SIZE } from 'config/variables';
 
 const Wrapper = styled.div`
     background: ${colors.WHITE};
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
 `;
 
 const Item = styled.div`
