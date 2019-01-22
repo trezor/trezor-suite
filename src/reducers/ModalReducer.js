@@ -18,6 +18,8 @@ export type State = {
 } | {
     context: typeof MODAL.CONTEXT_EXTERNAL_WALLET,
     windowType?: string;
+} | {
+    context: typeof MODAL.CONTEXT_SCAN_QR,
 }
 
 const initialState: State = {
@@ -89,6 +91,11 @@ export default function modal(state: State = initialState, action: Action): Stat
             return {
                 context: MODAL.CONTEXT_EXTERNAL_WALLET,
                 windowType: action.id,
+            };
+
+        case MODAL.OPEN_SCAN_QR:
+            return {
+                context: MODAL.CONTEXT_SCAN_QR,
             };
 
         default:

@@ -29,6 +29,8 @@ import Nem from 'components/modals/external/Nem';
 import Cardano from 'components/modals/external/Cardano';
 import Stellar from 'components/modals/external/Stellar';
 
+import QrModal from 'components/modals/QrModal';
+
 import type { Props } from './Container';
 
 const ModalContainer = styled.div`
@@ -166,6 +168,20 @@ const getExternalContextModal = (props: Props) => {
     }
 };
 
+const getQrModal = (props: Props) => {
+    const { modalActions, selectedAccount } = props;
+
+    if (!selectedAccount.network) return null;
+    const networkType = selectedAccount.network.type;
+
+    return (
+        <QrModal
+            onCancel={modalActions.onCancel}
+            onScan={parsedUri => modalActions.onQrScan(parsedUri, networkType)}
+        />
+    );
+};
+
 // modal container component
 const Modal = (props: Props) => {
     const { modal } = props;
@@ -178,6 +194,9 @@ const Modal = (props: Props) => {
             break;
         case MODAL.CONTEXT_EXTERNAL_WALLET:
             component = getExternalContextModal(props);
+            break;
+        case MODAL.CONTEXT_SCAN_QR:
+            component = getQrModal(props);
             break;
         default:
             break;

@@ -19,7 +19,7 @@ type Props = {
 
 const Wrapper = styled.div`
     width: 360px;
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const Header = styled.div``;

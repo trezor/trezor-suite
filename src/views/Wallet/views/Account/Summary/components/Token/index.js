@@ -46,7 +46,7 @@ const TokenText = styled.div`
 `;
 
 const TokenName = styled(TokenText)`
-    flex: 0 0 0;
+    flex: 1 1 0;
     padding-right: 5px;
 `;
 

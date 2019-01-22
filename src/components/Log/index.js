@@ -22,7 +22,7 @@ const Wrapper = styled.div`
     position: relative;
     color: ${colors.INFO_PRIMARY};
     background: ${colors.INFO_SECONDARY};
-    padding: 24px 48px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     text-align: left;
@@ -32,9 +32,10 @@ const Wrapper = styled.div`
 const Click = styled.div`
     cursor: pointer;
     position: absolute;
-    top: 8px;
+    top: 0;
     right: 0;
-    padding: 12px;
+    padding-right: inherit;
+    padding-top: inherit;
     color: inherit;
     transition: opacity 0.3s;
 
@@ -61,7 +62,7 @@ const Log = (props: Props): ?React$Element<string> => {
     return (
         <Wrapper>
             <Click onClick={props.toggle}>
-                <Icon size={25} color={colors.INFO_PRIMARY} icon={icons.CLOSE} />
+                <Icon size={24} color={colors.INFO_PRIMARY} icon={icons.CLOSE} />
             </Click>
             <H2>Log</H2>
             <StyledParagraph isSmaller>Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.</StyledParagraph>

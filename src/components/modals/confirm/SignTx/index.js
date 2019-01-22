@@ -24,13 +24,13 @@ const Wrapper = styled.div`
 `;
 
 const Header = styled.div`
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const Content = styled.div`
     border-top: 1px solid ${colors.DIVIDER};
     background: ${colors.MAIN};
-    padding: 24px 48px;
+    padding: 30px 48px;
     border-radius: 4px;
 `;
 

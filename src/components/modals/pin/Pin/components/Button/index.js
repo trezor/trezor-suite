@@ -22,6 +22,7 @@ const Wrapper = styled.button`
     border: 1px solid ${colors.DIVIDER};
     background: ${colors.WHITE};
     transition: all 0.3s;
+    cursor: pointer;
 
     &:first-child {
         margin-left: 0px;

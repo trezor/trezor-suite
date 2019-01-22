@@ -31,12 +31,12 @@ const ButtonContent = styled.div`
 `;
 
 const StyledP = styled(P)`
-    padding: 10px 0;
+    padding: 20px 0;
 `;
 
 const Wrapper = styled.div`
     width: 360px;
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const Text = styled.div`
@@ -46,10 +46,10 @@ const Text = styled.div`
 const Column = styled.div`
     display: flex;
     flex-direction: column;
-`;
 
-const StyledButton = styled(Button)`
-    margin: 5px 0;
+    Button + Button {
+        margin-top: 10px;
+    }
 `;
 
 const StyledLoader = styled(Loader)`
@@ -128,7 +128,7 @@ class RememberDevice extends PureComponent<Props, State> {
                 <H3>Forget {label}?</H3>
                 <StyledP isSmaller>Would you like Trezor Wallet to forget your { devicePlural }, so that it is still visible even while disconnected?</StyledP>
                 <Column>
-                    <StyledButton onClick={() => this.forget()}>
+                    <Button onClick={() => this.forget()}>
                         <ButtonContent>
                             <Text>Forget</Text>
                             <StyledLoader
@@ -138,12 +138,12 @@ class RememberDevice extends PureComponent<Props, State> {
                                 text={this.state.countdown.toString()}
                             />
                         </ButtonContent>
-                    </StyledButton>
-                    <StyledButton
+                    </Button>
+                    <Button
                         isWhite
                         onClick={() => onRememberDevice(device)}
                     >Remember
-                    </StyledButton>
+                    </Button>
                 </Column>
             </Wrapper>
         );

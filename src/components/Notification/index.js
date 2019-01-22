@@ -58,11 +58,8 @@ const Title = styled.div`
 `;
 
 const CloseClick = styled.div`
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding-right: inherit;
-    padding-top: inherit;
+    margin-left: 24px;
+    align-self: flex-start;
     cursor: pointer;
 `;
 
@@ -102,15 +99,6 @@ const Notification = (props: Props): React$Element<string> => {
         <Wrapper className={props.className} type={props.type}>
             <Content>
                 {props.loading && <Loader size={50} /> }
-                {props.cancelable && (
-                    <CloseClick onClick={() => close()}>
-                        <Icon
-                            color={getPrimaryColor(props.type)}
-                            icon={icons.CLOSE}
-                            size={20}
-                        />
-                    </CloseClick>
-                )}
                 <Body>
                     <IconWrapper>
                         <StyledIcon
@@ -138,6 +126,15 @@ const Notification = (props: Props): React$Element<string> => {
                         </ActionContent>
                     )}
                 </AdditionalContent>
+                {props.cancelable && (
+                    <CloseClick onClick={() => close()}>
+                        <Icon
+                            color={getPrimaryColor(props.type)}
+                            icon={icons.CLOSE}
+                            size={20}
+                        />
+                    </CloseClick>
+                )}
             </Content>
         </Wrapper>
     );
