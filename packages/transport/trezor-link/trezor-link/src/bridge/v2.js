@@ -33,7 +33,7 @@ export default class BridgeTransport {
 
   url: string;
   newestVersionUrl: string;
-  newVersion: string;
+  newVersion: ?string;
   debug: boolean = false;
 
   configured: boolean = false;
@@ -41,7 +41,7 @@ export default class BridgeTransport {
 
   stopped: boolean = false;
 
-  constructor(url?: ?string, newestVersionUrl?: ?string, newVersion?: string) {
+  constructor(url?: ?string, newestVersionUrl?: ?string, newVersion?: ?string) {
     this.url = url == null ? DEFAULT_URL : url;
     this.newestVersionUrl = newestVersionUrl == null ? DEFAULT_VERSION_URL : newestVersionUrl;
     this.newVersion = newVersion;
