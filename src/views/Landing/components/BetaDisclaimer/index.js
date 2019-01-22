@@ -36,7 +36,7 @@ const ModalWindow = styled.div`
     text-align: center;
     width: 100%;
     max-width: 620px;
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const StyledP = styled(P)`

@@ -4,6 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 
+import Link from 'components/Link';
 import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
 import Tooltip from 'components/Tooltip';
@@ -117,7 +118,10 @@ const Right = styled.div`
     display: flex;
     flex-direction: row;
     font-size: ${FONT_SIZE.SMALL};
-    cursor: pointer;
+`;
+
+const StyledLink = styled(Link)`
+    white-space: nowrap;
 `;
 
 // stateless component
@@ -190,8 +194,8 @@ const AdvancedForm = (props: Props) => {
                                 </Tooltip>
                             </Left>
                             { showDefaultGasLimitButton && (
-                                <Right onClick={() => setDefaultGasLimit()}>
-                                    Set default
+                                <Right>
+                                    <StyledLink onClick={setDefaultGasLimit} isGreen>Set default</StyledLink>
                                 </Right>)
                             }
                         </InputLabelWrapper>

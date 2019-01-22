@@ -66,6 +66,11 @@ const MainContent = styled.article`
     display: flex;
     flex-direction: column;
     overflow: auto;
+    border-top-right-radius: 4px;
+    
+    @media screen and (max-width: 1170px) {
+        border-top-right-radius: 0px;
+    }
 `;
 
 const Navigation = styled.nav`

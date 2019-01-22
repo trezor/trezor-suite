@@ -41,7 +41,7 @@ const StyledLink = styled(Link)`
 
 const Wrapper = styled.div`
     width: 360px;
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const Column = styled.div`
@@ -138,7 +138,7 @@ class DuplicateDevice extends PureComponent<Props, State> {
         return (
             <Wrapper>
                 <StyledLink onClick={onCancel}>
-                    <Icon size={20} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                    <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                 </StyledLink>
                 <H3>Clone { device.label }?</H3>
                 <StyledP isSmaller>This will create new instance of device which can be used with different passphrase</StyledP>

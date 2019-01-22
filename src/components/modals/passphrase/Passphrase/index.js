@@ -31,7 +31,7 @@ type State = {
 };
 
 const Wrapper = styled.div`
-    padding: 24px 48px;
+    padding: 30px 48px;
     max-width: 390px;
 `;
 
