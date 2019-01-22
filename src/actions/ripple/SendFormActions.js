@@ -120,6 +120,38 @@ export const toggleAdvanced = (): Action => ({
 });
 
 /*
+* Called from UI from "clear" button
+*/
+export const onClear = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { network } = getState().selectedAccount;
+    const { advanced } = getState().sendFormRipple;
+
+    if (!network) return;
+
+    // clear transaction draft from session storage
+    dispatch(SessionStorageActions.clear());
+
+    const blockchainFeeLevels = dispatch(BlockchainActions.getFeeLevels(network));
+    const feeLevels = dispatch(ValidationActions.getFeeLevels(blockchainFeeLevels));
+    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, initialState.selectedFeeLevel);
+
+    dispatch({
+        type: SEND.CLEAR,
+        networkType: 'ripple',
+        state: {
+            ...initialState,
+            networkName: network.shortcut,
+            networkSymbol: network.symbol,
+            feeLevels,
+            selectedFeeLevel,
+            fee: network.fee.defaultFee,
+            sequence: '1',
+            advanced,
+        },
+    });
+};
+
+/*
 * Called from UI on "address" field change
 */
 export const onAddressChange = (address: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
@@ -368,4 +400,5 @@ export default {
     onFeeChange,
     onDestinationTagChange,
     onSend,
+    onClear,
 };

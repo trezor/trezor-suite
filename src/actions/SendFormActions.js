@@ -18,11 +18,11 @@ import * as EthereumSendFormActions from './ethereum/SendFormActions';
 import * as RippleSendFormActions from './ripple/SendFormActions';
 
 export type SendFormAction = {
-    type: typeof SEND.INIT | typeof SEND.VALIDATION | typeof SEND.CHANGE,
+    type: typeof SEND.INIT | typeof SEND.VALIDATION | typeof SEND.CHANGE | typeof SEND.CLEAR,
     networkType: 'ethereum',
     state: EthereumState,
 } | {
-    type: typeof SEND.INIT | typeof SEND.VALIDATION | typeof SEND.CHANGE,
+    type: typeof SEND.INIT | typeof SEND.VALIDATION | typeof SEND.CHANGE | typeof SEND.CLEAR,
     networkType: 'ripple',
     state: RippleState,
 } | {

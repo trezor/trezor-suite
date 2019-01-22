@@ -19,6 +19,9 @@ export type BlockchainAction = {
     type: typeof BLOCKCHAIN.UPDATE_FEE,
     shortcut: string,
     feeLevels: Array<BlockchainFeeLevel>,
+} | {
+    type: typeof BLOCKCHAIN.START_SUBSCRIBE,
+    shortcut: string,
 }
 
 // Conditionally subscribe to blockchain backend
@@ -51,6 +54,11 @@ export const subscribe = (networkName: string): PromiseAction<void> => async (di
     const { config } = getState().localStorage;
     const network = config.networks.find(c => c.shortcut === networkName);
     if (!network) return;
+
+    dispatch({
+        type: BLOCKCHAIN.START_SUBSCRIBE,
+        shortcut: network.shortcut,
+    });
 
     switch (network.type) {
         case 'ethereum':

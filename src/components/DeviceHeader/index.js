@@ -15,6 +15,7 @@ const Wrapper = styled.div`
     position: relative;
     height: 70px;
     width: 320px;
+    z-index: 10;
     display: flex;
     align-items: center;
     background: ${props => (props.disabled ? colors.GRAY_LIGHT : 'transparent')};
