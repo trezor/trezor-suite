@@ -175,6 +175,14 @@ const AdvancedSettingsIcon = styled(Icon)`
     margin-left: 10px;
 `;
 
+const QrButton = styled(Button)`
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-left: 0px;
+    height: 40px;
+    padding: 0 10px;
+`;
+
 // render helpers
 const getAddressInputState = (address: string, addressErrors: string, addressWarnings: string): string => {
     let state = '';
@@ -298,6 +306,19 @@ const AccountSend = (props: Props) => {
                     bottomText={errors.address || warnings.address || infos.address}
                     value={address}
                     onChange={event => onAddressChange(event.target.value)}
+                    sideAddons={[(
+                        <QrButton
+                            key="qrButton"
+                            isWhite
+                            onClick={props.openQrModal}
+                        >
+                            <Icon
+                                size={25}
+                                color={colors.TEXT_SECONDARY}
+                                icon={ICONS.QRCODE}
+                            />
+                        </QrButton>
+                    )]}
                 />
             </InputRow>
             <InputRow>

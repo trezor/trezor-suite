@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 /* @flow */
 
 import TrezorConnect, { UI } from 'trezor-connect';
@@ -9,6 +10,10 @@ import type {
     ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
 } from 'flowtype';
 import type { State } from 'reducers/ModalReducer';
+import type { parsedURI } from 'utils/cryptoUriParser';
+
+import sendEthereumFormActions from './ethereum/SendFormActions';
+import sendRippleFormActions from './ripple/SendFormActions';
 
 export type ModalAction = {
     type: typeof MODAL.CLOSE
@@ -16,7 +21,10 @@ export type ModalAction = {
     type: typeof MODAL.OPEN_EXTERNAL_WALLET,
     id: string,
     url: string,
+} | {
+    type: typeof MODAL.OPEN_SCAN_QR,
 };
+
 
 export const onPinSubmit = (value: string): Action => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: value });
@@ -139,6 +147,29 @@ export const gotoExternalWallet = (id: string, url: string): ThunkAction => (dis
     });
 };
 
+export const openQrModal = (): ThunkAction => (dispatch: Dispatch): void => {
+    dispatch({
+        type: MODAL.OPEN_SCAN_QR,
+    });
+};
+
+export const onQrScan = (parsedUri: parsedURI, networkType: string): ThunkAction => (dispatch: Dispatch): void => {
+    const { address = '', amount } = parsedUri;
+    switch (networkType) {
+        case 'ethereum':
+            dispatch(sendEthereumFormActions.onAddressChange(address));
+            if (amount) dispatch(sendEthereumFormActions.onAmountChange(amount));
+            break;
+        case 'ripple':
+            dispatch(sendRippleFormActions.onAddressChange(address));
+            if (amount) dispatch(sendRippleFormActions.onAmountChange(amount));
+            break;
+        default:
+            break;
+    }
+};
+
+
 export default {
     onPinSubmit,
     onPassphraseSubmit,
@@ -149,4 +180,6 @@ export default {
     onDuplicateDevice,
     onWalletTypeRequest,
     gotoExternalWallet,
+    openQrModal,
+    onQrScan,
 };

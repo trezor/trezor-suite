@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import SendFormActions from 'actions/ethereum/SendFormActions';
+import { openQrModal } from 'actions/ModalActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 import AccountSend from './index';
@@ -20,6 +21,7 @@ export type StateProps = {
 
 export type DispatchProps = {
     sendFormActions: typeof SendFormActions,
+    openQrModal: typeof openQrModal,
 }
 
 export type Props = StateProps & DispatchProps;
@@ -34,6 +36,8 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
     sendFormActions: bindActionCreators(SendFormActions, dispatch),
+    openQrModal: bindActionCreators(openQrModal, dispatch),
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountSend);
