@@ -5,7 +5,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 // import FlowWebpackPlugin from 'flow-webpack-plugin';
 
 import {
-    ABSOLUTE_BASE, SRC, BUILD, PORT,
+    SRC, BUILD, PORT,
 } from './constants';
 
 module.exports = {
