@@ -1,8 +1,7 @@
 /* @flow */
 import { MESSAGES, RESPONSES } from '../../constants';
 import * as common from '../common';
-// import Connection from './socket.io';
-import Socket from './websocket';
+import Connection from './websocket';
 
 import type { Message, Response } from '../../types';
 import * as MessageTypes from '../../types/messages';
@@ -67,8 +66,7 @@ const connect = async (): Promise<Connection> => {
     }
 
     common.debug('Connecting to', _endpoints[0]);
-    // _connection = new Connection(_endpoints[0]);
-    _connection = new Socket(_endpoints[0]);
+    _connection = new Connection(_endpoints[0]);
 
     try {
         await _connection.connect();
@@ -181,7 +179,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
     const { payload } = data;
     try {
         if (payload.type === 'notification') {
-            await subscribeAddresses(payload.addresses, payload.mempool);
+            await subscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             await subscribeBlock();
         }
@@ -197,7 +195,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
     });
 }
 
-const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = true) => {
+const subscribeAddresses = async (addresses: Array<string>) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const socket = await connect();
     if (!common.getSubscription('notification')) {

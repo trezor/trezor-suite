@@ -1,24 +1,24 @@
 /* @flow */
 
-import WSWebSocket from 'ws';
+import WebSocket from 'ws';
 import EventEmitter from 'events';
 import Promise from 'es6-promise';
-import WS from '../../utils/ws';
 
-declare function wscallback(result: {}): void
-
+type WsCallback = (result: Object) => void;
 export default class Socket extends EventEmitter {
     _url: string;
-    _ws: ?WSWebSocket = null;
+    _ws: ?WebSocket;
     _state: number = 0;
 
     _messageID: number = 0;
-    _pendingMessages: { [string]: wscallback } = {};
-    _subscriptions: { [string]: wscallback } = {};
+    _pendingMessages: { [string]: WsCallback } = {};
+    _subscriptions: { [string]: WsCallback } = {};
     _subscribeNewBlockId: string = '';
     _subscribeAddressesId: string = '';
 
-    _send(method: string, params: {}, callback: wscallback): string {
+    _send(method: string, params: {}, callback: WsCallback): string {
+        if (!this._ws) throw new Error('WebSocket not initialized');
+        const ws = this._ws;
         const id = this._messageID.toString();
         this._messageID++;
         this._pendingMessages[id] = callback;
@@ -27,11 +27,13 @@ export default class Socket extends EventEmitter {
             method,
             params
         }
-        this._ws.send(JSON.stringify(req));
+        ws.send(JSON.stringify(req));
         return id;
     }
 
-    _subscribe(method: string, params: {}, callback: wscallback): string {
+    _subscribe(method: string, params: {}, callback: WsCallback): string {
+        if (!this._ws) throw new Error('WebSocket not initialized');
+        const ws = this._ws;
         const id = this._messageID.toString();
         this._messageID++;
         this._subscriptions[id] = callback;
@@ -40,11 +42,13 @@ export default class Socket extends EventEmitter {
             method,
             params
         }
-        this._ws.send(JSON.stringify(req));
+        ws.send(JSON.stringify(req));
         return id;
     }
 
-    _unsubscribe(method: string, id: string, params: {}, callback: wscallback): string {
+    _unsubscribe(method: string, id: string, params: {}, callback: WsCallback): string {
+        if (!this._ws) throw new Error('WebSocket not initialized');
+        const ws = this._ws;
         delete this._subscriptions[id];
         this._pendingMessages[id] = callback;
         const req = {
@@ -52,12 +56,11 @@ export default class Socket extends EventEmitter {
             method,
             params
         }
-        this._ws.send(JSON.stringify(req));
+        ws.send(JSON.stringify(req));
         return id;
     }
 
     _onmessage(m: string) {
-        console.log('resp ' + m);
         const resp = JSON.parse(m);
         const f = this._pendingMessages[resp.id];
         if (f != undefined) {
@@ -69,13 +72,13 @@ export default class Socket extends EventEmitter {
                 s(resp.data);
             }
             else {
-                console.log('unkown response ' + resp.id);
+                console.log('unknown response ' + resp.id);
             }
         }
     }
 
-    _createWebSocket(): WSWebSocket {
-        const websocket = new WSWebSocket(this._url);
+    _createWebSocket(): WebSocket {
+        const websocket = new WebSocket(this._url);
         // we will have a listener for each outstanding request,
         // so we have to raise the limit (the default is 10)
         if (typeof websocket.setMaxListeners === 'function') {
@@ -99,7 +102,6 @@ export default class Socket extends EventEmitter {
         }
         this._url = url;
     }
-
 
     connect(): Promise {
         //this._clearReconnectTimer()
@@ -134,15 +136,17 @@ export default class Socket extends EventEmitter {
 
     disconnect(): Promise {
         return new Promise(() => {
-            this._ws.close();
+            if (this._ws)
+                this._ws.close();
         });
     }
 
     isConnected(): boolean {
-        return this._ws && this._ws.readyState == WS.OPEN;
+        const ws = this._ws;
+        return ws && ws.readyState == WebSocket.OPEN;
     }
 
-    getServerInfo() {
+    getServerInfo(): Promise<any> {
         return new Promise((resolve) => {
             this._send('getInfo', {}, response => {
                 resolve({
@@ -161,7 +165,6 @@ export default class Socket extends EventEmitter {
                 this._subscribeNewBlockId = '';
             }
             this._subscribeNewBlockId = this._subscribe('subscribeNewBlock', {}, result => {
-                console.log('newBlock', result)
                 this.emit('block', {
                     block: result.height,
                     hash: result.hash,
@@ -191,7 +194,6 @@ export default class Socket extends EventEmitter {
                 this._subscribeAddressesId = "";
             }
             this._subscribeAddressesId = this._subscribe(method, params, result => {
-                console.log('newTxAddress', result)
                 this.emit('notification', result);
             });
         });
@@ -220,7 +222,7 @@ export default class Socket extends EventEmitter {
         });
     }
 
-    estimateFee(options: Any): Promise {
+    estimateFee(options: any): Promise {
         return new Promise((resolve) => {
             this._send('estimateFee', {
                 blocks: [2, 5, 10, 20],
@@ -238,5 +240,4 @@ export default class Socket extends EventEmitter {
             });
         });
     }
-
 }
