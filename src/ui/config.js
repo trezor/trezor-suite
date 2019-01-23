@@ -58,7 +58,7 @@ export default [
             // subscribe: 'rJb5KsHsDHF1YS5B5DU6QCkH5NsPaKQTcy,rsG1sNifXJxGS2nDQ9zHyoe1S5APrtwpjV'
             subscribe: 'rMBzp8CgpE441cp5PVyA9rpVV7oT8hP3ys'
         },
-        selected: true
+        selected: false
     },
     {
         blockchain: {
@@ -83,6 +83,6 @@ export default [
             tx: '',
             subscribe: '0x103262f243e6f67d12d6a4ea0d45302c1fa4bb0a'
         },
-        
+        selected: true
     },
 ];

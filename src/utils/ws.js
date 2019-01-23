@@ -1,71 +1,43 @@
-/* @flow */
-
-import EventEmitter from 'events';
-
-// Define the global WebSocket class found on the native browser
-// declare class WebSocket {
-//     onclose?: Function;
-//     onopen?: Function;
-//     onerror?: Function;
-//     onmessage?: Function;
-//     readyState: number;
-//     constructor(url: string)
-//     close();
-//     send(message: string);
-// }
-
 /**
+ * Copy/paste from /node_modules/ripple-lib/dist/npm/common/wswrapper.js
  * Provides `EventEmitter` interface for native browser `WebSocket`,
  * same, as `ws` package provides.
- * From: https://github.com/ripple/ripple-lib/blob/develop/src/common/wswrapper.ts
  */
-class WS extends EventEmitter {
 
-    _ws: WebSocket;
-    static CONNECTING = 0
-    static OPEN = 1
-    static CLOSING = 2
-    static CLOSED = 3
+const events = require("events");
 
-    constructor(url: string, _protocols: any, _websocketOptions: any) {
+class WSWrapper extends events.EventEmitter {
+    constructor(url, _protocols, _websocketOptions) {
         super();
-
-        console.warn("WS FAKE", WebSocket)
-
+        this.setMaxListeners(Infinity);
         this._ws = new WebSocket(url);
-
         this._ws.onclose = () => {
             this.emit('close');
-        }
-
+        };
         this._ws.onopen = () => {
             this.emit('open');
-        }
-
+        };
         this._ws.onerror = error => {
-            console.warn("ON ERROR", error)
             this.emit('error', error);
-        }
-
+        };
         this._ws.onmessage = message => {
             this.emit('message', message.data);
-        }
+        };
     }
-
     close() {
         if (this.readyState === 1) {
             this._ws.close();
         }
     }
-
-    send(message: any) {
+    send(message) {
         this._ws.send(message);
     }
-
     get readyState() {
         return this._ws.readyState;
     }
-
 }
-
-export default WS;
+WSWrapper.CONNECTING = 0;
+WSWrapper.OPEN = 1;
+WSWrapper.CLOSING = 2;
+WSWrapper.CLOSED = 3;
+module.exports = WSWrapper;

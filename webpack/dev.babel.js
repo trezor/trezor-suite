@@ -5,7 +5,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 // import FlowWebpackPlugin from 'flow-webpack-plugin';
 
 import {
-    SRC, BUILD, PORT,
+    ABSOLUTE_BASE, SRC, BUILD, PORT,
 } from './constants';
 
 module.exports = {
@@ -51,15 +51,14 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         alias: {
-            // 'ws-browser': `${SRC}/utils/ws.js`,
-            // 'ws-browser': 'node_modules/ripple-lib/dist/npm/common/wswrapper.js',
+            'ws-browser': `${SRC}/utils/ws.js`,
         },
     },
     performance: {
         hints: false,
     },
     plugins: [
-        // new webpack.NormalModuleReplacementPlugin(/^ws$/, 'ws-browser'),
+        new webpack.NormalModuleReplacementPlugin(/^ws$/, 'ws-browser'),
         // new FlowWebpackPlugin({
         //     reportingSeverity: 'warning',
         // }),

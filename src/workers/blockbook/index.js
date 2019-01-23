@@ -1,8 +1,7 @@
 /* @flow */
 import { MESSAGES, RESPONSES } from '../../constants';
 import * as common from '../common';
-import Connection from './socket.io';
-// import Socket from './websocket';
+import Connection from './websocket';
 
 import type { Message, Response } from '../../types';
 import * as MessageTypes from '../../types/messages';
@@ -13,7 +12,7 @@ declare function onmessage(event: { data: Message }): void;
 onmessage = (event) => {
     if (!event.data) return;
     const { data } = event;
-    
+
     common.debug('onmessage', data);
     switch (data.type) {
         case MESSAGES.HANDSHAKE:
@@ -25,9 +24,12 @@ onmessage = (event) => {
         case MESSAGES.GET_ACCOUNT_INFO:
             getAccountInfo(data);
             break;
-        // case MESSAGES.PUSH_TRANSACTION:
-        //     pushTransaction(data);
-        //     break;
+        case MESSAGES.ESTIMATE_FEE:
+            estimateFee(data);
+            break;
+        case MESSAGES.PUSH_TRANSACTION:
+            pushTransaction(data);
+            break;
         case MESSAGES.SUBSCRIBE:
             subscribe(data);
             break;
@@ -50,11 +52,6 @@ let _connection: ?Connection;
 let _endpoints: Array<string> = [];
 
 const connect = async (): Promise<Connection> => {
-
-    // const s = new Socket();
-    // const ss = await s.connect();
-    // console.warn("NativeWS", ss);
-
     if (_connection) {
         if (_connection.isConnected()) return _connection;
     }
@@ -70,7 +67,7 @@ const connect = async (): Promise<Connection> => {
 
     common.debug('Connecting to', _endpoints[0]);
     _connection = new Connection(_endpoints[0]);
-   
+
     try {
         await _connection.connect();
     } catch (error) {
@@ -112,7 +109,7 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     try {
         const socket = await connect();
         const info = await socket.getServerInfo();
-        console.warn("info", info, data)
+        console.warn("getInfo", info, data)
         postMessage({
             id: data.id,
             type: RESPONSES.GET_INFO,
@@ -122,6 +119,37 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
         common.errorHandler({ id: data.id, error });
     }
 }
+
+const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
+    try {
+        const socket = await connect();
+        const resp = await socket.estimateFee(data);
+        console.warn("estimateFee", resp, data)
+        postMessage({
+            id: data.id,
+            type: RESPONSES.ESTIMATE_FEE,
+            payload: resp
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+}
+
+const pushTransaction = async (data: { id: number } & MessageTypes.PushTransaction): Promise<void> => {
+    try {
+        const socket = await connect();
+        const resp = await socket.pushTransaction(data.payload);
+        console.warn("pushTransaction", resp, data)
+        postMessage({
+            id: data.id,
+            type: RESPONSES.PUSH_TRANSACTION,
+            payload: resp
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+}
+
 
 const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo): Promise<void> => {
     const { payload } = data;
@@ -151,7 +179,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
     const { payload } = data;
     try {
         if (payload.type === 'notification') {
-            await subscribeAddresses(payload.addresses, payload.mempool);
+            await subscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             await subscribeBlock();
         }
@@ -167,7 +195,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
     });
 }
 
-const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = true) => {
+const subscribeAddresses = async (addresses: Array<string>) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
     const socket = await connect();
     if (!common.getSubscription('notification')) {
@@ -186,13 +214,13 @@ const subscribeBlock = async () => {
     const socket = await connect();
     common.addSubscription('block');
     socket.on('block', onNewBlock);
-    socket.subscribeBlock();
+    await socket.subscribeBlock();
 };
 
 const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
     const { payload } = data;
     try {
-        if (payload.type === 'address') {
+        if (payload.type === 'notification') {
             await unsubscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             await unsubscribeBlock();
@@ -212,7 +240,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
 const unsubscribeAddresses = async (addresses: Array<string>) => {
     const subscribed = common.removeAddresses(addresses);
     const socket = await connect();
-    // socket.unsubscribeAddresses(addresses);
+    await socket.unsubscribeAddresses(addresses);
 
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
@@ -223,10 +251,11 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
 }
 
 const unsubscribeBlock = async () => {
-    if (!common.getSubscription('ledger')) return;
+    if (!common.getSubscription('block')) return;
     const socket = await connect();
-    // socket.off('block', onNewBlock);
+    socket.removeListener('block', onNewBlock);
     common.removeSubscription('block');
+    await socket.unsubscribeBlock();
 }
 
 const disconnect = async (data: { id: number }) => {

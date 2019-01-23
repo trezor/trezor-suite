@@ -2,7 +2,7 @@
     "extends": [
         "eslint:recommended",
         "plugin:flowtype/recommended",
-        "plugin:,mocha/recommended"
+        "plugin:mocha/recommended"
     ],
     "globals": {
     },
