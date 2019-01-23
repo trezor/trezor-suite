@@ -4,12 +4,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import icons from 'config/icons';
 import colors from 'config/colors';
 import { LINE_HEIGHT, FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 import P from 'components/Paragraph';
-import Icon from 'components/Icon';
+import DeviceIcon from 'components/images/DeviceIcon';
 import { H3 } from 'components/Heading';
 
 import type { TrezorDevice, State } from 'flowtype';
@@ -71,7 +70,7 @@ const ConfirmSignTx = (props: Props) => {
     return (
         <Wrapper>
             <Header>
-                <Icon icon={icons.T1} size={60} color={colors.TEXT_SECONDARY} />
+                <DeviceIcon device={props.device} size={60} color={colors.TEXT_SECONDARY} />
                 <H3>Confirm transaction on { props.device.label } device</H3>
                 <P isSmaller>Details are shown on display</P>
             </Header>
