@@ -64,6 +64,10 @@ const AdvancedSettingsSendButtonWrapper = styled.div`
     justify-content: flex-end;
 `;
 
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
 const getFeeInputState = (feeErrors: string, feeWarnings: string): string => {
     let state = '';
     if (feeWarnings && !feeErrors) {
@@ -132,7 +136,7 @@ const AdvancedForm = (props: Props) => {
                                     readMoreLink="https://developers.ripple.com/transaction-cost.html"
                                     placement="top"
                                 >
-                                    <Icon
+                                    <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
                                         size={24}
@@ -168,7 +172,7 @@ const AdvancedForm = (props: Props) => {
                                     readMoreLink="https://developers.ripple.com/rippleapi-reference.html#payment"
                                     placement="top"
                                 >
-                                    <Icon
+                                    <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
                                         size={24}
