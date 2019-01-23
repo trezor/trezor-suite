@@ -17,9 +17,9 @@ export type {
 } from './types/messages';
 
 const workerWrapper = (factory: string | Function): Worker => {
+    if (typeof factory === 'function') return new factory();
     if (typeof factory === 'string' && typeof Worker !== 'undefined') return new Worker(factory);
     // use custom worker
-    if (typeof factory === 'function') return new factory();
     throw new Error('Cannot use worker');
 };
 
@@ -29,6 +29,7 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
     const worker = workerWrapper(settings.worker);
     worker.onmessage = (message: any) => {
         if (message.data.type !== MESSAGES.HANDSHAKE) return;
+        delete settings.worker;
         worker.postMessage({
             type: MESSAGES.HANDSHAKE,
             settings,
