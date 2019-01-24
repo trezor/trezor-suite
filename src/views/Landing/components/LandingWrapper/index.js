@@ -19,7 +19,6 @@ type Props = {
 
 const Wrapper = styled.div`
     min-height: 100%;
-    min-width: 720px;
 
     display: flex;
     flex-direction: column;
