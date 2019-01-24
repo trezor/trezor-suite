@@ -26,7 +26,6 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 400px;
     margin: 0 auto;
     padding: 36px 0;
 `;
@@ -41,8 +40,9 @@ const ConnectTrezorWrapper = styled.div`
 `;
 
 const Image = styled.img`
-    width: 777px;
-    min-height: 500px;
+    width: 100%;
+    max-width: 777px;
+    height: auto;
     margin: auto;
     background-repeat: no-repeat;
     background-position: center 0px;
