@@ -1,17 +1,42 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 
 import Modal from 'components/Modal';
+import Pin from 'components/Pin';
+import Passphrase from 'components/Passphrase';
+
+const device = {
+    label: 'Test',
+    path: 'test',
+};
 
 storiesOf('Modal', module)
-    .addWithJSX('Hello world!', () => {
-        const modal = {
-            content: 'Hello world!',
-        };
-        return (
-            <Modal
-                modal={modal}
-            />
-        );
-    });
+    .addWithJSX('Hello world!', () => (
+        <Modal
+            modal={{
+                content: 'Hello world!',
+            }}
+        />
+    ))
+    .addWithJSX('Pin modal', () => (
+        <Modal
+            modal={{
+                content: <Pin
+                    device={device}
+                    onPinSubmit={action('Pin submit')}
+                />,
+            }}
+        />
+    ))
+    .addWithJSX('Passphrase modal', () => (
+        <Modal
+            modal={{
+                content: <Passphrase
+                    device={device}
+                    onPassphraseSubmit={action('Passphrase submit')}
+                />,
+            }}
+        />
+    ));
