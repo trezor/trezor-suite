@@ -7,7 +7,6 @@ import {
     H1, H2, H3, H4,
 } from 'components/Heading';
 import Link from 'components/Link';
-import Input from 'components/inputs/Input';
 import P from 'components/Paragraph';
 import Tooltip from 'components/Tooltip';
 
@@ -19,19 +18,6 @@ storiesOf('Text', module)
     .addWithJSX('Link', () => <Link href="https://trezor.io">This is a link.</Link>)
     .addWithJSX('Paragraph', () => <P>This is a paragraph.</P>)
     .addWithJSX('Paragraph small', () => <P isSmaller>This is a paragraph.</P>)
-    .addWithJSX('Input', () => (
-        <Input
-            type="text"
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck="false"
-            placeholder="placeholder..."
-            innerRef="test-input"
-            onChange={action('Input change')}
-            value="Input value"
-        />
-    ))
     .addWithJSX('Tooltip', () => (
         <Tooltip
             maxWidth={280}
