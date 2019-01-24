@@ -16,6 +16,10 @@ const StyledSVG = styled.svg`
     margin-bottom: 24px;
 `;
 
+const StyledP = styled(P)`
+    text-align: center;
+`;
+
 const AddTokenMessage = () => (
     <Wrapper>
         <StyledSVG width="84px" height="76px" viewBox="0 0 84 76">
@@ -51,7 +55,7 @@ const AddTokenMessage = () => (
             </g>
         </StyledSVG>
         <H2>Add your tokens</H2>
-        <P isSmaller>Search for the token or add them manually by pasting token address into search input.</P>
+        <StyledP isSmaller>Search for the token or add them manually by pasting token address into search input.</StyledP>
     </Wrapper>
 );
 export default AddTokenMessage;
