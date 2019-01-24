@@ -25,7 +25,6 @@ type Props = {
 }
 
 const Wrapper = styled.div`
-    width: 360px;
 `;
 
 const Header = styled.div`
