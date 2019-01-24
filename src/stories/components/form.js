@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 
 import Input from 'components/inputs/Input';
 import TextArea from 'components/Textarea';
@@ -21,7 +20,7 @@ storiesOf('Form', module)
         <Input
             placeholder="placeholder..."
             value="Input value"
-            onChange={action('Input change')}
+            onChange={() => {}}
         />
     ))
     .addWithJSX('Input (error)', () => (
@@ -30,7 +29,7 @@ storiesOf('Form', module)
             bottomText="This is the error message."
             placeholder="placeholder..."
             value="Input value"
-            onChange={action('Input change')}
+            onChange={() => {}}
         />
     ))
     .addWithJSX('Input (disabled)', () => (
@@ -38,13 +37,13 @@ storiesOf('Form', module)
             isDisabled
             placeholder="placeholder..."
             value="Input value"
-            onChange={action('Input change')}
+            onChange={() => {}}
         />
     ))
     .addWithJSX('Textarea', () => (
         <TextArea
             value="Text value of textarea"
-            onChange={action('Textarea change')}
+            onChange={() => {}}
         />
     ))
     .addWithJSX('Textarea (error)', () => (
@@ -52,20 +51,20 @@ storiesOf('Form', module)
             state="error"
             bottomText="This is the description of the error."
             value="Text value of textarea"
-            onChange={action('Textarea change')}
+            onChange={() => {}}
         />
     ))
     .addWithJSX('Textarea (disabled)', () => (
         <TextArea
             isDisabled
             value="Text value of textarea"
-            onChange={action('Textarea change')}
+            onChange={() => {}}
         />
     ))
     .addWithJSX('Checkbox', () => (
         <Checkbox
             isChecked={false}
-            onClick={action('Checkbox click')}
+            onClick={() => {}}
         >
             Show passphrase
         </Checkbox>
@@ -73,7 +72,7 @@ storiesOf('Form', module)
     .addWithJSX('Checkbox (checked)', () => (
         <Checkbox
             isChecked
-            onClick={action('Checkbox click')}
+            onClick={() => {}}
         >
             Show passphrase
         </Checkbox>
@@ -87,7 +86,7 @@ storiesOf('Form', module)
                 { value: 'hello', label: 'Hello' },
                 { value: 'world', label: 'World' },
             ]}
-            onChange={action('Select change')}
+            onChange={() => {}}
         />
     ))
     .addWithJSX('Select (Async)', () => (
@@ -97,7 +96,7 @@ storiesOf('Form', module)
                 { value: 'world', label: 'World' },
             ]}
             cacheOptions={false}
-            onInputChange={action('Select input change')}
+            onInputChange={() => {}}
             loadOptions={loadOptions}
         />
     ))
@@ -109,6 +108,6 @@ storiesOf('Form', module)
                 { value: 'hello', label: 'Hello' },
                 { value: 'world', label: 'World' },
             ]}
-            onChange={action('Select change')}
+            onChange={() => {}}
         />
     ));

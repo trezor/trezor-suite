@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 
 import Pin from 'components/Pin';
 import Passphrase from 'components/Passphrase';
@@ -17,7 +16,7 @@ storiesOf('Device', module)
     .addWithJSX('Pin', () => (
         <Pin
             device={device}
-            onPinSubmit={action('Pin submit')}
+            onPinSubmit={() => {}}
         />
     ))
     .addWithJSX('Pin Invalid', () => (
@@ -29,7 +28,7 @@ storiesOf('Device', module)
         <Passphrase
             device={device}
             selectedDevice={device}
-            onPassphraseSubmit={action('Passphrase submit')}
+            onPassphraseSubmit={() => {}}
         />
     ))
     .addWithJSX('Transaction send', () => (

@@ -1,21 +1,20 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 
 import ButtonText from 'components/buttons/ButtonText';
 import ButtonWebUSB from 'components/buttons/ButtonWebUSB';
 
 storiesOf('Buttons', module)
     .addWithJSX('with text', () => (
-        <ButtonText onClick={action('Button clicked')}>Hello Button</ButtonText>
+        <ButtonText onClick={() => {}}>Hello Button</ButtonText>
     ))
     .addWithJSX('with text (disabled)', () => (
-        <ButtonText isDisabled onClick={action('Button clicked')}>Hello Button</ButtonText>
+        <ButtonText isDisabled onClick={() => {}}>Hello Button</ButtonText>
     ))
     .addWithJSX('transparent with text ', () => (
-        <ButtonText isTransparent onClick={action('Button clicked')}>Hello Button</ButtonText>
+        <ButtonText isTransparent onClick={() => {}}>Hello Button</ButtonText>
     ))
     .addWithJSX('with text (WebUSB)', () => (
-        <ButtonWebUSB onClick={action('Button clicked')}>Hello Button</ButtonWebUSB>
+        <ButtonWebUSB onClick={() => {}}>Hello Button</ButtonWebUSB>
     ));

@@ -15,7 +15,6 @@
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
-    "@storybook/addon-actions": "^4.1.7",
     "@storybook/addon-links": "^4.1.6",
     "@storybook/addon-notes": "^4.1.6",
     "@storybook/addons": "^4.1.6",

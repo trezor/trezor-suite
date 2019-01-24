@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 
 import Modal from 'components/Modal';
 import Pin from 'components/Pin';
@@ -25,7 +24,7 @@ storiesOf('Modal', module)
             modal={{
                 content: <Pin
                     device={device}
-                    onPinSubmit={action('Pin submit')}
+                    onPinSubmit={() => {}}
                 />,
             }}
         />
@@ -35,7 +34,7 @@ storiesOf('Modal', module)
             modal={{
                 content: <Passphrase
                     device={device}
-                    onPassphraseSubmit={action('Passphrase submit')}
+                    onPassphraseSubmit={() => {}}
                 />,
             }}
         />
