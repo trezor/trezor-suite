@@ -18,6 +18,10 @@ type Props = {
     showDisconnect: boolean,
 };
 
+const StyledConnectDevice = styled.div`
+    padding: 0px 48px;
+`;
+
 const Title = styled.div`
     margin-top: 60px;
 `;
@@ -105,7 +109,7 @@ class ConnectDevice extends PureComponent<Props> {
 
     render() {
         return (
-            <div>
+            <StyledConnectDevice>
                 <Title>
                     <H2 claim>The private bank in your hands.</H2>
                     <P>Trezor Wallet is an easy-to-use interface for your Trezor.</P>
@@ -156,7 +160,7 @@ class ConnectDevice extends PureComponent<Props> {
                         </StyledLink>
                     </P>
                 </Footer>
-            </div>
+            </StyledConnectDevice>
         );
     }
 }

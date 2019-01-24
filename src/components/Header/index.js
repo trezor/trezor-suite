@@ -34,9 +34,17 @@ const LayoutWrapper = styled.div`
     }
 `;
 
-const MenuToggler = styled.div`
+const Left = styled.div`
     display: none;
     flex: 0 0 33%;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        display: initial;
+    }
+`;
+
+const MenuToggler = styled.div`
+    display: none;
     white-space: nowrap;
     color: ${colors.WHITE};
     align-self: center;
@@ -97,15 +105,18 @@ const A = styled.a`
 `;
 
 type Props = {
+    sidebarEnabled?: boolean,
     sidebarOpened?: boolean,
     toggleSidebar?: toggleSidebarType,
 
 };
 
-const Header = ({ sidebarOpened, toggleSidebar }: Props) => (
+const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
     <Wrapper>
         <LayoutWrapper>
-            <MenuToggler onClick={toggleSidebar}>{sidebarOpened ? '✕ Close' : '☰ Menu'}</MenuToggler>
+            <Left>
+                { sidebarEnabled && <MenuToggler onClick={toggleSidebar}>{sidebarOpened ? '✕ Close' : '☰ Menu'}</MenuToggler>}
+            </Left>
             <Logo>
                 <NavLink to="/">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 163.7 41.9" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">

@@ -106,7 +106,7 @@ const StyledBackdrop = styled(Backdrop)`
 
 const Wallet = (props: Props) => (
     <AppWrapper>
-        <Header sidebarOpened={props.wallet.showSidebar} toggleSidebar={props.toggleSidebar} />
+        <Header sidebarEnabled={!!props.wallet.selectedDevice} sidebarOpened={props.wallet.showSidebar} toggleSidebar={props.toggleSidebar} />
         <AppNotifications />
         <WalletWrapper>
             <StyledBackdrop show={props.wallet.showSidebar} onClick={props.toggleSidebar} animated />
