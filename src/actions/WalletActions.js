@@ -40,6 +40,8 @@ export type WalletAction = {
     devices: Array<TrezorDevice>
 } | {
     type: typeof WALLET.SHOW_BETA_DISCLAIMER | typeof WALLET.HIDE_BETA_DISCLAIMER | typeof WALLET.SET_FIRST_LOCATION_CHANGE,
+} | {
+    type: typeof WALLET.TOGGLE_SIDEBAR,
 }
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
@@ -60,6 +62,10 @@ export const hideBetaDisclaimer = (): WalletAction => ({
 export const toggleDeviceDropdown = (opened: boolean): WalletAction => ({
     type: WALLET.TOGGLE_DEVICE_DROPDOWN,
     opened,
+});
+
+export const toggleSidebar = (): WalletAction => ({
+    type: WALLET.TOGGLE_SIDEBAR,
 });
 
 // This method will be called after each DEVICE.CONNECT action

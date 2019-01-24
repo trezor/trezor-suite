@@ -6,8 +6,12 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
 
-import type { MapStateToProps } from 'react-redux';
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State } from 'flowtype';
+
+import type { WalletAction } from 'actions/WalletActions';
+import { toggleSidebar } from 'actions/WalletActions';
+import { bindActionCreators } from 'redux';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -15,26 +19,31 @@ import ModalContainer from 'components/modals/Container';
 import AppNotifications from 'components/notifications/App';
 import ContextNotifications from 'components/notifications/Context';
 
+import { SCREEN_SIZE } from 'config/variables';
+
 import Log from 'components/Log';
+import Backdrop from 'components/Backdrop';
 
 import LeftNavigation from './components/LeftNavigation/Container';
 import TopNavigationAccount from './components/TopNavigationAccount';
 import TopNavigationDeviceSettings from './components/TopNavigationDeviceSettings';
 
-
-type WalletContainerProps = {
+type StateProps = {
     wallet: $ElementType<State, 'wallet'>,
-    children?: React.Node
+    children?: React.Node,
 }
 
-// type ContentProps = {
-//     children?: React.Node
-// }
+type DispatchProps = {
+    toggleSidebar: WalletAction,
+};
+
+type OwnProps = {};
+
+export type Props = StateProps & DispatchProps;
 
 const AppWrapper = styled.div`
     position: relative;
     min-height: 100%;
-    min-width: 720px;
     display: flex;
     flex-direction: column;
     background: ${colors.BACKGROUND};
@@ -87,11 +96,20 @@ const Body = styled.div`
     flex-direction: column;
 `;
 
-const Wallet = (props: WalletContainerProps) => (
+const StyledBackdrop = styled(Backdrop)`
+    display: none;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        display: initial;    
+    }
+`;
+
+const Wallet = (props: Props) => (
     <AppWrapper>
-        <Header />
+        <Header sidebarOpened={props.wallet.showSidebar} toggleSidebar={props.toggleSidebar} />
         <AppNotifications />
         <WalletWrapper>
+            <StyledBackdrop show={props.wallet.showSidebar} onClick={props.toggleSidebar} animated />
             {props.wallet.selectedDevice && <LeftNavigation />}
             <MainContent>
                 <Navigation>
@@ -110,10 +128,14 @@ const Wallet = (props: WalletContainerProps) => (
     </AppWrapper>
 );
 
-const mapStateToProps: MapStateToProps<State, {}, WalletContainerProps> = (state: State): WalletContainerProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     wallet: state.wallet,
 });
 
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+    toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
+});
+
 export default withRouter(
-    connect(mapStateToProps, null)(Wallet),
+    connect(mapStateToProps, mapDispatchToProps)(Wallet),
 );

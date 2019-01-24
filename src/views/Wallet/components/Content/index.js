@@ -4,7 +4,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Loader from 'components/Loader';
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 import { H1 } from 'components/Heading';
 import P from 'components/Paragraph';
 import colors from 'config/colors';
@@ -26,6 +26,10 @@ const Wrapper = styled.div`
     flex: 1;
     flex-direction: column;
     padding: 40px 35px 40px 35px;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}){
+        padding: 20px 35px;
+    }
 `;
 
 const Loading = styled.div`

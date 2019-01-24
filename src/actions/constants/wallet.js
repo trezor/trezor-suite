@@ -11,3 +11,5 @@ export const SHOW_BETA_DISCLAIMER: 'wallet__show_beta_disclaimer' = 'wallet__sho
 export const HIDE_BETA_DISCLAIMER: 'wallet__hide_beta_disclaimer' = 'wallet__hide_beta_disclaimer';
 
 export const CLEAR_UNAVAILABLE_DEVICE_DATA: 'wallet__clear_unavailable_device_data' = 'wallet__clear_unavailable_device_data';
+
+export const TOGGLE_SIDEBAR: 'wallet__toggle_sidebar' = 'wallet__toggle_sidebar';
