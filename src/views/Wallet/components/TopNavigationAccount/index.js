@@ -25,8 +25,11 @@ const Wrapper = styled.div`
     overflow-y: hidden;
     overflow-x: auto;
 
-    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         justify-content: space-between;
+    }
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         padding: 0px 16px;
     }
 `;
@@ -39,7 +42,7 @@ const StyledNavLink = styled(NavLink)`
     padding: 20px 35px;
     white-space: nowrap;
 
-    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         padding: 20px 10px;
     }
 
