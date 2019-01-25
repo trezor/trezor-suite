@@ -8,7 +8,9 @@ import colors from 'config/colors';
 import { WHITE_COLOR } from 'config/animations';
 import { getPrimaryColor } from 'utils/notification';
 import Loader from 'components/Loader';
-import { TRANSITION, FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import {
+    TRANSITION, FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE,
+} from 'config/variables';
 
 type Props = {
     type: string;
@@ -47,6 +49,10 @@ const Wrapper = styled.button`
     color: ${props => getPrimaryColor(props.type)};
     border: 1px solid ${props => getPrimaryColor(props.type)};
     transition: ${TRANSITION.HOVER};
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}){
+        padding: 12px 24px; 
+    }
 
     &:hover {
         color: ${colors.WHITE};
