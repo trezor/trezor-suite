@@ -15,7 +15,7 @@ import * as deviceUtils from 'utils/device';
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
-import MobileSidebar from './components/MobileSidebar';
+import Sidebar from './components/Sidebar';
 
 import type { Props } from './components/common';
 
@@ -203,13 +203,8 @@ class LeftNavigation extends React.PureComponent<Props, State> {
 
         const { selectedDevice, dropdownOpened } = props.wallet;
         const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
-        const SidebarComponent = MobileSidebar;
         return (
-            <SidebarComponent
-                isOpen={props.wallet.showSidebar}
-                location={props.router.location.pathname}
-                deviceSelection={this.props.wallet.dropdownOpened}
-            >
+            <Sidebar isOpen={props.wallet.showSidebar}>
                 <Header
                     isSelected
                     isHoverable={false}
@@ -253,7 +248,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                         </A>
                     </Help>
                 </Footer>
-            </SidebarComponent>
+            </Sidebar>
         );
     }
 }

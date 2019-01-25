@@ -41,30 +41,19 @@ const AbsoluteWrapper = styled.aside`
 
 `;
 
-const MobileSidebarWrapper = styled.div`
+const SidebarWrapper = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
 `;
 
-export default class MobileSidebar extends React.PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            footerFixed: false,
-        };
-    }
-
+export default class Sidebar extends React.PureComponent<Props, State> {
     render() {
         return (
             <AbsoluteWrapper isOpen={this.props.isOpen}>
-                <MobileSidebarWrapper>
-                    {React.Children.map(this.props.children, (child) => { // eslint-disable-line arrow-body-style
-                        return child.key === 'sticky-footer' ? React.cloneElement(child, {
-                            position: this.state.footerFixed ? 'fixed' : 'relative',
-                        }) : child;
-                    })}
-                </MobileSidebarWrapper>
+                <SidebarWrapper>
+                    {this.props.children}
+                </SidebarWrapper>
             </AbsoluteWrapper>
         );
     }
