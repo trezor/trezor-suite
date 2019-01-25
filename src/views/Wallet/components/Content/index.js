@@ -45,6 +45,7 @@ const Title = styled(H1)`
     font-weight: ${FONT_WEIGHT.NORMAL};
     color: ${props => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
     margin-left: 10px;
+    text-align: center;
 `;
 
 const Message = styled(P)`
