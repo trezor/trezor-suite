@@ -25,6 +25,8 @@ const AbsoluteWrapper = styled.aside`
     border-top-left-radius: 4px;
     border-right: 1px solid ${colors.DIVIDER};
 
+    overflow-x: hidden;
+
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         position: absolute;
         height: calc(100% - 52px);
