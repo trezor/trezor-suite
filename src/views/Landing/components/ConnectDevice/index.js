@@ -42,7 +42,7 @@ const Wrapper = styled.div`
 const ConnectTrezorWrapper = styled.div`
     position: relative;
     top: 1px;
-    margin: 10px 10px 0px 10px;
+    margin: 15px 15px 0px 15px;
     animation: ${PULSATE} 1.3s ease-out infinite;
     color: ${colors.GREEN_PRIMARY};
     font-size: ${FONT_SIZE.BIG};
@@ -50,11 +50,12 @@ const ConnectTrezorWrapper = styled.div`
 `;
 
 const StyledP = styled(P)`
-    margin: 10px 10px 0px 10px;
+    line-height: auto;
+    margin: 15px 15px 0px 15px;
 `;
 
 const StyledButton = styled(Button)`
-    margin: 10px 10px 0px 10px;
+    margin: 15px 15px 5px 15px;
 `;
 
 const Image = styled.img`
