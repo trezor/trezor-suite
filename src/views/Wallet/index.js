@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import colors from 'config/colors';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
 
@@ -76,7 +76,15 @@ const MainContent = styled.article`
     flex-direction: column;
     overflow: auto;
     border-top-right-radius: 4px;
-    
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}){
+        ${props => props.preventBgScroll && css`
+            position: fixed;
+            width: 100%;
+            min-height: calc(100vh - 52px);
+        `}
+    }
+
     @media screen and (max-width: 1170px) {
         border-top-right-radius: 0px;
     }
@@ -111,7 +119,7 @@ const Wallet = (props: Props) => (
         <WalletWrapper>
             <StyledBackdrop show={props.wallet.showSidebar} onClick={props.toggleSidebar} animated />
             {props.wallet.selectedDevice && <LeftNavigation />}
-            <MainContent>
+            <MainContent preventBgScroll={props.wallet.showSidebar}>
                 <Navigation>
                     <Route path="/device/:device/network/:network/account/:account" component={TopNavigationAccount} />
                     <Route path="/device/:device/device-settings" component={TopNavigationDeviceSettings} />

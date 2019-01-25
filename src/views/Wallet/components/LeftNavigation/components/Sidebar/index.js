@@ -29,7 +29,7 @@ const AbsoluteWrapper = styled.aside`
 
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         position: absolute;
-        height: calc(100% - 52px);
+        height: calc(100vh - 52px);
         z-index: 200;
         top: 52px;
         animation: ${props => (props.isOpen ? SLIDE_RIGHT : SLIDE_LEFT)} 0.25s cubic-bezier(0.17, 0.04, 0.03, 0.94) forwards;
