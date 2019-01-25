@@ -19,6 +19,7 @@ import Divider from '../Divider';
 
 const Wrapper = styled.div`
     position: absolute;
+    z-index: 1;
     width: 100%;
     padding-bottom: 8px; 
     border-bottom: 1px solid #E3E3E3;
