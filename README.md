@@ -1,6 +1,8 @@
 trezor-rollout
 =========
 
+[![npm version](https://badge.fury.io/js/trezor-rollout.svg)](https://badge.fury.io/js/trezor-rollout)
+
 Tldr: For historical reasons, Trezor devices firmware updates are not always straightforward. 
 
 __Incremental update__: not every firmware update can be applied on any installed firmware. This currently applies only for T1 devices. `min_bootloader_version` and `min_firmware_version` should be observed. 
