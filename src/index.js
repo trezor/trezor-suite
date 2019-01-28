@@ -1,4 +1,4 @@
-export ButtonText from 'components/buttons/ButtonText';
+export ButtonText from './components/buttons/ButtonText';
 // export ButtonWebUSB from 'components/buttons/ButtonWebUSB';
 
 // export Pin from 'components/Pin';
