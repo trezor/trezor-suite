@@ -96,11 +96,11 @@ const getDeviceContextModal = (props: Props) => {
         }
 
         case 'ButtonRequest_ProtectCall':
-            return <ConfirmAction />;
+            return <ConfirmAction device={modal.device} />;
 
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ConfirmOutput':
-            return <ConfirmAction />;
+            return <ConfirmAction device={modal.device} />;
 
         case RECEIVE.REQUEST_UNVERIFIED:
             return (

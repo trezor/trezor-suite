@@ -8,6 +8,7 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import Input from 'components/inputs/Input';
+import DeviceIcon from 'components/images/DeviceIcon';
 
 import ICONS from 'config/icons';
 import colors from 'config/colors';
@@ -131,10 +132,7 @@ const AccountReceive = (props: Props) => {
                             isPartiallyHidden={isAddressHidden}
                             trezorAction={isAddressVerifying ? (
                                 <React.Fragment>
-                                    <Icon
-                                        icon={ICONS.T1}
-                                        color={colors.WHITE}
-                                    />
+                                    <DeviceIcon device={device} color={colors.WHITE} />
                                     Check address on your Trezor
                                 </React.Fragment>
                             ) : null}

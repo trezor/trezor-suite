@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
+import DeviceIcon from 'components/images/DeviceIcon';
 
 import icons from 'config/icons';
 import colors from 'config/colors';
@@ -77,11 +78,7 @@ class MenuItems extends PureComponent {
                 </Item>
                 {this.showClone() && (
                     <Item onClick={() => this.onDeviceMenuClick('clone', this.props.device)}>
-                        <Icon
-                            icon={icons.T1}
-                            size={25}
-                            color={colors.TEXT_SECONDARY}
-                        />
+                        <DeviceIcon device={this.props.device} size={25} color={colors.TEXT_SECONDARY} />
                         <Label>Change wallet type</Label>
                     </Item>
                 )}
@@ -89,7 +86,7 @@ class MenuItems extends PureComponent {
                     <Item
                         onClick={() => this.onDeviceMenuClick('reload')}
                     >
-                        <Icon icon={icons.T1} size={25} color={colors.TEXT_SECONDARY} />
+                        <DeviceIcon device={this.props.device} size={25} color={colors.TEXT_SECONDARY} />
                         <Label>Renew session</Label>
                     </Item>
                 )}
