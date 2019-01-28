@@ -124,6 +124,10 @@ const StyledLink = styled(Link)`
     white-space: nowrap;
 `;
 
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
 // stateless component
 const AdvancedForm = (props: Props) => {
     const {
@@ -186,7 +190,7 @@ const AdvancedForm = (props: Props) => {
                                     readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
                                     placement="top"
                                 >
-                                    <Icon
+                                    <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
                                         size={24}
@@ -228,7 +232,7 @@ const AdvancedForm = (props: Props) => {
                                     readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
                                     placement="top"
                                 >
-                                    <Icon
+                                    <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
                                         size={24}
@@ -256,7 +260,7 @@ const AdvancedForm = (props: Props) => {
                                 )}
                                 placement="top"
                             >
-                                <Icon
+                                <StyledIcon
                                     icon={ICONS.HELP}
                                     color={colors.TEXT_SECONDARY}
                                     size={24}
