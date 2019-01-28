@@ -8,7 +8,7 @@ import Button from 'components/Button';
 import { H2 } from 'components/Heading';
 import { PULSATE } from 'config/animations';
 import colors from 'config/colors';
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 import CaseImage from 'images/macbook.png';
 import Link from 'components/Link';
 
@@ -18,31 +18,50 @@ type Props = {
     showDisconnect: boolean,
 };
 
+const StyledConnectDevice = styled.div`
+    padding: 0px 48px;
+`;
+
 const Title = styled.div`
     margin-top: 60px;
 `;
 
 const Wrapper = styled.div`
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    width: 400px;
     margin: 0 auto;
     padding: 36px 0;
+    justify-content: center;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        align-content: center;
+        flex-direction: column;
+    }
 `;
 
 const ConnectTrezorWrapper = styled.div`
     position: relative;
     top: 1px;
+    margin: 15px 15px 0px 15px;
     animation: ${PULSATE} 1.3s ease-out infinite;
     color: ${colors.GREEN_PRIMARY};
     font-size: ${FONT_SIZE.BIG};
     font-weight: ${FONT_WEIGHT.MEDIUM};
 `;
 
+const StyledP = styled(P)`
+    line-height: auto;
+    margin: 15px 15px 0px 15px;
+`;
+
+const StyledButton = styled(Button)`
+    margin: 15px 15px 5px 15px;
+`;
+
 const Image = styled.img`
-    width: 777px;
-    min-height: 500px;
+    width: 100%;
+    max-width: 777px;
+    height: auto;
     margin: auto;
     background-repeat: no-repeat;
     background-position: center 0px;
@@ -105,7 +124,7 @@ class ConnectDevice extends PureComponent<Props> {
 
     render() {
         return (
-            <div>
+            <StyledConnectDevice>
                 <Title>
                     <H2 claim>The private bank in your hands.</H2>
                     <P>Trezor Wallet is an easy-to-use interface for your Trezor.</P>
@@ -124,10 +143,10 @@ class ConnectDevice extends PureComponent<Props> {
                     </ConnectTrezorWrapper>
                     {this.props.showWebUsb && !this.props.showDisconnect && (
                         <React.Fragment>
-                            <P>and</P>
-                            <Button isWebUsb>
+                            <StyledP>and</StyledP>
+                            <StyledButton isWebUsb>
                                 Check for devices
-                            </Button>
+                            </StyledButton>
                         </React.Fragment>
                     )}
                 </Wrapper>
@@ -156,7 +175,7 @@ class ConnectDevice extends PureComponent<Props> {
                         </StyledLink>
                     </P>
                 </Footer>
-            </div>
+            </StyledConnectDevice>
         );
     }
 }

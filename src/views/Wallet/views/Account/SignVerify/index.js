@@ -7,6 +7,8 @@ import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
 import colors from 'config/colors';
+import { SCREEN_SIZE } from 'config/variables';
+
 
 import type { Props } from './Container';
 
@@ -14,6 +16,7 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: row;
+    flex-wrap: wrap;
     background: ${colors.WHITE};
 `;
 
@@ -52,14 +55,22 @@ const StyledButton = styled(Button)`
 
 const Column = styled.div`
     display: flex;
-    flex: 1;
+    flex: 1 1 50%;
     flex-direction: column;
+
+    @media screen and (max-width: ${SCREEN_SIZE.XS}) {
+        flex: 1 1 100%;
+    }
 `;
 
 const Sign = styled(Column)``;
 
 const Verify = styled(Column)`
     padding-left: 20px;
+
+    @media screen and (max-width: ${SCREEN_SIZE.XS}) {
+        padding-left: 0px;
+    }
 `;
 
 class SignVerify extends Component <Props> {

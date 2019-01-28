@@ -20,7 +20,7 @@ type Props = {
 }
 
 const Wrapper = styled.div`
-    width: 390px;
+    max-width: 390px;
 `;
 
 const Header = styled.div`

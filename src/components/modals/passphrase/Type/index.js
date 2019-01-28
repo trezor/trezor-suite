@@ -18,7 +18,7 @@ type Props = {
 }
 
 const Wrapper = styled.div`
-    width: 360px;
+    max-width: 360px;
     padding: 30px 48px;
 `;
 

@@ -28,6 +28,10 @@ const StyledP = styled(P)`
     text-align: center;
 `;
 
+const StyledH1 = styled(H1)`
+    text-align: center;
+`;
+
 const DeviceSettings = () => (
     <Content>
         <Section>
@@ -37,7 +41,7 @@ const DeviceSettings = () => (
                     color={colors.WARNING_PRIMARY}
                     icon={ICONS.WARNING}
                 />
-                <H1>Device settings is under construction</H1>
+                <StyledH1>Device settings is under construction</StyledH1>
                 <StyledP>Please use Bitcoin wallet interface to change your device settings</StyledP>
                 <Link href="https://beta-wallet.trezor.io/">
                     <Button>Take me to the Bitcoin wallet</Button>

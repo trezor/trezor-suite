@@ -47,10 +47,6 @@ const AccountTitle = styled.div`
     color: ${colors.WALLET_TITLE};
 `;
 
-const StyledCoinLogo = styled(CoinLogo)`
-    margin-right: 10px;
-`;
-
 const StyledIcon = styled(Icon)`
     position: relative;
     top: -7px;
@@ -86,7 +82,7 @@ const AccountSummary = (props: Props) => {
             <React.Fragment>
                 <AccountHeading>
                     <AccountName>
-                        <StyledCoinLogo network={account.network} />
+                        <CoinLogo network={account.network} />
                         <AccountTitle>Account #{parseInt(account.index, 10) + 1}</AccountTitle>
                     </AccountName>
                     { !account.empty && <Link href={explorerLink} isGray>See full transaction history</Link> }

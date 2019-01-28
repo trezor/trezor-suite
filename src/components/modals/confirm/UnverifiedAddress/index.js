@@ -30,7 +30,7 @@ const StyledLink = styled(Link)`
 `;
 
 const Wrapper = styled.div`
-    width: 370px;
+    max-width: 370px;
     padding: 30px 48px;
 `;
 

@@ -15,12 +15,13 @@ import * as deviceUtils from 'utils/device';
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
-import StickyContainer from './components/StickyContainer';
+import Sidebar from './components/Sidebar';
 
 import type { Props } from './components/common';
 
 const Header = styled(DeviceHeader)`
     border-right: 1px solid ${colors.BACKGROUND};
+    flex: 0 0 auto;
 `;
 
 const Counter = styled.div`
@@ -56,6 +57,7 @@ const Footer = styled.div.attrs(props => ({
 `;
 
 const Body = styled.div`
+    flex: 1 0 auto;
     width: 320px;
     min-height: ${props => (props.minHeight ? `${props.minHeight}px` : '0px')};
 `;
@@ -202,10 +204,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         const { selectedDevice, dropdownOpened } = props.wallet;
         const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
         return (
-            <StickyContainer
-                location={props.router.location.pathname}
-                deviceSelection={this.props.wallet.dropdownOpened}
-            >
+            <Sidebar isOpen={props.wallet.showSidebar}>
                 <Header
                     isSelected
                     isHoverable={false}
@@ -249,7 +248,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                         </A>
                     </Help>
                 </Footer>
-            </StickyContainer>
+            </Sidebar>
         );
     }
 }

@@ -12,10 +12,12 @@ const A = styled.a`
     font-size: ${FONT_SIZE.SMALL};
 
     ${props => props.isGreen && css`
-        border-bottom: 1px solid ${colors.GREEN_PRIMARY};
+        text-decoration: underline;
+        text-decoration-color: ${colors.GREEN_PRIMARY};
     `}
     ${props => props.isGray && css`
-        border-bottom: 1px solid ${colors.TEXT_SECONDARY};
+        text-decoration: underline;
+        text-decoration-color: ${colors.TEXT_SECONDARY};
     `}
 
     &,
