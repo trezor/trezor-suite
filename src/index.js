@@ -1,5 +1,5 @@
-import colors from 'config/colors';
-import icons from 'config/icons';
+export colors from 'config/colors';
+export icons from 'config/icons';
 
 export ButtonText from 'components/buttons/ButtonText';
 export ButtonWebUSB from 'components/buttons/ButtonWebUSB';
