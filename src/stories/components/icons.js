@@ -2,29 +2,29 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 
-import ICONS from 'config/icons';
+import icons from 'config/icons';
 import Icon from 'components/Icon';
 
 storiesOf('Icons', module)
-    .addWithJSX('Top', () => <Icon icon={ICONS.TOP} />)
-    .addWithJSX('Eye crossed', () => <Icon icon={ICONS.EYE_CROSSED} />)
-    .addWithJSX('Eye', () => <Icon icon={ICONS.EYE} />)
-    .addWithJSX('Checked', () => <Icon icon={ICONS.CHECKED} />)
-    .addWithJSX('Back', () => <Icon icon={ICONS.BACK} />)
-    .addWithJSX('Help', () => <Icon icon={ICONS.HELP} />)
-    .addWithJSX('Refresh', () => <Icon icon={ICONS.REFRESH} />)
-    .addWithJSX('T1', () => <Icon icon={ICONS.T1} />)
-    .addWithJSX('Config', () => <Icon icon={ICONS.COG} />)
-    .addWithJSX('Eject', () => <Icon icon={ICONS.EJECT} />)
-    .addWithJSX('Close', () => <Icon icon={ICONS.CLOSE} />)
-    .addWithJSX('Download', () => <Icon icon={ICONS.DOWNLOAD} />)
-    .addWithJSX('Plus', () => <Icon icon={ICONS.PLUS} />)
-    .addWithJSX('Arrow up', () => <Icon icon={ICONS.ARROW_UP} />)
-    .addWithJSX('Arrow left', () => <Icon icon={ICONS.ARROW_LEFT} />)
-    .addWithJSX('Arrow down', () => <Icon icon={ICONS.ARROW_DOWN} />)
-    .addWithJSX('Chat', () => <Icon icon={ICONS.CHAT} />)
-    .addWithJSX('Skip', () => <Icon icon={ICONS.SKIP} />)
-    .addWithJSX('Warning', () => <Icon icon={ICONS.WARNING} />)
-    .addWithJSX('Info', () => <Icon icon={ICONS.INFO} />)
-    .addWithJSX('Error', () => <Icon icon={ICONS.ERROR} />)
-    .addWithJSX('Success', () => <Icon icon={ICONS.SUCCESS} />);
+    .addWithJSX('Top', () => <Icon icon={icons.TOP} />)
+    .addWithJSX('Eye crossed', () => <Icon icon={icons.EYE_CROSSED} />)
+    .addWithJSX('Eye', () => <Icon icon={icons.EYE} />)
+    .addWithJSX('Checked', () => <Icon icon={icons.CHECKED} />)
+    .addWithJSX('Back', () => <Icon icon={icons.BACK} />)
+    .addWithJSX('Help', () => <Icon icon={icons.HELP} />)
+    .addWithJSX('Refresh', () => <Icon icon={icons.REFRESH} />)
+    .addWithJSX('T1', () => <Icon icon={icons.T1} />)
+    .addWithJSX('Config', () => <Icon icon={icons.COG} />)
+    .addWithJSX('Eject', () => <Icon icon={icons.EJECT} />)
+    .addWithJSX('Close', () => <Icon icon={icons.CLOSE} />)
+    .addWithJSX('Download', () => <Icon icon={icons.DOWNLOAD} />)
+    .addWithJSX('Plus', () => <Icon icon={icons.PLUS} />)
+    .addWithJSX('Arrow up', () => <Icon icon={icons.ARROW_UP} />)
+    .addWithJSX('Arrow left', () => <Icon icon={icons.ARROW_LEFT} />)
+    .addWithJSX('Arrow down', () => <Icon icon={icons.ARROW_DOWN} />)
+    .addWithJSX('Chat', () => <Icon icon={icons.CHAT} />)
+    .addWithJSX('Skip', () => <Icon icon={icons.SKIP} />)
+    .addWithJSX('Warning', () => <Icon icon={icons.WARNING} />)
+    .addWithJSX('Info', () => <Icon icon={icons.INFO} />)
+    .addWithJSX('Error', () => <Icon icon={icons.ERROR} />)
+    .addWithJSX('Success', () => <Icon icon={icons.SUCCESS} />);
