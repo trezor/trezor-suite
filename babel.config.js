@@ -1,8 +1,7 @@
 module.exports = {
     presets: [
         '@babel/preset-env',
-        'babel-preset-stage-0',
-        'babel-preset-es2015'
+        '@babel/preset-react',
     ],
     plugins: [
         ['module-resolver', {
