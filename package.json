@@ -13,7 +13,7 @@
     "license": "LGPL-3.0+",
     "scripts": {
         "dev": "webpack-dev-server --config ./webpack/config.dev.babel.js --mode development",
-        "dev:local": "webpack-dev-server --config ./webpack/config.dev.local.babel.js --mode development",
+        "dev:local": "webpack-dev-server --config ./webpack/config.dev.local.babel.js --mode development --progress",
         "build": "rm -rf build && webpack --config ./webpack/config.prod.babel.js --progress",
         "flow": "cd src/js && flow check"
     },
