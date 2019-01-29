@@ -16,7 +16,7 @@ const initialState: MethodState = {
     js: 'TrezorConnect.ethereumGetAddress',
     fields: ['path', 'showOnTrezor'],
 
-    path: "m/44'/60'/0'",
+    path: "m/44'/60'/0'/0/0",
     showOnTrezor: true,
 };
 

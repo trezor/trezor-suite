@@ -16,7 +16,7 @@ const initialState: MethodState = {
     js: 'TrezorConnect.cardanoGetAddress',
     fields: ['path', 'showOnTrezor'],
 
-    path: "m/44'/1815'/0'",
+    path: "m/44'/1815'/0'/0/0",
     showOnTrezor: true,
 };
 
