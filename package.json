@@ -10,7 +10,6 @@
     "lint:js": "npx eslint ./src",
     "lint:css": "npx stylelint './src/**/*.js'",
     "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
-    "transpile": "babel src/index.js --out-file src/index-transpiled.js",
     "build": "build-storybook -c .storybook -o ./docs/"
   },
   "devDependencies": {
