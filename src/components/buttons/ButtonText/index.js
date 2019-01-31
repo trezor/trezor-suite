@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import colors from '../config/colors';
+import colors from 'config/colors';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 
 const Wrapper = styled.button`
