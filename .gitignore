@@ -81,3 +81,6 @@ typings/
 
 # dev mess
 src/.old_components
+
+# npm module
+npm

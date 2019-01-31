@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import P from 'components/Paragraph';
-import { H2 } from 'components/Heading';
-import Link from 'components/Link';
-import ButtonText from 'components/buttons/ButtonText';
+import P from '../Paragraph';
+import { H2 } from '../Heading';
+import Link from '../Link';
+import ButtonText from '../buttons/ButtonText';
 
 import PinButton from './components/Button';
 import PinInput from './components/Input';

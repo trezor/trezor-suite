@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import colors from 'config/colors';
 import { FADE_IN } from 'config/animations';
 
@@ -19,7 +19,6 @@ const ModalContainer = styled.div`
     align-items: center;
     overflow: auto;
     padding: 20px;
-    animation: ${FADE_IN} 0.3s;
 `;
 
 const ModalWindow = styled.div`
@@ -35,7 +34,7 @@ const Modal = (props) => {
     const { modal } = props;
 
     return (
-        <ModalContainer>
+        <ModalContainer css={css`animation: ${FADE_IN} 0.3s;`}>
             <ModalWindow>
                 { modal.content }
             </ModalWindow>

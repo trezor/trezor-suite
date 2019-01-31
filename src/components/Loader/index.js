@@ -19,7 +19,6 @@ const SvgWrapper = styled.svg`
     position: absolute;
     width: 100%;
     height: 100%;
-    animation: rotate 2s linear infinite;
     transform-origin: center center;
 `;
 
@@ -36,8 +35,6 @@ const CircleWrapper = styled.circle`
             stroke-width: ${props.transparentRoute ? '2px' : '1px'};
             stroke-dasharray: 1, 200;
             stroke-dashoffset: 0;
-            animation: ${DASH} 1.5s ease-in-out infinite,
-                ${props.animationColor || GREEN_COLOR} 6s ease-in-out infinite;
             stroke-linecap: round;
         `};
 `;
@@ -60,7 +57,7 @@ const Loader = ({
         <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>
             {text}
         </StyledParagraph>
-        <SvgWrapper viewBox="25 25 50 50">
+        <SvgWrapper viewBox="25 25 50 50" css={css`animation: rotate 2s linear infinite;`}>
             <CircleWrapper
                 animationColor={animationColor}
                 cx="50"
@@ -73,6 +70,7 @@ const Loader = ({
                 transparentRoute={transparentRoute}
             />
             <CircleWrapper
+                css={css`animation: ${DASH} 1.5s ease-in-out infinite;`}
                 animationColor={animationColor}
                 cx="50"
                 cy="50"

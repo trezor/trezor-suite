@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import colors from 'config/colors';
 import { FONT_SIZE, TRANSITION } from 'config/variables';
 
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Checkbox from 'components/Checkbox';
-import ButtonText from 'components/buttons/ButtonText';
-import Input from 'components/inputs/Input';
+import { H2 } from '../Heading';
+import P from '../Paragraph';
+import Checkbox from '../Checkbox';
+import ButtonText from '../buttons/ButtonText';
+import Input from '../inputs/Input';
 
 const Wrapper = styled.div`
     padding: 24px 48px;
