@@ -3,11 +3,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import colors from 'config/colors';
+import { SCREEN_SIZE } from 'config/variables';
+import type { toggleSidebar as toggleSidebarType } from 'actions/WalletActions';
 
 const Wrapper = styled.header`
     width: 100%;
     height: 52px;
     background: ${colors.HEADER};
+    overflow: hidden;
+    z-index: 200;
 
     svg {
         fill: ${colors.WHITE};
@@ -31,12 +35,54 @@ const LayoutWrapper = styled.div`
 `;
 
 const Left = styled.div`
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
+    display: none;
+    flex: 0 0 33%;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        display: initial;
+    }
 `;
 
-const Right = styled.div``;
+const MenuToggler = styled.div`
+    display: none;
+    white-space: nowrap;
+    color: ${colors.WHITE};
+    align-self: center;
+    cursor: pointer;
+    user-select: none;
+    padding: 10px 0px;
+    transition: all .1s ease-in;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        display: initial;
+    }
+`;
+
+const Logo = styled.div`
+    flex: 1;
+    justify-content: flex-start;
+    display: flex;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        flex: 1 0 33%;
+        justify-content: center;
+    }
+`;
+
+const MenuLinks = styled.div`
+    flex: 0;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        flex: 0 1 33%;
+    }
+`;
+
+const Projects = styled.div`
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        display: none;
+    }
+`;
 
 const A = styled.a`
     color: ${colors.WHITE};
@@ -58,10 +104,20 @@ const A = styled.a`
     }
 `;
 
-const Header = (): React$Element<string> => (
+type Props = {
+    sidebarEnabled?: boolean,
+    sidebarOpened?: boolean,
+    toggleSidebar?: toggleSidebarType,
+
+};
+
+const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
     <Wrapper>
         <LayoutWrapper>
             <Left>
+                { sidebarEnabled && <MenuToggler onClick={toggleSidebar}>{sidebarOpened ? '✕ Close' : '☰ Menu'}</MenuToggler>}
+            </Left>
+            <Logo>
                 <NavLink to="/">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 163.7 41.9" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">
                         <polygon points="101.1,12.8 118.2,12.8 118.2,17.3 108.9,29.9 118.2,29.9 118.2,35.2 101.1,35.2 101.1,30.7 110.4,18.1 101.1,18.1" />
@@ -73,13 +129,15 @@ const Header = (): React$Element<string> => (
                         <polygon points="40.5,12.8 58.6,12.8 58.6,18.1 52.4,18.1 52.4,35.2 46.6,35.2 46.6,18.1 40.5,18.1 " />
                     </svg>
                 </NavLink>
-            </Left>
-            <Right>
-                <A href="https://trezor.io/" target="_blank" rel="noreferrer noopener">Trezor</A>
-                <A href="https://wiki.trezor.io/" target="_blank" rel="noreferrer noopener">Wiki</A>
-                <A href="https://blog.trezor.io/" target="_blank" rel="noreferrer noopener">Blog</A>
-                <A href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Support</A>
-            </Right>
+            </Logo>
+            <MenuLinks>
+                <Projects>
+                    <A href="https://trezor.io/" target="_blank" rel="noreferrer noopener">Trezor</A>
+                    <A href="https://wiki.trezor.io/" target="_blank" rel="noreferrer noopener">Wiki</A>
+                    <A href="https://blog.trezor.io/" target="_blank" rel="noreferrer noopener">Blog</A>
+                    <A href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Support</A>
+                </Projects>
+            </MenuLinks>
         </LayoutWrapper>
     </Wrapper>
 );

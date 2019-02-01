@@ -8,7 +8,9 @@ import { H2 } from 'components/Heading';
 import ChromeImage from 'images/browser-chrome.png';
 import FirefoxImage from 'images/browser-firefox.png';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    padding: 24px 0px;
+`;
 
 const ChooseBrowserWrapper = styled.div`
     display: flex;

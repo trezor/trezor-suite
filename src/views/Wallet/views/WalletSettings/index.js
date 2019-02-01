@@ -23,6 +23,10 @@ const Row = styled.div`
     padding: 50px 0;
 `;
 
+const StyledH1 = styled(H1)`
+    text-align: center;
+`;
+
 const WalletSettings = () => (
     <Content>
         <Section>
@@ -32,7 +36,7 @@ const WalletSettings = () => (
                     color={colors.WARNING_PRIMARY}
                     icon={icons.WARNING}
                 />
-                <H1>Wallet settings is under construction</H1>
+                <StyledH1>Wallet settings is under construction</StyledH1>
                 <Link to="/">
                     <Button>Take me back</Button>
                 </Link>

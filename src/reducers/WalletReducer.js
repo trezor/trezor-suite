@@ -6,6 +6,7 @@ import { DEVICE, TRANSPORT } from 'trezor-connect';
 import * as MODAL from 'actions/constants/modal';
 import * as WALLET from 'actions/constants/wallet';
 import * as CONNECT from 'actions/constants/TrezorConnect';
+import * as ACCOUNT from 'actions/constants/account';
 
 import type { Action, RouterLocationState, TrezorDevice } from 'flowtype';
 
@@ -14,6 +15,7 @@ type State = {
     online: boolean;
     dropdownOpened: boolean;
     showBetaDisclaimer: boolean;
+    showSidebar: boolean;
     initialParams: ?RouterLocationState;
     initialPathname: ?string;
     firstLocationChange: boolean;
@@ -27,6 +29,7 @@ const initialState: State = {
     dropdownOpened: false,
     firstLocationChange: true,
     showBetaDisclaimer: false,
+    showSidebar: true,
     initialParams: null,
     initialPathname: null,
     disconnectRequest: null,
@@ -71,6 +74,11 @@ export default function wallet(state: State = initialState, action: Action): Sta
                 ...state,
                 dropdownOpened: false,
             };
+        case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
+            return {
+                ...state,
+                showSidebar: false,
+            };
 
         case CONNECT.DISCONNECT_REQUEST:
             return {
@@ -92,6 +100,12 @@ export default function wallet(state: State = initialState, action: Action): Sta
             return {
                 ...state,
                 selectedDevice: action.device,
+            };
+
+        case WALLET.TOGGLE_SIDEBAR:
+            return {
+                ...state,
+                showSidebar: !state.showSidebar,
             };
 
         case WALLET.SHOW_BETA_DISCLAIMER:

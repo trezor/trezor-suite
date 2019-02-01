@@ -18,8 +18,10 @@ const Wrapper = styled.div`
     z-index: 10;
     display: flex;
     align-items: center;
+    padding: 0px 25px;
     background: ${props => (props.disabled ? colors.GRAY_LIGHT : 'transparent')};
     background: ${props => (props.isSelected ? colors.WHITE : 'transparent')};
+    cursor: pointer;
 
     border-radius: 4px 0 0 0;
     box-shadow: ${props => (props.disabled ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.04)')};
@@ -28,24 +30,14 @@ const Wrapper = styled.div`
         box-shadow: none;
     `}
 
+    ${props => props.disabled && css`
+        cursor: default;
+    `}
+
     ${props => props.isHoverable && !props.disabled && css`
         &:hover {
             background: ${colors.GRAY_LIGHT};
         }
-    `}
-`;
-
-const ClickWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    padding-left: 25px;
-    padding-right: 25px;
-    height: 100%;
-    align-items: center;
-    cursor: pointer;
-
-    ${props => props.disabled && css`
-        cursor: default;
     `}
 `;
 
@@ -115,23 +107,19 @@ const DeviceHeader = ({
             isHoverable={isHoverable}
             disabled={disabled}
             className={className}
+            onClick={onClickWrapper}
         >
-            <ClickWrapper
-                disabled={disabled}
-                onClick={onClickWrapper}
-            >
-                <ImageWrapper>
-                    <Dot color={getStatusColor(status)} />
-                    <TrezorImage model={getVersion(device)} />
-                </ImageWrapper>
-                <LabelWrapper>
-                    <Name>{device.instanceLabel}</Name>
-                    <Status title={getStatusName(status)}>{getStatusName(status)}</Status>
-                </LabelWrapper>
-                <IconWrapper>
-                    {icon && !disabled && isAccessible && icon}
-                </IconWrapper>
-            </ClickWrapper>
+            <ImageWrapper>
+                <Dot color={getStatusColor(status)} />
+                <TrezorImage model={getVersion(device)} />
+            </ImageWrapper>
+            <LabelWrapper>
+                <Name>{device.instanceLabel}</Name>
+                <Status title={getStatusName(status)}>{getStatusName(status)}</Status>
+            </LabelWrapper>
+            <IconWrapper>
+                {icon && !disabled && isAccessible && icon}
+            </IconWrapper>
         </Wrapper>
     );
 };

@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import React from 'react';
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import colors from 'config/colors';
@@ -24,6 +24,14 @@ const Wrapper = styled.div`
     padding: 0px 30px 0 35px;
     overflow-y: hidden;
     overflow-x: auto;
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        justify-content: space-between;
+    }
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        padding: 0px 16px;
+    }
 `;
 
 const StyledNavLink = styled(NavLink)`
@@ -33,6 +41,15 @@ const StyledNavLink = styled(NavLink)`
     margin: 0px 4px;
     padding: 20px 35px;
     white-space: nowrap;
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        padding: 20px 10px;
+    }
+
+    @media screen and (max-width: ${SCREEN_SIZE.XS}) {
+        font-size: ${FONT_SIZE.BASE};
+        padding: 20px 10px;
+    }
 
     &.active,
     &:hover {

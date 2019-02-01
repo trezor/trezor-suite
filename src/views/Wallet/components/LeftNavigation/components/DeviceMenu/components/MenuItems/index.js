@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
+import DeviceIcon from 'components/images/DeviceIcon';
 
 import icons from 'config/icons';
 import colors from 'config/colors';
@@ -9,7 +10,6 @@ import { FONT_SIZE } from 'config/variables';
 
 const Wrapper = styled.div`
     background: ${colors.WHITE};
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
 `;
 
 const Item = styled.div`
@@ -74,7 +74,7 @@ class MenuItems extends PureComponent {
                     <Item
                         onClick={() => this.props.acquireDevice()}
                     >
-                        <Icon icon={icons.T1} size={25} color={colors.TEXT_SECONDARY} />
+                        <DeviceIcon device={this.props.device} size={25} color={colors.TEXT_SECONDARY} />
                         <Label>Renew session</Label>
                     </Item>
                 )}

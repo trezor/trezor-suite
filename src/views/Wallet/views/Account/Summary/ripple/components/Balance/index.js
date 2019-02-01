@@ -22,7 +22,7 @@ type State = {
 };
 
 const Wrapper = styled.div`
-    padding-bottom: 28px;
+    padding-bottom: ${props => (props.isHidden ? '0px' : '28px')};
     position: relative;
     display: flex;
 
@@ -117,7 +117,7 @@ class AccountBalance extends PureComponent<Props, State> {
         }
 
         return (
-            <Wrapper>
+            <Wrapper isHidden={this.state.isHidden}>
                 <HideBalanceIconWrapper
                     onClick={() => this.handleHideBalanceIconClick()}
                 >

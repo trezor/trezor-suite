@@ -6,7 +6,7 @@ import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { Select } from 'components/Select';
 import Link from 'components/Link';
-import { H1 } from 'components/Heading';
+import { H1, H2 } from 'components/Heading';
 import Button from 'components/Button';
 import P from 'components/Paragraph';
 import Icon from 'components/Icon';
@@ -42,6 +42,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     max-width: 500px;
+    padding: 0 24px;
 `;
 
 const Top = styled.div`
@@ -62,6 +63,7 @@ const TitleHeader = styled(H1)`
     font-size: ${FONT_SIZE.HUGE};
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 `;
 
 const Version = styled.span`
@@ -81,12 +83,15 @@ const LearnMoreText = styled.span`
 const SelectWrapper = styled(Select)`
     margin-right: 10px;
     width: 180px;
+    margin-bottom: 5px;
 `;
 
 const Download = styled.div`
     margin: 24px auto;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
 `;
 
 const DownloadBridgeButton = styled(Button)`
@@ -94,6 +99,7 @@ const DownloadBridgeButton = styled(Button)`
     padding-bottom: 5px;
     display: flex;
     align-items: center;
+    margin-bottom: 5px;
 `;
 
 const GoBack = styled.span`
@@ -110,7 +116,7 @@ const Ol = styled.ul`
     margin: 0 auto;
     color: ${colors.TEXT_SECONDARY};
     font-size: ${FONT_SIZE.BIG};
-    padding: 10px 0 15px 25px;
+    padding: 0px 0 15px 25px;
     text-align: left;
 `;
 
@@ -175,6 +181,7 @@ class InstallBridge extends PureComponent<Props, State> {
                                 </DownloadBridgeButton>
                             </Link>
                         </Download>
+                        <H2>Changelog</H2>
                         <Ol>
                             {this.props.transport.bridge.changelog.map(entry => (
                                 <Li key={entry}>{entry}</Li>
