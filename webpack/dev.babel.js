@@ -33,6 +33,7 @@ module.exports = {
         ],
         hot: true,
         https: false,
+        quiet: true,
         port: PORT,
         stats: 'minimal',
         inline: true,
