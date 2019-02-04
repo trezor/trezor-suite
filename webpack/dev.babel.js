@@ -45,6 +45,7 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     'babel-loader',
+                    'react-hot-loader/webpack',
                     {
                         loader: 'eslint-loader',
                         options: {
