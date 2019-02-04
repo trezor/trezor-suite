@@ -2,8 +2,10 @@
 import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { SRC, BUILD, PUBLIC } from './constants';
+
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -80,5 +82,6 @@ module.exports = {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.NamedModulesPlugin(),
+        new FriendlyErrorsWebpackPlugin(),
     ],
 };

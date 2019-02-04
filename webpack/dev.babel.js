@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import FlowWebpackPlugin from 'flow-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
 
@@ -32,6 +33,7 @@ module.exports = {
         ],
         hot: true,
         https: false,
+        quiet: true,
         port: PORT,
         stats: 'minimal',
         inline: true,
@@ -122,5 +124,6 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
+        new FriendlyErrorsWebpackPlugin(),
     ],
 };
