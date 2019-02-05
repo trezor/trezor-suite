@@ -30,7 +30,7 @@ module.exports = {
                 test: /\.(png|gif|jpg)$/,
                 exclude: /(node_modules)/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './images',
                     name: '[name].[hash].[ext]',
                 },
@@ -38,7 +38,7 @@ module.exports = {
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './fonts',
                     name: '[name].[hash].[ext]',
                 },
@@ -48,7 +48,7 @@ module.exports = {
                 test: /\.json/,
                 exclude: /(node_modules)/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './data',
                     name: '[name].[hash].[ext]',
                 },

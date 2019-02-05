@@ -64,7 +64,7 @@ module.exports = {
             {
                 test: /\.(png|gif|jpg)$/,
                 loader: 'file-loader?name=./images/[name].[ext]',
-                query: {
+                options: {
                     outputPath: './images',
                     name: '[name].[ext]',
                 },
@@ -72,7 +72,7 @@ module.exports = {
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './fonts',
                     name: '[name].[ext]',
                 },
@@ -82,7 +82,7 @@ module.exports = {
                 test: /\.json/,
                 exclude: /(node_modules)/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './data',
                     name: '[name].[ext]',
                 },
