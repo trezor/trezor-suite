@@ -10,8 +10,9 @@
     "lint:js": "npx eslint ./src",
     "lint:css": "npx stylelint './src/**/*.js'",
     "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
-    "build": "build-storybook -c .storybook -o ./docs/",
-    "build:npm": "rm -rf npm && babel-node ./tools/build.js && babel ./npm/lib --out-dir ./npm/lib"
+    "storybook:build": "build-storybook -c .storybook -o ./docs/",
+    "build": "WEBPACK_ENV=build webpack --config webpack.config.js --mode production",
+    "build:dev": "WEBPACK_ENV=build webpack --config webpack.config.js --mode development"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -21,11 +22,14 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-stage-0": "^7.0.0",
+    "@playlyfe/babel-loader": "^1.0.2",
     "@storybook/addon-links": "^4.1.6",
     "@storybook/addon-notes": "^4.1.6",
     "@storybook/addons": "^4.1.6",
     "babel-cli": "^6.26.0",
     "babel-collect-imports": "^1.1.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-add-module-exports": "^1.0.0",
     "babel-plugin-module-resolver": "^3.1.3",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-decorators": "^6.24.1",
@@ -49,12 +53,12 @@
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-custom-processor-loader": "^0.6.0",
     "stylelint-processor-styled-components": "^1.5.1",
+    "uglifyjs-webpack-plugin": "^2.1.1",
     "webpack": "^4.28.1",
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
     "@storybook/react": "^4.1.11",
-    "babel-loader": "^8.0.5",
     "prop-types": "^15.6.2",
     "rc-tooltip": "^3.7.3",
     "react": "^16.7.0",

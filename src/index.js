@@ -1,7 +1,5 @@
 import colors from './config/colors';
 import icons from './config/icons';
-import animations from './config/animations';
-import variables from './config/variables';
 
 import ButtonText from './components/buttons/ButtonText';
 import ButtonWebUSB from './components/buttons/ButtonWebUSB';
@@ -35,8 +33,6 @@ import P from './components/Paragraph';
 module.exports = {
 	colors,
     icons,
-    animations,
-	variables,
     ButtonText,
     ButtonWebUSB,
     Modal,
