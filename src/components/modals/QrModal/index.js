@@ -127,7 +127,8 @@ class QrModal extends React.Component<Props, State> {
                     {!this.state.readerLoaded && (
                         <CameraPlaceholder>
                             Waiting for camera...
-                        </CameraPlaceholder>)
+                        </CameraPlaceholder>
+                    )
                     }
                 </Padding>
                 <StyledQrReader

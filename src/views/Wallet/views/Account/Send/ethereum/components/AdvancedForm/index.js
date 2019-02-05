@@ -200,7 +200,8 @@ const AdvancedForm = (props: Props) => {
                             { showDefaultGasLimitButton && (
                                 <Right>
                                     <StyledLink onClick={setDefaultGasLimit} isGreen>Set default</StyledLink>
-                                </Right>)
+                                </Right>
+                            )
                             }
                         </InputLabelWrapper>
                     )}

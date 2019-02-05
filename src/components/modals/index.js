@@ -68,7 +68,8 @@ const getDeviceContextModal = (props: Props) => {
                 <Pin
                     device={modal.device}
                     onPinSubmit={modalActions.onPinSubmit}
-                />);
+                />
+            );
 
         case UI.INVALID_PIN:
             return <InvalidPin device={modal.device} />;
@@ -79,7 +80,8 @@ const getDeviceContextModal = (props: Props) => {
                     device={modal.device}
                     selectedDevice={props.wallet.selectedDevice}
                     onPassphraseSubmit={modalActions.onPassphraseSubmit}
-                />);
+                />
+            );
 
         case 'ButtonRequest_PassphraseType':
             return <PassphraseType device={modal.device} />;
@@ -110,7 +112,8 @@ const getDeviceContextModal = (props: Props) => {
                     onCancel={modalActions.onCancel}
                     showAddress={props.receiveActions.showAddress}
                     showUnverifiedAddress={props.receiveActions.showUnverifiedAddress}
-                />);
+                />
+            );
 
         case CONNECT.REMEMBER_REQUEST:
             return (
@@ -119,7 +122,8 @@ const getDeviceContextModal = (props: Props) => {
                     instances={modal.instances}
                     onRememberDevice={modalActions.onRememberDevice}
                     onForgetDevice={modalActions.onForgetDevice}
-                />);
+                />
+            );
 
         case CONNECT.FORGET_REQUEST:
             return (
@@ -127,7 +131,8 @@ const getDeviceContextModal = (props: Props) => {
                     device={modal.device}
                     onForgetSingleDevice={modalActions.onForgetSingleDevice}
                     onCancel={modalActions.onCancel}
-                />);
+                />
+            );
 
         case CONNECT.TRY_TO_DUPLICATE:
             return (
@@ -136,7 +141,8 @@ const getDeviceContextModal = (props: Props) => {
                     devices={props.devices}
                     onDuplicateDevice={modalActions.onDuplicateDevice}
                     onCancel={modalActions.onCancel}
-                />);
+                />
+            );
 
         case CONNECT.REQUEST_WALLET_TYPE:
             return (
@@ -144,7 +150,8 @@ const getDeviceContextModal = (props: Props) => {
                     device={modal.device}
                     onWalletTypeRequest={modalActions.onWalletTypeRequest}
                     onCancel={modalActions.onCancel}
-                />);
+                />
+            );
 
         default:
             return null;
