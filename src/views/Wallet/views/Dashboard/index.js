@@ -49,7 +49,7 @@ const Image = styled.img`
 const Dashboard = () => (
     <Content>
         <Wrapper>
-            <Row>
+            <Row data-test="Dashboard__page__content">
                 <H1>Please select your coin</H1>
                 <StyledP>You will gain access to receiving &amp; sending selected coin</StyledP>
                 <Overlay>

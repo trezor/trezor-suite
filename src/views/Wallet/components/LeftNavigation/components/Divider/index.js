@@ -23,9 +23,10 @@ const TextLeft = styled.p`
 `;
 
 const Divider = ({
-    textLeft, textRight, hasBorder = false, className,
+    textLeft, textRight, hasBorder = false, className, testId,
 }) => (
     <Wrapper
+        data-test={testId}
         hasBorder={hasBorder}
         className={className}
     >
@@ -39,6 +40,7 @@ Divider.propTypes = {
     textLeft: PropTypes.string,
     textRight: PropTypes.string,
     hasBorder: PropTypes.bool,
+    testId: PropTypes.string,
 };
 
 export default Divider;

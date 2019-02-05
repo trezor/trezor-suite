@@ -98,11 +98,13 @@ const DeviceHeader = ({
     disabled = false,
     isSelected = false,
     className,
+    testId,
 }) => {
     const status = getStatus(device);
     return (
         <Wrapper
             isSelected={isSelected}
+            data-test={testId}
             isOpen={isOpen}
             isHoverable={isHoverable}
             disabled={disabled}
@@ -134,6 +136,7 @@ DeviceHeader.propTypes = {
     isSelected: PropTypes.bool,
     onClickWrapper: PropTypes.func.isRequired,
     className: PropTypes.string,
+    testId: PropTypes.string,
 };
 
 export default DeviceHeader;
