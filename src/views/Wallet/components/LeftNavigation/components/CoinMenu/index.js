@@ -57,7 +57,7 @@ class CoinMenu extends PureComponent<Props> {
     render() {
         const { config } = this.props.localStorage;
         return (
-            <Wrapper>
+            <Wrapper data-test="Main__page__coin__menu">
                 {config.networks.map(item => (
                     <NavLink
                         key={item.shortcut}
@@ -72,6 +72,7 @@ class CoinMenu extends PureComponent<Props> {
                     </NavLink>
                 ))}
                 <Divider
+                    testId="Main__page__coin__menu__divider"
                     textLeft="Other coins"
                     textRight="(You will be redirected)"
                     hasBorder

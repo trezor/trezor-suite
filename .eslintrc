@@ -10,7 +10,8 @@
     },
     "env": {
         "browser": true,
-        "jest": true
+        "jest": true,
+        "cypress/globals": true
     },
     "rules": {
         "import/prefer-default-export": 0,
@@ -32,13 +33,17 @@
         "new-cap": 0,
         "max-len": 0,
         "eol-last": 0,
-        "spaced-comment": 0
+        "spaced-comment": 0,
+        "no-unused-expressions": 0,
+        "chai-friendly/no-unused-expressions": 2
     },
     "plugins": [
         "import",
         "react",
         "jest",
-        "flowtype"
+        "flowtype",
+        "cypress",
+        "chai-friendly"
     ],
     "settings": {
         "import/resolver": {

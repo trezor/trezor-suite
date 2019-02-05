@@ -112,7 +112,7 @@ type Props = {
 };
 
 const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
-    <Wrapper>
+    <Wrapper data-test="Main__page__navigation">
         <LayoutWrapper>
             <Left>
                 { sidebarEnabled && <MenuToggler onClick={toggleSidebar}>{sidebarOpened ? '✕ Close' : '☰ Menu'}</MenuToggler>}
