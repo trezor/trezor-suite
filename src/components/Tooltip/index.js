@@ -31,13 +31,13 @@ const Tooltip = ({
     content,
     readMoreLink,
     children,
-    delayed,
+    enterDelayMs,
 }) => (
     <Wrapper className={className}>
         <RcTooltip
             arrowContent={<div className="rc-tooltip-arrow-inner" />}
             placement={placement}
-            mouseEnterDelay={delayed ? 1.5 : 0}
+            mouseEnterDelay={enterDelayMs || 0}
             overlay={() => (
                 <ContentWrapper>
                     <Content maxWidth={maxWidth}>{content}</Content>
@@ -67,7 +67,7 @@ Tooltip.propTypes = {
         PropTypes.string,
     ]),
     readMoreLink: PropTypes.string,
-    delayed: PropTypes.bool,
+    enterDelayMs: PropTypes.bool,
 };
 
 export default Tooltip;

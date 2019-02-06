@@ -240,7 +240,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     content={walletTooltipMsg}
                                     maxWidth={200}
                                     placement="bottom"
-                                    delayed
+                                    enterDelayMs={0.5}
                                 >
                                     <WalletTypeIconWrapper>
                                         <WalletTypeIcon
@@ -263,7 +263,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     content="Number of devices"
                                     maxWidth={200}
                                     placement="bottom"
-                                    delayed
+                                    enterDelayMs={0.5}
                                 >
                                     <Counter>{this.props.devices.length}</Counter>
                                 </Tooltip>
