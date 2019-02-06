@@ -17,7 +17,7 @@ import * as WalletActions from 'actions/WalletActions';
 
 const Wrapper = styled.div`
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     top: 0px;
     left: 0px;
     background: rgba(0, 0, 0, 0.35);
@@ -68,7 +68,7 @@ const BetaDisclaimer = (props: { close: () => void }) => (
                 />
                 Please note that the <i>Trezor Beta Wallet</i> might be collecting anonymized usage data, especially error logs, for development purposes. The <i>Trezor Wallet</i> does not log any data.
             </StyledP>
-            <StyledButton onClick={props.close}>OK, I understand</StyledButton>
+            <StyledButton dataTest="Modal__disclaimer__button__confirm" onClick={props.close}>OK, I understand</StyledButton>
         </ModalWindow>
     </Wrapper>
 );

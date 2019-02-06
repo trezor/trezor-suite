@@ -2,7 +2,6 @@ import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
-import FlowWebpackPlugin from 'flow-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
 
 // turn on for bundle analyzing
@@ -45,6 +44,7 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     'babel-loader',
+                    'react-hot-loader/webpack',
                     {
                         loader: 'eslint-loader',
                         options: {
@@ -63,7 +63,7 @@ module.exports = {
             {
                 test: /\.(png|gif|jpg)$/,
                 loader: 'file-loader?name=./images/[name].[ext]',
-                query: {
+                options: {
                     outputPath: './images',
                     name: '[name].[ext]',
                 },
@@ -71,7 +71,7 @@ module.exports = {
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './fonts',
                     name: '[name].[ext]',
                 },
@@ -81,7 +81,7 @@ module.exports = {
                 test: /\.json/,
                 exclude: [/(node_modules)/, TRANSLATIONS],
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './data',
                     name: '[name].[ext]',
                 },
@@ -104,9 +104,6 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
-        }),
-        new FlowWebpackPlugin({
-            reportingSeverity: 'warning',
         }),
         new HtmlWebpackPlugin({
             chunks: ['index'],

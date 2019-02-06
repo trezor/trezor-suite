@@ -1,11 +1,9 @@
-
 import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { SRC, BUILD, PUBLIC } from './constants';
-
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -30,7 +28,7 @@ module.exports = {
                 test: /\.(png|gif|jpg)$/,
                 exclude: /(node_modules)/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './images',
                     name: '[name].[hash].[ext]',
                 },
@@ -38,7 +36,7 @@ module.exports = {
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './fonts',
                     name: '[name].[hash].[ext]',
                 },
@@ -48,7 +46,7 @@ module.exports = {
                 test: /\.json/,
                 exclude: /(node_modules)/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './data',
                     name: '[name].[hash].[ext]',
                 },

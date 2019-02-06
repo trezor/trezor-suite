@@ -107,7 +107,8 @@ const AccountSummary = (props: Props) => {
                                 size={24}
                             />
                         </StyledTooltip>
-                    </H2Wrapper>)
+                    </H2Wrapper>
+                )
                 }
             </React.Fragment>
         </Content>

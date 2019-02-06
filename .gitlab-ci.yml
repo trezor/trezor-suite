@@ -1,14 +1,19 @@
-image: node:9.3
+image: node:10.15.1
+
+variables:
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - node_modules/
+  - node_modules
+  - ${CYPRESS_CACHE_FOLDER}
 
 stages:
   - test
   - build
   - deploy
+  - integration tests
 
 lint:
   stage: test
@@ -62,7 +67,23 @@ build stable:
     expire_in: 1 week
     paths:
       - build/stable
-      - scripts/s3sync.sh
+      - scripts/s3sync.sh 
+
+build emulator and bridge image:
+  variables:
+    CONTAINER_NAME: "$CI_REGISTRY/emulator-bridge-tests"
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  stage: build
+  when: manual
+  script:
+    - docker pull $CONTAINER_NAME:latest || true
+    - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
+    - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
+    - docker push $CONTAINER_NAME:latest
 
 deploy review:
   stage: deploy
@@ -138,3 +159,24 @@ delete review:
     - branches
   tags:
     - deploy
+
+integration tests:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: integration tests
+  script:
+    - 'export SHARED_PATH="$(dirname ${CI_PROJECT_DIR})/shared"'
+    - rm -r ${SHARED_PATH} || true
+    - docker build -t wallet-emulator-bridge-tests .
+    - mkdir -p ${SHARED_PATH}/trezor-wallet/screenshots
+    - mkdir -p ${SHARED_PATH}/trezor-wallet/videos
+    - docker run --volume ${SHARED_PATH}/trezor-wallet/screenshots:/trezor-wallet/test/screenshots --volume ${SHARED_PATH}/trezor-wallet/videos:/trezor-wallet/test/videos --rm wallet-emulator-bridge-tests
+    - find ${SHARED_PATH}
+    - mkdir trezor-wallet
+    - cp -r ${SHARED_PATH}/ trezor-wallet/
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - trezor-wallet/
