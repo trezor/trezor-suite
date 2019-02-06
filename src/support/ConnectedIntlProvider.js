@@ -38,6 +38,7 @@ const ReactIntlProvider = ({ children, locale }: Props) => {
     console.log(messages);
     return (
         <IntlProvider
+            key={locale}
             locale={locale}
             messages={messages[locale]}
         >
