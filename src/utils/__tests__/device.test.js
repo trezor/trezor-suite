@@ -40,9 +40,9 @@ describe('device utils', () => {
 
     it('isWebUSB', () => {
         const data = [
-            { transport: { type: 'ParallelTransport', version: 'webusb' } },
+            { transport: { type: 'webusb', version: '1.6.0' } },
             { transport: { type: null, version: 'aaaaaa' } },
-            { transport: { type: 'ParallelTransport', version: 'webusb' } },
+            { transport: { type: 'webusb' } },
         ];
 
         data.forEach((item) => {
