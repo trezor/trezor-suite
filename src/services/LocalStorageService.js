@@ -25,6 +25,10 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
         case WALLET.HIDE_BETA_DISCLAIMER:
             api.dispatch(LocalStorageActions.hideBetaDisclaimer());
             break;
+
+        case WALLET.SET_LANGUAGE:
+            api.dispatch(LocalStorageActions.setLanguage());
+            break;
         // first time saving
         case CONNECT.REMEMBER:
             api.dispatch(LocalStorageActions.save());

@@ -52,6 +52,7 @@ const KEY_DISCOVERY: string = `${STORAGE_PATH}discovery`;
 const KEY_TOKENS: string = `${STORAGE_PATH}tokens`;
 const KEY_PENDING: string = `${STORAGE_PATH}pending`;
 const KEY_BETA_MODAL: string = '/betaModalPrivacy'; // this key needs to be compatible with "parent" (old) wallet
+const KEY_LANGUAGE: string = `${STORAGE_PATH}language`;
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js
 // or
@@ -235,6 +236,14 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
             });
         }
     }
+
+    const language: ?string = storageUtils.get(TYPE, KEY_LANGUAGE);
+    if (language) {
+        dispatch({
+            type: WALLET.SET_LANGUAGE,
+            language: JSON.parse(language),
+        });
+    }
 };
 
 export const loadData = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
@@ -249,4 +258,9 @@ export const loadData = (): ThunkAction => (dispatch: Dispatch, getState: GetSta
 export const hideBetaDisclaimer = (): ThunkAction => (dispatch: Dispatch): void => {
     storageUtils.set(TYPE, KEY_BETA_MODAL, true);
     dispatch(loadJSON());
+};
+
+export const setLanguage = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const { language } = getState().wallet;
+    storageUtils.set(TYPE, KEY_LANGUAGE, JSON.stringify(language));
 };
