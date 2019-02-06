@@ -2,7 +2,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-import type { TrezorDevice } from 'flowtype';
 
 import COLORS from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
@@ -45,11 +44,6 @@ const StyledDivider = styled(Divider)`
     border: none;
 `;
 
-type DeviceMenuItem = {
-    type: string;
-    label: string;
-}
-
 class DeviceMenu extends PureComponent<Props> {
     constructor(props: Props) {
         super(props);
@@ -72,19 +66,6 @@ class DeviceMenu extends PureComponent<Props> {
 
     componentWillUnmount(): void {
         window.removeEventListener('mousedown', this.mouseDownHandler, false);
-    }
-
-    onDeviceMenuClick(item: DeviceMenuItem, device: TrezorDevice): void {
-        if (item.type === 'reload') {
-            this.props.acquireDevice();
-        } else if (item.type === 'forget') {
-            this.props.forgetDevice(device);
-        } else if (item.type === 'clone') {
-            this.props.duplicateDevice(device);
-        } else if (item.type === 'settings') {
-            this.props.toggleDeviceDropdown(false);
-            this.props.gotoDeviceSettings(device);
-        }
     }
 
     getMenuHeight(): number {

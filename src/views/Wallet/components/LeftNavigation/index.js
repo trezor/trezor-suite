@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
 import * as deviceUtils from 'utils/device';
 
+import Tooltip from 'components/Tooltip';
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
@@ -22,6 +23,9 @@ import type { Props } from './components/common';
 const Header = styled(DeviceHeader)`
     border-right: 1px solid ${colors.BACKGROUND};
     flex: 0 0 auto;
+`;
+
+const WalletTypeIconWrapper = styled.div`
 `;
 
 const Counter = styled.div`
@@ -203,6 +207,19 @@ class LeftNavigation extends React.PureComponent<Props, State> {
 
         const { selectedDevice, dropdownOpened } = props.wallet;
         const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
+        const walletType = selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard';
+        const showWalletType = selectedDevice && selectedDevice.features && selectedDevice.features.passphrase_protection;
+        const isDeviceReady = selectedDevice && selectedDevice.connected && selectedDevice.available;
+
+        let walletTooltipMsg = `You are in your ${walletType} wallet.`;
+        if (isDeviceReady) {
+            walletTooltipMsg = walletType === 'standard'
+                ? `${walletTooltipMsg} Click here to access your hidden wallet.`
+                : `${walletTooltipMsg} Click here to access your standard or another hidden wallet`;
+        } else {
+            walletTooltipMsg = `${walletTooltipMsg} To access other wallets please connect your device.`;
+        }
+
         return (
             <Sidebar isOpen={props.wallet.showSidebar}>
                 <Header
@@ -219,9 +236,38 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
-                            <WalletTypeIcon type={selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard'} size={25} color={colors.TEXT_SECONDARY} />
+                            {showWalletType ? (
+                                <Tooltip
+                                    content={walletTooltipMsg}
+                                    maxWidth={200}
+                                    placement="bottom"
+                                    enterDelayMs={0.5}
+                                >
+                                    <WalletTypeIconWrapper>
+                                        <WalletTypeIcon
+                                            onClick={(e) => {
+                                                if (selectedDevice && isDeviceReady) {
+                                                    this.props.duplicateDevice(selectedDevice);
+                                                    e.stopPropagation();
+                                                }
+                                            }}
+                                            hoverColor={isDeviceReady ? colors.TEXT_PRIMARY : colors.TEXT_SECONDARY}
+                                            type={walletType}
+                                            size={25}
+                                            color={colors.TEXT_SECONDARY}
+                                        />
+                                    </WalletTypeIconWrapper>
+                                </Tooltip>) : null
+                            }
                             {this.props.devices.length > 1 && (
-                                <Counter>{this.props.devices.length}</Counter>
+                                <Tooltip
+                                    content="Number of devices"
+                                    maxWidth={200}
+                                    placement="bottom"
+                                    enterDelayMs={0.5}
+                                >
+                                    <Counter>{this.props.devices.length}</Counter>
+                                </Tooltip>
                             )}
                             <Icon
                                 canAnimate={this.state.clicked === true}
