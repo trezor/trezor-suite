@@ -9,7 +9,7 @@ import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import {
-    SRC, BUILD, PORT, PUBLIC,
+    SRC, BUILD, PORT, PUBLIC, TRANSLATIONS,
 } from './constants';
 
 const gitRevisionPlugin = new GitRevisionPlugin();
@@ -79,7 +79,7 @@ module.exports = {
             {
                 type: 'javascript/auto',
                 test: /\.json/,
-                exclude: /(node_modules)/,
+                exclude: [/(node_modules)/, TRANSLATIONS],
                 loader: 'file-loader',
                 query: {
                     outputPath: './data',

@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 
 // general
+import ConnectedIntlProvider from 'support/ConnectedIntlProvider';
 import ErrorBoundary from 'support/ErrorBoundary';
 import ImagesPreloader from 'support/ImagesPreloader';
 import { getPattern } from 'support/routes';
@@ -35,34 +36,36 @@ import store, { history } from 'store';
 
 const App = () => (
     <Provider store={store}>
-        <ConnectedRouter history={history}>
-            <Switch>
-                <Route exact path={getPattern('landing-home')} component={RootView} />
-                <Route exact path={getPattern('landing-bridge')} component={InstallBridge} />
-                <Route exact path={getPattern('landing-import')} component={ImportView} />
-                <Route>
-                    <ErrorBoundary>
-                        <ImagesPreloader />
-                        <WalletContainer>
-                            <Route exact path={getPattern('wallet-settings')} component={WalletSettings} />
-                            <Route exact path={getPattern('wallet-dashboard')} component={WalletDashboard} />
-                            <Route exact path={getPattern('wallet-acquire')} component={WalletAcquire} />
-                            <Route exact path={getPattern('wallet-unreadable')} component={WalletUnreadableDevice} />
-                            <Route exact path={getPattern('wallet-bootloader')} component={WalletBootloader} />
-                            <Route exact path={getPattern('wallet-initialize')} component={WalletInitialize} />
-                            <Route exact path={getPattern('wallet-seedless')} component={WalletSeedless} />
-                            <Route exact path={getPattern('wallet-firmware-update')} component={WalletFirmwareUpdate} />
-                            <Route exact path={getPattern('wallet-device-settings')} component={WalletDeviceSettings} />
-                            <Route exact path={getPattern('wallet-account-summary')} component={AccountSummary} />
-                            <Route path={getPattern('wallet-account-send')} component={AccountSend} />
-                            <Route path={getPattern('wallet-account-send-override')} component={AccountSend} />
-                            <Route path={getPattern('wallet-account-receive')} component={AccountReceive} />
-                            <Route path={getPattern('wallet-account-signverify')} component={AccountSignVerify} />
-                        </WalletContainer>
-                    </ErrorBoundary>
-                </Route>
-            </Switch>
-        </ConnectedRouter>
+        <ConnectedIntlProvider>
+            <ConnectedRouter history={history}>
+                <Switch>
+                    <Route exact path={getPattern('landing-home')} component={RootView} />
+                    <Route exact path={getPattern('landing-bridge')} component={InstallBridge} />
+                    <Route exact path={getPattern('landing-import')} component={ImportView} />
+                    <Route>
+                        <ErrorBoundary>
+                            <ImagesPreloader />
+                            <WalletContainer>
+                                <Route exact path={getPattern('wallet-settings')} component={WalletSettings} />
+                                <Route exact path={getPattern('wallet-dashboard')} component={WalletDashboard} />
+                                <Route exact path={getPattern('wallet-acquire')} component={WalletAcquire} />
+                                <Route exact path={getPattern('wallet-unreadable')} component={WalletUnreadableDevice} />
+                                <Route exact path={getPattern('wallet-bootloader')} component={WalletBootloader} />
+                                <Route exact path={getPattern('wallet-initialize')} component={WalletInitialize} />
+                                <Route exact path={getPattern('wallet-seedless')} component={WalletSeedless} />
+                                <Route exact path={getPattern('wallet-firmware-update')} component={WalletFirmwareUpdate} />
+                                <Route exact path={getPattern('wallet-device-settings')} component={WalletDeviceSettings} />
+                                <Route exact path={getPattern('wallet-account-summary')} component={AccountSummary} />
+                                <Route path={getPattern('wallet-account-send')} component={AccountSend} />
+                                <Route path={getPattern('wallet-account-send-override')} component={AccountSend} />
+                                <Route path={getPattern('wallet-account-receive')} component={AccountReceive} />
+                                <Route path={getPattern('wallet-account-signverify')} component={AccountSignVerify} />
+                            </WalletContainer>
+                        </ErrorBoundary>
+                    </Route>
+                </Switch>
+            </ConnectedRouter>
+        </ConnectedIntlProvider>
     </Provider>
 );
 

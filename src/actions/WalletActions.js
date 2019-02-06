@@ -42,6 +42,9 @@ export type WalletAction = {
     type: typeof WALLET.SHOW_BETA_DISCLAIMER | typeof WALLET.HIDE_BETA_DISCLAIMER | typeof WALLET.SET_FIRST_LOCATION_CHANGE,
 } | {
     type: typeof WALLET.TOGGLE_SIDEBAR,
+} | {
+    type: typeof WALLET.SET_LANGUAGE,
+    language: string
 }
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
@@ -66,6 +69,11 @@ export const toggleDeviceDropdown = (opened: boolean): WalletAction => ({
 
 export const toggleSidebar = (): WalletAction => ({
     type: WALLET.TOGGLE_SIDEBAR,
+});
+
+export const setLanguage = (language: string): WalletAction => ({
+    type: WALLET.SET_LANGUAGE,
+    language,
 });
 
 // This method will be called after each DEVICE.CONNECT action
