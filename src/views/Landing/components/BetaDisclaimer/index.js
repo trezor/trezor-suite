@@ -17,7 +17,7 @@ import * as WalletActions from 'actions/WalletActions';
 
 const Wrapper = styled.div`
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     top: 0px;
     left: 0px;
     background: rgba(0, 0, 0, 0.35);
