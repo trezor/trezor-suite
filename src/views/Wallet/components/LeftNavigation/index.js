@@ -257,7 +257,8 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                             color={colors.TEXT_SECONDARY}
                                         />
                                     </WalletTypeIconWrapper>
-                                </Tooltip>) : null
+                                </Tooltip>
+                            ) : null
                             }
                             {this.props.devices.length > 1 && (
                                 <Tooltip
