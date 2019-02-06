@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 /* @flow */
 import React from 'react';
 import styled from 'styled-components';
@@ -5,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import colors from 'config/colors';
 import { SCREEN_SIZE } from 'config/variables';
 import type { toggleSidebar as toggleSidebarType } from 'actions/WalletActions';
+import LanguagePicker from './components/LanguagePicker/Container';
 
 const Wrapper = styled.header`
     width: 100%;
@@ -70,7 +72,11 @@ const Logo = styled.div`
 `;
 
 const MenuLinks = styled.div`
+    display: flex;
+    align-content: center;
+    justify-content: flex-end;
     flex: 0;
+    height: 100%;
 
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         flex: 0 1 33%;
@@ -78,6 +84,12 @@ const MenuLinks = styled.div`
 `;
 
 const Projects = styled.div`
+    display: flex;
+    align-items: center;
+    height: 100%;
+    border-right: 1px solid ${colors.HEADER_DIVIDER};
+    padding-right: 24px;
+    margin-right: 24px;
 
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         display: none;
@@ -137,6 +149,7 @@ const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
                     <A href="https://blog.trezor.io/" target="_blank" rel="noreferrer noopener">Blog</A>
                     <A href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Support</A>
                 </Projects>
+                <LanguagePicker />
             </MenuLinks>
         </LayoutWrapper>
     </Wrapper>
