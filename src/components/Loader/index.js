@@ -1,10 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import Paragraph from 'components/Paragraph';
-import { FONT_SIZE } from 'config/variables';
-import { DASH, GREEN_COLOR } from 'config/animations';
-import colors from 'config/colors';
+import Paragraph from '../Paragraph';
+import { FONT_SIZE } from '../../config/variables';
+import { DASH, GREEN_COLOR } from '../../config/animations';
+import colors from '../../config/colors';
 
 const Wrapper = styled.div`
     position: relative;

@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import colors from 'config/colors';
-import Icon from 'components/Icon';
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import icons from 'config/icons';
+import Icon from '../../../Icon';
+import colors from '../../../../config/colors';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../../config/variables';
+import icons from '../../../../config/icons';
 
 const Wrapper = styled.div`
     position: relative;

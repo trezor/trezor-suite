@@ -1,16 +1,16 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import colors from 'config/colors';
-import ICONS from 'config/icons';
-import Icon from 'components/Icon';
+import colors from '../../../config/colors';
+import ICONS from '../../../config/icons';
+import Icon from '../../Icon';
 import {
     FONT_SIZE,
     FONT_FAMILY,
     FONT_WEIGHT,
     LINE_HEIGHT,
     TRANSITION,
-} from 'config/variables';
+} from '../../../config/variables';
 
 const Wrapper = styled.div`
     width: 100%;

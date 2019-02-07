@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import colors from 'config/colors';
-import Link from 'components/Link';
+import colors from '../../config/colors';
+import Link from '../Link';
 
 const Wrapper = styled.div`
     border-bottom: 1px solid ${colors.DIVIDER};

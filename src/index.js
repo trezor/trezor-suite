@@ -8,8 +8,8 @@ import ButtonWebUSB from './components/buttons/ButtonWebUSB';
 
 import Pin from './components/Pin';
 import Passphrase from './components/Passphrase';
-// import Invalid from './components/Invalid';
-// import Transaction from './components/Transaction';
+import Invalid from './components/Invalid';
+import Transaction from './components/Transaction';
 
 import Input from './components/inputs/Input';
 import TextArea from './components/Textarea';
@@ -33,17 +33,17 @@ import P from './components/Paragraph';
 // import Tooltip from './components/Tooltip';
 
 module.exports = {
-	colors,
+    colors,
     icons,
     animations,
-	variables,
+    variables,
     ButtonText,
     ButtonWebUSB,
     Modal,
     Pin,
     Passphrase,
-    // Invalid,
-    // Transaction,
+    Invalid,
+    Transaction,
     Input,
     TextArea,
     Checkbox,

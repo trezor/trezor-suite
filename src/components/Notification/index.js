@@ -1,11 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { getPrimaryColor, getSecondaryColor, getIcon } from 'utils/notification';
-import Icon from 'components/Icon';
-import icons from 'config/icons';
-import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
+import { getPrimaryColor, getSecondaryColor, getIcon } from '../../utils/notification';
+import Icon from '../Icon';
+import icons from '../../config/icons';
+import { FONT_WEIGHT, FONT_SIZE } from '../../config/variables';
 
-import Loader from 'components/Loader';
+import Loader from '../Loader';
 
 import NotificationButton from './components/NotificationButton';
 

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import colors from 'config/colors';
-import { TRANSITION, FONT_WEIGHT, FONT_SIZE } from 'config/variables';
+import colors from '../../../config/colors';
+import { TRANSITION, FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
 
 const Wrapper = styled.button`
     padding: ${props => (props.icon ? '4px 24px 4px 15px' : '11px 24px')};

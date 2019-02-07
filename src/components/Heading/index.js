@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
-import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
+import colors from '../../config/colors';
+import { FONT_SIZE } from '../../config/variables';
 
 const baseStyles = css`
     -webkit-font-smoothing: antialiased;

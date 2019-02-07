@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import colors from 'config/colors';
+import colors from '../../config/colors';
 import styled, { keyframes } from 'styled-components';
 
 const chooseIconAnimationType = (canAnimate, isActive) => {

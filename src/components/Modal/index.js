@@ -1,8 +1,7 @@
 import * as React from 'react';
 
 import styled, { css } from 'styled-components';
-import colors from 'config/colors';
-import { FADE_IN } from 'config/animations';
+import colors from '../../config/colors';
 
 import PropTypes from 'prop-types';
 
@@ -34,7 +33,7 @@ const Modal = (props) => {
     const { modal } = props;
 
     return (
-        <ModalContainer css={css`animation: ${FADE_IN} 0.3s;`}>
+        <ModalContainer>
             <ModalWindow>
                 { modal.content }
             </ModalWindow>

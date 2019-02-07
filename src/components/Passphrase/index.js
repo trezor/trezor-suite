@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import colors from 'config/colors';
-import { FONT_SIZE, TRANSITION } from 'config/variables';
+import colors from '../../config/colors';
+import { FONT_SIZE, TRANSITION } from '../../config/variables';
 
 import { H2 } from '../Heading';
 import P from '../Paragraph';

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import colors from 'config/colors';
-import { FONT_SIZE, LINE_HEIGHT } from 'config/variables';
+import colors from '../../config/colors';
+import { FONT_SIZE, LINE_HEIGHT } from '../../config/variables';
 
 const Wrapper = styled.p`
     font-size: ${FONT_SIZE.BIG};

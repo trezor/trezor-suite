@@ -9,7 +9,7 @@ let { internal } = collectImportsSync( path.resolve(__dirname, '../src/index.js'
 const src = path.resolve(__dirname, '../src');
 const npm = path.resolve(__dirname, '../npm');
 const lib = path.resolve(__dirname, '../npm/lib');
-console.log(internal)
+
 internal.forEach(file => {
     const libFile = file.replace(src, lib);
     fs.copySync(file, libFile);
@@ -18,7 +18,6 @@ internal.forEach(file => {
 
 delete packageJSON.devDependencies;
 delete packageJSON.scripts;
-delete packageJSON.bin;
 delete packageJSON.dependencies['@storybook/react'];
 delete packageJSON.dependencies['storybook-addon-jsx'];
 delete packageJSON.dependencies['react'];
