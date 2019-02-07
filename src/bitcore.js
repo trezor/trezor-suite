@@ -18,6 +18,7 @@ export type TransactionWithHeight = {
     zcash: boolean,
     height: ?number,
     timestamp: ?number,
+    time?: ?number, // capricoin specific field
     hash: string,
     inputAddresses: Array<?string>,
     outputAddresses: Array<?string>,
@@ -78,6 +79,7 @@ type BcDetailedOutput = {
 
 type BcDetailedTransaction = {
     blockTimestamp: ?number, // undef on unconfirmed
+    time?: ?number, // capricoin specific field
     hash: string,
     height: number, // -1 on unconfirmed
     hex: string,
@@ -614,6 +616,7 @@ function convertTx(zcash: boolean, bcTx: BcDetailedTransaction): TransactionWith
         hex: bcTx.hex,
         height: bcTx.height === -1 ? null : bcTx.height,
         timestamp: bcTx.blockTimestamp == null ? null : bcTx.blockTimestamp,
+        time: bcTx.time, // capricoin specific field
         hash: bcTx.hash,
         inputAddresses: bcTx.inputs.map(input => input.address),
         outputAddresses: bcTx.outputs.map(output => output.address),
