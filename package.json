@@ -96,5 +96,8 @@
     "virtual-dom": "2.1.1",
     "watchify": "3.6.0",
     "workerify": "1.0.0"
+  },
+  "engines": {
+    "node": ">=6.0.0 <9.0.0"
   }
 }
