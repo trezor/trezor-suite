@@ -108,9 +108,9 @@ class SignVerify extends Component <Props> {
         const verifyAddressError = this.getError('verifyAddress');
         return (
             <Content>
-                <Title>Sign &amp; Verify</Title>
                 <Wrapper>
                     <Sign>
+                        <Title>Sign Message</Title>
                         <Row>
                             <Input
                                 topLabel="Address"
@@ -157,6 +157,7 @@ class SignVerify extends Component <Props> {
                         </RowButtons>
                     </Sign>
                     <Verify>
+                        <Title>Verify message</Title>
                         <Row>
                             <Input
                                 topLabel="Address"
