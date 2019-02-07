@@ -236,7 +236,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
-                            {showWalletType ? (
+                            {showWalletType && (
                                 <Tooltip
                                     content={walletTooltipMsg}
                                     maxWidth={200}
@@ -258,7 +258,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                         />
                                     </WalletTypeIconWrapper>
                                 </Tooltip>
-                            ) : null
+                            )
                             }
                             {this.props.devices.length > 1 && (
                                 <Tooltip
