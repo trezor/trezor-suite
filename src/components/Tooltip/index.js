@@ -1,6 +1,6 @@
 import React from 'react';
 import { RcTooltip } from 'rc-tooltip';
-import colors from 'config/colors';
+import colors from '../../config/colors';
 import Link from '../Link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
