@@ -7,7 +7,7 @@ import styled from 'styled-components';
 const Wrapper = styled.div``;
 
 storiesOf('Icons', module)
-    .add('Icons', () => (
+    .addWithJSX('icons', () => (
         <Wrapper>
             <Icon icon={icons.TOP} />
             <Icon icon={icons.EYE_CROSSED} />
