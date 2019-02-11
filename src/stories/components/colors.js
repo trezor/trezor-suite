@@ -1,162 +1,50 @@
 import React from 'react';
+import colors from 'config/colors';
+import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
 
-import { storiesOf } from '@storybook/react';
+const Wrapper = styled.div`
+    display: flex;
+    width: 150px;
+    flex-direction: row;
+`;
 
-import colors from 'config/colors';
+const ColorBox = styled.div`
+    max-width: 90px;
+    height: 20px;
+    padding: 20px;
+    display: flex;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    background: ${props => props.color};
+    border: 1px solid black;
+`;
 
 storiesOf('Colors', module)
-    .addWithJSX('White', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.WHITE};
-        `;
-        return <Div>{colors.WHITE}</Div>
-    })
-    .addWithJSX('Background', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.BACKGROUND};
-        `;
-        return <Div>{colors.BACKGROUND}</Div>
-    })
-    .addWithJSX('Header', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.HEADER};
-        `;
-        return <Div>{colors.HEADER}</Div>
-    })
-    .addWithJSX('Body', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.BODY};
-        `;
-        return <Div>{colors.BODY}</Div>
-    })
-    .addWithJSX('Landing', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.LANDING};
-        `;
-        return <Div>{colors.LANDING}</Div>
-    })
-    .addWithJSX('Text primary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            color: ${colors.TEXT_PRIMARY};
-        `;
-        return <Div>{colors.TEXT_PRIMARY}</Div>
-    })
-    .addWithJSX('Text secondary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            color: ${colors.TEXT_SECONDARY};
-        `;
-        return <Div>{colors.TEXT_SECONDARY}</Div>
-    })
-    .addWithJSX('Label color', () => {
-        const Div = styled.div`
-            height: 100vh;
-            color: ${colors.LABEL_COLOR};
-        `;
-        return <Div>{colors.DIVIDER}</Div>
-    })
-    .addWithJSX('Gray light', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.GRAY_LIGHT};
-        `;
-        return <Div>{colors.GRAY_LIGHT}</Div>
-    })
-    .addWithJSX('Divider', () => {
-        const Div = styled.div`
-            padding: 10px 0;
-            border-bottom: 1px solid ${colors.DIVIDER};
-        `;
-        return <Div>{colors.DIVIDER}</Div>
-    })
-    .addWithJSX('Green primary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.GREEN_PRIMARY};
-        `;
-        return <Div>{colors.GREEN_PRIMARY}</Div>
-    })
-    .addWithJSX('Green secondary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.GREEN_SECONDARY};
-        `;
-        return <Div>{colors.GREEN_SECONDARY}</Div>
-    })
-    .addWithJSX('Green tertiary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.GREEN_TERTIARY};
-        `;
-        return <Div>{colors.GREEN_TERTIARY}</Div>
-    })
-    .addWithJSX('Success primary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.SUCCESS_PRIMARY};
-        `;
-        return <Div>{colors.SUCCESS_PRIMARY}</Div>
-    })
-    .addWithJSX('Success secondary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.SUCCESS_SECONDARY};
-        `;
-        return <Div>{colors.SUCCESS_SECONDARY}</Div>
-    })
-    .addWithJSX('Info primary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.INFO_PRIMARY};
-        `;
-        return <Div>{colors.INFO_PRIMARY}</Div>
-    })
-    .addWithJSX('Info secondary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.INFO_SECONDARY};
-        `;
-        return <Div>{colors.INFO_SECONDARY}</Div>
-    })
-    .addWithJSX('Warning primary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.WARNING_PRIMARY};
-        `;
-        return <Div>{colors.WARNING_PRIMARY}</Div>
-    })
-    .addWithJSX('Warning secondary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.WARNING_SECONDARY};
-        `;
-        return <Div>{colors.WARNING_SECONDARY}</Div>
-    })
-    .addWithJSX('Error primary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.ERROR_PRIMARY};
-        `;
-        return <Div>{colors.ERROR_PRIMARY}</Div>
-    })
-    .addWithJSX('Error secondary', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.ERROR_SECONDARY};
-        `;
-        return <Div>{colors.ERROR_SECONDARY}</Div>
-    })
-    .addWithJSX('Tooltip background', () => {
-        const Div = styled.div`
-            height: 100vh;
-            background: ${colors.TOOLTIP_BACKGROUND};
-        `;
-        return <Div>{colors.TOOLTIP_BACKGROUND}</Div>
-    });
+    .addWithJSX('colors', () => (
+        <Wrapper>
+            <ColorBox color={colors.WHITE}>{colors.WHITE}</ColorBox>
+            <ColorBox color={colors.BACKGROUND}>{colors.BACKGROUND}</ColorBox>
+            <ColorBox color={colors.HEADER}>{colors.HEADER}</ColorBox>
+            <ColorBox color={colors.BODY}>{colors.BODY}</ColorBox>
+            <ColorBox color={colors.LANDING}>{colors.LANDING}</ColorBox>
+            <ColorBox color={colors.TEXT_PRIMARY}>{colors.TEXT_PRIMARY}</ColorBox>
+            <ColorBox color={colors.TEXT_SECONDARY}>{colors.TEXT_SECONDARY}</ColorBox>
+            <ColorBox color={colors.LABEL_COLOR}>{colors.LABEL_COLOR}</ColorBox>
+            <ColorBox color={colors.GRAY_LIGHT}>{colors.GRAY_LIGHT}</ColorBox>
+            <ColorBox color={colors.DIVIDER}>{colors.DIVIDER}</ColorBox>
+            <ColorBox color={colors.GREEN_PRIMARY}>{colors.GREEN_PRIMARY}</ColorBox>
+            <ColorBox color={colors.GREEN_SECONDARY}>{colors.GREEN_SECONDARY}</ColorBox>
+            <ColorBox color={colors.GREEN_TERTIARY}>{colors.GREEN_TERTIARY}</ColorBox>
+            <ColorBox color={colors.SUCCESS_PRIMARY}>{colors.SUCCESS_PRIMARY}</ColorBox>
+            <ColorBox color={colors.SUCCESS_SECONDARY}>{colors.SUCCESS_SECONDARY}</ColorBox>
+            <ColorBox color={colors.INFO_PRIMARY}>{colors.INFO_PRIMARY}</ColorBox>
+            <ColorBox color={colors.INFO_SECONDARY}>{colors.INFO_SECONDARY}</ColorBox>
+            <ColorBox color={colors.WARNING_PRIMARY}>{colors.WARNING_PRIMARY}</ColorBox>
+            <ColorBox color={colors.WARNING_SECONDARY}>{colors.WARNING_SECONDARY}</ColorBox>
+            <ColorBox color={colors.ERROR_PRIMARY}>{colors.ERROR_PRIMARY}</ColorBox>
+            <ColorBox color={colors.ERROR_SECONDARY}>{colors.ERROR_SECONDARY}</ColorBox>
+            <ColorBox color={colors.TOOLTIP_BACKGROUND}>{colors.TOOLTIP_BACKGROUND}</ColorBox>
+        </Wrapper>
+    ));
