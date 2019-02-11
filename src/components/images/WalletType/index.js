@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import colors from 'config/colors';
+import colors from '../../../config/colors';
 import styled from 'styled-components';
 
 const SvgWrapper = styled.svg`

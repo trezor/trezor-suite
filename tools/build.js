@@ -1,10 +1,9 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { exec } from 'child_process';
 import { collectImportsSync } from 'babel-collect-imports';
 import packageJSON from '../package.json';
 
-let { internal } = collectImportsSync( path.resolve(__dirname, '../src/index.js') );
+const { internal } = collectImportsSync(path.resolve(__dirname, '../src/index.js'));
 
 const src = path.resolve(__dirname, '../src');
 const npm = path.resolve(__dirname, '../npm');
