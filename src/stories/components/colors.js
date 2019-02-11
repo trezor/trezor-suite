@@ -13,6 +13,7 @@ const ColorBox = styled.div`
     max-width: 90px;
     height: 20px;
     padding: 20px;
+    margin: 5px;
     display: flex;
     display: block;
     justify-content: center;

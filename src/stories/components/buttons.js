@@ -1,9 +1,7 @@
-import React from 'react';
-
-import { storiesOf } from '@storybook/react';
-
 import ButtonText from 'components/buttons/ButtonText';
 import ButtonWebUSB from 'components/buttons/ButtonWebUSB';
+import React from 'react';
+import { storiesOf } from '@storybook/react';
 
 storiesOf('Buttons', module)
     .addWithJSX('with text', () => (

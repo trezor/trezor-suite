@@ -1,11 +1,9 @@
-import React from 'react';
-
-import { storiesOf } from '@storybook/react';
-
-import Pin from 'components/Pin';
-import Passphrase from 'components/Passphrase';
 import Invalid from 'components/Invalid';
+import Passphrase from 'components/Passphrase';
+import Pin from 'components/Pin';
+import React from 'react';
 import Transaction from 'components/Transaction';
+import { storiesOf } from '@storybook/react';
 
 const device = {
     label: 'Test',

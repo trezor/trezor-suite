@@ -1,11 +1,10 @@
-import React from 'react';
+import { AsyncSelect, Select } from 'components/Select';
 
-import { storiesOf } from '@storybook/react';
-
-import Input from 'components/inputs/Input';
-import TextArea from 'components/Textarea';
 import Checkbox from 'components/Checkbox';
-import { Select, AsyncSelect } from 'components/Select';
+import Input from 'components/inputs/Input';
+import React from 'react';
+import TextArea from 'components/Textarea';
+import { storiesOf } from '@storybook/react';
 
 const loadOptions = (inputValue, callback) => {
     const data = [

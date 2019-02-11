@@ -1,10 +1,8 @@
-import React from 'react';
-
-import { storiesOf } from '@storybook/react';
-
 import CoinLogo from 'components/images/CoinLogo';
+import React from 'react';
 import TrezorImage from 'components/images/TrezorImage';
 import WalletType from 'components/images/WalletType';
+import { storiesOf } from '@storybook/react';
 
 storiesOf('Images', module)
     .addWithJSX('Model One', () => <TrezorImage model="1" />)

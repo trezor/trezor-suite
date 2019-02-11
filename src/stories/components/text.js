@@ -1,13 +1,15 @@
-import React from 'react';
-
-import { storiesOf } from '@storybook/react';
-
 import {
-    H1, H2, H3, H4,
+    H1,
+    H2,
+    H3,
+    H4,
 } from 'components/Heading';
+
 import Link from 'components/Link';
 import P from 'components/Paragraph';
+import React from 'react';
 import Tooltip from 'components/Tooltip';
+import { storiesOf } from '@storybook/react';
 
 storiesOf('Text', module)
     .addWithJSX('Heading H1', () => <H1>Hello World!</H1>)

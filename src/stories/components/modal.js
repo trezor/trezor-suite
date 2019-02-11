@@ -1,10 +1,8 @@
-import React from 'react';
-
-import { storiesOf } from '@storybook/react';
-
 import Modal from 'components/Modal';
-import Pin from 'components/Pin';
 import Passphrase from 'components/Passphrase';
+import Pin from 'components/Pin';
+import React from 'react';
+import { storiesOf } from '@storybook/react';
 
 const device = {
     label: 'Test',
