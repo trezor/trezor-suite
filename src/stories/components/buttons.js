@@ -1,18 +1,21 @@
-import ButtonText from 'components/buttons/ButtonText';
-import ButtonWebUSB from 'components/buttons/ButtonWebUSB';
+import Button from 'components/buttons/Button';
 import React from 'react';
+import WebUSB from 'components/buttons/WebUsb';
 import { storiesOf } from '@storybook/react';
 
 storiesOf('Buttons', module)
-    .addWithJSX('with text', () => (
-        <ButtonText onClick={() => {}}>Hello Button</ButtonText>
+    .addWithJSX('Button primary', () => (
+        <Button primary onClick={() => {}}>Primary Button</Button>
     ))
-    .addWithJSX('with text (disabled)', () => (
-        <ButtonText isDisabled onClick={() => {}}>Hello Button</ButtonText>
+    .addWithJSX('Button primary', () => (
+        <Button secondary onClick={() => {}}>Secondary Button</Button>
+    ))
+    .addWithJSX('Button (disabled)', () => (
+        <Button isDisabled onClick={() => {}}>Disabled Button</Button>
     ))
     .addWithJSX('transparent with text ', () => (
-        <ButtonText isTransparent onClick={() => {}}>Hello Button</ButtonText>
+        <Button isTransparent onClick={() => {}}>Transparent Button</Button>
     ))
     .addWithJSX('with text (WebUSB)', () => (
-        <ButtonWebUSB onClick={() => {}}>Hello Button</ButtonWebUSB>
+        <WebUSB onClick={() => {}}>web usb Button</WebUSB>
     ));

@@ -3,11 +3,12 @@ import React from 'react';
 import TrezorImage from 'components/images/TrezorImage';
 import WalletType from 'components/images/WalletType';
 import { storiesOf } from '@storybook/react';
+import styled from 'styled-components';
 
-const Wrapper = style.div`
+const Wrapper = styled.div`
 `;
 
-storiesOf('Coins', module);
+storiesOf('Coins', module)
 'coins', () => (
     <Wrapper>
         <CoinLogo network="ada" />

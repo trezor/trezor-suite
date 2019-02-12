@@ -27,21 +27,16 @@ const ModalWindow = styled.div`
     text-align: center;
 `;
 
-// modal container component
-const Modal = (props) => {
-    const { modal } = props;
-
-    return (
-        <ModalContainer>
-            <ModalWindow>
-                { modal.content }
-            </ModalWindow>
-        </ModalContainer>
-    );
-};
+const Modal = ({ content }) => (
+    <ModalContainer>
+        <ModalWindow>
+            { content }
+        </ModalWindow>
+    </ModalContainer>
+);
 
 Modal.propTypes = {
-    modal: PropTypes.object,
+    content: PropTypes.element,
 };
 
 export default Modal;
