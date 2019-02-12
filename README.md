@@ -42,7 +42,7 @@ You can also build your own custom process. Just make sure that the JSON file co
 ``` 
 
 #### CLI
-CLI requires a configuration file. By default it will try to parse 'l10n.config.json' inside the root of your project. You can also specify the path to your configuration file via command line option `--config path`.
+CLI requires a configuration file. By default it will try to parse `l10n.config.json` inside the root of your project. You can also specify the path to your configuration file via command line option `--config path`.
 ```shell
     $ ttm <command>
     
