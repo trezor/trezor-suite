@@ -1,4 +1,13 @@
-import { configure } from '@storybook/react';
+import { addDecorator, configure } from '@storybook/react';
+import { withOptions } from '@storybook/addon-options';
+import { withInfo } from '@storybook/addon-info';
+
+addDecorator(
+    withOptions({
+        name: 'Trezor UI',
+        addonPanelInRight: true
+    })
+);
 
 function loadStories() {
     require('stories/index.js');
@@ -10,7 +19,7 @@ function loadStories() {
     require('stories/components/loader.js');
     require('stories/components/modal.js');
     require('stories/components/icons.js');
-    require('stories/components/images.js');
+    require('stories/components/coins.js');
 }
 
 configure(loadStories, module);

@@ -1,41 +1,61 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
+import centered from '@storybook/addon-centered';
+import { withInfo } from '@storybook/addon-info';
+import styled from 'styled-components';
 
 import Notification from 'components/Notification';
 
+const Wrapper = styled.div`
+    min-width: 600px;
+`;
+
 storiesOf('Notifications', module)
-    .addWithJSX('Success', () => (
-        <Notification
-            type="success"
-            title="Success notification"
-            message="This is a success message"
-            cancelable
-        />
+    .addDecorator(centered)
+    .addDecorator(
+        withInfo({
+            header: true,
+            propTablesExclude: [Wrapper]
+        }),
+    )
+    .add('Success', () => (
+        <Wrapper>
+            <Notification
+                type="success"
+                title="Success notification"
+                message="This is a success message"
+                cancelable
+            />
+        </Wrapper>
     ))
-    .addWithJSX('Warning', () => (
-        <Notification
-            type="warning"
-            title="Warning notification"
-            message="This is a warning message"
-            actions={[
-                {
-                    label: 'Confirm',
-                    callback: () => {},
-                },
-            ]}
-        />
+    .add('Warning', () => (
+        <Wrapper>
+            <Notification
+                type="warning"
+                title="Warning notification"
+                message="This is a warning message"
+                actions={[
+                    {
+                        label: 'Confirm',
+                        callback: () => {},
+                    },
+                ]}
+            />
+        </Wrapper>
     ))
-    .addWithJSX('Error', () => (
-        <Notification
-            type="error"
-            title="Error notification"
-            message="This is a error message"
-            actions={[
-                {
-                    label: 'Remove',
-                    callback: () => {},
-                },
-            ]}
-        />
+    .add('Error', () => (
+        <Wrapper>
+            <Notification
+                type="error"
+                title="Error notification"
+                message="This is a error message"
+                actions={[
+                    {
+                        label: 'Remove',
+                        callback: () => {},
+                    },
+                ]}
+            />
+        </Wrapper>
     ));

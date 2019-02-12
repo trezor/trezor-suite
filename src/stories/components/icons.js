@@ -3,11 +3,20 @@ import React from 'react';
 import icons from 'config/icons';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
+import centered from '@storybook/addon-centered';
+import { withInfo } from '@storybook/addon-info';
 
 const Wrapper = styled.div``;
 
 storiesOf('Icons', module)
-    .addWithJSX('icons', () => (
+    .addDecorator(centered)
+    .addDecorator(
+        withInfo({
+            header: true,
+            propTablesExclude: [Wrapper]
+        }),
+    )
+    .add('icons', () => (
         <Wrapper>
             <Icon icon={icons.TOP} />
             <Icon icon={icons.EYE_CROSSED} />

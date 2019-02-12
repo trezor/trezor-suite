@@ -9,13 +9,22 @@ import Link from 'components/Link';
 import P from 'components/Paragraph';
 import React from 'react';
 import Tooltip from 'components/Tooltip';
-import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
+import { storiesOf } from '@storybook/react';
+import centered from '@storybook/addon-centered';
+import { withInfo } from '@storybook/addon-info';
 
 const Wrapper = styled.div``;
 
 storiesOf('Text', module)
-    .addWithJSX('Headings', () => (
+    .addDecorator(
+        withInfo({
+            header: true,
+            propTablesExclude: [Wrapper, styled.div]
+        }),
+    )
+    .addDecorator(centered)
+    .add('Headings', () => (
         <Wrapper>
             <H1>Heading level 1</H1>
             <H2>Heading level 2</H2>
@@ -23,10 +32,10 @@ storiesOf('Text', module)
             <H4>Heading level 4</H4>
         </Wrapper>
     ))
-    .addWithJSX('Link', () => <Link href="https://trezor.io">This is a link.</Link>)
-    .addWithJSX('Paragraph', () => <P>This is a paragraph.</P>)
-    .addWithJSX('Paragraph small', () => <P isSmaller>This is a paragraph.</P>)
-    .addWithJSX('Tooltip', () => (
+    .add('Link', () => <Link href="https://trezor.io">This is a link.</Link>)
+    .add('Paragraph', () => <P>This is a paragraph.</P>)
+    .add('Paragraph small', () => <P isSmaller>This is a paragraph.</P>)
+    .add('Tooltip', () => (
         <Tooltip
             maxWidth={280}
             placement="bottom"
