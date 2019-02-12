@@ -78,7 +78,6 @@
         "styled-normalize": "^8.0.6",
         "trezor-bridge-communicator": "1.0.2",
         "trezor-connect": "7.0.0-beta.2",
-        "trezor-translations-manager": "slowbackspace/trezor-translations-manager",
         "wallet-address-validator": "^0.2.4",
         "web3": "1.0.0-beta.35",
         "webpack": "^4.29.1",
@@ -126,6 +125,7 @@
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.5.2",
         "stylelint-webpack-plugin": "^0.10.5",
+        "trezor-translations-manager": "slowbackspace/trezor-translations-manager",
         "webpack-cli": "^3.2.3",
         "webpack-dev-server": "^3.1.14",
         "yargs": "11.0.0"
