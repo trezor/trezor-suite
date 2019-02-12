@@ -82,7 +82,7 @@ switch (command) {
                 // https://support.crowdin.com/api/error-codes/
                 if (crowdinErr.error.code === 8) {
                     console.log("File doesn't exist in Crowdin, adding a new file.");
-                    const csvScheme = 'identifier,source_phrase,context,' + languages.join(",");
+                    const csvScheme = `identifier,source_phrase,context,${languages.join(',')}`;
                     crowdin.addFile(path.join(outputDir, 'master.csv'), csvScheme, projectId, apiKey)
                         .catch((addErr) => {
                             crowdinErr = JSON.parse(addErr.error);
