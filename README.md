@@ -10,7 +10,7 @@ yarn add slowbackspace/trezor-translations-manager
 
 ## Usage
 ### Extracting messages for translation
-This package does not deal with the process of extracting messages for translations from your source code.
+This package does not deal with the process of extracting messages for translation from your source code.
 
 For React apps it is recommended to use [babel-plugin-react-intl](https://github.com/yahoo/babel-plugin-react-intl). Then with `ttm merge-msgs` you can merge extracted messages to one JSON file.
 
