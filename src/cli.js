@@ -54,7 +54,7 @@ if (!configFilePath) {
 // Parse configuration file
 const config = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
 const {
-    languages, outputDir, localesOutputDir, extractedMessagesFilePattern, csvScheme,
+    languages, outputDir, localesOutputDir, extractedMessagesFilePattern,
 } = config;
 
 // Crowdin API key should be stored in an env variable which name is specified in the config 'apiKeyEnv' field
@@ -82,6 +82,7 @@ switch (command) {
                 // https://support.crowdin.com/api/error-codes/
                 if (crowdinErr.error.code === 8) {
                     console.log("File doesn't exist in Crowdin, adding a new file.");
+                    const csvScheme = 'identifier,source_phrase,context,' + languages.join(",");
                     crowdin.addFile(path.join(outputDir, 'master.csv'), csvScheme, projectId, apiKey)
                         .catch((addErr) => {
                             crowdinErr = JSON.parse(addErr.error);
