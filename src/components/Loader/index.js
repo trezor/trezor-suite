@@ -1,9 +1,10 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
+
 import PropTypes from 'prop-types';
-import Paragraph from '../Paragraph';
+import React from 'react';
+import { DASH } from '../../config/animations';
 import { FONT_SIZE } from '../../config/variables';
-import { DASH, GREEN_COLOR } from '../../config/animations';
+import Paragraph from '../Paragraph';
 import colors from '../../config/colors';
 
 const Wrapper = styled.div`

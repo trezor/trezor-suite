@@ -1,9 +1,8 @@
 import * as React from 'react';
 
-import styled, { css } from 'styled-components';
-import colors from '../../config/colors';
-
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import colors from '../../config/colors';
 
 const ModalContainer = styled.div`
     position: fixed;
@@ -28,21 +27,16 @@ const ModalWindow = styled.div`
     text-align: center;
 `;
 
-// modal container component
-const Modal = (props) => {
-    const { modal } = props;
-
-    return (
-        <ModalContainer>
-            <ModalWindow>
-                { modal.content }
-            </ModalWindow>
-        </ModalContainer>
-    );
-};
+const Modal = ({ content }) => (
+    <ModalContainer>
+        <ModalWindow>
+            { content }
+        </ModalWindow>
+    </ModalContainer>
+);
 
 Modal.propTypes = {
-    modal: PropTypes.object,
+    content: PropTypes.element,
 };
 
 export default Modal;

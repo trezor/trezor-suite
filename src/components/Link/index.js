@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
+
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FONT_SIZE, TRANSITION } from '../../config/variables';
 import colors from '../../config/colors';
-import { NavLink } from 'react-router-dom';
 
 const A = styled.a`
     text-decoration: none;

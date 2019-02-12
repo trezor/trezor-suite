@@ -1,19 +1,28 @@
-import React from 'react';
-
-import { storiesOf } from '@storybook/react';
-
 import {
-    H1, H2, H3, H4,
+    H1,
+    H2,
+    H3,
+    H4,
 } from 'components/Heading';
+
 import Link from 'components/Link';
 import P from 'components/Paragraph';
+import React from 'react';
 import Tooltip from 'components/Tooltip';
+import { storiesOf } from '@storybook/react';
+import styled from 'styled-components';
+
+const Wrapper = styled.div``;
 
 storiesOf('Text', module)
-    .addWithJSX('Heading H1', () => <H1>Hello World!</H1>)
-    .addWithJSX('Heading H2', () => <H2>Hello World!</H2>)
-    .addWithJSX('Heading H3', () => <H3>Hello World!</H3>)
-    .addWithJSX('Heading H4', () => <H4>Hello World!</H4>)
+    .addWithJSX('Headings', () => (
+        <Wrapper>
+            <H1>Heading level 1</H1>
+            <H2>Heading level 2</H2>
+            <H3>Heading level 3</H3>
+            <H4>Heading level 4</H4>
+        </Wrapper>
+    ))
     .addWithJSX('Link', () => <Link href="https://trezor.io">This is a link.</Link>)
     .addWithJSX('Paragraph', () => <P>This is a paragraph.</P>)
     .addWithJSX('Paragraph small', () => <P isSmaller>This is a paragraph.</P>)

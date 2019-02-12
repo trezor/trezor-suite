@@ -84,3 +84,5 @@ src/.old_components
 
 # npm module
 npm
+
+/docs
