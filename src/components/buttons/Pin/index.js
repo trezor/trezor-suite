@@ -1,8 +1,10 @@
 import * as React from 'react';
-import styled from 'styled-components';
+
+import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+
 import PropTypes from 'prop-types';
-import colors from '../../../../config/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../../config/variables';
+import colors from 'config/colors';
+import styled from 'styled-components';
 
 const Wrapper = styled.button`
     width: 80px;

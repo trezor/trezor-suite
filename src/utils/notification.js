@@ -1,5 +1,5 @@
-import colors from '../config/colors';
-import icons from '../config/icons';
+import colors from 'config/colors';
+import icons from 'config/icons';
 
 const getPrimaryColor = (type) => {
     let color;

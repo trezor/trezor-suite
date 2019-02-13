@@ -14,6 +14,9 @@ module.exports = (api) => {
         ['@babel/plugin-transform-runtime', {
             regenerator: true,
         }],
+        ['module-resolver', {
+            root: ['./src'],
+        }],
     ];
 
     return {

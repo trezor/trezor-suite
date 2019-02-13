@@ -1,12 +1,13 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
+
+import Icon from 'components/Icon';
+import Loader from 'components/Loader';
 import PropTypes from 'prop-types';
-import Icon from '../../../Icon';
-import colors from '../../../../config/colors';
-import { WHITE_COLOR } from '../../../../config/animations';
-import { getPrimaryColor } from '../../../../utils/notification';
-import Loader from '../../../Loader';
-import { TRANSITION, FONT_SIZE, FONT_WEIGHT } from '../../../../config/variables';
+import React from 'react';
+import { WHITE_COLOR } from 'config/animations';
+import colors from 'config/colors';
+import { getPrimaryColor } from 'utils/notification';
+import styled from 'styled-components';
 
 const LoaderContent = styled.div`
     position: absolute;

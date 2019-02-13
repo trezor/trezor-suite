@@ -1,8 +1,8 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import ReactSelect from 'react-select';
+import React from 'react';
 import ReactAsyncSelect from 'react-select/lib/Async';
-import colors from '../../config/colors';
+import ReactSelect from 'react-select';
+import colors from 'config/colors';
 
 const styles = isSearchable => ({
     singleValue: base => ({

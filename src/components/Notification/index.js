@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-import styled from 'styled-components';
-import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
-import { getIcon, getPrimaryColor, getSecondaryColor } from '../../utils/notification';
+import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { getIcon, getPrimaryColor, getSecondaryColor } from 'utils/notification';
 
-import Icon from '../Icon';
-import Loader from '../Loader';
-import NotificationButton from './components/NotificationButton';
-import icons from '../../config/icons';
+import Icon from 'components/Icon';
+import Loader from 'components/Loader';
+import NotificationButton from 'components/buttons/Notification';
+import icons from 'config/icons';
+import styled from 'styled-components';
 
 const Wrapper = styled.div`
     width: 100%;

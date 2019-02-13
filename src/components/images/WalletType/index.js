@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import colors from 'config/colors';
 import styled from 'styled-components';
-import colors from '../../../config/colors';
 
 const SvgWrapper = styled.svg`
     :hover {
