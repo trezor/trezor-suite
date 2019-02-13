@@ -1,6 +1,13 @@
 module.exports = {
     presets: [
-        '@babel/preset-env',
+        [
+            '@babel/preset-env',
+            {
+                targets: {
+                    node: '8.6.0',
+                },
+            },
+        ],
     ],
     plugins: [
         ['module-resolver', {
