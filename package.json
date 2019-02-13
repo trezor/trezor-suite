@@ -1,17 +1,17 @@
 {
   "name": "trezor-ui-components",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/trezor/trezor-ui-components",
-  "author": "SatoshiLabs",
+  "author": "SatoshiLabs s.r.o.",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "lint": "run-s lint:*",
-    "lint:js": "npx eslint ./src --fix",
+    "lint:js": "npx eslint ./src",
     "lint:css": "npx stylelint './src/**/*.js'",
     "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
-    "build": "build-storybook -c .storybook -o ./docs/",
-    "build:npm": "rm -rf npm && babel-node ./tools/build.js && babel ./npm/lib --out-dir ./npm/lib"
+    "build": "npx babel src -d lib --copy-files",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -29,7 +29,6 @@
     "@storybook/addon-options": "^4.1.11",
     "@storybook/addon-viewport": "^4.1.11",
     "@storybook/addons": "^4.1.11",
-    "babel-collect-imports": "^1.1.0",
     "babel-loader": "^8.0.5",
     "babel-plugin-module-resolver": "^3.2.0",
     "eslint": "^5.12.0",
@@ -38,7 +37,6 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.12.3",
-    "fs-extra": "^7.0.1",
     "stylelint": "^9.9.0",
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-config-styled-components": "^0.1.1",
@@ -55,7 +53,6 @@
     "react-router-dom": "^4.3.1",
     "react-select": "^2.3.0",
     "react-textarea-autosize": "^7.1.0",
-    "redux": "^4.0.1",
     "styled-components": "^4.1.3"
   },
   "npmDependencies": {

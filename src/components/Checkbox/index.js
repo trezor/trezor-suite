@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import Icon from '../Icon';
-import colors from '../../config/colors';
-import icons from '../../config/icons';
-import { FONT_SIZE } from '../../config/variables';
+
+import { FONT_SIZE } from 'config/variables';
+import Icon from 'components/Icon';
+import PropTypes from 'prop-types';
+import colors from 'config/colors';
+import icons from 'config/icons';
 
 const Wrapper = styled.div`
     display: flex;

@@ -15,30 +15,30 @@ storiesOf('Coins', module)
     .addDecorator(
         withInfo({
             header: true,
-            propTablesExclude: [Wrapper]
+            propTablesExclude: [Wrapper],
         }),
     )
     .add('coins', () => (
-    <Wrapper>
-        <CoinLogo network="ada" />
-        <CoinLogo network="bch" />
-        <CoinLogo network="btc" />
-        <CoinLogo network="btg" />
-        <CoinLogo network="dash" />
-        <CoinLogo network="dgb" />
-        <CoinLogo network="doge" />
-        <CoinLogo network="etc" />
-        <CoinLogo network="eth" />
-        <CoinLogo network="ltc" />
-        <CoinLogo network="nem" />
-        <CoinLogo network="nmc" />
-        <CoinLogo network="rinkeby" />
-        <CoinLogo network="trop" />
-        <CoinLogo network="txrp" />
-        <CoinLogo network="vtc" />
-        <CoinLogo network="xem" />
-        <CoinLogo network="xlm" />
-        <CoinLogo network="xrp" />
-        <CoinLogo network="zec" />
-    </Wrapper>
-));
+        <Wrapper>
+            <CoinLogo network="ada" />
+            <CoinLogo network="bch" />
+            <CoinLogo network="btc" />
+            <CoinLogo network="btg" />
+            <CoinLogo network="dash" />
+            <CoinLogo network="dgb" />
+            <CoinLogo network="doge" />
+            <CoinLogo network="etc" />
+            <CoinLogo network="eth" />
+            <CoinLogo network="ltc" />
+            <CoinLogo network="nem" />
+            <CoinLogo network="nmc" />
+            <CoinLogo network="rinkeby" />
+            <CoinLogo network="trop" />
+            <CoinLogo network="txrp" />
+            <CoinLogo network="vtc" />
+            <CoinLogo network="xem" />
+            <CoinLogo network="xlm" />
+            <CoinLogo network="xrp" />
+            <CoinLogo network="zec" />
+        </Wrapper>
+    ));

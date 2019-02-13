@@ -1,12 +1,12 @@
-import React from 'react';
-import { RcTooltip } from 'rc-tooltip';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import colors from '../../config/colors';
-import Link from '../Link';
-
 /* Tooltip CSS */
 import 'rc-tooltip/assets/bootstrap.css';
+
+import Link from 'components/Link';
+import PropTypes from 'prop-types';
+import { RcTooltip } from 'rc-tooltip';
+import React from 'react';
+import colors from 'config/colors';
+import styled from 'styled-components';
 
 const Wrapper = styled.div``;
 
@@ -35,7 +35,7 @@ const Tooltip = ({
     readMoreLink,
     children,
 }) => {
-    const ContentWrapper = (
+    const Overlay = (
         <ContentWrapper>
             <Content maxWidth={maxWidth}>{content}</Content>
             {readMoreLink && (
@@ -53,7 +53,7 @@ const Tooltip = ({
                 arrowContent={<div className="rc-tooltip-arrow-inner" />}
                 placement={placement}
                 overlay={() => (
-                    ContentWrapper
+                    Overlay
                 )}
             >
                 {children}

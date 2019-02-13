@@ -2,7 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import centered from '@storybook/addon-centered';
-import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
+import {
+    withKnobs, text, boolean, select,
+} from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
 
 import { AsyncSelect, Select } from 'components/Select';
@@ -20,39 +22,39 @@ storiesOf('Form', module)
         withInfo({
             header: true,
             propTablesExclude: [Wrapper, styled],
-            excludedPropTypes: ['children']
+            excludedPropTypes: ['children'],
         }),
     )
     .addDecorator(centered)
     .addDecorator(withKnobs)
     .add('Input', () => (
-        <Input 
+        <Input
             type={select('Type', {
                 Text: 'text',
-                Password: 'password'
+                Password: 'password',
             })}
-            isDisabled={boolean('Disabled', false)} 
+            isDisabled={boolean('Disabled', false)}
             value={text('Input value', '')}
             placeholder={text('Placeholder', 'placeholder...')}
             state={select('State', {
                 Default: '',
                 Error: 'error',
                 Success: 'success',
-                Warning: 'warning'
+                Warning: 'warning',
             }, '')}
             bottomText={text('Bottom text', 'bottom text')}
         />
     ))
     .add('Textarea', () => (
         <TextArea
-            isDisabled={boolean('Disabled', false)} 
+            isDisabled={boolean('Disabled', false)}
             value={text('Value', '')}
             placeholder={text('Placeholder', 'placeholder...')}
             state={select('State', {
                 Default: '',
                 Error: 'error',
                 Success: 'success',
-                Warning: 'warning'
+                Warning: 'warning',
             }, '')}
             bottomText={text('Bottom text', 'bottom text')}
         />

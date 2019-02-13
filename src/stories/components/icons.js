@@ -13,7 +13,7 @@ storiesOf('Icons', module)
     .addDecorator(
         withInfo({
             header: true,
-            propTablesExclude: [Wrapper]
+            propTablesExclude: [Wrapper],
         }),
     )
     .add('icons', () => (

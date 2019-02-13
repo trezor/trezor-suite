@@ -3,7 +3,9 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import centered from '@storybook/addon-centered';
 import { withInfo } from '@storybook/addon-info';
-import { withKnobs, text, boolean, select, object } from '@storybook/addon-knobs';
+import {
+    withKnobs, text, boolean, select,
+} from '@storybook/addon-knobs';
 
 import styled from 'styled-components';
 
@@ -18,7 +20,7 @@ storiesOf('Notifications', module)
     .addDecorator(
         withInfo({
             header: true,
-            propTablesExclude: [Wrapper]
+            propTablesExclude: [Wrapper],
         }),
     )
     .addDecorator(centered)
@@ -29,7 +31,7 @@ storiesOf('Notifications', module)
                 type={select('Type', {
                     Success: 'success',
                     Warning: 'warning',
-                    Info: 'info'
+                    Info: 'info',
                 }, 'success')}
                 title={text('Title', 'Notification title')}
                 message={text('Text', 'Text of the notification.')}
@@ -43,7 +45,7 @@ storiesOf('Notifications', module)
                 type={select('Type', {
                     Success: 'success',
                     Warning: 'warning',
-                    Info: 'info'
+                    Info: 'info',
                 }, 'success')}
                 title={text('Title', 'Notification title')}
                 message={text('Text', 'Text of the notification.')}

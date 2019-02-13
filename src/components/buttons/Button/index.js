@@ -1,8 +1,9 @@
-import React from 'react';
+import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import styled, { css } from 'styled-components';
+
 import PropTypes from 'prop-types';
-import colors from '../../../config/colors';
-import { FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
+import React from 'react';
+import colors from 'config/colors';
 
 const Wrapper = styled.button`
     padding: ${props => (props.icon ? '4px 24px 4px 15px' : '11px 24px')};

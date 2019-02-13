@@ -11,7 +11,9 @@ import React from 'react';
 import Tooltip from 'components/Tooltip';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, boolean, text, select, radios } from '@storybook/addon-knobs';
+import {
+    withKnobs, boolean, text, select, radios,
+} from '@storybook/addon-knobs';
 import centered from '@storybook/addon-centered';
 import { withInfo } from '@storybook/addon-info';
 
@@ -38,23 +40,26 @@ storiesOf('Text', module)
     .add('Link', () => {
         const color = radios('Color', {
             Green: 'green',
-            Gray: 'gray'
+            Gray: 'gray',
         }, 'green');
 
-        return <Link 
-            href={text('URL', 'https://trezor.io')} 
-            target={select('Target', {
-                None: '',
-                Blank: '_blank',
-                Self: '_self',
-                Parent: '_parent',
-                Top: '_top'
-            })}
-            isGreen={color === 'green'}
-            isGray={color === 'gray'}>
+        return (
+            <Link
+                href={text('URL', 'https://trezor.io')}
+                target={select('Target', {
+                    None: '',
+                    Blank: '_blank',
+                    Self: '_self',
+                    Parent: '_parent',
+                    Top: '_top',
+                })}
+                isGreen={color === 'green'}
+                isGray={color === 'gray'}
+            >
                 {text('Text', 'This is a link.')}
-        </Link>}
-    )
+            </Link>
+        );
+    })
     .add('Paragraph', () => <P isSmaller={boolean('Smaller', false)}>{text('Text', 'This is a paragraph.')}</P>)
     .add('Tooltip', () => (
         <Tooltip
