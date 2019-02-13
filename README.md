@@ -5,7 +5,7 @@
 ## Installation
 
 ```shell
-yarn add slowbackspace/trezor-translations-manager
+yarn add trezor/trezor-translations-manager
 ```
 
 ## Usage
