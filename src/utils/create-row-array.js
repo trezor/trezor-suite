@@ -19,4 +19,4 @@ const createRowArray = (masterKey, masterValue, occurrences = false) => {
     ];
 };
 
-module.exports = createRowArray;
+export default createRowArray;

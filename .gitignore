@@ -17,4 +17,7 @@ logs
 *.log
 .yarnclean
 
+# Lib
+lib
+
 .env

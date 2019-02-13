@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-require('dotenv').config();
-const fs = require('fs');
-const path = require('path');
-const meow = require('meow');
-const { mergeMessages, buildCSV, buildLocales } = require('./index');
-const crowdin = require('./services/crowdin/');
+import fs from 'fs';
+import path from 'path';
+import dotenv from 'dotenv';
+import meow from 'meow';
+import { mergeMessages, buildCSV, buildLocales } from './index';
+import crowdin from './services/crowdin';
+
+dotenv.config();
 
 const cli = meow(`
 Usage
@@ -62,61 +64,61 @@ const projectId = config.project.identifier;
 const apiKey = process.env[config.project.apiKeyEnv];
 
 switch (command) {
-    case 'merge-msgs':
-        console.log(`Merging messages to ${path.join(outputDir, 'master.json')}`);
-        mergeMessages(extractedMessagesFilePattern, path.join(outputDir, 'master.json'));
-        break;
+case 'merge-msgs':
+    console.log(`Merging messages to ${path.join(outputDir, 'master.json')}`);
+    mergeMessages(extractedMessagesFilePattern, path.join(outputDir, 'master.json'));
+    break;
 
-    case 'build-csv':
-        console.log(`Building csv file ${path.join(outputDir, 'master.csv')}`);
-        buildCSV(path.join(outputDir, 'master.json'), path.join(outputDir, 'master.csv'), languages);
-        break;
+case 'build-csv':
+    console.log(`Building csv file ${path.join(outputDir, 'master.csv')}`);
+    buildCSV(path.join(outputDir, 'master.json'), path.join(outputDir, 'master.csv'), languages);
+    break;
 
-    case 'upload':
-        console.log(`Updating csv file '${path.join(outputDir, 'master.csv')}' to Crowdin project '${projectId}'`);
-        crowdin.updateFile(path.join(outputDir, 'master.csv'), projectId, apiKey)
-            .catch((err) => {
-                let crowdinErr = JSON.parse(err.error);
+case 'upload':
+    console.log(`Updating csv file '${path.join(outputDir, 'master.csv')}' to Crowdin project '${projectId}'`);
+    crowdin.updateFile(path.join(outputDir, 'master.csv'), projectId, apiKey)
+        .catch((err) => {
+            let crowdinErr = JSON.parse(err.error);
 
-                // If file doesn't exist in Crowdin we need to use a different API endpoint to add a new file
-                // https://support.crowdin.com/api/error-codes/
-                if (crowdinErr.error.code === 8) {
-                    console.log("File doesn't exist in Crowdin, adding a new file.");
-                    const csvScheme = `identifier,source_phrase,context,${languages.join(',')}`;
-                    crowdin.addFile(path.join(outputDir, 'master.csv'), csvScheme, projectId, apiKey)
-                        .catch((addErr) => {
-                            crowdinErr = JSON.parse(addErr.error);
-                            console.log('Failed to upload new master.csv file to Crowdin');
-                            console.log(crowdinErr);
-                        });
-                } else {
-                    console.log('Failed to upload new master.csv to Crowdin');
-                    console.log(crowdinErr);
-                }
-            });
-        break;
-
-    case 'build-translations':
-        console.log(`Building Crowdin translations for a project '${projectId}'`);
-        crowdin.buildTranslations(projectId, apiKey).then((res) => {
-            console.log(res);
+            // If file doesn't exist in Crowdin we need to use a different API endpoint to add a new file
+            // https://support.crowdin.com/api/error-codes/
+            if (crowdinErr.error.code === 8) {
+                console.log("File doesn't exist in Crowdin, adding a new file.");
+                const csvScheme = `identifier,source_phrase,context,${languages.join(',')}`;
+                crowdin.addFile(path.join(outputDir, 'master.csv'), csvScheme, projectId, apiKey)
+                    .catch((addErr) => {
+                        crowdinErr = JSON.parse(addErr.error);
+                        console.log('Failed to upload new master.csv file to Crowdin');
+                        console.log(crowdinErr);
+                    });
+            } else {
+                console.log('Failed to upload new master.csv to Crowdin');
+                console.log(crowdinErr);
+            }
         });
-        break;
+    break;
 
-    case 'export-translations':
-        console.log(`Exporting translations for a project '${projectId}'`);
-        crowdin.exportTranslations(localesOutputDir, projectId, apiKey);
-        console.log(`Generating locales files in a directory ${localesOutputDir}`);
-        buildLocales(path.join(localesOutputDir, 'master.csv'), localesOutputDir, languages, true);
-        break;
+case 'build-translations':
+    console.log(`Building Crowdin translations for a project '${projectId}'`);
+    crowdin.buildTranslations(projectId, apiKey).then((res) => {
+        console.log(res);
+    });
+    break;
 
-        // case 'locales':
-        //     console.log(`Generating locales files in a directory ${outputDir}`);
-        //     buildLocales(path.join(outputDir, 'master.csv'), localesOutputDir, languages);
-        //     break;
+case 'export-translations':
+    console.log(`Exporting translations for a project '${projectId}'`);
+    crowdin.exportTranslations(localesOutputDir, projectId, apiKey);
+    console.log(`Generating locales files in a directory ${localesOutputDir}`);
+    buildLocales(path.join(localesOutputDir, 'master.csv'), localesOutputDir, languages, true);
+    break;
 
-    default:
-        console.error('Unknown command');
-        cli.showHelp();
-        break;
+    // case 'locales':
+    //     console.log(`Generating locales files in a directory ${outputDir}`);
+    //     buildLocales(path.join(outputDir, 'master.csv'), localesOutputDir, languages);
+    //     break;
+
+default:
+    console.error('Unknown command');
+    cli.showHelp();
+    break;
 }

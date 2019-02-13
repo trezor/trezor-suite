@@ -1,21 +1,27 @@
 {
-    "extends": ["airbnb-base", "plugin:node/recommended"],
+    "extends": [
+        "eslint-config-airbnb-base"
+    ],
     "env": {
-        "node": true
+        "browser": true,
+        "jest": true
     },
     "rules": {
-        "import/prefer-default-export": 0,
-        "no-use-before-define": 0,
-        "no-plusplus": 0,
-        "class-methods-use-this": 0,
-        "indent": [2, 4, { "SwitchCase": 1 }],
-        "no-confusing-arrow": [2,{ "allowParens": true }],
-        "no-console": 0,
-        "no-alert": 0,
-        "no-prototype-builtins": 0,
-        "new-cap": 0,
+        "indent": ["error", 4],
         "max-len": 0,
-        "eol-last": 0,
-        "spaced-comment": 0
+        "no-console": "off",
+        "import/prefer-default-export": 0
+    },
+    "plugins": [
+        "import"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "settings": {
+        "import/resolver": {
+            "babel-module": {}
+        }
     }
 }

@@ -1,11 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
-const csvToJson = require('csvtojson');
-const csvStringify = require('csv-stringify/lib/sync');
-const { ensureDirSync } = require('fs-extra');
-const createRowArray = require('./utils/create-row-array');
-const Crowdin = require('./services/crowdin');
+import fs from 'fs';
+import path from 'path';
+import glob from 'glob';
+import csvToJson from 'csvtojson';
+import csvStringify from 'csv-stringify/lib/sync';
+import { ensureDirSync } from 'fs-extra';
+import createRowArray from './utils/create-row-array';
 
 /*
     Aggregates the default messages that were extracted from the app's
@@ -27,7 +26,7 @@ const Crowdin = require('./services/crowdin');
         ...
     ]
 */
-const mergeMessages = (filePattern, outputFilePath) => {
+export const mergeMessages = (filePattern, outputFilePath) => {
     const transformedMessages = glob.sync(filePattern)
         .map(filename => fs.readFileSync(filename, 'utf8'))
         .map(file => JSON.parse(file))
@@ -36,7 +35,7 @@ const mergeMessages = (filePattern, outputFilePath) => {
                 const {
                     id, defaultMessage, description, file,
                 } = d;
-                if (collection.hasOwnProperty(id)) {
+                if ({}.hasOwnProperty.call(collection, id)) {
                     throw new Error(`Duplicate message id: ${id}`);
                 }
                 // eslint-disable-next-line no-param-reassign
@@ -75,7 +74,7 @@ const mergeMessages = (filePattern, outputFilePath) => {
     ]
 }
 */
-const buildCSV = (inputFilePath, outputFilePath, languages) => {
+export const buildCSV = (inputFilePath, outputFilePath, languages) => {
     const messages = JSON.parse(fs.readFileSync(inputFilePath, 'utf-8')); // this contains our master data;
     const csvArrays = Object.entries(messages).map(([k, v]) => createRowArray(k, v).concat(Array(languages.length).join('.').split('.')));
     const cols = ['key', 'source', 'context'].concat(languages);
@@ -87,7 +86,7 @@ const buildCSV = (inputFilePath, outputFilePath, languages) => {
 /*
     Build language json files from translated master.csv downloaded from Crowdin
  */
-const buildLocales = async (inputFilePath, outputDir, languages, deleteCSV = true) => {
+export const buildLocales = async (inputFilePath, outputDir, languages, deleteCSV = true) => {
     const jsonArray = await csvToJson().fromFile(inputFilePath);
 
     languages.forEach((language) => {
@@ -107,11 +106,4 @@ const buildLocales = async (inputFilePath, outputDir, languages, deleteCSV = tru
         // delete the CSV file from which locales were generated
         fs.unlinkSync(inputFilePath);
     }
-};
-
-module.exports = {
-    mergeMessages,
-    buildCSV,
-    buildLocales,
-    Crowdin,
 };
