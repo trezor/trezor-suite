@@ -5,6 +5,7 @@ module.exports = (api) => {
             useBuiltIns: false,
             loose: true,
         }],
+        '@babel/preset-react',
     ];
 
     const plugins = [

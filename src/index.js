@@ -6,8 +6,7 @@ import {
     H4,
 } from './components/Heading';
 
-import ButtonText from './components/buttons/ButtonText';
-import ButtonWebUSB from './components/buttons/ButtonWebUSB';
+import Button from './components/buttons/Button';
 import Checkbox from './components/Checkbox';
 import Icon from './components/Icon';
 import Input from './components/inputs/Input';
@@ -17,9 +16,7 @@ import Loader from './components/Loader';
 import Modal from './components/Modal';
 import Notification from './components/Notification';
 import P from './components/Paragraph';
-import Passphrase from './components/Passphrase';
 import TextArea from './components/Textarea';
-import Transaction from './components/Transaction';
 import animations from './config/animations';
 import colors from './config/colors';
 import icons from './config/icons';
@@ -30,12 +27,9 @@ module.exports = {
     icons,
     animations,
     variables,
-    ButtonText,
-    ButtonWebUSB,
+    Button,
     Modal,
-    Passphrase,
     Invalid,
-    Transaction,
     Input,
     TextArea,
     Checkbox,

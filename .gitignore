@@ -86,3 +86,5 @@ src/.old_components
 npm
 
 /docs
+
+lib
