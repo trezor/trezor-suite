@@ -27,7 +27,7 @@ Example configuration in the `babel.config.js`
 
 ```
 
-You can also build your own custom process. Just make sure that the JSON file containing the messages matches following format:
+You can also build your own custom extraction process. Just make sure that the JSON file containing the messages matches following format:
 ```json
 [
     {
@@ -42,7 +42,7 @@ You can also build your own custom process. Just make sure that the JSON file co
 ]
 ``` 
 
-#### CLI
+### CLI
 This package also serves as CLI tool. Configuration is stored in a JSON file. By default it will try to parse `l10n.config.json` in the root of your project. You can also specify the path to your configuration file via command line option `--config path`.
 
 ```shell
@@ -79,8 +79,8 @@ You can automatize running this tool by creating a new script entry in your proj
 Now you are able to run the whole flow  with `yarn run translations-sync`.
 
 
-### Configuration
-#### Fields
+#### Configuration
+##### Fields
 - `extractedMessagesFilePattern`: [Glob](https://github.com/isaacs/node-glob) pattern used to look for React Intl messages that were extracted via [babel-plugin-react-intl](https://github.com/yahoo/babel-plugin-react-intl).
 - `outputDir` - Directory which contains master JSON file with messages to translate.
 - `localesOutputDir`: Output directory where lang-specific json files will be generated.
@@ -132,6 +132,67 @@ Now you are able to run the whole flow  with `yarn run translations-sync`.
 }
 
 ```
+### API
+If the CLI tool does not suit your needs you can build your own script with these exported functions.
+
+```
+import { mergeMessages, buildCSV, buildLocales } from 'trezor-translations-manager';
+import {
+    addFile, updateFile, downloadTranslationsZip, buildTranslations, exportTranslations,
+} from 'trezor-translations-manager/lib/services/crowdin';
+```
+
+#### mergeMessages(filePattern, outputFilePath)
+Aggregates the default messages that were extracted from the app's React components via the React Intl Babel plugin. An error will be thrown if there are messages in different components that use the same `id`. The result is a flat collection of `translation_key: Object` pairs for the app's default locale.
+
+- `filePattern`: Pattern used to look for React Intl messages that were extracted via [babel-plugin-react-intl](https://github.com/yahoo/babel-plugin-react-intl).
+- `outputFilePath`: Path for outputed JSON file
+
+
+#### buildCSV(inputFilePath, outputFilePath, languages)
+Builds CSV file from JSON with merged messages.
+Format of an input file is same as format of the file created by mergeMessages():
+- `inputFilePath`: JSON file containing merged messages
+- `outputFilePath`: Path for outputed CSV file
+- `languages`: Array of [Crowdin language codes](https://support.crowdin.com/api/language-codes/) that are appended to CSV header
+
+#### buildLocales(inputFilePath, outputDir, languages, deleteCSV = true)
+Build language json files from a translated master.csv downloaded from Crowdin
+- `inputFilePath`: Path to the CSV file downloaded from Crowdin.
+- `outputDir`: Directory where locales should be generated.
+- `languages`: Array of [Crowdin language codes](https://support.crowdin.com/api/language-codes/). Used for naming generated JSON locales files.
+- `deleteCSV`: Whether should delete the csv file after. Default `true`.
+
+
+#### addFile(filePath, scheme, projectId, apiKey)
+Upload a new csv file to Crowdin service
+- `filePath`: Path to a file
+- `scheme`: Crowdin-specific CSV scheme (See [https://support.crowdin.com/api/add-file/](https://support.crowdin.com/api/add-file/))
+- `projectId`: Identifier of a Crowdin project
+- `apiKey`: API key for the Crowdin project
+
+#### updateFile(filePath, projectId, apiKey)
+Update an existing csv file in Crowdin service
+- `filePath`: Path to a file
+- `projectId`: Identifier of a Crowdin project
+- `apiKey`: API key for the Crowdin project
+
+#### buildTranslations(projectId, apikey)
+Builds translations in Crowdin service. It does not actually download anything.
+This method can be invoked only once per 30 minutes (otherwise the build process is skipped).
+- `projectId`: Identifier of a Crowdin project
+- `apiKey`: API key for the Crowdin project
+
+#### downloadTranslationsZip(projectId, apiKey)
+Downloads a ZIP file with translations.
+- `projectId`: Identifier of a Crowdin project
+- `apiKey`: API key for the Crowdin project
+
+#### exportTranslations (exportDir, projectId, apiKey)
+Downloads a ZIP file with translations and extracts files to exportDir
+- `exportDir`: Directory where files from the archive should be extracted.
+- `projectId`: Identifier of a Crowdin project
+- `apiKey`: API key for the Crowdin project
 
 ## Development
 
