@@ -43,7 +43,8 @@ You can also build your own custom process. Just make sure that the JSON file co
 ``` 
 
 #### CLI
-CLI requires a configuration file. By default it will try to parse `l10n.config.json` inside the root of your project. You can also specify the path to your configuration file via command line option `--config path`.
+This package also serves as CLI tool. Configuration is stored in a JSON file. By default it will try to parse `l10n.config.json` in the root of your project. You can also specify the path to your configuration file via command line option `--config path`.
+
 ```shell
     $ ttm <command>
     
@@ -66,6 +67,17 @@ CLI requires a configuration file. By default it will try to parse `l10n.config.
         export-translations
             - downloads translations and generates locales
 ```
+
+You can automatize running this tool by creating a new script entry in your project's `package.json`:
+```json
+{
+    "scripts": {
+        "translations-sync": "yarn ttm merge-msgs && yarn ttm build-csv && yarn ttm upload && yarn ttm build-translations && yarn ttm export-translations",
+    }
+}
+```
+Now you are able to run the whole flow  with `yarn run translations-sync`.
+
 
 ### Configuration
 #### Fields
@@ -120,3 +132,11 @@ CLI requires a configuration file. By default it will try to parse `l10n.config.
 }
 
 ```
+
+## Development
+
+#### Build 
+To build a lib run `yarn build`
+
+#### eslint
+`yarn run lint`
