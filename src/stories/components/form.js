@@ -13,18 +13,24 @@ import TextArea from 'components/Textarea';
 const Wrapper = styled.div`
     min-width: 250px;
 `;
+Wrapper.displayName = 'Wrapper';
 
 storiesOf('Form', module)
-    .addDecorator(withKnobs)
-    .addDecorator(centered)
     .addDecorator(
         withInfo({
             header: true,
-            propTablesExclude: [Wrapper]
+            propTablesExclude: [Wrapper, styled],
+            excludedPropTypes: ['children']
         }),
     )
+    .addDecorator(centered)
+    .addDecorator(withKnobs)
     .add('Input', () => (
         <Input 
+            type={select('Type', {
+                Text: 'text',
+                Password: 'password'
+            })}
             isDisabled={boolean('Disabled', false)} 
             value={text('Input value', '')}
             placeholder={text('Placeholder', 'placeholder...')}

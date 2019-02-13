@@ -1,23 +1,33 @@
-import Button from 'components/buttons/Button';
 import React from 'react';
+import styled from 'styled-components';
+import Button from 'components/buttons/Button';
 import WebUSB from 'components/buttons/WebUsb';
+import PinButton from 'components/buttons/Pin';
 import { storiesOf } from '@storybook/react';
 import centered from '@storybook/addon-centered';
+import { withKnobs, text, boolean, select, radios } from '@storybook/addon-knobs';
+import { withInfo } from '@storybook/addon-info';
 
 storiesOf('Buttons', module)
+    .addDecorator(
+        withInfo({
+            header: true,
+            excludedPropTypes: ['children']
+        }),
+    )
     .addDecorator(centered)
-    .add('Button primary', () => (
-        <Button primary onClick={() => {}}>Primary Button</Button>
+    .addDecorator(withKnobs)
+    .add('Default', () => {
+        return <Button 
+            isDisabled={boolean('Disabled', false)}
+            isTransparent={boolean('Transparent', false)}
+            isWhite={boolean('White', false)}>
+                {text('Text', 'Button text')}
+            </Button>
+    })
+    .add('Web USB', () => (
+        <WebUSB isDisabled={boolean('Disabled', false)}>Web USB</WebUSB>
     ))
-    .add('Button primary', () => (
-        <Button secondary onClick={() => {}}>Secondary Button</Button>
-    ))
-    .add('Button (disabled)', () => (
-        <Button isDisabled onClick={() => {}}>Disabled Button</Button>
-    ))
-    .add('transparent with text ', () => (
-        <Button isTransparent onClick={() => {}}>Transparent Button</Button>
-    ))
-    .add('with text (WebUSB)', () => (
-        <WebUSB onClick={() => {}}>web usb Button</WebUSB>
+    .add('Pin button', () => (
+        <PinButton>●</PinButton>
     ));

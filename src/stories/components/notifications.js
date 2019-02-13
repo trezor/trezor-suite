@@ -3,6 +3,8 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import centered from '@storybook/addon-centered';
 import { withInfo } from '@storybook/addon-info';
+import { withKnobs, text, boolean, select, object } from '@storybook/addon-knobs';
+
 import styled from 'styled-components';
 
 import Notification from 'components/Notification';
@@ -10,49 +12,44 @@ import Notification from 'components/Notification';
 const Wrapper = styled.div`
     min-width: 600px;
 `;
+Wrapper.displayName = 'Wrapper';
 
 storiesOf('Notifications', module)
-    .addDecorator(centered)
     .addDecorator(
         withInfo({
             header: true,
             propTablesExclude: [Wrapper]
         }),
     )
-    .add('Success', () => (
+    .addDecorator(centered)
+    .addDecorator(withKnobs)
+    .add('Default', () => (
         <Wrapper>
             <Notification
-                type="success"
-                title="Success notification"
-                message="This is a success message"
-                cancelable
+                type={select('Type', {
+                    Success: 'success',
+                    Warning: 'warning',
+                    Info: 'info'
+                }, 'success')}
+                title={text('Title', 'Notification title')}
+                message={text('Text', 'Text of the notification.')}
+                cancelable={boolean('Cancelable', false)}
             />
         </Wrapper>
     ))
-    .add('Warning', () => (
+    .add('CTA', () => (
         <Wrapper>
             <Notification
-                type="warning"
-                title="Warning notification"
-                message="This is a warning message"
+                type={select('Type', {
+                    Success: 'success',
+                    Warning: 'warning',
+                    Info: 'info'
+                }, 'success')}
+                title={text('Title', 'Notification title')}
+                message={text('Text', 'Text of the notification.')}
                 actions={[
                     {
                         label: 'Confirm',
-                        callback: () => {},
-                    },
-                ]}
-            />
-        </Wrapper>
-    ))
-    .add('Error', () => (
-        <Wrapper>
-            <Notification
-                type="error"
-                title="Error notification"
-                message="This is a error message"
-                actions={[
-                    {
-                        label: 'Remove',
                         callback: () => {},
                     },
                 ]}
