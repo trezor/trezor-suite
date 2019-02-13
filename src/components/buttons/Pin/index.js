@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 

@@ -1,6 +1,6 @@
+import { DASH, GREEN_COLOR } from 'config/animations';
 import styled, { css } from 'styled-components';
 
-import { DASH } from 'config/animations';
 import { FONT_SIZE } from 'config/variables';
 import Paragraph from 'components/Paragraph';
 import PropTypes from 'prop-types';
@@ -20,6 +20,7 @@ const SvgWrapper = styled.svg`
     position: absolute;
     width: 100%;
     height: 100%;
+    animation: rotate 2s linear infinite;
     transform-origin: center center;
 `;
 
@@ -36,6 +37,8 @@ const CircleWrapper = styled.circle`
             stroke-width: ${props.transparentRoute ? '2px' : '1px'};
             stroke-dasharray: 1, 200;
             stroke-dashoffset: 0;
+            animation: ${DASH} 1.5s ease-in-out infinite,
+                ${props.animationColor || GREEN_COLOR} 6s ease-in-out infinite;
             stroke-linecap: round;
         `};
 `;

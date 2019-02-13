@@ -2,11 +2,12 @@ import React from 'react';
 import colors from 'config/colors';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
+import centered from '@storybook/addon-centered';
 
 const Wrapper = styled.div`
     display: flex;
-    width: 150px;
     flex-direction: row;
+    flex-wrap: wrap;
 `;
 
 const ColorBox = styled.div`
@@ -15,7 +16,6 @@ const ColorBox = styled.div`
     padding: 20px;
     margin: 5px;
     display: flex;
-    display: block;
     justify-content: center;
     align-items: center;
     background: ${props => props.color};
@@ -23,7 +23,8 @@ const ColorBox = styled.div`
 `;
 
 storiesOf('Colors', module)
-    .addWithJSX('colors', () => (
+    .addDecorator(centered)
+    .add('colors', () => (
         <Wrapper>
             <ColorBox color={colors.WHITE}>{colors.WHITE}</ColorBox>
             <ColorBox color={colors.BACKGROUND}>{colors.BACKGROUND}</ColorBox>

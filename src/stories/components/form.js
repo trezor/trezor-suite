@@ -1,112 +1,100 @@
-import { AsyncSelect, Select } from 'components/Select';
+import React from 'react';
+import styled from 'styled-components';
+import { storiesOf } from '@storybook/react';
+import centered from '@storybook/addon-centered';
+import {
+    withKnobs, text, boolean, select,
+} from '@storybook/addon-knobs';
+import { withInfo } from '@storybook/addon-info';
 
+import { AsyncSelect, Select } from 'components/Select';
 import Checkbox from 'components/Checkbox';
 import Input from 'components/inputs/Input';
-import React from 'react';
 import TextArea from 'components/Textarea';
-import { storiesOf } from '@storybook/react';
 
-const loadOptions = (inputValue, callback) => {
-    const data = [
-        { value: 'hello', label: 'Hello' },
-        { value: 'world', label: 'World' },
-    ].filter(item => item.label.toLowerCase().search(inputValue.toLowerCase()) !== -1);
-    callback(data);
-};
+const Wrapper = styled.div`
+    min-width: 250px;
+`;
+Wrapper.displayName = 'Wrapper';
 
 storiesOf('Form', module)
-    .addWithJSX('Input', () => (
+    .addDecorator(
+        withInfo({
+            header: true,
+            propTablesExclude: [Wrapper, styled],
+            excludedPropTypes: ['children'],
+        }),
+    )
+    .addDecorator(centered)
+    .addDecorator(withKnobs)
+    .add('Input', () => (
         <Input
-            placeholder="placeholder..."
-            value="Input value"
-            onChange={() => {}}
+            type={select('Type', {
+                Text: 'text',
+                Password: 'password',
+            })}
+            isDisabled={boolean('Disabled', false)}
+            value={text('Input value', '')}
+            placeholder={text('Placeholder', 'placeholder...')}
+            state={select('State', {
+                Default: '',
+                Error: 'error',
+                Success: 'success',
+                Warning: 'warning',
+            }, '')}
+            bottomText={text('Bottom text', 'bottom text')}
         />
     ))
-    .addWithJSX('Input (error)', () => (
-        <Input
-            state="error"
-            bottomText="This is the error message."
-            placeholder="placeholder..."
-            value="Input value"
-            onChange={() => {}}
-        />
-    ))
-    .addWithJSX('Input (disabled)', () => (
-        <Input
-            isDisabled
-            placeholder="placeholder..."
-            value="Input value"
-            onChange={() => {}}
-        />
-    ))
-    .addWithJSX('Textarea', () => (
+    .add('Textarea', () => (
         <TextArea
-            value="Text value of textarea"
-            onChange={() => {}}
+            isDisabled={boolean('Disabled', false)}
+            value={text('Value', '')}
+            placeholder={text('Placeholder', 'placeholder...')}
+            state={select('State', {
+                Default: '',
+                Error: 'error',
+                Success: 'success',
+                Warning: 'warning',
+            }, '')}
+            bottomText={text('Bottom text', 'bottom text')}
         />
     ))
-    .addWithJSX('Textarea (error)', () => (
-        <TextArea
-            state="error"
-            bottomText="This is the description of the error."
-            value="Text value of textarea"
-            onChange={() => {}}
-        />
-    ))
-    .addWithJSX('Textarea (disabled)', () => (
-        <TextArea
-            isDisabled
-            value="Text value of textarea"
-            onChange={() => {}}
-        />
-    ))
-    .addWithJSX('Checkbox', () => (
+    .add('Checkbox', () => (
         <Checkbox
-            isChecked={false}
-            onClick={() => {}}
+            isChecked={boolean('Checked', false)}
         >
-            Show passphrase
+            {text('Checkbox text', 'Checkbox')}
         </Checkbox>
     ))
-    .addWithJSX('Checkbox (checked)', () => (
-        <Checkbox
-            isChecked
-            onClick={() => {}}
-        >
-            Show passphrase
-        </Checkbox>
+    .add('Select', () => (
+        <Wrapper>
+            <Select
+                isSearchable={boolean('Searchable', false)}
+                isClearable={boolean('Clearable', false)}
+                value={text('Value', 'hello')}
+                options={[
+                    { value: 'hello', label: 'Hello' },
+                    { value: 'world', label: 'World' },
+                ]}
+            />
+        </Wrapper>
     ))
-    .addWithJSX('Select', () => (
-        <Select
-            isSearchable={false}
-            isClearable={false}
-            value="test"
-            options={[
-                { value: 'hello', label: 'Hello' },
-                { value: 'world', label: 'World' },
-            ]}
-            onChange={() => {}}
-        />
-    ))
-    .addWithJSX('Select (Async)', () => (
-        <AsyncSelect
-            defaultOptions={[
-                { value: 'hello', label: 'Hello' },
-                { value: 'world', label: 'World' },
-            ]}
-            cacheOptions={false}
-            onInputChange={() => {}}
-            loadOptions={loadOptions}
-        />
-    ))
-    .addWithJSX('Select (disabled)', () => (
-        <Select
-            isDisabled
-            value="test"
-            options={[
-                { value: 'hello', label: 'Hello' },
-                { value: 'world', label: 'World' },
-            ]}
-            onChange={() => {}}
-        />
+    .add('Select (Async)', () => (
+        <Wrapper>
+            <AsyncSelect
+                defaultOptions={[
+                    { value: 'hello', label: 'Hello' },
+                    { value: 'world', label: 'World' },
+                ]}
+                cacheOptions={false}
+                onInputChange={() => {}}
+                loadOptions={(inputValue, callback) => {
+                    const data = [
+                        { value: 'hello', label: 'Hello' },
+                        { value: 'world', label: 'World' },
+                    ].filter(item => item.label.toLowerCase().search(inputValue.toLowerCase()) !== -1);
+                    callback(data);
+                }}
+            />
+        </Wrapper>
     ));

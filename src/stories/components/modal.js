@@ -8,6 +8,6 @@ const ModalContent = styled.div`
 `;
 
 storiesOf('Modal', module)
-    .addWithJSX('Hello world!', () => (
+    .add('Hello world!', () => (
         <Modal content={<ModalContent>Modal content with padding</ModalContent>} />
     ));
