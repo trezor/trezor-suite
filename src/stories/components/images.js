@@ -8,7 +8,7 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
 `;
 
-storiesOf('Coins', module)
+storiesOf('Coins', module);
 'coins', () => (
     <Wrapper>
         <CoinLogo network="ada" />
