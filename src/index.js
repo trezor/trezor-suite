@@ -92,7 +92,6 @@ export const buildLocales = async (inputFilePath, outputDir, languages, deleteCS
     languages.forEach((language) => {
         const langMessages = {};
         jsonArray.forEach((record) => {
-            console.log(record);
             langMessages[record.key] = record[language];
         });
 
