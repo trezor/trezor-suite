@@ -1,21 +1,22 @@
+import React from 'react';
+import styled from 'styled-components';
+
+import { storiesOf } from '@storybook/react';
+import {
+    withKnobs, boolean, text, select, radios, number,
+} from '@storybook/addon-knobs';
+import centered from '@storybook/addon-centered';
+import { withInfo } from '@storybook/addon-info';
+
 import {
     H1,
     H2,
     H3,
     H4,
 } from 'components/Heading';
-
 import Link from 'components/Link';
 import P from 'components/Paragraph';
-import React from 'react';
 import Tooltip from 'components/Tooltip';
-import styled from 'styled-components';
-import { storiesOf } from '@storybook/react';
-import {
-    withKnobs, boolean, text, select, radios,
-} from '@storybook/addon-knobs';
-import centered from '@storybook/addon-centered';
-import { withInfo } from '@storybook/addon-info';
 
 const Wrapper = styled.div``;
 
@@ -52,7 +53,7 @@ storiesOf('Text', module)
                     Self: '_self',
                     Parent: '_parent',
                     Top: '_top',
-                })}
+                }, '')}
                 isGreen={color === 'green'}
                 isGray={color === 'gray'}
             >
@@ -63,10 +64,15 @@ storiesOf('Text', module)
     .add('Paragraph', () => <P isSmaller={boolean('Smaller', false)}>{text('Text', 'This is a paragraph.')}</P>)
     .add('Tooltip', () => (
         <Tooltip
-            maxWidth={280}
-            placement="bottom"
-            content="Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet."
-            readMoreLink="https://wiki.trezor.io/Passphrase"
+            maxWidth={number('Max width', 280)}
+            placement={select('Placement', {
+                Top: 'top',
+                Bottom: 'bottom',
+                Left: 'left',
+                Right: 'right',
+            }, 'bottom')}
+            content={text('Content', 'Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet.')}
+            readMoreLink={text('Read more link', 'https://wiki.trezor.io/Passphrase')}
         >
             <div>Text with tooltip</div>
         </Tooltip>

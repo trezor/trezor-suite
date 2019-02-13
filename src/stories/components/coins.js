@@ -1,7 +1,5 @@
 import CoinLogo from 'components/images/CoinLogo';
 import React from 'react';
-import TrezorImage from 'components/images/TrezorImage';
-import WalletType from 'components/images/WalletType';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
 import centered from '@storybook/addon-centered';

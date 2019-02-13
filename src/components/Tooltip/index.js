@@ -3,7 +3,7 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 import Link from 'components/Link';
 import PropTypes from 'prop-types';
-import { RcTooltip } from 'rc-tooltip';
+import RcTooltip from 'rc-tooltip';
 import React from 'react';
 import colors from 'config/colors';
 import styled from 'styled-components';

@@ -13,7 +13,6 @@ addDecorator(
 configureViewport();
 
 function loadStories() {
-    require('stories/index.js');
     require('stories/components/text.js');
     require('stories/components/buttons.js');
     require('stories/components/form.js');
