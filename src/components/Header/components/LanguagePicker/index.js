@@ -15,9 +15,12 @@ const SelectWrapper = styled.div`
 
 const SelectIcon = styled.span`
     padding: 0px 6px;
+    margin-right: -20px;
 `;
 
 const StyledSelect = styled.select`
+    height: 100%;
+    padding-left: 20px;
     border: 0;
     background: transparent;
     cursor: pointer;
