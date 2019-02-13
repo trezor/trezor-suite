@@ -1,7 +1,7 @@
 {
   "name": "trezor-translations-manager",
-  "version": "1.0.0",
-  "main": "./src/index.js",
+  "version": "1.0.1",
+  "main": "./lib/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/trezor/trezor-translations-manager.git"
@@ -14,7 +14,7 @@
     "prepublishOnly": "yarn run lint && npm run build"
   },
   "bin": {
-    "ttm": "./src/cli.js"
+    "ttm": "./lib/cli.js"
   },
   "license": "SEE LICENSE IN LICENSE.md",
   "engines": {
