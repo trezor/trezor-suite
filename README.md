@@ -73,7 +73,6 @@ CLI requires a configuration file. By default it will try to parse `l10n.config.
 - `localesOutputDir`: Output directory where lang-specific json files will be generated.
 - `project.identifier`: Crowdin identifier of project 
 - `project.apiKeyEnv`: Name of an environment variable which contains API key
-- `csvScheme`: Scheme of CSV file that will be generated from JSON file. Used when uploading a new file to Crowdin.
 - `languages`: [Crowdin language codes](https://support.crowdin.com/api/language-codes/). Codes are also used as filenames for generated lang-specific JSON files with translations.
 
 `l10n.config.json` file example
