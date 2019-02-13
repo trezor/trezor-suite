@@ -8,7 +8,8 @@
   "bin": {
     "ttm": "./src/cli.js"
   },
-  "license": "ISC",
+  "author": "SatoshiLabs",
+  "license": "SEE LICENSE IN LICENSE.md",
   "engines": {
     "node": ">=8.6.0"
   },
