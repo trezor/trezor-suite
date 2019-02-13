@@ -1,0 +1,20 @@
+{
+  "dashboard.selectyourcoin.title": {
+    "source": "Please select your coin",
+    "meta": {
+      "comment": "Title of the dashboard component if coin was not selected",
+      "occurrences": [
+        "src/views/Wallet/views/Dashboard/index.messages.js"
+      ]
+    }
+  },
+  "dashboard.selectyourcoin.body": {
+    "source": "You will gain access to receiving & sending selected coin",
+    "meta": {
+      "comment": "Content of the dashboard component if coin was not selected",
+      "occurrences": [
+        "src/views/Wallet/views/Dashboard/index.messages.js"
+      ]
+    }
+  }
+}

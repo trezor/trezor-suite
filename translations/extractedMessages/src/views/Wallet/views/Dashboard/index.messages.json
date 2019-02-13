@@ -1,0 +1,30 @@
+[
+  {
+    "id": "dashboard.selectyourcoin.title",
+    "description": "Title of the dashboard component if coin was not selected",
+    "defaultMessage": "Please select your coin",
+    "file": "src/views/Wallet/views/Dashboard/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 11
+    },
+    "end": {
+      "line": 10,
+      "column": 5
+    }
+  },
+  {
+    "id": "dashboard.selectyourcoin.body",
+    "description": "Content of the dashboard component if coin was not selected",
+    "defaultMessage": "You will gain access to receiving & sending selected coin",
+    "file": "src/views/Wallet/views/Dashboard/index.messages.js",
+    "start": {
+      "line": 11,
+      "column": 10
+    },
+    "end": {
+      "line": 15,
+      "column": 5
+    }
+  }
+]
