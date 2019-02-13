@@ -5,7 +5,7 @@ import { getIcon, getPrimaryColor, getSecondaryColor } from 'utils/notification'
 
 import Icon from 'components/Icon';
 import Loader from 'components/Loader';
-import NotificationButton from 'components/buttons/Notification';
+import NotificationButton from 'components/buttons/NotificationButton';
 import icons from 'config/icons';
 import styled from 'styled-components';
 
