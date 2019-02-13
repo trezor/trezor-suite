@@ -3,8 +3,7 @@
         "eslint-config-airbnb-base"
     ],
     "env": {
-        "browser": true,
-        "jest": true
+        "node": true
     },
     "rules": {
         "indent": ["error", 4],
