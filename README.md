@@ -1,4 +1,5 @@
-# trezor-translations-manager
+# trezor-translations-managebadge.fury.ior
+[![npm version](https://badge.fury.io/js/trezor-translations-manager.svg)](https://badge.fury.io/js/trezor-translations-manager)
 
 ## Features
 
