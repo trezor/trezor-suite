@@ -107,15 +107,11 @@ case 'build-translations':
 
 case 'export-translations':
     console.log(`Exporting translations for a project '${projectId}'`);
-    crowdin.exportTranslations(localesOutputDir, projectId, apiKey);
-    console.log(`Generating locales files in a directory ${localesOutputDir}`);
-    buildLocales(path.join(localesOutputDir, 'master.csv'), localesOutputDir, languages, true);
+    crowdin.exportTranslations(localesOutputDir, projectId, apiKey).then(() => {
+        console.log(`Generating locales files in a directory ${localesOutputDir}`);
+        buildLocales(path.join(localesOutputDir, 'master.csv'), localesOutputDir, languages, true);
+    });
     break;
-
-    // case 'locales':
-    //     console.log(`Generating locales files in a directory ${outputDir}`);
-    //     buildLocales(path.join(outputDir, 'master.csv'), localesOutputDir, languages);
-    //     break;
 
 default:
     console.error('Unknown command');

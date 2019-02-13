@@ -80,10 +80,13 @@ const exportTranslations = async (exportDir, projectId, apiKey) => {
     const data = await downloadTranslationsZip(projectId, apiKey);
     fs.writeFileSync(zipFilePath, data);
     // extract zip
-    extractZip(zipFilePath, { dir: exportDirAbs }, (err) => {
-        if (err) throw (err);
-        // delete downloaded zip file
-        fs.unlinkSync(zipFilePath);
+    return new Promise((resolve, reject) => {
+        extractZip(zipFilePath, { dir: exportDirAbs }, (err) => {
+            if (err) return reject(err);
+            // delete downloaded zip file
+            fs.unlinkSync(zipFilePath);
+            return resolve();
+        });
     });
 };
 
