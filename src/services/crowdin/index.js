@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { ensureDirSync } = require('fs-extra');
 const path = require('path');
 const request = require('request-promise-native');
 const extractZip = require('extract-zip');
@@ -74,6 +75,7 @@ const downloadTranslationsZip = (projectId, apiKey) => request({
     Downloads a ZIP file with translations and extracts files to exportDir
 */
 const exportTranslations = async (exportDir, projectId, apiKey) => {
+    ensureDirSync(exportDir);
     const exportDirAbs = path.resolve(exportDir);
     const zipFilePath = path.join(exportDir, 'temp.zip');
     // download builded translations
