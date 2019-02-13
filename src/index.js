@@ -5,6 +5,7 @@ const csvToJson = require('csvtojson');
 const csvStringify = require('csv-stringify/lib/sync');
 const { ensureDirSync } = require('fs-extra');
 const createRowArray = require('./utils/create-row-array');
+const Crowdin = require('./services/crowdin');
 
 /*
     Aggregates the default messages that were extracted from the app's
@@ -112,4 +113,5 @@ module.exports = {
     mergeMessages,
     buildCSV,
     buildLocales,
+    Crowdin,
 };
