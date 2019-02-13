@@ -14,7 +14,8 @@
         "build:stable": "rimraf build/stable && npx webpack --config webpack/production.babel.js --output-path build/stable --progress --bail",
         "build:beta": "rimraf build/beta && cross-env BUILD=beta npx webpack --config webpack/production.babel.js --output-path build/beta --progress --bail",
         "build:dev": "rimraf build.dev && cross-env BUILD=development npx webpack --config webpack/production.babel.js --output-path build/dev --progress --bail",
-        "translations:extract": "cross-env NODE_ENV=translations npx babel src",
+        "translations:extract": "cross-env NODE_ENV=translations babel src",
+        "translations:sync": "yarn ttm merge-msgs && yarn ttm build-csv && yarn ttm upload && yarn ttm build-translations && yarn ttm export-translations",
         "flow": "flow check src",
         "lint": "run-s lint:*",
         "lint:js": "npx eslint ./src ./webpack",
@@ -125,7 +126,7 @@
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.5.2",
         "stylelint-webpack-plugin": "^0.10.5",
-        "trezor-translations-manager": "slowbackspace/trezor-translations-manager",
+        "trezor-translations-manager": "^1.0.2",
         "webpack-cli": "^3.2.3",
         "webpack-dev-server": "^3.1.14",
         "yargs": "11.0.0"

@@ -8,7 +8,7 @@ const constants: Object = Object.freeze({
     BUILD: path.join(ABSOLUTE_BASE, 'build/'),
     PUBLIC: path.join(ABSOLUTE_BASE, 'public/'),
     SRC: path.join(ABSOLUTE_BASE, 'src/'),
-    TRANSLATIONS: path.join(ABSOLUTE_BASE, 'translations/'),
+    TRANSLATIONS: path.join(ABSOLUTE_BASE, 'public/l10n'),
     PORT: 8081,
     INDEX: path.join(ABSOLUTE_BASE, 'src/index.html'),
     TREZOR_CONNECT_ROOT: path.join(ABSOLUTE_BASE, '../trezor-connect/'),

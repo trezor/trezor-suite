@@ -1,6 +1,6 @@
 {
     "extractedMessagesFilePattern": "translations/extractedMessages/**/*.json",
-    "localesOutputDir": "translations/locales/",
+    "localesOutputDir": "public/l10n/",
     "outputDir": "translations/",
     "project": {
         "identifier": "trezor-wallet-test",

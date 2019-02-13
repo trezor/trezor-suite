@@ -10701,9 +10701,10 @@ trezor-connect@7.0.0-beta.2:
     events "^1.1.1"
     whatwg-fetch "^2.0.4"
 
-trezor-translations-manager@slowbackspace/trezor-translations-manager:
-  version "1.0.0"
-  resolved "https://codeload.github.com/slowbackspace/trezor-translations-manager/tar.gz/0f479a38ca79f239c5f98dc1227b3da9915219c3"
+trezor-translations-manager@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/trezor-translations-manager/-/trezor-translations-manager-1.0.2.tgz#49f46380f11801ee223d930cf596417b3e697c56"
+  integrity sha512-gZbCj1FBuXc7GdqIJslT6HcBCjPcFYqiPMYPs+yAOBfCXDKdV2sQKxbtfMHi1xdv97XTuUydRhk3tvyW7BcaSA==
   dependencies:
     csv-stringify "^5.3.0"
     csvtojson "^2.0.8"
