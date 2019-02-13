@@ -5,7 +5,7 @@
 ## Installation
 
 ```shell
-yarn add trezor-translations-manager
+yarn add --dev trezor-translations-manager
 ```
 
 ## Usage
