@@ -6,7 +6,7 @@
     "lint": "eslint .",
     "clean": "rimraf lib",
     "build": "yarn run clean && babel src --out-dir lib",
-    "prepublish": "yarn run clean && yarn run lint && npm run build"
+    "prepublishOnly": "yarn run clean && yarn run lint && npm run build"
   },
   "bin": {
     "ttm": "./src/cli.js"
