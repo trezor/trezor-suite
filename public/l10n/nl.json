@@ -1,4 +1,12 @@
 {
+	"TR_TREZOR_WALLET_IS_AN_EASY_DASH": "De Trezor Portemonnee is een gebruiksvriendelijke interface voor uw Trezor apparaat. Vanaf deze Portemonnee kunt u uw munten controleren, uw balans beheren en betalingen verrichten.",
+	"TR_THE_PRIVATE_BANK_IN_YOUR_HANDS": "The private bank in your hands.",
+	"TR_CONNECT_TREZOR_TO_CONTINUE": "Sluit uw Trezor aan om door te gaan",
+	"TR_AND": "and",
+	"TR_CHECK_FOR_DEVICES": "Check for devices",
+	"TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING": "Device not recognized? Try installing the {link}.",
+	"TR_DONT_HAVE_A_TREZOR_GET": "Heb je geen Trezor? {getOne}",
+	"TR_GET_ONE": "Get one",
 	"dashboard.selectyourcoin.title": "Please select your coin",
 	"dashboard.selectyourcoin.body": "You will gain access to receiving & sending selected coin"
 }

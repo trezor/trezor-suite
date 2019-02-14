@@ -1,4 +1,12 @@
 {
+	"TR_TREZOR_WALLET_IS_AN_EASY_DASH": "Trezor Wallet je komfortní rozhraní pro Vaše zařízení Trezor. Z rozhraní Wallet můžete snadno spravovat své účty, přijímat a odesílat platby.",
+	"TR_THE_PRIVATE_BANK_IN_YOUR_HANDS": "Soukromá banka ve Vašich rukou.",
+	"TR_CONNECT_TREZOR_TO_CONTINUE": "Pro pokračování připojte Trezor",
+	"TR_AND": "a",
+	"TR_CHECK_FOR_DEVICES": "Hledat zařízení",
+	"TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING": "Zařízení nebylo rozpoznáno? Zkuste nainstalovat <a>Trezor Bridge</a>.",
+	"TR_DONT_HAVE_A_TREZOR_GET": "Ještě nemáte Trezor? <a>Jeden si pořiďte</a>",
+	"TR_GET_ONE": "Get one",
 	"dashboard.selectyourcoin.title": "Please select your coin",
 	"dashboard.selectyourcoin.body": "You will gain access to receiving & sending selected coin"
 }

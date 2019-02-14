@@ -1,4 +1,12 @@
 {
+	"TR_TREZOR_WALLET_IS_AN_EASY_DASH": "Trezor Wallet est une interface facile à utiliser pour votre Trezor et qui vous permet de contrôler facilement vos fonds, de gérer votre solde et d'opérer des virements.",
+	"TR_THE_PRIVATE_BANK_IN_YOUR_HANDS": "La banque privée entre vos mains.",
+	"TR_CONNECT_TREZOR_TO_CONTINUE": "Connectez Trezor pour continuer",
+	"TR_AND": "et",
+	"TR_CHECK_FOR_DEVICES": "Recherchez des appareils",
+	"TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING": "L'appareil n'est pas reconnu ? Essayez d'installer {link}.",
+	"TR_DONT_HAVE_A_TREZOR_GET": "Vous n'avez pas de Trezor ? {getOne}",
+	"TR_GET_ONE": "Get one",
 	"dashboard.selectyourcoin.title": "Please select your coin",
 	"dashboard.selectyourcoin.body": "You will gain access to receiving & sending selected coin"
 }
