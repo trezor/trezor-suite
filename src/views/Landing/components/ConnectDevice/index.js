@@ -12,6 +12,9 @@ import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 import CaseImage from 'images/macbook.png';
 import Link from 'components/Link';
 
+import { FormattedMessage } from 'react-intl';
+import l10nMessages from './index.messages';
+
 type Props = {
     deviceLabel: string,
     showWebUsb: boolean,
@@ -24,6 +27,8 @@ const StyledConnectDevice = styled.div`
 
 const Title = styled.div`
     margin-top: 60px;
+    max-width: 800px;
+    text-align: center;
 `;
 
 const Wrapper = styled.div`
@@ -60,7 +65,7 @@ const StyledButton = styled(Button)`
 
 const Image = styled.img`
     width: 100%;
-    max-width: 777px;
+    max-width: 850px;
     height: auto;
     margin: auto;
     background-repeat: no-repeat;
@@ -126,9 +131,8 @@ class ConnectDevice extends PureComponent<Props> {
         return (
             <StyledConnectDevice>
                 <Title>
-                    <H2 claim>The private bank in your hands.</H2>
-                    <P>Trezor Wallet is an easy-to-use interface for your Trezor.</P>
-                    <P>Trezor Wallet allows you to easily control your funds, manage your balance and initiate transfers.</P>
+                    <H2 claim><FormattedMessage {...l10nMessages.TR_THE_PRIVATE_BANK_IN_YOUR_HANDS} /></H2>
+                    <P><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET_IS_AN_EASY_DASH} /></P>
                 </Title>
 
                 <Wrapper>
@@ -137,15 +141,15 @@ class ConnectDevice extends PureComponent<Props> {
                         {!this.props.showDisconnect && (
                             <React.Fragment>
                                 {this.getTrezorDeviceImage()}
-                                Connect Trezor
+                                <FormattedMessage {...l10nMessages.TR_CONNECT_TREZOR_TO_CONTINUE} />
                             </React.Fragment>
                         )}
                     </ConnectTrezorWrapper>
                     {this.props.showWebUsb && !this.props.showDisconnect && (
                         <React.Fragment>
-                            <StyledP>and</StyledP>
+                            <StyledP><FormattedMessage {...l10nMessages.TR_AND} /></StyledP>
                             <StyledButton isWebUsb>
-                                Check for devices
+                                <FormattedMessage {...l10nMessages.TR_CHECK_FOR_DEVICES} />
                             </StyledButton>
                         </React.Fragment>
                     )}
@@ -156,23 +160,37 @@ class ConnectDevice extends PureComponent<Props> {
                 <Footer>
                     {this.props.showWebUsb && (
                         <P>
-                            <FooterText>Device not recognized?</FooterText>
-                            <StyledLink
-                                to="/bridge"
-                                isGreen
-                            >Try installing the Trezor Bridge.
-                            </StyledLink>
+                            <FooterText>
+                                <FormattedMessage
+                                    {...l10nMessages.TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING}
+                                    values={{
+                                        link: (
+                                            <StyledLink
+                                                to="/bridge"
+                                                isGreen
+                                            >Trezor Bridge
+                                            </StyledLink>
+                                        ),
+                                    }}
+                                />
+                            </FooterText>
                         </P>
                     )}
                     <P>
                         <FooterText>
-                            Don&apos;t have Trezor?
+                            <FormattedMessage
+                                {...l10nMessages.TR_DONT_HAVE_A_TREZOR}
+                                values={{
+                                    getOne: (
+                                        <StyledLink
+                                            href="https://trezor.io/"
+                                            isGreen
+                                        ><FormattedMessage {...l10nMessages.TR_GET_ONE} />
+                                        </StyledLink>
+                                    ),
+                                }}
+                            />
                         </FooterText>
-                        <StyledLink
-                            href="https://trezor.io/"
-                            isGreen
-                        >Get one
-                        </StyledLink>
                     </P>
                 </Footer>
             </StyledConnectDevice>
