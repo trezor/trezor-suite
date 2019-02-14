@@ -86,7 +86,7 @@ Now you are able to run the whole flow  with `yarn run translations-sync`.
 - `localesOutputDir`: Output directory where lang-specific json files will be generated.
 - `project.identifier`: Crowdin identifier of project 
 - `project.apiKeyEnv`: Name of an environment variable which contains API key
-- `languages`: [Crowdin language codes](https://support.crowdin.com/api/language-codes/). Codes are also used as filenames for generated lang-specific JSON files with translations.
+- `languages`: [Crowdin language codes](https://support.crowdin.com/api/language-codes/). Codes are also used as filenames for generated lang-specific JSON files with translations. Be aware that they do not have to match codes returned by `navigator.language`.
 
 `l10n.config.json` file example
 ```json
