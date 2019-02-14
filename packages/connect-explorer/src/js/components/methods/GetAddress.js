@@ -21,12 +21,15 @@ const GetAddress = (props): any => {
 
     const {
         path,
+        address,
+        addressValidation,
         coin,
         showOnTrezor
     } = props.state;
 
     const { 
         onPathChange,
+        onAddressChange,
         onCoinChange,
         onConfirmationChange,
         onGetAddress
@@ -35,6 +38,8 @@ const GetAddress = (props): any => {
     const {
         onTabChange
     } = props.commonActions;
+
+    const validationClassName = addressValidation ? 'row validated' : 'row';
 
     return (
         <section className="method-content">
@@ -56,6 +61,11 @@ const GetAddress = (props): any => {
                         <input type="checkbox" checked={ showOnTrezor } onChange={ event => onConfirmationChange(event.target.checked) } />
                         <span className="indicator"></span>
                     </label>
+                </div>
+
+                <div className={ validationClassName }>
+                    <label>Address validation</label>
+                    <input type="text" value={ address } onChange={ event => onAddressChange(event.target.value) } />
                 </div>
 
                 <div className="row">
