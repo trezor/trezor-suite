@@ -18,6 +18,8 @@ module.exports = (api) => {
         '@babel/plugin-transform-flow-strip-types',
         '@babel/plugin-proposal-class-properties',
         '@babel/plugin-proposal-object-rest-spread',
+        '@babel/plugin-syntax-dynamic-import',
+        'dynamic-import-node',
         [
             '@babel/plugin-transform-runtime',
             {
