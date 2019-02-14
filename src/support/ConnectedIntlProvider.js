@@ -7,6 +7,8 @@ import type { State } from 'flowtype';
 
 import { IntlProvider, addLocaleData } from 'react-intl';
 
+// import { LANGUAGE } from 'config/variables';
+
 import en from 'react-intl/locale-data/en';
 import cs from 'react-intl/locale-data/cs';
 import bn from 'react-intl/locale-data/bn';
@@ -62,10 +64,13 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 
 
 const ReactIntlProvider = ({ children, locale }: Props) => {
+    // const localeData = await import(`react-intl/locale-data/${locale}`);
+    // addLocaleData(localeData);
     const localeMessages = messages[locale];
     console.log(locale);
     return (
         <IntlProvider
+            key={locale}
             locale={locale}
             messages={localeMessages}
         >
