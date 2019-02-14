@@ -3,7 +3,8 @@
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 import { UI, DEVICE } from 'trezor-connect';
-import { CONFIRMATION_CHANGE, COIN_CHANGE, PATH_CHANGE } from '../../actions/methods/GetAddressActions';
+import { CONFIRMATION_CHANGE, COIN_CHANGE, PATH_CHANGE, ADDRESS_CHANGE } from '../../actions/methods/GetAddressActions';
+import { RESPONSE } from '../../actions/methods/CommonActions';
 
 type MethodState = {
     +js: string;
@@ -31,6 +32,8 @@ const initialState: MethodState = {
     fields: ['path', 'showOnTrezor'],
     
     path: "m/49'/0'/0'/0/0",
+    address: '',
+    addressValidation: false,
     coin: '',
     showOnTrezor: true,
 };
@@ -48,6 +51,25 @@ export default function method(state: MethodState = initialState, action: any): 
                 ...state,
                 path: action.path,
             };
+
+        case ADDRESS_CHANGE :
+            return {
+                ...state,
+                address: action.address,
+                addressValidation: false,
+            };
+
+        case UI.ADDRESS_VALIDATION:
+            return {
+                ...state,
+                addressValidation: true,
+            }
+
+        case RESPONSE:
+            return {
+                ...state,
+                addressValidation: false,
+            }
 
         case COIN_CHANGE :
             if (action.coin === '') {
@@ -70,6 +92,7 @@ export default function method(state: MethodState = initialState, action: any): 
                 ...state,
                 showOnTrezor: action.showOnTrezor
             };
+            
 
         default:
             return state;

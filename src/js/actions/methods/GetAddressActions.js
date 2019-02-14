@@ -7,6 +7,7 @@ import { onResponse } from './CommonActions';
 const PREFIX: string = 'getaddress';
 export const COIN_CHANGE: string = `${PREFIX}_coin_@change`;
 export const PATH_CHANGE: string = `${PREFIX}_path_@change`;
+export const ADDRESS_CHANGE: string = `${PREFIX}_address_@change`;
 export const CONFIRMATION_CHANGE: string = `${PREFIX}_confirmation_@change`;
 
 export function onCoinChange(coin: string): any {
@@ -20,6 +21,13 @@ export function onPathChange(path: string): any {
     return {
         type: PATH_CHANGE,
         path
+    }
+}
+
+export function onAddressChange(address: string): any {
+    return {
+        type: ADDRESS_CHANGE,
+        address
     }
 }
 
@@ -40,7 +48,11 @@ export function onGetAddress(): any {
             });
             response = await TrezorConnect.getAddress( { bundle } );
         } else {
-            response = await TrezorConnect.getAddress( getState().common.params );
+            if (getState().getaddress.address.length > 0) {
+                response = await TrezorConnect.getAddress( { ...getState().common.params, address: getState().getaddress.address } );
+            } else {
+                response = await TrezorConnect.getAddress( { ...getState().common.params } );
+            }
         }
 
         // const response = await TrezorConnect.getAddress(getState().common.params);
