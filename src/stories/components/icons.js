@@ -8,14 +8,15 @@ import { withInfo } from '@storybook/addon-info';
 
 const Wrapper = styled.div``;
 
+Wrapper.displayName = 'Wrapper';
+
 storiesOf('Icons', module)
-    .addDecorator(centered)
     .addDecorator(
         withInfo({
             header: true,
-            propTablesExclude: [Wrapper],
         }),
     )
+    .addDecorator(centered)
     .add('icons', () => (
         <Wrapper>
             <Icon icon={icons.TOP} />

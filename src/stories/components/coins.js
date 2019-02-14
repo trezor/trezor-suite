@@ -5,17 +5,17 @@ import styled from 'styled-components';
 import centered from '@storybook/addon-centered';
 import { withInfo } from '@storybook/addon-info';
 
-const Wrapper = styled.div`
-`;
+const Wrapper = styled.div``;
+
+Wrapper.displayName = 'Wrapper';
 
 storiesOf('Coins', module)
-    .addDecorator(centered)
     .addDecorator(
         withInfo({
             header: true,
-            propTablesExclude: [Wrapper],
         }),
     )
+    .addDecorator(centered)
     .add('coins', () => (
         <Wrapper>
             <CoinLogo network="ada" />

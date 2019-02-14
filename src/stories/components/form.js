@@ -21,7 +21,6 @@ storiesOf('Form', module)
     .addDecorator(
         withInfo({
             header: true,
-            propTablesExclude: [Wrapper, styled],
             excludedPropTypes: ['children'],
         }),
     )
@@ -43,6 +42,7 @@ storiesOf('Form', module)
                 Warning: 'warning',
             }, '')}
             bottomText={text('Bottom text', 'bottom text')}
+            onChange={() => {}}
         />
     ))
     .add('Textarea', () => (
@@ -62,6 +62,7 @@ storiesOf('Form', module)
     .add('Checkbox', () => (
         <Checkbox
             isChecked={boolean('Checked', false)}
+            onClick={() => {}}
         >
             {text('Checkbox text', 'Checkbox')}
         </Checkbox>

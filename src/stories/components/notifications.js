@@ -20,7 +20,6 @@ storiesOf('Notifications', module)
     .addDecorator(
         withInfo({
             header: true,
-            propTablesExclude: [Wrapper],
         }),
     )
     .addDecorator(centered)

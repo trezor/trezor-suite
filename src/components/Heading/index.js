@@ -1,4 +1,6 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
 
 import { FONT_SIZE } from 'config/variables';
 import colors from 'config/colors';
@@ -12,35 +14,61 @@ const baseStyles = css`
     padding: 0;
 `;
 
-const H1 = styled.h1`
+const h1 = styled.h1`
     ${baseStyles};
     font-size: ${FONT_SIZE.H1};
     padding-bottom: 10px;
 `;
 
-const H2 = styled.h2`
+const h2 = styled.h2`
     ${baseStyles};
     font-size: ${FONT_SIZE.H2};
     padding-bottom: 10px;
-
-    ${props => props.claim
-        && css`
-            font-size: ${FONT_SIZE.HUGE};
-            padding-bottom: 24px;
-        `};
 `;
 
-const H3 = styled.h3`
+const h3 = styled.h3`
     ${baseStyles};
     font-size: ${FONT_SIZE.H3};
-    margin-bottom: 10px;
+    padding-bottom: 10px;
 `;
 
-const H4 = styled.h4`
+const h4 = styled.h4`
     ${baseStyles};
     font-size: ${FONT_SIZE.H4};
     padding-bottom: 10px;
 `;
+
+const H1 = ({children}) => {
+    return <h1>{children}</h1>
+};
+
+const H2 = ({children}) => {
+    return <h2>{children}</h2>
+};
+
+const H3 = ({children}) => {
+    return <h3>{children}</h3>
+};
+
+const H4 = ({children}) => {
+    return <h4>{children}</h4>
+};
+
+H1.propTypes = {
+    children: PropTypes.node,
+};
+
+H2.propTypes = {
+    children: PropTypes.node,
+};
+
+H3.propTypes = {
+    children: PropTypes.node,
+};
+
+H4.propTypes = {
+    children: PropTypes.node,
+};
 
 export {
     H1, H2, H3, H4,

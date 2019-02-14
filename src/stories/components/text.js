@@ -20,12 +20,16 @@ import Tooltip from 'components/Tooltip';
 
 const Wrapper = styled.div``;
 
+Wrapper.displayName = 'Wrapper';
+H1.displayName = 'H1';
+H2.displayName = 'H2';
+H3.displayName = 'H3';
+H4.displayName = 'H4';
+
 storiesOf('Text', module)
     .addDecorator(
         withInfo({
             header: true,
-            propTablesExclude: [Wrapper, styled.div],
-            excludedPropTypes: ['children'],
         }),
     )
     .addDecorator(centered)

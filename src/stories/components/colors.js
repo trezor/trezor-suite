@@ -12,15 +12,15 @@ const Wrapper = styled.div`
 
 const ColorBox = styled.div`
     text-align: center;
-    max-width: 90px;
+    width: 15%;
     height: 20px;
     padding: 20px;
-    margin: 5px;
     display: flex;
+    margin: 0 0 10px 10px;
     justify-content: center;
     align-items: center;
     background: ${props => props.color};
-    border: 1px solid black;
+    border-radius: 5px;
 `;
 
 const Section = styled.div``;
