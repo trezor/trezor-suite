@@ -3,9 +3,10 @@
 
 import { LOCATION_CHANGE } from 'react-router-redux';
 
-import TrezorConnect, { TRANSPORT_EVENT, DEVICE_EVENT, UI_EVENT, UI } from 'trezor-connect';
+import TrezorConnect, { TRANSPORT_EVENT, DEVICE_EVENT, UI_EVENT, UI, DEVICE } from 'trezor-connect';
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
 import { updateCode } from '../actions/methods/CommonActions';
+import { getQueryVariable } from '../utils/windowUtils';
 
 let inited: boolean = false;
 
@@ -31,18 +32,15 @@ const TrezorConnectService = store => next => action => {
         // TrezorConnect.on(TRANSPORT_EVENT, (event) => {
         //     console.warn("-------TRANSPOOOO", event)
         // })
+        const customSrc = getQueryVariable('src');
+        if (customSrc) {
+            window.__TREZOR_CONNECT_SRC = customSrc;
+        } else {
+            window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
+        }
+        window.TrezorConnect = TrezorConnect;
 
-        // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
-
-        // const src = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/next/';
-        /// const src = 'https://sisyfos.trezor.io/next/';
-
-        
-        /*
         TrezorConnect.init({
-            connectSrc: src,
-            // connectSrc: 'https://localhost:8088/',
-            // connectSrc: 'https://sisyfos.trezor.io/next/',
 
             webusb: true,
             // transportReconnect: false,
@@ -57,7 +55,6 @@ const TrezorConnectService = store => next => action => {
         .catch(error => {
             console.log("ERROR", error);
         })
-        */
 
         
         
@@ -79,6 +76,14 @@ const TrezorConnectService = store => next => action => {
                     data: event.payload
                 });
             });
+
+            TrezorConnect.on(UI.ADDRESS_VALIDATION, (data: any) => {
+                console.warn("HANDLE EVENT", data)
+                // store.dispatch({
+                //     type: UI.ADDRESS_VALIDATION,
+                //     data
+                // })
+            })
 
 
         
