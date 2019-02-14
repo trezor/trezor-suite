@@ -1366,9 +1366,10 @@ bitcoin-script@^0.1.1:
     sha1 "^1.1.0"
     sha256 "^0.1.1"
 
-bitcoinjs-lib-zcash@^3.5.2:
-  version "3.5.2"
-  resolved "https://registry.yarnpkg.com/bitcoinjs-lib-zcash/-/bitcoinjs-lib-zcash-3.5.2.tgz#cd757976572106363dfe2b497e0d6c92f9a8ed98"
+bitcoinjs-lib-zcash@3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/bitcoinjs-lib-zcash/-/bitcoinjs-lib-zcash-3.6.0.tgz#73f657c033352b680ec05e9ad876d044e2b7f341"
+  integrity sha512-TcGM3CbyeBXtpWjYgWD1PGy2A2mYYUyfBM4bZtFDU4z1l/NMaJrUBCu1jtQfWhtRGMATrTOojLNvpE5gA8RxOA==
   dependencies:
     bech32 "^1.1.2"
     bigi "^1.4.0"
