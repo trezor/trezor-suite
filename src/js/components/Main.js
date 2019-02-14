@@ -34,6 +34,7 @@ export default class Main extends Component {
                     { navLink('/composetx', 'Payment request') }
                     { navLink('/push-tx', 'Push Transaction') }
                     { navLink('/eth-getaddress', 'Ethereum Get Address') }
+                    { navLink('/eth-getxpub', 'Ethereum Get Public Key') }
                     { navLink('/eth-signtx', 'Ethereum Sign Transaction') }
                     { navLink('/eth-signmessage', 'Ethereum Sign Message') }
                     { navLink('/eth-verifymessage', 'Ethereum Verify Message') }

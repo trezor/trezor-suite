@@ -8,6 +8,7 @@ export { default as GetPublicKey } from './GetPublicKey';
 export { default as SignMessage } from './SignMessage';
 export { default as VerifyMessage } from './VerifyMessage';
 export { default as EthereumGetAddress } from './EthereumGetAddress';
+export { default as EthereumGetPublicKey } from './EthereumGetPublicKey';
 export { default as EthereumSignTx } from './EthereumSignTx';
 export { default as EthereumSignMessage } from './EthereumSignMessage';
 export { default as EthereumVerifyMessage } from './EthereumVerifyMessage';
