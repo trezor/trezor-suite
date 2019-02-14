@@ -16,6 +16,7 @@ import {
     SignMessage,
     VerifyMessage,
     EthereumGetAddress,
+    EthereumGetPublicKey,
     EthereumSignTx,
     EthereumSignMessage,
     EthereumVerifyMessage,
@@ -57,6 +58,7 @@ export default (
                     <Route exact path="/get-accountinfo" component={ GetAccountInfo } />
                     <Route exact path="/getaddress" component={ GetAddress } />
                     <Route exact path="/eth-getaddress" component={ EthereumGetAddress } />
+                    <Route exact path="/eth-getxpub" component={ EthereumGetPublicKey } />
                     <Route exact path="/eth-signtx" component={ EthereumSignTx } />
                     <Route exact path="/eth-signmessage" component={ EthereumSignMessage } />
                     <Route exact path="/eth-verifymessage" component={ EthereumVerifyMessage } />
