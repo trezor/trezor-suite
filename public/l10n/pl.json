@@ -1,4 +1,11 @@
 {
+	"TR_YOU_ARE_OPENING_TREZOR_BETA_WALLET": "You are opening Trezor Beta Wallet",
+	"TR_TREZOR_BETA_WALLET_IS": "{trezorBetaWallet} is a public feature-testing version of the {trezorWallet}, offering the newest features before they are available to the general public.",
+	"TR_IN_CONTRAST_COMMA_TREZOR": "In contrast, {trezorWallet} is feature-conservative, making sure that its functionality is maximally reliable and dependable for the general public.",
+	"TR_PLEASE_NOTE_THAT_THE_TREZOR": "Please note that the {trezorBetaWallet} might be collecting anonymized usage data, especially error logs, for development purposes. The {trezorWallet} does not log any data.",
+	"TR_OK_COMMA_I_UNDERSTAND": "OK, I understand",
+	"TR_TREZOR_WALLET": "Trezor Wallet",
+	"TR_TREZOR_BETA_WALLET": "Trezor Beta Wallet",
 	"TR_TREZOR_WALLET_IS_AN_EASY_DASH": "Portfel Trezor oferuje łatwy w użyciu interfejs. Z łatwością możesz kontrolować swoje pieniądze, zarządzać balansem konta i wysyłać transakcje.",
 	"TR_THE_PRIVATE_BANK_IN_YOUR_HANDS": "The private bank in your hands.",
 	"TR_CONNECT_TREZOR_TO_CONTINUE": "Podłącz Trezor, aby kontynuować",

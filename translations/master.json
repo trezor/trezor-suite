@@ -1,4 +1,125 @@
 {
+  "TR_YOU_ARE_OPENING_TREZOR_BETA_WALLET": {
+    "source": "You are opening Trezor Beta Wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR_BETA_WALLET_IS": {
+    "source": "{trezorBetaWallet} is a public feature-testing version of the {trezorWallet}, offering the newest features before they are available to the general public.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_IN_CONTRAST_COMMA_TREZOR": {
+    "source": "In contrast, {trezorWallet} is feature-conservative, making sure that its functionality is maximally reliable and dependable for the general public.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_NOTE_THAT_THE_TREZOR": {
+    "source": "Please note that the {trezorBetaWallet} might be collecting anonymized usage data, especially error logs, for development purposes. The {trezorWallet} does not log any data.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_OK_COMMA_I_UNDERSTAND": {
+    "source": "OK, I understand",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR_WALLET": {
+    "source": "Trezor Wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR_BETA_WALLET": {
+    "source": "Trezor Beta Wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR_WALLET_IS_AN_EASY_DASH": {
+    "source": "Trezor Wallet is an easy-to-use interface for your Trezor. Trezor Wallet allows you to easily control your funds, manage your balance and initiate transfers.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_THE_PRIVATE_BANK_IN_YOUR_HANDS": {
+    "source": "The private bank in your hands.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONNECT_TREZOR_TO_CONTINUE": {
+    "source": "Connect Trezor to continue",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_AND": {
+    "source": "and",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_CHECK_FOR_DEVICES": {
+    "source": "Check for devices",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING": {
+    "source": "Device not recognized? Try installing the {link}.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_DONT_HAVE_A_TREZOR_GET": {
+    "source": "Don't have a Trezor? {getOne}",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_GET_ONE": {
+    "source": "Get one",
+    "meta": {
+      "comment": "Part of the sentence: Dont have a Trezor? Get one",
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
   "dashboard.selectyourcoin.title": {
     "source": "Please select your coin",
     "meta": {

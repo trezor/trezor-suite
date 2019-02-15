@@ -36,5 +36,24 @@
         "tr",
         "uk",
         "vi"
-    ]
+    ],
+    "langToFileNameMap": {
+        "en": "en",
+        "bn": "bn",
+        "cs": "cs",
+        "de": "de",
+        "el": "el",
+        "es-ES": "es",
+        "fr": "fr",
+        "id": "id",
+        "it": "it",
+        "ja": "ja",
+        "nl": "nl",
+        "pl": "pl",
+        "pt-PT": "pt",
+        "ru": "ru",
+        "uk": "uk",
+        "zh-CN": "zh",
+        "zh-TW": "zh_TW"
+    }
 }

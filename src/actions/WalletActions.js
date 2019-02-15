@@ -73,27 +73,7 @@ export const toggleSidebar = (): WalletAction => ({
 });
 
 export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch): void => {
-    const mapLocaleToFileName = {
-        en: 'en',
-        bn: 'bn',
-        cs: 'cs',
-        de: 'de',
-        el: 'el',
-        es: 'es-ES',
-        fr: 'fr',
-        id: 'id',
-        it: 'it',
-        ja: 'ja',
-        nl: 'nl',
-        pl: 'pl',
-        pt: 'pt-PT',
-        ru: 'ru',
-        uk: 'uk',
-        zh: 'zh-CN',
-        zh_TW: 'zh-TW',
-    };
-    const filename = mapLocaleToFileName[locale];
-    fetch(`/l10n/${filename}.json`)
+    fetch(`/l10n/${locale}.json`)
         .then(response => response.json())
         .then((messages) => {
             dispatch({
