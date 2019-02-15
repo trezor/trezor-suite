@@ -4,7 +4,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import meow from 'meow';
 import { mergeMessages, buildCSV, buildLocales } from './index';
-import crowdin from './services/crowdin';
+import Crowdin from './services/crowdin';
 
 dotenv.config();
 
@@ -62,6 +62,7 @@ const {
 // Crowdin API key should be stored in an env variable which name is specified in the config 'apiKeyEnv' field
 const projectId = config.project.identifier;
 const apiKey = process.env[config.project.apiKeyEnv];
+const crowdin = new Crowdin(projectId, apiKey);
 
 switch (command) {
 case 'merge-msgs':
@@ -76,7 +77,7 @@ case 'build-csv':
 
 case 'upload':
     console.log(`Updating csv file '${path.join(outputDir, 'master.csv')}' to Crowdin project '${projectId}'`);
-    crowdin.updateFile(path.join(outputDir, 'master.csv'), projectId, apiKey)
+    crowdin.updateFile(path.join(outputDir, 'master.csv'))
         .catch((err) => {
             let crowdinErr = JSON.parse(err.error);
 
@@ -85,7 +86,7 @@ case 'upload':
             if (crowdinErr.error.code === 8) {
                 console.log("File doesn't exist in Crowdin, adding a new file.");
                 const csvScheme = `identifier,source_phrase,context,${languages.join(',')}`;
-                crowdin.addFile(path.join(outputDir, 'master.csv'), csvScheme, projectId, apiKey)
+                crowdin.addFile(path.join(outputDir, 'master.csv'), csvScheme)
                     .catch((addErr) => {
                         crowdinErr = JSON.parse(addErr.error);
                         console.log('Failed to upload new master.csv file to Crowdin');
@@ -100,14 +101,17 @@ case 'upload':
 
 case 'build-translations':
     console.log(`Building Crowdin translations for a project '${projectId}'`);
-    crowdin.buildTranslations(projectId, apiKey).then((res) => {
+    crowdin.buildTranslations().then((res) => {
         console.log(res);
+    }).catch((err) => {
+        const crowdinErr = JSON.parse(err.error);
+        console.log(crowdinErr);
     });
     break;
 
 case 'export-translations':
     console.log(`Exporting translations for a project '${projectId}'`);
-    crowdin.exportTranslations(localesOutputDir, projectId, apiKey).then(() => {
+    crowdin.exportTranslations(localesOutputDir).then(() => {
         console.log(`Generating locales files in a directory ${localesOutputDir}`);
         buildLocales(path.join(localesOutputDir, 'master.csv'), localesOutputDir, languages, true);
     });

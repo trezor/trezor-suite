@@ -13,7 +13,7 @@ yarn add --dev trezor-translations-manager
 ### Extracting messages for translation
 This package does not deal with the process of extracting messages for translation from your source code.
 
-For React apps it is recommended to use [babel-plugin-react-intl](https://github.com/yahoo/babel-plugin-react-intl). Then with `ttm merge-msgs` you can merge extracted messages to one JSON file.
+For React apps it is recommended to use [babel-plugin-react-intl](https://github.com/yahoo/babel-plugin-react-intl). Then with `ttm merge-msgs` you can merge extracted messages to a single JSON file.
 
 Example configuration in the `babel.config.js`
 ```javascript
@@ -98,48 +98,21 @@ Now you are able to run the whole flow  with `yarn run translations-sync`.
         "identifier": "trezor-wallet-test",
         "apiKeyEnv": "CROWDIN_API_KEY"
     },
-    "languages": [
-        "af",
-        "ar",
-        "bn",
-        "zh-CN",
-        "zh-TW",
-        "cs",
-        "nl",
-        "en",
-        "et",
-        "fr",
-        "de",
-        "el",
-        "he",
-        "hi",
-        "hu",
-        "id",
-        "it",
-        "ja",
-        "ko",
-        "no",
-        "fa",
-        "pl",
-        "pt-PT",
-        "ru",
-        "es-ES",
-        "sv-SE",
-        "tr",
-        "uk",
-        "vi"
-    ]
+    "languages": ["af", "ar", "bn", "zh-CN", "zh-TW", "cs", "nl", "en", "et", "fr", "de", "el", "he", "hi", "hu", "id", "it", "ja", "ko", "no", "fa", "pl", "pt-PT", "ru", "es-ES", "sv-SE", "tr", "uk", "vi"]
 }
 
 ```
 ### API
 If the CLI tool does not suit your needs you can build your own script with these exported functions.
 
-```
+```javascript
 import { mergeMessages, buildCSV, buildLocales } from 'trezor-translations-manager';
-import {
-    addFile, updateFile, downloadTranslationsZip, buildTranslations, exportTranslations,
-} from 'trezor-translations-manager/lib/services/crowdin';
+import Crowdin from 'trezor-translations-manager/lib/services/crowdin';
+
+// projectId - Identifier of a Crowdin project
+// apiKey - API key for the Crowdin project
+const crowdin = new Crowdin(projectId, apiKey);
+// available methods are addFile, updateFile, downloadTranslationsZip, buildTranslations, exportTranslations,
 ```
 
 #### mergeMessages(filePattern, outputFilePath)
@@ -164,35 +137,34 @@ Build language json files from a translated master.csv downloaded from Crowdin
 - `deleteCSV`: Whether should delete the csv file after. Default `true`.
 
 
-#### addFile(filePath, scheme, projectId, apiKey)
+#### crowdin.createBranch(branch)
+Creates a new branch in Crowdin service
+- `branch`: Crowdin branch name
+
+#### crowdin.addFile(filePath, scheme, branch = null)
 Upload a new csv file to Crowdin service
 - `filePath`: Path to a file
 - `scheme`: Crowdin-specific CSV scheme (See [https://support.crowdin.com/api/add-file/](https://support.crowdin.com/api/add-file/))
-- `projectId`: Identifier of a Crowdin project
-- `apiKey`: API key for the Crowdin project
+- `branch`: Crowdin branch name
 
-#### updateFile(filePath, projectId, apiKey)
+#### crowdin.updateFile(filePath, branch = null)
 Update an existing csv file in Crowdin service
 - `filePath`: Path to a file
-- `projectId`: Identifier of a Crowdin project
-- `apiKey`: API key for the Crowdin project
+- `branch`: Crowdin branch name
 
-#### buildTranslations(projectId, apikey)
+#### crowdin.buildTranslations(branch = null)
 Builds translations in Crowdin service. It does not actually download anything.
 This method can be invoked only once per 30 minutes (otherwise the build process is skipped).
-- `projectId`: Identifier of a Crowdin project
-- `apiKey`: API key for the Crowdin project
+- `branch`: Crowdin branch name
 
-#### downloadTranslationsZip(projectId, apiKey)
+#### crowdin.downloadTranslationsZip(branch = null)
 Downloads a ZIP file with translations.
-- `projectId`: Identifier of a Crowdin project
-- `apiKey`: API key for the Crowdin project
+- `branch`: Crowdin branch name
 
-#### exportTranslations (exportDir, projectId, apiKey)
+#### crowdin.exportTranslations (exportDir, branch = null)
 Downloads a ZIP file with translations and extracts files to exportDir
 - `exportDir`: Directory where files from the archive should be extracted.
-- `projectId`: Identifier of a Crowdin project
-- `apiKey`: API key for the Crowdin project
+- `branch`: Crowdin branch name
 
 ## Development
 
