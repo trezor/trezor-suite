@@ -31,11 +31,11 @@ const StyledSelect = styled.select`
 `;
 
 
-const LanguagePicker = ({ language, setLanguage }: Props) => (
+const LanguagePicker = ({ language, fetchLocale }: Props) => (
     <SelectWrapper>
         <SelectIcon role="img" aria-label="Select language">🌎</SelectIcon>
         <StyledSelect
-            onChange={e => setLanguage(e.target.value)}
+            onChange={e => fetchLocale(e.target.value)}
             value={language}
         >
             {LANGUAGE.map(lang => (

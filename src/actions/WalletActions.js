@@ -44,7 +44,8 @@ export type WalletAction = {
     type: typeof WALLET.TOGGLE_SIDEBAR,
 } | {
     type: typeof WALLET.SET_LANGUAGE,
-    language: string
+    locale: string,
+    messages: { [string]: string },
 }
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
@@ -71,10 +72,37 @@ export const toggleSidebar = (): WalletAction => ({
     type: WALLET.TOGGLE_SIDEBAR,
 });
 
-export const setLanguage = (language: string): WalletAction => ({
-    type: WALLET.SET_LANGUAGE,
-    language,
-});
+export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch): void => {
+    const mapLocaleToFileName = {
+        en: 'en',
+        bn: 'bn',
+        cs: 'cs',
+        de: 'de',
+        el: 'el',
+        es: 'es-ES',
+        fr: 'fr',
+        id: 'id',
+        it: 'it',
+        ja: 'ja',
+        nl: 'nl',
+        pl: 'pl',
+        pt: 'pt-PT',
+        ru: 'ru',
+        uk: 'uk',
+        zh: 'zh-CN',
+        zh_TW: 'zh-TW',
+    };
+    const filename = mapLocaleToFileName[locale];
+    fetch(`/l10n/${filename}.json`)
+        .then(response => response.json())
+        .then((messages) => {
+            dispatch({
+                type: WALLET.SET_LANGUAGE,
+                locale,
+                messages,
+            });
+        });
+};
 
 // This method will be called after each DEVICE.CONNECT action
 // if connected device has different "passphrase_protection" settings than saved instances

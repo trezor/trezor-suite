@@ -14,7 +14,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    setLanguage: typeof WalletActions.setLanguage,
+    fetchLocale: typeof WalletActions.fetchLocale,
 };
 
 type OwnProps = {
@@ -28,7 +28,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
 });
 
 const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    setLanguage: bindActionCreators(WalletActions.setLanguage, dispatch),
+    fetchLocale: bindActionCreators(WalletActions.fetchLocale, dispatch),
 });
 
 export default withRouter(

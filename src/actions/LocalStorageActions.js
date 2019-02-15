@@ -11,6 +11,7 @@ import * as WALLET from 'actions/constants/wallet';
 import { httpRequest } from 'utils/networkUtils';
 import * as buildUtils from 'utils/build';
 import * as storageUtils from 'utils/storage';
+import * as WalletActions from 'actions/WalletActions';
 
 import { getAccountTokens } from 'reducers/utils';
 import type { Account } from 'reducers/AccountsReducer';
@@ -239,10 +240,7 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
 
     const language: ?string = storageUtils.get(TYPE, KEY_LANGUAGE);
     if (language) {
-        dispatch({
-            type: WALLET.SET_LANGUAGE,
-            language: JSON.parse(language),
-        });
+        dispatch(WalletActions.fetchLocale(language));
     }
 };
 

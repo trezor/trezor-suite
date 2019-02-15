@@ -1,13 +1,11 @@
-/* eslint-disable global-require */
 /* @flow */
 import * as React from 'react';
 import { connect } from 'react-redux';
+
 import type { MapStateToProps } from 'react-redux';
 import type { State } from 'flowtype';
 
 import { IntlProvider, addLocaleData } from 'react-intl';
-
-// import { LANGUAGE } from 'config/variables';
 
 import en from 'react-intl/locale-data/en';
 import cs from 'react-intl/locale-data/cs';
@@ -28,55 +26,30 @@ import zh from 'react-intl/locale-data/zh';
 
 addLocaleData([...en, ...cs, ...bn, ...de, ...el, ...es, ...fr, ...id, ...it, ...ja, ...nl, ...pl, ...pt, ...ru, ...uk, ...zh]);
 
-const messages = {
-    en: require('public/l10n/en.json'),
-    bn: require('public/l10n/bn.json'),
-    cs: require('public/l10n/cs.json'),
-    de: require('public/l10n/de.json'),
-    el: require('public/l10n/el.json'),
-    es: require('public/l10n/es-ES.json'),
-    fr: require('public/l10n/fr.json'),
-    id: require('public/l10n/id.json'),
-    it: require('public/l10n/it.json'),
-    ja: require('public/l10n/ja.json'),
-    nl: require('public/l10n/nl.json'),
-    pl: require('public/l10n/pl.json'),
-    pt: require('public/l10n/pt-PT.json'),
-    ru: require('public/l10n/ru.json'),
-    uk: require('public/l10n/uk.json'),
-    zh: require('public/l10n/zh-CN.json'),
-    zh_TW: require('public/l10n/zh-TW.json'),
-};
-
 type OwnProps = {
     children: React.Node
 }
 
 type StateProps = {
-    locale: string
+    locale: string,
+    messages: { [string]: string }
 }
 
 type Props = StateProps & OwnProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     locale: state.wallet.language,
+    messages: state.wallet.messages,
 });
 
-
-const ReactIntlProvider = ({ children, locale }: Props) => {
-    // const localeData = await import(`react-intl/locale-data/${locale}`);
-    // addLocaleData(localeData);
-    const localeMessages = messages[locale];
-    console.log(locale);
-    return (
-        <IntlProvider
-            key={locale}
-            locale={locale}
-            messages={localeMessages}
-        >
-            {children}
-        </IntlProvider>
-    );
-};
+const ReactIntlProvider = ({ children, locale, messages }: Props) => (
+    <IntlProvider
+        key={locale} // dirty hack to rerender IntlProvider when lang file is downloaded
+        locale={locale}
+        messages={messages}
+    >
+        {children}
+    </IntlProvider>
+);
 
 export default connect(mapStateToProps, null)(ReactIntlProvider);
