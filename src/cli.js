@@ -56,7 +56,7 @@ if (!configFilePath) {
 // Parse configuration file
 const config = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
 const {
-    languages, outputDir, localesOutputDir, extractedMessagesFilePattern,
+    languages, outputDir, localesOutputDir, extractedMessagesFilePattern, langToFileNameMap,
 } = config;
 
 // Crowdin API key should be stored in an env variable which name is specified in the config 'apiKeyEnv' field
@@ -113,7 +113,7 @@ case 'export-translations':
     console.log(`Exporting translations for a project '${projectId}'`);
     crowdin.exportTranslations(localesOutputDir).then(() => {
         console.log(`Generating locales files in a directory ${localesOutputDir}`);
-        buildLocales(path.join(localesOutputDir, 'master.csv'), localesOutputDir, languages, true);
+        buildLocales(path.join(localesOutputDir, 'master.csv'), localesOutputDir, languages, langToFileNameMap, true);
     });
     break;
 

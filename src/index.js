@@ -86,7 +86,7 @@ export const buildCSV = (inputFilePath, outputFilePath, languages) => {
 /*
     Build language json files from translated master.csv downloaded from Crowdin
  */
-export const buildLocales = async (inputFilePath, outputDir, languages, deleteCSV = true) => {
+export const buildLocales = async (inputFilePath, outputDir, languages, langToFileNameMap = null, deleteCSV = true) => {
     const jsonArray = await csvToJson().fromFile(inputFilePath);
 
     languages.forEach((language) => {
@@ -95,7 +95,11 @@ export const buildLocales = async (inputFilePath, outputDir, languages, deleteCS
             langMessages[record.key] = record[language];
         });
 
-        const outputFilePath = path.join(outputDir, `${language}.json`);
+        let localeFileName = language;
+        if (langToFileNameMap && langToFileNameMap[language]) {
+            localeFileName = langToFileNameMap[language];
+        }
+        const outputFilePath = path.join(outputDir, `${localeFileName}.json`);
         ensureDirSync(outputDir);
         // write json file for current locale
         fs.writeFileSync(outputFilePath, JSON.stringify(langMessages, null, '\t'));
