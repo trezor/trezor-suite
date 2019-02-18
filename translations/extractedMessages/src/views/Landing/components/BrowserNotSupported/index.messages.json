@@ -1,0 +1,54 @@
+[
+  {
+    "id": "TR_YOUR_BROWSER_IS_NOT_SUPPORTED",
+    "defaultMessage": "Your browser is not supported",
+    "file": "src/views/Landing/components/BrowserNotSupported/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 38
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_CHOOSE_ONE_OF_THE_SUPPORTED",
+    "defaultMessage": "Please choose one of the supported browsers",
+    "file": "src/views/Landing/components/BrowserNotSupported/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 43
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GET_CHROME",
+    "defaultMessage": "Get Chrome",
+    "file": "src/views/Landing/components/BrowserNotSupported/index.messages.js",
+    "start": {
+      "line": 14,
+      "column": 19
+    },
+    "end": {
+      "line": 17,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GET_FIREFOX",
+    "defaultMessage": "Get Firefox",
+    "file": "src/views/Landing/components/BrowserNotSupported/index.messages.js",
+    "start": {
+      "line": 18,
+      "column": 20
+    },
+    "end": {
+      "line": 21,
+      "column": 5
+    }
+  }
+]

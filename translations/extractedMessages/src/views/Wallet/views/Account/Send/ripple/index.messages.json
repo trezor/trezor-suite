@@ -1,0 +1,29 @@
+[
+  {
+    "id": "TR_XRP_RESERVE",
+    "description": "XRP reserve input label",
+    "defaultMessage": "Reserve: {value}",
+    "file": "src/views/Wallet/views/Account/Send/ripple/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 20
+    },
+    "end": {
+      "line": 10,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_RIPPLE",
+    "defaultMessage": "Send Ripple",
+    "file": "src/views/Wallet/views/Account/Send/ripple/index.messages.js",
+    "start": {
+      "line": 11,
+      "column": 20
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  }
+]

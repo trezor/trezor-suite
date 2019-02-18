@@ -37,8 +37,8 @@ const Divider = ({
 
 Divider.propTypes = {
     className: PropTypes.string,
-    textLeft: PropTypes.string,
-    textRight: PropTypes.string,
+    textLeft: PropTypes.node,
+    textRight: PropTypes.node,
     hasBorder: PropTypes.bool,
     testId: PropTypes.string,
 };

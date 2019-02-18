@@ -1,0 +1,28 @@
+[
+  {
+    "id": "TR_OTHER_COINS",
+    "defaultMessage": "Other coins",
+    "file": "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 20
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_YOU_WILL_BE_REDIRECTED",
+    "defaultMessage": "(You will be redirected)",
+    "file": "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 31
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  }
+]

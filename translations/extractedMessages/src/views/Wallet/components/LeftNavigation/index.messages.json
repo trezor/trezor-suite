@@ -1,0 +1,93 @@
+[
+  {
+    "id": "TR_YOU_ARE_IN_YOUR_STANDARD_WALLET",
+    "defaultMessage": "You are in your standard wallet.",
+    "file": "src/views/Wallet/components/LeftNavigation/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 40
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_YOU_ARE_IN_YOUR_WALLET",
+    "defaultMessage": "You are in your hidden wallet.",
+    "file": "src/views/Wallet/components/LeftNavigation/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 38
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CLICK_HERE_TO_ACCESS_YOUR_HIDDEN",
+    "defaultMessage": "Click here to access your hidden wallet.",
+    "file": "src/views/Wallet/components/LeftNavigation/index.messages.js",
+    "start": {
+      "line": 14,
+      "column": 41
+    },
+    "end": {
+      "line": 17,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CLICK_HERE_TO_ACCESS_YOUR_STANDARD",
+    "defaultMessage": "Click here to access your standard or another hidden wallet.",
+    "file": "src/views/Wallet/components/LeftNavigation/index.messages.js",
+    "start": {
+      "line": 18,
+      "column": 43
+    },
+    "end": {
+      "line": 21,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TO_ACCESS_OTHER_WALLETS",
+    "defaultMessage": "To access other wallets please connect your device.",
+    "file": "src/views/Wallet/components/LeftNavigation/index.messages.js",
+    "start": {
+      "line": 22,
+      "column": 32
+    },
+    "end": {
+      "line": 25,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NEED_HELP",
+    "defaultMessage": "Need help?",
+    "file": "src/views/Wallet/components/LeftNavigation/index.messages.js",
+    "start": {
+      "line": 26,
+      "column": 18
+    },
+    "end": {
+      "line": 29,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NUMBER_OF_DEVICES",
+    "defaultMessage": "Number of devices",
+    "file": "src/views/Wallet/components/LeftNavigation/index.messages.js",
+    "start": {
+      "line": 30,
+      "column": 26
+    },
+    "end": {
+      "line": 33,
+      "column": 5
+    }
+  }
+]

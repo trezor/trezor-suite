@@ -3,6 +3,7 @@
 import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
 import TrezorConnect from 'trezor-connect';
+import l10nCommonMessages from 'views/common.messages';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
 import { H2 } from 'components/Heading';
@@ -149,7 +150,7 @@ class ConnectDevice extends PureComponent<Props> {
                         <React.Fragment>
                             <StyledP><FormattedMessage {...l10nMessages.TR_AND} /></StyledP>
                             <StyledButton isWebUsb>
-                                <FormattedMessage {...l10nMessages.TR_CHECK_FOR_DEVICES} />
+                                <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
                             </StyledButton>
                         </React.Fragment>
                     )}

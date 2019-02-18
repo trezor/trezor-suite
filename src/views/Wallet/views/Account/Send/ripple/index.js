@@ -3,6 +3,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Select } from 'components/Select';
+import { FormattedMessage } from 'react-intl';
 import Button from 'components/Button';
 import Input from 'components/inputs/Input';
 import Icon from 'components/Icon';
@@ -12,9 +13,13 @@ import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
 import Title from 'views/Wallet/components/Title';
 import P from 'components/Paragraph';
+import l10nCommonMessages from 'views/common.messages';
 import Content from 'views/Wallet/components/Content';
 import PendingTransactions from '../components/PendingTransactions';
 import AdvancedForm from './components/AdvancedForm';
+
+import l10nMessages from './index.messages';
+import l10nSendMessages from '../common.messages';
 
 import type { Props } from './Container';
 
@@ -268,7 +273,7 @@ const AccountSend = (props: Props) => {
 
     return (
         <Content>
-            <Title>Send Ripple</Title>
+            <Title><FormattedMessage {...l10nMessages.TR_SEND_RIPPLE} /></Title>
             <InputRow>
                 <Input
                     state={getAddressInputState(address, errors.address, warnings.address)}
@@ -304,9 +309,14 @@ const AccountSend = (props: Props) => {
                     spellCheck="false"
                     topLabel={(
                         <AmountInputLabelWrapper>
-                            <AmountInputLabel>Amount</AmountInputLabel>
+                            <AmountInputLabel><FormattedMessage {...l10nSendMessages.TR_AMOUNT} /></AmountInputLabel>
                             {accountReserve && (
-                                <AmountInputLabel>Reserve: {accountReserve} {network.symbol}</AmountInputLabel>
+                                <AmountInputLabel>
+                                    <FormattedMessage
+                                        {...l10nMessages.TR_XRP_RESERVE}
+                                        values={{ value: `${accountReserve} ${network.symbol}` }}
+                                    />
+                                </AmountInputLabel>
                             )}
                         </AmountInputLabelWrapper>
                     )}
@@ -334,7 +344,7 @@ const AccountSend = (props: Props) => {
                                         color={colors.WHITE}
                                     />
                                 )}
-                                Set max
+                                <FormattedMessage {...l10nSendMessages.TR_SET_MAX} />
                             </SetMaxAmountButton>
                         ),
                         (
@@ -353,7 +363,7 @@ const AccountSend = (props: Props) => {
 
             <InputRow>
                 <FeeLabelWrapper>
-                    <FeeLabel>Fee</FeeLabel>
+                    <FeeLabel><FormattedMessage {...l10nSendMessages.TR_FEE} /></FeeLabel>
                     {feeNeedsUpdate && (
                         <UpdateFeeWrapper>
                             <Icon
@@ -361,7 +371,7 @@ const AccountSend = (props: Props) => {
                                 color={colors.WARNING_PRIMARY}
                                 size={20}
                             />
-                            Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
+                            <FormattedMessage {...l10nSendMessages.TR_RECOMMENDED_FEES_UPDATED} /> <StyledLink onClick={updateFeeLevels} isGreen><FormattedMessage {...l10nSendMessages.TR_CLICK_HERE_TO_USE_THEM} /></StyledLink>
                         </UpdateFeeWrapper>
                     )}
                 </FeeLabelWrapper>
@@ -387,7 +397,7 @@ const AccountSend = (props: Props) => {
                     isTransparent
                     onClick={toggleAdvanced}
                 >
-                    Advanced settings
+                    <FormattedMessage {...l10nSendMessages.TR_ADVANCED_SETTINGS} />
                     <AdvancedSettingsIcon
                         icon={ICONS.ARROW_DOWN}
                         color={colors.TEXT_SECONDARY}
@@ -405,7 +415,7 @@ const AccountSend = (props: Props) => {
                             isWhite
                             onClick={() => onClear()}
                         >
-                            Clear
+                            <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                         </ClearButton>
                         <SendButton
                             isDisabled={isSendButtonDisabled}
@@ -426,7 +436,7 @@ const AccountSend = (props: Props) => {
                             isWhite
                             onClick={() => onClear()}
                         >
-                            Clear
+                            <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                         </ClearButton>
                         <SendButton
                             isDisabled={isSendButtonDisabled}

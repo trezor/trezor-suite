@@ -8,8 +8,11 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { NavLink } from 'react-router-dom';
 import Link from 'components/Link';
+import { FormattedMessage } from 'react-intl';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';
+
+import l10nMessages from './index.messages';
 
 import type { Props } from '../common';
 
@@ -73,8 +76,8 @@ class CoinMenu extends PureComponent<Props> {
                 ))}
                 <Divider
                     testId="Main__page__coin__menu__divider"
-                    textLeft="Other coins"
-                    textRight="(You will be redirected)"
+                    textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
+                    textRight={<FormattedMessage {...l10nMessages.TR_YOU_WILL_BE_REDIRECTED} />}
                     hasBorder
                 />
                 {this.getOtherCoins()}

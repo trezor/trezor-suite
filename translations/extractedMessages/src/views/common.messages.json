@@ -1,0 +1,42 @@
+[
+  {
+    "id": "TR_DEVICE_SETTINGS",
+    "defaultMessage": "Device settings",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 6,
+      "column": 24
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CLEAR",
+    "description": "Clear form button",
+    "defaultMessage": "Clear",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 10,
+      "column": 14
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHECK_FOR_DEVICES",
+    "defaultMessage": "Check for devices",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 15,
+      "column": 26
+    },
+    "end": {
+      "line": 18,
+      "column": 5
+    }
+  }
+]

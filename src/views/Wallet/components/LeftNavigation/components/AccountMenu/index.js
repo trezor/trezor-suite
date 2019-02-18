@@ -8,6 +8,7 @@ import styled, { css } from 'styled-components';
 import * as stateUtils from 'reducers/utils';
 import Tooltip from 'components/Tooltip';
 import ICONS from 'config/icons';
+import { FormattedMessage } from 'react-intl';
 
 import { NavLink } from 'react-router-dom';
 import { findDeviceAccounts } from 'reducers/AccountsReducer';
@@ -19,6 +20,8 @@ import type { Accounts } from 'flowtype';
 import type { Props } from '../common';
 import Row from '../Row';
 import RowCoin from '../RowCoin';
+import l10nMessages from './index.messages';
+
 
 const Wrapper = styled.div``;
 
@@ -105,7 +108,7 @@ const AccountMenu = (props: Props) => {
         // const url: string = `${baseUrl}/network/${location.state.network}/account/${i}`;
         const url: string = location.pathname.replace(/account+\/([0-9]*)/, `account/${i}`);
 
-        let balance: string = 'Loading...';
+        let balance: ?string = null;
         if (account.balance !== '') {
             const pending = stateUtils.getAccountPendingTx(props.pending, account);
             const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
@@ -130,9 +133,9 @@ const AccountMenu = (props: Props) => {
                         isSelected={urlAccountIndex === account.index}
                         borderTop={account.index === 0}
                     >
-                        Account #{account.index + 1}
+                        <FormattedMessage {...l10nMessages.TR_ACCOUNT_HASH} values={{ number: account.index + 1 }} />
                         {balance && <Text>{balance}</Text>}
-                        {!balance && <Text>Loading...</Text>}
+                        {!balance && <Text><FormattedMessage {...l10nMessages.TR_LOADING_DOT_DOT_DOT} /></Text>}
                     </RowAccountWrapper>
                 </Row>
             </NavLink>
@@ -148,7 +151,7 @@ const AccountMenu = (props: Props) => {
             discoveryStatus = (
                 <Tooltip
                     maxWidth={200}
-                    content={`To add a new account, connect ${selected.instanceLabel} device.`}
+                    content={<FormattedMessage {...l10nMessages.TR_TO_ADD_ACCOUNTS} />}
                     placement="bottom"
                 >
                     <Row>
@@ -160,7 +163,7 @@ const AccountMenu = (props: Props) => {
                                     color={colors.TEXT_SECONDARY}
                                 />
                             </AddAccountIconWrapper>
-                            Add account
+                            <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
                         </RowAddAccountWrapper>
                     </Row>
                 </Tooltip>
@@ -176,7 +179,7 @@ const AccountMenu = (props: Props) => {
                                 color={colors.TEXT_SECONDARY}
                             />
                         </AddAccountIconWrapper>
-                        Add account
+                        <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
                     </RowAddAccountWrapper>
                 </Row>
             );
@@ -184,7 +187,7 @@ const AccountMenu = (props: Props) => {
             discoveryStatus = (
                 <Tooltip
                     maxWidth={200}
-                    content="To add a new account, last account must have some transactions."
+                    content={<FormattedMessage {...l10nMessages.TR_TO_ADD_A_NEW_ACCOUNT_LAST} />}
                     placement="bottom"
                 >
                     <Row>
@@ -196,7 +199,7 @@ const AccountMenu = (props: Props) => {
                                     color={colors.TEXT_SECONDARY}
                                 />
                             </AddAccountIconWrapper>
-                            Add account
+                            <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
                         </RowAddAccountWrapper>
                     </Row>
                 </Tooltip>
@@ -208,7 +211,7 @@ const AccountMenu = (props: Props) => {
                 <DiscoveryLoadingWrapper>
                     <Loader size={20} />
                     <DiscoveryLoadingText>
-                        Loading...
+                        <FormattedMessage {...l10nMessages.TR_LOADING_DOT_DOT_DOT} />
                     </DiscoveryLoadingText>
                 </DiscoveryLoadingWrapper>
             </Row>

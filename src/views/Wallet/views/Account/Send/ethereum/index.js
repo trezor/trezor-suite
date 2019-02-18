@@ -16,9 +16,13 @@ import P from 'components/Paragraph';
 import Content from 'views/Wallet/components/Content';
 import * as stateUtils from 'reducers/utils';
 import type { Token } from 'flowtype';
+import { FormattedMessage } from 'react-intl';
+import l10nCommonMessages from 'views/common.messages';
 import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from '../components/PendingTransactions';
 
+import l10nMessages from './index.messages';
+import l10nSendMessages from '../common.messages';
 import type { Props } from './Container';
 
 // TODO: Decide on a small screen width for the whole app
@@ -294,7 +298,7 @@ const AccountSend = (props: Props) => {
 
     return (
         <Content>
-            <Title>Send Ethereum or tokens</Title>
+            <Title><FormattedMessage {...l10nMessages.TR_SEND_ETHEREUM_OR_TOKENS} /></Title>
             <InputRow>
                 <Input
                     state={getAddressInputState(address, errors.address, warnings.address)}
@@ -330,9 +334,14 @@ const AccountSend = (props: Props) => {
                     spellCheck="false"
                     topLabel={(
                         <AmountInputLabelWrapper>
-                            <AmountInputLabel>Amount</AmountInputLabel>
+                            <AmountInputLabel><FormattedMessage {...l10nSendMessages.TR_AMOUNT} /></AmountInputLabel>
                             {(isCurrentCurrencyToken && selectedToken) && (
-                                <AmountInputLabel>You have: {selectedTokenBalance} {selectedToken.symbol}</AmountInputLabel>
+                                <AmountInputLabel>
+                                    <FormattedMessage
+                                        {...l10nSendMessages.YOU_HAVE_TOKEN_BALANCE}
+                                        values={{ tokenBalance: `${selectedTokenBalance} ${selectedToken.symbol}` }}
+                                    />
+                                </AmountInputLabel>
                             )}
                         </AmountInputLabelWrapper>
                     )}
@@ -360,7 +369,7 @@ const AccountSend = (props: Props) => {
                                         color={colors.WHITE}
                                     />
                                 )}
-                                Set max
+                                <FormattedMessage {...l10nSendMessages.TR_SET_MAX} />
                             </SetMaxAmountButton>
                         ),
                         (
@@ -388,7 +397,7 @@ const AccountSend = (props: Props) => {
                                 color={colors.WARNING_PRIMARY}
                                 size={20}
                             />
-                            Recommended fees updated. <StyledLink onClick={updateFeeLevels} isGreen>Click here to use them</StyledLink>
+                            <FormattedMessage {...l10nSendMessages.TR_RECOMMENDED_FEES_UPDATED} /> <StyledLink onClick={updateFeeLevels} isGreen><FormattedMessage {...l10nSendMessages.TR_CLICK_HERE_TO_USE_THEM} /></StyledLink>
                         </UpdateFeeWrapper>
                     )}
                 </FeeLabelWrapper>
@@ -414,7 +423,7 @@ const AccountSend = (props: Props) => {
                     isTransparent
                     onClick={toggleAdvanced}
                 >
-                    Advanced settings
+                    <FormattedMessage {...l10nSendMessages.TR_ADVANCED_SETTINGS} />
                     <AdvancedSettingsIcon
                         icon={ICONS.ARROW_DOWN}
                         color={colors.TEXT_SECONDARY}
@@ -432,7 +441,7 @@ const AccountSend = (props: Props) => {
                             isWhite
                             onClick={() => onClear()}
                         >
-                            Clear
+                            <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                         </ClearButton>
                         <SendButton
                             isDisabled={isSendButtonDisabled}
@@ -453,7 +462,7 @@ const AccountSend = (props: Props) => {
                             isWhite
                             onClick={() => onClear()}
                         >
-                            Clear
+                            <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                         </ClearButton>
                         <SendButton
                             isDisabled={isSendButtonDisabled}

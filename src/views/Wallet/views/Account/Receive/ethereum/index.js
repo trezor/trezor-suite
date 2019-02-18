@@ -2,6 +2,7 @@
 import React from 'react';
 import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
+import { FormattedMessage } from 'react-intl';
 
 import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
@@ -16,6 +17,9 @@ import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
 import Content from 'views/Wallet/components/Content';
 import VerifyAddressTooltip from '../components/VerifyAddressTooltip';
+
+import l10nMessages from './index.messages';
+import l10nCommonMessages from '../common.messages';
 
 import type { Props } from './Container';
 
@@ -120,7 +124,7 @@ const AccountReceive = (props: Props) => {
     return (
         <Content>
             <React.Fragment>
-                <Title>Receive Ethereum or tokens</Title>
+                <Title><FormattedMessage {...l10nMessages.TR_RECEIVE_ETHEREUM_OR_TOKENS} /></Title>
                 <AddressWrapper isShowingQrCode={addressVerified || addressUnverified}>
                     <Row>
                         <Input
@@ -133,7 +137,7 @@ const AccountReceive = (props: Props) => {
                             trezorAction={isAddressVerifying ? (
                                 <React.Fragment>
                                     <DeviceIcon device={device} color={colors.WHITE} />
-                                    Check address on your Trezor
+                                    <FormattedMessage {...l10nCommonMessages.TR_CHECK_ADDRESS_ON_TREZOR} />
                                 </React.Fragment>
                             ) : null}
                             icon={((addressVerified || addressUnverified) && !isAddressVerifying) && (
@@ -158,13 +162,13 @@ const AccountReceive = (props: Props) => {
                         />
                         {!(addressVerified || addressUnverified) && (
                             <ShowAddressButton onClick={() => props.showAddress(account.accountPath)} isDisabled={device.connected && !discovery.completed}>
-                                <ShowAddressIcon icon={ICONS.EYE} color={colors.WHITE} />Show full address
+                                <ShowAddressIcon icon={ICONS.EYE} color={colors.WHITE} /><FormattedMessage {...l10nCommonMessages.TR_SHOW_FULL_ADDRESS} />
                             </ShowAddressButton>
                         )}
                     </Row>
                     {(addressVerified || addressUnverified) && !isAddressVerifying && (
                         <QrWrapper>
-                            <Label>QR code</Label>
+                            <Label><FormattedMessage {...l10nCommonMessages.TR_QR_CODE} /></Label>
                             <StyledQRCode
                                 bgColor="#FFFFFF"
                                 fgColor="#000000"

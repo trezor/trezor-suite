@@ -1,0 +1,84 @@
+[
+  {
+    "id": "TR_AMOUNT",
+    "defaultMessage": "Amount",
+    "file": "src/views/Wallet/views/Account/Send/common.messages.js",
+    "start": {
+      "line": 6,
+      "column": 15
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SET_MAX",
+    "description": "Used for setting maximum amount in Send form",
+    "defaultMessage": "Set max",
+    "file": "src/views/Wallet/views/Account/Send/common.messages.js",
+    "start": {
+      "line": 10,
+      "column": 16
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FEE",
+    "description": "Label in Send form",
+    "defaultMessage": "Fee",
+    "file": "src/views/Wallet/views/Account/Send/common.messages.js",
+    "start": {
+      "line": 15,
+      "column": 12
+    },
+    "end": {
+      "line": 19,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECOMMENDED_FEES_UPDATED",
+    "defaultMessage": "Recommended fees updated.",
+    "file": "src/views/Wallet/views/Account/Send/common.messages.js",
+    "start": {
+      "line": 20,
+      "column": 33
+    },
+    "end": {
+      "line": 23,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CLICK_HERE_TO_USE_THEM",
+    "description": "Button to use recommended updated fees.",
+    "defaultMessage": "Click here to use them",
+    "file": "src/views/Wallet/views/Account/Send/common.messages.js",
+    "start": {
+      "line": 24,
+      "column": 31
+    },
+    "end": {
+      "line": 28,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADVANCED_SETTINGS",
+    "description": "Shows advanced sending form",
+    "defaultMessage": "Advanced settings",
+    "file": "src/views/Wallet/views/Account/Send/common.messages.js",
+    "start": {
+      "line": 29,
+      "column": 26
+    },
+    "end": {
+      "line": 33,
+      "column": 5
+    }
+  }
+]

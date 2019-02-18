@@ -7,7 +7,9 @@ import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import colors from 'config/colors';
 import type { State } from 'flowtype';
+import { FormattedMessage } from 'react-intl';
 
+import l10nMessages from './index.messages';
 import Indicator from './components/Indicator';
 
 type Props = {
@@ -83,11 +85,11 @@ class TopNavigationAccount extends React.PureComponent<Props> {
 
         return (
             <Wrapper className="account-tabs" ref={this.wrapperRefCallback}>
-                <StyledNavLink exact to={`${basePath}`}>Summary</StyledNavLink>
-                <StyledNavLink to={`${basePath}/receive`}>Receive</StyledNavLink>
-                <StyledNavLink to={`${basePath}/send`}>Send</StyledNavLink>
+                <StyledNavLink exact to={`${basePath}`}><FormattedMessage {...l10nMessages.TR_SUMMARY} /></StyledNavLink>
+                <StyledNavLink to={`${basePath}/receive`}><FormattedMessage {...l10nMessages.TR_RECEIVE} /></StyledNavLink>
+                <StyledNavLink to={`${basePath}/send`}><FormattedMessage {...l10nMessages.TR_SEND} /></StyledNavLink>
                 {network.type === 'ethereum'
-                    && <StyledNavLink to={`${basePath}/signverify`}>Sign &amp; Verify</StyledNavLink>
+                    && <StyledNavLink to={`${basePath}/signverify`}><FormattedMessage {...l10nMessages.TR_SIGN_AND_VERIFY} /></StyledNavLink>
                 }
                 <Indicator pathname={pathname} wrapper={() => this.wrapper} />
             </Wrapper>

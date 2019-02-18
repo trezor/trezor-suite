@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
+import { FormattedMessage } from 'react-intl';
 
 import COLORS from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
@@ -9,6 +10,7 @@ import { SLIDE_DOWN } from 'config/animations';
 
 import Button from 'components/Button';
 import * as deviceUtils from 'utils/device';
+import l10nCommonMessages from 'views/common.messages';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
 
@@ -124,7 +126,9 @@ class DeviceMenu extends PureComponent<Props> {
                 />
                 {deviceUtils.isWebUSB(transport) && (
                     <ButtonWrapper>
-                        <StyledButton isWebUsb>Check for devices</StyledButton>
+                        <StyledButton isWebUsb>
+                            <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
+                        </StyledButton>
                     </ButtonWrapper>
                 )}
             </Wrapper>

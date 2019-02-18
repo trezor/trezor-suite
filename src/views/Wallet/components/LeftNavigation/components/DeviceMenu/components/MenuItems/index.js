@@ -3,10 +3,14 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import DeviceIcon from 'components/images/DeviceIcon';
+import { FormattedMessage } from 'react-intl';
 
 import icons from 'config/icons';
 import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
+
+// import l10nCommonMessages from 'views/common.messages';
+import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     background: ${colors.WHITE};
@@ -58,7 +62,7 @@ class MenuItems extends PureComponent {
                         size={25}
                         color={colors.TEXT_SECONDARY}
                     />
-                    <Label>Device settings</Label>
+                    <Label><FormattedMessage {...l10nMessages.TR_DEVICE_SETTINGS} /></Label>
                 </Item> */}
                 {this.showClone() && (
                     <Item onClick={() => this.props.duplicateDevice(device)}>
@@ -67,7 +71,7 @@ class MenuItems extends PureComponent {
                             size={25}
                             color={colors.TEXT_SECONDARY}
                         />
-                        <Label>Change wallet type</Label>
+                        <Label><FormattedMessage {...l10nMessages.TR_CHANGE_WALLET_TYPE} /></Label>
                     </Item>
                 )}
                 {this.showRenewSession() && (
@@ -75,7 +79,7 @@ class MenuItems extends PureComponent {
                         onClick={() => this.props.acquireDevice()}
                     >
                         <DeviceIcon device={this.props.device} size={25} color={colors.TEXT_SECONDARY} />
-                        <Label>Renew session</Label>
+                        <Label><FormattedMessage {...l10nMessages.TR_RENEW_SESSION} /></Label>
                     </Item>
                 )}
                 <Item onClick={() => this.props.forgetDevice(device)}>
@@ -84,7 +88,7 @@ class MenuItems extends PureComponent {
                         size={25}
                         color={colors.TEXT_SECONDARY}
                     />
-                    <Label>Forget device</Label>
+                    <Label><FormattedMessage {...l10nMessages.TR_FORGET_DEVICE} /></Label>
                 </Item>
             </Wrapper>
         );

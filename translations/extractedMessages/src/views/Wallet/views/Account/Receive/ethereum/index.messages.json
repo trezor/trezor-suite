@@ -1,0 +1,15 @@
+[
+  {
+    "id": "TR_RECEIVE_ETHEREUM_OR_TOKENS",
+    "defaultMessage": "Receive Ethereum or tokens",
+    "file": "src/views/Wallet/views/Account/Receive/ethereum/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 35
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  }
+]

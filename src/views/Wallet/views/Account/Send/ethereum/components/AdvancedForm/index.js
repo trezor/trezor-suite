@@ -3,6 +3,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
+import { FormattedMessage } from 'react-intl';
 
 import Link from 'components/Link';
 import Input from 'components/inputs/Input';
@@ -11,6 +12,8 @@ import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import { FONT_SIZE } from 'config/variables';
+
+import l10nMessages from './index.messages';
 
 import type { Props as BaseProps } from '../../Container';
 
@@ -177,14 +180,17 @@ const AdvancedForm = (props: Props) => {
                     topLabel={(
                         <InputLabelWrapper>
                             <Left>
-                            Gas limit
+                                <FormattedMessage {...l10nMessages.TR_GAS_LIMIT} />
                                 <Tooltip
                                     content={(
-                                        <React.Fragment>
-                                        Gas limit refers to the maximum amount of gas user is willing to spendon a particular transaction.{' '}
-                                            <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>.{' '}Increasing the gas limit will not get the transaction confirmed sooner.
-                                        Default value for sending {gasLimitTooltipCurrency} is <GreenSpan>{gasLimitTooltipValue}</GreenSpan>.
-                                        </React.Fragment>
+                                        <FormattedMessage
+                                            {...l10nMessages.TR_GAS_LIMIT_REFERS_TO}
+                                            values={{
+                                                TR_GAS_QUOTATION: <GreenSpan><FormattedMessage {...l10nMessages.TR_GAS_QUOTATION} /></GreenSpan>,
+                                                gasLimitTooltipValue: <GreenSpan>{gasLimitTooltipValue}</GreenSpan>,
+                                                gasLimitTooltipCurrency,
+                                            }}
+                                        />
                                     )}
                                     maxWidth={410}
                                     readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
@@ -199,14 +205,14 @@ const AdvancedForm = (props: Props) => {
                             </Left>
                             { showDefaultGasLimitButton && (
                                 <Right>
-                                    <StyledLink onClick={setDefaultGasLimit} isGreen>Set default</StyledLink>
+                                    <StyledLink onClick={setDefaultGasLimit} isGreen><FormattedMessage {...l10nMessages.TR_SET_DEFAULT} /></StyledLink>
                                 </Right>
                             )
                             }
                         </InputLabelWrapper>
                     )}
                     bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
-                    value={calculatingGasLimit ? 'Calculating...' : gasLimit}
+                    value={calculatingGasLimit ? 'Calculating...' : gasLimit} // TODO: figure out translations in inputs
                     isDisabled={networkSymbol === currency && data.length > 0}
                     onChange={event => onGasLimitChange(event.target.value)}
                 />
@@ -220,14 +226,17 @@ const AdvancedForm = (props: Props) => {
                     topLabel={(
                         <InputLabelWrapper>
                             <Left>
-                                Gas price
+                                <FormattedMessage {...l10nMessages.TR_GAS_PRICE} />
                                 <Tooltip
                                     content={(
-                                        <React.Fragment>
-                                            Gas price refers to the amount of ether you are willing to pay for every
-                                            unit of gas, and is usually measured in “Gwei”. <GreenSpan>Transaction fee = gas limit * gas price</GreenSpan>. Increasing the gas price will get the transaction confirmed sooner but
-                                            makes it more expensive. The recommended gas price is <GreenSpan>{recommendedGasPrice} GWEI</GreenSpan>.
-                                        </React.Fragment>
+                                        <FormattedMessage
+                                            {...l10nMessages.TR_GAS_PRICE_REFERS_TO}
+                                            values={{
+                                                TR_GAS_PRICE_QUOTATION: <GreenSpan><FormattedMessage {...l10nMessages.TR_GAS_PRICE_QUOTATION} /></GreenSpan>,
+                                                recommendedGasPrice: <GreenSpan>{recommendedGasPrice}</GreenSpan>,
+                                            }}
+
+                                        />
                                     )}
                                     maxWidth={400}
                                     readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
@@ -252,13 +261,9 @@ const AdvancedForm = (props: Props) => {
                 topLabel={(
                     <InputLabelWrapper>
                         <Left>
-                            Data
+                            <FormattedMessage {...l10nMessages.TR_DATA} />
                             <Tooltip
-                                content={(
-                                    <React.Fragment>
-                                        Data is usually used when you send transactions to contracts.
-                                    </React.Fragment>
-                                )}
+                                content={<FormattedMessage {...l10nMessages.TR_DATA_IS_USUALLY_USED} />}
                                 placement="top"
                             >
                                 <StyledIcon

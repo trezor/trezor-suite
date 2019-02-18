@@ -19,10 +19,6 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_AND',
         defaultMessage: 'and',
     },
-    TR_CHECK_FOR_DEVICES: {
-        id: 'TR_CHECK_FOR_DEVICES',
-        defaultMessage: 'Check for devices',
-    },
     TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING: {
         id: 'TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING',
         defaultMessage: 'Device not recognized? Try installing the {link}.',

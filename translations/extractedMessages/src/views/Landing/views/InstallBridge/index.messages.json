@@ -1,0 +1,94 @@
+[
+  {
+    "id": "TR_NEW_COMMUNICATION_TOOL",
+    "defaultMessage": "New communication tool to facilitate the connection between your Trezor and your internet browser.",
+    "file": "src/views/Landing/views/InstallBridge/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 31
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DOWNLOAD_LATEST_BRIDGE",
+    "defaultMessage": "Download latest Bridge {version}",
+    "file": "src/views/Landing/views/InstallBridge/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 31
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LEARN_MORE_ABOUT_LATEST_VERSION",
+    "defaultMessage": "Learn more about latest version in {TR_CHANGELOG}.",
+    "file": "src/views/Landing/views/InstallBridge/index.messages.js",
+    "start": {
+      "line": 14,
+      "column": 40
+    },
+    "end": {
+      "line": 17,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHANGELOG",
+    "description": "Part of the sentence: Learn more about latest version in {TR_CHANGELOG}.",
+    "defaultMessage": "Changelog",
+    "file": "src/views/Landing/views/InstallBridge/index.messages.js",
+    "start": {
+      "line": 18,
+      "column": 18
+    },
+    "end": {
+      "line": 22,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHECK_PGP_SIGNATURE",
+    "defaultMessage": "Check PGP signature",
+    "file": "src/views/Landing/views/InstallBridge/index.messages.js",
+    "start": {
+      "line": 23,
+      "column": 28
+    },
+    "end": {
+      "line": 26,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DONT_UPGRADE_BRIDGE",
+    "defaultMessage": "No, I don't want to upgrade Bridge now",
+    "file": "src/views/Landing/views/InstallBridge/index.messages.js",
+    "start": {
+      "line": 27,
+      "column": 28
+    },
+    "end": {
+      "line": 30,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TAKE_ME_BACK_TO_WALLET",
+    "defaultMessage": "Take me back to the wallet",
+    "file": "src/views/Landing/views/InstallBridge/index.messages.js",
+    "start": {
+      "line": 31,
+      "column": 31
+    },
+    "end": {
+      "line": 34,
+      "column": 5
+    }
+  }
+]

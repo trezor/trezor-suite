@@ -52,28 +52,15 @@
     }
   },
   {
-    "id": "TR_CHECK_FOR_DEVICES",
-    "defaultMessage": "Check for devices",
-    "file": "src/views/Landing/components/ConnectDevice/index.messages.js",
-    "start": {
-      "line": 22,
-      "column": 26
-    },
-    "end": {
-      "line": 25,
-      "column": 5
-    }
-  },
-  {
     "id": "TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING",
     "defaultMessage": "Device not recognized? Try installing the {link}.",
     "file": "src/views/Landing/components/ConnectDevice/index.messages.js",
     "start": {
-      "line": 26,
+      "line": 22,
       "column": 45
     },
     "end": {
-      "line": 29,
+      "line": 25,
       "column": 5
     }
   },
@@ -82,11 +69,11 @@
     "defaultMessage": "Don't have a Trezor? {getOne}",
     "file": "src/views/Landing/components/ConnectDevice/index.messages.js",
     "start": {
-      "line": 30,
+      "line": 26,
       "column": 27
     },
     "end": {
-      "line": 33,
+      "line": 29,
       "column": 5
     }
   },
@@ -96,11 +83,11 @@
     "defaultMessage": "Get one",
     "file": "src/views/Landing/components/ConnectDevice/index.messages.js",
     "start": {
-      "line": 34,
+      "line": 30,
       "column": 16
     },
     "end": {
-      "line": 38,
+      "line": 34,
       "column": 5
     }
   }
