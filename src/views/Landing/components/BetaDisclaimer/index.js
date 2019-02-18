@@ -63,16 +63,16 @@ const BetaDisclaimer = (props: { close: () => void }) => (
             <StyledP><FormattedMessage
                 {...l10nMessages.TR_TREZOR_BETA_WALLET_IS}
                 values={{
-                    trezorWallet: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
-                    trezorBetaWallet: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
+                    TR_TREZOR_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
+                    TR_TREZOR_BETA_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
                 }}
             />
             </StyledP>
             <StyledP><FormattedMessage
                 {...l10nMessages.TR_IN_CONTRAST_COMMA_TREZOR}
                 values={{
-                    trezorWallet: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
-                    trezorBetaWallet: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
+                    TR_TREZOR_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
+                    TR_TREZOR_BETA_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
                 }}
             />
             </StyledP>
@@ -85,8 +85,8 @@ const BetaDisclaimer = (props: { close: () => void }) => (
                 <FormattedMessage
                     {...l10nMessages.TR_PLEASE_NOTE_THAT_THE_TREZOR}
                     values={{
-                        trezorWallet: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
-                        trezorBetaWallet: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
+                        TR_TREZOR_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
+                        TR_TREZOR_BETA_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
                     }}
                 />
             </StyledP>
