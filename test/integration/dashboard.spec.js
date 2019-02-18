@@ -10,7 +10,7 @@ describe('Dashboard page', () => {
             .matchImageSnapshot();
     });
 
-    it('content', () => {
+    it.skip('content', () => {
         cy.getTestElement('Dashboard__page__content')
             .should('be.visible')
             .matchImageSnapshot();
@@ -18,7 +18,7 @@ describe('Dashboard page', () => {
 
     // Menu
 
-    it('device header', () => {
+    it.skip('device header', () => {
         cy.getTestElement('Main__page__device__header')
             .should('be.visible')
             .matchImageSnapshot();
