@@ -226,16 +226,16 @@ export const amountValidation = ($state: State): PayloadAction<State> => (dispat
 
             if (!state.amount.match(decimalRegExp)) {
                 state.errors.amount = `Maximum ${token.decimals} decimals allowed`;
-            } else if (new BigNumber(state.total).greaterThan(account.balance)) {
+            } else if (new BigNumber(state.total).isGreaterThan(account.balance)) {
                 state.errors.amount = `Not enough ${state.networkSymbol} to cover transaction fee`;
-            } else if (new BigNumber(state.amount).greaterThan(new BigNumber(token.balance).minus(pendingAmount))) {
+            } else if (new BigNumber(state.amount).isGreaterThan(new BigNumber(token.balance).minus(pendingAmount))) {
                 state.errors.amount = 'Not enough funds';
-            } else if (new BigNumber(state.amount).lessThanOrEqualTo('0')) {
+            } else if (new BigNumber(state.amount).isLessThanOrEqualTo('0')) {
                 state.errors.amount = 'Amount is too low';
             }
         } else if (!state.amount.match(ETH_18_RE)) {
             state.errors.amount = 'Maximum 18 decimals allowed';
-        } else if (new BigNumber(state.total).greaterThan(new BigNumber(account.balance).minus(pendingAmount))) {
+        } else if (new BigNumber(state.total).isGreaterThan(new BigNumber(account.balance).minus(pendingAmount))) {
             state.errors.amount = 'Not enough funds';
         }
     }
@@ -261,9 +261,9 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (disp
         state.errors.gasLimit = 'Gas limit is not a number';
     } else {
         const gl: BigNumber = new BigNumber(gasLimit);
-        if (gl.lessThan(1)) {
+        if (gl.isLessThan(1)) {
             state.errors.gasLimit = 'Gas limit is too low';
-        } else if (gl.lessThan(state.currency !== state.networkSymbol ? network.defaultGasLimitTokens : network.defaultGasLimit)) {
+        } else if (gl.isLessThan(state.currency !== state.networkSymbol ? network.defaultGasLimitTokens : network.defaultGasLimit)) {
             state.warnings.gasLimit = 'Gas limit is below recommended';
         }
     }
@@ -284,9 +284,9 @@ export const gasPriceValidation = ($state: State): PayloadAction<State> => (): S
         state.errors.gasPrice = 'Gas price is not a number';
     } else {
         const gp: BigNumber = new BigNumber(gasPrice);
-        if (gp.greaterThan(1000)) {
+        if (gp.isGreaterThan(1000)) {
             state.warnings.gasPrice = 'Gas price is too high';
-        } else if (gp.lessThanOrEqualTo('0')) {
+        } else if (gp.isLessThanOrEqualTo('0')) {
             state.errors.gasPrice = 'Gas price is too low';
         }
     }
@@ -312,9 +312,9 @@ export const nonceValidation = ($state: State): PayloadAction<State> => (dispatc
         state.errors.nonce = 'Nonce is not a valid number';
     } else {
         const n: BigNumber = new BigNumber(nonce);
-        if (n.lessThan(account.nonce)) {
+        if (n.isLessThan(account.nonce)) {
             state.warnings.nonce = 'Nonce is lower than recommended';
-        } else if (n.greaterThan(account.nonce)) {
+        } else if (n.isGreaterThan(account.nonce)) {
             state.warnings.nonce = 'Nonce is greater than recommended';
         }
     }
@@ -358,7 +358,7 @@ export const calculateMaxAmount = (balance: BigNumber, gasPrice: string, gasLimi
         // TODO - minus pendings
         const fee = calculateFee(gasPrice, gasLimit);
         const max = balance.minus(fee);
-        if (max.lessThan(0)) return '0';
+        if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {
         return '0';

@@ -236,7 +236,7 @@ const amountValidation = ($state: State): PayloadAction<State> => (dispatch: Dis
         const pendingAmount: BigNumber = getPendingAmount(pending, state.networkSymbol);
         if (!state.amount.match(XRP_6_RE)) {
             state.errors.amount = 'Maximum 6 decimals allowed';
-        } else if (new BigNumber(state.total).greaterThan(new BigNumber(account.balance).minus(pendingAmount))) {
+        } else if (new BigNumber(state.total).isGreaterThan(new BigNumber(account.balance).minus(pendingAmount))) {
             state.errors.amount = 'Not enough funds';
         }
     }
@@ -271,9 +271,9 @@ export const feeValidation = ($state: State): PayloadAction<State> => (dispatch:
         state.errors.fee = 'Fee must be an absolute number';
     } else {
         const gl: BigNumber = new BigNumber(fee);
-        if (gl.lessThan(network.fee.minFee)) {
+        if (gl.isLessThan(network.fee.minFee)) {
             state.errors.fee = 'Fee is below recommended';
-        } else if (gl.greaterThan(network.fee.maxFee)) {
+        } else if (gl.isGreaterThan(network.fee.maxFee)) {
             state.errors.fee = 'Fee is above recommended';
         }
     }
@@ -310,7 +310,7 @@ const calculateMaxAmount = (balance: BigNumber, fee: string): string => {
     try {
         // TODO - minus pendings
         const max = balance.minus(fee);
-        if (max.lessThan(0)) return '0';
+        if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {
         return '0';

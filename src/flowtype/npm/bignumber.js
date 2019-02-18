@@ -27,22 +27,20 @@ declare module 'bignumber.js' {
 
       // Methods
       abs(): T_BigNumber;
-      cmp(n: $npm$big$number$object): $npm$cmp$result;
       div(n: $npm$big$number$object): T_BigNumber;
       dividedBy(n: $npm$big$number$object): T_BigNumber;
       eq(n: $npm$big$number$object): boolean;
       gt(n: $npm$big$number$object): boolean;
-      greaterThan(n: $npm$big$number$object): boolean;
+      isGreaterThan(n: $npm$big$number$object): boolean;
       gte(n: $npm$big$number$object): boolean;
       lt(n: $npm$big$number$object): boolean;
-      lessThan(n: $npm$big$number$object): boolean;
+      isLessThan(n: $npm$big$number$object): boolean;
       lte(n: $npm$big$number$object): boolean;
-      lessThanOrEqualTo(n: $npm$big$number$object): boolean;
+      isLessThanOrEqualTo(n: $npm$big$number$object): boolean;
       minus(n: $npm$big$number$object): T_BigNumber;
       mod(n: $npm$big$number$object): T_BigNumber;
       plus(n: $npm$big$number$object): T_BigNumber;
       pow(exp: number): BigNumber;
-      round(dp: ?number, rm: ?RM): T_BigNumber;
       sqrt(): T_BigNumber;
       times(n: $npm$big$number$object): T_BigNumber;
       toExponential(dp: ?number): string;
