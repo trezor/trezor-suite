@@ -14,45 +14,37 @@ const baseStyles = css`
     padding: 0;
 `;
 
-const h1 = styled.h1`
+const StyledH1 = styled.h1`
     ${baseStyles};
     font-size: ${FONT_SIZE.H1};
     padding-bottom: 10px;
 `;
 
-const h2 = styled.h2`
+const StyledH2 = styled.h2`
     ${baseStyles};
     font-size: ${FONT_SIZE.H2};
     padding-bottom: 10px;
 `;
 
-const h3 = styled.h3`
+const StyledH3 = styled.h3`
     ${baseStyles};
     font-size: ${FONT_SIZE.H3};
     padding-bottom: 10px;
 `;
 
-const h4 = styled.h4`
+const StyledH4 = styled.h4`
     ${baseStyles};
     font-size: ${FONT_SIZE.H4};
     padding-bottom: 10px;
 `;
 
-const H1 = ({children}) => {
-    return <h1>{children}</h1>
-};
+const H1 = ({ children }) => <StyledH1>{children}</StyledH1>;
 
-const H2 = ({children}) => {
-    return <h2>{children}</h2>
-};
+const H2 = ({ children }) => <StyledH2>{children}</StyledH2>;
 
-const H3 = ({children}) => {
-    return <h3>{children}</h3>
-};
+const H3 = ({ children }) => <StyledH3>{children}</StyledH3>;
 
-const H4 = ({children}) => {
-    return <h4>{children}</h4>
-};
+const H4 = ({ children }) => <StyledH4>{children}</StyledH4>;
 
 H1.propTypes = {
     children: PropTypes.node,

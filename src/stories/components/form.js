@@ -10,6 +10,7 @@ import { withInfo } from '@storybook/addon-info';
 import { AsyncSelect, Select } from 'components/Select';
 import Checkbox from 'components/Checkbox';
 import Input from 'components/inputs/Input';
+import PinInput from 'components/inputs/Pin';
 import TextArea from 'components/Textarea';
 
 const Wrapper = styled.div`
@@ -43,6 +44,12 @@ storiesOf('Form', module)
             }, '')}
             bottomText={text('Bottom text', 'bottom text')}
             onChange={() => {}}
+        />
+    ))
+    .add('Pin input', () => (
+        <PinInput
+            value={text('Input value', '')}
+            onDeleteClick={() => {}}
         />
     ))
     .add('Textarea', () => (

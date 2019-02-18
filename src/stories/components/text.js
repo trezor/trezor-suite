@@ -30,6 +30,7 @@ storiesOf('Text', module)
     .addDecorator(
         withInfo({
             header: true,
+            excludedPropTypes: ['children'],
         }),
     )
     .addDecorator(centered)
