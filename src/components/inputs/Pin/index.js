@@ -20,6 +20,7 @@ const StyledInput = styled.input`
     color: ${colors.TEXT_PRIMARY};
     background: transparent;
     border: 1px solid ${colors.DIVIDER};
+    box-sizing: border-box;
 `;
 
 const StyledIcon = styled(Icon)`

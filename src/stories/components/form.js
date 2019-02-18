@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
-import centered from '@storybook/addon-centered';
 import {
     withKnobs, text, boolean, select,
 } from '@storybook/addon-knobs';
@@ -13,6 +12,8 @@ import Input from 'components/inputs/Input';
 import PinInput from 'components/inputs/Pin';
 import TextArea from 'components/Textarea';
 
+import colors from 'config/colors';
+
 const Wrapper = styled.div`
     min-width: 250px;
 `;
@@ -21,37 +22,90 @@ Wrapper.displayName = 'Wrapper';
 storiesOf('Form', module)
     .addDecorator(
         withInfo({
-            header: true,
+            header: false,
+            inline: true,
+            maxPropsIntoLine: 1,
+            styles: {
+                infoStory: {
+                    background: colors.LANDING,
+                    borderBottom: `1px solid ${colors.DIVIDER}`,
+                    padding: '30px',
+                    margin: '-8px',
+                },
+                infoBody: {
+                    border: 'none',
+                    padding: '15px',
+                },
+            },
             excludedPropTypes: ['children'],
         }),
     )
-    .addDecorator(centered)
     .addDecorator(withKnobs)
-    .add('Input', () => (
-        <Input
-            type={select('Type', {
-                Text: 'text',
-                Password: 'password',
-            })}
-            isDisabled={boolean('Disabled', false)}
-            value={text('Input value', '')}
-            placeholder={text('Placeholder', 'placeholder...')}
-            state={select('State', {
-                Default: '',
-                Error: 'error',
-                Success: 'success',
-                Warning: 'warning',
-            }, '')}
-            bottomText={text('Bottom text', 'bottom text')}
-            onChange={() => {}}
-        />
-    ))
+    .add('Input', () => {
+        const type = select('Type', {
+            Text: 'text',
+            Password: 'password',
+        });
+        const disabled = boolean('Disabled', false);
+        const value = text('Input value', '');
+        const placeholder = text('Placeholder', 'placeholder...');
+        const state = select('State', {
+            Default: '',
+            Error: 'error',
+            Success: 'success',
+            Warning: 'warning',
+        }, '');
+        const bottomText = text('Bottom text', 'bottom text');
+
+        if (disabled) {
+            return (
+                <Input
+                    type={type}
+                    value={value}
+                    placeholder={placeholder}
+                    state={state}
+                    bottomText={bottomText}
+                    onChange={() => {}}
+                    isDisabled
+                />
+            );
+        }
+
+        return (
+            <Input
+                type={type}
+                value={value}
+                placeholder={placeholder}
+                state={state}
+                bottomText={bottomText}
+                onChange={() => {}}
+            />
+        );
+    }, {
+        info: {
+            text: `
+            ## Import
+            ~~~js
+            import { Input } from 'trezor-ui-components';
+            ~~~
+            `,
+        },
+    })
     .add('Pin input', () => (
         <PinInput
             value={text('Input value', '')}
             onDeleteClick={() => {}}
         />
-    ))
+    ), {
+        info: {
+            text: `
+            ## Import
+            ~~~js
+            import { PinInput } from 'trezor-ui-components';
+            ~~~
+            `,
+        },
+    })
     .add('Textarea', () => (
         <TextArea
             isDisabled={boolean('Disabled', false)}
@@ -65,7 +119,16 @@ storiesOf('Form', module)
             }, '')}
             bottomText={text('Bottom text', 'bottom text')}
         />
-    ))
+    ), {
+        info: {
+            text: `
+            ## Import
+            ~~~js
+            import { TextArea } from 'trezor-ui-components';
+            ~~~
+            `,
+        },
+    })
     .add('Checkbox', () => (
         <Checkbox
             isChecked={boolean('Checked', false)}
@@ -73,36 +136,59 @@ storiesOf('Form', module)
         >
             {text('Checkbox text', 'Checkbox')}
         </Checkbox>
-    ))
+    ), {
+        info: {
+            text: `
+            ## Import
+            ~~~js
+            import { Checkbox } from 'trezor-ui-components';
+            ~~~
+            `,
+        },
+    })
     .add('Select', () => (
-        <Wrapper>
-            <Select
-                isSearchable={boolean('Searchable', false)}
-                isClearable={boolean('Clearable', false)}
-                value={text('Value', 'hello')}
-                options={[
-                    { value: 'hello', label: 'Hello' },
-                    { value: 'world', label: 'World' },
-                ]}
-            />
-        </Wrapper>
-    ))
+        <Select
+            isSearchable={boolean('Searchable', false)}
+            isClearable={boolean('Clearable', false)}
+            value={text('Value', 'hello')}
+            options={[
+                { value: 'hello', label: 'Hello' },
+                { value: 'world', label: 'World' },
+            ]}
+        />
+    ), {
+        info: {
+            text: `
+            ## Import
+            ~~~js
+            import { Select } from 'trezor-ui-components';
+            ~~~
+            `,
+        },
+    })
     .add('Select (Async)', () => (
-        <Wrapper>
-            <AsyncSelect
-                defaultOptions={[
+        <AsyncSelect
+            defaultOptions={[
+                { value: 'hello', label: 'Hello' },
+                { value: 'world', label: 'World' },
+            ]}
+            cacheOptions={false}
+            onInputChange={() => {}}
+            loadOptions={(inputValue, callback) => {
+                const data = [
                     { value: 'hello', label: 'Hello' },
                     { value: 'world', label: 'World' },
-                ]}
-                cacheOptions={false}
-                onInputChange={() => {}}
-                loadOptions={(inputValue, callback) => {
-                    const data = [
-                        { value: 'hello', label: 'Hello' },
-                        { value: 'world', label: 'World' },
-                    ].filter(item => item.label.toLowerCase().search(inputValue.toLowerCase()) !== -1);
-                    callback(data);
-                }}
-            />
-        </Wrapper>
-    ));
+                ].filter(item => item.label.toLowerCase().search(inputValue.toLowerCase()) !== -1);
+                callback(data);
+            }}
+        />
+    ), {
+        info: {
+            text: `
+            ## Import
+            ~~~js
+            import { AsyncSelect } from 'trezor-ui-components';
+            ~~~
+            `,
+        },
+    });

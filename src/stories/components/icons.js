@@ -3,43 +3,79 @@ import React from 'react';
 import icons from 'config/icons';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
-import centered from '@storybook/addon-centered';
 import { withInfo } from '@storybook/addon-info';
+import {
+    withKnobs, number, select, color,
+} from '@storybook/addon-knobs';
+
+import colors from 'config/colors';
 
 const Wrapper = styled.div``;
 
 Wrapper.displayName = 'Wrapper';
 
 storiesOf('Icons', module)
+    .addDecorator(withKnobs)
     .addDecorator(
         withInfo({
-            header: true,
+            header: false,
+            inline: true,
+            maxPropsIntoLine: 1,
+            styles: {
+                infoStory: {
+                    background: colors.LANDING,
+                    borderBottom: `1px solid ${colors.DIVIDER}`,
+                    padding: '30px',
+                    margin: '-8px',
+                },
+                infoBody: {
+                    border: 'none',
+                    padding: '15px',
+                },
+            },
         }),
     )
-    .addDecorator(centered)
     .add('icons', () => (
-        <Wrapper>
+        <Icon
+            icon={select('Icon', {
+                TOP: icons.TOP,
+                EYE_CROSSED: icons.EYE_CROSSED,
+                EYE: icons.EYE,
+                CHECKED: icons.CHECKED,
+                BACK: icons.BACK,
+                HELP: icons.HELP,
+                REFRESH: icons.REFRESH,
+                T1: icons.T1,
+                COG: icons.COG,
+                EJECT: icons.EJECT,
+                CLOSE: icons.CLOSE,
+                DOWNLOAD: icons.DOWNLOAD,
+                PLUS: icons.PLUS,
+                ARROW_UP: icons.ARROW_UP,
+                ARROW_LEFT: icons.ARROW_LEFT,
+                ARROW_DOWN: icons.ARROW_DOWN,
+                CHAT: icons.CHAT,
+                SKIP: icons.SKIP,
+                WARNING: icons.WARNING,
+                INFO: icons.INFO,
+                ERROR: icons.ERROR,
+                SUCCESS: icons.SUCCESS,
+            }, icons.TOP)}
+            size={number('Size', 36)}
+            hoverColor={color('Hover color', colors.GREEN_PRIMARY)}
+        />
+    ), {
+        info: {
+            text: `
+            ## Import
+            ~~~js
+            import { Icon, icons } from 'trezor-ui-components';
+            ~~~
+
+            Icons usage example:
+            ~~~js
             <Icon icon={icons.TOP} />
-            <Icon icon={icons.EYE_CROSSED} />
-            <Icon icon={icons.EYE} />
-            <Icon icon={icons.CHECKED} />
-            <Icon icon={icons.BACK} />
-            <Icon icon={icons.HELP} />
-            <Icon icon={icons.REFRESH} />
-            <Icon icon={icons.T1} />
-            <Icon icon={icons.COG} />
-            <Icon icon={icons.EJECT} />
-            <Icon icon={icons.CLOSE} />
-            <Icon icon={icons.DOWNLOAD} />
-            <Icon icon={icons.PLUS} />
-            <Icon icon={icons.ARROW_UP} />
-            <Icon icon={icons.ARROW_LEFT} />
-            <Icon icon={icons.ARROW_DOWN} />
-            <Icon icon={icons.CHAT} />
-            <Icon icon={icons.SKIP} />
-            <Icon icon={icons.WARNING} />
-            <Icon icon={icons.INFO} />
-            <Icon icon={icons.ERROR} />
-            <Icon icon={icons.SUCCESS} />
-        </Wrapper>
-    ));
+            ~~~
+            `,
+        },
+    });

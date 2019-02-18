@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
-import centered from '@storybook/addon-centered';
 import { withInfo } from '@storybook/addon-info';
 import {
     withKnobs, text, boolean, select,
@@ -10,6 +9,7 @@ import {
 import styled from 'styled-components';
 
 import Notification from 'components/Notification';
+import colors from 'config/colors';
 
 const Wrapper = styled.div`
     min-width: 600px;
@@ -19,41 +19,84 @@ Wrapper.displayName = 'Wrapper';
 storiesOf('Notifications', module)
     .addDecorator(
         withInfo({
-            header: true,
+            header: false,
+            inline: true,
+            maxPropsIntoLine: 1,
+            styles: {
+                infoStory: {
+                    background: colors.LANDING,
+                    borderBottom: `1px solid ${colors.DIVIDER}`,
+                    padding: '30px',
+                    margin: '-8px',
+                },
+                infoBody: {
+                    border: 'none',
+                    padding: '15px',
+                },
+            },
         }),
     )
-    .addDecorator(centered)
     .addDecorator(withKnobs)
-    .add('Default', () => (
-        <Wrapper>
+    .add('Default', () => {
+        const type = select('Type', {
+            Success: 'success',
+            Warning: 'warning',
+            Info: 'info',
+        }, 'success');
+        const title = text('Title', 'Notification title');
+        const message = text('Text', 'Text of the notification.');
+        const cancelable = boolean('Cancelable', false);
+
+        if (cancelable) {
+            return (
+                <Notification
+                    type={type}
+                    title={title}
+                    message={message}
+                    cancelable
+                />
+            );
+        }
+        return (
             <Notification
-                type={select('Type', {
-                    Success: 'success',
-                    Warning: 'warning',
-                    Info: 'info',
-                }, 'success')}
-                title={text('Title', 'Notification title')}
-                message={text('Text', 'Text of the notification.')}
-                cancelable={boolean('Cancelable', false)}
+                type={type}
+                title={title}
+                message={message}
             />
-        </Wrapper>
-    ))
+        );
+    }, {
+        info: {
+            text: `
+            ## Import
+            ~~~js
+            import { Notification } from 'trezor-ui-components';
+            ~~~
+            `,
+        },
+    })
     .add('CTA', () => (
-        <Wrapper>
-            <Notification
-                type={select('Type', {
-                    Success: 'success',
-                    Warning: 'warning',
-                    Info: 'info',
-                }, 'success')}
-                title={text('Title', 'Notification title')}
-                message={text('Text', 'Text of the notification.')}
-                actions={[
-                    {
-                        label: 'Confirm',
-                        callback: () => {},
-                    },
-                ]}
-            />
-        </Wrapper>
-    ));
+        <Notification
+            type={select('Type', {
+                Success: 'success',
+                Warning: 'warning',
+                Info: 'info',
+            }, 'success')}
+            title={text('Title', 'Notification title')}
+            message={text('Text', 'Text of the notification.')}
+            actions={[
+                {
+                    label: 'Confirm',
+                    callback: () => {},
+                },
+            ]}
+        />
+    ), {
+        info: {
+            text: `
+            ## Import
+            ~~~js
+            import { Notification } from 'trezor-ui-components';
+            ~~~
+            `,
+        },
+    });
