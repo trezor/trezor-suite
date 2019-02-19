@@ -1,6 +1,6 @@
 {
     "name": "trezor-wallet",
-    "version": "1.0.0",
+    "version": "1.0.3-beta",
     "author": "TREZOR <info@trezor.io>",
     "description": "",
     "bin": {
