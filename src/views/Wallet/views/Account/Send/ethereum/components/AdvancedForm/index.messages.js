@@ -22,6 +22,7 @@ const definedMessages: Messages = defineMessages({
     TR_CALCULATING_DOT_DOT: {
         id: 'TR_CALCULATING_DOT_DOT',
         defaultMessage: 'Calculating...',
+        description: 'Used when calculating gas limit based on data input in ethereum advanced send form',
     },
     TR_GAS_PRICE: {
         id: 'TR_GAS_PRICE',

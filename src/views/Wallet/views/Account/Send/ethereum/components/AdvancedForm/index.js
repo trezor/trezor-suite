@@ -3,7 +3,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import Link from 'components/Link';
 import Input from 'components/inputs/Input';
@@ -18,6 +18,7 @@ import l10nMessages from './index.messages';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = BaseProps & {
+    intl: any,
     children: React.Node,
 }
 
@@ -212,7 +213,7 @@ const AdvancedForm = (props: Props) => {
                         </InputLabelWrapper>
                     )}
                     bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
-                    value={calculatingGasLimit ? 'Calculating...' : gasLimit} // TODO: figure out translations in inputs
+                    value={calculatingGasLimit ? props.intl.formatMessage(l10nMessages.TR_CALCULATING_DOT_DOT) : gasLimit} // TODO: figure out translations in inputs
                     isDisabled={networkSymbol === currency && data.length > 0}
                     onChange={event => onGasLimitChange(event.target.value)}
                 />
@@ -289,4 +290,4 @@ const AdvancedForm = (props: Props) => {
     );
 };
 
-export default AdvancedForm;
+export default injectIntl(AdvancedForm);
