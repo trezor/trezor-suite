@@ -1,5 +1,7 @@
 # Trezor Wallet
 
+You can try this wallet live [HERE](https://beta-wallet.trezor.io/next/)
+
 To install dependencies run `npm install` or `yarn`
 To start locally run `npm run dev` or `yarn run dev`
 To build the project run `npm run build` or `yarn run build`
