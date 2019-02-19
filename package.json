@@ -11,6 +11,7 @@
     "lint:css": "npx stylelint './src/**/*.js'",
     "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
     "build": "npx babel src -d lib --copy-files",
+    "build:gh-pages": "build-storybook -c .storybook -o /docs",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
