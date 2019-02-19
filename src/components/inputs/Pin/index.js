@@ -20,6 +20,7 @@ const StyledInput = styled.input`
     color: ${colors.TEXT_PRIMARY};
     background: transparent;
     border: 1px solid ${colors.DIVIDER};
+    box-sizing: border-box;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -29,7 +30,7 @@ const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
-const Input = ({ value, onDeleteClick }) => (
+const PinInput = ({ value, onDeleteClick }) => (
     <Wrapper>
         <StyledInput
             disabled
@@ -42,9 +43,9 @@ const Input = ({ value, onDeleteClick }) => (
     </Wrapper>
 );
 
-Input.propTypes = {
+PinInput.propTypes = {
     onDeleteClick: PropTypes.func.isRequired,
     value: PropTypes.string.isRequired,
 };
 
-export default Input;
+export default PinInput;

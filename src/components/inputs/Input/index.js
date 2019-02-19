@@ -46,6 +46,7 @@ const StyledInput = styled.input`
     font-size: ${props => (props.isSmallText ? `${FONT_SIZE.SMALL}` : `${FONT_SIZE.BASE}`)};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${props => (props.color ? props.color : colors.TEXT)};
+    box-sizing: border-box;
 
     border-radius: 2px;
     

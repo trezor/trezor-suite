@@ -8,6 +8,7 @@ import Loader from 'components/Loader';
 import NotificationButton from 'components/buttons/NotificationButton';
 import icons from 'config/icons';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -126,6 +127,18 @@ const Notification = (props) => {
             </Content>
         </Wrapper>
     );
+};
+
+Notification.propTypes = {
+    close: PropTypes.func,
+    type: PropTypes.string,
+    title: PropTypes.string,
+    message: PropTypes.string,
+    cancelable: PropTypes.bool,
+    loading: PropTypes.bool,
+    isActionInProgress: PropTypes.bool,
+    actions: PropTypes.array,
+    className: PropTypes.string,
 };
 
 export default Notification;
