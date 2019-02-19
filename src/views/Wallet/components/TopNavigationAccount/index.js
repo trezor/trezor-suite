@@ -69,6 +69,7 @@ const StyledNavLink = styled(NavLink)`
 class TopNavigationAccount extends React.PureComponent<Props> {
     wrapperRefCallback = (element: ?HTMLElement) => {
         this.wrapper = element;
+        this.forceUpdate();
     }
 
     wrapper: ?HTMLElement;
