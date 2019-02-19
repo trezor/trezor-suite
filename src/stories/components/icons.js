@@ -14,7 +14,7 @@ const Wrapper = styled.div``;
 
 Wrapper.displayName = 'Wrapper';
 
-storiesOf('Icons', module)
+storiesOf('Other', module)
     .addDecorator(withKnobs)
     .addDecorator(
         withInfo({
@@ -35,7 +35,7 @@ storiesOf('Icons', module)
             },
         }),
     )
-    .add('icons', () => (
+    .add('Icons', () => (
         <Icon
             icon={select('Icon', {
                 TOP: icons.TOP,
@@ -72,7 +72,7 @@ storiesOf('Icons', module)
             import { Icon, icons } from 'trezor-ui-components';
             ~~~
 
-            Icons usage example:
+            Example
             ~~~js
             <Icon icon={icons.TOP} />
             ~~~

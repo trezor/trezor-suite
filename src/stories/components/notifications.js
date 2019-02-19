@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 `;
 Wrapper.displayName = 'Wrapper';
 
-storiesOf('Notifications', module)
+storiesOf('Components', module)
     .addDecorator(
         withInfo({
             header: false,
@@ -37,7 +37,7 @@ storiesOf('Notifications', module)
         }),
     )
     .addDecorator(withKnobs)
-    .add('Default', () => {
+    .add('Notification', () => {
         const type = select('Type', {
             Success: 'success',
             Warning: 'warning',
@@ -74,7 +74,7 @@ storiesOf('Notifications', module)
             `,
         },
     })
-    .add('CTA', () => (
+    .add('Notification with CTA', () => (
         <Notification
             type={select('Type', {
                 Success: 'success',

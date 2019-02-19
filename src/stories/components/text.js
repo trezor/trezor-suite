@@ -27,7 +27,7 @@ H2.displayName = 'H2';
 H3.displayName = 'H3';
 H4.displayName = 'H4';
 
-storiesOf('Text', module)
+storiesOf('Components', module)
     .addDecorator(
         withInfo({
             header: false,

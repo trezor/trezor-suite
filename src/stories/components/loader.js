@@ -9,7 +9,7 @@ import { withInfo } from '@storybook/addon-info';
 
 import colors from 'config/colors';
 
-storiesOf('Loader', module)
+storiesOf('Components', module)
     .addDecorator(
         withInfo({
             header: false,
@@ -30,7 +30,7 @@ storiesOf('Loader', module)
         }),
     )
     .addDecorator(withKnobs)
-    .add('Default', () => (
+    .add('Loader', () => (
         <Loader
             size={number('Size', 100)}
             text={text('Text', 'loading')}

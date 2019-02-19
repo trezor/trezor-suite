@@ -39,8 +39,8 @@ storiesOf('Modal', module)
                 infoBody: {
                     border: 'none',
                     padding: '15px',
-                }
-            }
+                },
+            },
         }),
     )
     .add('Hello world!', () => (

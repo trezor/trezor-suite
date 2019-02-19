@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 `;
 Wrapper.displayName = 'Wrapper';
 
-storiesOf('Form', module)
+storiesOf('Components', module)
     .addDecorator(
         withInfo({
             header: false,

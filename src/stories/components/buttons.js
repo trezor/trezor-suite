@@ -11,7 +11,7 @@ import { withInfo } from '@storybook/addon-info';
 
 import colors from 'config/colors';
 
-storiesOf('Buttons', module)
+storiesOf('Components', module)
     .addDecorator(
         withInfo({
             header: false,
@@ -33,7 +33,7 @@ storiesOf('Buttons', module)
         }),
     )
     .addDecorator(withKnobs)
-    .add('Default', () => (
+    .add('Button', () => (
         <Button
             isDisabled={boolean('Disabled', false)}
             isTransparent={boolean('Transparent', false)}
@@ -51,7 +51,7 @@ storiesOf('Buttons', module)
             `,
         },
     })
-    .add('Web USB', () => {
+    .add('Web USB button', () => {
         const disabled = boolean('Disabled', false);
         if (disabled) {
             return <WebUSB isDisabled>Web USB</WebUSB>;

@@ -2,41 +2,70 @@ import CoinLogo from 'components/images/CoinLogo';
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
-import centered from '@storybook/addon-centered';
 import { withInfo } from '@storybook/addon-info';
+import {
+    withKnobs, select,
+} from '@storybook/addon-knobs';
+
+import colors from 'config/colors';
 
 const Wrapper = styled.div``;
 
 Wrapper.displayName = 'Wrapper';
 
-storiesOf('Coins', module)
+storiesOf('Other', module)
     .addDecorator(
         withInfo({
-            header: true,
+            header: false,
+            inline: true,
+            styles: {
+                infoStory: {
+                    background: colors.LANDING,
+                    borderBottom: `1px solid ${colors.DIVIDER}`,
+                    padding: '30px',
+                    margin: '-8px',
+                },
+                infoBody: {
+                    border: 'none',
+                    padding: '15px',
+                },
+            },
         }),
     )
-    .addDecorator(centered)
-    .add('coins', () => (
-        <Wrapper>
-            <CoinLogo network="ada" />
-            <CoinLogo network="bch" />
-            <CoinLogo network="btc" />
-            <CoinLogo network="btg" />
-            <CoinLogo network="dash" />
-            <CoinLogo network="dgb" />
-            <CoinLogo network="doge" />
-            <CoinLogo network="etc" />
-            <CoinLogo network="eth" />
-            <CoinLogo network="ltc" />
-            <CoinLogo network="nem" />
-            <CoinLogo network="nmc" />
-            <CoinLogo network="rinkeby" />
-            <CoinLogo network="trop" />
-            <CoinLogo network="txrp" />
-            <CoinLogo network="vtc" />
-            <CoinLogo network="xem" />
-            <CoinLogo network="xlm" />
-            <CoinLogo network="xrp" />
-            <CoinLogo network="zec" />
-        </Wrapper>
-    ));
+    .addDecorator(withKnobs)
+    .add('Coins', () => (
+        <CoinLogo network={select('Coin', {
+            ADA: 'ada',
+            BCH: 'bch',
+            BTC: 'btc',
+            BTG: 'btg',
+            DASH: 'dash',
+            DGB: 'dgb',
+            DOGE: 'doge',
+            ETC: 'etc',
+            ETH: 'eth',
+            LTC: 'ltc',
+            NEM: 'nem',
+            NMC: 'nmc',
+            RINKEBY: 'rinkeby',
+            TROP: 'trop',
+            TXRP: 'txrp',
+            VTC: 'vtc',
+            XEM: 'xem',
+            XLM: 'xlm',
+            XRP: 'xrp',
+            ZEC: 'zec',
+        }, 'ada')}
+        />
+    ), {
+        info: {
+            text: `
+            ## Import
+
+            ~~~js
+            Import { CoinLogo } from 'trezor-ui-components';
+            ~~~
+
+            `,
+        },
+    });
