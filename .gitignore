@@ -88,3 +88,5 @@ npm
 /docs
 
 lib
+
+.DS_Store
