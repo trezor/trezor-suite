@@ -14,7 +14,7 @@ type Props = {
     router: $ElementType<State, 'router'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
 };
-type StateProps = {
+type LocalState = {
     wrapper: ?HTMLElement,
 };
 
@@ -69,7 +69,7 @@ const StyledNavLink = styled(NavLink)`
     }
 `;
 
-class TopNavigationAccount extends React.PureComponent<Props, StateProps> {
+class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
     constructor(props) {
         super(props);
         this.state = {
