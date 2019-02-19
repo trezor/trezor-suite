@@ -49,7 +49,7 @@ storiesOf('Other', module)
     .add('Colors', () => (
         <Section>
             <H1>Colors</H1>
-            <Code>{`import { colors } from 'trezor-ui-components';`}</Code>
+            <Code>{'import { colors } from \'trezor-ui-components\';'}</Code>
             <Table>
                 <Tr>
                     <Th>Backgrounds</Th>

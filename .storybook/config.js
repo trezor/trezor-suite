@@ -17,23 +17,25 @@ addDecorator(
             mainTextFace: 'Roboto',
             mainTextColor: colors.TEXT_PRIMARY,
             layoutMargin: 10,
+            mainTextSize: 14,
             treeMenuHeader: {
                 color: colors.TEXT_PRIMARY,
+                lineHeight: '1.4rem',
             },
             menuLink: {
                 color: colors.TEXT_SECONDARY,
+                fontSize: '.9rem',
+                lineHeight: '1.2rem',
+                marginLeft: 0,
             },
             activeMenuLink: {
                 color: colors.GREEN_PRIMARY,
                 background: 'none',
             },
-            filter: {
-                display: 'none'
-            }
         },
     }),
 );
-console.log(colors);
+
 configureViewport();
 
 function loadStories() {
