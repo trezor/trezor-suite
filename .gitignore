@@ -85,8 +85,6 @@ src/.old_components
 # npm module
 npm
 
-/docs
-
 lib
 
 .DS_Store
