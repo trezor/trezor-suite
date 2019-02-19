@@ -6,7 +6,8 @@
     ],
     "globals": {
         "LOCAL": true,
-        "COMMITHASH": true
+        "COMMITHASH": true,
+        "VERSION": true
     },
     "env": {
         "browser": true,

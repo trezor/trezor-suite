@@ -3,13 +3,14 @@ import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
-
-// turn on for bundle analyzing
-// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import packageJson from '../package.json';
 
 import {
     SRC, BUILD, PORT, PUBLIC,
 } from './constants';
+
+// turn on for bundle analyzing
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -103,6 +104,7 @@ module.exports = {
             suppressSuccess: true,
         }),
         new webpack.DefinePlugin({
+            VERSION: JSON.stringify(packageJson.version),
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
         new HtmlWebpackPlugin({

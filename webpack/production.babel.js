@@ -3,6 +3,7 @@ import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import packageJson from '../package.json';
 import { SRC, BUILD, PUBLIC } from './constants';
 
 const gitRevisionPlugin = new GitRevisionPlugin();
@@ -65,6 +66,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env.BUILD': JSON.stringify(process.env.BUILD),
+            VERSION: JSON.stringify(packageJson.version),
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
         new HtmlWebpackPlugin({
