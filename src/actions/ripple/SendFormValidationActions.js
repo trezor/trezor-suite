@@ -300,7 +300,12 @@ export const destinationTagValidation = ($state: State): PayloadAction<State> =>
 
 const calculateTotal = (amount: string, fee: string): string => {
     try {
-        return new BigNumber(amount).plus(fee).toFixed();
+        const bAmount = new BigNumber(amount);
+        // BigNumber() returns NaN on non-numeric string
+        if (bAmount.isNaN()) {
+            throw new Error('Amount is not a number');
+        }
+        return bAmount.plus(fee).toFixed();
     } catch (error) {
         return '0';
     }

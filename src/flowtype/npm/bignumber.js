@@ -37,6 +37,7 @@ declare module 'bignumber.js' {
       isLessThan(n: $npm$big$number$object): boolean;
       lte(n: $npm$big$number$object): boolean;
       isLessThanOrEqualTo(n: $npm$big$number$object): boolean;
+      isNaN(): boolean;
       minus(n: $npm$big$number$object): T_BigNumber;
       mod(n: $npm$big$number$object): T_BigNumber;
       plus(n: $npm$big$number$object): T_BigNumber;
