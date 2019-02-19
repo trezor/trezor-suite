@@ -26,7 +26,7 @@ import createRowArray from './utils/create-row-array';
         ...
     ]
 */
-export const mergeMessages = (filePattern, outputFilePath) => {
+export const mergeMessages = (filePattern, outputFilePath, allowDuplicates = false) => {
     const transformedMessages = glob.sync(filePattern)
         .map(filename => fs.readFileSync(filename, 'utf8'))
         .map(file => JSON.parse(file))
@@ -36,18 +36,27 @@ export const mergeMessages = (filePattern, outputFilePath) => {
                     id, defaultMessage, description, file,
                 } = d;
                 if ({}.hasOwnProperty.call(collection, id)) {
-                    throw new Error(`Duplicate message id: ${id}`);
+                    if (!allowDuplicates) {
+                        console.log(collection[id].meta.occurrences);
+                        throw new Error(`Duplicate message id: ${id}`);
+                    }
+                    if (defaultMessage === collection[id].source) {
+                        collection[id].meta.occurrences.push(file);
+                    } else {
+                        throw new Error(`Duplicate message id: ${id} with different source string`);
+                    }
+                } else {
+                    // eslint-disable-next-line no-param-reassign
+                    collection[id] = {
+                        source: defaultMessage,
+                        meta: {
+                            comment: description,
+                            occurrences: [
+                                file,
+                            ],
+                        },
+                    };
                 }
-                // eslint-disable-next-line no-param-reassign
-                collection[id] = {
-                    source: defaultMessage,
-                    meta: {
-                        comment: description,
-                        occurrences: [
-                            file,
-                        ],
-                    },
-                };
             });
 
             return collection;

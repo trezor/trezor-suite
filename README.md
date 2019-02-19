@@ -116,11 +116,12 @@ const crowdin = new Crowdin(projectId, apiKey);
 // available methods are addFile, updateFile, downloadTranslationsZip, buildTranslations, exportTranslations,
 ```
 
-#### mergeMessages(filePattern, outputFilePath)
-Aggregates the default messages that were extracted from the app's React components via the React Intl Babel plugin. An error will be thrown if there are messages in different components that use the same `id`. The result is a flat collection of `translation_key: Object` pairs for the app's default locale.
+#### mergeMessages(filePattern, outputFilePath, allowDuplicates = false)
+Aggregates the default messages that were extracted from the app's React components via the [React Intl Babel plugin](https://github.com/yahoo/babel-plugin-react-intl). The result is a flat collection of `translation_key: Object` pairs for the app's default locale.
 
-- `filePattern`: Pattern used to look for React Intl messages that were extracted via [babel-plugin-react-intl](https://github.com/yahoo/babel-plugin-react-intl).
+- `filePattern`: Pattern used to look for React Intl messages
 - `outputFilePath`: Path for outputed JSON file
+- `allowDuplicates`: If `false` an error will be thrown if there are messages in different components that use the same `id`
 
 
 #### buildCSV(inputFilePath, outputFilePath, languages)
