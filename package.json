@@ -32,7 +32,7 @@
         "bignumber.js": "8.0.2",
         "color-hash": "^1.0.3",
         "commander": "^2.19.0",
-        "connected-react-router": "^6.2.2",
+        "connected-react-router": "6.0.0",
         "copy-webpack-plugin": "^4.6.0",
         "cross-env": "^5.2.0",
         "date-fns": "^1.30.1",
