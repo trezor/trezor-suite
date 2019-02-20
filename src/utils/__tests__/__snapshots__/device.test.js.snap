@@ -44,15 +44,15 @@ exports[`device utils get status name 7`] = `"Disconnected"`;
 
 exports[`device utils get status name 8`] = `"Unavailable"`;
 
-exports[`device utils get version 1`] = `"1"`;
+exports[`device utils get version 1`] = `"One"`;
 
-exports[`device utils get version 2`] = `"1"`;
+exports[`device utils get version 2`] = `"One"`;
 
-exports[`device utils get version 3`] = `"1"`;
+exports[`device utils get version 3`] = `"One"`;
 
-exports[`device utils get version 4`] = `"1"`;
+exports[`device utils get version 4`] = `"One"`;
 
-exports[`device utils get version 5`] = `"1"`;
+exports[`device utils get version 5`] = `"One"`;
 
 exports[`device utils get version 6`] = `"T"`;
 
