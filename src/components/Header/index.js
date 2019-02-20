@@ -124,8 +124,8 @@ const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
         <LayoutWrapper>
             <Left>
                 { sidebarEnabled && (
-                    <MenuToggler onClick={toggleSidebar}>{sidebarOpened
-                        ? (
+                    <MenuToggler onClick={toggleSidebar}>
+                        {sidebarOpened ? (
                             <>
                                 <Icon
                                     size={24}
