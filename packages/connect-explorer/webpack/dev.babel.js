@@ -9,7 +9,7 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
-        'index': [ 'react-hot-loader/patch', `${SRC}js/index.js` ]
+        'index': [`${SRC}js/index.js` ]
     },
     output: {
         filename: '[name].[hash].js',
@@ -28,7 +28,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
+                use: ['babel-loader', 'react-hot-loader/webpack']
             },
             {
                 test: /\.less$/,

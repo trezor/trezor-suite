@@ -22,7 +22,7 @@ module.exports = {
         'iframe': `${TREZOR_IFRAME}`,
         'popup': `${TREZOR_POPUP}`,
         'extensionPermissions': `${TREZOR_CONNECT_ROOT}src/js/webusb/extensionPermissions.js`,
-        'index': [ 'react-hot-loader/patch', `${SRC}js/index.js` ]
+        'index': [`${SRC}js/index.js` ]
     },
     output: {
         filename: '[name].[hash].js',
