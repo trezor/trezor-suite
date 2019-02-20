@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { PATH_CHANGE, MESSAGE_CHANGE, SIGNATURE_CHANGE, VERIFY_RESPONSE_VALUES } from '../../actions/methods/LiskMessageActions';
 
 type MethodState = {

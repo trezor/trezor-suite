@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { TX_CHANGE, PATH_CHANGE, PASSPHRASE_CHANGE } from '../../actions/methods/StellarSignTxActions';
 
 type MethodState = {

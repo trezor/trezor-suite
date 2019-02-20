@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { MESSAGES_CHANGE, MESSAGE_CHANGE, PARAMS_CHANGE, CALLBACK_CHANGE } from '../../actions/methods/CustomMessageActions';
 
 import messages from '../../data/custom.messages';

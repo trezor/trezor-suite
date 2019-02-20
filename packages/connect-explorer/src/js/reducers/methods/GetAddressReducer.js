@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { UI, DEVICE } from 'trezor-connect';
 import { CONFIRMATION_CHANGE, COIN_CHANGE, PATH_CHANGE, ADDRESS_CHANGE } from '../../actions/methods/GetAddressActions';
 import { RESPONSE } from '../../actions/methods/CommonActions';

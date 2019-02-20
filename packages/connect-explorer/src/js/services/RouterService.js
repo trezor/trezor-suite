@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 /**
  * Middleware used for managing router path and

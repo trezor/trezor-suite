@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 import TrezorConnect, { TRANSPORT_EVENT, DEVICE_EVENT, UI_EVENT, UI, DEVICE } from 'trezor-connect';
 import * as TrezorConnectActions from '../actions/TrezorConnectActions';
@@ -36,24 +35,28 @@ const TrezorConnectService = store => next => action => {
         if (customSrc) {
             window.__TREZOR_CONNECT_SRC = customSrc;
         } else {
-            window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/';
+            window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : undefined;
         }
         window.TrezorConnect = TrezorConnect;
 
-        TrezorConnect.init({
+        // TrezorConnect.init({
 
-            webusb: true,
-            // transportReconnect: false,
-            popup: true,
-            debug: true,
-            // excludedDevices: ["web02"]
-        })
-        // .then(r => {
-        //     console.warn("INIT", r);
-        //     TrezorConnect.getPublicKey({ path: "m/44"});
+        //     webusb: true,
+        //     // transportReconnect: false,
+        //     popup: true,
+        //     debug: true,
+        //     // excludedDevices: ["web02"]
+        //     manifest: {
+        //         email: 'ab'
+        //     }
         // })
-        .catch(error => {
-            console.log("ERROR", error);
+        // .catch(error => {
+        //     console.log("ERROR", error);
+        // })
+
+        TrezorConnect.manifest({
+            email: 'abcd@xyz.com',
+            appUrl: 'www.'
         })
 
         
