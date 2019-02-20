@@ -2,7 +2,7 @@
 'use strict';
 
 import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
+import { connectRouter } from 'connected-react-router';
 
 import DOM from './DOMReducer';
 import connect from './TrezorConnectReducer';
@@ -54,8 +54,7 @@ import pushtx from './methods/PushTxReducer';
 import resetdevice from './methods/ResetDeviceReducer';
 import wipedevice from './methods/WipeDeviceReducer';
 
-export default combineReducers({
-    router: routerReducer,
+const reducers = {
     DOM,
     connect,
     modal,
@@ -105,4 +104,9 @@ export default combineReducers({
 
     resetdevice,
     wipedevice,
+};
+
+export default (history: any) => combineReducers({
+    ...reducers,
+    router: connectRouter(history),
 });
