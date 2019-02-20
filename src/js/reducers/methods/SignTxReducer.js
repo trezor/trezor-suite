@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { COIN_CHANGE, INPUTS_CHANGE, OUTPUTS_CHANGE, PUSH_CHANGE } from '../../actions/methods/SignTxActions';
 
 type MethodState = {

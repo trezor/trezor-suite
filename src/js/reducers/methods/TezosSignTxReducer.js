@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { OPERATION_CHANGE, PATH_CHANGE, BRANCH_CHANGE } from '../../actions/methods/TezosSignTxActions';
 
 type MethodState = {

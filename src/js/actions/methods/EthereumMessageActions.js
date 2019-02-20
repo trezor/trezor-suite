@@ -1,6 +1,6 @@
 /* @flow */
-'use strict';
-import { push } from 'react-router-redux';
+
+import { push } from 'connected-react-router';
 import TrezorConnect from 'trezor-connect';
 import { onResponse } from './CommonActions';
 

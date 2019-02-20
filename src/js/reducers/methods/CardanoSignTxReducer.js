@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { NETWORK_CHANGE, INPUTS_CHANGE, OUTPUTS_CHANGE, TXS_CHANGE } from '../../actions/methods/CardanoSignTxActions';
 
 type MethodState = {

@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { FLAG_CHANGE } from '../../actions/methods/ResetDeviceActions';
 
 type MethodState = {

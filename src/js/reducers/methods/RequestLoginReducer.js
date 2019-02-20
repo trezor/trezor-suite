@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { HIDDEN_CHANGE, VISUAL_CHANGE, CALLBACK_CHANGE } from '../../actions/methods/RequestLoginActions';
 
 type MethodState = {

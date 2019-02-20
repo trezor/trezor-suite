@@ -1,7 +1,6 @@
 /* @flow */
-'use strict';
 
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import { TAB_CHANGE, RESPONSE, UPDATE_CODE } from '../../actions/methods/CommonActions';
 
 type MethodState = {
