@@ -10,6 +10,7 @@ module.exports = (api) => {
     ];
 
     const plugins = [
+        'react-hot-loader/babel',
         '@babel/plugin-transform-flow-strip-types',
         '@babel/plugin-proposal-class-properties',
         '@babel/plugin-proposal-object-rest-spread',
@@ -17,6 +18,10 @@ module.exports = (api) => {
             regenerator: true,
         }],
     ];
+
+    if (process.env.LOCAL) {
+        plugins.shift();
+    }
 
     return {
         presets,
