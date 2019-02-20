@@ -2,11 +2,11 @@
 'use strict';
 
 import { createStore, applyMiddleware, compose } from 'redux';
-import { routerMiddleware, push } from 'react-router-redux';
+import { routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import createHistory from 'history/createHashHistory';
 import { createLogger } from 'redux-logger';
-import reducers from '../reducers';
+import createRootReducer from '../reducers';
 import services from '../services';
 
 export const history: History = createHistory( { queryKey: false } );
@@ -53,7 +53,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export default createStore(
-    reducers,
+    createRootReducer(history),
     initialState,
     composedEnhancers
 );
