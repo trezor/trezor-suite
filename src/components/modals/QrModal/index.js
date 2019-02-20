@@ -108,7 +108,8 @@ class QrModal extends React.Component<Props, State> {
             this.props.onError(err);
         }
 
-        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError'
+            || err.name === 'NotReadableError' || err.name === 'TrackStartError') {
             this.setState({
                 error: 'Permission to access the camera was denied.',
             });
