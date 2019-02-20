@@ -13,6 +13,7 @@ const coins = [
     { symbol: 'test', label: 'Testnet' },
     { symbol: 'doge', label: 'Dogecoin' },
     { symbol: 'vtc', label: 'Vertcoin' },
+    { symbol: 'cpc', label: 'Capricoin' },
 ]
 
 const CoinSelect = (props): any => {

@@ -24,6 +24,7 @@ const defaultPaths = {
     "test":  "m/49'/1'/0'",
     "doge":  "m/44'/3'/0'",
     "vtc":   "m/44'/28'/0'",
+    "cpc":   "m/44'/289'/0'",
 }
 
 const initialState: MethodState = {
