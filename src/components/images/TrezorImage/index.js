@@ -16,7 +16,8 @@ const Img = styled.img`
 
 const TrezorImage = ({ model }: Props) => {
     // $FlowIssue: `require` must be a string literal.
-    const src = require(`./images/trezor-${model}.png`); // eslint-disable-line
+    const imageName = model === 'One' ? 1 : model;
+    const src = require(`./images/trezor-${imageName}.png`); // eslint-disable-line
     return (
         <Wrapper>
             <Img model={model} src={src} />

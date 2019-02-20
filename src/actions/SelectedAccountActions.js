@@ -8,6 +8,7 @@ import * as TOKEN from 'actions/constants/token';
 import * as PENDING from 'actions/constants/pendingTx';
 
 import * as reducerUtils from 'reducers/utils';
+import { getVersion } from 'utils/device';
 import { initialState } from 'reducers/SelectedAccountReducer';
 
 import type {
@@ -51,12 +52,11 @@ const getExceptionPage = (state: State, selectedAccount: SelectedAccountState): 
             shortcut: 'not-used',
         };
     }
+
     if (discovery.fwNotSupported) {
-        const trezorModel = device.features.model;
-        const trezorName = trezorModel.toString() === '1' ? 'One' : trezorModel;
         return {
             type: 'fwNotSupported',
-            title: `${network.name} is not supported with Trezor ${trezorName}`,
+            title: `${network.name} is not supported with Trezor ${getVersion(device)}`,
             message: 'Find more information on Trezor Wiki.',
             shortcut: network.shortcut,
         };
