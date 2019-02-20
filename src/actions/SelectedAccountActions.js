@@ -52,9 +52,11 @@ const getExceptionPage = (state: State, selectedAccount: SelectedAccountState): 
         };
     }
     if (discovery.fwNotSupported) {
+        const trezorModel = device.features.model;
+        const trezorName = trezorModel.toString() === '1' ? 'One' : trezorModel;
         return {
             type: 'fwNotSupported',
-            title: `${network.name} is not supported with Trezor ${device.features.model}`,
+            title: `${network.name} is not supported with Trezor ${trezorName}`,
             message: 'Find more information on Trezor Wiki.',
             shortcut: network.shortcut,
         };

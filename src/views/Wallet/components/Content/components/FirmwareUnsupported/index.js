@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 `;
 
 const CoinLogoWrapper = styled.div`
-    margin: 10px 0;
+    margin: 10px 0 20px 0;
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
