@@ -347,7 +347,12 @@ export const calculateFee = (gasPrice: string, gasLimit: string): string => {
 
 export const calculateTotal = (amount: string, gasPrice: string, gasLimit: string): string => {
     try {
-        return new BigNumber(amount).plus(calculateFee(gasPrice, gasLimit)).toFixed();
+        const bAmount = new BigNumber(amount);
+        // BigNumber() returns NaN on non-numeric string
+        if (bAmount.isNaN()) {
+            throw new Error('Amount is not a number');
+        }
+        return bAmount.plus(calculateFee(gasPrice, gasLimit)).toFixed();
     } catch (error) {
         return '0';
     }
