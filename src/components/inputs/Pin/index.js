@@ -30,7 +30,7 @@ const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
-const PinInput = ({ value, onDeleteClick }) => (
+const InputPin = ({ value, onDeleteClick }) => (
     <Wrapper>
         <StyledInput
             disabled
@@ -43,9 +43,9 @@ const PinInput = ({ value, onDeleteClick }) => (
     </Wrapper>
 );
 
-PinInput.propTypes = {
+InputPin.propTypes = {
     onDeleteClick: PropTypes.func.isRequired,
     value: PropTypes.string.isRequired,
 };
 
-export default PinInput;
+export default InputPin;

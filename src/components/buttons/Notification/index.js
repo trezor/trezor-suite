@@ -45,7 +45,7 @@ const IconWrapper = styled.span`
     margin-right: 8px;
 `;
 
-const NotificationButton = ({
+const ButtonNotification = ({
     type, icon, onClick, children, isLoading,
 }) => (
     <Wrapper
@@ -71,7 +71,7 @@ const NotificationButton = ({
     </Wrapper>
 );
 
-NotificationButton.propTypes = {
+ButtonNotification.propTypes = {
     type: PropTypes.string.isRequired,
     icon: PropTypes.shape({
         type: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -83,4 +83,4 @@ NotificationButton.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-export default NotificationButton;
+export default ButtonNotification;

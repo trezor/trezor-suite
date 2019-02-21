@@ -35,15 +35,15 @@ const Wrapper = styled.button`
     }
 `;
 
-const PinButton = ({ children, onClick }) => (
+const ButtonPin = ({ children, onClick }) => (
     <Wrapper onClick={onClick}>
         { children }
     </Wrapper>
 );
 
-PinButton.propTypes = {
+ButtonPin.propTypes = {
     children: PropTypes.string.isRequired,
     onClick: PropTypes.func,
 };
 
-export default PinButton;
+export default ButtonPin;

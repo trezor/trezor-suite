@@ -61,7 +61,7 @@ const Wrapper = styled.button`
         `}
 `;
 
-const ButtonText = ({
+const Button = ({
     children,
     className = '',
     onClick,
@@ -86,7 +86,7 @@ const ButtonText = ({
     </Wrapper>
 );
 
-ButtonText.propTypes = {
+Button.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
     onClick: PropTypes.func,
@@ -98,4 +98,4 @@ ButtonText.propTypes = {
     isTransparent: PropTypes.bool,
 };
 
-export default ButtonText;
+export default Button;
