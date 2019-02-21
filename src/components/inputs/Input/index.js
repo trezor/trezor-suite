@@ -73,6 +73,12 @@ const StyledInput = styled.input`
         color: ${colors.TEXT_SECONDARY};
     }
 
+    &:focus {
+        box-shadow: rgb(214, 215, 215) 0px 0px 6px 0px;
+        border-color: rgb(169, 169, 169);
+        outline: none;
+    }
+
     ${props => props.trezorAction
         && css`
             z-index: 10001;

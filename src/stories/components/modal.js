@@ -2,7 +2,7 @@ import Modal from 'components/Modal';
 
 import ButtonText from 'components/buttons/Button';
 import PinButton from 'components/buttons/Pin';
-import PinInput from 'components/inputs/Pin';
+import InputPin from 'components/inputs/Pin';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import Link from 'components/Link';
@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import { withInfo } from '@storybook/addon-info';
 
 const ModalWrapper = styled.div`
-    padding: 25px;
+    padding: 30px 48px;
 `;
 const InputWrapper = styled.div`
     margin-top: 24px;
@@ -70,7 +70,7 @@ storiesOf('Modal', module)
                 <H2>Enter Trezor PIN</H2>
                 <P isSmaller>The PIN layout is displayed on your Trezor.</P>
                 <InputWrapper>
-                    <PinInput onDeleteClick={() => {}} value="" />
+                    <InputPin onDeleteClick={() => {}} value="" />
                 </InputWrapper>
                 <PinRow>
                     <PinButton>&#8226;</PinButton>
@@ -109,7 +109,7 @@ storiesOf('Modal', module)
                 Modal, 
                 ButtonText, 
                 PinButton, 
-                PinInput, 
+                InputPin, 
                 P, 
                 H2, 
                 Link 

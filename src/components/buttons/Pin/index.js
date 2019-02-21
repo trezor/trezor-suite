@@ -17,6 +17,7 @@ const Wrapper = styled.button`
     border: 1px solid ${colors.DIVIDER};
     background: ${colors.WHITE};
     transition: all 0.3s;
+    font-family: 'Roboto';
 
     &:first-child {
         margin-left: 0px;
