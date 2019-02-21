@@ -7,9 +7,11 @@ import {
 import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import Textarea from 'react-textarea-autosize';
 import colors from 'config/colors';
+import ICONS from 'config/icons';
+import Icon from 'components/Icon';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -26,7 +28,7 @@ const StyledTextarea = styled(Textarea)`
     min-height: 85px;
     padding: 10px 12px;
     box-sizing: border-box;
-    border: 1px solid ${props => (props.colorBorder ? props.colorBorder : colors.DIVIDER)};
+    border: 1px solid ${props => (props.borderColor ? props.borderColor : colors.DIVIDER)};
     border-radius: 2px;
     resize: none;
     outline: none;
@@ -63,6 +65,12 @@ const StyledTextarea = styled(Textarea)`
         opacity: 1;
     }
 
+    &:focus {
+        box-shadow: rgb(214, 215, 215) 0px 0px 6px 0px;
+        border-color: rgb(169, 169, 169);
+        outline: none;
+    }
+
     &:read-only {
         background: ${colors.GRAY_LIGHT};
         color: ${colors.TEXT_SECONDARY};
@@ -94,12 +102,6 @@ const StyledTextarea = styled(Textarea)`
         }
     }
 
-    &:focus {
-        box-shadow: rgb(214, 215, 215) 0px 0px 6px 0px;
-        border-color: rgb(169, 169, 169);
-        outline: none;
-    }
-
     ${props => props.trezorAction && css`
         z-index: 10001; /* bigger than modal container */
         border-color: ${colors.WHITE};
@@ -110,6 +112,13 @@ const StyledTextarea = styled(Textarea)`
     `}
 `;
 
+const StyledIcon = styled(Icon)`
+    position: absolute;
+    left: auto;
+    top: 3px;
+    right: 10px;
+`;
+
 const TopLabel = styled.span`
     padding-bottom: 10px;
     color: ${colors.TEXT_SECONDARY};
@@ -118,19 +127,8 @@ const TopLabel = styled.span`
 const BottomText = styled.span`
     font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
+    margin-top: 10px;
 `;
-
-const getColor = (inputState) => {
-    let color = '';
-    if (inputState === 'success') {
-        color = colors.SUCCESS_PRIMARY;
-    } else if (inputState === 'warning') {
-        color = colors.WARNING_PRIMARY;
-    } else if (inputState === 'error') {
-        color = colors.ERROR_PRIMARY;
-    }
-    return color;
-};
 
 const TrezorAction = styled.div`
     display: ${props => (props.action ? 'flex' : 'none')};
@@ -159,61 +157,77 @@ const ArrowUp = styled.div`
     z-index: 10001;
 `;
 
-const TextArea = ({
-    className,
-    placeholder = '',
-    value,
-    customStyle = {},
-    onFocus,
-    onBlur,
-    isDisabled,
-    readOnly,
-    name,
-    onChange,
-    topLabel,
-    rows,
-    maxRows,
-    maxLength,
-    autoSelect,
-    state = '',
-    bottomText = '',
-    trezorAction = null,
-}) => (
-    <Wrapper className={className}>
-        {topLabel && (
-            <TopLabel>{topLabel}</TopLabel>
-        )}
-        <StyledTextarea
-            spellCheck="false"
-            autoCorrect="off"
-            autoCapitalize="off"
-            maxRows={maxRows}
-            maxLength={maxLength}
-            rows={rows}
-            className={className}
-            disabled={isDisabled}
-            name={name}
-            style={customStyle}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            value={value}
-            readOnly={readOnly}
-            onClick={autoSelect ? event => event.target.select() : null}
-            placeholder={placeholder}
-            onChange={onChange}
-        />
-        <TrezorAction action={trezorAction}>
-            <ArrowUp />{trezorAction}
-        </TrezorAction>
-        {bottomText && (
-            <BottomText
-                color={getColor(state)}
-            >
-                {bottomText}
-            </BottomText>
-        )}
-    </Wrapper>
-);
+class TextArea extends PureComponent {
+    getIcon(inputState) {
+        let icon = [];
+        if (inputState === 'success') {
+            icon = ICONS.CHECKED;
+        } else if (inputState === 'warning') {
+            icon = ICONS.WARNING;
+        } else if (inputState === 'error') {
+            icon = ICONS.ERROR;
+        }
+        return icon;
+    }
+
+    getColor(inputState) {
+        let color = '';
+        if (inputState === 'success') {
+            color = colors.SUCCESS_PRIMARY;
+        } else if (inputState === 'warning') {
+            color = colors.WARNING_PRIMARY;
+        } else if (inputState === 'error') {
+            color = colors.ERROR_PRIMARY;
+        }
+        return color;
+    }
+
+    render() {
+        return (
+            <Wrapper className={this.props.className}>
+                {this.props.topLabel && (
+                    <TopLabel>{this.props.topLabel}</TopLabel>
+                )}
+                {this.this.props.state && (
+                    <StyledIcon
+                        icon={this.getIcon(this.this.props.state)}
+                        color={this.getColor(this.this.props.state)}
+                    />
+                )}
+                <StyledTextarea
+                    spellCheck="false"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    maxRows={this.props.maxRows}
+                    maxLength={this.props.maxLength}
+                    rows={this.props.rows}
+                    className={this.props.className}
+                    disabled={this.props.isDisabled}
+                    name={this.props.name}
+                    style={this.props.customStyle}
+                    onFocus={this.props.onFocus}
+                    onBlur={this.props.onBlur}
+                    value={this.props.value}
+                    readOnly={this.props.readOnly}
+                    onClick={this.props.autoSelect ? event => event.target.select() : null}
+                    placeholder={this.props.placeholder}
+                    onChange={this.props.onChange}
+                    borderColor={this.getColor(this.props.state)}
+                />
+                <TrezorAction action={this.props.trezorAction}>
+                    <ArrowUp />{this.props.trezorAction}
+                </TrezorAction>
+                {this.props.bottomText && (
+                    <BottomText
+                        color={this.getColor(this.props.state)}
+                    >
+                        {this.props.bottomText}
+                    </BottomText>
+                )}
+            </Wrapper>
+        );
+    }
+}
 
 TextArea.propTypes = {
     className: PropTypes.string,
