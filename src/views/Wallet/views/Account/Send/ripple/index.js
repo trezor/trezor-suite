@@ -253,16 +253,15 @@ const AccountSend = (props: Props) => {
     }
 
     let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
-    let sendButtonText: string = ` ${total} ${network.symbol}`;
-
+    let sendButtonText = <FormattedMessage {...l10nSendMessages.TR_SEND} values={{ amount: `${total} ${network.symbol}` }} />;
     if (!device.connected) {
-        sendButtonText = 'Device is not connected';
+        sendButtonText = <FormattedMessage {...l10nSendMessages.TR_DEVICE_IS_NOT_CONNECTED} />;
         isSendButtonDisabled = true;
     } else if (!device.available) {
-        sendButtonText = 'Device is unavailable';
+        sendButtonText = <FormattedMessage {...l10nSendMessages.TR_DEVICE_IS_UNAVAILABLE} />;
         isSendButtonDisabled = true;
     } else if (!discovery.completed) {
-        sendButtonText = 'Loading accounts';
+        sendButtonText = <FormattedMessage {...l10nSendMessages.TR_LOADING_ACCOUNTS} />;
         isSendButtonDisabled = true;
     }
 
@@ -281,7 +280,7 @@ const AccountSend = (props: Props) => {
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
-                    topLabel="Address"
+                    topLabel={props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
                     bottomText={errors.address || warnings.address || infos.address}
                     value={address}
                     onChange={event => onAddressChange(event.target.value)}

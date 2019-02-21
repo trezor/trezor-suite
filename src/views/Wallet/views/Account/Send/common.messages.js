@@ -31,6 +31,22 @@ const definedMessages: Messages = defineMessages({
         defaultMessage: 'Advanced settings',
         description: 'Shows advanced sending form',
     },
+    TR_DEVICE_IS_NOT_CONNECTED: {
+        id: 'TR_DEVICE_IS_NOT_CONNECTED',
+        defaultMessage: 'Device is not connected',
+    },
+    TR_DEVICE_IS_UNAVAILABLE: {
+        id: 'TR_DEVICE_IS_UNAVAILABLE',
+        defaultMessage: 'Device is not unavailable',
+    },
+    TR_LOADING_ACCOUNTS: {
+        id: 'TR_LOADING_ACCOUNTS',
+        defaultMessage: 'Loading accounts',
+    },
+    TR_SEND: {
+        id: 'TR_SEND',
+        defaultMessage: 'Send {amount}',
+    },
 });
 
 export default definedMessages;

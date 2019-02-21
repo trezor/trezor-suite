@@ -16,6 +16,11 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_CHECK_FOR_DEVICES',
         defaultMessage: 'Check for devices',
     },
+    TR_ADDRESS: {
+        id: 'TR_ADDRESS',
+        defaultMessage: 'Address',
+        description: 'Used as label for receive/send address input',
+    },
 });
 
 export default definedMessages;
