@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import colors from 'config/colors';
 import { SCREEN_SIZE } from 'config/variables';
+import Icon from 'components/Icon';
+import icons from 'config/icons';
+
 import type { toggleSidebar as toggleSidebarType } from 'actions/WalletActions';
 
 const Wrapper = styled.header`
@@ -12,12 +15,6 @@ const Wrapper = styled.header`
     background: ${colors.HEADER};
     overflow: hidden;
     z-index: 200;
-
-    svg {
-        fill: ${colors.WHITE};
-        height: 28px;
-        width: 100px;
-    }
 `;
 
 const LayoutWrapper = styled.div`
@@ -48,20 +45,31 @@ const MenuToggler = styled.div`
     white-space: nowrap;
     color: ${colors.WHITE};
     align-self: center;
+    align-items: center;
     cursor: pointer;
     user-select: none;
     padding: 10px 0px;
     transition: all .1s ease-in;
 
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
-        display: initial;
+        display: flex;
     }
+`;
+
+const TogglerText = styled.div`
+
 `;
 
 const Logo = styled.div`
     flex: 1;
     justify-content: flex-start;
     display: flex;
+
+    svg {
+        fill: ${colors.WHITE};
+        height: 28px;
+        width: 100px;
+    }
 
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         flex: 1 0 33%;
@@ -115,7 +123,29 @@ const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
     <Wrapper data-test="Main__page__navigation">
         <LayoutWrapper>
             <Left>
-                { sidebarEnabled && <MenuToggler onClick={toggleSidebar}>{sidebarOpened ? '✕ Close' : '☰ Menu'}</MenuToggler>}
+                { sidebarEnabled && (
+                    <MenuToggler onClick={toggleSidebar}>
+                        {sidebarOpened ? (
+                            <>
+                                <Icon
+                                    size={24}
+                                    color={colors.WHITE}
+                                    icon={icons.CLOSE}
+                                />
+                                <TogglerText>Close</TogglerText>
+                            </>
+                        ) : (
+                            <>
+                                <Icon
+                                    color={colors.WHITE}
+                                    size={24}
+                                    icon={icons.MENU}
+                                />
+                                <TogglerText>Menu</TogglerText>
+                            </>
+                        )}
+                    </MenuToggler>
+                )}
             </Left>
             <Logo>
                 <NavLink to="/">
