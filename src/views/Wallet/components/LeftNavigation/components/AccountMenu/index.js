@@ -17,6 +17,7 @@ import {
 } from 'config/variables';
 
 import type { Accounts } from 'flowtype';
+import l10nCommonMessages from 'views/common.messages';
 import type { Props } from '../common';
 import Row from '../Row';
 import RowCoin from '../RowCoin';
@@ -133,7 +134,7 @@ const AccountMenu = (props: Props) => {
                         isSelected={urlAccountIndex === account.index}
                         borderTop={account.index === 0}
                     >
-                        <FormattedMessage {...l10nMessages.TR_ACCOUNT_HASH} values={{ number: account.index + 1 }} />
+                        <FormattedMessage {...l10nCommonMessages.TR_ACCOUNT_HASH} values={{ number: account.index + 1 }} />
                         {balance && <Text>{balance}</Text>}
                         {!balance && <Text><FormattedMessage {...l10nMessages.TR_LOADING_DOT_DOT_DOT} /></Text>}
                     </RowAccountWrapper>
@@ -211,7 +212,7 @@ const AccountMenu = (props: Props) => {
                 <DiscoveryLoadingWrapper>
                     <Loader size={20} />
                     <DiscoveryLoadingText>
-                        <FormattedMessage {...l10nMessages.TR_LOADING_DOT_DOT_DOT} />
+                        <FormattedMessage {...l10nCommonMessages.TR_LOADING_DOT_DOT_DOT} />
                     </DiscoveryLoadingText>
                 </DiscoveryLoadingWrapper>
             </Row>

@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { H1 } from 'components/Heading';
 import P from 'components/Paragraph';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+
+import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,8 +32,8 @@ const StyledH1 = styled(H1)`
 const Bootloader = () => (
     <Wrapper>
         <Row>
-            <StyledH1>Your device is in firmware update mode</StyledH1>
-            <StyledP>Please re-connect it</StyledP>
+            <StyledH1><FormattedMessage {...l10nMessages.TR_YOUR_DEVICE_IS_IN_FIRMWARE} /></StyledH1>
+            <StyledP><FormattedMessage {...l10nMessages.TR_PLEASE_RECONNECT_IT} /></StyledP>
         </Row>
     </Wrapper>
 );

@@ -4,6 +4,10 @@ import Button from 'components/Button';
 import Paragraph from 'components/Paragraph';
 import React from 'react';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+
+import l10nCommonMessages from 'views/common.messages';
+import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,10 +32,10 @@ const StyledParagraph = styled(Paragraph)`
 const Initialize = () => (
     <Wrapper data-test="Page__device__not__initialized">
         <Row>
-            <H1>Your device is not initialized</H1>
-            <StyledParagraph>Please use Bitcoin wallet interface to start initialization process</StyledParagraph>
+            <H1><FormattedMessage {...l10nMessages.TR_YOUR_DEVICE_IS_NOT_INITIALIZED} /></H1>
+            <StyledParagraph><FormattedMessage {...l10nMessages.TR_PLEASE_USE_TO_START_INITIALIZATION} /></StyledParagraph>
             <A href="https://beta-wallet.trezor.io/">
-                <Button>Take me to the Bitcoin wallet</Button>
+                <Button><FormattedMessage {...l10nCommonMessages.TR_TAKE_ME_TO_BITCOIN_WALLET} /></Button>
             </A>
         </Row>
     </Wrapper>

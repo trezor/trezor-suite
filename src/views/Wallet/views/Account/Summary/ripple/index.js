@@ -3,16 +3,16 @@ import styled from 'styled-components';
 import React from 'react';
 import { H2 } from 'components/Heading';
 import BigNumber from 'bignumber.js';
-import Icon from 'components/Icon';
-import ICONS from 'config/icons';
 import colors from 'config/colors';
-import Tooltip from 'components/Tooltip';
 import Content from 'views/Wallet/components/Content';
+import { FormattedMessage } from 'react-intl';
+import l10nCommonMessages from 'views/common.messages';
 
 import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import Link from 'components/Link';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
+import l10nSummaryMessages from '../common.messages';
 import AccountBalance from './components/Balance';
 
 import type { Props } from './Container';
@@ -30,11 +30,6 @@ const H2Wrapper = styled.div`
     padding: 20px 0;
 `;
 
-const StyledTooltip = styled(Tooltip)`
-    position: relative;
-    top: 2px;
-`;
-
 const AccountName = styled.div`
     display: flex;
     justify-content: center;
@@ -45,15 +40,6 @@ const AccountTitle = styled.div`
     font-size: ${FONT_SIZE.WALLET_TITLE};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${colors.WALLET_TITLE};
-`;
-
-const StyledIcon = styled(Icon)`
-    position: relative;
-    top: -7px;
-    
-    &:hover {
-        cursor: pointer;
-    }
 `;
 
 const AccountSummary = (props: Props) => {
@@ -83,9 +69,18 @@ const AccountSummary = (props: Props) => {
                 <AccountHeading>
                     <AccountName>
                         <CoinLogo network={account.network} />
-                        <AccountTitle>Account #{parseInt(account.index, 10) + 1}</AccountTitle>
+                        <AccountTitle>
+                            <FormattedMessage
+                                {...l10nCommonMessages.TR_ACCOUNT_HASH}
+                                values={{ number: parseInt(account.index, 10) + 1 }}
+                            />
+                        </AccountTitle>
                     </AccountName>
-                    { !account.empty && <Link href={explorerLink} isGray>See full transaction history</Link> }
+                    { !account.empty && (
+                        <Link href={explorerLink} isGray>
+                            <FormattedMessage {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
+                        </Link>
+                    ) }
                 </AccountHeading>
                 <AccountBalance
                     network={network}
@@ -95,18 +90,7 @@ const AccountSummary = (props: Props) => {
                 />
                 { TMP_SHOW_HISTORY && (
                     <H2Wrapper>
-                        <H2>History</H2>
-                        <StyledTooltip
-                            maxWidth={200}
-                            placement="top"
-                            content="Insert token name, symbol or address to be able to send it."
-                        >
-                            <StyledIcon
-                                icon={ICONS.HELP}
-                                color={colors.TEXT_SECONDARY}
-                                size={24}
-                            />
-                        </StyledTooltip>
+                        <H2><FormattedMessage {...l10nSummaryMessages.TR_HISTORY} /></H2>
                     </H2Wrapper>
                 )
                 }

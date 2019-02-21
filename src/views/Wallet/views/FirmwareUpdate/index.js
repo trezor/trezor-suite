@@ -3,6 +3,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
@@ -15,12 +16,14 @@ import { FONT_SIZE } from 'config/variables';
 import * as deviceUtils from 'utils/device';
 
 import * as RouterActions from 'actions/RouterActions';
+import l10nCommonMessages from 'views/common.messages';
 
 import type {
     TrezorDevice,
     State,
     Dispatch,
 } from 'flowtype';
+import l10nMessages from './index.messages';
 
 type Props = {
     device: ?TrezorDevice;
@@ -127,13 +130,19 @@ const FirmwareUpdate = (props: Props) => (
                 </g>
             </svg>
         </Image>
-        <H1>It’s time to update your firmware</H1>
-        <StyledP>Please use Bitcoin wallet interface to update your firmware.</StyledP>
+        <H1>
+            <FormattedMessage {...l10nMessages.TR_ITS_TIME_TO_UPDATE_FIRMWARE} />
+        </H1>
+        <StyledP>
+            <FormattedMessage {...l10nMessages.TR_PLEASE_USE_OLD_WALLET} />
+        </StyledP>
         <Link href="https://beta-wallet.trezor.io">
-            <Button>Take me to the Bitcoin wallet</Button>
+            <Button>
+                <FormattedMessage {...l10nCommonMessages.TR_TAKE_ME_TO_BITCOIN_WALLET} />
+            </Button>
         </Link>
         {deviceUtils.isDeviceAccessible(props.device) && (
-            <StyledNavLink to="/">I’ll do that later.</StyledNavLink>
+            <StyledNavLink to="/"><FormattedMessage {...l10nMessages.TR_I_WILL_DO_THAT_LATER} /></StyledNavLink>
         )}
     </Wrapper>
 );

@@ -11,7 +11,7 @@ import { H1 } from 'components/Heading';
 import Paragraph from 'components/Paragraph';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './index.messages';
+import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -54,8 +54,8 @@ const Dashboard = () => (
     <Content>
         <Wrapper>
             <Row data-test="Dashboard__page__content">
-                <H1><FormattedMessage {...messages.title} /></H1>
-                <StyledP><FormattedMessage {...messages.body} /></StyledP>
+                <H1><FormattedMessage {...l10nMessages.TR_PLEASE_SELECT_YOUR} /></H1>
+                <StyledP><FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} /></StyledP>
                 <Overlay>
                     <Image src={EthIcon} width={20} />
                     <Image src={RippleIcon} width={25} />

@@ -3,6 +3,9 @@ import { H1 } from 'components/Heading';
 import Paragraph from 'components/Paragraph';
 import React from 'react';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+
+import l10nMessages from './index.messages';
 
 
 const Wrapper = styled.div`
@@ -26,8 +29,8 @@ const StyledParagraph = styled(Paragraph)`
 const Seedless = () => (
     <Wrapper>
         <Row>
-            <H1>Device is in seedless mode</H1>
-            <StyledParagraph>It&apos;s not suitable to use this service.</StyledParagraph>
+            <H1><FormattedMessage {...l10nMessages.TR_DEVICE_IS_IN_SEEDLESS} /></H1>
+            <StyledParagraph><FormattedMessage {...l10nMessages.TR_DEVICE_IS_INITIALIZED_IN_SEEDLESS_MODE} /></StyledParagraph>
         </Row>
     </Wrapper>
 );

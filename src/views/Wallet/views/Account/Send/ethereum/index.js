@@ -23,7 +23,7 @@ import PendingTransactions from '../components/PendingTransactions';
 
 
 import l10nMessages from './index.messages';
-import l10nSendMessages from '../common.messages';
+import l10nSendMessages from '../../common.messages';
 import type { Props } from './Container';
 
 // TODO: Decide on a small screen width for the whole app

@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import colors from 'config/colors';
 
-import l10nSendMessages from 'views/Wallet/views/Account/Send/common.messages';
+import l10nSendMessages from 'views/Wallet/views/Account/common.messages';
 import Input from 'components/inputs/Input';
 import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';

@@ -1,13 +1,15 @@
 /* @flow */
 import React, { PureComponent } from 'react';
+import { FormattedMessage } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-
 import type { Network, State as ReducersState } from 'flowtype';
+import l10nMessages from './index.messages';
+
 
 type Props = {
     network: Network,
@@ -131,7 +133,7 @@ class AccountBalance extends PureComponent<Props, State> {
                 {!this.state.isHidden && (
                     <React.Fragment>
                         <BalanceWrapper>
-                            <Label>Balance</Label>
+                            <Label><FormattedMessage {...l10nMessages.TR_BALANCE} /></Label>
                             {fiatRate && (
                                 <FiatValue>${fiat}</FiatValue>
                             )}
@@ -139,7 +141,7 @@ class AccountBalance extends PureComponent<Props, State> {
                         </BalanceWrapper>
                         {fiatRate && (
                             <BalanceRateWrapper>
-                                <Label>Rate</Label>
+                                <Label><FormattedMessage {...l10nMessages.TR_RATE} /></Label>
                                 <FiatValueRate>${fiatRateValue}</FiatValueRate>
                                 <CoinBalance>1.00 {network.symbol}</CoinBalance>
                             </BalanceRateWrapper>

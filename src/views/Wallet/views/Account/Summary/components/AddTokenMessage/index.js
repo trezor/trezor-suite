@@ -1,9 +1,11 @@
 /* @flow */
 import styled from 'styled-components';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { H2 } from 'components/Heading';
 import P from 'components/Paragraph';
+import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -54,8 +56,12 @@ const AddTokenMessage = () => (
                 </g>
             </g>
         </StyledSVG>
-        <H2>Add your tokens</H2>
-        <StyledP isSmaller>Search for the token or add them manually by pasting token address into search input.</StyledP>
+        <H2>
+            <FormattedMessage {...l10nMessages.TR_ADD_YOUR_TOKENS} />
+        </H2>
+        <StyledP isSmaller>
+            <FormattedMessage {...l10nMessages.TR_SEARCH_FOR_THE_TOKEN} />
+        </StyledP>
     </Wrapper>
 );
 export default AddTokenMessage;
