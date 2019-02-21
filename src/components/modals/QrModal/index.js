@@ -38,10 +38,17 @@ const CameraPlaceholder = styled(P)`
     padding: 10px 0;
 `;
 
-const Error = styled(P)`
-    text-align: center;
+const Error = styled.div`
     padding: 10px 0;
+`;
+
+const ErrorTitle = styled(P)`
+    text-align: center;
     color: ${colors.ERROR_PRIMARY};
+`;
+const ErrorMessage = styled.span`
+    text-align: center;
+    color: ${colors.TEXT_PRIMARY};
 `;
 
 const StyledQrReader = styled(QrReader)`
@@ -95,13 +102,25 @@ class QrModal extends React.Component<Props, State> {
     }
 
     handleError = (err: any) => {
-        console.log(err);
-        this.setState({
-            error: err,
-        });
-
+        // log thrown error
+        console.error(err);
         if (this.props.onError) {
             this.props.onError(err);
+        }
+
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError'
+            || err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+            this.setState({
+                error: 'Permission to access the camera was denied.',
+            });
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+            this.setState({
+                error: 'The camera was not recognized.',
+            });
+        } else {
+            this.setState({
+                error: 'Unknown error. See console logs for details.',
+            });
         }
     }
 
@@ -123,29 +142,25 @@ class QrModal extends React.Component<Props, State> {
                     />
                 </CloseLink>
                 <Padding>
-                    <H2>Scan an address from a QR code</H2>
-                    {!this.state.readerLoaded && (
-                        <CameraPlaceholder>
-                            Waiting for camera...
-                        </CameraPlaceholder>
-                    )
-                    }
-                </Padding>
-                <StyledQrReader
-                    delay={500}
-                    onError={this.handleError}
-                    onScan={this.handleScan}
-                    onLoad={this.onLoad}
-                    style={{ width: '100%' }}
-                    showViewFinder={false}
-                />
-                <Padding>
+                    <H2>Scan QR code</H2>
+                    {!this.state.readerLoaded && !this.state.error && <CameraPlaceholder>Waiting for camera...</CameraPlaceholder>}
                     {this.state.error && (
                         <Error>
-                            {this.state.error.toString()}
+                            <ErrorTitle>Oops! Something went wrong!</ErrorTitle>
+                            <ErrorMessage>{this.state.error.toString()}</ErrorMessage>
                         </Error>
                     )}
                 </Padding>
+                {!this.state.error && (
+                    <StyledQrReader
+                        delay={500}
+                        onError={this.handleError}
+                        onScan={this.handleScan}
+                        onLoad={this.onLoad}
+                        style={{ width: '100%' }}
+                        showViewFinder={false}
+                    />
+                )}
             </Wrapper>
         );
     }
