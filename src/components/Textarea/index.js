@@ -188,10 +188,10 @@ class TextArea extends PureComponent {
                 {this.props.topLabel && (
                     <TopLabel>{this.props.topLabel}</TopLabel>
                 )}
-                {this.this.props.state && (
+                {this.props.state && (
                     <StyledIcon
-                        icon={this.getIcon(this.this.props.state)}
-                        color={this.getColor(this.this.props.state)}
+                        icon={this.getIcon(this.props.state)}
+                        color={this.getColor(this.props.state)}
                     />
                 )}
                 <StyledTextarea
