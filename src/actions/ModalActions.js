@@ -59,6 +59,17 @@ export const onPassphraseSubmit = (passphrase: string): AsyncAction => async (di
     });
 };
 
+export const onReceiveConfirmation = (confirmation: any): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
+    await TrezorConnect.uiResponse({
+        type: UI.RECEIVE_CONFIRMATION,
+        payload: confirmation,
+    });
+
+    dispatch({
+        type: MODAL.CLOSE,
+    });
+};
+
 export const onRememberDevice = (device: TrezorDevice): Action => ({
     type: CONNECT.REMEMBER,
     device,
@@ -173,6 +184,7 @@ export const onQrScan = (parsedUri: parsedURI, networkType: string): ThunkAction
 export default {
     onPinSubmit,
     onPassphraseSubmit,
+    onReceiveConfirmation,
     onRememberDevice,
     onForgetDevice,
     onForgetSingleDevice,
