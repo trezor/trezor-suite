@@ -253,7 +253,10 @@ const AccountSend = (props: Props) => {
     }
 
     let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
-    let sendButtonText = <FormattedMessage {...l10nSendMessages.TR_SEND} values={{ amount: `${total} ${network.symbol}` }} />;
+    let sendButtonText = <FormattedMessage {...l10nSendMessages.TR_SEND} values={{ amount: '' }} />;
+    if (total !== '0') {
+        sendButtonText = <FormattedMessage {...l10nSendMessages.TR_SEND} values={{ amount: `${total} ${network.symbol}` }} />;
+    }
     if (!device.connected) {
         sendButtonText = <FormattedMessage {...l10nSendMessages.TR_DEVICE_IS_NOT_CONNECTED} />;
         isSendButtonDisabled = true;

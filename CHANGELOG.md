@@ -1,3 +1,22 @@
+## 1.1.0-beta
+__added__
+- Ripple support enabled
+- responsive sidebar
+- QR code scanner in send form
+- clear send form button
+
+__changed__
+- update dependencies
+- upgrade babel7
+- split icons for T1 and TT
+- device header styles
+- input styles
+- split sign and verify title
+
+__fixed__
+- beta disclaimer wrapper position
+- sidebar scrollbar
+
 ## 1.0.3-beta
 __added__
 - Ethereum: sign & verify tab

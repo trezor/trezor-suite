@@ -19,7 +19,7 @@ export default (props: Props) => {
         const { reserve, balance } = account;
         const bigBalance = new Bignumber(balance);
         const bigReserve = new Bignumber(reserve);
-        if (bigBalance.lessThan(bigReserve)) {
+        if (bigBalance.isLessThan(bigReserve)) {
             notifications.push(
                 <Notification
                     key="xrp-warning"

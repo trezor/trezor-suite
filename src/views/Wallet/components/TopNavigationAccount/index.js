@@ -16,6 +16,9 @@ type Props = {
     router: $ElementType<State, 'router'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
 };
+type LocalState = {
+    wrapper: ?HTMLElement,
+};
 
 const Wrapper = styled.div`
     position: relative;
@@ -68,9 +71,18 @@ const StyledNavLink = styled(NavLink)`
     }
 `;
 
-class TopNavigationAccount extends React.PureComponent<Props> {
+class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
+    constructor(props) {
+        super(props);
+        this.state = {
+            wrapper: null,
+        };
+    }
+
     wrapperRefCallback = (element: ?HTMLElement) => {
-        this.wrapper = element;
+        this.setState({
+            wrapper: element,
+        });
     }
 
     wrapper: ?HTMLElement;
@@ -91,7 +103,7 @@ class TopNavigationAccount extends React.PureComponent<Props> {
                 {network.type === 'ethereum'
                     && <StyledNavLink to={`${basePath}/signverify`}><FormattedMessage {...l10nMessages.TR_SIGN_AND_VERIFY} /></StyledNavLink>
                 }
-                <Indicator pathname={pathname} wrapper={() => this.wrapper} />
+                <Indicator pathname={pathname} wrapper={() => this.state.wrapper} />
             </Wrapper>
         );
     }

@@ -33,7 +33,7 @@ const initialState: State = {
     dropdownOpened: false,
     firstLocationChange: true,
     showBetaDisclaimer: false,
-    showSidebar: true,
+    showSidebar: false,
     initialParams: null,
     initialPathname: null,
     disconnectRequest: null,

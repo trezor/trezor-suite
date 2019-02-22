@@ -8,6 +8,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import ConnectedIntlProvider from 'support/ConnectedIntlProvider';
 import ErrorBoundary from 'support/ErrorBoundary';
 import ImagesPreloader from 'support/ImagesPreloader';
+import Version from 'views/Landing/views/Version';
 import { getPattern } from 'support/routes';
 
 // landing views
@@ -40,6 +41,7 @@ const App = () => (
             <ConnectedRouter history={history}>
                 <Switch>
                     <Route exact path={getPattern('landing-home')} component={RootView} />
+                    <Route exact path={getPattern('landing-version')} component={Version} />
                     <Route exact path={getPattern('landing-bridge')} component={InstallBridge} />
                     <Route exact path={getPattern('landing-import')} component={ImportView} />
                     <Route>

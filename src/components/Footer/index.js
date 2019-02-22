@@ -12,8 +12,6 @@ import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
 import * as LogActions from 'actions/LogActions';
 
-declare var COMMITHASH: string;
-
 type Props = {
     opened: boolean,
     isLanding: boolean,
@@ -60,7 +58,7 @@ const Right = styled.div`
 const Footer = ({ opened, toggle, isLanding }: Props) => (
     <Wrapper>
         <Left>
-            <Copy title={COMMITHASH}>&copy; {getYear(new Date())}</Copy>
+            <Copy>&copy; {getYear(new Date())}</Copy>
             <StyledLink href="http://satoshilabs.com" isGreen>SatoshiLabs</StyledLink>
             <StyledLink href="./assets/tos.pdf" isGreen>Terms</StyledLink>
             <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>

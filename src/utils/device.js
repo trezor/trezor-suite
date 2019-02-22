@@ -104,7 +104,7 @@ export const getVersion = (device: TrezorDevice): string => {
     if (device.features && device.features.major_version > 1) {
         version = 'T';
     } else {
-        version = '1';
+        version = 'One';
     }
     return version;
 };

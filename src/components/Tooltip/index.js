@@ -68,7 +68,7 @@ Tooltip.propTypes = {
         PropTypes.string,
     ]),
     readMoreLink: PropTypes.string,
-    enterDelayMs: PropTypes.bool,
+    enterDelayMs: PropTypes.number,
 };
 
 export default Tooltip;
