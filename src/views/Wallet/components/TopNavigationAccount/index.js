@@ -97,11 +97,11 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
 
         return (
             <Wrapper className="account-tabs" ref={this.wrapperRefCallback}>
-                <StyledNavLink exact to={`${basePath}`}><FormattedMessage {...l10nMessages.TR_SUMMARY} /></StyledNavLink>
-                <StyledNavLink to={`${basePath}/receive`}><FormattedMessage {...l10nMessages.TR_RECEIVE} /></StyledNavLink>
-                <StyledNavLink to={`${basePath}/send`}><FormattedMessage {...l10nMessages.TR_SEND} /></StyledNavLink>
+                <StyledNavLink exact to={`${basePath}`}><FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} /></StyledNavLink>
+                <StyledNavLink to={`${basePath}/receive`}><FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} /></StyledNavLink>
+                <StyledNavLink to={`${basePath}/send`}><FormattedMessage {...l10nMessages.TR_NAV_SEND} /></StyledNavLink>
                 {network.type === 'ethereum'
-                    && <StyledNavLink to={`${basePath}/signverify`}><FormattedMessage {...l10nMessages.TR_SIGN_AND_VERIFY} /></StyledNavLink>
+                    && <StyledNavLink to={`${basePath}/signverify`}><FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} /></StyledNavLink>
                 }
                 <Indicator pathname={pathname} wrapper={() => this.state.wrapper} />
             </Wrapper>
