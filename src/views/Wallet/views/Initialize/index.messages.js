@@ -11,10 +11,6 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_PLEASE_USE_TO_START_INITIALIZATION',
         defaultMessage: 'Please use Bitcoin wallet interface to start initialization process',
     },
-    TR_I_WILL_DO_THAT_LATER: {
-        id: 'TR_I_WILL_DO_THAT_LATER',
-        defaultMessage: 'I’ll do that later.',
-    },
 });
 
 export default definedMessages;

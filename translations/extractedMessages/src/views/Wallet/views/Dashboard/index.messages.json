@@ -1,12 +1,12 @@
 [
   {
-    "id": "dashboard.selectyourcoin.title",
+    "id": "TR_PLEASE_SELECT_YOUR",
     "description": "Title of the dashboard component if coin was not selected",
     "defaultMessage": "Please select your coin",
     "file": "src/views/Wallet/views/Dashboard/index.messages.js",
     "start": {
       "line": 6,
-      "column": 11
+      "column": 27
     },
     "end": {
       "line": 10,
@@ -14,13 +14,13 @@
     }
   },
   {
-    "id": "dashboard.selectyourcoin.body",
+    "id": "TR_YOU_WILL_GAIN_ACCESS",
     "description": "Content of the dashboard component if coin was not selected",
     "defaultMessage": "You will gain access to receiving & sending selected coin",
     "file": "src/views/Wallet/views/Dashboard/index.messages.js",
     "start": {
       "line": 11,
-      "column": 10
+      "column": 29
     },
     "end": {
       "line": 15,

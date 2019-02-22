@@ -1,0 +1,15 @@
+[
+  {
+    "id": "TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE",
+    "defaultMessage": "New Trezor Bridge is available.",
+    "file": "src/components/notifications/App/components/UpdateBridge/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 39
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  }
+]

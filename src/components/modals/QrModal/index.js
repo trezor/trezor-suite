@@ -1,9 +1,10 @@
 /* @flow */
 
-import * as React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import QrReader from 'react-qr-reader';
 import styled from 'styled-components';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import colors from 'config/colors';
 import icons from 'config/icons';
@@ -15,6 +16,7 @@ import Link from 'components/Link';
 
 import { parseUri } from 'utils/cryptoUriParser';
 import type { parsedURI } from 'utils/cryptoUriParser';
+import l10nMessages from './index.messages';
 import type { Props as BaseProps } from '../Container';
 
 const Wrapper = styled.div`
@@ -59,7 +61,8 @@ const StyledQrReader = styled(QrReader)`
 type Props = {
     onScan: (data: parsedURI) => any,
     onError?: (error: any) => any,
-    onCancel?: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
+    onCancel?: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>,
+    intl: any,
 }
 
 type State = {
@@ -67,7 +70,7 @@ type State = {
     error: any,
 };
 
-class QrModal extends React.Component<Props, State> {
+class QrModal extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -111,15 +114,15 @@ class QrModal extends React.Component<Props, State> {
         if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError'
             || err.name === 'NotReadableError' || err.name === 'TrackStartError') {
             this.setState({
-                error: 'Permission to access the camera was denied.',
+                error: this.props.intl.formatMessage(l10nMessages.TR_CAMERA_PERMISSION_DENIED),
             });
         } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
             this.setState({
-                error: 'The camera was not recognized.',
+                error: this.props.intl.formatMessage(l10nMessages.TR_CAMERA_NOT_RECOGNIZED),
             });
         } else {
             this.setState({
-                error: 'Unknown error. See console logs for details.',
+                error: this.props.intl.formatMessage(l10nMessages.TR_UNKOWN_ERROR_SEE_CONSOLE),
             });
         }
     }
@@ -142,11 +145,11 @@ class QrModal extends React.Component<Props, State> {
                     />
                 </CloseLink>
                 <Padding>
-                    <H2>Scan QR code</H2>
-                    {!this.state.readerLoaded && !this.state.error && <CameraPlaceholder>Waiting for camera...</CameraPlaceholder>}
+                    <H2><FormattedMessage {...l10nMessages.TR_SCAN_QR_CODE} /></H2>
+                    {!this.state.readerLoaded && !this.state.error && <CameraPlaceholder><FormattedMessage {...l10nMessages.TR_WAITING_FOR_CAMERA} /></CameraPlaceholder>}
                     {this.state.error && (
                         <Error>
-                            <ErrorTitle>Oops! Something went wrong!</ErrorTitle>
+                            <ErrorTitle><FormattedMessage {...l10nMessages.TR_OOPS_SOMETHING_WENT_WRONG} /></ErrorTitle>
                             <ErrorMessage>{this.state.error.toString()}</ErrorMessage>
                         </Error>
                     )}
@@ -170,6 +173,7 @@ QrModal.propTypes = {
     onScan: PropTypes.func.isRequired,
     onError: PropTypes.func,
     onCancel: PropTypes.func,
+    intl: PropTypes.any,
 };
 
-export default QrModal;
+export default injectIntl(QrModal);

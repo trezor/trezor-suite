@@ -13,16 +13,30 @@
     }
   },
   {
+    "id": "TR_ACCOUNT_HASH",
+    "description": "Used in auto-generated account label",
+    "defaultMessage": "Account #{number}",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 10,
+      "column": 21
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  },
+  {
     "id": "TR_CLEAR",
     "description": "Clear form button",
     "defaultMessage": "Clear",
     "file": "src/views/common.messages.js",
     "start": {
-      "line": 10,
+      "line": 15,
       "column": 14
     },
     "end": {
-      "line": 14,
+      "line": 19,
       "column": 5
     }
   },
@@ -31,11 +45,129 @@
     "defaultMessage": "Check for devices",
     "file": "src/views/common.messages.js",
     "start": {
-      "line": 15,
+      "line": 20,
       "column": 26
     },
     "end": {
-      "line": 18,
+      "line": 23,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS",
+    "description": "Used as label for receive/send address input",
+    "defaultMessage": "Address",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 24,
+      "column": 16
+    },
+    "end": {
+      "line": 28,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LOADING_DOT_DOT_DOT",
+    "defaultMessage": "Loading...",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 29,
+      "column": 28
+    },
+    "end": {
+      "line": 32,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TAKE_ME_TO_BITCOIN_WALLET",
+    "defaultMessage": "Take me to the Bitcoin wallet",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 33,
+      "column": 34
+    },
+    "end": {
+      "line": 36,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_I_WILL_DO_THAT_LATER",
+    "defaultMessage": "I’ll do that later.",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 37,
+      "column": 29
+    },
+    "end": {
+      "line": 40,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_DETAILS",
+    "defaultMessage": "Show details",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 41,
+      "column": 21
+    },
+    "end": {
+      "line": 44,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT",
+    "defaultMessage": "Upgrade for the newest features.",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 45,
+      "column": 44
+    },
+    "end": {
+      "line": 48,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LEARN_MORE",
+    "defaultMessage": "Learn more",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 49,
+      "column": 19
+    },
+    "end": {
+      "line": 52,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GO_TO_STANDARD_WALLET",
+    "defaultMessage": "Go to your standard wallet",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 53,
+      "column": 30
+    },
+    "end": {
+      "line": 56,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GO_TO_HIDDEN_WALLET",
+    "defaultMessage": "Go to your hidden wallet",
+    "file": "src/views/common.messages.js",
+    "start": {
+      "line": 57,
+      "column": 28
+    },
+    "end": {
+      "line": 60,
       "column": 5
     }
   }

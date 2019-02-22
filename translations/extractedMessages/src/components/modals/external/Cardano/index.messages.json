@@ -1,0 +1,15 @@
+[
+  {
+    "id": "TR_CARDANO_WALLET",
+    "defaultMessage": "Cardano wallet",
+    "file": "src/components/modals/external/Cardano/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 23
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  }
+]

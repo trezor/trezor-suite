@@ -11,10 +11,6 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_PLEASE_USE_OLD_WALLET',
         defaultMessage: 'Please use Bitcoin wallet interface to update your firmware.',
     },
-    TR_I_WILL_DO_THAT_LATER: {
-        id: 'TR_I_WILL_DO_THAT_LATER',
-        defaultMessage: 'I’ll do that later.',
-    },
 });
 
 export default definedMessages;

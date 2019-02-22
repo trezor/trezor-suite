@@ -7,8 +7,11 @@ import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import Link from 'components/Link';
 import Button from 'components/Button';
+import { FormattedMessage } from 'react-intl';
 
+import l10nCommonMessages from 'views/common.messages';
 import type { TrezorDevice } from 'flowtype';
+import l10nMessages from './index.messages';
 
 import PinButton from './components/Button';
 import PinInput from './components/Input';
@@ -146,8 +149,13 @@ class Pin extends PureComponent<Props, State> {
         const { pin } = this.state;
         return (
             <Wrapper>
-                <H2>Enter { device.label } PIN</H2>
-                <P isSmaller>The PIN layout is displayed on your Trezor.</P>
+                <H2>
+                    <FormattedMessage
+                        {...l10nMessages.TR_ENTER_PIN}
+                        values={{ deviceLabel: device.label }}
+                    />
+                </H2>
+                <P isSmaller><FormattedMessage {...l10nMessages.TR_THE_PIN_LAYOUT_IS_DISPLAYED_ON} /></P>
                 <InputRow>
                     <PinInput value={pin} onDeleteClick={() => this.onPinBackspace()} />
                 </InputRow>
@@ -167,13 +175,23 @@ class Pin extends PureComponent<Props, State> {
                     <PinButton type="button" data-value="3" onClick={() => this.onPinAdd(3)}>&#8226;</PinButton>
                 </PinRow>
                 <Footer>
-                    <Button type="button" onClick={() => onPinSubmit(pin)}>Enter PIN</Button>
-                    <StyledP isSmaller>Not sure how PIN works?
-                        <StyledLink
-                            isGreen
-                            href="https://wiki.trezor.io/User_manual:Entering_PIN"
-                        >Learn more
-                        </StyledLink>
+                    <Button type="button" onClick={() => onPinSubmit(pin)}>
+                        <FormattedMessage {...l10nMessages.TR_ENTER_PIN} />
+                    </Button>
+                    <StyledP isSmaller>
+                        <FormattedMessage
+                            {...l10nMessages.TR_NOT_SURE_HOW_PIN_WORKS}
+                            values={{
+                                TR_LEARN_MORE: (
+                                    <StyledLink
+                                        isGreen
+                                        href="https://wiki.trezor.io/User_manual:Entering_PIN"
+                                    >
+                                        <FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />
+                                    </StyledLink>
+                                ),
+                            }}
+                        />
                     </StyledP>
                 </Footer>
             </Wrapper>

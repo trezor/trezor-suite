@@ -1,41 +1,14 @@
 [
   {
-    "id": "TR_ACCOUNT_HASH",
-    "description": "Used in auto-generated account label",
-    "defaultMessage": "Account #{number}",
-    "file": "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js",
-    "start": {
-      "line": 6,
-      "column": 21
-    },
-    "end": {
-      "line": 10,
-      "column": 5
-    }
-  },
-  {
-    "id": "TR_LOADING_DOT_DOT_DOT",
-    "defaultMessage": "Loading...",
-    "file": "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js",
-    "start": {
-      "line": 11,
-      "column": 28
-    },
-    "end": {
-      "line": 14,
-      "column": 5
-    }
-  },
-  {
     "id": "TR_TO_ADD_A_NEW_ACCOUNT_LAST",
     "defaultMessage": "To add a new account, last account must have some transactions.",
     "file": "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js",
     "start": {
-      "line": 15,
+      "line": 6,
       "column": 34
     },
     "end": {
-      "line": 18,
+      "line": 9,
       "column": 5
     }
   },
@@ -44,11 +17,11 @@
     "defaultMessage": "To add accounts, make sure your device is connected.",
     "file": "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js",
     "start": {
-      "line": 19,
+      "line": 10,
       "column": 24
     },
     "end": {
-      "line": 22,
+      "line": 13,
       "column": 5
     }
   },
@@ -57,11 +30,11 @@
     "defaultMessage": "Add account",
     "file": "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js",
     "start": {
-      "line": 23,
+      "line": 14,
       "column": 20
     },
     "end": {
-      "line": 26,
+      "line": 17,
       "column": 5
     }
   }

@@ -142,7 +142,7 @@ const FirmwareUpdate = (props: Props) => (
             </Button>
         </Link>
         {deviceUtils.isDeviceAccessible(props.device) && (
-            <StyledNavLink to="/"><FormattedMessage {...l10nMessages.TR_I_WILL_DO_THAT_LATER} /></StyledNavLink>
+            <StyledNavLink to="/"><FormattedMessage {...l10nCommonMessages.TR_I_WILL_DO_THAT_LATER} /></StyledNavLink>
         )}
     </Wrapper>
 );

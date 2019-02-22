@@ -2,6 +2,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { FormattedMessage } from 'react-intl';
+
 
 import colors from 'config/colors';
 import { FONT_SIZE, TRANSITION } from 'config/variables';
@@ -13,6 +15,8 @@ import Button from 'components/Button';
 import Input from 'components/inputs/Input';
 
 import type { TrezorDevice } from 'flowtype';
+import l10nCommonMessages from 'views/common.messages';
+import l10nMessages from './index.messages';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
@@ -202,10 +206,23 @@ class Passphrase extends PureComponent<Props, State> {
     render() {
         return (
             <Wrapper>
-                <H2>Enter {this.state.deviceLabel} passphrase</H2>
-                <P isSmaller>Note that passphrase is case-sensitive. If you enter a wrong passphrase, you will not unlock the desired hidden wallet.</P>
+                <H2>
+                    <FormattedMessage
+                        {...l10nMessages.TR_ENTER_DEVICE_PASSPHRASE}
+                        values={{
+                            deviceLabel: this.state.deviceLabel,
+                        }}
+                    />
+                </H2>
+                <P isSmaller>
+                    <FormattedMessage {...l10nMessages.TR_NOTE_COLON_PASSPHRASE} />
+                    {' '}
+                    <FormattedMessage {...l10nMessages.TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA} />
+                </P>
                 <Row>
-                    <Label>Passphrase</Label>
+                    <Label>
+                        <FormattedMessage {...l10nMessages.TR_PASSPHRASE} />
+                    </Label>
                     <Input
                         innerRef={(input) => { this.passphraseInput = input; }}
                         name="passphraseInputValue"
@@ -219,7 +236,9 @@ class Passphrase extends PureComponent<Props, State> {
                 </Row>
                 {!this.state.shouldShowSingleInput && (
                     <Row>
-                        <Label>Confirm passphrase</Label>
+                        <Label>
+                            <FormattedMessage {...l10nMessages.TR_CONFIRM_PASSPHRASE} />
+                        </Label>
                         <Input
                             name="passphraseCheckInputValue"
                             type={this.state.isPassphraseHidden ? 'password' : 'text'}
@@ -233,30 +252,41 @@ class Passphrase extends PureComponent<Props, State> {
                     </Row>
                 )}
                 {!this.state.doPassphraseInputsMatch && (
-                    <PassphraseError>Passphrases do not match</PassphraseError>
+                    <PassphraseError>
+                        <FormattedMessage {...l10nMessages.TR_PASSPHRASES_DO_NOT_MATCH} />
+                    </PassphraseError>
                 )}
                 <Row>
                     <Checkbox
                         isChecked={!this.state.isPassphraseHidden}
                         onClick={() => this.handleCheckboxClick()}
                     >
-                        Show passphrase
+                        <FormattedMessage {...l10nMessages.TR_SHOW_PASSPHRASE} />
                     </Checkbox>
                 </Row>
                 <Row>
                     <Button
                         isDisabled={!this.state.doPassphraseInputsMatch}
                         onClick={() => this.submitPassphrase()}
-                    >Enter
+                    >
+                        <FormattedMessage {...l10nMessages.TR_ENTER} />
                     </Button>
                 </Row>
                 <Footer>
-                    <P isSmaller>Changed your mind? &nbsp;
-                        <LinkButton
-                            isGreen
-                            onClick={() => this.submitPassphrase(true)}
-                        >Go to your standard wallet
-                        </LinkButton>
+                    <P isSmaller>
+                        <FormattedMessage
+                            {...l10nMessages.TR_CHANGED_YOUR_MIND}
+                            values={{
+                                TR_GO_TO_STANDARD_WALLET: (
+                                    <LinkButton
+                                        isGreen
+                                        onClick={() => this.submitPassphrase(true)}
+                                    >
+                                        <FormattedMessage {...l10nCommonMessages.TR_GO_TO_STANDARD_WALLET} />
+                                    </LinkButton>
+                                ),
+                            }}
+                        />
                     </P>
                 </Footer>
             </Wrapper>

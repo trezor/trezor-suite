@@ -1,0 +1,28 @@
+[
+  {
+    "id": "TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL",
+    "defaultMessage": "You will be redirected to external wallet",
+    "file": "src/components/modals/external/common.messages.js",
+    "start": {
+      "line": 6,
+      "column": 43
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GO_TO_EXTERNAL_WALLET",
+    "defaultMessage": "Go to external wallet",
+    "file": "src/components/modals/external/common.messages.js",
+    "start": {
+      "line": 10,
+      "column": 30
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  }
+]

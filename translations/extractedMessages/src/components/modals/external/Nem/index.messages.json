@@ -1,0 +1,54 @@
+[
+  {
+    "id": "TR_NEM_WALLET",
+    "defaultMessage": "NEM wallet",
+    "file": "src/components/modals/external/Nem/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 19
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WE_HAVE_PARTNERED_UP_WITH_THE_NEM",
+    "defaultMessage": "We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.",
+    "file": "src/components/modals/external/Nem/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 42
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL",
+    "defaultMessage": "Make sure you download the Universal Client for Trezor support.",
+    "file": "src/components/modals/external/Nem/index.messages.js",
+    "start": {
+      "line": 14,
+      "column": 45
+    },
+    "end": {
+      "line": 17,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GO_TO_NEM_DOT_IO",
+    "defaultMessage": "Go to nem.io",
+    "file": "src/components/modals/external/Nem/index.messages.js",
+    "start": {
+      "line": 18,
+      "column": 25
+    },
+    "end": {
+      "line": 21,
+      "column": 5
+    }
+  }
+]

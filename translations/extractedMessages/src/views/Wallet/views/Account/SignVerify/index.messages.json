@@ -1,0 +1,86 @@
+[
+  {
+    "id": "TR_MESSAGE",
+    "description": "Used as a label for message input field in Sign and Verify form",
+    "defaultMessage": "Message",
+    "file": "src/views/Wallet/views/Account/SignVerify/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 16
+    },
+    "end": {
+      "line": 10,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SIGNATURE",
+    "description": "Used as a label for signature input field in Sign and Verify form",
+    "defaultMessage": "Signature",
+    "file": "src/views/Wallet/views/Account/SignVerify/index.messages.js",
+    "start": {
+      "line": 11,
+      "column": 18
+    },
+    "end": {
+      "line": 15,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SIGN",
+    "description": "Sign button in Sign and Verify form",
+    "defaultMessage": "Sign",
+    "file": "src/views/Wallet/views/Account/SignVerify/index.messages.js",
+    "start": {
+      "line": 16,
+      "column": 13
+    },
+    "end": {
+      "line": 20,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_VERIFY",
+    "description": "Verify button in Sign and Verify form",
+    "defaultMessage": "Verify",
+    "file": "src/views/Wallet/views/Account/SignVerify/index.messages.js",
+    "start": {
+      "line": 21,
+      "column": 15
+    },
+    "end": {
+      "line": 25,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_VERIFY_MESSAGE",
+    "description": "Header for the Sign and Verify form",
+    "defaultMessage": "Verify Message",
+    "file": "src/views/Wallet/views/Account/SignVerify/index.messages.js",
+    "start": {
+      "line": 26,
+      "column": 23
+    },
+    "end": {
+      "line": 30,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SIGN_MESSAGE",
+    "description": "Header for the Sign and Verify form",
+    "defaultMessage": "Sign Message",
+    "file": "src/views/Wallet/views/Account/SignVerify/index.messages.js",
+    "start": {
+      "line": 31,
+      "column": 21
+    },
+    "end": {
+      "line": 35,
+      "column": 5
+    }
+  }
+]

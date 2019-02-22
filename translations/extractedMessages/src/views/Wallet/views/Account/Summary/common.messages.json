@@ -1,0 +1,93 @@
+[
+  {
+    "id": "TR_SEE_FULL_TRANSACTION_HISTORY",
+    "defaultMessage": "See full transaction history",
+    "file": "src/views/Wallet/views/Account/Summary/common.messages.js",
+    "start": {
+      "line": 6,
+      "column": 37
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TOKENS",
+    "defaultMessage": "Tokens",
+    "file": "src/views/Wallet/views/Account/Summary/common.messages.js",
+    "start": {
+      "line": 10,
+      "column": 15
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_INSERT_TOKEN_NAME",
+    "defaultMessage": "Insert token name, symbol or address to be able to send it.",
+    "file": "src/views/Wallet/views/Account/Summary/common.messages.js",
+    "start": {
+      "line": 14,
+      "column": 26
+    },
+    "end": {
+      "line": 17,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TYPE_IN_A_TOKEN_NAME",
+    "defaultMessage": "Type in a token name or a token address.",
+    "file": "src/views/Wallet/views/Account/Summary/common.messages.js",
+    "start": {
+      "line": 18,
+      "column": 29
+    },
+    "end": {
+      "line": 21,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TOKEN_NOT_FOUND",
+    "defaultMessage": "Token not found",
+    "file": "src/views/Wallet/views/Account/Summary/common.messages.js",
+    "start": {
+      "line": 22,
+      "column": 24
+    },
+    "end": {
+      "line": 25,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ALREADY_USED",
+    "defaultMessage": "Already used",
+    "file": "src/views/Wallet/views/Account/Summary/common.messages.js",
+    "start": {
+      "line": 26,
+      "column": 21
+    },
+    "end": {
+      "line": 29,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HISTORY",
+    "defaultMessage": "History",
+    "file": "src/views/Wallet/views/Account/Summary/common.messages.js",
+    "start": {
+      "line": 30,
+      "column": 16
+    },
+    "end": {
+      "line": 33,
+      "column": 5
+    }
+  }
+]

@@ -53,6 +53,7 @@
   },
   {
     "id": "TR_CALCULATING_DOT_DOT",
+    "description": "Used when calculating gas limit based on data input in ethereum advanced send form",
     "defaultMessage": "Calculating...",
     "file": "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js",
     "start": {
@@ -60,7 +61,7 @@
       "column": 28
     },
     "end": {
-      "line": 25,
+      "line": 26,
       "column": 5
     }
   },
@@ -69,11 +70,11 @@
     "defaultMessage": "Gas price",
     "file": "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js",
     "start": {
-      "line": 26,
+      "line": 27,
       "column": 18
     },
     "end": {
-      "line": 29,
+      "line": 30,
       "column": 5
     }
   },
@@ -82,11 +83,11 @@
     "defaultMessage": "Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. {TR_GAS_PRICE_QUOTATION}. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {recommendedGasPrice} GWEI.",
     "file": "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js",
     "start": {
-      "line": 30,
+      "line": 31,
       "column": 28
     },
     "end": {
-      "line": 33,
+      "line": 34,
       "column": 5
     }
   },
@@ -95,11 +96,11 @@
     "defaultMessage": "Transaction fee = gas limit * gas price",
     "file": "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js",
     "start": {
-      "line": 34,
+      "line": 35,
       "column": 28
     },
     "end": {
-      "line": 37,
+      "line": 38,
       "column": 5
     }
   },
@@ -108,11 +109,11 @@
     "defaultMessage": "Data",
     "file": "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js",
     "start": {
-      "line": 38,
+      "line": 39,
       "column": 13
     },
     "end": {
-      "line": 41,
+      "line": 42,
       "column": 5
     }
   },
@@ -121,11 +122,11 @@
     "defaultMessage": "Data is usually used when you send transactions to contracts.",
     "file": "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js",
     "start": {
-      "line": 42,
+      "line": 43,
       "column": 29
     },
     "end": {
-      "line": 45,
+      "line": 46,
       "column": 5
     }
   }

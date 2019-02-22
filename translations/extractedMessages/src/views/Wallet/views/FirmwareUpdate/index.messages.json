@@ -1,0 +1,28 @@
+[
+  {
+    "id": "TR_ITS_TIME_TO_UPDATE_FIRMWARE",
+    "defaultMessage": "It’s time to update your firmware",
+    "file": "src/views/Wallet/views/FirmwareUpdate/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 36
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_USE_OLD_WALLET",
+    "defaultMessage": "Please use Bitcoin wallet interface to update your firmware.",
+    "file": "src/views/Wallet/views/FirmwareUpdate/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 30
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  }
+]

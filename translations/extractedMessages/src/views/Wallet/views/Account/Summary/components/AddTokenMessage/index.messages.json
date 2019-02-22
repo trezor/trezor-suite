@@ -1,0 +1,28 @@
+[
+  {
+    "id": "TR_ADD_YOUR_TOKENS",
+    "defaultMessage": "Add your tokens",
+    "file": "src/views/Wallet/views/Account/Summary/components/AddTokenMessage/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 24
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEARCH_FOR_THE_TOKEN",
+    "defaultMessage": "Search for the token or add them manually by pasting token address into search input.",
+    "file": "src/views/Wallet/views/Account/Summary/components/AddTokenMessage/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 29
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  }
+]

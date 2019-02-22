@@ -1,0 +1,93 @@
+[
+  {
+    "id": "TR_SELECT_WALLET_TYPE_FOR",
+    "defaultMessage": "Select wallet type for {deviceLabel}",
+    "file": "src/components/modals/device/WalletType/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 31
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHANGE_WALLET_TYPE_FOR",
+    "defaultMessage": "Select wallet type for {deviceLabel}",
+    "file": "src/components/modals/device/WalletType/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 31
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_STANDARD_WALLET",
+    "defaultMessage": "Standard wallet",
+    "file": "src/components/modals/device/WalletType/index.messages.js",
+    "start": {
+      "line": 14,
+      "column": 24
+    },
+    "end": {
+      "line": 17,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HIDDEN_WALLET",
+    "defaultMessage": "Hidden wallet",
+    "file": "src/components/modals/device/WalletType/index.messages.js",
+    "start": {
+      "line": 18,
+      "column": 22
+    },
+    "end": {
+      "line": 21,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONTINUE_TO_ACCESS_STANDARD_WALLET",
+    "defaultMessage": "Continue to access your standard wallet.",
+    "file": "src/components/modals/device/WalletType/index.messages.js",
+    "start": {
+      "line": 22,
+      "column": 43
+    },
+    "end": {
+      "line": 25,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PASSPHRASE_IS_OPTIONAL_FEATURE",
+    "defaultMessage": "Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet.",
+    "file": "src/components/modals/device/WalletType/index.messages.js",
+    "start": {
+      "line": 26,
+      "column": 39
+    },
+    "end": {
+      "line": 29,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK",
+    "defaultMessage": "You will be asked to enter your passphrase to unlock your hidden wallet.",
+    "file": "src/components/modals/device/WalletType/index.messages.js",
+    "start": {
+      "line": 30,
+      "column": 46
+    },
+    "end": {
+      "line": 33,
+      "column": 5
+    }
+  }
+]

@@ -1,11 +1,11 @@
 [
   {
-    "id": "TR_SUMMARY",
+    "id": "TR_NAV_SUMMARY",
     "defaultMessage": "Summary",
     "file": "src/views/Wallet/components/TopNavigationAccount/index.messages.js",
     "start": {
       "line": 6,
-      "column": 16
+      "column": 20
     },
     "end": {
       "line": 9,
@@ -13,12 +13,12 @@
     }
   },
   {
-    "id": "TR_RECEIVE",
+    "id": "TR_NAV_RECEIVE",
     "defaultMessage": "Receive",
     "file": "src/views/Wallet/components/TopNavigationAccount/index.messages.js",
     "start": {
       "line": 10,
-      "column": 16
+      "column": 20
     },
     "end": {
       "line": 13,
@@ -26,12 +26,12 @@
     }
   },
   {
-    "id": "TR_SEND",
+    "id": "TR_NAV_SEND",
     "defaultMessage": "Send",
     "file": "src/views/Wallet/components/TopNavigationAccount/index.messages.js",
     "start": {
       "line": 14,
-      "column": 13
+      "column": 17
     },
     "end": {
       "line": 17,
@@ -39,12 +39,12 @@
     }
   },
   {
-    "id": "TR_SIGN_AND_VERIFY",
+    "id": "TR_NAV_SIGN_AND_VERIFY",
     "defaultMessage": "Sign & Verify",
     "file": "src/views/Wallet/components/TopNavigationAccount/index.messages.js",
     "start": {
       "line": 18,
-      "column": 24
+      "column": 28
     },
     "end": {
       "line": 21,

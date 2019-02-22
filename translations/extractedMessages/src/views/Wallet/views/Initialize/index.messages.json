@@ -1,0 +1,28 @@
+[
+  {
+    "id": "TR_YOUR_DEVICE_IS_NOT_INITIALIZED",
+    "defaultMessage": "Your device is not initialized",
+    "file": "src/views/Wallet/views/Initialize/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 39
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_USE_TO_START_INITIALIZATION",
+    "defaultMessage": "Please use Bitcoin wallet interface to start initialization process",
+    "file": "src/views/Wallet/views/Initialize/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 43
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  }
+]

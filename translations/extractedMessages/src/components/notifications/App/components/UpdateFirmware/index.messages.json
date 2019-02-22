@@ -1,0 +1,15 @@
+[
+  {
+    "id": "TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT",
+    "defaultMessage": "New Trezor firmware is available.",
+    "file": "src/components/notifications/App/components/UpdateFirmware/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 45
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  }
+]

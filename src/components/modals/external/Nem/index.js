@@ -8,10 +8,12 @@ import icons from 'config/icons';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import Button from 'components/Button';
-import { H3, H4 } from 'components/Heading';
+import { H2, H4 } from 'components/Heading';
 import P from 'components/Paragraph';
 import coins from 'constants/coins';
+import { FormattedMessage } from 'react-intl';
 
+import l10nMessages from './index.messages';
 import NemImage from './images/nem-download.png';
 import type { Props as BaseProps } from '../../Container';
 
@@ -51,12 +53,20 @@ const NemWallet = (props: Props) => (
                 icon={icons.CLOSE}
             />
         </StyledLink>
-        <H3>NEM Wallet</H3>
-        <P isSmaller>We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.</P>
-        <H4>Make sure you download the Universal Client for Trezor support.</H4>
+        <H2>
+            <FormattedMessage {...l10nMessages.TR_NEM_WALLET} />
+        </H2>
+        <P isSmaller>
+            <FormattedMessage {...l10nMessages.TR_WE_HAVE_PARTNERED_UP_WITH_THE_NEM} />
+        </P>
+        <H4>
+            <FormattedMessage {...l10nMessages.TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL} />
+        </H4>
         <Img src={NemImage} />
         <Link href={coins.find(i => i.id === 'xem').url}>
-            <StyledButton>Go to nem.io</StyledButton>
+            <StyledButton>
+                <FormattedMessage {...l10nMessages.TR_GO_TO_NEM_DOT_IO} />
+            </StyledButton>
         </Link>
     </Wrapper>
 );

@@ -34,6 +34,30 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_TAKE_ME_TO_BITCOIN_WALLET',
         defaultMessage: 'Take me to the Bitcoin wallet',
     },
+    TR_I_WILL_DO_THAT_LATER: {
+        id: 'TR_I_WILL_DO_THAT_LATER',
+        defaultMessage: 'I’ll do that later.',
+    },
+    TR_SHOW_DETAILS: {
+        id: 'TR_SHOW_DETAILS',
+        defaultMessage: 'Show details',
+    },
+    TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT: {
+        id: 'TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT',
+        defaultMessage: 'Upgrade for the newest features.',
+    },
+    TR_LEARN_MORE: {
+        id: 'TR_LEARN_MORE',
+        defaultMessage: 'Learn more',
+    },
+    TR_GO_TO_STANDARD_WALLET: {
+        id: 'TR_GO_TO_STANDARD_WALLET',
+        defaultMessage: 'Go to your standard wallet',
+    },
+    TR_GO_TO_HIDDEN_WALLET: {
+        id: 'TR_GO_TO_HIDDEN_WALLET',
+        defaultMessage: 'Go to your hidden wallet',
+    },
 });
 
 export default definedMessages;

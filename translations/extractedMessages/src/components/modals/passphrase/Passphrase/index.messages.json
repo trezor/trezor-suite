@@ -1,0 +1,121 @@
+[
+  {
+    "id": "TR_ENTER_DEVICE_PASSPHRASE",
+    "defaultMessage": "Enter {deviceLabel} passphrase",
+    "file": "src/components/modals/passphrase/Passphrase/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 32
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NOTE_COLON_PASSPHRASE",
+    "defaultMessage": "Note: Passphrase is case-sensitive.",
+    "file": "src/components/modals/passphrase/Passphrase/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 30
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA",
+    "defaultMessage": "If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.",
+    "file": "src/components/modals/passphrase/Passphrase/index.messages.js",
+    "start": {
+      "line": 14,
+      "column": 44
+    },
+    "end": {
+      "line": 17,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONFIRM_PASSPHRASE",
+    "defaultMessage": "Confirm Passphrase",
+    "file": "src/components/modals/passphrase/Passphrase/index.messages.js",
+    "start": {
+      "line": 18,
+      "column": 27
+    },
+    "end": {
+      "line": 21,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PASSPHRASES_DO_NOT_MATCH",
+    "defaultMessage": "Passphrases do not match!",
+    "file": "src/components/modals/passphrase/Passphrase/index.messages.js",
+    "start": {
+      "line": 22,
+      "column": 33
+    },
+    "end": {
+      "line": 25,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_PASSPHRASE",
+    "description": "This is on a passphrase button",
+    "defaultMessage": "Show passphrase",
+    "file": "src/components/modals/passphrase/Passphrase/index.messages.js",
+    "start": {
+      "line": 26,
+      "column": 24
+    },
+    "end": {
+      "line": 30,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTER",
+    "defaultMessage": "Enter",
+    "file": "src/components/modals/passphrase/Passphrase/index.messages.js",
+    "start": {
+      "line": 31,
+      "column": 14
+    },
+    "end": {
+      "line": 34,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PASSPHRASE",
+    "description": "Label above input",
+    "defaultMessage": "Passphrase",
+    "file": "src/components/modals/passphrase/Passphrase/index.messages.js",
+    "start": {
+      "line": 35,
+      "column": 19
+    },
+    "end": {
+      "line": 39,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHANGED_YOUR_MIND",
+    "defaultMessage": "Changed your mind? {TR_GO_TO_STANDARD_WALLET}",
+    "file": "src/components/modals/passphrase/Passphrase/index.messages.js",
+    "start": {
+      "line": 40,
+      "column": 26
+    },
+    "end": {
+      "line": 43,
+      "column": 5
+    }
+  }
+]
