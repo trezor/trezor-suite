@@ -10709,10 +10709,10 @@ trezor-connect@7.0.0-beta.2:
     events "^1.1.1"
     whatwg-fetch "^2.0.4"
 
-trezor-translations-manager@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/trezor-translations-manager/-/trezor-translations-manager-1.0.3.tgz#94795fb9fd062f8b90ab2818f69ca41b931a5b58"
-  integrity sha512-DNsssJL61iHcNxwW/LMfsml1ZCeZYDv/oe6NyRcf55ImGIPYesUM/fyeNz4Z+dzsSy0oTEE+/IfK5oF5u4IWCw==
+trezor-translations-manager@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/trezor-translations-manager/-/trezor-translations-manager-1.0.4.tgz#b31f906b96fad91e279c16ee0c8da3113cdb74fa"
+  integrity sha512-khl2kKsDpKY2BJsyS73BQl6N7L+M0ozBDk6hYTlP7sDIx6pbbY6Lnyo4sGJ3wRaZstOOSeGjW9IbYmIxLG2Ubg==
   dependencies:
     csv-stringify "^5.3.0"
     csvtojson "^2.0.8"
