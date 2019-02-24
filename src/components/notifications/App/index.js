@@ -12,6 +12,7 @@ import * as RouterActions from 'actions/RouterActions';
 import OnlineStatus from './components/OnlineStatus';
 import UpdateBridge from './components/UpdateBridge';
 import UpdateFirmware from './components/UpdateFirmware';
+import NoBackup from './components/NoBackup';
 
 export type StateProps = {
     connect: $ElementType<State, 'connect'>;
@@ -33,6 +34,7 @@ const Notifications = (props: Props) => (
         <OnlineStatus {...props} />
         <UpdateBridge {...props} />
         <UpdateFirmware {...props} />
+        <NoBackup {...props} />
     </React.Fragment>
 );
 
