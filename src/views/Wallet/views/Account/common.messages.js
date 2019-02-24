@@ -37,7 +37,7 @@ const definedMessages: Messages = defineMessages({
     },
     TR_DEVICE_IS_UNAVAILABLE: {
         id: 'TR_DEVICE_IS_UNAVAILABLE',
-        defaultMessage: 'Device is not unavailable',
+        defaultMessage: 'Device is unavailable',
     },
     TR_LOADING_ACCOUNTS: {
         id: 'TR_LOADING_ACCOUNTS',

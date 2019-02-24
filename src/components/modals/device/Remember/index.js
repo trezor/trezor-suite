@@ -10,6 +10,7 @@ import Button from 'components/Button';
 import { FormattedMessage } from 'react-intl';
 
 import type { TrezorDevice } from 'flowtype';
+import l10nDeviceMessages from '../common.messages';
 import l10nMessages from './index.messages';
 
 import type { Props as BaseProps } from '../../Container';
@@ -118,19 +119,13 @@ class RememberDevice extends PureComponent<Props, State> {
         let { label } = device;
         const deviceCount = instances ? instances.length : 0;
         if (instances && instances.length > 0) {
-            label = instances.map((instance, index) => {
-                let comma: string = '';
-                if (index > 0) comma = ', ';
-                return (
-                    <span key={instance.instanceLabel}>{ comma }{ instance.instanceLabel }</span>
-                );
-            });
+            label = instances.map(instance => (instance.instanceLabel)).join(',');
         }
         return (
             <Wrapper>
                 <H3>
                     <FormattedMessage
-                        {...l10nMessages.TR_FORGET_LABEL}
+                        {...l10nDeviceMessages.TR_FORGET_LABEL}
                         values={{
                             deviceLabel: label,
                         }}
@@ -148,7 +143,7 @@ class RememberDevice extends PureComponent<Props, State> {
                     <Button onClick={() => this.forget()}>
                         <ButtonContent>
                             <Text>
-                                <FormattedMessage {...l10nMessages.TR_FORGET} />
+                                <FormattedMessage {...l10nDeviceMessages.TR_FORGET} />
                             </Text>
                             <StyledLoader
                                 isSmallText

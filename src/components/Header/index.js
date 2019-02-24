@@ -7,8 +7,11 @@ import colors from 'config/colors';
 import { SCREEN_SIZE } from 'config/variables';
 import Icon from 'components/Icon';
 import icons from 'config/icons';
+import { FormattedMessage } from 'react-intl';
 
 import type { toggleSidebar as toggleSidebarType } from 'actions/WalletActions';
+import l10nMessages from './index.messages';
+
 import LanguagePicker from './components/LanguagePicker/Container';
 
 const Wrapper = styled.header`
@@ -144,7 +147,9 @@ const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
                                     color={colors.WHITE}
                                     icon={icons.CLOSE}
                                 />
-                                <TogglerText>Close</TogglerText>
+                                <TogglerText>
+                                    <FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />
+                                </TogglerText>
                             </>
                         ) : (
                             <>
@@ -153,7 +158,9 @@ const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
                                     size={24}
                                     icon={icons.MENU}
                                 />
-                                <TogglerText>Menu</TogglerText>
+                                <TogglerText>
+                                    <FormattedMessage {...l10nMessages.TR_MENU} />
+                                </TogglerText>
                             </>
                         )}
                     </MenuToggler>
@@ -174,10 +181,10 @@ const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
             </Logo>
             <MenuLinks>
                 <Projects>
-                    <A href="https://trezor.io/" target="_blank" rel="noreferrer noopener">Trezor</A>
-                    <A href="https://wiki.trezor.io/" target="_blank" rel="noreferrer noopener">Wiki</A>
-                    <A href="https://blog.trezor.io/" target="_blank" rel="noreferrer noopener">Blog</A>
-                    <A href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener">Support</A>
+                    <A href="https://trezor.io/" target="_blank" rel="noreferrer noopener"><FormattedMessage {...l10nMessages.TR_TREZOR} /></A>
+                    <A href="https://wiki.trezor.io/" target="_blank" rel="noreferrer noopener"><FormattedMessage {...l10nMessages.TR_WIKI} /></A>
+                    <A href="https://blog.trezor.io/" target="_blank" rel="noreferrer noopener"><FormattedMessage {...l10nMessages.TR_BLOG} /></A>
+                    <A href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener"><FormattedMessage {...l10nMessages.TR_SUPPORT} /></A>
                 </Projects>
                 <LanguagePicker />
             </MenuLinks>

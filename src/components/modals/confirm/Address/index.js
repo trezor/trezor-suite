@@ -9,6 +9,11 @@ import { FONT_SIZE } from 'config/variables';
 
 import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
+import { FormattedMessage } from 'react-intl';
+
+import l10nCommonMessages from 'views/common.messages';
+
+import l10nMessages from './index.messages';
 
 import type { Props } from '../../Container';
 
@@ -41,12 +46,18 @@ const ConfirmAddress = (props: Props) => {
     return (
         <Wrapper>
             <Header>
-                <H3>Confirm address on Trezor</H3>
-                <P>Please compare your address on device with address shown bellow.</P>
+                <H3>
+                    <FormattedMessage {...l10nMessages.TR_CONFIRM_ADDRESS_ON_TREZOR} />
+                </H3>
+                <P>
+                    <FormattedMessage {...l10nMessages.TR_PLEASE_COMPARE_YOUR_ADDRESS} />
+                </P>
             </Header>
             <Content>
                 <P>{ account.descriptor }</P>
-                <Label>{ network.symbol } account #{ (account.index + 1) }</Label>
+                <Label>{ network.symbol }
+                    <FormattedMessage {...l10nCommonMessages.TR_ACCOUNT_HASH} values={{ number: account.index + 1 }} />
+                </Label>
             </Content>
         </Wrapper>
     );

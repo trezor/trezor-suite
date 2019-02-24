@@ -7,10 +7,13 @@ import Link from 'components/Link';
 import { getYear } from 'date-fns';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+
 
 import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
 import * as LogActions from 'actions/LogActions';
+import l10nMessages from './index.messages';
 
 type Props = {
     opened: boolean,
@@ -60,12 +63,17 @@ const Footer = ({ opened, toggle, isLanding }: Props) => (
         <Left>
             <Copy>&copy; {getYear(new Date())}</Copy>
             <StyledLink href="http://satoshilabs.com" isGreen>SatoshiLabs</StyledLink>
-            <StyledLink href="./assets/tos.pdf" isGreen>Terms</StyledLink>
+            <StyledLink href="./assets/tos.pdf" isGreen>
+                <FormattedMessage {...l10nMessages.TR_TERMS} />
+            </StyledLink>
             <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>
         </Left>
         {!isLanding && (
             <Right>
-                Exchange rates by <Link href="https://www.coingecko.com" isGreen>Coingecko</Link>
+                <FormattedMessage
+                    {...l10nMessages.TR_EXCHANGE_RATES_BY}
+                    values={{ service: <Link href="https://www.coingecko.com" isGreen>Coingecko</Link> }}
+                />
             </Right>
         )}
     </Wrapper>
