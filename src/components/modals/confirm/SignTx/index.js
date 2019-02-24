@@ -12,7 +12,6 @@ import DeviceIcon from 'components/images/DeviceIcon';
 import { H3 } from 'components/Heading';
 import { FormattedMessage } from 'react-intl';
 
-import l10nCommonMessages from 'views/common.messages';
 import type { TrezorDevice, State } from 'flowtype';
 import l10nMessages from './index.messages';
 

@@ -36,10 +36,6 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_TO_PREVENT_PHISHING_ATTACKS_COMMA',
         defaultMessage: 'To prevent phishing attacks, you should verify the address on your Trezor first. {claim} to continue with the verification process.',
     },
-    TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM: {
-        id: 'TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM',
-        defaultMessage: 'Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your Trezor again.',
-    },
 });
 
 export default definedMessages;
