@@ -20,6 +20,7 @@ describe('eth utils', () => {
     });
 
     it('padLeftEven', () => {
+        // TODO: add more tests
         expect(utils.padLeftEven('2540be3ff')).toBe('02540be3ff');
     });
 
@@ -39,6 +40,14 @@ describe('eth utils', () => {
     });
 
     it('calculate gas price', () => {
+        // TODO: add more tests
         expect(utils.calcGasPrice(new BigNumber(9898998989), 9)).toBe('89090990901');
+    });
+
+    it('validate address', () => {
+        // TODO: add more tests
+        expect(utils.validateAddress('')).toBe('Address is not set');
+        expect(utils.validateAddress('aaa')).toBe('Address is not valid');
+        expect(utils.validateAddress('BB9bc244D798123fDe783fCc1C72d3Bb8C189413')).toBe('Address is not valid');
     });
 });
