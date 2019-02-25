@@ -10,14 +10,14 @@ export default (props: Props) => {
     if (!needsBackup) return null;
     return (
         <Notification
-            key="needs-backup"
+            key="no-backup"
             type="warning"
             title="Your Trezor is not backed up!"
             message="If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events."
             actions={
                 [{
                     label: 'Create a backup',
-                    callback: () => {}, //TODO
+                    callback: props.routerActions.gotoBackup,
                 }]
             }
         />
