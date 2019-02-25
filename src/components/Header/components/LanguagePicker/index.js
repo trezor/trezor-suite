@@ -14,13 +14,13 @@ const SelectWrapper = styled.div`
 `;
 
 const SelectIcon = styled.span`
-    padding: 0px 6px;
-    margin-right: -38px;
+    margin-right: -24px;
+    padding-left: 6px;
 `;
 
 const StyledSelect = styled.select`
     height: 100%;
-    padding-left: 32px;
+    padding-left: 30px;
     border: 0;
     background: transparent;
     cursor: pointer;
@@ -34,8 +34,8 @@ const StyledSelect = styled.select`
 const LanguagePicker = ({ language, fetchLocale }: Props) => (
     <SelectWrapper>
         <SelectIcon role="img" aria-label="Select language">
-            <svg width="32" height="24">
-                <image xlinkHref={`l10n/flags/${language}.svg`} width="32" height="24" />
+            <svg width="24" height="18">
+                <image xlinkHref={`l10n/flags/${language}.svg`} width="24" height="18" />
             </svg>
         </SelectIcon>
         <StyledSelect
