@@ -6,6 +6,7 @@ module.exports = {
     testURL: 'http://localhost',
     modulePathIgnorePatterns: [
         'node_modules',
+        'utils/build.js',
         'utils/windowUtils.js',
         'utils/promiseUtils.js',
         'utils/networkUtils.js',
