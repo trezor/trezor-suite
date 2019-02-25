@@ -96,7 +96,7 @@
   },
   {
     "id": "TR_DEVICE_IS_UNAVAILABLE",
-    "defaultMessage": "Device is not unavailable",
+    "defaultMessage": "Device is unavailable",
     "file": "src/views/Wallet/views/Account/common.messages.js",
     "start": {
       "line": 38,

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "TR_ATTENTION_COLON_THE_LOG_CONTAINS",
+    "defaultMessage": "Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.",
+    "file": "src/components/Log/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 41
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LOG",
+    "description": "application event and error",
+    "defaultMessage": "Log",
+    "file": "src/components/Log/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 12
+    },
+    "end": {
+      "line": 14,
+      "column": 5
+    }
+  }
+]

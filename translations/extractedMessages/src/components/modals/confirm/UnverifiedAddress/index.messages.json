@@ -1,0 +1,107 @@
+[
+  {
+    "id": "TR_DEVICE_LABEL_IS_NOT_CONNECTED",
+    "defaultMessage": "{deviceLabel} is not connected",
+    "file": "src/components/modals/confirm/UnverifiedAddress/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 38
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_LABEL_IS_UNAVAILABLE",
+    "defaultMessage": "{deviceLabel} is unavailable",
+    "file": "src/components/modals/confirm/UnverifiedAddress/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 36
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_CONNECT_YOUR_DEVICE",
+    "defaultMessage": "Please connect your devicet",
+    "file": "src/components/modals/confirm/UnverifiedAddress/index.messages.js",
+    "start": {
+      "line": 14,
+      "column": 35
+    },
+    "end": {
+      "line": 17,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_ENABLE_PASSPHRASE",
+    "defaultMessage": "Please enable passphrase settings",
+    "file": "src/components/modals/confirm/UnverifiedAddress/index.messages.js",
+    "start": {
+      "line": 18,
+      "column": 33
+    },
+    "end": {
+      "line": 21,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_DISABLE_PASSPHRASE",
+    "defaultMessage": "Please disable passphrase settings",
+    "file": "src/components/modals/confirm/UnverifiedAddress/index.messages.js",
+    "start": {
+      "line": 22,
+      "column": 34
+    },
+    "end": {
+      "line": 25,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_UNVERIFIED_ADDRESS",
+    "defaultMessage": "Show unverified address",
+    "file": "src/components/modals/confirm/UnverifiedAddress/index.messages.js",
+    "start": {
+      "line": 26,
+      "column": 32
+    },
+    "end": {
+      "line": 29,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TRY_AGAIN",
+    "description": "Try to verify the address again",
+    "defaultMessage": "Try again",
+    "file": "src/components/modals/confirm/UnverifiedAddress/index.messages.js",
+    "start": {
+      "line": 30,
+      "column": 18
+    },
+    "end": {
+      "line": 34,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA",
+    "defaultMessage": "To prevent phishing attacks, you should verify the address on your Trezor first. {claim} to continue with the verification process.",
+    "file": "src/components/modals/confirm/UnverifiedAddress/index.messages.js",
+    "start": {
+      "line": 35,
+      "column": 42
+    },
+    "end": {
+      "line": 38,
+      "column": 5
+    }
+  }
+]

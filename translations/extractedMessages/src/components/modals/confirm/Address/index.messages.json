@@ -1,0 +1,28 @@
+[
+  {
+    "id": "TR_CONFIRM_ADDRESS_ON_TREZOR",
+    "defaultMessage": "Confirm address on Trezor",
+    "file": "src/components/modals/confirm/Address/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 34
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_COMPARE_YOUR_ADDRESS",
+    "defaultMessage": "Please compare your address on device with address shown bellow",
+    "file": "src/components/modals/confirm/Address/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 36
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  }
+]

@@ -1,22 +1,260 @@
 {
+  "TR_TERMS": {
+    "source": "Terms",
+    "meta": {
+      "comment": "As in Terms and Conditions, In the bottom footer",
+      "occurrences": [
+        "src/components/Footer/index.messages.js"
+      ]
+    }
+  },
+  "TR_EXCHANGE_RATES_BY": {
+    "source": "Exchange rates by {service}",
+    "meta": {
+      "occurrences": [
+        "src/components/Footer/index.messages.js"
+      ]
+    }
+  },
+  "TR_MENU": {
+    "source": "Menu",
+    "meta": {
+      "comment": "Mobile sidebar toggler",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_MENU_CLOSE": {
+    "source": "Close",
+    "meta": {
+      "comment": "Used on button for closing sidebar menu",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR": {
+    "source": "Trezor",
+    "meta": {
+      "comment": "Link in header navigation",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_WIKI": {
+    "source": "Wiki",
+    "meta": {
+      "comment": "Link in header navigation",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_BLOG": {
+    "source": "Blog",
+    "meta": {
+      "comment": "Link in header navigation",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_SUPPORT": {
+    "source": "Support",
+    "meta": {
+      "comment": "Link in header navigation",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_ATTENTION_COLON_THE_LOG_CONTAINS": {
+    "source": "Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.",
+    "meta": {
+      "occurrences": [
+        "src/components/Log/index.messages.js"
+      ]
+    }
+  },
+  "TR_LOG": {
+    "source": "Log",
+    "meta": {
+      "comment": "application event and error",
+      "occurrences": [
+        "src/components/Log/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONFIRM_ACTION_ON_YOUR": {
+    "source": "Confirm action on your Trezor",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/Action/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONFIRM_ADDRESS_ON_TREZOR": {
+    "source": "Confirm address on Trezor",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/Address/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_COMPARE_YOUR_ADDRESS": {
+    "source": "Please compare your address on device with address shown bellow",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/Address/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONFIRM_TRANSACTION_ON": {
+    "source": "Confirm transaction on {deviceLabel} device",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_DETAILS_ARE_SHOWN_ON": {
+    "source": "Details are shown on display",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_TO_LABEL": {
+    "source": "To",
+    "meta": {
+      "comment": "Label for recepeint's address",
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_SEND_LABEL": {
+    "source": "Send",
+    "meta": {
+      "comment": "Label for amount to be send",
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_FEE_LABEL": {
+    "source": "Fee",
+    "meta": {
+      "comment": "Label above the fee used for transaction",
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_LABEL_IS_NOT_CONNECTED": {
+    "source": "{deviceLabel} is not connected",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_LABEL_IS_UNAVAILABLE": {
+    "source": "{deviceLabel} is unavailable",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_CONNECT_YOUR_DEVICE": {
+    "source": "Please connect your devicet",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_ENABLE_PASSPHRASE": {
+    "source": "Please enable passphrase settings",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_DISABLE_PASSPHRASE": {
+    "source": "Please disable passphrase settings",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_SHOW_UNVERIFIED_ADDRESS": {
+    "source": "Show unverified address",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_TRY_AGAIN": {
+    "source": "Try again",
+    "meta": {
+      "comment": "Try to verify the address again",
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": {
+    "source": "To prevent phishing attacks, you should verify the address on your Trezor first. {claim} to continue with the verification process.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
   "TR_FORGET_LABEL": {
     "source": "Forget {deviceLabel}?",
     "meta": {
       "occurrences": [
-        "src/components/modals/device/Remember/index.messages.js"
-      ]
-    }
-  },
-  "TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO": {
-    "source": "Would you like Trezor Wallet to forget your {deviceCount, plural, one {device} other {devices}} or to remember {deviceCount, plural, one {it} other {them}}, so that it is still visible even while disconnected?",
-    "meta": {
-      "occurrences": [
-        "src/components/modals/device/Remember/index.messages.js"
+        "src/components/modals/device/common.messages.js"
       ]
     }
   },
   "TR_FORGET": {
     "source": "Forget",
+    "meta": {
+      "comment": "Button in remember/forget dialog",
+      "occurrences": [
+        "src/components/modals/device/common.messages.js"
+      ]
+    }
+  },
+  "TR_DONT_FORGET": {
+    "source": "Don't forget",
+    "meta": {
+      "comment": "Button in remember/forget dialog",
+      "occurrences": [
+        "src/components/modals/device/Forget/index.messages.js"
+      ]
+    }
+  },
+  "TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM": {
+    "source": "Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your Trezor again.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/Forget/index.messages.js"
+      ]
+    }
+  },
+  "TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO": {
+    "source": "Would you like Trezor Wallet to forget your {deviceCount, plural, one {device} other {devices}} or to remember {deviceCount, plural, one {it} other {them}}, so that it is still visible even while disconnected?",
     "meta": {
       "occurrences": [
         "src/components/modals/device/Remember/index.messages.js"
@@ -917,7 +1155,7 @@
     }
   },
   "TR_DEVICE_IS_UNAVAILABLE": {
-    "source": "Device is not unavailable",
+    "source": "Device is unavailable",
     "meta": {
       "occurrences": [
         "src/views/Wallet/views/Account/common.messages.js"

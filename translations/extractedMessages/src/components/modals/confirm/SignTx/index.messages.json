@@ -1,0 +1,70 @@
+[
+  {
+    "id": "TR_CONFIRM_TRANSACTION_ON",
+    "defaultMessage": "Confirm transaction on {deviceLabel} device",
+    "file": "src/components/modals/confirm/SignTx/index.messages.js",
+    "start": {
+      "line": 6,
+      "column": 31
+    },
+    "end": {
+      "line": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DETAILS_ARE_SHOWN_ON",
+    "defaultMessage": "Details are shown on display",
+    "file": "src/components/modals/confirm/SignTx/index.messages.js",
+    "start": {
+      "line": 10,
+      "column": 29
+    },
+    "end": {
+      "line": 13,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TO_LABEL",
+    "description": "Label for recepeint's address",
+    "defaultMessage": "To",
+    "file": "src/components/modals/confirm/SignTx/index.messages.js",
+    "start": {
+      "line": 14,
+      "column": 17
+    },
+    "end": {
+      "line": 18,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_LABEL",
+    "description": "Label for amount to be send",
+    "defaultMessage": "Send",
+    "file": "src/components/modals/confirm/SignTx/index.messages.js",
+    "start": {
+      "line": 19,
+      "column": 19
+    },
+    "end": {
+      "line": 23,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FEE_LABEL",
+    "description": "Label above the fee used for transaction",
+    "defaultMessage": "Fee",
+    "file": "src/components/modals/confirm/SignTx/index.messages.js",
+    "start": {
+      "line": 24,
+      "column": 18
+    },
+    "end": {
+      "line": 28,
+      "column": 5
+    }
+  }
+]
