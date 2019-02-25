@@ -165,11 +165,11 @@ const AdvancedForm = (props: Props) => {
                                 <Tooltip
                                     content={(
                                         <React.Fragment>
-                                        An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account.
+                                        Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.
                                         </React.Fragment>
                                     )}
                                     maxWidth={200}
-                                    readMoreLink="https://developers.ripple.com/rippleapi-reference.html#payment"
+                                    readMoreLink="https://wiki.trezor.io/Ripple_(XRP)"
                                     placement="top"
                                 >
                                     <StyledIcon

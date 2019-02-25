@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Notification from 'components/Notification';
 import Bignumber from 'bignumber.js';
-
+import Link from 'components/Link';
 import type { Props } from '../../index';
 
 export default (props: Props) => {
@@ -25,7 +25,12 @@ export default (props: Props) => {
                     key="xrp-warning"
                     type="warning"
                     title="Minimum account reserve required"
-                    message={`The Base Reserve is a minimum amount of XRP that is required for every address in the ledger. Currently, this is ${bigReserve.toString()} XRP.`}
+                    message={(
+                        <>
+                            {`Ripple addresses require a minimum balance of ${bigReserve.toString()} XRP to activate and maintain the account. `}
+                            <Link isGreen href="https://wiki.trezor.io/Ripple_(XRP)">Learn more</Link>
+                        </>
+                    )}
                 />,
             );
         }
