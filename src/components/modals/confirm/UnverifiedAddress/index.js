@@ -59,6 +59,10 @@ const Row = styled.div`
     }
 `;
 
+const BackupButton = styled(Button)`
+    width: 100%;
+`;
+
 const WarnButton = styled(Button)`
     background: transparent;
     border-color: ${colors.WARNING_PRIMARY};
@@ -148,7 +152,7 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                         <Content>
                             <Row>
                                 <Link href="https://wallet.trezor.io/?backup">
-                                    <Button>Create a backup in 3 minutes</Button>
+                                    <BackupButton>Create a backup in 3 minutes</BackupButton>
                                 </Link>
                             </Row>
                         </Content>
