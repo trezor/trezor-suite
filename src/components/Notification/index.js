@@ -17,7 +17,7 @@ type Props = {
     cancelable?: boolean;
     title: string;
     className?: string;
-    message?: ?string;
+    message?: ?React.Node;
     actions?: Array<CallbackAction>;
     isActionInProgress?: boolean;
     close?: typeof NotificationActions.close,
