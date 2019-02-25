@@ -31,11 +31,23 @@ const StyledLink = styled(Link)`
 
 const Wrapper = styled.div`
     max-width: 370px;
-    padding: 30px 48px;
+    padding: 30px 0px;
+
+`;
+
+const Content = styled.div`
+    padding: 0px 48px;
 `;
 
 const StyledP = styled(P)`
-    padding: 20px 0px;
+    padding-bottom: 20px;
+`;
+
+const Divider = styled.div`
+    width: 100%;
+    height: 1px;
+    background: ${colors.DIVIDER};
+    margin: 20px 0px;
 `;
 
 const Row = styled.div`
@@ -44,6 +56,20 @@ const Row = styled.div`
 
     Button + Button {
         margin-top: 10px;
+    }
+`;
+
+const WarnButton = styled(Button)`
+    background: transparent;
+    border-color: ${colors.WARNING_PRIMARY};
+    color: ${colors.WARNING_PRIMARY};
+
+    &:focus,
+    &:hover,
+    &:active {
+        color: ${colors.WHITE};
+        background: ${colors.WARNING_PRIMARY};
+        box-shadow: none;
     }
 `;
 
@@ -86,26 +112,48 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
         let claim: string;
 
         if (!device.connected) {
-            deviceStatus = `${device.label} is not connected`;
+            deviceStatus = `Device ${device.label} is not connected`;
             claim = 'Please connect your device';
         } else {
             // corner-case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
             const enable: string = device.features && device.features.passphrase_protection ? 'enable' : 'disable';
-            deviceStatus = `${device.label} is unavailable`;
+            deviceStatus = `Device ${device.label} is unavailable`;
             claim = `Please ${enable} passphrase settings`;
         }
 
+        const needsBackup = device.features && device.features.needs_backup;
+
         return (
             <Wrapper>
-                <StyledLink onClick={onCancel}>
-                    <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
-                </StyledLink>
-                <H2>{ deviceStatus }</H2>
-                <StyledP isSmaller>To prevent phishing attacks, you should verify the address on your Trezor first. { claim } to continue with the verification process.</StyledP>
-                <Row>
-                    <Button onClick={() => (!account ? this.verifyAddress() : 'false')}>Try again</Button>
-                    <Button isWhite onClick={() => this.showUnverifiedAddress()}>Show unverified address</Button>
-                </Row>
+                <Content>
+                    <StyledLink onClick={onCancel}>
+                        <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                    </StyledLink>
+                    <H2>{ deviceStatus }</H2>
+                    <StyledP isSmaller>To prevent phishing attacks, you should verify the address on your Trezor first. { claim } to continue with the verification process.</StyledP>
+                </Content>
+                <Content>
+                    <Row>
+                        <Button onClick={() => (!account ? this.verifyAddress() : 'false')}>Try again</Button>
+                        <WarnButton isWhite onClick={() => this.showUnverifiedAddress()}>Show unverified address</WarnButton>
+                    </Row>
+                </Content>
+                {needsBackup && <Divider />}
+                {needsBackup && (
+                    <>
+                        <Content>
+                            <H2>Device {device.label} is not backed up</H2>
+                            <StyledP isSmaller>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</StyledP>
+                        </Content>
+                        <Content>
+                            <Row>
+                                <Link href="https://wallet.trezor.io/?backup">
+                                    <Button>Create a backup in 3 minutes</Button>
+                                </Link>
+                            </Row>
+                        </Content>
+                    </>
+                )}
             </Wrapper>
         );
     }
