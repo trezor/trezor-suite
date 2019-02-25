@@ -28,7 +28,7 @@ const StyledTextarea = styled(Textarea)`
     min-height: 85px;
     padding: 10px 12px;
     box-sizing: border-box;
-    border: 1px solid ${props => (props.borderColor ? props.borderColor : colors.DIVIDER)};
+    border: 1px solid ${props => (props.border || colors.DIVIDER)};
     border-radius: 2px;
     resize: none;
     outline: none;
@@ -66,8 +66,8 @@ const StyledTextarea = styled(Textarea)`
     }
 
     &:focus {
-        box-shadow: rgb(214, 215, 215) 0px 0px 6px 0px;
-        border-color: rgb(169, 169, 169);
+        box-shadow: ${colors.INPUT_FOCUS} 0px 0px 6px 0px;
+        border-color: ${props => (props.border || colors.LABEL_COLOR)};
         outline: none;
     }
 
@@ -126,7 +126,7 @@ const TopLabel = styled.span`
 
 const BottomText = styled.span`
     font-size: ${FONT_SIZE.SMALL};
-    color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
+    color: ${props => (props.color || colors.TEXT_SECONDARY)};
     margin-top: 10px;
 `;
 
@@ -212,7 +212,7 @@ class TextArea extends PureComponent {
                     onClick={this.props.autoSelect ? event => event.target.select() : null}
                     placeholder={this.props.placeholder}
                     onChange={this.props.onChange}
-                    borderColor={this.getColor(this.props.state)}
+                    border={this.getColor(this.props.state)}
                 />
                 <TrezorAction action={this.props.trezorAction}>
                     <ArrowUp />{this.props.trezorAction}

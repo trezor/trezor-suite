@@ -34,4 +34,5 @@ export default {
 
     LABEL_COLOR: '#A9A9A9',
     TOOLTIP_BACKGROUND: '#333333',
+    INPUT_FOCUS: '#D6D7D7',
 };

@@ -57,7 +57,7 @@ const StyledInput = styled.input`
         `}
 
     border: 1px solid ${colors.DIVIDER};
-    border-color: ${props => props.borderColor};
+    border-color: ${props => props.border};
 
     background-color: ${colors.WHITE};
     transition: ${TRANSITION.HOVER};
@@ -74,8 +74,8 @@ const StyledInput = styled.input`
     }
 
     &:focus {
-        box-shadow: rgb(214, 215, 215) 0px 0px 6px 0px;
-        border-color: rgb(169, 169, 169);
+        box-shadow: ${colors.INPUT_FOCUS} 0px 0px 6px 0px;
+        border-color: ${props => (props.border || colors.LABEL_COLOR)};
         outline: none;
     }
 
@@ -216,7 +216,7 @@ class Input extends PureComponent {
                                     ? event => event.target.select()
                                     : null
                             }
-                            borderColor={this.getColor(this.props.state)}
+                            border={this.getColor(this.props.state)}
                             disabled={this.props.isDisabled}
                             name={this.props.name}
                             data-lpignore="true"
