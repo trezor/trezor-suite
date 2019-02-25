@@ -1,12 +1,13 @@
 import * as utils from '../formatUtils';
 
 describe('format utils', () => {
+    // TODO: check this weird function
     it('formatAmount', () => {
-        expect(utils.formatAmount(0, { isBitcoin: true }, 'mbtc')).toMatchSnapshot('0 btc');
-        expect(utils.formatAmount(1000000, { isBitcoin: true }, 'mbtc')).toMatchSnapshot('10 mBTC');
-        expect(utils.formatAmount(0.5, { isBitcoin: true }, 'mbtc')).toMatchSnapshot('0.000005 mBTC');
-        expect(utils.formatAmount(1, { isBitcoin: false, shortcut: 'eth' }, null)).toMatchSnapshot('1e-8 eth');
-        expect(utils.formatAmount(99999, { isBitcoin: false, shortcut: 'tau' }, null)).toMatchSnapshot('0.00099999 tau');
+        expect(utils.formatAmount(0, { isBitcoin: false, shortcut: 'mbtc' }, 'mbtc')).toBe('0 mbtc');
+        expect(utils.formatAmount(1000000, { isBitcoin: true }, 'mbtc')).toBe('10 mBTC');
+        expect(utils.formatAmount(0.5, { isBitcoin: true }, 'mbtc')).toBe('0.000005 mBTC');
+        expect(utils.formatAmount(1, { isBitcoin: false, shortcut: 'eth' }, null)).toBe('1e-8 eth');
+        expect(utils.formatAmount(99999, { isBitcoin: false, shortcut: 'tau' }, null)).toBe('0.00099999 tau');
     });
 
     it('format time', () => {
