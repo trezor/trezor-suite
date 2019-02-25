@@ -1,32 +1,12 @@
-import * as nUtils from 'utils/notification';
+import * as utils from 'utils/notification';
 
-describe('device utils', () => {
-    it('get status', () => {
-        const types = [
-            'info',
-            'error',
-            'warning',
-            'success',
-            'kdsjflds',
-            '',
-        ];
-
-        types.forEach((type) => {
-            expect(nUtils.getPrimaryColor(type)).toMatchSnapshot();
-        });
-    });
-    it('get icon', () => {
-        const types = [
-            'info',
-            'error',
-            'warning',
-            'success',
-            'kdsjflds',
-            '',
-        ];
-
-        types.forEach((type) => {
-            expect(nUtils.getIcon(type)).toMatchSnapshot();
-        });
+describe('notification utils', () => {
+    it('get colors from status', () => {
+        expect(utils.getPrimaryColor('info')).toBe('#1E7FF0');
+        expect(utils.getPrimaryColor('warning')).toBe('#EB8A00');
+        expect(utils.getPrimaryColor('error')).toBe('#ED1212');
+        expect(utils.getPrimaryColor('success')).toBe('#01B757');
+        expect(utils.getPrimaryColor('kdsjflds')).toBe(null);
+        expect(utils.getPrimaryColor('')).toBe(null);
     });
 });
