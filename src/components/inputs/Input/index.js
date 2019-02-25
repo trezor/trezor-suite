@@ -56,8 +56,7 @@ const StyledInput = styled.input`
             border-bottom-right-radius: 0;
         `}
 
-    border: 1px solid ${colors.DIVIDER};
-    border-color: ${props => props.border};
+    border: 1px solid ${props => props.border || colors.INPUT_BORDER};
 
     background-color: ${colors.WHITE};
     transition: ${TRANSITION.HOVER};
@@ -74,8 +73,8 @@ const StyledInput = styled.input`
     }
 
     &:focus {
-        box-shadow: ${colors.INPUT_FOCUS} 0px 0px 6px 0px;
-        border-color: ${props => (props.border || colors.LABEL_COLOR)};
+        box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
+        border-color: ${props => (props.border || colors.INPUT_FOCUS_BORDER)};
         outline: none;
     }
 

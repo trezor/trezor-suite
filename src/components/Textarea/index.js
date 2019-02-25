@@ -28,7 +28,7 @@ const StyledTextarea = styled(Textarea)`
     min-height: 85px;
     padding: 10px 12px;
     box-sizing: border-box;
-    border: 1px solid ${props => (props.border || colors.DIVIDER)};
+    border: 1px solid ${props => (props.border || colors.INPUT_BORDER)};
     border-radius: 2px;
     resize: none;
     outline: none;
@@ -66,8 +66,8 @@ const StyledTextarea = styled(Textarea)`
     }
 
     &:focus {
-        box-shadow: ${colors.INPUT_FOCUS} 0px 0px 6px 0px;
-        border-color: ${props => (props.border || colors.LABEL_COLOR)};
+        box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
+        border-color: ${props => (props.border || colors.INPUT_FOCUS_BORDER)};
         outline: none;
     }
 
