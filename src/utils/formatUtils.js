@@ -14,25 +14,6 @@ export const formatAmount = (n: number, coinInfo: any, currencyUnits: string = c
     return `${s} ${coinInfo.shortcut}`;
 };
 
-export const formatTime = (n: number): string => {
-    const hours = Math.floor(n / 60);
-    const minutes = n % 60;
-
-    if (!n) return 'No time estimate';
-    let res = '';
-    if (hours !== 0) {
-        res += `${hours} hour`;
-        if (hours > 1) {
-            res += 's';
-        }
-        res += ' ';
-    }
-    if (minutes !== 0) {
-        res += `${minutes} minutes`;
-    }
-    return res;
-};
-
 export const btckb2satoshib = (n: number): number => Math.round(n * 1e5);
 
 export const stringToHex = (str: string): string => {

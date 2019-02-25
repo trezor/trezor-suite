@@ -10,15 +10,6 @@ describe('format utils', () => {
         expect(utils.formatAmount(99999, { isBitcoin: false, shortcut: 'tau' }, null)).toBe('0.00099999 tau');
     });
 
-    it('format time', () => {
-        expect(utils.formatTime(0)).toBe('No time estimate');
-        expect(utils.formatTime(1)).toBe('1 minutes'); // TODO: should be minute
-        expect(utils.formatTime(2)).toBe('2 minutes');
-        expect(utils.formatTime(45)).toBe('45 minutes');
-        expect(utils.formatTime(100)).toBe('1 hour 40 minutes');
-        expect(utils.formatTime(999)).toBe('16 hours 39 minutes'); // TODO: days, months ????
-    });
-
     it('btckb2satoshib', () => {
         expect(utils.btckb2satoshib(0)).toBe(0);
         expect(utils.btckb2satoshib(1)).toBe(100000);
