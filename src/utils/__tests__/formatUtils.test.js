@@ -16,7 +16,7 @@ describe('format utils', () => {
         expect(utils.formatTime(2)).toBe('2 minutes');
         expect(utils.formatTime(45)).toBe('45 minutes');
         expect(utils.formatTime(100)).toBe('1 hour 40 minutes');
-        expect(utils.formatTime(999)).toBe('16 hours 39 minutes');
+        expect(utils.formatTime(999)).toBe('16 hours 39 minutes'); // TODO: days, months ????
     });
 
     it('btckb2satoshib', () => {
