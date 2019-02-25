@@ -43,7 +43,7 @@ const Tooltip = ({
                     <Content maxWidth={maxWidth}>{content}</Content>
                     {readMoreLink && (
                         <Link href={readMoreLink}>
-                            <ReadMore>Read more</ReadMore>
+                            <ReadMore>Learn more</ReadMore>
                         </Link>
                     )
                     }
