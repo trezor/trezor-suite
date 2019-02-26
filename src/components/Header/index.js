@@ -111,6 +111,7 @@ const A = styled.a`
     color: ${colors.WHITE};
     margin-left: 24px;
     transition: all .1s ease-in;
+    white-space: nowrap;
 
     &:visited {
         color: ${colors.WHITE};
