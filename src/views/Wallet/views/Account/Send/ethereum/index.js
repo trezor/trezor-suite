@@ -391,7 +391,9 @@ const AccountSend = (props: Props) => {
 
             <InputRow>
                 <FeeLabelWrapper>
-                    <FeeLabel>Fee</FeeLabel>
+                    <FeeLabel>
+                        <FormattedMessage {...l10nSendMessages.TR_FEE} />
+                    </FeeLabel>
                     {gasPriceNeedsUpdate && (
                         <UpdateFeeWrapper>
                             <Icon
