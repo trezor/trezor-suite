@@ -77,7 +77,7 @@ class ForgetDevice extends PureComponent<Props> {
                     <FormattedMessage {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
                 </StyledP>
                 <Row>
-                    <Button onClick={() => this.forget()}><FormattedMessage {...l10nDeviceMessages.TR_FORGET} /></Button>
+                    <Button onClick={() => this.forget()}><FormattedMessage {...l10nDeviceMessages.TR_FORGET_DEVICE} /></Button>
                     <Button isWhite onClick={this.props.onCancel}><FormattedMessage {...l10nMessages.TR_DONT_FORGET} /></Button>
                 </Row>
             </Wrapper>
