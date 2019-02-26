@@ -191,13 +191,13 @@ const getQrModal = (props: Props) => {
 };
 
 const getConfirmationModal = (props: Props) => {
-    const { modal, modalActions } = props;
+    const { modal, modalActions, wallet } = props;
 
     if (modal.context !== MODAL.CONTEXT_CONFIRMATION) return null;
 
     switch (modal.windowType) {
         case 'no-backup':
-            return (<ConfirmNoBackup onReceiveConfirmation={modalActions.onReceiveConfirmation} />);
+            return (<ConfirmNoBackup device={wallet.selectedDevice} onReceiveConfirmation={modalActions.onReceiveConfirmation} />);
         default:
             return null;
     }
