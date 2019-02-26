@@ -1,112 +1,87 @@
-import * as dUtils from 'utils/device';
+import * as utils from 'utils/device';
 
 describe('device utils', () => {
     it('get status', () => {
-        const deviceMock = [
-            {
-                connected: false,
-            },
-            {
-                connected: true,
-                available: false,
-            },
-            {
-                connected: true,
-                available: false,
-                type: null,
-            },
-            {
-                connected: true,
-                available: true,
-                type: 'acquired',
-            },
-            {
-                connected: true,
-                available: true,
-                type: 'unacquired',
-            },
-            {
-                connected: true,
-                available: true,
-                type: 'acquired',
-                status: 'occupied',
-            },
-        ];
+        expect(utils.getStatus({ connected: false }))
+            .toBe('disconnected');
 
-        deviceMock.forEach((device) => {
-            expect(dUtils.getStatus(device)).toMatchSnapshot();
-        });
+        expect(utils.getStatus({ connected: true, available: false }))
+            .toBe('unavailable');
+
+        expect(utils.getStatus({
+            connected: true,
+            available: false,
+            type: null,
+        })).toBe('unavailable');
+
+        expect(utils.getStatus({
+            connected: true,
+            available: true,
+            type: 'acquired',
+        })).toBe('connected');
+
+        expect(utils.getStatus({
+            connected: true,
+            available: true,
+            type: 'unacquired',
+        })).toBe('unacquired');
+
+        expect(utils.getStatus({
+            connected: true,
+            available: true,
+            type: 'acquired',
+            status: 'occupied',
+        })).toBe('used-in-other-window');
     });
 
     it('isWebUSB', () => {
-        const data = [
-            { transport: { type: 'webusb', version: '1.6.0' } },
-            { transport: { type: null, version: 'aaaaaa' } },
-            { transport: { type: 'webusb' } },
-        ];
-
-        data.forEach((item) => {
-            expect(dUtils.isWebUSB(item.transport)).toMatchSnapshot();
-        });
+        expect(utils.isWebUSB({ type: 'webusb', version: '1.6.0' })).toBe(true);
+        expect(utils.isWebUSB({ type: 'aaaa', version: 'aaaaaa' })).toBe(false);
+        expect(utils.isWebUSB({ type: 'webusb' })).toBe(true);
     });
 
     it('isDisabled', () => {
-        const data = [
-            { selectedDevice: { features: null }, devices: [1, 2, 3], transport: { version: 'webusb' } },
-            { selectedDevice: { features: null }, devices: [], transport: { version: 'test' } },
-        ];
+        expect(utils.isDisabled(
+            { selectedDevice: { features: null } },
+            [1, 2, 3],
+            {
+                version: 'webusb',
+            },
+        )).toBe(false);
 
-        data.forEach((item) => {
-            expect(dUtils.isDisabled(item.selectedDevice, item.devices, item.transport)).toMatchSnapshot();
-        });
+        expect(utils.isDisabled(
+            { features: null }, [], { version: 'test' },
+        )).toBe(true);
     });
 
     it('get version', () => {
-        const deviceMock = [
-            { },
-            { features: {} },
-            { features: { major_version: null } },
-            { features: { major_version: 0 } },
-            { features: { major_version: 1 } },
-            { features: { major_version: 2 } },
-        ];
-
-        deviceMock.forEach((device) => {
-            expect(dUtils.getVersion(device)).toMatchSnapshot();
-        });
+        expect(utils.getVersion({})).toBe('One');
+        expect(utils.getVersion({ features: {} })).toBe('One');
+        expect(utils.getVersion({ features: { major_version: null } })).toBe('One');
+        expect(utils.getVersion({ features: { major_version: 0 } })).toBe('One');
+        expect(utils.getVersion({ features: { major_version: 1 } })).toBe('One');
+        expect(utils.getVersion({ features: { major_version: 2 } })).toBe('T');
     });
 
     it('get status color', () => {
-        const entry = [
-            0,
-            null,
-            'sdsdsdsd',
-            'used-in-other-window',
-            'connected',
-            'unacquired',
-            'disconnected',
-            'unavailable',
-        ];
-
-        entry.forEach((status) => {
-            expect(dUtils.getStatusColor(status)).toMatchSnapshot();
-        });
+        expect(utils.getStatusColor(0)).toBe('#494949');
+        expect(utils.getStatusColor(null)).toBe('#494949');
+        expect(utils.getStatusColor('sdsdsdsd')).toBe('#494949');
+        expect(utils.getStatusColor('used-in-other-window')).toBe('#EB8A00');
+        expect(utils.getStatusColor('connected')).toBe('#01B757');
+        expect(utils.getStatusColor('unacquired')).toBe('#EB8A00');
+        expect(utils.getStatusColor('disconnected')).toBe('#ED1212');
+        expect(utils.getStatusColor('unavailable')).toBe('#ED1212');
     });
 
     it('get status name', () => {
-        const entry = [
-            0,
-            null,
-            'sdsdsdsd',
-            'used-in-other-window',
-            'connected',
-            'unacquired',
-            'disconnected',
-            'unavailable',
-        ];
-
-        entry.forEach((status) => {
-            expect(dUtils.getStatusName(status)).toMatchSnapshot();
-        });
+        expect(utils.getStatusName(0)).toBe('Status unknown');
+        expect(utils.getStatusName(null)).toBe('Status unknown');
+        expect(utils.getStatusName('sdsdsdsd')).toBe('Status unknown');
+        expect(utils.getStatusName('used-in-other-window')).toBe('Used in other window');
+        expect(utils.getStatusName('connected')).toBe('Connected');
+        expect(utils.getStatusName('unacquired')).toBe('Used in other window');
+        expect(utils.getStatusName('disconnected')).toBe('Disconnected');
+        expect(utils.getStatusName('unavailable')).toBe('Unavailable');
     });
 });

@@ -17,7 +17,7 @@ type State = {
     messages: { [string]: string };
     dropdownOpened: boolean;
     showBetaDisclaimer: boolean;
-    showSidebar: boolean;
+    showSidebar: ?boolean;
     initialParams: ?RouterLocationState;
     initialPathname: ?string;
     firstLocationChange: boolean;
@@ -33,7 +33,7 @@ const initialState: State = {
     dropdownOpened: false,
     firstLocationChange: true,
     showBetaDisclaimer: false,
-    showSidebar: false,
+    showSidebar: null,
     initialParams: null,
     initialPathname: null,
     disconnectRequest: null,

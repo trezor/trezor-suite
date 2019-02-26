@@ -1,7 +1,6 @@
 import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import FriendlyErrorsWebpackPlugin from 'friendly-errors-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import packageJson from '../package.json';
 import {
@@ -84,6 +83,5 @@ module.exports = {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.NamedModulesPlugin(),
-        new FriendlyErrorsWebpackPlugin(),
     ],
 };

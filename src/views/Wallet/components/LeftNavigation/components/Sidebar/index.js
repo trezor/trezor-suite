@@ -9,7 +9,7 @@ import { SLIDE_RIGHT, SLIDE_LEFT } from 'config/animations';
 
 type Props = {
     children?: React.Node,
-    isOpen: boolean,
+    isOpen: ?boolean,
 }
 
 type State = {
@@ -32,6 +32,9 @@ const AbsoluteWrapper = styled.aside`
         height: calc(100vh - 52px);
         z-index: 200;
         top: 52px;
+        /* Prevents firing SLIDE_LEFT anim on page load.  */
+        /* isOpen is null until user clicks on menu toggler */
+        display: ${props => (props.isOpen === null ? 'none' : 'block')}; 
         animation: ${props => (props.isOpen ? SLIDE_RIGHT : SLIDE_LEFT)} 0.25s cubic-bezier(0.17, 0.04, 0.03, 0.94) forwards;
     }
 

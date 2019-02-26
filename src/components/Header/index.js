@@ -129,7 +129,7 @@ const A = styled.a`
 
 type Props = {
     sidebarEnabled?: boolean,
-    sidebarOpened?: boolean,
+    sidebarOpened?: ?boolean,
     toggleSidebar?: toggleSidebarType,
 
 };

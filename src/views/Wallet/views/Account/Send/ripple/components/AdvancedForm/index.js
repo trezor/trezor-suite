@@ -164,7 +164,7 @@ const AdvancedForm = (props: Props) => {
                                 <Tooltip
                                     content={<FormattedMessage {...l10nMessages.TR_XRP_DESTINATION_TAG_EXPLAINED} />}
                                     maxWidth={200}
-                                    readMoreLink="https://developers.ripple.com/rippleapi-reference.html#payment"
+                                    readMoreLink="https://wiki.trezor.io/Ripple_(XRP)"
                                     placement="top"
                                 >
                                     <StyledIcon
