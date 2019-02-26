@@ -7,9 +7,9 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_FORGET_LABEL',
         defaultMessage: 'Forget {deviceLabel}?',
     },
-    TR_FORGET: {
-        id: 'TR_FORGET',
-        defaultMessage: 'Forget',
+    TR_FORGET_DEVICE: {
+        id: 'TR_FORGET_DEVICE',
+        defaultMessage: 'Forget device',
         description: 'Button in remember/forget dialog',
     },
 });
