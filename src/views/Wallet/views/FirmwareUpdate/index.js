@@ -49,6 +49,14 @@ const StyledP = styled(P)`
     text-align: center;
 `;
 
+const getFirmwareReleaseLink = (device: ?TrezorDevice): string => {
+    if (!device || !device.firmwareRelease) return 'https://beta-wallet.trezor.io';
+    const release = device.firmwareRelease;
+    const url = release.channel === 'beta' ? 'https://beta-wallet.trezor.io/' : 'https://wallet.trezor.io/';
+    const version = release.version.join('.');
+    return `${url}?fw=${version}`;
+};
+
 const FirmwareUpdate = (props: Props) => (
     <Wrapper>
         <Image>
@@ -129,7 +137,7 @@ const FirmwareUpdate = (props: Props) => (
         </Image>
         <H1>It’s time to update your firmware</H1>
         <StyledP>Please use Bitcoin wallet interface to update your firmware.</StyledP>
-        <Link href="https://beta-wallet.trezor.io">
+        <Link href={getFirmwareReleaseLink(props.device)}>
             <Button>Take me to the Bitcoin wallet</Button>
         </Link>
         {deviceUtils.isDeviceAccessible(props.device) && (
