@@ -133,7 +133,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
             pendingTransportEvent: (getState().devices.length < 1),
             manifest: {
                 email: 'info@trezor.io',
-                appUrl: 'http://beta-wallet.trezor.io/next/',
+                appUrl: 'https://beta-wallet.trezor.io/next/',
             },
         });
     } catch (error) {
