@@ -4250,9 +4250,14 @@ eventemitter3@3.1.0, eventemitter3@^3.0.0, eventemitter3@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
 
-events@^1.0.0, events@^1.1.1:
+events@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
+
+events@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/events/-/events-3.0.0.tgz#9a0a0dfaf62893d92b875b8f2698ca4114973e88"
+  integrity sha512-Dc381HFWJzEOhQ+d8pkNon++bk9h6cdAoAj4iE6Q4y6xgTzySWXlKn05/TVNpjnfRqi/X0EpJEJohPjNI3zpVA==
 
 eventsource@^1.0.7:
   version "1.0.7"
@@ -10564,13 +10569,14 @@ trezor-bridge-communicator@1.0.2:
     request "^2.88.0"
     whatwg-fetch "^3.0.0"
 
-trezor-connect@7.0.0-beta.2:
-  version "7.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-7.0.0-beta.2.tgz#10dc04e1b60804263e9873cd503a4fc9d3e940d2"
+trezor-connect@7.0.0-beta.3:
+  version "7.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-7.0.0-beta.3.tgz#34aff422e36745eac24a266bcdfa266282ac5255"
+  integrity sha512-aRh+Vzfqy/2GMJnsvtrzGhwi9j9wjOkBrNN62HTD2sDXLrcROlQMHBCd5lPjSZaJk1npjw5rrvhPS3G9IeyiVw==
   dependencies:
-    babel-runtime "^6.26.0"
-    events "^1.1.1"
-    whatwg-fetch "^2.0.4"
+    "@babel/runtime" "^7.3.1"
+    events "^3.0.0"
+    whatwg-fetch "^3.0.0"
 
 trim-newlines@^2.0.0:
   version "2.0.0"
@@ -11427,7 +11433,7 @@ whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3:
   dependencies:
     iconv-lite "0.4.19"
 
-whatwg-fetch@2.0.4, whatwg-fetch@^2.0.4:
+whatwg-fetch@2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.4.tgz#dde6a5df315f9d39991aa17621853d720b85566f"
 
