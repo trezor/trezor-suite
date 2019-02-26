@@ -1,16 +1,21 @@
 /* @flow */
-
 import React from 'react';
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Link from 'components/Link';
+import { getOldWalletUrl } from 'utils/url';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-
 import { FONT_SIZE } from 'config/variables';
 import colors from 'config/colors';
 import icons from 'config/icons';
+
+import type { TrezorDevice } from 'flowtype';
+
+type Props = {
+    device: ?TrezorDevice;
+}
 
 const Wrapper = styled.section`
     display: flex;
@@ -40,7 +45,7 @@ const Message = styled.div`
     padding: 0 0 15px 0;
 `;
 
-const FirmwareUpdate = () => (
+const FirmwareUpdate = (props: Props) => (
     <Wrapper>
         <Icon
             size={128}
@@ -52,7 +57,7 @@ const FirmwareUpdate = () => (
             <StyledP>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</StyledP>
             <P>Please use Bitcoin wallet interface to create a backup.</P>
         </Message>
-        <Link href="https://wallet.trezor.io?backup=1">
+        <Link href={`${getOldWalletUrl(props.device)}?backup=1`}>
             <Button>Take me to the Bitcoin wallet</Button>
         </Link>
         <StyledNavLink to="/">I’ll do that later.</StyledNavLink>

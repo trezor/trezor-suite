@@ -3,6 +3,7 @@ import TrezorConnect, {
     DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
 import { CONTEXT_NONE } from 'actions/constants/modal';
+import urlConstants from 'constants/urls';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as NOTIFICATION from 'actions/constants/notification';
 import { getDuplicateInstanceNumber } from 'reducers/utils';
@@ -120,7 +121,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     if (buildUtils.isDev()) {
         window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
-        // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://connect.trezor.io/5/'; // eslint-disable-line no-underscore-dangle
+        // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://localhost:8088/'; // eslint-disable-line no-underscore-dangle
         window.TrezorConnect = TrezorConnect;
     }
 
@@ -131,6 +132,10 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
             popup: false,
             webusb: true,
             pendingTransportEvent: (getState().devices.length < 1),
+            manifest: {
+                email: 'info@trezor.io',
+                appUrl: urlConstants.NEXT_WALLET,
+            },
         });
     } catch (error) {
         dispatch({
