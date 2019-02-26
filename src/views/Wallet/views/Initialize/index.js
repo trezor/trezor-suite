@@ -1,10 +1,17 @@
+/* @flow */
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
 import Button from 'components/Button';
-import urlConstants from 'constants/urls';
+import { getOldWalletUrl } from 'utils/url';
 import Paragraph from 'components/Paragraph';
 import React from 'react';
 import { connect } from 'react-redux';
+
+import type { TrezorDevice } from 'flowtype';
+
+type Props = {
+    device: ?TrezorDevice;
+}
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,12 +33,12 @@ const StyledParagraph = styled(Paragraph)`
     text-align: center;
 `;
 
-const Initialize = () => (
+const Initialize = (props: Props) => (
     <Wrapper data-test="Page__device__not__initialized">
         <Row>
             <H1>Your device is not initialized</H1>
             <StyledParagraph>Please use Bitcoin wallet interface to start initialization process</StyledParagraph>
-            <A href={urlConstants.OLD_WALLET_BETA}>
+            <A href={getOldWalletUrl(props.device)}>
                 <Button>Take me to the Bitcoin wallet</Button>
             </A>
         </Row>

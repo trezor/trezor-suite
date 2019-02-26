@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
+import { getOldWalletUrl } from 'utils/url';
 import icons from 'config/icons';
 import colors from 'config/colors';
 
@@ -151,7 +151,7 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                         </Content>
                         <Content>
                             <Row>
-                                <Link href="https://wallet.trezor.io/?backup">
+                                <Link href={`${getOldWalletUrl(device)}/?backup`}>
                                     <BackupButton>Create a backup in 3 minutes</BackupButton>
                                 </Link>
                             </Row>

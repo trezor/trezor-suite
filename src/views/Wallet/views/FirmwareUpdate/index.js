@@ -3,7 +3,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import urlConstants from 'constants/urls';
+import { getOldWalletReleaseUrl } from 'utils/url';
 
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
@@ -49,14 +49,6 @@ const StyledP = styled(P)`
     padding: 0 0 15px 0;
     text-align: center;
 `;
-
-const getFirmwareReleaseLink = (device: ?TrezorDevice): string => {
-    if (!device || !device.firmwareRelease) return urlConstants.OLD_WALLET_BETA;
-    const release = device.firmwareRelease;
-    const url = release.channel === 'beta' ? urlConstants.OLD_WALLET_BETA : urlConstants.OLD_WALLET;
-    const version = release.version.join('.');
-    return `${url}?fw=${version}`;
-};
 
 const FirmwareUpdate = (props: Props) => (
     <Wrapper>
@@ -138,7 +130,7 @@ const FirmwareUpdate = (props: Props) => (
         </Image>
         <H1>It’s time to update your firmware</H1>
         <StyledP>Please use Bitcoin wallet interface to update your firmware.</StyledP>
-        <Link href={getFirmwareReleaseLink(props.device)}>
+        <Link href={getOldWalletReleaseUrl(props.device)}>
             <Button>Take me to the Bitcoin wallet</Button>
         </Link>
         {deviceUtils.isDeviceAccessible(props.device) && (
