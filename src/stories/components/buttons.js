@@ -1,8 +1,8 @@
 import React from 'react';
 import Button from 'components/buttons/Button';
-import WebUSB from 'components/buttons/WebUsb';
-import PinButton from 'components/buttons/Pin';
-import NotificationButton from 'components/buttons/NotificationButton';
+import ButtonWebUSB from 'components/buttons/WebUsb';
+import ButtonPin from 'components/buttons/Pin';
+import ButtonNotification from 'components/buttons/Notification';
 import { storiesOf } from '@storybook/react';
 import {
     withKnobs, text, boolean, select,
@@ -51,35 +51,35 @@ storiesOf('Components', module)
             `,
         },
     })
-    .add('Web USB button', () => {
+    .add('Button Web USB', () => {
         const disabled = boolean('Disabled', false);
         if (disabled) {
-            return <WebUSB isDisabled>Web USB</WebUSB>;
+            return <ButtonWebUSB isDisabled>Web USB</ButtonWebUSB>;
         }
-        return <WebUSB>Web USB</WebUSB>;
+        return <ButtonWebUSB>Web USB</ButtonWebUSB>;
     }, {
         info: {
             text: `
             ## Import
             ~~~js
-            import { WebUSB } from 'trezor-ui-components';
+            import { ButtonWebUSB } from 'trezor-ui-components';
             ~~~
             `,
         },
     })
-    .add('Pin button', () => (
-        <PinButton>&#8226;</PinButton>
+    .add('Button Pin', () => (
+        <ButtonPin onClick={() => {}} />
     ), {
         info: {
             text: `
             ## Import
             ~~~js
-            import { PinButton } from 'trezor-ui-components';
+            import { ButtonPin } from 'trezor-ui-components';
             ~~~
             `,
         },
     })
-    .add('Notification button', () => {
+    .add('Button Notification', () => {
         const type = select('Type', {
             Success: 'success',
             Warning: 'warning',
@@ -90,24 +90,24 @@ storiesOf('Components', module)
 
         if (loading) {
             return (
-                <NotificationButton
+                <ButtonNotification
                     type={type}
                     isLoading
                 >{buttonText}
-                </NotificationButton>
+                </ButtonNotification>
             );
         }
         return (
-            <NotificationButton type={type}>
+            <ButtonNotification type={type}>
                 {buttonText}
-            </NotificationButton>
+            </ButtonNotification>
         );
     }, {
         info: {
             text: `
             ## Import
             ~~~js
-            import { NotificationButton } from 'trezor-ui-components';
+            import { ButtonNotification } from 'trezor-ui-components';
             ~~~
             `,
         },

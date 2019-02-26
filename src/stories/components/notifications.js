@@ -42,6 +42,7 @@ storiesOf('Components', module)
             Success: 'success',
             Warning: 'warning',
             Info: 'info',
+            Error: 'error',
         }, 'success');
         const title = text('Title', 'Notification title');
         const message = text('Text', 'Text of the notification.');
@@ -80,6 +81,7 @@ storiesOf('Components', module)
                 Success: 'success',
                 Warning: 'warning',
                 Info: 'info',
+                Error: 'error',
             }, 'success')}
             title={text('Title', 'Notification title')}
             message={text('Text', 'Text of the notification.')}

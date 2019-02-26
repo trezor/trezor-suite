@@ -91,7 +91,7 @@ storiesOf('Components', module)
             `,
         },
     })
-    .add('Pin input', () => (
+    .add('Input Pin', () => (
         <PinInput
             value={text('Input value', '')}
             onDeleteClick={() => {}}

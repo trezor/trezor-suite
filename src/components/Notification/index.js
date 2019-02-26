@@ -5,7 +5,7 @@ import { getIcon, getPrimaryColor, getSecondaryColor } from 'utils/notification'
 
 import Icon from 'components/Icon';
 import Loader from 'components/Loader';
-import NotificationButton from 'components/buttons/NotificationButton';
+import ButtonNotification from 'components/buttons/Notification';
 import icons from 'config/icons';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -113,13 +113,13 @@ const Notification = (props) => {
                     {props.actions && props.actions.length > 0 && (
                         <ActionContent>
                             {props.actions.map(action => (
-                                <NotificationButton
+                                <ButtonNotification
                                     key={action.label}
                                     type={props.type}
                                     isLoading={props.isActionInProgress}
                                     onClick={() => { close(); action.callback(); }}
                                 >{action.label}
-                                </NotificationButton>
+                                </ButtonNotification>
                             ))}
                         </ActionContent>
                     )}

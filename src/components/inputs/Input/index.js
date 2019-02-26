@@ -56,8 +56,7 @@ const StyledInput = styled.input`
             border-bottom-right-radius: 0;
         `}
 
-    border: 1px solid ${colors.DIVIDER};
-    border-color: ${props => props.borderColor};
+    border: 1px solid ${props => props.border || colors.INPUT_BORDER};
 
     background-color: ${colors.WHITE};
     transition: ${TRANSITION.HOVER};
@@ -71,6 +70,12 @@ const StyledInput = styled.input`
     &:read-only  {
         background: ${colors.GRAY_LIGHT};
         color: ${colors.TEXT_SECONDARY};
+    }
+
+    &:focus {
+        box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
+        border-color: ${props => (props.border || colors.INPUT_FOCUS_BORDER)};
+        outline: none;
     }
 
     ${props => props.trezorAction
@@ -210,7 +215,7 @@ class Input extends PureComponent {
                                     ? event => event.target.select()
                                     : null
                             }
-                            borderColor={this.getColor(this.props.state)}
+                            border={this.getColor(this.props.state)}
                             disabled={this.props.isDisabled}
                             name={this.props.name}
                             data-lpignore="true"
