@@ -61,9 +61,6 @@ const Tooltip = ({
                 overlay={() => (
                     Overlay
                 )}
-                overlayStyle={{
-                    background: colors.TOOLTIP_BACKGROUND,
-                }}
             >
                 {children}
             </RcTooltip>
