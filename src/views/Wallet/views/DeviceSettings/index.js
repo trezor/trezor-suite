@@ -7,6 +7,7 @@ import Button from 'components/Button';
 import P from 'components/Paragraph';
 import Link from 'components/Link';
 import ICONS from 'config/icons';
+import urlConstants from 'constants/urls';
 import Content from 'views/Wallet/components/Content';
 import { connect } from 'react-redux';
 
@@ -43,7 +44,7 @@ const DeviceSettings = () => (
                 />
                 <StyledH1>Device settings is under construction</StyledH1>
                 <StyledP>Please use Bitcoin wallet interface to change your device settings</StyledP>
-                <Link href="https://beta-wallet.trezor.io/">
+                <Link href={urlConstants.OLD_WALLET_BETA}>
                     <Button>Take me to the Bitcoin wallet</Button>
                 </Link>
             </Row>

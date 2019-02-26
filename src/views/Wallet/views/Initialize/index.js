@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
 import Button from 'components/Button';
+import urlConstants from 'constants/urls';
 import Paragraph from 'components/Paragraph';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -30,7 +31,7 @@ const Initialize = () => (
         <Row>
             <H1>Your device is not initialized</H1>
             <StyledParagraph>Please use Bitcoin wallet interface to start initialization process</StyledParagraph>
-            <A href="https://beta-wallet.trezor.io/">
+            <A href={urlConstants.OLD_WALLET_BETA}>
                 <Button>Take me to the Bitcoin wallet</Button>
             </A>
         </Row>

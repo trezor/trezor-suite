@@ -3,6 +3,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import urlConstants from 'constants/urls';
 
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
@@ -50,9 +51,9 @@ const StyledP = styled(P)`
 `;
 
 const getFirmwareReleaseLink = (device: ?TrezorDevice): string => {
-    if (!device || !device.firmwareRelease) return 'https://beta-wallet.trezor.io';
+    if (!device || !device.firmwareRelease) return urlConstants.OLD_WALLET_BETA;
     const release = device.firmwareRelease;
-    const url = release.channel === 'beta' ? 'https://beta-wallet.trezor.io/' : 'https://wallet.trezor.io/';
+    const url = release.channel === 'beta' ? urlConstants.OLD_WALLET_BETA : urlConstants.OLD_WALLET;
     const version = release.version.join('.');
     return `${url}?fw=${version}`;
 };
