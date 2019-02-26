@@ -13,6 +13,7 @@ const Wrapper = styled.button`
     background: ${colors.WHITE};
     transition: all 0.3s;
     position: relative;
+    cursor: pointer;
 
     &:first-child {
         margin-left: 0px;
