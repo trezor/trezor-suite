@@ -348,6 +348,17 @@ export const gotoFirmwareUpdate = (): ThunkAction => (dispatch: Dispatch, getSta
 };
 
 /*
+* Go to NoBackup page
+*/
+export const gotoBackup = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const { selectedDevice } = getState().wallet;
+    if (!selectedDevice || !selectedDevice.features) return;
+    const devUrl: string = `${selectedDevice.features.device_id}${selectedDevice.instance ? `:${selectedDevice.instance}` : ''}`;
+    dispatch(goto(`/device/${devUrl}/backup`));
+};
+
+
+/*
 * Try to redirect to initial url
 */
 export const setInitialUrl = (): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
