@@ -1,7 +1,7 @@
 import Modal from 'components/Modal';
 
 import ButtonText from 'components/buttons/Button';
-import PinButton from 'components/buttons/Pin';
+import ButtonPin from 'components/buttons/Pin';
 import InputPin from 'components/inputs/Pin';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
@@ -58,7 +58,7 @@ storiesOf('Modal', module)
             ModalWrapper
             ~~~js
             const ModalWrapper = styled.div\`
-                padding: 25px;
+                padding: 30px 48px;
             \`;
             ~~~
             `,
@@ -73,22 +73,22 @@ storiesOf('Modal', module)
                     <InputPin onDeleteClick={() => {}} value="" />
                 </InputWrapper>
                 <PinRow>
-                    <PinButton>&#8226;</PinButton>
-                    <PinButton>&#8226;</PinButton>
-                    <PinButton>&#8226;</PinButton>
+                    <ButtonPin onClick={() => {}} />
+                    <ButtonPin onClick={() => {}} />
+                    <ButtonPin onClick={() => {}} />
                 </PinRow>
                 <PinRow>
-                    <PinButton>&#8226;</PinButton>
-                    <PinButton>&#8226;</PinButton>
-                    <PinButton>&#8226;</PinButton>
+                    <ButtonPin onClick={() => {}} />
+                    <ButtonPin onClick={() => {}} />
+                    <ButtonPin onClick={() => {}} />
                 </PinRow>
                 <PinRow>
-                    <PinButton>&#8226;</PinButton>
-                    <PinButton>&#8226;</PinButton>
-                    <PinButton>&#8226;</PinButton>
+                    <ButtonPin onClick={() => {}} />
+                    <ButtonPin onClick={() => {}} />
+                    <ButtonPin onClick={() => {}} />
                 </PinRow>
                 <PinFooter>
-                    <ButtonText>Enter PIN</ButtonText>
+                    <ButtonText onClick={() => {}}>Enter PIN</ButtonText>
                     <P isSmaller>
                         Not sure how PIN works?
                         <Link
@@ -108,7 +108,7 @@ storiesOf('Modal', module)
             import {
                 Modal, 
                 ButtonText, 
-                PinButton, 
+                ButtonPin, 
                 InputPin, 
                 P, 
                 H2, 
@@ -122,7 +122,7 @@ storiesOf('Modal', module)
             ModalWrapper
             ~~~js
             const ModalWrapper = styled.div\`
-                padding: 25px;
+                padding: 30px 45px;
             \`;
             ~~~
 

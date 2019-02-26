@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import styled from 'styled-components';
@@ -11,13 +9,10 @@ const Wrapper = styled.button`
     height: 80px;
     margin-top: 15px;
     margin-left: 10px;
-    font-size: ${FONT_SIZE.BIGGER};
-    font-weight: ${FONT_WEIGHT.SEMIBOLD};
-    color: ${colors.TEXT_PRIMARY};
     border: 1px solid ${colors.DIVIDER};
     background: ${colors.WHITE};
     transition: all 0.3s;
-    font-family: Roboto, sans-serif;
+    position: relative;
 
     &:first-child {
         margin-left: 0px;
@@ -34,16 +29,24 @@ const Wrapper = styled.button`
         background: ${colors.DIVIDER};
         border-color: ${colors.DIVIDER};
     }
+
+    &:before {
+        width: 6px;
+        height: 6px;
+        content: ' ';
+        position: absolute;
+        border-radius: 100%;
+        background: ${colors.TEXT_PRIMARY};
+        margin-top: -3px;
+        margin-left: -3px;
+    }
 `;
 
-const ButtonPin = ({ children, onClick }) => (
-    <Wrapper onClick={onClick}>
-        { children }
-    </Wrapper>
+const ButtonPin = ({ onClick }) => (
+    <Wrapper onClick={onClick} />
 );
 
 ButtonPin.propTypes = {
-    children: PropTypes.string.isRequired,
     onClick: PropTypes.func,
 };
 

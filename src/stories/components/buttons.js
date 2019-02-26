@@ -68,7 +68,7 @@ storiesOf('Components', module)
         },
     })
     .add('Button Pin', () => (
-        <ButtonPin>&#8226;</ButtonPin>
+        <ButtonPin onClick={() => {}} />
     ), {
         info: {
             text: `
