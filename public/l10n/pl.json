@@ -103,7 +103,7 @@
 	"TR_AND": "and",
 	"TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING": "Device not recognized? Try installing the {link}.",
 	"TR_DONT_HAVE_A_TREZOR_GET": "Nie masz Trezor? {getOne}",
-	"TR_GET_ONE": "Get one",
+	"TR_GET_ONE": "Zdobądź go",
 	"TR_NEW_COMMUNICATION_TOOL": "New communication tool to facilitate the connection between your Trezor and your internet browser.",
 	"TR_DOWNLOAD_LATEST_BRIDGE": "Download latest Bridge {version}",
 	"TR_LEARN_MORE_ABOUT_LATEST_VERSION": "Learn more about latest version in {TR_CHANGELOG}.",

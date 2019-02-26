@@ -103,7 +103,7 @@
 	"TR_AND": "a",
 	"TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING": "Zařízení nebylo rozpoznáno? Zkuste nainstalovat {link}.",
 	"TR_DONT_HAVE_A_TREZOR_GET": "Ještě nemáte Trezor? {getOne}",
-	"TR_GET_ONE": "Get one",
+	"TR_GET_ONE": "Jeden si pořiďte",
 	"TR_NEW_COMMUNICATION_TOOL": "Nový nástroj pro usnadnění komunikace mezi vaším Trezorem a internetovým prohlížečem.",
 	"TR_DOWNLOAD_LATEST_BRIDGE": "Download latest Bridge {version}",
 	"TR_LEARN_MORE_ABOUT_LATEST_VERSION": "Learn more about latest version in {TR_CHANGELOG}.",
