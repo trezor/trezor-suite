@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import icons from 'config/icons';
-import urlConstants from 'constants/urls';
+import { getOldWalletUrl } from 'utils/url';
 import colors from 'config/colors';
 
 import { H2 } from 'components/Heading';
@@ -14,10 +14,12 @@ import Icon from 'components/Icon';
 import Button from 'components/Button';
 import Link from 'components/Link';
 
+import type { TrezorDevice } from 'flowtype';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
     onReceiveConfirmation: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onReceiveConfirmation'>;
+    device: ?TrezorDevice;
 }
 
 const Wrapper = styled.div`
@@ -68,7 +70,7 @@ const Confirmation = (props: Props) => (
         <Icon size={48} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
         <StyledP isSmaller>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</StyledP>
         <Row>
-            <Link href={`${urlConstants.OLD_WALLET}/?backup`}>
+            <Link href={`${getOldWalletUrl(props.device)}/?backup`}>
                 <BackupButton onClick={() => props.onReceiveConfirmation(false)}>Create a backup in 3 minutes</BackupButton>
             </Link>
             <ProceedButton isWhite onClick={() => props.onReceiveConfirmation(true)}>Show address, I will take the risk</ProceedButton>
