@@ -27,6 +27,7 @@ import WalletDeviceSettings from 'views/Wallet/views/DeviceSettings';
 import WalletSettings from 'views/Wallet/views/WalletSettings';
 import WalletBootloader from 'views/Wallet/views/Bootloader';
 import WalletFirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
+import WalletNoBackup from 'views/Wallet/views/NoBackup';
 import WalletInitialize from 'views/Wallet/views/Initialize';
 import WalletSeedless from 'views/Wallet/views/Seedless';
 import WalletAcquire from 'views/Wallet/views/Acquire';
@@ -54,6 +55,7 @@ const App = () => (
                             <Route exact path={getPattern('wallet-initialize')} component={WalletInitialize} />
                             <Route exact path={getPattern('wallet-seedless')} component={WalletSeedless} />
                             <Route exact path={getPattern('wallet-firmware-update')} component={WalletFirmwareUpdate} />
+                            <Route exact path={getPattern('wallet-backup')} component={WalletNoBackup} />
                             <Route exact path={getPattern('wallet-device-settings')} component={WalletDeviceSettings} />
                             <Route exact path={getPattern('wallet-account-summary')} component={AccountSummary} />
                             <Route path={getPattern('wallet-account-send')} component={AccountSend} />

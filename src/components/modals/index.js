@@ -19,6 +19,7 @@ import PassphraseType from 'components/modals/passphrase/Type';
 import ConfirmSignTx from 'components/modals/confirm/SignTx';
 import ConfirmAction from 'components/modals/confirm/Action';
 import ConfirmUnverifiedAddress from 'components/modals/confirm/UnverifiedAddress';
+import ConfirmNoBackup from 'components/modals/confirm/NoBackup';
 import ForgetDevice from 'components/modals/device/Forget';
 import RememberDevice from 'components/modals/device/Remember';
 import DuplicateDevice from 'components/modals/device/Duplicate';
@@ -189,6 +190,19 @@ const getQrModal = (props: Props) => {
     );
 };
 
+const getConfirmationModal = (props: Props) => {
+    const { modal, modalActions } = props;
+
+    if (modal.context !== MODAL.CONTEXT_CONFIRMATION) return null;
+
+    switch (modal.windowType) {
+        case 'no-backup':
+            return (<ConfirmNoBackup onReceiveConfirmation={modalActions.onReceiveConfirmation} />);
+        default:
+            return null;
+    }
+};
+
 // modal container component
 const Modal = (props: Props) => {
     const { modal } = props;
@@ -204,6 +218,9 @@ const Modal = (props: Props) => {
             break;
         case MODAL.CONTEXT_SCAN_QR:
             component = getQrModal(props);
+            break;
+        case MODAL.CONTEXT_CONFIRMATION:
+            component = getConfirmationModal(props);
             break;
         default:
             break;
