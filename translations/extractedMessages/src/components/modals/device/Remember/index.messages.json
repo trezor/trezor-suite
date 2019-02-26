@@ -13,12 +13,12 @@
     }
   },
   {
-    "id": "TR_REMEMBER",
-    "defaultMessage": "Remember",
+    "id": "TR_REMEMBER_DEVICE",
+    "defaultMessage": "Remember device",
     "file": "src/components/modals/device/Remember/index.messages.js",
     "start": {
       "line": 10,
-      "column": 17
+      "column": 24
     },
     "end": {
       "line": 13,

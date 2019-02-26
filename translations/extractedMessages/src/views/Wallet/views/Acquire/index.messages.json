@@ -27,6 +27,7 @@
   },
   {
     "id": "TR_ACQUIRE_DEVICE",
+    "description": "call-to-action to use device in current window when it is used in other window",
     "defaultMessage": "Acquire device",
     "file": "src/views/Wallet/views/Acquire/index.messages.js",
     "start": {
@@ -34,7 +35,7 @@
       "column": 23
     },
     "end": {
-      "line": 17,
+      "line": 18,
       "column": 5
     }
   }

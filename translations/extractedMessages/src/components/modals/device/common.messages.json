@@ -13,13 +13,13 @@
     }
   },
   {
-    "id": "TR_FORGET",
+    "id": "TR_FORGET_DEVICE",
     "description": "Button in remember/forget dialog",
-    "defaultMessage": "Forget",
+    "defaultMessage": "Forget device",
     "file": "src/components/modals/device/common.messages.js",
     "start": {
       "line": 10,
-      "column": 15
+      "column": 22
     },
     "end": {
       "line": 14,

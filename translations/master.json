@@ -600,11 +600,19 @@
       ]
     }
   },
-  "TR_READ_MORE": {
-    "source": "Read more",
+  "TR_MINIMUM_ACCOUNT_RESERVE_REQUIRED": {
+    "source": "Minimum account reserve required",
     "meta": {
       "occurrences": [
-        "src/components/Tooltip/index.messages.js"
+        "src/components/notifications/Context/components/Static/index.messages.js"
+      ]
+    }
+  },
+  "TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE": {
+    "source": "Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/components/Static/index.messages.js"
       ]
     }
   },
@@ -1364,7 +1372,7 @@
     }
   },
   "TR_XRP_DESTINATION_TAG_EXPLAINED": {
-    "source": "Number that identifies a reason for payment or a non-Ripple account.",
+    "source": "Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.",
     "meta": {
       "occurrences": [
         "src/views/Wallet/views/Account/Send/ripple/components/AdvancedForm/index.messages.js"
