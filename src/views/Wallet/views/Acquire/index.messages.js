@@ -14,6 +14,7 @@ const definedMessages: Messages = defineMessages({
     TR_ACQUIRE_DEVICE: {
         id: 'TR_ACQUIRE_DEVICE',
         defaultMessage: 'Acquire device',
+        description: 'call-to-action to use device in current window when it is used in other window',
     },
 });
 

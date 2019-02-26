@@ -143,7 +143,7 @@ class RememberDevice extends PureComponent<Props, State> {
                     <Button onClick={() => this.forget()}>
                         <ButtonContent>
                             <Text>
-                                <FormattedMessage {...l10nDeviceMessages.TR_FORGET} />
+                                <FormattedMessage {...l10nDeviceMessages.TR_FORGET_DEVICE} />
                             </Text>
                             <StyledLoader
                                 isSmallText
@@ -157,7 +157,7 @@ class RememberDevice extends PureComponent<Props, State> {
                         isWhite
                         onClick={() => onRememberDevice(device)}
                     >
-                        <FormattedMessage {...l10nMessages.TR_REMEMBER} />
+                        <FormattedMessage {...l10nMessages.TR_REMEMBER_DEVICE} />
                     </Button>
                 </Column>
             </Wrapper>
