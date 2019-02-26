@@ -15,7 +15,7 @@ const ColorBox = styled.div`
     height: 20px;
     padding: 20px;
     display: flex;
-    margin: 0 10px 10px 0;
+    margin: 0;
     justify-content: center;
     align-items: center;
     background: ${props => props.color};

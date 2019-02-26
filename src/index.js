@@ -22,7 +22,7 @@ import {
 } from './components/Heading';
 import Link from './components/Link';
 import P from './components/Paragraph';
-// import Tooltip from './components/Tooltip';
+import Tooltip from './components/Tooltip';
 
 import Modal from './components/Modal';
 import InvalidPin from './components/Invalid';
@@ -54,7 +54,7 @@ module.exports = {
     H4,
     Link,
     P,
-    // Tooltip,
+    Tooltip,
 
     Modal,
     InvalidPin,

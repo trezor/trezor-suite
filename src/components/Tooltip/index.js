@@ -1,12 +1,18 @@
 /* Tooltip CSS */
-import 'rc-tooltip/assets/bootstrap.css';
-
 import Link from 'components/Link';
 import PropTypes from 'prop-types';
 import RcTooltip from 'rc-tooltip';
 import React from 'react';
 import colors from 'config/colors';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+
+import tooltipStyles from './styles/Tooltip';
+import animationStyles from './styles/Animations';
+
+const BaseStyles = createGlobalStyle`
+    ${animationStyles};
+    ${tooltipStyles};
+`;
 
 const Wrapper = styled.div``;
 
@@ -55,9 +61,13 @@ const Tooltip = ({
                 overlay={() => (
                     Overlay
                 )}
+                overlayStyle={{
+                    background: colors.TOOLTIP_BACKGROUND,
+                }}
             >
                 {children}
             </RcTooltip>
+            <BaseStyles />
         </Wrapper>
     );
 };
