@@ -30,6 +30,11 @@ const StyledH1 = styled(H1)`
     text-align: center;
 `;
 
+const StyledP = styled(P)`
+    max-width: 550px;
+    padding-bottom: 15px;
+`;
+
 const Message = styled.div`
     text-align: center;
     padding: 0 0 15px 0;
@@ -44,7 +49,7 @@ const FirmwareUpdate = () => (
         />
         <StyledH1>Your Trezor is not backed up!</StyledH1>
         <Message>
-            <P>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</P>
+            <StyledP>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</StyledP>
             <P>Please use Bitcoin wallet interface to create a backup.</P>
         </Message>
         <Link href="https://wallet.trezor.io?backup=1">
