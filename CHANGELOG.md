@@ -4,6 +4,7 @@ __added__
 - responsive sidebar
 - QR code scanner in send form
 - clear send form button
+- backup notification modal
 
 __changed__
 - update dependencies
@@ -12,6 +13,7 @@ __changed__
 - device header styles
 - input styles
 - split sign and verify title
+- connect v7
 
 __fixed__
 - beta disclaimer wrapper position
