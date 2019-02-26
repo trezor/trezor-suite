@@ -205,7 +205,7 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
         }
 
         // handle outdated firmware error
-        if (error.message === UI.FIRMWARE) {
+        if (error.message === UI.FIRMWARE_OLD) {
             dispatch({
                 type: DISCOVERY.FIRMWARE_OUTDATED,
                 device,

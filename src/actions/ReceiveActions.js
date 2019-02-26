@@ -94,6 +94,9 @@ export const showAddress = (path: Array<number>): AsyncAction => async (dispatch
             type: RECEIVE.HIDE_ADDRESS,
         });
 
+        // special case: device no-backup permissions not granted
+        if (response.payload.code === 403) return;
+
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
