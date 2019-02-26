@@ -17,6 +17,7 @@ type Props = {
     isWhite?: boolean,
     isWebUsb?: boolean,
     isTransparent?: boolean,
+    dataTest?: string
 }
 
 const Wrapper = styled.button`
@@ -37,6 +38,11 @@ const Wrapper = styled.button`
         background: ${colors.GREEN_TERTIARY};
     }
 
+    &:focus {
+        border-color: ${colors.INPUT_FOCUSED_BORDER};
+        box-shadow: 0 0px 6px 0 ${colors.INPUT_FOCUSED_SHADOW};
+    }
+
     ${props => props.isDisabled && css`
         pointer-events: none;
         color: ${colors.TEXT_SECONDARY};
@@ -47,6 +53,10 @@ const Wrapper = styled.button`
         background: ${colors.WHITE};
         color: ${colors.TEXT_SECONDARY};
         border: 1px solid ${colors.DIVIDER};
+
+        &:focus {
+            border-color: ${colors.INPUT_FOCUSED_BORDER};
+        }
 
         &:hover {
             color: ${colors.TEXT_PRIMARY};
@@ -63,6 +73,11 @@ const Wrapper = styled.button`
         background: transparent;
         border: 0px;
         color: ${colors.TEXT_SECONDARY};
+
+        &:focus {
+            color: ${colors.TEXT_PRIMARY};
+            box-shadow: none;
+        }
 
         &:hover,
         &:active {
@@ -132,10 +147,12 @@ const Button = ({
     isWhite = false,
     isWebUsb = false,
     isTransparent = false,
+    dataTest,
 }: Props) => {
     const newClassName = isWebUsb ? `${className} trezor-webusb-button` : className;
     return (
         <Wrapper
+            data-test={dataTest}
             className={newClassName}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
@@ -162,6 +179,7 @@ Button.propTypes = {
     isWhite: PropTypes.bool,
     isWebUsb: PropTypes.bool,
     isTransparent: PropTypes.bool,
+    dataTest: PropTypes.string,
 };
 
 export default Button;

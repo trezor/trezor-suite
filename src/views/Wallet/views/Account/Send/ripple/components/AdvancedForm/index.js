@@ -35,7 +35,7 @@ const AdvancedSettingsWrapper = styled.div`
     border-top: 1px solid ${colors.DIVIDER};
 `;
 
-const GasInputRow = styled.div`
+const InputRow = styled.div`
     width: 100%;
     display: flex;
 
@@ -44,7 +44,7 @@ const GasInputRow = styled.div`
     }
 `;
 
-const GasInput = styled(Input)`
+const StyledInput = styled(Input)`
     /* min-height: 85px; */
     padding-bottom: 28px;
     &:first-child {
@@ -64,12 +64,27 @@ const AdvancedSettingsSendButtonWrapper = styled.div`
     justify-content: flex-end;
 `;
 
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
 const getFeeInputState = (feeErrors: string, feeWarnings: string): string => {
     let state = '';
     if (feeWarnings && !feeErrors) {
         state = 'warning';
     }
     if (feeErrors) {
+        state = 'error';
+    }
+    return state;
+};
+
+const getDestinationTagInputState = (errors: string, warnings: string): string => {
+    let state = '';
+    if (warnings && !errors) {
+        state = 'warning';
+    }
+    if (errors) {
         state = 'error';
     }
     return state;
@@ -91,15 +106,17 @@ const AdvancedForm = (props: Props) => {
         warnings,
         infos,
         fee,
+        destinationTag,
     } = props.sendForm;
     const {
         onFeeChange,
+        onDestinationTagChange,
     } = props.sendFormActions;
 
     return (
         <AdvancedSettingsWrapper>
-            <GasInputRow>
-                <GasInput
+            <InputRow>
+                <StyledInput
                     state={getFeeInputState(errors.fee, warnings.fee)}
                     autoComplete="off"
                     autoCorrect="off"
@@ -115,11 +132,11 @@ const AdvancedForm = (props: Props) => {
                                         Transfer cost in XRP drops
                                         </React.Fragment>
                                     )}
-                                    maxWidth={410}
+                                    maxWidth={100}
                                     readMoreLink="https://developers.ripple.com/transaction-cost.html"
                                     placement="top"
                                 >
-                                    <Icon
+                                    <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
                                         size={24}
@@ -132,7 +149,43 @@ const AdvancedForm = (props: Props) => {
                     value={fee}
                     onChange={event => onFeeChange(event.target.value)}
                 />
-            </GasInputRow>
+            </InputRow>
+
+            <InputRow>
+                <StyledInput
+                    state={getDestinationTagInputState(errors.destinationTag, warnings.destinationTag)}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    topLabel={(
+                        <InputLabelWrapper>
+                            <Left>
+                            Destination tag
+                                <Tooltip
+                                    content={(
+                                        <React.Fragment>
+                                        Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.
+                                        </React.Fragment>
+                                    )}
+                                    maxWidth={200}
+                                    readMoreLink="https://wiki.trezor.io/Ripple_(XRP)"
+                                    placement="top"
+                                >
+                                    <StyledIcon
+                                        icon={ICONS.HELP}
+                                        color={colors.TEXT_SECONDARY}
+                                        size={24}
+                                    />
+                                </Tooltip>
+                            </Left>
+                        </InputLabelWrapper>
+                    )}
+                    bottomText={errors.destinationTag || warnings.destinationTag || infos.destinationTag}
+                    value={destinationTag}
+                    onChange={event => onDestinationTagChange(event.target.value)}
+                />
+            </InputRow>
 
             <AdvancedSettingsSendButtonWrapper>
                 { props.children }

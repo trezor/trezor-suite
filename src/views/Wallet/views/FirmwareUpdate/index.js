@@ -3,6 +3,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { getOldWalletReleaseUrl } from 'utils/url';
 
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
@@ -129,7 +130,7 @@ const FirmwareUpdate = (props: Props) => (
         </Image>
         <H1>It’s time to update your firmware</H1>
         <StyledP>Please use Bitcoin wallet interface to update your firmware.</StyledP>
-        <Link href="https://beta-wallet.trezor.io">
+        <Link href={getOldWalletReleaseUrl(props.device)}>
             <Button>Take me to the Bitcoin wallet</Button>
         </Link>
         {deviceUtils.isDeviceAccessible(props.device) && (

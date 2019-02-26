@@ -153,6 +153,41 @@ export const toggleAdvanced = (): Action => ({
 });
 
 /*
+* Called from UI from "clear" button
+*/
+export const onClear = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { network } = getState().selectedAccount;
+    const { advanced } = getState().sendFormEthereum;
+
+    if (!network) return;
+
+    // clear transaction draft from session storage
+    dispatch(SessionStorageActions.clear());
+
+    const gasPrice: BigNumber = await dispatch(BlockchainActions.getGasPrice(network.shortcut, network.defaultGasPrice));
+    const gasLimit = network.defaultGasLimit.toString();
+    const feeLevels = ValidationActions.getFeeLevels(network.symbol, gasPrice, gasLimit);
+    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, initialState.selectedFeeLevel);
+
+    dispatch({
+        type: SEND.CLEAR,
+        networkType: 'ethereum',
+        state: {
+            ...initialState,
+            networkName: network.shortcut,
+            networkSymbol: network.symbol,
+            currency: network.symbol,
+            feeLevels,
+            selectedFeeLevel,
+            recommendedGasPrice: gasPrice.toString(),
+            gasLimit,
+            gasPrice: gasPrice.toString(),
+            advanced,
+        },
+    });
+};
+
+/*
 * Called from UI on "address" field change
 */
 export const onAddressChange = (address: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
@@ -613,4 +648,5 @@ export default {
     onNonceChange,
     onDataChange,
     onSend,
+    onClear,
 };

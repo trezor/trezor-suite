@@ -118,7 +118,7 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
 
     const updatedAccount = await TrezorConnect.rippleGetAccountInfo({
         account: {
-            address: account.descriptor,
+            descriptor: account.descriptor,
             from: account.block,
             history: false,
         },

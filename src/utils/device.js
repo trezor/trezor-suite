@@ -79,7 +79,7 @@ export const getStatusName = (deviceStatus: string): string => {
     }
 };
 
-export const isWebUSB = (transport: Transport) => !!((transport.type && transport.version.indexOf('webusb') >= 0));
+export const isWebUSB = (transport: Transport) => !!((transport.type && transport.type === 'webusb'));
 
 export const isDisabled = (selectedDevice: TrezorDevice, devices: Array<TrezorDevice>, transport: Transport) => {
     if (isWebUSB(transport)) return false; // always enabled if webusb
@@ -104,7 +104,7 @@ export const getVersion = (device: TrezorDevice): string => {
     if (device.features && device.features.major_version > 1) {
         version = 'T';
     } else {
-        version = '1';
+        version = 'One';
     }
     return version;
 };

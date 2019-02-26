@@ -22,6 +22,16 @@ import type { Props } from './Container';
 // and put it inside config/variables.js
 const SmallScreenWidth = '850px';
 
+const AmountInputLabelWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const AmountInputLabel = styled.span`
+    text-align: right;
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 const InputRow = styled.div`
     padding-bottom: 28px;
 `;
@@ -74,6 +84,20 @@ const FeeOptionWrapper = styled.div`
     justify-content: space-between;
 `;
 
+const OptionValue = styled(P)`
+    flex: 1 0 auto;
+    min-width: 70px;
+    margin-right: 5px;
+`;
+
+const OptionLabel = styled(P)`
+    flex: 0 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+    word-break: break-all;
+`;
+
 const FeeLabelWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -115,22 +139,47 @@ const ToggleAdvancedSettingsButton = styled(Button)`
     min-height: 40px;
     padding: 0;
     display: flex;
+    flex: 1 1 0;
     align-items: center;
     font-weight: ${FONT_WEIGHT.SEMIBOLD};
 `;
 
-const SendButton = styled(Button)`
-    min-width: ${props => (props.isAdvancedSettingsHidden ? '50%' : '100%')};
-    word-break: break-all;
+const FormButtons = styled.div`
+    display: flex;
+    flex: 1 1;
 
+    
     @media screen and (max-width: ${SmallScreenWidth}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
     }
+
+    Button + Button {
+        margin-left: 5px;
+    }
+`;
+
+const SendButton = styled(Button)`
+    word-break: break-all;
+    flex: 1;
+
+`;
+
+const ClearButton = styled(Button)`
+
 `;
 
 const AdvancedSettingsIcon = styled(Icon)`
     margin-left: 10px;
 `;
+
+const QrButton = styled(Button)`
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-left: 0px;
+    height: 40px;
+    padding: 0 10px;
+`;
+
 
 // render helpers
 const getAddressInputState = (address: string, addressErrors: string, addressWarnings: string): string => {
@@ -190,6 +239,7 @@ const AccountSend = (props: Props) => {
         onFeeLevelChange,
         updateFeeLevels,
         onSend,
+        onClear,
     } = props.sendFormActions;
 
     if (!device || !account || !discovery || !network || !shouldRender) {
@@ -198,7 +248,10 @@ const AccountSend = (props: Props) => {
     }
 
     let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
-    let sendButtonText: string = ` ${total} ${network.symbol}`;
+    let sendButtonText: string = 'Send';
+    if (total !== '0') {
+        sendButtonText = `${sendButtonText} ${total} ${network.symbol}`;
+    }
 
     if (!device.connected) {
         sendButtonText = 'Device is not connected';
@@ -214,6 +267,7 @@ const AccountSend = (props: Props) => {
     const tokensSelectData: Array<{ value: string, label: string }> = [{ value: network.symbol, label: network.symbol }];
     const tokensSelectValue = tokensSelectData[0];
     const isAdvancedSettingsHidden = !advanced;
+    const accountReserve: ?string = account.networkType === 'ripple' && !account.empty ? account.reserve : null;
 
     return (
         <Content>
@@ -229,6 +283,19 @@ const AccountSend = (props: Props) => {
                     bottomText={errors.address || warnings.address || infos.address}
                     value={address}
                     onChange={event => onAddressChange(event.target.value)}
+                    sideAddons={[(
+                        <QrButton
+                            key="qrButton"
+                            isWhite
+                            onClick={props.openQrModal}
+                        >
+                            <Icon
+                                size={25}
+                                color={colors.TEXT_SECONDARY}
+                                icon={ICONS.QRCODE}
+                            />
+                        </QrButton>
+                    )]}
                 />
             </InputRow>
             <InputRow>
@@ -238,7 +305,14 @@ const AccountSend = (props: Props) => {
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
-                    topLabel="Amount"
+                    topLabel={(
+                        <AmountInputLabelWrapper>
+                            <AmountInputLabel>Amount</AmountInputLabel>
+                            {accountReserve && (
+                                <AmountInputLabel>Reserve: {accountReserve} {network.symbol}</AmountInputLabel>
+                            )}
+                        </AmountInputLabelWrapper>
+                    )}
                     value={amount}
                     onChange={event => onAmountChange(event.target.value)}
                     bottomText={errors.amount || warnings.amount || infos.amount}
@@ -302,8 +376,8 @@ const AccountSend = (props: Props) => {
                     options={feeLevels}
                     formatOptionLabel={option => (
                         <FeeOptionWrapper>
-                            <P>{option.value}</P>
-                            <P>{option.label}</P>
+                            <OptionValue>{option.value}</OptionValue>
+                            <OptionLabel>{option.label}</OptionLabel>
                         </FeeOptionWrapper>
                     )}
                 />
@@ -327,24 +401,43 @@ const AccountSend = (props: Props) => {
                 </ToggleAdvancedSettingsButton>
 
                 {isAdvancedSettingsHidden && (
-                    <SendButton
-                        isDisabled={isSendButtonDisabled}
+                    <FormButtons
                         isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-                        onClick={() => onSend()}
                     >
-                        {sendButtonText}
-                    </SendButton>
+                        <ClearButton
+                            isWhite
+                            onClick={() => onClear()}
+                        >
+                            Clear
+                        </ClearButton>
+                        <SendButton
+                            isDisabled={isSendButtonDisabled}
+                            onClick={() => onSend()}
+                        >
+                            {sendButtonText}
+                        </SendButton>
+                    </FormButtons>
                 )}
             </ToggleAdvancedSettingsWrapper>
 
             {advanced && (
                 <AdvancedForm {...props}>
-                    <SendButton
-                        isDisabled={isSendButtonDisabled}
-                        onClick={() => onSend()}
+                    <FormButtons
+                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
                     >
-                        {sendButtonText}
-                    </SendButton>
+                        <ClearButton
+                            isWhite
+                            onClick={() => onClear()}
+                        >
+                            Clear
+                        </ClearButton>
+                        <SendButton
+                            isDisabled={isSendButtonDisabled}
+                            onClick={() => onSend()}
+                        >
+                            {sendButtonText}
+                        </SendButton>
+                    </FormButtons>
                 </AdvancedForm>
             )}
 

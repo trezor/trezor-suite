@@ -59,6 +59,11 @@ const StyledInput = styled.input`
     background-color: ${colors.WHITE};
     transition: ${TRANSITION.HOVER};
 
+    &:focus {
+        border-color: ${colors.INPUT_FOCUSED_BORDER};
+        box-shadow: 0 0px 6px 0 ${colors.INPUT_FOCUSED_SHADOW};
+    }
+
     &:disabled {
         pointer-events: none;
         background: ${colors.GRAY_LIGHT};
@@ -183,7 +188,7 @@ class Input extends PureComponent {
                             autoComplete="off"
                             height={this.props.height}
                             trezorAction={this.props.trezorAction}
-                            hasIcon={this.getIcon(this.props.state).length > 0}
+                            hasIcon={this.props.icon || this.getIcon(this.props.state).length > 0}
                             ref={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}

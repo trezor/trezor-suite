@@ -21,12 +21,14 @@ export type State = {
     touched: {[k: string]: boolean};
     address: string;
     amount: string;
+    minAmount: string;
     setMax: boolean;
     feeLevels: Array<FeeLevel>;
     selectedFeeLevel: FeeLevel;
     fee: string;
     feeNeedsUpdate: boolean;
     sequence: string;
+    destinationTag: string;
     total: string;
 
     errors: {[k: string]: string};
@@ -46,6 +48,7 @@ export const initialState: State = {
     touched: {},
     address: '',
     amount: '',
+    minAmount: '0',
     setMax: false,
     feeLevels: [],
     selectedFeeLevel: {
@@ -56,6 +59,7 @@ export const initialState: State = {
     fee: '0',
     feeNeedsUpdate: false,
     sequence: '0',
+    destinationTag: '',
     total: '0',
 
     errors: {},
@@ -73,6 +77,7 @@ export default (state: State = initialState, action: Action): State => {
         case SEND.INIT:
         case SEND.CHANGE:
         case SEND.VALIDATION:
+        case SEND.CLEAR:
             return action.state;
 
         case SEND.TOGGLE_ADVANCED:

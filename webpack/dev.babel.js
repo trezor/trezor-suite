@@ -1,15 +1,15 @@
 import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import FlowWebpackPlugin from 'flow-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
-
-// turn on for bundle analyzing
-// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import packageJson from '../package.json';
 
 import {
     SRC, BUILD, PORT, PUBLIC,
 } from './constants';
+
+// turn on for bundle analyzing
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -30,10 +30,11 @@ module.exports = {
             SRC,
             PUBLIC,
         ],
+        stats: 'minimal',
         hot: true,
         https: false,
+        quiet: false,
         port: PORT,
-        stats: 'minimal',
         inline: true,
     },
     module: {
@@ -43,6 +44,7 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     'babel-loader',
+                    'react-hot-loader/webpack',
                     {
                         loader: 'eslint-loader',
                         options: {
@@ -61,7 +63,7 @@ module.exports = {
             {
                 test: /\.(png|gif|jpg)$/,
                 loader: 'file-loader?name=./images/[name].[ext]',
-                query: {
+                options: {
                     outputPath: './images',
                     name: '[name].[ext]',
                 },
@@ -69,7 +71,7 @@ module.exports = {
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './fonts',
                     name: '[name].[ext]',
                 },
@@ -79,7 +81,7 @@ module.exports = {
                 test: /\.json/,
                 exclude: /(node_modules)/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './data',
                     name: '[name].[ext]',
                 },
@@ -101,10 +103,8 @@ module.exports = {
             suppressSuccess: true,
         }),
         new webpack.DefinePlugin({
+            VERSION: JSON.stringify(packageJson.version),
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
-        }),
-        new FlowWebpackPlugin({
-            reportingSeverity: 'warning',
         }),
         new HtmlWebpackPlugin({
             chunks: ['index'],

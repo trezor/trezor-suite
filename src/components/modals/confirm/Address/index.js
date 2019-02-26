@@ -13,11 +13,11 @@ import P from 'components/Paragraph';
 import type { Props } from '../../Container';
 
 const Wrapper = styled.div`
-    width: 390px;
+    max-width: 390px;
 `;
 
 const Header = styled.div`
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const Content = styled.div`

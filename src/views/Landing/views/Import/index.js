@@ -13,7 +13,6 @@ import Button from 'components/Button';
 import LandingWrapper from 'views/Landing/components/LandingWrapper';
 
 const Wrapper = styled.div`
-    min-width: 720px;
     width: 100%;
     display: flex;
     flex-direction: column;

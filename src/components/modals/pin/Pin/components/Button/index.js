@@ -4,7 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 
 type Props = {
     onClick: () => void;
@@ -22,6 +22,12 @@ const Wrapper = styled.button`
     border: 1px solid ${colors.DIVIDER};
     background: ${colors.WHITE};
     transition: all 0.3s;
+    cursor: pointer;
+
+    @media screen and (max-width: ${SCREEN_SIZE.XS}) {
+        width: 50px;
+        height: 50px;
+    }
 
     &:first-child {
         margin-left: 0px;

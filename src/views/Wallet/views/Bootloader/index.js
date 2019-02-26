@@ -22,10 +22,14 @@ const StyledP = styled(P)`
     text-align: center;
 `;
 
+const StyledH1 = styled(H1)`
+    text-align: center;
+`;
+
 const Bootloader = () => (
     <Wrapper>
         <Row>
-            <H1>Your device is in firmware update mode</H1>
+            <StyledH1>Your device is in firmware update mode</StyledH1>
             <StyledP>Please re-connect it</StyledP>
         </Row>
     </Wrapper>

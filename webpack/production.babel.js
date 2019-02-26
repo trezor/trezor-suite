@@ -1,8 +1,8 @@
-
 import webpack from 'webpack';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import packageJson from '../package.json';
 import { SRC, BUILD, PUBLIC } from './constants';
 
 const gitRevisionPlugin = new GitRevisionPlugin();
@@ -28,7 +28,7 @@ module.exports = {
                 test: /\.(png|gif|jpg)$/,
                 exclude: /(node_modules)/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './images',
                     name: '[name].[hash].[ext]',
                 },
@@ -36,7 +36,7 @@ module.exports = {
             {
                 test: /\.(ttf|eot|svg|woff|woff2)$/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './fonts',
                     name: '[name].[hash].[ext]',
                 },
@@ -46,7 +46,7 @@ module.exports = {
                 test: /\.json/,
                 exclude: /(node_modules)/,
                 loader: 'file-loader',
-                query: {
+                options: {
                     outputPath: './data',
                     name: '[name].[hash].[ext]',
                 },
@@ -65,6 +65,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env.BUILD': JSON.stringify(process.env.BUILD),
+            VERSION: JSON.stringify(packageJson.version),
             COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
         }),
         new HtmlWebpackPlugin({

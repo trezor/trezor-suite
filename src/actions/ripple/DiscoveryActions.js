@@ -76,6 +76,6 @@ export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discover
 
         networkType: 'ripple',
         sequence: account.sequence,
-        reserve: '0',
+        reserve: toDecimalAmount(account.reserve, network.decimals),
     };
 };

@@ -94,6 +94,10 @@ export const showAddress = (path: Array<number>): AsyncAction => async (dispatch
             type: RECEIVE.HIDE_ADDRESS,
         });
 
+        // special case: device no-backup permissions not granted
+        // $FlowIssue: remove this after trezor-connect@7.0.0 release
+        if (response.payload.code === 403) return;
+
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {

@@ -22,11 +22,11 @@ type Props = {
 const Wrapper = styled.div`
     width: 100%;
     max-width: 620px;
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const StyledButton = styled(Button)`
-    margin: 0 0 10px 0;
+    margin-top: 10px;
     width: 100%;
 `;
 
@@ -46,7 +46,7 @@ const NemWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
             <Icon
-                size={20}
+                size={24}
                 color={colors.TEXT_SECONDARY}
                 icon={icons.CLOSE}
             />

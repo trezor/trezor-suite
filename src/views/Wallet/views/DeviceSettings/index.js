@@ -1,3 +1,4 @@
+/* @flow */
 import React from 'react';
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
@@ -7,8 +8,15 @@ import Button from 'components/Button';
 import P from 'components/Paragraph';
 import Link from 'components/Link';
 import ICONS from 'config/icons';
+import { getOldWalletUrl } from 'utils/url';
 import Content from 'views/Wallet/components/Content';
 import { connect } from 'react-redux';
+
+import type { TrezorDevice } from 'flowtype';
+
+type Props = {
+    device: ?TrezorDevice;
+}
 
 const Section = styled.section`
     display: flex;
@@ -28,7 +36,11 @@ const StyledP = styled(P)`
     text-align: center;
 `;
 
-const DeviceSettings = () => (
+const StyledH1 = styled(H1)`
+    text-align: center;
+`;
+
+const DeviceSettings = (props: Props) => (
     <Content>
         <Section>
             <Row>
@@ -37,9 +49,9 @@ const DeviceSettings = () => (
                     color={colors.WARNING_PRIMARY}
                     icon={ICONS.WARNING}
                 />
-                <H1>Device settings is under construction</H1>
+                <StyledH1>Device settings is under construction</StyledH1>
                 <StyledP>Please use Bitcoin wallet interface to change your device settings</StyledP>
-                <Link href="https://beta-wallet.trezor.io/">
+                <Link href={getOldWalletUrl(props.device)}>
                     <Button>Take me to the Bitcoin wallet</Button>
                 </Link>
             </Row>

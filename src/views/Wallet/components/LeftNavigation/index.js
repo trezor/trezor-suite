@@ -12,25 +12,31 @@ import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
 import * as deviceUtils from 'utils/device';
 
+import Tooltip from 'components/Tooltip';
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
-import StickyContainer from './components/StickyContainer';
+import Sidebar from './components/Sidebar';
 
 import type { Props } from './components/common';
 
 const Header = styled(DeviceHeader)`
     border-right: 1px solid ${colors.BACKGROUND};
+    flex: 0 0 auto;
+`;
+
+const WalletTypeIconWrapper = styled.div`
 `;
 
 const Counter = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 1px solid ${colors.DIVIDER};
     border-radius: 50%;
     color: ${colors.TEXT_SECONDARY};
     width: 24px;
     height: 24px;
-    line-height: 22px;
-    text-align: center;
     font-size: ${FONT_SIZE.COUNTER};
     margin-right: 8px;
 `;
@@ -55,7 +61,9 @@ const Footer = styled.div.attrs(props => ({
 `;
 
 const Body = styled.div`
+    flex: 1 0 auto;
     width: 320px;
+    min-height: ${props => (props.minHeight ? `${props.minHeight}px` : '0px')};
 `;
 
 const Help = styled.div`
@@ -109,40 +117,46 @@ const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGro
 
 type State = {
     animationType: ?string;
-    shouldRenderDeviceSelection: boolean;
     clicked: boolean;
+    bodyMinHeight: number;
 }
 
 class LeftNavigation extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
+        this.deviceMenuRef = React.createRef();
         const { location } = this.props.router;
         const hasNetwork = location && location.state && location.state.network;
         this.state = {
             animationType: hasNetwork ? 'slide-left' : null,
-            shouldRenderDeviceSelection: false,
             clicked: false,
+            bodyMinHeight: 0,
         };
     }
 
+    componentDidMount() {
+        this.recalculateBodyMinHeight();
+    }
+
     componentWillReceiveProps(nextProps: Props) {
-        const { dropdownOpened, selectedDevice } = nextProps.wallet;
+        const { selectedDevice } = nextProps.wallet;
         const { location } = nextProps.router;
         const hasNetwork = location && location.state.network;
         const deviceReady = selectedDevice && selectedDevice.features && selectedDevice.mode === 'normal';
-        if (dropdownOpened) {
-            this.setState({ shouldRenderDeviceSelection: true });
-        } else if (hasNetwork) {
+
+        if (hasNetwork) {
             this.setState({
-                shouldRenderDeviceSelection: false,
                 animationType: 'slide-left',
             });
         } else {
             this.setState({
-                shouldRenderDeviceSelection: false,
                 animationType: deviceReady ? 'slide-right' : null,
             });
         }
+    }
+
+    componentDidUpdate() {
+        this.recalculateBodyMinHeight();
     }
 
     shouldRenderAccounts() {
@@ -152,7 +166,6 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             && location
             && location.state
             && location.state.network
-            && !this.state.shouldRenderDeviceSelection
             && this.state.animationType === 'slide-left';
     }
 
@@ -162,8 +175,18 @@ class LeftNavigation extends React.PureComponent<Props, State> {
     }
 
     shouldRenderCoins() {
-        return !this.state.shouldRenderDeviceSelection && this.state.animationType !== 'slide-left';
+        return this.state.animationType !== 'slide-left';
     }
+
+    recalculateBodyMinHeight() {
+        if (this.deviceMenuRef.current) {
+            this.setState({
+                bodyMinHeight: this.deviceMenuRef.current.getMenuHeight(),
+            });
+        }
+    }
+
+    deviceMenuRef: { current: any };
 
     render() {
         const { props } = this;
@@ -182,15 +205,26 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             );
         }
 
-        const { selectedDevice } = props.wallet;
+        const { selectedDevice, dropdownOpened } = props.wallet;
         const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
+        const walletType = selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard';
+        const showWalletType = selectedDevice && selectedDevice.features && selectedDevice.features.passphrase_protection;
+        const isDeviceReady = selectedDevice && selectedDevice.connected && selectedDevice.available;
+
+        let walletTooltipMsg = `You are in your ${walletType} wallet.`;
+        if (isDeviceReady) {
+            walletTooltipMsg = walletType === 'standard'
+                ? `${walletTooltipMsg} Click here to access your hidden wallet.`
+                : `${walletTooltipMsg} Click here to access your standard or another hidden wallet`;
+        } else {
+            walletTooltipMsg = `${walletTooltipMsg} To access other wallets please connect your device.`;
+        }
+
         return (
-            <StickyContainer
-                location={props.router.location.pathname}
-                deviceSelection={this.props.wallet.dropdownOpened}
-            >
+            <Sidebar isOpen={props.wallet.showSidebar}>
                 <Header
                     isSelected
+                    testId="Main__page__device__header"
                     isHoverable={false}
                     onClickWrapper={() => {
                         if (isDeviceAccessible || this.props.devices.length > 1) {
@@ -202,9 +236,39 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     isOpen={this.props.wallet.dropdownOpened}
                     icon={(
                         <React.Fragment>
-                            <WalletTypeIcon type={selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard'} size={25} color={colors.TEXT_SECONDARY} />
+                            {showWalletType && (
+                                <Tooltip
+                                    content={walletTooltipMsg}
+                                    maxWidth={200}
+                                    placement="bottom"
+                                    enterDelayMs={0.5}
+                                >
+                                    <WalletTypeIconWrapper>
+                                        <WalletTypeIcon
+                                            onClick={(e) => {
+                                                if (selectedDevice && isDeviceReady) {
+                                                    this.props.duplicateDevice(selectedDevice);
+                                                    e.stopPropagation();
+                                                }
+                                            }}
+                                            hoverColor={isDeviceReady ? colors.TEXT_PRIMARY : colors.TEXT_SECONDARY}
+                                            type={walletType}
+                                            size={25}
+                                            color={colors.TEXT_SECONDARY}
+                                        />
+                                    </WalletTypeIconWrapper>
+                                </Tooltip>
+                            )
+                            }
                             {this.props.devices.length > 1 && (
-                                <Counter>{this.props.devices.length}</Counter>
+                                <Tooltip
+                                    content="Number of devices"
+                                    maxWidth={200}
+                                    placement="bottom"
+                                    enterDelayMs={0.5}
+                                >
+                                    <Counter>{this.props.devices.length}</Counter>
+                                </Tooltip>
                             )}
                             <Icon
                                 canAnimate={this.state.clicked === true}
@@ -217,11 +281,11 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     )}
                     {...this.props}
                 />
-                <Body>
-                    {this.state.shouldRenderDeviceSelection && <DeviceMenu {...this.props} />}
+                <Body minHeight={this.state.bodyMinHeight}>
+                    {dropdownOpened && <DeviceMenu ref={this.deviceMenuRef} {...this.props} />}
                     {isDeviceAccessible && menu}
                 </Body>
-                <Footer key="sticky-footer">
+                <Footer data-test="Main__page__footer" key="sticky-footer">
                     <Help>
                         <A
                             href="https://trezor.io/support/"
@@ -232,7 +296,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                         </A>
                     </Help>
                 </Footer>
-            </StickyContainer>
+            </Sidebar>
         );
     }
 }

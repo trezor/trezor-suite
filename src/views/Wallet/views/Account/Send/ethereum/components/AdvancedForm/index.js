@@ -4,6 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 
+import Link from 'components/Link';
 import Input from 'components/inputs/Input';
 import Textarea from 'components/Textarea';
 import Tooltip from 'components/Tooltip';
@@ -117,6 +118,13 @@ const Right = styled.div`
     display: flex;
     flex-direction: row;
     font-size: ${FONT_SIZE.SMALL};
+`;
+
+const StyledLink = styled(Link)`
+    white-space: nowrap;
+`;
+
+const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
@@ -182,7 +190,7 @@ const AdvancedForm = (props: Props) => {
                                     readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
                                     placement="top"
                                 >
-                                    <Icon
+                                    <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
                                         size={24}
@@ -190,9 +198,10 @@ const AdvancedForm = (props: Props) => {
                                 </Tooltip>
                             </Left>
                             { showDefaultGasLimitButton && (
-                                <Right onClick={() => setDefaultGasLimit()}>
-                                    Set default
-                                </Right>)
+                                <Right>
+                                    <StyledLink onClick={setDefaultGasLimit} isGreen>Set default</StyledLink>
+                                </Right>
+                            )
                             }
                         </InputLabelWrapper>
                     )}
@@ -224,7 +233,7 @@ const AdvancedForm = (props: Props) => {
                                     readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
                                     placement="top"
                                 >
-                                    <Icon
+                                    <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
                                         size={24}
@@ -252,7 +261,7 @@ const AdvancedForm = (props: Props) => {
                                 )}
                                 placement="top"
                             >
-                                <Icon
+                                <StyledIcon
                                     icon={ICONS.HELP}
                                     color={colors.TEXT_SECONDARY}
                                     size={24}

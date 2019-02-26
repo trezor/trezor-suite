@@ -13,6 +13,11 @@ export const routes: Array<Route> = [
         fields: [],
     },
     {
+        name: 'landing-version',
+        pattern: '/version',
+        fields: ['version'],
+    },
+    {
         name: 'landing-bridge',
         pattern: '/bridge',
         fields: ['bridge'],
@@ -56,6 +61,11 @@ export const routes: Array<Route> = [
         name: 'wallet-firmware-update',
         pattern: '/device/:device/firmware-update',
         fields: ['device', 'firmware-update'],
+    },
+    {
+        name: 'wallet-backup',
+        pattern: '/device/:device/backup',
+        fields: ['device', 'backup'],
     },
     {
         name: 'wallet-device-settings',

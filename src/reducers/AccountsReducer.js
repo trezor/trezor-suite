@@ -92,8 +92,8 @@ export default (state: State = initialState, action: Action): State => {
         case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA:
             return clear(state, action.devices);
 
-        //case CONNECT.FORGET_SINGLE :
-        //    return forgetAccounts(state, action);
+            //case CONNECT.FORGET_SINGLE :
+            //    return forgetAccounts(state, action);
 
         case ACCOUNT.UPDATE:
             return updateAccount(state, action.payload);

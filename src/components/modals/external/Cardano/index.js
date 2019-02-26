@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-    margin: 10px 0 10px 0;
+    margin-top: 10px;
     width: 100%;
 `;
 
@@ -48,7 +48,7 @@ const CardanoWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
             <Icon
-                size={20}
+                size={24}
                 color={colors.TEXT_SECONDARY}
                 icon={icons.CLOSE}
             />

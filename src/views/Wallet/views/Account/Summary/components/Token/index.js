@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
 import colors from 'config/colors';
+import { FONT_WEIGHT } from 'config/variables';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
@@ -39,12 +40,21 @@ const P = styled.p`
     color: inherit;
 `;
 
-const TokenName = styled.div`
-    flex: 1;
+const TokenText = styled.div`
+    font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const TokenBalance = styled.div``;
+const TokenName = styled(TokenText)`
+    flex: 1 1 0;
+    padding-right: 5px;
+`;
+
+const TokenBalance = styled(TokenText)`
+    flex: 1 0 0;
+    word-break: break-all;
+    text-align: right;
+`;
 
 const RemoveTokenButton = styled(Button)`
     padding: 0 0 0 10px;
@@ -58,8 +68,8 @@ class AddedToken extends PureComponent {
     }
 
     render() {
-        const bgColor = new ColorHash({ lightness: 0.16 });
-        const textColor = new ColorHash();
+        const bgColor = new ColorHash({ lightness: 0.9 });
+        const textColor = new ColorHash({ lightness: 0.3, saturation: 1 });
 
         return (
             <TokenWrapper key={this.props.token.symbol}>

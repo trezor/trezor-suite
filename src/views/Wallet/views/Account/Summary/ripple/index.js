@@ -13,7 +13,7 @@ import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import Link from 'components/Link';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
-import AccountBalance from '../components/Balance';
+import AccountBalance from './components/Balance';
 
 import type { Props } from './Container';
 
@@ -47,10 +47,6 @@ const AccountTitle = styled.div`
     color: ${colors.WALLET_TITLE};
 `;
 
-const StyledCoinLogo = styled(CoinLogo)`
-    margin-right: 10px;
-`;
-
 const StyledIcon = styled(Icon)`
     position: relative;
     top: -7px;
@@ -77,6 +73,7 @@ const AccountSummary = (props: Props) => {
     const explorerLink: string = `${network.explorer.address}${account.descriptor}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
     const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
+    const reserve: string = account.networkType === 'ripple' && !account.empty ? account.reserve : '0';
 
     const TMP_SHOW_HISTORY = false;
 
@@ -85,7 +82,7 @@ const AccountSummary = (props: Props) => {
             <React.Fragment>
                 <AccountHeading>
                     <AccountName>
-                        <StyledCoinLogo network={account.network} />
+                        <CoinLogo network={account.network} />
                         <AccountTitle>Account #{parseInt(account.index, 10) + 1}</AccountTitle>
                     </AccountName>
                     { !account.empty && <Link href={explorerLink} isGray>See full transaction history</Link> }
@@ -93,6 +90,7 @@ const AccountSummary = (props: Props) => {
                 <AccountBalance
                     network={network}
                     balance={balance}
+                    reserve={reserve}
                     fiat={props.fiat}
                 />
                 { TMP_SHOW_HISTORY && (
@@ -109,7 +107,8 @@ const AccountSummary = (props: Props) => {
                                 size={24}
                             />
                         </StyledTooltip>
-                    </H2Wrapper>)
+                    </H2Wrapper>
+                )
                 }
             </React.Fragment>
         </Content>

@@ -18,7 +18,12 @@ export type State = {
 } | {
     context: typeof MODAL.CONTEXT_EXTERNAL_WALLET,
     windowType?: string;
-}
+} | {
+    context: typeof MODAL.CONTEXT_SCAN_QR,
+} | {
+    context: typeof MODAL.CONTEXT_CONFIRMATION,
+    windowType: string;
+};
 
 const initialState: State = {
     context: MODAL.CONTEXT_NONE,
@@ -89,6 +94,17 @@ export default function modal(state: State = initialState, action: Action): Stat
             return {
                 context: MODAL.CONTEXT_EXTERNAL_WALLET,
                 windowType: action.id,
+            };
+
+        case MODAL.OPEN_SCAN_QR:
+            return {
+                context: MODAL.CONTEXT_SCAN_QR,
+            };
+
+        case UI.REQUEST_CONFIRMATION:
+            return {
+                context: MODAL.CONTEXT_CONFIRMATION,
+                windowType: action.payload.view,
             };
 
         default:

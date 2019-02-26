@@ -6,16 +6,19 @@
     ],
     "globals": {
         "LOCAL": true,
-        "COMMITHASH": true
+        "COMMITHASH": true,
+        "VERSION": true
     },
     "env": {
         "browser": true,
-        "jest": true
+        "jest": true,
+        "cypress/globals": true
     },
     "rules": {
         "import/prefer-default-export": 0,
         "no-use-before-define": 0,
         "no-plusplus": 0,
+        "jest/no-disabled-tests": 0,
         "class-methods-use-this": 0,
         "react/require-default-props": 0,
         "react/forbid-prop-types": 0,
@@ -32,13 +35,17 @@
         "new-cap": 0,
         "max-len": 0,
         "eol-last": 0,
-        "spaced-comment": 0
+        "spaced-comment": 0,
+        "no-unused-expressions": 0,
+        "chai-friendly/no-unused-expressions": 2
     },
     "plugins": [
         "import",
         "react",
         "jest",
-        "flowtype"
+        "flowtype",
+        "cypress",
+        "chai-friendly"
     ],
     "settings": {
         "import/resolver": {
@@ -52,8 +59,7 @@
         "ecmaVersion": 7,
         "sourceType": "module",
         "ecmaFeatures": {
-            "jsx": true,
-            "experimentalObjectRestSpread": true
+            "jsx": true
         }
     }
 }

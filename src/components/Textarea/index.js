@@ -67,6 +67,11 @@ const StyledTextarea = styled(Textarea)`
         color: ${colors.TEXT_SECONDARY};
     }
 
+    &:focus {
+        border-color: ${colors.INPUT_FOCUSED_BORDER};
+        box-shadow: 0 0px 6px 0 ${colors.INPUT_FOCUSED_SHADOW};
+    }
+
     &:disabled {
         pointer-events: none;
         background: ${colors.GRAY_LIGHT};
@@ -109,6 +114,7 @@ const TopLabel = styled.span`
 `;
 
 const BottomText = styled.span`
+    margin-top: 10px;
     font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 `;

@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { H3 } from 'components/Heading';
+import { H2 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
 
@@ -19,21 +19,20 @@ type Props = {
 
 const Wrapper = styled.div`
     width: 360px;
-    padding: 24px 48px;
+    padding: 30px 48px;
 `;
 
 const StyledP = styled(P)`
-    padding: 7px 0px;
-`;
-
-const StyledButton = styled(Button)`
-    margin: 0 0 10px 0;
+    padding: 20px 0px;
 `;
 
 const Row = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 10px 0;
+
+    Button + Button {
+        margin-top: 10px;
+    }
 `;
 
 class ForgetDevice extends PureComponent<Props> {
@@ -62,11 +61,11 @@ class ForgetDevice extends PureComponent<Props> {
     render() {
         return (
             <Wrapper>
-                <H3>Forget { this.props.device.instanceLabel }?</H3>
+                <H2>Forget { this.props.device.instanceLabel }?</H2>
                 <StyledP isSmaller>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your Trezor again.</StyledP>
                 <Row>
-                    <StyledButton onClick={() => this.forget()}>Forget</StyledButton>
-                    <StyledButton isWhite onClick={this.props.onCancel}>Don&apos;t forget</StyledButton>
+                    <Button onClick={() => this.forget()}>Forget</Button>
+                    <Button isWhite onClick={this.props.onCancel}>Don&apos;t forget</Button>
                 </Row>
             </Wrapper>
         );

@@ -1,12 +1,10 @@
 # Trezor Wallet
 
+You can try this wallet live [HERE](https://beta-wallet.trezor.io/next/)
+
 To install dependencies run `npm install` or `yarn`
 To start locally run `npm run dev` or `yarn run dev`
 To build the project run `npm run build` or `yarn run build`
-
-## Docker
-- Build `./scripts/docker-build.sh`
-- Run `./scripts/docker-run.sh`
 
 ## Project structure
 The project is divided into two parts - data that are used when compiling the project and data that aren't.

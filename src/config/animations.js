@@ -49,6 +49,12 @@ export const GREEN_COLOR = keyframes`
     }
 `;
 
+export const WHITE_COLOR = keyframes`
+    0%, 100% {
+        stroke: white;
+    }
+`;
+
 export const PULSATE = keyframes`
     0%, 100% {
         opacity: 0.5;
@@ -64,5 +70,32 @@ export const FADE_IN = keyframes`
     }
     100% {
         opacity: 1;
+    }
+`;
+
+export const SLIDE_DOWN = keyframes`
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+`;
+
+export const SLIDE_RIGHT = keyframes`
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+`;
+
+export const SLIDE_LEFT = keyframes`
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
     }
 `;

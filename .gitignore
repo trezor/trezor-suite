@@ -20,3 +20,5 @@ logs
 _old
 
 coverage
+test/**/__diff_output__
+test/screenshots

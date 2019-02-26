@@ -1,5 +1,5 @@
 /* @flow */
-
+import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as SEND from 'actions/constants/send';
 import { findDevice, getPendingAmount } from 'reducers/utils';
@@ -9,6 +9,7 @@ import type {
     Dispatch,
     GetState,
     PayloadAction,
+    PromiseAction,
     BlockchainFeeLevel,
 } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormRippleReducer';
@@ -59,7 +60,7 @@ export const onFeeUpdated = (network: string, feeLevels: Array<BlockchainFeeLeve
 /*
 * Recalculate amount, total and fees
 */
-export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+export const validation = (prevState: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
     // clone deep nested object
     // to avoid overrides across state history
     let state: State = JSON.parse(JSON.stringify(getState().sendFormRipple));
@@ -73,6 +74,10 @@ export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getSt
     state = dispatch(addressLabel(state));
     state = dispatch(amountValidation(state));
     state = dispatch(feeValidation(state));
+    state = dispatch(destinationTagValidation(state));
+    if (state.touched.address && prevState.address !== state.address) {
+        dispatch(addressBalanceValidation(state));
+    }
     return state;
 };
 
@@ -82,14 +87,14 @@ const recalculateTotalAmount = ($state: State): PayloadAction<State> => (dispatc
         network,
         pending,
     } = getState().selectedAccount;
-    if (!account || !network) return $state;
+    if (!account || account.networkType !== 'ripple' || !network) return $state;
 
     const state = { ...$state };
     const fee = toDecimalAmount(state.selectedFeeLevel.fee, network.decimals);
 
     if (state.setMax) {
         const pendingAmount = getPendingAmount(pending, state.networkSymbol, false);
-        const availableBalance = new BigNumber(account.balance).minus(pendingAmount);
+        const availableBalance = new BigNumber(account.balance).minus(account.reserve).minus(pendingAmount);
         state.amount = calculateMaxAmount(availableBalance, fee);
     }
 
@@ -132,6 +137,43 @@ const addressValidation = ($state: State): PayloadAction<State> => (dispatch: Di
         state.errors.address = 'Cannot send to myself';
     }
     return state;
+};
+
+/*
+* Address balance validation
+* Fetch data from trezor-connect and set minimum required amount in reducer
+*/
+const addressBalanceValidation = ($state: State): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+    const { network } = getState().selectedAccount;
+    if (!network) return;
+
+    let minAmount: string = '0';
+    const response = await TrezorConnect.rippleGetAccountInfo({
+        account: {
+            descriptor: $state.address,
+        },
+        coin: network.shortcut,
+    });
+    if (response.success) {
+        const empty = response.payload.sequence <= 0 && response.payload.balance === '0';
+        if (empty) {
+            minAmount = toDecimalAmount(response.payload.reserve, network.decimals);
+        }
+    }
+
+    // TODO: consider checking local (known) accounts reserve instead of async fetching
+
+    // a2 (not empty): rJX2KwzaLJDyFhhtXKi3htaLfaUH2tptEX
+    // a4 (empty): r9skfe7kZkvqss7oMB3tuj4a59PXD5wRa2
+
+    dispatch({
+        type: SEND.CHANGE,
+        networkType: 'ripple',
+        state: {
+            ...getState().sendFormRipple,
+            minAmount,
+        },
+    });
 };
 
 /*
@@ -183,7 +225,7 @@ const amountValidation = ($state: State): PayloadAction<State> => (dispatch: Dis
         account,
         pending,
     } = getState().selectedAccount;
-    if (!account) return state;
+    if (!account || account.networkType !== 'ripple') return state;
 
     const { amount } = state;
     if (amount.length < 1) {
@@ -192,13 +234,21 @@ const amountValidation = ($state: State): PayloadAction<State> => (dispatch: Dis
         state.errors.amount = 'Amount is not a number';
     } else {
         const pendingAmount: BigNumber = getPendingAmount(pending, state.networkSymbol);
-
         if (!state.amount.match(XRP_6_RE)) {
             state.errors.amount = 'Maximum 6 decimals allowed';
-        } else if (new BigNumber(state.total).greaterThan(new BigNumber(account.balance).minus(pendingAmount))) {
+        } else if (new BigNumber(state.total).isGreaterThan(new BigNumber(account.balance).minus(pendingAmount))) {
             state.errors.amount = 'Not enough funds';
         }
     }
+
+    if (!state.errors.amount && new BigNumber(account.balance).minus(state.total).lt(account.reserve)) {
+        state.errors.amount = `Not enough funds. Reserved amount for this account is ${account.reserve} ${state.networkSymbol}`;
+    }
+
+    if (!state.errors.amount && new BigNumber(state.amount).lt(state.minAmount)) {
+        state.errors.amount = `Amount is too low. Minimum amount for creating a new account is ${state.minAmount} ${state.networkSymbol}`;
+    }
+
     return state;
 };
 
@@ -221,11 +271,24 @@ export const feeValidation = ($state: State): PayloadAction<State> => (dispatch:
         state.errors.fee = 'Fee must be an absolute number';
     } else {
         const gl: BigNumber = new BigNumber(fee);
-        if (gl.lessThan(network.fee.minFee)) {
+        if (gl.isLessThan(network.fee.minFee)) {
             state.errors.fee = 'Fee is below recommended';
-        } else if (gl.greaterThan(network.fee.maxFee)) {
+        } else if (gl.isGreaterThan(network.fee.maxFee)) {
             state.errors.fee = 'Fee is above recommended';
         }
+    }
+    return state;
+};
+/*
+* Destination Tag value validation
+*/
+export const destinationTagValidation = ($state: State): PayloadAction<State> => (): State => {
+    const state = { ...$state };
+    if (!state.touched.destinationTag) return state;
+
+    const { destinationTag } = state;
+    if (destinationTag.length > 0 && !destinationTag.match(ABS_RE)) {
+        state.errors.destinationTag = 'Destination tag must be an absolute number';
     }
     return state;
 };
@@ -237,7 +300,12 @@ export const feeValidation = ($state: State): PayloadAction<State> => (dispatch:
 
 const calculateTotal = (amount: string, fee: string): string => {
     try {
-        return new BigNumber(amount).plus(fee).toString(10);
+        const bAmount = new BigNumber(amount);
+        // BigNumber() returns NaN on non-numeric string
+        if (bAmount.isNaN()) {
+            throw new Error('Amount is not a number');
+        }
+        return bAmount.plus(fee).toFixed();
     } catch (error) {
         return '0';
     }
@@ -247,8 +315,8 @@ const calculateMaxAmount = (balance: BigNumber, fee: string): string => {
     try {
         // TODO - minus pendings
         const max = balance.minus(fee);
-        if (max.lessThan(0)) return '0';
-        return max.toString(10);
+        if (max.isLessThan(0)) return '0';
+        return max.toFixed();
     } catch (error) {
         return '0';
     }

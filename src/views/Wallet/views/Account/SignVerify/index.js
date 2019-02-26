@@ -7,6 +7,8 @@ import Title from 'views/Wallet/components/Title';
 import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
 import colors from 'config/colors';
+import { SCREEN_SIZE } from 'config/variables';
+
 
 import type { Props } from './Container';
 
@@ -15,6 +17,10 @@ const Wrapper = styled.div`
     flex: 1;
     flex-direction: row;
     background: ${colors.WHITE};
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        flex-wrap: wrap;
+    }
 `;
 
 const Row = styled.div`
@@ -25,11 +31,6 @@ const RowButtons = styled(Row)`
     display: flex;
     align-items: center;
     justify-content: flex-end;
-
-    @media all and (max-width: 850px) {
-        flex-wrap: wrap;
-        margin: -5px;
-    }
 `;
 
 const StyledButton = styled(Button)`
@@ -39,27 +40,26 @@ const StyledButton = styled(Button)`
     &:first-child {
         margin-left: 0;
     }
-
-    @media all and (max-width: 850px) {
-        flex: 1;
-        margin: 5px;
-
-        &:first-child {
-            margin-left: 5px;
-        }
-    }
 `;
 
 const Column = styled.div`
     display: flex;
-    flex: 1;
+    flex: 1 1 50%;
     flex-direction: column;
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        flex: 1 1 100%;
+    }
 `;
 
 const Sign = styled(Column)``;
 
 const Verify = styled(Column)`
     padding-left: 20px;
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        padding-left: 0px;
+    }
 `;
 
 class SignVerify extends Component <Props> {
@@ -97,9 +97,9 @@ class SignVerify extends Component <Props> {
         const verifyAddressError = this.getError('verifyAddress');
         return (
             <Content>
-                <Title>Sign &amp; Verify</Title>
                 <Wrapper>
                     <Sign>
+                        <Title>Sign Message</Title>
                         <Row>
                             <Input
                                 topLabel="Address"
@@ -146,6 +146,7 @@ class SignVerify extends Component <Props> {
                         </RowButtons>
                     </Sign>
                     <Verify>
+                        <Title>Verify message</Title>
                         <Row>
                             <Input
                                 topLabel="Address"
