@@ -68,7 +68,7 @@ storiesOf('Components', module)
                 return <H3>Heading level 3</H3>;
             }
             case 'h4': {
-                return <H4>Heading level 2</H4>;
+                return <H4>Heading level 4</H4>;
             }
             default: {
                 return <H1>Heading level 1</H1>;
