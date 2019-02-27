@@ -18,6 +18,8 @@ import {
     H2,
     H3,
     H4,
+    H5,
+    H6,
 } from './components/Heading';
 import Link from './components/Link';
 import P from './components/Paragraph';
@@ -50,6 +52,8 @@ module.exports = {
     H2,
     H3,
     H4,
+    H5,
+    H6,
     Link,
     P,
     Tooltip,

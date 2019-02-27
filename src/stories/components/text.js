@@ -12,6 +12,8 @@ import {
     H2,
     H3,
     H4,
+    H5,
+    H6,
 } from 'components/Heading';
 import Link from 'components/Link';
 import P from 'components/Paragraph';
@@ -27,7 +29,41 @@ H2.displayName = 'H2';
 H3.displayName = 'H3';
 H4.displayName = 'H4';
 
-storiesOf('Components', module)
+storiesOf('Typography', module)
+    .add('All', () => (
+        <Wrapper>
+            <H1>Heading level 1</H1>
+            <P>
+                This is a paragraph with <Link href="/test" isGreen>link</Link>.
+            </P>
+            <P isSmaller>
+                This is a smaller paragraph with <Link href="/test" isGreen isSmaller>link</Link>.
+            </P>
+
+            <H2>Heading level 2</H2>
+            <P>
+                This is a paragraph.
+            </P>
+            <P isSmaller>This is a smaller paragraph.</P>
+
+            <H3>Heading level 3</H3>
+            <P>This is a paragraph.</P>
+            <P isSmaller>This is a smaller paragraph.</P>
+
+            <H4>Heading level 4</H4>
+            <P>This is a paragraph.</P>
+            <P isSmaller>This is a smaller paragraph.</P>
+
+            <H5>Heading level 5</H5>
+            <P>This is a paragraph.</P>
+            <P isSmaller>This is a smaller paragraph.</P>
+
+            <H6>Heading level 6</H6>
+            <P isSmaller>This is a smaller paragraph.</P>
+        </Wrapper>
+    ));
+
+storiesOf('Typography', module)
     .addDecorator(
         withInfo({
             header: false,
@@ -55,6 +91,8 @@ storiesOf('Components', module)
             H2: 'h2',
             H3: 'h3',
             H4: 'h4',
+            H5: 'h5',
+            H6: 'h6',
         });
 
         switch (level) {
@@ -70,6 +108,12 @@ storiesOf('Components', module)
             case 'h4': {
                 return <H4>Heading level 4</H4>;
             }
+            case 'h5': {
+                return <H5>Heading level 4</H5>;
+            }
+            case 'h6': {
+                return <H6>Heading level 4</H6>;
+            }
             default: {
                 return <H1>Heading level 1</H1>;
             }
@@ -79,7 +123,7 @@ storiesOf('Components', module)
             text: `
             ## Import
             ~~~js
-            import { H1, H2, H3, H4 } from 'trezor-ui-components';
+            import { H1, H2, H3, H4, H5, H6 } from 'trezor-ui-components';
             ~~~
             `,
         },
@@ -98,12 +142,14 @@ storiesOf('Components', module)
         }, '');
         const href = text('URL', 'https://trezor.io');
         const linkText = text('Text', 'This is a link.');
+        const isSmaller = boolean('Smaller', false);
 
         if (color === 'green') {
             return (
                 <Link
                     href={href}
                     target={target}
+                    isSmaller={isSmaller}
                     isGreen
                 >
                     {linkText}
@@ -115,6 +161,7 @@ storiesOf('Components', module)
             <Link
                 href={href}
                 target={target}
+                isSmaller={isSmaller}
                 isGray
             >
                 {linkText}

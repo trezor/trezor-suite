@@ -9,7 +9,7 @@ import { withInfo } from '@storybook/addon-info';
 
 import colors from 'config/colors';
 
-storiesOf('Components', module)
+storiesOf('Other', module)
     .addDecorator(
         withInfo({
             header: false,

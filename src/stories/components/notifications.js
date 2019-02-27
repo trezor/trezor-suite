@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 `;
 Wrapper.displayName = 'Wrapper';
 
-storiesOf('Components', module)
+storiesOf('Notifications', module)
     .addDecorator(
         withInfo({
             header: false,

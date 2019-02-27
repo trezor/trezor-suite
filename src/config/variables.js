@@ -7,10 +7,12 @@ export const FONT_SIZE = {
     HUGE: '2.5714rem',
     TOP_MENU: '1.2142rem',
     WALLET_TITLE: '1.2857rem',
-    H1: '1.2857rem',
-    H2: '1.1428rem',
-    H3: '1rem',
-    H4: '0.8571rem',
+    H1: '2rem',
+    H2: '1.714285rem',
+    H3: '1.42857rem',
+    H4: '1.2857rem',
+    H5: '1.1428rem',
+    H6: '1rem',
     COUNTER: '0.7857rem',
 };
 

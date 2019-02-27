@@ -11,7 +11,7 @@ import { withInfo } from '@storybook/addon-info';
 import colors from 'config/colors';
 import icons from 'config/icons';
 
-storiesOf('Components', module)
+storiesOf('Buttons', module)
     .addDecorator(
         withInfo({
             header: false,

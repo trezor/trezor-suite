@@ -10,7 +10,7 @@ const A = styled.a`
     text-decoration: none;
     cursor: pointer;
     transition: ${TRANSITION.HOVER};
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${props => (props.isSmaller ? FONT_SIZE.SMALL : FONT_SIZE.BASE)};
 
     ${props => props.isGreen
         && css`
@@ -93,6 +93,7 @@ Link.propTypes = {
     onClick: PropTypes.func,
     isGreen: PropTypes.bool,
     isGray: PropTypes.bool,
+    isSmaller: PropTypes.bool,
 };
 
 export default Link;
