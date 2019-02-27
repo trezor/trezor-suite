@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from 'components/buttons/Button';
-import ButtonWebUSB from 'components/buttons/WebUsb';
 import ButtonPin from 'components/buttons/Pin';
 import ButtonNotification from 'components/buttons/Notification';
 import { storiesOf } from '@storybook/react';
@@ -10,6 +9,7 @@ import {
 import { withInfo } from '@storybook/addon-info';
 
 import colors from 'config/colors';
+import icons from 'config/icons';
 
 storiesOf('Components', module)
     .addDecorator(
@@ -33,36 +33,67 @@ storiesOf('Components', module)
         }),
     )
     .addDecorator(withKnobs)
-    .add('Button', () => (
-        <Button
-            isDisabled={boolean('Disabled', false)}
-            isTransparent={boolean('Transparent', false)}
-            isWhite={boolean('White', false)}
-        >
-            {text('Text', 'Button text')}
-        </Button>
-    ), {
-        info: {
-            text: `
-            ## Import
-            ~~~js
-            import { Button } from 'trezor-ui-components';
-            ~~~
-            `,
-        },
-    })
-    .add('Button Web USB', () => {
-        const disabled = boolean('Disabled', false);
-        if (disabled) {
-            return <ButtonWebUSB isDisabled>Web USB</ButtonWebUSB>;
+    .add('Button', () => {
+        const isInverse = boolean('Inverse', false);
+        const isDisabled = boolean('Disabled', false);
+        const buttonText = text('Text', 'Button text');
+        const icon = select('Icon', {
+            None: null,
+            TOP: icons.TOP,
+            EYE_CROSSED: icons.EYE_CROSSED,
+            EYE: icons.EYE,
+            CHECKED: icons.CHECKED,
+            BACK: icons.BACK,
+            HELP: icons.HELP,
+            REFRESH: icons.REFRESH,
+            T1: icons.T1,
+            COG: icons.COG,
+            EJECT: icons.EJECT,
+            CLOSE: icons.CLOSE,
+            DOWNLOAD: icons.DOWNLOAD,
+            PLUS: icons.PLUS,
+            ARROW_UP: icons.ARROW_UP,
+            ARROW_LEFT: icons.ARROW_LEFT,
+            ARROW_DOWN: icons.ARROW_DOWN,
+            CHAT: icons.CHAT,
+            SKIP: icons.SKIP,
+            WARNING: icons.WARNING,
+            INFO: icons.INFO,
+            ERROR: icons.ERROR,
+            SUCCESS: icons.SUCCESS,
+        }, null);
+
+        if (isInverse) {
+            return (
+                <Button
+                    isDisabled={isDisabled}
+                    isInverse={isInverse}
+                    icon={icon}
+                >
+                    {buttonText}
+                </Button>
+            );
         }
-        return <ButtonWebUSB>Web USB</ButtonWebUSB>;
+
+        const isTransparent = boolean('Transparent', false);
+        const isWhite = boolean('White', false);
+
+        return (
+            <Button
+                isDisabled={isDisabled}
+                isTransparent={isTransparent}
+                isWhite={isWhite}
+                icon={icon}
+            >
+                {buttonText}
+            </Button>
+        );
     }, {
         info: {
             text: `
             ## Import
             ~~~js
-            import { ButtonWebUSB } from 'trezor-ui-components';
+            import { Button } from 'trezor-ui-components';
             ~~~
             `,
         },
