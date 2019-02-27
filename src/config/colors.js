@@ -37,4 +37,5 @@ export default {
     INPUT_BORDER: '#E3E3E3',
     INPUT_FOCUS_SHADOW: '#D6D7D7',
     INPUT_FOCUS_BORDER: '#A9A9A9',
+    SELECT_HOVER: '#F9F9F9',
 };

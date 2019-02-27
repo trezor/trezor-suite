@@ -18,7 +18,7 @@ const styles = isSearchable => ({
         borderRadius: '2px',
         borderColor: colors.DIVIDER,
         boxShadow: 'none',
-        background: isDisabled ? colors.LANDING : colors.WHITE,
+        background: isDisabled ? colors.SELECT_HOVER : colors.WHITE,
         '&:hover': {
             cursor: isSearchable ? 'text' : 'pointer',
             borderColor: colors.DIVIDER,
@@ -53,11 +53,11 @@ const styles = isSearchable => ({
     option: (base, { isFocused }) => ({
         ...base,
         color: colors.TEXT_SECONDARY,
-        background: isFocused ? colors.LANDING : colors.WHITE,
+        background: isFocused ? colors.SELECT_HOVER : colors.WHITE,
         borderRadius: 0,
         '&:hover': {
             cursor: 'pointer',
-            background: colors.LANDING,
+            background: colors.SELECT_HOVER,
         },
     }),
 });
