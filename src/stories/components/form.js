@@ -150,7 +150,11 @@ storiesOf('Components', module)
         <Select
             isSearchable={boolean('Searchable', false)}
             isClearable={boolean('Clearable', false)}
-            value={text('Value', 'hello')}
+            value={select('Value', {
+                None: null,
+                Hello: { value: 'hello', label: 'Hello' },
+                World: { value: 'world', label: 'World' },
+            })}
             options={[
                 { value: 'hello', label: 'Hello' },
                 { value: 'world', label: 'World' },
