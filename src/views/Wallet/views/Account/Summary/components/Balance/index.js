@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
+import Tooltip from 'components/Tooltip';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 import type { Network, State as ReducersState } from 'flowtype';
@@ -56,6 +57,7 @@ const FiatValue = styled.div`
     margin: 7px 0;
     min-height: 25px;
     color: ${colors.TEXT_PRIMARY};
+    align-items: center;
 `;
 
 const FiatValueRate = styled.div`
@@ -86,6 +88,15 @@ const Label = styled.div`
     color: ${colors.TEXT_SECONDARY};
 `;
 
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+    margin-top: -5px;
+`;
+
+const TooltipWrapper = styled.div`
+    display: flex;
+    align-items: center;
+`;
 
 class AccountBalance extends PureComponent<Props, State> {
     constructor(props: Props) {
@@ -115,6 +126,20 @@ class AccountBalance extends PureComponent<Props, State> {
             fiat = accountBalance.times(fiatRateValue).toFixed(2);
         }
 
+        const NoRatesTooltip = (
+            <Tooltip
+                maxWidth={285}
+                placement="top"
+                content="Fiat rates are not currently available."
+            >
+                <StyledIcon
+                    icon={ICONS.HELP}
+                    color={colors.TEXT_SECONDARY}
+                    size={26}
+                />
+            </Tooltip>
+        );
+
         return (
             <Wrapper isHidden={this.state.isHidden}>
                 <HideBalanceIconWrapper
@@ -132,18 +157,20 @@ class AccountBalance extends PureComponent<Props, State> {
                     <React.Fragment>
                         <BalanceWrapper>
                             <Label>Balance</Label>
-                            {fiatRate && (
-                                <FiatValue>${fiat}</FiatValue>
-                            )}
+                            <TooltipWrapper>
+                                <FiatValue>{fiatRate ? `$ ${fiat}` : 'N/A'}</FiatValue>
+                                {!fiatRate && NoRatesTooltip}
+                            </TooltipWrapper>
                             <CoinBalance>{this.props.balance} {network.symbol}</CoinBalance>
                         </BalanceWrapper>
-                        {fiatRate && (
-                            <BalanceRateWrapper>
-                                <Label>Rate</Label>
-                                <FiatValueRate>${fiatRateValue}</FiatValueRate>
-                                <CoinBalance>1.00 {network.symbol}</CoinBalance>
-                            </BalanceRateWrapper>
-                        )}
+                        <BalanceRateWrapper>
+                            <Label>Rate</Label>
+                            <TooltipWrapper>
+                                <FiatValueRate>{fiatRate ? `$ ${fiatRateValue}` : 'N/A'}</FiatValueRate>
+                                {!fiatRate && NoRatesTooltip}
+                            </TooltipWrapper>
+                            <CoinBalance>1 {network.symbol}</CoinBalance>
+                        </BalanceRateWrapper>
                     </React.Fragment>
                 )}
             </Wrapper>

@@ -79,16 +79,16 @@ const getFeeInputState = (feeErrors: string, feeWarnings: string): string => {
     return state;
 };
 
-const getDestinationTagInputState = (errors: string, warnings: string): string => {
-    let state = '';
-    if (warnings && !errors) {
-        state = 'warning';
-    }
-    if (errors) {
-        state = 'error';
-    }
-    return state;
-};
+// const getDestinationTagInputState = (errors: string, warnings: string): string => {
+//     let state = '';
+//     if (warnings && !errors) {
+//         state = 'warning';
+//     }
+//     if (errors) {
+//         state = 'error';
+//     }
+//     return state;
+// };
 
 const Left = styled.div`
     display: flex;
@@ -106,11 +106,11 @@ const AdvancedForm = (props: Props) => {
         warnings,
         infos,
         fee,
-        destinationTag,
+        // destinationTag,
     } = props.sendForm;
     const {
         onFeeChange,
-        onDestinationTagChange,
+        // onDestinationTagChange,
     } = props.sendFormActions;
 
     return (
@@ -151,7 +151,7 @@ const AdvancedForm = (props: Props) => {
                 />
             </InputRow>
 
-            <InputRow>
+            {/* <InputRow>
                 <StyledInput
                     state={getDestinationTagInputState(errors.destinationTag, warnings.destinationTag)}
                     autoComplete="off"
@@ -185,7 +185,7 @@ const AdvancedForm = (props: Props) => {
                     value={destinationTag}
                     onChange={event => onDestinationTagChange(event.target.value)}
                 />
-            </InputRow>
+            </InputRow> */}
 
             <AdvancedSettingsSendButtonWrapper>
                 { props.children }
