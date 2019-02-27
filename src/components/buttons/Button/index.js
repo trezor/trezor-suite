@@ -69,7 +69,7 @@ const Wrapper = styled.button`
     ${props => props.isDisabled
         && css`
             pointer-events: none;
-            ${props => !props.isInverse
+            ${props.isInverse
                 && css`
                 color: ${colors.TEXT_SECONDARY}
                 background: ${colors.GRAY_LIGHT}

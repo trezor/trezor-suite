@@ -6,7 +6,6 @@ import variables from './config/variables';
 import Button from './components/buttons/Button';
 import ButtonNotification from './components/buttons/Notification';
 import ButtonPin from './components/buttons/Pin';
-import ButtonWebUSB from './components/buttons/WebUsb';
 
 import Input from './components/inputs/Input';
 import InputPin from './components/inputs/Pin';
@@ -39,7 +38,6 @@ module.exports = {
     Button,
     ButtonNotification,
     ButtonPin,
-    ButtonWebUSB,
 
     Input,
     InputPin,

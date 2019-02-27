@@ -33,6 +33,7 @@ storiesOf('Components', module)
     .add('Loader', () => (
         <Loader
             size={number('Size', 100)}
+            strokeWidth={number('Stroke width', 1)}
             text={text('Text', 'loading')}
             isWhiteText={boolean('White text', false)}
             isSmallText={boolean('Small text', false)}
