@@ -130,7 +130,7 @@ const FirmwareUpdate = (props: Props) => (
         </Image>
         <H1>It’s time to update your firmware</H1>
         <StyledP>Please use Bitcoin wallet interface to update your firmware.</StyledP>
-        <Link href={getOldWalletReleaseUrl(props.device)} target="_self">
+        <Link href={getOldWalletReleaseUrl(props.device)}>
             <Button>Take me to the Bitcoin wallet</Button>
         </Link>
         {deviceUtils.isDeviceAccessible(props.device) && (
