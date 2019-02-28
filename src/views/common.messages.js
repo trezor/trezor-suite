@@ -58,6 +58,10 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_GO_TO_HIDDEN_WALLET',
         defaultMessage: 'Go to your hidden wallet',
     },
+    TR_FORGET_DEVICE: {
+        id: 'TR_FORGET_DEVICE',
+        defaultMessage: 'Forget device',
+    },
 });
 
 export default definedMessages;

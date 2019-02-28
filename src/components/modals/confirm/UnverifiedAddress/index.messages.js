@@ -5,11 +5,11 @@ import type { Messages } from 'flowtype/npm/react-intl';
 const definedMessages: Messages = defineMessages({
     TR_DEVICE_LABEL_IS_NOT_CONNECTED: {
         id: 'TR_DEVICE_LABEL_IS_NOT_CONNECTED',
-        defaultMessage: '{deviceLabel} is not connected',
+        defaultMessage: 'Device {deviceLabel} is not connected',
     },
     TR_DEVICE_LABEL_IS_UNAVAILABLE: {
         id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
-        defaultMessage: '{deviceLabel} is unavailable',
+        defaultMessage: 'Device {deviceLabel} is unavailable',
     },
     TR_PLEASE_CONNECT_YOUR_DEVICE: {
         id: 'TR_PLEASE_CONNECT_YOUR_DEVICE',

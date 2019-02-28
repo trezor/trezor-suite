@@ -10,6 +10,7 @@ import Button from 'components/Button';
 import { FormattedMessage } from 'react-intl';
 
 import type { TrezorDevice } from 'flowtype';
+import l10nCommonMessages from 'views/common.messages';
 import l10nDeviceMessages from '../common.messages';
 import l10nMessages from './index.messages';
 
@@ -77,7 +78,7 @@ class ForgetDevice extends PureComponent<Props> {
                     <FormattedMessage {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
                 </StyledP>
                 <Row>
-                    <Button onClick={() => this.forget()}><FormattedMessage {...l10nDeviceMessages.TR_FORGET_DEVICE} /></Button>
+                    <Button onClick={() => this.forget()}><FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} /></Button>
                     <Button isWhite onClick={this.props.onCancel}><FormattedMessage {...l10nMessages.TR_DONT_FORGET} /></Button>
                 </Row>
             </Wrapper>

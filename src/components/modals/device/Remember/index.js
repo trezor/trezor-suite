@@ -10,6 +10,7 @@ import Button from 'components/Button';
 import { FormattedMessage } from 'react-intl';
 
 import type { TrezorDevice } from 'flowtype';
+import l10nCommonMessages from 'views/common.messages';
 import l10nDeviceMessages from '../common.messages';
 import l10nMessages from './index.messages';
 
@@ -143,7 +144,7 @@ class RememberDevice extends PureComponent<Props, State> {
                     <Button onClick={() => this.forget()}>
                         <ButtonContent>
                             <Text>
-                                <FormattedMessage {...l10nDeviceMessages.TR_FORGET_DEVICE} />
+                                <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
                             </Text>
                             <StyledLoader
                                 isSmallText

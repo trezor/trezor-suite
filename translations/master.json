@@ -155,7 +155,7 @@
     }
   },
   "TR_DEVICE_LABEL_IS_NOT_CONNECTED": {
-    "source": "{deviceLabel} is not connected",
+    "source": "Device {deviceLabel} is not connected",
     "meta": {
       "occurrences": [
         "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
@@ -163,7 +163,7 @@
     }
   },
   "TR_DEVICE_LABEL_IS_UNAVAILABLE": {
-    "source": "{deviceLabel} is unavailable",
+    "source": "Device {deviceLabel} is unavailable",
     "meta": {
       "occurrences": [
         "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
@@ -171,7 +171,7 @@
     }
   },
   "TR_PLEASE_CONNECT_YOUR_DEVICE": {
-    "source": "Please connect your devicet",
+    "source": "Please connect your device to continue with the verification process",
     "meta": {
       "occurrences": [
         "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
@@ -179,7 +179,7 @@
     }
   },
   "TR_PLEASE_ENABLE_PASSPHRASE": {
-    "source": "Please enable passphrase settings",
+    "source": "Please enable passphrase settings to continue with the verification process.",
     "meta": {
       "occurrences": [
         "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
@@ -187,7 +187,7 @@
     }
   },
   "TR_PLEASE_DISABLE_PASSPHRASE": {
-    "source": "Please disable passphrase settings",
+    "source": "Please disable passphrase settings to continue with the verification process.",
     "meta": {
       "occurrences": [
         "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
@@ -212,7 +212,7 @@
     }
   },
   "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": {
-    "source": "To prevent phishing attacks, you should verify the address on your Trezor first. {claim} to continue with the verification process.",
+    "source": "To prevent phishing attacks, you should verify the address on your Trezor first. {claim}",
     "meta": {
       "occurrences": [
         "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
@@ -222,15 +222,6 @@
   "TR_FORGET_LABEL": {
     "source": "Forget {deviceLabel}?",
     "meta": {
-      "occurrences": [
-        "src/components/modals/device/common.messages.js"
-      ]
-    }
-  },
-  "TR_FORGET": {
-    "source": "Forget",
-    "meta": {
-      "comment": "Button in remember/forget dialog",
       "occurrences": [
         "src/components/modals/device/common.messages.js"
       ]
@@ -261,8 +252,8 @@
       ]
     }
   },
-  "TR_REMEMBER": {
-    "source": "Remember",
+  "TR_REMEMBER_DEVICE": {
+    "source": "Remember device",
     "meta": {
       "occurrences": [
         "src/components/modals/device/Remember/index.messages.js"
@@ -723,6 +714,14 @@
       ]
     }
   },
+  "TR_FORGET_DEVICE": {
+    "source": "Forget device",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
   "TR_YOU_ARE_OPENING_TREZOR_BETA_WALLET": {
     "source": "You are opening Trezor Beta Wallet",
     "meta": {
@@ -1001,14 +1000,6 @@
     "source": "Renew session",
     "meta": {
       "comment": "TODO",
-      "occurrences": [
-        "src/views/Wallet/components/LeftNavigation/components/DeviceMenu/components/MenuItems/index.messages.js"
-      ]
-    }
-  },
-  "TR_FORGET_DEVICE": {
-    "source": "Forget device",
-    "meta": {
       "occurrences": [
         "src/views/Wallet/components/LeftNavigation/components/DeviceMenu/components/MenuItems/index.messages.js"
       ]
@@ -1557,6 +1548,7 @@
   "TR_ACQUIRE_DEVICE": {
     "source": "Acquire device",
     "meta": {
+      "comment": "call-to-action to use device in current window when it is used in other window",
       "occurrences": [
         "src/views/Wallet/views/Acquire/index.messages.js"
       ]

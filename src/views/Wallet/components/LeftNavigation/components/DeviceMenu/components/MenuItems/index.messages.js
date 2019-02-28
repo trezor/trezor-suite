@@ -12,10 +12,6 @@ const definedMessages: Messages = defineMessages({
         defaultMessage: 'Renew session',
         description: 'TODO',
     },
-    TR_FORGET_DEVICE: {
-        id: 'TR_FORGET_DEVICE',
-        defaultMessage: 'Forget device',
-    },
 });
 
 export default definedMessages;

@@ -9,7 +9,7 @@ import icons from 'config/icons';
 import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
 
-// import l10nCommonMessages from 'views/common.messages';
+import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
@@ -88,7 +88,7 @@ class MenuItems extends PureComponent {
                         size={25}
                         color={colors.TEXT_SECONDARY}
                     />
-                    <Label><FormattedMessage {...l10nMessages.TR_FORGET_DEVICE} /></Label>
+                    <Label><FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} /></Label>
                 </Item>
             </Wrapper>
         );
