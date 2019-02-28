@@ -11,6 +11,8 @@ import * as WALLET from 'actions/constants/wallet';
 import { httpRequest } from 'utils/networkUtils';
 import * as buildUtils from 'utils/build';
 import * as storageUtils from 'utils/storage';
+import * as WalletActions from 'actions/WalletActions';
+import * as l10nUtils from 'utils/l10n';
 
 import { getAccountTokens } from 'reducers/utils';
 import type { Account } from 'reducers/AccountsReducer';
@@ -52,6 +54,7 @@ const KEY_DISCOVERY: string = `${STORAGE_PATH}discovery`;
 const KEY_TOKENS: string = `${STORAGE_PATH}tokens`;
 const KEY_PENDING: string = `${STORAGE_PATH}pending`;
 const KEY_BETA_MODAL: string = '/betaModalPrivacy'; // this key needs to be compatible with "parent" (old) wallet
+const KEY_LANGUAGE: string = `${STORAGE_PATH}language`;
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js
 // or
@@ -235,6 +238,13 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
             });
         }
     }
+
+    const language: ?string = storageUtils.get(TYPE, KEY_LANGUAGE);
+    if (language) {
+        dispatch(WalletActions.fetchLocale(JSON.parse(language)));
+    } else {
+        dispatch(WalletActions.fetchLocale(l10nUtils.getInitialLocale()));
+    }
 };
 
 export const loadData = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
@@ -249,4 +259,9 @@ export const loadData = (): ThunkAction => (dispatch: Dispatch, getState: GetSta
 export const hideBetaDisclaimer = (): ThunkAction => (dispatch: Dispatch): void => {
     storageUtils.set(TYPE, KEY_BETA_MODAL, true);
     dispatch(loadJSON());
+};
+
+export const setLanguage = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const { language } = getState().wallet;
+    storageUtils.set(TYPE, KEY_LANGUAGE, JSON.stringify(language));
 };

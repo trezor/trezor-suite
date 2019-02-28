@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
@@ -26,10 +27,12 @@ export type DispatchProps = {
     close: typeof NotificationActions.close;
     blockchainReconnect: typeof reconnect;
 }
+type OwnProps = {
+    intl: any
+};
 
-export type Props = StateProps & DispatchProps;
+export type Props = OwnProps & StateProps & DispatchProps;
 
-type OwnProps = {};
 
 const Notifications = (props: Props) => (
     <React.Fragment>
@@ -52,4 +55,4 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     blockchainReconnect: bindActionCreators(reconnect, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Notifications));

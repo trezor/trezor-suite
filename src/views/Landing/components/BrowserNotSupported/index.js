@@ -4,9 +4,11 @@ import Link from 'components/Link';
 import Button from 'components/Button';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
+import { FormattedMessage } from 'react-intl';
 
 import ChromeImage from 'images/browser-chrome.png';
 import FirefoxImage from 'images/browser-firefox.png';
+import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     padding: 24px 0px;
@@ -32,21 +34,21 @@ const Browser = styled.div`
 
 const BrowserNotSupported = () => (
     <Wrapper>
-        <H2>Your browser is not supported</H2>
-        <P>Please choose one of the supported browsers</P>
+        <H2><FormattedMessage {...l10nMessages.TR_YOUR_BROWSER_IS_NOT_SUPPORTED} /></H2>
+        <P><FormattedMessage {...l10nMessages.TR_PLEASE_CHOOSE_ONE_OF_THE_SUPPORTED} /></P>
         <ChooseBrowserWrapper>
             <Browser>
                 <BrowserLogo src={ChromeImage} />
                 <P isSmaller>Google Chrome</P>
                 <Link href="https://www.google.com/chrome/">
-                    <Button>Get Chrome</Button>
+                    <Button><FormattedMessage {...l10nMessages.TR_GET_CHROME} /></Button>
                 </Link>
             </Browser>
             <Browser>
                 <BrowserLogo src={FirefoxImage} />
                 <P isSmaller>Mozzila Firefox</P>
                 <Link href="https://www.mozilla.org/en-US/firefox/new/">
-                    <Button>Get Firefox</Button>
+                    <Button><FormattedMessage {...l10nMessages.TR_GET_FIREFOX} /></Button>
                 </Link>
 
             </Browser>

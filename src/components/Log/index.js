@@ -8,10 +8,13 @@ import { H2 } from 'components/Heading';
 import ReactJson from 'react-json-view';
 import Icon from 'components/Icon';
 import P from 'components/Paragraph';
+import { FormattedMessage } from 'react-intl';
+
 
 import * as LogActions from 'actions/LogActions';
 import icons from 'config/icons';
 import type { State, Dispatch } from 'flowtype';
+import l10nMessages from './index.messages';
 
 type Props = {
     log: $ElementType<State, 'log'>,
@@ -64,8 +67,12 @@ const Log = (props: Props): ?React$Element<string> => {
             <Click onClick={props.toggle}>
                 <Icon size={24} color={colors.INFO_PRIMARY} icon={icons.CLOSE} />
             </Click>
-            <H2>Log</H2>
-            <StyledParagraph isSmaller>Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.</StyledParagraph>
+            <H2>
+                <FormattedMessage {...l10nMessages.TR_LOG} />
+            </H2>
+            <StyledParagraph isSmaller>
+                <FormattedMessage {...l10nMessages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
+            </StyledParagraph>
             <LogWrapper>
                 <ReactJson src={props.log.entries} />
             </LogWrapper>

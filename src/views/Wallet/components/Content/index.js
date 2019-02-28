@@ -12,7 +12,10 @@ import colors from 'config/colors';
 import type { State } from 'flowtype';
 
 import FirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
+import { FormattedMessage } from 'react-intl';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
+
+import l10nMessages from './index.messages';
 
 type Props = {
     children?: React.Node,
@@ -81,7 +84,7 @@ const Content = ({
             <Loading>
                 <Row>
                     {loader.type === 'progress' && <Loader size={30} />}
-                    <Title type={loader.type}>{loader.title || 'Initializing accounts'}</Title>
+                    <Title type={loader.type}>{loader.title || <FormattedMessage {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />}</Title>
                 </Row>
                 {loader.message && <Message>{loader.message}</Message>}
             </Loading>

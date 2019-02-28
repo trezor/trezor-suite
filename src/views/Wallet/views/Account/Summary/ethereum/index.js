@@ -9,11 +9,14 @@ import ICONS from 'config/icons';
 import colors from 'config/colors';
 import Tooltip from 'components/Tooltip';
 import Content from 'views/Wallet/components/Content';
+import { FormattedMessage } from 'react-intl';
 
+import l10nCommonMessages from 'views/common.messages';
 import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
 import Link from 'components/Link';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
+import l10nSummaryMessages from '../common.messages';
 import AccountBalance from '../components/Balance';
 import AddedToken from '../components/Token';
 import AddTokenMessage from '../components/AddTokenMessage';
@@ -90,9 +93,16 @@ const AccountSummary = (props: Props) => {
                 <AccountHeading>
                     <AccountName>
                         <CoinLogo network={account.network} />
-                        <AccountTitle>Account #{parseInt(account.index, 10) + 1}</AccountTitle>
+                        <AccountTitle>
+                            <FormattedMessage
+                                {...l10nCommonMessages.TR_ACCOUNT_HASH}
+                                values={{ number: parseInt(account.index, 10) + 1 }}
+                            />
+                        </AccountTitle>
                     </AccountName>
-                    <Link href={explorerLink} isGray>See full transaction history</Link>
+                    <Link href={explorerLink} isGray>
+                        <FormattedMessage {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
+                    </Link>
                 </AccountHeading>
                 <AccountBalance
                     network={network}
@@ -100,11 +110,13 @@ const AccountSummary = (props: Props) => {
                     fiat={props.fiat}
                 />
                 <H2Wrapper>
-                    <H2>Tokens</H2>
+                    <H2>
+                        <FormattedMessage {...l10nSummaryMessages.TR_TOKENS} />
+                    </H2>
                     <StyledTooltip
                         maxWidth={200}
                         placement="top"
-                        content="Insert token name, symbol or address to be able to send it."
+                        content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
                     >
                         <StyledIcon
                             icon={ICONS.HELP}
@@ -119,9 +131,9 @@ const AccountSummary = (props: Props) => {
                         defaultOptions
                         value={null}
                         isMulti={false}
-                        placeholder="Type in a token name or a token address"
-                        loadingMessage={() => 'Loading...'}
-                        noOptionsMessage={() => 'Token not found'}
+                        placeholder={props.intl.formatMessage(l10nSummaryMessages.TR_TYPE_IN_A_TOKEN_NAME)}
+                        loadingMessage={() => props.intl.formatMessage(l10nCommonMessages.TR_LOADING_DOT_DOT_DOT)}
+                        noOptionsMessage={() => props.intl.formatMessage(l10nSummaryMessages.TR_TOKEN_NOT_FOUND)}
                         onChange={(token) => {
                             if (token.name) {
                                 const isAdded = tokens.find(t => t.symbol === token.symbol);
@@ -134,7 +146,7 @@ const AccountSummary = (props: Props) => {
                         formatOptionLabel={(option) => {
                             const isAdded = tokens.find(t => t.symbol === option.symbol);
                             if (isAdded) {
-                                return `${option.name} (Already added)`;
+                                return `${option.name} (${props.intl.formatMessage(l10nSummaryMessages.TR_ALREADY_USED)})`;
                             }
                             return option.name;
                         }}

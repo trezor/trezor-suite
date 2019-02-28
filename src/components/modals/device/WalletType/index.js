@@ -14,11 +14,15 @@ import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import WalletTypeIcon from 'components/images/WalletType';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import type { TrezorDevice } from 'flowtype';
+import l10nCommonMessages from 'views/common.messages';
+import l10nMessages from './index.messages';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
+    intl: any,
     device: TrezorDevice;
     onWalletTypeRequest: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onWalletTypeRequest'>;
     onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
@@ -110,20 +114,36 @@ class WalletType extends PureComponent<Props> {
                         />
                     </StyledLink>
                 )}
-                <StyledHeading>{ device.state ? 'Change' : 'Select' } wallet type for { device.instanceLabel }</StyledHeading>
+                <StyledHeading>{ device.state
+                    ? (
+                        <FormattedMessage
+                            {...l10nMessages.TR_CHANGE_WALLET_TYPE_FOR}
+                            values={{ deviceLabel: device.instanceLabel }}
+                        />
+                    ) : (
+                        <FormattedMessage
+                            {...l10nMessages.TR_SELECT_WALLET_TYPE_FOR}
+                            values={{ deviceLabel: device.instanceLabel }}
+                        />
+                    )}
+                </StyledHeading>
                 <Content isTop>
                     <Header>
                         <WalletTypeIcon type="standard" size={32} color={colors.TEXT_PRIMARY} />
-                        Standard Wallet
+                        <FormattedMessage {...l10nMessages.TR_STANDARD_WALLET} />
                     </Header>
-                    <P isSmaller>Continue to access your standard wallet.</P>
-                    <StyledButton onClick={() => onWalletTypeRequest(false)}>Go to your standard wallet</StyledButton>
+                    <P isSmaller>
+                        <FormattedMessage {...l10nMessages.TR_CONTINUE_TO_ACCESS_STANDARD_WALLET} />
+                    </P>
+                    <StyledButton onClick={() => onWalletTypeRequest(false)}>
+                        <FormattedMessage {...l10nCommonMessages.TR_GO_TO_STANDARD_WALLET} />
+                    </StyledButton>
                 </Content>
                 <Content>
                     <Tooltip
                         maxWidth={285}
                         placement="top"
-                        content="Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet."
+                        content={this.props.intl.formatMessage(l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE)}
                         readMoreLink="https://wiki.trezor.io/Passphrase"
                     >
                         <StyledIcon
@@ -138,10 +158,14 @@ class WalletType extends PureComponent<Props> {
                             size={32}
                             color={colors.TEXT_PRIMARY}
                         />
-                        Hidden Wallet
+                        <FormattedMessage {...l10nMessages.TR_HIDDEN_WALLET} />
                     </Header>
-                    <P isSmaller>You will be asked to enter your passphrase to unlock your hidden wallet.</P>
-                    <StyledButton isWhite onClick={() => onWalletTypeRequest(true)}>Go to your hidden wallet</StyledButton>
+                    <P isSmaller>
+                        <FormattedMessage {...l10nMessages.TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK} />
+                    </P>
+                    <StyledButton isWhite onClick={() => onWalletTypeRequest(true)}>
+                        <FormattedMessage {...l10nCommonMessages.TR_GO_TO_HIDDEN_WALLET} />
+                    </StyledButton>
                 </Content>
             </Wrapper>
         );
@@ -154,4 +178,4 @@ WalletType.propTypes = {
     onCancel: PropTypes.func.isRequired,
 };
 
-export default WalletType;
+export default injectIntl(WalletType);

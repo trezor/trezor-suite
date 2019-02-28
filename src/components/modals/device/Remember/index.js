@@ -7,8 +7,13 @@ import { H3 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Loader from 'components/Loader';
 import Button from 'components/Button';
+import { FormattedMessage } from 'react-intl';
 
 import type { TrezorDevice } from 'flowtype';
+import l10nCommonMessages from 'views/common.messages';
+import l10nDeviceMessages from '../common.messages';
+import l10nMessages from './index.messages';
+
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
@@ -113,24 +118,34 @@ class RememberDevice extends PureComponent<Props, State> {
         const { device, instances, onRememberDevice } = this.props;
 
         let { label } = device;
-        const devicePlural: string = instances && instances.length > 1 ? 'devices or to remember them' : 'device or to remember it';
+        const deviceCount = instances ? instances.length : 0;
         if (instances && instances.length > 0) {
-            label = instances.map((instance, index) => {
-                let comma: string = '';
-                if (index > 0) comma = ', ';
-                return (
-                    <span key={instance.instanceLabel}>{ comma }{ instance.instanceLabel }</span>
-                );
-            });
+            label = instances.map(instance => (instance.instanceLabel)).join(',');
         }
         return (
             <Wrapper>
-                <H3>Forget {label}?</H3>
-                <StyledP isSmaller>Would you like Trezor Wallet to forget your { devicePlural }, so that it is still visible even while disconnected?</StyledP>
+                <H3>
+                    <FormattedMessage
+                        {...l10nDeviceMessages.TR_FORGET_LABEL}
+                        values={{
+                            deviceLabel: label,
+                        }}
+                    />
+                </H3>
+                <StyledP isSmaller>
+                    <FormattedMessage
+                        {...l10nMessages.TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO}
+                        values={{
+                            deviceCount,
+                        }}
+                    />
+                </StyledP>
                 <Column>
                     <Button onClick={() => this.forget()}>
                         <ButtonContent>
-                            <Text>Forget</Text>
+                            <Text>
+                                <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
+                            </Text>
                             <StyledLoader
                                 isSmallText
                                 isWhiteText
@@ -142,7 +157,8 @@ class RememberDevice extends PureComponent<Props, State> {
                     <Button
                         isWhite
                         onClick={() => onRememberDevice(device)}
-                    >Remember
+                    >
+                        <FormattedMessage {...l10nMessages.TR_REMEMBER_DEVICE} />
                     </Button>
                 </Column>
             </Wrapper>

@@ -11,6 +11,10 @@ import Button from 'components/Button';
 import { H2 } from 'components/Heading';
 import P from 'components/Paragraph';
 import coins from 'constants/coins';
+import { FormattedMessage } from 'react-intl';
+
+import l10nCommonMessages from '../common.messages';
+import l10nMessages from './index.messages';
 
 import CardanoImage from './images/cardano.png';
 import type { Props as BaseProps } from '../../Container';
@@ -54,11 +58,17 @@ const CardanoWallet = (props: Props) => (
             />
         </StyledLink>
         <Img src={CardanoImage} />
-        <H2>Cardano wallet</H2>
-        <P isSmaller>You will be redirected to external wallet</P>
+        <H2>
+            <FormattedMessage {...l10nMessages.TR_CARDANO_WALLET} />
+        </H2>
+        <P isSmaller>
+            <FormattedMessage {...l10nCommonMessages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL} />
+        </P>
 
         <Link href={coins.find(i => i.id === 'ada').url}>
-            <StyledButton onClick={props.onCancel}>Go to external wallet</StyledButton>
+            <StyledButton onClick={props.onCancel}>
+                <FormattedMessage {...l10nCommonMessages.TR_GO_TO_EXTERNAL_WALLET} />
+            </StyledButton>
         </Link>
     </Wrapper>
 );

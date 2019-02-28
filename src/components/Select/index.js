@@ -61,6 +61,7 @@ const styles = isSearchable => ({
     }),
 });
 
+
 const propTypes = {
     isAsync: PropTypes.bool,
     isSearchable: PropTypes.bool,

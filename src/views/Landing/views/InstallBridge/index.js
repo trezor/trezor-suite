@@ -6,7 +6,7 @@ import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { Select } from 'components/Select';
 import Link from 'components/Link';
-import { H1, H2 } from 'components/Heading';
+import { H1 } from 'components/Heading';
 import Button from 'components/Button';
 import P from 'components/Paragraph';
 import Icon from 'components/Icon';
@@ -14,7 +14,9 @@ import ICONS from 'config/icons';
 import LandingWrapper from 'views/Landing/components/LandingWrapper';
 import * as RouterActions from 'actions/RouterActions';
 
+import { FormattedMessage } from 'react-intl';
 import type { State as TrezorConnectState } from 'reducers/TrezorConnectReducer';
+import l10nMessages from './index.messages';
 
 type InstallTarget = {
     value: string;
@@ -112,17 +114,17 @@ const GoBack = styled.span`
     }
 `;
 
-const Ol = styled.ul`
-    margin: 0 auto;
-    color: ${colors.TEXT_SECONDARY};
-    font-size: ${FONT_SIZE.BIG};
-    padding: 0px 0 15px 25px;
-    text-align: left;
-`;
+// const Ol = styled.ul`
+//     margin: 0 auto;
+//     color: ${colors.TEXT_SECONDARY};
+//     font-size: ${FONT_SIZE.BIG};
+//     padding: 0px 0 15px 25px;
+//     text-align: left;
+// `;
 
-const Li = styled.li`
-    text-align: justify;
-`;
+// const Li = styled.li`
+//     text-align: justify;
+// `;
 
 class InstallBridge extends PureComponent<Props, State> {
     constructor(props: Props) {
@@ -161,7 +163,7 @@ class InstallBridge extends PureComponent<Props, State> {
                 <Wrapper>
                     <Top>
                         <TitleHeader>Trezor Bridge<Version>{this.state.currentVersion}</Version></TitleHeader>
-                        <P>New communication tool to facilitate the connection between your Trezor and your internet browser.</P>
+                        <P><FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} /></P>
                         <Download>
                             <SelectWrapper
                                 isSearchable={false}
@@ -177,30 +179,39 @@ class InstallBridge extends PureComponent<Props, State> {
                                         color={colors.WHITE}
                                         size={30}
                                     />
-                                Download latest Bridge {this.state.latestVersion}
+                                    <FormattedMessage {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE} values={{ version: this.state.latestVersion }} />
                                 </DownloadBridgeButton>
                             </Link>
                         </Download>
-                        <H2>Changelog</H2>
+                        {/* <H2><FormattedMessage {...l10nMessages.TR_CHANGELOG} /></H2>
                         <Ol>
                             {this.props.transport.bridge.changelog.map(entry => (
                                 <Li key={entry}>{entry}</Li>
                             ))}
-                        </Ol>
+                        </Ol> */}
                         <P isSmaller>
-                            <LearnMoreText>Learn more about latest versions in</LearnMoreText>
-                            <Link
-                                href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
-                                isGreen
-                            >Changelog
-                            </Link>
+                            <LearnMoreText>
+                                <FormattedMessage
+                                    {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
+                                    values={{
+                                        TR_CHANGELOG: (
+                                            <Link
+                                                href="https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md"
+                                                isGreen
+                                            >
+                                                <FormattedMessage {...l10nMessages.TR_CHANGELOG} />
+                                            </Link>
+                                        ),
+                                    }}
+                                />
+                            </LearnMoreText>
                         </P>
                         <P>
                             {target.signature && (
                                 <Link
                                     href={this.state.uri + target.signature}
                                     isGreen
-                                >Check PGP signature
+                                ><FormattedMessage {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
                                 </Link>
                             )}
                         </P>
@@ -208,8 +219,8 @@ class InstallBridge extends PureComponent<Props, State> {
                     <Bottom>
                         {this.props.transport.type && (
                             <P>
-                                No, i dont want to upgrade Bridge now<br />
-                                Take me <GoBack onClick={() => this.props.selectFirstAvailableDevice()}>back to the wallet</GoBack>
+                                <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} /><br />
+                                <GoBack onClick={() => this.props.selectFirstAvailableDevice()}><FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} /></GoBack>
                             </P>
                         )}
                     </Bottom>

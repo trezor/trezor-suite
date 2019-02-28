@@ -1,9 +1,11 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import RcTooltip from 'rc-tooltip';
 import colors from 'config/colors';
 import Link from 'components/Link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import l10nCommonMessages from 'views/common.messages';
 
 const Wrapper = styled.div``;
 
@@ -43,7 +45,7 @@ const Tooltip = ({
                     <Content maxWidth={maxWidth}>{content}</Content>
                     {readMoreLink && (
                         <Link href={readMoreLink}>
-                            <ReadMore>Learn more</ReadMore>
+                            <ReadMore><FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} /></ReadMore>
                         </Link>
                     )
                     }

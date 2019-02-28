@@ -5,7 +5,7 @@ import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
 import packageJson from '../package.json';
 
 import {
-    SRC, BUILD, PORT, PUBLIC,
+    SRC, BUILD, PORT, PUBLIC, TRANSLATIONS,
 } from './constants';
 
 // turn on for bundle analyzing
@@ -79,7 +79,7 @@ module.exports = {
             {
                 type: 'javascript/auto',
                 test: /\.json/,
-                exclude: /(node_modules)/,
+                exclude: [/(node_modules)/, TRANSLATIONS],
                 loader: 'file-loader',
                 options: {
                     outputPath: './data',

@@ -1,13 +1,16 @@
 /* @flow */
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
 
 import { showAddress } from 'actions/ReceiveActions';
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 import Receive from './index';
 
-type OwnProps = { }
+type OwnProps = {
+    intl: any,
+}
 
 type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
@@ -20,7 +23,7 @@ type DispatchProps = {
     showAddress: typeof showAddress
 };
 
-export type Props = StateProps & DispatchProps;
+export type Props = OwnProps & StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
     selectedAccount: state.selectedAccount,
@@ -33,4 +36,4 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     showAddress: bindActionCreators(showAddress, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Receive);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Receive));

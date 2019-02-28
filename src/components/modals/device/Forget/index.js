@@ -7,8 +7,13 @@ import styled from 'styled-components';
 import { H2 } from 'components/Heading';
 import P from 'components/Paragraph';
 import Button from 'components/Button';
+import { FormattedMessage } from 'react-intl';
 
 import type { TrezorDevice } from 'flowtype';
+import l10nCommonMessages from 'views/common.messages';
+import l10nDeviceMessages from '../common.messages';
+import l10nMessages from './index.messages';
+
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
@@ -61,11 +66,20 @@ class ForgetDevice extends PureComponent<Props> {
     render() {
         return (
             <Wrapper>
-                <H2>Forget { this.props.device.instanceLabel }?</H2>
-                <StyledP isSmaller>Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your Trezor again.</StyledP>
+                <H2>
+                    <FormattedMessage
+                        {...l10nDeviceMessages.TR_FORGET_LABEL}
+                        values={{
+                            deviceLabel: this.props.device.instanceLabel,
+                        }}
+                    />
+                </H2>
+                <StyledP isSmaller>
+                    <FormattedMessage {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
+                </StyledP>
                 <Row>
-                    <Button onClick={() => this.forget()}>Forget</Button>
-                    <Button isWhite onClick={this.props.onCancel}>Don&apos;t forget</Button>
+                    <Button onClick={() => this.forget()}><FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} /></Button>
+                    <Button isWhite onClick={this.props.onCancel}><FormattedMessage {...l10nMessages.TR_DONT_FORGET} /></Button>
                 </Row>
             </Wrapper>
         );

@@ -42,6 +42,10 @@ export type WalletAction = {
     type: typeof WALLET.SHOW_BETA_DISCLAIMER | typeof WALLET.HIDE_BETA_DISCLAIMER | typeof WALLET.SET_FIRST_LOCATION_CHANGE,
 } | {
     type: typeof WALLET.TOGGLE_SIDEBAR,
+} | {
+    type: typeof WALLET.SET_LANGUAGE,
+    locale: string,
+    messages: { [string]: string },
 }
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
@@ -67,6 +71,18 @@ export const toggleDeviceDropdown = (opened: boolean): WalletAction => ({
 export const toggleSidebar = (): WalletAction => ({
     type: WALLET.TOGGLE_SIDEBAR,
 });
+
+export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch): void => {
+    fetch(`/l10n/${locale}.json`)
+        .then(response => response.json())
+        .then((messages) => {
+            dispatch({
+                type: WALLET.SET_LANGUAGE,
+                locale,
+                messages,
+            });
+        });
+};
 
 // This method will be called after each DEVICE.CONNECT action
 // if connected device has different "passphrase_protection" settings than saved instances

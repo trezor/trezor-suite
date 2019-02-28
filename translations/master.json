@@ -1,0 +1,1656 @@
+{
+  "TR_TERMS": {
+    "source": "Terms",
+    "meta": {
+      "comment": "As in Terms and Conditions, In the bottom footer",
+      "occurrences": [
+        "src/components/Footer/index.messages.js"
+      ]
+    }
+  },
+  "TR_EXCHANGE_RATES_BY": {
+    "source": "Exchange rates by {service}",
+    "meta": {
+      "occurrences": [
+        "src/components/Footer/index.messages.js"
+      ]
+    }
+  },
+  "TR_MENU": {
+    "source": "Menu",
+    "meta": {
+      "comment": "Mobile sidebar toggler",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_MENU_CLOSE": {
+    "source": "Close",
+    "meta": {
+      "comment": "Used on button for closing sidebar menu",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR": {
+    "source": "Trezor",
+    "meta": {
+      "comment": "Link in header navigation",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_WIKI": {
+    "source": "Wiki",
+    "meta": {
+      "comment": "Link in header navigation",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_BLOG": {
+    "source": "Blog",
+    "meta": {
+      "comment": "Link in header navigation",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_SUPPORT": {
+    "source": "Support",
+    "meta": {
+      "comment": "Link in header navigation",
+      "occurrences": [
+        "src/components/Header/index.messages.js"
+      ]
+    }
+  },
+  "TR_ATTENTION_COLON_THE_LOG_CONTAINS": {
+    "source": "Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.",
+    "meta": {
+      "occurrences": [
+        "src/components/Log/index.messages.js"
+      ]
+    }
+  },
+  "TR_LOG": {
+    "source": "Log",
+    "meta": {
+      "comment": "application event and error",
+      "occurrences": [
+        "src/components/Log/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONFIRM_ACTION_ON_YOUR": {
+    "source": "Confirm action on your Trezor",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/Action/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONFIRM_ADDRESS_ON_TREZOR": {
+    "source": "Confirm address on Trezor",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/Address/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_COMPARE_YOUR_ADDRESS": {
+    "source": "Please compare your address on device with address shown bellow",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/Address/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONFIRM_TRANSACTION_ON": {
+    "source": "Confirm transaction on {deviceLabel} device",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_DETAILS_ARE_SHOWN_ON": {
+    "source": "Details are shown on display",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_TO_LABEL": {
+    "source": "To",
+    "meta": {
+      "comment": "Label for recepeint's address",
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_SEND_LABEL": {
+    "source": "Send",
+    "meta": {
+      "comment": "Label for amount to be send",
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_FEE_LABEL": {
+    "source": "Fee",
+    "meta": {
+      "comment": "Label above the fee used for transaction",
+      "occurrences": [
+        "src/components/modals/confirm/SignTx/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_LABEL_IS_NOT_CONNECTED": {
+    "source": "Device {deviceLabel} is not connected",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_LABEL_IS_UNAVAILABLE": {
+    "source": "Device {deviceLabel} is unavailable",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_CONNECT_YOUR_DEVICE": {
+    "source": "Please connect your device to continue with the verification process",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_ENABLE_PASSPHRASE": {
+    "source": "Please enable passphrase settings to continue with the verification process.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_DISABLE_PASSPHRASE": {
+    "source": "Please disable passphrase settings to continue with the verification process.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_SHOW_UNVERIFIED_ADDRESS": {
+    "source": "Show unverified address",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_TRY_AGAIN": {
+    "source": "Try again",
+    "meta": {
+      "comment": "Try to verify the address again",
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": {
+    "source": "To prevent phishing attacks, you should verify the address on your Trezor first. {claim}",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_FORGET_LABEL": {
+    "source": "Forget {deviceLabel}?",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/common.messages.js"
+      ]
+    }
+  },
+  "TR_DONT_FORGET": {
+    "source": "Don't forget",
+    "meta": {
+      "comment": "Button in remember/forget dialog",
+      "occurrences": [
+        "src/components/modals/device/Forget/index.messages.js"
+      ]
+    }
+  },
+  "TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM": {
+    "source": "Forgetting only removes the device from the list on the left, your coins are still safe and you can access them by reconnecting your Trezor again.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/Forget/index.messages.js"
+      ]
+    }
+  },
+  "TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO": {
+    "source": "Would you like Trezor Wallet to forget your {deviceCount, plural, one {device} other {devices}} or to remember {deviceCount, plural, one {it} other {them}}, so that it is still visible even while disconnected?",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/Remember/index.messages.js"
+      ]
+    }
+  },
+  "TR_REMEMBER_DEVICE": {
+    "source": "Remember device",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/Remember/index.messages.js"
+      ]
+    }
+  },
+  "TR_SELECT_WALLET_TYPE_FOR": {
+    "source": "Select wallet type for {deviceLabel}",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/WalletType/index.messages.js"
+      ]
+    }
+  },
+  "TR_CHANGE_WALLET_TYPE_FOR": {
+    "source": "Select wallet type for {deviceLabel}",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/WalletType/index.messages.js"
+      ]
+    }
+  },
+  "TR_STANDARD_WALLET": {
+    "source": "Standard wallet",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/WalletType/index.messages.js"
+      ]
+    }
+  },
+  "TR_HIDDEN_WALLET": {
+    "source": "Hidden wallet",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/WalletType/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONTINUE_TO_ACCESS_STANDARD_WALLET": {
+    "source": "Continue to access your standard wallet.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/WalletType/index.messages.js"
+      ]
+    }
+  },
+  "TR_PASSPHRASE_IS_OPTIONAL_FEATURE": {
+    "source": "Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/WalletType/index.messages.js"
+      ]
+    }
+  },
+  "TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK": {
+    "source": "You will be asked to enter your passphrase to unlock your hidden wallet.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/device/WalletType/index.messages.js"
+      ]
+    }
+  },
+  "TR_CARDANO_WALLET": {
+    "source": "Cardano wallet",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/external/Cardano/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL": {
+    "source": "You will be redirected to external wallet",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/external/common.messages.js"
+      ]
+    }
+  },
+  "TR_GO_TO_EXTERNAL_WALLET": {
+    "source": "Go to external wallet",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/external/common.messages.js"
+      ]
+    }
+  },
+  "TR_NEM_WALLET": {
+    "source": "NEM wallet",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/external/Nem/index.messages.js"
+      ]
+    }
+  },
+  "TR_WE_HAVE_PARTNERED_UP_WITH_THE_NEM": {
+    "source": "We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/external/Nem/index.messages.js"
+      ]
+    }
+  },
+  "TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL": {
+    "source": "Make sure you download the Universal Client for Trezor support.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/external/Nem/index.messages.js"
+      ]
+    }
+  },
+  "TR_GO_TO_NEM_DOT_IO": {
+    "source": "Go to nem.io",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/external/Nem/index.messages.js"
+      ]
+    }
+  },
+  "TR_STELLAR_WALLET": {
+    "source": "Stellar wallet",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/external/Stellar/index.messages.js"
+      ]
+    }
+  },
+  "TR_ENTER_DEVICE_PASSPHRASE": {
+    "source": "Enter {deviceLabel} passphrase",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_NOTE_COLON_PASSPHRASE": {
+    "source": "Note: Passphrase is case-sensitive.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA": {
+    "source": "If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONFIRM_PASSPHRASE": {
+    "source": "Confirm Passphrase",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_PASSPHRASES_DO_NOT_MATCH": {
+    "source": "Passphrases do not match!",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_SHOW_PASSPHRASE": {
+    "source": "Show passphrase",
+    "meta": {
+      "comment": "This is on a passphrase button",
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_ENTER": {
+    "source": "Enter",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_PASSPHRASE": {
+    "source": "Passphrase",
+    "meta": {
+      "comment": "Label above input",
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_CHANGED_YOUR_MIND": {
+    "source": "Changed your mind? {TR_GO_TO_STANDARD_WALLET}",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_ENTERED_PIN_NOT_CORRECT": {
+    "source": "Entered PIN for {deviceLabel} is not correct",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/pin/Invalid/index.messages.js"
+      ]
+    }
+  },
+  "TR_RETRYING_DOT_DOT": {
+    "source": "Retrying...",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/pin/Invalid/index.messages.js"
+      ]
+    }
+  },
+  "TR_THE_PIN_LAYOUT_IS_DISPLAYED_ON": {
+    "source": "The PIN layout is displayed on your Trezor.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/pin/Pin/index.messages.js"
+      ]
+    }
+  },
+  "TR_ENTER_DEVICE_PIN": {
+    "source": "Enter {deviceLabel} PIN",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/pin/Pin/index.messages.js"
+      ]
+    }
+  },
+  "TR_ENTER_PIN": {
+    "source": "Enter PIN",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/pin/Pin/index.messages.js"
+      ]
+    }
+  },
+  "TR_NOT_SURE_HOW_PIN_WORKS": {
+    "source": "Not sure how PIN works? {TR_LEARN_MORE}",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/pin/Pin/index.messages.js"
+      ]
+    }
+  },
+  "TR_SCAN_QR_CODE": {
+    "source": "Scan QR code",
+    "meta": {
+      "comment": "Title for the Scan QR modal dialog",
+      "occurrences": [
+        "src/components/modals/QrModal/index.messages.js"
+      ]
+    }
+  },
+  "TR_WAITING_FOR_CAMERA": {
+    "source": "Waiting for camera...",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/QrModal/index.messages.js"
+      ]
+    }
+  },
+  "TR_OOPS_SOMETHING_WENT_WRONG": {
+    "source": "Oops! Something went wrong!",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/QrModal/index.messages.js"
+      ]
+    }
+  },
+  "TR_CAMERA_PERMISSION_DENIED": {
+    "source": "Permission to access the camera was denied.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/QrModal/index.messages.js"
+      ]
+    }
+  },
+  "TR_CAMERA_NOT_RECOGNIZED": {
+    "source": "The camera was not recognized.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/QrModal/index.messages.js"
+      ]
+    }
+  },
+  "TR_UNKOWN_ERROR_SEE_CONSOLE": {
+    "source": "Unknown error. See console logs for details.",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/QrModal/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOU_WERE_DISCONNECTED_DOT": {
+    "source": "You were disconnected.",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/App/components/OnlineStatus/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_RELOAD_THE_PAGE_DOT": {
+    "source": "Please check your Internet connection and reload the page.",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/App/components/OnlineStatus/index.messages.js"
+      ]
+    }
+  },
+  "TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE": {
+    "source": "New Trezor Bridge is available.",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/App/components/UpdateBridge/index.messages.js"
+      ]
+    }
+  },
+  "TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT": {
+    "source": "New Trezor firmware is available.",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/App/components/UpdateFirmware/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONNECT_TO_BACKEND": {
+    "source": "Connect",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/components/Account/index.messages.js"
+      ]
+    }
+  },
+  "TR_MINIMUM_ACCOUNT_RESERVE_REQUIRED": {
+    "source": "Minimum account reserve required",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/components/Static/index.messages.js"
+      ]
+    }
+  },
+  "TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE": {
+    "source": "Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/components/Static/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_SETTINGS": {
+    "source": "Device settings",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_ACCOUNT_HASH": {
+    "source": "Account #{number}",
+    "meta": {
+      "comment": "Used in auto-generated account label",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_CLEAR": {
+    "source": "Clear",
+    "meta": {
+      "comment": "Clear form button",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_CHECK_FOR_DEVICES": {
+    "source": "Check for devices",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_ADDRESS": {
+    "source": "Address",
+    "meta": {
+      "comment": "Used as label for receive/send address input",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_LOADING_DOT_DOT_DOT": {
+    "source": "Loading...",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_TAKE_ME_TO_BITCOIN_WALLET": {
+    "source": "Take me to the Bitcoin wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_I_WILL_DO_THAT_LATER": {
+    "source": "I’ll do that later.",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_SHOW_DETAILS": {
+    "source": "Show details",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT": {
+    "source": "Upgrade for the newest features.",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_LEARN_MORE": {
+    "source": "Learn more",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_GO_TO_STANDARD_WALLET": {
+    "source": "Go to your standard wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_GO_TO_HIDDEN_WALLET": {
+    "source": "Go to your hidden wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_FORGET_DEVICE": {
+    "source": "Forget device",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_YOU_ARE_OPENING_TREZOR_BETA_WALLET": {
+    "source": "You are opening Trezor Beta Wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR_BETA_WALLET_IS": {
+    "source": "{TR_TREZOR_BETA_WALLET} is a public feature-testing version of the {TR_TREZOR_WALLET}, offering the newest features before they are available to the general public.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_IN_CONTRAST_COMMA_TREZOR": {
+    "source": "In contrast, {TR_TREZOR_WALLET} is feature-conservative, making sure that its functionality is maximally reliable and dependable for the general public.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_NOTE_THAT_THE_TREZOR": {
+    "source": "Please note that the {TR_TREZOR_BETA_WALLET} might be collecting anonymized usage data, especially error logs, for development purposes. The {TR_TREZOR_WALLET} does not log any data.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_OK_COMMA_I_UNDERSTAND": {
+    "source": "OK, I understand",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR_WALLET": {
+    "source": "Trezor Wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR_BETA_WALLET": {
+    "source": "Trezor Beta Wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BetaDisclaimer/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOUR_BROWSER_IS_NOT_SUPPORTED": {
+    "source": "Your browser is not supported",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BrowserNotSupported/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_CHOOSE_ONE_OF_THE_SUPPORTED": {
+    "source": "Please choose one of the supported browsers",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BrowserNotSupported/index.messages.js"
+      ]
+    }
+  },
+  "TR_GET_CHROME": {
+    "source": "Get Chrome",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BrowserNotSupported/index.messages.js"
+      ]
+    }
+  },
+  "TR_GET_FIREFOX": {
+    "source": "Get Firefox",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/BrowserNotSupported/index.messages.js"
+      ]
+    }
+  },
+  "TR_TREZOR_WALLET_IS_AN_EASY_DASH": {
+    "source": "Trezor Wallet is an easy-to-use interface for your Trezor. Trezor Wallet allows you to easily control your funds, manage your balance and initiate transfers.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_THE_PRIVATE_BANK_IN_YOUR_HANDS": {
+    "source": "The private bank in your hands.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONNECT_TREZOR_TO_CONTINUE": {
+    "source": "Connect Trezor to continue",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_AND": {
+    "source": "and",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING": {
+    "source": "Device not recognized? Try installing the {link}.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_DONT_HAVE_A_TREZOR_GET": {
+    "source": "Don't have a Trezor? {getOne}",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_GET_ONE": {
+    "source": "Get one",
+    "meta": {
+      "comment": "Part of the sentence: Dont have a Trezor? Get one",
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_NEW_COMMUNICATION_TOOL": {
+    "source": "New communication tool to facilitate the connection between your Trezor and your internet browser.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/views/InstallBridge/index.messages.js"
+      ]
+    }
+  },
+  "TR_DOWNLOAD_LATEST_BRIDGE": {
+    "source": "Download latest Bridge {version}",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/views/InstallBridge/index.messages.js"
+      ]
+    }
+  },
+  "TR_LEARN_MORE_ABOUT_LATEST_VERSION": {
+    "source": "Learn more about latest version in {TR_CHANGELOG}.",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/views/InstallBridge/index.messages.js"
+      ]
+    }
+  },
+  "TR_CHANGELOG": {
+    "source": "Changelog",
+    "meta": {
+      "comment": "Part of the sentence: Learn more about latest version in {TR_CHANGELOG}.",
+      "occurrences": [
+        "src/views/Landing/views/InstallBridge/index.messages.js"
+      ]
+    }
+  },
+  "TR_CHECK_PGP_SIGNATURE": {
+    "source": "Check PGP signature",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/views/InstallBridge/index.messages.js"
+      ]
+    }
+  },
+  "TR_DONT_UPGRADE_BRIDGE": {
+    "source": "No, I don't want to upgrade Bridge now",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/views/InstallBridge/index.messages.js"
+      ]
+    }
+  },
+  "TR_TAKE_ME_BACK_TO_WALLET": {
+    "source": "Take me back to the wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/views/InstallBridge/index.messages.js"
+      ]
+    }
+  },
+  "TR_FIND_OUT_MORE_INFO": {
+    "source": "Find out more info",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/Content/components/FirmwareUnsupported/index.messages.js"
+      ]
+    }
+  },
+  "TR_MODEL_DOES_NOT_SUPPORT_COIN": {
+    "source": "The coin {coin} is not supported by your Trezor model.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/Content/components/FirmwareUnsupported/index.messages.js"
+      ]
+    }
+  },
+  "TR_INITIALIZING_ACCOUNTS": {
+    "source": "Initializing accounts",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/Content/index.messages.js"
+      ]
+    }
+  },
+  "TR_TO_ADD_A_NEW_ACCOUNT_LAST": {
+    "source": "To add a new account, last account must have some transactions.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_TO_ADD_ACCOUNTS": {
+    "source": "To add accounts, make sure your device is connected.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_ADD_ACCOUNT": {
+    "source": "Add account",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_OTHER_COINS": {
+    "source": "Other coins",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOU_WILL_BE_REDIRECTED": {
+    "source": "(You will be redirected)",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_CHANGE_WALLET_TYPE": {
+    "source": "Change wallet type",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/DeviceMenu/components/MenuItems/index.messages.js"
+      ]
+    }
+  },
+  "TR_RENEW_SESSION": {
+    "source": "Renew session",
+    "meta": {
+      "comment": "TODO",
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/DeviceMenu/components/MenuItems/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOU_ARE_IN_YOUR_STANDARD_WALLET": {
+    "source": "You are in your standard wallet.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOU_ARE_IN_YOUR_WALLET": {
+    "source": "You are in your hidden wallet.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/index.messages.js"
+      ]
+    }
+  },
+  "TR_CLICK_HERE_TO_ACCESS_YOUR_HIDDEN": {
+    "source": "Click here to access your hidden wallet.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/index.messages.js"
+      ]
+    }
+  },
+  "TR_CLICK_HERE_TO_ACCESS_YOUR_STANDARD": {
+    "source": "Click here to access your standard or another hidden wallet.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/index.messages.js"
+      ]
+    }
+  },
+  "TR_TO_ACCESS_OTHER_WALLETS": {
+    "source": "To access other wallets please connect your device.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/index.messages.js"
+      ]
+    }
+  },
+  "TR_NEED_HELP": {
+    "source": "Need help?",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/index.messages.js"
+      ]
+    }
+  },
+  "TR_NUMBER_OF_DEVICES": {
+    "source": "Number of devices",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/index.messages.js"
+      ]
+    }
+  },
+  "TR_NAV_SUMMARY": {
+    "source": "Summary",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
+      ]
+    }
+  },
+  "TR_NAV_RECEIVE": {
+    "source": "Receive",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
+      ]
+    }
+  },
+  "TR_NAV_SEND": {
+    "source": "Send",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
+      ]
+    }
+  },
+  "TR_NAV_SIGN_AND_VERIFY": {
+    "source": "Sign & Verify",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
+      ]
+    }
+  },
+  "TR_AMOUNT": {
+    "source": "Amount",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_SET_MAX": {
+    "source": "Set max",
+    "meta": {
+      "comment": "Used for setting maximum amount in Send form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_FEE": {
+    "source": "Fee",
+    "meta": {
+      "comment": "Label in Send form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_RECOMMENDED_FEES_UPDATED": {
+    "source": "Recommended fees updated.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_CLICK_HERE_TO_USE_THEM": {
+    "source": "Click here to use them",
+    "meta": {
+      "comment": "Button to use recommended updated fees.",
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_ADVANCED_SETTINGS": {
+    "source": "Advanced settings",
+    "meta": {
+      "comment": "Shows advanced sending form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_IS_NOT_CONNECTED": {
+    "source": "Device is not connected",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_IS_UNAVAILABLE": {
+    "source": "Device is unavailable",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_LOADING_ACCOUNTS": {
+    "source": "Loading accounts",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_SEND": {
+    "source": "Send {amount}",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/common.messages.js"
+      ]
+    }
+  },
+  "TR_CHECK_ADDRESS_ON_TREZOR": {
+    "source": "Check address on Trezor",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Receive/common.messages.js"
+      ]
+    }
+  },
+  "TR_SHOW_FULL_ADDRESS": {
+    "source": "Show full address",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Receive/common.messages.js"
+      ]
+    }
+  },
+  "TR_QR_CODE": {
+    "source": "QR Code",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Receive/common.messages.js"
+      ]
+    }
+  },
+  "TR_UNVERIFIED_ADDRESS_COMMA_CONNECT": {
+    "source": "Unverified address, connect your Trezor to verify it",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Receive/components/VerifyAddressTooltip/index.messages.js"
+      ]
+    }
+  },
+  "TR_UNVERIFIED_ADDRESS_COMMA_SHOW": {
+    "source": "Unverified address, show on Trezor.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Receive/components/VerifyAddressTooltip/index.messages.js"
+      ]
+    }
+  },
+  "TR_SHOW_ON_TREZOR": {
+    "source": "Show on Trezor",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Receive/components/VerifyAddressTooltip/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONNECT_YOUR_TREZOR_TO_CHECK": {
+    "source": "Connect your Trezor to verify this address",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Receive/components/VerifyAddressTooltip/index.messages.js"
+      ]
+    }
+  },
+  "TR_RECEIVE_ETHEREUM_OR_TOKENS": {
+    "source": "Receive Ethereum or tokens",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Receive/ethereum/index.messages.js"
+      ]
+    }
+  },
+  "TR_RECEIVE_RIPPLE": {
+    "source": "Receive Ripple",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Receive/ripple/index.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_LIMIT": {
+    "source": "Gas limit",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_LIMIT_REFERS_TO": {
+    "source": "Gas limit refers to the maximum amount of gas user is willing to spendon a particular transaction. {TR_GAS_QUOTATION}. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending {gasLimitTooltipCurrency} is {gasLimitTooltipValue}.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_QUOTATION": {
+    "source": "Transaction fee = gas limit * gas price",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_SET_DEFAULT": {
+    "source": "Set default",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_CALCULATING_DOT_DOT": {
+    "source": "Calculating...",
+    "meta": {
+      "comment": "Used when calculating gas limit based on data input in ethereum advanced send form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_PRICE": {
+    "source": "Gas price",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_PRICE_REFERS_TO": {
+    "source": "Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. {TR_GAS_PRICE_QUOTATION}. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {recommendedGasPrice} GWEI.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_PRICE_QUOTATION": {
+    "source": "Transaction fee = gas limit * gas price",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_DATA": {
+    "source": "Data",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_DATA_IS_USUALLY_USED": {
+    "source": "Data is usually used when you send transactions to contracts.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_SEND_ETHEREUM_OR_TOKENS": {
+    "source": "Send Ethereum or tokens",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/index.messages.js"
+      ]
+    }
+  },
+  "YOU_HAVE_TOKEN_BALANCE": {
+    "source": "You have: {tokenBalance}",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ethereum/index.messages.js"
+      ]
+    }
+  },
+  "TR_XRP_TRANSFER_COST": {
+    "source": "Transfer cost in XRP drops",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ripple/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_XRP_DESTINATION_TAG": {
+    "source": "Destination tag",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ripple/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_XRP_DESTINATION_TAG_EXPLAINED": {
+    "source": "Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ripple/components/AdvancedForm/index.messages.js"
+      ]
+    }
+  },
+  "TR_XRP_RESERVE": {
+    "source": "Reserve: {value}",
+    "meta": {
+      "comment": "XRP reserve input label",
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ripple/index.messages.js"
+      ]
+    }
+  },
+  "TR_SEND_RIPPLE": {
+    "source": "Send Ripple",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/ripple/index.messages.js"
+      ]
+    }
+  },
+  "TR_MESSAGE": {
+    "source": "Message",
+    "meta": {
+      "comment": "Used as a label for message input field in Sign and Verify form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/SignVerify/index.messages.js"
+      ]
+    }
+  },
+  "TR_SIGNATURE": {
+    "source": "Signature",
+    "meta": {
+      "comment": "Used as a label for signature input field in Sign and Verify form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/SignVerify/index.messages.js"
+      ]
+    }
+  },
+  "TR_SIGN": {
+    "source": "Sign",
+    "meta": {
+      "comment": "Sign button in Sign and Verify form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/SignVerify/index.messages.js"
+      ]
+    }
+  },
+  "TR_VERIFY": {
+    "source": "Verify",
+    "meta": {
+      "comment": "Verify button in Sign and Verify form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/SignVerify/index.messages.js"
+      ]
+    }
+  },
+  "TR_VERIFY_MESSAGE": {
+    "source": "Verify Message",
+    "meta": {
+      "comment": "Header for the Sign and Verify form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/SignVerify/index.messages.js"
+      ]
+    }
+  },
+  "TR_SIGN_MESSAGE": {
+    "source": "Sign Message",
+    "meta": {
+      "comment": "Header for the Sign and Verify form",
+      "occurrences": [
+        "src/views/Wallet/views/Account/SignVerify/index.messages.js"
+      ]
+    }
+  },
+  "TR_SEE_FULL_TRANSACTION_HISTORY": {
+    "source": "See full transaction history",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/common.messages.js"
+      ]
+    }
+  },
+  "TR_TOKENS": {
+    "source": "Tokens",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/common.messages.js"
+      ]
+    }
+  },
+  "TR_INSERT_TOKEN_NAME": {
+    "source": "Insert token name, symbol or address to be able to send it.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/common.messages.js"
+      ]
+    }
+  },
+  "TR_TYPE_IN_A_TOKEN_NAME": {
+    "source": "Type in a token name or a token address.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/common.messages.js"
+      ]
+    }
+  },
+  "TR_TOKEN_NOT_FOUND": {
+    "source": "Token not found",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/common.messages.js"
+      ]
+    }
+  },
+  "TR_ALREADY_USED": {
+    "source": "Already used",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/common.messages.js"
+      ]
+    }
+  },
+  "TR_HISTORY": {
+    "source": "History",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/common.messages.js"
+      ]
+    }
+  },
+  "TR_ADD_YOUR_TOKENS": {
+    "source": "Add your tokens",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/components/AddTokenMessage/index.messages.js"
+      ]
+    }
+  },
+  "TR_SEARCH_FOR_THE_TOKEN": {
+    "source": "Search for the token or add them manually by pasting token address into search input.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/components/AddTokenMessage/index.messages.js"
+      ]
+    }
+  },
+  "TR_BALANCE": {
+    "source": "Balance",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/components/Balance/index.messages.js"
+      ]
+    }
+  },
+  "TR_RATE": {
+    "source": "Rate",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/components/Balance/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_USED_IN_OTHER": {
+    "source": "Device is used in other window",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Acquire/index.messages.js"
+      ]
+    }
+  },
+  "TR_USE_YOUR_DEVICE_IN_THIS_WINDOW": {
+    "source": "Do you want to use your device in this window?",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Acquire/index.messages.js"
+      ]
+    }
+  },
+  "TR_ACQUIRE_DEVICE": {
+    "source": "Acquire device",
+    "meta": {
+      "comment": "call-to-action to use device in current window when it is used in other window",
+      "occurrences": [
+        "src/views/Wallet/views/Acquire/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOUR_DEVICE_IS_IN_FIRMWARE": {
+    "source": "Your device is in firmware update mode",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Bootloader/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_RECONNECT_IT": {
+    "source": "Please re-connect it",
+    "meta": {
+      "comment": "Call to action to re-connect Trezor device",
+      "occurrences": [
+        "src/views/Wallet/views/Bootloader/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_SELECT_YOUR": {
+    "source": "Please select your coin",
+    "meta": {
+      "comment": "Title of the dashboard component if coin was not selected",
+      "occurrences": [
+        "src/views/Wallet/views/Dashboard/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOU_WILL_GAIN_ACCESS": {
+    "source": "You will gain access to receiving & sending selected coin",
+    "meta": {
+      "comment": "Content of the dashboard component if coin was not selected",
+      "occurrences": [
+        "src/views/Wallet/views/Dashboard/index.messages.js"
+      ]
+    }
+  },
+  "TR_ITS_TIME_TO_UPDATE_FIRMWARE": {
+    "source": "It’s time to update your firmware",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/FirmwareUpdate/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_USE_OLD_WALLET": {
+    "source": "Please use Bitcoin wallet interface to update your firmware.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/FirmwareUpdate/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOUR_DEVICE_IS_NOT_INITIALIZED": {
+    "source": "Your device is not initialized",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Initialize/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_USE_TO_START_INITIALIZATION": {
+    "source": "Please use Bitcoin wallet interface to start initialization process",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Initialize/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_IS_INITIALIZED_IN_SEEDLESS_MODE": {
+    "source": "Device is initialized in seedless mode and therefore not allowed to access wallet",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Seedless/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_IS_IN_SEEDLESS": {
+    "source": "Device is in seedless mode",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Seedless/index.messages.js"
+      ]
+    }
+  },
+  "TR_UNREADABLE_DEVICE": {
+    "source": "Unreadable device",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/UnreadableDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_PLEASE_INSTALL_TREZOR_BRIDGE": {
+    "source": "Please install Trezor Bridge",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/UnreadableDevice/index.messages.js"
+      ]
+    }
+  }
+}
