@@ -6,6 +6,7 @@ export default {
     WALLET_VIEW_TITLE: '#505050',
 
     HEADER: '#1A1A1A',
+    HEADER_DIVIDER: '#424242',
     BODY: '#E3E3E3',
     MAIN: '#FBFBFB',
     LANDING: '#F9F9F9',

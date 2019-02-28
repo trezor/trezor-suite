@@ -1,13 +1,16 @@
 /* @flow */
 
 import * as React from 'react';
+import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import colors from 'config/colors';
 
+import l10nSendMessages from 'views/Wallet/views/Account/common.messages';
 import Input from 'components/inputs/Input';
 import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
+import l10nMessages from './index.messages';
 
 import type { Props as BaseProps } from '../../Container';
 
@@ -125,13 +128,9 @@ const AdvancedForm = (props: Props) => {
                     topLabel={(
                         <InputLabelWrapper>
                             <Left>
-                            Fee
+                                <FormattedMessage {...l10nSendMessages.TR_FEE} />
                                 <Tooltip
-                                    content={(
-                                        <React.Fragment>
-                                        Transfer cost in XRP drops
-                                        </React.Fragment>
-                                    )}
+                                    content={<FormattedMessage {...l10nMessages.TR_XRP_TRANSFER_COST} />}
                                     maxWidth={100}
                                     readMoreLink="https://developers.ripple.com/transaction-cost.html"
                                     placement="top"
@@ -161,13 +160,9 @@ const AdvancedForm = (props: Props) => {
                     topLabel={(
                         <InputLabelWrapper>
                             <Left>
-                            Destination tag
+                                <FormattedMessage {...l10nMessages.TR_XRP_DESTINATION_TAG} />
                                 <Tooltip
-                                    content={(
-                                        <React.Fragment>
-                                        Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.
-                                        </React.Fragment>
-                                    )}
+                                    content={<FormattedMessage {...l10nMessages.TR_XRP_DESTINATION_TAG_EXPLAINED} />}
                                     maxWidth={200}
                                     readMoreLink="https://wiki.trezor.io/Ripple_(XRP)"
                                     placement="top"

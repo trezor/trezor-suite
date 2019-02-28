@@ -22,3 +22,8 @@ _old
 coverage
 test/**/__diff_output__
 test/screenshots
+
+translations/extractedMessages
+translations/*.csv
+
+.env

@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { PureComponent } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
@@ -11,7 +11,7 @@ import { FONT_SIZE } from 'config/variables';
 type Props = {
     onClick: (event: KeyboardEvent) => void,
     isChecked: boolean,
-    children: string,
+    children: React.Node,
 }
 
 const Wrapper = styled.div`
@@ -62,7 +62,7 @@ const Label = styled.div`
     }
 `;
 
-class Checkbox extends PureComponent<Props> {
+class Checkbox extends React.PureComponent<Props> {
     handleKeyboard(event: KeyboardEvent) {
         if (event.keyCode === 32) {
             this.props.onClick(event);

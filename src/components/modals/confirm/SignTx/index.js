@@ -10,8 +10,11 @@ import { LINE_HEIGHT, FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import P from 'components/Paragraph';
 import DeviceIcon from 'components/images/DeviceIcon';
 import { H3 } from 'components/Heading';
+import { FormattedMessage } from 'react-intl';
 
 import type { TrezorDevice, State } from 'flowtype';
+import l10nMessages from './index.messages';
+
 
 type Props = {
     device: TrezorDevice;
@@ -71,15 +74,25 @@ const ConfirmSignTx = (props: Props) => {
         <Wrapper>
             <Header>
                 <DeviceIcon device={props.device} size={60} color={colors.TEXT_SECONDARY} />
-                <H3>Confirm transaction on { props.device.label } device</H3>
-                <P isSmaller>Details are shown on display</P>
+                <H3>
+                    <FormattedMessage {...l10nMessages.TR_CONFIRM_TRANSACTION_ON} values={{ deviceLabel: props.device.label }} />
+                </H3>
+                <P isSmaller>
+                    <FormattedMessage {...l10nMessages.TR_DETAILS_ARE_SHOWN_ON} />
+                </P>
             </Header>
             <Content>
-                <Label>Send</Label>
+                <Label>
+                    <FormattedMessage {...l10nMessages.TR_SEND_LABEL} />
+                </Label>
                 <StyledP>{`${amount} ${currency}` }</StyledP>
-                <Label>To</Label>
+                <Label>
+                    <FormattedMessage {...l10nMessages.TR_TO_LABEL} />
+                </Label>
                 <Address>{ address }</Address>
-                <Label>Fee</Label>
+                <Label>
+                    <FormattedMessage {...l10nMessages.TR_FEE_LABEL} />
+                </Label>
                 <FeeLevelName>{selectedFeeLevel.value}</FeeLevelName>
                 <StyledP>{ selectedFeeLevel.label }</StyledP>
             </Content>

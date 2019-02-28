@@ -1,6 +1,7 @@
 /* @flow */
 import * as React from 'react';
 import Notification from 'components/Notification';
+import l10nMessages from './index.messages';
 
 import type { Props } from '../../index';
 
@@ -21,7 +22,7 @@ export default (props: Props) => {
                 isActionInProgress={blockchain && blockchain.connecting}
                 actions={
                     [{
-                        label: 'Connect',
+                        label: props.intl.formatMessage(l10nMessages.TR_CONNECT_TO_BACKEND),
                         callback: async () => {
                             await props.blockchainReconnect(network.shortcut);
                         },

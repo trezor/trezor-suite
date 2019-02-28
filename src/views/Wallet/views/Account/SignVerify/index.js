@@ -8,7 +8,10 @@ import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
 import colors from 'config/colors';
 import { SCREEN_SIZE } from 'config/variables';
+import { FormattedMessage } from 'react-intl';
 
+import l10nCommonMessages from 'views/common.messages';
+import l10nMessages from './index.messages';
 
 import type { Props } from './Container';
 
@@ -99,10 +102,10 @@ class SignVerify extends Component <Props> {
             <Content>
                 <Wrapper>
                     <Sign>
-                        <Title>Sign Message</Title>
+                        <Title><FormattedMessage {...l10nMessages.TR_SIGN_MESSAGE} /></Title>
                         <Row>
                             <Input
-                                topLabel="Address"
+                                topLabel={this.props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
                                 name="signAddress"
                                 value={account.descriptor}
                                 type="text"
@@ -112,7 +115,7 @@ class SignVerify extends Component <Props> {
                         </Row>
                         <Row>
                             <Textarea
-                                topLabel="Message"
+                                topLabel={this.props.intl.formatMessage(l10nMessages.TR_MESSAGE)}
                                 name="signMessage"
                                 value={signMessage}
                                 onChange={this.handleInputChange}
@@ -123,7 +126,7 @@ class SignVerify extends Component <Props> {
                         </Row>
                         <Row>
                             <Textarea
-                                topLabel="Signature"
+                                topLabel={this.props.intl.formatMessage(l10nMessages.TR_SIGNATURE)}
                                 name="signSignature"
                                 value={signSignature}
                                 rows={4}
@@ -137,19 +140,20 @@ class SignVerify extends Component <Props> {
                             <StyledButton
                                 onClick={this.props.signVerifyActions.clearSign}
                                 isWhite
-                            >Clear
+                            >
+                                <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
                                 onClick={() => signVerifyActions.sign(account.accountPath, signMessage)}
-                            >Sign
+                            ><FormattedMessage {...l10nMessages.TR_SIGN} />
                             </StyledButton>
                         </RowButtons>
                     </Sign>
                     <Verify>
-                        <Title>Verify message</Title>
+                        <Title><FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE} /></Title>
                         <Row>
                             <Input
-                                topLabel="Address"
+                                topLabel={this.props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
                                 autoSelect
                                 name="verifyAddress"
                                 value={verifyAddress}
@@ -161,7 +165,7 @@ class SignVerify extends Component <Props> {
                         </Row>
                         <Row>
                             <Textarea
-                                topLabel="Message"
+                                topLabel={this.props.intl.formatMessage(l10nMessages.TR_MESSAGE)}
                                 name="verifyMessage"
                                 value={verifyMessage}
                                 onChange={this.handleInputChange}
@@ -172,7 +176,7 @@ class SignVerify extends Component <Props> {
                         </Row>
                         <Row>
                             <Textarea
-                                topLabel="Signature"
+                                topLabel={this.props.intl.formatMessage(l10nMessages.TR_SIGNATURE)}
                                 autoSelect
                                 name="verifySignature"
                                 value={verifySignature}
@@ -186,7 +190,8 @@ class SignVerify extends Component <Props> {
                             <StyledButton
                                 onClick={signVerifyActions.clearVerify}
                                 isWhite
-                            >Clear
+                            >
+                                <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
                                 onClick={
@@ -200,7 +205,8 @@ class SignVerify extends Component <Props> {
                                         }
                                     }
                                 }
-                            >Verify
+                            >
+                                <FormattedMessage {...l10nMessages.TR_VERIFY} />
                             </StyledButton>
                         </RowButtons>
                     </Verify>

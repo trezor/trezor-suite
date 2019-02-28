@@ -1,4 +1,5 @@
 import * as utils from 'utils/device';
+import colors from 'config/colors';
 
 describe('device utils', () => {
     it('get status', () => {
@@ -64,14 +65,14 @@ describe('device utils', () => {
     });
 
     it('get status color', () => {
-        expect(utils.getStatusColor(0)).toBe('#494949');
-        expect(utils.getStatusColor(null)).toBe('#494949');
-        expect(utils.getStatusColor('sdsdsdsd')).toBe('#494949');
-        expect(utils.getStatusColor('used-in-other-window')).toBe('#EB8A00');
-        expect(utils.getStatusColor('connected')).toBe('#01B757');
-        expect(utils.getStatusColor('unacquired')).toBe('#EB8A00');
-        expect(utils.getStatusColor('disconnected')).toBe('#ED1212');
-        expect(utils.getStatusColor('unavailable')).toBe('#ED1212');
+        expect(utils.getStatusColor(0)).toBe(colors.TEXT_PRIMARY);
+        expect(utils.getStatusColor(null)).toBe(colors.TEXT_PRIMARY);
+        expect(utils.getStatusColor('sdsdsdsd')).toBe(colors.TEXT_PRIMARY);
+        expect(utils.getStatusColor('used-in-other-window')).toBe(colors.WARNING_PRIMARY);
+        expect(utils.getStatusColor('connected')).toBe(colors.GREEN_PRIMARY);
+        expect(utils.getStatusColor('unacquired')).toBe(colors.WARNING_PRIMARY);
+        expect(utils.getStatusColor('disconnected')).toBe(colors.ERROR_PRIMARY);
+        expect(utils.getStatusColor('unavailable')).toBe(colors.ERROR_PRIMARY);
     });
 
     it('get status name', () => {

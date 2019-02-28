@@ -4,6 +4,9 @@ import * as React from 'react';
 import Notification from 'components/Notification';
 import Bignumber from 'bignumber.js';
 import Link from 'components/Link';
+import { FormattedMessage } from 'react-intl';
+import l10nCommonMessages from 'views/common.messages';
+import l10nMessages from './index.messages';
 import type { Props } from '../../index';
 
 export default (props: Props) => {
@@ -24,11 +27,22 @@ export default (props: Props) => {
                 <Notification
                     key="xrp-warning"
                     type="warning"
-                    title="Minimum account reserve required"
+                    title={(
+                        <FormattedMessage {...l10nMessages.TR_MINIMUM_ACCOUNT_RESERVE_REQUIRED} />
+                    )}
                     message={(
                         <>
-                            {`Ripple addresses require a minimum balance of ${bigReserve.toString()} XRP to activate and maintain the account. `}
-                            <Link isGreen href="https://wiki.trezor.io/Ripple_(XRP)">Learn more</Link>
+                            <FormattedMessage
+                                {...l10nMessages.TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE}
+                                values={{
+                                    minBalance: bigReserve.toString(),
+                                    TR_LEARN_MORE: (
+                                        <Link isGreen href="https://wiki.trezor.io/Ripple_(XRP)">
+                                            <FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />
+                                        </Link>
+                                    ),
+                                }}
+                            />
                         </>
                     )}
                 />,

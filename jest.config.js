@@ -6,6 +6,7 @@ module.exports = {
     testURL: 'http://localhost',
     modulePathIgnorePatterns: [
         'node_modules',
+        'utils/build.js',
         'utils/windowUtils.js',
         'utils/promiseUtils.js',
         'utils/networkUtils.js',
@@ -14,6 +15,14 @@ module.exports = {
         'utils/**.js',
         'reducers/utils/**.js',
     ],
+    // coverageThreshold: {
+    //     global: {
+    //         branches: 100,
+    //         functions: 100,
+    //         lines: 100,
+    //         statements: 100,
+    //     },
+    // },
     setupFiles: [
         './support/setupJest.js',
     ],

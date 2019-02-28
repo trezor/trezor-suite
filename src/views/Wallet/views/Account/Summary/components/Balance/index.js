@@ -1,5 +1,6 @@
 /* @flow */
 import React, { PureComponent } from 'react';
+import { FormattedMessage } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
@@ -7,8 +8,9 @@ import colors from 'config/colors';
 import ICONS from 'config/icons';
 import Tooltip from 'components/Tooltip';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-
 import type { Network, State as ReducersState } from 'flowtype';
+import l10nMessages from './index.messages';
+
 
 type Props = {
     network: Network,
@@ -156,7 +158,7 @@ class AccountBalance extends PureComponent<Props, State> {
                 {!this.state.isHidden && (
                     <React.Fragment>
                         <BalanceWrapper>
-                            <Label>Balance</Label>
+                            <Label><FormattedMessage {...l10nMessages.TR_BALANCE} /></Label>
                             <TooltipWrapper>
                                 <FiatValue>{fiatRate ? `$ ${fiat}` : 'N/A'}</FiatValue>
                                 {!fiatRate && NoRatesTooltip}
@@ -164,7 +166,7 @@ class AccountBalance extends PureComponent<Props, State> {
                             <CoinBalance>{this.props.balance} {network.symbol}</CoinBalance>
                         </BalanceWrapper>
                         <BalanceRateWrapper>
-                            <Label>Rate</Label>
+                            <Label><FormattedMessage {...l10nMessages.TR_RATE} /></Label>
                             <TooltipWrapper>
                                 <FiatValueRate>{fiatRate ? `$ ${fiatRateValue}` : 'N/A'}</FiatValueRate>
                                 {!fiatRate && NoRatesTooltip}

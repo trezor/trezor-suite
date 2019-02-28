@@ -13,3 +13,4 @@ export const HIDE_BETA_DISCLAIMER: 'wallet__hide_beta_disclaimer' = 'wallet__hid
 export const CLEAR_UNAVAILABLE_DEVICE_DATA: 'wallet__clear_unavailable_device_data' = 'wallet__clear_unavailable_device_data';
 
 export const TOGGLE_SIDEBAR: 'wallet__toggle_sidebar' = 'wallet__toggle_sidebar';
+export const SET_LANGUAGE: 'wallet__set_language' = 'wallet__set_language';

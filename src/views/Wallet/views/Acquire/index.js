@@ -3,14 +3,17 @@ import React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+
 import colors from 'config/colors';
 import Notification from 'components/Notification';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
-
 import type { State, Dispatch } from 'flowtype';
+import l10nMessages from './index.messages';
 
 type Props = {
-    acquiring: boolean;
+    intl: any,
+    acquiring: boolean,
     acquireDevice: typeof TrezorConnectActions.acquire
 }
 
@@ -24,15 +27,15 @@ const Wrapper = styled.div`
 const Acquire = (props: Props) => (
     <Wrapper>
         <Notification
-            title="Device is used in other window"
-            message="Do you want to use your device in this window?"
+            title={props.intl.formatMessage(l10nMessages.TR_DEVICE_USED_IN_OTHER)}
+            message={props.intl.formatMessage(l10nMessages.TR_USE_YOUR_DEVICE_IN_THIS_WINDOW)}
             type="info"
             cancelable={false}
             isActionInProgress={props.acquiring}
             actions={
                 [
                     {
-                        label: 'Acquire device',
+                        label: props.intl.formatMessage(l10nMessages.TR_ACQUIRE_DEVICE),
                         callback: () => {
                             props.acquireDevice();
                         },
@@ -43,11 +46,11 @@ const Acquire = (props: Props) => (
     </Wrapper>
 );
 
-export default connect(
+export default injectIntl(connect(
     (state: State) => ({
         acquiring: state.connect.acquiringDevice,
     }),
     (dispatch: Dispatch) => ({
         acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
     }),
-)(Acquire);
+)(Acquire));

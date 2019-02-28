@@ -15,7 +15,7 @@ import NotificationButton from './components/NotificationButton';
 type Props = {
     type: string,
     cancelable?: boolean;
-    title: string;
+    title: ?React.Node;
     className?: string;
     message?: ?React.Node;
     actions?: Array<CallbackAction>;

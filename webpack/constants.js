@@ -8,6 +8,7 @@ const constants: Object = Object.freeze({
     BUILD: path.join(ABSOLUTE_BASE, 'build/'),
     PUBLIC: path.join(ABSOLUTE_BASE, 'public/'),
     SRC: path.join(ABSOLUTE_BASE, 'src/'),
+    TRANSLATIONS: path.join(ABSOLUTE_BASE, 'public/l10n'),
     PORT: 8081,
     INDEX: path.join(ABSOLUTE_BASE, 'src/index.html'),
     TREZOR_CONNECT_ROOT: path.join(ABSOLUTE_BASE, '../trezor-connect/'),
@@ -24,10 +25,11 @@ export const TREZOR_CONNECT_FILES: string = path.join(constants.TREZOR_CONNECT_R
 export const {
     BUILD,
     SRC,
+    TRANSLATIONS,
     PORT,
     INDEX,
     PUBLIC,
-}: { BUILD: string, SRC: string, PORT: string, INDEX: string, PUBLIC: string } = constants;
+}: { BUILD: string, SRC: string, TRANSLATIONS: string, PORT: string, INDEX: string, PUBLIC: string } = constants;
 // export const SRC: string = constants.SRC;
 // export const PORT: string = constants.PORT;
 // export const INDEX: string = constants.INDEX;

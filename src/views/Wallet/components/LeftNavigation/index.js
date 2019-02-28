@@ -13,12 +13,14 @@ import DeviceHeader from 'components/DeviceHeader';
 import * as deviceUtils from 'utils/device';
 
 import Tooltip from 'components/Tooltip';
+import { FormattedMessage } from 'react-intl';
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
 import Sidebar from './components/Sidebar';
 
 import type { Props } from './components/common';
+import l10nMessages from './index.messages';
 
 const Header = styled(DeviceHeader)`
     border-right: 1px solid ${colors.BACKGROUND};
@@ -114,6 +116,26 @@ const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGro
         </CSSTransition>
     </TransitionGroupWrapper>
 );
+
+const WalletTooltipMsg = ({ walletType, isDeviceReady }: { walletType: string, isDeviceReady: ?boolean}): any => {
+    let secondPart = '';
+    if (isDeviceReady) {
+        secondPart = walletType === 'standard'
+            ? <FormattedMessage {...l10nMessages.TR_CLICK_HERE_TO_ACCESS_YOUR_HIDDEN} />
+            : <FormattedMessage {...l10nMessages.TR_CLICK_HERE_TO_ACCESS_YOUR_STANDARD} />;
+    } else {
+        secondPart = <FormattedMessage {...l10nMessages.TR_TO_ACCESS_OTHER_WALLETS} />;
+    }
+    return (
+        <>
+            {walletType === 'standard'
+                ? <FormattedMessage {...l10nMessages.TR_YOU_ARE_IN_YOUR_STANDARD_WALLET} />
+                : <FormattedMessage {...l10nMessages.TR_YOU_ARE_IN_YOUR_HIDDEN_WALLET} />}
+            {' '}{secondPart}
+        </>
+    );
+};
+
 
 type State = {
     animationType: ?string;
@@ -211,14 +233,6 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         const showWalletType = selectedDevice && selectedDevice.features && selectedDevice.features.passphrase_protection;
         const isDeviceReady = selectedDevice && selectedDevice.connected && selectedDevice.available;
 
-        let walletTooltipMsg = `You are in your ${walletType} wallet.`;
-        if (isDeviceReady) {
-            walletTooltipMsg = walletType === 'standard'
-                ? `${walletTooltipMsg} Click here to access your hidden wallet.`
-                : `${walletTooltipMsg} Click here to access your standard or another hidden wallet`;
-        } else {
-            walletTooltipMsg = `${walletTooltipMsg} To access other wallets please connect your device.`;
-        }
 
         return (
             <Sidebar isOpen={props.wallet.showSidebar}>
@@ -238,7 +252,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                         <React.Fragment>
                             {showWalletType && (
                                 <Tooltip
-                                    content={walletTooltipMsg}
+                                    content={<WalletTooltipMsg walletType={walletType} isDeviceReady={isDeviceReady} />}
                                     maxWidth={200}
                                     placement="bottom"
                                     enterDelayMs={0.5}
@@ -262,7 +276,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                             }
                             {this.props.devices.length > 1 && (
                                 <Tooltip
-                                    content="Number of devices"
+                                    content={<FormattedMessage {...l10nMessages.TR_NUMBER_OF_DEVICES} />}
                                     maxWidth={200}
                                     placement="bottom"
                                     enterDelayMs={0.5}
@@ -292,7 +306,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                             target="_blank"
                             rel="noreferrer noopener"
                         >
-                            <Icon size={26} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />Need help?
+                            <Icon size={26} icon={icons.CHAT} color={colors.TEXT_SECONDARY} /><FormattedMessage {...l10nMessages.TR_NEED_HELP} />
                         </A>
                     </Help>
                 </Footer>

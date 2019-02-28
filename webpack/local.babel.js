@@ -13,6 +13,7 @@ import {
     SRC,
     BUILD,
     PUBLIC,
+    TRANSLATIONS,
     PORT,
 } from './constants';
 
@@ -83,7 +84,7 @@ module.exports = {
             {
                 type: 'javascript/auto',
                 test: /\.json/,
-                exclude: /(node_modules)/,
+                exclude: [/(node_modules)/, TRANSLATIONS],
                 loader: 'file-loader',
                 options: {
                     outputPath: './data',

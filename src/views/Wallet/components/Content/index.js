@@ -12,7 +12,10 @@ import colors from 'config/colors';
 import type { State } from 'flowtype';
 
 import FirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
+import { FormattedMessage } from 'react-intl';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
+
+import l10nMessages from './index.messages';
 
 type Props = {
     children?: React.Node,
@@ -46,6 +49,7 @@ const Title = styled(H1)`
     color: ${props => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
     margin-left: 10px;
     text-align: center;
+    padding: 0;
 `;
 
 const Message = styled(P)`
@@ -55,6 +59,7 @@ const Message = styled(P)`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
+    align-items: center;
 `;
 
 const getExceptionPage = (exceptionPage) => {
@@ -81,7 +86,7 @@ const Content = ({
             <Loading>
                 <Row>
                     {loader.type === 'progress' && <Loader size={30} />}
-                    <Title type={loader.type}>{loader.title || 'Initializing accounts'}</Title>
+                    <Title type={loader.type}>{loader.title || <FormattedMessage {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />}</Title>
                 </Row>
                 {loader.message && <Message>{loader.message}</Message>}
             </Loading>

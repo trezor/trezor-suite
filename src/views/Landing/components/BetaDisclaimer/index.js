@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { FormattedMessage } from 'react-intl';
 
 import colors from 'config/colors';
 import icons from 'config/icons';
@@ -14,6 +15,7 @@ import Button from 'components/Button';
 import P from 'components/Paragraph';
 import { H2 } from 'components/Heading';
 import * as WalletActions from 'actions/WalletActions';
+import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -57,18 +59,38 @@ const StyledIcon = styled(Icon)`
 const BetaDisclaimer = (props: { close: () => void }) => (
     <Wrapper>
         <ModalWindow>
-            <H2>You are opening Trezor Beta Wallet</H2>
-            <StyledP><i>Trezor Beta Wallet</i> is a public feature-testing version of the <i>Trezor Wallet</i>, offering the newest features before they are available to the general public.</StyledP>
-            <StyledP>In contrast, <i>Trezor Wallet</i> is feature-conservative, making sure that its functionality is maximally reliable and dependable for the general public.</StyledP>
+            <H2><FormattedMessage {...l10nMessages.TR_YOU_ARE_OPENING_TREZOR_BETA_WALLET} /></H2>
+            <StyledP><FormattedMessage
+                {...l10nMessages.TR_TREZOR_BETA_WALLET_IS}
+                values={{
+                    TR_TREZOR_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
+                    TR_TREZOR_BETA_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
+                }}
+            />
+            </StyledP>
+            <StyledP><FormattedMessage
+                {...l10nMessages.TR_IN_CONTRAST_COMMA_TREZOR}
+                values={{
+                    TR_TREZOR_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
+                    TR_TREZOR_BETA_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
+                }}
+            />
+            </StyledP>
             <StyledP>
                 <StyledIcon
                     size={24}
                     color={colors.WARNING_PRIMARY}
                     icon={icons.WARNING}
                 />
-                Please note that the <i>Trezor Beta Wallet</i> might be collecting anonymized usage data, especially error logs, for development purposes. The <i>Trezor Wallet</i> does not log any data.
+                <FormattedMessage
+                    {...l10nMessages.TR_PLEASE_NOTE_THAT_THE_TREZOR}
+                    values={{
+                        TR_TREZOR_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
+                        TR_TREZOR_BETA_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
+                    }}
+                />
             </StyledP>
-            <StyledButton dataTest="Modal__disclaimer__button__confirm" onClick={props.close}>OK, I understand</StyledButton>
+            <StyledButton dataTest="Modal__disclaimer__button__confirm" onClick={props.close}><FormattedMessage {...l10nMessages.TR_OK_COMMA_I_UNDERSTAND} /></StyledButton>
         </ModalWindow>
     </Wrapper>
 );
