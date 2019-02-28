@@ -1,15 +1,106 @@
 import React from 'react';
+import styled from 'styled-components';
 import Button from 'components/buttons/Button';
 import ButtonPin from 'components/buttons/Pin';
 import ButtonNotification from 'components/buttons/Notification';
+import { H1 } from 'components/Heading';
+import Icon from 'components/Icon';
 import { storiesOf } from '@storybook/react';
 import {
     withKnobs, text, boolean, select,
 } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
+import { linkTo } from '@storybook/addon-links'
 
 import colors from 'config/colors';
 import icons from 'config/icons';
+
+const Wrapper = styled.div`
+    padding: 1.6rem;
+`;
+
+const Row = styled.div`
+    display: flex;
+    justify-content: space-evenly;
+    padding: 1rem 0;
+    margin: .5rem 0 2rem;
+`;
+
+const BtnLink = styled.button`
+    font-size: 1rem;
+    color: ${colors.TEXT_SECONDARY};
+    vertical-align: middle;
+    background: ${colors.LANDING};
+    padding: .5rem;
+    border: none;
+    border-radius: 5px;
+`;
+
+storiesOf('Buttons', module)
+    .add('All', () => (
+        <Wrapper>
+            <H1>
+                Default <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button />'}</BtnLink>
+            </H1>
+            <Row>
+                <Button>
+                    Button
+                </Button>
+                <Button isWhite>
+                    White
+                </Button>
+                <Button isTransparent>
+                    Transparent
+                </Button>
+                <Button isDisabled>
+                    Disabled
+                </Button>
+            </Row>
+            <H1>
+                Inverse <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button isInverse />'}</BtnLink>
+            </H1>
+            <Row>
+                <Button
+                  isInverse
+                >
+                    Inverse
+                </Button>
+                <Button
+                  isInverse
+                  icon={icons.PLUS}
+                >
+                    Web USB
+                </Button>
+                <Button
+                  isInverse
+                  icon={icons.PLUS}
+                  isDisabled
+                >
+                    Web USB Disabled
+                </Button>
+            </Row>
+            <H1>
+                Notification <BtnLink onClick={linkTo('Buttons', 'Button Notification')}>{'<ButtonNotification />'}</BtnLink>
+            </H1>
+            <Row>
+                <ButtonNotification type="success">
+                    Confirm!
+                </ButtonNotification>
+                <ButtonNotification type="warning">
+                    Warning!
+                </ButtonNotification>
+                <ButtonNotification type="error">
+                    Error!
+                </ButtonNotification>
+            </Row>
+            <H1>
+                Pin <BtnLink onClick={linkTo('Buttons', 'Button Pin')}>{'<ButtonPin />'}</BtnLink>
+            </H1>
+            <Row>
+                <ButtonPin onClick={() => {}} />
+            </Row>
+        </Wrapper>
+    ));
 
 storiesOf('Buttons', module)
     .addDecorator(
