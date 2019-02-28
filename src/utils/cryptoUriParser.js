@@ -10,7 +10,7 @@ export type parsedURI = {
 };
 
 // Parse a string read from a bitcoin QR code into an object
-export const parseUri = (uri: string): ?parsedURI => {
+const parseUri = (uri: string): ?parsedURI => {
     const str = stripPrefix(uri);
     const query: Array<string> = str.split('?');
     const values: Object = (query.length > 1) ? parseQuery(query[1]) : {};
@@ -37,3 +37,7 @@ const parseQuery = (str: string): {} => str.split('&')
         }
         return vals;
     }, {});
+
+export {
+    parseUri,
+};
