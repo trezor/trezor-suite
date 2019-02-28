@@ -28,7 +28,7 @@ const Backdrop = ({
 );
 
 Backdrop.propTypes = {
-    show: PropTypes.bool.isRequired,
+    show: PropTypes.bool,
     className: PropTypes.string,
     animated: PropTypes.bool,
     onClick: PropTypes.func,

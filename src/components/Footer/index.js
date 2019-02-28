@@ -63,7 +63,7 @@ const Footer = ({ opened, toggle, isLanding }: Props) => (
         <Left>
             <Copy>&copy; {getYear(new Date())}</Copy>
             <StyledLink href="http://satoshilabs.com" isGreen>SatoshiLabs</StyledLink>
-            <StyledLink href="./assets/tos.pdf" isGreen>
+            <StyledLink href="https://trezor.io/static/pdf/tos.pdf" isGreen>
                 <FormattedMessage {...l10nMessages.TR_TERMS} />
             </StyledLink>
             <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>

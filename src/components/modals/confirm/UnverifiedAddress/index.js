@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
+import { getOldWalletUrl } from 'utils/url';
 import icons from 'config/icons';
 import colors from 'config/colors';
 
@@ -34,11 +34,23 @@ const StyledLink = styled(Link)`
 
 const Wrapper = styled.div`
     max-width: 370px;
-    padding: 30px 48px;
+    padding: 30px 0px;
+
+`;
+
+const Content = styled.div`
+    padding: 0px 48px;
 `;
 
 const StyledP = styled(P)`
-    padding: 20px 0px;
+    padding-bottom: 20px;
+`;
+
+const Divider = styled.div`
+    width: 100%;
+    height: 1px;
+    background: ${colors.DIVIDER};
+    margin: 20px 0px;
 `;
 
 const Row = styled.div`
@@ -47,6 +59,24 @@ const Row = styled.div`
 
     Button + Button {
         margin-top: 10px;
+    }
+`;
+
+const BackupButton = styled(Button)`
+    width: 100%;
+`;
+
+const WarnButton = styled(Button)`
+    background: transparent;
+    border-color: ${colors.WARNING_PRIMARY};
+    color: ${colors.WARNING_PRIMARY};
+
+    &:focus,
+    &:hover,
+    &:active {
+        color: ${colors.WHITE};
+        background: ${colors.WARNING_PRIMARY};
+        box-shadow: none;
     }
 `;
 
@@ -100,22 +130,44 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                 : <FormattedMessage {...l10nMessages.TR_PLEASE_DISABLE_PASSPHRASE} />;
         }
 
+        const needsBackup = device.features && device.features.needs_backup;
+
         return (
             <Wrapper>
-                <StyledLink onClick={onCancel}>
-                    <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
-                </StyledLink>
-                <H2>{ deviceStatus }</H2>
-                <StyledP isSmaller>
-                    <FormattedMessage
-                        {...l10nMessages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
-                        values={{ claim }}
-                    />
-                </StyledP>
-                <Row>
-                    <Button onClick={() => (!account ? this.verifyAddress() : 'false')}><FormattedMessage {...l10nMessages.TR_TRY_AGAIN} /></Button>
-                    <Button isWhite onClick={() => this.showUnverifiedAddress()}><FormattedMessage {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} /></Button>
-                </Row>
+                <Content>
+                    <StyledLink onClick={onCancel}>
+                        <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                    </StyledLink>
+                    <H2>{ deviceStatus }</H2>
+                    <StyledP isSmaller>
+                        <FormattedMessage
+                            {...l10nMessages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
+                            values={{ claim }}
+                        />
+                    </StyledP>
+                </Content>
+                <Content>
+                    <Row>
+                        <Button onClick={() => (!account ? this.verifyAddress() : 'false')}><FormattedMessage {...l10nMessages.TR_TRY_AGAIN} /></Button>
+                        <WarnButton isWhite onClick={() => this.showUnverifiedAddress()}><FormattedMessage {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} /></WarnButton>
+                    </Row>
+                </Content>
+                {needsBackup && <Divider />}
+                {needsBackup && (
+                    <>
+                        <Content>
+                            <H2>Device {device.label} is not backed up</H2>
+                            <StyledP isSmaller>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</StyledP>
+                        </Content>
+                        <Content>
+                            <Row>
+                                <Link href={`${getOldWalletUrl(device)}/?backup`}>
+                                    <BackupButton>Create a backup in 3 minutes</BackupButton>
+                                </Link>
+                            </Row>
+                        </Content>
+                    </>
+                )}
             </Wrapper>
         );
     }

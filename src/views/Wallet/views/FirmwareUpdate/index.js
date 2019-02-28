@@ -4,6 +4,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { getOldWalletReleaseUrl } from 'utils/url';
 
 import styled from 'styled-components';
 import { H1 } from 'components/Heading';
@@ -136,7 +137,7 @@ const FirmwareUpdate = (props: Props) => (
         <StyledP>
             <FormattedMessage {...l10nMessages.TR_PLEASE_USE_OLD_WALLET} />
         </StyledP>
-        <Link href="https://beta-wallet.trezor.io">
+        <Link href={getOldWalletReleaseUrl(props.device)}>
             <Button>
                 <FormattedMessage {...l10nCommonMessages.TR_TAKE_ME_TO_BITCOIN_WALLET} />
             </Button>
