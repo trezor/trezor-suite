@@ -20,8 +20,11 @@ import P from 'components/Paragraph';
 import Tooltip from 'components/Tooltip';
 
 import colors from 'config/colors';
+import { FONT_SIZE } from 'config/variables';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    padding: 1.6rem;
+`;
 
 Wrapper.displayName = 'Wrapper';
 H1.displayName = 'H1';
@@ -33,33 +36,23 @@ storiesOf('Typography', module)
     .add('All', () => (
         <Wrapper>
             <H1>Heading level 1</H1>
+            <H2>Heading level 2</H2>
+            <H3>Heading level 3</H3>
+            <H4>Heading level 4</H4>
+            <H5>Heading level 5</H5>
+            <H6>Heading level 6</H6>
+            <P size={FONT_SIZE.SMALL}>
+                This is a SMALL paragraph with <Link href="/test" isGreen>link</Link>.
+            </P>
             <P>
                 This is a paragraph with <Link href="/test" isGreen>link</Link>.
             </P>
-            <P isSmaller>
-                This is a smaller paragraph with <Link href="/test" isGreen isSmaller>link</Link>.
+            <P size={FONT_SIZE.BIG}>
+                This is a BIG paragraph with <Link href="/test" isGray> gray link</Link>.
             </P>
-
-            <H2>Heading level 2</H2>
-            <P>
-                This is a paragraph.
+            <P size={FONT_SIZE.BIGGER}>
+                This is a BIGGER paragraph with <Link href="/test" isGreen>link</Link>.
             </P>
-            <P isSmaller>This is a smaller paragraph.</P>
-
-            <H3>Heading level 3</H3>
-            <P>This is a paragraph.</P>
-            <P isSmaller>This is a smaller paragraph.</P>
-
-            <H4>Heading level 4</H4>
-            <P>This is a paragraph.</P>
-            <P isSmaller>This is a smaller paragraph.</P>
-
-            <H5>Heading level 5</H5>
-            <P>This is a paragraph.</P>
-            <P isSmaller>This is a smaller paragraph.</P>
-
-            <H6>Heading level 6</H6>
-            <P isSmaller>This is a smaller paragraph.</P>
         </Wrapper>
     ));
 
@@ -142,14 +135,20 @@ storiesOf('Typography', module)
         }, '');
         const href = text('URL', 'https://trezor.io');
         const linkText = text('Text', 'This is a link.');
-        const isSmaller = boolean('Smaller', false);
+        const size = select('Size', {
+            Inherit: null,
+            Small: FONT_SIZE.SMALL,
+            Base: FONT_SIZE.BASE,
+            Big: FONT_SIZE.BIG,
+            Bigger: FONT_SIZE.BIGGER,
+        }, FONT_SIZE.BASE);
 
         if (color === 'green') {
             return (
                 <Link
                     href={href}
                     target={target}
-                    isSmaller={isSmaller}
+                    size={size}
                     isGreen
                 >
                     {linkText}
@@ -161,7 +160,7 @@ storiesOf('Typography', module)
             <Link
                 href={href}
                 target={target}
-                isSmaller={isSmaller}
+                size={size}
                 isGray
             >
                 {linkText}
@@ -172,16 +171,29 @@ storiesOf('Typography', module)
             text: `
             ## Import
             ~~~js
-            import { Link } from 'trezor-ui-components';
+            import { Link, variables } from 'trezor-ui-components';
+            ~~~
+
+            #### Font size via \`size\` prop (default: _inherit_)
+            ~~~js
+            variables.FONT_SIZE.SMALL
+            variables.FONT_SIZE.BASE
+            variables.FONT_SIZE.BIG
+            variables.FONT_SIZE.BIGGER
             ~~~
             `,
         },
     })
     .add('Paragraph', () => {
-        const isSmaller = boolean('Smaller', false);
+        const size = select('Size', {
+            Small: FONT_SIZE.SMALL,
+            Base: FONT_SIZE.BASE,
+            Big: FONT_SIZE.BIG,
+            Bigger: FONT_SIZE.BIGGER,
+        }, FONT_SIZE.BASE);
         const paragraphText = text('Text', 'This is a paragraph.');
-        if (isSmaller) {
-            return <P isSmaller>{paragraphText}</P>;
+        if (size) {
+            return <P size={size}>{paragraphText}</P>;
         }
         return <P>{paragraphText}</P>;
     }, {
@@ -189,7 +201,15 @@ storiesOf('Typography', module)
             text: `
             ## Import
             ~~~js
-            import { P } from 'trezor-ui-components';
+            import { P, variables } from 'trezor-ui-components';
+            ~~~
+
+            #### Font size via \`size\` prop (default: _BASE_)
+            ~~~js
+            variables.FONT_SIZE.SMALL
+            variables.FONT_SIZE.BASE
+            variables.FONT_SIZE.BIG
+            variables.FONT_SIZE.BIGGER
             ~~~
             `,
         },
