@@ -46,6 +46,7 @@ const Title = styled(H1)`
     color: ${props => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
     margin-left: 10px;
     text-align: center;
+    padding: 0;
 `;
 
 const Message = styled(P)`
@@ -55,6 +56,7 @@ const Message = styled(P)`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
+    align-items: center;
 `;
 
 const getExceptionPage = (exceptionPage) => {
