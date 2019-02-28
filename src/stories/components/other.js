@@ -6,9 +6,9 @@ import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
 import { withInfo } from '@storybook/addon-info';
 import {
-    withKnobs, select, number, color, boolean
+    withKnobs, select, number, color, boolean,
 } from '@storybook/addon-knobs';
-import { linkTo } from '@storybook/addon-links'
+import { linkTo } from '@storybook/addon-links';
 
 import colors from 'config/colors';
 import icons from 'config/icons';
@@ -319,16 +319,20 @@ storiesOf('Other', module)
 
         if (hasHover) {
             const hoverColor = color('Hover color', colors.GREEN_PRIMARY);
-            return <Icon
+            return (
+                <Icon
+                    icon={iconSelect}
+                    size={iconSize}
+                    hoverColor={hoverColor}
+                />
+            );
+        }
+        return (
+            <Icon
                 icon={iconSelect}
                 size={iconSize}
-                hoverColor={hoverColor}
             />
-        }
-        return <Icon
-            icon={iconSelect}
-            size={iconSize}
-        />
+        );
     }, {
         info: {
             text: `

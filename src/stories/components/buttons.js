@@ -4,13 +4,12 @@ import Button from 'components/buttons/Button';
 import ButtonPin from 'components/buttons/Pin';
 import ButtonNotification from 'components/buttons/Notification';
 import { H1 } from 'components/Heading';
-import Icon from 'components/Icon';
 import { storiesOf } from '@storybook/react';
 import {
     withKnobs, text, boolean, select,
 } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
-import { linkTo } from '@storybook/addon-links'
+import { linkTo } from '@storybook/addon-links';
 
 import colors from 'config/colors';
 import icons from 'config/icons';
@@ -61,20 +60,20 @@ storiesOf('Buttons', module)
             </H1>
             <Row>
                 <Button
-                  isInverse
+                    isInverse
                 >
                     Inverse
                 </Button>
                 <Button
-                  isInverse
-                  icon={icons.PLUS}
+                    isInverse
+                    icon={icons.PLUS}
                 >
                     Web USB
                 </Button>
                 <Button
-                  isInverse
-                  icon={icons.PLUS}
-                  isDisabled
+                    isInverse
+                    icon={icons.PLUS}
+                    isDisabled
                 >
                     Web USB Disabled
                 </Button>

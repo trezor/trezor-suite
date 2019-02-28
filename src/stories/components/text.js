@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { storiesOf } from '@storybook/react';
 import {
-    withKnobs, boolean, text, select, radios, number,
+    withKnobs, text, select, radios, number,
 } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
 

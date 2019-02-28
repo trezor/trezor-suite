@@ -1,7 +1,6 @@
 import React from 'react';
 import colors from 'config/colors';
 import { storiesOf } from '@storybook/react';
-import centered from '@storybook/addon-centered';
 import styled from 'styled-components';
 import { H1, H2 } from 'components/Heading';
 
