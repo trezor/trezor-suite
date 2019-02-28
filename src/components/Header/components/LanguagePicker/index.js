@@ -12,7 +12,11 @@ const SelectWrapper = styled.div`
     display: flex;
     color: ${colors.WHITE};
     align-items: center;
-    width: 140px;
+    width: 180px;
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        width: 140px;
+    }
 
     @media screen and (max-width: ${SCREEN_SIZE.XS}) {
         width: 100px;
@@ -22,6 +26,7 @@ const SelectWrapper = styled.div`
 const SelectIcon = styled.span`
     margin-right: -24px;
     padding-left: 6px;
+    display: flex;
 `;
 
 const styles = {
@@ -46,7 +51,8 @@ const styles = {
         width: '100%',
     }),
     dropdownIndicator: () => ({
-        display: 'none',
+        display: 'block',
+        marginTop: '3px',
     }),
     menu: base => ({
         ...base,
