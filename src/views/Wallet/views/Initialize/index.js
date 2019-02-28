@@ -38,7 +38,7 @@ const Initialize = (props: Props) => (
         <Row>
             <H1>Your device is not initialized</H1>
             <StyledParagraph>Please use Bitcoin wallet interface to start initialization process</StyledParagraph>
-            <A href={getOldWalletUrl(props.device)}>
+            <A href={getOldWalletUrl(props.device)} target="_self">
                 <Button>Take me to the Bitcoin wallet</Button>
             </A>
         </Row>
