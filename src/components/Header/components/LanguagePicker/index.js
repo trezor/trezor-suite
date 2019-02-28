@@ -3,7 +3,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
-import { LANGUAGE } from 'config/variables';
+import ReactSelect from 'react-select';
+import { LANGUAGE, SCREEN_SIZE } from 'config/variables';
 
 import type { Props } from './Container';
 
@@ -11,6 +12,11 @@ const SelectWrapper = styled.div`
     display: flex;
     color: ${colors.WHITE};
     align-items: center;
+    width: 140px;
+
+    @media screen and (max-width: ${SCREEN_SIZE.XS}) {
+        width: 100px;
+    }
 `;
 
 const SelectIcon = styled.span`
@@ -18,34 +24,80 @@ const SelectIcon = styled.span`
     padding-left: 6px;
 `;
 
-const StyledSelect = styled.select`
-    height: 100%;
-    padding-left: 30px;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    appearance: none;
-    border-radius: 0;
-    overflow: visible;
-    color: ${colors.WHITE};
-`;
+const styles = {
+    singleValue: base => ({
+        ...base,
+        color: colors.WHITE,
+        paddingLeft: '25px', // flag
+    }),
+    control: base => ({
+        ...base,
+        height: '40px',
+        border: 'none',
+        background: 'transparent',
+        boxShadow: 'none',
+        cursor: 'pointer',
+    }),
+    indicatorSeparator: () => ({
+        display: 'none',
+    }),
+    container: base => ({
+        ...base,
+        width: '100%',
+    }),
+    dropdownIndicator: () => ({
+        display: 'none',
+    }),
+    menu: base => ({
+        ...base,
+        color: colors.WHITE,
+        marginTop: '6px',
+        boxShadow: 'none',
+    }),
+    menuList: base => ({
+        ...base,
+        padding: 0,
+        boxShadow: 'none',
+        background: colors.WHITE,
+        borderLeft: `1px solid ${colors.DIVIDER}`,
+        borderRight: `1px solid ${colors.DIVIDER}`,
+        borderBottom: `1px solid ${colors.DIVIDER}`,
+    }),
+    option: (base, { isFocused }) => ({
+        ...base,
+        color: colors.TEXT_SECONDARY,
+        background: isFocused ? colors.LANDING : colors.WHITE,
+        borderRadius: 0,
+        '&:hover': {
+            cursor: 'pointer',
+            background: colors.LANDING,
+        },
+    }),
+};
 
+
+const buildOption = (langCode) => {
+    const lang = LANGUAGE.find(l => l.code === langCode);
+    return { value: lang.code, label: lang.name };
+};
 
 const LanguagePicker = ({ language, fetchLocale }: Props) => (
     <SelectWrapper>
         <SelectIcon role="img" aria-label="Select language">
-            <svg width="24" height="18">
-                <image xlinkHref={`l10n/flags/${language}.svg`} width="24" height="18" />
+            <svg width="21" height="15">
+                <image xlinkHref={`l10n/flags/${language}.svg`} width="21" height="15" />
             </svg>
         </SelectIcon>
-        <StyledSelect
-            onChange={e => fetchLocale(e.target.value)}
-            value={language}
-        >
-            {LANGUAGE.map(lang => (
-                <option key={lang.code} label={lang.name} value={lang.code}>{lang.name}</option>
-            ))}
-        </StyledSelect>
+        <ReactSelect
+            styles={styles}
+            isSearchable={false}
+            isClearable={false}
+            onChange={option => fetchLocale(option.value)}
+            value={buildOption(language)}
+            options={
+                LANGUAGE.map(lang => buildOption(lang.code))
+            }
+        />
     </SelectWrapper>
 );
 
