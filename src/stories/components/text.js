@@ -135,20 +135,12 @@ storiesOf('Typography', module)
         }, '');
         const href = text('URL', 'https://trezor.io');
         const linkText = text('Text', 'This is a link.');
-        const size = select('Size', {
-            Inherit: null,
-            Small: FONT_SIZE.SMALL,
-            Base: FONT_SIZE.BASE,
-            Big: FONT_SIZE.BIG,
-            Bigger: FONT_SIZE.BIGGER,
-        }, FONT_SIZE.BASE);
 
         if (color === 'green') {
             return (
                 <Link
                     href={href}
                     target={target}
-                    size={size}
                     isGreen
                 >
                     {linkText}
@@ -160,7 +152,6 @@ storiesOf('Typography', module)
             <Link
                 href={href}
                 target={target}
-                size={size}
                 isGray
             >
                 {linkText}

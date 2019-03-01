@@ -10,7 +10,6 @@ const A = styled.a`
     text-decoration: none;
     cursor: pointer;
     transition: ${TRANSITION.HOVER};
-    font-size: ${({ size = 'inherit' }) => size};
 
     ${props => props.isGreen
         && css`
@@ -93,7 +92,6 @@ Link.propTypes = {
     onClick: PropTypes.func,
     isGreen: PropTypes.bool,
     isGray: PropTypes.bool,
-    size: PropTypes.string,
 };
 
 export default Link;
