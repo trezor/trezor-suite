@@ -33,6 +33,11 @@ const BtnLink = styled.button`
     padding: .5rem;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+        color: ${colors.TEXT};
+    }
 `;
 
 storiesOf('Buttons', module)
