@@ -1,6 +1,8 @@
 # trezor-translations-manager
 [![npm version](https://badge.fury.io/js/trezor-translations-manager.svg)](https://badge.fury.io/js/trezor-translations-manager)
 
+CLI tool for synchronizing localization resources with Crowdin service.
+
 ## Features
 
 ## Installation
