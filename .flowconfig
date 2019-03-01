@@ -23,6 +23,9 @@
 ./src/flowtype/npm/web3.js
 ./src/flowtype/css.js
 
+[untyped]
+.*/node_modules/react-select/.*
+
 [options]
 esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
