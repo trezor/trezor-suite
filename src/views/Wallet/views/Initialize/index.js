@@ -42,7 +42,7 @@ const Initialize = (props: Props) => (
         <Row>
             <H1><FormattedMessage {...l10nMessages.TR_YOUR_DEVICE_IS_NOT_INITIALIZED} /></H1>
             <StyledParagraph><FormattedMessage {...l10nMessages.TR_PLEASE_USE_TO_START_INITIALIZATION} /></StyledParagraph>
-            <A href={getOldWalletUrl(props.device)}>
+            <A href={getOldWalletUrl(props.device)} target="_self">
                 <Button><FormattedMessage {...l10nCommonMessages.TR_TAKE_ME_TO_BITCOIN_WALLET} /></Button>
             </A>
         </Row>

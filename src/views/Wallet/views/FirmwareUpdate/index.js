@@ -137,7 +137,7 @@ const FirmwareUpdate = (props: Props) => (
         <StyledP>
             <FormattedMessage {...l10nMessages.TR_PLEASE_USE_OLD_WALLET} />
         </StyledP>
-        <Link href={getOldWalletReleaseUrl(props.device)}>
+        <Link href={getOldWalletReleaseUrl(props.device)} target="_self">
             <Button>
                 <FormattedMessage {...l10nCommonMessages.TR_TAKE_ME_TO_BITCOIN_WALLET} />
             </Button>

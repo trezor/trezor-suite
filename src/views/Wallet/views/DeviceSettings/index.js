@@ -51,7 +51,7 @@ const DeviceSettings = (props: Props) => (
                 />
                 <StyledH1>Device settings is under construction</StyledH1>
                 <StyledP>Please use Bitcoin wallet interface to change your device settings</StyledP>
-                <Link href={getOldWalletUrl(props.device)}>
+                <Link href={getOldWalletUrl(props.device)} target="_self">
                     <Button>Take me to the Bitcoin wallet</Button>
                 </Link>
             </Row>

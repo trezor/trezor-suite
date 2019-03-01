@@ -57,7 +57,7 @@ const FirmwareUpdate = (props: Props) => (
             <StyledP>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</StyledP>
             <P>Please use Bitcoin wallet interface to create a backup.</P>
         </Message>
-        <Link href={`${getOldWalletUrl(props.device)}?backup=1`}>
+        <Link href={`${getOldWalletUrl(props.device)}?backup=1`} target="_self">
             <Button>Take me to the Bitcoin wallet</Button>
         </Link>
         <StyledNavLink to="/">I’ll do that later.</StyledNavLink>
