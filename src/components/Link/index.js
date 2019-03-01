@@ -1,4 +1,3 @@
-import { TRANSITION } from 'config/variables';
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
@@ -7,15 +6,14 @@ import PropTypes from 'prop-types';
 import colors from 'config/colors';
 
 const A = styled.a`
-    text-decoration: underline;
+    text-decoration: none;
     cursor: pointer;
-    transition: ${TRANSITION.HOVER};
     color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
 
-    &,
     &:visited,
     &:active,
     &:hover {
+        text-decoration: underline;
         color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
     }
 `;
