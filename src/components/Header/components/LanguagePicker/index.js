@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
 /* @flow */
 import * as React from 'react';
 import styled from 'styled-components';
