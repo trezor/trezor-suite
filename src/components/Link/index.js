@@ -1,56 +1,27 @@
 import { TRANSITION } from 'config/variables';
 import React, { PureComponent } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
 
 const A = styled.a`
-    text-decoration: none;
+    text-decoration: underline;
     cursor: pointer;
     transition: ${TRANSITION.HOVER};
-
-    ${props => props.isGreen
-        && css`
-            text-decoration: underline;
-            text-decoration-color: ${colors.GREEN_PRIMARY};
-        `}
-    ${props => props.isGray
-        && css`
-            text-decoration: underline;
-            text-decoration-color: ${colors.TEXT_SECONDARY};
-        `}
+    color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
 
     &,
     &:visited,
     &:active,
     &:hover {
-        ${props => props.isGreen
-            && css`
-                color: ${colors.GREEN_PRIMARY};
-            `}
-        ${props => props.isGray
-            && css`
-                color: ${colors.TEXT_SECONDARY};
-            `}
-    }
-
-    &:hover {
-        border-color: transparent;
+        color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
     }
 `;
 
 const StyledNavLink = styled(NavLink)`
-    ${props => props.isGreen
-        && css`
-            color: ${colors.GREEN_PRIMARY};
-        `}
-
-    ${props => props.isGray
-        && css`
-            color: ${colors.TEXT_SECONDARY};
-        `}
+    color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
 `;
 
 class Link extends PureComponent {
