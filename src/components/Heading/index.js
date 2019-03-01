@@ -38,6 +38,18 @@ const StyledH4 = styled.h4`
     padding-bottom: 10px;
 `;
 
+const StyledH5 = styled.h5`
+    ${baseStyles};
+    font-size: ${FONT_SIZE.H5};
+    padding-bottom: 10px;
+`;
+
+const StyledH6 = styled.h6`
+    ${baseStyles};
+    font-size: ${FONT_SIZE.H6};
+    padding-bottom: 10px;
+`;
+
 const H1 = ({ children }) => <StyledH1>{children}</StyledH1>;
 
 const H2 = ({ children }) => <StyledH2>{children}</StyledH2>;
@@ -45,6 +57,10 @@ const H2 = ({ children }) => <StyledH2>{children}</StyledH2>;
 const H3 = ({ children }) => <StyledH3>{children}</StyledH3>;
 
 const H4 = ({ children }) => <StyledH4>{children}</StyledH4>;
+
+const H5 = ({ children }) => <StyledH5>{children}</StyledH5>;
+
+const H6 = ({ children }) => <StyledH6>{children}</StyledH6>;
 
 H1.propTypes = {
     children: PropTypes.node,
@@ -62,6 +78,14 @@ H4.propTypes = {
     children: PropTypes.node,
 };
 
+H5.propTypes = {
+    children: PropTypes.node,
+};
+
+H6.propTypes = {
+    children: PropTypes.node,
+};
+
 export {
-    H1, H2, H3, H4,
+    H1, H2, H3, H4, H5, H6,
 };

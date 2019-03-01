@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { storiesOf } from '@storybook/react';
 import {
-    withKnobs, boolean, text, select, radios, number,
+    withKnobs, text, select, radios, number,
 } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
 
@@ -12,14 +12,19 @@ import {
     H2,
     H3,
     H4,
+    H5,
+    H6,
 } from 'components/Heading';
 import Link from 'components/Link';
 import P from 'components/Paragraph';
 import Tooltip from 'components/Tooltip';
 
 import colors from 'config/colors';
+import { FONT_SIZE } from 'config/variables';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    padding: 1.6rem;
+`;
 
 Wrapper.displayName = 'Wrapper';
 H1.displayName = 'H1';
@@ -27,7 +32,31 @@ H2.displayName = 'H2';
 H3.displayName = 'H3';
 H4.displayName = 'H4';
 
-storiesOf('Components', module)
+storiesOf('Typography', module)
+    .add('All', () => (
+        <Wrapper>
+            <H1>Heading level 1</H1>
+            <H2>Heading level 2</H2>
+            <H3>Heading level 3</H3>
+            <H4>Heading level 4</H4>
+            <H5>Heading level 5</H5>
+            <H6>Heading level 6</H6>
+            <P size={FONT_SIZE.SMALL}>
+                This is a SMALL paragraph with <Link href="/test" isGreen>link</Link>.
+            </P>
+            <P>
+                This is a paragraph with <Link href="/test" isGreen>link</Link>.
+            </P>
+            <P size={FONT_SIZE.BIG}>
+                This is a BIG paragraph with <Link href="/test" isGray> gray link</Link>.
+            </P>
+            <P size={FONT_SIZE.BIGGER}>
+                This is a BIGGER paragraph with <Link href="/test" isGreen>link</Link>.
+            </P>
+        </Wrapper>
+    ));
+
+storiesOf('Typography', module)
     .addDecorator(
         withInfo({
             header: false,
@@ -55,6 +84,8 @@ storiesOf('Components', module)
             H2: 'h2',
             H3: 'h3',
             H4: 'h4',
+            H5: 'h5',
+            H6: 'h6',
         });
 
         switch (level) {
@@ -68,7 +99,13 @@ storiesOf('Components', module)
                 return <H3>Heading level 3</H3>;
             }
             case 'h4': {
-                return <H4>Heading level 2</H4>;
+                return <H4>Heading level 4</H4>;
+            }
+            case 'h5': {
+                return <H5>Heading level 4</H5>;
+            }
+            case 'h6': {
+                return <H6>Heading level 4</H6>;
             }
             default: {
                 return <H1>Heading level 1</H1>;
@@ -79,7 +116,7 @@ storiesOf('Components', module)
             text: `
             ## Import
             ~~~js
-            import { H1, H2, H3, H4 } from 'trezor-ui-components';
+            import { H1, H2, H3, H4, H5, H6 } from 'trezor-ui-components';
             ~~~
             `,
         },
@@ -125,16 +162,29 @@ storiesOf('Components', module)
             text: `
             ## Import
             ~~~js
-            import { Link } from 'trezor-ui-components';
+            import { Link, variables } from 'trezor-ui-components';
+            ~~~
+
+            #### Font size via \`size\` prop (default: _inherit_)
+            ~~~js
+            variables.FONT_SIZE.SMALL
+            variables.FONT_SIZE.BASE
+            variables.FONT_SIZE.BIG
+            variables.FONT_SIZE.BIGGER
             ~~~
             `,
         },
     })
     .add('Paragraph', () => {
-        const isSmaller = boolean('Smaller', false);
+        const size = select('Size', {
+            Small: FONT_SIZE.SMALL,
+            Base: FONT_SIZE.BASE,
+            Big: FONT_SIZE.BIG,
+            Bigger: FONT_SIZE.BIGGER,
+        }, FONT_SIZE.BASE);
         const paragraphText = text('Text', 'This is a paragraph.');
-        if (isSmaller) {
-            return <P isSmaller>{paragraphText}</P>;
+        if (size) {
+            return <P size={size}>{paragraphText}</P>;
         }
         return <P>{paragraphText}</P>;
     }, {
@@ -142,7 +192,15 @@ storiesOf('Components', module)
             text: `
             ## Import
             ~~~js
-            import { P } from 'trezor-ui-components';
+            import { P, variables } from 'trezor-ui-components';
+            ~~~
+
+            #### Font size via \`size\` prop (default: _BASE_)
+            ~~~js
+            variables.FONT_SIZE.SMALL
+            variables.FONT_SIZE.BASE
+            variables.FONT_SIZE.BIG
+            variables.FONT_SIZE.BIGGER
             ~~~
             `,
         },

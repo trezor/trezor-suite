@@ -43,10 +43,9 @@ function loadStories() {
     require('stories/components/buttons.js');
     require('stories/components/form.js');
     require('stories/components/notifications.js');
-    require('stories/components/loader.js');
     require('stories/components/modal.js');
-    require('stories/components/icons.js');
-    require('stories/components/coins.js');
+    require('stories/components/other.js');
+    require('stories/components/loader.js');
     require('stories/components/colors.js');
 }
 

@@ -34,7 +34,7 @@ const CircleWrapper = styled.circle`
 
     ${props => props.isPath
         && css`
-            stroke-width: ${props.transparentRoute ? '2px' : '1px'};
+            stroke-width: ${props.strokeWidth}px;
             stroke-dasharray: 1, 200;
             stroke-dashoffset: 0;
             animation: ${DASH} 1.5s ease-in-out infinite,
@@ -56,6 +56,7 @@ const Loader = ({
     size = 100,
     animationColor,
     transparentRoute,
+    strokeWidth = 1,
 }) => (
     <Wrapper className={className} size={size}>
         <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>
@@ -72,6 +73,7 @@ const Loader = ({
                 strokeMiterlimit="10"
                 isRoute
                 transparentRoute={transparentRoute}
+                strokeWidth={strokeWidth}
             />
             <CircleWrapper
                 css={css`animation: ${DASH} 1.5s ease-in-out infinite;`}
@@ -83,6 +85,7 @@ const Loader = ({
                 strokeMiterlimit="10"
                 isPath
                 transparentRoute={transparentRoute}
+                strokeWidth={strokeWidth}
             />
         </SvgWrapper>
     </Wrapper>
@@ -96,6 +99,7 @@ Loader.propTypes = {
     animationColor: PropTypes.object,
     transparentRoute: PropTypes.bool,
     size: PropTypes.number,
+    strokeWidth: PropTypes.number,
 };
 
 export default Loader;

@@ -1,12 +1,13 @@
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import styled, { css } from 'styled-components';
+import Icon from 'components/Icon';
 
 import PropTypes from 'prop-types';
 import React from 'react';
 import colors from 'config/colors';
 
 const Wrapper = styled.button`
-    padding: ${props => (props.icon ? '4px 24px 4px 15px' : '11px 24px')};
+    padding: 11px 24px;
     border-radius: 3px;
     font-size: ${FONT_SIZE.BASE};
     font-weight: ${FONT_WEIGHT.LIGHT};
@@ -19,6 +20,48 @@ const Wrapper = styled.button`
         background: ${colors.GREEN_SECONDARY};
     }
 
+    ${props => props.isInverse
+        && css`
+            background: transparent;
+            color: ${colors.GREEN_PRIMARY};
+            border: 1px solid ${colors.GREEN_PRIMARY};
+            transition: ${TRANSITION.HOVER};
+
+            &:hover {
+                background: ${colors.GREEN_PRIMARY};
+                color: ${colors.WHITE};
+
+                &:before,
+                &:after {
+                    background: ${colors.WHITE};
+                }
+            }
+        `}
+
+    ${props => props.icon && css`
+        position: relative;
+        padding: 12px 24px 12px 40px;
+
+        svg {
+            position: absolute;
+            top: 50%;
+            margin-top: -12px;
+            left: 12px;
+
+            path {
+                transition: ${TRANSITION.HOVER};   
+            }
+        }
+
+        &:hover {
+            svg {
+                path {
+                    fill: ${colors.WHITE};
+                }
+            }
+        }
+        `}
+
     &:active {
         background: ${colors.GREEN_TERTIARY};
     }
@@ -26,8 +69,17 @@ const Wrapper = styled.button`
     ${props => props.isDisabled
         && css`
             pointer-events: none;
-            color: ${colors.TEXT_SECONDARY};
-            background: ${colors.GRAY_LIGHT};
+            ${props.isInverse
+                && css`
+                color: ${colors.TEXT_SECONDARY}
+                background: ${colors.GRAY_LIGHT}
+            `};
+
+            svg {
+                path {
+                    fill: ${colors.TEXT_SECONDARY};
+                }
+            }
         `}
 
     ${props => props.isWhite
@@ -39,6 +91,18 @@ const Wrapper = styled.button`
             &:hover {
                 color: ${colors.TEXT_PRIMARY};
                 background: ${colors.DIVIDER};
+
+                svg {
+                    path {
+                        fill: ${colors.TEXT_PRIMARY};
+                    }
+                }
+            }
+
+            svg {
+                path {
+                    fill: ${colors.TEXT_SECONDARY};
+                }
             }
 
             &:active {
@@ -57,6 +121,18 @@ const Wrapper = styled.button`
             &:active {
                 color: ${colors.TEXT_PRIMARY};
                 background: transparent;
+
+                svg {
+                    path {
+                        fill: ${colors.TEXT_PRIMARY};
+                    }
+                }
+            }
+
+            svg {
+                path {
+                    fill: ${colors.TEXT_SECONDARY};
+                }
             }
         `}
 `;
@@ -71,6 +147,8 @@ const Button = ({
     isDisabled = false,
     isWhite = false,
     isTransparent = false,
+    isInverse = false,
+    icon = null,
 }) => (
     <Wrapper
         className={className}
@@ -81,7 +159,10 @@ const Button = ({
         isDisabled={isDisabled}
         isWhite={isWhite}
         isTransparent={isTransparent}
+        isInverse={isInverse}
+        icon={icon}
     >
+        {icon && <Icon icon={icon} size={24} color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE} />}
         {children}
     </Wrapper>
 );
@@ -96,6 +177,8 @@ Button.propTypes = {
     isDisabled: PropTypes.bool,
     isWhite: PropTypes.bool,
     isTransparent: PropTypes.bool,
+    isInverse: PropTypes.bool,
+    icon: PropTypes.array,
 };
 
 export default Button;

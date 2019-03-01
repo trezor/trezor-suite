@@ -1,4 +1,4 @@
-import { FONT_SIZE, TRANSITION } from 'config/variables';
+import { TRANSITION } from 'config/variables';
 import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -10,7 +10,6 @@ const A = styled.a`
     text-decoration: none;
     cursor: pointer;
     transition: ${TRANSITION.HOVER};
-    font-size: ${FONT_SIZE.SMALL};
 
     ${props => props.isGreen
         && css`

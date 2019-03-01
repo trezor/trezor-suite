@@ -6,7 +6,6 @@ import variables from './config/variables';
 import Button from './components/buttons/Button';
 import ButtonNotification from './components/buttons/Notification';
 import ButtonPin from './components/buttons/Pin';
-import ButtonWebUSB from './components/buttons/WebUsb';
 
 import Input from './components/inputs/Input';
 import InputPin from './components/inputs/Pin';
@@ -19,6 +18,8 @@ import {
     H2,
     H3,
     H4,
+    H5,
+    H6,
 } from './components/Heading';
 import Link from './components/Link';
 import P from './components/Paragraph';
@@ -39,7 +40,6 @@ module.exports = {
     Button,
     ButtonNotification,
     ButtonPin,
-    ButtonWebUSB,
 
     Input,
     InputPin,
@@ -52,6 +52,8 @@ module.exports = {
     H2,
     H3,
     H4,
+    H5,
+    H6,
     Link,
     P,
     Tooltip,
