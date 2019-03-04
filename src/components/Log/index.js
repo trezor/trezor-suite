@@ -21,7 +21,8 @@ import l10nMessages from './index.messages';
 type Props = {
     log: $ElementType<State, 'log'>,
     toggle: typeof LogActions.toggle,
-    copyToClipboard: typeof LogActions.copyToClipboard
+    copyToClipboard: typeof LogActions.copyToClipboard,
+    resetCopyState: typeof LogActions.resetCopyState,
 }
 
 const Wrapper = styled.div`
@@ -98,6 +99,7 @@ const Log = (props: Props): ?React$Element<string> => {
                     maxWidth={285}
                     placement="top"
                     content={<FormattedMessage {...l10nMessages.TR_COPIED} />}
+                    afterVisibleChange={props.resetCopyState}
                 >
 
                     {copyBtn}
@@ -117,5 +119,6 @@ export default connect(
     (dispatch: Dispatch) => ({
         toggle: bindActionCreators(LogActions.toggle, dispatch),
         copyToClipboard: bindActionCreators(LogActions.copyToClipboard, dispatch),
+        resetCopyState: bindActionCreators(LogActions.resetCopyState, dispatch),
     }),
 )(Log);

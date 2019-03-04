@@ -49,6 +49,12 @@ export default (state: State = initialState, action: Action): State => {
                 copied: true,
             };
 
+        case LOG.COPY_RESET:
+            return {
+                ...state,
+                copied: false,
+            };
+
         default:
             return state;
     }

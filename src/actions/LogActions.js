@@ -13,6 +13,8 @@ export type LogAction = {
 } | {
     type: typeof LOG.CLOSE,
 } | {
+    type: typeof LOG.COPY_RESET,
+} | {
     type: typeof LOG.COPY_SUCCESS,
 } | {
     type: typeof LOG.ADD,
@@ -55,3 +57,7 @@ export const copyToClipboard = (): ThunkAction => (dispatch: Dispatch, getState:
         console.error(err);
     }
 };
+
+export const resetCopyState = (): Action => ({
+    type: LOG.COPY_RESET,
+});

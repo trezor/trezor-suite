@@ -35,6 +35,7 @@ const Tooltip = ({
     children,
     enterDelayMs,
     defaultVisible = false,
+    ...rest
 }) => (
     <Wrapper className={className}>
         <RcTooltip
@@ -53,6 +54,7 @@ const Tooltip = ({
                     }
                 </ContentWrapper>
             )}
+            {...rest}
         >
             {children}
         </RcTooltip>
