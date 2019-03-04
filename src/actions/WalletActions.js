@@ -85,7 +85,7 @@ export const toggleSidebar = (): WalletAction => ({
 });
 
 export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch): void => {
-    fetch(`/l10n/${locale}.json`)
+    fetch(`./l10n/${locale}.json`)
         .then(response => response.json())
         .then(messages => {
             dispatch({
