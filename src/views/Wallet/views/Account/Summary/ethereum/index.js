@@ -56,7 +56,7 @@ const AccountTitle = styled.div`
 const StyledIcon = styled(Icon)`
     position: relative;
     top: -7px;
-    
+
     &:hover {
         cursor: pointer;
     }
@@ -70,13 +70,7 @@ const AddedTokensWrapper = styled.div``;
 
 const AccountSummary = (props: Props) => {
     const device = props.wallet.selectedDevice;
-    const {
-        account,
-        network,
-        tokens,
-        pending,
-        shouldRender,
-    } = props.selectedAccount;
+    const { account, network, tokens, pending, shouldRender } = props.selectedAccount;
 
     if (!device || !account || !network || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
@@ -101,14 +95,12 @@ const AccountSummary = (props: Props) => {
                         </AccountTitle>
                     </AccountName>
                     <Link href={explorerLink} isGray>
-                        <FormattedMessage {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
+                        <FormattedMessage
+                            {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY}
+                        />
                     </Link>
                 </AccountHeading>
-                <AccountBalance
-                    network={network}
-                    balance={balance}
-                    fiat={props.fiat}
-                />
+                <AccountBalance network={network} balance={balance} fiat={props.fiat} />
                 <H2Wrapper>
                     <H2>
                         <FormattedMessage {...l10nSummaryMessages.TR_TOKENS} />
@@ -118,11 +110,7 @@ const AccountSummary = (props: Props) => {
                         placement="top"
                         content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
                     >
-                        <StyledIcon
-                            icon={ICONS.HELP}
-                            color={colors.TEXT_SECONDARY}
-                            size={24}
-                        />
+                        <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={24} />
                     </StyledTooltip>
                 </H2Wrapper>
                 <AsyncSelectWrapper>
@@ -131,10 +119,16 @@ const AccountSummary = (props: Props) => {
                         defaultOptions
                         value={null}
                         isMulti={false}
-                        placeholder={props.intl.formatMessage(l10nSummaryMessages.TR_TYPE_IN_A_TOKEN_NAME)}
-                        loadingMessage={() => props.intl.formatMessage(l10nCommonMessages.TR_LOADING_DOT_DOT_DOT)}
-                        noOptionsMessage={() => props.intl.formatMessage(l10nSummaryMessages.TR_TOKEN_NOT_FOUND)}
-                        onChange={(token) => {
+                        placeholder={props.intl.formatMessage(
+                            l10nSummaryMessages.TR_TYPE_IN_A_TOKEN_NAME
+                        )}
+                        loadingMessage={() =>
+                            props.intl.formatMessage(l10nCommonMessages.TR_LOADING_DOT_DOT_DOT)
+                        }
+                        noOptionsMessage={() =>
+                            props.intl.formatMessage(l10nSummaryMessages.TR_TOKEN_NOT_FOUND)
+                        }
+                        onChange={token => {
                             if (token.name) {
                                 const isAdded = tokens.find(t => t.symbol === token.symbol);
                                 if (!isAdded) {
@@ -143,10 +137,12 @@ const AccountSummary = (props: Props) => {
                             }
                         }}
                         loadOptions={input => props.loadTokens(input, account.network)}
-                        formatOptionLabel={(option) => {
+                        formatOptionLabel={option => {
                             const isAdded = tokens.find(t => t.symbol === option.symbol);
                             if (isAdded) {
-                                return `${option.name} (${props.intl.formatMessage(l10nSummaryMessages.TR_ALREADY_USED)})`;
+                                return `${option.name} (${props.intl.formatMessage(
+                                    l10nSummaryMessages.TR_ALREADY_USED
+                                )})`;
                             }
                             return option.name;
                         }}
@@ -155,7 +151,7 @@ const AccountSummary = (props: Props) => {
                     />
                 </AsyncSelectWrapper>
                 <AddedTokensWrapper>
-                    { tokens.length < 1 && (<AddTokenMessage />) }
+                    {tokens.length < 1 && <AddTokenMessage />}
                     {tokens.map(token => (
                         <AddedToken
                             key={token.symbol}

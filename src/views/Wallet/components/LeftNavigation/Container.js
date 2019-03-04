@@ -15,11 +15,11 @@ import type { StateProps, DispatchProps } from './components/common';
 
 import LeftNavigation from './index';
 
-type OwnProps = {
+type OwnProps = {};
 
-}
-
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     connect: state.connect,
     accounts: state.accounts,
     router: state.router,
@@ -31,7 +31,9 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     pending: state.pending,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
+    dispatch: Dispatch
+): DispatchProps => ({
     toggleDeviceDropdown: bindActionCreators(toggleDeviceDropdown, dispatch),
     addAccount: bindActionCreators(DiscoveryActions.addAccount, dispatch),
     acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
@@ -43,5 +45,8 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
 });
 
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(LeftNavigation),
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(LeftNavigation)
 );

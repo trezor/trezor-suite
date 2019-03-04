@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import { LOCATION_CHANGE } from 'connected-react-router';
 import { DEVICE, TRANSPORT } from 'trezor-connect';
 import * as MODAL from 'actions/constants/modal';
@@ -11,19 +10,19 @@ import * as ACCOUNT from 'actions/constants/account';
 import type { Action, RouterLocationState, TrezorDevice } from 'flowtype';
 
 type State = {
-    ready: boolean;
-    online: boolean;
-    language: string;
-    messages: { [string]: string };
-    dropdownOpened: boolean;
-    showBetaDisclaimer: boolean;
-    showSidebar: ?boolean;
-    initialParams: ?RouterLocationState;
-    initialPathname: ?string;
-    firstLocationChange: boolean;
-    disconnectRequest: ?TrezorDevice;
-    selectedDevice: ?TrezorDevice;
-}
+    ready: boolean,
+    online: boolean,
+    language: string,
+    messages: { [string]: string },
+    dropdownOpened: boolean,
+    showBetaDisclaimer: boolean,
+    showSidebar: ?boolean,
+    initialParams: ?RouterLocationState,
+    initialPathname: ?string,
+    firstLocationChange: boolean,
+    disconnectRequest: ?TrezorDevice,
+    selectedDevice: ?TrezorDevice,
+};
 
 const initialState: State = {
     ready: false,

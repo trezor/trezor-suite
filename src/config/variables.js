@@ -49,7 +49,8 @@ export const FONT_WEIGHT = {
 };
 
 export const FONT_FAMILY = {
-    DEFAULT: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
+    DEFAULT:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
     MONOSPACE: '"Roboto Mono", Menlo, Monaco, Consolas, "Courier New", monospace',
 };
 
@@ -70,7 +71,9 @@ const TRANSITION_TIME = {
 };
 
 export const TRANSITION = {
-    HOVER: `background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${TRANSITION_TIME.BASE} ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out`,
+    HOVER: `background-color ${TRANSITION_TIME.BASE} ease-in-out, color ${
+        TRANSITION_TIME.BASE
+    } ease-in-out, border-color ${TRANSITION_TIME.BASE} ease-in-out`,
 };
 
 export const LINE_HEIGHT = {

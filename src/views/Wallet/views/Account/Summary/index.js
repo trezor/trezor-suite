@@ -8,12 +8,15 @@ import RippleTypeSummary from './ripple/Container';
 
 type WrapperProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-}
+};
 
 // return container for requested network type
-export default connect((state: State): WrapperProps => ({
-    selectedAccount: state.selectedAccount,
-}), null)((props) => {
+export default connect(
+    (state: State): WrapperProps => ({
+        selectedAccount: state.selectedAccount,
+    }),
+    null
+)(props => {
     const { network } = props.selectedAccount;
     if (!network) return null;
 

@@ -14,7 +14,7 @@ const definedMessages: Messages = defineMessages({
     TR_TO_LABEL: {
         id: 'TR_TO_LABEL',
         defaultMessage: 'To',
-        description: 'Label for recepeint\'s address',
+        description: "Label for recepeint's address",
     },
     TR_SEND_LABEL: {
         id: 'TR_SEND_LABEL',

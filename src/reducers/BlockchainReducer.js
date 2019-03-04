@@ -28,20 +28,24 @@ const onStartSubscribe = (state: State, shortcut: string): State => {
     const network = state.find(b => b.shortcut === shortcut);
     if (network) {
         const others = state.filter(b => b !== network);
-        return others.concat([{
-            ...network,
-            connecting: true,
-        }]);
+        return others.concat([
+            {
+                ...network,
+                connecting: true,
+            },
+        ]);
     }
 
-    return state.concat([{
-        shortcut,
-        connected: false,
-        connecting: true,
-        block: 0,
-        feeTimestamp: 0,
-        feeLevels: [],
-    }]);
+    return state.concat([
+        {
+            shortcut,
+            connected: false,
+            connecting: true,
+            block: 0,
+            feeTimestamp: 0,
+            feeLevels: [],
+        },
+    ]);
 };
 
 const onConnect = (state: State, action: BlockchainConnect): State => {
@@ -50,22 +54,26 @@ const onConnect = (state: State, action: BlockchainConnect): State => {
     const { info } = action.payload;
     if (network) {
         const others = state.filter(b => b !== network);
-        return others.concat([{
-            ...network,
-            block: info.block,
-            connected: true,
-            connecting: false,
-        }]);
+        return others.concat([
+            {
+                ...network,
+                block: info.block,
+                connected: true,
+                connecting: false,
+            },
+        ]);
     }
 
-    return state.concat([{
-        shortcut,
-        connected: true,
-        connecting: false,
-        block: info.block,
-        feeTimestamp: 0,
-        feeLevels: [],
-    }]);
+    return state.concat([
+        {
+            shortcut,
+            connected: true,
+            connecting: false,
+            block: info.block,
+            feeTimestamp: 0,
+            feeLevels: [],
+        },
+    ]);
 };
 
 const onError = (state: State, action: BlockchainError): State => {
@@ -73,21 +81,25 @@ const onError = (state: State, action: BlockchainError): State => {
     const network = state.find(b => b.shortcut === shortcut);
     if (network) {
         const others = state.filter(b => b !== network);
-        return others.concat([{
-            ...network,
-            connected: false,
-            connecting: false,
-        }]);
+        return others.concat([
+            {
+                ...network,
+                connected: false,
+                connecting: false,
+            },
+        ]);
     }
 
-    return state.concat([{
-        shortcut,
-        connected: false,
-        connecting: false,
-        block: 0,
-        feeTimestamp: 0,
-        feeLevels: [],
-    }]);
+    return state.concat([
+        {
+            shortcut,
+            connected: false,
+            connecting: false,
+            block: 0,
+            feeTimestamp: 0,
+            feeLevels: [],
+        },
+    ]);
 };
 
 const onBlock = (state: State, action: BlockchainBlock): State => {
@@ -95,10 +107,12 @@ const onBlock = (state: State, action: BlockchainBlock): State => {
     const network = state.find(b => b.shortcut === shortcut);
     if (network) {
         const others = state.filter(b => b !== network);
-        return others.concat([{
-            ...network,
-            block: action.payload.block,
-        }]);
+        return others.concat([
+            {
+                ...network,
+                block: action.payload.block,
+            },
+        ]);
     }
 
     return state;
@@ -109,13 +123,14 @@ const updateFee = (state: State, shortcut: string, feeLevels: Array<BlockchainFe
     if (!network) return state;
 
     const others = state.filter(b => b !== network);
-    return others.concat([{
-        ...network,
-        feeTimestamp: new Date().getTime(),
-        feeLevels,
-    }]);
+    return others.concat([
+        {
+            ...network,
+            feeTimestamp: new Date().getTime(),
+            feeLevels,
+        },
+    ]);
 };
-
 
 export default (state: State = initialState, action: Action): State => {
     switch (action.type) {

@@ -22,8 +22,9 @@ const H2 = styled.h2`
     font-size: ${FONT_SIZE.H2};
     padding-bottom: 10px;
 
-    ${props => props.claim
-        && css`
+    ${props =>
+        props.claim &&
+        css`
             font-size: ${FONT_SIZE.HUGE};
             padding-bottom: 24px;
         `};
@@ -41,6 +42,4 @@ const H4 = styled.h4`
     padding-bottom: 10px;
 `;
 
-export {
-    H1, H2, H3, H4,
-};
+export { H1, H2, H3, H4 };

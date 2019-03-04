@@ -9,31 +9,40 @@ import type { State, Dispatch } from 'flowtype';
 import Receive from './index';
 
 type OwnProps = {
-    intl: any
-}
+    intl: any,
+};
 
 type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
     receive: $ElementType<State, 'receive'>,
     modal: $ElementType<State, 'modal'>,
     wallet: $ElementType<State, 'wallet'>,
-}
+};
 
 type DispatchProps = {
-    showAddress: typeof showAddress
+    showAddress: typeof showAddress,
 };
 
 export type Props = OwnProps & StateProps & DispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     selectedAccount: state.selectedAccount,
     receive: state.receive,
     modal: state.modal,
     wallet: state.wallet,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
+    dispatch: Dispatch
+): DispatchProps => ({
     showAddress: bindActionCreators(showAddress, dispatch),
 });
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Receive));
+export default injectIntl(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(Receive)
+);

@@ -9,7 +9,10 @@ import {
     TREZOR_CONNECT_ROOT,
     TREZOR_CONNECT_HTML,
     TREZOR_CONNECT_FILES,
-    TREZOR_CONNECT, TREZOR_IFRAME, TREZOR_POPUP, TREZOR_WEBUSB,
+    TREZOR_CONNECT,
+    TREZOR_IFRAME,
+    TREZOR_POPUP,
+    TREZOR_WEBUSB,
     SRC,
     BUILD,
     PUBLIC,
@@ -37,10 +40,7 @@ module.exports = {
         globalObject: 'this', // fix for HMR inside WebWorker from 'hd-wallet'
     },
     devServer: {
-        contentBase: [
-            SRC,
-            PUBLIC,
-        ],
+        contentBase: [SRC, PUBLIC],
         hot: true,
         https: false,
         port: PORT,
@@ -102,10 +102,7 @@ module.exports = {
         ],
     },
     resolve: {
-        modules: [
-            SRC,
-            'node_modules',
-            `${TREZOR_CONNECT_ROOT}/node_modules`],
+        modules: [SRC, 'node_modules', `${TREZOR_CONNECT_ROOT}/node_modules`],
         alias: {
             public: PUBLIC,
             'trezor-connect': `${TREZOR_CONNECT}`,
@@ -152,9 +149,7 @@ module.exports = {
         //     inject: true
         // }),
 
-        new CopyWebpackPlugin([
-            { from: TREZOR_CONNECT_FILES, to: 'data' },
-        ]),
+        new CopyWebpackPlugin([{ from: TREZOR_CONNECT_FILES, to: 'data' }]),
         new BundleAnalyzerPlugin({
             openAnalyzer: false,
             analyzerMode: false, // turn on to generate bundle pass 'static'

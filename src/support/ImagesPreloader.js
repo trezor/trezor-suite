@@ -16,7 +16,9 @@ class ImagesPreloader extends Component {
         const images = this.importAll(require.context('../images', false, /\.(png|jpe?g)$/));
         return (
             <Wrapper>
-                {images.map(image => <Img key={image} src={image} />)}
+                {images.map(image => (
+                    <Img key={image} src={image} />
+                ))}
             </Wrapper>
         );
     }

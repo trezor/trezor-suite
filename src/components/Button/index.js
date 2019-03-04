@@ -17,8 +17,8 @@ type Props = {
     isWhite?: boolean,
     isWebUsb?: boolean,
     isTransparent?: boolean,
-    dataTest?: string
-}
+    dataTest?: string,
+};
 
 const Wrapper = styled.button`
     padding: ${props => (props.icon ? '4px 24px 4px 15px' : '11px 24px')};
@@ -43,97 +43,105 @@ const Wrapper = styled.button`
         box-shadow: 0 0px 6px 0 ${colors.INPUT_FOCUSED_SHADOW};
     }
 
-    ${props => props.isDisabled && css`
-        pointer-events: none;
-        color: ${colors.TEXT_SECONDARY};
-        background: ${colors.GRAY_LIGHT};
-    `}
+    ${props =>
+        props.isDisabled &&
+        css`
+            pointer-events: none;
+            color: ${colors.TEXT_SECONDARY};
+            background: ${colors.GRAY_LIGHT};
+        `}
 
-    ${props => props.isWhite && css`
-        background: ${colors.WHITE};
-        color: ${colors.TEXT_SECONDARY};
-        border: 1px solid ${colors.DIVIDER};
+    ${props =>
+        props.isWhite &&
+        css`
+            background: ${colors.WHITE};
+            color: ${colors.TEXT_SECONDARY};
+            border: 1px solid ${colors.DIVIDER};
 
-        &:focus {
-            border-color: ${colors.INPUT_FOCUSED_BORDER};
-        }
+            &:focus {
+                border-color: ${colors.INPUT_FOCUSED_BORDER};
+            }
 
-        &:hover {
-            color: ${colors.TEXT_PRIMARY};
-            background: ${colors.DIVIDER};
-        }
+            &:hover {
+                color: ${colors.TEXT_PRIMARY};
+                background: ${colors.DIVIDER};
+            }
 
-        &:active {
-            color: ${colors.TEXT_PRIMARY};
-            background: ${colors.DIVIDER};
-        }
-    `}
+            &:active {
+                color: ${colors.TEXT_PRIMARY};
+                background: ${colors.DIVIDER};
+            }
+        `}
 
-    ${props => props.isTransparent && css`
-        background: transparent;
-        border: 0px;
-        color: ${colors.TEXT_SECONDARY};
-
-        &:focus {
-            color: ${colors.TEXT_PRIMARY};
-            box-shadow: none;
-        }
-
-        &:hover,
-        &:active {
-            color: ${colors.TEXT_PRIMARY};
+    ${props =>
+        props.isTransparent &&
+        css`
             background: transparent;
-        }
-    `}
+            border: 0px;
+            color: ${colors.TEXT_SECONDARY};
 
-    ${props => props.isWebUsb && css`
-        position: relative;
-        padding: 12px 24px 12px 40px;
-        background: transparent;
-        color: ${colors.GREEN_PRIMARY};
-        border: 1px solid ${colors.GREEN_PRIMARY};
-        transition: ${TRANSITION.HOVER};
+            &:focus {
+                color: ${colors.TEXT_PRIMARY};
+                box-shadow: none;
+            }
 
-        &:before,
-        &:after {
-            content: '';
-            position: absolute;
-            background: ${colors.GREEN_PRIMARY};
-            top: 0;
-            bottom: 0;
-            margin: auto;
+            &:hover,
+            &:active {
+                color: ${colors.TEXT_PRIMARY};
+                background: transparent;
+            }
+        `}
+
+    ${props =>
+        props.isWebUsb &&
+        css`
+            position: relative;
+            padding: 12px 24px 12px 40px;
+            background: transparent;
+            color: ${colors.GREEN_PRIMARY};
+            border: 1px solid ${colors.GREEN_PRIMARY};
             transition: ${TRANSITION.HOVER};
-        }
-
-        &:before {
-            width: 12px;
-            height: 2px;
-            left: 18px;
-        }
-
-    &:after {
-            width: 2px;
-            height: 12px;
-            left: 23px;
-        }
-
-        &:hover {
-            background: ${colors.GREEN_PRIMARY};
-            color: ${colors.WHITE};
 
             &:before,
             &:after {
-                background: ${colors.WHITE};
+                content: '';
+                position: absolute;
+                background: ${colors.GREEN_PRIMARY};
+                top: 0;
+                bottom: 0;
+                margin: auto;
+                transition: ${TRANSITION.HOVER};
             }
-        }
 
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-    `}
+            &:before {
+                width: 12px;
+                height: 2px;
+                left: 18px;
+            }
+
+            &:after {
+                width: 2px;
+                height: 12px;
+                left: 23px;
+            }
+
+            &:hover {
+                background: ${colors.GREEN_PRIMARY};
+                color: ${colors.WHITE};
+
+                &:before,
+                &:after {
+                    background: ${colors.WHITE};
+                }
+            }
+
+            iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+            }
+        `}
 `;
 
 const Button = ({

@@ -45,18 +45,23 @@ const reducers = {
     devices,
     blockchain,
     signVerify,
-    router: () => ({
-        location: {
-            pathname: '', hash: '', search: '', state: {},
-        },
-    }: State),
+    router: () =>
+        ({
+            location: {
+                pathname: '',
+                hash: '',
+                search: '',
+                state: {},
+            },
+        }: State),
 };
 
 export type Reducers = typeof reducers;
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;
 export type ReducersState = $ObjMap<Reducers, $ExtractFunctionReturn>;
 
-export default (history: any) => combineReducers({
-    ...reducers,
-    router: connectRouter(history),
-});
+export default (history: any) =>
+    combineReducers({
+        ...reducers,
+        router: connectRouter(history),
+    });

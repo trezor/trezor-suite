@@ -23,11 +23,7 @@ const Wrapper = styled.div`
 const Import = () => (
     <LandingWrapper>
         <Wrapper>
-            <Icon
-                size={60}
-                color={colors.WARNING_PRIMARY}
-                icon={icons.WARNING}
-            />
+            <Icon size={60} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
             <H2>Import tool is under construction</H2>
             <Link to="/">
                 <Button>Take me back</Button>

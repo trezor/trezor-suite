@@ -1,8 +1,6 @@
 /* @flow */
 
-import {
-    TRANSPORT, DEVICE, BLOCKCHAIN,
-} from 'trezor-connect';
+import { TRANSPORT, DEVICE, BLOCKCHAIN } from 'trezor-connect';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as BlockchainActions from 'actions/BlockchainActions';
 import * as RouterActions from 'actions/RouterActions';
@@ -11,15 +9,11 @@ import * as STORAGE from 'actions/constants/localStorage';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import { READY as BLOCKCHAIN_READY } from 'actions/constants/blockchain';
 
-import type {
-    Middleware,
-    MiddlewareAPI,
-    MiddlewareDispatch,
-    State,
-    Action,
-} from 'flowtype';
+import type { Middleware, MiddlewareAPI, MiddlewareDispatch, State, Action } from 'flowtype';
 
-const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
+const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (
+    action: Action
+): Action => {
     // const prevState: $ElementType<State, 'connect'> = api.getState().connect;
     const prevModalState: $ElementType<State, 'modal'> = api.getState().modal;
     // const prevRouterState: $ElementType<State, 'router'> = api.getState().router;

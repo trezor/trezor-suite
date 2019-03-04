@@ -25,7 +25,8 @@ const definedMessages: Messages = defineMessages({
     },
     TR_PASSPHRASE_IS_OPTIONAL_FEATURE: {
         id: 'TR_PASSPHRASE_IS_OPTIONAL_FEATURE',
-        defaultMessage: 'Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet.',
+        defaultMessage:
+            'Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet.',
     },
     TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK: {
         id: 'TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK',

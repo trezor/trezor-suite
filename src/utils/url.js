@@ -18,7 +18,4 @@ const getOldWalletReleaseUrl = (device: ?TrezorDevice): string => {
     return `${url}?fw=${version}`;
 };
 
-export {
-    getOldWalletUrl,
-    getOldWalletReleaseUrl,
-};
+export { getOldWalletUrl, getOldWalletReleaseUrl };

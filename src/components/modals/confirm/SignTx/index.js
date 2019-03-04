@@ -15,11 +15,10 @@ import { FormattedMessage } from 'react-intl';
 import type { TrezorDevice, State } from 'flowtype';
 import l10nMessages from './index.messages';
 
-
 type Props = {
-    device: TrezorDevice;
-    sendForm: $ElementType<State, 'sendFormEthereum'> | $ElementType<State, 'sendFormRipple'>;
-}
+    device: TrezorDevice,
+    sendForm: $ElementType<State, 'sendFormEthereum'> | $ElementType<State, 'sendFormRipple'>,
+};
 
 const Wrapper = styled.div`
     max-width: 390px;
@@ -62,20 +61,22 @@ const FeeLevelName = styled(StyledP)`
 `;
 
 const ConfirmSignTx = (props: Props) => {
-    const {
-        amount,
-        address,
-        selectedFeeLevel,
-    } = props.sendForm;
+    const { amount, address, selectedFeeLevel } = props.sendForm;
 
-    const currency: string = typeof props.sendForm.currency === 'string' ? props.sendForm.currency : props.sendForm.networkSymbol;
+    const currency: string =
+        typeof props.sendForm.currency === 'string'
+            ? props.sendForm.currency
+            : props.sendForm.networkSymbol;
 
     return (
         <Wrapper>
             <Header>
                 <DeviceIcon device={props.device} size={60} color={colors.TEXT_SECONDARY} />
                 <H3>
-                    <FormattedMessage {...l10nMessages.TR_CONFIRM_TRANSACTION_ON} values={{ deviceLabel: props.device.label }} />
+                    <FormattedMessage
+                        {...l10nMessages.TR_CONFIRM_TRANSACTION_ON}
+                        values={{ deviceLabel: props.device.label }}
+                    />
                 </H3>
                 <P isSmaller>
                     <FormattedMessage {...l10nMessages.TR_DETAILS_ARE_SHOWN_ON} />
@@ -85,16 +86,16 @@ const ConfirmSignTx = (props: Props) => {
                 <Label>
                     <FormattedMessage {...l10nMessages.TR_SEND_LABEL} />
                 </Label>
-                <StyledP>{`${amount} ${currency}` }</StyledP>
+                <StyledP>{`${amount} ${currency}`}</StyledP>
                 <Label>
                     <FormattedMessage {...l10nMessages.TR_TO_LABEL} />
                 </Label>
-                <Address>{ address }</Address>
+                <Address>{address}</Address>
                 <Label>
                     <FormattedMessage {...l10nMessages.TR_FEE_LABEL} />
                 </Label>
                 <FeeLevelName>{selectedFeeLevel.value}</FeeLevelName>
-                <StyledP>{ selectedFeeLevel.label }</StyledP>
+                <StyledP>{selectedFeeLevel.label}</StyledP>
             </Content>
         </Wrapper>
     );

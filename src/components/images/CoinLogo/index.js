@@ -42,11 +42,7 @@ class CoinLogo extends PureComponent {
             return logo;
         }
 
-        return (
-            <Wrapper className={className}>
-                {logo}
-            </Wrapper>
-        );
+        return <Wrapper className={className}>{logo}</Wrapper>;
     }
 }
 

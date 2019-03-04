@@ -2,19 +2,20 @@
 
 import * as LOG from 'actions/constants/log';
 
-import type {
-    Action, ThunkAction, GetState, Dispatch,
-} from 'flowtype';
+import type { Action, ThunkAction, GetState, Dispatch } from 'flowtype';
 import type { LogEntry } from 'reducers/LogReducer';
 
-export type LogAction = {
-    type: typeof LOG.OPEN,
-} | {
-    type: typeof LOG.CLOSE,
-} | {
-    type: typeof LOG.ADD,
-    payload: LogEntry
-};
+export type LogAction =
+    | {
+          type: typeof LOG.OPEN,
+      }
+    | {
+          type: typeof LOG.CLOSE,
+      }
+    | {
+          type: typeof LOG.ADD,
+          payload: LogEntry,
+      };
 
 export const toggle = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     if (!getState().log.opened) {

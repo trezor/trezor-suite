@@ -2,12 +2,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import {
-    getStatusColor,
-    getStatusName,
-    getStatus,
-    getVersion,
-} from 'utils/device';
+import { getStatusColor, getStatusName, getStatus, getVersion } from 'utils/device';
 import TrezorImage from 'components/images/TrezorImage';
 import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
@@ -27,19 +22,26 @@ const Wrapper = styled.div`
     border-radius: 4px 0 0 0;
     box-shadow: ${props => (props.disabled ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.04)')};
 
-    ${props => (props.isOpen || !props.isSelected) && css`
-        box-shadow: none;
-    `}
+    ${props =>
+        (props.isOpen || !props.isSelected) &&
+        css`
+            box-shadow: none;
+        `}
 
-    ${props => props.disabled && css`
-        cursor: default;
-    `}
+    ${props =>
+        props.disabled &&
+        css`
+            cursor: default;
+        `}
 
-    ${props => props.isHoverable && !props.disabled && css`
-        &:hover {
-            background: ${colors.GRAY_LIGHT};
-        }
-    `}
+    ${props =>
+        props.isHoverable &&
+        !props.disabled &&
+        css`
+            &:hover {
+                background: ${colors.GRAY_LIGHT};
+            }
+        `}
 `;
 
 const LabelWrapper = styled.div`
@@ -88,7 +90,6 @@ const Dot = styled.div`
     height: 10px;
 `;
 
-
 const DeviceHeader = ({
     isOpen,
     icon,
@@ -120,9 +121,7 @@ const DeviceHeader = ({
                 <Name>{device.instanceLabel}</Name>
                 <Status title={getStatusName(status)}>{getStatusName(status)}</Status>
             </LabelWrapper>
-            <IconWrapper>
-                {icon && !disabled && isAccessible && icon}
-            </IconWrapper>
+            <IconWrapper>{icon && !disabled && isAccessible && icon}</IconWrapper>
         </Wrapper>
     );
 };

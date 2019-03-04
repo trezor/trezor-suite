@@ -9,8 +9,8 @@ import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import icons from 'config/icons';
 
 type Props = {
-    value: string;
-    onDeleteClick: () => void;
+    value: string,
+    onDeleteClick: () => void,
 };
 
 const Wrapper = styled.div`
@@ -37,13 +37,7 @@ const StyledIcon = styled(Icon)`
 
 const Input = ({ value, onDeleteClick }: Props) => (
     <Wrapper>
-        <StyledInput
-            disabled
-            type="password"
-            maxLength="9"
-            autoComplete="off"
-            value={value}
-        />
+        <StyledInput disabled type="password" maxLength="9" autoComplete="off" value={value} />
         <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon={icons.BACK} />
     </Wrapper>
 );

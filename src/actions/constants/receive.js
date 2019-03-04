@@ -1,6 +1,5 @@
 /* @flow */
 
-
 export const INIT: 'receive__init' = 'receive__init';
 export const DISPOSE: 'receive__dispose' = 'receive__dispose';
 export const REQUEST_UNVERIFIED: 'receive__request_unverified' = 'receive__request_unverified';

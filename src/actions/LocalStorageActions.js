@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as ACCOUNT from 'actions/constants/account';
 import * as TOKEN from 'actions/constants/token';
@@ -32,18 +31,21 @@ import type { Config, Network, TokensCollection } from 'reducers/LocalStorageRed
 import Erc20AbiJSON from 'public/data/ERC20Abi.json';
 import AppConfigJSON from 'public/data/appConfig.json';
 
-export type StorageAction = {
-    type: typeof STORAGE.READY,
-    config: Config,
-    tokens: TokensCollection,
-    ERC20Abi: Array<TokensCollection>
-} | {
-    type: typeof STORAGE.SAVE,
-    network: string,
-} | {
-    type: typeof STORAGE.ERROR,
-    error: string,
-};
+export type StorageAction =
+    | {
+          type: typeof STORAGE.READY,
+          config: Config,
+          tokens: TokensCollection,
+          ERC20Abi: Array<TokensCollection>,
+      }
+    | {
+          type: typeof STORAGE.SAVE,
+          network: string,
+      }
+    | {
+          type: typeof STORAGE.ERROR,
+          error: string,
+      };
 
 const TYPE: 'local' = 'local';
 const { STORAGE_PATH } = storageUtils;
@@ -60,16 +62,39 @@ const KEY_LANGUAGE: string = `${STORAGE_PATH}language`;
 // or
 // https://www.npmjs.com/package/redux-react-session
 
-const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): Array<Account> => devices.reduce((arr, dev) => arr.concat(accounts.filter(a => a.deviceState === dev.state)), []);
+const findAccounts = (devices: Array<TrezorDevice>, accounts: Array<Account>): Array<Account> =>
+    devices.reduce((arr, dev) => arr.concat(accounts.filter(a => a.deviceState === dev.state)), []);
 
-const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> => accounts.reduce((arr, account) => arr.concat(getAccountTokens(tokens, account)), []);
+const findTokens = (accounts: Array<Account>, tokens: Array<Token>): Array<Token> =>
+    accounts.reduce((arr, account) => arr.concat(getAccountTokens(tokens, account)), []);
 
-const findDiscovery = (devices: Array<TrezorDevice>, discovery: Array<Discovery>): Array<Discovery> => devices.reduce((arr, dev) => arr.concat(discovery.filter(d => d.deviceState === dev.state && d.completed)), []);
+const findDiscovery = (
+    devices: Array<TrezorDevice>,
+    discovery: Array<Discovery>
+): Array<Discovery> =>
+    devices.reduce(
+        (arr, dev) => arr.concat(discovery.filter(d => d.deviceState === dev.state && d.completed)),
+        []
+    );
 
-const findPendingTxs = (accounts: Array<Account>, pending: Array<Transaction>): Array<Transaction> => accounts.reduce((result, account) => result.concat(pending.filter(p => p.descriptor === account.descriptor && p.network === account.network)), []);
+const findPendingTxs = (
+    accounts: Array<Account>,
+    pending: Array<Transaction>
+): Array<Transaction> =>
+    accounts.reduce(
+        (result, account) =>
+            result.concat(
+                pending.filter(
+                    p => p.descriptor === account.descriptor && p.network === account.network
+                )
+            ),
+        []
+    );
 
 export const save = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const devices: Array<TrezorDevice> = getState().devices.filter(d => d.features && d.remember === true);
+    const devices: Array<TrezorDevice> = getState().devices.filter(
+        d => d.features && d.remember === true
+    );
     const accounts: Array<Account> = findAccounts(devices, getState().accounts);
     const tokens: Array<Token> = findTokens(accounts, getState().tokens);
     const pending: Array<Transaction> = findPendingTxs(accounts, getState().pending);
@@ -98,14 +123,12 @@ export const update = (event: StorageEvent): ThunkAction => (dispatch: Dispatch)
         // check if device was added/ removed
         // const newDevices: Array<TrezorDevice> = JSON.parse(event.newValue);
         // const myDevices: Array<TrezorDevice> = getState().connect.devices.filter(d => d.features);
-
         // if (newDevices.length !== myDevices.length) {
         //     const diff = myDevices.filter(d => newDevices.indexOf(d) < 0)
         //     console.warn("DEV LIST CHANGED!", newDevices.length, myDevices.length, diff)
         //     // check if difference is caused by local device which is not saved
         //     // or device which was saved in other tab
         // }
-
         // const diff = oldDevices.filter(d => newDevices.indexOf())
     }
 
@@ -151,19 +174,25 @@ const loadJSON = (): AsyncAction => async (dispatch: Dispatch): Promise<void> =>
 
         const ERC20Abi = await httpRequest(Erc20AbiJSON, 'json');
 
-        window.addEventListener('storage', (event) => {
+        window.addEventListener('storage', event => {
             dispatch(update(event));
         });
 
         // load tokens
-        const tokens = await config.networks.reduce(async (promise: Promise<TokensCollection>, network: Network): Promise<TokensCollection> => {
-            const collection: TokensCollection = await promise;
-            if (network.tokens) {
-                const json = await httpRequest(network.tokens, 'json');
-                collection[network.shortcut] = json;
-            }
-            return collection;
-        }, Promise.resolve({}));
+        const tokens = await config.networks.reduce(
+            async (
+                promise: Promise<TokensCollection>,
+                network: Network
+            ): Promise<TokensCollection> => {
+                const collection: TokensCollection = await promise;
+                if (network.tokens) {
+                    const json = await httpRequest(network.tokens, 'json');
+                    collection[network.shortcut] = json;
+                }
+                return collection;
+            },
+            Promise.resolve({})
+        );
 
         dispatch({
             type: STORAGE.READY,
@@ -230,7 +259,9 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
     }
 
     if (buildUtils.isDev() || buildUtils.isBeta()) {
-        const betaModal = Object.keys(window.localStorage).find(key => key.indexOf(KEY_BETA_MODAL) >= 0);
+        const betaModal = Object.keys(window.localStorage).find(
+            key => key.indexOf(KEY_BETA_MODAL) >= 0
+        );
         if (!betaModal) {
             dispatch({
                 type: WALLET.SHOW_BETA_DISCLAIMER,

@@ -19,10 +19,7 @@ export const history: History = createHistory({ queryKey: false });
 const initialState: any = {};
 const enhancers = [];
 
-const middlewares = [
-    thunk,
-    routerMiddleware(history),
-];
+const middlewares = [thunk, routerMiddleware(history)];
 
 // sentry io middleware only in dev and beta build
 if (buildUtils.isDev() || buildUtils.isBeta()) {
@@ -55,17 +52,13 @@ if (buildUtils.isDev()) {
 
     composedEnhancers = compose(
         applyMiddleware(logger, ...middlewares, ...services),
-        ...enhancers,
+        ...enhancers
     );
 } else {
     composedEnhancers = compose(
         applyMiddleware(...middlewares, ...services),
-        ...enhancers,
+        ...enhancers
     );
 }
 
-export default createStore(
-    createRootReducer(history),
-    initialState,
-    composedEnhancers,
-);
+export default createStore(createRootReducer(history), initialState, composedEnhancers);

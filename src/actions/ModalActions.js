@@ -6,25 +6,25 @@ import type { Device } from 'trezor-connect';
 import * as MODAL from 'actions/constants/modal';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 
-import type {
-    ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice,
-} from 'flowtype';
+import type { ThunkAction, AsyncAction, Action, GetState, Dispatch, TrezorDevice } from 'flowtype';
 import type { State } from 'reducers/ModalReducer';
 import type { parsedURI } from 'utils/cryptoUriParser';
 
 import sendEthereumFormActions from './ethereum/SendFormActions';
 import sendRippleFormActions from './ripple/SendFormActions';
 
-export type ModalAction = {
-    type: typeof MODAL.CLOSE
-} | {
-    type: typeof MODAL.OPEN_EXTERNAL_WALLET,
-    id: string,
-    url: string,
-} | {
-    type: typeof MODAL.OPEN_SCAN_QR,
-};
-
+export type ModalAction =
+    | {
+          type: typeof MODAL.CLOSE,
+      }
+    | {
+          type: typeof MODAL.OPEN_EXTERNAL_WALLET,
+          id: string,
+          url: string,
+      }
+    | {
+          type: typeof MODAL.OPEN_SCAN_QR,
+      };
 
 export const onPinSubmit = (value: string): Action => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: value });
@@ -33,7 +33,10 @@ export const onPinSubmit = (value: string): Action => {
     };
 };
 
-export const onPassphraseSubmit = (passphrase: string): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const onPassphraseSubmit = (passphrase: string): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     const { modal } = getState();
     if (modal.context !== MODAL.CONTEXT_DEVICE) return;
 
@@ -59,7 +62,9 @@ export const onPassphraseSubmit = (passphrase: string): AsyncAction => async (di
     });
 };
 
-export const onReceiveConfirmation = (confirmation: any): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
+export const onReceiveConfirmation = (confirmation: any): AsyncAction => async (
+    dispatch: Dispatch
+): Promise<void> => {
     await TrezorConnect.uiResponse({
         type: UI.RECEIVE_CONFIRMATION,
         payload: confirmation,
@@ -89,7 +94,9 @@ export const onCancel = (): Action => ({
     type: MODAL.CLOSE,
 });
 
-export const onDuplicateDevice = (device: TrezorDevice): ThunkAction => (dispatch: Dispatch): void => {
+export const onDuplicateDevice = (device: TrezorDevice): ThunkAction => (
+    dispatch: Dispatch
+): void => {
     dispatch(onCancel());
 
     dispatch({
@@ -98,11 +105,17 @@ export const onDuplicateDevice = (device: TrezorDevice): ThunkAction => (dispatc
     });
 };
 
-export const onRememberRequest = (prevState: State): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const onRememberRequest = (prevState: State): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const state: State = getState().modal;
     // handle case where forget modal is already opened
     // TODO: 2 modals at once (two devices disconnected in the same time)
-    if (prevState.context === MODAL.CONTEXT_DEVICE && prevState.windowType === CONNECT.REMEMBER_REQUEST) {
+    if (
+        prevState.context === MODAL.CONTEXT_DEVICE &&
+        prevState.windowType === CONNECT.REMEMBER_REQUEST
+    ) {
         // forget current (new)
         if (state.context === MODAL.CONTEXT_DEVICE) {
             dispatch({
@@ -119,12 +132,20 @@ export const onRememberRequest = (prevState: State): ThunkAction => (dispatch: D
     }
 };
 
-export const onDeviceConnect = (device: Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const onDeviceConnect = (device: Device): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     // interrupt process of remembering device (force forget)
     // TODO: the same for disconnect more than 1 device at once
     const { modal } = getState();
     if (modal.context === MODAL.CONTEXT_DEVICE && modal.windowType === CONNECT.REMEMBER_REQUEST) {
-        if (device.features && modal.device && modal.device.features && modal.device.features.device_id === device.features.device_id) {
+        if (
+            device.features &&
+            modal.device &&
+            modal.device.features &&
+            modal.device.features.device_id === device.features.device_id
+        ) {
             dispatch({
                 type: MODAL.CLOSE,
             });
@@ -137,7 +158,10 @@ export const onDeviceConnect = (device: Device): ThunkAction => (dispatch: Dispa
     }
 };
 
-export const onWalletTypeRequest = (hidden: boolean): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const onWalletTypeRequest = (hidden: boolean): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const { modal } = getState();
     if (modal.context !== MODAL.CONTEXT_DEVICE) return;
     dispatch({
@@ -150,7 +174,9 @@ export const onWalletTypeRequest = (hidden: boolean): ThunkAction => (dispatch: 
     });
 };
 
-export const gotoExternalWallet = (id: string, url: string): ThunkAction => (dispatch: Dispatch): void => {
+export const gotoExternalWallet = (id: string, url: string): ThunkAction => (
+    dispatch: Dispatch
+): void => {
     dispatch({
         type: MODAL.OPEN_EXTERNAL_WALLET,
         id,
@@ -164,7 +190,9 @@ export const openQrModal = (): ThunkAction => (dispatch: Dispatch): void => {
     });
 };
 
-export const onQrScan = (parsedUri: parsedURI, networkType: string): ThunkAction => (dispatch: Dispatch): void => {
+export const onQrScan = (parsedUri: parsedURI, networkType: string): ThunkAction => (
+    dispatch: Dispatch
+): void => {
     const { address = '', amount } = parsedUri;
     switch (networkType) {
         case 'ethereum':
@@ -179,7 +207,6 @@ export const onQrScan = (parsedUri: parsedURI, networkType: string): ThunkAction
             break;
     }
 };
-
 
 export default {
     onPinSubmit,

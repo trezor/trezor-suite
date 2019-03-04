@@ -27,8 +27,7 @@ const Header = styled(DeviceHeader)`
     flex: 0 0 auto;
 `;
 
-const WalletTypeIconWrapper = styled.div`
-`;
+const WalletTypeIconWrapper = styled.div``;
 
 const Counter = styled.div`
     display: flex;
@@ -92,9 +91,9 @@ const A = styled.a`
 `;
 
 type TransitionMenuProps = {
-    animationType: ?string;
-    children?: React.Node;
-}
+    animationType: ?string,
+    children?: React.Node,
+};
 
 // TransitionMenu needs to dispatch window.resize event
 // in order to StickyContainer be recalculated
@@ -102,7 +101,9 @@ const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGro
     <TransitionGroupWrapper component="div" className="transition-container">
         <CSSTransition
             key={props.animationType}
-            onExit={() => { window.dispatchEvent(new Event('resize')); }}
+            onExit={() => {
+                window.dispatchEvent(new Event('resize'));
+            }}
             onExited={() => window.dispatchEvent(new Event('resize'))}
             in
             out
@@ -110,38 +111,46 @@ const TransitionMenu = (props: TransitionMenuProps): React$Element<TransitionGro
             appear={false}
             timeout={300}
         >
-            <TransitionContentWrapper>
-                { props.children }
-            </TransitionContentWrapper>
+            <TransitionContentWrapper>{props.children}</TransitionContentWrapper>
         </CSSTransition>
     </TransitionGroupWrapper>
 );
 
-const WalletTooltipMsg = ({ walletType, isDeviceReady }: { walletType: string, isDeviceReady: ?boolean}): any => {
+const WalletTooltipMsg = ({
+    walletType,
+    isDeviceReady,
+}: {
+    walletType: string,
+    isDeviceReady: ?boolean,
+}): any => {
     let secondPart = '';
     if (isDeviceReady) {
-        secondPart = walletType === 'standard'
-            ? <FormattedMessage {...l10nMessages.TR_CLICK_HERE_TO_ACCESS_YOUR_HIDDEN} />
-            : <FormattedMessage {...l10nMessages.TR_CLICK_HERE_TO_ACCESS_YOUR_STANDARD} />;
+        secondPart =
+            walletType === 'standard' ? (
+                <FormattedMessage {...l10nMessages.TR_CLICK_HERE_TO_ACCESS_YOUR_HIDDEN} />
+            ) : (
+                <FormattedMessage {...l10nMessages.TR_CLICK_HERE_TO_ACCESS_YOUR_STANDARD} />
+            );
     } else {
         secondPart = <FormattedMessage {...l10nMessages.TR_TO_ACCESS_OTHER_WALLETS} />;
     }
     return (
         <>
-            {walletType === 'standard'
-                ? <FormattedMessage {...l10nMessages.TR_YOU_ARE_IN_YOUR_STANDARD_WALLET} />
-                : <FormattedMessage {...l10nMessages.TR_YOU_ARE_IN_YOUR_HIDDEN_WALLET} />}
-            {' '}{secondPart}
+            {walletType === 'standard' ? (
+                <FormattedMessage {...l10nMessages.TR_YOU_ARE_IN_YOUR_STANDARD_WALLET} />
+            ) : (
+                <FormattedMessage {...l10nMessages.TR_YOU_ARE_IN_YOUR_HIDDEN_WALLET} />
+            )}{' '}
+            {secondPart}
         </>
     );
 };
 
-
 type State = {
-    animationType: ?string;
-    clicked: boolean;
-    bodyMinHeight: number;
-}
+    animationType: ?string,
+    clicked: boolean,
+    bodyMinHeight: number,
+};
 
 class LeftNavigation extends React.PureComponent<Props, State> {
     constructor(props: Props) {
@@ -164,7 +173,8 @@ class LeftNavigation extends React.PureComponent<Props, State> {
         const { selectedDevice } = nextProps.wallet;
         const { location } = nextProps.router;
         const hasNetwork = location && location.state.network;
-        const deviceReady = selectedDevice && selectedDevice.features && selectedDevice.mode === 'normal';
+        const deviceReady =
+            selectedDevice && selectedDevice.features && selectedDevice.mode === 'normal';
 
         if (hasNetwork) {
             this.setState({
@@ -184,11 +194,13 @@ class LeftNavigation extends React.PureComponent<Props, State> {
     shouldRenderAccounts() {
         const { selectedDevice } = this.props.wallet;
         const { location } = this.props.router;
-        return selectedDevice
-            && location
-            && location.state
-            && location.state.network
-            && this.state.animationType === 'slide-left';
+        return (
+            selectedDevice &&
+            location &&
+            location.state &&
+            location.state.network &&
+            this.state.animationType === 'slide-left'
+        );
     }
 
     handleOpen() {
@@ -229,10 +241,14 @@ class LeftNavigation extends React.PureComponent<Props, State> {
 
         const { selectedDevice, dropdownOpened } = props.wallet;
         const isDeviceAccessible = deviceUtils.isDeviceAccessible(selectedDevice);
-        const walletType = selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard';
-        const showWalletType = selectedDevice && selectedDevice.features && selectedDevice.features.passphrase_protection;
-        const isDeviceReady = selectedDevice && selectedDevice.connected && selectedDevice.available;
-
+        const walletType =
+            selectedDevice && !selectedDevice.useEmptyPassphrase ? 'hidden' : 'standard';
+        const showWalletType =
+            selectedDevice &&
+            selectedDevice.features &&
+            selectedDevice.features.passphrase_protection;
+        const isDeviceReady =
+            selectedDevice && selectedDevice.connected && selectedDevice.available;
 
         return (
             <Sidebar isOpen={props.wallet.showSidebar}>
@@ -248,35 +264,45 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     device={selectedDevice}
                     disabled={!isDeviceAccessible && this.props.devices.length === 1}
                     isOpen={this.props.wallet.dropdownOpened}
-                    icon={(
+                    icon={
                         <React.Fragment>
                             {showWalletType && (
                                 <Tooltip
-                                    content={<WalletTooltipMsg walletType={walletType} isDeviceReady={isDeviceReady} />}
+                                    content={
+                                        <WalletTooltipMsg
+                                            walletType={walletType}
+                                            isDeviceReady={isDeviceReady}
+                                        />
+                                    }
                                     maxWidth={200}
                                     placement="bottom"
                                     enterDelayMs={0.5}
                                 >
                                     <WalletTypeIconWrapper>
                                         <WalletTypeIcon
-                                            onClick={(e) => {
+                                            onClick={e => {
                                                 if (selectedDevice && isDeviceReady) {
                                                     this.props.duplicateDevice(selectedDevice);
                                                     e.stopPropagation();
                                                 }
                                             }}
-                                            hoverColor={isDeviceReady ? colors.TEXT_PRIMARY : colors.TEXT_SECONDARY}
+                                            hoverColor={
+                                                isDeviceReady
+                                                    ? colors.TEXT_PRIMARY
+                                                    : colors.TEXT_SECONDARY
+                                            }
                                             type={walletType}
                                             size={25}
                                             color={colors.TEXT_SECONDARY}
                                         />
                                     </WalletTypeIconWrapper>
                                 </Tooltip>
-                            )
-                            }
+                            )}
                             {this.props.devices.length > 1 && (
                                 <Tooltip
-                                    content={<FormattedMessage {...l10nMessages.TR_NUMBER_OF_DEVICES} />}
+                                    content={
+                                        <FormattedMessage {...l10nMessages.TR_NUMBER_OF_DEVICES} />
+                                    }
                                     maxWidth={200}
                                     placement="bottom"
                                     enterDelayMs={0.5}
@@ -292,7 +318,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                 icon={icons.ARROW_DOWN}
                             />
                         </React.Fragment>
-                    )}
+                    }
                     {...this.props}
                 />
                 <Body minHeight={this.state.bodyMinHeight}>
@@ -306,7 +332,8 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                             target="_blank"
                             rel="noreferrer noopener"
                         >
-                            <Icon size={26} icon={icons.CHAT} color={colors.TEXT_SECONDARY} /><FormattedMessage {...l10nMessages.TR_NEED_HELP} />
+                            <Icon size={26} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />
+                            <FormattedMessage {...l10nMessages.TR_NEED_HELP} />
                         </A>
                     </Help>
                 </Footer>

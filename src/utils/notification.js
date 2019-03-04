@@ -1,7 +1,7 @@
 import colors from 'config/colors';
 import icons from 'config/icons';
 
-const getPrimaryColor = (type) => {
+const getPrimaryColor = type => {
     let color;
     switch (type) {
         case 'info':
@@ -23,7 +23,7 @@ const getPrimaryColor = (type) => {
     return color;
 };
 
-const getSecondaryColor = (type) => {
+const getSecondaryColor = type => {
     let color;
     switch (type) {
         case 'info':
@@ -47,8 +47,4 @@ const getSecondaryColor = (type) => {
 
 const getIcon = type => icons[type.toUpperCase()];
 
-export {
-    getPrimaryColor,
-    getSecondaryColor,
-    getIcon,
-};
+export { getPrimaryColor, getSecondaryColor, getIcon };

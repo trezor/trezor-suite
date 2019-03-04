@@ -21,10 +21,13 @@ const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?
 const XRP_6_RE = new RegExp('^(0|0\\.([0-9]{0,6})?|[1-9][0-9]*\\.?([0-9]{0,6})?|\\.[0-9]{0,6})$');
 
 /*
-* Called from SendFormActions.observe
-* Reaction for BLOCKCHAIN.FEE_UPDATED action
-*/
-export const onFeeUpdated = (network: string, feeLevels: Array<BlockchainFeeLevel>): PayloadAction<void> => (dispatch: Dispatch, getState: GetState): void => {
+ * Called from SendFormActions.observe
+ * Reaction for BLOCKCHAIN.FEE_UPDATED action
+ */
+export const onFeeUpdated = (
+    network: string,
+    feeLevels: Array<BlockchainFeeLevel>
+): PayloadAction<void> => (dispatch: Dispatch, getState: GetState): void => {
     const state = getState().sendFormRipple;
     if (network === state.networkSymbol) return;
 
@@ -58,9 +61,12 @@ export const onFeeUpdated = (network: string, feeLevels: Array<BlockchainFeeLeve
 };
 
 /*
-* Recalculate amount, total and fees
-*/
-export const validation = (prevState: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Recalculate amount, total and fees
+ */
+export const validation = (prevState: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     // clone deep nested object
     // to avoid overrides across state history
     let state: State = JSON.parse(JSON.stringify(getState().sendFormRipple));
@@ -81,12 +87,11 @@ export const validation = (prevState: State): PayloadAction<State> => (dispatch:
     return state;
 };
 
-const recalculateTotalAmount = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
-    const {
-        account,
-        network,
-        pending,
-    } = getState().selectedAccount;
+const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
+    const { account, network, pending } = getState().selectedAccount;
     if (!account || account.networkType !== 'ripple' || !network) return $state;
 
     const state = { ...$state };
@@ -94,7 +99,9 @@ const recalculateTotalAmount = ($state: State): PayloadAction<State> => (dispatc
 
     if (state.setMax) {
         const pendingAmount = getPendingAmount(pending, state.networkSymbol, false);
-        const availableBalance = new BigNumber(account.balance).minus(account.reserve).minus(pendingAmount);
+        const availableBalance = new BigNumber(account.balance)
+            .minus(account.reserve)
+            .minus(pendingAmount);
         state.amount = calculateMaxAmount(availableBalance, fee);
     }
 
@@ -102,7 +109,10 @@ const recalculateTotalAmount = ($state: State): PayloadAction<State> => (dispatc
     return state;
 };
 
-const updateCustomFeeLabel = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+const updateCustomFeeLabel = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const { network } = getState().selectedAccount;
     if (!network) return $state; // flowtype fallback
 
@@ -118,9 +128,12 @@ const updateCustomFeeLabel = ($state: State): PayloadAction<State> => (dispatch:
 };
 
 /*
-* Address value validation
-*/
-const addressValidation = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Address value validation
+ */
+const addressValidation = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.address) return state;
 
@@ -140,10 +153,13 @@ const addressValidation = ($state: State): PayloadAction<State> => (dispatch: Di
 };
 
 /*
-* Address balance validation
-* Fetch data from trezor-connect and set minimum required amount in reducer
-*/
-const addressBalanceValidation = ($state: State): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+ * Address balance validation
+ * Fetch data from trezor-connect and set minimum required amount in reducer
+ */
+const addressBalanceValidation = ($state: State): PromiseAction<void> => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     const { network } = getState().selectedAccount;
     if (!network) return;
 
@@ -177,36 +193,52 @@ const addressBalanceValidation = ($state: State): PromiseAction<void> => async (
 };
 
 /*
-* Address label assignation
-*/
-const addressLabel = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Address label assignation
+ */
+const addressLabel = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.address || state.errors.address) return state;
 
-    const {
-        account,
-        network,
-    } = getState().selectedAccount;
+    const { account, network } = getState().selectedAccount;
     if (!account || !network) return state;
     const { address } = state;
 
-    const savedAccounts = getState().accounts.filter(a => a.descriptor.toLowerCase() === address.toLowerCase());
+    const savedAccounts = getState().accounts.filter(
+        a => a.descriptor.toLowerCase() === address.toLowerCase()
+    );
     if (savedAccounts.length > 0) {
         // check if found account belongs to this network
         const currentNetworkAccount = savedAccounts.find(a => a.network === network.shortcut);
         if (currentNetworkAccount) {
-            const device = findDevice(getState().devices, currentNetworkAccount.deviceID, currentNetworkAccount.deviceState);
+            const device = findDevice(
+                getState().devices,
+                currentNetworkAccount.deviceID,
+                currentNetworkAccount.deviceState
+            );
             if (device) {
-                state.infos.address = `${device.instanceLabel} Account #${(currentNetworkAccount.index + 1)}`;
+                state.infos.address = `${
+                    device.instanceLabel
+                } Account #${currentNetworkAccount.index + 1}`;
             }
         } else {
             // corner-case: the same derivation path is used on different networks
             const otherNetworkAccount = savedAccounts[0];
-            const device = findDevice(getState().devices, otherNetworkAccount.deviceID, otherNetworkAccount.deviceState);
+            const device = findDevice(
+                getState().devices,
+                otherNetworkAccount.deviceID,
+                otherNetworkAccount.deviceState
+            );
             const { networks } = getState().localStorage.config;
             const otherNetwork = networks.find(c => c.shortcut === otherNetworkAccount.network);
             if (device && otherNetwork) {
-                state.warnings.address = `Looks like it's ${device.instanceLabel} Account #${(otherNetworkAccount.index + 1)} address of ${otherNetwork.name} network`;
+                state.warnings.address = `Looks like it's ${
+                    device.instanceLabel
+                } Account #${otherNetworkAccount.index + 1} address of ${
+                    otherNetwork.name
+                } network`;
             }
         }
     }
@@ -215,16 +247,16 @@ const addressLabel = ($state: State): PayloadAction<State> => (dispatch: Dispatc
 };
 
 /*
-* Amount value validation
-*/
-const amountValidation = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Amount value validation
+ */
+const amountValidation = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.amount) return state;
 
-    const {
-        account,
-        pending,
-    } = getState().selectedAccount;
+    const { account, pending } = getState().selectedAccount;
     if (!account || account.networkType !== 'ripple') return state;
 
     const { amount } = state;
@@ -236,32 +268,44 @@ const amountValidation = ($state: State): PayloadAction<State> => (dispatch: Dis
         const pendingAmount: BigNumber = getPendingAmount(pending, state.networkSymbol);
         if (!state.amount.match(XRP_6_RE)) {
             state.errors.amount = 'Maximum 6 decimals allowed';
-        } else if (new BigNumber(state.total).isGreaterThan(new BigNumber(account.balance).minus(pendingAmount))) {
+        } else if (
+            new BigNumber(state.total).isGreaterThan(
+                new BigNumber(account.balance).minus(pendingAmount)
+            )
+        ) {
             state.errors.amount = 'Not enough funds';
         }
     }
 
-    if (!state.errors.amount && new BigNumber(account.balance).minus(state.total).lt(account.reserve)) {
-        state.errors.amount = `Not enough funds. Reserved amount for this account is ${account.reserve} ${state.networkSymbol}`;
+    if (
+        !state.errors.amount &&
+        new BigNumber(account.balance).minus(state.total).lt(account.reserve)
+    ) {
+        state.errors.amount = `Not enough funds. Reserved amount for this account is ${
+            account.reserve
+        } ${state.networkSymbol}`;
     }
 
     if (!state.errors.amount && new BigNumber(state.amount).lt(state.minAmount)) {
-        state.errors.amount = `Amount is too low. Minimum amount for creating a new account is ${state.minAmount} ${state.networkSymbol}`;
+        state.errors.amount = `Amount is too low. Minimum amount for creating a new account is ${
+            state.minAmount
+        } ${state.networkSymbol}`;
     }
 
     return state;
 };
 
 /*
-* Fee value validation
-*/
-export const feeValidation = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Fee value validation
+ */
+export const feeValidation = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.fee) return state;
 
-    const {
-        network,
-    } = getState().selectedAccount;
+    const { network } = getState().selectedAccount;
     if (!network) return state;
 
     const { fee } = state;
@@ -280,8 +324,8 @@ export const feeValidation = ($state: State): PayloadAction<State> => (dispatch:
     return state;
 };
 /*
-* Destination Tag value validation
-*/
+ * Destination Tag value validation
+ */
 export const destinationTagValidation = ($state: State): PayloadAction<State> => (): State => {
     const state = { ...$state };
     if (!state.touched.destinationTag) return state;
@@ -293,10 +337,9 @@ export const destinationTagValidation = ($state: State): PayloadAction<State> =>
     return state;
 };
 
-
 /*
-* UTILITIES
-*/
+ * UTILITIES
+ */
 
 const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -323,7 +366,10 @@ const calculateMaxAmount = (balance: BigNumber, fee: string): string => {
 };
 
 // Generate FeeLevel dataset for "fee" select
-export const getFeeLevels = (feeLevels: Array<BlockchainFeeLevel>, selected?: FeeLevel): PayloadAction<Array<FeeLevel>> => (dispatch: Dispatch, getState: GetState): Array<FeeLevel> => {
+export const getFeeLevels = (
+    feeLevels: Array<BlockchainFeeLevel>,
+    selected?: FeeLevel
+): PayloadAction<Array<FeeLevel>> => (dispatch: Dispatch, getState: GetState): Array<FeeLevel> => {
     const { network } = getState().selectedAccount;
     if (!network) return []; // flowtype fallback
 
@@ -335,15 +381,18 @@ export const getFeeLevels = (feeLevels: Array<BlockchainFeeLevel>, selected?: Fe
     }));
 
     // add "Custom" level
-    const customLevel = selected && selected.value === 'Custom' ? {
-        value: 'Custom',
-        fee: selected.fee,
-        label: `${toDecimalAmount(selected.fee, network.decimals)} ${network.symbol}`,
-    } : {
-        value: 'Custom',
-        fee: '0',
-        label: '',
-    };
+    const customLevel =
+        selected && selected.value === 'Custom'
+            ? {
+                  value: 'Custom',
+                  fee: selected.fee,
+                  label: `${toDecimalAmount(selected.fee, network.decimals)} ${network.symbol}`,
+              }
+            : {
+                  value: 'Custom',
+                  fee: '0',
+                  label: '',
+              };
 
     return levels.concat([customLevel]);
 };

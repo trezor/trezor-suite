@@ -4,9 +4,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
 import packageJson from '../package.json';
 
-import {
-    SRC, BUILD, PORT, PUBLIC, TRANSLATIONS,
-} from './constants';
+import { SRC, BUILD, PORT, PUBLIC, TRANSLATIONS } from './constants';
 
 // turn on for bundle analyzing
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
@@ -26,10 +24,7 @@ module.exports = {
     },
     devServer: {
         // host: '0.0.0.0',
-        contentBase: [
-            SRC,
-            PUBLIC,
-        ],
+        contentBase: [SRC, PUBLIC],
         stats: 'minimal',
         hot: true,
         https: false,

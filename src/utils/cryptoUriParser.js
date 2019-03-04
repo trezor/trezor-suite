@@ -13,7 +13,7 @@ export type parsedURI = {
 const parseUri = (uri: string): ?parsedURI => {
     const str = stripPrefix(uri);
     const query: Array<string> = str.split('?');
-    const values: Object = (query.length > 1) ? parseQuery(query[1]) : {};
+    const values: Object = query.length > 1 ? parseQuery(query[1]) : {};
     values.address = query[0];
 
     return values;
@@ -29,15 +29,15 @@ const stripPrefix = (str: string): string => {
 };
 
 // Parse URL query string (like 'foo=bar&baz=1337) into an object
-const parseQuery = (str: string): {} => str.split('&')
-    .map(val => val.split('='))
-    .reduce((vals, pair) => {
-        if (pair.length > 1) {
-            vals[pair[0]] = pair[1];
-        }
-        return vals;
-    }, {});
+const parseQuery = (str: string): {} =>
+    str
+        .split('&')
+        .map(val => val.split('='))
+        .reduce((vals, pair) => {
+            if (pair.length > 1) {
+                vals[pair[0]] = pair[1];
+            }
+            return vals;
+        }, {});
 
-export {
-    parseUri,
-};
+export { parseUri };

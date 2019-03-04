@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 type Props = {
-    model: string;
-}
+    model: string,
+};
 
 const Wrapper = styled.div``;
 

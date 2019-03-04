@@ -17,10 +17,13 @@ import l10nMessages from './index.messages';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    device: TrezorDevice;
-    onForgetSingleDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onForgetSingleDevice'>;
-    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
-}
+    device: TrezorDevice,
+    onForgetSingleDevice: $ElementType<
+        $ElementType<BaseProps, 'modalActions'>,
+        'onForgetSingleDevice'
+    >,
+    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>,
+};
 
 const Wrapper = styled.div`
     width: 360px;
@@ -35,7 +38,7 @@ const Row = styled.div`
     display: flex;
     flex-direction: column;
 
-    Button + Button {
+    button + button {
         margin-top: 10px;
     }
 `;
@@ -75,11 +78,17 @@ class ForgetDevice extends PureComponent<Props> {
                     />
                 </H2>
                 <StyledP isSmaller>
-                    <FormattedMessage {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM} />
+                    <FormattedMessage
+                        {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM}
+                    />
                 </StyledP>
                 <Row>
-                    <Button onClick={() => this.forget()}><FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} /></Button>
-                    <Button isWhite onClick={this.props.onCancel}><FormattedMessage {...l10nMessages.TR_DONT_FORGET} /></Button>
+                    <Button onClick={() => this.forget()}>
+                        <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
+                    </Button>
+                    <Button isWhite onClick={this.props.onCancel}>
+                        <FormattedMessage {...l10nMessages.TR_DONT_FORGET} />
+                    </Button>
                 </Row>
             </Wrapper>
         );
