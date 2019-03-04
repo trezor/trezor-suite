@@ -14,7 +14,7 @@ export type LogAction =
           type: typeof LOG.CLOSE,
       }
     | {
-        type: typeof LOG.COPY_RESET,
+          type: typeof LOG.COPY_RESET,
       }
     | {
           type: typeof LOG.COPY_SUCCESS,
