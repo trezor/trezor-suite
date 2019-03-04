@@ -33,21 +33,6 @@ export default (props: Props) => {
                     )}
                 />,
             );
-        } else if (location.state.send) {
-            notifications.push(
-                <Notification
-                    key="xrp-warning"
-                    type="warning"
-                    title="Do not send to accounts requiring a destination tag!"
-                    message={(
-                        <>
-                            Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction. The current firmware version <strong>does not support</strong> destination tags yet.
-                            <br /><br />
-                            If the receiver requires a destination tag, do not use Trezor to send XRP. We are working on adding this feature.
-                        </>
-                    )}
-                />,
-            );
         }
     }
 
