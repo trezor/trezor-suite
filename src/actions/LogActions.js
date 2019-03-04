@@ -1,6 +1,7 @@
 /* @flow */
 
 import * as LOG from 'actions/constants/log';
+import copy from 'copy-to-clipboard';
 
 import type {
     Action, ThunkAction, GetState, Dispatch,
@@ -11,6 +12,8 @@ export type LogAction = {
     type: typeof LOG.OPEN,
 } | {
     type: typeof LOG.CLOSE,
+} | {
+    type: typeof LOG.COPY_SUCCESS,
 } | {
     type: typeof LOG.ADD,
     payload: LogEntry
@@ -38,3 +41,17 @@ export const add = (type: string, message: any): Action => ({
         message,
     },
 });
+
+export const copyToClipboard = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const { entries } = getState().log;
+    try {
+        const res = copy(JSON.stringify(entries));
+        if (res) {
+            dispatch({
+                type: LOG.COPY_SUCCESS,
+            });
+        }
+    } catch (err) {
+        console.error(err);
+    }
+};

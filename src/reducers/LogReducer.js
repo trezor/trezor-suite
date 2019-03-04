@@ -12,11 +12,13 @@ export type LogEntry = {
 export type State = {
     opened: boolean;
     entries: Array<LogEntry>;
+    copied: boolean
 }
 
 export const initialState: State = {
     opened: false,
     entries: [],
+    copied: false,
 };
 
 
@@ -32,12 +34,19 @@ export default (state: State = initialState, action: Action): State => {
             return {
                 ...state,
                 opened: false,
+                copied: false,
             };
 
         case LOG.ADD:
             return {
                 ...state,
                 entries: state.entries.concat([action.payload]),
+            };
+
+        case LOG.COPY_SUCCESS:
+            return {
+                ...state,
+                copied: true,
             };
 
         default:
