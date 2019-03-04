@@ -68,7 +68,6 @@ const CopyWrapper = styled.div`
 
 const ButtonCopy = styled(Button)`
     margin-top: 10px;
-    max-width: 200px;
 `;
 
 const Log = (props: Props): ?React$Element<string> => {
