@@ -32,10 +32,17 @@ const StyledH1 = styled(H1)`
 const Bootloader = () => (
     <Wrapper>
         <Row>
-            <StyledH1><FormattedMessage {...l10nMessages.TR_YOUR_DEVICE_IS_IN_FIRMWARE} /></StyledH1>
-            <StyledP><FormattedMessage {...l10nMessages.TR_PLEASE_RECONNECT_IT} /></StyledP>
+            <StyledH1>
+                <FormattedMessage {...l10nMessages.TR_YOUR_DEVICE_IS_IN_FIRMWARE} />
+            </StyledH1>
+            <StyledP>
+                <FormattedMessage {...l10nMessages.TR_PLEASE_RECONNECT_IT} />
+            </StyledP>
         </Row>
     </Wrapper>
 );
 
-export default connect(null, null)(Bootloader);
+export default connect(
+    null,
+    null
+)(Bootloader);

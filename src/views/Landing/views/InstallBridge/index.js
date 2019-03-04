@@ -19,24 +19,24 @@ import type { State as TrezorConnectState } from 'reducers/TrezorConnectReducer'
 import l10nMessages from './index.messages';
 
 type InstallTarget = {
-    value: string;
-    label: string;
-    signature: ?string;
-    preferred: boolean;
-}
+    value: string,
+    label: string,
+    signature: ?string,
+    preferred: boolean,
+};
 
 type State = {
-    currentVersion: string;
-    latestVersion: string;
-    installers: Array<InstallTarget>;
-    target: InstallTarget;
-    uri: string;
-}
+    currentVersion: string,
+    latestVersion: string,
+    installers: Array<InstallTarget>,
+    target: InstallTarget,
+    uri: string,
+};
 
 type Props = {
     selectFirstAvailableDevice: typeof RouterActions.selectFirstAvailableDevice,
-    transport: $ElementType<TrezorConnectState, 'transport'>;
-}
+    transport: $ElementType<TrezorConnectState, 'transport'>,
+};
 
 const Wrapper = styled.div`
     display: flex;
@@ -139,7 +139,10 @@ class InstallBridge extends PureComponent<Props, State> {
 
         const currentTarget: ?InstallTarget = installers.find(i => i.preferred === true);
         this.state = {
-            currentVersion: props.transport.type && props.transport.type === 'bridge' ? `Your version ${props.transport.version}` : 'Not installed',
+            currentVersion:
+                props.transport.type && props.transport.type === 'bridge'
+                    ? `Your version ${props.transport.version}`
+                    : 'Not installed',
             latestVersion: props.transport.bridge.version.join('.'),
             installers,
             target: currentTarget || installers[0],
@@ -162,8 +165,12 @@ class InstallBridge extends PureComponent<Props, State> {
             <LandingWrapper loading={!target}>
                 <Wrapper>
                     <Top>
-                        <TitleHeader>Trezor Bridge<Version>{this.state.currentVersion}</Version></TitleHeader>
-                        <P><FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} /></P>
+                        <TitleHeader>
+                            Trezor Bridge<Version>{this.state.currentVersion}</Version>
+                        </TitleHeader>
+                        <P>
+                            <FormattedMessage {...l10nMessages.TR_NEW_COMMUNICATION_TOOL} />
+                        </P>
                         <Download>
                             <SelectWrapper
                                 isSearchable={false}
@@ -174,12 +181,11 @@ class InstallBridge extends PureComponent<Props, State> {
                             />
                             <Link href={`${this.state.uri}${target.value}`}>
                                 <DownloadBridgeButton>
-                                    <Icon
-                                        icon={ICONS.DOWNLOAD}
-                                        color={colors.WHITE}
-                                        size={30}
+                                    <Icon icon={ICONS.DOWNLOAD} color={colors.WHITE} size={30} />
+                                    <FormattedMessage
+                                        {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
+                                        values={{ version: this.state.latestVersion }}
                                     />
-                                    <FormattedMessage {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE} values={{ version: this.state.latestVersion }} />
                                 </DownloadBridgeButton>
                             </Link>
                         </Download>
@@ -208,10 +214,8 @@ class InstallBridge extends PureComponent<Props, State> {
                         </P>
                         <P>
                             {target.signature && (
-                                <Link
-                                    href={this.state.uri + target.signature}
-                                    isGreen
-                                ><FormattedMessage {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
+                                <Link href={this.state.uri + target.signature} isGreen>
+                                    <FormattedMessage {...l10nMessages.TR_CHECK_PGP_SIGNATURE} />
                                 </Link>
                             )}
                         </P>
@@ -219,8 +223,11 @@ class InstallBridge extends PureComponent<Props, State> {
                     <Bottom>
                         {this.props.transport.type && (
                             <P>
-                                <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} /><br />
-                                <GoBack onClick={() => this.props.selectFirstAvailableDevice()}><FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} /></GoBack>
+                                <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
+                                <br />
+                                <GoBack onClick={() => this.props.selectFirstAvailableDevice()}>
+                                    <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
+                                </GoBack>
                             </P>
                         )}
                     </Bottom>

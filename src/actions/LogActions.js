@@ -3,23 +3,26 @@
 import * as LOG from 'actions/constants/log';
 import copy from 'copy-to-clipboard';
 
-import type {
-    Action, ThunkAction, GetState, Dispatch,
-} from 'flowtype';
+import type { Action, ThunkAction, GetState, Dispatch } from 'flowtype';
 import type { LogEntry } from 'reducers/LogReducer';
 
-export type LogAction = {
-    type: typeof LOG.OPEN,
-} | {
-    type: typeof LOG.CLOSE,
-} | {
-    type: typeof LOG.COPY_RESET,
-} | {
-    type: typeof LOG.COPY_SUCCESS,
-} | {
-    type: typeof LOG.ADD,
-    payload: LogEntry
-};
+export type LogAction =
+    | {
+          type: typeof LOG.OPEN,
+      }
+    | {
+          type: typeof LOG.CLOSE,
+      }
+    | {
+        type: typeof LOG.COPY_RESET,
+      }
+    | {
+          type: typeof LOG.COPY_SUCCESS,
+      }
+    | {
+          type: typeof LOG.ADD,
+          payload: LogEntry,
+      };
 
 export const toggle = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     if (!getState().log.opened) {
@@ -44,7 +47,10 @@ export const add = (type: string, message: any): Action => ({
     },
 });
 
-export const copyToClipboard = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const copyToClipboard = (): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const { entries } = getState().log;
     try {
         const res = copy(JSON.stringify(entries));

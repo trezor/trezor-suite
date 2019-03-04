@@ -4,19 +4,18 @@ import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as PENDING from 'actions/constants/pendingTx';
 
-import type {
-    TrezorDevice,
-    Dispatch,
-    GetState,
-    PromiseAction,
-} from 'flowtype';
+import type { TrezorDevice, Dispatch, GetState, PromiseAction } from 'flowtype';
 import type { EthereumAccount, BlockchainNotification } from 'trezor-connect';
 import type { Token } from 'reducers/TokensReducer';
 import type { NetworkToken } from 'reducers/LocalStorageReducer';
 import * as Web3Actions from 'actions/Web3Actions';
 import * as AccountsActions from 'actions/AccountsActions';
 
-export const discoverAccount = (device: TrezorDevice, descriptor: string, network: string): PromiseAction<EthereumAccount> => async (dispatch: Dispatch): Promise<EthereumAccount> => {
+export const discoverAccount = (
+    device: TrezorDevice,
+    descriptor: string,
+    network: string
+): PromiseAction<EthereumAccount> => async (dispatch: Dispatch): Promise<EthereumAccount> => {
     // get data from connect
     const txs = await TrezorConnect.ethereumGetAccountInfo({
         account: {
@@ -46,11 +45,18 @@ export const discoverAccount = (device: TrezorDevice, descriptor: string, networ
     };
 };
 
-export const getTokenInfo = (input: string, network: string): PromiseAction<NetworkToken> => async (dispatch: Dispatch): Promise<NetworkToken> => dispatch(Web3Actions.getTokenInfo(input, network));
+export const getTokenInfo = (input: string, network: string): PromiseAction<NetworkToken> => async (
+    dispatch: Dispatch
+): Promise<NetworkToken> => dispatch(Web3Actions.getTokenInfo(input, network));
 
-export const getTokenBalance = (token: Token): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => dispatch(Web3Actions.getTokenBalance(token));
+export const getTokenBalance = (token: Token): PromiseAction<string> => async (
+    dispatch: Dispatch
+): Promise<string> => dispatch(Web3Actions.getTokenBalance(token));
 
-export const getGasPrice = (network: string, defaultGasPrice: number): PromiseAction<BigNumber> => async (dispatch: Dispatch): Promise<BigNumber> => {
+export const getGasPrice = (
+    network: string,
+    defaultGasPrice: number
+): PromiseAction<BigNumber> => async (dispatch: Dispatch): Promise<BigNumber> => {
     try {
         const gasPrice = await dispatch(Web3Actions.getCurrentGasPrice(network));
         return gasPrice === '0' ? new BigNumber(defaultGasPrice) : new BigNumber(gasPrice);
@@ -60,7 +66,12 @@ export const getGasPrice = (network: string, defaultGasPrice: number): PromiseAc
 };
 
 const estimateProxy: Array<Promise<string>> = [];
-export const estimateGasLimit = (network: string, data: string, value: string, gasPrice: string): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => {
+export const estimateGasLimit = (
+    network: string,
+    data: string,
+    value: string,
+    gasPrice: string
+): PromiseAction<string> => async (dispatch: Dispatch): Promise<string> => {
     // Since this method could be called multiple times in short period of time
     // check for pending calls in proxy and if there more than two (first is current running and the second is waiting for result of first)
     // TODO: should reject second call immediately?
@@ -69,12 +80,14 @@ export const estimateGasLimit = (network: string, data: string, value: string, g
         await estimateProxy[0];
     }
 
-    const call = dispatch(Web3Actions.estimateGasLimit(network, {
-        to: '',
-        data,
-        value,
-        gasPrice,
-    }));
+    const call = dispatch(
+        Web3Actions.estimateGasLimit(network, {
+            to: '',
+            data,
+            value,
+            gasPrice,
+        })
+    );
     // add current call to proxy
     estimateProxy.push(call);
     // wait for result
@@ -85,8 +98,13 @@ export const estimateGasLimit = (network: string, data: string, value: string, g
     return result;
 };
 
-export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.descriptor); // eslint-disable-line no-unused-vars
+export const subscribe = (network: string): PromiseAction<void> => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
+    const accounts: Array<string> = getState()
+        .accounts.filter(a => a.network === network)
+        .map(a => a.descriptor); // eslint-disable-line no-unused-vars
     const response = await TrezorConnect.blockchainSubscribe({
         accounts,
         coin: network,
@@ -96,7 +114,10 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
     await dispatch(Web3Actions.initWeb3(network));
 };
 
-export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const onBlockMined = (network: string): PromiseAction<void> => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     // TODO: handle rollback,
     // check latest saved transaction blockhash against blockhheight
 
@@ -131,7 +152,9 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
     }
 };
 
-export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const onNotification = (
+    payload: $ElementType<BlockchainNotification, 'payload'>
+): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { notification } = payload;
     const account = getState().accounts.find(a => a.descriptor === notification.descriptor);
     if (!account) return;
@@ -148,6 +171,8 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     }
 };
 
-export const onError = (network: string): PromiseAction<void> => async (dispatch: Dispatch): Promise<void> => {
+export const onError = (network: string): PromiseAction<void> => async (
+    dispatch: Dispatch
+): Promise<void> => {
     dispatch(Web3Actions.disconnect(network));
 };

@@ -9,7 +9,8 @@ const definedMessages: Messages = defineMessages({
     },
     TR_WE_HAVE_PARTNERED_UP_WITH_THE_NEM: {
         id: 'TR_WE_HAVE_PARTNERED_UP_WITH_THE_NEM',
-        defaultMessage: 'We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.',
+        defaultMessage:
+            'We have partnered up with the NEM Foundation to provide you with a full-fledged NEM Wallet.',
     },
     TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL: {
         id: 'TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL',

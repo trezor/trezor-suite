@@ -1,25 +1,21 @@
 /* @flow */
 
-
 import Web3 from 'web3';
 
 import type { Contract } from 'web3';
 import * as WEB3 from 'actions/constants/web3';
 
 import type { Action } from 'flowtype';
-import type {
-    Web3UpdateBlockAction,
-    Web3UpdateGasPriceAction,
-} from 'actions/Web3Actions';
+import type { Web3UpdateBlockAction, Web3UpdateGasPriceAction } from 'actions/Web3Actions';
 
 export type Web3Instance = {
-    network: string;
-    web3: Web3;
-    chainId: number;
-    latestBlock: any;
-    gasPrice: string;
-    erc20: Contract;
-}
+    network: string,
+    web3: Web3,
+    chainId: number,
+    latestBlock: any,
+    gasPrice: string,
+    erc20: Contract,
+};
 
 export type State = Array<Web3Instance>;
 

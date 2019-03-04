@@ -20,7 +20,7 @@ import type { Props as BaseProps } from '../../Container';
 type Props = BaseProps & {
     intl: any,
     children: React.Node,
-}
+};
 
 // TODO: Decide on a small screen width for the whole app
 // and put it inside config/variables.js
@@ -134,9 +134,7 @@ const StyledIcon = styled(Icon)`
 
 // stateless component
 const AdvancedForm = (props: Props) => {
-    const {
-        network,
-    } = props.selectedAccount;
+    const { network } = props.selectedAccount;
     if (!network) return null;
     const {
         networkSymbol,
@@ -178,21 +176,29 @@ const AdvancedForm = (props: Props) => {
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
-                    topLabel={(
+                    topLabel={
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nMessages.TR_GAS_LIMIT} />
                                 <Tooltip
-                                    content={(
+                                    content={
                                         <FormattedMessage
                                             {...l10nMessages.TR_GAS_LIMIT_REFERS_TO}
                                             values={{
-                                                TR_GAS_QUOTATION: <GreenSpan><FormattedMessage {...l10nMessages.TR_GAS_QUOTATION} /></GreenSpan>,
-                                                gasLimitTooltipValue: <GreenSpan>{gasLimitTooltipValue}</GreenSpan>,
+                                                TR_GAS_QUOTATION: (
+                                                    <GreenSpan>
+                                                        <FormattedMessage
+                                                            {...l10nMessages.TR_GAS_QUOTATION}
+                                                        />
+                                                    </GreenSpan>
+                                                ),
+                                                gasLimitTooltipValue: (
+                                                    <GreenSpan>{gasLimitTooltipValue}</GreenSpan>
+                                                ),
                                                 gasLimitTooltipCurrency,
                                             }}
                                         />
-                                    )}
+                                    }
                                     maxWidth={410}
                                     readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
                                     placement="top"
@@ -204,16 +210,21 @@ const AdvancedForm = (props: Props) => {
                                     />
                                 </Tooltip>
                             </Left>
-                            { showDefaultGasLimitButton && (
+                            {showDefaultGasLimitButton && (
                                 <Right>
-                                    <StyledLink onClick={setDefaultGasLimit} isGreen><FormattedMessage {...l10nMessages.TR_SET_DEFAULT} /></StyledLink>
+                                    <StyledLink onClick={setDefaultGasLimit} isGreen>
+                                        <FormattedMessage {...l10nMessages.TR_SET_DEFAULT} />
+                                    </StyledLink>
                                 </Right>
-                            )
-                            }
+                            )}
                         </InputLabelWrapper>
-                    )}
+                    }
                     bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
-                    value={calculatingGasLimit ? props.intl.formatMessage(l10nMessages.TR_CALCULATING_DOT_DOT) : gasLimit} // TODO: figure out translations in inputs
+                    value={
+                        calculatingGasLimit
+                            ? props.intl.formatMessage(l10nMessages.TR_CALCULATING_DOT_DOT)
+                            : gasLimit
+                    } // TODO: figure out translations in inputs
                     isDisabled={networkSymbol === currency && data.length > 0}
                     onChange={event => onGasLimitChange(event.target.value)}
                 />
@@ -224,21 +235,28 @@ const AdvancedForm = (props: Props) => {
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
-                    topLabel={(
+                    topLabel={
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nMessages.TR_GAS_PRICE} />
                                 <Tooltip
-                                    content={(
+                                    content={
                                         <FormattedMessage
                                             {...l10nMessages.TR_GAS_PRICE_REFERS_TO}
                                             values={{
-                                                TR_GAS_PRICE_QUOTATION: <GreenSpan><FormattedMessage {...l10nMessages.TR_GAS_PRICE_QUOTATION} /></GreenSpan>,
-                                                recommendedGasPrice: <GreenSpan>{recommendedGasPrice}</GreenSpan>,
+                                                TR_GAS_PRICE_QUOTATION: (
+                                                    <GreenSpan>
+                                                        <FormattedMessage
+                                                            {...l10nMessages.TR_GAS_PRICE_QUOTATION}
+                                                        />
+                                                    </GreenSpan>
+                                                ),
+                                                recommendedGasPrice: (
+                                                    <GreenSpan>{recommendedGasPrice}</GreenSpan>
+                                                ),
                                             }}
-
                                         />
-                                    )}
+                                    }
                                     maxWidth={400}
                                     readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
                                     placement="top"
@@ -251,7 +269,7 @@ const AdvancedForm = (props: Props) => {
                                 </Tooltip>
                             </Left>
                         </InputLabelWrapper>
-                    )}
+                    }
                     bottomText={errors.gasPrice || warnings.gasPrice || infos.gasPrice}
                     value={gasPrice}
                     onChange={event => onGasPriceChange(event.target.value)}
@@ -259,12 +277,14 @@ const AdvancedForm = (props: Props) => {
             </GasInputRow>
 
             <StyledTextarea
-                topLabel={(
+                topLabel={
                     <InputLabelWrapper>
                         <Left>
                             <FormattedMessage {...l10nMessages.TR_DATA} />
                             <Tooltip
-                                content={<FormattedMessage {...l10nMessages.TR_DATA_IS_USUALLY_USED} />}
+                                content={
+                                    <FormattedMessage {...l10nMessages.TR_DATA_IS_USUALLY_USED} />
+                                }
                                 placement="top"
                             >
                                 <StyledIcon
@@ -275,7 +295,7 @@ const AdvancedForm = (props: Props) => {
                             </Tooltip>
                         </Left>
                     </InputLabelWrapper>
-                )}
+                }
                 state={getDataTextareaState(errors.data, warnings.data)}
                 bottomText={errors.data || warnings.data || infos.data}
                 isDisabled={networkSymbol !== currency}
@@ -283,9 +303,7 @@ const AdvancedForm = (props: Props) => {
                 onChange={event => onDataChange(event.target.value)}
             />
 
-            <AdvancedSettingsSendButtonWrapper>
-                { props.children }
-            </AdvancedSettingsSendButtonWrapper>
+            <AdvancedSettingsSendButtonWrapper>{props.children}</AdvancedSettingsSendButtonWrapper>
         </AdvancedSettingsWrapper>
     );
 };

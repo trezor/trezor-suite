@@ -11,13 +11,7 @@ import * as reducerUtils from 'reducers/utils';
 import { getVersion } from 'utils/device';
 import { initialState } from 'reducers/SelectedAccountReducer';
 
-import type {
-    PayloadAction,
-    Action,
-    GetState,
-    Dispatch,
-    State,
-} from 'flowtype';
+import type { PayloadAction, Action, GetState, Dispatch, State } from 'flowtype';
 
 import type {
     State as SelectedAccountState,
@@ -26,12 +20,14 @@ import type {
     ExceptionPage,
 } from 'reducers/SelectedAccountReducer';
 
-export type SelectedAccountAction = {
-    type: typeof ACCOUNT.DISPOSE,
-} | {
-    type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT,
-    payload: SelectedAccountState,
-};
+export type SelectedAccountAction =
+    | {
+          type: typeof ACCOUNT.DISPOSE,
+      }
+    | {
+          type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT,
+          payload: SelectedAccountState,
+      };
 
 export const dispose = (): Action => ({
     type: ACCOUNT.DISPOSE,
@@ -68,11 +64,7 @@ const getExceptionPage = (state: State, selectedAccount: SelectedAccountState): 
 // display loader instead of component body
 const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): ?Loader => {
     const device = state.wallet.selectedDevice;
-    const {
-        account,
-        discovery,
-        network,
-    } = selectedAccount;
+    const { account, discovery, network } = selectedAccount;
 
     if (!device || !device.state) {
         return {
@@ -88,7 +80,6 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
             title: 'Loading account',
         };
     }
-
 
     if (account) return null;
     // account not found (yet). checking why...
@@ -135,7 +126,10 @@ const getAccountLoader = (state: State, selectedAccount: SelectedAccountState): 
 };
 
 // display notification above the component, with or without component body
-const getAccountNotification = (state: State, selectedAccount: SelectedAccountState): ?(Notification & { shouldRender: boolean }) => {
+const getAccountNotification = (
+    state: State,
+    selectedAccount: SelectedAccountState
+): ?(Notification & { shouldRender: boolean }) => {
     const device = state.wallet.selectedDevice;
     const { account, network, discovery } = selectedAccount;
     if (!device || !network) return null;
@@ -190,16 +184,21 @@ const actions = [
     ...Object.values(BLOCKCHAIN).filter(v => typeof v === 'string'),
     WALLET.SET_SELECTED_DEVICE,
     WALLET.UPDATE_SELECTED_DEVICE,
-    ...Object.values(ACCOUNT).filter(v => typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE), // exported values got unwanted "__esModule: true" as first element
+    ...Object.values(ACCOUNT).filter(
+        v => typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE
+    ), // exported values got unwanted "__esModule: true" as first element
     ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
     ...Object.values(TOKEN).filter(v => typeof v === 'string'),
     ...Object.values(PENDING).filter(v => typeof v === 'string'),
 ];
 
 /*
-* Called from WalletService
-*/
-export const observe = (prevState: State, action: Action): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+ * Called from WalletService
+ */
+export const observe = (prevState: State, action: Action): PayloadAction<boolean> => (
+    dispatch: Dispatch,
+    getState: GetState
+): boolean => {
     // ignore not listed actions
     if (actions.indexOf(action.type) < 0) return false;
     const state: State = getState();
@@ -238,12 +237,22 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
         newState.notification = notification;
     }
 
-    newState.shouldRender = !(loader || exceptionPage || (notification && !notification.shouldRender));
+    newState.shouldRender = !(
+        loader ||
+        exceptionPage ||
+        (notification && !notification.shouldRender)
+    );
 
     // check if newState is different than previous state
     const stateChanged = reducerUtils.observeChanges(prevState.selectedAccount, newState, {
         account: ['balance', 'nonce'],
-        discovery: ['accountIndex', 'interrupted', 'completed', 'waitingForBlockchain', 'waitingForDevice'],
+        discovery: [
+            'accountIndex',
+            'interrupted',
+            'completed',
+            'waitingForBlockchain',
+            'waitingForDevice',
+        ],
     });
 
     if (stateChanged) {

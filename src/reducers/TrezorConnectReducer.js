@@ -5,29 +5,31 @@ import * as CONNECT from 'actions/constants/TrezorConnect';
 import type { Action } from 'flowtype';
 
 export type SelectedDevice = {
-    id: string; // could be device path if unacquired or features.device_id
-    instance: ?number;
-}
+    id: string, // could be device path if unacquired or features.device_id
+    instance: ?number,
+};
 
 export type LatestBridge = {
-    version: Array<number>;
-    directory: string;
-    packages: Array<{ name: string; url: string; signature?: string; preferred: boolean; }>;
-    changelog: Array<string>;
-}
+    version: Array<number>,
+    directory: string,
+    packages: Array<{ name: string, url: string, signature?: string, preferred: boolean }>,
+    changelog: Array<string>,
+};
 
 export type State = {
-    initialized: boolean;
-    error: ?string;
-    transport: {
-        type: string;
-        version: string;
-        outdated: boolean;
-        bridge: LatestBridge;
-    } | {
-        type: null,
-        bridge: LatestBridge;
-    };
+    initialized: boolean,
+    error: ?string,
+    transport:
+        | {
+              type: string,
+              version: string,
+              outdated: boolean,
+              bridge: LatestBridge,
+          }
+        | {
+              type: null,
+              bridge: LatestBridge,
+          },
     // browserState: {
     //     name: string;
     //     osname: string;
@@ -35,9 +37,9 @@ export type State = {
     //     outdated: boolean;
     //     mobile: boolean;
     // } | {};
-    browserState: any;
-    acquiringDevice: boolean;
-}
+    browserState: any,
+    acquiringDevice: boolean,
+};
 
 const initialState: State = {
     initialized: false,
@@ -54,7 +56,6 @@ const initialState: State = {
     browserState: {},
     acquiringDevice: false,
 };
-
 
 export default function connect(state: State = initialState, action: Action): State {
     switch (action.type) {

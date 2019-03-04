@@ -19,13 +19,13 @@ import PinInput from './components/Input';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    device: TrezorDevice;
-    onPinSubmit: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onPinSubmit'>;
-}
+    device: TrezorDevice,
+    onPinSubmit: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onPinSubmit'>,
+};
 
 type State = {
-    pin: string;
-}
+    pin: string,
+};
 
 const Wrapper = styled.div`
     padding: 30px 48px;
@@ -78,13 +78,13 @@ class Pin extends PureComponent<Props, State> {
                 pin,
             });
         }
-    }
+    };
 
     onPinBackspace = (): void => {
         this.setState(previousState => ({
             pin: previousState.pin.substring(0, previousState.pin.length - 1),
         }));
-    }
+    };
 
     keyboardHandler(event: KeyboardEvent): void {
         const { onPinSubmit } = this.props;
@@ -138,7 +138,8 @@ class Pin extends PureComponent<Props, State> {
             case 105:
                 this.onPinAdd(9);
                 break;
-            default: break;
+            default:
+                break;
         }
     }
 
@@ -155,24 +156,44 @@ class Pin extends PureComponent<Props, State> {
                         values={{ deviceLabel: device.label }}
                     />
                 </H2>
-                <P isSmaller><FormattedMessage {...l10nMessages.TR_THE_PIN_LAYOUT_IS_DISPLAYED_ON} /></P>
+                <P isSmaller>
+                    <FormattedMessage {...l10nMessages.TR_THE_PIN_LAYOUT_IS_DISPLAYED_ON} />
+                </P>
                 <InputRow>
                     <PinInput value={pin} onDeleteClick={() => this.onPinBackspace()} />
                 </InputRow>
                 <PinRow>
-                    <PinButton type="button" data-value="7" onClick={() => this.onPinAdd(7)}>&#8226; </PinButton>
-                    <PinButton type="button" data-value="8" onClick={() => this.onPinAdd(8)}>&#8226;</PinButton>
-                    <PinButton type="button" data-value="9" onClick={() => this.onPinAdd(9)}>&#8226;</PinButton>
+                    <PinButton type="button" data-value="7" onClick={() => this.onPinAdd(7)}>
+                        &#8226;{' '}
+                    </PinButton>
+                    <PinButton type="button" data-value="8" onClick={() => this.onPinAdd(8)}>
+                        &#8226;
+                    </PinButton>
+                    <PinButton type="button" data-value="9" onClick={() => this.onPinAdd(9)}>
+                        &#8226;
+                    </PinButton>
                 </PinRow>
                 <PinRow>
-                    <PinButton type="button" data-value="4" onClick={() => this.onPinAdd(4)}>&#8226; </PinButton>
-                    <PinButton type="button" data-value="5" onClick={() => this.onPinAdd(5)}>&#8226;</PinButton>
-                    <PinButton type="button" data-value="6" onClick={() => this.onPinAdd(6)}>&#8226;</PinButton>
+                    <PinButton type="button" data-value="4" onClick={() => this.onPinAdd(4)}>
+                        &#8226;{' '}
+                    </PinButton>
+                    <PinButton type="button" data-value="5" onClick={() => this.onPinAdd(5)}>
+                        &#8226;
+                    </PinButton>
+                    <PinButton type="button" data-value="6" onClick={() => this.onPinAdd(6)}>
+                        &#8226;
+                    </PinButton>
                 </PinRow>
                 <PinRow>
-                    <PinButton type="button" data-value="1" onClick={() => this.onPinAdd(1)}>&#8226; </PinButton>
-                    <PinButton type="button" data-value="2" onClick={() => this.onPinAdd(2)}>&#8226;</PinButton>
-                    <PinButton type="button" data-value="3" onClick={() => this.onPinAdd(3)}>&#8226;</PinButton>
+                    <PinButton type="button" data-value="1" onClick={() => this.onPinAdd(1)}>
+                        &#8226;{' '}
+                    </PinButton>
+                    <PinButton type="button" data-value="2" onClick={() => this.onPinAdd(2)}>
+                        &#8226;
+                    </PinButton>
+                    <PinButton type="button" data-value="3" onClick={() => this.onPinAdd(3)}>
+                        &#8226;
+                    </PinButton>
                 </PinRow>
                 <Footer>
                     <Button type="button" onClick={() => onPinSubmit(pin)}>

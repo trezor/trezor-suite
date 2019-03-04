@@ -33,7 +33,9 @@ type DispatchProps = {
 
 export type Props = StateProps & DispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     modal: state.modal,
     accounts: state.accounts,
     devices: state.devices,
@@ -46,12 +48,17 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     wallet: state.wallet,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
+    dispatch: Dispatch
+): DispatchProps => ({
     modalActions: bindActionCreators(ModalActions, dispatch),
     receiveActions: bindActionCreators(ReceiveActions, dispatch),
 });
 
 // export default connect(mapStateToProps, mapDispatchToProps)(Modal);
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(Modal),
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(Modal)
 );

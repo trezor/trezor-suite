@@ -11,8 +11,8 @@ import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
 
 type Props = {
-    device: TrezorDevice;
-}
+    device: TrezorDevice,
+};
 
 const Wrapper = styled.div``;
 
@@ -34,6 +34,5 @@ const ConfirmAction = (props: Props) => (
 ConfirmAction.propTypes = {
     device: PropTypes.object.isRequired,
 };
-
 
 export default ConfirmAction;

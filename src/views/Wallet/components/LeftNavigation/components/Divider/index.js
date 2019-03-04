@@ -12,24 +12,20 @@ const Wrapper = styled.div`
     font-size: ${FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
     background: ${colors.LANDING};
-    ${props => props.hasBorder && css`
-        border-top: 1px solid ${colors.BODY};
-        border-bottom: 1px solid ${colors.BODY};
-    `}
+    ${props =>
+        props.hasBorder &&
+        css`
+            border-top: 1px solid ${colors.BODY};
+            border-bottom: 1px solid ${colors.BODY};
+        `}
 `;
 
 const TextLeft = styled.p`
     font-weight: ${FONT_WEIGHT.MEDIUM};
 `;
 
-const Divider = ({
-    textLeft, textRight, hasBorder = false, className, testId,
-}) => (
-    <Wrapper
-        data-test={testId}
-        hasBorder={hasBorder}
-        className={className}
-    >
+const Divider = ({ textLeft, textRight, hasBorder = false, className, testId }) => (
+    <Wrapper data-test={testId} hasBorder={hasBorder} className={className}>
         <TextLeft>{textLeft}</TextLeft>
         <p>{textRight}</p>
     </Wrapper>

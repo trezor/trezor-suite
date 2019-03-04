@@ -83,7 +83,7 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
         this.setState({
             wrapper: element,
         });
-    }
+    };
 
     wrapper: ?HTMLElement;
 
@@ -93,23 +93,36 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
         const { network } = this.props.selectedAccount;
         if (!network) return null;
 
-        const basePath = `/device/${state.device}/network/${state.network}/account/${state.account}`;
+        const basePath = `/device/${state.device}/network/${state.network}/account/${
+            state.account
+        }`;
 
         return (
             <Wrapper className="account-tabs" ref={this.wrapperRefCallback}>
-                <StyledNavLink exact to={`${basePath}`}><FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} /></StyledNavLink>
-                <StyledNavLink to={`${basePath}/receive`}><FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} /></StyledNavLink>
-                <StyledNavLink to={`${basePath}/send`}><FormattedMessage {...l10nMessages.TR_NAV_SEND} /></StyledNavLink>
-                {network.type === 'ethereum'
-                    && <StyledNavLink to={`${basePath}/signverify`}><FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} /></StyledNavLink>
-                }
+                <StyledNavLink exact to={`${basePath}`}>
+                    <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />
+                </StyledNavLink>
+                <StyledNavLink to={`${basePath}/receive`}>
+                    <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />
+                </StyledNavLink>
+                <StyledNavLink to={`${basePath}/send`}>
+                    <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
+                </StyledNavLink>
+                {network.type === 'ethereum' && (
+                    <StyledNavLink to={`${basePath}/signverify`}>
+                        <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
+                    </StyledNavLink>
+                )}
                 <Indicator pathname={pathname} wrapper={() => this.state.wrapper} />
             </Wrapper>
         );
     }
 }
 
-export default connect((state: State): Props => ({
-    router: state.router,
-    selectedAccount: state.selectedAccount,
-}), null)(TopNavigationAccount);
+export default connect(
+    (state: State): Props => ({
+        router: state.router,
+        selectedAccount: state.selectedAccount,
+    }),
+    null
+)(TopNavigationAccount);

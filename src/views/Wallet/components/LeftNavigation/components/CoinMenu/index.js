@@ -37,7 +37,7 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     getOtherCoins() {
-        return coins.map((coin) => {
+        return coins.map(coin => {
             const row = (
                 <RowCoin
                     network={{
@@ -52,8 +52,20 @@ class CoinMenu extends PureComponent<Props> {
                 />
             );
 
-            if (coin.external) return <ExternalWallet key={coin.id} onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}>{row}</ExternalWallet>;
-            return <Link key={coin.id} href={coin.url} target="_top">{row}</Link>;
+            if (coin.external)
+                return (
+                    <ExternalWallet
+                        key={coin.id}
+                        onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}
+                    >
+                        {row}
+                    </ExternalWallet>
+                );
+            return (
+                <Link key={coin.id} href={coin.url} target="_top">
+                    {row}
+                </Link>
+            );
         });
     }
 

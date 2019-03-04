@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import HDKey from 'hdkey';
 
 import * as DISCOVERY from 'actions/constants/discovery';
@@ -18,20 +17,20 @@ import type {
 import type { Account } from './AccountsReducer';
 
 export type Discovery = {
-    network: string;
-    basePath: Array<number>;
-    deviceState: string;
-    accountIndex: number;
-    interrupted: boolean;
-    completed: boolean;
-    waitingForDevice: boolean;
-    waitingForBlockchain: boolean;
-    fwNotSupported: boolean;
-    fwOutdated: boolean;
+    network: string,
+    basePath: Array<number>,
+    deviceState: string,
+    accountIndex: number,
+    interrupted: boolean,
+    completed: boolean,
+    waitingForDevice: boolean,
+    waitingForBlockchain: boolean,
+    fwNotSupported: boolean,
+    fwOutdated: boolean,
 
-    publicKey: string; // used in ethereum only
-    chainCode: string; // used in ethereum only
-    hdKey: HDKey; // used in ethereum only
+    publicKey: string, // used in ethereum only
+    chainCode: string, // used in ethereum only
+    hdKey: HDKey, // used in ethereum only
 };
 
 export type State = Array<Discovery>;
@@ -53,7 +52,8 @@ const defaultDiscovery: Discovery = {
     hdKey: null,
 };
 
-const findIndex = (state: State, network: string, deviceState: string): number => state.findIndex(d => d.network === network && d.deviceState === deviceState);
+const findIndex = (state: State, network: string, deviceState: string): number =>
+    state.findIndex(d => d.network === network && d.deviceState === deviceState);
 
 const start = (state: State, action: DiscoveryStartAction): State => {
     const deviceState: string = action.device.state || '0';
@@ -99,11 +99,12 @@ const accountCreate = (state: State, account: Account): State => {
     return newState;
 };
 
-const forgetDiscovery = (state: State, device: TrezorDevice): State => state.filter(d => d.deviceState !== device.state);
+const forgetDiscovery = (state: State, device: TrezorDevice): State =>
+    state.filter(d => d.deviceState !== device.state);
 
 const clear = (state: State, devices: Array<TrezorDevice>): State => {
     let newState: State = [...state];
-    devices.forEach((d) => {
+    devices.forEach(d => {
         newState = forgetDiscovery(newState, d);
     });
     return newState;
@@ -163,7 +164,9 @@ const waitingForBlockchain = (state: State, action: DiscoveryWaitingAction): Sta
 };
 
 const notSupported = (state: State, action: DiscoveryWaitingAction): State => {
-    const affectedProcesses = state.filter(d => d.deviceState === action.device.state && d.network === action.network);
+    const affectedProcesses = state.filter(
+        d => d.deviceState === action.device.state && d.network === action.network
+    );
     const otherProcesses = state.filter(d => affectedProcesses.indexOf(d) === -1);
 
     const changedProcesses = affectedProcesses.map(d => ({
@@ -194,7 +197,7 @@ export default function discovery(state: State = initialState, action: Action): 
         case DISCOVERY.FIRMWARE_OUTDATED:
             return notSupported(state, action);
         case DISCOVERY.FROM_STORAGE:
-            return action.payload.map((d) => {
+            return action.payload.map(d => {
                 if (d.publicKey.length < 1) return d;
                 // recreate ethereum discovery HDKey
                 // deprecated: will be removed after switching to blockbook

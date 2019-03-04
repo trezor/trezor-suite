@@ -6,38 +6,37 @@ import * as ACCOUNT from 'actions/constants/account';
 import type { Action } from 'flowtype';
 
 export type FeeLevel = {
-    label: string;
-    fee: string;
-    value: string;
-}
+    label: string,
+    fee: string,
+    value: string,
+};
 
 export type State = {
-    +networkName: string;
-    +networkSymbol: string;
+    +networkName: string,
+    +networkSymbol: string,
 
     // form fields
-    advanced: boolean;
-    untouched: boolean; // set to true when user made any changes in form
-    touched: {[k: string]: boolean};
-    address: string;
-    amount: string;
-    minAmount: string;
-    setMax: boolean;
-    feeLevels: Array<FeeLevel>;
-    selectedFeeLevel: FeeLevel;
-    fee: string;
-    feeNeedsUpdate: boolean;
-    sequence: string;
-    destinationTag: string;
-    total: string;
+    advanced: boolean,
+    untouched: boolean, // set to true when user made any changes in form
+    touched: { [k: string]: boolean },
+    address: string,
+    amount: string,
+    minAmount: string,
+    setMax: boolean,
+    feeLevels: Array<FeeLevel>,
+    selectedFeeLevel: FeeLevel,
+    fee: string,
+    feeNeedsUpdate: boolean,
+    sequence: string,
+    destinationTag: string,
+    total: string,
 
-    errors: {[k: string]: string};
-    warnings: {[k: string]: string};
-    infos: {[k: string]: string};
+    errors: { [k: string]: string },
+    warnings: { [k: string]: string },
+    infos: { [k: string]: string },
 
-    sending: boolean;
-}
-
+    sending: boolean,
+};
 
 export const initialState: State = {
     networkName: '',

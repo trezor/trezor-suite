@@ -8,20 +8,20 @@ import { DEVICE } from 'trezor-connect';
 import type { Action } from 'flowtype';
 
 export type CallbackAction = {
-    label: string;
-    callback: Function;
-}
+    label: string,
+    callback: Function,
+};
 
 export type NotificationEntry = {
-    +key: string; // React.Key
-    +id: ?string;
-    +devicePath: ?string;
-    +type: string;
-    +title: React.Node | string;
-    +message: ?(React.Node | string);
-    +cancelable: boolean;
-    +actions: Array<CallbackAction>;
-}
+    +key: string, // React.Key
+    +id: ?string,
+    +devicePath: ?string,
+    +type: string,
+    +title: React.Node | string,
+    +message: ?(React.Node | string),
+    +cancelable: boolean,
+    +actions: Array<CallbackAction>,
+};
 
 export type State = Array<NotificationEntry>;
 
@@ -56,7 +56,8 @@ const addNotification = (state: State, payload: any): State => {
 const closeNotification = (state: State, payload: any): State => {
     if (payload && typeof payload.id === 'string') {
         return state.filter(entry => entry.id !== payload.id);
-    } if (payload && typeof payload.devicePath === 'string') {
+    }
+    if (payload && typeof payload.devicePath === 'string') {
         return state.filter(entry => entry.devicePath !== payload.devicePath);
     }
     return state.filter(entry => !entry.cancelable);

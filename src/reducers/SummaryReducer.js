@@ -1,15 +1,14 @@
 /* @flow */
 
-
 import * as ACCOUNT from 'actions/constants/account';
 import * as SUMMARY from 'actions/constants/summary';
 import type { Action } from 'flowtype';
 import type { NetworkToken } from './LocalStorageReducer';
 
 export type State = {
-    details: boolean;
-    selectedToken: ?NetworkToken;
-}
+    details: boolean,
+    selectedToken: ?NetworkToken,
+};
 
 export const initialState: State = {
     details: true,

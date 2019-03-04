@@ -1,6 +1,5 @@
 /* @flow */
 
-
 export const INIT: 'account__init' = 'account__init';
 export const DISPOSE: 'account__dispose' = 'account__dispose';
 
@@ -11,4 +10,5 @@ export const SET_BALANCE: 'account__set_balance' = 'account__set_balance';
 export const SET_NONCE: 'account__set_nonce' = 'account__set_nonce';
 export const FROM_STORAGE: 'account__from_storage' = 'account__from_storage';
 
-export const UPDATE_SELECTED_ACCOUNT: 'account__update_selected_account' = 'account__update_selected_account';
+export const UPDATE_SELECTED_ACCOUNT: 'account__update_selected_account' =
+    'account__update_selected_account';

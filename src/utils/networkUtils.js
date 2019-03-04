@@ -8,7 +8,8 @@ export const httpRequest = async (url: string, type: string = 'text'): any => {
         if (type === 'json') {
             const txt: string = await response.text();
             return JSON.parse(txt);
-        } if (type === 'binary') {
+        }
+        if (type === 'binary') {
             await response.arrayBuffer();
         }
         await response.text();

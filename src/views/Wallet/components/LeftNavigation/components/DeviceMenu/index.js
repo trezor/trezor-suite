@@ -22,10 +22,10 @@ const Wrapper = styled.div`
     position: absolute;
     z-index: 1;
     width: 100%;
-    padding-bottom: 8px; 
-    border-bottom: 1px solid #E3E3E3;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e3e3e3;
     background: white;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
     animation: ${SLIDE_DOWN} 0.25s cubic-bezier(0.17, 0.04, 0.03, 0.94) forwards;
 `;
 
@@ -58,7 +58,8 @@ class DeviceMenu extends PureComponent<Props> {
         window.addEventListener('mousedown', this.mouseDownHandler, false);
         // window.addEventListener('blur', this.blurHandler, false);
         const { transport } = this.props.connect;
-        if (transport.type && transport.version.indexOf('webusb') >= 0) TrezorConnect.renderWebUSBButton();
+        if (transport.type && transport.version.indexOf('webusb') >= 0)
+            TrezorConnect.renderWebUSBButton();
     }
 
     componentDidUpdate() {
@@ -82,7 +83,12 @@ class DeviceMenu extends PureComponent<Props> {
         let elem: any = (event.target: any);
         let block: boolean = false;
         while (elem.parentElement) {
-            if (elem.tagName.toLowerCase() === 'aside' || (elem.className && elem.className.indexOf && elem.className.indexOf('modal-container') >= 0)) {
+            if (
+                elem.tagName.toLowerCase() === 'aside' ||
+                (elem.className &&
+                    elem.className.indexOf &&
+                    elem.className.indexOf('modal-container') >= 0)
+            ) {
                 block = true;
                 break;
             }
@@ -107,7 +113,7 @@ class DeviceMenu extends PureComponent<Props> {
         return deviceUtils.isDeviceAccessible(this.props.wallet.selectedDevice);
     }
 
-    myRef: { current: ?HTMLDivElement }
+    myRef: { current: ?HTMLDivElement };
 
     render() {
         const { devices, onSelectDevice, forgetDevice } = this.props;

@@ -1,41 +1,45 @@
 /* @flow */
 import TrezorConnect from 'trezor-connect';
-import type {
-    GetState, Dispatch, ThunkAction, AsyncAction,
-} from 'flowtype';
+import type { GetState, Dispatch, ThunkAction, AsyncAction } from 'flowtype';
 import { validateAddress } from 'utils/ethUtils';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SIGN_VERIFY from './constants/signVerify';
 
-export type SignVerifyAction = {
-    type: typeof SIGN_VERIFY.SIGN_SUCCESS,
-    signSignature: string
-} | {
-    type: typeof SIGN_VERIFY.CLEAR_SIGN,
-} | {
-    type: typeof SIGN_VERIFY.CLEAR_VERIFY,
-} | {
-    type: typeof SIGN_VERIFY.INPUT_CHANGE,
-    inputName: string,
-    value: string
-} | {
-    type: typeof SIGN_VERIFY.TOUCH,
-    inputName: string,
-} | {
-    type: typeof SIGN_VERIFY.ERROR,
-    inputName: string,
-    message: ?string
-} | {
-    type: typeof SIGN_VERIFY.ERROR,
-    inputName: string,
-    message: ?string
-}
+export type SignVerifyAction =
+    | {
+          type: typeof SIGN_VERIFY.SIGN_SUCCESS,
+          signSignature: string,
+      }
+    | {
+          type: typeof SIGN_VERIFY.CLEAR_SIGN,
+      }
+    | {
+          type: typeof SIGN_VERIFY.CLEAR_VERIFY,
+      }
+    | {
+          type: typeof SIGN_VERIFY.INPUT_CHANGE,
+          inputName: string,
+          value: string,
+      }
+    | {
+          type: typeof SIGN_VERIFY.TOUCH,
+          inputName: string,
+      }
+    | {
+          type: typeof SIGN_VERIFY.ERROR,
+          inputName: string,
+          message: ?string,
+      }
+    | {
+          type: typeof SIGN_VERIFY.ERROR,
+          inputName: string,
+          message: ?string,
+      };
 
-const sign = (
-    path: Array<number>,
-    message: string,
-    hex: boolean = false,
-): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+const sign = (path: Array<number>, message: string, hex: boolean = false): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
 
@@ -73,7 +77,7 @@ const verify = (
     address: string,
     message: string,
     signature: string,
-    hex: boolean = false,
+    hex: boolean = false
 ): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
@@ -125,7 +129,9 @@ const verify = (
     }
 };
 
-const inputChange = (inputName: string, value: string): ThunkAction => (dispatch: Dispatch): void => {
+const inputChange = (inputName: string, value: string): ThunkAction => (
+    dispatch: Dispatch
+): void => {
     dispatch({
         type: SIGN_VERIFY.INPUT_CHANGE,
         inputName,

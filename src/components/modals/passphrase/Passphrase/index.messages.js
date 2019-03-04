@@ -13,7 +13,8 @@ const definedMessages: Messages = defineMessages({
     },
     TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA: {
         id: 'TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA',
-        defaultMessage: 'If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.',
+        defaultMessage:
+            'If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.',
     },
     TR_CONFIRM_PASSPHRASE: {
         id: 'TR_CONFIRM_PASSPHRASE',

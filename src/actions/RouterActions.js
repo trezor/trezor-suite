@@ -18,9 +18,11 @@ import type {
 import type { RouterAction } from 'connected-react-router';
 
 /*
-* Parse url string to RouterLocationState object (key/value)
-*/
-export const pathToParams = (path: string): PayloadAction<RouterLocationState> => (): RouterLocationState => {
+ * Parse url string to RouterLocationState object (key/value)
+ */
+export const pathToParams = (
+    path: string
+): PayloadAction<RouterLocationState> => (): RouterLocationState => {
     // split url into parts
     const parts: Array<string> = path.split('/').slice(1);
     const params: RouterLocationState = {};
@@ -46,10 +48,13 @@ export const pathToParams = (path: string): PayloadAction<RouterLocationState> =
 };
 
 /*
-* RouterLocationState validation
-* Check if requested device or network exists in reducers
-*/
-export const paramsValidation = (params: RouterLocationState): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+ * RouterLocationState validation
+ * Check if requested device or network exists in reducers
+ */
+export const paramsValidation = (params: RouterLocationState): PayloadAction<boolean> => (
+    dispatch: Dispatch,
+    getState: GetState
+): boolean => {
     // validate requested device
 
     if (params.hasOwnProperty('device')) {
@@ -57,9 +62,18 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
 
         let device: ?TrezorDevice;
         if (params.hasOwnProperty('deviceInstance')) {
-            device = devices.find(d => d.features && d.features.device_id === params.device && d.instance === parseInt(params.deviceInstance, 10));
+            device = devices.find(
+                d =>
+                    d.features &&
+                    d.features.device_id === params.device &&
+                    d.instance === parseInt(params.deviceInstance, 10)
+            );
         } else {
-            device = devices.find(d => ((!d.features || d.mode === 'bootloader') && d.path === params.device) || (d.features && d.features.device_id === params.device));
+            device = devices.find(
+                d =>
+                    ((!d.features || d.mode === 'bootloader') && d.path === params.device) ||
+                    (d.features && d.features.device_id === params.device)
+            );
         }
 
         if (!device) return false;
@@ -87,12 +101,16 @@ export const paramsValidation = (params: RouterLocationState): PayloadAction<boo
 };
 
 /*
-* Composing url string from given RouterLocationState object
-* Filters unrecognized fields and sorting in correct order
-*/
-export const paramsToPath = (params: RouterLocationState): PayloadAction<?string> => (): ?string => {
+ * Composing url string from given RouterLocationState object
+ * Filters unrecognized fields and sorting in correct order
+ */
+export const paramsToPath = (
+    params: RouterLocationState
+): PayloadAction<?string> => (): ?string => {
     // get patterns (fields) from routes and sort them by complexity
-    const patterns: Array<Array<string>> = routes.map(r => r.fields).sort((a, b) => (a.length > b.length ? -1 : 1));
+    const patterns: Array<Array<string>> = routes
+        .map(r => r.fields)
+        .sort((a, b) => (a.length > b.length ? -1 : 1));
 
     // find pattern
     const keys: Array<string> = Object.keys(params);
@@ -111,7 +129,7 @@ export const paramsToPath = (params: RouterLocationState): PayloadAction<?string
 
     // compose url string from pattern
     let url: string = '';
-    patternToUse.forEach((field) => {
+    patternToUse.forEach(field => {
         if (field === params[field]) {
             // standalone (odd) fields
             url += `/${field}`;
@@ -127,7 +145,10 @@ export const paramsToPath = (params: RouterLocationState): PayloadAction<?string
     return url;
 };
 
-export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dispatch: Dispatch, getState: GetState): string => {
+export const getValidUrl = (action: RouterAction): PayloadAction<string> => (
+    dispatch: Dispatch,
+    getState: GetState
+): string => {
     const { location } = getState().router;
     const { firstLocationChange } = getState().wallet;
     // redirect to landing page (loading screen)
@@ -151,12 +172,17 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
         // example 2 (invalid blocking): url changes while passphrase modal opened because device disconnect
         const currentParams = dispatch(pathToParams(location.pathname));
         const currentParamsAreValid = dispatch(paramsValidation(currentParams));
-        if (currentParamsAreValid) { return location.pathname; }
+        if (currentParamsAreValid) {
+            return location.pathname;
+        }
     }
 
     // there are no connected devices or application isn't ready or initialization error occurred
     // redirect to landing page
-    const shouldBeLandingPage = getState().devices.length < 1 || !getState().wallet.ready || getState().connect.error !== null;
+    const shouldBeLandingPage =
+        getState().devices.length < 1 ||
+        !getState().wallet.ready ||
+        getState().connect.error !== null;
     const landingPageUrl = dispatch(isLandingPageUrl(requestedUrl));
     if (shouldBeLandingPage) {
         const landingPageRoute = dispatch(isLandingPageUrl(requestedUrl, getState().wallet.ready));
@@ -185,13 +211,17 @@ export const getValidUrl = (action: RouterAction): PayloadAction<string> => (dis
 };
 
 /*
-* Compose url from requested device object and returns url
-*/
-const getDeviceUrl = (device: TrezorDevice | Device): PayloadAction<?string> => (dispatch: Dispatch, getState: GetState): ?string => {
+ * Compose url from requested device object and returns url
+ */
+const getDeviceUrl = (device: TrezorDevice | Device): PayloadAction<?string> => (
+    dispatch: Dispatch,
+    getState: GetState
+): ?string => {
     let url: ?string;
     if (!device.features) {
         url = `/device/${device.path}/${device.type === 'unreadable' ? 'unreadable' : 'acquire'}`;
-    } else if (device.mode === 'bootloader') { // device in bootloader doesn't have device_id
+    } else if (device.mode === 'bootloader') {
+        // device in bootloader doesn't have device_id
         url = `/device/${device.path}/bootloader`;
     } else if (device.mode === 'initialize') {
         url = `/device/${device.features.device_id}/initialize`;
@@ -207,7 +237,9 @@ const getDeviceUrl = (device: TrezorDevice | Device): PayloadAction<?string> => 
         if (!device.hasOwnProperty('ts')) {
             // it is device from trezor-connect triggered by DEVICE.CONNECT event
             // need to lookup if there are unavailable instances
-            const available: Array<TrezorDevice> = getState().devices.filter(d => d.path === device.path);
+            const available: Array<TrezorDevice> = getState().devices.filter(
+                d => d.path === device.path
+            );
             const latest: Array<TrezorDevice> = sortDevices(available);
             if (latest.length > 0 && latest[0].instance) {
                 url += `:${latest[0].instance}`;
@@ -218,13 +250,16 @@ const getDeviceUrl = (device: TrezorDevice | Device): PayloadAction<?string> => 
 };
 
 /*
-* Try to find first available device using order:
-* 1. First unacquired
-* 2. First connected
-* 3. Saved with latest timestamp
-* OR redirect to landing page
-*/
-export const getFirstAvailableDeviceUrl = (): PayloadAction<?string> => (dispatch: Dispatch, getState: GetState): ?string => {
+ * Try to find first available device using order:
+ * 1. First unacquired
+ * 2. First connected
+ * 3. Saved with latest timestamp
+ * OR redirect to landing page
+ */
+export const getFirstAvailableDeviceUrl = (): PayloadAction<?string> => (
+    dispatch: Dispatch,
+    getState: GetState
+): ?string => {
     const { devices } = getState();
     let url: ?string;
     if (devices.length > 0) {
@@ -241,20 +276,24 @@ export const getFirstAvailableDeviceUrl = (): PayloadAction<?string> => (dispatc
 };
 
 /*
-* Utility used in "getDeviceUrl" and "getFirstAvailableDeviceUrl"
-* sorting device array by "ts" (timestamp) field
-*/
-const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> => devices.sort((a, b) => {
-    if (!a.ts || !b.ts) {
-        return -1;
-    }
-    return a.ts > b.ts ? -1 : 1;
-});
+ * Utility used in "getDeviceUrl" and "getFirstAvailableDeviceUrl"
+ * sorting device array by "ts" (timestamp) field
+ */
+const sortDevices = (devices: Array<TrezorDevice>): Array<TrezorDevice> =>
+    devices.sort((a, b) => {
+        if (!a.ts || !b.ts) {
+            return -1;
+        }
+        return a.ts > b.ts ? -1 : 1;
+    });
 
 /*
-* Redirect to requested device
-*/
-export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+ * Redirect to requested device
+ */
+export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     if (dispatch(setInitialUrl())) return;
 
     const url: ?string = dispatch(getDeviceUrl(device));
@@ -262,20 +301,30 @@ export const selectDevice = (device: TrezorDevice | Device): ThunkAction => (dis
 
     const currentParams: RouterLocationState = getState().router.location.state;
     const requestedParams = dispatch(pathToParams(url));
-    if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
+    if (
+        currentParams.device !== requestedParams.device ||
+        currentParams.deviceInstance !== requestedParams.deviceInstance
+    ) {
         dispatch(goto(url));
     }
 };
 
 /*
-* Redirect to first device or landing page
-*/
-export const selectFirstAvailableDevice = (gotoRoot: boolean = false): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+ * Redirect to first device or landing page
+ */
+export const selectFirstAvailableDevice = (gotoRoot: boolean = false): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const url = dispatch(getFirstAvailableDeviceUrl());
     if (url) {
         const currentParams = getState().router.location.state;
         const requestedParams = dispatch(pathToParams(url));
-        if (gotoRoot || currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
+        if (
+            gotoRoot ||
+            currentParams.device !== requestedParams.device ||
+            currentParams.deviceInstance !== requestedParams.deviceInstance
+        ) {
             dispatch(goto(url));
         }
     } else {
@@ -284,8 +333,8 @@ export const selectFirstAvailableDevice = (gotoRoot: boolean = false): ThunkActi
 };
 
 /*
-* Internal method. redirect to given url
-*/
+ * Internal method. redirect to given url
+ */
 const goto = (url: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     if (getState().router.location.pathname !== url) {
         dispatch(push(url));
@@ -293,15 +342,20 @@ const goto = (url: string): ThunkAction => (dispatch: Dispatch, getState: GetSta
 };
 
 /*
-* Check if requested OR current url is landing page
-*/
-export const isLandingPageUrl = ($url?: string, checkRoutes: boolean = false): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+ * Check if requested OR current url is landing page
+ */
+export const isLandingPageUrl = (
+    $url?: string,
+    checkRoutes: boolean = false
+): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
     let url: ?string = $url;
     if (typeof url !== 'string') {
         url = getState().router.location.pathname;
     }
     if (checkRoutes) {
-        const isLandingRoute = routes.find(r => r.pattern === url && r.name.indexOf('landing') >= 0);
+        const isLandingRoute = routes.find(
+            r => r.pattern === url && r.name.indexOf('landing') >= 0
+        );
         if (isLandingRoute) {
             return true;
         }
@@ -310,8 +364,8 @@ export const isLandingPageUrl = ($url?: string, checkRoutes: boolean = false): P
 };
 
 /*
-* Try to redirect to landing page
-*/
+ * Try to redirect to landing page
+ */
 export const gotoLandingPage = (): ThunkAction => (dispatch: Dispatch): void => {
     const isLandingPage = dispatch(isLandingPageUrl());
     if (!isLandingPage) {
@@ -320,61 +374,76 @@ export const gotoLandingPage = (): ThunkAction => (dispatch: Dispatch): void => 
 };
 
 /*
-* Go to given device settings page
-*/
-export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (dispatch: Dispatch): void => {
+ * Go to given device settings page
+ */
+export const gotoDeviceSettings = (device: TrezorDevice): ThunkAction => (
+    dispatch: Dispatch
+): void => {
     if (device.features) {
-        const devUrl: string = `${device.features.device_id}${device.instance ? `:${device.instance}` : ''}`;
+        const devUrl: string = `${device.features.device_id}${
+            device.instance ? `:${device.instance}` : ''
+        }`;
         dispatch(goto(`/device/${devUrl}/settings`));
     }
 };
 
 /*
-* Go to UpdateBridge page
-*/
+ * Go to UpdateBridge page
+ */
 export const gotoBridgeUpdate = (): ThunkAction => (dispatch: Dispatch): void => {
     dispatch(goto('/bridge'));
 };
 
 /*
-* Go to UpdateFirmware page
-* Called from App notification
-*/
-export const gotoFirmwareUpdate = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+ * Go to UpdateFirmware page
+ * Called from App notification
+ */
+export const gotoFirmwareUpdate = (): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const { selectedDevice } = getState().wallet;
     if (!selectedDevice || !selectedDevice.features) return;
-    const devUrl: string = `${selectedDevice.features.device_id}${selectedDevice.instance ? `:${selectedDevice.instance}` : ''}`;
+    const devUrl: string = `${selectedDevice.features.device_id}${
+        selectedDevice.instance ? `:${selectedDevice.instance}` : ''
+    }`;
     dispatch(goto(`/device/${devUrl}/firmware-update`));
 };
 
 /*
-* Go to NoBackup page
-*/
+ * Go to NoBackup page
+ */
 export const gotoBackup = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const { selectedDevice } = getState().wallet;
     if (!selectedDevice || !selectedDevice.features) return;
-    const devUrl: string = `${selectedDevice.features.device_id}${selectedDevice.instance ? `:${selectedDevice.instance}` : ''}`;
+    const devUrl: string = `${selectedDevice.features.device_id}${
+        selectedDevice.instance ? `:${selectedDevice.instance}` : ''
+    }`;
     dispatch(goto(`/device/${devUrl}/backup`));
 };
 
-
 /*
-* Try to redirect to initial url
-*/
-export const setInitialUrl = (): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+ * Try to redirect to initial url
+ */
+export const setInitialUrl = (): PayloadAction<boolean> => (
+    dispatch: Dispatch,
+    getState: GetState
+): boolean => {
     const { initialPathname } = getState().wallet;
     if (typeof initialPathname === 'string' && !dispatch(isLandingPageUrl(initialPathname, true))) {
-        const valid = dispatch(getValidUrl({
-            type: LOCATION_CHANGE,
-            payload: {
-                location: {
-                    pathname: initialPathname,
-                    hash: '',
-                    search: '',
-                    state: {},
+        const valid = dispatch(
+            getValidUrl({
+                type: LOCATION_CHANGE,
+                payload: {
+                    location: {
+                        pathname: initialPathname,
+                        hash: '',
+                        search: '',
+                        state: {},
+                    },
                 },
-            },
-        }));
+            })
+        );
 
         if (valid === initialPathname) {
             // reset initial url

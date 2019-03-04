@@ -1,6 +1,5 @@
 /* @flow */
 
-
 export const START: 'web3__start' = 'web3__start';
 export const STOP: 'web3__stop' = 'web3__stop';
 export const CREATE: 'web3__create' = 'web3__create';

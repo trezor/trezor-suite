@@ -7,30 +7,33 @@ import { findDevice, getPendingAmount, findToken } from 'reducers/utils';
 import * as SEND from 'actions/constants/send';
 import * as ethUtils from 'utils/ethUtils';
 
-import type {
-    Dispatch,
-    GetState,
-    PayloadAction,
-} from 'flowtype';
+import type { Dispatch, GetState, PayloadAction } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormEthereumReducer';
 
 // general regular expressions
 const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
 const UPPERCASE_RE = new RegExp('^(.*[A-Z].*)$');
 const ABS_RE = new RegExp('^[0-9]+$');
-const ETH_18_RE = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
+const ETH_18_RE = new RegExp(
+    '^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$'
+);
 const dynamicRegexp = (decimals: number): RegExp => {
     if (decimals > 0) {
-        return new RegExp(`^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?|\\.[0-9]{1,${decimals}})$`);
+        return new RegExp(
+            `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?|\\.[0-9]{1,${decimals}})$`
+        );
     }
     return ABS_RE;
 };
 
 /*
-* Called from SendFormActions.observe
-* Reaction for WEB3.GAS_PRICE_UPDATED action
-*/
-export const onGasPriceUpdated = (network: string, gasPrice: string): PayloadAction<void> => (dispatch: Dispatch, getState: GetState): void => {
+ * Called from SendFormActions.observe
+ * Reaction for WEB3.GAS_PRICE_UPDATED action
+ */
+export const onGasPriceUpdated = (network: string, gasPrice: string): PayloadAction<void> => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     // testing random data
     // function getRandomInt(min, max) {
     //     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -77,9 +80,12 @@ export const onGasPriceUpdated = (network: string, gasPrice: string): PayloadAct
 };
 
 /*
-* Recalculate amount, total and fees
-*/
-export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Recalculate amount, total and fees
+ */
+export const validation = (): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     // clone deep nested object
     // to avoid overrides across state history
     let state: State = JSON.parse(JSON.stringify(getState().sendFormEthereum));
@@ -99,12 +105,11 @@ export const validation = (): PayloadAction<State> => (dispatch: Dispatch, getSt
     return state;
 };
 
-export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
-    const {
-        account,
-        tokens,
-        pending,
-    } = getState().selectedAccount;
+export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
+    const { account, tokens, pending } = getState().selectedAccount;
     if (!account) return $state;
 
     const state = { ...$state };
@@ -113,7 +118,12 @@ export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
     if (state.setMax) {
         const pendingAmount = getPendingAmount(pending, state.currency, isToken);
         if (isToken) {
-            const token = findToken(tokens, account.descriptor, state.currency, account.deviceState);
+            const token = findToken(
+                tokens,
+                account.descriptor,
+                state.currency,
+                account.deviceState
+            );
             if (token) {
                 state.amount = new BigNumber(token.balance).minus(pendingAmount).toFixed();
             }
@@ -140,8 +150,8 @@ export const updateCustomFeeLabel = ($state: State): PayloadAction<State> => ():
 };
 
 /*
-* Address value validation
-*/
+ * Address value validation
+ */
 export const addressValidation = ($state: State): PayloadAction<State> => (): State => {
     const state = { ...$state };
     if (!state.touched.address) return state;
@@ -159,36 +169,52 @@ export const addressValidation = ($state: State): PayloadAction<State> => (): St
 };
 
 /*
-* Address label assignation
-*/
-export const addressLabel = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Address label assignation
+ */
+export const addressLabel = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.address || state.errors.address) return state;
 
-    const {
-        account,
-        network,
-    } = getState().selectedAccount;
+    const { account, network } = getState().selectedAccount;
     if (!account || !network) return state;
     const { address } = state;
 
-    const savedAccounts = getState().accounts.filter(a => a.descriptor.toLowerCase() === address.toLowerCase());
+    const savedAccounts = getState().accounts.filter(
+        a => a.descriptor.toLowerCase() === address.toLowerCase()
+    );
     if (savedAccounts.length > 0) {
         // check if found account belongs to this network
         const currentNetworkAccount = savedAccounts.find(a => a.network === network.shortcut);
         if (currentNetworkAccount) {
-            const device = findDevice(getState().devices, currentNetworkAccount.deviceID, currentNetworkAccount.deviceState);
+            const device = findDevice(
+                getState().devices,
+                currentNetworkAccount.deviceID,
+                currentNetworkAccount.deviceState
+            );
             if (device) {
-                state.infos.address = `${device.instanceLabel} Account #${(currentNetworkAccount.index + 1)}`;
+                state.infos.address = `${
+                    device.instanceLabel
+                } Account #${currentNetworkAccount.index + 1}`;
             }
         } else {
             // corner-case: the same derivation path is used on different networks
             const otherNetworkAccount = savedAccounts[0];
-            const device = findDevice(getState().devices, otherNetworkAccount.deviceID, otherNetworkAccount.deviceState);
+            const device = findDevice(
+                getState().devices,
+                otherNetworkAccount.deviceID,
+                otherNetworkAccount.deviceState
+            );
             const { networks } = getState().localStorage.config;
             const otherNetwork = networks.find(c => c.shortcut === otherNetworkAccount.network);
             if (device && otherNetwork) {
-                state.warnings.address = `Looks like it's ${device.instanceLabel} Account #${(otherNetworkAccount.index + 1)} address of ${otherNetwork.name} network`;
+                state.warnings.address = `Looks like it's ${
+                    device.instanceLabel
+                } Account #${otherNetworkAccount.index + 1} address of ${
+                    otherNetwork.name
+                } network`;
             }
         }
     }
@@ -197,17 +223,16 @@ export const addressLabel = ($state: State): PayloadAction<State> => (dispatch: 
 };
 
 /*
-* Amount value validation
-*/
-export const amountValidation = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Amount value validation
+ */
+export const amountValidation = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.amount) return state;
 
-    const {
-        account,
-        tokens,
-        pending,
-    } = getState().selectedAccount;
+    const { account, tokens, pending } = getState().selectedAccount;
     if (!account) return state;
 
     const { amount } = state;
@@ -220,7 +245,12 @@ export const amountValidation = ($state: State): PayloadAction<State> => (dispat
         const pendingAmount: BigNumber = getPendingAmount(pending, state.currency, isToken);
 
         if (isToken) {
-            const token = findToken(tokens, account.descriptor, state.currency, account.deviceState);
+            const token = findToken(
+                tokens,
+                account.descriptor,
+                state.currency,
+                account.deviceState
+            );
             if (!token) return state;
             const decimalRegExp = dynamicRegexp(parseInt(token.decimals, 0));
 
@@ -228,14 +258,22 @@ export const amountValidation = ($state: State): PayloadAction<State> => (dispat
                 state.errors.amount = `Maximum ${token.decimals} decimals allowed`;
             } else if (new BigNumber(state.total).isGreaterThan(account.balance)) {
                 state.errors.amount = `Not enough ${state.networkSymbol} to cover transaction fee`;
-            } else if (new BigNumber(state.amount).isGreaterThan(new BigNumber(token.balance).minus(pendingAmount))) {
+            } else if (
+                new BigNumber(state.amount).isGreaterThan(
+                    new BigNumber(token.balance).minus(pendingAmount)
+                )
+            ) {
                 state.errors.amount = 'Not enough funds';
             } else if (new BigNumber(state.amount).isLessThanOrEqualTo('0')) {
                 state.errors.amount = 'Amount is too low';
             }
         } else if (!state.amount.match(ETH_18_RE)) {
             state.errors.amount = 'Maximum 18 decimals allowed';
-        } else if (new BigNumber(state.total).isGreaterThan(new BigNumber(account.balance).minus(pendingAmount))) {
+        } else if (
+            new BigNumber(state.total).isGreaterThan(
+                new BigNumber(account.balance).minus(pendingAmount)
+            )
+        ) {
             state.errors.amount = 'Not enough funds';
         }
     }
@@ -243,15 +281,16 @@ export const amountValidation = ($state: State): PayloadAction<State> => (dispat
 };
 
 /*
-* Gas limit value validation
-*/
-export const gasLimitValidation = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Gas limit value validation
+ */
+export const gasLimitValidation = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.gasLimit) return state;
 
-    const {
-        network,
-    } = getState().selectedAccount;
+    const { network } = getState().selectedAccount;
     if (!network) return state;
 
     const { gasLimit } = state;
@@ -263,7 +302,13 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (disp
         const gl: BigNumber = new BigNumber(gasLimit);
         if (gl.isLessThan(1)) {
             state.errors.gasLimit = 'Gas limit is too low';
-        } else if (gl.isLessThan(state.currency !== state.networkSymbol ? network.defaultGasLimitTokens : network.defaultGasLimit)) {
+        } else if (
+            gl.isLessThan(
+                state.currency !== state.networkSymbol
+                    ? network.defaultGasLimitTokens
+                    : network.defaultGasLimit
+            )
+        ) {
             state.warnings.gasLimit = 'Gas limit is below recommended';
         }
     }
@@ -271,8 +316,8 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (disp
 };
 
 /*
-* Gas price value validation
-*/
+ * Gas price value validation
+ */
 export const gasPriceValidation = ($state: State): PayloadAction<State> => (): State => {
     const state = { ...$state };
     if (!state.touched.gasPrice) return state;
@@ -294,15 +339,16 @@ export const gasPriceValidation = ($state: State): PayloadAction<State> => (): S
 };
 
 /*
-* Nonce value validation
-*/
-export const nonceValidation = ($state: State): PayloadAction<State> => (dispatch: Dispatch, getState: GetState): State => {
+ * Nonce value validation
+ */
+export const nonceValidation = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.nonce) return state;
 
-    const {
-        account,
-    } = getState().selectedAccount;
+    const { account } = getState().selectedAccount;
     if (!account || account.networkType !== 'ethereum') return state;
 
     const { nonce } = state;
@@ -322,8 +368,8 @@ export const nonceValidation = ($state: State): PayloadAction<State> => (dispatc
 };
 
 /*
-* Gas price value validation
-*/
+ * Gas price value validation
+ */
 export const dataValidation = ($state: State): PayloadAction<State> => (): State => {
     const state = { ...$state };
     if (!state.touched.data || state.data.length === 0) return state;
@@ -334,12 +380,16 @@ export const dataValidation = ($state: State): PayloadAction<State> => (): State
 };
 
 /*
-* UTILITIES
-*/
+ * UTILITIES
+ */
 
 export const calculateFee = (gasPrice: string, gasLimit: string): string => {
     try {
-        return EthereumjsUnits.convert(new BigNumber(gasPrice).times(gasLimit).toFixed(), 'gwei', 'ether');
+        return EthereumjsUnits.convert(
+            new BigNumber(gasPrice).times(gasLimit).toFixed(),
+            'gwei',
+            'ether'
+        );
     } catch (error) {
         return '0';
     }
@@ -358,7 +408,11 @@ export const calculateTotal = (amount: string, gasPrice: string, gasLimit: strin
     }
 };
 
-export const calculateMaxAmount = (balance: BigNumber, gasPrice: string, gasLimit: string): string => {
+export const calculateMaxAmount = (
+    balance: BigNumber,
+    gasPrice: string,
+    gasLimit: string
+): string => {
     try {
         // TODO - minus pendings
         const fee = calculateFee(gasPrice, gasLimit);
@@ -370,22 +424,30 @@ export const calculateMaxAmount = (balance: BigNumber, gasPrice: string, gasLimi
     }
 };
 
-export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLimit: string, selected?: FeeLevel): Array<FeeLevel> => {
+export const getFeeLevels = (
+    symbol: string,
+    gasPrice: BigNumber | string,
+    gasLimit: string,
+    selected?: FeeLevel
+): Array<FeeLevel> => {
     const price: BigNumber = typeof gasPrice === 'string' ? new BigNumber(gasPrice) : gasPrice;
     const quarter: BigNumber = price.dividedBy(4);
     const high: string = price.plus(quarter.times(2)).toFixed();
     const low: string = price.minus(quarter.times(2)).toFixed();
 
-    const customLevel: FeeLevel = selected && selected.value === 'Custom' ? {
-        value: 'Custom',
-        gasPrice: selected.gasPrice,
-        // label: `${ calculateFee(gasPrice, gasLimit) } ${ symbol }`
-        label: `${calculateFee(selected.gasPrice, gasLimit)} ${symbol}`,
-    } : {
-        value: 'Custom',
-        gasPrice: low,
-        label: '',
-    };
+    const customLevel: FeeLevel =
+        selected && selected.value === 'Custom'
+            ? {
+                  value: 'Custom',
+                  gasPrice: selected.gasPrice,
+                  // label: `${ calculateFee(gasPrice, gasLimit) } ${ symbol }`
+                  label: `${calculateFee(selected.gasPrice, gasLimit)} ${symbol}`,
+              }
+            : {
+                  value: 'Custom',
+                  gasPrice: low,
+                  label: '',
+              };
 
     return [
         {

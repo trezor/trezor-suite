@@ -17,13 +17,21 @@ export const getSelectedDevice = (state: State): ?TrezorDevice => {
     const locationState = state.router.location.state;
     if (!locationState.device) return undefined;
 
-    const instance: ?number = locationState.deviceInstance ? parseInt(locationState.deviceInstance, 10) : undefined;
-    return state.devices.find((d) => {
+    const instance: ?number = locationState.deviceInstance
+        ? parseInt(locationState.deviceInstance, 10)
+        : undefined;
+    return state.devices.find(d => {
         if (!d.features && d.path === locationState.device) {
             return true;
-        } if (d.mode === 'bootloader' && d.path === locationState.device) {
+        }
+        if (d.mode === 'bootloader' && d.path === locationState.device) {
             return true;
-        } if (d.features && d.features.device_id === locationState.device && d.instance === instance) {
+        }
+        if (
+            d.features &&
+            d.features.device_id === locationState.device &&
+            d.instance === instance
+        ) {
             return true;
         }
         return false;
@@ -31,19 +39,30 @@ export const getSelectedDevice = (state: State): ?TrezorDevice => {
 };
 
 // find device by id and state
-export const findDevice = (devices: Array<TrezorDevice>, deviceId: string, deviceState: string /*, instance: ?number*/): ?TrezorDevice => devices.find((d) => {
-    // TODO: && (instance && d.instance === instance)
-    if (d.features && d.features.device_id === deviceId && d.state === deviceState) {
-        return true;
-    }
-    return false;
-});
+export const findDevice = (
+    devices: Array<TrezorDevice>,
+    deviceId: string,
+    deviceState: string /*, instance: ?number*/
+): ?TrezorDevice =>
+    devices.find(d => {
+        // TODO: && (instance && d.instance === instance)
+        if (d.features && d.features.device_id === deviceId && d.state === deviceState) {
+            return true;
+        }
+        return false;
+    });
 
 // get next instance number
-export const getDuplicateInstanceNumber = (devices: Array<TrezorDevice>, device: Device | TrezorDevice): number => {
+export const getDuplicateInstanceNumber = (
+    devices: Array<TrezorDevice>,
+    device: Device | TrezorDevice
+): number => {
     // find device(s) with the same features.device_id
     // and sort them by instance number
-    const affectedDevices: Array<TrezorDevice> = devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id)
+    const affectedDevices: Array<TrezorDevice> = devices
+        .filter(
+            d => d.features && device.features && d.features.device_id === device.features.device_id
+        )
         .sort((a, b) => {
             if (!a.instance) {
                 return -1;
@@ -52,7 +71,10 @@ export const getDuplicateInstanceNumber = (devices: Array<TrezorDevice>, device:
         });
 
     // calculate new instance number
-    const instance: number = affectedDevices.reduce((inst, dev) => (dev.instance ? dev.instance + 1 : inst + 1), 0);
+    const instance: number = affectedDevices.reduce(
+        (inst, dev) => (dev.instance ? dev.instance + 1 : inst + 1),
+        0
+    );
     return instance;
 };
 
@@ -63,7 +85,12 @@ export const getSelectedAccount = (state: State): ?Account => {
 
     const index: number = parseInt(locationState.account, 10);
 
-    return state.accounts.find(a => a.deviceState === device.state && a.index === index && a.network === locationState.network);
+    return state.accounts.find(
+        a =>
+            a.deviceState === device.state &&
+            a.index === index &&
+            a.network === locationState.network
+    );
 };
 
 export const getSelectedNetwork = (state: State): ?Network => {
@@ -80,43 +107,70 @@ export const getDiscoveryProcess = (state: State): ?Discovery => {
     const locationState = state.router.location.state;
     if (!device || !locationState.network) return null;
 
-    return state.discovery.find(d => d.deviceState === device.state && d.network === locationState.network);
+    return state.discovery.find(
+        d => d.deviceState === device.state && d.network === locationState.network
+    );
 };
 
-export const getAccountPendingTx = (pending: Array<Transaction>, account: ?Account): Array<Transaction> => {
+export const getAccountPendingTx = (
+    pending: Array<Transaction>,
+    account: ?Account
+): Array<Transaction> => {
     const a = account;
     if (!a) return [];
     return pending.filter(p => p.network === a.network && p.descriptor === a.descriptor);
 };
 
-export const getPendingSequence = (pending: Array<Transaction>): number => pending.reduce((value: number, tx: Transaction): number => {
-    if (tx.rejected) return value;
-    return Math.max(value, tx.sequence + 1);
-}, 0);
+export const getPendingSequence = (pending: Array<Transaction>): number =>
+    pending.reduce((value: number, tx: Transaction): number => {
+        if (tx.rejected) return value;
+        return Math.max(value, tx.sequence + 1);
+    }, 0);
 
-export const getPendingAmount = (pending: Array<Transaction>, currency: string, token: boolean = false): BigNumber => pending.reduce((value: BigNumber, tx: Transaction): BigNumber => {
-    if (tx.type !== 'send') return value;
-    if (!token) {
-        // regular transactions
-        // add fees from token txs and amount from regular txs
-        return new BigNumber(value).plus(tx.tokens ? tx.fee : tx.total);
-    }
-    if (tx.tokens) {
-        // token transactions
-        const allTokens = tx.tokens.filter(t => t.shortcut === currency);
-        const tokensValue: BigNumber = allTokens.reduce((tv, t) => new BigNumber(value).plus(t.value), new BigNumber('0'));
-        return new BigNumber(value).plus(tokensValue);
-    }
-    // default
-    return value;
-}, new BigNumber('0'));
+export const getPendingAmount = (
+    pending: Array<Transaction>,
+    currency: string,
+    token: boolean = false
+): BigNumber =>
+    pending.reduce((value: BigNumber, tx: Transaction): BigNumber => {
+        if (tx.type !== 'send') return value;
+        if (!token) {
+            // regular transactions
+            // add fees from token txs and amount from regular txs
+            return new BigNumber(value).plus(tx.tokens ? tx.fee : tx.total);
+        }
+        if (tx.tokens) {
+            // token transactions
+            const allTokens = tx.tokens.filter(t => t.shortcut === currency);
+            const tokensValue: BigNumber = allTokens.reduce(
+                (tv, t) => new BigNumber(value).plus(t.value),
+                new BigNumber('0')
+            );
+            return new BigNumber(value).plus(tokensValue);
+        }
+        // default
+        return value;
+    }, new BigNumber('0'));
 
-export const findToken = (state: Array<Token>, address: string, symbol: string, deviceState: string): ?Token => state.find(t => t.ethAddress === address && t.symbol === symbol && t.deviceState === deviceState);
+export const findToken = (
+    state: Array<Token>,
+    address: string,
+    symbol: string,
+    deviceState: string
+): ?Token =>
+    state.find(
+        t => t.ethAddress === address && t.symbol === symbol && t.deviceState === deviceState
+    );
 
 export const getAccountTokens = (tokens: Array<Token>, account: ?Account): Array<Token> => {
     const a = account;
     if (!a) return [];
-    return tokens.filter(t => t.ethAddress === a.descriptor && t.network === a.network && t.deviceState === a.deviceState);
+    return tokens.filter(
+        t =>
+            t.ethAddress === a.descriptor &&
+            t.network === a.network &&
+            t.deviceState === a.deviceState
+    );
 };
 
 export const getWeb3 = (state: State): ?Web3Instance => {
@@ -125,7 +179,11 @@ export const getWeb3 = (state: State): ?Web3Instance => {
     return state.web3.find(w3 => w3.network === locationState.network);
 };
 
-export const observeChanges = (prev: ?any, current: ?any, filter?: {[k: string]: Array<string>}): boolean => {
+export const observeChanges = (
+    prev: ?any,
+    current: ?any,
+    filter?: { [k: string]: Array<string> }
+): boolean => {
     // 1. both objects are the same (solves simple types like string, boolean and number)
     if (prev === current) return false;
     // 2. one of the objects is null/undefined

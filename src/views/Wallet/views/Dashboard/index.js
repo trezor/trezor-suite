@@ -22,7 +22,7 @@ const Row = styled.div`
     flex: 1;
     display: flex;
     padding: 50px 0;
-    
+
     flex-direction: column;
     align-items: center;
 `;
@@ -54,8 +54,12 @@ const Dashboard = () => (
     <Content>
         <Wrapper>
             <Row data-test="Dashboard__page__content">
-                <H1><FormattedMessage {...l10nMessages.TR_PLEASE_SELECT_YOUR} /></H1>
-                <StyledP><FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} /></StyledP>
+                <H1>
+                    <FormattedMessage {...l10nMessages.TR_PLEASE_SELECT_YOUR} />
+                </H1>
+                <StyledP>
+                    <FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} />
+                </StyledP>
                 <Overlay>
                     <Image src={EthIcon} width={20} />
                     <Image src={RippleIcon} width={25} />
@@ -65,4 +69,7 @@ const Dashboard = () => (
     </Content>
 );
 
-export default connect(null, null)(Dashboard);
+export default connect(
+    null,
+    null
+)(Dashboard);
