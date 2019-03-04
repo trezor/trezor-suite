@@ -19,16 +19,12 @@ import * as deviceUtils from 'utils/device';
 import * as RouterActions from 'actions/RouterActions';
 import l10nCommonMessages from 'views/common.messages';
 
-import type {
-    TrezorDevice,
-    State,
-    Dispatch,
-} from 'flowtype';
+import type { TrezorDevice, State, Dispatch } from 'flowtype';
 import l10nMessages from './index.messages';
 
 type Props = {
-    device: ?TrezorDevice;
-}
+    device: ?TrezorDevice,
+};
 
 const Wrapper = styled.section`
     display: flex;
@@ -56,32 +52,68 @@ const StyledP = styled(P)`
 const FirmwareUpdate = (props: Props) => (
     <Wrapper>
         <Image>
-            <svg width="181px" height="134px" viewBox="0 0 181 134" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg
+                width="181px"
+                height="134px"
+                viewBox="0 0 181 134"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+            >
                 <title>Chip</title>
                 <defs>
-                    <linearGradient x1="-18.9038234%" y1="84.5976591%" x2="72.6763662%" y2="84.5976587%" id="linearGradient-1">
+                    <linearGradient
+                        x1="-18.9038234%"
+                        y1="84.5976591%"
+                        x2="72.6763662%"
+                        y2="84.5976587%"
+                        id="linearGradient-1"
+                    >
                         <stop stopColor="#FFFFFF" offset="0%" />
                         <stop stopColor="#E8E8E8" offset="71.3377225%" />
                         <stop stopColor="#F5F5F5" offset="75.783547%" />
                         <stop stopColor="#EDEEEE" offset="80.9337916%" />
                         <stop stopColor="#DDDDDD" offset="100%" />
                     </linearGradient>
-                    <linearGradient x1="50%" y1="100%" x2="50%" y2="3.061617e-15%" id="linearGradient-2">
+                    <linearGradient
+                        x1="50%"
+                        y1="100%"
+                        x2="50%"
+                        y2="3.061617e-15%"
+                        id="linearGradient-2"
+                    >
                         <stop stopColor="#FFFFFF" offset="0%" />
                         <stop stopColor="#EDEEEE" offset="100%" />
                     </linearGradient>
-                    <linearGradient x1="-18.9038234%" y1="84.5976591%" x2="72.6763662%" y2="84.5976587%" id="linearGradient-3">
+                    <linearGradient
+                        x1="-18.9038234%"
+                        y1="84.5976591%"
+                        x2="72.6763662%"
+                        y2="84.5976587%"
+                        id="linearGradient-3"
+                    >
                         <stop stopColor="#858585" offset="0%" />
                         <stop stopColor="#505050" offset="71.3377225%" />
                         <stop stopColor="#606060" offset="75.783547%" />
                         <stop stopColor="#2A2A2A" offset="80.9337916%" />
                         <stop stopColor="#202020" offset="100%" />
                     </linearGradient>
-                    <linearGradient x1="50%" y1="100%" x2="50%" y2="3.061617e-15%" id="linearGradient-4">
+                    <linearGradient
+                        x1="50%"
+                        y1="100%"
+                        x2="50%"
+                        y2="3.061617e-15%"
+                        id="linearGradient-4"
+                    >
                         <stop stopColor="#141313" offset="0%" />
                         <stop stopColor="#5B5B5B" offset="100%" />
                     </linearGradient>
-                    <linearGradient x1="50%" y1="0%" x2="50%" y2="97.3898121%" id="linearGradient-5">
+                    <linearGradient
+                        x1="50%"
+                        y1="0%"
+                        x2="50%"
+                        y2="97.3898121%"
+                        id="linearGradient-5"
+                    >
                         <stop stopColor="#FFDA7F" offset="0%" />
                         <stop stopColor="#FF8007" offset="100%" />
                     </linearGradient>
@@ -105,7 +137,10 @@ const FirmwareUpdate = (props: Props) => (
                                                     fill="url(#linearGradient-2)"
                                                 />
                                             </g>
-                                            <g id="Group-2" transform="translate(31.260116, 16.800000)">
+                                            <g
+                                                id="Group-2"
+                                                transform="translate(31.260116, 16.800000)"
+                                            >
                                                 <path
                                                     d="M15.2430528,41.4528673 L65.6068201,8.88594655 C70.6741421,5.6092442 77.2046046,5.65936263 82.2210382,9.01345336 L130.640608,41.3877741 C136.039791,44.9977792 137.490207,52.3011696 133.880202,57.700353 C132.993166,59.027019 131.845386,60.1592599 130.506752,61.0281312 L80.9718465,93.1799281 C75.9649846,96.4297497 69.5147842,96.4297497 64.5079223,93.1799281 L15.2260928,61.1923964 C9.77820645,57.6563175 8.22838031,50.3733748 11.7644592,44.9254885 C12.6664405,43.5358442 13.8518606,42.3524594 15.2430528,41.4528673 Z"
                                                     id="Path-29"
@@ -143,7 +178,9 @@ const FirmwareUpdate = (props: Props) => (
             </Button>
         </Link>
         {deviceUtils.isDeviceAccessible(props.device) && (
-            <StyledNavLink to="/"><FormattedMessage {...l10nCommonMessages.TR_I_WILL_DO_THAT_LATER} /></StyledNavLink>
+            <StyledNavLink to="/">
+                <FormattedMessage {...l10nCommonMessages.TR_I_WILL_DO_THAT_LATER} />
+            </StyledNavLink>
         )}
     </Wrapper>
 );
@@ -154,5 +191,5 @@ export default connect(
     }),
     (dispatch: Dispatch) => ({
         cancel: bindActionCreators(RouterActions.selectFirstAvailableDevice, dispatch),
-    }),
+    })
 )(FirmwareUpdate);

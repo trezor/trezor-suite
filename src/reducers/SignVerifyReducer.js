@@ -17,8 +17,8 @@ export type State = {
     verifyMessage: string,
     verifySignature: string,
     touched: Array<string>,
-    errors: Array<Error>
-}
+    errors: Array<Error>,
+};
 
 export const initialState: State = {
     signAddress: '',

@@ -40,7 +40,12 @@ class MenuItems extends PureComponent {
     }
 
     showClone() {
-        return this.props.device && this.props.device.features.passphrase_protection && this.props.device.connected && this.props.device.available;
+        return (
+            this.props.device &&
+            this.props.device.features.passphrase_protection &&
+            this.props.device.connected &&
+            this.props.device.available
+        );
     }
 
     showRenewSession() {
@@ -71,24 +76,28 @@ class MenuItems extends PureComponent {
                             size={25}
                             color={colors.TEXT_SECONDARY}
                         />
-                        <Label><FormattedMessage {...l10nMessages.TR_CHANGE_WALLET_TYPE} /></Label>
+                        <Label>
+                            <FormattedMessage {...l10nMessages.TR_CHANGE_WALLET_TYPE} />
+                        </Label>
                     </Item>
                 )}
                 {this.showRenewSession() && (
-                    <Item
-                        onClick={() => this.props.acquireDevice()}
-                    >
-                        <DeviceIcon device={this.props.device} size={25} color={colors.TEXT_SECONDARY} />
-                        <Label><FormattedMessage {...l10nMessages.TR_RENEW_SESSION} /></Label>
+                    <Item onClick={() => this.props.acquireDevice()}>
+                        <DeviceIcon
+                            device={this.props.device}
+                            size={25}
+                            color={colors.TEXT_SECONDARY}
+                        />
+                        <Label>
+                            <FormattedMessage {...l10nMessages.TR_RENEW_SESSION} />
+                        </Label>
                     </Item>
                 )}
                 <Item onClick={() => this.props.forgetDevice(device)}>
-                    <Icon
-                        icon={icons.EJECT}
-                        size={25}
-                        color={colors.TEXT_SECONDARY}
-                    />
-                    <Label><FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} /></Label>
+                    <Icon icon={icons.EJECT} size={25} color={colors.TEXT_SECONDARY} />
+                    <Label>
+                        <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
+                    </Label>
                 </Item>
             </Wrapper>
         );

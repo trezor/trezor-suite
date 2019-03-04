@@ -17,7 +17,7 @@ type Props = {
     onMouseLeave?: () => void,
     onFocus?: () => void,
     onClick?: () => void,
-}
+};
 
 const chooseIconAnimationType = (canAnimate, isActive) => {
     if (canAnimate) {
@@ -49,11 +49,12 @@ const rotate180down = keyframes`
 `;
 
 const SvgWrapper = styled.svg`
-    animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1 forwards;
+    animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
+        forwards;
 
     :hover {
         path {
-            fill: ${props => props.hoverColor}
+            fill: ${props => props.hoverColor};
         }
     }
 `;
@@ -93,12 +94,7 @@ const Icon = ({
         onClick={onClick}
     >
         {icon.map(path => (
-            <Path
-                key={path}
-                isActive={isActive}
-                color={color}
-                d={path}
-            />
+            <Path key={path} isActive={isActive} color={color} d={path} />
         ))}
     </SvgWrapper>
 );

@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import { UI, DEVICE } from 'trezor-connect';
 import * as RECEIVE from 'actions/constants/receive';
 import * as MODAL from 'actions/constants/modal';
@@ -8,22 +7,27 @@ import * as CONNECT from 'actions/constants/TrezorConnect';
 
 import type { Action, TrezorDevice } from 'flowtype';
 
-export type State = {
-    context: typeof MODAL.CONTEXT_NONE;
-} | {
-    context: typeof MODAL.CONTEXT_DEVICE,
-    device: TrezorDevice;
-    instances?: Array<TrezorDevice>;
-    windowType?: string;
-} | {
-    context: typeof MODAL.CONTEXT_EXTERNAL_WALLET,
-    windowType?: string;
-} | {
-    context: typeof MODAL.CONTEXT_SCAN_QR,
-} | {
-    context: typeof MODAL.CONTEXT_CONFIRMATION,
-    windowType: string;
-};
+export type State =
+    | {
+          context: typeof MODAL.CONTEXT_NONE,
+      }
+    | {
+          context: typeof MODAL.CONTEXT_DEVICE,
+          device: TrezorDevice,
+          instances?: Array<TrezorDevice>,
+          windowType?: string,
+      }
+    | {
+          context: typeof MODAL.CONTEXT_EXTERNAL_WALLET,
+          windowType?: string,
+      }
+    | {
+          context: typeof MODAL.CONTEXT_SCAN_QR,
+      }
+    | {
+          context: typeof MODAL.CONTEXT_CONFIRMATION,
+          windowType: string,
+      };
 
 const initialState: State = {
     context: MODAL.CONTEXT_NONE,
@@ -61,11 +65,13 @@ export default function modal(state: State = initialState, action: Action): Stat
         // device with context assigned to modal was disconnected
         // close modal
         case DEVICE.DISCONNECT:
-            if (state.context === MODAL.CONTEXT_DEVICE && action.device.path === state.device.path) {
+            if (
+                state.context === MODAL.CONTEXT_DEVICE &&
+                action.device.path === state.device.path
+            ) {
                 return initialState;
             }
             return state;
-
 
         case UI.REQUEST_PIN:
         case UI.INVALID_PIN:

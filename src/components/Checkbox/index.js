@@ -12,7 +12,7 @@ type Props = {
     onClick: (event: KeyboardEvent) => void,
     isChecked: boolean,
     children: React.Node,
-}
+};
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,8 +26,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const Tick = styled.div`
-`;
+const Tick = styled.div``;
 
 const IconWrapper = styled.div`
     display: flex;
@@ -42,9 +41,11 @@ const IconWrapper = styled.div`
 
     &:hover,
     &:focus {
-        ${props => !props.isChecked && css`
-            border: 1px solid ${colors.GREEN_PRIMARY};
-        `}
+        ${props =>
+            !props.isChecked &&
+            css`
+                border: 1px solid ${colors.GREEN_PRIMARY};
+            `}
         background: ${props => (props.isChecked ? colors.GREEN_PRIMARY : colors.WHITE)};
     }
 `;
@@ -70,17 +71,9 @@ class Checkbox extends React.PureComponent<Props> {
     }
 
     render() {
-        const {
-            isChecked,
-            children,
-            onClick,
-        } = this.props;
+        const { isChecked, children, onClick } = this.props;
         return (
-            <Wrapper
-                onClick={onClick}
-                onKeyUp={event => this.handleKeyboard(event)}
-                tabIndex={0}
-            >
+            <Wrapper onClick={onClick} onKeyUp={event => this.handleKeyboard(event)} tabIndex={0}>
                 <IconWrapper isChecked={isChecked}>
                     {isChecked && (
                         <Tick>
@@ -91,8 +84,7 @@ class Checkbox extends React.PureComponent<Props> {
                                 icon={icons.SUCCESS}
                             />
                         </Tick>
-                    )
-                    }
+                    )}
                 </IconWrapper>
                 <Label isChecked={isChecked}>{children}</Label>
             </Wrapper>

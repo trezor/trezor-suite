@@ -9,7 +9,8 @@ const definedMessages: Messages = defineMessages({
     },
     TR_SEARCH_FOR_THE_TOKEN: {
         id: 'TR_SEARCH_FOR_THE_TOKEN',
-        defaultMessage: 'Search for the token or add them manually by pasting token address into search input.',
+        defaultMessage:
+            'Search for the token or add them manually by pasting token address into search input.',
     },
 });
 

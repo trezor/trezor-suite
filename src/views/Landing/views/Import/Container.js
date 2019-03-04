@@ -11,24 +11,32 @@ import ImportView from './index';
 export type StateProps = {
     transport: $ElementType<$ElementType<State, 'connect'>, 'transport'>,
     children?: React.Node,
-}
+};
 
 type DispatchProps = {
     selectFirstAvailableDevice: typeof RouterActions.selectFirstAvailableDevice,
-}
+};
 
-type OwnProps = {
-
-}
+type OwnProps = {};
 
 export type Props = StateProps & DispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     transport: state.connect.transport,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
-    selectFirstAvailableDevice: bindActionCreators(RouterActions.selectFirstAvailableDevice, dispatch),
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
+    dispatch: Dispatch
+): DispatchProps => ({
+    selectFirstAvailableDevice: bindActionCreators(
+        RouterActions.selectFirstAvailableDevice,
+        dispatch
+    ),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ImportView);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ImportView);

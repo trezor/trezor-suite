@@ -12,10 +12,9 @@ import l10nCommonMessages from 'views/common.messages';
 import type { TrezorDevice } from 'flowtype';
 import l10nMessages from './index.messages';
 
-
 type Props = {
-    device: ?TrezorDevice;
-}
+    device: ?TrezorDevice,
+};
 
 const Wrapper = styled.div`
     display: flex;
@@ -40,13 +39,22 @@ const StyledParagraph = styled(Paragraph)`
 const Initialize = (props: Props) => (
     <Wrapper data-test="Page__device__not__initialized">
         <Row>
-            <H1><FormattedMessage {...l10nMessages.TR_YOUR_DEVICE_IS_NOT_INITIALIZED} /></H1>
-            <StyledParagraph><FormattedMessage {...l10nMessages.TR_PLEASE_USE_TO_START_INITIALIZATION} /></StyledParagraph>
+            <H1>
+                <FormattedMessage {...l10nMessages.TR_YOUR_DEVICE_IS_NOT_INITIALIZED} />
+            </H1>
+            <StyledParagraph>
+                <FormattedMessage {...l10nMessages.TR_PLEASE_USE_TO_START_INITIALIZATION} />
+            </StyledParagraph>
             <A href={getOldWalletUrl(props.device)} target="_self">
-                <Button><FormattedMessage {...l10nCommonMessages.TR_TAKE_ME_TO_BITCOIN_WALLET} /></Button>
+                <Button>
+                    <FormattedMessage {...l10nCommonMessages.TR_TAKE_ME_TO_BITCOIN_WALLET} />
+                </Button>
             </A>
         </Row>
     </Wrapper>
 );
 
-export default connect(null, null)(Initialize);
+export default connect(
+    null,
+    null
+)(Initialize);

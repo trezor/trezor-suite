@@ -7,7 +7,6 @@ import { FormattedMessage } from 'react-intl';
 
 import l10nMessages from './index.messages';
 
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -29,10 +28,17 @@ const StyledParagraph = styled(Paragraph)`
 const Seedless = () => (
     <Wrapper>
         <Row>
-            <H1><FormattedMessage {...l10nMessages.TR_DEVICE_IS_IN_SEEDLESS} /></H1>
-            <StyledParagraph><FormattedMessage {...l10nMessages.TR_DEVICE_IS_INITIALIZED_IN_SEEDLESS_MODE} /></StyledParagraph>
+            <H1>
+                <FormattedMessage {...l10nMessages.TR_DEVICE_IS_IN_SEEDLESS} />
+            </H1>
+            <StyledParagraph>
+                <FormattedMessage {...l10nMessages.TR_DEVICE_IS_INITIALIZED_IN_SEEDLESS_MODE} />
+            </StyledParagraph>
         </Row>
     </Wrapper>
 );
 
-export default connect(null, null)(Seedless);
+export default connect(
+    null,
+    null
+)(Seedless);

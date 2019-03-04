@@ -12,9 +12,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { NavLink } from 'react-router-dom';
 import { findDeviceAccounts } from 'reducers/AccountsReducer';
-import {
-    FONT_SIZE, BORDER_WIDTH, LEFT_NAVIGATION_ROW,
-} from 'config/variables';
+import { FONT_SIZE, BORDER_WIDTH, LEFT_NAVIGATION_ROW } from 'config/variables';
 
 import type { Accounts } from 'flowtype';
 import l10nCommonMessages from 'views/common.messages';
@@ -22,7 +20,6 @@ import type { Props } from '../common';
 import Row from '../Row';
 import RowCoin from '../RowCoin';
 import l10nMessages from './index.messages';
-
 
 const Wrapper = styled.div``;
 
@@ -46,17 +43,21 @@ const RowAccountWrapper = styled.div`
         background-color: ${colors.GRAY_LIGHT};
     }
 
-    ${props => props.borderTop && css`
-        border-top: 1px solid ${colors.DIVIDER};
-    `}
+    ${props =>
+        props.borderTop &&
+        css`
+            border-top: 1px solid ${colors.DIVIDER};
+        `}
 
-    ${props => props.isSelected && css`
-        border-left: ${BORDER_WIDTH.SELECTED} solid ${colors.GREEN_PRIMARY};
-        background: ${colors.WHITE};
-        &:hover {
-            background-color: ${colors.WHITE};
-        }
-    `}
+    ${props =>
+        props.isSelected &&
+        css`
+            border-left: ${BORDER_WIDTH.SELECTED} solid ${colors.GREEN_PRIMARY};
+            background: ${colors.WHITE};
+            &:hover {
+                background-color: ${colors.WHITE};
+            }
+        `}
 `;
 
 const RowAddAccountWrapper = styled.div`
@@ -94,7 +95,9 @@ const AccountMenu = (props: Props) => {
     const { location } = props.router;
     const urlParams = location.state;
     const { accounts } = props;
-    const baseUrl: string = urlParams.deviceInstance ? `/device/${urlParams.device}:${urlParams.deviceInstance}` : `/device/${urlParams.device}`;
+    const baseUrl: string = urlParams.deviceInstance
+        ? `/device/${urlParams.device}:${urlParams.deviceInstance}`
+        : `/device/${urlParams.device}`;
 
     const { config } = props.localStorage;
     const network = config.networks.find(c => c.shortcut === location.state.network);
@@ -113,7 +116,9 @@ const AccountMenu = (props: Props) => {
         if (account.balance !== '') {
             const pending = stateUtils.getAccountPendingTx(props.pending, account);
             const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
-            const availableBalance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
+            const availableBalance: string = new BigNumber(account.balance)
+                .minus(pendingAmount)
+                .toString(10);
 
             balance = `${availableBalance} ${network.symbol}`;
             if (fiatRate) {
@@ -125,18 +130,22 @@ const AccountMenu = (props: Props) => {
 
         const urlAccountIndex = parseInt(props.router.location.state.account, 10);
         return (
-            <NavLink
-                to={url}
-                key={account.index}
-            >
+            <NavLink to={url} key={account.index}>
                 <Row column>
                     <RowAccountWrapper
                         isSelected={urlAccountIndex === account.index}
                         borderTop={account.index === 0}
                     >
-                        <FormattedMessage {...l10nCommonMessages.TR_ACCOUNT_HASH} values={{ number: account.index + 1 }} />
+                        <FormattedMessage
+                            {...l10nCommonMessages.TR_ACCOUNT_HASH}
+                            values={{ number: account.index + 1 }}
+                        />
                         {balance && <Text>{balance}</Text>}
-                        {!balance && <Text><FormattedMessage {...l10nMessages.TR_LOADING_DOT_DOT_DOT} /></Text>}
+                        {!balance && (
+                            <Text>
+                                <FormattedMessage {...l10nMessages.TR_LOADING_DOT_DOT_DOT} />
+                            </Text>
+                        )}
                     </RowAccountWrapper>
                 </Row>
             </NavLink>
@@ -144,7 +153,9 @@ const AccountMenu = (props: Props) => {
     });
 
     let discoveryStatus = null;
-    const discovery = props.discovery.find(d => d.deviceState === selected.state && d.network === location.state.network);
+    const discovery = props.discovery.find(
+        d => d.deviceState === selected.state && d.network === location.state.network
+    );
 
     if (discovery && discovery.completed) {
         const lastAccount = deviceAccounts[deviceAccounts.length - 1];
@@ -158,11 +169,7 @@ const AccountMenu = (props: Props) => {
                     <Row>
                         <RowAddAccountWrapper disabled>
                             <AddAccountIconWrapper>
-                                <Icon
-                                    icon={ICONS.PLUS}
-                                    size={24}
-                                    color={colors.TEXT_SECONDARY}
-                                />
+                                <Icon icon={ICONS.PLUS} size={24} color={colors.TEXT_SECONDARY} />
                             </AddAccountIconWrapper>
                             <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
                         </RowAddAccountWrapper>
@@ -174,11 +181,7 @@ const AccountMenu = (props: Props) => {
                 <Row onClick={props.addAccount}>
                     <RowAddAccountWrapper>
                         <AddAccountIconWrapper>
-                            <Icon
-                                icon={ICONS.PLUS}
-                                size={24}
-                                color={colors.TEXT_SECONDARY}
-                            />
+                            <Icon icon={ICONS.PLUS} size={24} color={colors.TEXT_SECONDARY} />
                         </AddAccountIconWrapper>
                         <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
                     </RowAddAccountWrapper>
@@ -194,11 +197,7 @@ const AccountMenu = (props: Props) => {
                     <Row>
                         <RowAddAccountWrapper disabled>
                             <AddAccountIconWrapper>
-                                <Icon
-                                    icon={ICONS.PLUS}
-                                    size={24}
-                                    color={colors.TEXT_SECONDARY}
-                                />
+                                <Icon icon={ICONS.PLUS} size={24} color={colors.TEXT_SECONDARY} />
                             </AddAccountIconWrapper>
                             <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
                         </RowAddAccountWrapper>
@@ -238,9 +237,7 @@ const AccountMenu = (props: Props) => {
                     }}
                 />
             </NavLink>
-            <Wrapper>
-                {selectedAccounts}
-            </Wrapper>
+            <Wrapper>{selectedAccounts}</Wrapper>
             {discoveryStatus}
         </Wrapper>
     );

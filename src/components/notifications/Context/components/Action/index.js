@@ -6,10 +6,5 @@ import type { Props } from '../../index';
 
 export default (props: Props) => {
     const { notifications, close } = props;
-    return (
-        <NotificationsGroups
-            notifications={notifications}
-            close={close}
-        />
-    );
+    return <NotificationsGroups notifications={notifications} close={close} />;
 };

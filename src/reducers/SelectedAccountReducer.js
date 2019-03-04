@@ -1,33 +1,26 @@
 /* @flow */
 import * as ACCOUNT from 'actions/constants/account';
 
-import type {
-    Action,
-    Account,
-    Network,
-    Token,
-    Transaction,
-    Discovery,
-} from 'flowtype';
+import type { Action, Account, Network, Token, Transaction, Discovery } from 'flowtype';
 
 export type Loader = {
     type: string,
     title: string,
     message?: string,
-}
+};
 
 export type Notification = {
     type: string,
     title: string,
     message?: string,
-}
+};
 
 export type ExceptionPage = {
     type: ?string,
     title: ?string,
     message: ?string,
     shortcut: string,
-}
+};
 
 export type State = {
     location: string,

@@ -16,7 +16,7 @@ export type StateProps = {
     wallet: $ElementType<State, 'wallet'>,
     devices: $ElementType<State, 'devices'>,
     pending: $ElementType<State, 'pending'>,
-}
+};
 
 export type DispatchProps = {
     toggleDeviceDropdown: typeof toggleDeviceDropdown,
@@ -27,6 +27,6 @@ export type DispatchProps = {
     gotoDeviceSettings: typeof RouterActions.gotoDeviceSettings,
     onSelectDevice: typeof RouterActions.selectDevice,
     gotoExternalWallet: typeof ModalActions.gotoExternalWallet,
-}
+};
 
 export type Props = StateProps & DispatchProps;

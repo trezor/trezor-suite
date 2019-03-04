@@ -15,14 +15,16 @@ export type StateProps = {
     wallet: $ElementType<State, 'wallet'>,
     devices: $ElementType<State, 'devices'>,
     children?: React.Node,
-}
+};
 
 type DispatchProps = {};
 type OwnProps = {};
 
 export type Props = StateProps & DispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     localStorage: state.localStorage,
     modal: state.modal,
     wallet: state.wallet,
@@ -31,4 +33,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     devices: state.devices,
 });
 
-export default connect(mapStateToProps, null)(RootView);
+export default connect(
+    mapStateToProps,
+    null
+)(RootView);

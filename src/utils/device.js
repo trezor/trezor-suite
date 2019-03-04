@@ -3,10 +3,7 @@
 import colors from 'config/colors';
 
 import type { Device } from 'trezor-connect';
-import type {
-    TrezorDevice,
-    State,
-} from 'flowtype';
+import type { TrezorDevice, State } from 'flowtype';
 
 type Transport = $ElementType<$ElementType<State, 'connect'>, 'transport'>;
 
@@ -38,7 +35,8 @@ export const getStatus = (device: TrezorDevice): string => {
         }
         return 'connected';
     }
-    if (!device.available) { // deprecated
+    if (!device.available) {
+        // deprecated
         return 'unavailable';
     }
     if (device.type === 'unacquired') {
@@ -79,9 +77,13 @@ export const getStatusName = (deviceStatus: string): string => {
     }
 };
 
-export const isWebUSB = (transport: Transport) => !!((transport.type && transport.type === 'webusb'));
+export const isWebUSB = (transport: Transport) => !!(transport.type && transport.type === 'webusb');
 
-export const isDisabled = (selectedDevice: TrezorDevice, devices: Array<TrezorDevice>, transport: Transport) => {
+export const isDisabled = (
+    selectedDevice: TrezorDevice,
+    devices: Array<TrezorDevice>,
+    transport: Transport
+) => {
     if (isWebUSB(transport)) return false; // always enabled if webusb
     if (devices.length < 1) return true; // no devices
     if (devices.length === 1) {
@@ -97,7 +99,15 @@ export const isDeviceAccessible = (device: ?TrezorDevice): boolean => {
     return device.mode === 'normal' && device.firmware !== 'required';
 };
 
-export const isSelectedDevice = (selected: ?TrezorDevice, device: ?(TrezorDevice | Device)): boolean => !!((selected && device && (selected.path === device.path && (device.ts && selected.instance === device.instance))));
+export const isSelectedDevice = (
+    selected: ?TrezorDevice,
+    device: ?(TrezorDevice | Device)
+): boolean =>
+    !!(
+        selected &&
+        device &&
+        (selected.path === device.path && (device.ts && selected.instance === device.instance))
+    );
 
 export const getVersion = (device: TrezorDevice): string => {
     let version;

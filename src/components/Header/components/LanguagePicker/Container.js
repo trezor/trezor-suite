@@ -11,26 +11,31 @@ import LanguagePicker from './index';
 
 type StateProps = {
     language: string,
-}
+};
 
 type DispatchProps = {
     fetchLocale: typeof WalletActions.fetchLocale,
 };
 
-type OwnProps = {
-
-}
+type OwnProps = {};
 
 export type Props = StateProps & DispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     language: state.wallet.language,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
+    dispatch: Dispatch
+): DispatchProps => ({
     fetchLocale: bindActionCreators(WalletActions.fetchLocale, dispatch),
 });
 
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(LanguagePicker),
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(LanguagePicker)
 );

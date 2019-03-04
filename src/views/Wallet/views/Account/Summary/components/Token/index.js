@@ -83,15 +83,14 @@ class AddedToken extends PureComponent {
                 </TokenIcon>
 
                 <TokenName>{this.props.token.name}</TokenName>
-                <TokenBalance>{this.getTokenBalance(this.props.token)} {this.props.token.symbol}</TokenBalance>
+                <TokenBalance>
+                    {this.getTokenBalance(this.props.token)} {this.props.token.symbol}
+                </TokenBalance>
                 <RemoveTokenButton
                     isTransparent
                     onClick={() => this.props.removeToken(this.props.token)}
                 >
-                    <Icon
-                        icon={ICONS.CLOSE}
-                        size={23}
-                    />
+                    <Icon icon={ICONS.CLOSE} size={23} />
                 </RemoveTokenButton>
             </TokenWrapper>
         );

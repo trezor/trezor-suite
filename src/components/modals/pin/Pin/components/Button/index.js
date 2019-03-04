@@ -7,8 +7,8 @@ import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 
 type Props = {
-    onClick: () => void;
-    children: React.Node;
+    onClick: () => void,
+    children: React.Node,
 };
 
 const Wrapper = styled.button`
@@ -46,11 +46,7 @@ const Wrapper = styled.button`
     }
 `;
 
-const PinButton = ({ children, onClick }: Props) => (
-    <Wrapper onClick={onClick}>
-        { children }
-    </Wrapper>
-);
+const PinButton = ({ children, onClick }: Props) => <Wrapper onClick={onClick}>{children}</Wrapper>;
 
 PinButton.propTypes = {
     children: PropTypes.string.isRequired,

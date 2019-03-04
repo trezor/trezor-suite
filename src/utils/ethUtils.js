@@ -25,7 +25,8 @@ export const strip = (str: string): string => {
     return padLeftEven(str);
 };
 
-export const calcGasPrice = (price: BigNumber, limit: string): string => price.times(limit).toString();
+export const calcGasPrice = (price: BigNumber, limit: string): string =>
+    price.times(limit).toString();
 
 export const validateAddress = (address: string): ?string => {
     const hasUpperCase = new RegExp('^(.*[A-Z].*)$');

@@ -9,7 +9,8 @@ const definedMessages: Messages = defineMessages({
     },
     TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE: {
         id: 'TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE',
-        defaultMessage: 'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
+        defaultMessage:
+            'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
     },
 });
 

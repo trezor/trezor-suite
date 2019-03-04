@@ -17,16 +17,16 @@ import l10nMessages from './index.messages';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    device: TrezorDevice;
-    instances: ?Array<TrezorDevice>;
-    onRememberDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onRememberDevice'>;
-    onForgetDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onForgetDevice'>;
-}
+    device: TrezorDevice,
+    instances: ?Array<TrezorDevice>,
+    onRememberDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onRememberDevice'>,
+    onForgetDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onForgetDevice'>,
+};
 
 type State = {
-    countdown: number;
-    ticker?: number;
-}
+    countdown: number,
+    ticker?: number,
+};
 
 const ButtonContent = styled.div`
     display: flex;
@@ -52,7 +52,7 @@ const Column = styled.div`
     display: flex;
     flex-direction: column;
 
-    Button + Button {
+    button + button {
         margin-top: 10px;
     }
 `;
@@ -120,7 +120,7 @@ class RememberDevice extends PureComponent<Props, State> {
         let { label } = device;
         const deviceCount = instances ? instances.length : 0;
         if (instances && instances.length > 0) {
-            label = instances.map(instance => (instance.instanceLabel)).join(',');
+            label = instances.map(instance => instance.instanceLabel).join(',');
         }
         return (
             <Wrapper>
@@ -154,10 +154,7 @@ class RememberDevice extends PureComponent<Props, State> {
                             />
                         </ButtonContent>
                     </Button>
-                    <Button
-                        isWhite
-                        onClick={() => onRememberDevice(device)}
-                    >
+                    <Button isWhite onClick={() => onRememberDevice(device)}>
                         <FormattedMessage {...l10nMessages.TR_REMEMBER_DEVICE} />
                     </Button>
                 </Column>

@@ -31,7 +31,7 @@ import TopNavigationDeviceSettings from './components/TopNavigationDeviceSetting
 type StateProps = {
     wallet: $ElementType<State, 'wallet'>,
     children?: React.Node,
-}
+};
 
 type DispatchProps = {
     toggleSidebar: WalletAction,
@@ -77,12 +77,14 @@ const MainContent = styled.article`
     overflow: auto;
     border-top-right-radius: 4px;
 
-    @media screen and (max-width: ${SCREEN_SIZE.SM}){
-        ${props => props.preventBgScroll && css`
-            position: fixed;
-            width: 100%;
-            min-height: calc(100vh - 52px);
-        `}
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        ${props =>
+            props.preventBgScroll &&
+            css`
+                position: fixed;
+                width: 100%;
+                min-height: calc(100vh - 52px);
+            `}
     }
 
     @media screen and (max-width: 1170px) {
@@ -108,7 +110,7 @@ const StyledBackdrop = styled(Backdrop)`
     display: none;
 
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
-        display: initial;    
+        display: initial;
     }
 `;
 
@@ -121,18 +123,26 @@ const Wallet = (props: Props) => (
         />
         <AppNotifications />
         <WalletWrapper>
-            <StyledBackdrop show={props.wallet.showSidebar} onClick={props.toggleSidebar} animated />
+            <StyledBackdrop
+                show={props.wallet.showSidebar}
+                onClick={props.toggleSidebar}
+                animated
+            />
             {props.wallet.selectedDevice && <LeftNavigation />}
             <MainContent preventBgScroll={props.wallet.showSidebar}>
                 <Navigation>
-                    <Route path="/device/:device/network/:network/account/:account" component={TopNavigationAccount} />
-                    <Route path="/device/:device/device-settings" component={TopNavigationDeviceSettings} />
+                    <Route
+                        path="/device/:device/network/:network/account/:account"
+                        component={TopNavigationAccount}
+                    />
+                    <Route
+                        path="/device/:device/device-settings"
+                        component={TopNavigationDeviceSettings}
+                    />
                 </Navigation>
                 <ContextNotifications />
                 <Log />
-                <Body>
-                    { props.children }
-                </Body>
+                <Body>{props.children}</Body>
                 <Footer />
             </MainContent>
         </WalletWrapper>
@@ -140,14 +150,21 @@ const Wallet = (props: Props) => (
     </AppWrapper>
 );
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     wallet: state.wallet,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
+    dispatch: Dispatch
+): DispatchProps => ({
     toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
 });
 
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(Wallet),
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(Wallet)
 );

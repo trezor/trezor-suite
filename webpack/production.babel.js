@@ -3,9 +3,7 @@ import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import packageJson from '../package.json';
-import {
-    SRC, BUILD, PUBLIC, TRANSLATIONS,
-} from './constants';
+import { SRC, BUILD, PUBLIC, TRANSLATIONS } from './constants';
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -77,9 +75,7 @@ module.exports = {
             inject: true,
             favicon: `${SRC}images/favicon.ico`,
         }),
-        new CopyWebpackPlugin([
-            { from: `${PUBLIC}`, to: './' },
-        ]),
+        new CopyWebpackPlugin([{ from: `${PUBLIC}`, to: './' }]),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.NamedModulesPlugin(),

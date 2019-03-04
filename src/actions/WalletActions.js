@@ -19,34 +19,46 @@ import type {
     State,
 } from 'flowtype';
 
-export type WalletAction = {
-    type: typeof WALLET.SET_INITIAL_URL,
-    state?: RouterLocationState,
-    pathname?: string
-} | {
-    type: typeof WALLET.TOGGLE_DEVICE_DROPDOWN,
-    opened: boolean
-} | {
-    type: typeof WALLET.ONLINE_STATUS,
-    online: boolean
-} | {
-    type: typeof WALLET.SET_SELECTED_DEVICE,
-    device: ?TrezorDevice
-} | {
-    type: typeof WALLET.UPDATE_SELECTED_DEVICE,
-    device: TrezorDevice
-} | {
-    type: typeof WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA,
-    devices: Array<TrezorDevice>
-} | {
-    type: typeof WALLET.SHOW_BETA_DISCLAIMER | typeof WALLET.HIDE_BETA_DISCLAIMER | typeof WALLET.SET_FIRST_LOCATION_CHANGE,
-} | {
-    type: typeof WALLET.TOGGLE_SIDEBAR,
-} | {
-    type: typeof WALLET.SET_LANGUAGE,
-    locale: string,
-    messages: { [string]: string },
-}
+export type WalletAction =
+    | {
+          type: typeof WALLET.SET_INITIAL_URL,
+          state?: RouterLocationState,
+          pathname?: string,
+      }
+    | {
+          type: typeof WALLET.TOGGLE_DEVICE_DROPDOWN,
+          opened: boolean,
+      }
+    | {
+          type: typeof WALLET.ONLINE_STATUS,
+          online: boolean,
+      }
+    | {
+          type: typeof WALLET.SET_SELECTED_DEVICE,
+          device: ?TrezorDevice,
+      }
+    | {
+          type: typeof WALLET.UPDATE_SELECTED_DEVICE,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA,
+          devices: Array<TrezorDevice>,
+      }
+    | {
+          type:
+              | typeof WALLET.SHOW_BETA_DISCLAIMER
+              | typeof WALLET.HIDE_BETA_DISCLAIMER
+              | typeof WALLET.SET_FIRST_LOCATION_CHANGE,
+      }
+    | {
+          type: typeof WALLET.TOGGLE_SIDEBAR,
+      }
+    | {
+          type: typeof WALLET.SET_LANGUAGE,
+          locale: string,
+          messages: { [string]: string },
+      };
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
     const updateOnlineStatus = () => {
@@ -75,7 +87,7 @@ export const toggleSidebar = (): WalletAction => ({
 export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch): void => {
     fetch(`/l10n/${locale}.json`)
         .then(response => response.json())
-        .then((messages) => {
+        .then(messages => {
             dispatch({
                 type: WALLET.SET_LANGUAGE,
                 locale,
@@ -89,12 +101,18 @@ export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch)
 // all saved instances will be removed immediately inside DevicesReducer
 // This method will clear leftovers associated with removed instances from reducers.
 // (DiscoveryReducer, AccountReducer, TokensReducer)
-export const clearUnavailableDevicesData = (prevState: State, device: Device): ThunkAction => (dispatch: Dispatch): void => {
+export const clearUnavailableDevicesData = (prevState: State, device: Device): ThunkAction => (
+    dispatch: Dispatch
+): void => {
     if (!device.features) return;
 
-    const affectedDevices = prevState.devices.filter(d => d.features && device.features
-            && d.features.device_id === device.features.device_id
-            && d.features.passphrase_protection !== device.features.passphrase_protection);
+    const affectedDevices = prevState.devices.filter(
+        d =>
+            d.features &&
+            device.features &&
+            d.features.device_id === device.features.device_id &&
+            d.features.passphrase_protection !== device.features.passphrase_protection
+    );
 
     if (affectedDevices.length > 0) {
         dispatch({
@@ -114,15 +132,21 @@ const actions = [
 ];
 
 /*
-* Called from WalletService
-*/
-export const observe = (prevState: State, action: Action): PayloadAction<boolean> => (dispatch: Dispatch, getState: GetState): boolean => {
+ * Called from WalletService
+ */
+export const observe = (prevState: State, action: Action): PayloadAction<boolean> => (
+    dispatch: Dispatch,
+    getState: GetState
+): boolean => {
     // ignore not listed actions
     if (actions.indexOf(action.type) < 0) return false;
 
     const state: State = getState();
 
-    const locationChanged = reducerUtils.observeChanges(prevState.router.location, state.router.location);
+    const locationChanged = reducerUtils.observeChanges(
+        prevState.router.location,
+        state.router.location
+    );
     const device = reducerUtils.getSelectedDevice(state);
     const selectedDeviceChanged = reducerUtils.observeChanges(state.wallet.selectedDevice, device);
 

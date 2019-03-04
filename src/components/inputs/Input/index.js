@@ -4,13 +4,7 @@ import styled, { css } from 'styled-components';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
 import Icon from 'components/Icon';
-import {
-    FONT_SIZE,
-    FONT_FAMILY,
-    FONT_WEIGHT,
-    LINE_HEIGHT,
-    TRANSITION,
-} from 'config/variables';
+import { FONT_SIZE, FONT_FAMILY, FONT_WEIGHT, LINE_HEIGHT, TRANSITION } from 'config/variables';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -48,10 +42,12 @@ const StyledInput = styled.input`
 
     border-radius: 2px;
     
-    ${props => props.hasAddon && css`
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    `}
+    ${props =>
+        props.hasAddon &&
+        css`
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        `}
 
     border: 1px solid ${colors.DIVIDER};
     border-color: ${props => props.borderColor};
@@ -75,14 +71,16 @@ const StyledInput = styled.input`
         color: ${colors.TEXT_SECONDARY};
     }
 
-    ${props => props.trezorAction && css`
-        z-index: 10001;
-        position: relative; /* bigger than modal container */
-        border-color: ${colors.WHITE};
-        border-width: 2px;
-        transform: translate(-1px, -1px);
-        background: ${colors.DIVIDER};
-    `};
+    ${props =>
+        props.trezorAction &&
+        css`
+            z-index: 10001;
+            position: relative; /* bigger than modal container */
+            border-color: ${colors.WHITE};
+            border-width: 2px;
+            transform: translate(-1px, -1px);
+            background: ${colors.DIVIDER};
+        `};
 `;
 
 const StyledIcon = styled(Icon)`
@@ -99,18 +97,21 @@ const BottomText = styled.span`
 `;
 
 const Overlay = styled.div`
-    ${props => props.isPartiallyHidden && css`
-        bottom: 0;
-        border: 1px solid ${colors.DIVIDER};
-        border-radius: 2px;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background-image: linear-gradient(to right, 
-            rgba(0,0,0, 0) 0%,
-            rgba(249,249,249, 1) 220px
-        );
-    `}
+    ${props =>
+        props.isPartiallyHidden &&
+        css`
+            bottom: 0;
+            border: 1px solid ${colors.DIVIDER};
+            border-radius: 2px;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(
+                to right,
+                rgba(0, 0, 0, 0) 0%,
+                rgba(249, 249, 249, 1) 220px
+            );
+        `}
 `;
 
 const TrezorAction = styled.div`
@@ -168,12 +169,8 @@ class Input extends PureComponent {
 
     render() {
         return (
-            <Wrapper
-                className={this.props.className}
-            >
-                {this.props.topLabel && (
-                    <TopLabel>{this.props.topLabel}</TopLabel>
-                )}
+            <Wrapper className={this.props.className}>
+                {this.props.topLabel && <TopLabel>{this.props.topLabel}</TopLabel>}
                 <InputWrapper>
                     <InputIconWrapper>
                         {this.props.state && (
@@ -208,15 +205,14 @@ class Input extends PureComponent {
                             data-lpignore="true"
                         />
                         <TrezorAction action={this.props.trezorAction}>
-                            <ArrowUp />{this.props.trezorAction}
+                            <ArrowUp />
+                            {this.props.trezorAction}
                         </TrezorAction>
                     </InputIconWrapper>
                     {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
                 </InputWrapper>
                 {this.props.bottomText && (
-                    <BottomText
-                        color={this.getColor(this.props.state)}
-                    >
+                    <BottomText color={this.getColor(this.props.state)}>
                         {this.props.bottomText}
                     </BottomText>
                 )}

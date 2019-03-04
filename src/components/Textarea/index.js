@@ -3,12 +3,7 @@ import Textarea from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import colors from 'config/colors';
-import {
-    FONT_SIZE,
-    FONT_WEIGHT,
-    LINE_HEIGHT,
-    FONT_FAMILY,
-} from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT, FONT_FAMILY } from 'config/variables';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -34,11 +29,11 @@ const StyledTextarea = styled(Textarea)`
     background: ${colors.WHITE};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     font-size: ${FONT_SIZE.BASE};
-    white-space: pre-wrap;       /* css-3 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
 
     /* placeholder styles do not work correctly when groupped into one block */
 
@@ -98,14 +93,16 @@ const StyledTextarea = styled(Textarea)`
         }
     }
 
-    ${props => props.trezorAction && css`
-        z-index: 10001; /* bigger than modal container */
-        border-color: ${colors.WHITE};
-        border-width: 2px;
-        transform: translate(-1px, -1px);
-        background: ${colors.DIVIDER};
-        pointer-events: none;
-    `}
+    ${props =>
+        props.trezorAction &&
+        css`
+            z-index: 10001; /* bigger than modal container */
+            border-color: ${colors.WHITE};
+            border-width: 2px;
+            transform: translate(-1px, -1px);
+            background: ${colors.DIVIDER};
+            pointer-events: none;
+        `}
 `;
 
 const TopLabel = styled.span`
@@ -119,7 +116,7 @@ const BottomText = styled.span`
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 `;
 
-const getColor = (inputState) => {
+const getColor = inputState => {
     let color = '';
     if (inputState === 'success') {
         color = colors.SUCCESS_PRIMARY;
@@ -179,9 +176,7 @@ const TextArea = ({
     trezorAction = null,
 }) => (
     <Wrapper className={className}>
-        {topLabel && (
-            <TopLabel>{topLabel}</TopLabel>
-        )}
+        {topLabel && <TopLabel>{topLabel}</TopLabel>}
         <StyledTextarea
             spellCheck="false"
             autoCorrect="off"
@@ -202,15 +197,10 @@ const TextArea = ({
             onChange={onChange}
         />
         <TrezorAction action={trezorAction}>
-            <ArrowUp />{trezorAction}
+            <ArrowUp />
+            {trezorAction}
         </TrezorAction>
-        {bottomText && (
-            <BottomText
-                color={getColor(state)}
-            >
-                {bottomText}
-            </BottomText>
-        )}
+        {bottomText && <BottomText color={getColor(state)}>{bottomText}</BottomText>}
     </Wrapper>
 );
 

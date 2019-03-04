@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import * as STORAGE from 'actions/constants/localStorage';
 
 import type { Action } from 'flowtype';
@@ -14,43 +13,43 @@ type NetworkFeeLevel = {
 };
 
 export type Network = {
-    type: string;
-    name: string;
-    testnet?: boolean;
-    shortcut: string;
-    symbol: string;
-    bip44: string;
-    defaultGasLimit: number;
-    defaultGasLimitTokens: number;
-    defaultGasPrice: number;
-    chainId: number; // ETH specific
+    type: string,
+    name: string,
+    testnet?: boolean,
+    shortcut: string,
+    symbol: string,
+    bip44: string,
+    defaultGasLimit: number,
+    defaultGasLimitTokens: number,
+    defaultGasPrice: number,
+    chainId: number, // ETH specific
     explorer: {
-        tx: string;
-        address: string;
-    };
-    tokens: string;
-    decimals: number;
+        tx: string,
+        address: string,
+    },
+    tokens: string,
+    decimals: number,
     fee: {
-        defaultFee: string;
-        minFee: string;
-        maxFee: string;
-        defaultGasLimit: string; // ETH specific
-        defaultGasLimitTokens: string; // ETH specific
-        levels: Array<NetworkFeeLevel>;
+        defaultFee: string,
+        minFee: string,
+        maxFee: string,
+        defaultGasLimit: string, // ETH specific
+        defaultGasLimitTokens: string, // ETH specific
+        levels: Array<NetworkFeeLevel>,
     },
     backends: Array<{
-        name: string;
-        urls: Array<string>;
-    }>;
-    web3: Array<string>;
-}
+        name: string,
+        urls: Array<string>,
+    }>,
+    web3: Array<string>,
+};
 
 export type NetworkToken = {
     address: string,
     name: string,
     symbol: string,
-    decimals: number
-}
+    decimals: number,
+};
 
 export type TokensCollection = { [network: string]: Array<NetworkToken> };
 
@@ -71,22 +70,22 @@ export type TokensCollection = { [network: string]: Array<NetworkToken> };
 // }
 
 export type FiatValueTicker = {
-    network: string;
-    url: string;
-}
+    network: string,
+    url: string,
+};
 
 export type Config = {
-    networks: Array<Network>;
-    fiatValueTickers: Array<FiatValueTicker>;
-}
+    networks: Array<Network>,
+    fiatValueTickers: Array<FiatValueTicker>,
+};
 
 export type State = {
-    initialized: boolean;
-    error: ?string;
-    config: Config;
-    ERC20Abi: Array<Object>;
-    tokens: TokensCollection;
-}
+    initialized: boolean,
+    error: ?string,
+    config: Config,
+    ERC20Abi: Array<Object>,
+    tokens: TokensCollection,
+};
 
 const initialState: State = {
     initialized: false,
@@ -116,7 +115,6 @@ export default function localStorage(state: State = initialState, action: Action
                 ...state,
                 error: action.error,
             };
-
 
         default:
             return state;

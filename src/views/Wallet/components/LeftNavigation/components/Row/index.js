@@ -13,9 +13,7 @@ const Wrapper = styled.div`
     transition: ${TRANSITION.HOVER};
 `;
 
-const Row = ({
-    children, onClick, onMouseEnter, onMouseLeave, onFocus,
-}) => (
+const Row = ({ children, onClick, onMouseEnter, onMouseLeave, onFocus }) => (
     <Wrapper
         onClick={onClick}
         onMouseEnter={onMouseEnter}
@@ -27,10 +25,7 @@ const Row = ({
 );
 
 Row.propTypes = {
-    children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.node),
-        PropTypes.node,
-    ]),
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     onClick: PropTypes.func,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,

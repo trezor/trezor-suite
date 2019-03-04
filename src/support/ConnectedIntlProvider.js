@@ -24,20 +24,39 @@ import ru from 'react-intl/locale-data/ru';
 import uk from 'react-intl/locale-data/uk';
 import zh from 'react-intl/locale-data/zh';
 
-addLocaleData([...en, ...cs, ...bn, ...de, ...el, ...es, ...fr, ...id, ...it, ...ja, ...nl, ...pl, ...pt, ...ru, ...uk, ...zh]);
+addLocaleData([
+    ...en,
+    ...cs,
+    ...bn,
+    ...de,
+    ...el,
+    ...es,
+    ...fr,
+    ...id,
+    ...it,
+    ...ja,
+    ...nl,
+    ...pl,
+    ...pt,
+    ...ru,
+    ...uk,
+    ...zh,
+]);
 
 type OwnProps = {
-    children: React.Node
-}
+    children: React.Node,
+};
 
 type StateProps = {
     locale: string,
-    messages: { [string]: string }
-}
+    messages: { [string]: string },
+};
 
 type Props = StateProps & OwnProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     locale: state.wallet.language,
     messages: state.wallet.messages,
 });
@@ -52,4 +71,7 @@ const ReactIntlProvider = ({ children, locale, messages }: Props) => (
     </IntlProvider>
 );
 
-export default connect(mapStateToProps, null)(ReactIntlProvider);
+export default connect(
+    mapStateToProps,
+    null
+)(ReactIntlProvider);

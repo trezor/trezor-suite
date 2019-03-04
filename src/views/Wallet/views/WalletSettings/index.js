@@ -31,11 +31,7 @@ const WalletSettings = () => (
     <Content>
         <Section>
             <Row>
-                <Icon
-                    size={60}
-                    color={colors.WARNING_PRIMARY}
-                    icon={icons.WARNING}
-                />
+                <Icon size={60} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
                 <StyledH1>Wallet settings is under construction</StyledH1>
                 <Link to="/">
                     <Button>Take me back</Button>
@@ -45,4 +41,7 @@ const WalletSettings = () => (
     </Content>
 );
 
-export default connect(null, null)(WalletSettings);
+export default connect(
+    null,
+    null
+)(WalletSettings);

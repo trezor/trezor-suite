@@ -14,8 +14,8 @@ import icons from 'config/icons';
 import type { TrezorDevice } from 'flowtype';
 
 type Props = {
-    device: ?TrezorDevice;
-}
+    device: ?TrezorDevice,
+};
 
 const Wrapper = styled.section`
     display: flex;
@@ -47,14 +47,13 @@ const Message = styled.div`
 
 const FirmwareUpdate = (props: Props) => (
     <Wrapper>
-        <Icon
-            size={128}
-            color={colors.WARNING_PRIMARY}
-            icon={icons.WARNING}
-        />
+        <Icon size={128} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
         <StyledH1>Your Trezor is not backed up!</StyledH1>
         <Message>
-            <StyledP>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</StyledP>
+            <StyledP>
+                If your device is ever lost or damaged, your funds will be lost. Backup your device
+                first, to protect your coins against such events.
+            </StyledP>
             <P>Please use Bitcoin wallet interface to create a backup.</P>
         </Message>
         <Link href={`${getOldWalletUrl(props.device)}?backup=1`} target="_self">

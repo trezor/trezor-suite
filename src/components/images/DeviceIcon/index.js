@@ -13,12 +13,12 @@ type Props = {
     color?: string,
     hoverColor?: string,
     onClick?: any,
-}
+};
 
 const SvgWrapper = styled.svg`
     :hover {
         path {
-            fill: ${props => props.hoverColor}
+            fill: ${props => props.hoverColor};
         }
     }
 `;
@@ -54,11 +54,7 @@ const DeviceIcon = ({
             viewBox="0 0 1024 1024"
             onClick={onClick}
         >
-            <Path
-                key={majorVersion}
-                color={color}
-                d={getDeviceIcon(majorVersion)}
-            />
+            <Path key={majorVersion} color={color} d={getDeviceIcon(majorVersion)} />
         </SvgWrapper>
     );
 };

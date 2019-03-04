@@ -1,10 +1,10 @@
 /* @flow */
 
 export type Route = {
-    +name: string;
-    +pattern: string;
-    fields: Array<string>;
-}
+    +name: string,
+    +pattern: string,
+    fields: Array<string>,
+};
 
 export const routes: Array<Route> = [
     {

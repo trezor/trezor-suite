@@ -11,8 +11,8 @@ import type { State, Dispatch } from 'flowtype';
 import AccountSend from './index';
 
 type OwnProps = {
-    intl: any
-}
+    intl: any,
+};
 
 export type StateProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
@@ -20,16 +20,18 @@ export type StateProps = {
     wallet: $ElementType<State, 'wallet'>,
     fiat: $ElementType<State, 'fiat'>,
     localStorage: $ElementType<State, 'localStorage'>,
-}
+};
 
 export type DispatchProps = {
     sendFormActions: typeof SendFormActions,
     openQrModal: typeof openQrModal,
-}
+};
 
 export type Props = OwnProps & StateProps & DispatchProps;
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     selectedAccount: state.selectedAccount,
     sendForm: state.sendFormEthereum,
     wallet: state.wallet,
@@ -37,10 +39,16 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
     localStorage: state.localStorage,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
+    dispatch: Dispatch
+): DispatchProps => ({
     sendFormActions: bindActionCreators(SendFormActions, dispatch),
     openQrModal: bindActionCreators(openQrModal, dispatch),
-
 });
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(AccountSend));
+export default injectIntl(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(AccountSend)
+);

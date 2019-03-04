@@ -17,8 +17,13 @@ import type {
     BlockchainFeeLevel,
 } from 'flowtype';
 
-export const subscribe = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const accounts: Array<string> = getState().accounts.filter(a => a.network === network).map(a => a.descriptor);
+export const subscribe = (network: string): PromiseAction<void> => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
+    const accounts: Array<string> = getState()
+        .accounts.filter(a => a.network === network)
+        .map(a => a.descriptor);
     await TrezorConnect.blockchainSubscribe({
         accounts,
         coin: network,
@@ -28,7 +33,10 @@ export const subscribe = (network: string): PromiseAction<void> => async (dispat
 // Get current known fee
 // Use default values from appConfig.json if it wasn't downloaded from blockchain yet
 // update them later, after onBlockMined event
-export const getFeeLevels = (network: Network): PayloadAction<Array<BlockchainFeeLevel>> => (dispatch: Dispatch, getState: GetState): Array<BlockchainFeeLevel> => {
+export const getFeeLevels = (network: Network): PayloadAction<Array<BlockchainFeeLevel>> => (
+    dispatch: Dispatch,
+    getState: GetState
+): Array<BlockchainFeeLevel> => {
     const blockchain = getState().blockchain.find(b => b.shortcut === network.shortcut);
     if (!blockchain || blockchain.feeLevels.length < 1) {
         return network.fee.levels.map(level => ({
@@ -39,7 +47,10 @@ export const getFeeLevels = (network: Network): PayloadAction<Array<BlockchainFe
     return blockchain.feeLevels;
 };
 
-export const onBlockMined = (network: string): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const onBlockMined = (network: string): PromiseAction<void> => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     const blockchain = getState().blockchain.find(b => b.shortcut === network);
     if (!blockchain) return; // flowtype fallback
 
@@ -69,9 +80,7 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
         //     level: 'transactions',
         //     coin: network,
         // });
-
         // if (!response.success) return;
-
         // response.payload.forEach((a, i) => {
         //     if (a.transactions.length > 0) {
         //         console.warn('APDEJTED!', a, i);
@@ -87,7 +96,9 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (dis
     }
 };
 
-export const onNotification = (payload: $ElementType<BlockchainNotification, 'payload'>): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const onNotification = (
+    payload: $ElementType<BlockchainNotification, 'payload'>
+): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { notification } = payload;
     const account = getState().accounts.find(a => a.descriptor === notification.descriptor);
     if (!account) return;
@@ -103,7 +114,10 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
                 network: account.network,
 
                 amount: toDecimalAmount(notification.amount, network.decimals),
-                total: notification.type === 'send' ? toDecimalAmount(notification.total, network.decimals) : toDecimalAmount(notification.amount, network.decimals),
+                total:
+                    notification.type === 'send'
+                        ? toDecimalAmount(notification.total, network.decimals)
+                        : toDecimalAmount(notification.amount, network.decimals),
                 fee: toDecimalAmount(notification.fee, network.decimals),
             },
         });
@@ -126,13 +140,18 @@ export const onNotification = (payload: $ElementType<BlockchainNotification, 'pa
     });
     if (!updatedAccount.success) return;
 
-    dispatch(AccountsActions.update({
-        networkType: 'ripple',
-        ...account,
-        balance: toDecimalAmount(updatedAccount.payload.balance, network.decimals),
-        availableBalance: toDecimalAmount(updatedAccount.payload.availableBalance, network.decimals),
-        block: updatedAccount.payload.block,
-        sequence: updatedAccount.payload.sequence,
-        reserve: '0',
-    }));
+    dispatch(
+        AccountsActions.update({
+            networkType: 'ripple',
+            ...account,
+            balance: toDecimalAmount(updatedAccount.payload.balance, network.decimals),
+            availableBalance: toDecimalAmount(
+                updatedAccount.payload.availableBalance,
+                network.decimals
+            ),
+            block: updatedAccount.payload.block,
+            sequence: updatedAccount.payload.sequence,
+            reserve: '0',
+        })
+    );
 };

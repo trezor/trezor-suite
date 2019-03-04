@@ -4,12 +4,7 @@ import { findToken } from 'reducers/utils';
 
 import type { State as EthereumSendFormState } from 'reducers/SendFormEthereumReducer';
 import type { State as RippleSendFormState } from 'reducers/SendFormRippleReducer';
-import type {
-    ThunkAction,
-    PayloadAction,
-    GetState,
-    Dispatch,
-} from 'flowtype';
+import type { ThunkAction, PayloadAction, GetState, Dispatch } from 'flowtype';
 
 const TYPE: 'session' = 'session';
 const { STORAGE_PATH } = storageUtils;
@@ -20,7 +15,10 @@ const getTxDraftKey = (getState: GetState): string => {
     return `${KEY_TX_DRAFT}${pathname}`;
 };
 
-export const saveDraftTransaction = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+export const saveDraftTransaction = (): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const state = getState().sendFormEthereum;
     if (state.untouched) return;
 
@@ -28,7 +26,10 @@ export const saveDraftTransaction = (): ThunkAction => (dispatch: Dispatch, getS
     storageUtils.set(TYPE, key, JSON.stringify(state));
 };
 
-export const loadEthereumDraftTransaction = (): PayloadAction<?EthereumSendFormState> => (dispatch: Dispatch, getState: GetState): ?EthereumSendFormState => {
+export const loadEthereumDraftTransaction = (): PayloadAction<?EthereumSendFormState> => (
+    dispatch: Dispatch,
+    getState: GetState
+): ?EthereumSendFormState => {
     const key = getTxDraftKey(getState);
     const value: ?string = storageUtils.get(TYPE, key);
     if (!value) return null;
@@ -53,7 +54,10 @@ export const loadEthereumDraftTransaction = (): PayloadAction<?EthereumSendFormS
     return state;
 };
 
-export const loadRippleDraftTransaction = (): PayloadAction<?RippleSendFormState> => (dispatch: Dispatch, getState: GetState): ?RippleSendFormState => {
+export const loadRippleDraftTransaction = (): PayloadAction<?RippleSendFormState> => (
+    dispatch: Dispatch,
+    getState: GetState
+): ?RippleSendFormState => {
     const key = getTxDraftKey(getState);
     const value: ?string = storageUtils.get(TYPE, key);
     if (!value) return null;

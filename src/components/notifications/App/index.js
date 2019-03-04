@@ -16,21 +16,20 @@ import UpdateFirmware from './components/UpdateFirmware';
 import NoBackup from './components/NoBackup';
 
 export type StateProps = {
-    connect: $ElementType<State, 'connect'>;
-    wallet: $ElementType<State, 'wallet'>;
-    children?: React.Node;
-}
+    connect: $ElementType<State, 'connect'>,
+    wallet: $ElementType<State, 'wallet'>,
+    children?: React.Node,
+};
 
 export type DispatchProps = {
-    close: typeof NotificationActions.close;
-    routerActions: typeof RouterActions;
-}
+    close: typeof NotificationActions.close,
+    routerActions: typeof RouterActions,
+};
 type OwnProps = {
     intl: any,
 };
 
 export type Props = OwnProps & StateProps & DispatchProps;
-
 
 const Notifications = (props: Props) => (
     <React.Fragment>
@@ -41,14 +40,23 @@ const Notifications = (props: Props) => (
     </React.Fragment>
 );
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State): StateProps => ({
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
     connect: state.connect,
     wallet: state.wallet,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (dispatch: Dispatch): DispatchProps => ({
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
+    dispatch: Dispatch
+): DispatchProps => ({
     close: bindActionCreators(NotificationActions.close, dispatch),
     routerActions: bindActionCreators(RouterActions, dispatch),
 });
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Notifications));
+export default injectIntl(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(Notifications)
+);

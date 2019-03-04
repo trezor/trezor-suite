@@ -61,13 +61,17 @@ export default [
         deviceState: '4058d01c7c964787b7d06f0f32ce229088e123a042bf95aad658f1b1b99c73fc',
         fee: '0.0002',
         hash: '0xbf6ac83bdf29abacbca91cd4100ddd5cd8de16e72911ea7d1daec17ccbfc6099',
-        inputs: [{
-            addresses: ['0x73d0385F4d8E00C5e6504C6030F47BF6212736A8'],
-        }],
+        inputs: [
+            {
+                addresses: ['0x73d0385F4d8E00C5e6504C6030F47BF6212736A8'],
+            },
+        ],
         network: 'trop',
-        outputs: [{
-            addresses: ['0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'],
-        }],
+        outputs: [
+            {
+                addresses: ['0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'],
+            },
+        ],
         sequence: 249,
         status: 'pending',
         timestamp: '',
@@ -83,13 +87,17 @@ export default [
         deviceState: '4058d01c7c964787b7d06f0f32ce229088e123a042bf95aad658f1b1b99c73fc',
         fee: '0.0002',
         hash: '0xbf6ac83bdf29abacbca91cd4100ddd5cd8de16e72911ea7d1daec17ccbfc6099',
-        inputs: [{
-            addresses: ['0x73d0385F4d8E00C5e6504C6030F47BF6212736A8'],
-        }],
+        inputs: [
+            {
+                addresses: ['0x73d0385F4d8E00C5e6504C6030F47BF6212736A8'],
+            },
+        ],
         network: 'trop',
-        outputs: [{
-            addresses: ['0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'],
-        }],
+        outputs: [
+            {
+                addresses: ['0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'],
+            },
+        ],
         sequence: 249,
         status: 'pending',
         timestamp: '',

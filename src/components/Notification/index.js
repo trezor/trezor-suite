@@ -14,14 +14,14 @@ import NotificationButton from './components/NotificationButton';
 
 type Props = {
     type: string,
-    cancelable?: boolean;
-    title: ?React.Node;
-    className?: string;
-    message?: ?React.Node;
-    actions?: Array<CallbackAction>;
-    isActionInProgress?: boolean;
+    cancelable?: boolean,
+    title: ?React.Node,
+    className?: string,
+    message?: ?React.Node,
+    actions?: Array<CallbackAction>,
+    isActionInProgress?: boolean,
     close?: typeof NotificationActions.close,
-    loading?: boolean
+    loading?: boolean,
 };
 
 const Wrapper = styled.div`
@@ -98,7 +98,7 @@ const Notification = (props: Props): React$Element<string> => {
     return (
         <Wrapper className={props.className} type={props.type}>
             <Content>
-                {props.loading && <Loader size={50} /> }
+                {props.loading && <Loader size={50} />}
                 <Body>
                     <IconWrapper>
                         <StyledIcon
@@ -107,8 +107,8 @@ const Notification = (props: Props): React$Element<string> => {
                         />
                     </IconWrapper>
                     <Texts>
-                        <Title>{ props.title }</Title>
-                        { props.message ? <Message>{props.message}</Message> : '' }
+                        <Title>{props.title}</Title>
+                        {props.message ? <Message>{props.message}</Message> : ''}
                     </Texts>
                 </Body>
                 <AdditionalContent>
@@ -119,8 +119,12 @@ const Notification = (props: Props): React$Element<string> => {
                                     key={action.label}
                                     type={props.type}
                                     isLoading={props.isActionInProgress}
-                                    onClick={() => { close(); action.callback(); }}
-                                >{action.label}
+                                    onClick={() => {
+                                        close();
+                                        action.callback();
+                                    }}
+                                >
+                                    {action.label}
                                 </NotificationButton>
                             ))}
                         </ActionContent>
@@ -128,11 +132,7 @@ const Notification = (props: Props): React$Element<string> => {
                 </AdditionalContent>
                 {props.cancelable && (
                     <CloseClick onClick={() => close()}>
-                        <Icon
-                            color={getPrimaryColor(props.type)}
-                            icon={icons.CLOSE}
-                            size={20}
-                        />
+                        <Icon color={getPrimaryColor(props.type)} icon={icons.CLOSE} size={20} />
                     </CloseClick>
                 )}
             </Content>
