@@ -10,10 +10,10 @@ export type LogEntry = {
 };
 
 export type State = {
-    opened: boolean;
-    entries: Array<LogEntry>;
-    copied: boolean
-}
+    opened: boolean,
+    entries: Array<LogEntry>,
+    copied: boolean,
+};
 
 export const initialState: State = {
     opened: false,
