@@ -23,7 +23,7 @@
         "lint:css": "npx stylelint './src/**/*.js'",
         "lint:prettier": "npx pretty-quick",
         "lint-fix": "npx eslint ./src ./webpack --fix",
-        "prettier:check": "eslint --print-config ./src | eslint-config-prettier-check",
+        "prettier:check": "npx eslint --print-config ./src | eslint-config-prettier-check",
         "test": "run-s test:*",
         "test:unit": "npx jest",
         "test-unit:watch": "npx jest -o --watch",
