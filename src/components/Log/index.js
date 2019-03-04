@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import colors from 'config/colors';
 import { H2 } from 'components/Heading';
+import Button from 'components/Button';
+import Tooltip from 'components/Tooltip';
 import ReactJson from 'react-json-view';
 import Icon from 'components/Icon';
 import P from 'components/Paragraph';
@@ -18,6 +20,8 @@ import l10nMessages from './index.messages';
 type Props = {
     log: $ElementType<State, 'log'>,
     toggle: typeof LogActions.toggle,
+    copyToClipboard: typeof LogActions.copyToClipboard,
+    resetCopyState: typeof LogActions.resetCopyState,
 };
 
 const Wrapper = styled.div`
@@ -59,8 +63,20 @@ const LogWrapper = styled.div`
     overflow: scroll;
 `;
 
+const CopyWrapper = styled.div``;
+
+const ButtonCopy = styled(Button)`
+    margin-top: 10px;
+`;
+
 const Log = (props: Props): ?React$Element<string> => {
     if (!props.log.opened) return null;
+
+    const copyBtn = (
+        <ButtonCopy onClick={() => props.copyToClipboard()}>
+            <FormattedMessage {...l10nMessages.TR_COPY_TO_CLIPBOARD} />
+        </ButtonCopy>
+    );
     return (
         <Wrapper>
             <Click onClick={props.toggle}>
@@ -75,6 +91,19 @@ const Log = (props: Props): ?React$Element<string> => {
             <LogWrapper>
                 <ReactJson src={props.log.entries} />
             </LogWrapper>
+            {props.log.copied ? (
+                <Tooltip
+                    defaultVisible
+                    maxWidth={285}
+                    placement="top"
+                    content={<FormattedMessage {...l10nMessages.TR_COPIED} />}
+                    afterVisibleChange={props.resetCopyState}
+                >
+                    {copyBtn}
+                </Tooltip>
+            ) : (
+                <CopyWrapper>{copyBtn}</CopyWrapper>
+            )}
         </Wrapper>
     );
 };
@@ -85,5 +114,7 @@ export default connect(
     }),
     (dispatch: Dispatch) => ({
         toggle: bindActionCreators(LogActions.toggle, dispatch),
+        copyToClipboard: bindActionCreators(LogActions.copyToClipboard, dispatch),
+        resetCopyState: bindActionCreators(LogActions.resetCopyState, dispatch),
     })
 )(Log);

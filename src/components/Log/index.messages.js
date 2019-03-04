@@ -13,6 +13,14 @@ const definedMessages: Messages = defineMessages({
         defaultMessage: 'Log',
         description: 'application event and error',
     },
+    TR_COPY_TO_CLIPBOARD: {
+        id: 'TR_COPY_TO_CLIPBOARD',
+        defaultMessage: 'Copy to clipboard',
+    },
+    TR_COPIED: {
+        id: 'TR_COPIED',
+        defaultMessage: 'Copied!',
+    },
 });
 
 export default definedMessages;
