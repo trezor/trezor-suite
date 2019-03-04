@@ -194,6 +194,7 @@ class SignVerify extends Component <Props> {
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
+                                isDisabled={verifyAddressError}
                                 onClick={
                                     () => {
                                         if (errors.length <= 0) {
