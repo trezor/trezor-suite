@@ -6,7 +6,7 @@ variables:
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  # - node_modules
+  - node_modules
   - ${CYPRESS_CACHE_FOLDER}
 
 stages:
