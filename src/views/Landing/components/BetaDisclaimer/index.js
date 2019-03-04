@@ -59,38 +59,64 @@ const StyledIcon = styled(Icon)`
 const BetaDisclaimer = (props: { close: () => void }) => (
     <Wrapper>
         <ModalWindow>
-            <H2><FormattedMessage {...l10nMessages.TR_YOU_ARE_OPENING_TREZOR_BETA_WALLET} /></H2>
-            <StyledP><FormattedMessage
-                {...l10nMessages.TR_TREZOR_BETA_WALLET_IS}
-                values={{
-                    TR_TREZOR_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
-                    TR_TREZOR_BETA_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
-                }}
-            />
-            </StyledP>
-            <StyledP><FormattedMessage
-                {...l10nMessages.TR_IN_CONTRAST_COMMA_TREZOR}
-                values={{
-                    TR_TREZOR_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
-                    TR_TREZOR_BETA_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
-                }}
-            />
-            </StyledP>
+            <H2>
+                <FormattedMessage {...l10nMessages.TR_YOU_ARE_OPENING_TREZOR_BETA_WALLET} />
+            </H2>
             <StyledP>
-                <StyledIcon
-                    size={24}
-                    color={colors.WARNING_PRIMARY}
-                    icon={icons.WARNING}
-                />
                 <FormattedMessage
-                    {...l10nMessages.TR_PLEASE_NOTE_THAT_THE_TREZOR}
+                    {...l10nMessages.TR_TREZOR_BETA_WALLET_IS}
                     values={{
-                        TR_TREZOR_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} /></i>,
-                        TR_TREZOR_BETA_WALLET: <i><FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} /></i>,
+                        TR_TREZOR_WALLET: (
+                            <i>
+                                <FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} />
+                            </i>
+                        ),
+                        TR_TREZOR_BETA_WALLET: (
+                            <i>
+                                <FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} />
+                            </i>
+                        ),
                     }}
                 />
             </StyledP>
-            <StyledButton dataTest="Modal__disclaimer__button__confirm" onClick={props.close}><FormattedMessage {...l10nMessages.TR_OK_COMMA_I_UNDERSTAND} /></StyledButton>
+            <StyledP>
+                <FormattedMessage
+                    {...l10nMessages.TR_IN_CONTRAST_COMMA_TREZOR}
+                    values={{
+                        TR_TREZOR_WALLET: (
+                            <i>
+                                <FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} />
+                            </i>
+                        ),
+                        TR_TREZOR_BETA_WALLET: (
+                            <i>
+                                <FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} />
+                            </i>
+                        ),
+                    }}
+                />
+            </StyledP>
+            <StyledP>
+                <StyledIcon size={24} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
+                <FormattedMessage
+                    {...l10nMessages.TR_PLEASE_NOTE_THAT_THE_TREZOR}
+                    values={{
+                        TR_TREZOR_WALLET: (
+                            <i>
+                                <FormattedMessage {...l10nMessages.TR_TREZOR_WALLET} />
+                            </i>
+                        ),
+                        TR_TREZOR_BETA_WALLET: (
+                            <i>
+                                <FormattedMessage {...l10nMessages.TR_TREZOR_BETA_WALLET} />
+                            </i>
+                        ),
+                    }}
+                />
+            </StyledP>
+            <StyledButton dataTest="Modal__disclaimer__button__confirm" onClick={props.close}>
+                <FormattedMessage {...l10nMessages.TR_OK_COMMA_I_UNDERSTAND} />
+            </StyledButton>
         </ModalWindow>
     </Wrapper>
 );
@@ -99,5 +125,5 @@ export default connect(
     null,
     (dispatch: Dispatch) => ({
         close: bindActionCreators(WalletActions.hideBetaDisclaimer, dispatch),
-    }),
+    })
 )(BetaDisclaimer);

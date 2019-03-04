@@ -12,8 +12,8 @@ import type { TrezorDevice } from 'flowtype';
 import l10nMessages from './index.messages';
 
 type Props = {
-    device: TrezorDevice;
-}
+    device: TrezorDevice,
+};
 
 const Wrapper = styled.div`
     padding: 30px 48px;

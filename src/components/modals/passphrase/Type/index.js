@@ -13,8 +13,8 @@ import P from 'components/Paragraph';
 import type { TrezorDevice } from 'flowtype';
 
 type Props = {
-    device: TrezorDevice;
-}
+    device: TrezorDevice,
+};
 
 const Wrapper = styled.div`
     max-width: 360px;
@@ -27,8 +27,10 @@ const PassphraseType = (props: Props) => (
     <Wrapper>
         <Header>
             <DeviceIcon device={props.device} size={60} color={colors.TEXT_SECONDARY} />
-            <H3>Complete the action on { props.device.label } device</H3>
-            <P isSmaller>If you enter a wrong passphrase, you will not unlock the desired hidden wallet.</P>
+            <H3>Complete the action on {props.device.label} device</H3>
+            <P isSmaller>
+                If you enter a wrong passphrase, you will not unlock the desired hidden wallet.
+            </P>
         </Header>
     </Wrapper>
 );

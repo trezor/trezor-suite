@@ -10,7 +10,6 @@ import Icon from 'components/Icon';
 import P from 'components/Paragraph';
 import { FormattedMessage } from 'react-intl';
 
-
 import * as LogActions from 'actions/LogActions';
 import icons from 'config/icons';
 import type { State, Dispatch } from 'flowtype';
@@ -18,8 +17,8 @@ import l10nMessages from './index.messages';
 
 type Props = {
     log: $ElementType<State, 'log'>,
-    toggle: typeof LogActions.toggle
-}
+    toggle: typeof LogActions.toggle,
+};
 
 const Wrapper = styled.div`
     position: relative;
@@ -86,5 +85,5 @@ export default connect(
     }),
     (dispatch: Dispatch) => ({
         toggle: bindActionCreators(LogActions.toggle, dispatch),
-    }),
+    })
 )(Log);

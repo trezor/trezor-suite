@@ -12,10 +12,10 @@ import colors from 'config/colors';
 import InitializationError from '../InitializationError';
 
 type Props = {
-    loading?: boolean;
-    error?: ?string;
-    children?: React.Node;
-}
+    loading?: boolean,
+    error?: ?string,
+    children?: React.Node,
+};
 
 const Wrapper = styled.div`
     min-height: 100vh;
@@ -47,11 +47,7 @@ const LandingWrapper = (props: Props) => (
                 <ContextNotifications />
                 {props.error && <InitializationError error={props.error} />}
                 <Log />
-                {!props.error && (
-                    <LandingContent>
-                        { props.children }
-                    </LandingContent>
-                )}
+                {!props.error && <LandingContent>{props.children}</LandingContent>}
                 <Footer isLanding />
             </React.Fragment>
         )}

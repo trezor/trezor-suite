@@ -9,8 +9,8 @@ const Wrapper = styled.div`
 `;
 
 class NotificationsGroup extends PureComponent {
-    groupNotifications = notifications => notifications
-        .reduce((acc, obj) => {
+    groupNotifications = notifications =>
+        notifications.reduce((acc, obj) => {
             const key = obj.type;
             if (!acc[key]) {
                 acc[key] = [];

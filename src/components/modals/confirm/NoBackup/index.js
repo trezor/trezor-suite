@@ -18,9 +18,12 @@ import type { TrezorDevice } from 'flowtype';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    onReceiveConfirmation: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onReceiveConfirmation'>;
-    device: ?TrezorDevice;
-}
+    onReceiveConfirmation: $ElementType<
+        $ElementType<BaseProps, 'modalActions'>,
+        'onReceiveConfirmation'
+    >,
+    device: ?TrezorDevice,
+};
 
 const Wrapper = styled.div`
     max-width: 370px;
@@ -68,12 +71,19 @@ const Confirmation = (props: Props) => (
         </StyledLink>
         <H2>Your Trezor is not backed up</H2>
         <Icon size={48} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
-        <StyledP isSmaller>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</StyledP>
+        <StyledP isSmaller>
+            If your device is ever lost or damaged, your funds will be lost. Backup your device
+            first, to protect your coins against such events.
+        </StyledP>
         <Row>
             <Link href={`${getOldWalletUrl(props.device)}/?backup`} target="_self">
-                <BackupButton onClick={() => props.onReceiveConfirmation(false)}>Create a backup in 3 minutes</BackupButton>
+                <BackupButton onClick={() => props.onReceiveConfirmation(false)}>
+                    Create a backup in 3 minutes
+                </BackupButton>
             </Link>
-            <ProceedButton isWhite onClick={() => props.onReceiveConfirmation(true)}>Show address, I will take the risk</ProceedButton>
+            <ProceedButton isWhite onClick={() => props.onReceiveConfirmation(true)}>
+                Show address, I will take the risk
+            </ProceedButton>
         </Row>
     </Wrapper>
 );

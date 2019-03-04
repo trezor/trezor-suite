@@ -6,7 +6,6 @@ import Notification from 'components/Notification';
 import { injectIntl } from 'react-intl';
 import l10nMessages from './index.messages';
 
-
 const Wrapper = styled.div``;
 
 const UnreadableDevice = ({ intl }: { intl: any }) => (

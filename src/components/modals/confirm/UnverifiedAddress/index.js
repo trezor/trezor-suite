@@ -19,12 +19,15 @@ import l10nMessages from './index.messages';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    device: TrezorDevice;
-    account: $ElementType<$ElementType<BaseProps, 'selectedAccount'>, 'account'>;
-    showAddress: $ElementType<$ElementType<BaseProps, 'receiveActions'>, 'showAddress'>;
-    showUnverifiedAddress: $ElementType<$ElementType<BaseProps, 'receiveActions'>, 'showUnverifiedAddress'>;
-    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
-}
+    device: TrezorDevice,
+    account: $ElementType<$ElementType<BaseProps, 'selectedAccount'>, 'account'>,
+    showAddress: $ElementType<$ElementType<BaseProps, 'receiveActions'>, 'showAddress'>,
+    showUnverifiedAddress: $ElementType<
+        $ElementType<BaseProps, 'receiveActions'>,
+        'showUnverifiedAddress'
+    >,
+    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>,
+};
 
 const StyledLink = styled(Link)`
     position: absolute;
@@ -35,7 +38,6 @@ const StyledLink = styled(Link)`
 const Wrapper = styled.div`
     max-width: 370px;
     padding: 30px 0px;
-
 `;
 
 const Content = styled.div`
@@ -57,7 +59,7 @@ const Row = styled.div`
     display: flex;
     flex-direction: column;
 
-    Button + Button {
+    button + button {
         margin-top: 10px;
     }
 `;
@@ -119,15 +121,27 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
         let claim;
 
         if (!device.connected) {
-            deviceStatus = <FormattedMessage {...l10nMessages.TR_DEVICE_LABEL_IS_NOT_CONNECTED} values={{ deviceLabel: device.label }} />;
+            deviceStatus = (
+                <FormattedMessage
+                    {...l10nMessages.TR_DEVICE_LABEL_IS_NOT_CONNECTED}
+                    values={{ deviceLabel: device.label }}
+                />
+            );
             claim = <FormattedMessage {...l10nMessages.TR_PLEASE_CONNECT_YOUR_DEVICE} />;
         } else {
             // corner-case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
             const enable: boolean = !!(device.features && device.features.passphrase_protection);
-            deviceStatus = <FormattedMessage {...l10nMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE} values={{ deviceLabel: device.label }} />;
-            claim = enable
-                ? <FormattedMessage {...l10nMessages.TR_PLEASE_ENABLE_PASSPHRASE} />
-                : <FormattedMessage {...l10nMessages.TR_PLEASE_DISABLE_PASSPHRASE} />;
+            deviceStatus = (
+                <FormattedMessage
+                    {...l10nMessages.TR_DEVICE_LABEL_IS_UNAVAILABLE}
+                    values={{ deviceLabel: device.label }}
+                />
+            );
+            claim = enable ? (
+                <FormattedMessage {...l10nMessages.TR_PLEASE_ENABLE_PASSPHRASE} />
+            ) : (
+                <FormattedMessage {...l10nMessages.TR_PLEASE_DISABLE_PASSPHRASE} />
+            );
         }
 
         const needsBackup = device.features && device.features.needs_backup;
@@ -138,7 +152,7 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                     <StyledLink onClick={onCancel}>
                         <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                     </StyledLink>
-                    <H2>{ deviceStatus }</H2>
+                    <H2>{deviceStatus}</H2>
                     <StyledP isSmaller>
                         <FormattedMessage
                             {...l10nMessages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
@@ -148,8 +162,12 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                 </Content>
                 <Content>
                     <Row>
-                        <Button onClick={() => (!account ? this.verifyAddress() : 'false')}><FormattedMessage {...l10nMessages.TR_TRY_AGAIN} /></Button>
-                        <WarnButton isWhite onClick={() => this.showUnverifiedAddress()}><FormattedMessage {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} /></WarnButton>
+                        <Button onClick={() => (!account ? this.verifyAddress() : 'false')}>
+                            <FormattedMessage {...l10nMessages.TR_TRY_AGAIN} />
+                        </Button>
+                        <WarnButton isWhite onClick={() => this.showUnverifiedAddress()}>
+                            <FormattedMessage {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} />
+                        </WarnButton>
                     </Row>
                 </Content>
                 {needsBackup && <Divider />}
@@ -157,7 +175,10 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                     <>
                         <Content>
                             <H2>Device {device.label} is not backed up</H2>
-                            <StyledP isSmaller>If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.</StyledP>
+                            <StyledP isSmaller>
+                                If your device is ever lost or damaged, your funds will be lost.
+                                Backup your device first, to protect your coins against such events.
+                            </StyledP>
                         </Content>
                         <Content>
                             <Row>

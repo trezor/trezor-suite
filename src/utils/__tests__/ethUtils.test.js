@@ -48,6 +48,8 @@ describe('eth utils', () => {
         // TODO: add more tests
         expect(utils.validateAddress('')).toBe('Address is not set');
         expect(utils.validateAddress('aaa')).toBe('Address is not valid');
-        expect(utils.validateAddress('BB9bc244D798123fDe783fCc1C72d3Bb8C189413')).toBe('Address is not valid');
+        expect(utils.validateAddress('BB9bc244D798123fDe783fCc1C72d3Bb8C189413')).toBe(
+            'Address is not valid'
+        );
     });
 });

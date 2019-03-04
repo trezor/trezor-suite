@@ -62,14 +62,13 @@ export type AcquiredDevice = $Exact<{
     state: ?string,
     useEmptyPassphrase: boolean,
 
-    remember: boolean; // device should be remembered
-    connected: boolean; // device is connected
-    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
-    instance?: number;
-    instanceLabel: string;
-    instanceName: ?string;
-    ts: number;
-
+    remember: boolean, // device should be remembered
+    connected: boolean, // device is connected
+    available: boolean, // device cannot be used because of features.passphrase_protection is different then expected
+    instance?: number,
+    instanceLabel: string,
+    instanceName: ?string,
+    ts: number,
 }>;
 
 export type UnknownDevice = $Exact<{
@@ -80,13 +79,13 @@ export type UnknownDevice = $Exact<{
     state: ?string,
     useEmptyPassphrase: boolean,
 
-    remember: boolean; // device should be remembered
-    connected: boolean; // device is connected
-    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
-    instance?: number;
-    instanceLabel: string;
-    instanceName: ?string;
-    ts: number;
+    remember: boolean, // device should be remembered
+    connected: boolean, // device is connected
+    available: boolean, // device cannot be used because of features.passphrase_protection is different then expected
+    instance?: number,
+    instanceLabel: string,
+    instanceName: ?string,
+    ts: number,
 }>;
 
 export type { Device } from 'trezor-connect';
@@ -104,12 +103,12 @@ export type RouterLocationState = LocationState;
 type DeviceEventAction = {
     type: DeviceMessageType,
     device: Device,
-}
+};
 
 type TransportEventAction = {
     type: TransportMessageType,
     payload: any,
-}
+};
 
 type UiEventAction = {
     type: UiMessageType,
@@ -118,22 +117,21 @@ type UiEventAction = {
     //     device: Device;
     //     code?: string;
     // },
-}
+};
 
 // TODO: join this message with uiMessage
 type IFrameHandshake = {
     type: 'iframe_handshake',
-    payload: any
-}
+    payload: any,
+};
 
 export type Action =
-    RouterAction
+    | RouterAction
     | IFrameHandshake
     | TransportEventAction
     | DeviceEventAction
     | UiEventAction
     | BlockchainEvent
-
     | SelectedAccountAction
     | AccountAction
     | BlockchainAction

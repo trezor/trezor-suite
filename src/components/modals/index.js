@@ -65,12 +65,7 @@ const getDeviceContextModal = (props: Props) => {
 
     switch (modal.windowType) {
         case UI.REQUEST_PIN:
-            return (
-                <Pin
-                    device={modal.device}
-                    onPinSubmit={modalActions.onPinSubmit}
-                />
-            );
+            return <Pin device={modal.device} onPinSubmit={modalActions.onPinSubmit} />;
 
         case UI.INVALID_PIN:
             return <InvalidPin device={modal.device} />;
@@ -91,10 +86,13 @@ const getDeviceContextModal = (props: Props) => {
             if (!props.selectedAccount.network) return null;
             switch (props.selectedAccount.network.type) {
                 case 'ethereum':
-                    return <ConfirmSignTx device={modal.device} sendForm={props.sendFormEthereum} />;
+                    return (
+                        <ConfirmSignTx device={modal.device} sendForm={props.sendFormEthereum} />
+                    );
                 case 'ripple':
                     return <ConfirmSignTx device={modal.device} sendForm={props.sendFormRipple} />;
-                default: return null;
+                default:
+                    return null;
             }
         }
 
@@ -166,11 +164,11 @@ const getExternalContextModal = (props: Props) => {
 
     switch (modal.windowType) {
         case 'xem':
-            return (<Nem onCancel={modalActions.onCancel} />);
+            return <Nem onCancel={modalActions.onCancel} />;
         case 'xlm':
-            return (<Stellar onCancel={modalActions.onCancel} />);
+            return <Stellar onCancel={modalActions.onCancel} />;
         case 'ada':
-            return (<Cardano onCancel={modalActions.onCancel} />);
+            return <Cardano onCancel={modalActions.onCancel} />;
         default:
             return null;
     }
@@ -197,7 +195,12 @@ const getConfirmationModal = (props: Props) => {
 
     switch (modal.windowType) {
         case 'no-backup':
-            return (<ConfirmNoBackup device={wallet.selectedDevice} onReceiveConfirmation={modalActions.onReceiveConfirmation} />);
+            return (
+                <ConfirmNoBackup
+                    device={wallet.selectedDevice}
+                    onReceiveConfirmation={modalActions.onReceiveConfirmation}
+                />
+            );
         default:
             return null;
     }
@@ -228,9 +231,7 @@ const Modal = (props: Props) => {
 
     return (
         <ModalContainer>
-            <ModalWindow>
-                { component }
-            </ModalWindow>
+            <ModalWindow>{component}</ModalWindow>
         </ModalContainer>
     );
 };

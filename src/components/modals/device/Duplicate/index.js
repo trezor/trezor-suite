@@ -20,18 +20,18 @@ import type { TrezorDevice } from 'flowtype';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    device: TrezorDevice;
-    devices: $ElementType<BaseProps, 'devices'>;
-    onDuplicateDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onDuplicateDevice'>;
-    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
-}
+    device: TrezorDevice,
+    devices: $ElementType<BaseProps, 'devices'>,
+    onDuplicateDevice: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onDuplicateDevice'>,
+    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>,
+};
 
 type State = {
-    defaultName: string;
-    instance: number;
-    instanceName: ?string;
-    isUsed: boolean;
-}
+    defaultName: string,
+    instance: number,
+    instanceName: ?string,
+    isUsed: boolean,
+};
 
 const StyledLink = styled(Link)`
     position: absolute;
@@ -102,14 +102,14 @@ class DuplicateDevice extends PureComponent<Props, State> {
     onNameChange = (value: string): void => {
         let isUsed: boolean = false;
         if (value.length > 0) {
-            isUsed = (this.props.devices.find(d => d.instanceName === value) !== undefined);
+            isUsed = this.props.devices.find(d => d.instanceName === value) !== undefined;
         }
 
         this.setState({
             instanceName: value.length > 0 ? value : null,
             isUsed,
         });
-    }
+    };
 
     input: ?HTMLInputElement;
 
@@ -123,25 +123,27 @@ class DuplicateDevice extends PureComponent<Props, State> {
     keyboardHandler: (event: KeyboardEvent) => void;
 
     submit() {
-        const extended: Object = { instanceName: this.state.instanceName, instance: this.state.instance };
+        const extended: Object = {
+            instanceName: this.state.instanceName,
+            instance: this.state.instance,
+        };
         this.props.onDuplicateDevice({ ...this.props.device, ...extended });
     }
 
     render() {
         const { device, onCancel } = this.props;
-        const {
-            defaultName,
-            instanceName,
-            isUsed,
-        } = this.state;
+        const { defaultName, instanceName, isUsed } = this.state;
 
         return (
             <Wrapper>
                 <StyledLink onClick={onCancel}>
                     <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                 </StyledLink>
-                <H3>Clone { device.label }?</H3>
-                <StyledP isSmaller>This will create new instance of device which can be used with different passphrase</StyledP>
+                <H3>Clone {device.label}?</H3>
+                <StyledP isSmaller>
+                    This will create new instance of device which can be used with different
+                    passphrase
+                </StyledP>
                 <Column>
                     <Label>Instance name</Label>
                     <Input
@@ -151,22 +153,20 @@ class DuplicateDevice extends PureComponent<Props, State> {
                         autoCapitalize="off"
                         spellCheck="false"
                         placeholder={defaultName}
-                        innerRef={(element) => { this.input = element; }}
+                        innerRef={element => {
+                            this.input = element;
+                        }}
                         onChange={event => this.onNameChange(event.currentTarget.value)}
                         value={instanceName}
                     />
-                    { isUsed && <ErrorMessage>Instance name is already in use</ErrorMessage> }
+                    {isUsed && <ErrorMessage>Instance name is already in use</ErrorMessage>}
                 </Column>
                 <Column>
-                    <StyledButton
-                        disabled={isUsed}
-                        onClick={() => this.submit()}
-                    >Create new instance
+                    <StyledButton disabled={isUsed} onClick={() => this.submit()}>
+                        Create new instance
                     </StyledButton>
-                    <StyledButton
-                        isWhite
-                        onClick={onCancel}
-                    >Cancel
+                    <StyledButton isWhite onClick={onCancel}>
+                        Cancel
                     </StyledButton>
                 </Column>
             </Wrapper>

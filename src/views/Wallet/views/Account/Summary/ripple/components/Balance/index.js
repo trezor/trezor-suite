@@ -14,7 +14,7 @@ type Props = {
     balance: string,
     reserve: string,
     fiat: $ElementType<ReducersState, 'fiat'>,
-}
+};
 
 type State = {
     isHidden: boolean,
@@ -132,19 +132,13 @@ class AccountBalance extends PureComponent<Props, State> {
                 placement="top"
                 content="Fiat rates are not currently available."
             >
-                <StyledIcon
-                    icon={ICONS.HELP}
-                    color={colors.TEXT_SECONDARY}
-                    size={26}
-                />
+                <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={26} />
             </Tooltip>
         );
 
         return (
             <Wrapper isHidden={this.state.isHidden}>
-                <HideBalanceIconWrapper
-                    onClick={() => this.handleHideBalanceIconClick()}
-                >
+                <HideBalanceIconWrapper onClick={() => this.handleHideBalanceIconClick()}>
                     <Icon
                         canAnimate={this.state.canAnimateHideBalanceIcon}
                         isActive={this.state.isHidden}
@@ -161,24 +155,29 @@ class AccountBalance extends PureComponent<Props, State> {
                                 <FiatValue>{fiatRate ? `$ ${fiat}` : 'N/A'}</FiatValue>
                                 {!fiatRate && NoRatesTooltip}
                             </TooltipWrapper>
-                            <CoinBalance>{this.props.balance} {network.symbol}</CoinBalance>
+                            <CoinBalance>
+                                {this.props.balance} {network.symbol}
+                            </CoinBalance>
                         </BalanceWrapper>
                         {this.props.reserve !== '0' && (
                             <BalanceWrapper>
                                 <Label>Reserve</Label>
-                                <FiatValueRate>{this.props.reserve} {network.symbol}</FiatValueRate>
+                                <FiatValueRate>
+                                    {this.props.reserve} {network.symbol}
+                                </FiatValueRate>
                             </BalanceWrapper>
                         )}
 
                         <BalanceRateWrapper>
                             <Label>Rate</Label>
                             <TooltipWrapper>
-                                <FiatValueRate>{fiatRate ? `$ ${fiatRateValue}` : 'N/A'}</FiatValueRate>
+                                <FiatValueRate>
+                                    {fiatRate ? `$ ${fiatRateValue}` : 'N/A'}
+                                </FiatValueRate>
                                 {!fiatRate && NoRatesTooltip}
                             </TooltipWrapper>
                             <CoinBalance>1 {network.symbol}</CoinBalance>
                         </BalanceRateWrapper>
-
                     </React.Fragment>
                 )}
             </Wrapper>

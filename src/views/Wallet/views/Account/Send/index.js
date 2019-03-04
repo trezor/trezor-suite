@@ -8,12 +8,15 @@ import RippleTypeSendForm from './ripple/Container';
 
 export type BaseProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-}
+};
 
 // return container for requested network type
-export default connect((state: State): BaseProps => ({
-    selectedAccount: state.selectedAccount,
-}), null)((props) => {
+export default connect(
+    (state: State): BaseProps => ({
+        selectedAccount: state.selectedAccount,
+    }),
+    null
+)(props => {
     const { network } = props.selectedAccount;
     if (!network) return null;
 

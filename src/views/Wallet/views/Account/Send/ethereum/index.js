@@ -21,7 +21,6 @@ import l10nCommonMessages from 'views/common.messages';
 import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from '../components/PendingTransactions';
 
-
 import l10nMessages from './index.messages';
 import l10nSendMessages from '../../common.messages';
 import type { Props } from './Container';
@@ -66,19 +65,21 @@ const SetMaxAmountButton = styled(Button)`
         background: ${colors.GRAY_LIGHT};
     }
 
-    ${props => props.isActive && css`
-        color: ${colors.WHITE};
-        background: ${colors.GREEN_PRIMARY};
-        border-color: ${colors.GREEN_PRIMARY};
+    ${props =>
+        props.isActive &&
+        css`
+            color: ${colors.WHITE};
+            background: ${colors.GREEN_PRIMARY};
+            border-color: ${colors.GREEN_PRIMARY};
 
-        &:hover {
-            background: ${colors.GREEN_SECONDARY};
-        }
+            &:hover {
+                background: ${colors.GREEN_SECONDARY};
+            }
 
-        &:active {
-            background: ${colors.GREEN_TERTIARY};
-        }
-    `}
+            &:active {
+                background: ${colors.GREEN_TERTIARY};
+            }
+        `}
 `;
 
 const CurrencySelect = styled(Select)`
@@ -137,9 +138,11 @@ const ToggleAdvancedSettingsWrapper = styled.div`
     justify-content: space-between;
 
     @media screen and (max-width: ${SmallScreenWidth}) {
-        ${props => (props.isAdvancedSettingsHidden && css`
-            flex-direction: column;
-        `)}
+        ${props =>
+            props.isAdvancedSettingsHidden &&
+            css`
+                flex-direction: column;
+            `}
     }
 `;
 
@@ -156,12 +159,11 @@ const FormButtons = styled.div`
     display: flex;
     flex: 1 1;
 
-    
     @media screen and (max-width: ${SmallScreenWidth}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
     }
 
-    Button + Button {
+    button + button {
         margin-left: 5px;
     }
 `;
@@ -169,12 +171,9 @@ const FormButtons = styled.div`
 const SendButton = styled(Button)`
     word-break: break-all;
     flex: 1;
-
 `;
 
-const ClearButton = styled(Button)`
-
-`;
+const ClearButton = styled(Button)``;
 
 const AdvancedSettingsIcon = styled(Icon)`
     margin-left: 10px;
@@ -189,7 +188,11 @@ const QrButton = styled(Button)`
 `;
 
 // render helpers
-const getAddressInputState = (address: string, addressErrors: string, addressWarnings: string): string => {
+const getAddressInputState = (
+    address: string,
+    addressErrors: string,
+    addressWarnings: string
+): string => {
     let state = '';
     if (address && !addressErrors) {
         state = 'success';
@@ -214,8 +217,14 @@ const getAmountInputState = (amountErrors: string, amountWarnings: string): stri
     return state;
 };
 
-const getTokensSelectData = (tokens: Array<Token>, accountNetwork: any): Array<{ value: string, label: string }> => {
-    const tokensSelectData: Array<{ value: string, label: string }> = tokens.map(t => ({ value: t.symbol, label: t.symbol }));
+const getTokensSelectData = (
+    tokens: Array<Token>,
+    accountNetwork: any
+): Array<{ value: string, label: string }> => {
+    const tokensSelectData: Array<{ value: string, label: string }> = tokens.map(t => ({
+        value: t.symbol,
+        label: t.symbol,
+    }));
     tokensSelectData.unshift({ value: accountNetwork.symbol, label: accountNetwork.symbol });
 
     return tokensSelectData;
@@ -224,13 +233,7 @@ const getTokensSelectData = (tokens: Array<Token>, accountNetwork: any): Array<{
 // stateless component
 const AccountSend = (props: Props) => {
     const device = props.wallet.selectedDevice;
-    const {
-        account,
-        network,
-        discovery,
-        tokens,
-        shouldRender,
-    } = props.selectedAccount;
+    const { account, network, discovery, tokens, shouldRender } = props.selectedAccount;
     const {
         address,
         amount,
@@ -270,18 +273,31 @@ const AccountSend = (props: Props) => {
     let selectedTokenBalance = '0';
     const selectedToken = tokens.find(t => t.symbol === currency);
     if (selectedToken) {
-        const pendingAmount: BigNumber = stateUtils.getPendingAmount(props.selectedAccount.pending, selectedToken.symbol, true);
-        selectedTokenBalance = new BigNumber(selectedToken.balance).minus(pendingAmount).toString(10);
+        const pendingAmount: BigNumber = stateUtils.getPendingAmount(
+            props.selectedAccount.pending,
+            selectedToken.symbol,
+            true
+        );
+        selectedTokenBalance = new BigNumber(selectedToken.balance)
+            .minus(pendingAmount)
+            .toString(10);
     }
 
-    let isSendButtonDisabled: boolean = Object.keys(errors).length > 0 || total === '0' || amount.length === 0 || address.length === 0 || sending;
+    let isSendButtonDisabled: boolean =
+        Object.keys(errors).length > 0 ||
+        total === '0' ||
+        amount.length === 0 ||
+        address.length === 0 ||
+        sending;
     let amountText = '';
     if (networkSymbol !== currency && amount.length > 0 && !errors.amount) {
         amountText = `${amount} ${currency.toUpperCase()}`;
     } else if (networkSymbol === currency && total !== '0') {
         amountText = `${total} ${network.symbol}`;
     }
-    let sendButtonText = <FormattedMessage {...l10nSendMessages.TR_SEND} values={{ amount: amountText }} />;
+    let sendButtonText = (
+        <FormattedMessage {...l10nSendMessages.TR_SEND} values={{ amount: amountText }} />
+    );
 
     if (!device.connected) {
         sendButtonText = <FormattedMessage {...l10nSendMessages.TR_DEVICE_IS_NOT_CONNECTED} />;
@@ -300,7 +316,9 @@ const AccountSend = (props: Props) => {
 
     return (
         <Content>
-            <Title><FormattedMessage {...l10nMessages.TR_SEND_ETHEREUM_OR_TOKENS} /></Title>
+            <Title>
+                <FormattedMessage {...l10nMessages.TR_SEND_ETHEREUM_OR_TOKENS} />
+            </Title>
             <InputRow>
                 <Input
                     state={getAddressInputState(address, errors.address, warnings.address)}
@@ -312,19 +330,11 @@ const AccountSend = (props: Props) => {
                     bottomText={errors.address || warnings.address || infos.address}
                     value={address}
                     onChange={event => onAddressChange(event.target.value)}
-                    sideAddons={[(
-                        <QrButton
-                            key="qrButton"
-                            isWhite
-                            onClick={props.openQrModal}
-                        >
-                            <Icon
-                                size={25}
-                                color={colors.TEXT_SECONDARY}
-                                icon={ICONS.QRCODE}
-                            />
-                        </QrButton>
-                    )]}
+                    sideAddons={[
+                        <QrButton key="qrButton" isWhite onClick={props.openQrModal}>
+                            <Icon size={25} color={colors.TEXT_SECONDARY} icon={ICONS.QRCODE} />
+                        </QrButton>,
+                    ]}
                 />
             </InputRow>
             <InputRow>
@@ -334,57 +344,45 @@ const AccountSend = (props: Props) => {
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
-                    topLabel={(
+                    topLabel={
                         <AmountInputLabelWrapper>
-                            <AmountInputLabel><FormattedMessage {...l10nSendMessages.TR_AMOUNT} /></AmountInputLabel>
-                            {(isCurrentCurrencyToken && selectedToken) && (
+                            <AmountInputLabel>
+                                <FormattedMessage {...l10nSendMessages.TR_AMOUNT} />
+                            </AmountInputLabel>
+                            {isCurrentCurrencyToken && selectedToken && (
                                 <AmountInputLabel>
                                     <FormattedMessage
                                         {...l10nSendMessages.YOU_HAVE_TOKEN_BALANCE}
-                                        values={{ tokenBalance: `${selectedTokenBalance} ${selectedToken.symbol}` }}
+                                        values={{
+                                            tokenBalance: `${selectedTokenBalance} ${
+                                                selectedToken.symbol
+                                            }`,
+                                        }}
                                     />
                                 </AmountInputLabel>
                             )}
                         </AmountInputLabelWrapper>
-                    )}
+                    }
                     value={amount}
                     onChange={event => onAmountChange(event.target.value)}
                     bottomText={errors.amount || warnings.amount || infos.amount}
                     sideAddons={[
-                        (
-                            <SetMaxAmountButton
-                                key="icon"
-                                onClick={() => onSetMax()}
-                                isActive={setMax}
-                            >
-                                {!setMax && (
-                                    <Icon
-                                        icon={ICONS.TOP}
-                                        size={25}
-                                        color={colors.TEXT_SECONDARY}
-                                    />
-                                )}
-                                {setMax && (
-                                    <Icon
-                                        icon={ICONS.CHECKED}
-                                        size={25}
-                                        color={colors.WHITE}
-                                    />
-                                )}
-                                <FormattedMessage {...l10nSendMessages.TR_SET_MAX} />
-                            </SetMaxAmountButton>
-                        ),
-                        (
-                            <CurrencySelect
-                                key="currency"
-                                isSearchable={false}
-                                isClearable={false}
-                                value={tokensSelectValue}
-                                isDisabled={tokensSelectData.length < 2}
-                                onChange={onCurrencyChange}
-                                options={tokensSelectData}
-                            />
-                        ),
+                        <SetMaxAmountButton key="icon" onClick={() => onSetMax()} isActive={setMax}>
+                            {!setMax && (
+                                <Icon icon={ICONS.TOP} size={25} color={colors.TEXT_SECONDARY} />
+                            )}
+                            {setMax && <Icon icon={ICONS.CHECKED} size={25} color={colors.WHITE} />}
+                            <FormattedMessage {...l10nSendMessages.TR_SET_MAX} />
+                        </SetMaxAmountButton>,
+                        <CurrencySelect
+                            key="currency"
+                            isSearchable={false}
+                            isClearable={false}
+                            value={tokensSelectValue}
+                            isDisabled={tokensSelectData.length < 2}
+                            onChange={onCurrencyChange}
+                            options={tokensSelectData}
+                        />,
                     ]}
                 />
             </InputRow>
@@ -396,12 +394,13 @@ const AccountSend = (props: Props) => {
                     </FeeLabel>
                     {gasPriceNeedsUpdate && (
                         <UpdateFeeWrapper>
-                            <Icon
-                                icon={ICONS.WARNING}
-                                color={colors.WARNING_PRIMARY}
-                                size={20}
-                            />
-                            <FormattedMessage {...l10nSendMessages.TR_RECOMMENDED_FEES_UPDATED} /> <StyledLink onClick={updateFeeLevels} isGreen><FormattedMessage {...l10nSendMessages.TR_CLICK_HERE_TO_USE_THEM} /></StyledLink>
+                            <Icon icon={ICONS.WARNING} color={colors.WARNING_PRIMARY} size={20} />
+                            <FormattedMessage
+                                {...l10nSendMessages.TR_RECOMMENDED_FEES_UPDATED}
+                            />{' '}
+                            <StyledLink onClick={updateFeeLevels} isGreen>
+                                <FormattedMessage {...l10nSendMessages.TR_CLICK_HERE_TO_USE_THEM} />
+                            </StyledLink>
                         </UpdateFeeWrapper>
                     )}
                 </FeeLabelWrapper>
@@ -420,13 +419,8 @@ const AccountSend = (props: Props) => {
                 />
             </InputRow>
 
-            <ToggleAdvancedSettingsWrapper
-                isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-            >
-                <ToggleAdvancedSettingsButton
-                    isTransparent
-                    onClick={toggleAdvanced}
-                >
+            <ToggleAdvancedSettingsWrapper isAdvancedSettingsHidden={isAdvancedSettingsHidden}>
+                <ToggleAdvancedSettingsButton isTransparent onClick={toggleAdvanced}>
                     <FormattedMessage {...l10nSendMessages.TR_ADVANCED_SETTINGS} />
                     <AdvancedSettingsIcon
                         icon={ICONS.ARROW_DOWN}
@@ -438,19 +432,11 @@ const AccountSend = (props: Props) => {
                 </ToggleAdvancedSettingsButton>
 
                 {isAdvancedSettingsHidden && (
-                    <FormButtons
-                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-                    >
-                        <ClearButton
-                            isWhite
-                            onClick={() => onClear()}
-                        >
+                    <FormButtons isAdvancedSettingsHidden={isAdvancedSettingsHidden}>
+                        <ClearButton isWhite onClick={() => onClear()}>
                             <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                         </ClearButton>
-                        <SendButton
-                            isDisabled={isSendButtonDisabled}
-                            onClick={() => onSend()}
-                        >
+                        <SendButton isDisabled={isSendButtonDisabled} onClick={() => onSend()}>
                             {sendButtonText}
                         </SendButton>
                     </FormButtons>
@@ -459,19 +445,11 @@ const AccountSend = (props: Props) => {
 
             {advanced && (
                 <AdvancedForm {...props}>
-                    <FormButtons
-                        isAdvancedSettingsHidden={isAdvancedSettingsHidden}
-                    >
-                        <ClearButton
-                            isWhite
-                            onClick={() => onClear()}
-                        >
+                    <FormButtons isAdvancedSettingsHidden={isAdvancedSettingsHidden}>
+                        <ClearButton isWhite onClick={() => onClear()}>
                             <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                         </ClearButton>
-                        <SendButton
-                            isDisabled={isSendButtonDisabled}
-                            onClick={() => onSend()}
-                        >
+                        <SendButton isDisabled={isSendButtonDisabled} onClick={() => onSend()}>
                             {sendButtonText}
                         </SendButton>
                     </FormButtons>

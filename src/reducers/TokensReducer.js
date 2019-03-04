@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import * as CONNECT from 'actions/constants/TrezorConnect';
 import * as WALLET from 'actions/constants/wallet';
 import * as TOKEN from 'actions/constants/token';
@@ -8,16 +7,16 @@ import * as TOKEN from 'actions/constants/token';
 import type { Action, TrezorDevice } from 'flowtype';
 
 export type Token = {
-    loaded: boolean;
-    +deviceState: string;
-    +network: string;
-    +name: string;
-    +symbol: string;
-    +address: string;
-    +ethAddress: string; // foreign key
-    +decimals: number;
-    balance: string;
-}
+    loaded: boolean,
+    +deviceState: string,
+    +network: string,
+    +name: string,
+    +symbol: string,
+    +address: string,
+    +ethAddress: string, // foreign key
+    +decimals: number,
+    balance: string,
+};
 
 export type State = Array<Token>;
 
@@ -29,17 +28,26 @@ const create = (state: State, token: Token): State => {
     return newState;
 };
 
-const forget = (state: State, device: TrezorDevice): State => state.filter(t => t.deviceState !== device.state);
+const forget = (state: State, device: TrezorDevice): State =>
+    state.filter(t => t.deviceState !== device.state);
 
 const clear = (state: State, devices: Array<TrezorDevice>): State => {
     let newState: State = [...state];
-    devices.forEach((d) => {
+    devices.forEach(d => {
         newState = forget(newState, d);
     });
     return newState;
 };
 
-const remove = (state: State, token: Token): State => state.filter(t => !(t.ethAddress === token.ethAddress && t.address === token.address && t.deviceState === token.deviceState));
+const remove = (state: State, token: Token): State =>
+    state.filter(
+        t =>
+            !(
+                t.ethAddress === token.ethAddress &&
+                t.address === token.address &&
+                t.deviceState === token.deviceState
+            )
+    );
 
 export default (state: State = initialState, action: Action): State => {
     switch (action.type) {

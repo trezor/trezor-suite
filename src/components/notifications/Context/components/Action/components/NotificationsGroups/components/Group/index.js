@@ -61,7 +61,7 @@ class Group extends PureComponent {
                 visibleCount: 0,
             });
         }
-    }
+    };
 
     render() {
         const { type, groupNotifications, close } = this.props;
@@ -71,13 +71,10 @@ class Group extends PureComponent {
                 {groupNotifications.length > 1 && (
                     <Header onClick={this.toggle}>
                         <Left>
-                            <Icon
-                                color={color}
-                                size={30}
-                                icon={getIcon(type)}
-                            />
+                            <Icon color={color} size={30} icon={getIcon(type)} />
                             <Title color={color}>
-                                {groupNotifications.length} {groupNotifications.length > 1 ? `${type}s` : type}
+                                {groupNotifications.length}{' '}
+                                {groupNotifications.length > 1 ? `${type}s` : type}
                             </Title>
                         </Left>
                         <Right>
@@ -92,19 +89,17 @@ class Group extends PureComponent {
                     </Header>
                 )}
                 <Body>
-                    {groupNotifications
-                        .slice(0, this.state.visibleCount)
-                        .map(notification => (
-                            <StyledNotification
-                                key={notification.key}
-                                type={notification.type}
-                                title={notification.title}
-                                message={notification.message}
-                                cancelable={notification.cancelable}
-                                actions={notification.actions}
-                                close={close}
-                            />
-                        ))}
+                    {groupNotifications.slice(0, this.state.visibleCount).map(notification => (
+                        <StyledNotification
+                            key={notification.key}
+                            type={notification.type}
+                            title={notification.title}
+                            message={notification.message}
+                            cancelable={notification.cancelable}
+                            actions={notification.actions}
+                            close={close}
+                        />
+                    ))}
                 </Body>
             </Wrapper>
         );
@@ -118,15 +113,9 @@ Group.propTypes = {
         PropTypes.shape({
             key: PropTypes.object,
             type: PropTypes.string,
-            title: PropTypes.oneOfType([
-                PropTypes.string,
-                PropTypes.node,
-            ]),
-            message: PropTypes.oneOfType([
-                PropTypes.string,
-                PropTypes.node,
-            ]),
-        }),
+            title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+            message: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+        })
     ),
 };
 

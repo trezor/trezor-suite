@@ -11,25 +11,33 @@ const A = styled.a`
     transition: ${TRANSITION.HOVER};
     font-size: ${FONT_SIZE.SMALL};
 
-    ${props => props.isGreen && css`
-        text-decoration: underline;
-        text-decoration-color: ${colors.GREEN_PRIMARY};
-    `}
-    ${props => props.isGray && css`
-        text-decoration: underline;
-        text-decoration-color: ${colors.TEXT_SECONDARY};
-    `}
+    ${props =>
+        props.isGreen &&
+        css`
+            text-decoration: underline;
+            text-decoration-color: ${colors.GREEN_PRIMARY};
+        `}
+    ${props =>
+        props.isGray &&
+        css`
+            text-decoration: underline;
+            text-decoration-color: ${colors.TEXT_SECONDARY};
+        `}
 
     &,
     &:visited,
     &:active,
     &:hover {
-        ${props => props.isGreen && css`
-            color: ${colors.GREEN_PRIMARY};
-        `}
-        ${props => props.isGray && css`
-            color: ${colors.TEXT_SECONDARY};
-        `}
+        ${props =>
+            props.isGreen &&
+            css`
+                color: ${colors.GREEN_PRIMARY};
+            `}
+        ${props =>
+            props.isGray &&
+            css`
+                color: ${colors.TEXT_SECONDARY};
+            `}
     }
 
     &:hover {
@@ -38,13 +46,17 @@ const A = styled.a`
 `;
 
 const StyledNavLink = styled(NavLink)`
-    ${props => props.isGreen && css`
-        color: ${colors.GREEN_PRIMARY};
-    `}
+    ${props =>
+        props.isGreen &&
+        css`
+            color: ${colors.GREEN_PRIMARY};
+        `}
 
-    ${props => props.isGray && css`
-        color: ${colors.TEXT_SECONDARY};
-    `}
+    ${props =>
+        props.isGray &&
+        css`
+            color: ${colors.TEXT_SECONDARY};
+        `}
 `;
 
 class Link extends PureComponent {
@@ -52,8 +64,7 @@ class Link extends PureComponent {
         const shouldRenderRouterLink = this.props.to;
         let LinkComponent;
         if (shouldRenderRouterLink) {
-            LinkComponent = (
-                <StyledNavLink {...this.props}>{this.props.children}</StyledNavLink>);
+            LinkComponent = <StyledNavLink {...this.props}>{this.props.children}</StyledNavLink>;
         } else {
             LinkComponent = (
                 <A
@@ -61,7 +72,8 @@ class Link extends PureComponent {
                     target={this.props.target || '_blank'}
                     rel="noreferrer noopener"
                     {...this.props}
-                >{this.props.children}
+                >
+                    {this.props.children}
                 </A>
             );
         }

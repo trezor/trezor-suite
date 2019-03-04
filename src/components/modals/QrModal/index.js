@@ -63,7 +63,7 @@ type Props = {
     onError?: (error: any) => any,
     onCancel?: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>,
     intl: any,
-}
+};
 
 type State = {
     readerLoaded: boolean,
@@ -83,7 +83,7 @@ class QrModal extends Component<Props, State> {
         this.setState({
             readerLoaded: true,
         });
-    }
+    };
 
     handleScan = (data: string) => {
         if (data) {
@@ -102,7 +102,7 @@ class QrModal extends Component<Props, State> {
                 this.handleError(error);
             }
         }
-    }
+    };
 
     handleError = (err: any) => {
         // log thrown error
@@ -111,8 +111,12 @@ class QrModal extends Component<Props, State> {
             this.props.onError(err);
         }
 
-        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError'
-            || err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+        if (
+            err.name === 'NotAllowedError' ||
+            err.name === 'PermissionDeniedError' ||
+            err.name === 'NotReadableError' ||
+            err.name === 'TrackStartError'
+        ) {
             this.setState({
                 error: this.props.intl.formatMessage(l10nMessages.TR_CAMERA_PERMISSION_DENIED),
             });
@@ -125,31 +129,34 @@ class QrModal extends Component<Props, State> {
                 error: this.props.intl.formatMessage(l10nMessages.TR_UNKOWN_ERROR_SEE_CONSOLE),
             });
         }
-    }
+    };
 
     handleCancel = () => {
         if (this.props.onCancel) {
             this.props.onCancel();
         }
-    }
-
+    };
 
     render() {
         return (
             <Wrapper>
                 <CloseLink onClick={this.handleCancel}>
-                    <Icon
-                        size={24}
-                        color={colors.TEXT_SECONDARY}
-                        icon={icons.CLOSE}
-                    />
+                    <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                 </CloseLink>
                 <Padding>
-                    <H2><FormattedMessage {...l10nMessages.TR_SCAN_QR_CODE} /></H2>
-                    {!this.state.readerLoaded && !this.state.error && <CameraPlaceholder><FormattedMessage {...l10nMessages.TR_WAITING_FOR_CAMERA} /></CameraPlaceholder>}
+                    <H2>
+                        <FormattedMessage {...l10nMessages.TR_SCAN_QR_CODE} />
+                    </H2>
+                    {!this.state.readerLoaded && !this.state.error && (
+                        <CameraPlaceholder>
+                            <FormattedMessage {...l10nMessages.TR_WAITING_FOR_CAMERA} />
+                        </CameraPlaceholder>
+                    )}
                     {this.state.error && (
                         <Error>
-                            <ErrorTitle><FormattedMessage {...l10nMessages.TR_OOPS_SOMETHING_WENT_WRONG} /></ErrorTitle>
+                            <ErrorTitle>
+                                <FormattedMessage {...l10nMessages.TR_OOPS_SOMETHING_WENT_WRONG} />
+                            </ErrorTitle>
                             <ErrorMessage>{this.state.error.toString()}</ErrorMessage>
                         </Error>
                     )}

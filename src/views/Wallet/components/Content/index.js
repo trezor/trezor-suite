@@ -22,7 +22,7 @@ type Props = {
     isLoading?: boolean,
     loader?: $ElementType<$ElementType<State, 'selectedAccount'>, 'loader'>,
     exceptionPage?: $ElementType<$ElementType<State, 'selectedAccount'>, 'exceptionPage'>,
-}
+};
 
 const Wrapper = styled.div`
     display: flex;
@@ -30,7 +30,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     padding: 40px 35px 40px 35px;
 
-    @media screen and (max-width: ${SCREEN_SIZE.SM}){
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         padding: 20px 35px;
     }
 `;
@@ -62,31 +62,33 @@ const Row = styled.div`
     align-items: center;
 `;
 
-const getExceptionPage = (exceptionPage) => {
+const getExceptionPage = exceptionPage => {
     const { title, message, shortcut } = exceptionPage;
     switch (exceptionPage.type) {
         case 'fwOutdated':
             return <FirmwareUpdate />;
         case 'fwNotSupported':
-            return <FirmwareUnsupported title={title} message={message} networkShortcut={shortcut} />;
-        default: return null;
+            return (
+                <FirmwareUnsupported title={title} message={message} networkShortcut={shortcut} />
+            );
+        default:
+            return null;
     }
 };
 
-const Content = ({
-    children,
-    isLoading = false,
-    loader,
-    exceptionPage,
-}: Props) => (
+const Content = ({ children, isLoading = false, loader, exceptionPage }: Props) => (
     <Wrapper>
-        {(!isLoading) && children}
+        {!isLoading && children}
         {isLoading && exceptionPage && getExceptionPage(exceptionPage)}
         {isLoading && loader && (
             <Loading>
                 <Row>
                     {loader.type === 'progress' && <Loader size={30} />}
-                    <Title type={loader.type}>{loader.title || <FormattedMessage {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />}</Title>
+                    <Title type={loader.type}>
+                        {loader.title || (
+                            <FormattedMessage {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />
+                        )}
+                    </Title>
                 </Row>
                 {loader.message && <Message>{loader.message}</Message>}
             </Loading>

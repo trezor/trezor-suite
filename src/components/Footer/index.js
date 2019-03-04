@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
-
 import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
 import * as LogActions from 'actions/LogActions';
@@ -19,7 +18,7 @@ type Props = {
     opened: boolean,
     isLanding: boolean,
     toggle: () => any,
-}
+};
 
 const Wrapper = styled.div`
     width: 100%;
@@ -62,17 +61,27 @@ const Footer = ({ opened, toggle, isLanding }: Props) => (
     <Wrapper>
         <Left>
             <Copy>&copy; {getYear(new Date())}</Copy>
-            <StyledLink href="http://satoshilabs.com" isGreen>SatoshiLabs</StyledLink>
+            <StyledLink href="http://satoshilabs.com" isGreen>
+                SatoshiLabs
+            </StyledLink>
             <StyledLink href="https://trezor.io/static/pdf/tos.pdf" isGreen>
                 <FormattedMessage {...l10nMessages.TR_TERMS} />
             </StyledLink>
-            <StyledLink onClick={toggle} isGreen>{ opened ? 'Hide Log' : 'Show Log' }</StyledLink>
+            <StyledLink onClick={toggle} isGreen>
+                {opened ? 'Hide Log' : 'Show Log'}
+            </StyledLink>
         </Left>
         {!isLanding && (
             <Right>
                 <FormattedMessage
                     {...l10nMessages.TR_EXCHANGE_RATES_BY}
-                    values={{ service: <Link href="https://www.coingecko.com" isGreen>Coingecko</Link> }}
+                    values={{
+                        service: (
+                            <Link href="https://www.coingecko.com" isGreen>
+                                Coingecko
+                            </Link>
+                        ),
+                    }}
                 />
             </Right>
         )}
@@ -93,4 +102,7 @@ const mapDispatchToProps = dispatch => ({
     toggle: bindActionCreators(LogActions.toggle, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Footer);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Footer);

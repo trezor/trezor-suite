@@ -24,17 +24,22 @@ const SvgWrapper = styled.svg`
 `;
 
 const CircleWrapper = styled.circle`
-    ${props => props.isRoute && css`
-        stroke: ${props.transparentRoute ? 'transparent' : colors.GRAY_LIGHT};
-    `}
+    ${props =>
+        props.isRoute &&
+        css`
+            stroke: ${props.transparentRoute ? 'transparent' : colors.GRAY_LIGHT};
+        `}
 
-    ${props => props.isPath && css`
-        stroke-width: ${props.transparentRoute ? '2px' : '1px'};
-        stroke-dasharray: 1, 200;
-        stroke-dashoffset: 0;
-        animation: ${DASH} 1.5s ease-in-out infinite, ${props.animationColor || GREEN_COLOR} 6s ease-in-out infinite;
-        stroke-linecap: round;
-    `};
+    ${props =>
+        props.isPath &&
+        css`
+            stroke-width: ${props.transparentRoute ? '2px' : '1px'};
+            stroke-dasharray: 1, 200;
+            stroke-dashoffset: 0;
+            animation: ${DASH} 1.5s ease-in-out infinite,
+                ${props.animationColor || GREEN_COLOR} 6s ease-in-out infinite;
+            stroke-linecap: round;
+        `};
 `;
 
 const StyledParagraph = styled(Paragraph)`
@@ -43,10 +48,18 @@ const StyledParagraph = styled(Paragraph)`
 `;
 
 const Loader = ({
-    className, text, isWhiteText = false, isSmallText, size = 100, animationColor, transparentRoute,
+    className,
+    text,
+    isWhiteText = false,
+    isSmallText,
+    size = 100,
+    animationColor,
+    transparentRoute,
 }) => (
     <Wrapper className={className} size={size}>
-        <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>{text}</StyledParagraph>
+        <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>
+            {text}
+        </StyledParagraph>
         <SvgWrapper viewBox="25 25 50 50">
             <CircleWrapper
                 animationColor={animationColor}

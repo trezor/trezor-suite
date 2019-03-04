@@ -17,11 +17,13 @@ const definedMessages: Messages = defineMessages({
     },
     TR_PLEASE_ENABLE_PASSPHRASE: {
         id: 'TR_PLEASE_ENABLE_PASSPHRASE',
-        defaultMessage: 'Please enable passphrase settings to continue with the verification process.',
+        defaultMessage:
+            'Please enable passphrase settings to continue with the verification process.',
     },
     TR_PLEASE_DISABLE_PASSPHRASE: {
         id: 'TR_PLEASE_DISABLE_PASSPHRASE',
-        defaultMessage: 'Please disable passphrase settings to continue with the verification process.',
+        defaultMessage:
+            'Please disable passphrase settings to continue with the verification process.',
     },
     TR_SHOW_UNVERIFIED_ADDRESS: {
         id: 'TR_SHOW_UNVERIFIED_ADDRESS',
@@ -34,7 +36,8 @@ const definedMessages: Messages = defineMessages({
     },
     TR_TO_PREVENT_PHISHING_ATTACKS_COMMA: {
         id: 'TR_TO_PREVENT_PHISHING_ATTACKS_COMMA',
-        defaultMessage: 'To prevent phishing attacks, you should verify the address on your Trezor first. {claim}',
+        defaultMessage:
+            'To prevent phishing attacks, you should verify the address on your Trezor first. {claim}',
     },
 });
 

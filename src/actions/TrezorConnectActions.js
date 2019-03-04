@@ -1,6 +1,10 @@
 /* @flow */
 import TrezorConnect, {
-    DEVICE, DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT,
+    DEVICE,
+    DEVICE_EVENT,
+    UI_EVENT,
+    TRANSPORT_EVENT,
+    BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
 import { CONTEXT_NONE } from 'actions/constants/modal';
 import urlConstants from 'constants/urls';
@@ -31,96 +35,127 @@ import type {
     TrezorDevice,
 } from 'flowtype';
 
-
-export type TrezorConnectAction = {
-    type: typeof CONNECT.INITIALIZATION_ERROR,
-    error: string
-} | {
-    type: typeof CONNECT.NETWORK_CHANGED,
-    payload: {
-        network: string
-    }
-} | {
-    type: typeof CONNECT.AUTH_DEVICE,
-    device: TrezorDevice,
-    state: string
-} | {
-    type: typeof CONNECT.DUPLICATE,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.REMEMBER_REQUEST,
-    device: TrezorDevice,
-    instances: Array<TrezorDevice>
-} | {
-    type: typeof CONNECT.DISCONNECT_REQUEST,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.FORGET_REQUEST,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.FORGET,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.FORGET_SINGLE | typeof CONNECT.FORGET_SILENT,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.REMEMBER,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.TRY_TO_DUPLICATE,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.DEVICE_FROM_STORAGE,
-    payload: Array<TrezorDevice>
-} | {
-    type: typeof CONNECT.START_ACQUIRING | typeof CONNECT.STOP_ACQUIRING,
-} | {
-    type: typeof CONNECT.REQUEST_WALLET_TYPE,
-    device: TrezorDevice
-} | {
-    type: typeof CONNECT.RECEIVE_WALLET_TYPE | typeof CONNECT.UPDATE_WALLET_TYPE,
-    device: TrezorDevice,
-    hidden: boolean,
-};
+export type TrezorConnectAction =
+    | {
+          type: typeof CONNECT.INITIALIZATION_ERROR,
+          error: string,
+      }
+    | {
+          type: typeof CONNECT.NETWORK_CHANGED,
+          payload: {
+              network: string,
+          },
+      }
+    | {
+          type: typeof CONNECT.AUTH_DEVICE,
+          device: TrezorDevice,
+          state: string,
+      }
+    | {
+          type: typeof CONNECT.DUPLICATE,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof CONNECT.REMEMBER_REQUEST,
+          device: TrezorDevice,
+          instances: Array<TrezorDevice>,
+      }
+    | {
+          type: typeof CONNECT.DISCONNECT_REQUEST,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof CONNECT.FORGET_REQUEST,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof CONNECT.FORGET,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof CONNECT.FORGET_SINGLE | typeof CONNECT.FORGET_SILENT,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof CONNECT.REMEMBER,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof CONNECT.TRY_TO_DUPLICATE,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof CONNECT.DEVICE_FROM_STORAGE,
+          payload: Array<TrezorDevice>,
+      }
+    | {
+          type: typeof CONNECT.START_ACQUIRING | typeof CONNECT.STOP_ACQUIRING,
+      }
+    | {
+          type: typeof CONNECT.REQUEST_WALLET_TYPE,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof CONNECT.RECEIVE_WALLET_TYPE | typeof CONNECT.UPDATE_WALLET_TYPE,
+          device: TrezorDevice,
+          hidden: boolean,
+      };
 
 declare var LOCAL: ?string;
 
-export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const init = (): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     // set listeners
-    TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
-        // post event to reducers
-        const type: DeviceMessageType = event.type; // eslint-disable-line prefer-destructuring
-        dispatch({
-            type,
-            device: event.payload,
-        });
-    });
+    TrezorConnect.on(
+        DEVICE_EVENT,
+        (event: DeviceMessage): void => {
+            // post event to reducers
+            const type: DeviceMessageType = event.type; // eslint-disable-line prefer-destructuring
+            dispatch({
+                type,
+                device: event.payload,
+            });
+        }
+    );
 
-    TrezorConnect.on(UI_EVENT, (event: UiMessage): void => {
-        // post event to reducers
-        const type: UiMessageType = event.type; // eslint-disable-line prefer-destructuring
-        dispatch({
-            type,
-            payload: event.payload,
-        });
-    });
+    TrezorConnect.on(
+        UI_EVENT,
+        (event: UiMessage): void => {
+            // post event to reducers
+            const type: UiMessageType = event.type; // eslint-disable-line prefer-destructuring
+            dispatch({
+                type,
+                payload: event.payload,
+            });
+        }
+    );
 
-    TrezorConnect.on(TRANSPORT_EVENT, (event: TransportMessage): void => {
-        // post event to reducers
-        const type: TransportMessageType = event.type; // eslint-disable-line prefer-destructuring
-        dispatch({
-            type,
-            payload: event.payload,
-        });
-    });
+    TrezorConnect.on(
+        TRANSPORT_EVENT,
+        (event: TransportMessage): void => {
+            // post event to reducers
+            const type: TransportMessageType = event.type; // eslint-disable-line prefer-destructuring
+            dispatch({
+                type,
+                payload: event.payload,
+            });
+        }
+    );
 
     // post event to reducers
-    TrezorConnect.on(BLOCKCHAIN_EVENT, (event: BlockchainEvent): void => {
-        dispatch(event);
-    });
+    TrezorConnect.on(
+        BLOCKCHAIN_EVENT,
+        (event: BlockchainEvent): void => {
+            dispatch(event);
+        }
+    );
 
     if (buildUtils.isDev()) {
-        window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
+        // eslint-disable-next-line
+        window.__TREZOR_CONNECT_SRC =
+            typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
         // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://localhost:8088/'; // eslint-disable-line no-underscore-dangle
         window.TrezorConnect = TrezorConnect;
     }
@@ -131,7 +166,7 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
             debug: false,
             popup: false,
             webusb: true,
-            pendingTransportEvent: (getState().devices.length < 1),
+            pendingTransportEvent: getState().devices.length < 1,
             manifest: {
                 email: 'info@trezor.io',
                 appUrl: urlConstants.NEXT_WALLET,
@@ -165,10 +200,18 @@ export const postInit = (): ThunkAction => (dispatch: Dispatch): void => {
     }
 };
 
-export const requestWalletType = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const requestWalletType = (): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
-    const isDeviceReady = selected.connected && selected.features && !selected.state && selected.mode === 'normal' && selected.firmware !== 'required';
+    const isDeviceReady =
+        selected.connected &&
+        selected.features &&
+        !selected.state &&
+        selected.mode === 'normal' &&
+        selected.firmware !== 'required';
     if (!isDeviceReady) return;
 
     if (selected.features && selected.features.passphrase_protection) {
@@ -186,10 +229,18 @@ export const requestWalletType = (): AsyncAction => async (dispatch: Dispatch, g
     }
 };
 
-export const authorizeDevice = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const authorizeDevice = (): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
-    const isDeviceReady = selected.connected && selected.features && !selected.state && selected.mode === 'normal' && selected.firmware !== 'required';
+    const isDeviceReady =
+        selected.connected &&
+        selected.features &&
+        !selected.state &&
+        selected.mode === 'normal' &&
+        selected.firmware !== 'required';
     if (!isDeviceReady) return;
 
     const response = await TrezorConnect.getDeviceState({
@@ -233,11 +284,24 @@ export const authorizeDevice = (): AsyncAction => async (dispatch: Dispatch, get
     }
 };
 
-export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const deviceDisconnect = (device: Device): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     if (device.features) {
-        const instances = getState().devices.filter(d => d.features && device.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
+        const instances = getState().devices.filter(
+            d =>
+                d.features &&
+                device.features &&
+                d.state &&
+                !d.remember &&
+                d.features.device_id === device.features.device_id
+        );
         if (instances.length > 0) {
-            const isSelected = deviceUtils.isSelectedDevice(getState().wallet.selectedDevice, device);
+            const isSelected = deviceUtils.isSelectedDevice(
+                getState().wallet.selectedDevice,
+                device
+            );
             if (!isSelected && getState().modal.context !== CONTEXT_NONE) {
                 dispatch({
                     type: CONNECT.FORGET_SILENT,
@@ -259,8 +323,7 @@ export const deviceDisconnect = (device: Device): AsyncAction => async (dispatch
 };
 
 export function reload(): AsyncAction {
-    return async (): Promise<void> => {
-    };
+    return async (): Promise<void> => {};
 }
 
 export function acquire(): AsyncAction {
@@ -314,7 +377,10 @@ export const forget = (device: TrezorDevice): Action => ({
     device,
 });
 
-export const duplicateDeviceOld = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const duplicateDeviceOld = (device: TrezorDevice): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     const instance: number = getDuplicateInstanceNumber(getState().devices, device);
     const extended: Object = { instance };
     dispatch({
@@ -323,7 +389,9 @@ export const duplicateDeviceOld = (device: TrezorDevice): AsyncAction => async (
     });
 };
 
-export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (dispatch: Dispatch): Promise<void> => {
+export const duplicateDevice = (device: TrezorDevice): AsyncAction => async (
+    dispatch: Dispatch
+): Promise<void> => {
     dispatch({
         type: CONNECT.REQUEST_WALLET_TYPE,
         device,

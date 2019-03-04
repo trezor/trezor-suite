@@ -7,7 +7,6 @@ import { FONT_SIZE, LEFT_NAVIGATION_ROW } from 'config/variables';
 import colors from 'config/colors';
 import Row from '../Row';
 
-
 const CoinNameWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -21,7 +20,7 @@ const RowCoinWrapper = styled.div`
     font-size: ${FONT_SIZE.BIG};
     color: ${colors.TEXT_PRIMARY};
     transition: background-color 0.3s, color 0.3s;
-    
+
     &:hover {
         background-color: ${colors.GRAY_LIGHT};
     }
@@ -37,19 +36,13 @@ const IconWrapper = styled.div`
     margin-right: 10px;
 `;
 
-const RowCoin = ({
-    network, iconLeft, iconRight,
-}) => (
+const RowCoin = ({ network, iconLeft, iconRight }) => (
     <RowCoinWrapper>
         <Row>
             <Left>
                 {iconLeft && (
                     <IconWrapper>
-                        <Icon
-                            icon={iconLeft.type}
-                            size={iconLeft.size}
-                            color={iconLeft.color}
-                        />
+                        <Icon icon={iconLeft.type} size={iconLeft.size} color={iconLeft.color} />
                     </IconWrapper>
                 )}
                 <CoinNameWrapper>
@@ -58,11 +51,7 @@ const RowCoin = ({
                 </CoinNameWrapper>
             </Left>
             {iconRight && (
-                <Icon
-                    icon={iconRight.type}
-                    size={iconRight.size}
-                    color={iconRight.color}
-                />
+                <Icon icon={iconRight.type} size={iconRight.size} color={iconRight.color} />
             )}
         </Row>
     </RowCoinWrapper>

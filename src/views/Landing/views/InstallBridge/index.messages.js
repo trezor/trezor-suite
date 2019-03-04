@@ -5,7 +5,8 @@ import type { Messages } from 'flowtype/npm/react-intl';
 const definedMessages: Messages = defineMessages({
     TR_NEW_COMMUNICATION_TOOL: {
         id: 'TR_NEW_COMMUNICATION_TOOL',
-        defaultMessage: 'New communication tool to facilitate the connection between your Trezor and your internet browser.',
+        defaultMessage:
+            'New communication tool to facilitate the connection between your Trezor and your internet browser.',
     },
     TR_DOWNLOAD_LATEST_BRIDGE: {
         id: 'TR_DOWNLOAD_LATEST_BRIDGE',
@@ -26,7 +27,7 @@ const definedMessages: Messages = defineMessages({
     },
     TR_DONT_UPGRADE_BRIDGE: {
         id: 'TR_DONT_UPGRADE_BRIDGE',
-        defaultMessage: 'No, I don\'t want to upgrade Bridge now',
+        defaultMessage: "No, I don't want to upgrade Bridge now",
     },
     TR_TAKE_ME_BACK_TO_WALLET: {
         id: 'TR_TAKE_ME_BACK_TO_WALLET',

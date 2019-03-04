@@ -18,8 +18,8 @@ import NemImage from './images/nem-download.png';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
-}
+    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>,
+};
 
 const Wrapper = styled.div`
     width: 100%;
@@ -47,11 +47,7 @@ const Img = styled.img`
 const NemWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
-            <Icon
-                size={24}
-                color={colors.TEXT_SECONDARY}
-                icon={icons.CLOSE}
-            />
+            <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
         <H2>
             <FormattedMessage {...l10nMessages.TR_NEM_WALLET} />

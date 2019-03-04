@@ -11,13 +11,7 @@ const Wrapper = styled.div`
     padding-bottom: 35px;
 `;
 
-const Title = ({
-    children,
-}) => (
-    <Wrapper>
-        {children}
-    </Wrapper>
-);
+const Title = ({ children }) => <Wrapper>{children}</Wrapper>;
 
 Title.propTypes = {
     children: PropTypes.node,

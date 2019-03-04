@@ -5,15 +5,14 @@ import colors from 'config/colors';
 import { H2 } from 'components/Heading';
 import Transaction from 'components/Transaction';
 
-
 import type { Network } from 'reducers/LocalStorageReducer';
 import type { BaseProps } from '../../index';
 // import testData from './test.data';
 
 type Props = {
     pending: $PropertyType<$ElementType<BaseProps, 'selectedAccount'>, 'pending'>,
-    network: Network
-}
+    network: Network,
+};
 
 const Wrapper = styled.div`
     padding-top: 20px;

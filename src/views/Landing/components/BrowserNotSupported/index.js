@@ -34,23 +34,30 @@ const Browser = styled.div`
 
 const BrowserNotSupported = () => (
     <Wrapper>
-        <H2><FormattedMessage {...l10nMessages.TR_YOUR_BROWSER_IS_NOT_SUPPORTED} /></H2>
-        <P><FormattedMessage {...l10nMessages.TR_PLEASE_CHOOSE_ONE_OF_THE_SUPPORTED} /></P>
+        <H2>
+            <FormattedMessage {...l10nMessages.TR_YOUR_BROWSER_IS_NOT_SUPPORTED} />
+        </H2>
+        <P>
+            <FormattedMessage {...l10nMessages.TR_PLEASE_CHOOSE_ONE_OF_THE_SUPPORTED} />
+        </P>
         <ChooseBrowserWrapper>
             <Browser>
                 <BrowserLogo src={ChromeImage} />
                 <P isSmaller>Google Chrome</P>
                 <Link href="https://www.google.com/chrome/">
-                    <Button><FormattedMessage {...l10nMessages.TR_GET_CHROME} /></Button>
+                    <Button>
+                        <FormattedMessage {...l10nMessages.TR_GET_CHROME} />
+                    </Button>
                 </Link>
             </Browser>
             <Browser>
                 <BrowserLogo src={FirefoxImage} />
                 <P isSmaller>Mozzila Firefox</P>
                 <Link href="https://www.mozilla.org/en-US/firefox/new/">
-                    <Button><FormattedMessage {...l10nMessages.TR_GET_FIREFOX} /></Button>
+                    <Button>
+                        <FormattedMessage {...l10nMessages.TR_GET_FIREFOX} />
+                    </Button>
                 </Link>
-
             </Browser>
         </ChooseBrowserWrapper>
     </Wrapper>

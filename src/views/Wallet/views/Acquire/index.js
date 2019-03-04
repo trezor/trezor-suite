@@ -14,8 +14,8 @@ import l10nMessages from './index.messages';
 type Props = {
     intl: any,
     acquiring: boolean,
-    acquireDevice: typeof TrezorConnectActions.acquire
-}
+    acquireDevice: typeof TrezorConnectActions.acquire,
+};
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,25 +32,25 @@ const Acquire = (props: Props) => (
             type="info"
             cancelable={false}
             isActionInProgress={props.acquiring}
-            actions={
-                [
-                    {
-                        label: props.intl.formatMessage(l10nMessages.TR_ACQUIRE_DEVICE),
-                        callback: () => {
-                            props.acquireDevice();
-                        },
+            actions={[
+                {
+                    label: props.intl.formatMessage(l10nMessages.TR_ACQUIRE_DEVICE),
+                    callback: () => {
+                        props.acquireDevice();
                     },
-                ]
-            }
+                },
+            ]}
         />
     </Wrapper>
 );
 
-export default injectIntl(connect(
-    (state: State) => ({
-        acquiring: state.connect.acquiringDevice,
-    }),
-    (dispatch: Dispatch) => ({
-        acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
-    }),
-)(Acquire));
+export default injectIntl(
+    connect(
+        (state: State) => ({
+            acquiring: state.connect.acquiringDevice,
+        }),
+        (dispatch: Dispatch) => ({
+            acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
+        })
+    )(Acquire)
+);

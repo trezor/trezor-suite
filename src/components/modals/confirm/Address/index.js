@@ -37,10 +37,7 @@ const Label = styled.div`
 `;
 
 const ConfirmAddress = (props: Props) => {
-    const {
-        account,
-        network,
-    } = props.selectedAccount;
+    const { account, network } = props.selectedAccount;
     if (!account || !network) return null;
 
     return (
@@ -54,9 +51,13 @@ const ConfirmAddress = (props: Props) => {
                 </P>
             </Header>
             <Content>
-                <P>{ account.descriptor }</P>
-                <Label>{ network.symbol }
-                    <FormattedMessage {...l10nCommonMessages.TR_ACCOUNT_HASH} values={{ number: account.index + 1 }} />
+                <P>{account.descriptor}</P>
+                <Label>
+                    {network.symbol}
+                    <FormattedMessage
+                        {...l10nCommonMessages.TR_ACCOUNT_HASH}
+                        values={{ number: account.index + 1 }}
+                    />
                 </Label>
             </Content>
         </Wrapper>

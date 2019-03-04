@@ -35,15 +35,22 @@ const mergeDevices = (current: TrezorDevice, upcoming: Device | TrezorDevice): T
         remember: typeof upcoming.remember === 'boolean' ? upcoming.remember : current.remember,
         instance: current.instance,
         instanceLabel,
-        instanceName: typeof upcoming.instanceName === 'string' ? upcoming.instanceName : current.instanceName,
+        instanceName:
+            typeof upcoming.instanceName === 'string'
+                ? upcoming.instanceName
+                : current.instanceName,
         state: current.state,
         ts: typeof upcoming.ts === 'number' ? upcoming.ts : current.ts,
-        useEmptyPassphrase: typeof upcoming.useEmptyPassphrase === 'boolean' ? upcoming.useEmptyPassphrase : current.useEmptyPassphrase,
+        useEmptyPassphrase:
+            typeof upcoming.useEmptyPassphrase === 'boolean'
+                ? upcoming.useEmptyPassphrase
+                : current.useEmptyPassphrase,
     };
 
     if (upcoming.type === 'acquired') {
         return { ...upcoming, ...extended };
-    } if (upcoming.type === 'unacquired' && current.features && current.state) {
+    }
+    if (upcoming.type === 'unacquired' && current.features && current.state) {
         // corner-case: trying to merge unacquired device with acquired
         // make sure that sensitive fields will not be changed and device will remain acquired
         return {
@@ -72,11 +79,13 @@ const addDevice = (state: State, device: Device): State => {
         }
         otherDevices = state.filter(d => affectedDevices.indexOf(d) === -1);
     } else {
-        affectedDevices = state.filter(d => d.features
-            && device.features
-            && d.features.device_id === device.features.device_id);
+        affectedDevices = state.filter(
+            d => d.features && device.features && d.features.device_id === device.features.device_id
+        );
         const unacquiredDevices = state.filter(d => d.path.length > 0 && d.path === device.path);
-        otherDevices = state.filter(d => affectedDevices.indexOf(d) < 0 && unacquiredDevices.indexOf(d) < 0);
+        otherDevices = state.filter(
+            d => affectedDevices.indexOf(d) < 0 && unacquiredDevices.indexOf(d) < 0
+        );
     }
 
     const extended = {
@@ -92,15 +101,17 @@ const addDevice = (state: State, device: Device): State => {
         useEmptyPassphrase: true,
     };
 
-
-    const newDevice: TrezorDevice = device.type === 'acquired' ? {
-        ...device,
-        ...extended,
-    } : {
-        ...device,
-        features: null,
-        ...extended,
-    };
+    const newDevice: TrezorDevice =
+        device.type === 'acquired'
+            ? {
+                  ...device,
+                  ...extended,
+              }
+            : {
+                  ...device,
+                  features: null,
+                  ...extended,
+              };
 
     if (affectedDevices.length > 0) {
         // check if freshly added device has different "passphrase_protection" settings
@@ -130,11 +141,17 @@ const addDevice = (state: State, device: Device): State => {
         //     changedDevices.push(newDevice);
         // }
 
-        const changedDevices: Array<TrezorDevice> = affectedDevices.filter(d => d.features && device.features
-            && d.features.passphrase_protection === device.features.passphrase_protection).map((d) => {
-            const extended2: Object = { connected: true, available: true };
-            return mergeDevices(d, { ...device, ...extended2 });
-        });
+        const changedDevices: Array<TrezorDevice> = affectedDevices
+            .filter(
+                d =>
+                    d.features &&
+                    device.features &&
+                    d.features.passphrase_protection === device.features.passphrase_protection
+            )
+            .map(d => {
+                const extended2: Object = { connected: true, available: true };
+                return mergeDevices(d, { ...device, ...extended2 });
+            });
         if (changedDevices.length !== affectedDevices.length) {
             changedDevices.push(newDevice);
         }
@@ -143,7 +160,6 @@ const addDevice = (state: State, device: Device): State => {
     }
     return otherDevices.concat([newDevice]);
 };
-
 
 const duplicate = (state: State, device: TrezorDevice): State => {
     if (!device.features) return state;
@@ -171,14 +187,22 @@ const changeDevice = (state: State, device: Device | TrezorDevice, extended: Obj
 
     // find devices with the same device_id and passphrase_protection settings
     // or devices with the same path (TODO: should be that way?)
-    const affectedDevices: Array<TrezorDevice> = state.filter(d => (d.features && device.features && d.features.device_id === device.features.device_id && d.features.passphrase_protection === device.features.passphrase_protection)
-        || (d.features && d.path.length > 0 && d.path === device.path));
+    const affectedDevices: Array<TrezorDevice> = state.filter(
+        d =>
+            (d.features &&
+                device.features &&
+                d.features.device_id === device.features.device_id &&
+                d.features.passphrase_protection === device.features.passphrase_protection) ||
+            (d.features && d.path.length > 0 && d.path === device.path)
+    );
 
     const otherDevices: Array<TrezorDevice> = state.filter(d => affectedDevices.indexOf(d) === -1);
 
     if (affectedDevices.length > 0) {
         // merge incoming device with State
-        const changedDevices = affectedDevices.map(d => mergeDevices(d, { ...device, ...extended }));
+        const changedDevices = affectedDevices.map(d =>
+            mergeDevices(d, { ...device, ...extended })
+        );
         return otherDevices.concat(changedDevices);
     }
 
@@ -186,7 +210,9 @@ const changeDevice = (state: State, device: Device | TrezorDevice, extended: Obj
 };
 
 const authDevice = (state: State, device: TrezorDevice, deviceState: string): State => {
-    const affectedDevice: ?TrezorDevice = state.find(d => d.path === device.path && d.instance === device.instance);
+    const affectedDevice: ?TrezorDevice = state.find(
+        d => d.path === device.path && d.instance === device.instance
+    );
     // device could already have own state from trezor-connect, do not override it
     if (affectedDevice && !affectedDevice.state && affectedDevice.type === 'acquired') {
         const otherDevices: Array<TrezorDevice> = state.filter(d => d !== affectedDevice);
@@ -195,28 +221,35 @@ const authDevice = (state: State, device: TrezorDevice, deviceState: string): St
     return state;
 };
 
-
 // Transform JSON form local storage into State
-const devicesFromStorage = ($devices: Array<TrezorDevice>): State => $devices.map((device: TrezorDevice) => {
-    const extended = {
-        connected: false,
-        available: false,
-        path: '',
-    };
+const devicesFromStorage = ($devices: Array<TrezorDevice>): State =>
+    $devices.map((device: TrezorDevice) => {
+        const extended = {
+            connected: false,
+            available: false,
+            path: '',
+        };
 
-    return device.type === 'acquired' ? {
-        ...device,
-        ...extended,
-    } : {
-        ...device,
-        features: null,
-        ...extended,
-    };
-});
+        return device.type === 'acquired'
+            ? {
+                  ...device,
+                  ...extended,
+              }
+            : {
+                  ...device,
+                  features: null,
+                  ...extended,
+              };
+    });
 
 // Remove all device reference from State
-const forgetDevice = (state: State, device: TrezorDevice): State => state.filter(d => d.remember || (d.features && device.features && d.features.device_id !== device.features.device_id) || (!d.features && d.path !== device.path));
-
+const forgetDevice = (state: State, device: TrezorDevice): State =>
+    state.filter(
+        d =>
+            d.remember ||
+            (d.features && device.features && d.features.device_id !== device.features.device_id) ||
+            (!d.features && d.path !== device.path)
+    );
 
 // Remove single device reference from State
 const forgetSingleDevice = (state: State, device: TrezorDevice): State => {
@@ -227,19 +260,28 @@ const forgetSingleDevice = (state: State, device: TrezorDevice): State => {
 };
 
 const disconnectDevice = (state: State, device: Device): State => {
-    const affectedDevices: State = state.filter(d => d.path === device.path || (d.features && device.features && d.features.device_id === device.features.device_id));
+    const affectedDevices: State = state.filter(
+        d =>
+            d.path === device.path ||
+            (d.features && device.features && d.features.device_id === device.features.device_id)
+    );
     const otherDevices: State = state.filter(d => affectedDevices.indexOf(d) === -1);
 
     if (affectedDevices.length > 0) {
-        const acquiredDevices = affectedDevices.filter(d => d.features && d.state).map((d) => { // eslint-disable-line arrow-body-style
-            return d.type === 'acquired' ? {
-                ...d,
-                connected: false,
-                available: false,
-                status: 'available',
-                path: '',
-            } : d;
-        });
+        const acquiredDevices = affectedDevices
+            .filter(d => d.features && d.state)
+            .map(d => {
+                // eslint-disable-line arrow-body-style
+                return d.type === 'acquired'
+                    ? {
+                          ...d,
+                          connected: false,
+                          available: false,
+                          status: 'available',
+                          path: '',
+                      }
+                    : d;
+            });
         return otherDevices.concat(acquiredDevices);
     }
 
@@ -250,29 +292,39 @@ const onSelectedDevice = (state: State, device: ?TrezorDevice): State => {
     if (!device) return state;
 
     const otherDevices: Array<TrezorDevice> = state.filter(d => d !== device);
-    const extended = device.type === 'acquired' ? {
-        ...device,
-        ts: new Date().getTime(),
-    } : {
-        ...device,
-        features: null,
-        ts: new Date().getTime(),
-    };
+    const extended =
+        device.type === 'acquired'
+            ? {
+                  ...device,
+                  ts: new Date().getTime(),
+              }
+            : {
+                  ...device,
+                  features: null,
+                  ts: new Date().getTime(),
+              };
     return otherDevices.concat([extended]);
 };
 
 const onChangeWalletType = (state: State, device: TrezorDevice, hidden: boolean): State => {
-    const affectedDevices: State = state.filter(d => d.path === device.path || (d.features && device.features && d.features.device_id === device.features.device_id));
+    const affectedDevices: State = state.filter(
+        d =>
+            d.path === device.path ||
+            (d.features && device.features && d.features.device_id === device.features.device_id)
+    );
     const otherDevices: State = state.filter(d => affectedDevices.indexOf(d) === -1);
     if (affectedDevices.length > 0) {
-        const changedDevices = affectedDevices.map((d) => { // eslint-disable-line arrow-body-style
-            return d.type === 'acquired' ? {
-                ...d,
-                remember: false,
-                state: null,
-                useEmptyPassphrase: !hidden,
-                ts: new Date().getTime(),
-            } : d;
+        const changedDevices = affectedDevices.map(d => {
+            // eslint-disable-line arrow-body-style
+            return d.type === 'acquired'
+                ? {
+                      ...d,
+                      remember: false,
+                      state: null,
+                      useEmptyPassphrase: !hidden,
+                      ts: new Date().getTime(),
+                  }
+                : d;
         });
         return otherDevices.concat(changedDevices);
     }
@@ -307,10 +359,10 @@ export default function devices(state: State = initialState, action: Action): St
         case DEVICE.CHANGED:
             // return changeDevice(state, { ...action.device, connected: true, available: true });
             return changeDevice(state, action.device, { connected: true, available: true });
-            // TODO: check if available will propagate to unavailable
+        // TODO: check if available will propagate to unavailable
 
         case DEVICE.DISCONNECT:
-        // case DEVICE.DISCONNECT_UNACQUIRED:
+            // case DEVICE.DISCONNECT_UNACQUIRED:
             return disconnectDevice(state, action.device);
 
         case WALLET.SET_SELECTED_DEVICE:

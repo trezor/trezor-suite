@@ -16,9 +16,18 @@ const constants: Object = Object.freeze({
 
 export const { TREZOR_CONNECT_ROOT }: { TREZOR_CONNECT_ROOT: string } = constants;
 export const TREZOR_CONNECT: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/index');
-export const TREZOR_IFRAME: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/iframe/iframe.js');
-export const TREZOR_POPUP: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/popup/popup.js');
-export const TREZOR_WEBUSB: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/js/webusb/index.js');
+export const TREZOR_IFRAME: string = path.join(
+    constants.TREZOR_CONNECT_ROOT,
+    'src/js/iframe/iframe.js'
+);
+export const TREZOR_POPUP: string = path.join(
+    constants.TREZOR_CONNECT_ROOT,
+    'src/js/popup/popup.js'
+);
+export const TREZOR_WEBUSB: string = path.join(
+    constants.TREZOR_CONNECT_ROOT,
+    'src/js/webusb/index.js'
+);
 export const TREZOR_CONNECT_HTML: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/html/');
 export const TREZOR_CONNECT_FILES: string = path.join(constants.TREZOR_CONNECT_ROOT, 'src/data/');
 
@@ -29,7 +38,14 @@ export const {
     PORT,
     INDEX,
     PUBLIC,
-}: { BUILD: string, SRC: string, TRANSLATIONS: string, PORT: string, INDEX: string, PUBLIC: string } = constants;
+}: {
+    BUILD: string,
+    SRC: string,
+    TRANSLATIONS: string,
+    PORT: string,
+    INDEX: string,
+    PUBLIC: string,
+} = constants;
 // export const SRC: string = constants.SRC;
 // export const PORT: string = constants.PORT;
 // export const INDEX: string = constants.INDEX;

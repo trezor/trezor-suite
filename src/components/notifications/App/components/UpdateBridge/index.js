@@ -13,13 +13,15 @@ export default (props: Props) => {
                 key="update-bridge"
                 type="warning"
                 title={props.intl.formatMessage(l10nMessages.TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE)}
-                message={props.intl.formatMessage(l10nCommonMessages.TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT)}
-                actions={
-                    [{
+                message={props.intl.formatMessage(
+                    l10nCommonMessages.TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT
+                )}
+                actions={[
+                    {
                         label: props.intl.formatMessage(l10nCommonMessages.TR_SHOW_DETAILS),
                         callback: props.routerActions.gotoBridgeUpdate,
-                    }]
-                }
+                    },
+                ]}
             />
         );
     }

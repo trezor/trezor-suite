@@ -4,14 +4,7 @@ import TrezorConnect from 'trezor-connect';
 import * as DISCOVERY from 'actions/constants/discovery';
 import { toDecimalAmount } from 'utils/formatUtils';
 
-import type {
-    PromiseAction,
-    GetState,
-    Dispatch,
-    TrezorDevice,
-    Network,
-    Account,
-} from 'flowtype';
+import type { PromiseAction, GetState, Dispatch, TrezorDevice, Network, Account } from 'flowtype';
 import type { Discovery } from 'reducers/DiscoveryReducer';
 
 export type DiscoveryStartAction = {
@@ -21,14 +14,20 @@ export type DiscoveryStartAction = {
     device: TrezorDevice,
 };
 
-export const begin = (device: TrezorDevice, network: Network): PromiseAction<DiscoveryStartAction> => async (): Promise<DiscoveryStartAction> => ({
+export const begin = (
+    device: TrezorDevice,
+    network: Network
+): PromiseAction<DiscoveryStartAction> => async (): Promise<DiscoveryStartAction> => ({
     type: DISCOVERY.START,
     networkType: 'ripple',
     network,
     device,
 });
 
-export const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): PromiseAction<Account> => async (dispatch: Dispatch, getState: GetState): Promise<Account> => {
+export const discoverAccount = (
+    device: TrezorDevice,
+    discoveryProcess: Discovery
+): PromiseAction<Account> => async (dispatch: Dispatch, getState: GetState): Promise<Account> => {
     const { config } = getState().localStorage;
     const network = config.networks.find(c => c.shortcut === discoveryProcess.network);
     if (!network) throw new Error('Discovery network not found');
