@@ -7,7 +7,7 @@ import ICONS from 'config/icons';
 const SvgWrapper = styled.svg`
     :hover {
         path {
-            fill: ${props => props.hoverColor}
+            fill: ${props => props.hoverColor};
         }
     }
 `;

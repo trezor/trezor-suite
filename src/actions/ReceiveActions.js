@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import TrezorConnect from 'trezor-connect';
 import * as RECEIVE from 'actions/constants/receive';
 import * as NOTIFICATION from 'actions/constants/notification';
@@ -8,25 +7,29 @@ import * as NOTIFICATION from 'actions/constants/notification';
 import { initialState } from 'reducers/ReceiveReducer';
 import type { State } from 'reducers/ReceiveReducer';
 
-import type {
-    TrezorDevice, ThunkAction, AsyncAction, Action, GetState, Dispatch,
-} from 'flowtype';
+import type { TrezorDevice, ThunkAction, AsyncAction, Action, GetState, Dispatch } from 'flowtype';
 
-export type ReceiveAction = {
-    type: typeof RECEIVE.INIT,
-    state: State
-} | {
-    type: typeof RECEIVE.DISPOSE,
-} | {
-    type: typeof RECEIVE.REQUEST_UNVERIFIED,
-    device: TrezorDevice
-} | {
-    type: typeof RECEIVE.SHOW_ADDRESS
-} | {
-    type: typeof RECEIVE.HIDE_ADDRESS
-} | {
-    type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS
-}
+export type ReceiveAction =
+    | {
+          type: typeof RECEIVE.INIT,
+          state: State,
+      }
+    | {
+          type: typeof RECEIVE.DISPOSE,
+      }
+    | {
+          type: typeof RECEIVE.REQUEST_UNVERIFIED,
+          device: TrezorDevice,
+      }
+    | {
+          type: typeof RECEIVE.SHOW_ADDRESS,
+      }
+    | {
+          type: typeof RECEIVE.HIDE_ADDRESS,
+      }
+    | {
+          type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS,
+      };
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
     const state: State = {
@@ -48,7 +51,10 @@ export const showUnverifiedAddress = (): Action => ({
 });
 
 //export const showAddress = (address_n: string): AsyncAction => {
-export const showAddress = (path: Array<number>): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const showAddress = (path: Array<number>): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     const selected = getState().wallet.selectedDevice;
     const { network } = getState().selectedAccount;
 
@@ -81,7 +87,11 @@ export const showAddress = (path: Array<number>): AsyncAction => async (dispatch
             response = await TrezorConnect.rippleGetAddress(params);
             break;
         default:
-            response = { payload: { error: `ReceiveActions.showAddress: Unknown network type: ${network.type}` } };
+            response = {
+                payload: {
+                    error: `ReceiveActions.showAddress: Unknown network type: ${network.type}`,
+                },
+            };
             break;
     }
 

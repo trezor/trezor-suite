@@ -13,17 +13,14 @@ import * as SendFormActions from 'actions/SendFormActions';
 import * as DiscoveryActions from 'actions/DiscoveryActions';
 import * as RouterActions from 'actions/RouterActions';
 
-import type {
-    Middleware,
-    MiddlewareAPI,
-    MiddlewareDispatch,
-    Action,
-} from 'flowtype';
+import type { Middleware, MiddlewareAPI, MiddlewareDispatch, Action } from 'flowtype';
 
 /**
  * Middleware
  */
-const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => async (action: Action): Promise<Action> => {
+const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => async (
+    action: Action
+): Promise<Action> => {
     const prevState = api.getState();
     // Application live cycle starts HERE!
     // when first LOCATION_CHANGE is called router does not have "location" set yet
@@ -88,7 +85,10 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         }
 
         // watch for account change
-        if (prevLocation.state.network !== currentLocation.state.network || prevLocation.state.account !== currentLocation.state.account) {
+        if (
+            prevLocation.state.network !== currentLocation.state.network ||
+            prevLocation.state.account !== currentLocation.state.account
+        ) {
             api.dispatch(SelectedAccountActions.dispose());
         }
 
@@ -97,9 +97,9 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     }
 
     // observe common values in WallerReducer
-    if (!await api.dispatch(WalletActions.observe(prevState, action))) {
+    if (!(await api.dispatch(WalletActions.observe(prevState, action)))) {
         // if "selectedDevice" didn't change observe common values in SelectedAccountReducer
-        if (!await api.dispatch(SelectedAccountActions.observe(prevState, action))) {
+        if (!(await api.dispatch(SelectedAccountActions.observe(prevState, action)))) {
             // if "selectedAccount" didn't change observe send form props changes
             api.dispatch(SendFormActions.observe(prevState, action));
         }
@@ -118,7 +118,6 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
             api.dispatch(DiscoveryActions.restore());
         }
     }
-
 
     // even if "selectedDevice" didn't change because it was updated on DEVICE.CHANGED before DEVICE.CONNECT action
     // try to restore discovery

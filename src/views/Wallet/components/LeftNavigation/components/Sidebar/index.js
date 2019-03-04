@@ -6,15 +6,14 @@ import colors from 'config/colors';
 import { SCREEN_SIZE } from 'config/variables';
 import { SLIDE_RIGHT, SLIDE_LEFT } from 'config/animations';
 
-
 type Props = {
     children?: React.Node,
     isOpen: ?boolean,
-}
+};
 
 type State = {
     footerFixed: boolean,
-}
+};
 
 const AbsoluteWrapper = styled.aside`
     width: 320px;
@@ -34,14 +33,14 @@ const AbsoluteWrapper = styled.aside`
         top: 52px;
         /* Prevents firing SLIDE_LEFT anim on page load.  */
         /* isOpen is null until user clicks on menu toggler */
-        display: ${props => (props.isOpen === null ? 'none' : 'block')}; 
-        animation: ${props => (props.isOpen ? SLIDE_RIGHT : SLIDE_LEFT)} 0.25s cubic-bezier(0.17, 0.04, 0.03, 0.94) forwards;
+        display: ${props => (props.isOpen === null ? 'none' : 'block')};
+        animation: ${props => (props.isOpen ? SLIDE_RIGHT : SLIDE_LEFT)} 0.25s
+            cubic-bezier(0.17, 0.04, 0.03, 0.94) forwards;
     }
 
     @media screen and (max-width: ${SCREEN_SIZE.LG}) {
         border-top-left-radius: 0px;
     }
-
 `;
 
 const SidebarWrapper = styled.div`
@@ -54,9 +53,7 @@ export default class Sidebar extends React.PureComponent<Props, State> {
     render() {
         return (
             <AbsoluteWrapper isOpen={this.props.isOpen}>
-                <SidebarWrapper>
-                    {this.props.children}
-                </SidebarWrapper>
+                <SidebarWrapper>{this.props.children}</SidebarWrapper>
             </AbsoluteWrapper>
         );
     }

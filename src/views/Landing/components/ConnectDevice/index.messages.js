@@ -5,7 +5,8 @@ import type { Messages } from 'flowtype/npm/react-intl';
 const definedMessages: Messages = defineMessages({
     TR_TREZOR_WALLET_IS_AN_EASY_DASH: {
         id: 'TR_TREZOR_WALLET_IS_AN_EASY_DASH',
-        defaultMessage: 'Trezor Wallet is an easy-to-use interface for your Trezor. Trezor Wallet allows you to easily control your funds, manage your balance and initiate transfers.',
+        defaultMessage:
+            'Trezor Wallet is an easy-to-use interface for your Trezor. Trezor Wallet allows you to easily control your funds, manage your balance and initiate transfers.',
     },
     TR_THE_PRIVATE_BANK_IN_YOUR_HANDS: {
         id: 'TR_THE_PRIVATE_BANK_IN_YOUR_HANDS',
@@ -25,7 +26,7 @@ const definedMessages: Messages = defineMessages({
     },
     TR_DONT_HAVE_A_TREZOR: {
         id: 'TR_DONT_HAVE_A_TREZOR_GET',
-        defaultMessage: 'Don\'t have a Trezor? {getOne}',
+        defaultMessage: "Don't have a Trezor? {getOne}",
     },
     TR_GET_ONE: {
         id: 'TR_GET_ONE',

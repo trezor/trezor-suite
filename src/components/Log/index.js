@@ -12,7 +12,6 @@ import Icon from 'components/Icon';
 import P from 'components/Paragraph';
 import { FormattedMessage } from 'react-intl';
 
-
 import * as LogActions from 'actions/LogActions';
 import icons from 'config/icons';
 import type { State, Dispatch } from 'flowtype';
@@ -21,8 +20,8 @@ import l10nMessages from './index.messages';
 type Props = {
     log: $ElementType<State, 'log'>,
     toggle: typeof LogActions.toggle,
-    copyToClipboard: typeof LogActions.copyToClipboard
-}
+    copyToClipboard: typeof LogActions.copyToClipboard,
+};
 
 const Wrapper = styled.div`
     position: relative;
@@ -63,8 +62,7 @@ const LogWrapper = styled.div`
     overflow: scroll;
 `;
 
-const CopyWrapper = styled.div`
-`;
+const CopyWrapper = styled.div``;
 
 const ButtonCopy = styled(Button)`
     margin-top: 10px;
@@ -99,13 +97,11 @@ const Log = (props: Props): ?React$Element<string> => {
                     placement="top"
                     content={<FormattedMessage {...l10nMessages.TR_COPIED} />}
                 >
-
                     {copyBtn}
                 </Tooltip>
             ) : (
                 <CopyWrapper>{copyBtn}</CopyWrapper>
-            )
-            }
+            )}
         </Wrapper>
     );
 };
@@ -117,5 +113,5 @@ export default connect(
     (dispatch: Dispatch) => ({
         toggle: bindActionCreators(LogActions.toggle, dispatch),
         copyToClipboard: bindActionCreators(LogActions.copyToClipboard, dispatch),
-    }),
+    })
 )(Log);

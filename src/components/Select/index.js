@@ -28,7 +28,7 @@ const styles = isSearchable => ({
     }),
     dropdownIndicator: (base, { isDisabled }) => ({
         ...base,
-        display: (isSearchable || isDisabled) ? 'none' : 'block',
+        display: isSearchable || isDisabled ? 'none' : 'block',
         color: colors.TEXT_SECONDARY,
         path: '',
         '&:hover': {
@@ -61,7 +61,6 @@ const styles = isSearchable => ({
     }),
 });
 
-
 const propTypes = {
     isAsync: PropTypes.bool,
     isSearchable: PropTypes.bool,
@@ -71,7 +70,4 @@ const AsyncSelect = props => <ReactAsyncSelect styles={styles(props.isSearchable
 Select.propTypes = propTypes;
 AsyncSelect.propTypes = propTypes;
 
-export {
-    Select,
-    AsyncSelect,
-};
+export { Select, AsyncSelect };

@@ -9,15 +9,11 @@ import * as DISCOVERY from 'actions/constants/discovery';
 import * as PENDING from 'actions/constants/pendingTx';
 import * as WALLET from 'actions/constants/wallet';
 
+import type { Middleware, MiddlewareAPI, MiddlewareDispatch, Action } from 'flowtype';
 
-import type {
-    Middleware,
-    MiddlewareAPI,
-    MiddlewareDispatch,
-    Action,
-} from 'flowtype';
-
-const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (action: Action): Action => {
+const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch) => (
+    action: Action
+): Action => {
     // pass action
     next(action);
 

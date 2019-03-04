@@ -3,36 +3,42 @@ import colors from 'config/colors';
 
 describe('device utils', () => {
     it('get status', () => {
-        expect(utils.getStatus({ connected: false }))
-            .toBe('disconnected');
+        expect(utils.getStatus({ connected: false })).toBe('disconnected');
 
-        expect(utils.getStatus({ connected: true, available: false }))
-            .toBe('unavailable');
+        expect(utils.getStatus({ connected: true, available: false })).toBe('unavailable');
 
-        expect(utils.getStatus({
-            connected: true,
-            available: false,
-            type: null,
-        })).toBe('unavailable');
+        expect(
+            utils.getStatus({
+                connected: true,
+                available: false,
+                type: null,
+            })
+        ).toBe('unavailable');
 
-        expect(utils.getStatus({
-            connected: true,
-            available: true,
-            type: 'acquired',
-        })).toBe('connected');
+        expect(
+            utils.getStatus({
+                connected: true,
+                available: true,
+                type: 'acquired',
+            })
+        ).toBe('connected');
 
-        expect(utils.getStatus({
-            connected: true,
-            available: true,
-            type: 'unacquired',
-        })).toBe('unacquired');
+        expect(
+            utils.getStatus({
+                connected: true,
+                available: true,
+                type: 'unacquired',
+            })
+        ).toBe('unacquired');
 
-        expect(utils.getStatus({
-            connected: true,
-            available: true,
-            type: 'acquired',
-            status: 'occupied',
-        })).toBe('used-in-other-window');
+        expect(
+            utils.getStatus({
+                connected: true,
+                available: true,
+                type: 'acquired',
+                status: 'occupied',
+            })
+        ).toBe('used-in-other-window');
     });
 
     it('isWebUSB', () => {
@@ -42,17 +48,13 @@ describe('device utils', () => {
     });
 
     it('isDisabled', () => {
-        expect(utils.isDisabled(
-            { selectedDevice: { features: null } },
-            [1, 2, 3],
-            {
+        expect(
+            utils.isDisabled({ selectedDevice: { features: null } }, [1, 2, 3], {
                 version: 'webusb',
-            },
-        )).toBe(false);
+            })
+        ).toBe(false);
 
-        expect(utils.isDisabled(
-            { features: null }, [], { version: 'test' },
-        )).toBe(true);
+        expect(utils.isDisabled({ features: null }, [], { version: 'test' })).toBe(true);
     });
 
     it('get version', () => {

@@ -16,7 +16,7 @@ import type { Props as BaseProps } from '../../Container';
 
 type Props = BaseProps & {
     children: React.Node,
-}
+};
 
 // TODO: Decide on a small screen width for the whole app
 // and put it inside config/variables.js
@@ -100,9 +100,7 @@ const Left = styled.div`
 
 // stateless component
 const AdvancedForm = (props: Props) => {
-    const {
-        network,
-    } = props.selectedAccount;
+    const { network } = props.selectedAccount;
     if (!network) return null;
     const {
         errors,
@@ -125,12 +123,14 @@ const AdvancedForm = (props: Props) => {
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
-                    topLabel={(
+                    topLabel={
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nSendMessages.TR_FEE} />
                                 <Tooltip
-                                    content={<FormattedMessage {...l10nMessages.TR_XRP_TRANSFER_COST} />}
+                                    content={
+                                        <FormattedMessage {...l10nMessages.TR_XRP_TRANSFER_COST} />
+                                    }
                                     maxWidth={100}
                                     readMoreLink="https://developers.ripple.com/transaction-cost.html"
                                     placement="top"
@@ -143,7 +143,7 @@ const AdvancedForm = (props: Props) => {
                                 </Tooltip>
                             </Left>
                         </InputLabelWrapper>
-                    )}
+                    }
                     bottomText={errors.fee || warnings.fee || infos.fee}
                     value={fee}
                     onChange={event => onFeeChange(event.target.value)}
@@ -182,9 +182,7 @@ const AdvancedForm = (props: Props) => {
                 />
             </InputRow> */}
 
-            <AdvancedSettingsSendButtonWrapper>
-                { props.children }
-            </AdvancedSettingsSendButtonWrapper>
+            <AdvancedSettingsSendButtonWrapper>{props.children}</AdvancedSettingsSendButtonWrapper>
         </AdvancedSettingsWrapper>
     );
 };

@@ -5,17 +5,17 @@ import colors from 'config/colors';
 import React, { PureComponent } from 'react';
 
 type Props = {
-    pathname: string;
-    wrapper: () => ?HTMLElement;
-}
+    pathname: string,
+    wrapper: () => ?HTMLElement,
+};
 
 type State = {
     style: {
-        width: number;
-        left: number;
+        width: number,
+        left: number,
     },
     shouldAnimate: boolean,
-}
+};
 
 const Wrapper = styled.div`
     position: absolute;
@@ -24,9 +24,11 @@ const Wrapper = styled.div`
     width: 100px;
     height: 2px;
     background: ${colors.GREEN_PRIMARY};
-    ${props => props.animation && css`
-        transition: all 0.3s ease-in-out;
-    `}
+    ${props =>
+        props.animation &&
+        css`
+            transition: all 0.3s ease-in-out;
+        `}
 `;
 
 class Indicator extends PureComponent<Props, State> {
@@ -92,9 +94,7 @@ class Indicator extends PureComponent<Props, State> {
 
     render() {
         if (!this.props.wrapper) return null;
-        return (
-            <Wrapper style={this.state.style} animation={this.state.shouldAnimate} />
-        );
+        return <Wrapper style={this.state.style} animation={this.state.shouldAnimate} />;
     }
 }
 

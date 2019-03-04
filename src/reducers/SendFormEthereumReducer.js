@@ -6,41 +6,40 @@ import * as ACCOUNT from 'actions/constants/account';
 import type { Action } from 'flowtype';
 
 export type FeeLevel = {
-    label: string;
-    gasPrice: string;
-    value: string;
-}
+    label: string,
+    gasPrice: string,
+    value: string,
+};
 
 export type State = {
-    +networkName: string;
-    +networkSymbol: string;
-    currency: string;
+    +networkName: string,
+    +networkSymbol: string,
+    currency: string,
 
     // form fields
-    advanced: boolean;
-    untouched: boolean; // set to true when user made any changes in form
-    touched: {[k: string]: boolean};
-    address: string;
-    amount: string;
-    setMax: boolean;
-    feeLevels: Array<FeeLevel>;
-    selectedFeeLevel: FeeLevel;
-    recommendedGasPrice: string;
-    gasPriceNeedsUpdate: boolean;
-    gasLimit: string;
-    calculatingGasLimit: boolean;
-    gasPrice: string;
-    data: string;
-    nonce: string;
-    total: string;
+    advanced: boolean,
+    untouched: boolean, // set to true when user made any changes in form
+    touched: { [k: string]: boolean },
+    address: string,
+    amount: string,
+    setMax: boolean,
+    feeLevels: Array<FeeLevel>,
+    selectedFeeLevel: FeeLevel,
+    recommendedGasPrice: string,
+    gasPriceNeedsUpdate: boolean,
+    gasLimit: string,
+    calculatingGasLimit: boolean,
+    gasPrice: string,
+    data: string,
+    nonce: string,
+    total: string,
 
-    errors: {[k: string]: string};
-    warnings: {[k: string]: string};
-    infos: {[k: string]: string};
+    errors: { [k: string]: string },
+    warnings: { [k: string]: string },
+    infos: { [k: string]: string },
 
-    sending: boolean;
-}
-
+    sending: boolean,
+};
 
 export const initialState: State = {
     networkName: '',

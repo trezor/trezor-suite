@@ -15,8 +15,8 @@ import { connect } from 'react-redux';
 import type { TrezorDevice } from 'flowtype';
 
 type Props = {
-    device: ?TrezorDevice;
-}
+    device: ?TrezorDevice,
+};
 
 const Section = styled.section`
     display: flex;
@@ -44,13 +44,11 @@ const DeviceSettings = (props: Props) => (
     <Content>
         <Section>
             <Row>
-                <Icon
-                    size={60}
-                    color={colors.WARNING_PRIMARY}
-                    icon={ICONS.WARNING}
-                />
+                <Icon size={60} color={colors.WARNING_PRIMARY} icon={ICONS.WARNING} />
                 <StyledH1>Device settings is under construction</StyledH1>
-                <StyledP>Please use Bitcoin wallet interface to change your device settings</StyledP>
+                <StyledP>
+                    Please use Bitcoin wallet interface to change your device settings
+                </StyledP>
                 <Link href={getOldWalletUrl(props.device)} target="_self">
                     <Button>Take me to the Bitcoin wallet</Button>
                 </Link>
@@ -59,4 +57,7 @@ const DeviceSettings = (props: Props) => (
     </Content>
 );
 
-export default connect(null, null)(DeviceSettings);
+export default connect(
+    null,
+    null
+)(DeviceSettings);

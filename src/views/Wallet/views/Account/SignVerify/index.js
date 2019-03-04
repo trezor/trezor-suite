@@ -65,7 +65,7 @@ const Verify = styled(Column)`
     }
 `;
 
-class SignVerify extends Component <Props> {
+class SignVerify extends Component<Props> {
     getError(inputName: string) {
         if (!this.props.signVerify) return null;
         return this.props.signVerify.errors.find(e => e.inputName === inputName);
@@ -73,13 +73,11 @@ class SignVerify extends Component <Props> {
 
     handleInputChange = (event: SyntheticInputEvent<Text>) => {
         this.props.signVerifyActions.inputChange(event.target.name, event.target.value);
-    }
+    };
 
     render() {
         const device = this.props.wallet.selectedDevice;
-        const {
-            account, discovery, shouldRender,
-        } = this.props.selectedAccount;
+        const { account, discovery, shouldRender } = this.props.selectedAccount;
 
         if (!device || !account || !discovery || !shouldRender) {
             const { loader, exceptionPage } = this.props.selectedAccount;
@@ -102,10 +100,14 @@ class SignVerify extends Component <Props> {
             <Content>
                 <Wrapper>
                     <Sign>
-                        <Title><FormattedMessage {...l10nMessages.TR_SIGN_MESSAGE} /></Title>
+                        <Title>
+                            <FormattedMessage {...l10nMessages.TR_SIGN_MESSAGE} />
+                        </Title>
                         <Row>
                             <Input
-                                topLabel={this.props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
+                                topLabel={this.props.intl.formatMessage(
+                                    l10nCommonMessages.TR_ADDRESS
+                                )}
                                 name="signAddress"
                                 value={account.descriptor}
                                 type="text"
@@ -137,23 +139,27 @@ class SignVerify extends Component <Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <StyledButton
-                                onClick={this.props.signVerifyActions.clearSign}
-                                isWhite
-                            >
+                            <StyledButton onClick={this.props.signVerifyActions.clearSign} isWhite>
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
-                                onClick={() => signVerifyActions.sign(account.accountPath, signMessage)}
-                            ><FormattedMessage {...l10nMessages.TR_SIGN} />
+                                onClick={() =>
+                                    signVerifyActions.sign(account.accountPath, signMessage)
+                                }
+                            >
+                                <FormattedMessage {...l10nMessages.TR_SIGN} />
                             </StyledButton>
                         </RowButtons>
                     </Sign>
                     <Verify>
-                        <Title><FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE} /></Title>
+                        <Title>
+                            <FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE} />
+                        </Title>
                         <Row>
                             <Input
-                                topLabel={this.props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
+                                topLabel={this.props.intl.formatMessage(
+                                    l10nCommonMessages.TR_ADDRESS
+                                )}
                                 autoSelect
                                 name="verifyAddress"
                                 value={verifyAddress}
@@ -187,24 +193,19 @@ class SignVerify extends Component <Props> {
                             />
                         </Row>
                         <RowButtons>
-                            <StyledButton
-                                onClick={signVerifyActions.clearVerify}
-                                isWhite
-                            >
+                            <StyledButton onClick={signVerifyActions.clearVerify} isWhite>
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
-                                onClick={
-                                    () => {
-                                        if (errors.length <= 0) {
-                                            signVerifyActions.verify(
-                                                verifyAddress,
-                                                verifyMessage,
-                                                verifySignature,
-                                            );
-                                        }
+                                onClick={() => {
+                                    if (errors.length <= 0) {
+                                        signVerifyActions.verify(
+                                            verifyAddress,
+                                            verifyMessage,
+                                            verifySignature
+                                        );
                                     }
-                                }
+                                }}
                             >
                                 <FormattedMessage {...l10nMessages.TR_VERIFY} />
                             </StyledButton>

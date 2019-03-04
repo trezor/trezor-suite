@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
-
 import colors from 'config/colors';
 import { FONT_SIZE, TRANSITION } from 'config/variables';
 
@@ -20,10 +19,10 @@ import l10nMessages from './index.messages';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    device: TrezorDevice;
-    selectedDevice: ?TrezorDevice;
-    onPassphraseSubmit: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onPassphraseSubmit'>;
-}
+    device: TrezorDevice,
+    selectedDevice: ?TrezorDevice,
+    onPassphraseSubmit: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onPassphraseSubmit'>,
+};
 
 type State = {
     deviceLabel: string,
@@ -165,7 +164,10 @@ class Passphrase extends PureComponent<Props, State> {
 
     handleCheckboxClick() {
         let match = false;
-        if (this.state.shouldShowSingleInput || this.state.passphraseInputValue === this.state.passphraseCheckInputValue) {
+        if (
+            this.state.shouldShowSingleInput ||
+            this.state.passphraseInputValue === this.state.passphraseCheckInputValue
+        ) {
             match = true;
         } else {
             match = !!this.state.isPassphraseHidden;
@@ -215,8 +217,7 @@ class Passphrase extends PureComponent<Props, State> {
                     />
                 </H2>
                 <P isSmaller>
-                    <FormattedMessage {...l10nMessages.TR_NOTE_COLON_PASSPHRASE} />
-                    {' '}
+                    <FormattedMessage {...l10nMessages.TR_NOTE_COLON_PASSPHRASE} />{' '}
                     <FormattedMessage {...l10nMessages.TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA} />
                 </P>
                 <Row>
@@ -224,7 +225,9 @@ class Passphrase extends PureComponent<Props, State> {
                         <FormattedMessage {...l10nMessages.TR_PASSPHRASE} />
                     </Label>
                     <Input
-                        innerRef={(input) => { this.passphraseInput = input; }}
+                        innerRef={input => {
+                            this.passphraseInput = input;
+                        }}
                         name="passphraseInputValue"
                         type={this.state.isPassphraseHidden ? 'password' : 'text'}
                         autocorrect="off"
@@ -278,11 +281,10 @@ class Passphrase extends PureComponent<Props, State> {
                             {...l10nMessages.TR_CHANGED_YOUR_MIND}
                             values={{
                                 TR_GO_TO_STANDARD_WALLET: (
-                                    <LinkButton
-                                        isGreen
-                                        onClick={() => this.submitPassphrase(true)}
-                                    >
-                                        <FormattedMessage {...l10nCommonMessages.TR_GO_TO_STANDARD_WALLET} />
+                                    <LinkButton isGreen onClick={() => this.submitPassphrase(true)}>
+                                        <FormattedMessage
+                                            {...l10nCommonMessages.TR_GO_TO_STANDARD_WALLET}
+                                        />
                                     </LinkButton>
                                 ),
                             }}

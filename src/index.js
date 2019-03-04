@@ -13,7 +13,7 @@ if (root) {
             <BaseStyles />
             <App />
         </React.Fragment>,
-        root,
+        root
     );
 }
 

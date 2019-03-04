@@ -11,15 +11,14 @@ import colors from 'config/colors';
 import type { TrezorDevice } from 'flowtype';
 import type { Props as CommonProps } from '../../../common';
 
-
 const Wrapper = styled.div``;
 const IconClick = styled.div``;
 
 type Props = {
-    devices: $ElementType<CommonProps, 'devices'>;
-    selectedDevice: $ElementType<$ElementType<CommonProps, 'wallet'>, 'selectedDevice'>;
-    onSelectDevice: $ElementType<CommonProps, 'onSelectDevice'>;
-    forgetDevice: $ElementType<CommonProps, 'forgetDevice'>;
+    devices: $ElementType<CommonProps, 'devices'>,
+    selectedDevice: $ElementType<$ElementType<CommonProps, 'wallet'>, 'selectedDevice'>,
+    onSelectDevice: $ElementType<CommonProps, 'onSelectDevice'>,
+    forgetDevice: $ElementType<CommonProps, 'forgetDevice'>,
 };
 
 class DeviceList extends PureComponent<Props> {
@@ -29,14 +28,11 @@ class DeviceList extends PureComponent<Props> {
     }
 
     render() {
-        const {
-            devices, selectedDevice, onSelectDevice, forgetDevice,
-        } = this.props;
+        const { devices, selectedDevice, onSelectDevice, forgetDevice } = this.props;
         return (
             <Wrapper>
-                {devices
-                    .sort(this.sortByInstance)
-                    .map(device => (
+                {devices.sort(this.sortByInstance).map(
+                    device =>
                         !deviceUtils.isSelectedDevice(selectedDevice, device) && (
                             <DeviceHeader
                                 key={device.state || device.path}
@@ -45,13 +41,14 @@ class DeviceList extends PureComponent<Props> {
                                     onSelectDevice(device);
                                 }}
                                 onClickIcon={() => forgetDevice(device)}
-                                icon={(
+                                icon={
                                     <React.Fragment>
-                                        <IconClick onClick={(event) => {
-                                            event.stopPropagation();
-                                            event.preventDefault();
-                                            forgetDevice(device);
-                                        }}
+                                        <IconClick
+                                            onClick={event => {
+                                                event.stopPropagation();
+                                                event.preventDefault();
+                                                forgetDevice(device);
+                                            }}
                                         >
                                             <Icon
                                                 icon={icons.EJECT}
@@ -60,14 +57,13 @@ class DeviceList extends PureComponent<Props> {
                                             />
                                         </IconClick>
                                     </React.Fragment>
-                                )}
+                                }
                                 device={device}
                                 devices={devices}
                                 isHoverable
                             />
                         )
-                    ))}
-
+                )}
             </Wrapper>
         );
     }

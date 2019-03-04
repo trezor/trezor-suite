@@ -11,16 +11,16 @@ const Wrapper = styled.p`
     padding: 0;
     margin: 0;
 
-    ${props => props.isSmaller && css`
-        font-size: ${FONT_SIZE.SMALL};
-    `}
+    ${props =>
+        props.isSmaller &&
+        css`
+            font-size: ${FONT_SIZE.SMALL};
+        `}
 `;
 
 const P = ({ children, className, isSmaller = false }) => (
-    <Wrapper
-        className={className}
-        isSmaller={isSmaller}
-    >{children}
+    <Wrapper className={className} isSmaller={isSmaller}>
+        {children}
     </Wrapper>
 );
 

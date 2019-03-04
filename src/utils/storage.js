@@ -51,10 +51,14 @@ export const clearAll = (type: ?StorageType): void => {
 
     try {
         if (clearLocal) {
-            Object.keys(window.localStorage).forEach(key => key.indexOf(STORAGE_PATH) >= 0 && window.localStorage.removeItem(key));
+            Object.keys(window.localStorage).forEach(
+                key => key.indexOf(STORAGE_PATH) >= 0 && window.localStorage.removeItem(key)
+            );
         }
         if (clearSession) {
-            Object.keys(window.sessionStorage).forEach(key => key.indexOf(STORAGE_PATH) >= 0 && window.sessionStorage.removeItem(key));
+            Object.keys(window.sessionStorage).forEach(
+                key => key.indexOf(STORAGE_PATH) >= 0 && window.sessionStorage.removeItem(key)
+            );
         }
     } catch (error) {
         console.error(`Clearing sessionStorage error: ${error}`);

@@ -12,7 +12,6 @@ import CoinLogo from 'components/images/CoinLogo';
 import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
 
-
 const getInfoUrl = (networkShortcut: ?string) => {
     const urls = {
         default: 'https://wiki.trezor.io',
@@ -26,7 +25,7 @@ type Props = {
     networkShortcut: ?string,
     title: ?string,
     message: ?string,
-}
+};
 
 const Wrapper = styled.div`
     display: flex;
@@ -46,7 +45,7 @@ const StyledCoinLogo = styled(CoinLogo)`
 const Row = styled.div`
     display: flex;
     padding: 50px 0;
-    
+
     flex-direction: column;
     align-items: center;
     text-align: center;
@@ -61,11 +60,17 @@ const FirmwareUnsupported = (props: Props) => (
     //TODO: localization
     <Wrapper>
         <Row>
-            {props.networkShortcut && <CoinLogoWrapper><StyledCoinLogo standalone network={props.networkShortcut} /></CoinLogoWrapper>}
+            {props.networkShortcut && (
+                <CoinLogoWrapper>
+                    <StyledCoinLogo standalone network={props.networkShortcut} />
+                </CoinLogoWrapper>
+            )}
             <H1>{props.title}</H1>
             <Message>{props.message}</Message>
             <Link href={getInfoUrl(props.networkShortcut)}>
-                <Button><FormattedMessage {...l10nMessages.TR_FIND_OUT_MORE_INFO} /></Button>
+                <Button>
+                    <FormattedMessage {...l10nMessages.TR_FIND_OUT_MORE_INFO} />
+                </Button>
             </Link>
         </Row>
     </Wrapper>

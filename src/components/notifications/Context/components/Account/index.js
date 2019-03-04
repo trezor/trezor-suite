@@ -20,14 +20,14 @@ export default (props: Props) => {
                 title={notification.title}
                 message={notification.message}
                 isActionInProgress={blockchain && blockchain.connecting}
-                actions={
-                    [{
+                actions={[
+                    {
                         label: props.intl.formatMessage(l10nMessages.TR_CONNECT_TO_BACKEND),
                         callback: async () => {
                             await props.blockchainReconnect(network.shortcut);
                         },
-                    }]
-                }
+                    },
+                ]}
             />
         );
     }

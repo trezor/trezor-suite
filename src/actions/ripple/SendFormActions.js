@@ -23,9 +23,12 @@ import * as BlockchainActions from './BlockchainActions';
 import * as ValidationActions from './SendFormValidationActions';
 
 /*
-* Called from WalletService
-*/
-export const observe = (prevState: ReducersState, action: Action): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+ * Called from WalletService
+ */
+export const observe = (prevState: ReducersState, action: Action): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const currentState = getState();
 
     // if action type is SEND.VALIDATION which is called as result of this process
@@ -50,13 +53,20 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
 
     let shouldUpdate: boolean = false;
     // check if "selectedAccount" reducer changed
-    shouldUpdate = reducerUtils.observeChanges(prevState.selectedAccount, currentState.selectedAccount, {
-        account: ['balance', 'sequence'],
-    });
+    shouldUpdate = reducerUtils.observeChanges(
+        prevState.selectedAccount,
+        currentState.selectedAccount,
+        {
+            account: ['balance', 'sequence'],
+        }
+    );
 
     // check if "sendForm" reducer changed
     if (!shouldUpdate) {
-        shouldUpdate = reducerUtils.observeChanges(prevState.sendFormRipple, currentState.sendFormRipple);
+        shouldUpdate = reducerUtils.observeChanges(
+            prevState.sendFormRipple,
+            currentState.sendFormRipple
+        );
     }
 
     if (shouldUpdate) {
@@ -70,15 +80,15 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
 };
 
 /*
-* Called from "observe" action
-* Initialize "sendFormRipple" reducer data
-* Get data either from session storage or "selectedAccount" reducer
-*/
-export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const {
-        account,
-        network,
-    } = getState().selectedAccount;
+ * Called from "observe" action
+ * Initialize "sendFormRipple" reducer data
+ * Get data either from session storage or "selectedAccount" reducer
+ */
+export const init = (): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
+    const { account, network } = getState().selectedAccount;
 
     if (!account || account.networkType !== 'ripple' || !network) return;
 
@@ -94,7 +104,10 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 
     const blockchainFeeLevels = dispatch(BlockchainActions.getFeeLevels(network));
     const feeLevels = dispatch(ValidationActions.getFeeLevels(blockchainFeeLevels));
-    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, initialState.selectedFeeLevel);
+    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(
+        feeLevels,
+        initialState.selectedFeeLevel
+    );
 
     dispatch({
         type: SEND.INIT,
@@ -112,17 +125,20 @@ export const init = (): AsyncAction => async (dispatch: Dispatch, getState: GetS
 };
 
 /*
-* Called from UI from "advanced" button
-*/
+ * Called from UI from "advanced" button
+ */
 export const toggleAdvanced = (): Action => ({
     type: SEND.TOGGLE_ADVANCED,
     networkType: 'ripple',
 });
 
 /*
-* Called from UI from "clear" button
-*/
-export const onClear = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+ * Called from UI from "clear" button
+ */
+export const onClear = (): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
     const { network } = getState().selectedAccount;
     const { advanced } = getState().sendFormRipple;
 
@@ -133,7 +149,10 @@ export const onClear = (): AsyncAction => async (dispatch: Dispatch, getState: G
 
     const blockchainFeeLevels = dispatch(BlockchainActions.getFeeLevels(network));
     const feeLevels = dispatch(ValidationActions.getFeeLevels(blockchainFeeLevels));
-    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, initialState.selectedFeeLevel);
+    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(
+        feeLevels,
+        initialState.selectedFeeLevel
+    );
 
     dispatch({
         type: SEND.CLEAR,
@@ -152,9 +171,12 @@ export const onClear = (): AsyncAction => async (dispatch: Dispatch, getState: G
 };
 
 /*
-* Called from UI on "address" field change
-*/
-export const onAddressChange = (address: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+ * Called from UI on "address" field change
+ */
+export const onAddressChange = (address: string): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const state: State = getState().sendFormRipple;
     dispatch({
         type: SEND.CHANGE,
@@ -169,9 +191,12 @@ export const onAddressChange = (address: string): ThunkAction => (dispatch: Disp
 };
 
 /*
-* Called from UI on "amount" field change
-*/
-export const onAmountChange = (amount: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+ * Called from UI on "amount" field change
+ */
+export const onAmountChange = (amount: string): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const state = getState().sendFormRipple;
     dispatch({
         type: SEND.CHANGE,
@@ -187,8 +212,8 @@ export const onAmountChange = (amount: string): ThunkAction => (dispatch: Dispat
 };
 
 /*
-* Called from UI from "set max" button
-*/
+ * Called from UI from "set max" button
+ */
 export const onSetMax = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const state = getState().sendFormRipple;
     dispatch({
@@ -204,9 +229,12 @@ export const onSetMax = (): ThunkAction => (dispatch: Dispatch, getState: GetSta
 };
 
 /*
-* Called from UI on "fee" selection change
-*/
-export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+ * Called from UI on "fee" selection change
+ */
+export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const state = getState().sendFormRipple;
 
     const isCustom = feeLevel.value === 'Custom';
@@ -225,19 +253,24 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => (dispatch: 
 };
 
 /*
-* Called from UI from "update recommended fees" button
-*/
-export const updateFeeLevels = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
-    const {
-        account,
-        network,
-    } = getState().selectedAccount;
+ * Called from UI from "update recommended fees" button
+ */
+export const updateFeeLevels = (): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
+    const { account, network } = getState().selectedAccount;
     if (!account || !network) return;
 
     const blockchainFeeLevels = dispatch(BlockchainActions.getFeeLevels(network));
     const state: State = getState().sendFormRipple;
-    const feeLevels = dispatch(ValidationActions.getFeeLevels(blockchainFeeLevels, state.selectedFeeLevel));
-    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(feeLevels, state.selectedFeeLevel);
+    const feeLevels = dispatch(
+        ValidationActions.getFeeLevels(blockchainFeeLevels, state.selectedFeeLevel)
+    );
+    const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(
+        feeLevels,
+        state.selectedFeeLevel
+    );
 
     dispatch({
         type: SEND.CHANGE,
@@ -252,16 +285,20 @@ export const updateFeeLevels = (): ThunkAction => (dispatch: Dispatch, getState:
 };
 
 /*
-* Called from UI on "advanced / fee" field change
-*/
-export const onFeeChange = (fee: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+ * Called from UI on "advanced / fee" field change
+ */
+export const onFeeChange = (fee: string): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const { network } = getState().selectedAccount;
     if (!network) return;
     const state: State = getState().sendFormRipple;
 
     // switch to custom fee level
     let newSelectedFeeLevel = state.selectedFeeLevel;
-    if (state.selectedFeeLevel.value !== 'Custom') newSelectedFeeLevel = state.feeLevels.find(f => f.value === 'Custom');
+    if (state.selectedFeeLevel.value !== 'Custom')
+        newSelectedFeeLevel = state.feeLevels.find(f => f.value === 'Custom');
 
     dispatch({
         type: SEND.CHANGE,
@@ -277,9 +314,12 @@ export const onFeeChange = (fee: string): ThunkAction => (dispatch: Dispatch, ge
 };
 
 /*
-* Called from UI on "advanced / destination tag" field change
-*/
-export const onDestinationTagChange = (destinationTag: string): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+ * Called from UI on "advanced / destination tag" field change
+ */
+export const onDestinationTagChange = (destinationTag: string): ThunkAction => (
+    dispatch: Dispatch,
+    getState: GetState
+): void => {
     const state: State = getState().sendFormRipple;
     dispatch({
         type: SEND.CHANGE,
@@ -294,13 +334,13 @@ export const onDestinationTagChange = (destinationTag: string): ThunkAction => (
 };
 
 /*
-* Called from UI from "send" button
-*/
-export const onSend = (): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    const {
-        account,
-        network,
-    } = getState().selectedAccount;
+ * Called from UI from "send" button
+ */
+export const onSend = (): AsyncAction => async (
+    dispatch: Dispatch,
+    getState: GetState
+): Promise<void> => {
+    const { account, network } = getState().selectedAccount;
 
     const selected: ?TrezorDevice = getState().wallet.selectedDevice;
     if (!selected) return;

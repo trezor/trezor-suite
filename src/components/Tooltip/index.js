@@ -47,10 +47,11 @@ const Tooltip = ({
                     <Content maxWidth={maxWidth}>{content}</Content>
                     {readMoreLink && (
                         <Link href={readMoreLink}>
-                            <ReadMore><FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} /></ReadMore>
+                            <ReadMore>
+                                <FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />
+                            </ReadMore>
                         </Link>
-                    )
-                    }
+                    )}
                 </ContentWrapper>
             )}
         >
@@ -62,15 +63,9 @@ const Tooltip = ({
 Tooltip.propTypes = {
     className: PropTypes.string,
     placement: PropTypes.string,
-    children: PropTypes.oneOfType([
-        PropTypes.element,
-        PropTypes.string,
-    ]),
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
     maxWidth: PropTypes.number,
-    content: PropTypes.oneOfType([
-        PropTypes.element,
-        PropTypes.string,
-    ]),
+    content: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
     readMoreLink: PropTypes.string,
     enterDelayMs: PropTypes.number,
     defaultVisible: PropTypes.bool,

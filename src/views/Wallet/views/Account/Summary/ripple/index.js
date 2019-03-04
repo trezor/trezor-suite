@@ -44,12 +44,7 @@ const AccountTitle = styled.div`
 
 const AccountSummary = (props: Props) => {
     const device = props.wallet.selectedDevice;
-    const {
-        account,
-        network,
-        pending,
-        shouldRender,
-    } = props.selectedAccount;
+    const { account, network, pending, shouldRender } = props.selectedAccount;
 
     if (!device || !account || !network || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
@@ -59,7 +54,8 @@ const AccountSummary = (props: Props) => {
     const explorerLink: string = `${network.explorer.address}${account.descriptor}`;
     const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
     const balance: string = new BigNumber(account.balance).minus(pendingAmount).toString(10);
-    const reserve: string = account.networkType === 'ripple' && !account.empty ? account.reserve : '0';
+    const reserve: string =
+        account.networkType === 'ripple' && !account.empty ? account.reserve : '0';
 
     const TMP_SHOW_HISTORY = false;
 
@@ -76,11 +72,13 @@ const AccountSummary = (props: Props) => {
                             />
                         </AccountTitle>
                     </AccountName>
-                    { !account.empty && (
+                    {!account.empty && (
                         <Link href={explorerLink} isGray>
-                            <FormattedMessage {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY} />
+                            <FormattedMessage
+                                {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY}
+                            />
                         </Link>
-                    ) }
+                    )}
                 </AccountHeading>
                 <AccountBalance
                     network={network}
@@ -88,12 +86,13 @@ const AccountSummary = (props: Props) => {
                     reserve={reserve}
                     fiat={props.fiat}
                 />
-                { TMP_SHOW_HISTORY && (
+                {TMP_SHOW_HISTORY && (
                     <H2Wrapper>
-                        <H2><FormattedMessage {...l10nSummaryMessages.TR_HISTORY} /></H2>
+                        <H2>
+                            <FormattedMessage {...l10nSummaryMessages.TR_HISTORY} />
+                        </H2>
                     </H2Wrapper>
-                )
-                }
+                )}
             </React.Fragment>
         </Content>
     );

@@ -13,7 +13,8 @@ const definedMessages: Messages = defineMessages({
     },
     TR_XRP_DESTINATION_TAG_EXPLAINED: {
         id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
-        defaultMessage: 'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
+        defaultMessage:
+            'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
     },
 });
 

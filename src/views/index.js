@@ -49,21 +49,77 @@ const App = () => (
                         <ErrorBoundary>
                             <ImagesPreloader />
                             <WalletContainer>
-                                <Route exact path={getPattern('wallet-settings')} component={WalletSettings} />
-                                <Route exact path={getPattern('wallet-dashboard')} component={WalletDashboard} />
-                                <Route exact path={getPattern('wallet-acquire')} component={WalletAcquire} />
-                                <Route exact path={getPattern('wallet-unreadable')} component={WalletUnreadableDevice} />
-                                <Route exact path={getPattern('wallet-bootloader')} component={WalletBootloader} />
-                                <Route exact path={getPattern('wallet-initialize')} component={WalletInitialize} />
-                                <Route exact path={getPattern('wallet-seedless')} component={WalletSeedless} />
-                                <Route exact path={getPattern('wallet-firmware-update')} component={WalletFirmwareUpdate} />
-                                <Route exact path={getPattern('wallet-backup')} component={WalletNoBackup} />
-                                <Route exact path={getPattern('wallet-device-settings')} component={WalletDeviceSettings} />
-                                <Route exact path={getPattern('wallet-account-summary')} component={AccountSummary} />
-                                <Route path={getPattern('wallet-account-send')} component={AccountSend} />
-                                <Route path={getPattern('wallet-account-send-override')} component={AccountSend} />
-                                <Route path={getPattern('wallet-account-receive')} component={AccountReceive} />
-                                <Route path={getPattern('wallet-account-signverify')} component={AccountSignVerify} />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-settings')}
+                                    component={WalletSettings}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-dashboard')}
+                                    component={WalletDashboard}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-acquire')}
+                                    component={WalletAcquire}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-unreadable')}
+                                    component={WalletUnreadableDevice}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-bootloader')}
+                                    component={WalletBootloader}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-initialize')}
+                                    component={WalletInitialize}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-seedless')}
+                                    component={WalletSeedless}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-firmware-update')}
+                                    component={WalletFirmwareUpdate}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-backup')}
+                                    component={WalletNoBackup}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-device-settings')}
+                                    component={WalletDeviceSettings}
+                                />
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-account-summary')}
+                                    component={AccountSummary}
+                                />
+                                <Route
+                                    path={getPattern('wallet-account-send')}
+                                    component={AccountSend}
+                                />
+                                <Route
+                                    path={getPattern('wallet-account-send-override')}
+                                    component={AccountSend}
+                                />
+                                <Route
+                                    path={getPattern('wallet-account-receive')}
+                                    component={AccountReceive}
+                                />
+                                <Route
+                                    path={getPattern('wallet-account-signverify')}
+                                    component={AccountSignVerify}
+                                />
                             </WalletContainer>
                         </ErrorBoundary>
                     </Route>

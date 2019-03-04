@@ -14,16 +14,18 @@ const add = (state: State, payload: Transaction): State => {
     return newState;
 };
 
-const removeByDeviceState = (state: State, deviceState: ?string): State => state.filter(tx => tx.deviceState !== deviceState);
+const removeByDeviceState = (state: State, deviceState: ?string): State =>
+    state.filter(tx => tx.deviceState !== deviceState);
 
 const removeByHash = (state: State, hash: string): State => state.filter(tx => tx.hash !== hash);
 
-const reject = (state: State, hash: string): State => state.map((tx) => {
-    if (tx.hash === hash && !tx.rejected) {
-        return { ...tx, rejected: true };
-    }
-    return tx;
-});
+const reject = (state: State, hash: string): State =>
+    state.map(tx => {
+        if (tx.hash === hash && !tx.rejected) {
+            return { ...tx, rejected: true };
+        }
+        return tx;
+    });
 
 export default function pending(state: State = initialState, action: Action): State {
     switch (action.type) {

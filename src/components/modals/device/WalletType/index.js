@@ -23,13 +23,15 @@ import type { Props as BaseProps } from '../../Container';
 
 type Props = {
     intl: any,
-    device: TrezorDevice;
-    onWalletTypeRequest: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onWalletTypeRequest'>;
-    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>;
-}
+    device: TrezorDevice,
+    onWalletTypeRequest: $ElementType<
+        $ElementType<BaseProps, 'modalActions'>,
+        'onWalletTypeRequest'
+    >,
+    onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>,
+};
 
-const Wrapper = styled.div`
-`;
+const Wrapper = styled.div``;
 
 const Header = styled.div`
     display: flex;
@@ -71,10 +73,12 @@ const Content = styled.div`
     justify-content: center;
     align-items: center;
 
-    ${props => props.isTop && css`
-        padding-top: 40px;
-        border-bottom: 1px solid ${colors.DIVIDER};
-    `}
+    ${props =>
+        props.isTop &&
+        css`
+            padding-top: 40px;
+            border-bottom: 1px solid ${colors.DIVIDER};
+        `}
 `;
 
 class WalletType extends PureComponent<Props> {
@@ -105,17 +109,13 @@ class WalletType extends PureComponent<Props> {
 
         return (
             <Wrapper>
-                { device.state && (
+                {device.state && (
                     <StyledLink onClick={onCancel}>
-                        <Icon
-                            size={24}
-                            color={colors.TEXT_SECONDARY}
-                            icon={icons.CLOSE}
-                        />
+                        <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                     </StyledLink>
                 )}
-                <StyledHeading>{ device.state
-                    ? (
+                <StyledHeading>
+                    {device.state ? (
                         <FormattedMessage
                             {...l10nMessages.TR_CHANGE_WALLET_TYPE_FOR}
                             values={{ deviceLabel: device.instanceLabel }}
@@ -143,25 +143,21 @@ class WalletType extends PureComponent<Props> {
                     <Tooltip
                         maxWidth={285}
                         placement="top"
-                        content={this.props.intl.formatMessage(l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE)}
+                        content={this.props.intl.formatMessage(
+                            l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE
+                        )}
                         readMoreLink="https://wiki.trezor.io/Passphrase"
                     >
-                        <StyledIcon
-                            icon={icons.HELP}
-                            color={colors.TEXT_SECONDARY}
-                            size={26}
-                        />
+                        <StyledIcon icon={icons.HELP} color={colors.TEXT_SECONDARY} size={26} />
                     </Tooltip>
                     <Header>
-                        <WalletTypeIcon
-                            type="hidden"
-                            size={32}
-                            color={colors.TEXT_PRIMARY}
-                        />
+                        <WalletTypeIcon type="hidden" size={32} color={colors.TEXT_PRIMARY} />
                         <FormattedMessage {...l10nMessages.TR_HIDDEN_WALLET} />
                     </Header>
                     <P isSmaller>
-                        <FormattedMessage {...l10nMessages.TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK} />
+                        <FormattedMessage
+                            {...l10nMessages.TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK}
+                        />
                     </P>
                     <StyledButton isWhite onClick={() => onWalletTypeRequest(true)}>
                         <FormattedMessage {...l10nCommonMessages.TR_GO_TO_HIDDEN_WALLET} />
