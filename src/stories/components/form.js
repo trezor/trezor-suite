@@ -106,7 +106,7 @@ storiesOf('Form', module)
             `,
         },
     })
-    .add('Textarea', () => (
+    .add('TextArea', () => (
         <TextArea
             isDisabled={boolean('Disabled', false)}
             value={text('Value', '')}
