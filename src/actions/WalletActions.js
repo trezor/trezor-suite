@@ -100,7 +100,7 @@ export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch)
             });
         })
         .catch(error => {
-            console.log(error);
+            console.error(error);
         });
 };
 
