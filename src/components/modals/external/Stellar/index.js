@@ -62,7 +62,7 @@ const StellarWallet = (props: Props) => (
         </P>
 
         <Link href={coins.find(i => i.id === 'xlm').url}>
-            <StyledButton>
+            <StyledButton onClick={props.onCancel}>
                 <FormattedMessage {...l10nCommonMessages.TR_GO_TO_EXTERNAL_WALLET} />
             </StyledButton>
         </Link>
