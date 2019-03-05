@@ -29,6 +29,7 @@ import WalletType from 'components/modals/device/WalletType';
 import Nem from 'components/modals/external/Nem';
 import Cardano from 'components/modals/external/Cardano';
 import Stellar from 'components/modals/external/Stellar';
+import Tezos from 'components/modals/external/Tezos';
 
 import QrModal from 'components/modals/QrModal';
 
@@ -171,6 +172,8 @@ const getExternalContextModal = (props: Props) => {
             return (<Stellar onCancel={modalActions.onCancel} />);
         case 'ada':
             return (<Cardano onCancel={modalActions.onCancel} />);
+        case 'xtz':
+            return (<Tezos onCancel={modalActions.onCancel} />);
         default:
             return null;
     }

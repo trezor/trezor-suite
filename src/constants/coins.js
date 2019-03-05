@@ -67,4 +67,10 @@ export default [
         url: 'https://adalite.io/app',
         external: true,
     },
+    {
+        id: 'xtz',
+        coinName: 'Tezos',
+        url: 'https://wallet.simplestaking.com/tezos/wallet/start',
+        external: true,
+    },
 ];
