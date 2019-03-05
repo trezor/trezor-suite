@@ -60,7 +60,7 @@ const NemWallet = (props: Props) => (
         </H4>
         <Img src={NemImage} />
         <Link href={coins.find(i => i.id === 'xem').url}>
-            <StyledButton>
+            <StyledButton onClick={props.onCancel}>
                 <FormattedMessage {...l10nMessages.TR_GO_TO_NEM_DOT_IO} />
             </StyledButton>
         </Link>
