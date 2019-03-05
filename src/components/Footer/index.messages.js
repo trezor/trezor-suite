@@ -12,6 +12,15 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_EXCHANGE_RATES_BY',
         defaultMessage: 'Exchange rates by {service}',
     },
+    TR_WE_THANK_OUR_TRANSLATORS: {
+        id: 'TR_WE_THANK_OUR_TRANSLATORS',
+        defaultMessage: 'We thank our translators for their {TR_CONTRIBUTION}',
+    },
+    TR_CONTRIBUTION: {
+        id: 'TR_CONTRIBUTION',
+        defaultMessage: 'contribution',
+        description: 'Part of the sentence: We thank our translators for their contribution',
+    },
 });
 
 export default definedMessages;
