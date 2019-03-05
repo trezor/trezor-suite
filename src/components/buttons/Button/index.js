@@ -69,11 +69,9 @@ const Wrapper = styled.button`
     ${props => props.isDisabled
         && css`
             pointer-events: none;
-            ${props.isInverse
-                && css`
-                color: ${colors.TEXT_SECONDARY}
-                background: ${colors.GRAY_LIGHT}
-            `};
+            color: ${colors.TEXT_SECONDARY};
+            background: ${colors.GRAY_LIGHT};
+            border: 1px solid ${colors.DIVIDER};
 
             svg {
                 path {
