@@ -88,3 +88,6 @@ npm
 lib
 
 .DS_Store
+
+test/integration/screenshots
+test/integration/videos

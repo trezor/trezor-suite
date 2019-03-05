@@ -4,7 +4,8 @@
     ],
     "env": {
         "browser": true,
-        "jest": true
+        "jest": true,
+        "cypress/globals": true
     },
     "rules": {
         "import/prefer-default-export": 0,
@@ -31,7 +32,8 @@
     },
     "plugins": [
         "import",
-        "react"
+        "react",
+        "cypress"
     ],
     "settings": {
         "import/resolver": {
