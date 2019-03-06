@@ -1,14 +1,9 @@
-import React from 'react';
-
-import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import styled from 'styled-components';
 
-const Wrapper = styled.button`
+const ButtonPin = styled.button`
     width: 80px;
     height: 80px;
-    margin-top: 15px;
-    margin-left: 10px;
     border: 1px solid ${colors.DIVIDER};
     background: ${colors.WHITE};
     transition: all 0.3s;
@@ -38,17 +33,9 @@ const Wrapper = styled.button`
         position: absolute;
         border-radius: 100%;
         background: ${colors.TEXT_PRIMARY};
-        margin-top: -3px;
-        margin-left: -3px;
+        top: calc(50% - 3px);
+        left: calc(50% - 3px);
     }
 `;
-
-const ButtonPin = ({ onClick }) => (
-    <Wrapper onClick={onClick} />
-);
-
-ButtonPin.propTypes = {
-    onClick: PropTypes.func,
-};
 
 export default ButtonPin;
