@@ -90,6 +90,9 @@ storiesOf('Buttons', module)
                 <ButtonNotification type="success">
                     Confirm!
                 </ButtonNotification>
+                <ButtonNotification type="info">
+                    Info!
+                </ButtonNotification>
                 <ButtonNotification type="warning">
                     Warning!
                 </ButtonNotification>
@@ -208,6 +211,7 @@ storiesOf('Buttons', module)
     .add('Button Notification', () => {
         const type = select('Type', {
             Success: 'success',
+            Info: 'info',
             Warning: 'warning',
             Error: 'error',
         }, 'success');
