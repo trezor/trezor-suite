@@ -89,7 +89,6 @@ class CoinMenu extends PureComponent<Props> {
                 <Divider
                     testId="Main__page__coin__menu__divider"
                     textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
-                    textRight={<FormattedMessage {...l10nMessages.TR_YOU_WILL_BE_REDIRECTED} />}
                     hasBorder
                 />
                 {this.getOtherCoins()}
