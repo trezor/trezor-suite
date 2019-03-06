@@ -244,7 +244,7 @@ TextArea.propTypes = {
     name: PropTypes.string,
     isDisabled: PropTypes.bool,
     topLabel: PropTypes.node,
-    state: PropTypes.string,
+    state: PropTypes.oneOf(['success', 'warning', 'error']),
     autoSelect: PropTypes.bool,
     bottomText: PropTypes.string,
     trezorAction: PropTypes.node,
