@@ -7,10 +7,6 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_OTHER_COINS',
         defaultMessage: 'Other coins',
     },
-    TR_YOU_WILL_BE_REDIRECTED: {
-        id: 'TR_YOU_WILL_BE_REDIRECTED',
-        defaultMessage: '(You will be redirected)',
-    },
 });
 
 export default definedMessages;
