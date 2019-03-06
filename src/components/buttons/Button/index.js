@@ -12,12 +12,18 @@ const Wrapper = styled.button`
     font-size: ${FONT_SIZE.BASE};
     font-weight: ${FONT_WEIGHT.LIGHT};
     cursor: pointer;
+    outline: none;
     background: ${colors.GREEN_PRIMARY};
     color: ${colors.WHITE};
     border: 0;
+    transition: ${TRANSITION.HOVER};
 
-    &:hover {
+    &:hover, &:focus {
         background: ${colors.GREEN_SECONDARY};
+    }
+
+    &:focus {
+        box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
     }
 
     ${props => props.isInverse
@@ -25,9 +31,8 @@ const Wrapper = styled.button`
             background: transparent;
             color: ${colors.GREEN_PRIMARY};
             border: 1px solid ${colors.GREEN_PRIMARY};
-            transition: ${TRANSITION.HOVER};
 
-            &:hover {
+            &:hover, &:focus {
                 background: ${colors.GREEN_PRIMARY};
                 color: ${colors.WHITE};
 
@@ -53,7 +58,7 @@ const Wrapper = styled.button`
             }
         }
 
-        &:hover {
+        &:hover, &:focus {
             svg {
                 path {
                     fill: ${colors.WHITE};
@@ -88,7 +93,7 @@ const Wrapper = styled.button`
             color: ${colors.TEXT_SECONDARY};
             border: 1px solid ${colors.DIVIDER};
 
-            &:hover {
+            &:hover, &:focus {
                 color: ${colors.TEXT_PRIMARY};
                 background: ${colors.DIVIDER};
 
@@ -118,7 +123,8 @@ const Wrapper = styled.button`
             color: ${colors.TEXT_SECONDARY};
 
             &:hover,
-            &:active {
+            &:active, 
+            &:focus {
                 color: ${colors.TEXT_PRIMARY};
                 background: transparent;
 
