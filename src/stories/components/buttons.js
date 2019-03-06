@@ -73,14 +73,14 @@ storiesOf('Buttons', module)
                     isInverse
                     icon={icons.PLUS}
                 >
-                    Web USB
+                    Icon
                 </Button>
                 <Button
                     isInverse
                     icon={icons.PLUS}
                     isDisabled
                 >
-                    Web USB Disabled
+                    Icon Disabled
                 </Button>
             </Row>
             <H1>
