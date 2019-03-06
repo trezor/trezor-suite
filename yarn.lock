@@ -1376,7 +1376,7 @@ bitcoin-script@^0.1.1:
 
 "bitcoinjs-lib-zcash@https://github.com/karel-3d/bitcoinjs-lib#fix/dash":
   version "3.6.0"
-  resolved "https://github.com/karel-3d/bitcoinjs-lib#eef0e31f87f62396a455487aaeaa7f2251e891b0"
+  resolved "https://github.com/karel-3d/bitcoinjs-lib#b7aaa79dccdda48a2165e7d1b10de1be8dd9191a"
   dependencies:
     bech32 "^1.1.2"
     bigi "^1.4.0"
@@ -1392,7 +1392,7 @@ bitcoin-script@^0.1.1:
     pushdata-bitcoin "^1.0.1"
     randombytes "^2.0.1"
     safe-buffer "^5.0.1"
-    typeforce "^1.11.3"
+    typeforce "1.11.3"
     varuint-bitcoin "^1.0.4"
     wif "^2.0.1"
 
@@ -3831,6 +3831,7 @@ inflight@^1.0.4:
 inherits@2, inherits@2.0.3, inherits@^2.0.1, inherits@~2.0.0, inherits@~2.0.1, inherits@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
+  integrity sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=
 
 inherits@2.0.1:
   version "2.0.1"
@@ -7333,10 +7334,12 @@ typedarray@~0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typeforce@^1.11.3:
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/typeforce/-/typeforce-1.18.0.tgz#d7416a2c5845e085034d70fcc5b6cc4a90edbfdc"
-  integrity sha512-7uc1O8h1M1g0rArakJdf0uLRSSgFcYexrVoKo+bzJd32gd4gDy2L/Z+8/FjPnU9ydY3pEnVPtr9FyscYY60K1g==
+typeforce@1.11.3:
+  version "1.11.3"
+  resolved "https://registry.yarnpkg.com/typeforce/-/typeforce-1.11.3.tgz#a54d0ff58808788fba358020982270bd6995d8e4"
+  integrity sha512-+vllWbxe1AKLkO3KNyZPjb51NRHwRE/8bAi/cmF6TK24VqrPiQPRiHrFV19j1xHxxCHQbIvN4Zfco+skuiXSWQ==
+  dependencies:
+    inherits "^2.0.1"
 
 uglify-js@2.x.x:
   version "2.8.12"
