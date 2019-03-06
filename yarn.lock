@@ -1376,7 +1376,7 @@ bitcoin-script@^0.1.1:
 
 "bitcoinjs-lib-zcash@https://github.com/karel-3d/bitcoinjs-lib#fix/dash":
   version "3.6.0"
-  resolved "https://github.com/karel-3d/bitcoinjs-lib#b7aaa79dccdda48a2165e7d1b10de1be8dd9191a"
+  resolved "https://github.com/karel-3d/bitcoinjs-lib#0a4edb898b4715386a2fab01a73594cd1bb483d5"
   dependencies:
     bech32 "^1.1.2"
     bigi "^1.4.0"
