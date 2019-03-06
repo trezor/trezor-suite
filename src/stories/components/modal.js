@@ -17,9 +17,23 @@ const ModalWrapper = styled.div`
 `;
 const InputWrapper = styled.div`
     margin-top: 24px;
+    margin-bottom: 10px;
     max-width: 260px;
 `;
-const PinRow = styled.div``;
+const PinRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    button {
+        width: 30%;
+        height: 0;
+        padding-bottom: 30%;
+    }
+
+    & + & {
+        margin-top: 10px;
+    }
+`;
+
 const PinFooter = styled.div`
     margin: 20px 0 10px 0;
     display: flex;
@@ -31,7 +45,7 @@ InputWrapper.displayName = 'InputWrapper';
 PinRow.displayName = 'PinRow';
 PinFooter.displayName = 'PinFooter';
 
-storiesOf('Modal', module)
+storiesOf('Examples', module)
     .addDecorator(
         withInfo({
             header: false,
@@ -130,13 +144,26 @@ storiesOf('Modal', module)
             ~~~js
             const InputWrapper = styled.div\`
                 margin-top: 24px;
+                margin-bottom: 10px;
                 max-width: 260px;
             \`;
             ~~~
 
             PinRow
             ~~~js
-            const PinRow = styled.div\`\`;
+            const PinRow = styled.div\`
+                display: flex;
+                justify-content: space-between;
+                button {
+                    width: 30%;
+                    height: 0;
+                    padding-bottom: 30%;
+                }
+            
+                & + & {
+                    margin-top: 10px;
+                }
+            \`;
             ~~~
 
             PinFooter
