@@ -131,7 +131,7 @@ storiesOf('Buttons', module)
     .add('Button', () => {
         const isInverse = boolean('Inverse', false);
         const isDisabled = boolean('Disabled', false);
-        const buttonText = text('Text', 'Button');
+        const buttonText = text('Text', 'Button Text');
         const icon = select('Icon', {
             None: null,
             TOP: icons.TOP,
