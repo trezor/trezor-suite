@@ -72,7 +72,7 @@ const ButtonNotification = ({
 );
 
 ButtonNotification.propTypes = {
-    type: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(['success', 'info', 'warning', 'error']).isRequired,
     icon: PropTypes.shape({
         type: PropTypes.arrayOf(PropTypes.string).isRequired,
         color: PropTypes.string,

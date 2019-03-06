@@ -46,39 +46,26 @@ storiesOf('Form', module)
             Text: 'text',
             Password: 'password',
         });
-        const disabled = boolean('Disabled', false);
+        const isDisabled = boolean('Disabled', false);
         const value = text('Input value', '');
         const placeholder = text('Placeholder', 'placeholder...');
         const state = select('State', {
-            Default: '',
+            Default: null,
             Error: 'error',
             Success: 'success',
             Warning: 'warning',
-        }, '');
+        }, null);
         const bottomText = text('Bottom text', 'bottom text');
-
-        if (disabled) {
-            return (
-                <Input
-                    type={type}
-                    value={value}
-                    placeholder={placeholder}
-                    state={state}
-                    bottomText={bottomText}
-                    onChange={() => {}}
-                    isDisabled
-                />
-            );
-        }
 
         return (
             <Input
                 type={type}
                 value={value}
                 placeholder={placeholder}
-                state={state}
+                state={state || undefined}
                 bottomText={bottomText}
                 onChange={() => {}}
+                isDisabled={isDisabled || undefined}
             />
         );
     }, {
@@ -106,20 +93,24 @@ storiesOf('Form', module)
             `,
         },
     })
-    .add('TextArea', () => (
-        <TextArea
-            isDisabled={boolean('Disabled', false)}
-            value={text('Value', '')}
-            placeholder={text('Placeholder', 'placeholder...')}
-            state={select('State', {
-                Default: '',
-                Error: 'error',
-                Success: 'success',
-                Warning: 'warning',
-            }, '')}
-            bottomText={text('Bottom text', 'bottom text')}
-        />
-    ), {
+    .add('TextArea', () => {
+        const state = select('State', {
+            Default: null,
+            Error: 'error',
+            Success: 'success',
+            Warning: 'warning',
+        }, null);
+
+        return (
+            <TextArea
+                isDisabled={boolean('Disabled', false)}
+                value={text('Value', '')}
+                placeholder={text('Placeholder', 'placeholder...')}
+                bottomText={text('Bottom text', 'bottom text')}
+                {...(state ? { state } : {})} // hack to hide state prop if its value is null
+            />
+        );
+    }, {
         info: {
             text: `
             ## Import
