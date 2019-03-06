@@ -223,7 +223,7 @@ export class GetChainTransactions {
 
         value.transactions.forEach((transaction) => {
             // parse txs (error in here is handled in iterate)
-            const parsed = BitcoinJsTransaction.fromHex(transaction.hex, transaction.zcash, typeof transaction.time === 'number');
+            const parsed = BitcoinJsTransaction.fromHex(transaction.hex, transaction.network);
             const outputAddresses = [];
             parsed.outs.forEach((output) => {
                 let address;

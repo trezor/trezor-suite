@@ -256,7 +256,7 @@ declare module 'bitcoinjs-lib-zcash' {
         outs: Array<Output>;
 
         constructor(): void;
-        static fromHex(hex: string, zcash: boolean, hasTimestamp?: boolean): Transaction;
+        static fromHex(hex: string, network: Network): Transaction;
         static fromBuffer(buffer: Buffer): Transaction;
         toHex(): string;
         addInput(hash: Buffer, index: number, sequence?: ?number, scriptSig?: Buffer): void;

@@ -147,7 +147,7 @@ export type AccountLoadStatus = {
 
 export type ForceAddedTransaction = {
     hex: string,
-    zcash: boolean,
+    network: BitcoinJsNetwork,
     hash: string,
     inputAddresses: Array<?string>,
     outputAddresses: Array<?string>,

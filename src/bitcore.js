@@ -4,6 +4,9 @@
 
 import 'whatwg-fetch';
 
+import { networks } from 'bitcoinjs-lib-zcash';
+import type { Network as BitcoinJsNetwork } from 'bitcoinjs-lib-zcash';
+
 import { Emitter, Stream } from './utils/stream';
 import { Socket } from './socketio-worker/outside';
 import { deferred } from './utils/deferred';
@@ -15,7 +18,7 @@ export type SyncStatus = { height: number };
 
 export type TransactionWithHeight = {
     hex: string,
-    zcash: boolean,
+    network: BitcoinJsNetwork,
     height: ?number,
     timestamp: ?number,
     time?: ?number, // capricoin specific field
@@ -124,7 +127,7 @@ export class BitcoreBlockchain {
 
     workingUrl: string = 'none';
 
-    zcash: boolean;
+    network: BitcoinJsNetwork;
 
     hasSmartTxFees: boolean; // does server support estimatesmartfee
 
@@ -164,12 +167,16 @@ export class BitcoreBlockchain {
 
     closeOnInit: Emitter<void> = new Emitter();
 
-    constructor(endpoints: Array<string>, socketWorkerFactory: SocketWorkerFactory) {
+    constructor(
+        endpoints: Array<string>,
+        socketWorkerFactory: SocketWorkerFactory,
+        network: BitcoinJsNetwork = networks.bitcoin,
+    ) {
         this.addresses = new Set();
 
         this.socketWorkerFactory = socketWorkerFactory;
         this.endpoints = endpoints;
-        this.zcash = false;
+        this.network = network;
 
         const lookupTM = (socket: Socket): Stream<TransactionWithHeight> => Stream.filterError(socket.observe('bitcoind/addresstxid').mapPromise(
             ({ txid }) => this.lookupTransaction(txid),
@@ -293,7 +300,7 @@ export class BitcoreBlockchain {
                     return r;
                 }
                 return r.items.map(
-                    (i: BcTransactionInfo): TransactionWithHeight => convertTx(this.zcash, i.tx),
+                    (i: BcTransactionInfo): TransactionWithHeight => convertTx(i.tx, this.network),
                 );
             })),
         );
@@ -346,7 +353,7 @@ export class BitcoreBlockchain {
 
     lookupTransaction(hash: string): Promise<TransactionWithHeight> {
         return this.socket.promise.then(socket => lookupDetailedTransaction(socket, hash)
-            .then((i: BcDetailedTransaction): TransactionWithHeight => convertTx(this.zcash, i)));
+            .then((i: BcDetailedTransaction): TransactionWithHeight => convertTx(i, this.network)));
     }
 
     sendTransaction(hex: string): Promise<string> {
@@ -610,9 +617,9 @@ function observeErrors(socket: Socket): Stream<Error> {
     return s;
 }
 
-function convertTx(zcash: boolean, bcTx: BcDetailedTransaction): TransactionWithHeight {
+function convertTx(bcTx: BcDetailedTransaction, network: BitcoinJsNetwork): TransactionWithHeight {
     return {
-        zcash,
+        network,
         hex: bcTx.hex,
         height: bcTx.height === -1 ? null : bcTx.height,
         timestamp: bcTx.blockTimestamp == null ? null : bcTx.blockTimestamp,
