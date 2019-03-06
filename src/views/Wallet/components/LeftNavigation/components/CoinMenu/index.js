@@ -37,55 +37,59 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     getOtherCoins() {
-        return coins.map(coin => {
-            const row = (
-                <RowCoin
-                    network={{
-                        name: coin.coinName,
-                        shortcut: coin.id,
-                    }}
-                    iconRight={{
-                        type: ICONS.SKIP,
-                        color: colors.TEXT_SECONDARY,
-                        size: 27,
-                    }}
-                />
-            );
-
-            if (coin.external)
-                return (
-                    <ExternalWallet
-                        key={coin.id}
-                        onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}
-                    >
-                        {row}
-                    </ExternalWallet>
+        return coins
+            .sort((a, b) => a.order - b.order)
+            .map(coin => {
+                const row = (
+                    <RowCoin
+                        network={{
+                            name: coin.coinName,
+                            shortcut: coin.id,
+                        }}
+                        iconRight={{
+                            type: ICONS.SKIP,
+                            color: colors.TEXT_SECONDARY,
+                            size: 27,
+                        }}
+                    />
                 );
-            return (
-                <Link key={coin.id} href={coin.url} target="_top">
-                    {row}
-                </Link>
-            );
-        });
+
+                if (coin.external)
+                    return (
+                        <ExternalWallet
+                            key={coin.id}
+                            onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}
+                        >
+                            {row}
+                        </ExternalWallet>
+                    );
+                return (
+                    <Link key={coin.id} href={coin.url} target="_top">
+                        {row}
+                    </Link>
+                );
+            });
     }
 
     render() {
         const { config } = this.props.localStorage;
         return (
             <Wrapper data-test="Main__page__coin__menu">
-                {config.networks.map(item => (
-                    <NavLink
-                        key={item.shortcut}
-                        to={`${this.getBaseUrl()}/network/${item.shortcut}/account/0`}
-                    >
-                        <RowCoin
-                            network={{
-                                name: item.name,
-                                shortcut: item.shortcut,
-                            }}
-                        />
-                    </NavLink>
-                ))}
+                {config.networks
+                    .sort((a, b) => a.order - b.order)
+                    .map(item => (
+                        <NavLink
+                            key={item.shortcut}
+                            to={`${this.getBaseUrl()}/network/${item.shortcut}/account/0`}
+                        >
+                            <RowCoin
+                                network={{
+                                    name: item.name,
+                                    shortcut: item.shortcut,
+                                }}
+                            />
+                        </NavLink>
+                    ))}
                 <Divider
                     testId="Main__page__coin__menu__divider"
                     textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
