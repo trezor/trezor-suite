@@ -3,6 +3,7 @@
 /* global it:false, describe:false */
 
 import assert from 'assert';
+import { networks } from 'bitcoinjs-lib-zcash';
 
 import { BitcoreBlockchain } from '../src/bitcore';
 import { MockWorker } from './_mock-worker';
@@ -292,7 +293,7 @@ describe('bitcore', () => {
             assert.ok(blockchain.socket.promise instanceof Promise);
             assert.ok(blockchain.endpoints instanceof Array);
             assert.ok(blockchain.workingUrl === 'none');
-            assert.ok(typeof blockchain.zcash === 'boolean');
+            assert.ok(typeof blockchain.network === 'object');
             blockchain.destroy().then(() => done());
         });
 
@@ -966,7 +967,7 @@ describe('bitcore', () => {
                 },
             }];
             const corrTx = {
-                zcash: false,
+                network: networks.bitcoin,
                 hex: '02000000010000000000000000000000000000000000000000000000000000000000000000ffffffff05022e010101ffffffff02808b814a000000001976a9140ff5f5345000a17d667d893d5a2322404716d8f188ac0000000000000000266a24aa21a9ed91b9461f86a372d90bb7e93175c907308476361e3781341e8749292300182b8200000000',
                 height: 302,
                 timestamp: 1544936347,
@@ -1407,7 +1408,7 @@ describe('bitcore', () => {
                 [],
                 [
                     {
-                        zcash: false,
+                        network: networks.bitcoin,
                         hex: '02000000014d003ae3f324fddcf78a8d76bb35e8c0cb1a0f6fa57041c5fdc0ba3b4c67e5ad0000000048473044022020ba68b5ff34cf93796a844593a70d2eeca7bc34c012fc03305203df5b87f7bf0220565dd3b76b0a8588a6c4581bb0b36d203edadcd976717da99c9941de52fbdc5301feffffff0240ce4a1f000000001976a9140881a6bae1125d60a614ec2965225687a076ca3a88ac00e1f505000000001976a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac86030000',
                         height: null,
                         timestamp: null,
@@ -1425,7 +1426,7 @@ describe('bitcore', () => {
                 ],
                 [
                     {
-                        zcash: false,
+                        network: networks.bitcoin,
                         hex: '020000000161b33cc9ce724ce662c38733a598d69f6af07ba49514d9e33c9b6a13a7da0a7f000000004847304402204dc0783fd47e26b9dee5cd352c7136c6f6200e203cfa4951afc051b2f8749250022045bf8a71a5a2a167288f6a698c57e98e11867454ea5906220fdc9e7059b24fe801feffffff0200e1f505000000001976a9143732c8fb478ca48165d686f70125e0ed223f364188ac40ce4a1f000000001976a9140a51f5d9832ef732150f81807c2d7a9982c179d788ac86030000',
                         height: null,
                         timestamp: null,
@@ -1441,7 +1442,7 @@ describe('bitcore', () => {
                         vsize: 191,
                     },
                     {
-                        zcash: false,
+                        network: networks.bitcoin,
                         hex: '02000000016e9d3d44b7c371e3221c45d42f79e0a8e764d4e748cad88562700267433f221f00000000494830450221008d592c419aafdb8f677025db7f38ae546d8c16943fea9869286201782f993a12022023a1bdb03f99db9eb0062a33b879933538cc44875669645b1e4a617036c09e0701feffffff0240ce4a1f000000001976a9144b7345dac0bd0d956ff72370c6749103969ad5f988ac00e1f505000000001976a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac86030000',
                         height: null,
                         timestamp: null,
@@ -1457,7 +1458,7 @@ describe('bitcore', () => {
                         vsize: 192,
                     },
                     {
-                        zcash: false,
+                        network: networks.bitcoin,
                         hex: '0200000001088d3695724f9974dba7018bc26c6fd7056f04f4a7238aebc3a03a6b86cf47ca0000000049483045022100d813498e9c27c24284ba05ec1eae784692ee25257bd7056e81d5b8bafd66d51302204999038cc2c31c55a7a336a763f4a4c4cb410c2c1e8b34c1d520f5522f75afd301feffffff0200e1f505000000001976a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac40ce4a1f000000001976a9146ce2fcfa2aee4544db61dbad0f09e62431ca646b88ac86030000',
                         height: null,
                         timestamp: null,
@@ -1473,7 +1474,7 @@ describe('bitcore', () => {
                         vsize: 192,
                     },
                     {
-                        zcash: false,
+                        network: networks.bitcoin,
                         hex: '020000000175d7a86f03d955f9b2d73f7daa92d4eb47c9282e6cdbdf00911bd6d1654c71f70000000049483045022100fc860eeb12809fe38ced2db5a9c866752ae75b2d8bd81f42e08e47345b3a374102205dced01525c6174f482e42fcd85de6419fb88dc84ecb388d04fd42bd4816576401feffffff0240ce4a1f000000001976a9145044bd4f4267eb5450402996dc305404e178112888ac00e1f505000000001976a9143732c8fb478ca48165d686f70125e0ed223f364188ac86030000',
                         height: null,
                         timestamp: null,
@@ -1489,7 +1490,7 @@ describe('bitcore', () => {
                         vsize: 192,
                     },
                     {
-                        zcash: false,
+                        network: networks.bitcoin,
                         hex: '02000000017f971cfdf41412a4d6fb8e4fdee05145b88ddab326c9ab97a97b596aabfa97f20000000049483045022100c6de99ddcb0944f61dfcad07cdb2981ee7ee2a9eef88f8e646214df3fb7f1b2a022007e4fded62f5e0407417fc0580e473b56000eb5d1f0d001ac38af330ae061ded01feffffff0200e1f505000000001976a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac40ce4a1f000000001976a914893893f15e73899afe8beff1947b07cebe2c4bbe88ac86030000',
                         height: null,
                         timestamp: null,
@@ -2032,7 +2033,7 @@ describe('bitcore', () => {
             const s = blockchain.lookupTransactions(['mkYpJDNquegLmPBzUNb1Up6F5cLZntzNYa', 'n33YtcSh7WsfCjgXwmJtkE4tSHCnXwfamH', 'mtnS3H9s1Y5xkhTgssvq8BjvFP6FD1D4bv'], 10000000, 0);
             const corrTxs = [
                 {
-                    zcash: false,
+                    network: networks.bitcoin,
                     hex: '02000000014d003ae3f324fddcf78a8d76bb35e8c0cb1a0f6fa57041c5fdc0ba3b4c67e5ad0000000048473044022020ba68b5ff34cf93796a844593a70d2eeca7bc34c012fc03305203df5b87f7bf0220565dd3b76b0a8588a6c4581bb0b36d203edadcd976717da99c9941de52fbdc5301feffffff0240ce4a1f000000001976a9140881a6bae1125d60a614ec2965225687a076ca3a88ac00e1f505000000001976a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac86030000',
                     height: null,
                     timestamp: null,
@@ -2048,7 +2049,7 @@ describe('bitcore', () => {
                     vsize: 191,
                 },
                 {
-                    zcash: false,
+                    network: networks.bitcoin,
                     hex: '020000000161b33cc9ce724ce662c38733a598d69f6af07ba49514d9e33c9b6a13a7da0a7f000000004847304402204dc0783fd47e26b9dee5cd352c7136c6f6200e203cfa4951afc051b2f8749250022045bf8a71a5a2a167288f6a698c57e98e11867454ea5906220fdc9e7059b24fe801feffffff0200e1f505000000001976a9143732c8fb478ca48165d686f70125e0ed223f364188ac40ce4a1f000000001976a9140a51f5d9832ef732150f81807c2d7a9982c179d788ac86030000',
                     height: null,
                     timestamp: null,
@@ -2064,7 +2065,7 @@ describe('bitcore', () => {
                     vsize: 191,
                 },
                 {
-                    zcash: false,
+                    network: networks.bitcoin,
                     hex: '02000000016e9d3d44b7c371e3221c45d42f79e0a8e764d4e748cad88562700267433f221f00000000494830450221008d592c419aafdb8f677025db7f38ae546d8c16943fea9869286201782f993a12022023a1bdb03f99db9eb0062a33b879933538cc44875669645b1e4a617036c09e0701feffffff0240ce4a1f000000001976a9144b7345dac0bd0d956ff72370c6749103969ad5f988ac00e1f505000000001976a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac86030000',
                     height: null,
                     timestamp: null,
@@ -2080,7 +2081,7 @@ describe('bitcore', () => {
                     vsize: 192,
                 },
                 {
-                    zcash: false,
+                    network: networks.bitcoin,
                     hex: '0200000001088d3695724f9974dba7018bc26c6fd7056f04f4a7238aebc3a03a6b86cf47ca0000000049483045022100d813498e9c27c24284ba05ec1eae784692ee25257bd7056e81d5b8bafd66d51302204999038cc2c31c55a7a336a763f4a4c4cb410c2c1e8b34c1d520f5522f75afd301feffffff0200e1f505000000001976a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac40ce4a1f000000001976a9146ce2fcfa2aee4544db61dbad0f09e62431ca646b88ac86030000',
                     height: null,
                     timestamp: null,
@@ -2096,7 +2097,7 @@ describe('bitcore', () => {
                     vsize: 192,
                 },
                 {
-                    zcash: false,
+                    network: networks.bitcoin,
                     hex: '020000000175d7a86f03d955f9b2d73f7daa92d4eb47c9282e6cdbdf00911bd6d1654c71f70000000049483045022100fc860eeb12809fe38ced2db5a9c866752ae75b2d8bd81f42e08e47345b3a374102205dced01525c6174f482e42fcd85de6419fb88dc84ecb388d04fd42bd4816576401feffffff0240ce4a1f000000001976a9145044bd4f4267eb5450402996dc305404e178112888ac00e1f505000000001976a9143732c8fb478ca48165d686f70125e0ed223f364188ac86030000',
                     height: null,
                     timestamp: null,
@@ -2112,7 +2113,7 @@ describe('bitcore', () => {
                     vsize: 192,
                 },
                 {
-                    zcash: false,
+                    network: networks.bitcoin,
                     hex: '02000000017f971cfdf41412a4d6fb8e4fdee05145b88ddab326c9ab97a97b596aabfa97f20000000049483045022100c6de99ddcb0944f61dfcad07cdb2981ee7ee2a9eef88f8e646214df3fb7f1b2a022007e4fded62f5e0407417fc0580e473b56000eb5d1f0d001ac38af330ae061ded01feffffff0200e1f505000000001976a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac40ce4a1f000000001976a914893893f15e73899afe8beff1947b07cebe2c4bbe88ac86030000',
                     height: null,
                     timestamp: null,
