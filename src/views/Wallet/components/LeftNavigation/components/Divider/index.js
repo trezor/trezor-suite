@@ -27,7 +27,7 @@ const TextLeft = styled.p`
 const Divider = ({ textLeft, textRight, hasBorder = false, className, testId }) => (
     <Wrapper data-test={testId} hasBorder={hasBorder} className={className}>
         <TextLeft>{textLeft}</TextLeft>
-        <p>{textRight}</p>
+        {textRight && <p>{textRight}</p>}
     </Wrapper>
 );
 

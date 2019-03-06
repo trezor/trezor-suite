@@ -13,6 +13,7 @@ type NetworkFeeLevel = {
 };
 
 export type Network = {
+    order: number,
     type: string,
     name: string,
     testnet?: boolean,

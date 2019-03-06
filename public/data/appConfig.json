@@ -1,6 +1,7 @@
 {
     "networks": [
         {
+            "order": 2,
             "type": "ethereum",
             "name": "Ethereum",
             "symbol": "ETH",
@@ -21,6 +22,7 @@
             }
         },
         {
+            "order": 18,
             "type": "ethereum",
             "name": "Ethereum Classic",
             "symbol": "ETC",
@@ -40,7 +42,8 @@
                 "address": "https://gastracker.io/addr/"
             }
         },
-        { 
+        {
+            "order": 2,
             "type": "ethereum",
             "name": "Ethereum Ropsten",
             "testnet": true,
@@ -74,6 +77,7 @@
             }
         },
         {
+            "order": 3,
             "type": "ripple",
             "name": "Ripple",
             "symbol": "XRP",
@@ -94,6 +98,7 @@
             }
         },
         {
+            "order": 3,
             "type": "ripple",
             "name": "Ripple Testnet",
             "testnet": true,
