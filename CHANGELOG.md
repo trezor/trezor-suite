@@ -1,5 +1,10 @@
 ## 1.1.0-beta
 __added__
+- Ripple destination tag option
+- Tezos external wallet
+
+## 1.1.0-beta
+__added__
 - Ripple support
 - responsive sidebar
 - QR code scanner in send form

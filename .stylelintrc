@@ -17,13 +17,6 @@
                 "ignoreProperties": ["composes", "font-smoothing", "font-smooth"]
             }
         ],
-        "at-rule-empty-line-before": [
-            "always", {
-                "ignoreAtRules": [
-                    "import"
-                ]
-            }
-        ],
         "at-rule-no-unknown": [ true, {
             ignoreAtRules: ["each"]
         }]
