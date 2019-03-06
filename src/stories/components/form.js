@@ -167,6 +167,7 @@ storiesOf('Form', module)
             ~~~js
             import { Select } from 'trezor-ui-components';
             ~~~
+            *<Select> is just a styling wrapper around [react-select](https://react-select.com) component. See the [official documentation](https://react-select.com) for more information about its props and usage.*
             `,
         },
     })
@@ -193,6 +194,7 @@ storiesOf('Form', module)
             ~~~js
             import { AsyncSelect } from 'trezor-ui-components';
             ~~~
+            *<AsyncSelect> is just a styling wrapper around async version of [react-select](https://react-select.com) component. See the [official documentation](https://react-select.com/async) for more information about its props and usage.*
             `,
         },
     });
