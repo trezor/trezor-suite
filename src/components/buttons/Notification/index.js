@@ -55,7 +55,7 @@ const ButtonNotification = ({
     >
         {isLoading && (
             <LoaderContent type={type}>
-                <Loader transparentRoute animationColor={WHITE_COLOR} size={30} />
+                <Loader transparentRoute strokeWidth={2} animationColor={WHITE_COLOR} size={30} />
             </LoaderContent>
         )}
         {icon && (
