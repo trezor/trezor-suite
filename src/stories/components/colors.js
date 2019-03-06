@@ -97,10 +97,6 @@ storiesOf('Other', module)
                         <ColorBox color={colors.TEXT_SECONDARY} text={colors.WHITE}>{colors.TEXT_SECONDARY}</ColorBox>
                     </Color>
                     <Color>
-                        <Title>WALLET_VIEW_TITLE</Title>
-                        <ColorBox color={colors.WALLET_VIEW_TITLE} text={colors.WHITE}>{colors.WALLET_VIEW_TITLE}</ColorBox>
-                    </Color>
-                    <Color>
                         <Title>TEXT_PRIMARY</Title>
                         <ColorBox color={colors.TEXT_PRIMARY} text={colors.WHITE}>{colors.TEXT_PRIMARY}</ColorBox>
                     </Color>
