@@ -37,36 +37,38 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     getOtherCoins() {
-        return coins.map(coin => {
-            const row = (
-                <RowCoin
-                    network={{
-                        name: coin.coinName,
-                        shortcut: coin.id,
-                    }}
-                    iconRight={{
-                        type: ICONS.SKIP,
-                        color: colors.TEXT_SECONDARY,
-                        size: 27,
-                    }}
-                />
-            );
-
-            if (coin.external)
-                return (
-                    <ExternalWallet
-                        key={coin.id}
-                        onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}
-                    >
-                        {row}
-                    </ExternalWallet>
+        return coins
+            .sort((a, b) => a.order - b.order)
+            .map(coin => {
+                const row = (
+                    <RowCoin
+                        network={{
+                            name: coin.coinName,
+                            shortcut: coin.id,
+                        }}
+                        iconRight={{
+                            type: ICONS.SKIP,
+                            color: colors.TEXT_SECONDARY,
+                            size: 27,
+                        }}
+                    />
                 );
-            return (
-                <Link key={coin.id} href={coin.url} target="_top">
-                    {row}
-                </Link>
-            );
-        });
+
+                if (coin.external)
+                    return (
+                        <ExternalWallet
+                            key={coin.id}
+                            onClick={() => this.props.gotoExternalWallet(coin.id, coin.url)}
+                        >
+                            {row}
+                        </ExternalWallet>
+                    );
+                return (
+                    <Link key={coin.id} href={coin.url} target="_top">
+                        {row}
+                    </Link>
+                );
+            });
     }
 
     render() {
