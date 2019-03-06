@@ -75,19 +75,21 @@ class CoinMenu extends PureComponent<Props> {
         const { config } = this.props.localStorage;
         return (
             <Wrapper data-test="Main__page__coin__menu">
-                {config.networks.map(item => (
-                    <NavLink
-                        key={item.shortcut}
-                        to={`${this.getBaseUrl()}/network/${item.shortcut}/account/0`}
-                    >
-                        <RowCoin
-                            network={{
-                                name: item.name,
-                                shortcut: item.shortcut,
-                            }}
-                        />
-                    </NavLink>
-                ))}
+                {config.networks
+                    .sort((a, b) => a.order - b.order)
+                    .map(item => (
+                        <NavLink
+                            key={item.shortcut}
+                            to={`${this.getBaseUrl()}/network/${item.shortcut}/account/0`}
+                        >
+                            <RowCoin
+                                network={{
+                                    name: item.name,
+                                    shortcut: item.shortcut,
+                                }}
+                            />
+                        </NavLink>
+                    ))}
                 <Divider
                     testId="Main__page__coin__menu__divider"
                     textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
