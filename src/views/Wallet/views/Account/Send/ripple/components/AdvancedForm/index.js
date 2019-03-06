@@ -102,17 +102,8 @@ const Left = styled.div`
 const AdvancedForm = (props: Props) => {
     const { network } = props.selectedAccount;
     if (!network) return null;
-    const {
-        errors,
-        warnings,
-        infos,
-        fee,
-        destinationTag,
-    } = props.sendForm;
-    const {
-        onFeeChange,
-        onDestinationTagChange,
-    } = props.sendFormActions;
+    const { errors, warnings, infos, fee, destinationTag } = props.sendForm;
+    const { onFeeChange, onDestinationTagChange } = props.sendFormActions;
 
     return (
         <AdvancedSettingsWrapper>
@@ -152,17 +143,24 @@ const AdvancedForm = (props: Props) => {
 
             <InputRow>
                 <StyledInput
-                    state={getDestinationTagInputState(errors.destinationTag, warnings.destinationTag)}
+                    state={getDestinationTagInputState(
+                        errors.destinationTag,
+                        warnings.destinationTag
+                    )}
                     autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
-                    topLabel={(
+                    topLabel={
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nMessages.TR_XRP_DESTINATION_TAG} />
                                 <Tooltip
-                                    content={<FormattedMessage {...l10nMessages.TR_XRP_DESTINATION_TAG_EXPLAINED} />}
+                                    content={
+                                        <FormattedMessage
+                                            {...l10nMessages.TR_XRP_DESTINATION_TAG_EXPLAINED}
+                                        />
+                                    }
                                     maxWidth={200}
                                     readMoreLink="https://wiki.trezor.io/Ripple_(XRP)"
                                     placement="top"
@@ -175,8 +173,10 @@ const AdvancedForm = (props: Props) => {
                                 </Tooltip>
                             </Left>
                         </InputLabelWrapper>
-                    )}
-                    bottomText={errors.destinationTag || warnings.destinationTag || infos.destinationTag}
+                    }
+                    bottomText={
+                        errors.destinationTag || warnings.destinationTag || infos.destinationTag
+                    }
                     value={destinationTag}
                     onChange={event => onDestinationTagChange(event.target.value)}
                 />

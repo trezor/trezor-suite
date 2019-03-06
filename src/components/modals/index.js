@@ -169,9 +169,9 @@ const getExternalContextModal = (props: Props) => {
         case 'xlm':
             return <Stellar onCancel={modalActions.onCancel} />;
         case 'ada':
-            return (<Cardano onCancel={modalActions.onCancel} />);
+            return <Cardano onCancel={modalActions.onCancel} />;
         case 'xtz':
-            return (<Tezos onCancel={modalActions.onCancel} />);
+            return <Tezos onCancel={modalActions.onCancel} />;
         default:
             return null;
     }

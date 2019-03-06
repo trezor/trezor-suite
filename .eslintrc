@@ -3,9 +3,9 @@
         "eslint-config-airbnb",
         "prettier",
         "prettier/babel",
+        "plugin:flowtype/recommended",
         "prettier/flowtype",
         "prettier/react",
-        "plugin:flowtype/recommended",
         "plugin:jest/recommended"
     ],
     "globals": {
