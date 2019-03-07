@@ -97,28 +97,38 @@ storiesOf('Typography', module)
                 H6: 'h6',
             });
 
-            switch (level) {
-                case 'h1': {
-                    return <H1>Heading level 1</H1>;
-                }
-                case 'h2': {
-                    return <H2>Heading level 2</H2>;
-                }
-                case 'h3': {
-                    return <H3>Heading level 3</H3>;
-                }
-                case 'h4': {
-                    return <H4>Heading level 4</H4>;
-                }
-                case 'h5': {
-                    return <H5>Heading level 4</H5>;
-                }
-                case 'h6': {
-                    return <H6>Heading level 4</H6>;
-                }
-                default: {
-                    return <H1>Heading level 1</H1>;
-                }
+        const textAlign = select('textAlign', {
+            Default: null,
+            left: 'left',
+            center: 'center',
+            right: 'right',
+            justify: 'justify',
+        }, null);
+
+        const props = {
+            ...(textAlign ? { textAlign } : {}),
+        };
+        switch (level) {
+            case 'h1': {
+                return <H1 {...props}>Heading level 1</H1>;
+            }
+            case 'h2': {
+                return <H2 {...props}>Heading level 2</H2>;
+            }
+            case 'h3': {
+                return <H3 {...props}>Heading level 3</H3>;
+            }
+            case 'h4': {
+                return <H4 {...props}>Heading level 4</H4>;
+            }
+            case 'h5': {
+                return <H5 {...props}>Heading level 5</H5>;
+            }
+            case 'h6': {
+                return <H6 {...props}>Heading level 6</H6>;
+            }
+            default: {
+                return <H1 {...props}>Heading level 1</H1>;
             }
         },
         {
