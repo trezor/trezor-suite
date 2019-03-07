@@ -20,7 +20,6 @@ import P from 'components/Paragraph';
 import Tooltip from 'components/Tooltip';
 
 import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
 
 const Wrapper = styled.div`
     padding: 1.6rem;
