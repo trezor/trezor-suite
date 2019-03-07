@@ -46,8 +46,7 @@ const Wrapper = styled.button`
                     transition: ${TRANSITION.HOVER};
                 }
             }
-        }
-    `}
+        `}
 
     ${props =>
         props.isInverse &&
