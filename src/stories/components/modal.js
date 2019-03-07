@@ -55,15 +55,18 @@ storiesOf('Examples', module)
                     padding: '15px',
                 },
             },
-        }),
+        })
     )
-    .add('Hello world!', () => (
-        <Modal>
-            <ModalWrapper>Hello world!</ModalWrapper>
-        </Modal>
-    ), {
-        info: {
-            text: `
+    .add(
+        'Hello world!',
+        () => (
+            <Modal>
+                <ModalWrapper>Hello world!</ModalWrapper>
+            </Modal>
+        ),
+        {
+            info: {
+                text: `
             ## Import
             ~~~js
             import { Modal } from 'trezor-ui-components';
@@ -76,47 +79,49 @@ storiesOf('Examples', module)
             \`;
             ~~~
             `,
-        },
-    })
-    .add('Pin modal', () => (
-        <Modal>
-            <ModalWrapper>
-                <H2>Enter Trezor PIN</H2>
-                <P isSmaller>The PIN layout is displayed on your Trezor.</P>
-                <InputWrapper>
-                    <InputPin onDeleteClick={() => {}} value="" />
-                </InputWrapper>
-                <PinRow>
-                    <ButtonPin onClick={() => {}} />
-                    <ButtonPin onClick={() => {}} />
-                    <ButtonPin onClick={() => {}} />
-                </PinRow>
-                <PinRow>
-                    <ButtonPin onClick={() => {}} />
-                    <ButtonPin onClick={() => {}} />
-                    <ButtonPin onClick={() => {}} />
-                </PinRow>
-                <PinRow>
-                    <ButtonPin onClick={() => {}} />
-                    <ButtonPin onClick={() => {}} />
-                    <ButtonPin onClick={() => {}} />
-                </PinRow>
-                <PinFooter>
-                    <ButtonText onClick={() => {}}>Enter PIN</ButtonText>
-                    <P isSmaller>
-                        Not sure how PIN works?
-                        <Link
-                            isGreen
-                            href="https://wiki.trezor.io/User_manual:Entering_PIN"
-                        >Learn more
-                        </Link>
-                    </P>
-                </PinFooter>
-            </ModalWrapper>
-        </Modal>
-    ), {
-        info: {
-            text: `
+            },
+        }
+    )
+    .add(
+        'Pin modal',
+        () => (
+            <Modal>
+                <ModalWrapper>
+                    <H2>Enter Trezor PIN</H2>
+                    <P isSmaller>The PIN layout is displayed on your Trezor.</P>
+                    <InputWrapper>
+                        <InputPin onDeleteClick={() => {}} value="" />
+                    </InputWrapper>
+                    <PinRow>
+                        <ButtonPin onClick={() => {}} />
+                        <ButtonPin onClick={() => {}} />
+                        <ButtonPin onClick={() => {}} />
+                    </PinRow>
+                    <PinRow>
+                        <ButtonPin onClick={() => {}} />
+                        <ButtonPin onClick={() => {}} />
+                        <ButtonPin onClick={() => {}} />
+                    </PinRow>
+                    <PinRow>
+                        <ButtonPin onClick={() => {}} />
+                        <ButtonPin onClick={() => {}} />
+                        <ButtonPin onClick={() => {}} />
+                    </PinRow>
+                    <PinFooter>
+                        <ButtonText onClick={() => {}}>Enter PIN</ButtonText>
+                        <P isSmaller>
+                            Not sure how PIN works?
+                            <Link isGreen href="https://wiki.trezor.io/User_manual:Entering_PIN">
+                                Learn more
+                            </Link>
+                        </P>
+                    </PinFooter>
+                </ModalWrapper>
+            </Modal>
+        ),
+        {
+            info: {
+                text: `
             ## Import
             ~~~js
             import {
@@ -175,5 +180,6 @@ storiesOf('Examples', module)
             \`;
             ~~~
             `,
-        },
-    });
+            },
+        }
+    );

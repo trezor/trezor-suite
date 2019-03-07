@@ -1,6 +1,6 @@
 import colors from 'config/colors';
 
-export const getStatus = (device) => {
+export const getStatus = device => {
     if (!device.connected) {
         return 'disconnected';
     }
@@ -28,7 +28,8 @@ export const getStatus = (device) => {
         }
         return 'connected';
     }
-    if (!device.available) { // deprecated
+    if (!device.available) {
+        // deprecated
         return 'unavailable';
     }
     if (device.type === 'unacquired') {
@@ -69,7 +70,7 @@ export const getStatusName = (deviceStatus = String) => {
     }
 };
 
-export const isWebUSB = transport => !!((transport.type && transport.version.indexOf('webusb') >= 0));
+export const isWebUSB = transport => !!(transport.type && transport.version.indexOf('webusb') >= 0);
 
 export const isDisabled = (selectedDevice, devices = Array, transport) => {
     if (isWebUSB(transport)) return false; // always enabled if webusb
@@ -82,14 +83,19 @@ export const isDisabled = (selectedDevice, devices = Array, transport) => {
     return false; // default
 };
 
-export const isDeviceAccessible = (device) => {
+export const isDeviceAccessible = device => {
     if (!device || !device.features) return false;
     return device.mode === 'normal' && device.firmware !== 'required';
 };
 
-export const isSelectedDevice = (selected, device) => !!((selected && device && (selected.path === device.path && (device.ts && selected.instance === device.instance))));
+export const isSelectedDevice = (selected, device) =>
+    !!(
+        selected &&
+        device &&
+        (selected.path === device.path && (device.ts && selected.instance === device.instance))
+    );
 
-export const getVersion = (device) => {
+export const getVersion = device => {
     let version;
     if (device.features && device.features.major_version > 1) {
         version = 'T';

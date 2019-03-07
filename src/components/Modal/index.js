@@ -29,9 +29,7 @@ const ModalWindow = styled.div`
 
 const Modal = ({ children }) => (
     <ModalContainer>
-        <ModalWindow>
-            { children }
-        </ModalWindow>
+        <ModalWindow>{children}</ModalWindow>
     </ModalContainer>
 );
 

@@ -1,7 +1,16 @@
 {
     "extends": [
-        "eslint-config-airbnb"
+        "eslint-config-airbnb",
+        "prettier",
+        "prettier/babel",
+        "prettier/flowtype",
+        "prettier/react"
     ],
+    "globals": {
+        "LOCAL": true,
+        "COMMITHASH": true,
+        "VERSION": true
+    },
     "env": {
         "browser": true,
         "jest": true,
@@ -9,29 +18,28 @@
     },
     "rules": {
         "import/prefer-default-export": 0,
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
         "no-use-before-define": 0,
         "no-plusplus": 0,
+        "jest/no-disabled-tests": 0,
         "class-methods-use-this": 0,
         "react/require-default-props": 0,
         "react/forbid-prop-types": 0,
         "react/destructuring-assignment": 0,
         "react/jsx-one-expression-per-line": 0,
-        "react/jsx-indent": [2, 4],
-        "react/jsx-indent-props": [2, 4],
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"]}],
-        "indent": [2, 4, { "SwitchCase": 1 }],
-        "no-confusing-arrow": [2,{ "allowParens": true }],
         "no-console": 0,
         "no-alert": 0,
         "no-prototype-builtins": 0,
         "new-cap": 0,
         "max-len": 0,
         "eol-last": 0,
-        "spaced-comment": 0
+        "spaced-comment": 0,
+        "no-unused-expressions": 0,
+        "prettier/prettier": "error"
     },
     "plugins": [
         "import",
+        "prettier",
         "react",
         "cypress"
     ],
