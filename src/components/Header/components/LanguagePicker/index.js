@@ -73,6 +73,7 @@ const styles = {
         color: colors.TEXT_SECONDARY,
         background: isFocused ? colors.LANDING : colors.WHITE,
         borderRadius: 0,
+        textAlign: 'left',
         '&:hover': {
             cursor: 'pointer',
             background: colors.LANDING,
