@@ -34,9 +34,7 @@ class Tooltip extends React.Component {
     }
 
     render() {
-        const {
-            maxWidth, className, placement, content, readMoreLink, children,
-        } = this.props;
+        const { maxWidth, className, placement, content, readMoreLink, children } = this.props;
         const Overlay = (
             <ContentWrapper>
                 <Content maxWidth={maxWidth}>{content}</Content>
@@ -44,20 +42,22 @@ class Tooltip extends React.Component {
                     <Link href={readMoreLink}>
                         <ReadMore>Read more</ReadMore>
                     </Link>
-                )
-                }
+                )}
             </ContentWrapper>
         );
 
         return (
-            <Wrapper className={className} ref={(el) => { this.wrapper = el; }}>
+            <Wrapper
+                className={className}
+                ref={el => {
+                    this.wrapper = el;
+                }}
+            >
                 <RcTooltip
                     getTooltipContainer={() => this.wrapper}
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
                     placement={placement}
-                    overlay={() => (
-                        Overlay
-                    )}
+                    overlay={() => Overlay}
                 >
                     {children}
                 </RcTooltip>
@@ -69,15 +69,9 @@ class Tooltip extends React.Component {
 Tooltip.propTypes = {
     className: PropTypes.string,
     placement: PropTypes.string,
-    children: PropTypes.oneOfType([
-        PropTypes.element,
-        PropTypes.string,
-    ]),
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
     maxWidth: PropTypes.number,
-    content: PropTypes.oneOfType([
-        PropTypes.element,
-        PropTypes.string,
-    ]),
+    content: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
     readMoreLink: PropTypes.string,
 };
 

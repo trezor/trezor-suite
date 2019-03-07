@@ -34,8 +34,8 @@ const rotate180down = keyframes`
 `;
 
 const SvgWrapper = styled.svg`
-    animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)}
-        0.2s linear 1 forwards;
+    animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
+        forwards;
 
     :hover {
         path {

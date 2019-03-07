@@ -1,10 +1,4 @@
-import {
-    FONT_FAMILY,
-    FONT_SIZE,
-    FONT_WEIGHT,
-    LINE_HEIGHT,
-    TRANSITION,
-} from 'config/variables';
+import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT, TRANSITION } from 'config/variables';
 import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -50,8 +44,9 @@ const StyledInput = styled.input`
 
     border-radius: 2px;
     
-    ${props => props.hasAddon
-        && css`
+    ${props =>
+        props.hasAddon &&
+        css`
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
         `}
@@ -74,12 +69,13 @@ const StyledInput = styled.input`
 
     &:focus {
         box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
-        border-color: ${props => (props.border || colors.INPUT_FOCUS_BORDER)};
+        border-color: ${props => props.border || colors.INPUT_FOCUS_BORDER};
         outline: none;
     }
 
-    ${props => props.trezorAction
-        && css`
+    ${props =>
+        props.trezorAction &&
+        css`
             z-index: 10001;
             position: relative; /* bigger than modal container */
             border-color: ${colors.WHITE};
@@ -103,8 +99,9 @@ const BottomText = styled.span`
 `;
 
 const Overlay = styled.div`
-    ${props => props.isPartiallyHidden
-        && css`
+    ${props =>
+        props.isPartiallyHidden &&
+        css`
             bottom: 0;
             border: 1px solid ${colors.DIVIDER};
             border-radius: 2px;
@@ -175,9 +172,7 @@ class Input extends PureComponent {
     render() {
         return (
             <Wrapper className={this.props.className}>
-                {this.props.topLabel && (
-                    <TopLabel>{this.props.topLabel}</TopLabel>
-                )}
+                {this.props.topLabel && <TopLabel>{this.props.topLabel}</TopLabel>}
                 <InputWrapper>
                     <InputIconWrapper>
                         {this.props.state && (
@@ -186,18 +181,13 @@ class Input extends PureComponent {
                                 color={this.getColor(this.props.state)}
                             />
                         )}
-                        <Overlay
-                            isPartiallyHidden={this.props.isPartiallyHidden}
-                        />
+                        <Overlay isPartiallyHidden={this.props.isPartiallyHidden} />
                         {this.props.icon}
                         <StyledInput
                             autoComplete="off"
                             height={this.props.height}
                             trezorAction={this.props.trezorAction}
-                            hasIcon={
-                                this.props.icon
-                                || this.getIcon(this.props.state).length > 0
-                            }
+                            hasIcon={this.props.icon || this.getIcon(this.props.state).length > 0}
                             ref={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
@@ -210,11 +200,7 @@ class Input extends PureComponent {
                             value={this.props.value}
                             readOnly={this.props.readOnly}
                             onChange={this.props.onChange}
-                            onClick={
-                                this.props.autoSelect
-                                    ? event => event.target.select()
-                                    : null
-                            }
+                            onClick={this.props.autoSelect ? event => event.target.select() : null}
                             border={this.getColor(this.props.state)}
                             disabled={this.props.isDisabled}
                             name={this.props.name}
@@ -225,8 +211,7 @@ class Input extends PureComponent {
                             {this.props.trezorAction}
                         </TrezorAction>
                     </InputIconWrapper>
-                    {this.props.sideAddons
-                        && this.props.sideAddons.map(sideAddon => sideAddon)}
+                    {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
                 </InputWrapper>
                 {this.props.bottomText && (
                     <BottomText color={this.getColor(this.props.state)}>
