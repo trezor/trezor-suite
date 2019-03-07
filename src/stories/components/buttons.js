@@ -44,10 +44,16 @@ storiesOf('Buttons', module).add('All', () => (
             Default <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button />'}</BtnLink>
         </H1>
         <Row>
-            <Button>Button</Button>
-            <Button isWhite>White</Button>
-            <Button isTransparent>Transparent</Button>
-            <Button isDisabled>Disabled</Button>
+            <Button data-test="Button__default">Button</Button>
+            <Button data-test="Button__white" isWhite>
+                White
+            </Button>
+            <Button data-test="Button__transparent" isTransparent>
+                Transparent
+            </Button>
+            <Button data-test="Button__disabled" isDisabled>
+                Disabled
+            </Button>
         </Row>
         <H1>
             Inverse{' '}
