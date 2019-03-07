@@ -11,7 +11,6 @@ import React, { PureComponent } from 'react';
 import Textarea from 'react-textarea-autosize';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
-import Icon from 'components/Icon';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -112,13 +111,6 @@ const StyledTextarea = styled(Textarea)`
     `}
 `;
 
-const StyledIcon = styled(Icon)`
-    position: absolute;
-    left: auto;
-    top: 3px;
-    right: 10px;
-`;
-
 const TopLabel = styled.span`
     padding-bottom: 10px;
     color: ${colors.TEXT_SECONDARY};
@@ -187,12 +179,6 @@ class TextArea extends PureComponent {
             <Wrapper className={this.props.className}>
                 {this.props.topLabel && (
                     <TopLabel>{this.props.topLabel}</TopLabel>
-                )}
-                {this.props.state && (
-                    <StyledIcon
-                        icon={this.getIcon(this.props.state)}
-                        color={this.getColor(this.props.state)}
-                    />
                 )}
                 <StyledTextarea
                     spellCheck="false"
