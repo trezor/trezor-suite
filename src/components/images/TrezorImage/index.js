@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 
 const Wrapper = styled.div``;
 
-const Img = styled.img`width: ${props => (props.model === 'T' ? '17px' : '13px')};`;
+const Img = styled.img`
+    width: ${props => (props.model === 'T' ? '17px' : '13px')};
+`;
 
 const TrezorImage = ({ model }) => {
     // $FlowIssue: `require` must be a string literal.

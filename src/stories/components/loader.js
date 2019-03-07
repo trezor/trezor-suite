@@ -2,9 +2,7 @@ import React from 'react';
 import Loader from 'components/Loader';
 
 import { storiesOf } from '@storybook/react';
-import {
-    withKnobs, number, text, boolean,
-} from '@storybook/addon-knobs';
+import { withKnobs, number, text, boolean } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
 
 import colors from 'config/colors';
@@ -27,25 +25,29 @@ storiesOf('Other', module)
                     padding: '15px',
                 },
             },
-        }),
+        })
     )
     .addDecorator(withKnobs)
-    .add('Loader', () => (
-        <Loader
-            size={number('Size', 100)}
-            strokeWidth={number('Stroke width', 1)}
-            text={text('Text', 'loading')}
-            isWhiteText={boolean('White text', false)}
-            isSmallText={boolean('Small text', false)}
-            transparentRoute={boolean('Transparent route', false)}
-        />
-    ), {
-        info: {
-            text: `
+    .add(
+        'Loader',
+        () => (
+            <Loader
+                size={number('Size', 100)}
+                strokeWidth={number('Stroke width', 1)}
+                text={text('Text', 'loading')}
+                isWhiteText={boolean('White text', false)}
+                isSmallText={boolean('Small text', false)}
+                transparentRoute={boolean('Transparent route', false)}
+            />
+        ),
+        {
+            info: {
+                text: `
             ## Import
             ~~~js
             import { Loader } from 'trezor-ui-components';
             ~~~
             `,
-        },
-    });
+            },
+        }
+    );

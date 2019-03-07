@@ -5,9 +5,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
 import { withInfo } from '@storybook/addon-info';
-import {
-    withKnobs, select, number, color, boolean,
-} from '@storybook/addon-knobs';
+import { withKnobs, select, number, color, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 
 import colors from 'config/colors';
@@ -22,18 +20,18 @@ const Row = styled.div`
     display: flex;
     justify-content: space-evenly;
     padding: 1rem 0;
-    margin: .5rem 0 1rem;
+    margin: 0.5rem 0 1rem;
 `;
 
 const Col = styled.div`
     width: 100px;
     text-align: center;
-    padding: .5rem;
+    padding: 0.5rem;
 `;
 const Title = styled.div`
     color: ${colors.TEXT_SECONDARY};
     font-size: ${FONT_SIZE.SMALL};
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
 `;
 
 const BtnLink = styled.button`
@@ -41,7 +39,7 @@ const BtnLink = styled.button`
     color: ${colors.TEXT_SECONDARY};
     vertical-align: middle;
     background: ${colors.LANDING};
-    padding: .5rem;
+    padding: 0.5rem;
     border: none;
     border-radius: 5px;
 `;
@@ -54,7 +52,9 @@ const CoinLogoInline = styled(CoinLogo)`
 storiesOf('Other', module)
     .add('Coins & Icons', () => (
         <Wrapper>
-            <H1>Icons <BtnLink onClick={linkTo('Other', 'Icon')}>{'<Icon />'}</BtnLink></H1>
+            <H1>
+                Icons <BtnLink onClick={linkTo('Other', 'Icon')}>{'<Icon />'}</BtnLink>
+            </H1>
             <Row>
                 <Col>
                     <Title>TOP</Title>
@@ -145,7 +145,6 @@ storiesOf('Other', module)
                     <Icon icon={icons.ERROR} size={42} />
                 </Col>
             </Row>
-
             <Row>
                 <Col>
                     <Title>WALLET_STANDARD</Title>
@@ -164,8 +163,9 @@ storiesOf('Other', module)
                     <Icon icon={icons.QRCODE} size={42} />
                 </Col>
             </Row>
-
-            <H1>Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink></H1>
+            <H1>
+                Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink>
+            </H1>
             <Row>
                 <Col>
                     <Title>ada</Title>
@@ -269,36 +269,44 @@ storiesOf('Other', module)
                     padding: '15px',
                 },
             },
-        }),
+        })
     )
     .addDecorator(withKnobs)
-    .add('Coin', () => (
-        <CoinLogo network={select('Coin', {
-            ADA: 'ada',
-            BCH: 'bch',
-            BTC: 'btc',
-            BTG: 'btg',
-            DASH: 'dash',
-            DGB: 'dgb',
-            DOGE: 'doge',
-            ETC: 'etc',
-            ETH: 'eth',
-            LTC: 'ltc',
-            NEM: 'nem',
-            NMC: 'nmc',
-            RINKEBY: 'rinkeby',
-            TROP: 'trop',
-            TXRP: 'txrp',
-            VTC: 'vtc',
-            XEM: 'xem',
-            XLM: 'xlm',
-            XRP: 'xrp',
-            ZEC: 'zec',
-        }, 'ada')}
-        />
-    ), {
-        info: {
-            text: `
+    .add(
+        'Coin',
+        () => (
+            <CoinLogo
+                network={select(
+                    'Coin',
+                    {
+                        ADA: 'ada',
+                        BCH: 'bch',
+                        BTC: 'btc',
+                        BTG: 'btg',
+                        DASH: 'dash',
+                        DGB: 'dgb',
+                        DOGE: 'doge',
+                        ETC: 'etc',
+                        ETH: 'eth',
+                        LTC: 'ltc',
+                        NEM: 'nem',
+                        NMC: 'nmc',
+                        RINKEBY: 'rinkeby',
+                        TROP: 'trop',
+                        TXRP: 'txrp',
+                        VTC: 'vtc',
+                        XEM: 'xem',
+                        XLM: 'xlm',
+                        XRP: 'xrp',
+                        ZEC: 'zec',
+                    },
+                    'ada'
+                )}
+            />
+        ),
+        {
+            info: {
+                text: `
             ## Import
 
             ~~~js
@@ -306,59 +314,56 @@ storiesOf('Other', module)
             ~~~
 
             `,
-        },
-    })
-    .add('Icon', () => {
-        const iconSize = number('Size', 36);
-        const iconSelect = select('Icon', {
-            TOP: icons.TOP,
-            EYE_CROSSED: icons.EYE_CROSSED,
-            EYE: icons.EYE,
-            CHECKED: icons.CHECKED,
-            BACK: icons.BACK,
-            HELP: icons.HELP,
-            REFRESH: icons.REFRESH,
-            T1: icons.T1,
-            COG: icons.COG,
-            EJECT: icons.EJECT,
-            CLOSE: icons.CLOSE,
-            DOWNLOAD: icons.DOWNLOAD,
-            PLUS: icons.PLUS,
-            ARROW_UP: icons.ARROW_UP,
-            ARROW_LEFT: icons.ARROW_LEFT,
-            ARROW_DOWN: icons.ARROW_DOWN,
-            CHAT: icons.CHAT,
-            SKIP: icons.SKIP,
-            WARNING: icons.WARNING,
-            INFO: icons.INFO,
-            ERROR: icons.ERROR,
-            SUCCESS: icons.SUCCESS,
-            WALLET_STANDARD: icons.WALLET_STANDARD,
-            WALLET_HIDDEN: icons.WALLET_HIDDEN,
-            MENU: icons.MENU,
-            QRCODE: icons.QRCODE,
-        }, icons.TOP);
-        const hasHover = boolean('With hover', false);
-
-        if (hasHover) {
-            const hoverColor = color('Hover color', colors.GREEN_PRIMARY);
-            return (
-                <Icon
-                    icon={iconSelect}
-                    size={iconSize}
-                    hoverColor={hoverColor}
-                />
-            );
+            },
         }
-        return (
-            <Icon
-                icon={iconSelect}
-                size={iconSize}
-            />
-        );
-    }, {
-        info: {
-            text: `
+    )
+    .add(
+        'Icon',
+        () => {
+            const iconSize = number('Size', 36);
+            const iconSelect = select(
+                'Icon',
+                {
+                    TOP: icons.TOP,
+                    EYE_CROSSED: icons.EYE_CROSSED,
+                    EYE: icons.EYE,
+                    CHECKED: icons.CHECKED,
+                    BACK: icons.BACK,
+                    HELP: icons.HELP,
+                    REFRESH: icons.REFRESH,
+                    T1: icons.T1,
+                    COG: icons.COG,
+                    EJECT: icons.EJECT,
+                    CLOSE: icons.CLOSE,
+                    DOWNLOAD: icons.DOWNLOAD,
+                    PLUS: icons.PLUS,
+                    ARROW_UP: icons.ARROW_UP,
+                    ARROW_LEFT: icons.ARROW_LEFT,
+                    ARROW_DOWN: icons.ARROW_DOWN,
+                    CHAT: icons.CHAT,
+                    SKIP: icons.SKIP,
+                    WARNING: icons.WARNING,
+                    INFO: icons.INFO,
+                    ERROR: icons.ERROR,
+                    SUCCESS: icons.SUCCESS,
+                    WALLET_STANDARD: icons.WALLET_STANDARD,
+                    WALLET_HIDDEN: icons.WALLET_HIDDEN,
+                    MENU: icons.MENU,
+                    QRCODE: icons.QRCODE,
+                },
+                icons.TOP
+            );
+            const hasHover = boolean('With hover', false);
+
+            if (hasHover) {
+                const hoverColor = color('Hover color', colors.GREEN_PRIMARY);
+                return <Icon icon={iconSelect} size={iconSize} hoverColor={hoverColor} />;
+            }
+            return <Icon icon={iconSelect} size={iconSize} />;
+        },
+        {
+            info: {
+                text: `
             ## Import
             ~~~js
             import { Icon, icons } from 'trezor-ui-components';
@@ -369,5 +374,6 @@ storiesOf('Other', module)
             <Icon icon={icons.TOP} />
             ~~~
             `,
-        },
-    });
+            },
+        }
+    );

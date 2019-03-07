@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 
 const InvalidPin = props => (
     <Wrapper>
-        <H3>Entered PIN for { props.device.label } is not correct</H3>
+        <H3>Entered PIN for {props.device.label} is not correct</H3>
         <P isSmaller>Retrying...</P>
     </Wrapper>
 );
