@@ -146,6 +146,25 @@ storiesOf('Other', module)
                 </Col>
             </Row>
 
+            <Row>
+                <Col>
+                    <Title>WALLET_STANDARD</Title>
+                    <Icon icon={icons.WALLET_STANDARD} size={42} />
+                </Col>
+                <Col>
+                    <Title>WALLET_HIDDEN</Title>
+                    <Icon icon={icons.WALLET_HIDDEN} size={42} />
+                </Col>
+                <Col>
+                    <Title>MENU</Title>
+                    <Icon icon={icons.MENU} size={42} />
+                </Col>
+                <Col>
+                    <Title>QRCODE</Title>
+                    <Icon icon={icons.QRCODE} size={42} />
+                </Col>
+            </Row>
+
             <H1>Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink></H1>
             <Row>
                 <Col>
@@ -314,6 +333,10 @@ storiesOf('Other', module)
             INFO: icons.INFO,
             ERROR: icons.ERROR,
             SUCCESS: icons.SUCCESS,
+            WALLET_STANDARD: icons.WALLET_STANDARD,
+            WALLET_HIDDEN: icons.WALLET_HIDDEN,
+            MENU: icons.MENU,
+            QRCODE: icons.QRCODE,
         }, icons.TOP);
         const hasHover = boolean('With hover', false);
 
