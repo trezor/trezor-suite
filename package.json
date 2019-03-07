@@ -37,6 +37,7 @@
         "@storybook/addons": "^4.1.11",
         "babel-loader": "^8.0.5",
         "babel-plugin-module-resolver": "^3.2.0",
+        "babel-plugin-styled-components": "^1.10.0",
         "cypress": "^3.1.5",
         "cypress-image-snapshot": "^3.0.0",
         "eslint": "^5.13.0",

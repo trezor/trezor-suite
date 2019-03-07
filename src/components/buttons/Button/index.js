@@ -165,6 +165,7 @@ const Button = ({
     isTransparent = false,
     isInverse = false,
     icon = null,
+    ...rest
 }) => (
     <Wrapper
         className={className}
@@ -177,6 +178,7 @@ const Button = ({
         isTransparent={isTransparent}
         isInverse={isInverse}
         icon={icon}
+        {...rest}
     >
         {icon && (
             <Icon icon={icon} size={24} color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE} />
