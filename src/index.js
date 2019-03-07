@@ -13,14 +13,7 @@ import TextArea from './components/Textarea';
 import Checkbox from './components/Checkbox';
 import { AsyncSelect, Select } from './components/Select';
 
-import {
-    H1,
-    H2,
-    H3,
-    H4,
-    H5,
-    H6,
-} from './components/Heading';
+import { H1, H2, H3, H4, H5, H6 } from './components/Heading';
 import Link from './components/Link';
 import P from './components/Paragraph';
 import Tooltip from './components/Tooltip';

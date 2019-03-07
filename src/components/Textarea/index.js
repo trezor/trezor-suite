@@ -1,9 +1,4 @@
-import {
-    FONT_FAMILY,
-    FONT_SIZE,
-    FONT_WEIGHT,
-    LINE_HEIGHT,
-} from 'config/variables';
+import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT } from 'config/variables';
 import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
@@ -11,7 +6,6 @@ import React, { PureComponent } from 'react';
 import Textarea from 'react-textarea-autosize';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
-import Icon from 'components/Icon';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -28,7 +22,7 @@ const StyledTextarea = styled(Textarea)`
     min-height: 85px;
     padding: 10px 12px;
     box-sizing: border-box;
-    border: 1px solid ${props => (props.border || colors.INPUT_BORDER)};
+    border: 1px solid ${props => props.border || colors.INPUT_BORDER};
     border-radius: 2px;
     resize: none;
     outline: none;
@@ -37,11 +31,11 @@ const StyledTextarea = styled(Textarea)`
     background: ${colors.WHITE};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     font-size: ${FONT_SIZE.BASE};
-    white-space: pre-wrap;       /* css-3 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
 
     /* placeholder styles do not work correctly when groupped into one block */
 
@@ -67,7 +61,7 @@ const StyledTextarea = styled(Textarea)`
 
     &:focus {
         box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
-        border-color: ${props => (props.border || colors.INPUT_FOCUS_BORDER)};
+        border-color: ${props => props.border || colors.INPUT_FOCUS_BORDER};
         outline: none;
     }
 
@@ -102,21 +96,16 @@ const StyledTextarea = styled(Textarea)`
         }
     }
 
-    ${props => props.trezorAction && css`
-        z-index: 10001; /* bigger than modal container */
-        border-color: ${colors.WHITE};
-        border-width: 2px;
-        transform: translate(-1px, -1px);
-        background: ${colors.DIVIDER};
-        pointer-events: none;
-    `}
-`;
-
-const StyledIcon = styled(Icon)`
-    position: absolute;
-    left: auto;
-    top: 3px;
-    right: 10px;
+    ${props =>
+        props.trezorAction &&
+        css`
+            z-index: 10001; /* bigger than modal container */
+            border-color: ${colors.WHITE};
+            border-width: 2px;
+            transform: translate(-1px, -1px);
+            background: ${colors.DIVIDER};
+            pointer-events: none;
+        `}
 `;
 
 const TopLabel = styled.span`
@@ -126,7 +115,7 @@ const TopLabel = styled.span`
 
 const BottomText = styled.span`
     font-size: ${FONT_SIZE.SMALL};
-    color: ${props => (props.color || colors.TEXT_SECONDARY)};
+    color: ${props => props.color || colors.TEXT_SECONDARY};
     margin-top: 10px;
 `;
 
@@ -185,15 +174,7 @@ class TextArea extends PureComponent {
     render() {
         return (
             <Wrapper className={this.props.className}>
-                {this.props.topLabel && (
-                    <TopLabel>{this.props.topLabel}</TopLabel>
-                )}
-                {this.props.state && (
-                    <StyledIcon
-                        icon={this.getIcon(this.props.state)}
-                        color={this.getColor(this.props.state)}
-                    />
-                )}
+                {this.props.topLabel && <TopLabel>{this.props.topLabel}</TopLabel>}
                 <StyledTextarea
                     spellCheck="false"
                     autoCorrect="off"
@@ -215,12 +196,11 @@ class TextArea extends PureComponent {
                     border={this.getColor(this.props.state)}
                 />
                 <TrezorAction action={this.props.trezorAction}>
-                    <ArrowUp />{this.props.trezorAction}
+                    <ArrowUp />
+                    {this.props.trezorAction}
                 </TrezorAction>
                 {this.props.bottomText && (
-                    <BottomText
-                        color={this.getColor(this.props.state)}
-                    >
+                    <BottomText color={this.getColor(this.props.state)}>
                         {this.props.bottomText}
                     </BottomText>
                 )}

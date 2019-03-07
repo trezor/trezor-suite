@@ -13,13 +13,9 @@ const Wrapper = styled.p`
     margin: 0;
 `;
 
-const P = ({
-    children, className, size = FONT_SIZE.BASE,
-}) => (
-    <Wrapper
-        className={className}
-        size={size}
-    >{children}
+const P = ({ children, className, size = FONT_SIZE.BASE }) => (
+    <Wrapper className={className} size={size}>
+        {children}
     </Wrapper>
 );
 
