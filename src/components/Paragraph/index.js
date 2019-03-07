@@ -37,7 +37,7 @@ P.propTypes = {
     className: PropTypes.string,
     children: PropTypes.node,
     size: PropTypes.oneOf(['small', 'medium', 'large', 'xlarge']),
-    textAlign: PropTypes.oneOf(['left', 'ceter', 'right', 'justify']),
+    textAlign: PropTypes.oneOf(['left', 'center', 'right', 'justify']),
 };
 
 export default P;
