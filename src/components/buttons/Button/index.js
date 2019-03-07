@@ -15,7 +15,7 @@ const Wrapper = styled.button`
     outline: none;
     background: ${colors.GREEN_PRIMARY};
     color: ${colors.WHITE};
-    border: 0;
+    border: 1px solid ${colors.GREEN_PRIMARY};
     transition: ${TRANSITION.HOVER};
 
     &:hover, &:focus {
@@ -26,24 +26,9 @@ const Wrapper = styled.button`
         box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
     }
 
-    ${props =>
-        props.isInverse &&
-        css`
-            background: transparent;
-            color: ${colors.GREEN_PRIMARY};
-            border: 1px solid ${colors.GREEN_PRIMARY};
-
-            &:hover,
-            &:focus {
-                background: ${colors.GREEN_PRIMARY};
-                color: ${colors.WHITE};
-
-                &:before,
-                &:after {
-                    background: ${colors.WHITE};
-                }
-            }
-        `}
+    &:active {
+        background: ${colors.GREEN_TERTIARY};
+    }
 
     ${props =>
         props.icon &&
@@ -61,9 +46,27 @@ const Wrapper = styled.button`
                     transition: ${TRANSITION.HOVER};
                 }
             }
+        }
+    `}
+
+    ${props =>
+        props.isInverse &&
+        !props.isDisabled &&
+        css`
+            background: transparent;
+            color: ${colors.GREEN_PRIMARY};
+            border: 1px solid ${colors.GREEN_PRIMARY};
 
             &:hover,
             &:focus {
+                background: ${colors.GREEN_PRIMARY};
+                color: ${colors.WHITE};
+
+                &:before,
+                &:after {
+                    background: ${colors.WHITE};
+                }
+
                 svg {
                     path {
                         fill: ${colors.WHITE};
@@ -72,10 +75,6 @@ const Wrapper = styled.button`
             }
         `}
 
-    &:active {
-        background: ${colors.GREEN_TERTIARY};
-    }
-
     ${props =>
         props.isDisabled &&
         css`
@@ -83,6 +82,10 @@ const Wrapper = styled.button`
             color: ${colors.TEXT_SECONDARY};
             background: ${colors.GRAY_LIGHT};
             border: 1px solid ${colors.DIVIDER};
+
+            &:focus {
+                background: ${colors.GRAY_LIGHT};
+            }
 
             svg {
                 path {
@@ -126,7 +129,7 @@ const Wrapper = styled.button`
         props.isTransparent &&
         css`
             background: transparent;
-            border: 0px;
+            border-color: transparent;
             color: ${colors.TEXT_SECONDARY};
 
             &:hover,
@@ -134,6 +137,7 @@ const Wrapper = styled.button`
             &:focus {
                 color: ${colors.TEXT_PRIMARY};
                 background: transparent;
+                box-shadow: none;
 
                 svg {
                     path {
