@@ -27,11 +27,7 @@ class Link extends PureComponent {
         const shouldRenderRouterLink = this.props.to;
         let LinkComponent;
         if (shouldRenderRouterLink) {
-            LinkComponent = (
-                <StyledNavLink {...this.props}>
-                    {this.props.children}
-                </StyledNavLink>
-            );
+            LinkComponent = <StyledNavLink {...this.props}>{this.props.children}</StyledNavLink>;
         } else {
             LinkComponent = (
                 <A

@@ -28,6 +28,7 @@ const Wrapper = styled.button`
     border-radius: 3px;
     background: transparent;
     font-size: ${FONT_SIZE.BASE};
+
     position: relative;
     font-weight: ${FONT_WEIGHT.LIGHT};
     cursor: pointer;
@@ -45,14 +46,8 @@ const IconWrapper = styled.span`
     margin-right: 8px;
 `;
 
-const ButtonNotification = ({
-    type, icon, onClick, children, isLoading,
-}) => (
-    <Wrapper
-        icon={icon}
-        onClick={onClick}
-        type={type}
-    >
+const ButtonNotification = ({ type, icon, onClick, children, isLoading }) => (
+    <Wrapper icon={icon} onClick={onClick} type={type}>
         {isLoading && (
             <LoaderContent type={type}>
                 <Loader transparentRoute strokeWidth={2} animationColor={WHITE_COLOR} size={30} />
@@ -60,11 +55,7 @@ const ButtonNotification = ({
         )}
         {icon && (
             <IconWrapper>
-                <Icon
-                    icon={icon.type}
-                    color={icon.color}
-                    size={icon.size}
-                />
+                <Icon icon={icon.type} color={icon.color} size={icon.size} />
             </IconWrapper>
         )}
         {children}
