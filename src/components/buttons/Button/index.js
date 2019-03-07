@@ -46,7 +46,6 @@ const Wrapper = styled.button`
         }
     `}
 
-
     ${props => props.isInverse && !props.isDisabled
         && css`
             background: transparent;
