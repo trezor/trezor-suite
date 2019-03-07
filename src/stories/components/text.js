@@ -41,17 +41,17 @@ storiesOf('Typography', module)
             <H4>Heading level 4</H4>
             <H5>Heading level 5</H5>
             <H6>Heading level 6</H6>
-            <P size={FONT_SIZE.SMALL}>
+            <P size="small">
                 This is a SMALL paragraph with <Link href="/test" isGreen>link</Link>.
             </P>
-            <P>
-                This is a paragraph with <Link href="/test" isGreen>link</Link>.
+            <P size="medium">
+                This is a MEDIUM paragraph with <Link href="/test" isGreen>link</Link>.
             </P>
-            <P size={FONT_SIZE.BIG}>
-                This is a BIG paragraph with <Link href="/test" isGray> gray link</Link>.
+            <P size="large">
+                This is a LARGE paragraph with <Link href="/test" isGray> gray link</Link>.
             </P>
-            <P size={FONT_SIZE.BIGGER}>
-                This is a BIGGER paragraph with <Link href="/test" isGreen>link</Link>.
+            <P size="xlarge">
+                This is a XLARGE paragraph with <Link href="/test" isGreen>link</Link>.
             </P>
         </Wrapper>
     ));
@@ -177,30 +177,33 @@ storiesOf('Typography', module)
     })
     .add('Paragraph', () => {
         const size = select('Size', {
-            Small: FONT_SIZE.SMALL,
-            Base: FONT_SIZE.BASE,
-            Big: FONT_SIZE.BIG,
-            Bigger: FONT_SIZE.BIGGER,
-        }, FONT_SIZE.BASE);
+            Default: null,
+            small: 'small',
+            medium: 'medium',
+            large: 'large',
+            xlarge: 'xlarge',
+        }, null);
+        const textAlign = select('textAlign', {
+            Default: null,
+            left: 'left',
+            center: 'center',
+            right: 'right',
+            justify: 'justify',
+        }, null);
         const paragraphText = text('Text', 'This is a paragraph.');
-        if (size) {
-            return <P size={size}>{paragraphText}</P>;
-        }
-        return <P>{paragraphText}</P>;
+        return (
+            <P
+                {...(size ? { size } : {})}
+                {...(textAlign ? { textAlign } : {})}
+            >{paragraphText}
+            </P>
+        );
     }, {
         info: {
             text: `
             ## Import
             ~~~js
-            import { P, variables } from 'trezor-ui-components';
-            ~~~
-
-            #### Font size via \`size\` prop (default: _BASE_)
-            ~~~js
-            variables.FONT_SIZE.SMALL
-            variables.FONT_SIZE.BASE
-            variables.FONT_SIZE.BIG
-            variables.FONT_SIZE.BIGGER
+            import { P } from 'trezor-ui-components';
             ~~~
             `,
         },
