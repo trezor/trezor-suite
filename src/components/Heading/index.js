@@ -6,7 +6,12 @@ import colors from 'config/colors';
 
 const Props = {
     children: PropTypes.node,
+    textAlign: PropTypes.oneOf(['left', 'center', 'right', 'justify']),
 };
+
+const textAlignStyle = css`
+    text-align: ${props => props.textAlign};
+`;
 
 const baseStyles = css`
     -webkit-font-smoothing: antialiased;
@@ -15,6 +20,7 @@ const baseStyles = css`
     font-weight: bold;
     margin: 0;
     padding: 0;
+    ${props => props.textAlign && textAlignStyle}
 `;
 
 const H1 = styled.h1`
@@ -60,6 +66,4 @@ H4.propTypes = Props;
 H5.propTypes = Props;
 H6.propTypes = Props;
 
-export {
-    H1, H2, H3, H4, H5, H6,
-};
+export { H1, H2, H3, H4, H5, H6 };

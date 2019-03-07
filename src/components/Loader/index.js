@@ -25,15 +25,15 @@ const SvgWrapper = styled.svg`
 `;
 
 const CircleWrapper = styled.circle`
-    ${props => props.isRoute
-        && css`
-            stroke: ${props.transparentRoute
-        ? 'transparent'
-        : colors.GRAY_LIGHT};
+    ${props =>
+        props.isRoute &&
+        css`
+            stroke: ${props.transparentRoute ? 'transparent' : colors.GRAY_LIGHT};
         `}
 
-    ${props => props.isPath
-        && css`
+    ${props =>
+        props.isPath &&
+        css`
             stroke-width: ${props.strokeWidth}px;
             stroke-dasharray: 1, 200;
             stroke-dashoffset: 0;
@@ -62,7 +62,12 @@ const Loader = ({
         <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>
             {text}
         </StyledParagraph>
-        <SvgWrapper viewBox="25 25 50 50" css={css`animation: rotate 2s linear infinite;`}>
+        <SvgWrapper
+            viewBox="25 25 50 50"
+            css={css`
+                animation: rotate 2s linear infinite;
+            `}
+        >
             <CircleWrapper
                 animationColor={animationColor}
                 cx="50"
@@ -76,7 +81,9 @@ const Loader = ({
                 strokeWidth={strokeWidth}
             />
             <CircleWrapper
-                css={css`animation: ${DASH} 1.5s ease-in-out infinite;`}
+                css={css`
+                    animation: ${DASH} 1.5s ease-in-out infinite;
+                `}
                 animationColor={animationColor}
                 cx="50"
                 cy="50"

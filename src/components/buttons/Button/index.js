@@ -15,7 +15,7 @@ const Wrapper = styled.button`
     outline: none;
     background: ${colors.GREEN_PRIMARY};
     color: ${colors.WHITE};
-    border: 0;
+    border: 1px solid ${colors.GREEN_PRIMARY};
     transition: ${TRANSITION.HOVER};
 
     &:hover, &:focus {
@@ -26,13 +26,39 @@ const Wrapper = styled.button`
         box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
     }
 
-    ${props => props.isInverse
-        && css`
+    &:active {
+        background: ${colors.GREEN_TERTIARY};
+    }
+
+    ${props =>
+        props.icon &&
+        css`
+            position: relative;
+            padding: 12px 24px 12px 40px;
+
+            svg {
+                position: absolute;
+                top: 50%;
+                margin-top: -12px;
+                left: 12px;
+
+                path {
+                    transition: ${TRANSITION.HOVER};
+                }
+            }
+        }
+    `}
+
+    ${props =>
+        props.isInverse &&
+        !props.isDisabled &&
+        css`
             background: transparent;
             color: ${colors.GREEN_PRIMARY};
             border: 1px solid ${colors.GREEN_PRIMARY};
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
                 background: ${colors.GREEN_PRIMARY};
                 color: ${colors.WHITE};
 
@@ -40,43 +66,26 @@ const Wrapper = styled.button`
                 &:after {
                     background: ${colors.WHITE};
                 }
-            }
-        `}
 
-    ${props => props.icon && css`
-        position: relative;
-        padding: 12px 24px 12px 40px;
-
-        svg {
-            position: absolute;
-            top: 50%;
-            margin-top: -12px;
-            left: 12px;
-
-            path {
-                transition: ${TRANSITION.HOVER};   
-            }
-        }
-
-        &:hover, &:focus {
-            svg {
-                path {
-                    fill: ${colors.WHITE};
+                svg {
+                    path {
+                        fill: ${colors.WHITE};
+                    }
                 }
             }
-        }
         `}
 
-    &:active {
-        background: ${colors.GREEN_TERTIARY};
-    }
-
-    ${props => props.isDisabled
-        && css`
+    ${props =>
+        props.isDisabled &&
+        css`
             pointer-events: none;
             color: ${colors.TEXT_SECONDARY};
             background: ${colors.GRAY_LIGHT};
             border: 1px solid ${colors.DIVIDER};
+
+            &:focus {
+                background: ${colors.GRAY_LIGHT};
+            }
 
             svg {
                 path {
@@ -85,13 +94,15 @@ const Wrapper = styled.button`
             }
         `}
 
-    ${props => props.isWhite
-        && css`
+    ${props =>
+        props.isWhite &&
+        css`
             background: ${colors.WHITE};
             color: ${colors.TEXT_SECONDARY};
             border: 1px solid ${colors.DIVIDER};
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
                 color: ${colors.TEXT_PRIMARY};
                 background: ${colors.DIVIDER};
 
@@ -114,17 +125,19 @@ const Wrapper = styled.button`
             }
         `}
 
-    ${props => props.isTransparent
-        && css`
+    ${props =>
+        props.isTransparent &&
+        css`
             background: transparent;
-            border: 0px;
+            border-color: transparent;
             color: ${colors.TEXT_SECONDARY};
 
             &:hover,
-            &:active, 
+            &:active,
             &:focus {
                 color: ${colors.TEXT_PRIMARY};
                 background: transparent;
+                box-shadow: none;
 
                 svg {
                     path {
@@ -166,7 +179,9 @@ const Button = ({
         isInverse={isInverse}
         icon={icon}
     >
-        {icon && <Icon icon={icon} size={24} color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE} />}
+        {icon && (
+            <Icon icon={icon} size={24} color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE} />
+        )}
         {children}
     </Wrapper>
 );

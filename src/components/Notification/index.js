@@ -81,20 +81,16 @@ const ActionContent = styled.div`
     align-items: flex-end;
 `;
 
-const Notification = (props) => {
+const Notification = props => {
     const close = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
 
     return (
         <Wrapper className={props.className} type={props.type}>
             <Content>
-                {props.loading && <Loader size={50} /> }
+                {props.loading && <Loader size={50} />}
                 {props.cancelable && (
                     <CloseClick onClick={() => close()}>
-                        <Icon
-                            color={getPrimaryColor(props.type)}
-                            icon={icons.CLOSE}
-                            size={20}
-                        />
+                        <Icon color={getPrimaryColor(props.type)} icon={icons.CLOSE} size={20} />
                     </CloseClick>
                 )}
                 <Body>
@@ -105,8 +101,8 @@ const Notification = (props) => {
                         />
                     </IconWrapper>
                     <Texts>
-                        <Title>{ props.title }</Title>
-                        { props.message ? <Message>{props.message}</Message> : '' }
+                        <Title>{props.title}</Title>
+                        {props.message ? <Message>{props.message}</Message> : ''}
                     </Texts>
                 </Body>
                 <AdditionalContent>
@@ -117,8 +113,12 @@ const Notification = (props) => {
                                     key={action.label}
                                     type={props.type}
                                     isLoading={props.isActionInProgress}
-                                    onClick={() => { close(); action.callback(); }}
-                                >{action.label}
+                                    onClick={() => {
+                                        close();
+                                        action.callback();
+                                    }}
+                                >
+                                    {action.label}
                                 </ButtonNotification>
                             ))}
                         </ActionContent>

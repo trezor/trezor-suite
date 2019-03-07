@@ -21,15 +21,9 @@ const Paragraph = styled.p`
     margin: 0;
 `;
 
-const P = ({
-    children, className, size = 'medium', textAlign = 'left', ...rest
-}) => (
-    <Paragraph
-        className={className}
-        size={P_SIZES[size]}
-        textAlign={textAlign}
-        {...rest}
-    >{children}
+const P = ({ children, className, size = 'medium', textAlign = 'left', ...rest }) => (
+    <Paragraph className={className} size={P_SIZES[size]} textAlign={textAlign} {...rest}>
+        {children}
     </Paragraph>
 );
 
