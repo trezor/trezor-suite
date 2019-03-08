@@ -1,4 +1,4 @@
-![Alt text](src/images/wallet-rocks.png?raw=true "Trezor Wallet rocks")
+![Alt text](src/images/trezor-rocks.png?raw=true "Trezor Wallet rocks")
 
 # Trezor Wallet
 
