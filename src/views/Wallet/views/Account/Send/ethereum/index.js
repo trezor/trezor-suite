@@ -3,12 +3,8 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
-import { Select } from 'components/Select';
-import Button from 'components/Button';
-import Input from 'components/inputs/Input';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
-import ICONS from 'config/icons';
+import { Select, Button, Input, Link, Icon } from 'trezor-ui-components';
+import ICONS from 'config/icons'; // TODO import icons from TUC
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import colors from 'config/colors';
 import Title from 'views/Wallet/components/Title';

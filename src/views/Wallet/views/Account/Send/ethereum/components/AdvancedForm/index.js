@@ -4,13 +4,14 @@ import * as React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
-import Link from 'components/Link';
-import Input from 'components/inputs/Input';
-import Textarea from 'components/Textarea';
-import Tooltip from 'components/Tooltip';
-import Icon from 'components/Icon';
-import ICONS from 'config/icons';
+import {
+    Link,
+    Input,
+    TextArea as Textarea,
+    Tooltip,
+    Icon,
+    icons as ICONS,
+} from 'trezor-ui-components';
 import { FONT_SIZE } from 'config/variables';
 
 import l10nMessages from './index.messages';

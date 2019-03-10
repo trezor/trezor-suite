@@ -3,15 +3,10 @@ import React from 'react';
 import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-
+import { Button, Icon, Tooltip, Input, icons as ICONS } from 'trezor-ui-components';
 import Title from 'views/Wallet/components/Title';
-import Button from 'components/Button';
-import Icon from 'components/Icon';
-import Tooltip from 'components/Tooltip';
-import Input from 'components/inputs/Input';
 import DeviceIcon from 'components/images/DeviceIcon';
 
-import ICONS from 'config/icons';
 import colors from 'config/colors';
 import { CONTEXT_DEVICE } from 'actions/constants/modal';
 
@@ -42,8 +37,6 @@ const StyledQRCode = styled(QRCode)`
 `;
 
 const ShowAddressButton = styled(Button)`
-    min-width: 195px;
-    padding: 0;
     white-space: nowrap;
     display: flex;
     height: 40px;
@@ -59,12 +52,6 @@ const ShowAddressButton = styled(Button)`
         align-self: auto;
         border-radius: 3px;
     }
-`;
-
-const ShowAddressIcon = styled(Icon)`
-    margin-right: 7px;
-    position: relative;
-    top: 2px;
 `;
 
 const EyeButton = styled(Button)`
@@ -177,10 +164,10 @@ const AccountReceive = (props: Props) => {
                         />
                         {!(addressVerified || addressUnverified) && (
                             <ShowAddressButton
+                                icon={ICONS.EYE}
                                 onClick={() => props.showAddress(account.accountPath)}
                                 isDisabled={device.connected && !discovery.completed}
                             >
-                                <ShowAddressIcon icon={ICONS.EYE} color={colors.WHITE} />
                                 <FormattedMessage {...l10nReceiveMessages.TR_SHOW_FULL_ADDRESS} />
                             </ShowAddressButton>
                         )}
