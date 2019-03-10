@@ -13602,10 +13602,10 @@ trezor-translations-manager@^1.0.4:
     request "^2.88.0"
     request-promise-native "^1.0.5"
 
-trezor-ui-components@^1.0.0-beta.2:
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.2.tgz#36449ff97b981b180ab6b51e3fc6469179a25ea9"
-  integrity sha512-Q8ljEwvCEhuKKiu8nh6C1BYFrIXx4IaTQKf4ds/KJIvXaP60gB6cXhCvLU0dRPquA6rQXFDQaKhgBvXp3d44zg==
+trezor-ui-components@^1.0.0-beta.3:
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.3.tgz#86e30118ac67dc7cbadbd14f07e9662ef70216c7"
+  integrity sha512-FebPh/Ec+nwBUifOtu9SVKyZiWPlPHm2Pcs08h3qlCAfmjBejOfo1fbw2tD4ZOlfH8VwuxCT+dAQgW5ITMTCZQ==
   dependencies:
     "@storybook/react" "^4.1.11"
     prop-types "^15.7.2"
