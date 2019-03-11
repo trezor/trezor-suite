@@ -43,13 +43,13 @@ const Icons = styled.div`
     display: flex;
     flex-wrap: wrap;
     padding: 1.6rem;
-`
+`;
 
 const Item = styled.div`
     flex-basis: 20%;
     padding: 0.5rem 0 1rem;
     text-align: center;
-`
+`;
 
 const Title = styled.div`
     color: ${colors.TEXT_SECONDARY};
@@ -78,36 +78,31 @@ storiesOf('Other', module)
             <H1>
                 Icons <BtnLink onClick={linkTo('Other', 'Icon')}>{'<Icon />'}</BtnLink>
             </H1>
-            
+
             <Icons>
-                {
-                    Object.keys(icons).map((icon) => {
-                        return (
-                            <Item>
-                                <Title>{icon}</Title>
-                                <Icon icon={icons[icon]}/>
-                            </Item>
-                        )
-                    })
-                }
+                {Object.keys(icons).map(icon => {
+                    return (
+                        <Item>
+                            <Title>{icon}</Title>
+                            <Icon icon={icons[icon]} />
+                        </Item>
+                    );
+                })}
             </Icons>
-            
-                
+
             <H1>
                 Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink>
             </H1>
 
             <Icons>
-                {
-                    Object.keys(coins).map((coin) => {
-                        return (
-                            <Item>
-                                <Title>{coin}</Title>
-                                <CoinLogoInline network={coins[coin]}/>
-                            </Item>
-                        )
-                    })
-                }
+                {Object.keys(coins).map(coin => {
+                    return (
+                        <Item>
+                            <Title>{coin}</Title>
+                            <CoinLogoInline network={coins[coin]} />
+                        </Item>
+                    );
+                })}
             </Icons>
         </Wrapper>
     ))
@@ -131,20 +126,9 @@ storiesOf('Other', module)
         })
     )
     .addDecorator(withKnobs)
-    .add(
-        'Coin',
-        () => (
-            <CoinLogo
-                network={select(
-                    'Coin',
-                    coins,
-                    'ada'
-                )}
-            />
-        ),
-        {
-            info: {
-                text: `
+    .add('Coin', () => <CoinLogo network={select('Coin', coins, 'ada')} />, {
+        info: {
+            text: `
             ## Import
 
             ~~~js
@@ -152,9 +136,8 @@ storiesOf('Other', module)
             ~~~
 
             `,
-            },
-        }
-    )
+        },
+    })
     .add(
         'Icon',
         () => {
