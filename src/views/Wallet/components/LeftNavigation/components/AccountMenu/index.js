@@ -9,6 +9,7 @@ import * as stateUtils from 'reducers/utils';
 import Tooltip from 'components/Tooltip';
 import ICONS from 'config/icons';
 import { FormattedMessage } from 'react-intl';
+import { toFiatCurrency } from 'utils/fiatConverter';
 
 import { NavLink } from 'react-router-dom';
 import { findDeviceAccounts } from 'reducers/AccountsReducer';
@@ -104,8 +105,6 @@ const AccountMenu = (props: Props) => {
 
     if (!selected || !network) return null;
 
-    const fiatRate = props.fiat.find(f => f.network === network.shortcut);
-
     const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);
 
     const selectedAccounts = deviceAccounts.map((account, i) => {
@@ -121,10 +120,13 @@ const AccountMenu = (props: Props) => {
                 .toString(10);
 
             balance = `${availableBalance} ${network.symbol}`;
-            if (fiatRate) {
-                const accountBalance = new BigNumber(availableBalance);
-                const fiat = accountBalance.times(fiatRate.value).toFixed(2);
-                balance = `${availableBalance} ${network.symbol} / $${fiat}`;
+            const fiatRates = props.fiat.find(f => f.network === network.shortcut);
+            if (fiatRates) {
+                const { localCurrency } = props.wallet;
+                const fiat = toFiatCurrency(availableBalance, localCurrency, fiatRates.rates);
+                balance = `${availableBalance} ${
+                    network.symbol
+                } / ${localCurrency.toUpperCase()} ${fiat}`;
             }
         }
 
