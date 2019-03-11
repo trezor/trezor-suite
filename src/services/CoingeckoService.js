@@ -19,8 +19,14 @@ export const RATE_UPDATE: 'rate__update' = 'rate__update';
 export type FiatRateAction = {
     type: typeof RATE_UPDATE,
     network: string,
-    rate: number,
+    rates: { [string]: number },
 };
+
+// const getSupportedCurrencies = async () => {
+//     const url = 'https://api.coingecko.com/api/v3/simple/supported_vs_currencies';
+//     const res = await httpRequest(url, 'json');
+//     return res;
+// };
 
 const loadRateAction = (): AsyncAction => async (
     dispatch: Dispatch,
@@ -41,7 +47,7 @@ const loadRateAction = (): AsyncAction => async (
                 dispatch({
                     type: RATE_UPDATE,
                     network: response.symbol,
-                    rate: response.market_data.current_price.usd,
+                    rates: response.market_data.current_price,
                 });
             }
         });
