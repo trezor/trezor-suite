@@ -17,3 +17,4 @@ export const CLEAR_UNAVAILABLE_DEVICE_DATA: 'wallet__clear_unavailable_device_da
 
 export const TOGGLE_SIDEBAR: 'wallet__toggle_sidebar' = 'wallet__toggle_sidebar';
 export const SET_LANGUAGE: 'wallet__set_language' = 'wallet__set_language';
+export const SET_LOCAL_CURRENCY: 'wallet__set_local_currency' = 'wallet__set_local_currency';
