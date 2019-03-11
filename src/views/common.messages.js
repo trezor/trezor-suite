@@ -7,6 +7,10 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_DEVICE_SETTINGS',
         defaultMessage: 'Device settings',
     },
+    TR_APPLICATION_SETTINGS: {
+        id: 'TR_APPLICATION_SETTINGS',
+        defaultMessage: 'Application settings',
+    },
     TR_ACCOUNT_HASH: {
         id: 'TR_ACCOUNT_HASH',
         defaultMessage: 'Account #{number}',
@@ -61,6 +65,10 @@ const definedMessages: Messages = defineMessages({
     TR_FORGET_DEVICE: {
         id: 'TR_FORGET_DEVICE',
         defaultMessage: 'Forget device',
+    },
+    TR_CLOSE: {
+        id: 'TR_CLOSE',
+        defaultMessage: 'Close',
     },
 });
 

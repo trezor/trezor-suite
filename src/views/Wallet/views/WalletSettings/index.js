@@ -1,47 +1,119 @@
+/* @flow */
 import styled from 'styled-components';
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
-import colors from 'config/colors';
-import icons from 'config/icons';
+import * as WalletActions from 'actions/WalletActions';
+import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
+import type { State, Dispatch } from 'flowtype';
 
-import Content from 'views/Wallet/components/Content';
-import { H1 } from 'components/Heading';
-import Icon from 'components/Icon';
 import Link from 'components/Link';
+import Content from 'views/Wallet/components/Content';
+import { Select } from 'components/Select';
 import Button from 'components/Button';
 
-const Section = styled.section`
+import colors from 'config/colors';
+import { FIAT_CURRENCIES } from 'config/app';
+import { FONT_SIZE } from 'config/variables';
+import l10nCommonMessages from 'views/common.messages';
+import l10nMessages from './index.messages';
+
+const CurrencySelect = styled(Select)`
+    min-width: 77px;
+    /* max-width: 200px; */
+`;
+
+const CurrencyLabel = styled.div`
+    color: ${colors.TEXT_SECONDARY};
+    padding-bottom: 10px;
+`;
+
+const Section = styled.div`
+    margin-bottom: 20px;
+`;
+
+const Actions = styled.div`
     display: flex;
-    flex-direction: column;
 `;
 
-const Row = styled.div`
+const Buttons = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 50px 0;
+    justify-content: flex-end;
 `;
 
-const StyledH1 = styled(H1)`
-    text-align: center;
+const Info = styled.div`
+    flex: 1;
+    color: ${colors.TEXT_SECONDARY};
+    font-size: ${FONT_SIZE.SMALL};
+    align-self: center;
 `;
 
-const WalletSettings = () => (
+const buildCurrencyOption = currency => {
+    return { value: currency, label: currency.toUpperCase() };
+};
+
+const WalletSettings = (props: Props) => (
     <Content>
         <Section>
-            <Row>
-                <Icon size={60} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
-                <StyledH1>Wallet settings is under construction</StyledH1>
-                <Link to="/">
-                    <Button>Take me back</Button>
-                </Link>
-            </Row>
+            <CurrencyLabel>
+                <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
+            </CurrencyLabel>
+            <CurrencySelect
+                isSearchable
+                isClearable={false}
+                onChange={option => props.setLocalCurrency(option.value)}
+                value={buildCurrencyOption(props.wallet.localCurrency)}
+                options={FIAT_CURRENCIES.map(c => buildCurrencyOption(c))}
+            />
         </Section>
+        <Actions>
+            <Info>
+                <FormattedMessage {...l10nMessages.TR_THE_CHANGES_ARE_SAVED} />
+            </Info>
+            <Buttons>
+                <Link to="/">
+                    <Button isGreen>
+                        <FormattedMessage {...l10nCommonMessages.TR_CLOSE} />
+                    </Button>
+                </Link>
+            </Buttons>
+        </Actions>
     </Content>
 );
 
-export default connect(
-    null,
-    null
-)(WalletSettings);
+type OwnProps = {};
+
+type StateProps = {
+    wallet: $ElementType<State, 'wallet'>,
+    fiat: $ElementType<State, 'fiat'>,
+    localStorage: $ElementType<State, 'localStorage'>,
+};
+
+type DispatchProps = {
+    setLocalCurrency: typeof WalletActions.setLocalCurrency,
+};
+
+export type Props = StateProps & DispatchProps;
+
+const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
+    state: State
+): StateProps => ({
+    wallet: state.wallet,
+    fiat: state.fiat,
+    localStorage: state.localStorage,
+});
+
+const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
+    dispatch: Dispatch
+): DispatchProps => ({
+    setLocalCurrency: bindActionCreators(WalletActions.setLocalCurrency, dispatch),
+});
+
+export default injectIntl(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(WalletSettings)
+);
