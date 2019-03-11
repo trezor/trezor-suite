@@ -1,13 +1,13 @@
 import fs from 'fs-extra';
-import path from 'path';
+import { resolve } from 'path';
 import { collectImportsSync } from 'babel-collect-imports';
 import packageJSON from '../package.json';
 
-const { internal } = collectImportsSync(path.resolve(__dirname, '../src/index.js'));
+const { internal } = collectImportsSync(resolve(__dirname, '../src/index.js'));
 
-const src = path.resolve(__dirname, '../src');
-const npm = path.resolve(__dirname, '../build');
-const lib = path.resolve(__dirname, '../build/lib');
+const src = resolve(__dirname, '../src');
+const npm = resolve(__dirname, '../build');
+const lib = resolve(__dirname, '../build/lib');
 
 internal.forEach(file => {
     const libFile = file.replace(src, lib);
@@ -20,8 +20,9 @@ delete packageJSON.scripts;
 delete packageJSON.bin;
 
 packageJSON.main = 'lib/index.js';
-fs.writeFileSync(path.resolve(npm, 'package.json'), JSON.stringify(packageJSON, null, '  '), 'utf-8');
+fs.writeFileSync(resolve(npm, 'package.json'), JSON.stringify(packageJSON, null, '  '), 'utf-8');
 
-fs.copySync(path.resolve(npm, '../README.md'), path.resolve(npm, 'README.md'));
-fs.copySync(path.resolve(npm, '../LICENSE.md'), path.resolve(npm, 'LICENSE.md'));
-fs.copySync(path.resolve(npm, '../CHANGELOG.md'), path.resolve(npm, 'CHANGELOG.md'));
+fs.copySync(resolve(npm, '../README.md'), resolve(npm, 'README.md'));
+fs.copySync(resolve(npm, '../LICENSE.md'), resolve(npm, 'LICENSE.md'));
+fs.copySync(resolve(npm, '../CHANGELOG.md'), resolve(npm, 'CHANGELOG.md'));
+fs.copySync(resolve(src, 'utils/ws.js'), resolve(lib, 'utils/ws.js'));
