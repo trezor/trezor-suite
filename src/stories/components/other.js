@@ -1,12 +1,14 @@
-import CoinLogo from 'components/images/CoinLogo';
-import Icon from 'components/Icon';
-import { H1 } from 'components/Heading';
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
+import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
 import { withKnobs, select, number, color, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
+
+import CoinLogo from 'components/images/CoinLogo';
+import Icon from 'components/Icon';
+import { H1 } from 'components/Heading';
+import Prompt from 'components/Prompt';
 
 import colors from 'config/colors';
 import icons from 'config/icons';
@@ -43,13 +45,13 @@ const Icons = styled.div`
     display: flex;
     flex-wrap: wrap;
     padding: 1.6rem;
-`
+`;
 
 const Item = styled.div`
     flex-basis: 20%;
     padding: 0.5rem 0 1rem;
     text-align: center;
-`
+`;
 
 const Title = styled.div`
     color: ${colors.TEXT_SECONDARY};
@@ -78,36 +80,31 @@ storiesOf('Other', module)
             <H1>
                 Icons <BtnLink onClick={linkTo('Other', 'Icon')}>{'<Icon />'}</BtnLink>
             </H1>
-            
+
             <Icons>
-                {
-                    Object.keys(icons).map((icon) => {
-                        return (
-                            <Item>
-                                <Title>{icon}</Title>
-                                <Icon icon={icons[icon]}/>
-                            </Item>
-                        )
-                    })
-                }
+                {Object.keys(icons).map(icon => {
+                    return (
+                        <Item>
+                            <Title>{icon}</Title>
+                            <Icon icon={icons[icon]} />
+                        </Item>
+                    );
+                })}
             </Icons>
-            
-                
+
             <H1>
                 Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink>
             </H1>
 
             <Icons>
-                {
-                    Object.keys(coins).map((coin) => {
-                        return (
-                            <Item>
-                                <Title>{coin}</Title>
-                                <CoinLogoInline network={coins[coin]}/>
-                            </Item>
-                        )
-                    })
-                }
+                {Object.keys(coins).map(coin => {
+                    return (
+                        <Item>
+                            <Title>{coin}</Title>
+                            <CoinLogoInline network={coins[coin]} />
+                        </Item>
+                    );
+                })}
             </Icons>
         </Wrapper>
     ))
@@ -131,20 +128,9 @@ storiesOf('Other', module)
         })
     )
     .addDecorator(withKnobs)
-    .add(
-        'Coin',
-        () => (
-            <CoinLogo
-                network={select(
-                    'Coin',
-                    coins,
-                    'ada'
-                )}
-            />
-        ),
-        {
-            info: {
-                text: `
+    .add('Coin', () => <CoinLogo network={select('Coin', coins, 'ada')} />, {
+        info: {
+            text: `
             ## Import
 
             ~~~js
@@ -152,9 +138,8 @@ storiesOf('Other', module)
             ~~~
 
             `,
-            },
-        }
-    )
+        },
+    })
     .add(
         'Icon',
         () => {
@@ -187,4 +172,5 @@ storiesOf('Other', module)
             `,
             },
         }
-    );
+    )
+    .add('Prompt', () => <Prompt model="1" />);
