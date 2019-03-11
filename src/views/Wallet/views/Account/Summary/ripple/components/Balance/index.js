@@ -14,6 +14,7 @@ type Props = {
     balance: string,
     reserve: string,
     fiat: $ElementType<ReducersState, 'fiat'>,
+    localCurrency: string,
 };
 
 type State = {
@@ -58,6 +59,7 @@ const FiatValue = styled.div`
     min-height: 25px;
     color: ${colors.TEXT_PRIMARY};
     align-items: center;
+    text-transform: uppercase;
 `;
 
 const FiatValueRate = styled.div`
@@ -68,6 +70,7 @@ const FiatValueRate = styled.div`
     display: flex;
     color: ${colors.TEXT_PRIMARY};
     align-items: center;
+    text-transform: uppercase;
 `;
 
 const BalanceWrapper = styled.div`
@@ -115,14 +118,14 @@ class AccountBalance extends PureComponent<Props, State> {
     }
 
     render() {
-        const { network } = this.props;
+        const { network, localCurrency } = this.props;
         const fiatRate = this.props.fiat.find(f => f.network === network.shortcut);
         let accountBalance = '';
         let fiatRateValue = '';
         let fiat = '';
         if (fiatRate) {
             accountBalance = new BigNumber(this.props.balance);
-            fiatRateValue = new BigNumber(fiatRate.value).toFixed(2);
+            fiatRateValue = new BigNumber(fiatRate.rates[localCurrency]).toFixed(2);
             fiat = accountBalance.times(fiatRateValue).toFixed(2);
         }
 
@@ -152,7 +155,9 @@ class AccountBalance extends PureComponent<Props, State> {
                         <BalanceWrapper>
                             <Label>Balance</Label>
                             <TooltipWrapper>
-                                <FiatValue>{fiatRate ? `$ ${fiat}` : 'N/A'}</FiatValue>
+                                <FiatValue>
+                                    {fiatRate ? `${fiat} ${localCurrency}` : 'N/A'}
+                                </FiatValue>
                                 {!fiatRate && NoRatesTooltip}
                             </TooltipWrapper>
                             <CoinBalance>
@@ -172,7 +177,7 @@ class AccountBalance extends PureComponent<Props, State> {
                             <Label>Rate</Label>
                             <TooltipWrapper>
                                 <FiatValueRate>
-                                    {fiatRate ? `$ ${fiatRateValue}` : 'N/A'}
+                                    {fiatRate ? `${fiatRateValue} ${localCurrency}` : 'N/A'}
                                 </FiatValueRate>
                                 {!fiatRate && NoRatesTooltip}
                             </TooltipWrapper>
