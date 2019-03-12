@@ -1,13 +1,7 @@
 /* @flow */
 import styled from 'styled-components';
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-
-import * as WalletActions from 'actions/WalletActions';
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State, Dispatch } from 'flowtype';
+import { FormattedMessage } from 'react-intl';
 
 import Link from 'components/Link';
 import Content from 'views/Wallet/components/Content';
@@ -19,6 +13,7 @@ import { FIAT_CURRENCIES } from 'config/app';
 import { FONT_SIZE } from 'config/variables';
 import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
+import type { Props } from './Container';
 
 const CurrencySelect = styled(Select)`
     min-width: 77px;
@@ -56,6 +51,7 @@ const buildCurrencyOption = currency => {
 
 const WalletSettings = (props: Props) => (
     <Content>
+        {console.log(props)}
         <Section>
             <CurrencyLabel>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
@@ -83,37 +79,4 @@ const WalletSettings = (props: Props) => (
     </Content>
 );
 
-type OwnProps = {};
-
-type StateProps = {
-    wallet: $ElementType<State, 'wallet'>,
-    fiat: $ElementType<State, 'fiat'>,
-    localStorage: $ElementType<State, 'localStorage'>,
-};
-
-type DispatchProps = {
-    setLocalCurrency: typeof WalletActions.setLocalCurrency,
-};
-
-export type Props = StateProps & DispatchProps;
-
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
-    state: State
-): StateProps => ({
-    wallet: state.wallet,
-    fiat: state.fiat,
-    localStorage: state.localStorage,
-});
-
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
-    dispatch: Dispatch
-): DispatchProps => ({
-    setLocalCurrency: bindActionCreators(WalletActions.setLocalCurrency, dispatch),
-});
-
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps
-    )(WalletSettings)
-);
+export default WalletSettings;

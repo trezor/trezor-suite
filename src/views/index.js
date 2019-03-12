@@ -25,7 +25,7 @@ import AccountSignVerify from 'views/Wallet/views/Account/SignVerify/Container';
 
 import WalletDashboard from 'views/Wallet/views/Dashboard';
 import WalletDeviceSettings from 'views/Wallet/views/DeviceSettings';
-import WalletSettings from 'views/Wallet/views/WalletSettings';
+import WalletSettings from 'views/Wallet/views/WalletSettings/Container';
 import WalletBootloader from 'views/Wallet/views/Bootloader';
 import WalletFirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
 import WalletNoBackup from 'views/Wallet/views/NoBackup';
