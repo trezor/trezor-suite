@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 
 const toFiatCurrency = (amount, fiatCurrency, networkRates) => {
     // calculate amount in local currency
-    if (!networkRates || !networkRates.rates) {
+    if (!networkRates || !networkRates.rates || !amount) {
         return '';
     }
 
@@ -11,13 +11,15 @@ const toFiatCurrency = (amount, fiatCurrency, networkRates) => {
         return '';
     }
 
-    let localAmount = BigNumber(amount).times(rate);
+    const formattedAmount = amount.replace(',', '.');
+
+    let localAmount = BigNumber(formattedAmount).times(rate);
     localAmount = localAmount.isNaN() ? '' : localAmount.toFixed(2);
     return localAmount;
 };
 
 const fromFiatCurrency = (localAmount, fiatCurrency, networkRates, decimals) => {
-    if (!networkRates || !networkRates.rates) {
+    if (!networkRates || !networkRates.rates || !localAmount) {
         return '';
     }
 
@@ -26,7 +28,9 @@ const fromFiatCurrency = (localAmount, fiatCurrency, networkRates, decimals) => 
         return '';
     }
 
-    let amount = BigNumber(localAmount).div(rate);
+    const formattedLocalAmount = localAmount.replace(',', '.');
+
+    let amount = BigNumber(formattedLocalAmount).div(rate);
     amount = amount.isNaN() ? '' : amount.toFixed(decimals);
     return amount;
 };
