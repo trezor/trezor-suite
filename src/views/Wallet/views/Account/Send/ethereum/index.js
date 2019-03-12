@@ -352,7 +352,7 @@ const AccountSend = (props: Props) => {
                             {isCurrentCurrencyToken && selectedToken && (
                                 <AmountInputLabel>
                                     <FormattedMessage
-                                        {...l10nSendMessages.YOU_HAVE_TOKEN_BALANCE}
+                                        {...l10nMessages.YOU_HAVE_TOKEN_BALANCE}
                                         values={{
                                             tokenBalance: `${selectedTokenBalance} ${
                                                 selectedToken.symbol
