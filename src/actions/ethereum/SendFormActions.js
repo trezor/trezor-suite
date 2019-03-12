@@ -321,8 +321,8 @@ export const onLocalCurrencyChange = (localCurrency: {
             localCurrency: localCurrency.value,
         },
     });
-    // Recalculates amount with new currency rates
-    dispatch(onLocalAmountChange(state.localAmount));
+    // Recalculates local amount with new currency rates
+    dispatch(onAmountChange(state.amount, true));
 };
 
 /*
