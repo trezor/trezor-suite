@@ -1,4 +1,4 @@
-import { LANGUAGE } from 'config/variables';
+import { LANGUAGE } from 'config/app';
 
 export const getInitialLocale = (defaultLocale = 'en') => {
     const browserLocale = navigator.language.split('-')[0];
