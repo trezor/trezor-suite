@@ -121,6 +121,7 @@ const AccountSummary = (props: Props) => {
                 <AsyncSelectWrapper>
                     <AsyncSelect
                         isSearchable
+                        withDropdownIndicator={false}
                         defaultOptions
                         value={null}
                         isMulti={false}
