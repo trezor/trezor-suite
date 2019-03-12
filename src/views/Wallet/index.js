@@ -78,6 +78,7 @@ const MainContent = styled.article`
     flex-direction: column;
     overflow: auto;
     border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
 
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         ${props =>
@@ -91,6 +92,7 @@ const MainContent = styled.article`
 
     @media screen and (max-width: 1170px) {
         border-top-right-radius: 0px;
+        border-top-left-radius: 0px;
     }
 `;
 
