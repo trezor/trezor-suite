@@ -1,12 +1,13 @@
 /* @flow */
 import React, { PureComponent } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
 import Tooltip from 'components/Tooltip';
+import { toFiatCurrency } from 'utils/fiatConverter';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import type { Network, State as ReducersState } from 'flowtype';
 import l10nMessages from './index.messages';
@@ -121,13 +122,11 @@ class AccountBalance extends PureComponent<Props, State> {
     render() {
         const { network, localCurrency } = this.props;
         const fiatRate = this.props.fiat.find(f => f.network === network.shortcut);
-        let accountBalance = '';
         let fiatRateValue = '';
         let fiat = '';
         if (fiatRate) {
-            accountBalance = new BigNumber(this.props.balance);
             fiatRateValue = new BigNumber(fiatRate.rates[localCurrency]).toFixed(2);
-            fiat = accountBalance.times(fiatRateValue).toFixed(2);
+            fiat = toFiatCurrency(this.props.balance, localCurrency, fiatRate.rates);
         }
 
         const NoRatesTooltip = (
@@ -159,7 +158,17 @@ class AccountBalance extends PureComponent<Props, State> {
                             </Label>
                             <TooltipWrapper>
                                 <FiatValue>
-                                    {fiatRate ? `${fiat} ${localCurrency}` : 'N/A'}
+                                    {fiatRate ? (
+                                        <FormattedNumber
+                                            currency={localCurrency}
+                                            value={fiat}
+                                            minimumFractionDigits={2}
+                                            // eslint-disable-next-line react/style-prop-object
+                                            style="currency"
+                                        />
+                                    ) : (
+                                        'N/A'
+                                    )}
                                 </FiatValue>
                                 {!fiatRate && NoRatesTooltip}
                             </TooltipWrapper>
@@ -173,7 +182,17 @@ class AccountBalance extends PureComponent<Props, State> {
                             </Label>
                             <TooltipWrapper>
                                 <FiatValueRate>
-                                    {fiatRate ? `${fiatRateValue} ${localCurrency}` : 'N/A'}
+                                    {fiatRate ? (
+                                        <FormattedNumber
+                                            currency={localCurrency}
+                                            value={fiatRateValue}
+                                            minimumFractionDigits={2}
+                                            // eslint-disable-next-line react/style-prop-object
+                                            style="currency"
+                                        />
+                                    ) : (
+                                        'N/A'
+                                    )}
                                 </FiatValueRate>
                                 {!fiatRate && NoRatesTooltip}
                             </TooltipWrapper>
