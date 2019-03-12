@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import * as SEND from 'actions/constants/send';
 import { findDevice, getPendingAmount } from 'reducers/utils';
 import { toDecimalAmount } from 'utils/formatUtils';
+import { toFiatCurrency } from 'utils/fiatConverter';
 
 import type {
     Dispatch,
@@ -103,6 +104,12 @@ const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
             .minus(account.reserve)
             .minus(pendingAmount);
         state.amount = calculateMaxAmount(availableBalance, fee);
+
+        // calculate amount in local currency
+        const { localCurrency } = getState().sendFormRipple;
+        const fiatRates = getState().fiat.find(f => f.network === state.networkName);
+        const localAmount = toFiatCurrency(state.amount, localCurrency, fiatRates);
+        state.localAmount = localAmount;
     }
 
     state.total = calculateTotal(state.amount, fee);
