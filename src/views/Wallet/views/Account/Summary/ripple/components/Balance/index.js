@@ -119,13 +119,13 @@ class AccountBalance extends PureComponent<Props, State> {
 
     render() {
         const { network, localCurrency } = this.props;
-        const fiatRate = this.props.fiat.find(f => f.network === network.shortcut);
+        const fiatRates = this.props.fiat.find(f => f.network === network.shortcut);
         let accountBalance = '';
         let fiatRateValue = '';
         let fiat = '';
-        if (fiatRate) {
+        if (fiatRates) {
             accountBalance = new BigNumber(this.props.balance);
-            fiatRateValue = new BigNumber(fiatRate.rates[localCurrency]).toFixed(2);
+            fiatRateValue = new BigNumber(fiatRates.rates[localCurrency]).toFixed(2);
             fiat = accountBalance.times(fiatRateValue).toFixed(2);
         }
 
@@ -156,9 +156,9 @@ class AccountBalance extends PureComponent<Props, State> {
                             <Label>Balance</Label>
                             <TooltipWrapper>
                                 <FiatValue>
-                                    {fiatRate ? `${fiat} ${localCurrency}` : 'N/A'}
+                                    {fiatRates ? `${fiat} ${localCurrency}` : 'N/A'}
                                 </FiatValue>
-                                {!fiatRate && NoRatesTooltip}
+                                {!fiatRates && NoRatesTooltip}
                             </TooltipWrapper>
                             <CoinBalance>
                                 {this.props.balance} {network.symbol}
@@ -177,9 +177,9 @@ class AccountBalance extends PureComponent<Props, State> {
                             <Label>Rate</Label>
                             <TooltipWrapper>
                                 <FiatValueRate>
-                                    {fiatRate ? `${fiatRateValue} ${localCurrency}` : 'N/A'}
+                                    {fiatRates ? `${fiatRateValue} ${localCurrency}` : 'N/A'}
                                 </FiatValueRate>
-                                {!fiatRate && NoRatesTooltip}
+                                {!fiatRates && NoRatesTooltip}
                             </TooltipWrapper>
                             <CoinBalance>1 {network.symbol}</CoinBalance>
                         </BalanceRateWrapper>

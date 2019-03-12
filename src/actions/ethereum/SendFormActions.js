@@ -246,10 +246,10 @@ export const onAddressChange = (address: string): ThunkAction => (
 /*
  * Called from UI on "amount" field change
  */
-export const onAmountChange = (amount: string, shouldUpdateLocalAmount = true): ThunkAction => (
-    dispatch: Dispatch,
-    getState: GetState
-): void => {
+export const onAmountChange = (
+    amount: string,
+    shouldUpdateLocalAmount: boolean = true
+): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const state = getState().sendFormEthereum;
     dispatch({
         type: SEND.CHANGE,
@@ -266,7 +266,7 @@ export const onAmountChange = (amount: string, shouldUpdateLocalAmount = true): 
     if (shouldUpdateLocalAmount) {
         const { localCurrency } = getState().sendFormEthereum;
         const fiatRates = getState().fiat.find(f => f.network === state.networkName);
-        const localAmount = toFiatCurrency(amount, localCurrency, fiatRates.rates);
+        const localAmount = toFiatCurrency(amount, localCurrency, fiatRates);
         dispatch(onLocalAmountChange(localAmount, false));
     }
 };
@@ -276,7 +276,7 @@ export const onAmountChange = (amount: string, shouldUpdateLocalAmount = true): 
  */
 export const onLocalAmountChange = (
     localAmount: string,
-    shouldUpdateAmount = true
+    shouldUpdateAmount: boolean = true
 ): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const state = getState().sendFormEthereum;
     const { localCurrency } = getState().sendFormEthereum;
@@ -300,12 +300,7 @@ export const onLocalAmountChange = (
     if (shouldUpdateAmount) {
         if (!network) return;
         // converts amount in local currency to crypto currency that will be sent
-        const amount = fromFiatCurrency(
-            localAmount,
-            localCurrency,
-            fiatRates.rates,
-            network.decimals
-        );
+        const amount = fromFiatCurrency(localAmount, localCurrency, fiatRates, network.decimals);
         dispatch(onAmountChange(amount, false));
     }
 };

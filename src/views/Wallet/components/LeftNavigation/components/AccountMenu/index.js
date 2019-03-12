@@ -124,7 +124,7 @@ const AccountMenu = (props: Props) => {
 
             balance = `${availableBalance} ${network.symbol}`;
             if (fiatRates) {
-                fiat = toFiatCurrency(availableBalance, localCurrency, fiatRates.rates);
+                fiat = toFiatCurrency(availableBalance, localCurrency, fiatRates);
                 balance = `${availableBalance} ${network.symbol} / `;
             }
         }
