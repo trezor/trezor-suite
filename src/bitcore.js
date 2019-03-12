@@ -26,6 +26,7 @@ export type TransactionWithHeight = {
     inputAddresses: Array<?string>,
     outputAddresses: Array<?string>,
     vsize: number,
+    rawTx?: BcDetailedTransaction,
 }
 
 export type TxFees = {[blocks: number]: number};
@@ -628,5 +629,6 @@ function convertTx(bcTx: BcDetailedTransaction, network: BitcoinJsNetwork): Tran
         inputAddresses: bcTx.inputs.map(input => input.address),
         outputAddresses: bcTx.outputs.map(output => output.address),
         vsize: bcTx.size == null ? bcTx.hex.length / 2 : bcTx.size,
+        rawTx: bcTx,
     };
 }

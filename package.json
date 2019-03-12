@@ -51,7 +51,7 @@
   "browserslist": "> 5%, IE > 9, last 10 versions",
   "dependencies": {
     "bchaddrjs": "^0.2.1",
-    "bitcoinjs-lib-zcash": "https://github.com/karel-3d/bitcoinjs-lib#fix/dash",
+    "bitcoinjs-lib-zcash": "3.6.1",
     "queue": "^4.4.2",
     "socket.io-client": "^1.7.3",
     "whatwg-fetch": "^0.11.0"
