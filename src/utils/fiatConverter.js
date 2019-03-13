@@ -11,7 +11,10 @@ const toFiatCurrency = (amount, fiatCurrency, networkRates) => {
         return '';
     }
 
-    const formattedAmount = amount.replace(',', '.');
+    let formattedAmount = amount;
+    if (typeof amount === 'string') {
+        formattedAmount = amount.replace(',', '.');
+    }
 
     let localAmount = BigNumber(formattedAmount).times(rate);
     localAmount = localAmount.isNaN() ? '' : localAmount.toFixed(2);
@@ -28,7 +31,10 @@ const fromFiatCurrency = (localAmount, fiatCurrency, networkRates, decimals) => 
         return '';
     }
 
-    const formattedLocalAmount = localAmount.replace(',', '.');
+    let formattedLocalAmount = localAmount;
+    if (typeof localAmount === 'string') {
+        formattedLocalAmount = localAmount.replace(',', '.');
+    }
 
     let amount = BigNumber(formattedLocalAmount).div(rate);
     amount = amount.isNaN() ? '' : amount.toFixed(decimals);
