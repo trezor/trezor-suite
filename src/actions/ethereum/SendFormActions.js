@@ -205,6 +205,9 @@ export const onClear = (): AsyncAction => async (
         initialState.selectedFeeLevel
     );
 
+    // initial local currency is set according to wallet settings
+    const { localCurrency } = getState().wallet;
+
     dispatch({
         type: SEND.CLEAR,
         networkType: 'ethereum',
@@ -213,6 +216,7 @@ export const onClear = (): AsyncAction => async (
             networkName: network.shortcut,
             networkSymbol: network.symbol,
             currency: network.symbol,
+            localCurrency,
             feeLevels,
             selectedFeeLevel,
             recommendedGasPrice: gasPrice.toString(),
