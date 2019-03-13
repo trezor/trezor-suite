@@ -37,6 +37,13 @@ export default function modal(state: ModalState = initialState, action: any): an
 
     switch (action.type) {
 
+        case UI.ADDRESS_VALIDATION:
+            return {
+                ...state,
+                opened: true,
+                windowType: action.type
+            };
+
         case UI.REQUEST_PIN :
         case UI.INVALID_PIN :
         case UI.REQUEST_PASSPHRASE :

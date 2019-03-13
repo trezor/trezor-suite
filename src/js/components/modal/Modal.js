@@ -87,9 +87,11 @@ export default class Modal extends Component {
             ch = (
                 <Fade key="1">
                     <div className="modal-container">
-                        <div className="modal-window">
-                            { component }
-                        </div>
+                        { component && (
+                            <div className="modal-window">
+                                { component }
+                            </div>
+                        )}
                     </div>
                 </Fade>
             );
