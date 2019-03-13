@@ -10,7 +10,6 @@ import Modal from './ModalContainer';
 
 import Header from '../components/Header';
 import Main from '../components/Main';
-import Footer from '../components/Footer';
 
 export default class AppContainer extends Component {
     render() {
@@ -21,7 +20,6 @@ export default class AppContainer extends Component {
                 <Main>
                     { this.props.children }
                 </Main>
-                <Footer />
                 <Modal />
             </div>
         );
