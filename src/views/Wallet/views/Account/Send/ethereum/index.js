@@ -445,7 +445,7 @@ const AccountSend = (props: Props) => {
                 <LocalAmountWrapper>
                     <EqualsSign>=</EqualsSign>
                     <LocalAmountInput
-                        // state={getAmountInputState(errors.amount, warnings.amount)}
+                        state={getAmountInputState(errors.amount, warnings.amount)}
                         autoComplete="off"
                         autoCorrect="off"
                         autoCapitalize="off"
