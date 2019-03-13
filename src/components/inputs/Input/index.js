@@ -148,7 +148,7 @@ class Input extends PureComponent {
     getIcon(inputState) {
         let icon = [];
         if (inputState === 'success') {
-            icon = ICONS.CHECKED;
+            icon = ICONS.SUCCESS;
         } else if (inputState === 'warning') {
             icon = ICONS.WARNING;
         } else if (inputState === 'error') {
