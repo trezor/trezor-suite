@@ -40,14 +40,15 @@ const TrezorConnectService = store => next => action => {
         window.TrezorConnect = TrezorConnect;
 
         // TrezorConnect.init({
-
+        //     // connectSrc: 'https://connect.trezor.io/7/',
         //     webusb: true,
         //     // transportReconnect: false,
         //     popup: true,
         //     debug: true,
         //     // excludedDevices: ["web02"]
         //     manifest: {
-        //         email: 'ab'
+        //         email: 'info@trezor.io',
+        //         appUrl: window.location.host
         //     }
         // })
         // .catch(error => {
@@ -55,8 +56,8 @@ const TrezorConnectService = store => next => action => {
         // })
 
         TrezorConnect.manifest({
-            email: 'abcd@xyz.com',
-            appUrl: 'www.'
+            email: 'info@trezor.io',
+            appUrl: window.location.host
         })
 
         
