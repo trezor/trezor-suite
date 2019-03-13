@@ -976,6 +976,45 @@ describe('bitcore', () => {
                 inputAddresses: [null],
                 outputAddresses: ['mgyM5P4AVffXLPZ8H9Kz4Y3pJYFk5U9Qdr', null],
                 vsize: 137,
+                rawTx: {
+                    blockHash: '4830edbdd234256a77c5e90ad6cfda52bc37bee7fcb7b98bf4364c60ca2223b9',
+                    blockTimestamp: 1544936347,
+                    coinbase: true,
+                    feeSatoshis: 0,
+                    hash: '81b312b2c70bb1bc54454671f06dc081b8e7526278adaca2ce07e1abac14a592',
+                    height: 302,
+                    hex: '02000000010000000000000000000000000000000000000000000000000000000000000000ffffffff05022e010101ffffffff02808b814a000000001976a9140ff5f5345000a17d667d893d5a2322404716d8f188ac0000000000000000266a24aa21a9ed91b9461f86a372d90bb7e93175c907308476361e3781341e8749292300182b8200000000',
+                    inputSatoshis: 0,
+                    inputs: [
+                        {
+                            address: null,
+                            outputIndex: null,
+                            prevTxId: null,
+                            satoshis: null,
+                            script: '022e010101',
+                            scriptAsm: null,
+                            sequence: 4294967295,
+                        },
+                    ],
+                    locktime: 0,
+                    outputSatoshis: 1250003840,
+                    outputs: [
+                        {
+                            address: 'mgyM5P4AVffXLPZ8H9Kz4Y3pJYFk5U9Qdr',
+                            satoshis: 1250003840,
+                            script: '76a9140ff5f5345000a17d667d893d5a2322404716d8f188ac',
+                            scriptAsm: 'OP_DUP OP_HASH160 0ff5f5345000a17d667d893d5a2322404716d8f1 OP_EQUALVERIFY OP_CHECKSIG',
+                        },
+                        {
+                            address: null,
+                            satoshis: 0,
+                            script: '6a24aa21a9ed91b9461f86a372d90bb7e93175c907308476361e3781341e8749292300182b82',
+                            scriptAsm: 'OP_RETURN aa21a9ed91b9461f86a372d90bb7e93175c907308476361e3781341e8749292300182b82',
+                        },
+                    ],
+                    size: 137,
+                    version: 2,
+                },
             };
 
             const spec = commStart.concat(commMiddle).concat(commEnd);
@@ -1422,6 +1461,47 @@ describe('bitcore', () => {
                             'n33YtcSh7WsfCjgXwmJtkE4tSHCnXwfamH',
                         ],
                         vsize: 191,
+                        rawTx: {
+                            feeSatoshis: 3840,
+                            hash: 'ee9a9b333e6e7ba39b58234c990a3fe71890f93f9894b1f872fc4bf972d58b1b',
+                            height: -1,
+                            hex: '02000000014d003ae3f324fddcf78a8d76bb35e8c0cb1a0f6fa57041c5fdc0ba3b4c67e5ad0000000048473044022020ba68b5ff34cf93796a844593a70d2eeca7bc34c012fc03305203df5b87f7bf0220565dd3b76b0a8588a6c4581bb0b36d203edadcd976717da99c9941de52fbdc5301feffffff0240ce4a1f000000001976a9140881a6bae1125d60a614ec2965225687a076ca3a88ac00e1f505000000001976a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac86030000',
+                            inputSatoshis: 625000000,
+                            inputs: [
+                                {
+                                    address: null,
+                                    outputIndex: 0,
+                                    prevTxId: 'ade5674c3bbac0fdc54170a56f0f1acbc0e835bb768d8af7dcfd24f3e33a004d',
+                                    satoshis: 625000000,
+                                    script: '473044022020ba68b5ff34cf93796a844593a70d2eeca7bc34c012fc03305203df5b87f7bf0220565dd3b76b0a8588a6c4581bb0b36d203edadcd976717da99c9941de52fbdc5301',
+                                    scriptAsm: '3044022020ba68b5ff34cf93796a844593a70d2eeca7bc34c012fc03305203df5b87f7bf0220565dd3b76b0a8588a6c4581bb0b36d203edadcd976717da99c9941de52fbdc53[ALL]',
+                                    sequence: 4294967294,
+
+                                },
+
+                            ],
+                            locktime: 902,
+                            outputSatoshis: 624996160,
+                            outputs: [
+                                {
+                                    address: 'mgHw1vCvZidX8n4gPa4VqMnGjLXHNqjtj2',
+                                    satoshis: 524996160,
+                                    script: '76a9140881a6bae1125d60a614ec2965225687a076ca3a88ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 0881a6bae1125d60a614ec2965225687a076ca3a OP_EQUALVERIFY OP_CHECKSIG',
+
+                                },
+                                {
+                                    address: 'n33YtcSh7WsfCjgXwmJtkE4tSHCnXwfamH',
+                                    satoshis: 100000000,
+                                    script: '76a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 ec23ffdc34aa576b8227f76f1b16d3782025e9e4 OP_EQUALVERIFY OP_CHECKSIG',
+
+                                },
+
+                            ],
+                            size: 191,
+                            version: 2,
+                        },
                     },
                 ],
                 [
@@ -1440,6 +1520,47 @@ describe('bitcore', () => {
                             'mgTXEgEfpGtuC6imnZU8hCBssafBEz3xgi',
                         ],
                         vsize: 191,
+                        rawTx: {
+                            feeSatoshis: 3840,
+                            hash: 'e0b48392659feb13325c6222cb30c5f10db4cdff673177ab6455c618356aa933',
+                            height: -1,
+                            hex: '020000000161b33cc9ce724ce662c38733a598d69f6af07ba49514d9e33c9b6a13a7da0a7f000000004847304402204dc0783fd47e26b9dee5cd352c7136c6f6200e203cfa4951afc051b2f8749250022045bf8a71a5a2a167288f6a698c57e98e11867454ea5906220fdc9e7059b24fe801feffffff0200e1f505000000001976a9143732c8fb478ca48165d686f70125e0ed223f364188ac40ce4a1f000000001976a9140a51f5d9832ef732150f81807c2d7a9982c179d788ac86030000',
+                            inputSatoshis: 625000000,
+                            inputs: [
+                                {
+                                    address: null,
+                                    outputIndex: 0,
+                                    prevTxId: '7f0adaa7136a9b3ce3d91495a47bf06a9fd698a53387c362e64c72cec93cb361',
+                                    satoshis: 625000000,
+                                    script: '47304402204dc0783fd47e26b9dee5cd352c7136c6f6200e203cfa4951afc051b2f8749250022045bf8a71a5a2a167288f6a698c57e98e11867454ea5906220fdc9e7059b24fe801',
+                                    scriptAsm: '304402204dc0783fd47e26b9dee5cd352c7136c6f6200e203cfa4951afc051b2f8749250022045bf8a71a5a2a167288f6a698c57e98e11867454ea5906220fdc9e7059b24fe8[ALL]',
+                                    sequence: 4294967294,
+
+                                },
+
+                            ],
+                            locktime: 902,
+                            outputSatoshis: 624996160,
+                            outputs: [
+                                {
+                                    address: 'mkYpJDNquegLmPBzUNb1Up6F5cLZntzNYa',
+                                    satoshis: 100000000,
+                                    script: '76a9143732c8fb478ca48165d686f70125e0ed223f364188ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 3732c8fb478ca48165d686f70125e0ed223f3641 OP_EQUALVERIFY OP_CHECKSIG',
+
+                                },
+                                {
+                                    address: 'mgTXEgEfpGtuC6imnZU8hCBssafBEz3xgi',
+                                    satoshis: 524996160,
+                                    script: '76a9140a51f5d9832ef732150f81807c2d7a9982c179d788ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 0a51f5d9832ef732150f81807c2d7a9982c179d7 OP_EQUALVERIFY OP_CHECKSIG',
+
+                                },
+
+                            ],
+                            size: 191,
+                            version: 2,
+                        },
                     },
                     {
                         network: networks.bitcoin,
@@ -1456,6 +1577,42 @@ describe('bitcore', () => {
                             'mtnS3H9s1Y5xkhTgssvq8BjvFP6FD1D4bv',
                         ],
                         vsize: 192,
+                        rawTx: {
+                            feeSatoshis: 3840,
+                            hash: 'fddec931105b2555b6d0c6e03c654fce064e4d2212e1fec2219d4c97bfff8923',
+                            height: -1,
+                            hex: '02000000016e9d3d44b7c371e3221c45d42f79e0a8e764d4e748cad88562700267433f221f00000000494830450221008d592c419aafdb8f677025db7f38ae546d8c16943fea9869286201782f993a12022023a1bdb03f99db9eb0062a33b879933538cc44875669645b1e4a617036c09e0701feffffff0240ce4a1f000000001976a9144b7345dac0bd0d956ff72370c6749103969ad5f988ac00e1f505000000001976a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac86030000',
+                            inputSatoshis: 625000000,
+                            inputs: [
+                                {
+                                    address: null,
+                                    outputIndex: 0,
+                                    prevTxId: '1f223f436702706285d8ca48e7d464e7a8e0792fd4451c22e371c3b7443d9d6e',
+                                    satoshis: 625000000,
+                                    script: '4830450221008d592c419aafdb8f677025db7f38ae546d8c16943fea9869286201782f993a12022023a1bdb03f99db9eb0062a33b879933538cc44875669645b1e4a617036c09e0701',
+                                    scriptAsm: '30450221008d592c419aafdb8f677025db7f38ae546d8c16943fea9869286201782f993a12022023a1bdb03f99db9eb0062a33b879933538cc44875669645b1e4a617036c09e07[ALL]',
+                                    sequence: 4294967294,
+                                },
+                            ],
+                            locktime: 902,
+                            outputSatoshis: 624996160,
+                            outputs: [
+                                {
+                                    address: 'mnPu4jur3yL2mozJiM1ZWJoYLdWoutxykF',
+                                    satoshis: 524996160,
+                                    script: '76a9144b7345dac0bd0d956ff72370c6749103969ad5f988ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 4b7345dac0bd0d956ff72370c6749103969ad5f9 OP_EQUALVERIFY OP_CHECKSIG',
+                                },
+                                {
+                                    address: 'mtnS3H9s1Y5xkhTgssvq8BjvFP6FD1D4bv',
+                                    satoshis: 100000000,
+                                    script: '76a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 9187090295b4901cd9e902fdd7d5bff7fd6dd870 OP_EQUALVERIFY OP_CHECKSIG',
+                                },
+                            ],
+                            size: 192,
+                            version: 2,
+                        },
                     },
                     {
                         network: networks.bitcoin,
@@ -1472,6 +1629,47 @@ describe('bitcore', () => {
                             'mqShCBqzsipjYCHA5jzcwrgHuLBgTqsfvk',
                         ],
                         vsize: 192,
+                        rawTx: {
+                            feeSatoshis: 3840,
+                            hash: '7767846399872f3d84e5a030651608ba2c373feb0cf61fe44fbcac9b4b2012cc',
+                            height: -1,
+                            hex: '0200000001088d3695724f9974dba7018bc26c6fd7056f04f4a7238aebc3a03a6b86cf47ca0000000049483045022100d813498e9c27c24284ba05ec1eae784692ee25257bd7056e81d5b8bafd66d51302204999038cc2c31c55a7a336a763f4a4c4cb410c2c1e8b34c1d520f5522f75afd301feffffff0200e1f505000000001976a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac40ce4a1f000000001976a9146ce2fcfa2aee4544db61dbad0f09e62431ca646b88ac86030000',
+                            inputSatoshis: 625000000,
+                            inputs: [
+                                {
+                                    address: null,
+                                    outputIndex: 0,
+                                    prevTxId: 'ca47cf866b3aa0c3eb8a23a7f4046f05d76f6cc28b01a7db74994f7295368d08',
+                                    satoshis: 625000000,
+                                    script: '483045022100d813498e9c27c24284ba05ec1eae784692ee25257bd7056e81d5b8bafd66d51302204999038cc2c31c55a7a336a763f4a4c4cb410c2c1e8b34c1d520f5522f75afd301',
+                                    scriptAsm: '3045022100d813498e9c27c24284ba05ec1eae784692ee25257bd7056e81d5b8bafd66d51302204999038cc2c31c55a7a336a763f4a4c4cb410c2c1e8b34c1d520f5522f75afd3[ALL]',
+                                    sequence: 4294967294,
+
+                                },
+
+                            ],
+                            locktime: 902,
+                            outputSatoshis: 624996160,
+                            outputs: [
+                                {
+                                    address: 'n33YtcSh7WsfCjgXwmJtkE4tSHCnXwfamH',
+                                    satoshis: 100000000,
+                                    script: '76a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 ec23ffdc34aa576b8227f76f1b16d3782025e9e4 OP_EQUALVERIFY OP_CHECKSIG',
+
+                                },
+                                {
+                                    address: 'mqShCBqzsipjYCHA5jzcwrgHuLBgTqsfvk',
+                                    satoshis: 524996160,
+                                    script: '76a9146ce2fcfa2aee4544db61dbad0f09e62431ca646b88ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 6ce2fcfa2aee4544db61dbad0f09e62431ca646b OP_EQUALVERIFY OP_CHECKSIG',
+
+                                },
+
+                            ],
+                            size: 192,
+                            version: 2,
+                        },
                     },
                     {
                         network: networks.bitcoin,
@@ -1488,6 +1686,42 @@ describe('bitcore', () => {
                             'mkYpJDNquegLmPBzUNb1Up6F5cLZntzNYa',
                         ],
                         vsize: 192,
+                        rawTx: {
+                            feeSatoshis: 3840,
+                            hash: '6e53a9727b2e28923c6348cfd55b73dccf3a342664394fc40a8fad48982b2c76',
+                            height: -1,
+                            hex: '020000000175d7a86f03d955f9b2d73f7daa92d4eb47c9282e6cdbdf00911bd6d1654c71f70000000049483045022100fc860eeb12809fe38ced2db5a9c866752ae75b2d8bd81f42e08e47345b3a374102205dced01525c6174f482e42fcd85de6419fb88dc84ecb388d04fd42bd4816576401feffffff0240ce4a1f000000001976a9145044bd4f4267eb5450402996dc305404e178112888ac00e1f505000000001976a9143732c8fb478ca48165d686f70125e0ed223f364188ac86030000',
+                            inputSatoshis: 625000000,
+                            inputs: [
+                                {
+                                    address: null,
+                                    outputIndex: 0,
+                                    prevTxId: 'f7714c65d1d61b9100dfdb6c2e28c947ebd492aa7d3fd7b2f955d9036fa8d775',
+                                    satoshis: 625000000,
+                                    script: '483045022100fc860eeb12809fe38ced2db5a9c866752ae75b2d8bd81f42e08e47345b3a374102205dced01525c6174f482e42fcd85de6419fb88dc84ecb388d04fd42bd4816576401',
+                                    scriptAsm: '3045022100fc860eeb12809fe38ced2db5a9c866752ae75b2d8bd81f42e08e47345b3a374102205dced01525c6174f482e42fcd85de6419fb88dc84ecb388d04fd42bd48165764[ALL]',
+                                    sequence: 4294967294,
+                                },
+                            ],
+                            locktime: 902,
+                            outputSatoshis: 624996160,
+                            outputs: [
+                                {
+                                    address: 'mnqNhWBhJJBj7YBrJsFsXUtwFk3jWzZDgB',
+                                    satoshis: 524996160,
+                                    script: '76a9145044bd4f4267eb5450402996dc305404e178112888ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 5044bd4f4267eb5450402996dc305404e1781128 OP_EQUALVERIFY OP_CHECKSIG',
+                                },
+                                {
+                                    address: 'mkYpJDNquegLmPBzUNb1Up6F5cLZntzNYa',
+                                    satoshis: 100000000,
+                                    script: '76a9143732c8fb478ca48165d686f70125e0ed223f364188ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 3732c8fb478ca48165d686f70125e0ed223f3641 OP_EQUALVERIFY OP_CHECKSIG',
+                                },
+                            ],
+                            size: 192,
+                            version: 2,
+                        },
                     },
                     {
                         network: networks.bitcoin,
@@ -1504,6 +1738,41 @@ describe('bitcore', () => {
                             'mt2WeSG2hFURbq9BsPX4ahLTBt8s5Urccd',
                         ],
                         vsize: 192,
+                        rawTx: {
+                            feeSatoshis: 3840,
+                            hash: '1bc5d5f51d99381330eb73c6e9877c9eb17fe32399230c361fceb85510c7abac',
+                            height: -1,
+                            hex: '02000000017f971cfdf41412a4d6fb8e4fdee05145b88ddab326c9ab97a97b596aabfa97f20000000049483045022100c6de99ddcb0944f61dfcad07cdb2981ee7ee2a9eef88f8e646214df3fb7f1b2a022007e4fded62f5e0407417fc0580e473b56000eb5d1f0d001ac38af330ae061ded01feffffff0200e1f505000000001976a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac40ce4a1f000000001976a914893893f15e73899afe8beff1947b07cebe2c4bbe88ac86030000',
+                            inputSatoshis: 625000000,
+                            inputs: [
+                                {
+                                    address: null,
+                                    outputIndex: 0,
+                                    prevTxId: 'f297faab6a597ba997abc926b3da8db84551e0de4f8efbd6a41214f4fd1c977f',
+                                    satoshis: 625000000,
+                                    script: '483045022100c6de99ddcb0944f61dfcad07cdb2981ee7ee2a9eef88f8e646214df3fb7f1b2a022007e4fded62f5e0407417fc0580e473b56000eb5d1f0d001ac38af330ae061ded01',
+                                    scriptAsm: '3045022100c6de99ddcb0944f61dfcad07cdb2981ee7ee2a9eef88f8e646214df3fb7f1b2a022007e4fded62f5e0407417fc0580e473b56000eb5d1f0d001ac38af330ae061ded[ALL]',
+                                    sequence: 4294967294,
+                                },
+                            ],
+                            locktime: 902,
+                            outputSatoshis: 624996160,
+                            outputs: [
+                                {
+                                    address: 'mtnS3H9s1Y5xkhTgssvq8BjvFP6FD1D4bv',
+                                    satoshis: 100000000,
+                                    script: '76a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 9187090295b4901cd9e902fdd7d5bff7fd6dd870 OP_EQUALVERIFY OP_CHECKSIG',
+                                },
+                                {
+                                    address: 'mt2WeSG2hFURbq9BsPX4ahLTBt8s5Urccd',
+                                    satoshis: 524996160,
+                                    script: '76a914893893f15e73899afe8beff1947b07cebe2c4bbe88ac',
+                                    scriptAsm: 'OP_DUP OP_HASH160 893893f15e73899afe8beff1947b07cebe2c4bbe OP_EQUALVERIFY OP_CHECKSIG',
+                                },
+                            ],
+                            version: 2,
+                        },
                     },
                 ],
             ];
@@ -2047,6 +2316,42 @@ describe('bitcore', () => {
                         'n33YtcSh7WsfCjgXwmJtkE4tSHCnXwfamH',
                     ],
                     vsize: 191,
+                    rawTx: {
+                        feeSatoshis: 3840,
+                        hash: 'ee9a9b333e6e7ba39b58234c990a3fe71890f93f9894b1f872fc4bf972d58b1b',
+                        height: -1,
+                        hex: '02000000014d003ae3f324fddcf78a8d76bb35e8c0cb1a0f6fa57041c5fdc0ba3b4c67e5ad0000000048473044022020ba68b5ff34cf93796a844593a70d2eeca7bc34c012fc03305203df5b87f7bf0220565dd3b76b0a8588a6c4581bb0b36d203edadcd976717da99c9941de52fbdc5301feffffff0240ce4a1f000000001976a9140881a6bae1125d60a614ec2965225687a076ca3a88ac00e1f505000000001976a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac86030000',
+                        inputSatoshis: 625000000,
+                        inputs: [
+                            {
+                                address: null,
+                                outputIndex: 0,
+                                prevTxId: 'ade5674c3bbac0fdc54170a56f0f1acbc0e835bb768d8af7dcfd24f3e33a004d',
+                                satoshis: 625000000,
+                                script: '473044022020ba68b5ff34cf93796a844593a70d2eeca7bc34c012fc03305203df5b87f7bf0220565dd3b76b0a8588a6c4581bb0b36d203edadcd976717da99c9941de52fbdc5301',
+                                scriptAsm: '3044022020ba68b5ff34cf93796a844593a70d2eeca7bc34c012fc03305203df5b87f7bf0220565dd3b76b0a8588a6c4581bb0b36d203edadcd976717da99c9941de52fbdc53[ALL]',
+                                sequence: 4294967294,
+                            },
+                        ],
+                        locktime: 902,
+                        outputSatoshis: 624996160,
+                        outputs: [
+                            {
+                                address: 'mgHw1vCvZidX8n4gPa4VqMnGjLXHNqjtj2',
+                                satoshis: 524996160,
+                                script: '76a9140881a6bae1125d60a614ec2965225687a076ca3a88ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 0881a6bae1125d60a614ec2965225687a076ca3a OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                            {
+                                address: 'n33YtcSh7WsfCjgXwmJtkE4tSHCnXwfamH',
+                                satoshis: 100000000,
+                                script: '76a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 ec23ffdc34aa576b8227f76f1b16d3782025e9e4 OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                        ],
+                        size: 191,
+                        version: 2,
+                    },
                 },
                 {
                     network: networks.bitcoin,
@@ -2063,6 +2368,42 @@ describe('bitcore', () => {
                         'mgTXEgEfpGtuC6imnZU8hCBssafBEz3xgi',
                     ],
                     vsize: 191,
+                    rawTx: {
+                        feeSatoshis: 3840,
+                        hash: 'e0b48392659feb13325c6222cb30c5f10db4cdff673177ab6455c618356aa933',
+                        height: -1,
+                        hex: '020000000161b33cc9ce724ce662c38733a598d69f6af07ba49514d9e33c9b6a13a7da0a7f000000004847304402204dc0783fd47e26b9dee5cd352c7136c6f6200e203cfa4951afc051b2f8749250022045bf8a71a5a2a167288f6a698c57e98e11867454ea5906220fdc9e7059b24fe801feffffff0200e1f505000000001976a9143732c8fb478ca48165d686f70125e0ed223f364188ac40ce4a1f000000001976a9140a51f5d9832ef732150f81807c2d7a9982c179d788ac86030000',
+                        inputSatoshis: 625000000,
+                        inputs: [
+                            {
+                                address: null,
+                                outputIndex: 0,
+                                prevTxId: '7f0adaa7136a9b3ce3d91495a47bf06a9fd698a53387c362e64c72cec93cb361',
+                                satoshis: 625000000,
+                                script: '47304402204dc0783fd47e26b9dee5cd352c7136c6f6200e203cfa4951afc051b2f8749250022045bf8a71a5a2a167288f6a698c57e98e11867454ea5906220fdc9e7059b24fe801',
+                                scriptAsm: '304402204dc0783fd47e26b9dee5cd352c7136c6f6200e203cfa4951afc051b2f8749250022045bf8a71a5a2a167288f6a698c57e98e11867454ea5906220fdc9e7059b24fe8[ALL]',
+                                sequence: 4294967294,
+                            },
+                        ],
+                        locktime: 902,
+                        outputSatoshis: 624996160,
+                        outputs: [
+                            {
+                                address: 'mkYpJDNquegLmPBzUNb1Up6F5cLZntzNYa',
+                                satoshis: 100000000,
+                                script: '76a9143732c8fb478ca48165d686f70125e0ed223f364188ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 3732c8fb478ca48165d686f70125e0ed223f3641 OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                            {
+                                address: 'mgTXEgEfpGtuC6imnZU8hCBssafBEz3xgi',
+                                satoshis: 524996160,
+                                script: '76a9140a51f5d9832ef732150f81807c2d7a9982c179d788ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 0a51f5d9832ef732150f81807c2d7a9982c179d7 OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                        ],
+                        size: 191,
+                        version: 2,
+                    },
                 },
                 {
                     network: networks.bitcoin,
@@ -2079,6 +2420,42 @@ describe('bitcore', () => {
                         'mtnS3H9s1Y5xkhTgssvq8BjvFP6FD1D4bv',
                     ],
                     vsize: 192,
+                    rawTx: {
+                        feeSatoshis: 3840,
+                        hash: 'fddec931105b2555b6d0c6e03c654fce064e4d2212e1fec2219d4c97bfff8923',
+                        height: -1,
+                        hex: '02000000016e9d3d44b7c371e3221c45d42f79e0a8e764d4e748cad88562700267433f221f00000000494830450221008d592c419aafdb8f677025db7f38ae546d8c16943fea9869286201782f993a12022023a1bdb03f99db9eb0062a33b879933538cc44875669645b1e4a617036c09e0701feffffff0240ce4a1f000000001976a9144b7345dac0bd0d956ff72370c6749103969ad5f988ac00e1f505000000001976a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac86030000',
+                        inputSatoshis: 625000000,
+                        inputs: [
+                            {
+                                address: null,
+                                outputIndex: 0,
+                                prevTxId: '1f223f436702706285d8ca48e7d464e7a8e0792fd4451c22e371c3b7443d9d6e',
+                                satoshis: 625000000,
+                                script: '4830450221008d592c419aafdb8f677025db7f38ae546d8c16943fea9869286201782f993a12022023a1bdb03f99db9eb0062a33b879933538cc44875669645b1e4a617036c09e0701',
+                                scriptAsm: '30450221008d592c419aafdb8f677025db7f38ae546d8c16943fea9869286201782f993a12022023a1bdb03f99db9eb0062a33b879933538cc44875669645b1e4a617036c09e07[ALL]',
+                                sequence: 4294967294,
+                            },
+                        ],
+                        locktime: 902,
+                        outputSatoshis: 624996160,
+                        outputs: [
+                            {
+                                address: 'mnPu4jur3yL2mozJiM1ZWJoYLdWoutxykF',
+                                satoshis: 524996160,
+                                script: '76a9144b7345dac0bd0d956ff72370c6749103969ad5f988ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 4b7345dac0bd0d956ff72370c6749103969ad5f9 OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                            {
+                                address: 'mtnS3H9s1Y5xkhTgssvq8BjvFP6FD1D4bv',
+                                satoshis: 100000000,
+                                script: '76a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 9187090295b4901cd9e902fdd7d5bff7fd6dd870 OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                        ],
+                        size: 192,
+                        version: 2,
+                    },
                 },
                 {
                     network: networks.bitcoin,
@@ -2095,6 +2472,42 @@ describe('bitcore', () => {
                         'mqShCBqzsipjYCHA5jzcwrgHuLBgTqsfvk',
                     ],
                     vsize: 192,
+                    rawTx: {
+                        feeSatoshis: 3840,
+                        hash: '7767846399872f3d84e5a030651608ba2c373feb0cf61fe44fbcac9b4b2012cc',
+                        height: -1,
+                        hex: '0200000001088d3695724f9974dba7018bc26c6fd7056f04f4a7238aebc3a03a6b86cf47ca0000000049483045022100d813498e9c27c24284ba05ec1eae784692ee25257bd7056e81d5b8bafd66d51302204999038cc2c31c55a7a336a763f4a4c4cb410c2c1e8b34c1d520f5522f75afd301feffffff0200e1f505000000001976a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac40ce4a1f000000001976a9146ce2fcfa2aee4544db61dbad0f09e62431ca646b88ac86030000',
+                        inputSatoshis: 625000000,
+                        inputs: [
+                            {
+                                address: null,
+                                outputIndex: 0,
+                                prevTxId: 'ca47cf866b3aa0c3eb8a23a7f4046f05d76f6cc28b01a7db74994f7295368d08',
+                                satoshis: 625000000,
+                                script: '483045022100d813498e9c27c24284ba05ec1eae784692ee25257bd7056e81d5b8bafd66d51302204999038cc2c31c55a7a336a763f4a4c4cb410c2c1e8b34c1d520f5522f75afd301',
+                                scriptAsm: '3045022100d813498e9c27c24284ba05ec1eae784692ee25257bd7056e81d5b8bafd66d51302204999038cc2c31c55a7a336a763f4a4c4cb410c2c1e8b34c1d520f5522f75afd3[ALL]',
+                                sequence: 4294967294,
+                            },
+                        ],
+                        locktime: 902,
+                        outputSatoshis: 624996160,
+                        outputs: [
+                            {
+                                address: 'n33YtcSh7WsfCjgXwmJtkE4tSHCnXwfamH',
+                                satoshis: 100000000,
+                                script: '76a914ec23ffdc34aa576b8227f76f1b16d3782025e9e488ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 ec23ffdc34aa576b8227f76f1b16d3782025e9e4 OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                            {
+                                address: 'mqShCBqzsipjYCHA5jzcwrgHuLBgTqsfvk',
+                                satoshis: 524996160,
+                                script: '76a9146ce2fcfa2aee4544db61dbad0f09e62431ca646b88ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 6ce2fcfa2aee4544db61dbad0f09e62431ca646b OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                        ],
+                        size: 192,
+                        version: 2,
+                    },
                 },
                 {
                     network: networks.bitcoin,
@@ -2111,6 +2524,42 @@ describe('bitcore', () => {
                         'mkYpJDNquegLmPBzUNb1Up6F5cLZntzNYa',
                     ],
                     vsize: 192,
+                    rawTx: {
+                        feeSatoshis: 3840,
+                        hash: '6e53a9727b2e28923c6348cfd55b73dccf3a342664394fc40a8fad48982b2c76',
+                        height: -1,
+                        hex: '020000000175d7a86f03d955f9b2d73f7daa92d4eb47c9282e6cdbdf00911bd6d1654c71f70000000049483045022100fc860eeb12809fe38ced2db5a9c866752ae75b2d8bd81f42e08e47345b3a374102205dced01525c6174f482e42fcd85de6419fb88dc84ecb388d04fd42bd4816576401feffffff0240ce4a1f000000001976a9145044bd4f4267eb5450402996dc305404e178112888ac00e1f505000000001976a9143732c8fb478ca48165d686f70125e0ed223f364188ac86030000',
+                        inputSatoshis: 625000000,
+                        inputs: [
+                            {
+                                address: null,
+                                outputIndex: 0,
+                                prevTxId: 'f7714c65d1d61b9100dfdb6c2e28c947ebd492aa7d3fd7b2f955d9036fa8d775',
+                                satoshis: 625000000,
+                                script: '483045022100fc860eeb12809fe38ced2db5a9c866752ae75b2d8bd81f42e08e47345b3a374102205dced01525c6174f482e42fcd85de6419fb88dc84ecb388d04fd42bd4816576401',
+                                scriptAsm: '3045022100fc860eeb12809fe38ced2db5a9c866752ae75b2d8bd81f42e08e47345b3a374102205dced01525c6174f482e42fcd85de6419fb88dc84ecb388d04fd42bd48165764[ALL]',
+                                sequence: 4294967294,
+                            },
+                        ],
+                        locktime: 902,
+                        outputSatoshis: 624996160,
+                        outputs: [
+                            {
+                                address: 'mnqNhWBhJJBj7YBrJsFsXUtwFk3jWzZDgB',
+                                satoshis: 524996160,
+                                script: '76a9145044bd4f4267eb5450402996dc305404e178112888ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 5044bd4f4267eb5450402996dc305404e1781128 OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                            {
+                                address: 'mkYpJDNquegLmPBzUNb1Up6F5cLZntzNYa',
+                                satoshis: 100000000,
+                                script: '76a9143732c8fb478ca48165d686f70125e0ed223f364188ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 3732c8fb478ca48165d686f70125e0ed223f3641 OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                        ],
+                        size: 192,
+                        version: 2,
+                    },
                 },
                 {
                     network: networks.bitcoin,
@@ -2127,6 +2576,42 @@ describe('bitcore', () => {
                         'mt2WeSG2hFURbq9BsPX4ahLTBt8s5Urccd',
                     ],
                     vsize: 192,
+                    rawTx: {
+                        feeSatoshis: 3840,
+                        hash: '1bc5d5f51d99381330eb73c6e9877c9eb17fe32399230c361fceb85510c7abac',
+                        height: -1,
+                        hex: '02000000017f971cfdf41412a4d6fb8e4fdee05145b88ddab326c9ab97a97b596aabfa97f20000000049483045022100c6de99ddcb0944f61dfcad07cdb2981ee7ee2a9eef88f8e646214df3fb7f1b2a022007e4fded62f5e0407417fc0580e473b56000eb5d1f0d001ac38af330ae061ded01feffffff0200e1f505000000001976a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac40ce4a1f000000001976a914893893f15e73899afe8beff1947b07cebe2c4bbe88ac86030000',
+                        inputSatoshis: 625000000,
+                        inputs: [
+                            {
+                                address: null,
+                                outputIndex: 0,
+                                prevTxId: 'f297faab6a597ba997abc926b3da8db84551e0de4f8efbd6a41214f4fd1c977f',
+                                satoshis: 625000000,
+                                script: '483045022100c6de99ddcb0944f61dfcad07cdb2981ee7ee2a9eef88f8e646214df3fb7f1b2a022007e4fded62f5e0407417fc0580e473b56000eb5d1f0d001ac38af330ae061ded01',
+                                scriptAsm: '3045022100c6de99ddcb0944f61dfcad07cdb2981ee7ee2a9eef88f8e646214df3fb7f1b2a022007e4fded62f5e0407417fc0580e473b56000eb5d1f0d001ac38af330ae061ded[ALL]',
+                                sequence: 4294967294,
+                            },
+                        ],
+                        locktime: 902,
+                        outputSatoshis: 624996160,
+                        outputs: [
+                            {
+                                address: 'mtnS3H9s1Y5xkhTgssvq8BjvFP6FD1D4bv',
+                                satoshis: 100000000,
+                                script: '76a9149187090295b4901cd9e902fdd7d5bff7fd6dd87088ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 9187090295b4901cd9e902fdd7d5bff7fd6dd870 OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                            {
+                                address: 'mt2WeSG2hFURbq9BsPX4ahLTBt8s5Urccd',
+                                satoshis: 524996160,
+                                script: '76a914893893f15e73899afe8beff1947b07cebe2c4bbe88ac',
+                                scriptAsm: 'OP_DUP OP_HASH160 893893f15e73899afe8beff1947b07cebe2c4bbe OP_EQUALVERIFY OP_CHECKSIG',
+                            },
+                        ],
+                        size: 192,
+                        version: 2,
+                    },
                 },
             ];
             let txs = [];

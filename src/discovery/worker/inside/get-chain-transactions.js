@@ -287,7 +287,7 @@ export class GetChainTransactions {
 
                 outputAddresses.push(address);
             });
-            console.warn('parsed', JSON.stringify(parsed));
+
             const c: ChainNewTransaction = {
                 tx: parsed,
                 outputAddresses,

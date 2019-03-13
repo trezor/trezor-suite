@@ -162,7 +162,7 @@ function analyzeTransaction(
 
     const confirmations = (t.height == null) ? null : ((lastBlock.height - t.height) + 1);
 
-    return {
+    const response = {
         isCoinbase,
         ...dates,
         height: t.height,
@@ -173,6 +173,12 @@ function analyzeTransaction(
         tsize: t.tx.byteLength(),
         vsize: t.vsize,
     };
+
+    if (t.tx.invalidTransaction) {
+        response.invalidTransaction = t.tx.invalidTransaction;
+    }
+
+    return response;
 }
 
 function getTargetsFromTransaction(
