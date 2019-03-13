@@ -11,7 +11,7 @@ const styles = (isSearchable, withDropdownIndicator = true) => ({
         width: '100%',
         color: colors.TEXT_SECONDARY,
         '&:hover': {
-            cursor: 'text',
+            cursor: isSearchable ? 'text' : 'pointer',
         },
     }),
     control: (base, { isDisabled, isFocused }) => ({
