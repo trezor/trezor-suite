@@ -251,6 +251,7 @@ export const onAmountChange = (
     shouldUpdateLocalAmount: boolean = true
 ): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const state = getState().sendFormEthereum;
+
     dispatch({
         type: SEND.CHANGE,
         networkType: 'ethereum',
@@ -265,7 +266,7 @@ export const onAmountChange = (
 
     if (shouldUpdateLocalAmount) {
         const { localCurrency } = getState().sendFormEthereum;
-        const fiatRates = getState().fiat.find(f => f.network === state.networkName);
+        const fiatRates = getState().fiat.find(f => f.network === state.currency.toLowerCase());
         const localAmount = toFiatCurrency(amount, localCurrency, fiatRates);
         dispatch(onLocalAmountChange(localAmount, false));
     }
@@ -280,7 +281,6 @@ export const onLocalAmountChange = (
 ): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const state = getState().sendFormEthereum;
     const { localCurrency } = getState().sendFormEthereum;
-    const fiatRates = getState().fiat.find(f => f.network === state.networkName);
     const { network } = getState().selectedAccount;
 
     // updates localAmount
@@ -300,6 +300,7 @@ export const onLocalAmountChange = (
     if (shouldUpdateAmount) {
         if (!network) return;
         // converts amount in local currency to crypto currency that will be sent
+        const fiatRates = getState().fiat.find(f => f.network === state.currency.toLowerCase());
         const amount = fromFiatCurrency(localAmount, localCurrency, fiatRates, network.decimals);
         dispatch(onAmountChange(amount, false));
     }
@@ -364,6 +365,9 @@ export const onCurrencyChange = (currency: { value: string, label: string }): Th
             gasLimit,
         },
     });
+
+    // Recalculates local amount with new currency rates
+    dispatch(onAmountChange(state.amount, true));
 };
 
 /*

@@ -3,6 +3,8 @@
 import { httpRequest } from 'utils/networkUtils';
 import { resolveAfter } from 'utils/promiseUtils';
 import { READY } from 'actions/constants/localStorage';
+import * as TOKEN from 'actions/constants/token';
+import type { Token } from 'reducers/TokensReducer';
 
 import type {
     Middleware,
@@ -14,7 +16,14 @@ import type {
     GetState,
 } from 'flowtype';
 
+const BASE_URL = 'https://api.coingecko.com/';
+
 export const RATE_UPDATE: 'rate__update' = 'rate__update';
+
+export type NetworkRate = {
+    network: string,
+    rates: { [string]: number },
+};
 
 export type FiatRateAction = {
     type: typeof RATE_UPDATE,
@@ -58,6 +67,49 @@ const loadRateAction = (): AsyncAction => async (
     await resolveAfter(50000);
 };
 
+const fetchCoinRate = async (id: string): Promise<any> => {
+    const url = new URL(`/api/v3/coins/${id}`, BASE_URL);
+    url.searchParams.set('tickers', 'false');
+    url.searchParams.set('market_data', 'true');
+    url.searchParams.set('community_data', 'false');
+    url.searchParams.set('developer_data', 'false');
+    url.searchParams.set('sparkline', 'false');
+
+    const response = await fetch(url.toString());
+    const rates = await response.json();
+    return rates;
+};
+
+const fetchCoinList = async (): Promise<any> => {
+    const url = new URL('/api/v3/coins/list', BASE_URL);
+
+    const response = await fetch(url.toString());
+    const tokens = await response.json();
+    return tokens;
+};
+
+const loadTokenRateAction = (token: Token): AsyncAction => async (
+    dispatch: Dispatch
+): Promise<void> => {
+    const { symbol } = token;
+    try {
+        const tokens = await fetchCoinList();
+        const tokenData = tokens.find(t => t.symbol === symbol.toLowerCase());
+        if (!tokenData) return;
+
+        const res = await fetchCoinRate(tokenData.id);
+        if (res) {
+            dispatch({
+                type: RATE_UPDATE,
+                network: res.symbol,
+                rates: res.market_data.current_price,
+            });
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 /**
  * Middleware
  */
@@ -68,6 +120,10 @@ const CoingeckoService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDi
 
     if (action.type === READY) {
         api.dispatch(loadRateAction());
+    }
+
+    if (action.type === TOKEN.ADD) {
+        api.dispatch(loadTokenRateAction(action.payload));
     }
 
     return action;
