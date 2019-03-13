@@ -37,7 +37,8 @@ html, body {
 }
 
 main {
-    width: 1170px;
+    max-width: 1170px;
+    min-width: 800px;
     min-height: 100%;
     padding-top: 90px;
     padding-bottom: 25px;
@@ -46,6 +47,13 @@ main {
     background: @color_main_background;
     display: flex;
     flex-direction: row;
+}
+
+@media screen and (min-width: 1172px) {
+    main {
+        border-left: 1px solid @color_light_gray;
+        border-right: 1px solid @color_light_gray;
+    }
 }
 
 a {
