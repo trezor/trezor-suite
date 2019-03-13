@@ -228,7 +228,7 @@ export class GetChainTransactions {
                 parsed = BitcoinJsTransaction.fromHex(transaction.hex, transaction.network);
             } catch (error) {
                 // create invalid transaction with zero-valued outputs
-                parsed = new BitcoinJsTransaction(transaction.network);
+                parsed = new BitcoinJsTransaction();
                 parsed.invalidTransaction = true;
                 parsed.timestamp = Number(transaction.timestamp);
                 if (transaction.rawTx) {
