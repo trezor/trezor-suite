@@ -61,7 +61,6 @@ const FiatValue = styled.div`
     min-height: 25px;
     color: ${colors.TEXT_PRIMARY};
     align-items: center;
-    text-transform: uppercase;
 `;
 
 const FiatValueRate = styled.div`
@@ -72,7 +71,6 @@ const FiatValueRate = styled.div`
     display: flex;
     align-items: center;
     color: ${colors.TEXT_PRIMARY};
-    text-transform: uppercase;
 `;
 
 const BalanceWrapper = styled.div`
