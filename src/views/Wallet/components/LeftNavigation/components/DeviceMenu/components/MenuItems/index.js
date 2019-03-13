@@ -116,7 +116,6 @@ class MenuItems extends PureComponent {
                         </Label>
                     </Item>
                 </Link>
-                <Divider />
             </Wrapper>
         );
     }
