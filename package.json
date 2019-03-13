@@ -19,9 +19,14 @@
     },
     "dependencies": {
         "connected-react-router": "6.0.0",
+        "markdown-it": "^8.4.2",
+        "markdown-it-link-attributes": "^2.1.0",
+        "markdown-it-replace-link": "^1.0.1",
         "react": "^16.8.1",
         "react-dom": "^16.8.1",
         "react-hot-loader": "4.6.5",
+        "react-infinity-menu": "^4.0.0",
+        "react-inspector": "^2.3.1",
         "react-json-tree": "^0.11.0",
         "react-redux": "^6.0.1",
         "react-router-dom": "^4.3.1",
@@ -29,7 +34,8 @@
         "redux": "^4.0.0",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
-        "trezor-connect": "../trezor-connect/npm"
+        "stringify-object": "^3.3.0",
+        "trezor-connect": "7.0.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.2",
