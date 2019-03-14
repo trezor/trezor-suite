@@ -9,7 +9,7 @@ export const DOCS_LOADED: string = 'docs_loaded';
 export const DOCS_ERROR: string = 'docs_error';
 
 const CDN: string = 'https://gitcdn.link/repo/trezor/connect/develop/docs/';
-const GITHUB: string = 'https://github.com/trezor/connect/blob/develop/docs/methods/';
+const GITHUB: string = 'https://github.com/trezor/connect/blob/develop/docs/';
 
 export const loadDocs = () => async (dispatch, getState) => {
 
