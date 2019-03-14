@@ -82,6 +82,7 @@ export type TransactionInfo = {
 
     tsize: number, // total size - in case of segwit, total, with segwit data
     vsize: number, // virtual size - segwit concept - same as size in non-segwit
+    invalidTransaction?: boolean, // true if we are not able to parse transaction correctly
 }
 
 // This is used for used addresses
@@ -147,7 +148,7 @@ export type AccountLoadStatus = {
 
 export type ForceAddedTransaction = {
     hex: string,
-    zcash: boolean,
+    network: BitcoinJsNetwork,
     hash: string,
     inputAddresses: Array<?string>,
     outputAddresses: Array<?string>,
