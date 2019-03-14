@@ -6,6 +6,7 @@ import { withInfo } from '@storybook/addon-info';
 
 import { AsyncSelect, Select } from 'components/Select';
 import Checkbox from 'components/Checkbox';
+import Switch from 'components/Switch';
 import Input from 'components/inputs/Input';
 import PinInput from 'components/inputs/Pin';
 import TextArea from 'components/Textarea';
@@ -143,6 +144,49 @@ storiesOf('Form', module)
             ~~~js
             import { Checkbox } from 'trezor-ui-components';
             ~~~
+            `,
+            },
+        }
+    )
+    .add(
+        'Switch',
+        () => {
+            const uncheckedIcon = select(
+                'uncheckedIcon',
+                {
+                    Default: null,
+                    false: false,
+                },
+                null
+            );
+            const checkedIcon = select(
+                'checkedIcon',
+                {
+                    Default: null,
+                    false: false,
+                },
+                null
+            );
+            return (
+                <Switch
+                    onChange={() => {
+                        return true;
+                    }}
+                    checked={boolean('Checked', false)}
+                    disabled={boolean('disabled', false)}
+                    {...(checkedIcon !== null ? { checkedIcon } : {})}
+                    {...(uncheckedIcon !== null ? { uncheckedIcon } : {})}
+                />
+            );
+        },
+        {
+            info: {
+                text: `
+            ## Import
+            ~~~js
+            import { Switch } from 'trezor-ui-components';
+            ~~~
+            *<Switch> is just a wrapper around [react-switch](https://www.npmjs.com/package/react-switch) component. See the [official documentation](https://github.com/markusenglund/react-switch) for more information about its props and usage.*
             `,
             },
         }

@@ -11,6 +11,7 @@ import Input from './components/inputs/Input';
 import InputPin from './components/inputs/Pin';
 import TextArea from './components/Textarea';
 import Checkbox from './components/Checkbox';
+import Switch from './components/Switch';
 import { AsyncSelect, Select } from './components/Select';
 
 import { H1, H2, H3, H4, H5, H6 } from './components/Heading';
@@ -38,6 +39,7 @@ module.exports = {
     InputPin,
     TextArea,
     Checkbox,
+    Switch,
     Select,
     AsyncSelect,
 
