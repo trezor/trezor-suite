@@ -84,7 +84,11 @@ class AddedToken extends PureComponent {
 
                 <TokenName>{this.props.token.name}</TokenName>
                 <TokenBalance>
-                    {this.getTokenBalance(this.props.token)} {this.props.token.symbol}
+                    {this.props.hideBalance ? (
+                        <Icon icon={ICONS.EYE_CROSSED} size={25} color={colors.TEXT_SECONDARY} />
+                    ) : (
+                        `${this.getTokenBalance(this.props.token)}  ${this.props.token.symbol}`
+                    )}
                 </TokenBalance>
                 <RemoveTokenButton
                     isTransparent
@@ -101,6 +105,7 @@ AddedToken.propTypes = {
     token: PropTypes.object,
     pending: PropTypes.array,
     removeToken: PropTypes.func,
+    hideBalance: PropTypes.bool,
 };
 
 export default AddedToken;

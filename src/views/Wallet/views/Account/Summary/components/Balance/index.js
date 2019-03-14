@@ -17,6 +17,7 @@ type Props = {
     balance: string,
     fiat: $ElementType<ReducersState, 'fiat'>,
     localCurrency: string,
+    isHidden: boolean,
 };
 
 type State = {
@@ -105,9 +106,17 @@ class AccountBalance extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            isHidden: false,
-            canAnimateHideBalanceIcon: false,
+            isHidden: props.isHidden,
+            canAnimateHideBalanceIcon: props.isHidden,
         };
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.isHidden !== this.props.isHidden) {
+            this.setState({
+                isHidden: this.props.isHidden,
+            });
+        }
     }
 
     handleHideBalanceIconClick() {

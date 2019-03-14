@@ -105,6 +105,7 @@ const AccountSummary = (props: Props) => {
                     balance={balance}
                     fiat={props.fiat}
                     localCurrency={props.wallet.localCurrency}
+                    isHidden={props.wallet.hideBalance}
                 />
                 <H2Wrapper>
                     <H2>
@@ -164,6 +165,7 @@ const AccountSummary = (props: Props) => {
                             token={token}
                             pending={pending}
                             removeToken={props.removeToken}
+                            hideBalance={props.wallet.hideBalance}
                         />
                     ))}
                 </AddedTokensWrapper>
