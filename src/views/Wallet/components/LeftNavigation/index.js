@@ -401,6 +401,7 @@ LeftNavigation.propTypes = {
     duplicateDevice: PropTypes.func,
     gotoDeviceSettings: PropTypes.func,
     onSelectDevice: PropTypes.func,
+    setHideBalance: PropTypes.func,
 };
 
 export default LeftNavigation;

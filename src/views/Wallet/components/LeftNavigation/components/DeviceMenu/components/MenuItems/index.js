@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
+import { Switch } from 'trezor-ui-components';
 import DeviceIcon from 'components/images/DeviceIcon';
 import { FormattedMessage } from 'react-intl';
 import { getPattern } from 'support/routes';
@@ -21,6 +22,7 @@ const Wrapper = styled.div`
 const Item = styled.div`
     padding: 6px 24px;
     display: flex;
+    height: 38px;
     align-items: center;
     font-size: ${FONT_SIZE.BASE};
     cursor: pointer;
@@ -39,6 +41,7 @@ const Divider = styled.div`
 
 const Label = styled.div`
     padding-left: 15px;
+    flex: 1;
 `;
 
 class MenuItems extends PureComponent {
@@ -108,6 +111,24 @@ class MenuItems extends PureComponent {
                     </Label>
                 </Item>
                 <Divider />
+                <Item>
+                    <Icon icon={icons.EYE_CROSSED} size={25} color={colors.TEXT_SECONDARY} />
+                    <Label>
+                        <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
+                    </Label>
+                    <Switch
+                        width={36}
+                        height={18}
+                        handleDiameter={14}
+                        checkedIcon={false}
+                        uncheckedIcon={false}
+                        onChange={checked => {
+                            this.props.setHideBalance(checked);
+                        }}
+                        checked={this.props.wallet.hideBalance}
+                    />
+                </Item>
+                <Divider />
                 <Link to={getPattern('wallet-settings')}>
                     <Item>
                         <Icon icon={icons.COG} size={25} color={colors.TEXT_SECONDARY} />
@@ -123,9 +144,11 @@ class MenuItems extends PureComponent {
 
 MenuItems.propTypes = {
     device: PropTypes.object.isRequired,
+    wallet: PropTypes.object.isRequired,
     acquireDevice: PropTypes.func.isRequired,
     forgetDevice: PropTypes.func.isRequired,
     duplicateDevice: PropTypes.func.isRequired,
+    setHideBalance: PropTypes.func.isRequired,
     // toggleDeviceDropdown: PropTypes.func.isRequired,
     // gotoDeviceSettings: PropTypes.func.isRequired,
 };
