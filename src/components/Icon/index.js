@@ -50,7 +50,7 @@ const Path = styled.path`
 
 const Icon = ({
     icon,
-    size = 32,
+    size = 24,
     color = colors.TEXT_SECONDARY,
     isActive,
     canAnimate,
@@ -70,15 +70,15 @@ const Icon = ({
             display: 'inline-block',
             verticalAlign: 'middle',
         }}
-        width={`${size}`}
+        width={`${size * (icon.ration || 1)}`}
         height={`${size}`}
-        viewBox="0 0 1024 1024"
+        viewBox={icon.viewBox || '0 0 1024 1024'}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onFocus={onFocus}
         onClick={onClick}
     >
-        {icon.map(path => (
+        {icon.paths.map(path => (
             <Path key={path} isActive={isActive} color={color} d={path} />
         ))}
     </SvgWrapper>
@@ -88,7 +88,7 @@ Icon.propTypes = {
     className: PropTypes.string,
     hoverColor: PropTypes.string,
     canAnimate: PropTypes.bool,
-    icon: PropTypes.arrayOf(PropTypes.string).isRequired,
+    icon: PropTypes.object.isRequired,
     size: PropTypes.number,
     isActive: PropTypes.bool,
     color: PropTypes.string,
