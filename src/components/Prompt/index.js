@@ -9,14 +9,19 @@ import icons from 'config/icons';
 import colors from 'config/colors';
 
 const PulseAnimation = keyframes`
-    0%, 35% {
+    0% {
         background-color: ${colors.GREEN_PRIMARY};
         transform: scale(0);
-        opacity: 1;
+        opacity: 0;
+    }
+    25% {
+        background-color: ${colors.GREEN_PRIMARY};
+        transform: scale(0.75);
+        opacity: 0.2;
     }
     50% {
         transform: scale(1.5);
-        opacity: 0.2;
+        opacity: 0.3;
     }
     100% {
         opacity: 0;
@@ -26,7 +31,7 @@ const PulseAnimation = keyframes`
 
 const Pulse = styled.div`
     position: absolute;
-    animation: ${PulseAnimation} 1.2s ease-out infinite;
+    animation: ${PulseAnimation} 1s ease-out infinite;
     animation-delay: 1s;
     border-radius: 50%;
     width: 100%;
