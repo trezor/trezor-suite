@@ -33,7 +33,7 @@ export default [
                 type: 'json',
                 value: `[{
     address: 't1fT6Zv1LcPwSwausNAuYGdewv2Mke3nrYo',
-    amount: '926751',
+    amount: '118000',
     script_type: 'PAYTOADDRESS',
 }]`
             },
