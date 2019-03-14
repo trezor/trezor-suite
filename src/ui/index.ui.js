@@ -34,15 +34,15 @@ const handleClick = (event: MouseEvent) => {
         
         case 'get-account-info': {
             const payload = {
-                type: getInputValue('get-account-info-mode') || 'basic',
                 descriptor: getInputValue('get-account-info-address'),
-                options: {
-                    page: parseInt(getInputValue('get-account-info-page'), 2) || 1,
-                    from: parseInt(getInputValue('get-account-info-from'), 2) || 1,
-                    to: parseInt(getInputValue('get-account-info-to'), 2) || 1,
-                    contract: getInputValue('get-account-info-contract') || ''
-                }
+                details: getInputValue('get-account-info-mode') || 'basic',
+                tokens: 'derived',
+                page: parseInt(getInputValue('get-account-info-page'), 2) || 1,
+                from: parseInt(getInputValue('get-account-info-from'), 2) || 1,
+                to: parseInt(getInputValue('get-account-info-to'), 2) || 1,
+                contractFilter: getInputValue('get-account-info-contract') || '',
             };
+            console.log(payload);
             blockchain.getAccountInfo(payload).then(onResponse).catch(onError);
             break;
         }

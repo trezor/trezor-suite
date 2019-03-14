@@ -211,11 +211,11 @@ export default class Socket extends EventEmitter {
 
     getAccountInfo(payload: any): Promise {
         return new Promise((resolve) => {
-            this._send('getAccountInfo', {
-                payload 
-            }, response => {
-                resolve(response);
-            });
+            this._send('getAccountInfo', 
+                payload, 
+                response => {
+                    resolve(response);
+                });
         });
     }
 
