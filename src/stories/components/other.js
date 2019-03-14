@@ -185,7 +185,7 @@ storiesOf('Other', module)
                 '1'
             );
 
-            return <Prompt text={text('text', '')} model={model} />;
+            return <Prompt text={text('text', 'Complete action on your device')} model={model} />;
         },
         {
             info: {
@@ -193,11 +193,6 @@ storiesOf('Other', module)
         ## Import
         ~~~js
         import { Prompt } from 'trezor-ui-components';
-        ~~~
-
-        Example
-        ~~~js
-        <Prompt text="Complete action on your device" model={1} />
         ~~~
         `,
             },
