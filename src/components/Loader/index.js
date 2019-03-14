@@ -62,9 +62,7 @@ const Loader = ({
         <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>
             {text}
         </StyledParagraph>
-        <SvgWrapper
-            viewBox="25 25 50 50"
-        >
+        <SvgWrapper viewBox="25 25 50 50">
             <CircleWrapper
                 animationColor={animationColor}
                 cx="50"
