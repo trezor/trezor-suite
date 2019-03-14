@@ -3,11 +3,8 @@ import styled from 'styled-components';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import Link from 'components/Link';
 import Content from 'views/Wallet/components/Content';
-import { Select } from 'components/Select';
-import Button from 'components/Button';
-
+import { Switch, Select, Link, Button, Tooltip, Icon, icons as ICONS } from 'trezor-ui-components';
 import colors from 'config/colors';
 import { FIAT_CURRENCIES } from 'config/app';
 import { FONT_SIZE } from 'config/variables';
@@ -20,7 +17,13 @@ const CurrencySelect = styled(Select)`
     /* max-width: 200px; */
 `;
 
-const CurrencyLabel = styled.div`
+const Label = styled.div`
+    display: flex;
+    color: ${colors.TEXT_SECONDARY};
+    align-items: center;
+`;
+
+const LabelTop = styled.div`
     color: ${colors.TEXT_SECONDARY};
     padding-bottom: 10px;
 `;
@@ -29,8 +32,15 @@ const Section = styled.div`
     margin-bottom: 20px;
 `;
 
+const Row = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
 const Actions = styled.div`
     display: flex;
+    margin-top: 40px;
 `;
 
 const Buttons = styled.div`
@@ -45,6 +55,10 @@ const Info = styled.div`
     align-self: center;
 `;
 
+const TooltipIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
 const buildCurrencyOption = currency => {
     return { value: currency, label: currency.toUpperCase() };
 };
@@ -53,9 +67,9 @@ const WalletSettings = (props: Props) => (
     <Content>
         {console.log(props)}
         <Section>
-            <CurrencyLabel>
+            <LabelTop>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
-            </CurrencyLabel>
+            </LabelTop>
             <CurrencySelect
                 isSearchable
                 isClearable={false}
@@ -63,6 +77,26 @@ const WalletSettings = (props: Props) => (
                 value={buildCurrencyOption(props.wallet.localCurrency)}
                 options={FIAT_CURRENCIES.map(c => buildCurrencyOption(c))}
             />
+        </Section>
+        <Section>
+            <Row>
+                <Label>
+                    <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
+                    <Tooltip
+                        content={<FormattedMessage {...l10nMessages.TR_HIDE_BALANCE_EXPLAINED} />}
+                        maxWidth={210}
+                        placement="right"
+                    >
+                        <TooltipIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={24} />
+                    </Tooltip>
+                </Label>
+                <Switch
+                    onChange={checked => {
+                        props.setHideBalance(checked);
+                    }}
+                    checked={props.wallet.hideBalance}
+                />
+            </Row>
         </Section>
         <Actions>
             <Info>

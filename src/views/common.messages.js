@@ -70,6 +70,10 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_CLOSE',
         defaultMessage: 'Close',
     },
+    TR_HIDE_BALANCE: {
+        id: 'TR_HIDE_BALANCE',
+        defaultMessage: 'Hide balance',
+    },
 });
 
 export default definedMessages;
