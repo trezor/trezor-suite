@@ -29,18 +29,8 @@ module.exports = {
                         loader: MiniCssExtractPlugin.loader,
                         options: { publicPath: '../' }
                     },
-                    { 
-                        loader: 'css-loader',
-                        options: { 
-                            minimize: false,
-                        } 
-                    },
-                    { 
-                        loader: 'less-loader',
-                        options: { 
-                            minimize: false,
-                        } 
-                    }
+                    'css-loader',
+                    'less-loader',
                 ]
             },
             {
@@ -81,6 +71,7 @@ module.exports = {
     plugins: [
         new MiniCssExtractPlugin({
             filename: 'css/[name].[hash].css',
+            chunkFilename: '[id].css',
         }),
         
         new HtmlWebpackPlugin({
