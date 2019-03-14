@@ -2,6 +2,7 @@
 
 // Preload workers in webpack, force webpack to compile them
 // $FlowIssue loader notation
+import * as MessageTypes from '../types/messages';
 import BlockbookWorker from 'worker-loader?name=js/blockbook-worker.js!../workers/blockbook/index.js'; // eslint-disable-line no-unused-vars
 // $FlowIssue loader notation
 import RippleWorker from 'worker-loader?name=js/ripple-worker.js!../workers/ripple/index.js'; // eslint-disable-line no-unused-vars
@@ -32,16 +33,17 @@ const handleClick = (event: MouseEvent) => {
             break;
         
         case 'get-account-info': {
-            const mode = getInputValue('get-account-info-mode');
-            const params = {
+            const payload = {
+                type: getInputValue('get-account-info-mode') || 'basic',
                 descriptor: getInputValue('get-account-info-address'),
-                options: undefined,
+                options: {
+                    page: parseInt(getInputValue('get-account-info-page'), 2) || 1,
+                    from: parseInt(getInputValue('get-account-info-from'), 2) || 1,
+                    to: parseInt(getInputValue('get-account-info-to'), 2) || 1,
+                    contract: getInputValue('get-account-info-contract') || ''
+                }
             };
-            if (mode === 'advanced') {
-                const options = getInputValue('get-account-info-account');
-                params.options = JSON.parse(options)
-            }
-            blockchain.getAccountInfo(params).then(onResponse).catch(onError);
+            blockchain.getAccountInfo(payload).then(onResponse).catch(onError);
             break;
         }
 

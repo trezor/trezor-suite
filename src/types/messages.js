@@ -18,7 +18,7 @@ export type GetAccountInfoOptions = {
     +page?: number,
     +from?: number,
     +to?: number,
-    +limit?: number,
+    +contract?: string,
 };
 export type GetAccountInfo = {
     +type: typeof MESSAGES.GET_ACCOUNT_INFO,

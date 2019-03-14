@@ -209,13 +209,10 @@ export default class Socket extends EventEmitter {
         });
     }
 
-    getAccountInfo(descriptor: string): Promise {
+    getAccountInfo(payload: any): Promise {
         return new Promise((resolve) => {
             this._send('getAccountInfo', {
-                descriptor,
-                details: 'txs', // 'basic', // 'balance', 'txs'
-                page: 0,
-                pageSize: 10,
+                payload 
             }, response => {
                 resolve(response);
             });

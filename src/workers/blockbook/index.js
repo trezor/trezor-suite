@@ -150,21 +150,11 @@ const pushTransaction = async (data: { id: number } & MessageTypes.PushTransacti
     }
 }
 
-
-const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo): Promise<void> => {
+const getAccountInfo = async (data: { id: number } & MessageTypes.getAccountInfo): Promise<void> => {
     const { payload } = data;
-    // const account = {
-    //     address: payload.descriptor,
-    //     transactions: 0,
-    //     block: 0,
-    //     balance: '0',
-    //     availableBalance: '0',
-    //     sequence: 0,
-    // };
-
     try {
         const socket = await connect();
-        const info = await socket.getAccountInfo(payload.descriptor);
+        const info = await socket.getAccountInfo(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
