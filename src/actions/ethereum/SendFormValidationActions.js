@@ -131,15 +131,12 @@ export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
         } else {
             const b = new BigNumber(account.balance).minus(pendingAmount);
             state.amount = calculateMaxAmount(b, state.gasPrice, state.gasLimit);
-
-            // calculate amount in local currency
-            const { localCurrency } = getState().sendFormEthereum;
-            const fiatRates = getState().fiat.find(f => f.network === state.currency.toLowerCase());
-            const localAmount = toFiatCurrency(state.amount, localCurrency, fiatRates);
-            if (localAmount) {
-                state.localAmount = localAmount;
-            }
         }
+        // calculate amount in local currency
+        const { localCurrency } = getState().sendFormEthereum;
+        const fiatRates = getState().fiat.find(f => f.network === state.currency.toLowerCase());
+        const localAmount = toFiatCurrency(state.amount, localCurrency, fiatRates);
+        state.localAmount = localAmount;
     }
 
     state.total = calculateTotal(isToken ? '0' : state.amount, state.gasPrice, state.gasLimit);
