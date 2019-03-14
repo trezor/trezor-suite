@@ -64,9 +64,6 @@ const Loader = ({
         </StyledParagraph>
         <SvgWrapper
             viewBox="25 25 50 50"
-            css={css`
-                animation: rotate 2s linear infinite;
-            `}
         >
             <CircleWrapper
                 animationColor={animationColor}
@@ -81,9 +78,6 @@ const Loader = ({
                 strokeWidth={strokeWidth}
             />
             <CircleWrapper
-                css={css`
-                    animation: ${DASH} 1.5s ease-in-out infinite;
-                `}
                 animationColor={animationColor}
                 cx="50"
                 cy="50"
