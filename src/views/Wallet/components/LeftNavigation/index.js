@@ -10,16 +10,19 @@ import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
+// import Link from 'components/Link';
 import * as deviceUtils from 'utils/device';
 
 import Tooltip from 'components/Tooltip';
 import { FormattedMessage } from 'react-intl';
+// import { getPattern } from 'support/routes';
 import AccountMenu from './components/AccountMenu';
 import CoinMenu from './components/CoinMenu';
 import DeviceMenu from './components/DeviceMenu';
 import Sidebar from './components/Sidebar';
 
 import type { Props } from './components/common';
+// import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
 
 const Header = styled(DeviceHeader)`
@@ -310,6 +313,27 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     <Counter>{this.props.devices.length}</Counter>
                                 </Tooltip>
                             )}
+                            {/* <Tooltip
+                                content={
+                                    <FormattedMessage
+                                        {...l10nCommonMessages.TR_APPLICATION_SETTINGS}
+                                    />
+                                }
+                                maxWidth={200}
+                                placement="bottom"
+                                enterDelayMs={0.5}
+                            >
+                                <WalletTypeIconWrapper>
+                                    <Link to={getPattern('wallet-settings')}>
+                                        <Icon
+                                            size={25}
+                                            color={colors.TEXT_SECONDARY}
+                                            hoverColor={colors.TEXT_PRIMARY}
+                                            icon={icons.COG}
+                                        />
+                                    </Link>
+                                </WalletTypeIconWrapper>
+                            </Tooltip> */}
                             <Icon
                                 canAnimate={this.state.clicked === true}
                                 isActive={this.props.wallet.dropdownOpened}

@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsUnits from 'ethereumjs-units';
 import { findDevice, getPendingAmount, findToken } from 'reducers/utils';
+import { toFiatCurrency } from 'utils/fiatConverter';
 import * as SEND from 'actions/constants/send';
 import * as ethUtils from 'utils/ethUtils';
 
@@ -130,6 +131,14 @@ export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
         } else {
             const b = new BigNumber(account.balance).minus(pendingAmount);
             state.amount = calculateMaxAmount(b, state.gasPrice, state.gasLimit);
+
+            // calculate amount in local currency
+            const { localCurrency } = getState().sendFormEthereum;
+            const fiatRates = getState().fiat.find(f => f.network === state.networkName);
+            const localAmount = toFiatCurrency(state.amount, localCurrency, fiatRates);
+            if (localAmount) {
+                state.localAmount = localAmount;
+            }
         }
     }
 
