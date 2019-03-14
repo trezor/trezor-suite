@@ -12,7 +12,7 @@ class Switch extends Component {
 
     handleChange(checked) {
         const shouldUpdateState = this.props.onChange(checked);
-        if (shouldUpdateState) {
+        if (shouldUpdateState !== false) {
             this.setState({ checked });
         }
     }
