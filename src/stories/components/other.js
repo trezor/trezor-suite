@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
-import { withKnobs, select, number, color, boolean } from '@storybook/addon-knobs';
+import { withKnobs, select, text, number, color, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 
 import CoinLogo from 'components/images/CoinLogo';
@@ -173,4 +173,33 @@ storiesOf('Other', module)
             },
         }
     )
-    .add('Prompt', () => <Prompt model="1" />);
+    .add(
+        'Prompt',
+        () => {
+            const model = select(
+                'model',
+                {
+                    '1': '1',
+                    '2': '2',
+                },
+                '1'
+            );
+
+            return <Prompt text={text('text', '')} model={model} />;
+        },
+        {
+            info: {
+                text: `
+        ## Import
+        ~~~js
+        import { Prompt } from 'trezor-ui-components';
+        ~~~
+
+        Example
+        ~~~js
+        <Prompt text="Complete action on your device" model={1} />
+        ~~~
+        `,
+            },
+        }
+    );

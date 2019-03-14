@@ -8,7 +8,7 @@ import Icon from 'components/Icon';
 import icons from 'config/icons';
 import colors from 'config/colors';
 
-const ripple = keyframes`
+const PulseAnimation = keyframes`
     0%, 35% {
         background-color: ${colors.GREEN_PRIMARY};
         transform: scale(0);
@@ -24,16 +24,16 @@ const ripple = keyframes`
     }
 `;
 
-const Ripple = styled.div`
+const Pulse = styled.div`
     position: absolute;
-    animation: ${ripple} 1.2s ease-out infinite;
+    animation: ${PulseAnimation} 1.2s ease-out infinite;
     animation-delay: 1s;
     border-radius: 50%;
     width: 100%;
     height: 100%;
 `;
 
-const TrezorImgWrapper = styled.div`
+const ImgWrapper = styled.div`
     position: relative;
 `;
 
@@ -53,28 +53,24 @@ const TextWrapper = styled(P)`
 const modelToIcon = model => {
     const mapping = {
         '1': icons.T1,
-        '2': icons.T1, // TODO: t2 icon not in icons yet.
+        '2': icons.T2,
     };
     return mapping[model];
 };
 
 const Prompt = ({ text, model }) => (
     <Wrapper>
-        <TrezorImgWrapper>
-            <Ripple />
+        <ImgWrapper>
+            <Pulse />
             <Icon icon={modelToIcon(model)} size={64} color={colors.GREEN_PRIMARY} />
-        </TrezorImgWrapper>
+        </ImgWrapper>
         <TextWrapper>{text}</TextWrapper>
     </Wrapper>
 );
 
-Prompt.defaultProps = {
-    text: 'Complete action on your device',
-};
-
 Prompt.propTypes = {
-    text: PropTypes.string,
     model: PropTypes.oneOf(['1', '2']).isRequired,
+    text: PropTypes.string,
 };
 
 export default Prompt;
