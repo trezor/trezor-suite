@@ -25,6 +25,7 @@ const TrezorConnectService = store => next => action => {
 
         TrezorConnect.on(TRANSPORT_EVENT, (event) => {
             console.warn("TRANSPORT_EVENT", event)
+            // this type of event should not be emitted in "popup mode"
         });
 
         TrezorConnect.on(UI_EVENT, (event: DeviceMessage): void => {
@@ -36,11 +37,7 @@ const TrezorConnectService = store => next => action => {
         });
 
         TrezorConnect.on(UI.ADDRESS_VALIDATION, (data: any) => {
-            console.warn("HANDLE EVENT", data)
-            // store.dispatch({
-            //     type: UI.ADDRESS_VALIDATION,
-            //     data
-            // })
+            // This needs to be explicity set to make address validation work
         });
 
         const customSrc = getQueryVariable('src');
@@ -50,6 +47,11 @@ const TrezorConnectService = store => next => action => {
             window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : undefined;
         }
         window.TrezorConnect = TrezorConnect;
+
+        TrezorConnect.manifest({
+            email: 'info@trezor.io',
+            appUrl: window.location.host
+        });
 
         // TrezorConnect.init({
         //     // connectSrc: 'https://connect.trezor.io/7/',
@@ -66,11 +68,6 @@ const TrezorConnectService = store => next => action => {
         // .catch(error => {
         //     console.log("ERROR", error);
         // });
-
-        TrezorConnect.manifest({
-            email: 'info@trezor.io',
-            appUrl: window.location.host
-        });
     }
 };
 
