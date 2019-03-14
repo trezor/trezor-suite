@@ -6,6 +6,7 @@ import React, { PureComponent } from 'react';
 import Textarea from 'react-textarea-autosize';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
+import Icon from 'components/Icon';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -16,6 +17,10 @@ const Wrapper = styled.div`
 `;
 
 const disabledColor = colors.TEXT_PRIMARY;
+
+const TextAreaWrapper = styled.div`
+    position: relative;
+`;
 
 const StyledTextarea = styled(Textarea)`
     width: 100%;
@@ -146,6 +151,12 @@ const ArrowUp = styled.div`
     z-index: 10001;
 `;
 
+const StyledIcon = styled(Icon)`
+    position: absolute;
+    top: 12px;
+    right: 15px;
+`;
+
 class TextArea extends PureComponent {
     getIcon(inputState) {
         let icon = [];
@@ -175,26 +186,35 @@ class TextArea extends PureComponent {
         return (
             <Wrapper className={this.props.className}>
                 {this.props.topLabel && <TopLabel>{this.props.topLabel}</TopLabel>}
-                <StyledTextarea
-                    spellCheck="false"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    maxRows={this.props.maxRows}
-                    maxLength={this.props.maxLength}
-                    rows={this.props.rows}
-                    className={this.props.className}
-                    disabled={this.props.isDisabled}
-                    name={this.props.name}
-                    style={this.props.customStyle}
-                    onFocus={this.props.onFocus}
-                    onBlur={this.props.onBlur}
-                    value={this.props.value}
-                    readOnly={this.props.readOnly}
-                    onClick={this.props.autoSelect ? event => event.target.select() : null}
-                    placeholder={this.props.placeholder}
-                    onChange={this.props.onChange}
-                    border={this.getColor(this.props.state)}
-                />
+                <TextAreaWrapper>
+                    {this.props.state && (
+                        <StyledIcon
+                            icon={this.getIcon(this.props.state)}
+                            color={this.getColor(this.props.state)}
+                            size={16}
+                        />
+                    )}
+                    <StyledTextarea
+                        spellCheck="false"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        maxRows={this.props.maxRows}
+                        maxLength={this.props.maxLength}
+                        rows={this.props.rows}
+                        className={this.props.className}
+                        disabled={this.props.isDisabled}
+                        name={this.props.name}
+                        style={this.props.customStyle}
+                        onFocus={this.props.onFocus}
+                        onBlur={this.props.onBlur}
+                        value={this.props.value}
+                        readOnly={this.props.readOnly}
+                        onClick={this.props.autoSelect ? event => event.target.select() : null}
+                        placeholder={this.props.placeholder}
+                        onChange={this.props.onChange}
+                        border={this.getColor(this.props.state)}
+                    />
+                </TextAreaWrapper>
                 <TrezorAction action={this.props.trezorAction}>
                     <ArrowUp />
                     {this.props.trezorAction}
