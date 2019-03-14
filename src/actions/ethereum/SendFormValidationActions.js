@@ -134,7 +134,7 @@ export const recalculateTotalAmount = ($state: State): PayloadAction<State> => (
 
             // calculate amount in local currency
             const { localCurrency } = getState().sendFormEthereum;
-            const fiatRates = getState().fiat.find(f => f.network === state.networkName);
+            const fiatRates = getState().fiat.find(f => f.network === state.currency.toLowerCase());
             const localAmount = toFiatCurrency(state.amount, localCurrency, fiatRates);
             if (localAmount) {
                 state.localAmount = localAmount;
