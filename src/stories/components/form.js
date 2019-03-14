@@ -61,16 +61,18 @@ storiesOf('Form', module)
                 null
             );
             const bottomText = text('Bottom text', 'bottom text');
+            const topLabel = text('Top label', 'Input label');
 
             return (
                 <Input
                     type={type}
                     value={value}
                     placeholder={placeholder}
-                    state={state || undefined}
                     bottomText={bottomText}
+                    topLabel={topLabel}
                     onChange={() => {}}
-                    isDisabled={isDisabled || undefined}
+                    {...(state ? { state } : {})}
+                    {...(isDisabled ? { isDisabled } : {})}
                 />
             );
         },
@@ -108,13 +110,15 @@ storiesOf('Form', module)
                 },
                 null
             );
+            const isDisabled = boolean('Disabled', false);
 
             return (
                 <TextArea
-                    isDisabled={boolean('Disabled', false)}
                     value={text('Value', '')}
                     placeholder={text('Placeholder', 'placeholder...')}
                     bottomText={text('Bottom text', 'bottom text')}
+                    topLabel={text('Top labe', 'Textarea label')}
+                    {...(isDisabled ? { isDisabled } : {})}
                     {...(state ? { state } : {})} // hack to hide state prop if its value is null
                 />
             );
@@ -132,11 +136,14 @@ storiesOf('Form', module)
     )
     .add(
         'Checkbox',
-        () => (
-            <Checkbox isChecked={boolean('Checked', false)} onClick={() => {}}>
-                {text('Checkbox text', 'Checkbox')}
-            </Checkbox>
-        ),
+        () => {
+            const isChecked = boolean('Checked', false);
+            return (
+                <Checkbox onClick={() => {}} {...(isChecked ? { isChecked } : {})}>
+                    {text('Checkbox text', 'Checkbox')}
+                </Checkbox>
+            );
+        },
         {
             info: {
                 text: `
@@ -167,15 +174,18 @@ storiesOf('Form', module)
                 },
                 null
             );
+            const disabled = boolean('disabled', false);
+            const checked = boolean('Checked', false);
+
             return (
                 <Switch
                     onChange={() => {
                         return true;
                     }}
-                    checked={boolean('Checked', false)}
-                    disabled={boolean('disabled', false)}
-                    {...(checkedIcon !== null ? { checkedIcon } : {})}
-                    {...(uncheckedIcon !== null ? { uncheckedIcon } : {})}
+                    {...(checked ? { checked } : {})}
+                    {...(disabled ? { disabled } : {})}
+                    {...(checkedIcon ? { checkedIcon } : {})}
+                    {...(uncheckedIcon ? { uncheckedIcon } : {})}
                 />
             );
         },
@@ -193,18 +203,25 @@ storiesOf('Form', module)
     )
     .add(
         'Select',
-        () => (
-            <Select
-                isSearchable={boolean('Searchable', false)}
-                isClearable={boolean('Clearable', false)}
-                value={select('Value', {
-                    None: null,
-                    Hello: { value: 'hello', label: 'Hello' },
-                    World: { value: 'world', label: 'World' },
-                })}
-                options={[{ value: 'hello', label: 'Hello' }, { value: 'world', label: 'World' }]}
-            />
-        ),
+        () => {
+            const isSearchable = boolean('Searchable', false);
+            const isClearable = boolean('Clearable', false);
+            return (
+                <Select
+                    {...(isSearchable ? { isSearchable } : {})}
+                    {...(isClearable ? { isClearable } : {})}
+                    value={select('Value', {
+                        None: null,
+                        Hello: { value: 'hello', label: 'Hello' },
+                        World: { value: 'world', label: 'World' },
+                    })}
+                    options={[
+                        { value: 'hello', label: 'Hello' },
+                        { value: 'world', label: 'World' },
+                    ]}
+                />
+            );
+        },
         {
             info: {
                 text: `
