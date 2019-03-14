@@ -18,10 +18,10 @@ class Switch extends Component {
     }
 
     render() {
-        console.log(this.state.checked);
         const { onChange, disabled, ...rest } = this.props;
         return (
             <ReactSwitch
+                checked={this.state.checked}
                 disabled={disabled}
                 onChange={this.handleChange}
                 onColor={colors.GREEN_PRIMARY}
