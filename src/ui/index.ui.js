@@ -42,7 +42,6 @@ const handleClick = (event: MouseEvent) => {
                 to: parseInt(getInputValue('get-account-info-to'), 2) || 1,
                 contractFilter: getInputValue('get-account-info-contract') || '',
             };
-            console.log(payload);
             blockchain.getAccountInfo(payload).then(onResponse).catch(onError);
             break;
         }
