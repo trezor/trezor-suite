@@ -24,6 +24,7 @@ import InvalidPin from './components/Invalid';
 import Icon from './components/Icon';
 import Loader from './components/Loader';
 import Notification from './components/Notification';
+import Prompt from './components/Prompt';
 
 module.exports = {
     colors,
@@ -58,4 +59,5 @@ module.exports = {
     Icon,
     Loader,
     Notification,
+    Prompt,
 };
