@@ -124,7 +124,6 @@ storiesOf('Buttons', module)
                     TOP: icons.TOP,
                     EYE_CROSSED: icons.EYE_CROSSED,
                     EYE: icons.EYE,
-                    CHECKED: icons.CHECKED,
                     BACK: icons.BACK,
                     HELP: icons.HELP,
                     REFRESH: icons.REFRESH,
