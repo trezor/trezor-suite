@@ -25,6 +25,10 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
         case WALLET.SET_LANGUAGE:
             api.dispatch(LocalStorageActions.setLanguage());
             break;
+
+        case WALLET.SET_LOCAL_CURRENCY:
+            api.dispatch(LocalStorageActions.setLocalCurrency());
+            break;
         // first time saving
         case CONNECT.REMEMBER:
             api.dispatch(LocalStorageActions.save());

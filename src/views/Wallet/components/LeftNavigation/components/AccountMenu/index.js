@@ -8,7 +8,8 @@ import styled, { css } from 'styled-components';
 import * as stateUtils from 'reducers/utils';
 import Tooltip from 'components/Tooltip';
 import ICONS from 'config/icons';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { toFiatCurrency } from 'utils/fiatConverter';
 
 import { NavLink } from 'react-router-dom';
 import { findDeviceAccounts } from 'reducers/AccountsReducer';
@@ -104,8 +105,6 @@ const AccountMenu = (props: Props) => {
 
     if (!selected || !network) return null;
 
-    const fiatRate = props.fiat.find(f => f.network === network.shortcut);
-
     const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);
 
     const selectedAccounts = deviceAccounts.map((account, i) => {
@@ -113,6 +112,9 @@ const AccountMenu = (props: Props) => {
         const url: string = location.pathname.replace(/account+\/([0-9]*)/, `account/${i}`);
 
         let balance: ?string = null;
+        const fiatRates = props.fiat.find(f => f.network === network.shortcut);
+        const { localCurrency } = props.wallet;
+        let fiat = '';
         if (account.balance !== '') {
             const pending = stateUtils.getAccountPendingTx(props.pending, account);
             const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, network.symbol);
@@ -121,10 +123,9 @@ const AccountMenu = (props: Props) => {
                 .toString(10);
 
             balance = `${availableBalance} ${network.symbol}`;
-            if (fiatRate) {
-                const accountBalance = new BigNumber(availableBalance);
-                const fiat = accountBalance.times(fiatRate.value).toFixed(2);
-                balance = `${availableBalance} ${network.symbol} / $${fiat}`;
+            if (fiatRates) {
+                fiat = toFiatCurrency(availableBalance, localCurrency, fiatRates);
+                balance = `${availableBalance} ${network.symbol} / `;
             }
         }
 
@@ -140,7 +141,20 @@ const AccountMenu = (props: Props) => {
                             {...l10nCommonMessages.TR_ACCOUNT_HASH}
                             values={{ number: account.index + 1 }}
                         />
-                        {balance && <Text>{balance}</Text>}
+                        {balance && (
+                            <Text>
+                                {balance}
+                                {fiatRates && (
+                                    <FormattedNumber
+                                        currency={localCurrency}
+                                        value={fiat}
+                                        minimumFractionDigits={2}
+                                        // eslint-disable-next-line react/style-prop-object
+                                        style="currency"
+                                    />
+                                )}
+                            </Text>
+                        )}
                         {!balance && (
                             <Text>
                                 <FormattedMessage {...l10nMessages.TR_LOADING_DOT_DOT_DOT} />

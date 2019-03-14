@@ -58,6 +58,10 @@ export type WalletAction =
           type: typeof WALLET.SET_LANGUAGE,
           locale: string,
           messages: { [string]: string },
+      }
+    | {
+          type: typeof WALLET.SET_LOCAL_CURRENCY,
+          localCurrency: string,
       };
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
@@ -103,6 +107,11 @@ export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch)
             console.error(error);
         });
 };
+
+export const setLocalCurrency = (localCurrency: string): WalletAction => ({
+    type: WALLET.SET_LOCAL_CURRENCY,
+    localCurrency: localCurrency.toLowerCase(),
+});
 
 // This method will be called after each DEVICE.CONNECT action
 // if connected device has different "passphrase_protection" settings than saved instances

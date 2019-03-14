@@ -85,6 +85,7 @@ const AccountSummary = (props: Props) => {
                     balance={balance}
                     reserve={reserve}
                     fiat={props.fiat}
+                    localCurrency={props.wallet.localCurrency}
                 />
                 {TMP_SHOW_HISTORY && (
                     <H2Wrapper>

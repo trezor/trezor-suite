@@ -9,7 +9,8 @@ import Input from 'components/inputs/Input';
 import Icon from 'components/Icon';
 import Link from 'components/Link';
 import ICONS from 'config/icons';
-import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT, TRANSITION, SCREEN_SIZE } from 'config/variables';
+import { FIAT_CURRENCIES } from 'config/app';
 import colors from 'config/colors';
 import Title from 'views/Wallet/components/Title';
 import P from 'components/Paragraph';
@@ -41,6 +42,44 @@ const AmountInputLabel = styled.span`
 
 const InputRow = styled.div`
     padding-bottom: 28px;
+`;
+
+const LocalAmountWrapper = styled.div`
+    display: flex;
+    align-self: flex-start;
+    margin-top: 26px;
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        flex: 1 0 100%;
+        justify-content: flex-end;
+        margin-top: 0px;
+        padding-top: 28px;
+    }
+`;
+
+const AmountRow = styled(InputRow)`
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 28px;
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        flex-wrap: wrap;
+    }
+`;
+
+const LocalAmountInput = styled(Input)`
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        flex: 1 1 100%;
+    }
+`;
+
+const LocalCurrencySelect = styled(Select)`
+    min-width: 77px;
+    height: 40px;
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        flex: 1 1 0;
+    }
 `;
 
 const SetMaxAmountButton = styled(Button)`
@@ -187,6 +226,16 @@ const QrButton = styled(Button)`
     padding: 0 10px;
 `;
 
+const EqualsSign = styled.div`
+    align-self: center;
+    padding: 0 10px;
+    font-size: ${FONT_SIZE.BIGGER};
+
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
+        display: none;
+    }
+`;
+
 // render helpers
 const getAddressInputState = (
     address: string,
@@ -230,6 +279,10 @@ const getTokensSelectData = (
     return tokensSelectData;
 };
 
+const buildCurrencyOption = currency => {
+    return { value: currency, label: currency.toUpperCase() };
+};
+
 // stateless component
 const AccountSend = (props: Props) => {
     const device = props.wallet.selectedDevice;
@@ -237,9 +290,11 @@ const AccountSend = (props: Props) => {
     const {
         address,
         amount,
+        localAmount,
         setMax,
         networkSymbol,
         currency,
+        localCurrency,
         feeLevels,
         selectedFeeLevel,
         gasPriceNeedsUpdate,
@@ -255,8 +310,10 @@ const AccountSend = (props: Props) => {
         toggleAdvanced,
         onAddressChange,
         onAmountChange,
+        onLocalAmountChange,
         onSetMax,
         onCurrencyChange,
+        onLocalCurrencyChange,
         onFeeLevelChange,
         updateFeeLevels,
         onSend,
@@ -337,7 +394,7 @@ const AccountSend = (props: Props) => {
                     ]}
                 />
             </InputRow>
-            <InputRow>
+            <AmountRow>
                 <Input
                     state={getAmountInputState(errors.amount, warnings.amount)}
                     autoComplete="off"
@@ -385,7 +442,29 @@ const AccountSend = (props: Props) => {
                         />,
                     ]}
                 />
-            </InputRow>
+                <LocalAmountWrapper>
+                    <EqualsSign>=</EqualsSign>
+                    <LocalAmountInput
+                        state={getAmountInputState(errors.amount, warnings.amount)}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck="false"
+                        value={localAmount}
+                        onChange={event => onLocalAmountChange(event.target.value)}
+                        sideAddons={[
+                            <LocalCurrencySelect
+                                key="local-currency"
+                                isSearchable
+                                isClearable={false}
+                                onChange={option => onLocalCurrencyChange(option)}
+                                value={buildCurrencyOption(localCurrency)}
+                                options={FIAT_CURRENCIES.map(c => buildCurrencyOption(c))}
+                            />,
+                        ]}
+                    />
+                </LocalAmountWrapper>
+            </AmountRow>
 
             <InputRow>
                 <FeeLabelWrapper>
