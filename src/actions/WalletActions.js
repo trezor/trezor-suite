@@ -62,6 +62,9 @@ export type WalletAction =
     | {
           type: typeof WALLET.SET_LOCAL_CURRENCY,
           localCurrency: string,
+      }
+    | {
+          type: typeof WALLET.SET_HIDE_BALANCE,
       };
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {
@@ -103,6 +106,11 @@ export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch)
 export const setLocalCurrency = (localCurrency: string): WalletAction => ({
     type: WALLET.SET_LOCAL_CURRENCY,
     localCurrency: localCurrency.toLowerCase(),
+});
+
+export const setHideBalance = (toggled: boolean): WalletAction => ({
+    type: WALLET.SET_HIDE_BALANCE,
+    toggled,
 });
 
 // This method will be called after each DEVICE.CONNECT action

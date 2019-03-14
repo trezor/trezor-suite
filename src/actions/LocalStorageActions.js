@@ -58,6 +58,7 @@ const KEY_PENDING: string = `${STORAGE_PATH}pending`;
 const KEY_BETA_MODAL: string = '/betaModalPrivacy'; // this key needs to be compatible with "parent" (old) wallet
 const KEY_LANGUAGE: string = `${STORAGE_PATH}language`;
 const KEY_LOCAL_CURRENCY: string = `${STORAGE_PATH}localCurrency`;
+const KEY_HIDE_BALANCE: string = `${STORAGE_PATH}hideBalance`;
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js
 // or
@@ -282,6 +283,11 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
     if (localCurrency) {
         dispatch(WalletActions.setLocalCurrency(JSON.parse(localCurrency)));
     }
+
+    const hideBalance: ?boolean = storageUtils.get(TYPE, KEY_HIDE_BALANCE);
+    if (hideBalance) {
+        dispatch(WalletActions.setHideBalance(JSON.parse(hideBalance)));
+    }
 };
 
 export const loadData = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
@@ -301,6 +307,11 @@ export const hideBetaDisclaimer = (): ThunkAction => (dispatch: Dispatch): void 
 export const setLanguage = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const { language } = getState().wallet;
     storageUtils.set(TYPE, KEY_LANGUAGE, JSON.stringify(language));
+};
+
+export const setHideBalance = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
+    const { hideBalance } = getState().wallet;
+    storageUtils.set(TYPE, KEY_HIDE_BALANCE, JSON.stringify(hideBalance));
 };
 
 export const setLocalCurrency = (): ThunkAction => (
