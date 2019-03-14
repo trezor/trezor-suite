@@ -479,11 +479,11 @@ export class StreamWithEnding<UpdateT, EndingT> {
     }
 
     static fromPromise<U, E>(p: Promise<StreamWithEnding<U, E>>): StreamWithEnding<U, E> {
+        // $FlowIssue the error thing - flow cannot infer
         const res: StreamWithEnding<U, E> = new StreamWithEnding();
         // the rejection will come to the ending promise
         // but if we use filterError, U can never include error
         let disposed = false;
-        // $FlowIssue the error thing - flow cannot infer
         res.stream = Stream.fromPromise(p.then((s) => {
             if (disposed) {
                 throw new Error('disposed'); // will be ignored
