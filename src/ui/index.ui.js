@@ -2,7 +2,6 @@
 
 // Preload workers in webpack, force webpack to compile them
 // $FlowIssue loader notation
-import * as MessageTypes from '../types/messages';
 import BlockbookWorker from 'worker-loader?name=js/blockbook-worker.js!../workers/blockbook/index.js'; // eslint-disable-line no-unused-vars
 // $FlowIssue loader notation
 import RippleWorker from 'worker-loader?name=js/ripple-worker.js!../workers/ripple/index.js'; // eslint-disable-line no-unused-vars
