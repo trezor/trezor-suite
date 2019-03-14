@@ -8,6 +8,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import store, { history } from '../store';
 
 import AppContainer from '../containers/AppContainer';
+import About from '../components/About';
 import Method from '../components/Method';
 
 // export default (
@@ -16,7 +17,7 @@ const App = () => (
         <ConnectedRouter history={ history }>
             <Switch>
                 <AppContainer>
-                    {/* <Route exact path="/" component={ GetPublicKey } /> */}
+                    <Route exact path="/" component={ About } />
                     <Route exact path="/method/:method" component={ Method } />
                 </AppContainer>
             </Switch>
