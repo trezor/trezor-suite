@@ -51,7 +51,6 @@ const buildCurrencyOption = currency => {
 
 const WalletSettings = (props: Props) => (
     <Content>
-        {console.log(props)}
         <Section>
             <CurrencyLabel>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
