@@ -3,13 +3,14 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
+import { FONT_SIZE, SCREEN_SIZE } from 'config/variables';
 import Icon from 'components/Icon';
 import WalletTypeIcon from 'components/images/WalletType';
 import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
+import Backdrop from 'components/Backdrop';
 // import Link from 'components/Link';
 import * as deviceUtils from 'utils/device';
 
@@ -97,6 +98,14 @@ type TransitionMenuProps = {
     animationType: ?string,
     children?: React.Node,
 };
+
+const StyledBackdrop = styled(Backdrop)`
+    display: none;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        display: initial;
+    }
+`;
 
 // TransitionMenu needs to dispatch window.resize event
 // in order to StickyContainer be recalculated
@@ -254,66 +263,74 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             selectedDevice && selectedDevice.connected && selectedDevice.available;
 
         return (
-            <Sidebar isOpen={props.wallet.showSidebar}>
-                <Header
-                    isSelected
-                    testId="Main__page__device__header"
-                    isHoverable={false}
-                    onClickWrapper={() => {
-                        if (isDeviceAccessible || this.props.devices.length > 1) {
-                            this.handleOpen();
-                        }
-                    }}
-                    device={selectedDevice}
-                    disabled={!isDeviceAccessible && this.props.devices.length === 1}
-                    isOpen={this.props.wallet.dropdownOpened}
-                    icon={
-                        <React.Fragment>
-                            {showWalletType && (
-                                <Tooltip
-                                    content={
-                                        <WalletTooltipMsg
-                                            walletType={walletType}
-                                            isDeviceReady={isDeviceReady}
-                                        />
-                                    }
-                                    maxWidth={200}
-                                    placement="bottom"
-                                    enterDelayMs={0.5}
-                                >
-                                    <WalletTypeIconWrapper>
-                                        <WalletTypeIcon
-                                            onClick={e => {
-                                                if (selectedDevice && isDeviceReady) {
-                                                    this.props.duplicateDevice(selectedDevice);
-                                                    e.stopPropagation();
+            <>
+                <StyledBackdrop
+                    show={props.wallet.showSidebar}
+                    onClick={props.toggleSidebar}
+                    animated
+                />
+                <Sidebar isOpen={props.wallet.showSidebar}>
+                    <Header
+                        isSelected
+                        testId="Main__page__device__header"
+                        isHoverable={false}
+                        onClickWrapper={() => {
+                            if (isDeviceAccessible || this.props.devices.length > 1) {
+                                this.handleOpen();
+                            }
+                        }}
+                        device={selectedDevice}
+                        disabled={!isDeviceAccessible && this.props.devices.length === 1}
+                        isOpen={this.props.wallet.dropdownOpened}
+                        icon={
+                            <React.Fragment>
+                                {showWalletType && (
+                                    <Tooltip
+                                        content={
+                                            <WalletTooltipMsg
+                                                walletType={walletType}
+                                                isDeviceReady={isDeviceReady}
+                                            />
+                                        }
+                                        maxWidth={200}
+                                        placement="bottom"
+                                        enterDelayMs={0.5}
+                                    >
+                                        <WalletTypeIconWrapper>
+                                            <WalletTypeIcon
+                                                onClick={e => {
+                                                    if (selectedDevice && isDeviceReady) {
+                                                        this.props.duplicateDevice(selectedDevice);
+                                                        e.stopPropagation();
+                                                    }
+                                                }}
+                                                hoverColor={
+                                                    isDeviceReady
+                                                        ? colors.TEXT_PRIMARY
+                                                        : colors.TEXT_SECONDARY
                                                 }
-                                            }}
-                                            hoverColor={
-                                                isDeviceReady
-                                                    ? colors.TEXT_PRIMARY
-                                                    : colors.TEXT_SECONDARY
-                                            }
-                                            type={walletType}
-                                            size={25}
-                                            color={colors.TEXT_SECONDARY}
-                                        />
-                                    </WalletTypeIconWrapper>
-                                </Tooltip>
-                            )}
-                            {this.props.devices.length > 1 && (
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage {...l10nMessages.TR_NUMBER_OF_DEVICES} />
-                                    }
-                                    maxWidth={200}
-                                    placement="bottom"
-                                    enterDelayMs={0.5}
-                                >
-                                    <Counter>{this.props.devices.length}</Counter>
-                                </Tooltip>
-                            )}
-                            {/* <Tooltip
+                                                type={walletType}
+                                                size={25}
+                                                color={colors.TEXT_SECONDARY}
+                                            />
+                                        </WalletTypeIconWrapper>
+                                    </Tooltip>
+                                )}
+                                {this.props.devices.length > 1 && (
+                                    <Tooltip
+                                        content={
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_NUMBER_OF_DEVICES}
+                                            />
+                                        }
+                                        maxWidth={200}
+                                        placement="bottom"
+                                        enterDelayMs={0.5}
+                                    >
+                                        <Counter>{this.props.devices.length}</Counter>
+                                    </Tooltip>
+                                )}
+                                {/* <Tooltip
                                 content={
                                     <FormattedMessage
                                         {...l10nCommonMessages.TR_APPLICATION_SETTINGS}
@@ -334,34 +351,35 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     </Link>
                                 </WalletTypeIconWrapper>
                             </Tooltip> */}
-                            <Icon
-                                canAnimate={this.state.clicked === true}
-                                isActive={this.props.wallet.dropdownOpened}
-                                size={25}
-                                color={colors.TEXT_SECONDARY}
-                                icon={icons.ARROW_DOWN}
-                            />
-                        </React.Fragment>
-                    }
-                    {...this.props}
-                />
-                <Body minHeight={this.state.bodyMinHeight}>
-                    {dropdownOpened && <DeviceMenu ref={this.deviceMenuRef} {...this.props} />}
-                    {isDeviceAccessible && menu}
-                </Body>
-                <Footer data-test="Main__page__footer" key="sticky-footer">
-                    <Help>
-                        <A
-                            href="https://trezor.io/support/"
-                            target="_blank"
-                            rel="noreferrer noopener"
-                        >
-                            <Icon size={26} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />
-                            <FormattedMessage {...l10nMessages.TR_NEED_HELP} />
-                        </A>
-                    </Help>
-                </Footer>
-            </Sidebar>
+                                <Icon
+                                    canAnimate={this.state.clicked === true}
+                                    isActive={this.props.wallet.dropdownOpened}
+                                    size={25}
+                                    color={colors.TEXT_SECONDARY}
+                                    icon={icons.ARROW_DOWN}
+                                />
+                            </React.Fragment>
+                        }
+                        {...this.props}
+                    />
+                    <Body minHeight={this.state.bodyMinHeight}>
+                        {dropdownOpened && <DeviceMenu ref={this.deviceMenuRef} {...this.props} />}
+                        {isDeviceAccessible && menu}
+                    </Body>
+                    <Footer data-test="Main__page__footer" key="sticky-footer">
+                        <Help>
+                            <A
+                                href="https://trezor.io/support/"
+                                target="_blank"
+                                rel="noreferrer noopener"
+                            >
+                                <Icon size={26} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />
+                                <FormattedMessage {...l10nMessages.TR_NEED_HELP} />
+                            </A>
+                        </Help>
+                    </Footer>
+                </Sidebar>
+            </>
         );
     }
 }
