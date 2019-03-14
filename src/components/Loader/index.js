@@ -34,6 +34,7 @@ const CircleWrapper = styled.circle`
     ${props =>
         props.isPath &&
         css`
+            stroke: ${colors.GREEN_COLOR};
             stroke-width: ${props.strokeWidth}px;
             stroke-dasharray: 1, 200;
             stroke-dashoffset: 0;
