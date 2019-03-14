@@ -36,10 +36,11 @@ const handleClick = (event: MouseEvent) => {
             const payload = {
                 descriptor: getInputValue('get-account-info-address'),
                 details: getInputValue('get-account-info-mode') || 'basic',
+                pageSize: 10,
                 tokens: 'derived',
-                page: parseInt(getInputValue('get-account-info-page'), 2) || 1,
-                from: parseInt(getInputValue('get-account-info-from'), 2) || 1,
-                to: parseInt(getInputValue('get-account-info-to'), 2) || 1,
+                page: parseInt(getInputValue('get-account-info-page'), 2) || 10,
+                from: parseInt(getInputValue('get-account-info-from'), 2) ,
+                to: parseInt(getInputValue('get-account-info-to'), 2) ,
                 contractFilter: getInputValue('get-account-info-contract') || '',
             };
             blockchain.getAccountInfo(payload).then(onResponse).catch(onError);
