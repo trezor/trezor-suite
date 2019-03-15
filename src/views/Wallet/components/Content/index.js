@@ -18,6 +18,7 @@ import FirmwareUnsupported from './components/FirmwareUnsupported';
 import l10nMessages from './index.messages';
 
 type Props = {
+    className?: string,
     children?: React.Node,
     isLoading?: boolean,
     loader?: $ElementType<$ElementType<State, 'selectedAccount'>, 'loader'>,
@@ -76,8 +77,8 @@ const getExceptionPage = exceptionPage => {
     }
 };
 
-const Content = ({ children, isLoading = false, loader, exceptionPage }: Props) => (
-    <Wrapper>
+const Content = ({ className, children, isLoading = false, loader, exceptionPage }: Props) => (
+    <Wrapper className={className}>
         {!isLoading && children}
         {isLoading && exceptionPage && getExceptionPage(exceptionPage)}
         {isLoading && loader && (
@@ -98,6 +99,7 @@ const Content = ({ children, isLoading = false, loader, exceptionPage }: Props) 
 
 Content.propTypes = {
     children: PropTypes.oneOfType([PropTypes.element, PropTypes.array]),
+    className: PropTypes.string,
     isLoading: PropTypes.bool,
     loader: PropTypes.object,
     exceptionPage: PropTypes.object,
