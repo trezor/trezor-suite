@@ -167,13 +167,17 @@ storiesOf('Form', module)
                 },
                 null
             );
+            const isDisabled = boolean('Disabled', false);
+            const isSmall = boolean('isSmall', false);
             return (
                 <Switch
+                    key={`force-unmount-${isSmall}`}
                     onChange={() => {
                         return true;
                     }}
                     checked={boolean('Checked', false)}
-                    disabled={boolean('disabled', false)}
+                    {...(isDisabled ? { isDisabled } : {})}
+                    {...(isSmall ? { isSmall } : {})}
                     {...(checkedIcon !== null ? { checkedIcon } : {})}
                     {...(uncheckedIcon !== null ? { uncheckedIcon } : {})}
                 />
