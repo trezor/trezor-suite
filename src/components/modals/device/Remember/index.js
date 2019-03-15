@@ -60,8 +60,8 @@ const StyledLoader = styled(Loader)`
 `;
 
 const ButtonWithLoader = styled(Button)`
-    padding-top: 7px;
-    padding-bottom: 7px;
+    padding-top: 6px;
+    padding-bottom: 6px;
 `;
 
 class RememberDevice extends PureComponent<Props, State> {
@@ -151,7 +151,7 @@ class RememberDevice extends PureComponent<Props, State> {
                             <StyledLoader
                                 isSmallText
                                 isWhiteText
-                                size={26}
+                                size={28}
                                 text={this.state.countdown.toString()}
                             />
                         </ButtonContent>
