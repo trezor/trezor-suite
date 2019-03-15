@@ -149,6 +149,8 @@ storiesOf('Typography', module)
     .add(
         'Link',
         () => {
+            const isGreen = true;
+            const isGray = true;
             const color = radios(
                 'Color',
                 {
@@ -160,27 +162,23 @@ storiesOf('Typography', module)
             const target = select(
                 'Target',
                 {
-                    None: '',
+                    None: null,
                     Blank: '_blank',
                     Self: '_self',
                     Parent: '_parent',
                     Top: '_top',
                 },
-                ''
+                null
             );
             const href = text('URL', 'https://trezor.io');
             const linkText = text('Text', 'This is a link.');
 
-            if (color === 'green') {
-                return (
-                    <Link href={href} target={target} isGreen>
-                        {linkText}
-                    </Link>
-                );
-            }
-
             return (
-                <Link href={href} target={target} isGray>
+                <Link
+                    href={href}
+                    {...(target ? { target } : {})}
+                    {...(color === 'green' ? { isGreen } : { isGray })}
+                >
                     {linkText}
                 </Link>
             );
