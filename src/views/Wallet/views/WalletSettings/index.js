@@ -20,9 +20,12 @@ import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
 import type { Props } from './Container';
 
+const StyledContent = styled(Content)`
+    max-width: 800px;
+`;
+
 const CurrencySelect = styled(Select)`
     min-width: 77px;
-    /* max-width: 200px; */
 `;
 
 const Label = styled.div`
@@ -72,7 +75,7 @@ const buildCurrencyOption = currency => {
 };
 
 const WalletSettings = (props: Props) => (
-    <Content>
+    <StyledContent>
         <Section>
             <LabelTop>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
@@ -117,7 +120,7 @@ const WalletSettings = (props: Props) => (
                 </Link>
             </Buttons>
         </Actions>
-    </Content>
+    </StyledContent>
 );
 
 export default WalletSettings;
