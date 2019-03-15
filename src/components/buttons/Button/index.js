@@ -9,6 +9,7 @@ import colors from 'config/colors';
 const Wrapper = styled.button`
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 11px 24px;
     border-radius: 3px;
     font-size: ${FONT_SIZE.BASE};
