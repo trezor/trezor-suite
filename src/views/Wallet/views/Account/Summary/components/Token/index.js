@@ -1,15 +1,18 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
+import { FormattedMessage } from 'react-intl';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
 import colors from 'config/colors';
 import { FONT_WEIGHT } from 'config/variables';
 import Button from 'components/Button';
+import Tooltip from 'components/Tooltip';
 import Icon from 'components/Icon';
 import ICONS from 'config/icons';
 import * as stateUtils from 'reducers/utils';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
+import l10nCommonMessages from 'views/common.messages';
 
 const TokenWrapper = styled.div`
     padding: 14px 0;
@@ -60,6 +63,10 @@ const RemoveTokenButton = styled(Button)`
     padding: 0 0 0 10px;
 `;
 
+const TooltipIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
 class AddedToken extends PureComponent {
     getTokenBalance(token) {
         const pendingAmount = stateUtils.getPendingAmount(this.props.pending, token.symbol, true);
@@ -85,7 +92,21 @@ class AddedToken extends PureComponent {
                 <TokenName>{this.props.token.name}</TokenName>
                 <TokenBalance>
                     {this.props.hideBalance ? (
-                        <Icon icon={ICONS.EYE_CROSSED} size={25} color={colors.TEXT_SECONDARY} />
+                        <Tooltip
+                            maxWidth={200}
+                            placement="top"
+                            content={
+                                <FormattedMessage
+                                    {...l10nCommonMessages.TR_THE_ACCOUNT_BALANCE_IS_HIDDEN}
+                                />
+                            }
+                        >
+                            <TooltipIcon
+                                icon={ICONS.EYE_CROSSED}
+                                size={25}
+                                color={colors.TEXT_SECONDARY}
+                            />
+                        </Tooltip>
                     ) : (
                         `${this.getTokenBalance(this.props.token)}  ${this.props.token.symbol}`
                     )}

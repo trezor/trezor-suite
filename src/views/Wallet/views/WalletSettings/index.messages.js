@@ -9,7 +9,8 @@ const definedMessages: Messages = defineMessages({
     },
     TR_HIDE_BALANCE_EXPLAINED: {
         id: 'TR_HIDE_BALANCE_EXPLAINED',
-        defaultMessage: 'Hides your account balance so nobody sees how much of a whale you are!',
+        defaultMessage:
+            "Hides your account balance so you don't have to worry about anyone looking over your shoulder.",
     },
     TR_THE_CHANGES_ARE_SAVED: {
         id: 'TR_THE_CHANGES_ARE_SAVED',
