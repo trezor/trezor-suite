@@ -112,6 +112,7 @@ class AccountBalance extends PureComponent<Props, State> {
     componentDidUpdate(prevProps: Props) {
         console.log(this.props.isHidden);
         if (prevProps.isHidden !== this.props.isHidden) {
+            // eslint-disable-next-line react/no-did-update-set-state
             this.setState({
                 isHidden: this.props.isHidden,
             });
