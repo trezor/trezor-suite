@@ -19,11 +19,13 @@ class Switch extends Component {
 
     render() {
         const { onChange, disabled, isSmall, ...rest } = this.props;
-        const smallProps = isSmall ? {
-            width: 36,
-            height: 18,
-            handleDiameter: 14,
-        } : {};
+        const smallProps = isSmall
+            ? {
+                  width: 36,
+                  height: 18,
+                  handleDiameter: 14,
+              }
+            : {};
         return (
             <ReactSwitch
                 checked={this.state.checked}
