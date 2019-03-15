@@ -311,7 +311,7 @@ export const setLanguage = (): ThunkAction => (dispatch: Dispatch, getState: Get
 
 export const setHideBalance = (): ThunkAction => (dispatch: Dispatch, getState: GetState): void => {
     const { hideBalance } = getState().wallet;
-    storageUtils.set(TYPE, KEY_HIDE_BALANCE, JSON.stringify(hideBalance));
+    storageUtils.set(TYPE, KEY_HIDE_BALANCE, hideBalance);
 };
 
 export const setLocalCurrency = (): ThunkAction => (
