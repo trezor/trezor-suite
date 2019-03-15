@@ -30,16 +30,22 @@ storiesOf('Other', module)
     .addDecorator(withKnobs)
     .add(
         'Loader',
-        () => (
-            <Loader
-                size={number('Size', 100)}
-                strokeWidth={number('Stroke width', 1)}
-                text={text('Text', 'loading')}
-                isWhiteText={boolean('White text', false)}
-                isSmallText={boolean('Small text', false)}
-                transparentRoute={boolean('Transparent route', false)}
-            />
-        ),
+        () => {
+            const isWhiteText = boolean('White text', false);
+            const isSmallText = boolean('Small text', false);
+            const transparentRoute = boolean('Transparent route', false);
+
+            return (
+                <Loader
+                    size={number('Size', 100)}
+                    strokeWidth={number('Stroke width', 1)}
+                    text={text('Text', 'loading')}
+                    {...(isWhiteText ? { isWhiteText } : {})}
+                    {...(isSmallText ? { isSmallText } : {})}
+                    {...(transparentRoute ? { transparentRoute } : {})}
+                />
+            );
+        },
         {
             info: {
                 text: `
