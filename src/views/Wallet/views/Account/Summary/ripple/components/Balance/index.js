@@ -5,9 +5,11 @@ import styled from 'styled-components';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import ICONS from 'config/icons';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import Tooltip from 'components/Tooltip';
 import type { Network, State as ReducersState } from 'flowtype';
+import l10nMessages from '../../../components/Balance/index.messages';
 
 type Props = {
     network: Network,
@@ -154,7 +156,17 @@ class AccountBalance extends PureComponent<Props, State> {
                             <Label>Balance</Label>
                             <TooltipWrapper>
                                 <FiatValue>
-                                    {fiatRates ? `${fiat} ${localCurrency}` : 'N/A'}
+                                    {fiatRates ? (
+                                        <FormattedNumber
+                                            currency={localCurrency}
+                                            value={fiat}
+                                            minimumFractionDigits={2}
+                                            // eslint-disable-next-line react/style-prop-object
+                                            style="currency"
+                                        />
+                                    ) : (
+                                        'N/A'
+                                    )}
                                 </FiatValue>
                                 {!fiatRates && NoRatesTooltip}
                             </TooltipWrapper>
@@ -164,7 +176,9 @@ class AccountBalance extends PureComponent<Props, State> {
                         </BalanceWrapper>
                         {this.props.reserve !== '0' && (
                             <BalanceWrapper>
-                                <Label>Reserve</Label>
+                                <Label>
+                                    <FormattedMessage {...l10nMessages.TR_RESERVE} />
+                                </Label>
                                 <FiatValueRate>
                                     {this.props.reserve} {network.symbol}
                                 </FiatValueRate>
@@ -172,10 +186,22 @@ class AccountBalance extends PureComponent<Props, State> {
                         )}
 
                         <BalanceRateWrapper>
-                            <Label>Rate</Label>
+                            <Label>
+                                <FormattedMessage {...l10nMessages.TR_RATE} />
+                            </Label>
                             <TooltipWrapper>
                                 <FiatValueRate>
-                                    {fiatRates ? `${fiatRateValue} ${localCurrency}` : 'N/A'}
+                                    {fiatRates ? (
+                                        <FormattedNumber
+                                            currency={localCurrency}
+                                            value={fiatRateValue}
+                                            minimumFractionDigits={2}
+                                            // eslint-disable-next-line react/style-prop-object
+                                            style="currency"
+                                        />
+                                    ) : (
+                                        'N/A'
+                                    )}
                                 </FiatValueRate>
                                 {!fiatRates && NoRatesTooltip}
                             </TooltipWrapper>
