@@ -93,13 +93,21 @@ export const toggleSidebar = (): WalletAction => ({
 
 export const fetchLocale = (locale: string): ThunkAction => (dispatch: Dispatch): void => {
     fetch(`./l10n/${locale}.json`)
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw Error(response.statusText);
+        })
         .then(messages => {
             dispatch({
                 type: WALLET.SET_LANGUAGE,
                 locale,
                 messages,
             });
+        })
+        .catch(error => {
+            console.error(error);
         });
 };
 
