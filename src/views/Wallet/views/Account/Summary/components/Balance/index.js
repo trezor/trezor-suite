@@ -111,7 +111,7 @@ class AccountBalance extends PureComponent<Props, State> {
         };
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Props) {
         if (prevProps.isHidden !== this.props.isHidden) {
             this.setState({
                 isHidden: this.props.isHidden,

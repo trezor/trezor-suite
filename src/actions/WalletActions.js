@@ -65,6 +65,7 @@ export type WalletAction =
       }
     | {
           type: typeof WALLET.SET_HIDE_BALANCE,
+          toggled: boolean,
       };
 
 export const init = (): ThunkAction => (dispatch: Dispatch): void => {

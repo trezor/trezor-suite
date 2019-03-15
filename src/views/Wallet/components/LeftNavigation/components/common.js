@@ -3,7 +3,7 @@ import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import * as DiscoveryActions from 'actions/DiscoveryActions';
 import * as RouterActions from 'actions/RouterActions';
 import * as ModalActions from 'actions/ModalActions';
-import { toggleDeviceDropdown } from 'actions/WalletActions';
+import * as WalletActions from 'actions/WalletActions';
 import type { State } from 'flowtype';
 
 export type StateProps = {
@@ -19,7 +19,9 @@ export type StateProps = {
 };
 
 export type DispatchProps = {
-    toggleDeviceDropdown: typeof toggleDeviceDropdown,
+    toggleDeviceDropdown: typeof WalletActions.toggleDeviceDropdown,
+    toggleSidebar: typeof WalletActions.toggleSidebar,
+    setHideBalance: typeof WalletActions.setHideBalance,
     addAccount: typeof DiscoveryActions.addAccount,
     acquireDevice: typeof TrezorConnectActions.acquire,
     forgetDevice: typeof TrezorConnectActions.forget,

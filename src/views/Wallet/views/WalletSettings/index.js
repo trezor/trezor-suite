@@ -4,8 +4,16 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Content from 'views/Wallet/components/Content';
-import { Switch, Select, Link, Button, Tooltip, Icon, icons as ICONS } from 'trezor-ui-components';
-import colors from 'config/colors';
+import {
+    Switch,
+    Select,
+    Link,
+    Button,
+    Tooltip,
+    Icon,
+    icons as ICONS,
+    colors,
+} from 'trezor-ui-components';
 import { FIAT_CURRENCIES } from 'config/app';
 import { FONT_SIZE } from 'config/variables';
 import l10nCommonMessages from 'views/common.messages';
