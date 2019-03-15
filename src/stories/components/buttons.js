@@ -146,23 +146,16 @@ storiesOf('Buttons', module)
                 null
             );
 
-            if (isInverse) {
-                return (
-                    <Button isDisabled={isDisabled} isInverse={isInverse} icon={icon}>
-                        {buttonText}
-                    </Button>
-                );
-            }
-
             const isTransparent = boolean('Transparent', false);
             const isWhite = boolean('White', false);
 
             return (
                 <Button
-                    isDisabled={isDisabled}
-                    isTransparent={isTransparent}
-                    isWhite={isWhite}
-                    icon={icon}
+                    {...(isDisabled ? { isDisabled } : {})}
+                    {...(isTransparent ? { isTransparent } : {})}
+                    {...(isWhite ? { isWhite } : {})}
+                    {...(isInverse ? { isInverse } : {})}
+                    {...(icon ? { icon } : {})}
                 >
                     {buttonText}
                 </Button>
@@ -202,17 +195,14 @@ storiesOf('Buttons', module)
                 },
                 'success'
             );
-            const loading = boolean('Loading', false);
+            const isLoading = boolean('Loading', false);
             const buttonText = text('Text', 'Confirm!');
 
-            if (loading) {
-                return (
-                    <ButtonNotification type={type} isLoading>
-                        {buttonText}
-                    </ButtonNotification>
-                );
-            }
-            return <ButtonNotification type={type}>{buttonText}</ButtonNotification>;
+            return (
+                <ButtonNotification type={type} {...(isLoading ? { isLoading } : {})}>
+                    {buttonText}
+                </ButtonNotification>
+            );
         },
         {
             info: {
