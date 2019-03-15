@@ -183,7 +183,7 @@ storiesOf('Form', module)
                     onChange={() => {
                         return true;
                     }}
-                    checked={boolean('Checked', false)}
+                    checked={checked}
                     {...(isDisabled ? { isDisabled } : {})}
                     {...(isSmall ? { isSmall } : {})}
                     {...(checkedIcon !== null ? { checkedIcon } : {})}
