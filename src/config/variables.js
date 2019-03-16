@@ -63,7 +63,7 @@ export const BORDER_WIDTH = {
 };
 
 export const LEFT_NAVIGATION_ROW = {
-    PADDING: '16px 24px',
+    PADDING: '0px 24px',
 };
 
 const TRANSITION_TIME = {
