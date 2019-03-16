@@ -174,7 +174,7 @@ storiesOf('Form', module)
                 },
                 null
             );
-            const isDisabled = boolean('Disabled', false);
+            const disabled = boolean('Disabled', false);
             const isSmall = boolean('isSmall', false);
             const checked = boolean('Checked', false);
             return (
@@ -184,7 +184,7 @@ storiesOf('Form', module)
                         return true;
                     }}
                     checked={checked}
-                    {...(isDisabled ? { isDisabled } : {})}
+                    {...(disabled ? { disabled } : {})}
                     {...(isSmall ? { isSmall } : {})}
                     {...(checkedIcon !== null ? { checkedIcon } : {})}
                     {...(uncheckedIcon !== null ? { uncheckedIcon } : {})}
