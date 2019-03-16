@@ -7,6 +7,9 @@ import React from 'react';
 import colors from 'config/colors';
 
 const Wrapper = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 11px 24px;
     border-radius: 3px;
     font-size: ${FONT_SIZE.BASE};
@@ -33,15 +36,8 @@ const Wrapper = styled.button`
     ${props =>
         props.icon &&
         css`
-            position: relative;
-            padding: 12px 24px 12px 40px;
-
             svg {
-                position: absolute;
-                top: 50%;
-                margin-top: -12px;
-                left: 12px;
-
+                margin-right: 0.8rem;
                 path {
                     transition: ${TRANSITION.HOVER};
                 }
@@ -181,7 +177,7 @@ const Button = ({
         {...rest}
     >
         {icon && (
-            <Icon icon={icon} size={24} color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE} />
+            <Icon icon={icon} size={14} color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE} />
         )}
         {children}
     </Wrapper>
@@ -198,7 +194,7 @@ Button.propTypes = {
     isWhite: PropTypes.bool,
     isTransparent: PropTypes.bool,
     isInverse: PropTypes.bool,
-    icon: PropTypes.array,
+    icon: PropTypes.object,
 };
 
 export default Button;

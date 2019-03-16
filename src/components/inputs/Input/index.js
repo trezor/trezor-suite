@@ -88,8 +88,8 @@ const StyledInput = styled.input`
 const StyledIcon = styled(Icon)`
     position: absolute;
     left: auto;
-    top: 3px;
-    right: 10px;
+    top: 12px;
+    right: 15px;
 `;
 
 const BottomText = styled.span`
@@ -179,6 +179,7 @@ class Input extends PureComponent {
                             <StyledIcon
                                 icon={this.getIcon(this.props.state)}
                                 color={this.getColor(this.props.state)}
+                                size={16}
                             />
                         )}
                         <Overlay isPartiallyHidden={this.props.isPartiallyHidden} />

@@ -49,7 +49,7 @@ const Icons = styled.div`
 
 const Item = styled.div`
     flex-basis: 20%;
-    padding: 0.5rem 0 1rem;
+    padding: 1rem 0 2rem;
     text-align: center;
 `;
 

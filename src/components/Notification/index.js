@@ -54,7 +54,6 @@ const CloseClick = styled.div`
 
 const StyledIcon = styled(Icon)`
     position: relative;
-    top: -7px;
     min-width: 20px;
 `;
 
@@ -90,7 +89,7 @@ const Notification = props => {
                 {props.loading && <Loader size={50} />}
                 {props.cancelable && (
                     <CloseClick onClick={() => close()}>
-                        <Icon color={getPrimaryColor(props.type)} icon={icons.CLOSE} size={20} />
+                        <Icon color={getPrimaryColor(props.type)} icon={icons.CLOSE} size={10} />
                     </CloseClick>
                 )}
                 <Body>
@@ -98,6 +97,7 @@ const Notification = props => {
                         <StyledIcon
                             color={getPrimaryColor(props.type)}
                             icon={getIcon(props.type)}
+                            size={16}
                         />
                     </IconWrapper>
                     <Texts>

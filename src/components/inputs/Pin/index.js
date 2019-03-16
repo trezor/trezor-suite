@@ -26,7 +26,7 @@ const StyledInput = styled.input`
 
 const StyledIcon = styled(Icon)`
     position: absolute;
-    top: 10px;
+    top: 14px;
     right: 15px;
     cursor: pointer;
 `;

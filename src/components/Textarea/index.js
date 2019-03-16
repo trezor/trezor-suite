@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Textarea from 'react-textarea-autosize';
 import colors from 'config/colors';
-import ICONS from 'config/icons';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -147,18 +146,6 @@ const ArrowUp = styled.div`
 `;
 
 class TextArea extends PureComponent {
-    getIcon(inputState) {
-        let icon = [];
-        if (inputState === 'success') {
-            icon = ICONS.SUCCESS;
-        } else if (inputState === 'warning') {
-            icon = ICONS.WARNING;
-        } else if (inputState === 'error') {
-            icon = ICONS.ERROR;
-        }
-        return icon;
-    }
-
     getColor(inputState) {
         let color = '';
         if (inputState === 'success') {

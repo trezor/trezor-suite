@@ -19,8 +19,6 @@ const Wrapper = styled.div`
     }
 `;
 
-const Tick = styled.div``;
-
 const IconWrapper = styled.div`
     display: flex;
     border-radius: 2px;
@@ -69,14 +67,12 @@ class Checkbox extends PureComponent {
             <Wrapper onClick={onClick} onKeyUp={event => this.handleKeyboard(event)} tabIndex={0}>
                 <IconWrapper isChecked={isChecked}>
                     {isChecked && (
-                        <Tick>
-                            <Icon
-                                hoverColor={colors.WHITE}
-                                size={26}
-                                color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
-                                icon={icons.SUCCESS}
-                            />
-                        </Tick>
+                        <Icon
+                            hoverColor={colors.WHITE}
+                            size={10}
+                            color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
+                            icon={icons.SUCCESS}
+                        />
                     )}
                 </IconWrapper>
                 <Label isChecked={isChecked}>{children}</Label>
