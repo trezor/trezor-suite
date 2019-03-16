@@ -15,6 +15,8 @@ const CoinNameWrapper = styled.div`
 
 const RowCoinWrapper = styled.div`
     padding: ${LEFT_NAVIGATION_ROW.PADDING};
+    padding-top: 0;
+    padding-bottom: 0;
     height: 44px;
     display: block;
     font-size: ${FONT_SIZE.BIG};
