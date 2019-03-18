@@ -3,13 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import colors from 'config/colors';
-import icons from 'config/icons';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
-import Button from 'components/Button';
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
+import { Button, H5, Link, P, Icon, icons, colors } from 'trezor-ui-components';
 import coins from 'constants/coins';
 
 import TezosImage from './images/xtz.png';
@@ -50,7 +44,7 @@ const TezosWallet = (props: Props) => (
             <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
         <Img src={TezosImage} />
-        <H2>Tezos wallet</H2>
+        <H5>Tezos wallet</H5>
         <P isSmaller>You will be redirected to external wallet</P>
 
         <Link href={coins.find(i => i.id === 'xtz').url}>

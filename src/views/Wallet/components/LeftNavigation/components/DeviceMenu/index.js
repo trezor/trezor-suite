@@ -4,11 +4,10 @@ import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import { FormattedMessage } from 'react-intl';
 
-import COLORS from 'config/colors';
+import { Button, colors as COLORS } from 'trezor-ui-components';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { SLIDE_DOWN } from 'config/animations';
 
-import Button from 'components/Button';
 import * as deviceUtils from 'utils/device';
 import l10nCommonMessages from 'views/common.messages';
 import MenuItems from './components/MenuItems';

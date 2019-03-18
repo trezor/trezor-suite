@@ -2,14 +2,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-
-import colors from 'config/colors';
-import icons from 'config/icons';
-
-import { H2 } from 'components/Heading';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
-import Button from 'components/Button';
+import { Button, Link, Icon, H5, icons, colors } from 'trezor-ui-components';
 import LandingWrapper from 'views/Landing/components/LandingWrapper';
 
 const Wrapper = styled.div`
@@ -24,7 +17,7 @@ const Import = () => (
     <LandingWrapper>
         <Wrapper>
             <Icon size={60} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
-            <H2>Import tool is under construction</H2>
+            <H5>Import tool is under construction</H5>
             <Link to="/">
                 <Button>Take me back</Button>
             </Link>

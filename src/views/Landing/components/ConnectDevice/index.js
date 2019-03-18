@@ -4,14 +4,12 @@ import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import l10nCommonMessages from 'views/common.messages';
-import P from 'components/Paragraph';
-import Button from 'components/Button';
-import { H2 } from 'components/Heading';
+
+import { Button, P, H5, Link, colors } from 'trezor-ui-components';
+
 import { PULSATE } from 'config/animations';
-import colors from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 import CaseImage from 'images/macbook.png';
-import Link from 'components/Link';
 
 import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
@@ -142,9 +140,9 @@ class ConnectDevice extends PureComponent<Props> {
         return (
             <StyledConnectDevice>
                 <Title>
-                    <H2 claim>
+                    <H5 claim>
                         <FormattedMessage {...l10nMessages.TR_THE_PRIVATE_BANK_IN_YOUR_HANDS} />
-                    </H2>
+                    </H5>
                     <P>
                         <FormattedMessage {...l10nMessages.TR_TREZOR_WALLET_IS_AN_EASY_DASH} />
                     </P>

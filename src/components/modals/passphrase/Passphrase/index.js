@@ -3,15 +3,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-
-import colors from 'config/colors';
-import { FONT_SIZE, TRANSITION } from 'config/variables';
-
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Checkbox from 'components/Checkbox';
-import Button from 'components/Button';
-import Input from 'components/inputs/Input';
+import { Button, Input, Checkbox, P, H5, colors } from 'trezor-ui-components';
+import { FONT_SIZE } from 'config/variables';
 
 import type { TrezorDevice } from 'flowtype';
 import l10nCommonMessages from 'views/common.messages';
@@ -68,24 +61,13 @@ const Footer = styled.div`
 const LinkButton = styled(Button)`
     padding: 0;
     margin: 0;
-    text-decoration: none;
-    cursor: pointer;
-    transition: ${TRANSITION.HOVER};
     font-size: ${FONT_SIZE.SMALL};
-    border-radius: 0;
-    border-bottom: 1px solid ${colors.GREEN_PRIMARY};
-    background: transparent;
+    text-decoration: underline;
+    color: ${colors.GREEN_PRIMARY};
 
-    &,
-    &:visited,
-    &:active,
     &:hover {
         color: ${colors.GREEN_PRIMARY};
-    }
-
-    &:hover {
-        border-color: transparent;
-        background: transparent;
+        text-decoration: none;
     }
 `;
 
@@ -208,14 +190,14 @@ class Passphrase extends PureComponent<Props, State> {
     render() {
         return (
             <Wrapper>
-                <H2>
+                <H5>
                     <FormattedMessage
                         {...l10nMessages.TR_ENTER_DEVICE_PASSPHRASE}
                         values={{
                             deviceLabel: this.state.deviceLabel,
                         }}
                     />
-                </H2>
+                </H5>
                 <P isSmaller>
                     <FormattedMessage {...l10nMessages.TR_NOTE_COLON_PASSPHRASE} />{' '}
                     <FormattedMessage {...l10nMessages.TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA} />
@@ -276,12 +258,16 @@ class Passphrase extends PureComponent<Props, State> {
                     </Button>
                 </Row>
                 <Footer>
-                    <P isSmaller>
+                    <P size="small">
                         <FormattedMessage
                             {...l10nMessages.TR_CHANGED_YOUR_MIND}
                             values={{
                                 TR_GO_TO_STANDARD_WALLET: (
-                                    <LinkButton isGreen onClick={() => this.submitPassphrase(true)}>
+                                    <LinkButton
+                                        isGreen
+                                        isTransparent
+                                        onClick={() => this.submitPassphrase(true)}
+                                    >
                                         <FormattedMessage
                                             {...l10nCommonMessages.TR_GO_TO_STANDARD_WALLET}
                                         />

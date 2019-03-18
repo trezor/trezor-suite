@@ -2,15 +2,9 @@
 
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import colors from 'config/colors';
+import { Button, Select, P, Link, Icon, H1, icons as ICONS, colors } from 'trezor-ui-components';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import { Select } from 'components/Select';
-import Link from 'components/Link';
-import { H1 } from 'components/Heading';
-import Button from 'components/Button';
-import P from 'components/Paragraph';
-import Icon from 'components/Icon';
-import ICONS from 'config/icons';
+
 import LandingWrapper from 'views/Landing/components/LandingWrapper';
 import * as RouterActions from 'actions/RouterActions';
 

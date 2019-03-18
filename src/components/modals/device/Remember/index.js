@@ -3,10 +3,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { H3 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Loader from 'components/Loader';
-import Button from 'components/Button';
+import { H5, P, Loader, Button } from 'trezor-ui-components';
 import { FormattedMessage } from 'react-intl';
 
 import type { TrezorDevice } from 'flowtype';
@@ -124,15 +121,15 @@ class RememberDevice extends PureComponent<Props, State> {
         }
         return (
             <Wrapper>
-                <H3>
+                <H5>
                     <FormattedMessage
                         {...l10nDeviceMessages.TR_FORGET_LABEL}
                         values={{
                             deviceLabel: label,
                         }}
                     />
-                </H3>
-                <StyledP isSmaller>
+                </H5>
+                <StyledP size="small">
                     <FormattedMessage
                         {...l10nMessages.TR_WOULD_YOU_LIKE_TREZOR_WALLET_TO}
                         values={{

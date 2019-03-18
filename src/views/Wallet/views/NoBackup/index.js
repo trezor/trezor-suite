@@ -1,15 +1,8 @@
 /* @flow */
 import React from 'react';
 import styled from 'styled-components';
-import { H1 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Link from 'components/Link';
+import { Button, Icon, Link, P, H4, colors, icons } from 'trezor-ui-components';
 import { getOldWalletUrl } from 'utils/url';
-import Button from 'components/Button';
-import Icon from 'components/Icon';
-import { FONT_SIZE } from 'config/variables';
-import colors from 'config/colors';
-import icons from 'config/icons';
 
 import type { TrezorDevice } from 'flowtype';
 
@@ -26,12 +19,10 @@ const Wrapper = styled.section`
 `;
 
 const StyledNavLink = styled(Link)`
-    color: ${colors.TEXT_SECONDARY};
     padding-top: 20px;
-    font-size: ${FONT_SIZE.BASE};
 `;
 
-const StyledH1 = styled(H1)`
+const StyledH = styled(H4)`
     text-align: center;
 `;
 
@@ -48,7 +39,7 @@ const Message = styled.div`
 const FirmwareUpdate = (props: Props) => (
     <Wrapper>
         <Icon size={128} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
-        <StyledH1>Your Trezor is not backed up!</StyledH1>
+        <StyledH>Your Trezor is not backed up!</StyledH>
         <Message>
             <StyledP>
                 If your device is ever lost or damaged, your funds will be lost. Backup your device
@@ -59,7 +50,9 @@ const FirmwareUpdate = (props: Props) => (
         <Link href={`${getOldWalletUrl(props.device)}?backup=1`} target="_self">
             <Button>Take me to the Bitcoin wallet</Button>
         </Link>
-        <StyledNavLink to="/">I’ll do that later.</StyledNavLink>
+        <StyledNavLink isGray to="/">
+            I’ll do that later.
+        </StyledNavLink>
     </Wrapper>
 );
 

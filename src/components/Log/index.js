@@ -3,17 +3,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import colors from 'config/colors';
-import { H2 } from 'components/Heading';
-import Button from 'components/Button';
-import Tooltip from 'components/Tooltip';
+
+import { Button, Tooltip, H5, P, Icon, icons, colors } from 'trezor-ui-components';
 import ReactJson from 'react-json-view';
-import Icon from 'components/Icon';
-import P from 'components/Paragraph';
 import { FormattedMessage } from 'react-intl';
 
 import * as LogActions from 'actions/LogActions';
-import icons from 'config/icons';
 import type { State, Dispatch } from 'flowtype';
 import l10nMessages from './index.messages';
 
@@ -82,10 +77,10 @@ const Log = (props: Props): ?React$Element<string> => {
             <Click onClick={props.toggle}>
                 <Icon size={24} color={colors.INFO_PRIMARY} icon={icons.CLOSE} />
             </Click>
-            <H2>
+            <H5>
                 <FormattedMessage {...l10nMessages.TR_LOG} />
-            </H2>
-            <StyledParagraph isSmaller>
+            </H5>
+            <StyledParagraph size="small">
                 <FormattedMessage {...l10nMessages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
             </StyledParagraph>
             <LogWrapper>

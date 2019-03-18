@@ -4,9 +4,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Button from 'components/Button';
+import { H5, P, Button } from 'trezor-ui-components';
 import { FormattedMessage } from 'react-intl';
 
 import type { TrezorDevice } from 'flowtype';
@@ -31,7 +29,9 @@ const Wrapper = styled.div`
 `;
 
 const StyledP = styled(P)`
-    padding: 20px 0px;
+    && {
+        padding: 20px 0px;
+    }
 `;
 
 const Row = styled.div`
@@ -69,15 +69,15 @@ class ForgetDevice extends PureComponent<Props> {
     render() {
         return (
             <Wrapper>
-                <H2>
+                <H5>
                     <FormattedMessage
                         {...l10nDeviceMessages.TR_FORGET_LABEL}
                         values={{
                             deviceLabel: this.props.device.instanceLabel,
                         }}
                     />
-                </H2>
-                <StyledP isSmaller>
+                </H5>
+                <StyledP size="small">
                     <FormattedMessage
                         {...l10nMessages.TR_FORGETTING_ONLY_REMOVES_THE_DEVICE_FROM}
                     />

@@ -3,10 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 
-import { H1 } from 'components/Heading';
-import Paragraph from 'components/Paragraph';
-import Button from 'components/Button';
-import Link from 'components/Link';
+import { H4, P, Button, Link } from 'trezor-ui-components';
 import CoinLogo from 'components/images/CoinLogo';
 
 import { FormattedMessage } from 'react-intl';
@@ -51,7 +48,7 @@ const Row = styled.div`
     text-align: center;
 `;
 
-const Message = styled(Paragraph)`
+const Message = styled(P)`
     padding: 0 0 15px 0;
     text-align: center;
 `;
@@ -65,7 +62,7 @@ const FirmwareUnsupported = (props: Props) => (
                     <StyledCoinLogo standalone network={props.networkShortcut} />
                 </CoinLogoWrapper>
             )}
-            <H1>{props.title}</H1>
+            <H4>{props.title}</H4>
             <Message>{props.message}</Message>
             <Link href={getInfoUrl(props.networkShortcut)}>
                 <Button>

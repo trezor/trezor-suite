@@ -4,15 +4,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
-import icons from 'config/icons';
-import colors from 'config/colors';
+import { H5, P, Button, Tooltip, Link, Icon, icons, colors } from 'trezor-ui-components';
 
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Button from 'components/Button';
-import Tooltip from 'components/Tooltip';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
 import WalletTypeIcon from 'components/images/WalletType';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
@@ -41,7 +34,7 @@ const Header = styled.div`
     color: ${colors.TEXT_PRIMARY};
 `;
 
-const StyledHeading = styled(H2)`
+const StyledHeading = styled(H5)`
     padding: 30px 48px 10px 48px;
 `;
 
@@ -132,7 +125,7 @@ class WalletType extends PureComponent<Props> {
                         <WalletTypeIcon type="standard" size={32} color={colors.TEXT_PRIMARY} />
                         <FormattedMessage {...l10nMessages.TR_STANDARD_WALLET} />
                     </Header>
-                    <P isSmaller>
+                    <P size="small">
                         <FormattedMessage {...l10nMessages.TR_CONTINUE_TO_ACCESS_STANDARD_WALLET} />
                     </P>
                     <StyledButton onClick={() => onWalletTypeRequest(false)}>
@@ -154,7 +147,7 @@ class WalletType extends PureComponent<Props> {
                         <WalletTypeIcon type="hidden" size={32} color={colors.TEXT_PRIMARY} />
                         <FormattedMessage {...l10nMessages.TR_HIDDEN_WALLET} />
                     </Header>
-                    <P isSmaller>
+                    <P size="small">
                         <FormattedMessage
                             {...l10nMessages.TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK}
                         />

@@ -3,18 +3,12 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import P from 'components/Paragraph';
-import { H2 } from 'components/Heading';
-import Link from 'components/Link';
-import Button from 'components/Button';
+import { H5, Link, Button, P, ButtonPin, InputPin } from 'trezor-ui-components';
 import { FormattedMessage } from 'react-intl';
 
 import l10nCommonMessages from 'views/common.messages';
 import type { TrezorDevice } from 'flowtype';
 import l10nMessages from './index.messages';
-
-import PinButton from './components/Button';
-import PinInput from './components/Input';
 
 import type { Props as BaseProps } from '../../Container';
 
@@ -31,12 +25,24 @@ const Wrapper = styled.div`
     padding: 30px 48px;
 `;
 
-const InputRow = styled.div`
+const InputWrapper = styled.div`
     margin-top: 24px;
+    margin-bottom: 10px;
     max-width: 260px;
 `;
+const PinRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    button {
+        width: 30%;
+        height: 0;
+        padding-bottom: 30%;
+    }
 
-const PinRow = styled.div``;
+    & + & {
+        margin-top: 10px;
+    }
+`;
 
 const StyledP = styled(P)`
     padding-top: 5px;
@@ -150,56 +156,38 @@ class Pin extends PureComponent<Props, State> {
         const { pin } = this.state;
         return (
             <Wrapper>
-                <H2>
+                <H5>
                     <FormattedMessage
                         {...l10nMessages.TR_ENTER_PIN}
                         values={{ deviceLabel: device.label }}
                     />
-                </H2>
-                <P isSmaller>
+                </H5>
+                <P size="small">
                     <FormattedMessage {...l10nMessages.TR_THE_PIN_LAYOUT_IS_DISPLAYED_ON} />
                 </P>
-                <InputRow>
-                    <PinInput value={pin} onDeleteClick={() => this.onPinBackspace()} />
-                </InputRow>
+                <InputWrapper>
+                    <InputPin value={pin} onDeleteClick={() => this.onPinBackspace()} />
+                </InputWrapper>
                 <PinRow>
-                    <PinButton type="button" data-value="7" onClick={() => this.onPinAdd(7)}>
-                        &#8226;{' '}
-                    </PinButton>
-                    <PinButton type="button" data-value="8" onClick={() => this.onPinAdd(8)}>
-                        &#8226;
-                    </PinButton>
-                    <PinButton type="button" data-value="9" onClick={() => this.onPinAdd(9)}>
-                        &#8226;
-                    </PinButton>
+                    <ButtonPin type="button" data-value="7" onClick={() => this.onPinAdd(7)} />
+                    <ButtonPin type="button" data-value="8" onClick={() => this.onPinAdd(8)} />
+                    <ButtonPin type="button" data-value="9" onClick={() => this.onPinAdd(9)} />
                 </PinRow>
                 <PinRow>
-                    <PinButton type="button" data-value="4" onClick={() => this.onPinAdd(4)}>
-                        &#8226;{' '}
-                    </PinButton>
-                    <PinButton type="button" data-value="5" onClick={() => this.onPinAdd(5)}>
-                        &#8226;
-                    </PinButton>
-                    <PinButton type="button" data-value="6" onClick={() => this.onPinAdd(6)}>
-                        &#8226;
-                    </PinButton>
+                    <ButtonPin type="button" data-value="4" onClick={() => this.onPinAdd(4)} />
+                    <ButtonPin type="button" data-value="5" onClick={() => this.onPinAdd(5)} />
+                    <ButtonPin type="button" data-value="6" onClick={() => this.onPinAdd(6)} />
                 </PinRow>
                 <PinRow>
-                    <PinButton type="button" data-value="1" onClick={() => this.onPinAdd(1)}>
-                        &#8226;{' '}
-                    </PinButton>
-                    <PinButton type="button" data-value="2" onClick={() => this.onPinAdd(2)}>
-                        &#8226;
-                    </PinButton>
-                    <PinButton type="button" data-value="3" onClick={() => this.onPinAdd(3)}>
-                        &#8226;
-                    </PinButton>
+                    <ButtonPin type="button" data-value="1" onClick={() => this.onPinAdd(1)} />
+                    <ButtonPin type="button" data-value="2" onClick={() => this.onPinAdd(2)} />
+                    <ButtonPin type="button" data-value="3" onClick={() => this.onPinAdd(3)} />
                 </PinRow>
                 <Footer>
                     <Button type="button" onClick={() => onPinSubmit(pin)}>
                         <FormattedMessage {...l10nMessages.TR_ENTER_PIN} />
                     </Button>
-                    <StyledP isSmaller>
+                    <StyledP size="small">
                         <FormattedMessage
                             {...l10nMessages.TR_NOT_SURE_HOW_PIN_WORKS}
                             values={{

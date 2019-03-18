@@ -56,12 +56,6 @@ const ShowAddressButton = styled(Button)`
     }
 `;
 
-const ShowAddressIcon = styled(Icon)`
-    margin-right: 7px;
-    position: relative;
-    top: 2px;
-`;
-
 const EyeButton = styled(Button)`
     z-index: 10001;
     padding: 0;
