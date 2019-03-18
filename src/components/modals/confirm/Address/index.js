@@ -3,13 +3,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
-import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
-
-import { H3 } from 'components/Heading';
-import P from 'components/Paragraph';
 import { FormattedMessage } from 'react-intl';
+
+import { H6, P, colors } from 'trezor-ui-components';
+import { FONT_SIZE } from 'config/variables';
 
 import l10nCommonMessages from 'views/common.messages';
 
@@ -43,9 +40,9 @@ const ConfirmAddress = (props: Props) => {
     return (
         <Wrapper>
             <Header>
-                <H3>
+                <H6>
                     <FormattedMessage {...l10nMessages.TR_CONFIRM_ADDRESS_ON_TREZOR} />
-                </H3>
+                </H6>
                 <P>
                     <FormattedMessage {...l10nMessages.TR_PLEASE_COMPARE_YOUR_ADDRESS} />
                 </P>

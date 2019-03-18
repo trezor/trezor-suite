@@ -3,11 +3,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Icon from 'components/Icon';
-import colors from 'config/colors';
+import { Icon, Loader, colors } from 'trezor-ui-components';
 import { WHITE_COLOR } from 'config/animations';
 import { getPrimaryColor } from 'utils/notification';
-import Loader from 'components/Loader';
 import { TRANSITION, FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 
 type Props = {

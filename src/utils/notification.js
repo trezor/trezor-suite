@@ -1,5 +1,4 @@
-import colors from 'config/colors';
-import icons from 'config/icons';
+import { colors, icons } from 'trezor-ui-components';
 
 const getPrimaryColor = type => {
     let color;

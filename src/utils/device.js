@@ -1,6 +1,6 @@
 /* @flow */
 
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 
 import type { Device } from 'trezor-connect';
 import type { TrezorDevice, State } from 'flowtype';

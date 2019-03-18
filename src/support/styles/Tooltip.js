@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 import { FONT_SIZE, LINE_HEIGHT } from 'config/variables';
 
 const tooltipStyles = css`

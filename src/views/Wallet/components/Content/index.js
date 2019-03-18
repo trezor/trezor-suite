@@ -1,18 +1,14 @@
 /* @flow */
 
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Loader from 'components/Loader';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { P, H4, Loader, colors } from 'trezor-ui-components';
 import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
-import { H1 } from 'components/Heading';
-import P from 'components/Paragraph';
-import colors from 'config/colors';
-
-import type { State } from 'flowtype';
 
 import FirmwareUpdate from 'views/Wallet/views/FirmwareUpdate';
-import { FormattedMessage } from 'react-intl';
+import type { State } from 'flowtype';
 import FirmwareUnsupported from './components/FirmwareUnsupported';
 
 import l10nMessages from './index.messages';
@@ -43,7 +39,7 @@ const Loading = styled.div`
     flex-direction: column;
 `;
 
-const Title = styled(H1)`
+const Title = styled(H4)`
     font-size: ${FONT_SIZE.BIGGER};
     font-weight: ${FONT_WEIGHT.NORMAL};
     color: ${props => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};

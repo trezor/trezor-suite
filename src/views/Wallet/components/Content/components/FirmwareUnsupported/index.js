@@ -1,9 +1,8 @@
 /* @flow */
 import React from 'react';
 import styled from 'styled-components';
-import colors from 'config/colors';
 
-import { H4, P, Button, Link } from 'trezor-ui-components';
+import { H4, P, Button, Link, colors } from 'trezor-ui-components';
 import CoinLogo from 'components/images/CoinLogo';
 
 import { FormattedMessage } from 'react-intl';

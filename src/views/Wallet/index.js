@@ -1,7 +1,7 @@
 /* @flow */
 
 import * as React from 'react';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';

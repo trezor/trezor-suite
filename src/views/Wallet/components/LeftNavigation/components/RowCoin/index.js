@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Icon from 'components/Icon';
 import CoinLogo from 'components/images/CoinLogo';
 import { FONT_SIZE, LEFT_NAVIGATION_ROW } from 'config/variables';
-import colors from 'config/colors';
+import { Icon, colors } from 'trezor-ui-components';
 import Row from '../Row';
 
 const CoinNameWrapper = styled.div`

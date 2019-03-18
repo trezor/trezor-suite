@@ -1,10 +1,9 @@
 /* @flow */
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Input, TextArea, Button } from 'trezor-ui-components';
+import { Input, TextArea, Button, colors } from 'trezor-ui-components';
 import Title from 'views/Wallet/components/Title';
 import Content from 'views/Wallet/components/Content';
-import colors from 'config/colors';
 import { SCREEN_SIZE } from 'config/variables';
 import { FormattedMessage } from 'react-intl';
 

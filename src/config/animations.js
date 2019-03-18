@@ -1,5 +1,5 @@
 import { keyframes } from 'styled-components';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 
 export const ROTATE_180_UP = keyframes`
     from { 

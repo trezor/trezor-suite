@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 import { SCREEN_SIZE } from 'config/variables';
 import { SLIDE_RIGHT, SLIDE_LEFT } from 'config/animations';
 

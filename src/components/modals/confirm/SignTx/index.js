@@ -4,12 +4,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import colors from 'config/colors';
+import { H5, P, colors } from 'trezor-ui-components';
 import { LINE_HEIGHT, FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
-import P from 'components/Paragraph';
 import DeviceIcon from 'components/images/DeviceIcon';
-import { H3 } from 'components/Heading';
 import { FormattedMessage } from 'react-intl';
 
 import type { TrezorDevice, State } from 'flowtype';
@@ -37,6 +35,7 @@ const Content = styled.div`
 
 const StyledP = styled(P)`
     padding-bottom: 20px;
+    text-align: center;
     color: ${colors.TEXT};
     font-size: ${FONT_SIZE.BASE};
     &:last-child {
@@ -72,13 +71,13 @@ const ConfirmSignTx = (props: Props) => {
         <Wrapper>
             <Header>
                 <DeviceIcon device={props.device} size={60} color={colors.TEXT_SECONDARY} />
-                <H3>
+                <H5>
                     <FormattedMessage
                         {...l10nMessages.TR_CONFIRM_TRANSACTION_ON}
                         values={{ deviceLabel: props.device.label }}
                     />
-                </H3>
-                <P isSmaller>
+                </H5>
+                <P textAlign="center" size="small">
                     <FormattedMessage {...l10nMessages.TR_DETAILS_ARE_SHOWN_ON} />
                 </P>
             </Header>

@@ -1,10 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Icon from 'components/Icon';
-import ICONS from 'config/icons';
-import colors from 'config/colors';
-import Notification from 'components/Notification';
+import { colors, Notification, Icon, icons as ICONS } from 'trezor-ui-components';
 import { getIcon, getPrimaryColor } from 'utils/notification';
 
 const Wrapper = styled.div``;

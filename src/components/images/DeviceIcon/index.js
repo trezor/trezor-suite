@@ -2,8 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import COLORS from 'config/colors';
-import ICONS from 'config/icons';
+import { colors as COLORS, icons as ICONS } from 'trezor-ui-components';
 import styled from 'styled-components';
 import type { TrezorDevice } from 'flowtype';
 

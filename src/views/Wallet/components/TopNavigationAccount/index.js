@@ -5,7 +5,7 @@ import React from 'react';
 import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 import type { State } from 'flowtype';
 import { FormattedMessage } from 'react-intl';
 
