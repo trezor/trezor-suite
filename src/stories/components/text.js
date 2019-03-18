@@ -264,7 +264,8 @@ storiesOf('Typography', module)
                     'Content',
                     'Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet.'
                 )}
-                readMoreLink={text('Read more link', 'https://wiki.trezor.io/Passphrase')}
+                ctaLink={text('CTA link', 'https://wiki.trezor.io/Passphrase')}
+                ctaText={text('CTA Text', 'Learn more')}
             >
                 <span>Text with tooltip</span>
             </Tooltip>
@@ -276,6 +277,7 @@ storiesOf('Typography', module)
             ~~~js
             import { Tooltip } from 'trezor-ui-components';
             ~~~
+            *<Tooltip> is a wrapper around [rc-tooltip](https://github.com/react-component/tooltip) component. See the [official documentation](https://github.com/react-component/tooltip) for more information about its props and usage.*
             `,
             },
         }
