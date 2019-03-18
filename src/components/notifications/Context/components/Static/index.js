@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Notification from 'components/Notification';
 import Bignumber from 'bignumber.js';
-import Link from 'components/Link';
+import { Link } from 'trezor-ui-components';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';

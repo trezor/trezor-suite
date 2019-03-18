@@ -1,6 +1,6 @@
 /* @flow */
 import React from 'react';
-import Link from 'components/Link';
+import { Link } from 'trezor-ui-components';
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as ACCOUNT from 'actions/constants/account';

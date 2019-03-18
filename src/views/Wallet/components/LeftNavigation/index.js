@@ -2,18 +2,15 @@
 
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import colors from 'config/colors';
+import { Icon, Tooltip, icons, colors } from 'trezor-ui-components';
 import { FONT_SIZE } from 'config/variables';
-import Icon from 'components/Icon';
 import WalletTypeIcon from 'components/images/WalletType';
-import icons from 'config/icons';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
 // import Link from 'components/Link';
 import * as deviceUtils from 'utils/device';
 
-import Tooltip from 'components/Tooltip';
 import { FormattedMessage } from 'react-intl';
 // import { getPattern } from 'support/routes';
 import AccountMenu from './components/AccountMenu';

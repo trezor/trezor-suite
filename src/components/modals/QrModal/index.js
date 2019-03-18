@@ -5,14 +5,7 @@ import PropTypes from 'prop-types';
 import QrReader from 'react-qr-reader';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
-import colors from 'config/colors';
-import icons from 'config/icons';
-
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
+import { Link, Icon, P, H5, icons, colors } from 'trezor-ui-components';
 
 import { parseUri } from 'utils/cryptoUriParser';
 import type { parsedURI } from 'utils/cryptoUriParser';
@@ -144,9 +137,9 @@ class QrModal extends Component<Props, State> {
                     <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                 </CloseLink>
                 <Padding>
-                    <H2>
+                    <H5>
                         <FormattedMessage {...l10nMessages.TR_SCAN_QR_CODE} />
-                    </H2>
+                    </H5>
                     {!this.state.readerLoaded && !this.state.error && (
                         <CameraPlaceholder>
                             <FormattedMessage {...l10nMessages.TR_WAITING_FOR_CAMERA} />

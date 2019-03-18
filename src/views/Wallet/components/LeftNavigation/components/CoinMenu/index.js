@@ -2,12 +2,10 @@
 
 import styled from 'styled-components';
 import coins from 'constants/coins';
-import colors from 'config/colors';
-import ICONS from 'config/icons';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Link, colors, icons as ICONS } from 'trezor-ui-components';
 import { NavLink } from 'react-router-dom';
-import Link from 'components/Link';
 import { FormattedMessage } from 'react-intl';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';

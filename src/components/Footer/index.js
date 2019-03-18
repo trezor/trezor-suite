@@ -3,12 +3,11 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Link from 'components/Link';
+import { Link, colors } from 'trezor-ui-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
-import colors from 'config/colors';
 import { FONT_SIZE, SCREEN_SIZE } from 'config/variables';
 import * as LogActions from 'actions/LogActions';
 import l10nMessages from './index.messages';

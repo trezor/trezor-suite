@@ -1,14 +1,11 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
-import DeviceIcon from 'components/images/DeviceIcon';
 import { FormattedMessage } from 'react-intl';
 import { getPattern } from 'support/routes';
 
-import icons from 'config/icons';
-import colors from 'config/colors';
+import { Link, Icon, colors, icons } from 'trezor-ui-components';
+import DeviceIcon from 'components/images/DeviceIcon';
 import { FONT_SIZE } from 'config/variables';
 
 import l10nCommonMessages from 'views/common.messages';
