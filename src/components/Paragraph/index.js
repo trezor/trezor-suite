@@ -21,7 +21,7 @@ const Paragraph = styled.p`
     margin: 0;
 `;
 
-const P = ({ children, className, size = 'medium', textAlign = 'left', ...rest }) => (
+const P = ({ children, className, size = 'medium', textAlign = 'initial', ...rest }) => (
     <Paragraph className={className} size={P_SIZES[size]} textAlign={textAlign} {...rest}>
         {children}
     </Paragraph>
@@ -31,7 +31,7 @@ P.propTypes = {
     className: PropTypes.string,
     children: PropTypes.node,
     size: PropTypes.oneOf(['small', 'medium', 'large', 'xlarge']),
-    textAlign: PropTypes.oneOf(['left', 'center', 'right', 'justify']),
+    textAlign: PropTypes.oneOf(['left', 'center', 'right', 'justify', 'initial']),
 };
 
 export default P;
