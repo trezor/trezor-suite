@@ -5,6 +5,7 @@ import colors from 'config/colors';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
+import { getPattern } from 'support/routes';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State } from 'flowtype';
@@ -27,6 +28,7 @@ import Backdrop from 'components/Backdrop';
 import LeftNavigation from './components/LeftNavigation/Container';
 import TopNavigationAccount from './components/TopNavigationAccount';
 import TopNavigationDeviceSettings from './components/TopNavigationDeviceSettings';
+import TopNavigationWalletSettings from './components/TopNavigationWalletSettings';
 
 type StateProps = {
     wallet: $ElementType<State, 'wallet'>,
@@ -76,6 +78,7 @@ const MainContent = styled.article`
     flex-direction: column;
     overflow: auto;
     border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
 
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         ${props =>
@@ -89,6 +92,7 @@ const MainContent = styled.article`
 
     @media screen and (max-width: 1170px) {
         border-top-right-radius: 0px;
+        border-top-left-radius: 0px;
     }
 `;
 
@@ -132,12 +136,16 @@ const Wallet = (props: Props) => (
             <MainContent preventBgScroll={props.wallet.showSidebar}>
                 <Navigation>
                     <Route
-                        path="/device/:device/network/:network/account/:account"
+                        path={getPattern('wallet-account-summary')}
                         component={TopNavigationAccount}
                     />
                     <Route
-                        path="/device/:device/device-settings"
+                        path={getPattern('wallet-device-settings')}
                         component={TopNavigationDeviceSettings}
+                    />
+                    <Route
+                        path={getPattern('wallet-settings')}
+                        component={TopNavigationWalletSettings}
                     />
                 </Navigation>
                 <ContextNotifications />

@@ -100,7 +100,12 @@ const AccountSummary = (props: Props) => {
                         />
                     </Link>
                 </AccountHeading>
-                <AccountBalance network={network} balance={balance} fiat={props.fiat} />
+                <AccountBalance
+                    network={network}
+                    balance={balance}
+                    fiat={props.fiat}
+                    localCurrency={props.wallet.localCurrency}
+                />
                 <H2Wrapper>
                     <H2>
                         <FormattedMessage {...l10nSummaryMessages.TR_TOKENS} />
@@ -116,6 +121,7 @@ const AccountSummary = (props: Props) => {
                 <AsyncSelectWrapper>
                     <AsyncSelect
                         isSearchable
+                        withDropdownIndicator={false}
                         defaultOptions
                         value={null}
                         isMulti={false}

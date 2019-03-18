@@ -17,11 +17,13 @@ export type State = {
     currency: string,
 
     // form fields
+    localCurrency: string,
     advanced: boolean,
     untouched: boolean, // set to true when user made any changes in form
     touched: { [k: string]: boolean },
     address: string,
     amount: string,
+    localAmount: string,
     setMax: boolean,
     feeLevels: Array<FeeLevel>,
     selectedFeeLevel: FeeLevel,
@@ -45,6 +47,7 @@ export const initialState: State = {
     networkName: '',
     networkSymbol: '',
     currency: '',
+    localCurrency: '',
 
     advanced: false,
     untouched: true,
@@ -52,6 +55,7 @@ export const initialState: State = {
     address: '',
     //address: '0x574BbB36871bA6b78E27f4B4dCFb76eA0091880B',
     amount: '',
+    localAmount: '',
     setMax: false,
     feeLevels: [],
     selectedFeeLevel: {

@@ -11,6 +11,11 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_RATE',
         defaultMessage: 'Rate',
     },
+    TR_RESERVE: {
+        id: 'TR_RESERVE',
+        defaultMessage: 'Reserve',
+        description: 'Label for minimal XRP account reserve',
+    },
 });
 
 export default definedMessages;

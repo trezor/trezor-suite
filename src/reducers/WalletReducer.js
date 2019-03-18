@@ -13,6 +13,7 @@ type State = {
     ready: boolean,
     online: boolean,
     language: string,
+    localCurrency: string,
     messages: { [string]: string },
     dropdownOpened: boolean,
     showBetaDisclaimer: boolean,
@@ -28,6 +29,7 @@ const initialState: State = {
     ready: false,
     online: navigator.onLine,
     language: 'en',
+    localCurrency: 'usd',
     messages: {},
     dropdownOpened: false,
     firstLocationChange: true,
@@ -127,6 +129,12 @@ export default function wallet(state: State = initialState, action: Action): Sta
                 ...state,
                 language: action.locale,
                 messages: action.messages ? action.messages : state.messages,
+            };
+
+        case WALLET.SET_LOCAL_CURRENCY:
+            return {
+                ...state,
+                localCurrency: action.localCurrency,
             };
 
         default:

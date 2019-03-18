@@ -3,7 +3,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 import colors from 'config/colors';
 import ReactSelect from 'react-select';
-import { LANGUAGE, SCREEN_SIZE } from 'config/variables';
+import { SCREEN_SIZE } from 'config/variables';
+import { LANGUAGE } from 'config/app';
 
 import type { Props } from './Container';
 
@@ -73,6 +74,7 @@ const styles = {
         color: colors.TEXT_SECONDARY,
         background: isFocused ? colors.LANDING : colors.WHITE,
         borderRadius: 0,
+        textAlign: 'left',
         '&:hover': {
             cursor: 'pointer',
             background: colors.LANDING,

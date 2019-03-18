@@ -1,4 +1,4 @@
-## 1.1.0-beta
+## 1.1.1-beta
 __added__
 - Ripple destination tag option
 - Tezos external wallet

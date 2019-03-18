@@ -2,8 +2,10 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
+import Link from 'components/Link';
 import DeviceIcon from 'components/images/DeviceIcon';
 import { FormattedMessage } from 'react-intl';
+import { getPattern } from 'support/routes';
 
 import icons from 'config/icons';
 import colors from 'config/colors';
@@ -27,6 +29,12 @@ const Item = styled.div`
     &:hover {
         background: ${colors.GRAY_LIGHT};
     }
+`;
+
+const Divider = styled.div`
+    width: 100%;
+    height: 1px;
+    background: ${colors.DIVIDER};
 `;
 
 const Label = styled.div`
@@ -99,6 +107,15 @@ class MenuItems extends PureComponent {
                         <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
                     </Label>
                 </Item>
+                <Divider />
+                <Link to={getPattern('wallet-settings')}>
+                    <Item>
+                        <Icon icon={icons.COG} size={25} color={colors.TEXT_SECONDARY} />
+                        <Label>
+                            <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />
+                        </Label>
+                    </Item>
+                </Link>
             </Wrapper>
         );
     }
