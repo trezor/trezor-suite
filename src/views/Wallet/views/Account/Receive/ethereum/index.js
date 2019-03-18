@@ -3,17 +3,13 @@ import React from 'react';
 import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import { Button, Icon, Tooltip, Input, icons as ICONS } from 'trezor-ui-components';
+import { Button, Icon, Tooltip, Input, colors, icons as ICONS } from 'trezor-ui-components';
 import Title from 'views/Wallet/components/Title';
 import DeviceIcon from 'components/images/DeviceIcon';
-
-import colors from 'config/colors';
-import { CONTEXT_DEVICE } from 'actions/constants/modal';
-
 import Content from 'views/Wallet/components/Content';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 import l10nCommonMessages from 'views/common.messages';
 import VerifyAddressTooltip from '../components/VerifyAddressTooltip';
-
 import l10nMessages from './index.messages';
 import l10nReceiveMessages from '../common.messages';
 

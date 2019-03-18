@@ -3,13 +3,10 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
-import { Select, Button, Input, Link, Icon } from 'trezor-ui-components';
-import ICONS from 'config/icons';
+import { Select, Button, Input, Link, Icon, P, colors, icons as ICONS } from 'trezor-ui-components';
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION, SCREEN_SIZE } from 'config/variables';
 import { FIAT_CURRENCIES } from 'config/app';
-import colors from 'config/colors';
 import Title from 'views/Wallet/components/Title';
-import P from 'components/Paragraph';
 import Content from 'views/Wallet/components/Content';
 import * as stateUtils from 'reducers/utils';
 import type { Token } from 'flowtype';
@@ -21,10 +18,6 @@ import PendingTransactions from '../components/PendingTransactions';
 import l10nMessages from './index.messages';
 import l10nSendMessages from '../../common.messages';
 import type { Props } from './Container';
-
-// TODO: Decide on a small screen width for the whole app
-// and put it inside config/variables.js
-const SmallScreenWidth = '850px';
 
 const AmountInputLabelWrapper = styled.div`
     display: flex;
@@ -172,7 +165,7 @@ const ToggleAdvancedSettingsWrapper = styled.div`
     flex-direction: row;
     justify-content: space-between;
 
-    @media screen and (max-width: ${SmallScreenWidth}) {
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         ${props =>
             props.isAdvancedSettingsHidden &&
             css`
@@ -194,7 +187,7 @@ const FormButtons = styled.div`
     display: flex;
     flex: 1 1;
 
-    @media screen and (max-width: ${SmallScreenWidth}) {
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
     }
 

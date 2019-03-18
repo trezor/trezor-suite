@@ -1,17 +1,16 @@
 /* @flow */
-import styled from 'styled-components';
 import React from 'react';
-import { H2 } from 'components/Heading';
+import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
-import colors from 'config/colors';
-import Content from 'views/Wallet/components/Content';
 import { FormattedMessage } from 'react-intl';
-import l10nCommonMessages from 'views/common.messages';
-
-import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
-import Link from 'components/Link';
+
+import { H5, Link, colors } from 'trezor-ui-components';
+import CoinLogo from 'components/images/CoinLogo';
+import Content from 'views/Wallet/components/Content';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
+
+import l10nCommonMessages from 'views/common.messages';
 import l10nSummaryMessages from '../common.messages';
 import AccountBalance from './components/Balance';
 
@@ -24,7 +23,7 @@ const AccountHeading = styled.div`
     align-items: center;
 `;
 
-const H2Wrapper = styled.div`
+const HeadingWrapper = styled.div`
     display: flex;
     align-items: center;
     padding: 20px 0;
@@ -88,11 +87,11 @@ const AccountSummary = (props: Props) => {
                     localCurrency={props.wallet.localCurrency}
                 />
                 {TMP_SHOW_HISTORY && (
-                    <H2Wrapper>
-                        <H2>
+                    <HeadingWrapper>
+                        <H5>
                             <FormattedMessage {...l10nSummaryMessages.TR_HISTORY} />
-                        </H2>
-                    </H2Wrapper>
+                        </H5>
+                    </HeadingWrapper>
                 )}
             </React.Fragment>
         </Content>

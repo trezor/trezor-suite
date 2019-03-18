@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import colors from 'config/colors';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import {
     Link,
@@ -10,6 +9,7 @@ import {
     TextArea as Textarea,
     Tooltip,
     Icon,
+    colors,
     icons as ICONS,
 } from 'trezor-ui-components';
 import { FONT_SIZE } from 'config/variables';

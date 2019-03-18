@@ -1,21 +1,15 @@
 /* @flow */
-import styled from 'styled-components';
 import React from 'react';
-import { H2 } from 'components/Heading';
+import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
-import Icon from 'components/Icon';
-import { AsyncSelect } from 'components/Select';
-import ICONS from 'config/icons';
-import colors from 'config/colors';
-import Tooltip from 'components/Tooltip';
-import Content from 'views/Wallet/components/Content';
+import * as stateUtils from 'reducers/utils';
 import { FormattedMessage } from 'react-intl';
 
-import l10nCommonMessages from 'views/common.messages';
+import { H5, Icon, Link, AsyncSelect, Tooltip, colors, icons as ICONS } from 'trezor-ui-components';
+import Content from 'views/Wallet/components/Content';
 import CoinLogo from 'components/images/CoinLogo';
-import * as stateUtils from 'reducers/utils';
-import Link from 'components/Link';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
+import l10nCommonMessages from 'views/common.messages';
 import l10nSummaryMessages from '../common.messages';
 import AccountBalance from '../components/Balance';
 import AddedToken from '../components/Token';
@@ -30,15 +24,10 @@ const AccountHeading = styled.div`
     align-items: center;
 `;
 
-const H2Wrapper = styled.div`
+const TokensHeadingWrapper = styled.div`
     display: flex;
     align-items: center;
     padding: 20px 0;
-`;
-
-const StyledTooltip = styled(Tooltip)`
-    position: relative;
-    top: 2px;
 `;
 
 const AccountName = styled.div`
@@ -60,6 +49,10 @@ const StyledIcon = styled(Icon)`
     &:hover {
         cursor: pointer;
     }
+`;
+
+const StyledLink = styled(Link)`
+    font-size: ${FONT_SIZE.SMALL};
 `;
 
 const AsyncSelectWrapper = styled.div`
@@ -94,11 +87,11 @@ const AccountSummary = (props: Props) => {
                             />
                         </AccountTitle>
                     </AccountName>
-                    <Link href={explorerLink} isGray>
+                    <StyledLink href={explorerLink} isGray>
                         <FormattedMessage
                             {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY}
                         />
-                    </Link>
+                    </StyledLink>
                 </AccountHeading>
                 <AccountBalance
                     network={network}
@@ -106,18 +99,18 @@ const AccountSummary = (props: Props) => {
                     fiat={props.fiat}
                     localCurrency={props.wallet.localCurrency}
                 />
-                <H2Wrapper>
-                    <H2>
+                <TokensHeadingWrapper>
+                    <H5>
                         <FormattedMessage {...l10nSummaryMessages.TR_TOKENS} />
-                    </H2>
-                    <StyledTooltip
+                    </H5>
+                    <Tooltip
                         maxWidth={200}
                         placement="top"
                         content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
                     >
                         <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={24} />
-                    </StyledTooltip>
-                </H2Wrapper>
+                    </Tooltip>
+                </TokensHeadingWrapper>
                 <AsyncSelectWrapper>
                     <AsyncSelect
                         isSearchable

@@ -3,13 +3,9 @@
 import * as React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import colors from 'config/colors';
+import { Input, Tooltip, Icon, colors, icons as ICONS } from 'trezor-ui-components';
 
 import l10nSendMessages from 'views/Wallet/views/Account/common.messages';
-import Input from 'components/inputs/Input';
-import Tooltip from 'components/Tooltip';
-import Icon from 'components/Icon';
-import ICONS from 'config/icons';
 import l10nMessages from './index.messages';
 
 import type { Props as BaseProps } from '../../Container';

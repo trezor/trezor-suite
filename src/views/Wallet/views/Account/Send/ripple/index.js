@@ -2,18 +2,12 @@
 
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Select } from 'components/Select';
 import { FormattedMessage } from 'react-intl';
-import Button from 'components/Button';
-import Input from 'components/inputs/Input';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
-import ICONS from 'config/icons';
+
+import { Button, Select, Input, Icon, Link, P, colors, icons as ICONS } from 'trezor-ui-components';
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION, SCREEN_SIZE } from 'config/variables';
 import { FIAT_CURRENCIES } from 'config/app';
-import colors from 'config/colors';
 import Title from 'views/Wallet/components/Title';
-import P from 'components/Paragraph';
 import l10nCommonMessages from 'views/common.messages';
 import Content from 'views/Wallet/components/Content';
 import PendingTransactions from '../components/PendingTransactions';
@@ -23,10 +17,6 @@ import l10nMessages from './index.messages';
 import l10nSendMessages from '../../common.messages';
 
 import type { Props } from './Container';
-
-// TODO: Decide on a small screen width for the whole app
-// and put it inside config/variables.js
-const SmallScreenWidth = '850px';
 
 const AmountInputLabelWrapper = styled.div`
     display: flex;
@@ -136,7 +126,7 @@ const ToggleAdvancedSettingsWrapper = styled.div`
     flex-direction: row;
     justify-content: space-between;
 
-    @media screen and (max-width: ${SmallScreenWidth}) {
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         ${props =>
             props.isAdvancedSettingsHidden &&
             css`
@@ -158,7 +148,7 @@ const FormButtons = styled.div`
     display: flex;
     flex: 1 1;
 
-    @media screen and (max-width: ${SmallScreenWidth}) {
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
     }
 
