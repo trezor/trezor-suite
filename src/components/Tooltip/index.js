@@ -18,13 +18,22 @@ const ContentWrapper = styled.div`
     display: block;
 `;
 
-const ReadMore = styled.div`
+const CTAWrapper = styled.div`
     margin-top: 15px;
     padding: 10px 0 5px 0;
     text-align: center;
     width: 100%;
-    color: ${colors.WHITE};
     border-top: 1px solid ${colors.TEXT_SECONDARY};
+`;
+
+const StyledLink = styled(Link)`
+    &,
+    &:visited,
+    &:active,
+    &:hover {
+        color: ${colors.WHITE};
+        text-decoration: none;
+    }
 `;
 
 class Tooltip extends React.Component {
@@ -34,14 +43,23 @@ class Tooltip extends React.Component {
     }
 
     render() {
-        const { maxWidth, className, placement, content, readMoreLink, children } = this.props;
+        const {
+            maxWidth,
+            className,
+            placement,
+            content,
+            ctaText,
+            ctaLink,
+            children,
+            ...rest
+        } = this.props;
         const Overlay = (
             <ContentWrapper>
                 <Content maxWidth={maxWidth}>{content}</Content>
-                {readMoreLink && (
-                    <Link href={readMoreLink}>
-                        <ReadMore>Read more</ReadMore>
-                    </Link>
+                {ctaLink && (
+                    <StyledLink isGray href={ctaLink}>
+                        <CTAWrapper>{ctaText}</CTAWrapper>
+                    </StyledLink>
                 )}
             </ContentWrapper>
         );
@@ -58,6 +76,7 @@ class Tooltip extends React.Component {
                     arrowContent={<div className="rc-tooltip-arrow-inner" />}
                     placement={placement}
                     overlay={() => Overlay}
+                    {...rest}
                 >
                     {children}
                 </RcTooltip>
@@ -72,7 +91,8 @@ Tooltip.propTypes = {
     children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
     maxWidth: PropTypes.number,
     content: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-    readMoreLink: PropTypes.string,
+    ctaLink: PropTypes.string,
+    ctaText: PropTypes.string,
 };
 
 export default Tooltip;
