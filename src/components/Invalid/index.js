@@ -1,4 +1,4 @@
-import { H3 } from 'components/Heading';
+import { H6 } from 'components/Heading';
 import P from 'components/Paragraph';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -10,8 +10,8 @@ const Wrapper = styled.div`
 
 const InvalidPin = props => (
     <Wrapper>
-        <H3>Entered PIN for {props.device.label} is not correct</H3>
-        <P isSmaller>Retrying...</P>
+        <H6>Entered PIN for {props.device.label} is not correct</H6>
+        <P size="small">Retrying...</P>
     </Wrapper>
 );
 
