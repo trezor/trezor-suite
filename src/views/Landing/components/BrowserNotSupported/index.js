@@ -52,7 +52,7 @@ const BrowserNotSupported = () => (
             </Browser>
             <Browser>
                 <BrowserLogo src={FirefoxImage} />
-                <P isSmaller>Mozzila Firefox</P>
+                <P isSmaller>Mozilla Firefox</P>
                 <Link href="https://www.mozilla.org/en-US/firefox/new/">
                     <Button>
                         <FormattedMessage {...l10nMessages.TR_GET_FIREFOX} />
