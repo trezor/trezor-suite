@@ -70,7 +70,7 @@ const Icon = ({
             display: 'inline-block',
             verticalAlign: 'middle',
         }}
-        width={`${size * (icon.ration || 1)}`}
+        width={`${size * (icon.ratio || 1)}`}
         height={`${size}`}
         viewBox={icon.viewBox || '0 0 1024 1024'}
         onMouseEnter={onMouseEnter}
