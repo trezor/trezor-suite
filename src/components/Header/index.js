@@ -3,10 +3,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import colors from 'config/colors';
 import { SCREEN_SIZE } from 'config/variables';
-import Icon from 'components/Icon';
-import icons from 'config/icons';
+import { Icon, icons, colors } from 'trezor-ui-components';
 import { FormattedMessage } from 'react-intl';
 
 import type { toggleSidebar as toggleSidebarType } from 'actions/WalletActions';

@@ -1,8 +1,7 @@
 /* @flow */
 import styled from 'styled-components';
-import { H4, Button } from 'trezor-ui-components';
+import { H4, Button, P } from 'trezor-ui-components';
 import { getOldWalletUrl } from 'utils/url';
-import Paragraph from 'components/Paragraph';
 import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -30,9 +29,11 @@ const Row = styled.div`
 
 const A = styled.a``;
 
-const StyledParagraph = styled(Paragraph)`
-    padding: 0 0 15px 0;
-    text-align: center;
+const StyledParagraph = styled(P)`
+    && {
+        padding: 0 0 15px 0;
+        text-align: center;
+    }
 `;
 
 const Initialize = (props: Props) => (

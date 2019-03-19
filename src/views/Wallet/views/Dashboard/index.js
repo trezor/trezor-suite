@@ -7,8 +7,7 @@ import Content from 'views/Wallet/components/Content';
 import EthIcon from 'images/coins/eth.png';
 import RippleIcon from 'images/coins/xrp.png';
 
-import { H1 } from 'components/Heading';
-import Paragraph from 'components/Paragraph';
+import { H4, P } from 'trezor-ui-components';
 
 import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
@@ -27,9 +26,11 @@ const Row = styled.div`
     align-items: center;
 `;
 
-const StyledP = styled(Paragraph)`
-    padding: 0 0 15px 0;
-    text-align: center;
+const StyledP = styled(P)`
+    && {
+        padding: 0 0 15px 0;
+        text-align: center;
+    }
 `;
 
 const Overlay = styled.div`
@@ -54,9 +55,9 @@ const Dashboard = () => (
     <Content>
         <Wrapper>
             <Row data-test="Dashboard__page__content">
-                <H1>
+                <H4>
                     <FormattedMessage {...l10nMessages.TR_PLEASE_SELECT_YOUR} />
-                </H1>
+                </H4>
                 <StyledP>
                     <FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} />
                 </StyledP>
