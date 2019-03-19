@@ -125,7 +125,8 @@ storiesOf('Examples', module)
             ## Import
             ~~~js
             import {
-                Modal, 
+                Modal,
+                Button,
                 ButtonPin, 
                 InputPin, 
                 P, 
