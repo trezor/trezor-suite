@@ -181,6 +181,7 @@ const ToggleAdvancedSettingsButton = styled(Button)`
     flex: 1 1 0;
     align-items: center;
     font-weight: ${FONT_WEIGHT.SEMIBOLD};
+    justify-content: flex-start;
 `;
 
 const FormButtons = styled.div`
@@ -205,6 +206,7 @@ const ClearButton = styled(Button)``;
 
 const AdvancedSettingsIcon = styled(Icon)`
     margin-left: 10px;
+    margin-right: 6px;
 `;
 
 const QrButton = styled(Button)`
@@ -223,6 +225,10 @@ const EqualsSign = styled.div`
     @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         display: none;
     }
+`;
+
+const StyledIcon = styled(Icon)`
+    margin-right: 6px;
 `;
 
 // render helpers
@@ -415,9 +421,15 @@ const AccountSend = (props: Props) => {
                     sideAddons={[
                         <SetMaxAmountButton key="icon" onClick={() => onSetMax()} isActive={setMax}>
                             {!setMax && (
-                                <Icon icon={ICONS.TOP} size={25} color={colors.TEXT_SECONDARY} />
+                                <StyledIcon
+                                    icon={ICONS.TOP}
+                                    size={14}
+                                    color={colors.TEXT_SECONDARY}
+                                />
                             )}
-                            {setMax && <Icon icon={ICONS.CHECKED} size={25} color={colors.WHITE} />}
+                            {setMax && (
+                                <StyledIcon icon={ICONS.SUCCESS} size={14} color={colors.WHITE} />
+                            )}
                             <FormattedMessage {...l10nSendMessages.TR_SET_MAX} />
                         </SetMaxAmountButton>,
                         <CurrencySelect
@@ -493,7 +505,7 @@ const AccountSend = (props: Props) => {
                     <AdvancedSettingsIcon
                         icon={ICONS.ARROW_DOWN}
                         color={colors.TEXT_SECONDARY}
-                        size={24}
+                        size={14}
                         isActive={advanced}
                         canAnimate
                     />

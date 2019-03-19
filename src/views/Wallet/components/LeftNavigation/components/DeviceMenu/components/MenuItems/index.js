@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 `;
 
 const Item = styled.div`
-    padding: 6px 24px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     font-size: ${FONT_SIZE.BASE};
@@ -69,7 +69,7 @@ class MenuItems extends PureComponent {
                 >
                     <Icon
                         icon={icons.COG}
-                        size={25}
+                        size={14}
                         color={colors.TEXT_SECONDARY}
                     />
                     <Label><FormattedMessage {...l10nMessages.TR_DEVICE_SETTINGS} /></Label>
@@ -78,7 +78,7 @@ class MenuItems extends PureComponent {
                     <Item onClick={() => this.props.duplicateDevice(device)}>
                         <Icon
                             icon={icons.WALLET_STANDARD}
-                            size={25}
+                            size={14}
                             color={colors.TEXT_SECONDARY}
                         />
                         <Label>
@@ -86,11 +86,11 @@ class MenuItems extends PureComponent {
                         </Label>
                     </Item>
                 )}
-                {this.showRenewSession() && (
+                {!this.showRenewSession() && (
                     <Item onClick={() => this.props.acquireDevice()}>
                         <DeviceIcon
                             device={this.props.device}
-                            size={25}
+                            size={14}
                             color={colors.TEXT_SECONDARY}
                         />
                         <Label>
@@ -99,7 +99,7 @@ class MenuItems extends PureComponent {
                     </Item>
                 )}
                 <Item onClick={() => this.props.forgetDevice(device)}>
-                    <Icon icon={icons.EJECT} size={25} color={colors.TEXT_SECONDARY} />
+                    <Icon icon={icons.EJECT} size={14} color={colors.TEXT_SECONDARY} />
                     <Label>
                         <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
                     </Label>
@@ -107,7 +107,7 @@ class MenuItems extends PureComponent {
                 <Divider />
                 <Link to={getPattern('wallet-settings')}>
                     <Item>
-                        <Icon icon={icons.COG} size={25} color={colors.TEXT_SECONDARY} />
+                        <Icon icon={icons.COG} size={14} color={colors.TEXT_SECONDARY} />
                         <Label>
                             <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />
                         </Label>

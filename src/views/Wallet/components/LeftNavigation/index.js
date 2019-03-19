@@ -27,7 +27,9 @@ const Header = styled(DeviceHeader)`
     flex: 0 0 auto;
 `;
 
-const WalletTypeIconWrapper = styled.div``;
+const DeviceIconWrapper = styled.div`
+    margin: 0 3px;
+`;
 
 const Counter = styled.div`
     display: flex;
@@ -39,7 +41,6 @@ const Counter = styled.div`
     width: 24px;
     height: 24px;
     font-size: ${FONT_SIZE.COUNTER};
-    margin-right: 8px;
 `;
 
 const TransitionGroupWrapper = styled(TransitionGroup)`
@@ -88,6 +89,14 @@ const A = styled.a`
         background: transparent;
         color: ${colors.TEXT_PRIMARY};
     }
+`;
+
+const StyledIcon = styled(Icon)`
+    margin-right: 6px;
+`;
+
+const IconDivider = styled.div`
+    width: 8px;
 `;
 
 type TransitionMenuProps = {
@@ -276,9 +285,9 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     }
                                     maxWidth={200}
                                     placement="bottom"
-                                    enterDelayMs={0.5}
+                                    mouseEnterDelay={0.5}
                                 >
-                                    <WalletTypeIconWrapper>
+                                    <DeviceIconWrapper>
                                         <WalletTypeIcon
                                             onClick={e => {
                                                 if (selectedDevice && isDeviceReady) {
@@ -292,10 +301,10 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                                     : colors.TEXT_SECONDARY
                                             }
                                             type={walletType}
-                                            size={25}
+                                            size={16}
                                             color={colors.TEXT_SECONDARY}
                                         />
-                                    </WalletTypeIconWrapper>
+                                    </DeviceIconWrapper>
                                 </Tooltip>
                             )}
                             {this.props.devices.length > 1 && (
@@ -305,9 +314,11 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     }
                                     maxWidth={200}
                                     placement="bottom"
-                                    enterDelayMs={0.5}
+                                    mouseEnterDelay={0.5}
                                 >
-                                    <Counter>{this.props.devices.length}</Counter>
+                                    <DeviceIconWrapper>
+                                        <Counter>{this.props.devices.length}</Counter>
+                                    </DeviceIconWrapper>
                                 </Tooltip>
                             )}
                             {/* <Tooltip
@@ -318,12 +329,12 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                 }
                                 maxWidth={200}
                                 placement="bottom"
-                                enterDelayMs={0.5}
+                                mouseEnterDelay={0.5}
                             >
                                 <WalletTypeIconWrapper>
                                     <Link to={getPattern('wallet-settings')}>
                                         <Icon
-                                            size={25}
+                                            size={16}
                                             color={colors.TEXT_SECONDARY}
                                             hoverColor={colors.TEXT_PRIMARY}
                                             icon={icons.COG}
@@ -331,10 +342,11 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     </Link>
                                 </WalletTypeIconWrapper>
                             </Tooltip> */}
+                            <IconDivider />
                             <Icon
                                 canAnimate={this.state.clicked === true}
                                 isActive={this.props.wallet.dropdownOpened}
-                                size={25}
+                                size={16}
                                 color={colors.TEXT_SECONDARY}
                                 icon={icons.ARROW_DOWN}
                             />
@@ -353,7 +365,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                             target="_blank"
                             rel="noreferrer noopener"
                         >
-                            <Icon size={26} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />
+                            <StyledIcon size={14} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />
                             <FormattedMessage {...l10nMessages.TR_NEED_HELP} />
                         </A>
                     </Help>

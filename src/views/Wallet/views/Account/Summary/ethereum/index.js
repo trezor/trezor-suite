@@ -26,7 +26,6 @@ const AccountHeading = styled.div`
 
 const TokensHeadingWrapper = styled.div`
     display: flex;
-    align-items: center;
     padding: 20px 0;
 `;
 
@@ -43,12 +42,8 @@ const AccountTitle = styled.div`
 `;
 
 const StyledIcon = styled(Icon)`
-    position: relative;
-    top: -7px;
-
-    &:hover {
-        cursor: pointer;
-    }
+    margin-left: 6px;
+    cursor: pointer;
 `;
 
 const StyledLink = styled(Link)`
@@ -108,7 +103,7 @@ const AccountSummary = (props: Props) => {
                         placement="top"
                         content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
                     >
-                        <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={24} />
+                        <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={14} />
                     </Tooltip>
                 </TokensHeadingWrapper>
                 <AsyncSelectWrapper>

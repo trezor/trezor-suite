@@ -1,43 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { colors, icons as ICONS } from 'trezor-ui-components';
-import styled from 'styled-components';
+import { Icon, colors, icons } from 'trezor-ui-components';
 
-const SvgWrapper = styled.svg`
-    :hover {
-        path {
-            fill: ${props => props.hoverColor};
-        }
-    }
-`;
-
-const Path = styled.path`
-    fill: ${props => props.color};
-`;
-
-const Icon = ({
+const WalletType = ({
     type = 'standard',
-    size = 24,
+    size = 14,
     color = colors.TEXT_SECONDARY,
     hoverColor,
     onClick,
-}) => (
-    <SvgWrapper
-        hoverColor={hoverColor}
-        width={`${size}`}
-        height={`${size}`}
-        viewBox="0 0 1024 1024"
-        onClick={onClick}
-    >
-        <Path
-            key={type}
+    ...rest
+}) => {
+    const icon = type === 'hidden' ? icons.WALLET_HIDDEN : icons.WALLET_STANDARD;
+    return (
+        <Icon
+            icon={icon}
+            hoverColor={hoverColor}
+            onClick={onClick}
             color={color}
-            d={type === 'hidden' ? ICONS.WALLET_HIDDEN : ICONS.WALLET_STANDARD}
+            size={size}
+            {...rest}
         />
-    </SvgWrapper>
-);
+    );
+};
 
-Icon.propTypes = {
+WalletType.propTypes = {
     type: PropTypes.string,
     size: PropTypes.number,
     color: PropTypes.string,
@@ -45,4 +31,4 @@ Icon.propTypes = {
     onClick: PropTypes.func,
 };
 
-export default Icon;
+export default WalletType;

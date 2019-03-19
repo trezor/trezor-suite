@@ -179,7 +179,7 @@ const AccountMenu = (props: Props) => {
                     <Row>
                         <RowAddAccountWrapper disabled>
                             <AddAccountIconWrapper>
-                                <Icon icon={ICONS.PLUS} size={24} color={colors.TEXT_SECONDARY} />
+                                <Icon icon={ICONS.PLUS} size={14} color={colors.TEXT_SECONDARY} />
                             </AddAccountIconWrapper>
                             <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
                         </RowAddAccountWrapper>
@@ -191,7 +191,7 @@ const AccountMenu = (props: Props) => {
                 <Row onClick={props.addAccount}>
                     <RowAddAccountWrapper>
                         <AddAccountIconWrapper>
-                            <Icon icon={ICONS.PLUS} size={24} color={colors.TEXT_SECONDARY} />
+                            <Icon icon={ICONS.PLUS} size={14} color={colors.TEXT_SECONDARY} />
                         </AddAccountIconWrapper>
                         <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
                     </RowAddAccountWrapper>
@@ -207,7 +207,7 @@ const AccountMenu = (props: Props) => {
                     <Row>
                         <RowAddAccountWrapper disabled>
                             <AddAccountIconWrapper>
-                                <Icon icon={ICONS.PLUS} size={24} color={colors.TEXT_SECONDARY} />
+                                <Icon icon={ICONS.PLUS} size={14} color={colors.TEXT_SECONDARY} />
                             </AddAccountIconWrapper>
                             <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
                         </RowAddAccountWrapper>
@@ -243,7 +243,7 @@ const AccountMenu = (props: Props) => {
                     iconLeft={{
                         type: ICONS.ARROW_LEFT,
                         color: colors.TEXT_PRIMARY,
-                        size: 20,
+                        size: 10,
                     }}
                 />
             </NavLink>

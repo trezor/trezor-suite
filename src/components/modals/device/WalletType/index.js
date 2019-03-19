@@ -74,6 +74,10 @@ const Content = styled.div`
         `}
 `;
 
+const StyledWalletTypeIcon = styled(WalletTypeIcon)`
+    margin-right: 6px;
+`;
+
 class WalletType extends PureComponent<Props> {
     constructor(props: Props) {
         super(props);
@@ -104,7 +108,7 @@ class WalletType extends PureComponent<Props> {
             <Wrapper>
                 {device.state && (
                     <StyledLink onClick={onCancel}>
-                        <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                        <Icon size={14} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                     </StyledLink>
                 )}
                 <StyledHeading>
@@ -122,7 +126,11 @@ class WalletType extends PureComponent<Props> {
                 </StyledHeading>
                 <Content isTop>
                     <Header>
-                        <WalletTypeIcon type="standard" size={32} color={colors.TEXT_PRIMARY} />
+                        <StyledWalletTypeIcon
+                            type="standard"
+                            size={16}
+                            color={colors.TEXT_PRIMARY}
+                        />
                         <FormattedMessage {...l10nMessages.TR_STANDARD_WALLET} />
                     </Header>
                     <P size="small">
@@ -141,10 +149,10 @@ class WalletType extends PureComponent<Props> {
                         )}
                         readMoreLink="https://wiki.trezor.io/Passphrase"
                     >
-                        <StyledIcon icon={icons.HELP} color={colors.TEXT_SECONDARY} size={26} />
+                        <StyledIcon icon={icons.HELP} color={colors.TEXT_SECONDARY} size={16} />
                     </Tooltip>
                     <Header>
-                        <WalletTypeIcon type="hidden" size={32} color={colors.TEXT_PRIMARY} />
+                        <StyledWalletTypeIcon type="hidden" size={16} color={colors.TEXT_PRIMARY} />
                         <FormattedMessage {...l10nMessages.TR_HIDDEN_WALLET} />
                     </Header>
                     <P size="small">

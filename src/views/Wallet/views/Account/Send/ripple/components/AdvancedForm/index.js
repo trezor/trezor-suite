@@ -65,6 +65,7 @@ const AdvancedSettingsSendButtonWrapper = styled.div`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
+    margin-left: 6px;
 `;
 
 const getFeeInputState = (feeErrors: string, feeWarnings: string): string => {
@@ -125,7 +126,7 @@ const AdvancedForm = (props: Props) => {
                                     <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
-                                        size={24}
+                                        size={14}
                                     />
                                 </Tooltip>
                             </Left>
@@ -164,7 +165,7 @@ const AdvancedForm = (props: Props) => {
                                     <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
-                                        size={24}
+                                        size={14}
                                     />
                                 </Tooltip>
                             </Left>

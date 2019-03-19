@@ -42,7 +42,7 @@ const Img = styled.img`
 const NemWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
-            <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+            <Icon size={14} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
         <H5>
             <FormattedMessage {...l10nMessages.TR_NEM_WALLET} />

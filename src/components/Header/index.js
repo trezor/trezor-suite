@@ -58,7 +58,9 @@ const MenuToggler = styled.div`
     }
 `;
 
-const TogglerText = styled.div``;
+const TogglerText = styled.div`
+    margin-left: 6px;
+`;
 
 const TREZOR = styled.div``;
 const T = styled.div``;
@@ -159,14 +161,14 @@ const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
                     <MenuToggler onClick={toggleSidebar}>
                         {sidebarOpened ? (
                             <>
-                                <Icon size={24} color={colors.WHITE} icon={icons.CLOSE} />
+                                <Icon size={14} color={colors.WHITE} icon={icons.CLOSE} />
                                 <TogglerText>
                                     <FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />
                                 </TogglerText>
                             </>
                         ) : (
                             <>
-                                <Icon color={colors.WHITE} size={24} icon={icons.MENU} />
+                                <Icon color={colors.WHITE} size={14} icon={icons.MENU} />
                                 <TogglerText>
                                     <FormattedMessage {...l10nMessages.TR_MENU} />
                                 </TogglerText>

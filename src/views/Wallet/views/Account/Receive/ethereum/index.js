@@ -79,6 +79,10 @@ const QrWrapper = styled.div`
     flex-direction: column;
 `;
 
+const StyledDeviceIcon = styled(DeviceIcon)`
+    margin-right: 6px;
+`;
+
 const AccountReceive = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const { account, discovery, shouldRender } = props.selectedAccount;
@@ -118,7 +122,11 @@ const AccountReceive = (props: Props) => {
                             trezorAction={
                                 isAddressVerifying ? (
                                     <React.Fragment>
-                                        <DeviceIcon device={device} color={colors.WHITE} />
+                                        <StyledDeviceIcon
+                                            size={16}
+                                            device={device}
+                                            color={colors.WHITE}
+                                        />
                                         <FormattedMessage
                                             {...l10nReceiveMessages.TR_CHECK_ADDRESS_ON_TREZOR}
                                         />

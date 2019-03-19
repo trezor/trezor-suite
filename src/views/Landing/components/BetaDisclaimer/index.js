@@ -91,7 +91,7 @@ const BetaDisclaimer = (props: { close: () => void }) => (
                 />
             </StyledP>
             <StyledP>
-                <StyledIcon size={24} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
+                <StyledIcon size={14} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
                 <FormattedMessage
                     {...l10nMessages.TR_PLEASE_NOTE_THAT_THE_TREZOR}
                     values={{

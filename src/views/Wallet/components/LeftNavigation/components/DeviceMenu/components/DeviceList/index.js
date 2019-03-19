@@ -50,7 +50,7 @@ class DeviceList extends PureComponent<Props> {
                                         >
                                             <Icon
                                                 icon={icons.EJECT}
-                                                size={25}
+                                                size={14}
                                                 color={colors.TEXT_SECONDARY}
                                             />
                                         </IconClick>

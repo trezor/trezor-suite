@@ -47,7 +47,7 @@ class CoinMenu extends PureComponent<Props> {
                         iconRight={{
                             type: ICONS.SKIP,
                             color: colors.TEXT_SECONDARY,
-                            size: 27,
+                            size: 13,
                         }}
                     />
                 );

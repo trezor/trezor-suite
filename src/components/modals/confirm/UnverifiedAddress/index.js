@@ -145,7 +145,7 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
             <Wrapper>
                 <Content>
                     <StyledLink onClick={onCancel}>
-                        <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                        <Icon size={14} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                     </StyledLink>
                     <H5>{deviceStatus}</H5>
                     <StyledP size="small">

@@ -73,6 +73,7 @@ const IconWrapper = styled.div`
     display: flex;
     flex: 1 0 0;
     justify-content: flex-end;
+    align-items: center;
 `;
 
 const ImageWrapper = styled.div`

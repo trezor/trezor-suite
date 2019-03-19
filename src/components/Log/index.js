@@ -75,7 +75,7 @@ const Log = (props: Props): ?React$Element<string> => {
     return (
         <Wrapper>
             <Click onClick={props.toggle}>
-                <Icon size={24} color={colors.INFO_PRIMARY} icon={icons.CLOSE} />
+                <Icon size={14} color={colors.INFO_PRIMARY} icon={icons.CLOSE} />
             </Click>
             <H5>
                 <FormattedMessage {...l10nMessages.TR_LOG} />

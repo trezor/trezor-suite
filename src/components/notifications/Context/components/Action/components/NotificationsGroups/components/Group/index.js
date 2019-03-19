@@ -78,7 +78,7 @@ class Group extends PureComponent {
                             <Icon
                                 icon={ICONS.ARROW_DOWN}
                                 color={colors.TEXT_SECONDARY}
-                                size={24}
+                                size={14}
                                 isActive={!this.state.visible}
                                 canAnimate
                             />
