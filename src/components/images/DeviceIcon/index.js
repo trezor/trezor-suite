@@ -2,8 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { colors as COLORS, icons as ICONS } from 'trezor-ui-components';
-import styled from 'styled-components';
+import { Icon, colors as COLORS, icons } from 'trezor-ui-components';
 import type { TrezorDevice } from 'flowtype';
 
 type Props = {
@@ -14,26 +13,14 @@ type Props = {
     onClick?: any,
 };
 
-const SvgWrapper = styled.svg`
-    :hover {
-        path {
-            fill: ${props => props.hoverColor};
-        }
-    }
-`;
-
-const Path = styled.path`
-    fill: ${props => props.color};
-`;
-
 const getDeviceIcon = (majorVersion: number) => {
     switch (majorVersion) {
         case 1:
-            return ICONS.T1;
+            return icons.T1;
         case 2:
-            return ICONS.T2;
+            return icons.T2;
         default:
-            return ICONS.T2;
+            return icons.T2;
     }
 };
 
@@ -45,17 +32,8 @@ const DeviceIcon = ({
     onClick,
 }: Props) => {
     const majorVersion = device.features ? device.features.major_version : 2;
-    return (
-        <SvgWrapper
-            hoverColor={hoverColor}
-            width={`${size}`}
-            height={`${size}`}
-            viewBox="0 0 1024 1024"
-            onClick={onClick}
-        >
-            <Path key={majorVersion} color={color} d={getDeviceIcon(majorVersion)} />
-        </SvgWrapper>
-    );
+    const icon = getDeviceIcon(majorVersion);
+    return <Icon icon={icon} hoverColor={hoverColor} onClick={onClick} color={color} size={size} />;
 };
 
 DeviceIcon.propTypes = {
