@@ -11175,10 +11175,10 @@ trezor-translations-manager@^1.0.4:
     request "^2.88.0"
     request-promise-native "^1.0.5"
 
-trezor-ui-components@^1.0.0-beta.4:
-  version "1.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.4.tgz#e68185775e13a130076e548a68ba61053f1053bf"
-  integrity sha512-ikH/k8p4rVonfDqqo8NjZPE3N73aq3P4lk6cvN1XwRSP70lsGELG5qoU71eQsThGsN1dioxhOxWA7HVAazHvDw==
+trezor-ui-components@^1.0.0-beta.5:
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.5.tgz#1f780184f707893e518da66a569b1402452d3968"
+  integrity sha512-hQOyNLFtzXmYR8/t+SH1+Qrl3gX5l4XXMavZcG3ulZAGGiweR8WOPmyCTLMIc8ZPnTkdpJG9oq71lYEptEFZgA==
   dependencies:
     prop-types "^15.7.2"
     rc-tooltip "^3.7.3"
