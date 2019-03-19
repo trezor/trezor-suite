@@ -2,13 +2,9 @@
 import styled from 'styled-components';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-
-import Link from 'components/Link';
+import { Button, Link, Select, colors } from 'trezor-ui-components';
 import Content from 'views/Wallet/components/Content';
-import { Select } from 'components/Select';
-import Button from 'components/Button';
 
-import colors from 'config/colors';
 import { FIAT_CURRENCIES } from 'config/app';
 import { FONT_SIZE } from 'config/variables';
 import l10nCommonMessages from 'views/common.messages';

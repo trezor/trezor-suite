@@ -5,8 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 
-import colors from 'config/colors';
-import Notification from 'components/Notification';
+import { colors, Notification } from 'trezor-ui-components';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import type { State, Dispatch } from 'flowtype';
 import l10nMessages from './index.messages';

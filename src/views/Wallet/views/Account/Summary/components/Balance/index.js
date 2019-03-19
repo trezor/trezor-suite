@@ -3,10 +3,8 @@ import React, { PureComponent } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import Icon from 'components/Icon';
-import colors from 'config/colors';
-import ICONS from 'config/icons';
-import Tooltip from 'components/Tooltip';
+import { Icon, Tooltip, colors, icons as ICONS } from 'trezor-ui-components';
+
 import { toFiatCurrency } from 'utils/fiatConverter';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import type { Network, State as ReducersState } from 'flowtype';

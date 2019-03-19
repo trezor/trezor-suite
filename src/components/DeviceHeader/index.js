@@ -4,7 +4,8 @@ import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { getStatusColor, getStatusName, getStatus, getVersion } from 'utils/device';
 import TrezorImage from 'components/images/TrezorImage';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
+
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 const Wrapper = styled.div`

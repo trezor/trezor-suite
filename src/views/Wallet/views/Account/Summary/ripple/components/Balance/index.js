@@ -2,12 +2,9 @@
 import React, { PureComponent } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import Icon from 'components/Icon';
-import colors from 'config/colors';
-import ICONS from 'config/icons';
+import { Icon, Tooltip, colors, icons as ICONS } from 'trezor-ui-components';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import Tooltip from 'components/Tooltip';
 import type { Network, State as ReducersState } from 'flowtype';
 import l10nMessages from '../../../components/Balance/index.messages';
 

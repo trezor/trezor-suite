@@ -1,5 +1,5 @@
 import * as utils from 'utils/device';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 
 describe('device utils', () => {
     it('get status', () => {
