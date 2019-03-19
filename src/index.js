@@ -1,7 +1,7 @@
 import animations from './config/animations';
 import colors from './config/colors';
 import icons from './config/icons';
-import variables from './config/variables';
+import * as variables from './config/variables';
 
 import Button from './components/buttons/Button';
 import ButtonNotification from './components/buttons/Notification';
