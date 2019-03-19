@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import Notification from 'components/Notification';
+import { Notification } from 'trezor-ui-components';
 import { injectIntl } from 'react-intl';
 import l10nMessages from './index.messages';
 

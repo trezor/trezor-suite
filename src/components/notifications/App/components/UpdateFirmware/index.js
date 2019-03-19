@@ -1,6 +1,6 @@
 /* @flow */
 import * as React from 'react';
-import Notification from 'components/Notification';
+import { Notification } from 'trezor-ui-components';
 import l10nCommonMessages from 'views/common.messages';
 import { withRouter } from 'react-router-dom';
 import { matchPath } from 'react-router';
