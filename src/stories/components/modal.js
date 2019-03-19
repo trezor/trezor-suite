@@ -1,10 +1,10 @@
 import Modal from 'components/Modal';
 
-import ButtonText from 'components/buttons/Button';
+import Button from 'components/buttons/Button';
 import ButtonPin from 'components/buttons/Pin';
 import InputPin from 'components/inputs/Pin';
 import P from 'components/Paragraph';
-import { H2 } from 'components/Heading';
+import { H5 } from 'components/Heading';
 import Link from 'components/Link';
 
 import React from 'react';
@@ -87,8 +87,8 @@ storiesOf('Examples', module)
         () => (
             <Modal>
                 <ModalWrapper>
-                    <H2>Enter Trezor PIN</H2>
-                    <P isSmaller>The PIN layout is displayed on your Trezor.</P>
+                    <H5>Enter Trezor PIN</H5>
+                    <P size="small">The PIN layout is displayed on your Trezor.</P>
                     <InputWrapper>
                         <InputPin onDeleteClick={() => {}} value="" />
                     </InputWrapper>
@@ -108,9 +108,9 @@ storiesOf('Examples', module)
                         <ButtonPin onClick={() => {}} />
                     </PinRow>
                     <PinFooter>
-                        <ButtonText onClick={() => {}}>Enter PIN</ButtonText>
-                        <P isSmaller>
-                            Not sure how PIN works?
+                        <Button onClick={() => {}}>Enter PIN</Button>
+                        <P size="small">
+                            Not sure how PIN works?{' '}
                             <Link isGreen href="https://wiki.trezor.io/User_manual:Entering_PIN">
                                 Learn more
                             </Link>
@@ -125,8 +125,8 @@ storiesOf('Examples', module)
             ## Import
             ~~~js
             import {
-                Modal, 
-                ButtonText, 
+                Modal,
+                Button,
                 ButtonPin, 
                 InputPin, 
                 P, 
