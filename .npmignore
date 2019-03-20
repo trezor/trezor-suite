@@ -10,3 +10,6 @@ node_modules
 .stylelintrc
 babel.config.js
 yarn.lock
+public
+scripts
+test
