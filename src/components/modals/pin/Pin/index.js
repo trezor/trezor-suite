@@ -164,7 +164,7 @@ class Pin extends PureComponent<Props, State> {
                 </InputRow>
                 <PinRow>
                     <PinButton type="button" data-value="7" onClick={() => this.onPinAdd(7)}>
-                        &#8226;{' '}
+                        &#8226;
                     </PinButton>
                     <PinButton type="button" data-value="8" onClick={() => this.onPinAdd(8)}>
                         &#8226;
@@ -175,7 +175,7 @@ class Pin extends PureComponent<Props, State> {
                 </PinRow>
                 <PinRow>
                     <PinButton type="button" data-value="4" onClick={() => this.onPinAdd(4)}>
-                        &#8226;{' '}
+                        &#8226;
                     </PinButton>
                     <PinButton type="button" data-value="5" onClick={() => this.onPinAdd(5)}>
                         &#8226;
@@ -186,7 +186,7 @@ class Pin extends PureComponent<Props, State> {
                 </PinRow>
                 <PinRow>
                     <PinButton type="button" data-value="1" onClick={() => this.onPinAdd(1)}>
-                        &#8226;{' '}
+                        &#8226;
                     </PinButton>
                     <PinButton type="button" data-value="2" onClick={() => this.onPinAdd(2)}>
                         &#8226;
