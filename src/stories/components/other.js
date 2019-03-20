@@ -5,7 +5,7 @@ import { withInfo } from '@storybook/addon-info';
 import { withKnobs, select, text, number, color, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 
-import CoinLogo from 'components/images/CoinLogo';
+import CoinLogo from 'components/CoinLogo';
 import Icon from 'components/Icon';
 import { H1 } from 'components/Heading';
 import Prompt from 'components/Prompt';
@@ -14,28 +14,29 @@ import colors from 'config/colors';
 import icons from 'config/icons';
 import { FONT_SIZE } from 'config/variables';
 
-const coins = {
-    ADA: 'ada',
-    BCH: 'bch',
-    BTC: 'btc',
-    BTG: 'btg',
-    DASH: 'dash',
-    DGB: 'dgb',
-    DOGE: 'doge',
-    ETC: 'etc',
-    ETH: 'eth',
-    LTC: 'ltc',
-    NEM: 'nem',
-    NMC: 'nmc',
-    RINKEBY: 'rinkeby',
-    TROP: 'trop',
-    TXRP: 'txrp',
-    VTC: 'vtc',
-    XEM: 'xem',
-    XLM: 'xlm',
-    XRP: 'xrp',
-    ZEC: 'zec',
-};
+const coins = [
+    'ada',
+    'bch',
+    'btc',
+    'btg',
+    'dash',
+    'dgb',
+    'doge',
+    'etc',
+    'eth',
+    'ltc',
+    'nem',
+    'nmc',
+    'rinkeby',
+    'trop',
+    'txrp',
+    'vtc',
+    'xem',
+    'xlm',
+    'xrp',
+    'zec',
+    'xtz',
+];
 
 const Wrapper = styled.div`
     padding: 1.6rem;
@@ -69,11 +70,6 @@ const BtnLink = styled.button`
     border-radius: 5px;
 `;
 
-const CoinLogoInline = styled(CoinLogo)`
-    display: inline;
-    padding: 0;
-`;
-
 storiesOf('Other', module)
     .add('Coins & Icons', () => (
         <Wrapper>
@@ -97,11 +93,12 @@ storiesOf('Other', module)
             </H1>
 
             <Icons>
-                {Object.keys(coins).map(coin => {
+                {coins.map(coin => {
+                    console.log(coin);
                     return (
                         <Item>
                             <Title>{coin}</Title>
-                            <CoinLogoInline network={coins[coin]} />
+                            <CoinLogo height="23" network={coin} />
                         </Item>
                     );
                 })}
@@ -128,18 +125,33 @@ storiesOf('Other', module)
         })
     )
     .addDecorator(withKnobs)
-    .add('Coin', () => <CoinLogo network={select('Coin', coins, 'ada')} />, {
-        info: {
-            text: `
+    .add(
+        'Coin',
+        () => {
+            const coinsObject = {};
+            coins.forEach(c => {
+                coinsObject[c] = c;
+            });
+            const coinSelect = select('network', coinsObject, 'ada');
+            const width = number('width', undefined);
+            const height = number('height', 23);
+            return <CoinLogo {...(width ? { width } : {})} height={height} network={coinSelect} />;
+        },
+        {
+            info: {
+                text: `
             ## Import
 
             ~~~js
             Import { CoinLogo } from 'trezor-ui-components';
             ~~~
 
+            *<CoinLogo> is just a styling wrapper around <img> tag. See the [documentation](https://www.w3schools.com/tags/tag_img.asp) for more information about its props and usage.*
+
             `,
-        },
-    })
+            },
+        }
+    )
     .add(
         'Icon',
         () => {
