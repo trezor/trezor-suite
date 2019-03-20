@@ -22,7 +22,7 @@ import Tooltip from './components/Tooltip';
 import Modal from './components/Modal';
 import InvalidPin from './components/Invalid';
 import Icon from './components/Icon';
-import CoinLogo from './components/images/CoinLogo';
+import CoinLogo from './components/CoinLogo';
 import Loader from './components/Loader';
 import Notification from './components/Notification';
 import Prompt from './components/Prompt';
