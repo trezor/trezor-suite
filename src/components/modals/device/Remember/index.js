@@ -44,9 +44,7 @@ const Wrapper = styled.div`
     padding: 30px 48px;
 `;
 
-const Text = styled.div`
-    padding-right: 10px;
-`;
+const Text = styled.div``;
 
 const Column = styled.div`
     display: flex;
@@ -58,8 +56,12 @@ const Column = styled.div`
 `;
 
 const StyledLoader = styled(Loader)`
-    position: absolute;
-    left: 200px;
+    padding-left: 6px;
+`;
+
+const ButtonWithLoader = styled(Button)`
+    padding-top: 6px;
+    padding-bottom: 6px;
 `;
 
 class RememberDevice extends PureComponent<Props, State> {
@@ -141,7 +143,7 @@ class RememberDevice extends PureComponent<Props, State> {
                     />
                 </StyledP>
                 <Column>
-                    <Button onClick={() => this.forget()}>
+                    <ButtonWithLoader onClick={() => this.forget()}>
                         <ButtonContent>
                             <Text>
                                 <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
@@ -153,7 +155,7 @@ class RememberDevice extends PureComponent<Props, State> {
                                 text={this.state.countdown.toString()}
                             />
                         </ButtonContent>
-                    </Button>
+                    </ButtonWithLoader>
                     <Button isWhite onClick={() => onRememberDevice(device)}>
                         <FormattedMessage {...l10nMessages.TR_REMEMBER_DEVICE} />
                     </Button>
