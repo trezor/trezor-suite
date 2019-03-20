@@ -70,6 +70,14 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_CLOSE',
         defaultMessage: 'Close',
     },
+    TR_HIDE_BALANCE: {
+        id: 'TR_HIDE_BALANCE',
+        defaultMessage: 'Hide balance',
+    },
+    TR_THE_ACCOUNT_BALANCE_IS_HIDDEN: {
+        id: 'TR_THE_ACCOUNT_BALANCE_IS_HIDDEN',
+        defaultMessage: 'The account balance is hidden.',
+    },
 });
 
 export default definedMessages;

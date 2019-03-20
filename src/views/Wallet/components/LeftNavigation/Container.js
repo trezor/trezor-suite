@@ -1,5 +1,5 @@
 /* @flow */
-import { toggleDeviceDropdown } from 'actions/WalletActions';
+import { toggleDeviceDropdown, toggleSidebar, setHideBalance } from 'actions/WalletActions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -42,6 +42,8 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     gotoDeviceSettings: bindActionCreators(RouterActions.gotoDeviceSettings, dispatch),
     onSelectDevice: bindActionCreators(RouterActions.selectDevice, dispatch),
     gotoExternalWallet: bindActionCreators(ModalActions.gotoExternalWallet, dispatch),
+    toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
+    setHideBalance: bindActionCreators(setHideBalance, dispatch),
 });
 
 export default withRouter(

@@ -13,8 +13,9 @@ type State = {
     ready: boolean,
     online: boolean,
     language: string,
-    localCurrency: string,
     messages: { [string]: string },
+    localCurrency: string,
+    hideBalance: boolean,
     dropdownOpened: boolean,
     showBetaDisclaimer: boolean,
     showSidebar: ?boolean,
@@ -29,8 +30,9 @@ const initialState: State = {
     ready: false,
     online: navigator.onLine,
     language: 'en',
-    localCurrency: 'usd',
     messages: {},
+    localCurrency: 'usd',
+    hideBalance: false,
     dropdownOpened: false,
     firstLocationChange: true,
     showBetaDisclaimer: false,
@@ -135,6 +137,12 @@ export default function wallet(state: State = initialState, action: Action): Sta
             return {
                 ...state,
                 localCurrency: action.localCurrency,
+            };
+
+        case WALLET.SET_HIDE_BALANCE:
+            return {
+                ...state,
+                hideBalance: action.toggled,
             };
 
         default:

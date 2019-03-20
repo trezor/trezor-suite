@@ -23,7 +23,6 @@ import ContextNotifications from 'components/notifications/Context';
 import { SCREEN_SIZE } from 'config/variables';
 
 import Log from 'components/Log';
-import Backdrop from 'components/Backdrop';
 
 import LeftNavigation from './components/LeftNavigation/Container';
 import TopNavigationAccount from './components/TopNavigationAccount';
@@ -110,14 +109,6 @@ const Body = styled.div`
     flex-direction: column;
 `;
 
-const StyledBackdrop = styled(Backdrop)`
-    display: none;
-
-    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
-        display: initial;
-    }
-`;
-
 const Wallet = (props: Props) => (
     <AppWrapper>
         <Header
@@ -127,11 +118,6 @@ const Wallet = (props: Props) => (
         />
         <AppNotifications />
         <WalletWrapper>
-            <StyledBackdrop
-                show={props.wallet.showSidebar}
-                onClick={props.toggleSidebar}
-                animated
-            />
             {props.wallet.selectedDevice && <LeftNavigation />}
             <MainContent preventBgScroll={props.wallet.showSidebar}>
                 <Navigation>

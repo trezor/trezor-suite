@@ -141,7 +141,7 @@ const AccountMenu = (props: Props) => {
                             {...l10nCommonMessages.TR_ACCOUNT_HASH}
                             values={{ number: account.index + 1 }}
                         />
-                        {balance && (
+                        {balance && !props.wallet.hideBalance && (
                             <Text>
                                 {balance}
                                 {fiatRates && (
