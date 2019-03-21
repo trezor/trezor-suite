@@ -66,29 +66,26 @@ const modelToIcon = model => {
     return mapping[model];
 };
 
-const Prompt = ({ Content, model, size }) => {
+const Prompt = ({ model, size, childern }) => {
     return (
         <Wrapper>
             <ImgWrapper size={size}>
                 <Pulse />
                 <Icon icon={modelToIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
             </ImgWrapper>
-            <ContentWrapper>
-                <Content />
-            </ContentWrapper>
+            <ContentWrapper>{childern}</ContentWrapper>
         </Wrapper>
     );
 };
 
 Prompt.propTypes = {
     model: PropTypes.oneOf(['1', '2']).isRequired,
-    Content: PropTypes.func,
+    childern: PropTypes.node.isRequired,
     size: PropTypes.number,
 };
 
 Prompt.defaultProps = {
     size: 32,
-    Content: () => <span>Complete action on your device</span>,
 };
 
 export default Prompt;

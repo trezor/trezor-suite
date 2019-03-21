@@ -8,7 +8,6 @@ import { linkTo } from '@storybook/addon-links';
 import CoinLogo from 'components/CoinLogo';
 import Icon from 'components/Icon';
 import { H1 } from 'components/Heading';
-import P from 'components/Paragraph';
 import Prompt from 'components/Prompt';
 
 import colors from 'config/colors';
@@ -198,7 +197,11 @@ storiesOf('Other', module)
                 '1'
             );
 
-            return <Prompt model={model} size={32} />;
+            return (
+                <Prompt model={model} size={32}>
+                    Complete action on your device
+                </Prompt>
+            );
         },
         {
             info: {
