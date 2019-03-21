@@ -60,8 +60,8 @@ const ContentWrapper = styled.div`
 
 const modelToIcon = model => {
     const mapping = {
-        '1': icons.T1,
-        '2': icons.T2,
+        1: icons.T1,
+        2: icons.T2,
     };
     return mapping[model];
 };
@@ -79,7 +79,7 @@ const Prompt = ({ model, size, children }) => {
 };
 
 Prompt.propTypes = {
-    model: PropTypes.oneOf(['1', '2']).isRequired,
+    model: PropTypes.oneOf([1, 2]).isRequired,
     children: PropTypes.node.isRequired,
     size: PropTypes.number,
 };
