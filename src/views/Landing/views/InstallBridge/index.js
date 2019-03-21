@@ -90,13 +90,7 @@ const Download = styled.div`
     justify-content: center;
 `;
 
-const DownloadBridgeButton = styled(Button)`
-    padding-top: 5px;
-    padding-bottom: 5px;
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-`;
+const DownloadBridgeButton = styled(Button)``;
 
 const GoBack = styled.span`
     color: ${colors.GREEN_PRIMARY};
@@ -174,8 +168,7 @@ class InstallBridge extends PureComponent<Props, State> {
                                 options={this.state.installers}
                             />
                             <Link href={`${this.state.uri}${target.value}`}>
-                                <DownloadBridgeButton>
-                                    <Icon icon={ICONS.DOWNLOAD} color={colors.WHITE} size={30} />
+                                <DownloadBridgeButton icon={ICONS.DOWNLOAD}>
                                     <FormattedMessage
                                         {...l10nMessages.TR_DOWNLOAD_LATEST_BRIDGE}
                                         values={{ version: this.state.latestVersion }}
@@ -189,7 +182,7 @@ class InstallBridge extends PureComponent<Props, State> {
                                 <Li key={entry}>{entry}</Li>
                             ))}
                         </Ol> */}
-                        <P isSmaller>
+                        <P size="small">
                             <LearnMoreText>
                                 <FormattedMessage
                                     {...l10nMessages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
