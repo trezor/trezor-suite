@@ -12,6 +12,7 @@ import InputPin from './components/inputs/Pin';
 import TextArea from './components/Textarea';
 import Checkbox from './components/Checkbox';
 import Switch from './components/Switch';
+import TrezorImage from './components/TrezorImage';
 import { AsyncSelect, Select } from './components/Select';
 
 import { H1, H2, H3, H4, H5, H6 } from './components/Heading';
@@ -59,6 +60,7 @@ module.exports = {
     InvalidPin,
     Icon,
     CoinLogo,
+    TrezorImage,
     Loader,
     Notification,
     Prompt,
