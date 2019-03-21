@@ -5,9 +5,17 @@ import BigNumber from 'bignumber.js';
 import * as stateUtils from 'reducers/utils';
 import { FormattedMessage } from 'react-intl';
 
-import { H5, Icon, Link, AsyncSelect, Tooltip, colors, icons as ICONS } from 'trezor-ui-components';
+import {
+    H5,
+    CoinLogo,
+    Icon,
+    Link,
+    AsyncSelect,
+    Tooltip,
+    colors,
+    icons as ICONS,
+} from 'trezor-ui-components';
 import Content from 'views/Wallet/components/Content';
-import CoinLogo from 'components/images/CoinLogo';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 import l10nCommonMessages from 'views/common.messages';
 import l10nSummaryMessages from '../common.messages';
@@ -56,6 +64,10 @@ const AsyncSelectWrapper = styled.div`
 
 const AddedTokensWrapper = styled.div``;
 
+const StyledCoinLogo = styled(CoinLogo)`
+    margin-right: 10px;
+`;
+
 const AccountSummary = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const { account, network, tokens, pending, shouldRender } = props.selectedAccount;
@@ -74,7 +86,7 @@ const AccountSummary = (props: Props) => {
             <React.Fragment>
                 <AccountHeading>
                     <AccountName>
-                        <CoinLogo network={account.network} />
+                        <StyledCoinLogo height={23} network={account.network} />
                         <AccountTitle>
                             <FormattedMessage
                                 {...l10nCommonMessages.TR_ACCOUNT_HASH}

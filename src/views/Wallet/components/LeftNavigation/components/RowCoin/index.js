@@ -1,15 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import CoinLogo from 'components/images/CoinLogo';
 import { FONT_SIZE, LEFT_NAVIGATION_ROW } from 'config/variables';
-import { Icon, colors } from 'trezor-ui-components';
+import { CoinLogo, Icon, colors } from 'trezor-ui-components';
 import Row from '../Row';
 
 const CoinNameWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+`;
+
+const CoinLogoWrapper = styled.div`
+    padding-right: 20px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
 `;
 
 const RowCoinWrapper = styled.div`
@@ -47,7 +53,9 @@ const RowCoin = ({ network, iconLeft, iconRight }) => (
                     </IconWrapper>
                 )}
                 <CoinNameWrapper>
-                    <CoinLogo network={network.shortcut} />
+                    <CoinLogoWrapper>
+                        <CoinLogo height="23" network={network.shortcut} />
+                    </CoinLogoWrapper>
                     <p>{network.name}</p>
                 </CoinNameWrapper>
             </Left>

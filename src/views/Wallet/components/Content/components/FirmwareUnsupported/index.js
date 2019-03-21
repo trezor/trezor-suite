@@ -2,8 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { H4, P, Button, Link, colors } from 'trezor-ui-components';
-import CoinLogo from 'components/images/CoinLogo';
+import { CoinLogo, H4, P, Button, Link, colors } from 'trezor-ui-components';
 
 import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';

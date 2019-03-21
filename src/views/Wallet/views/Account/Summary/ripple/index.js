@@ -5,8 +5,7 @@ import BigNumber from 'bignumber.js';
 import { FormattedMessage } from 'react-intl';
 import * as stateUtils from 'reducers/utils';
 
-import { H5, Link, colors } from 'trezor-ui-components';
-import CoinLogo from 'components/images/CoinLogo';
+import { CoinLogo, H5, Link, colors } from 'trezor-ui-components';
 import Content from 'views/Wallet/components/Content';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 
@@ -41,6 +40,10 @@ const AccountTitle = styled.div`
     color: ${colors.WALLET_TITLE};
 `;
 
+const StyledCoinLogo = styled(CoinLogo)`
+    margin-right: 10px;
+`;
+
 const AccountSummary = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const { account, network, pending, shouldRender } = props.selectedAccount;
@@ -63,7 +66,7 @@ const AccountSummary = (props: Props) => {
             <React.Fragment>
                 <AccountHeading>
                     <AccountName>
-                        <CoinLogo network={account.network} />
+                        <StyledCoinLogo height={23} network={account.network} />
                         <AccountTitle>
                             <FormattedMessage
                                 {...l10nCommonMessages.TR_ACCOUNT_HASH}
