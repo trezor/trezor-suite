@@ -224,6 +224,8 @@ storiesOf('Typography', module)
                     center: 'center',
                     right: 'right',
                     justify: 'justify',
+                    inherit: 'inherit',
+                    initial: 'initial',
                 },
                 null
             );
