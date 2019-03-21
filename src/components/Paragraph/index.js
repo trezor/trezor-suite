@@ -1,5 +1,5 @@
 import { FONT_SIZE, LINE_HEIGHT } from 'config/variables';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -16,12 +16,16 @@ const Paragraph = styled.p`
     font-size: ${props => props.size};
     line-height: ${LINE_HEIGHT.BASE};
     color: ${colors.TEXT_SECONDARY};
-    text-align: ${props => props.textAlign};
     padding: 0;
     margin: 0;
+    ${props =>
+        props.textAlign &&
+        css`
+            text-align: ${props.textAlign};
+        `}
 `;
 
-const P = ({ children, className, size = 'medium', textAlign = 'initial', ...rest }) => (
+const P = ({ children, className, size = 'medium', textAlign, ...rest }) => (
     <Paragraph className={className} size={P_SIZES[size]} textAlign={textAlign} {...rest}>
         {children}
     </Paragraph>
@@ -31,7 +35,7 @@ P.propTypes = {
     className: PropTypes.string,
     children: PropTypes.node,
     size: PropTypes.oneOf(['small', 'medium', 'large', 'xlarge']),
-    textAlign: PropTypes.oneOf(['left', 'center', 'right', 'justify', 'initial']),
+    textAlign: PropTypes.oneOf(['left', 'center', 'right', 'justify', 'inherit', 'initial']),
 };
 
 export default P;
