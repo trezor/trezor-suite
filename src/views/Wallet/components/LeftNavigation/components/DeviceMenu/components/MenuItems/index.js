@@ -108,7 +108,7 @@ class MenuItems extends PureComponent {
                 </Item>
                 <Divider />
                 <Item>
-                    <Icon icon={icons.EYE_CROSSED} size={25} color={colors.TEXT_SECONDARY} />
+                    <Icon icon={icons.EYE_CROSSED} size={14} color={colors.TEXT_SECONDARY} />
                     <Label>
                         <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
                     </Label>

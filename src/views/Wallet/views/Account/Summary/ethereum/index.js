@@ -104,7 +104,7 @@ const AccountSummary = (props: Props) => {
                         placement="top"
                         content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
                     >
-                        <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={14} />
+                        <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
                     </Tooltip>
                 </TokensHeadingWrapper>
                 <AsyncSelectWrapper>

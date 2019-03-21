@@ -99,7 +99,7 @@ class AddedToken extends PureComponent {
                         >
                             <TooltipIcon
                                 icon={ICONS.EYE_CROSSED}
-                                size={25}
+                                size={14}
                                 color={colors.TEXT_SECONDARY}
                             />
                         </Tooltip>
@@ -111,7 +111,7 @@ class AddedToken extends PureComponent {
                     isTransparent
                     onClick={() => this.props.removeToken(this.props.token)}
                 >
-                    <Icon icon={ICONS.CLOSE} size={23} />
+                    <Icon icon={ICONS.CLOSE} size={14} />
                 </RemoveTokenButton>
             </TokenWrapper>
         );

@@ -67,6 +67,7 @@ const Info = styled.div`
 `;
 
 const TooltipIcon = styled(Icon)`
+    margin-left: 6px;
     cursor: pointer;
 `;
 
@@ -97,7 +98,7 @@ const WalletSettings = (props: Props) => (
                         maxWidth={210}
                         placement="right"
                     >
-                        <TooltipIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={24} />
+                        <TooltipIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
                     </Tooltip>
                 </Label>
                 <Switch
