@@ -474,7 +474,7 @@ const AccountSend = (props: Props) => {
                     </FeeLabel>
                     {gasPriceNeedsUpdate && (
                         <UpdateFeeWrapper>
-                            <Icon icon={ICONS.WARNING} color={colors.WARNING_PRIMARY} size={20} />
+                            <StyledIcon icon={ICONS.WARNING} color={colors.WARNING_PRIMARY} size={12} />
                             <FormattedMessage
                                 {...l10nSendMessages.TR_RECOMMENDED_FEES_UPDATED}
                             />{' '}
