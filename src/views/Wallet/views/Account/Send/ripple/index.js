@@ -141,7 +141,7 @@ const ToggleAdvancedSettingsButton = styled(Button)`
     display: flex;
     flex: 1 1 0;
     align-items: center;
-    font-weight: ${FONT_WEIGHT.SEMIBOLD};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
     justify-content: flex-start;
 `;
 
@@ -439,10 +439,12 @@ const AccountSend = (props: Props) => {
                     </FeeLabel>
                     {feeNeedsUpdate && (
                         <UpdateFeeWrapper>
-                            <StyledIcon icon={ICONS.WARNING} color={colors.WARNING_PRIMARY} size={12} />
-                            <FormattedMessage
-                                {...l10nSendMessages.TR_RECOMMENDED_FEES_UPDATED}
-                            />{' '}
+                            <StyledIcon
+                                icon={ICONS.WARNING}
+                                color={colors.WARNING_PRIMARY}
+                                size={12}
+                            />
+                            <FormattedMessage {...l10nSendMessages.TR_RECOMMENDED_FEES_UPDATED} />{' '}
                             <StyledLink onClick={updateFeeLevels} isGreen>
                                 <FormattedMessage {...l10nSendMessages.TR_CLICK_HERE_TO_USE_THEM} />
                             </StyledLink>
