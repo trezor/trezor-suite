@@ -214,6 +214,8 @@ storiesOf('Other', module)
     .add(
         'TrezorImage',
         () => {
+            const width = number('width', undefined);
+            const height = number('height', 310);
             const model = select(
                 'model',
                 {
@@ -223,7 +225,7 @@ storiesOf('Other', module)
                 '1'
             );
 
-            return <TrezorImage model={model} />;
+            return <TrezorImage {...(width ? { width } : {})} height={height} model={model} />;
         },
         {
             info: {
