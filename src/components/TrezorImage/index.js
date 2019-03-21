@@ -11,7 +11,7 @@ const TrezorImage = ({ model, ...rest }) => {
 };
 
 TrezorImage.propTypes = {
-    model: PropTypes.oneOf(['1', '2']),
+    model: PropTypes.oneOf([1, 2]),
 };
 
 export default TrezorImage;
