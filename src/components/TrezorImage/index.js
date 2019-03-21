@@ -2,24 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Wrapper = styled.div``;
+const Img = styled.img``;
 
-const Img = styled.img`
-    width: ${props => (props.model === 'T' ? '17px' : '13px')};
-`;
-
-const TrezorImage = ({ model }) => {
+const TrezorImage = ({ model, ...rest }) => {
     // $FlowIssue: `require` must be a string literal.
-	const src = require(`../../images/images/trezor-${model}.png`); // eslint-disable-line
-    return (
-        <Wrapper>
-            <Img model={model} src={src} />
-        </Wrapper>
-    );
+	const src = require(`../../images/trezor-${model}.png`); // eslint-disable-line
+    return <Img model={model} src={src} {...rest} />;
 };
 
 TrezorImage.propTypes = {
-    model: PropTypes.string,
+    model: PropTypes.oneOf(['1', '2']),
 };
 
 export default TrezorImage;

@@ -6,6 +6,7 @@ import { withKnobs, select, text, number, color, boolean } from '@storybook/addo
 import { linkTo } from '@storybook/addon-links';
 
 import CoinLogo from 'components/CoinLogo';
+import TrezorImage from 'components/TrezorImage';
 import Icon from 'components/Icon';
 import { H1 } from 'components/Heading';
 import Prompt from 'components/Prompt';
@@ -206,6 +207,32 @@ storiesOf('Other', module)
         ~~~js
         import { Prompt } from 'trezor-ui-components';
         ~~~
+        `,
+            },
+        }
+    )
+    .add(
+        'TrezorImage',
+        () => {
+            const model = select(
+                'model',
+                {
+                    '1': '1',
+                    '2': '2',
+                },
+                '1'
+            );
+
+            return <TrezorImage model={model} />;
+        },
+        {
+            info: {
+                text: `
+        ## Import
+        ~~~js
+        import { TrezorIMage } from 'trezor-ui-components';
+        ~~~
+        *<TrezorIMage> is just a styled <img> tag. See the [documentation](https://www.w3schools.com/tags/tag_img.asp) for more information about its props and usage.*
         `,
             },
         }
