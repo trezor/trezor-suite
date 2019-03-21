@@ -126,7 +126,7 @@ const AdvancedForm = (props: Props) => {
                                     <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
-                                        size={14}
+                                        size={12}
                                     />
                                 </Tooltip>
                             </Left>
@@ -165,7 +165,7 @@ const AdvancedForm = (props: Props) => {
                                     <StyledIcon
                                         icon={ICONS.HELP}
                                         color={colors.TEXT_SECONDARY}
-                                        size={14}
+                                        size={12}
                                     />
                                 </Tooltip>
                             </Left>

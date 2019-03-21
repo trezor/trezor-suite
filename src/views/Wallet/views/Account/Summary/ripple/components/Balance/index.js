@@ -91,7 +91,9 @@ const Label = styled.div`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
+    margin-left: 6px;
     margin-top: -5px;
+    align-items: center;
 `;
 
 const TooltipWrapper = styled.div`
@@ -143,7 +145,7 @@ class AccountBalance extends PureComponent<Props, State> {
                 placement="top"
                 content="Fiat rates are not currently available."
             >
-                <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={26} />
+                <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
             </Tooltip>
         );
 
