@@ -3,11 +3,12 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Tooltip, icons, colors } from 'trezor-ui-components';
-import { FONT_SIZE } from 'config/variables';
+import { FONT_SIZE, SCREEN_SIZE } from 'config/variables';
 import WalletTypeIcon from 'components/images/WalletType';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
+import Backdrop from 'components/Backdrop';
 // import Link from 'components/Link';
 import * as deviceUtils from 'utils/device';
 
@@ -103,6 +104,14 @@ type TransitionMenuProps = {
     animationType: ?string,
     children?: React.Node,
 };
+
+const StyledBackdrop = styled(Backdrop)`
+    display: none;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        display: initial;
+    }
+`;
 
 // TransitionMenu needs to dispatch window.resize event
 // in order to StickyContainer be recalculated
@@ -261,6 +270,11 @@ class LeftNavigation extends React.PureComponent<Props, State> {
 
         return (
             <Sidebar isOpen={props.wallet.showSidebar}>
+                <StyledBackdrop
+                    show={props.wallet.showSidebar}
+                    onClick={props.toggleSidebar}
+                    animated
+                />
                 <Header
                     isSelected
                     testId="Main__page__device__header"
@@ -392,6 +406,7 @@ LeftNavigation.propTypes = {
     duplicateDevice: PropTypes.func,
     gotoDeviceSettings: PropTypes.func,
     onSelectDevice: PropTypes.func,
+    setHideBalance: PropTypes.func,
 };
 
 export default LeftNavigation;

@@ -401,7 +401,7 @@ const AccountSend = (props: Props) => {
                             <AmountInputLabel>
                                 <FormattedMessage {...l10nSendMessages.TR_AMOUNT} />
                             </AmountInputLabel>
-                            {isCurrentCurrencyToken && selectedToken && (
+                            {isCurrentCurrencyToken && selectedToken && !props.wallet.hideBalance && (
                                 <AmountInputLabel>
                                     <FormattedMessage
                                         {...l10nMessages.YOU_HAVE_TOKEN_BALANCE}

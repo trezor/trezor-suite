@@ -13,7 +13,7 @@ export const LANGUAGE = [
     { code: 'pl', name: 'Polski', en: 'Polish' },
     { code: 'pt', name: 'Português', en: 'Portuguese' },
     { code: 'ru', name: 'Русский', en: 'Russian' },
-    { code: 'uk', name: 'Український', en: 'Ukrainian' },
+    { code: 'uk', name: 'Українська', en: 'Ukrainian' },
     { code: 'zh', name: '中文(简体)', en: 'Chinese Simplified' },
     { code: 'zh_TW', name: '中文(台灣)', en: 'Chinese Traditional' },
 ];

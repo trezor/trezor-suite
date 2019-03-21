@@ -85,6 +85,7 @@ const AccountSummary = (props: Props) => {
                     reserve={reserve}
                     fiat={props.fiat}
                     localCurrency={props.wallet.localCurrency}
+                    isHidden={props.wallet.hideBalance}
                 />
                 {TMP_SHOW_HISTORY && (
                     <HeadingWrapper>

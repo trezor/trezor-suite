@@ -18,6 +18,7 @@ type StateProps = {
 
 type DispatchProps = {
     setLocalCurrency: typeof WalletActions.setLocalCurrency,
+    setHideBalance: typeof WalletActions.setHideBalance,
 };
 
 export type Props = StateProps & DispatchProps;
@@ -34,6 +35,7 @@ const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> 
     dispatch: Dispatch
 ): DispatchProps => ({
     setLocalCurrency: bindActionCreators(WalletActions.setLocalCurrency, dispatch),
+    setHideBalance: bindActionCreators(WalletActions.setHideBalance, dispatch),
 });
 
 export default injectIntl(
