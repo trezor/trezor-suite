@@ -2,7 +2,6 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
 
-import P from 'components/Paragraph';
 import Icon from 'components/Icon';
 
 import icons from 'config/icons';
@@ -40,6 +39,8 @@ const Pulse = styled.div`
 
 const ImgWrapper = styled.div`
     position: relative;
+    height: ${props => props.size}px;
+    width: ${props => props.size}px;
 `;
 
 const Wrapper = styled.div`
@@ -50,9 +51,11 @@ const Wrapper = styled.div`
     text-align: center;
 `;
 
-const TextWrapper = styled(P)`
+const ContentWrapper = styled.div`
     max-width: 300px;
     color: ${colors.GREEN_PRIMARY};
+    text-align: center;
+    margin: 5px;
 `;
 
 const modelToIcon = model => {
@@ -63,19 +66,26 @@ const modelToIcon = model => {
     return mapping[model];
 };
 
-const Prompt = ({ text, model }) => (
-    <Wrapper>
-        <ImgWrapper>
-            <Pulse />
-            <Icon icon={modelToIcon(model)} size={64} color={colors.GREEN_PRIMARY} />
-        </ImgWrapper>
-        <TextWrapper>{text}</TextWrapper>
-    </Wrapper>
-);
+const Prompt = ({ model, size, children }) => {
+    return (
+        <Wrapper>
+            <ImgWrapper size={size}>
+                <Pulse />
+                <Icon icon={modelToIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
+            </ImgWrapper>
+            <ContentWrapper>{children}</ContentWrapper>
+        </Wrapper>
+    );
+};
 
 Prompt.propTypes = {
     model: PropTypes.oneOf(['1', '2']).isRequired,
-    text: PropTypes.string,
+    children: PropTypes.node.isRequired,
+    size: PropTypes.number,
+};
+
+Prompt.defaultProps = {
+    size: 32,
 };
 
 export default Prompt;

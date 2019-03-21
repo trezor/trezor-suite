@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
-import { withKnobs, select, text, number, color, boolean } from '@storybook/addon-knobs';
+import { withKnobs, select, number, color, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 
 import CoinLogo from 'components/CoinLogo';
@@ -197,7 +197,11 @@ storiesOf('Other', module)
                 '1'
             );
 
-            return <Prompt text={text('text', 'Complete action on your device')} model={model} />;
+            return (
+                <Prompt model={model} size={32}>
+                    Complete action on your device
+                </Prompt>
+            );
         },
         {
             info: {
