@@ -2,7 +2,7 @@
 
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { Button, Select, P, Link, Icon, H1, icons as ICONS, colors } from 'trezor-ui-components';
+import { Button, Select, P, Link, H1, icons as ICONS, colors } from 'trezor-ui-components';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 import LandingWrapper from 'views/Landing/components/LandingWrapper';
