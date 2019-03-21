@@ -57,8 +57,8 @@ const TextWrapper = styled(P)`
 
 const modelToIcon = model => {
     const mapping = {
-        '1': icons.T1,
-        '2': icons.T2,
+        1: icons.T1,
+        2: icons.T2,
     };
     return mapping[model];
 };
@@ -74,7 +74,7 @@ const Prompt = ({ text, model }) => (
 );
 
 Prompt.propTypes = {
-    model: PropTypes.oneOf(['1', '2']).isRequired,
+    model: PropTypes.oneOf([1, 2]).isRequired,
     text: PropTypes.string,
 };
 
