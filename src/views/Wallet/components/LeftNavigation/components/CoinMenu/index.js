@@ -20,6 +20,12 @@ const ExternalWallet = styled.div`
     cursor: pointer;
 `;
 
+const StyledLink = styled(Link)`
+    &:hover {
+        text-decoration: none;
+    }
+`;
+
 class CoinMenu extends PureComponent<Props> {
     getBaseUrl() {
         const { selectedDevice } = this.props.wallet;
@@ -62,9 +68,9 @@ class CoinMenu extends PureComponent<Props> {
                         </ExternalWallet>
                     );
                 return (
-                    <Link key={coin.id} href={coin.url} target="_top">
+                    <StyledLink isGray key={coin.id} href={coin.url} target="_top">
                         {row}
-                    </Link>
+                    </StyledLink>
                 );
             });
     }
