@@ -155,7 +155,7 @@ class AccountBalance extends PureComponent<Props, State> {
                         isActive={this.state.isHidden}
                         icon={ICONS.ARROW_UP}
                         color={colors.TEXT_SECONDARY}
-                        size={26}
+                        size={14}
                     />
                 </HideBalanceIconWrapper>
                 {!this.state.isHidden && (
