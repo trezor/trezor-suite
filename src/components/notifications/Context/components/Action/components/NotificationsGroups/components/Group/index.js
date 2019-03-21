@@ -37,6 +37,10 @@ const StyledNotification = styled(Notification)`
     }
 `;
 
+const StyledIcon = styled(Icon)`
+    margin-right: 6px;
+`;
+
 class Group extends PureComponent {
     constructor() {
         super();
@@ -68,7 +72,7 @@ class Group extends PureComponent {
                 {groupNotifications.length > 1 && (
                     <Header onClick={this.toggle}>
                         <Left>
-                            <Icon color={color} size={30} icon={getIcon(type)} />
+                            <StyledIcon color={color} size={16} icon={getIcon(type)} />
                             <Title color={color}>
                                 {groupNotifications.length}{' '}
                                 {groupNotifications.length > 1 ? `${type}s` : type}
