@@ -7,7 +7,7 @@ import { CoinLogo, H4, P } from 'trezor-ui-components';
 
 import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
-import { Props } from './Container';
+import type { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
