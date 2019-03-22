@@ -269,73 +269,76 @@ class LeftNavigation extends React.PureComponent<Props, State> {
             selectedDevice && selectedDevice.connected && selectedDevice.available;
 
         return (
-            <Sidebar isOpen={props.wallet.showSidebar}>
+            <>
                 <StyledBackdrop
                     show={props.wallet.showSidebar}
                     onClick={props.toggleSidebar}
                     animated
                 />
-                <Header
-                    isSelected
-                    testId="Main__page__device__header"
-                    isHoverable={false}
-                    onClickWrapper={() => {
-                        if (isDeviceAccessible || this.props.devices.length > 1) {
-                            this.handleOpen();
-                        }
-                    }}
-                    device={selectedDevice}
-                    disabled={!isDeviceAccessible && this.props.devices.length === 1}
-                    isOpen={this.props.wallet.dropdownOpened}
-                    icon={
-                        <React.Fragment>
-                            {showWalletType && (
-                                <Tooltip
-                                    content={
-                                        <WalletTooltipMsg
-                                            walletType={walletType}
-                                            isDeviceReady={isDeviceReady}
-                                        />
-                                    }
-                                    maxWidth={200}
-                                    placement="bottom"
-                                    mouseEnterDelay={0.5}
-                                >
-                                    <DeviceIconWrapper>
-                                        <WalletTypeIcon
-                                            onClick={e => {
-                                                if (selectedDevice && isDeviceReady) {
-                                                    this.props.duplicateDevice(selectedDevice);
-                                                    e.stopPropagation();
+                <Sidebar isOpen={props.wallet.showSidebar}>
+                    <Header
+                        isSelected
+                        testId="Main__page__device__header"
+                        isHoverable={false}
+                        onClickWrapper={() => {
+                            if (isDeviceAccessible || this.props.devices.length > 1) {
+                                this.handleOpen();
+                            }
+                        }}
+                        device={selectedDevice}
+                        disabled={!isDeviceAccessible && this.props.devices.length === 1}
+                        isOpen={this.props.wallet.dropdownOpened}
+                        icon={
+                            <React.Fragment>
+                                {showWalletType && (
+                                    <Tooltip
+                                        content={
+                                            <WalletTooltipMsg
+                                                walletType={walletType}
+                                                isDeviceReady={isDeviceReady}
+                                            />
+                                        }
+                                        maxWidth={200}
+                                        placement="bottom"
+                                        mouseEnterDelay={0.5}
+                                    >
+                                        <DeviceIconWrapper>
+                                            <WalletTypeIcon
+                                                onClick={e => {
+                                                    if (selectedDevice && isDeviceReady) {
+                                                        this.props.duplicateDevice(selectedDevice);
+                                                        e.stopPropagation();
+                                                    }
+                                                }}
+                                                hoverColor={
+                                                    isDeviceReady
+                                                        ? colors.TEXT_PRIMARY
+                                                        : colors.TEXT_SECONDARY
                                                 }
-                                            }}
-                                            hoverColor={
-                                                isDeviceReady
-                                                    ? colors.TEXT_PRIMARY
-                                                    : colors.TEXT_SECONDARY
-                                            }
-                                            type={walletType}
-                                            size={16}
-                                            color={colors.TEXT_SECONDARY}
-                                        />
-                                    </DeviceIconWrapper>
-                                </Tooltip>
-                            )}
-                            {this.props.devices.length > 1 && (
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage {...l10nMessages.TR_NUMBER_OF_DEVICES} />
-                                    }
-                                    maxWidth={200}
-                                    placement="bottom"
-                                    mouseEnterDelay={0.5}
-                                >
-                                    <DeviceIconWrapper>
-                                        <Counter>{this.props.devices.length}</Counter>
-                                    </DeviceIconWrapper>
-                                </Tooltip>
-                            )}
-                            {/* <Tooltip
+                                                type={walletType}
+                                                size={16}
+                                                color={colors.TEXT_SECONDARY}
+                                            />
+                                        </DeviceIconWrapper>
+                                    </Tooltip>
+                                )}
+                                {this.props.devices.length > 1 && (
+                                    <Tooltip
+                                        content={
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_NUMBER_OF_DEVICES}
+                                            />
+                                        }
+                                        maxWidth={200}
+                                        placement="bottom"
+                                        mouseEnterDelay={0.5}
+                                    >
+                                        <DeviceIconWrapper>
+                                            <Counter>{this.props.devices.length}</Counter>
+                                        </DeviceIconWrapper>
+                                    </Tooltip>
+                                )}
+                                {/* <Tooltip
                                 content={
                                     <FormattedMessage
                                         {...l10nCommonMessages.TR_APPLICATION_SETTINGS}
@@ -356,35 +359,40 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                     </Link>
                                 </WalletTypeIconWrapper>
                             </Tooltip> */}
-                            <IconDivider />
-                            <Icon
-                                canAnimate={this.state.clicked === true}
-                                isActive={this.props.wallet.dropdownOpened}
-                                size={16}
-                                color={colors.TEXT_SECONDARY}
-                                icon={icons.ARROW_DOWN}
-                            />
-                        </React.Fragment>
-                    }
-                    {...this.props}
-                />
-                <Body minHeight={this.state.bodyMinHeight}>
-                    {dropdownOpened && <DeviceMenu ref={this.deviceMenuRef} {...this.props} />}
-                    {isDeviceAccessible && menu}
-                </Body>
-                <Footer data-test="Main__page__footer" key="sticky-footer">
-                    <Help>
-                        <A
-                            href="https://trezor.io/support/"
-                            target="_blank"
-                            rel="noreferrer noopener"
-                        >
-                            <StyledIcon size={14} icon={icons.CHAT} color={colors.TEXT_SECONDARY} />
-                            <FormattedMessage {...l10nMessages.TR_NEED_HELP} />
-                        </A>
-                    </Help>
-                </Footer>
-            </Sidebar>
+                                <IconDivider />
+                                <Icon
+                                    canAnimate={this.state.clicked === true}
+                                    isActive={this.props.wallet.dropdownOpened}
+                                    size={16}
+                                    color={colors.TEXT_SECONDARY}
+                                    icon={icons.ARROW_DOWN}
+                                />
+                            </React.Fragment>
+                        }
+                        {...this.props}
+                    />
+                    <Body minHeight={this.state.bodyMinHeight}>
+                        {dropdownOpened && <DeviceMenu ref={this.deviceMenuRef} {...this.props} />}
+                        {isDeviceAccessible && menu}
+                    </Body>
+                    <Footer data-test="Main__page__footer" key="sticky-footer">
+                        <Help>
+                            <A
+                                href="https://trezor.io/support/"
+                                target="_blank"
+                                rel="noreferrer noopener"
+                            >
+                                <StyledIcon
+                                    size={14}
+                                    icon={icons.CHAT}
+                                    color={colors.TEXT_SECONDARY}
+                                />
+                                <FormattedMessage {...l10nMessages.TR_NEED_HELP} />
+                            </A>
+                        </Help>
+                    </Footer>
+                </Sidebar>
+            </>
         );
     }
 }
