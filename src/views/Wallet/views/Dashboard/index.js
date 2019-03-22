@@ -90,4 +90,4 @@ const Dashboard = (props: Props) => (
     </Content>
 );
 
-export default Dashboard
+export default Dashboard;

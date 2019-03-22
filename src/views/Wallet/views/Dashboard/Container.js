@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import type { MapStateToProps } from 'react-redux';
 import type { State } from 'flowtype';
-import Dashboard from "./index";
+import Dashboard from './index';
 
 type OwnProps = {};
 
