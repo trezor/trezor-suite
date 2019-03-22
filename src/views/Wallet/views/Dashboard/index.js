@@ -4,10 +4,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Content from 'views/Wallet/components/Content';
 
-import EthIcon from 'images/coins/eth.png';
-import RippleIcon from 'images/coins/xrp.png';
-
-import { H4, P } from 'trezor-ui-components';
+import { CoinLogo, H4, P } from 'trezor-ui-components';
 
 import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
@@ -43,7 +40,7 @@ const Overlay = styled.div`
     background: white;
 `;
 
-const Image = styled.img`
+const StyledCoinLogo = styled(CoinLogo)`
     margin-right: 10px;
 
     &:last-child {
@@ -62,8 +59,8 @@ const Dashboard = () => (
                     <FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} />
                 </StyledP>
                 <Overlay>
-                    <Image src={EthIcon} width={20} />
-                    <Image src={RippleIcon} width={25} />
+                    <StyledCoinLogo network="eth" height={32} />
+                    <StyledCoinLogo network="xrp" height={32} />
                 </Overlay>
             </Row>
         </Wrapper>
