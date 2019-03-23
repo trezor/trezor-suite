@@ -14,14 +14,9 @@ import l10nCommonMessages from 'views/common.messages';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
 
-import type { Props as BaseProps } from '../common';
+import type { Props } from '../common';
 
 import Divider from '../Divider';
-
-type OwnProps = {
-    overlayHeight: number,
-};
-type Props = BaseProps & OwnProps;
 
 const Wrapper = styled.div`
     position: absolute;
@@ -37,7 +32,7 @@ const Wrapper = styled.div`
 const Overlay = styled.div`
     position: absolute;
     width: 100%;
-    height: ${props => `${props.height}px`};
+    height: 100%;
     background: rgba(0, 0, 0, 0.2);
     animation: ${FADE_IN} 0.25s;
 `;
@@ -156,7 +151,6 @@ class DeviceMenu extends PureComponent<Props> {
                     onClick={() => {
                         toggleDeviceDropdown(!dropdownOpened);
                     }}
-                    height={this.props.overlayHeight}
                 />
             </>
         );

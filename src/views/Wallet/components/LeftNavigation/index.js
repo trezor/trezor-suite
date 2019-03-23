@@ -163,21 +163,18 @@ type State = {
     animationType: ?string,
     clicked: boolean,
     bodyMinHeight: number,
-    bodyHeight: number,
 };
 
 class LeftNavigation extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.deviceMenuRef = React.createRef();
-        this.leftMenuBodyRef = React.createRef();
         const { location } = this.props.router;
         const hasNetwork = location && location.state && location.state.network;
         this.state = {
             animationType: hasNetwork ? 'slide-left' : null,
             clicked: false,
             bodyMinHeight: 0,
-            bodyHeight: 0,
         };
     }
 
@@ -234,16 +231,9 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                 bodyMinHeight: this.deviceMenuRef.current.getMenuHeight(),
             });
         }
-        if (this.leftMenuBodyRef.current) {
-            this.setState({
-                bodyHeight: this.leftMenuBodyRef.current.getBoundingClientRect().height,
-            });
-        }
     }
 
     deviceMenuRef: { current: any };
-
-    leftMenuBodyRef: { current: any };
 
     render() {
         const { props } = this;
@@ -376,14 +366,8 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                         }
                         {...this.props}
                     />
-                    <Body ref={this.leftMenuBodyRef} minHeight={this.state.bodyMinHeight}>
-                        {dropdownOpened && (
-                            <DeviceMenu
-                                ref={this.deviceMenuRef}
-                                overlayHeight={this.state.bodyHeight}
-                                {...this.props}
-                            />
-                        )}
+                    <Body minHeight={this.state.bodyMinHeight}>
+                        {dropdownOpened && <DeviceMenu ref={this.deviceMenuRef} {...this.props} />}
                         {isDeviceAccessible && menu}
                     </Body>
                     <Footer data-test="Main__page__footer" key="sticky-footer">
