@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 
 import COLORS from 'config/colors';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import { SLIDE_DOWN } from 'config/animations';
+import { SLIDE_DOWN, FADE_IN } from 'config/animations';
 
 import Button from 'components/Button';
 import * as deviceUtils from 'utils/device';
@@ -14,9 +14,14 @@ import l10nCommonMessages from 'views/common.messages';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
 
-import type { Props } from '../common';
+import type { Props as BaseProps } from '../common';
 
 import Divider from '../Divider';
+
+type OwnProps = {
+    overlayHeight: number,
+};
+type Props = BaseProps & OwnProps;
 
 const Wrapper = styled.div`
     position: absolute;
@@ -27,6 +32,14 @@ const Wrapper = styled.div`
     background: white;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
     animation: ${SLIDE_DOWN} 0.25s cubic-bezier(0.17, 0.04, 0.03, 0.94) forwards;
+`;
+
+const Overlay = styled.div`
+    position: absolute;
+    width: 100%;
+    height: ${props => `${props.height}px`};
+    background: rgba(0, 0, 0, 0.2);
+    animation: ${FADE_IN} 0.25s;
 `;
 
 const ButtonWrapper = styled.div`
@@ -116,28 +129,36 @@ class DeviceMenu extends PureComponent<Props> {
     myRef: { current: ?HTMLDivElement };
 
     render() {
-        const { devices, onSelectDevice, forgetDevice } = this.props;
+        const { devices, onSelectDevice, forgetDevice, toggleDeviceDropdown } = this.props;
         const { transport } = this.props.connect;
-        const { selectedDevice } = this.props.wallet;
+        const { selectedDevice, dropdownOpened } = this.props.wallet;
 
         return (
-            <Wrapper ref={this.myRef}>
-                {this.showMenuItems() && <MenuItems device={selectedDevice} {...this.props} />}
-                {this.showDivider() && <StyledDivider hasBorder textLeft="Other devices" />}
-                <DeviceList
-                    devices={devices}
-                    selectedDevice={selectedDevice}
-                    onSelectDevice={onSelectDevice}
-                    forgetDevice={forgetDevice}
+            <>
+                <Wrapper ref={this.myRef}>
+                    {this.showMenuItems() && <MenuItems device={selectedDevice} {...this.props} />}
+                    {this.showDivider() && <StyledDivider hasBorder textLeft="Other devices" />}
+                    <DeviceList
+                        devices={devices}
+                        selectedDevice={selectedDevice}
+                        onSelectDevice={onSelectDevice}
+                        forgetDevice={forgetDevice}
+                    />
+                    {deviceUtils.isWebUSB(transport) && (
+                        <ButtonWrapper>
+                            <StyledButton isWebUsb>
+                                <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
+                            </StyledButton>
+                        </ButtonWrapper>
+                    )}
+                </Wrapper>
+                <Overlay
+                    onClick={() => {
+                        toggleDeviceDropdown(!dropdownOpened);
+                    }}
+                    height={this.props.overlayHeight}
                 />
-                {deviceUtils.isWebUSB(transport) && (
-                    <ButtonWrapper>
-                        <StyledButton isWebUsb>
-                            <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
-                        </StyledButton>
-                    </ButtonWrapper>
-                )}
-            </Wrapper>
+            </>
         );
     }
 }
