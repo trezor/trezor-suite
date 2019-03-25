@@ -81,8 +81,8 @@ const AdvancedSettingsSendButtonWrapper = styled.div`
     justify-content: flex-end;
 `;
 
-const getGasLimitInputState = (gasLimitErrors: string, gasLimitWarnings: string): string => {
-    let state = '';
+const getGasLimitInputState = (gasLimitErrors: string, gasLimitWarnings: string): ?string => {
+    let state = null;
     if (gasLimitWarnings && !gasLimitErrors) {
         state = 'warning';
     }
@@ -92,8 +92,8 @@ const getGasLimitInputState = (gasLimitErrors: string, gasLimitWarnings: string)
     return state;
 };
 
-const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string): string => {
-    let state = '';
+const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string): ?string => {
+    let state = null;
     if (gasPriceWarnings && !gasPriceErrors) {
         state = 'warning';
     }
@@ -103,8 +103,8 @@ const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string)
     return state;
 };
 
-const getDataTextareaState = (dataError: string, dataWarning: string): string => {
-    let state = '';
+const getDataTextareaState = (dataError: string, dataWarning: string): ?string => {
+    let state = null;
     if (dataWarning) {
         state = 'warning';
     }

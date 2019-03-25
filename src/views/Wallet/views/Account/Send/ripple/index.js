@@ -234,8 +234,8 @@ const getAddressInputState = (
     address: string,
     addressErrors: string,
     addressWarnings: string
-): string => {
-    let state = '';
+): ?string => {
+    let state = null;
     if (address && !addressErrors) {
         state = 'success';
     }
@@ -248,8 +248,8 @@ const getAddressInputState = (
     return state;
 };
 
-const getAmountInputState = (amountErrors: string, amountWarnings: string): string => {
-    let state = '';
+const getAmountInputState = (amountErrors: string, amountWarnings: string): ?string => {
+    let state = null;
     if (amountWarnings && !amountErrors) {
         state = 'warning';
     }

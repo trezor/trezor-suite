@@ -68,8 +68,8 @@ const StyledIcon = styled(Icon)`
     margin-left: 6px;
 `;
 
-const getFeeInputState = (feeErrors: string, feeWarnings: string): string => {
-    let state = '';
+const getFeeInputState = (feeErrors: string, feeWarnings: string): ?string => {
+    let state = null;
     if (feeWarnings && !feeErrors) {
         state = 'warning';
     }
@@ -79,8 +79,8 @@ const getFeeInputState = (feeErrors: string, feeWarnings: string): string => {
     return state;
 };
 
-const getDestinationTagInputState = (errors: string, warnings: string): string => {
-    let state = '';
+const getDestinationTagInputState = (errors: string, warnings: string): ?string => {
+    let state = null;
     if (warnings && !errors) {
         state = 'warning';
     }
