@@ -36,4 +36,4 @@ e2e-chrome:
     expire_in: 1 day
     when: always
     paths:
-      - cypress/screenshots
+      - /builds/trezor/trezor-ui-components/test/snapshots
