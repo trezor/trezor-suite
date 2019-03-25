@@ -24,7 +24,7 @@ install:
   stage: build
   script:
     - yarn install
-    - cypress verify
+    - $(yarn bin)/cypress verify
 
 e2e-chrome:
   image: cypress/browsers:chrome67
