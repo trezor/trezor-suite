@@ -3,6 +3,7 @@ image: node:10.15.1
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
+  - .yarn
   - cache/Cypress
   - node_modules
 
@@ -11,30 +12,28 @@ stages:
   - test
 
 variables:
+  yarn_config_cache: "$CI_PROJECT_DIR/.yarn"
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
-
-lint:
-  stage: build
-  script:
-    - yarn install
-    - yarn run lint
 
 install:
   image: cypress/base:10
   stage: build
   script:
-    - yarn install
+    - yarn
     - $(yarn bin)/cypress verify
+
+lint:
+  stage: build
+  script:
+    - yarn run lint
 
 e2e-chrome:
   image: cypress/browsers:chrome67
   stage: test
   script:
-    - yarn install
-    - yarn test-e2e
+    - yarn test-e2e --browser chrome
   artifacts:
-    expire_in: 1 week
+    expire_in: 1 day
     when: always
     paths:
-    - cypress/screenshots
-    - cypress/videos
+      - cypress/screenshots/**/*.png
