@@ -30,6 +30,7 @@ e2e-chrome:
   image: cypress/browsers:chrome67
   stage: test
   script:
+    - yarn install
     - yarn test-e2e
   artifacts:
     expire_in: 1 week
