@@ -75,6 +75,7 @@ const Help = styled.div`
     justify-content: center;
     text-align: center;
     width: 319px;
+    height: 59px;
     padding: 8px 0px;
     border-top: 1px solid ${colors.BACKGROUND};
 `;
