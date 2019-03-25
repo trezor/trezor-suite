@@ -111,7 +111,7 @@ class AddedToken extends PureComponent {
                     isTransparent
                     onClick={() => this.props.removeToken(this.props.token)}
                 >
-                    <Icon icon={ICONS.CLOSE} size={14} />
+                    <Icon icon={ICONS.CLOSE} size={12} />
                 </RemoveTokenButton>
             </TokenWrapper>
         );
