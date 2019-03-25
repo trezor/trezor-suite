@@ -14,7 +14,8 @@
         "build": "rm -rf lib && npx babel src -d lib --ignore './src/stories/**/*.js' && babel-node ./scripts/build.js",
         "build:gh-pages": "build-storybook -c .storybook -o /docs",
         "prepublishOnly": "npm run build",
-        "run-integration-tests:chrome": "start-server-and-test storybook http://localhost:9001 && cypress run",
+        "run-integration-tests": "cypress run",
+        "ci-test:e2e": "yarn storybook & wait-on http://localhost:9001 && cypress run --browser chrome",
         "run-integration-tests:ui": "cypress open"
     },
     "devDependencies": {
@@ -57,7 +58,8 @@
         "stylelint-config-recommended": "^2.1.0",
         "stylelint-config-styled-components": "^0.1.1",
         "stylelint-custom-processor-loader": "^0.6.0",
-        "stylelint-processor-styled-components": "^1.5.2"
+        "stylelint-processor-styled-components": "^1.5.2",
+        "wait-on": "^3.2.0"
     },
     "dependencies": {
         "prop-types": "^15.7.2",
