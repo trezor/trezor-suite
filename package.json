@@ -14,8 +14,7 @@
         "build": "rm -rf lib && npx babel src -d lib --ignore './src/stories/**/*.js' && babel-node ./scripts/build.js",
         "build:gh-pages": "build-storybook -c .storybook -o /docs",
         "prepublishOnly": "npm run build",
-        "run-integration-tests": "cypress run",
-        "ci-test:e2e": "yarn storybook & wait-on http://localhost:9001 && cypress run --browser chrome",
+        "ci-test:e2e": "yarn storybook & wait-on http://localhost:9001 && cypress run",
         "run-integration-tests:ui": "cypress open"
     },
     "devDependencies": {
