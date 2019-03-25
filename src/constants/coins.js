@@ -85,5 +85,6 @@ export default [
         coinName: 'Tezos',
         url: 'https://wallet.simplestaking.com/tezos/wallet/start',
         external: true,
+        order: 21,
     },
 ];
