@@ -91,9 +91,6 @@ const Dot = styled.div`
     height: 10px;
 `;
 
-const StyledTrezorImage = styled(TrezorImage)`
-    width: ${props => (props.model === 2 ? '17px' : '13px')};
-`;
 
 const DeviceHeader = ({
     isOpen,
@@ -120,7 +117,8 @@ const DeviceHeader = ({
         >
             <ImageWrapper>
                 <Dot color={getStatusColor(status)} />
-                <StyledTrezorImage
+                <TrezorImage
+                    height={28}
                     model={(device.features && device.features.major_version) || 1}
                 />
             </ImageWrapper>

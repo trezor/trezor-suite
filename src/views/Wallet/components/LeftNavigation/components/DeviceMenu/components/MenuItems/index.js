@@ -40,10 +40,10 @@ const Label = styled.div`
 `;
 
 const IconWrapper = styled.div`
-    width: 14px;
+    width: 18px;
     display: flex;
     justify-content: center;
-    margin-right: 20px;
+    margin-right: 15px;
 `;
 
 class MenuItems extends PureComponent {
