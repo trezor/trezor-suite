@@ -33,9 +33,9 @@ e2e-chrome:
   stage: test
   script:
     - yarn
-    - yarn test-e2e --browser chrome
+    - yarn test-e2e
   artifacts:
     expire_in: 1 day
     when: always
     paths:
-      - cypress/screenshots/**/*.png
+      - cypress/screenshots
