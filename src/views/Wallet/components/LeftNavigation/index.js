@@ -3,7 +3,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Tooltip, icons, colors } from 'trezor-ui-components';
-import { FONT_SIZE, SCREEN_SIZE } from 'config/variables';
+import { FONT_SIZE, SCREEN_SIZE, FOOTER_HEIGHT } from 'config/variables';
 import WalletTypeIcon from 'components/images/WalletType';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
@@ -75,7 +75,7 @@ const Help = styled.div`
     justify-content: center;
     text-align: center;
     width: 319px;
-    height: 59px;
+    height: ${FOOTER_HEIGHT};
     padding: 8px 0px;
     border-top: 1px solid ${colors.BACKGROUND};
 `;

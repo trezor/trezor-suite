@@ -81,3 +81,5 @@ export const LINE_HEIGHT = {
     BASE: '1.8',
     TREZOR_ACTION: '37px',
 };
+
+export const FOOTER_HEIGHT = '59px';
