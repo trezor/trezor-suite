@@ -34,6 +34,7 @@
         "@storybook/addon-options": "^4.1.11",
         "@storybook/addon-viewport": "^4.1.11",
         "@storybook/addons": "^4.1.11",
+        "@storybook/cli": "^5.0.5",
         "@storybook/react": "^4.1.11",
         "babel-loader": "^8.0.5",
         "babel-plugin-module-resolver": "^3.2.0",
