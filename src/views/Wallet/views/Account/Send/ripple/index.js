@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
 import { Button, Select, Input, Icon, Link, P, colors, icons as ICONS } from 'trezor-ui-components';
-import { FONT_SIZE, FONT_WEIGHT, TRANSITION, SCREEN_SIZE } from 'config/variables';
+import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 import { FIAT_CURRENCIES } from 'config/app';
 import Title from 'views/Wallet/components/Title';
 import l10nCommonMessages from 'views/common.messages';
@@ -33,42 +33,12 @@ const InputRow = styled.div`
 `;
 
 const SetMaxAmountButton = styled(Button)`
-    height: 40px;
     padding: 0 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
     font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.SMALLEST};
-    color: ${colors.TEXT_SECONDARY};
-
+    transition: all 0s;
     border-radius: 0;
-    border: 1px solid ${colors.DIVIDER};
     border-right: 0;
     border-left: 0;
-    background: transparent;
-    transition: ${TRANSITION.HOVER};
-
-    &:hover {
-        background: ${colors.GRAY_LIGHT};
-    }
-
-    ${props =>
-        props.isActive &&
-        css`
-            color: ${colors.WHITE};
-            background: ${colors.GREEN_PRIMARY};
-            border-color: ${colors.GREEN_PRIMARY};
-
-            &:hover {
-                background: ${colors.GREEN_SECONDARY};
-            }
-
-            &:active {
-                background: ${colors.GREEN_TERTIARY};
-            }
-        `}
 `;
 
 const CurrencySelect = styled(Select)`
@@ -385,7 +355,7 @@ const AccountSend = (props: Props) => {
                     onChange={event => onAmountChange(event.target.value)}
                     bottomText={errors.amount || warnings.amount || infos.amount}
                     sideAddons={[
-                        <SetMaxAmountButton key="icon" onClick={() => onSetMax()} isActive={setMax}>
+                        <SetMaxAmountButton key="icon" onClick={() => onSetMax()} isWhite={!setMax}>
                             {!setMax && (
                                 <StyledIcon
                                     icon={ICONS.TOP}
