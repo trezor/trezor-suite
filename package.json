@@ -17,7 +17,7 @@
         "prepublishOnly": "npm run build",
         "run-integration-tests": "cypress run",
         "run-integration-tests:ui": "cypress open",
-        "test": "start-server-and-test storybook http://localhost:9001 run-integration-tests"
+        "test-e2e": "start-server-and-test storybook http://localhost:9001 run-integration-tests"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",

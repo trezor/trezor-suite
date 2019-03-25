@@ -3,13 +3,37 @@ image: node:10.15.1
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - node_modules/
+  - cache/Cypress
+  - node_modules
 
 stages:
+  - build
   - test
 
+variables:
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+
 lint:
-  stage: test
+  stage: build
   script:
     - yarn install
     - yarn run lint
+
+install:
+  image: cypress/base:10
+  stage: build
+  script:
+    - yarn install
+    - cypress verify
+
+e2e-chrome:
+  image: cypress/browsers:chrome67
+  stage: test
+  script:
+    - yarn test-e2e
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+    - cypress/screenshots
+    - cypress/videos
