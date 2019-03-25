@@ -4,12 +4,15 @@ import ReactAsyncSelect from 'react-select/lib/Async';
 import ReactSelect from 'react-select';
 import colors from 'config/colors';
 
-const styles = isSearchable => ({
+const styles = (isSearchable, withDropdownIndicator = true) => ({
     singleValue: base => ({
         ...base,
         maxWidth: 'calc(100% - 10px)', // 8px padding + 2px maring-left
         width: '100%',
         color: colors.TEXT_SECONDARY,
+        '&:hover': {
+            cursor: isSearchable ? 'text' : 'pointer',
+        },
     }),
     control: (base, { isDisabled }) => ({
         ...base,
@@ -20,7 +23,7 @@ const styles = isSearchable => ({
         boxShadow: 'none',
         background: isDisabled ? colors.SELECT_HOVER : colors.WHITE,
         '&:hover': {
-            cursor: isSearchable ? 'text' : 'pointer',
+            cursor: 'pointer',
             borderColor: colors.DIVIDER,
         },
     }),
@@ -29,7 +32,7 @@ const styles = isSearchable => ({
     }),
     dropdownIndicator: (base, { isDisabled }) => ({
         ...base,
-        display: isSearchable || isDisabled ? 'none' : 'block',
+        display: !withDropdownIndicator || isDisabled ? 'none' : 'block',
         color: colors.TEXT_SECONDARY,
         path: '',
         '&:hover': {
