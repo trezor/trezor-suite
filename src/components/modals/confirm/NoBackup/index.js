@@ -64,7 +64,7 @@ const Row = styled.div`
 const Confirmation = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={() => props.onReceiveConfirmation(false)}>
-            <Icon size={14} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+            <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
         <H5>Your Trezor is not backed up</H5>
         <Icon size={48} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />

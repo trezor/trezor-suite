@@ -132,7 +132,7 @@ class DuplicateDevice extends PureComponent<Props, State> {
         return (
             <Wrapper>
                 <StyledLink onClick={onCancel}>
-                    <Icon size={14} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                    <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                 </StyledLink>
                 <H5>Clone {device.label}?</H5>
                 <StyledP size="small">

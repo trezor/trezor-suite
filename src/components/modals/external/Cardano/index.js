@@ -45,7 +45,7 @@ const Img = styled.img`
 const CardanoWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
-            <Icon size={14} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+            <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
         <Img src={CardanoImage} />
         <H5>

@@ -41,7 +41,7 @@ const Img = styled.img`
 const TezosWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
-            <Icon size={14} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+            <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
         <Img src={TezosImage} />
         <H5>Tezos wallet</H5>
