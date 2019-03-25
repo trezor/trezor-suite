@@ -11,8 +11,8 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
 import Backdrop from 'components/Backdrop';
-// import Link from 'components/Link';
 import * as deviceUtils from 'utils/device';
+// import Link from 'components/Link';
 
 import Tooltip from 'components/Tooltip';
 import { FormattedMessage } from 'react-intl';
