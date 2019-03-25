@@ -8,6 +8,10 @@ import colors from 'config/colors';
 
 const Wrapper = styled.button`
     display: flex;
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
     align-items: center;
     justify-content: center;
     font-family: 'Roboto'; /* stylelint-disable-line */
