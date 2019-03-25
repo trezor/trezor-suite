@@ -1,6 +1,6 @@
 describe('Form', () => {
     beforeEach(() => {
-        cy.viewport(1366, 600);
+        cy.viewport(1024, 768);
     });
 
     it('Input', () => {
