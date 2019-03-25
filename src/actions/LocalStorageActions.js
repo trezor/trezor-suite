@@ -286,7 +286,7 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
 
     const hideBalance: ?boolean = storageUtils.get(TYPE, KEY_HIDE_BALANCE);
     if (hideBalance) {
-        dispatch(WalletActions.setHideBalance(hideBalance));
+        dispatch(WalletActions.setHideBalance(JSON.parse(hideBalance)));
     }
 };
 
