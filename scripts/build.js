@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import fs from 'fs-extra';
 import path from 'path';
 

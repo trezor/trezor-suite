@@ -7,8 +7,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
         "lint": "run-s lint:*",
-        "lint:js": "npx eslint ./src",
-        "lint:prettier": "npx pretty-quick --bail",
+        "lint:js": "eslint .",
         "lint:css": "npx stylelint './src/**/*.js'",
         "lint-fix": "npx eslint ./src --fix",
         "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
@@ -54,7 +53,6 @@
         "npm-run-all": "^4.1.5",
         "prettier": "^1.16.4",
         "prettier-eslint": "^8.8.2",
-        "pretty-quick": "^1.10.0",
         "start-server-and-test": "^1.7.11",
         "stylelint": "^9.9.0",
         "stylelint-config-recommended": "^2.1.0",

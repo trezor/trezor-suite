@@ -7,3 +7,4 @@ src/flowtype/npm
 scripts/solidity/.*
 **/_old/*
 docs
+lib
