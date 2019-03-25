@@ -30,10 +30,20 @@ const DeviceIcon = ({
     color = COLORS.TEXT_SECONDARY,
     hoverColor,
     onClick,
+    ...rest
 }: Props) => {
     const majorVersion = device.features ? device.features.major_version : 2;
     const icon = getDeviceIcon(majorVersion);
-    return <Icon icon={icon} hoverColor={hoverColor} onClick={onClick} color={color} size={size} />;
+    return (
+        <Icon
+            icon={icon}
+            hoverColor={hoverColor}
+            onClick={onClick}
+            color={color}
+            size={size}
+            {...rest}
+        />
+    );
 };
 
 DeviceIcon.propTypes = {

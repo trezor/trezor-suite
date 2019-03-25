@@ -59,9 +59,7 @@ const ShowAddressButton = styled(Button)`
 const EyeButton = styled(Button)`
     z-index: 10001;
     padding: 0;
-    width: 30px;
-    background: transparent;
-    top: 5px;
+    top: 12px;
     position: absolute;
     right: 10px;
 
@@ -83,6 +81,10 @@ const Row = styled.div`
 const QrWrapper = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+const StyledDeviceIcon = styled(DeviceIcon)`
+    margin: 0 6px;
 `;
 
 const AccountReceive = (props: Props) => {
@@ -124,7 +126,11 @@ const AccountReceive = (props: Props) => {
                             trezorAction={
                                 isAddressVerifying ? (
                                     <React.Fragment>
-                                        <DeviceIcon device={device} color={colors.WHITE} />
+                                        <StyledDeviceIcon
+                                            size={16}
+                                            device={device}
+                                            color={colors.WHITE}
+                                        />
                                         <FormattedMessage
                                             {...l10nReceiveMessages.TR_CHECK_ADDRESS_ON_TREZOR}
                                         />
@@ -145,9 +151,11 @@ const AccountReceive = (props: Props) => {
                                         }
                                     >
                                         <EyeButton
+                                            isTransparent
                                             onClick={() => props.showAddress(account.accountPath)}
                                         >
                                             <Icon
+                                                size={16}
                                                 icon={
                                                     addressUnverified
                                                         ? ICONS.EYE_CROSSED

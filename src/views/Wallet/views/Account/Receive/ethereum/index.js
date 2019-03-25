@@ -78,7 +78,7 @@ const QrWrapper = styled.div`
 `;
 
 const StyledDeviceIcon = styled(DeviceIcon)`
-    margin-right: 6px;
+    margin: 0 6px;
 `;
 
 const AccountReceive = (props: Props) => {
