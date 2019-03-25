@@ -507,7 +507,7 @@ const AccountSend = (props: Props) => {
                     <AdvancedSettingsIcon
                         icon={ICONS.ARROW_DOWN}
                         color={colors.TEXT_SECONDARY}
-                        size={14}
+                        size={12}
                         isActive={advanced}
                         canAnimate
                     />
