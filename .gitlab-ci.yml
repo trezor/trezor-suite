@@ -25,12 +25,14 @@ install:
 lint:
   stage: build
   script:
+    - yarn
     - yarn run lint
 
 e2e-chrome:
   image: cypress/browsers:chrome67
   stage: test
   script:
+    - yarn
     - yarn test-e2e --browser chrome
   artifacts:
     expire_in: 1 day
