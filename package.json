@@ -10,7 +10,7 @@
         "lint:js": "eslint .",
         "lint:css": "npx stylelint './src/**/*.js'",
         "lint-fix": "npx eslint ./src --fix",
-        "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
+        "storybook": "npx start-storybook -s ./public -p 9001 -c .storybook",
         "build": "rm -rf lib && npx babel src -d lib --ignore './src/stories/**/*.js' && babel-node ./scripts/build.js",
         "build:gh-pages": "build-storybook -c .storybook -o /docs",
         "prepublishOnly": "npm run build",
