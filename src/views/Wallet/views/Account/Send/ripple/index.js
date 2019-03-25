@@ -394,7 +394,7 @@ const AccountSend = (props: Props) => {
                                 />
                             )}
                             {setMax && (
-                                <StyledIcon icon={ICONS.CHECKED} size={14} color={colors.WHITE} />
+                                <StyledIcon icon={ICONS.SUCCESS} size={14} color={colors.WHITE} />
                             )}
                             <FormattedMessage {...l10nSendMessages.TR_SET_MAX} />
                         </SetMaxAmountButton>,
