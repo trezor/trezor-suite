@@ -14,9 +14,8 @@
         "build": "rm -rf lib && npx babel src -d lib --ignore './src/stories/**/*.js' && babel-node ./scripts/build.js",
         "build:gh-pages": "build-storybook -c .storybook -o /docs",
         "prepublishOnly": "npm run build",
-        "run-integration-tests:chrome": "cypress run --browser chrome",
-        "run-integration-tests:ui": "cypress open",
-        "test-e2e": "start-server-and-test storybook http://localhost:9001 run-integration-tests"
+        "run-integration-tests:chrome": "start-server-and-test storybook http://localhost:9001 && cypress run --browser chrome",
+        "run-integration-tests:ui": "cypress open"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",

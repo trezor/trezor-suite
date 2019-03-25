@@ -33,7 +33,7 @@ e2e-chrome:
   stage: test
   script:
     - yarn
-    - yarn test-e2e
+    - yarn run-integration-tests:chrome
   artifacts:
     expire_in: 1 day
     when: always
