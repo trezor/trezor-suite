@@ -161,7 +161,7 @@ const Header = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: Props) => (
                     <MenuToggler onClick={toggleSidebar}>
                         {sidebarOpened ? (
                             <>
-                                <Icon size={14} color={colors.WHITE} icon={icons.CLOSE} />
+                                <Icon size={12} color={colors.WHITE} icon={icons.CLOSE} />
                                 <TogglerText>
                                     <FormattedMessage {...l10nMessages.TR_MENU_CLOSE} />
                                 </TogglerText>
