@@ -36,9 +36,13 @@ const Message = styled.div`
     padding: 0 0 15px 0;
 `;
 
+const StyledIcon = styled(Icon)`
+    margin-bottom: 15px;
+`;
+
 const FirmwareUpdate = (props: Props) => (
     <Wrapper>
-        <Icon size={128} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
+        <StyledIcon size={64} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
         <StyledH>Your Trezor is not backed up!</StyledH>
         <Message>
             <StyledP>

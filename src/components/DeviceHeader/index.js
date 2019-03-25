@@ -91,7 +91,6 @@ const Dot = styled.div`
     height: 10px;
 `;
 
-
 const DeviceHeader = ({
     isOpen,
     icon,

@@ -67,7 +67,7 @@ const Confirmation = (props: Props) => (
             <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
         <H5>Your Trezor is not backed up</H5>
-        <Icon size={48} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
+        <Icon size={32} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
         <StyledP size="small">
             If your device is ever lost or damaged, your funds will be lost. Backup your device
             first, to protect your coins against such events.
