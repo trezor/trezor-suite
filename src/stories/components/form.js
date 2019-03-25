@@ -208,10 +208,14 @@ storiesOf('Form', module)
         () => {
             const isSearchable = boolean('Searchable', false);
             const isClearable = boolean('Clearable', false);
+            const isDisabled = boolean('Disabled', false);
+            const withDropdownIndicator = boolean('withDropdownIndicator', true);
             return (
                 <Select
                     {...(isSearchable ? { isSearchable } : {})}
                     {...(isClearable ? { isClearable } : {})}
+                    {...(isDisabled ? { isDisabled } : {})}
+                    {...(withDropdownIndicator ? {} : { withDropdownIndicator })}
                     value={select('Value', {
                         None: null,
                         Hello: { value: 'hello', label: 'Hello' },
