@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { Input, Tooltip, Icon, colors, icons as ICONS } from 'trezor-ui-components';
 
+import l10nCommonMessages from 'views/common.messages';
 import l10nSendMessages from 'views/Wallet/views/Account/common.messages';
 import l10nMessages from './index.messages';
 
@@ -120,7 +121,10 @@ const AdvancedForm = (props: Props) => {
                                         <FormattedMessage {...l10nMessages.TR_XRP_TRANSFER_COST} />
                                     }
                                     maxWidth={100}
-                                    readMoreLink="https://developers.ripple.com/transaction-cost.html"
+                                    ctaLink="https://developers.ripple.com/transaction-cost.html"
+                                    ctaText={
+                                        <FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />
+                                    }
                                     placement="top"
                                 >
                                     <StyledIcon
@@ -159,7 +163,10 @@ const AdvancedForm = (props: Props) => {
                                         />
                                     }
                                     maxWidth={200}
-                                    readMoreLink="https://wiki.trezor.io/Ripple_(XRP)"
+                                    ctaLink="https://wiki.trezor.io/Ripple_(XRP)"
+                                    ctaText={
+                                        <FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />
+                                    }
                                     placement="top"
                                 >
                                     <StyledIcon

@@ -147,7 +147,8 @@ class WalletType extends PureComponent<Props> {
                         content={this.props.intl.formatMessage(
                             l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE
                         )}
-                        readMoreLink="https://wiki.trezor.io/Passphrase"
+                        ctaLink="https://wiki.trezor.io/Passphrase"
+                        ctaText={<FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />}
                     >
                         <StyledIcon icon={icons.HELP} color={colors.TEXT_SECONDARY} size={16} />
                     </Tooltip>

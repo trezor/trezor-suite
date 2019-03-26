@@ -14,6 +14,7 @@ import {
 } from 'trezor-ui-components';
 import { FONT_SIZE } from 'config/variables';
 
+import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
 
 import type { Props as BaseProps } from '../../Container';
@@ -202,7 +203,10 @@ const AdvancedForm = (props: Props) => {
                                         />
                                     }
                                     maxWidth={410}
-                                    readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
+                                    ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
+                                    ctaText={
+                                        <FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />
+                                    }
                                     placement="top"
                                 >
                                     <StyledIcon
@@ -260,7 +264,10 @@ const AdvancedForm = (props: Props) => {
                                         />
                                     }
                                     maxWidth={400}
-                                    readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
+                                    ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
+                                    ctaText={
+                                        <FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />
+                                    }
                                     placement="top"
                                 >
                                     <StyledIcon
