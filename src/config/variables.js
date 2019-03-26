@@ -25,7 +25,7 @@ export const FONT_WEIGHT = {
 
 export const FONT_FAMILY = {
     DEFAULT:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
+        '"Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif',
     MONOSPACE: '"Roboto Mono", Menlo, Monaco, Consolas, "Courier New", monospace',
 };
 
