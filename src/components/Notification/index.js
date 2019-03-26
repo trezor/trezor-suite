@@ -129,8 +129,8 @@ const Notification = props => {
 Notification.propTypes = {
     close: PropTypes.func,
     type: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
-    title: PropTypes.string,
-    message: PropTypes.string,
+    title: PropTypes.node,
+    message: PropTypes.node,
     cancelable: PropTypes.bool,
     loading: PropTypes.bool,
     isActionInProgress: PropTypes.bool,
