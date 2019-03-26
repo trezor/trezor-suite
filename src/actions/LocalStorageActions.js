@@ -284,7 +284,7 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
         dispatch(WalletActions.setLocalCurrency(JSON.parse(localCurrency)));
     }
 
-    const hideBalance: ?boolean = storageUtils.get(TYPE, KEY_HIDE_BALANCE);
+    const hideBalance: ?string = storageUtils.get(TYPE, KEY_HIDE_BALANCE);
     if (hideBalance) {
         dispatch(WalletActions.setHideBalance(JSON.parse(hideBalance)));
     }
