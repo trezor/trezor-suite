@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import { FormattedMessage } from 'react-intl';
 
-import { Button, colors as COLORS } from 'trezor-ui-components';
+import { Button, icons, colors as COLORS } from 'trezor-ui-components';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { SLIDE_DOWN } from 'config/animations';
 
@@ -30,7 +30,7 @@ const Wrapper = styled.div`
 
 const ButtonWrapper = styled.div`
     margin: 10px 0;
-    padding: 0 10px;
+    padding: 0 24px;
     display: flex;
 `;
 const StyledButton = styled(Button)`
@@ -131,7 +131,11 @@ class DeviceMenu extends PureComponent<Props> {
                 />
                 {deviceUtils.isWebUSB(transport) && (
                     <ButtonWrapper>
-                        <StyledButton isWebUsb>
+                        <StyledButton
+                            isInverse
+                            icon={icons.PLUS}
+                            additionalClassName="trezor-webusb-button"
+                        >
                             <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
                         </StyledButton>
                     </ButtonWrapper>
