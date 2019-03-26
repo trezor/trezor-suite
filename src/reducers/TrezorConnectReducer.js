@@ -1,5 +1,5 @@
 /* @flow */
-import { TRANSPORT, UI } from 'trezor-connect';
+import { TRANSPORT, IFRAME } from 'trezor-connect';
 import * as CONNECT from 'actions/constants/TrezorConnect';
 
 import type { Action } from 'flowtype';
@@ -66,7 +66,7 @@ export default function connect(state: State = initialState, action: Action): St
                 error: action.error,
             };
         // trezor-connect iframe loaded
-        case UI.IFRAME_HANDSHAKE:
+        case IFRAME.LOADED:
             return {
                 ...state,
                 initialized: true,
