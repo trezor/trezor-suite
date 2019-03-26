@@ -71,6 +71,7 @@
         "react-select": "^2.3.0",
         "react-switch": "^4.1.0",
         "react-textarea-autosize": "^7.1.0",
+        "react-tippy": "^1.2.3",
         "styled-components": "^4.1.3"
     }
 }
