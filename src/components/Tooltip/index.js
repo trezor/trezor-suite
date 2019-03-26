@@ -1,6 +1,6 @@
 import Link from 'components/Link';
 import PropTypes from 'prop-types';
-import { Tooltip as Tippy } from 'react-tippy';
+import Tippy from '@tippy.js/react';
 import React from 'react';
 import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
@@ -12,18 +12,17 @@ const Content = styled.div`
 
 const ContentWrapper = styled.div`
     display: block;
-    margin: 4px;
     background: ${colors.TOOLTIP_BACKGROUND};
     color: white;
     border-radius: 3px;
     font-size: ${FONT_SIZE.SMALL};
     /* min-height: 34px; */
-    padding: 8px 10px;
+    padding: 8px 0px;
 `;
 
 const CTAWrapper = styled.div`
     margin-top: 15px;
-    padding: 10px 0 5px 0;
+    padding: 12px 0 0 0;
     text-align: center;
     width: 100%;
     border-top: 1px solid ${colors.TEXT_SECONDARY};
@@ -52,7 +51,7 @@ const Tooltip = ({ maxWidth, placement, content, ctaText, ctaLink, children, ...
     );
 
     return (
-        <Tippy position={placement} html={Overlay} offset={4} interactive {...rest}>
+        <Tippy placement={placement} content={Overlay} offset={4} arrow interactive {...rest}>
             {children}
         </Tippy>
     );
