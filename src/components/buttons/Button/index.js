@@ -8,6 +8,7 @@ import colors from 'config/colors';
 
 const Wrapper = styled.button`
     display: flex;
+    position: relative;
     align-items: center;
     justify-content: center;
     padding: 11px 24px;
