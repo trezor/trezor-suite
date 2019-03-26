@@ -22,7 +22,7 @@ const Wrapper = styled.button`
     border: 1px solid ${colors.GREEN_PRIMARY};
     transition: ${TRANSITION.HOVER};
 
-    &:hover, &:focus {
+    &:hover {
         background: ${colors.GREEN_SECONDARY};
     }
 
@@ -52,9 +52,8 @@ const Wrapper = styled.button`
             background: transparent;
             color: ${colors.GREEN_PRIMARY};
             border: 1px solid ${colors.GREEN_PRIMARY};
-
             &:hover,
-            &:focus {
+            &:active {
                 background: ${colors.GREEN_PRIMARY};
                 color: ${colors.WHITE};
 
@@ -68,6 +67,10 @@ const Wrapper = styled.button`
                         fill: ${colors.WHITE};
                     }
                 }
+            }
+
+            &:active {
+                background: ${colors.GREEN_TERTIARY};
             }
         `}
 
@@ -97,8 +100,7 @@ const Wrapper = styled.button`
             color: ${colors.TEXT_SECONDARY};
             border: 1px solid ${colors.DIVIDER};
 
-            &:hover,
-            &:focus {
+            &:hover {
                 color: ${colors.TEXT_PRIMARY};
                 background: ${colors.DIVIDER};
 
