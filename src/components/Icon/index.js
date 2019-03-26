@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
 import React from 'react';
 import colors from 'config/colors';
+import icons from 'config/icons';
 
 const chooseIconAnimationType = (canAnimate, isActive) => {
     if (canAnimate) {
@@ -60,35 +61,40 @@ const Icon = ({
     onMouseLeave,
     onFocus,
     onClick,
-}) => (
-    <SvgWrapper
-        className={className}
-        canAnimate={canAnimate}
-        hoverColor={hoverColor}
-        isActive={isActive}
-        style={{
-            display: 'inline-block',
-            verticalAlign: 'middle',
-        }}
-        width={`${size * (icon.ratio || 1)}`}
-        height={`${size}`}
-        viewBox={icon.viewBox || '0 0 1024 1024'}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onFocus={onFocus}
-        onClick={onClick}
-    >
-        {icon.paths.map(path => (
-            <Path key={path} isActive={isActive} color={color} d={path} />
-        ))}
-    </SvgWrapper>
-);
+}) => {
+    // if string is passed to the icon prop use it as a key in icons object
+    const iconObject = typeof icon === 'string' ? icons[icon] : icon;
+    if (!iconObject) return null;
+    return (
+        <SvgWrapper
+            className={className}
+            canAnimate={canAnimate}
+            hoverColor={hoverColor}
+            isActive={isActive}
+            style={{
+                display: 'inline-block',
+                verticalAlign: 'middle',
+            }}
+            width={`${size * (iconObject.ratio || 1)}`}
+            height={`${size}`}
+            viewBox={iconObject.viewBox || '0 0 1024 1024'}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onFocus={onFocus}
+            onClick={onClick}
+        >
+            {iconObject.paths.map(path => (
+                <Path key={path} isActive={isActive} color={color} d={path} />
+            ))}
+        </SvgWrapper>
+    );
+};
 
 Icon.propTypes = {
     className: PropTypes.string,
     hoverColor: PropTypes.string,
     canAnimate: PropTypes.bool,
-    icon: PropTypes.object.isRequired,
+    icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
     size: PropTypes.number,
     isActive: PropTypes.bool,
     color: PropTypes.string,

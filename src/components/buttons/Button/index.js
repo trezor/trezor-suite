@@ -8,6 +8,7 @@ import colors from 'config/colors';
 
 const Wrapper = styled.button`
     display: flex;
+    position: relative;
     align-items: center;
     justify-content: center;
     padding: 11px 24px;
@@ -151,7 +152,8 @@ const Wrapper = styled.button`
 
 const Button = ({
     children,
-    className = '',
+    className,
+    additionalClassName,
     onClick,
     onMouseEnter,
     onMouseLeave,
@@ -162,30 +164,38 @@ const Button = ({
     isInverse = false,
     icon = null,
     ...rest
-}) => (
-    <Wrapper
-        className={className}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onFocus={onFocus}
-        isDisabled={isDisabled}
-        isWhite={isWhite}
-        isTransparent={isTransparent}
-        isInverse={isInverse}
-        icon={icon}
-        {...rest}
-    >
-        {icon && (
-            <Icon icon={icon} size={14} color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE} />
-        )}
-        {children}
-    </Wrapper>
-);
+}) => {
+    const newClassName = additionalClassName ? `${className} ${additionalClassName}` : className;
+    return (
+        <Wrapper
+            className={newClassName}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onFocus={onFocus}
+            isDisabled={isDisabled}
+            isWhite={isWhite}
+            isTransparent={isTransparent}
+            isInverse={isInverse}
+            icon={icon}
+            {...rest}
+        >
+            {icon && (
+                <Icon
+                    icon={icon}
+                    size={14}
+                    color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE}
+                />
+            )}
+            {children}
+        </Wrapper>
+    );
+};
 
 Button.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
+    additionalClassName: PropTypes.string,
     onClick: PropTypes.func,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,

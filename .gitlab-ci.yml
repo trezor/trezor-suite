@@ -3,13 +3,38 @@ image: node:10.15.1
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - node_modules/
+  - cache/Cypress
+  - node_modules
 
 stages:
+  - build
   - test
 
+variables:
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+
+install:
+  image: cypress/base:10
+  stage: build
+  script:
+    - yarn
+    - $(yarn bin)/cypress verify
+
 lint:
+  stage: build
+  script:
+    - yarn
+    - yarn run lint
+
+e2e-chrome:
+  image: cypress/browsers:chrome67
   stage: test
   script:
-    - yarn install
-    - yarn run lint
+    - yarn
+    - yarn ci-test:e2e
+  artifacts:
+    expire_in: 1 day
+    when: always
+    paths:
+      - /builds/trezor/trezor-ui-components/test/screenshots
+      - /builds/trezor/trezor-ui-components/test/snapshots

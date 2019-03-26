@@ -44,11 +44,8 @@ const Title = styled.div`
 `;
 
 const CloseClick = styled.div`
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding-right: inherit;
-    padding-top: inherit;
+    margin-left: 24px;
+    align-self: flex-start;
     cursor: pointer;
 `;
 
@@ -87,11 +84,6 @@ const Notification = props => {
         <Wrapper className={props.className} type={props.type}>
             <Content>
                 {props.loading && <Loader size={50} />}
-                {props.cancelable && (
-                    <CloseClick onClick={() => close()}>
-                        <Icon color={getPrimaryColor(props.type)} icon={icons.CLOSE} size={10} />
-                    </CloseClick>
-                )}
                 <Body>
                     <IconWrapper>
                         <StyledIcon
@@ -124,6 +116,11 @@ const Notification = props => {
                         </ActionContent>
                     )}
                 </AdditionalContent>
+                {props.cancelable && (
+                    <CloseClick onClick={() => close()}>
+                        <Icon color={getPrimaryColor(props.type)} icon={icons.CLOSE} size={10} />
+                    </CloseClick>
+                )}
             </Content>
         </Wrapper>
     );
@@ -132,8 +129,8 @@ const Notification = props => {
 Notification.propTypes = {
     close: PropTypes.func,
     type: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
-    title: PropTypes.string,
-    message: PropTypes.string,
+    title: PropTypes.node,
+    message: PropTypes.node,
     cancelable: PropTypes.bool,
     loading: PropTypes.bool,
     isActionInProgress: PropTypes.bool,
