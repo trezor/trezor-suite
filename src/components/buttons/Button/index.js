@@ -10,7 +10,6 @@ const Wrapper = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Roboto'; /* stylelint-disable-line */
     padding: 11px 24px;
     border-radius: 3px;
     font-size: ${FONT_SIZE.BASE};
