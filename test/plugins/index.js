@@ -1,7 +1,6 @@
-const {
-    addMatchImageSnapshotPlugin,
-} = require('cypress-image-snapshot/plugin');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
 
-module.exports = (on) => {
+module.exports = on => {
     addMatchImageSnapshotPlugin(on);
 };
