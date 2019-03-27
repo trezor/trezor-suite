@@ -6,11 +6,10 @@ cache:
     - node_modules
 
 stages:
-  - build
   - test
 
 lint:
-  stage: build
+  stage: test
   script:
     - yarn
     - yarn run lint
