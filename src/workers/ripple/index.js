@@ -113,7 +113,7 @@ const connect = async (): Promise<RippleAPI> => {
         if (_endpoints.length < 1) {
             throw new Error('All backends are down');
         }
-        return await connect();
+        await connect();
     }
 
     // disable reconnecting

@@ -78,14 +78,14 @@ class BlockchainLink extends EventEmitter {
         return dfd.promise;
     };
 
-    async connect(): Promise<boolean> {
-        await this.__send({
+    async connect() {
+        return await this.__send({
             type: MESSAGES.CONNECT,
         });
     }
 
     async getInfo(): Promise<$ElementType<ResponseTypes.GetInfo, 'payload'>> {
-        await this.__send({
+        return await this.__send({
             type: MESSAGES.GET_INFO,
         });
     }
@@ -93,7 +93,7 @@ class BlockchainLink extends EventEmitter {
     async getAccountInfo(
         payload: $ElementType<MessageTypes.GetAccountInfo, 'payload'>
     ): Promise<$ElementType<ResponseTypes.GetAccountInfo, 'payload'>> {
-        await this.__send({
+        return await this.__send({
             type: MESSAGES.GET_ACCOUNT_INFO,
             payload,
         });
@@ -102,7 +102,7 @@ class BlockchainLink extends EventEmitter {
     async estimateFee(
         payload: $ElementType<MessageTypes.EstimateFee, 'payload'>
     ): Promise<$ElementType<ResponseTypes.EstimateFee, 'payload'>> {
-        await this.__send({
+        return await this.__send({
             type: MESSAGES.ESTIMATE_FEE,
             payload,
         });
@@ -111,7 +111,7 @@ class BlockchainLink extends EventEmitter {
     async subscribe(
         payload: $ElementType<MessageTypes.Subscribe, 'payload'>
     ): Promise<$ElementType<ResponseTypes.Subscribe, 'payload'>> {
-        await this.__send({
+        return await this.__send({
             type: MESSAGES.SUBSCRIBE,
             payload,
         });
@@ -120,7 +120,7 @@ class BlockchainLink extends EventEmitter {
     async unsubscribe(
         payload: $ElementType<MessageTypes.Subscribe, 'payload'>
     ): Promise<$ElementType<ResponseTypes.Unsubscribe, 'payload'>> {
-        await this.__send({
+        return await this.__send({
             type: MESSAGES.UNSUBSCRIBE,
             payload,
         });
@@ -129,7 +129,7 @@ class BlockchainLink extends EventEmitter {
     async pushTransaction(
         payload: $ElementType<MessageTypes.PushTransaction, 'payload'>
     ): Promise<$ElementType<ResponseTypes.PushTransaction, 'payload'>> {
-        await this.__send({
+        return await this.__send({
             type: MESSAGES.PUSH_TRANSACTION,
             payload,
         });
@@ -137,7 +137,7 @@ class BlockchainLink extends EventEmitter {
 
     async disconnect(): Promise<boolean> {
         if (!this.worker) return true;
-        await this.__send({
+        return await this.__send({
             type: MESSAGES.DISCONNECT,
         });
     }

@@ -6,7 +6,7 @@ export const rippleWorkerFactory = (): Worker => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker(() => {
             const requireHack = eval('req' + 'uire');
-            requireHack('babel-register')({cache: true});
+            requireHack('babel-register')({ cache: true });
             requireHack('../../../src/workers/ripple/index.js');
         });
     }
