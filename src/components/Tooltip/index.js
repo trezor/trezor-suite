@@ -66,7 +66,7 @@ Tooltip.propTypes = {
     maxWidth: PropTypes.number,
     content: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
     ctaLink: PropTypes.string,
-    ctaText: PropTypes.string,
+    ctaText: PropTypes.node,
 };
 
 export default Tooltip;
