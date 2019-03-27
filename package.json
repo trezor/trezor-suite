@@ -71,8 +71,8 @@
         "react-textarea-autosize": "^7.1.0"
     },
     "peerDependencies": {
-        "react": "^16.8.5",
-        "react-dom": "^16.8.5",
-        "styled-components": "^4.2.0"
+        "react": "^16.8",
+        "react-dom": "^16.8",
+        "styled-components": "^4.1.3"
     }
 }
