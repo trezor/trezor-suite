@@ -8,7 +8,7 @@ declare function postMessage(data: Response): void;
 let _settings: BlockchainSettings;
 let _debugPrefix: string;
 let _addresses: Array<string> = [];
-const _subscription: {[key: string]: boolean} = {};
+const _subscription: { [key: string]: boolean } = {};
 
 export const setSettings = (s: BlockchainSettings): void => {
     _settings = s;
@@ -34,7 +34,7 @@ export const handshake = (): void => {
     });
 };
 
-export const errorHandler = ({ id, error }: { id: number, error: Object}): void => {
+export const errorHandler = ({ id, error }: { id: number, error: Object }): void => {
     let message: string = '';
     if (typeof error === 'string') {
         message = error;
@@ -61,9 +61,9 @@ export const response = (data: Response): void => {
 const getUniqueInput = (addresses: Array<string>): Array<string> => {
     if (!Array.isArray(addresses)) return [];
     const seen = {};
-    return addresses.filter((a) => {
+    return addresses.filter(a => {
         if (typeof a !== 'string') return false;
-        return (seen.hasOwnProperty(a) ? false : (seen[a] = true));
+        return seen.hasOwnProperty(a) ? false : (seen[a] = true);
     });
 };
 
@@ -92,5 +92,5 @@ export const removeSubscription = (type: string): void => {
 };
 
 export const clearSubscriptions = (): void => {
-    Object.keys(_subscription).forEach(key => _subscription[key] = false);
+    Object.keys(_subscription).forEach(key => (_subscription[key] = false));
 };

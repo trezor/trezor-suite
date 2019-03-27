@@ -9,7 +9,7 @@ import * as MessageTypes from '../../types/messages';
 declare function postMessage(data: Response): void;
 declare function onmessage(event: { data: Message }): void;
 
-onmessage = (event) => {
+onmessage = event => {
     if (!event.data) return;
     const { data } = event;
 
@@ -135,7 +135,9 @@ const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Pro
     }
 };
 
-const pushTransaction = async (data: { id: number } & MessageTypes.PushTransaction): Promise<void> => {
+const pushTransaction = async (
+    data: { id: number } & MessageTypes.PushTransaction
+): Promise<void> => {
     try {
         const socket = await connect();
         const resp = await socket.pushTransaction(data.payload);
@@ -150,7 +152,9 @@ const pushTransaction = async (data: { id: number } & MessageTypes.PushTransacti
     }
 };
 
-const getAccountInfo = async (data: { id: number } & MessageTypes.getAccountInfo): Promise<void> => {
+const getAccountInfo = async (
+    data: { id: number } & MessageTypes.getAccountInfo
+): Promise<void> => {
     const { payload } = data;
     try {
         const socket = await connect();

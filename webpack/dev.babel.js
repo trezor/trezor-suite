@@ -4,9 +4,7 @@ import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 // import FlowWebpackPlugin from 'flow-webpack-plugin';
 
-import {
-    SRC, BUILD, PORT,
-} from './constants';
+import { SRC, BUILD, PORT } from './constants';
 
 module.exports = {
     watch: true,
@@ -22,9 +20,7 @@ module.exports = {
         path: BUILD,
     },
     devServer: {
-        contentBase: [
-            SRC,
-        ],
+        contentBase: [SRC],
         hot: false,
         https: false,
         port: PORT,

@@ -4,17 +4,11 @@ import EventEmitter from 'events';
 
 import { MESSAGES, RESPONSES } from './constants';
 import { create as createDeferred } from './utils/deferred';
-import type {
-    BlockchainSettings,
-    Deferred,
-} from './types';
+import type { BlockchainSettings, Deferred } from './types';
 import * as MessageTypes from './types/messages';
 import * as ResponseTypes from './types/responses';
 
-export type {
-    GetAccountInfoOptions,
-    EstimateFeeOptions,
-} from './types/messages';
+export type { GetAccountInfoOptions, EstimateFeeOptions } from './types/messages';
 
 const workerWrapper = (factory: string | Function): Worker => {
     if (typeof factory === 'function') return new factory();
@@ -40,7 +34,9 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
     worker.onerror = (error: any) => {
         worker.onmessage = null;
         worker.onerror = null;
-        const msg = error.message ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}` : 'Worker handshake error';
+        const msg = error.message
+            ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}`
+            : 'Worker handshake error';
         dfd.reject(new Error(msg));
     };
 
@@ -73,14 +69,14 @@ class BlockchainLink extends EventEmitter {
     }
 
     // Sending messages to worker
-    __send: <R>(message: any) => Promise<R> = async (message) => {
+    __send: <R>(message: any) => Promise<R> = async message => {
         await this.getWorker();
         const dfd: Deferred<any> = createDeferred(this.messageId);
         this.deferred.push(dfd);
         this.worker.postMessage({ id: this.messageId, ...message });
         this.messageId++;
         return dfd.promise;
-    }
+    };
 
     async connect(): Promise<boolean> {
         await this.__send({
@@ -94,35 +90,45 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
-    async getAccountInfo(payload: $ElementType<MessageTypes.GetAccountInfo, 'payload'>): Promise<$ElementType<ResponseTypes.GetAccountInfo, 'payload'>> {
+    async getAccountInfo(
+        payload: $ElementType<MessageTypes.GetAccountInfo, 'payload'>
+    ): Promise<$ElementType<ResponseTypes.GetAccountInfo, 'payload'>> {
         await this.__send({
             type: MESSAGES.GET_ACCOUNT_INFO,
             payload,
         });
     }
 
-    async estimateFee(payload: $ElementType<MessageTypes.EstimateFee, 'payload'>): Promise<$ElementType<ResponseTypes.EstimateFee, 'payload'>> {
+    async estimateFee(
+        payload: $ElementType<MessageTypes.EstimateFee, 'payload'>
+    ): Promise<$ElementType<ResponseTypes.EstimateFee, 'payload'>> {
         await this.__send({
             type: MESSAGES.ESTIMATE_FEE,
             payload,
         });
     }
 
-    async subscribe(payload: $ElementType<MessageTypes.Subscribe, 'payload'>): Promise<$ElementType<ResponseTypes.Subscribe, 'payload'>> {
+    async subscribe(
+        payload: $ElementType<MessageTypes.Subscribe, 'payload'>
+    ): Promise<$ElementType<ResponseTypes.Subscribe, 'payload'>> {
         await this.__send({
             type: MESSAGES.SUBSCRIBE,
             payload,
         });
     }
 
-    async unsubscribe(payload: $ElementType<MessageTypes.Subscribe, 'payload'>): Promise<$ElementType<ResponseTypes.Unsubscribe, 'payload'>> {
+    async unsubscribe(
+        payload: $ElementType<MessageTypes.Subscribe, 'payload'>
+    ): Promise<$ElementType<ResponseTypes.Unsubscribe, 'payload'>> {
         await this.__send({
             type: MESSAGES.UNSUBSCRIBE,
             payload,
         });
     }
 
-    async pushTransaction(payload: $ElementType<MessageTypes.PushTransaction, 'payload'>): Promise<$ElementType<ResponseTypes.PushTransaction, 'payload'>> {
+    async pushTransaction(
+        payload: $ElementType<MessageTypes.PushTransaction, 'payload'>
+    ): Promise<$ElementType<ResponseTypes.PushTransaction, 'payload'>> {
         await this.__send({
             type: MESSAGES.PUSH_TRANSACTION,
             payload,
@@ -138,7 +144,7 @@ class BlockchainLink extends EventEmitter {
 
     // worker messages handler
 
-    onMessage: (event: {data: ResponseTypes.Response}) => void = (event) => {
+    onMessage: (event: { data: ResponseTypes.Response }) => void = event => {
         if (!event.data) return;
         const { data } = event;
 
@@ -158,9 +164,9 @@ class BlockchainLink extends EventEmitter {
             dfd.resolve(data.payload);
         }
         this.deferred = this.deferred.filter(d => d !== dfd);
-    }
+    };
 
-    onEvent: (event: {data: ResponseTypes.Response}) => void = (event) => {
+    onEvent: (event: { data: ResponseTypes.Response }) => void = event => {
         if (!event.data) return;
         const { data } = event;
 
@@ -173,21 +179,23 @@ class BlockchainLink extends EventEmitter {
         } else if (data.type === RESPONSES.NOTIFICATION) {
             this.emit(data.payload.type, data.payload.payload);
         }
-    }
+    };
 
-    onNotification: (notification: any) => void = (notification) => {
+    onNotification: (notification: any) => void = notification => {
         this.emit(notification.type, notification.payload);
-    }
+    };
 
-    onError: (error: { message: ?string, lineno: number, filename: string }) => void = (error) => {
-        const message = error.message ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}` : 'Worker handshake error';
+    onError: (error: { message: ?string, lineno: number, filename: string }) => void = error => {
+        const message = error.message
+            ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}`
+            : 'Worker handshake error';
         const e = new Error(message);
         // reject all pending responses
-        this.deferred.forEach((d) => {
+        this.deferred.forEach(d => {
             d.reject(e);
         });
         this.deferred = [];
-    }
+    };
 
     dispose() {
         if (this.worker) {

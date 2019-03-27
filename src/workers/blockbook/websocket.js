@@ -141,7 +141,9 @@ export default class Socket extends EventEmitter {
 
     disconnect(): Promise {
         return new Promise(() => {
-            if (this._ws) { this._ws.close(); }
+            if (this._ws) {
+                this._ws.close();
+            }
         });
     }
 
@@ -151,8 +153,8 @@ export default class Socket extends EventEmitter {
     }
 
     getServerInfo(): Promise<any> {
-        return new Promise((resolve) => {
-            this._send('getInfo', {}, (response) => {
+        return new Promise(resolve => {
+            this._send('getInfo', {}, response => {
                 resolve({
                     block: response.bestheight,
                     // network: response.result.network,
@@ -163,12 +165,12 @@ export default class Socket extends EventEmitter {
     }
 
     subscribeBlock(): Promise {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             if (this._subscribeNewBlockId) {
                 delete this._subscriptions[this._subscribeNewBlockId];
                 this._subscribeNewBlockId = '';
             }
-            this._subscribeNewBlockId = this._subscribe('subscribeNewBlock', {}, (result) => {
+            this._subscribeNewBlockId = this._subscribe('subscribeNewBlock', {}, result => {
                 this.emit('block', {
                     block: result.height,
                     hash: result.hash,
@@ -178,9 +180,9 @@ export default class Socket extends EventEmitter {
     }
 
     unsubscribeBlock(): Promise {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             if (this._subscribeNewBlockId) {
-                this._unsubscribe('unsubscribeNewBlock', this._subscribeNewBlockId, {}, (result) => {
+                this._unsubscribe('unsubscribeNewBlock', this._subscribeNewBlockId, {}, result => {
                     this._subscribeNewBlockId = '';
                 });
             }
@@ -188,7 +190,7 @@ export default class Socket extends EventEmitter {
     }
 
     subscribeAddresses(addresses: Array<string>): Promise {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             const method = 'subscribeAddresses';
             const params = {
                 addresses,
@@ -197,46 +199,53 @@ export default class Socket extends EventEmitter {
                 delete this._subscriptions[this._subscribeAddressesId];
                 this._subscribeAddressesId = '';
             }
-            this._subscribeAddressesId = this._subscribe(method, params, (result) => {
+            this._subscribeAddressesId = this._subscribe(method, params, result => {
                 this.emit('notification', result);
             });
         });
     }
 
     unsubscribeAddresses(addresses: Array<string>): Promise {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             if (this._subscribeAddressesId) {
-                this._unsubscribe('unsubscribeAddresses', this._subscribeAddressesId, {}, (result) => {
-                    this._subscribeAddressesId = '';
-                });
+                this._unsubscribe(
+                    'unsubscribeAddresses',
+                    this._subscribeAddressesId,
+                    {},
+                    result => {
+                        this._subscribeAddressesId = '';
+                    }
+                );
             }
         });
     }
 
     getAccountInfo(payload: any): Promise {
-        return new Promise((resolve) => {
-            this._send('getAccountInfo',
-                payload,
-                (response) => {
-                    resolve(response);
-                });
-        });
-    }
-
-    estimateFee(options: any): Promise {
-        return new Promise((resolve) => {
-            this._send('estimateFee', {
-                blocks: [2, 5, 10, 20],
-                specific: undefined,
-            }, (response) => {
+        return new Promise(resolve => {
+            this._send('getAccountInfo', payload, response => {
                 resolve(response);
             });
         });
     }
 
+    estimateFee(options: any): Promise {
+        return new Promise(resolve => {
+            this._send(
+                'estimateFee',
+                {
+                    blocks: [2, 5, 10, 20],
+                    specific: undefined,
+                },
+                response => {
+                    resolve(response);
+                }
+            );
+        });
+    }
+
     pushTransaction(hex: string): Promise {
-        return new Promise((resolve) => {
-            this._send('sendTransaction', { hex }, (response) => {
+        return new Promise(resolve => {
+            this._send('sendTransaction', { hex }, response => {
                 resolve(response);
             });
         });

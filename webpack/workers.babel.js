@@ -1,7 +1,4 @@
-import {
-    SRC,
-    BUILD,
-} from './constants';
+import { SRC, BUILD } from './constants';
 
 // import webpack from 'webpack';
 // import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
@@ -46,16 +43,12 @@ module.exports = {
     },
     resolve: {
         modules: [SRC, 'node_modules'],
-        alias: {
-
-        },
+        alias: {},
     },
     performance: {
         hints: false,
     },
-    plugins: [
-
-    ],
+    plugins: [],
 
     // bitcoinjs-lib NOTE:
     // When uglifying the javascript, you must exclude the following variable names from being mangled:
@@ -82,7 +75,6 @@ module.exports = {
     optimization: {
         minimize: false,
     },
-
 
     // ignoring Node.js import in fastxpub (hd-wallet)
     node: {

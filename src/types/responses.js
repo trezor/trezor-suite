@@ -8,12 +8,12 @@ import * as RESPONSES from '../constants/responses';
 export type Connect = {
     +type: typeof RESPONSES.CONNECT,
     +payload: boolean,
-}
+};
 
 export type Error = {
     +type: typeof RESPONSES.ERROR,
     +payload: string,
-}
+};
 
 export type GetInfo = {
     +type: typeof RESPONSES.GET_INFO,
@@ -26,10 +26,10 @@ export type GetInfo = {
         +fee: string,
         +reserved?: string,
     },
-}
+};
 
 export type GetAccountInfo = {
-    +type: typeof RESPONSES.GET_ACCOUNT_INFO;
+    +type: typeof RESPONSES.GET_ACCOUNT_INFO,
     // +payload: RIPPLE.GetAccountInfo$;
     +payload: any,
 };
@@ -54,17 +54,17 @@ export type BlockEvent = {
 
 type Input = {
     addresses: Array<string>,
-}
+};
 
 type Output = {
     addresses: Array<string>,
-}
+};
 
 type Token = {
     name: string,
     shortcut: string,
     value: string,
-}
+};
 
 export type Transaction = {
     type: 'send' | 'recv',
@@ -82,7 +82,7 @@ export type Transaction = {
 
     tokens?: Array<Token>,
     sequence?: number, // eth: nonce || ripple: sequence
-}
+};
 
 export type NotificationEvent = {
     +type: 'notification',
@@ -97,30 +97,30 @@ export type Notification = {
 export type Unsubscribe = {
     +type: typeof RESPONSES.UNSUBSCRIBE,
     +payload: boolean,
-}
+};
 
 export type PushTransaction = {
-    +type: typeof RESPONSES.PUSH_TRANSACTION;
+    +type: typeof RESPONSES.PUSH_TRANSACTION,
     // +payload: RIPPLE.PushTransaction$ | BLOCKBOOK.PushTransaction$;
-    +payload: any;
-}
+    +payload: any,
+};
 
 type WithoutPayload = {
     id: number,
     +type: typeof HANDSHAKE | typeof RESPONSES.CONNECTED,
     +payload?: any, // just for flow
-}
+};
 
 // extended
 export type Response =
-    WithoutPayload |
-    { id: number, +type: typeof RESPONSES.DISCONNECTED, +payload: boolean } |
-    { id: number } & Error |
-    { id: number } & Connect |
-    { id: number } & GetInfo |
-    { id: number } & GetAccountInfo |
-    { id: number } & EstimateFee |
-    { id: number } & Subscribe |
-    { id: number } & Unsubscribe |
-    { id: number } & Notification |
-    { id: number } & PushTransaction;
+    | WithoutPayload
+    | { id: number, +type: typeof RESPONSES.DISCONNECTED, +payload: boolean }
+    | ({ id: number } & Error)
+    | ({ id: number } & Connect)
+    | ({ id: number } & GetInfo)
+    | ({ id: number } & GetAccountInfo)
+    | ({ id: number } & EstimateFee)
+    | ({ id: number } & Subscribe)
+    | ({ id: number } & Unsubscribe)
+    | ({ id: number } & Notification)
+    | ({ id: number } & PushTransaction);

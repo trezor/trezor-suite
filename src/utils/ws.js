@@ -17,10 +17,10 @@ class WSWrapper extends events.EventEmitter {
         this._ws.onopen = () => {
             this.emit('open');
         };
-        this._ws.onerror = (error) => {
+        this._ws.onerror = error => {
             this.emit('error', error);
         };
-        this._ws.onmessage = (message) => {
+        this._ws.onmessage = message => {
             this.emit('message', message.data);
         };
     }

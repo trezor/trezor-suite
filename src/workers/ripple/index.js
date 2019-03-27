@@ -13,7 +13,7 @@ import * as ResponseTypes from '../../types/responses';
 declare function onmessage(event: { data: Message }): void;
 
 // WebWorker message handling
-onmessage = (event) => {
+onmessage = event => {
     if (!event.data) return;
     const { data } = event;
 
@@ -23,10 +23,12 @@ onmessage = (event) => {
             common.setSettings(data.settings);
             break;
         case MESSAGES.CONNECT:
-            connect().then(async (api) => {
-                const block = await api.connection.getLedgerVersion();
-                common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
-            }).catch(error => common.errorHandler({ id: data.id, error }));
+            connect()
+                .then(async api => {
+                    const block = await api.connection.getLedgerVersion();
+                    common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
+                })
+                .catch(error => common.errorHandler({ id: data.id, error }));
             break;
         case MESSAGES.GET_INFO:
             getInfo(data);
@@ -119,7 +121,7 @@ const connect = async (): Promise<RippleAPI> => {
     // override private method and return never ending promise
     api.connection._retryConnect = () => new Promise(() => {});
 
-    api.on('ledger', (ledger) => {
+    api.on('ledger', ledger => {
         clearTimeout(_pingTimeout);
         _pingTimeout = setTimeout(timeoutHandler, 5000);
 
@@ -192,7 +194,9 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
 
 // Custom request
 // RippleApi doesn't support "ledger_index": "current", which will fetch data from mempool
-const getMempoolAccountInfo = async (account: string): Promise<{ xrpBalance: string, sequence: number }> => {
+const getMempoolAccountInfo = async (
+    account: string
+): Promise<{ xrpBalance: string, sequence: number }> => {
     const api = await connect();
     const info = await api.request('account_info', {
         account,
@@ -207,7 +211,10 @@ const getMempoolAccountInfo = async (account: string): Promise<{ xrpBalance: str
 
 // Custom request
 // RippleApi returns parsed/formatted transactions, use own parsing
-const getRawTransactions = async (account: string, options): Promise<Array<ResponseTypes.Transaction>> => {
+const getRawTransactions = async (
+    account: string,
+    options
+): Promise<Array<ResponseTypes.Transaction>> => {
     const api = await connect();
     const raw = await api.request('account_tx', {
         account,
@@ -223,7 +230,11 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
 
     const options: MessageTypes.GetAccountInfoOptions = payload || {};
 
-    if (options.details === 'tokens' || options.details === 'tokenBalances' || options.details === 'txids') {
+    if (
+        options.details === 'tokens' ||
+        options.details === 'tokenBalances' ||
+        options.details === 'txids'
+    ) {
         const error = `parameter ${options.details} is not supported by ripple`;
         common.errorHandler({ id: data.id, error });
     }
@@ -243,7 +254,10 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
         account.block = BLOCKS.MAX;
 
         const info = await api.getAccountInfo(payload.descriptor);
-        const ownersReserve = info.ownerCount > 0 ? new BigNumber(info.ownerCount).multipliedBy(RESERVE.OWNER).toString() : '0';
+        const ownersReserve =
+            info.ownerCount > 0
+                ? new BigNumber(info.ownerCount).multipliedBy(RESERVE.OWNER).toString()
+                : '0';
         account.balance = api.xrpToDrops(info.xrpBalance);
         account.availableBalance = account.balance;
         account.sequence = info.sequence;
@@ -337,7 +351,10 @@ const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Pro
         // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
         // investigate more...
         const drops = api.xrpToDrops(fee);
-        const payload = data.payload && Array.isArray(data.payload.levels) ? data.payload.levels.map(l => ({ name: l.name, value: drops })) : [{ name: 'Normal', value: drops }];
+        const payload =
+            data.payload && Array.isArray(data.payload.levels)
+                ? data.payload.levels.map(l => ({ name: l.name, value: drops }))
+                : [{ name: 'Normal', value: drops }];
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,
@@ -348,7 +365,9 @@ const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Pro
     }
 };
 
-const pushTransaction = async (data: { id: number } & MessageTypes.PushTransaction): Promise<void> => {
+const pushTransaction = async (
+    data: { id: number } & MessageTypes.PushTransaction
+): Promise<void> => {
     try {
         const api = await connect();
         // tx_blob hex must be in upper case
@@ -497,7 +516,6 @@ const onTransaction = (event: any) => {
     const sender = subscribed.indexOf(event.transaction.Account);
     const receiver = subscribed.indexOf(event.transaction.Destination);
 
-
     if (sender >= 0) {
         common.response({
             id: -1,
@@ -575,7 +593,6 @@ const onTransaction = (event: any) => {
 
 // postMessage(1/x); // Intentional error.
 common.handshake();
-
 
 // // Testnet account
 // // addr: rGz6kFcejym5ZEWnzUCwPjxcfwEPRUPXXG

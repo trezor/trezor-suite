@@ -3,8 +3,8 @@
         "airbnb-base",
         "prettier",
         "prettier/babel",
-        "prettier/flowtype",
-        "prettier/react"
+        "plugin:flowtype/recommended",
+        "prettier/flowtype"
     ],
     "globals": {
     },
@@ -29,13 +29,14 @@
         "new-cap": 0,
         "max-len": 0,
         "eol-last": 0,
-        "spaced-comment": 0
+        "spaced-comment": 0,
+        "prettier/prettier": "error"
     },
     "plugins": [
         "import",
         "prettier",
-        "mocha",
-        "flowtype"
+        "flowtype",
+        "mocha"
     ],
     "settings": {
         "import/resolver": {
@@ -43,7 +44,7 @@
         }
     },
     "parserOptions": {
-        "ecmaVersion": 2018,
+        "ecmaVersion": 7,
         "sourceType": "module"
     }
 }
