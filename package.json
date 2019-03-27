@@ -27,7 +27,7 @@
     "build": "rm -rf ./build && yarn build:lib && yarn build:workers && babel ./build/lib --out-dir ./build/lib",
     "build:lib": "babel-node ./scripts/build.lib.js",
     "build:workers": "babel-node ./scripts/build.workers.js",
-    "eslint": "lint ./src ./webpack",
+    "lint": "lint ./src ./webpack",
     "flow": "flow check ./src",
     "test": "mocha --opts ./tests/mocha.opts ./tests/index.js"
   },
