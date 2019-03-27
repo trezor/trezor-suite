@@ -19,6 +19,6 @@ const getFreePort = async (): Promise<number> => {
         });
         server.listen(0);
     });
-}
+};
 
 export default getFreePort;

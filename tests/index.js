@@ -16,7 +16,7 @@ chai.use(chaiAsPromised);
 describe('Ripple call', () => {
     let server;
     let blockchain;
-    
+
     beforeEach(async () => {
         server = await createServer();
         blockchain = new BlockchainLink({
@@ -38,4 +38,3 @@ describe('Ripple call', () => {
         expect(result).to.equal('12');
     });
 });
-

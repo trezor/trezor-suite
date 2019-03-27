@@ -14,16 +14,15 @@ const createResponse = (request, response, overrides = {}) => {
     // const change = response.result && !_.isEmpty(overrides) ?
     //   { id: request.id, result: result } : { id: request.id };
     return JSON.stringify(result);
-}
+};
 
 const create = async () => {
-
     const port = await getFreePort();
-    
+
     const server = new Server({ port, noServer: true });
-    
+
     const close = server.close;
-    server.close = function () {
+    server.close = function() {
         // if (mock.expectedRequests !== undefined) {
         //   const allRequestsMade = _.every(mock.expectedRequests, function (counter) {
         //     return counter === 0;
@@ -38,27 +37,27 @@ const create = async () => {
         close.call(server);
     };
 
-    server.on('connection', function (connection) {
-        connection.on('message', (json) => {
+    server.on('connection', function(connection) {
+        connection.on('message', json => {
             try {
                 const request = JSON.parse(json);
                 if (!request || typeof request.command !== 'string') {
                     throw new Error('Unknown request');
                 }
-                console.log('REQUEST', request)
-                server.emit(`request_${request.command}`, request, connection)
+                console.log('REQUEST', request);
+                server.emit(`request_${request.command}`, request, connection);
             } catch (error) {
                 assert(false, error.message);
             }
-        })
+        });
     });
 
     server.config = {};
 
     server.on('request_subscribe', (request, connection) => {
-        console.log("SUBS!", request.id)
+        console.log('SUBS!', request.id);
         const r = createResponse(request, responses.subscribe);
-        console.log("SUBS!", r)
+        console.log('SUBS!', r);
         connection.send(createResponse(request, responses.subscribe));
     });
 
