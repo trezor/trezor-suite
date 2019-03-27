@@ -1,9 +1,10 @@
 {
     "extends": [
-        "eslint:recommended",
         "airbnb-base",
-        "plugin:flowtype/recommended",
-        "plugin:mocha/recommended"
+        "prettier",
+        "prettier/babel",
+        "prettier/flowtype",
+        "prettier/react"
     ],
     "globals": {
     },
@@ -32,19 +33,17 @@
     },
     "plugins": [
         "import",
+        "prettier",
         "mocha",
         "flowtype"
     ],
     "settings": {
         "import/resolver": {
             "babel-module": {}
-        },
-        "import/ignore": [
-            "\\.(scss|less|css)$"
-        ]
+        }
     },
     "parserOptions": {
-        "ecmaVersion": 7,
+        "ecmaVersion": 2018,
         "sourceType": "module"
     }
 }

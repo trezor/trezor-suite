@@ -27,7 +27,7 @@
     "build": "rm -rf ./build && yarn build:lib && yarn build:workers && babel ./build/lib --out-dir ./build/lib",
     "build:lib": "babel-node ./scripts/build.lib.js",
     "build:workers": "babel-node ./scripts/build.workers.js",
-    "eslint": "eslint ./src ./webpack",
+    "eslint": "lint ./src ./webpack",
     "flow": "flow check ./src",
     "test": "mocha --opts ./tests/mocha.opts ./tests/index.js"
   },
@@ -59,6 +59,7 @@
     "fs-extra": "^7.0.1",
     "html-webpack-plugin": "^3.2.0",
     "mocha": "^5.2.0",
+    "prettier": "^1.16.4",
     "ripple-lib": "^1.0.2",
     "tiny-worker": "^2.1.2",
     "webpack": "^4.20.2",
