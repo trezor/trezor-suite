@@ -279,7 +279,7 @@ storiesOf('Typography', module)
             ~~~js
             import { Tooltip } from 'trezor-ui-components';
             ~~~
-            *<Tooltip> is a wrapper around [rc-tooltip](https://github.com/react-component/tooltip) component. See the [official documentation](https://github.com/react-component/tooltip) for more information about its props and usage.*
+            *<Tooltip> is a wrapper around [Tippy.js for React](https://github.com/atomiks/tippy.js-react) component. See the [official documentation](https://github.com/atomiks/tippy.js-react) for more information about its props and usage.*
             `,
             },
         }
