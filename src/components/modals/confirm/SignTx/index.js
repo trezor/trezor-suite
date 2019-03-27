@@ -59,6 +59,10 @@ const FeeLevelName = styled(StyledP)`
     padding-bottom: 0px;
 `;
 
+const StyledDeviceIcon = styled(DeviceIcon)`
+    margin-bottom: 10px;
+`;
+
 const ConfirmSignTx = (props: Props) => {
     const { amount, address, selectedFeeLevel } = props.sendForm;
 
@@ -70,7 +74,7 @@ const ConfirmSignTx = (props: Props) => {
     return (
         <Wrapper>
             <Header>
-                <DeviceIcon device={props.device} size={60} color={colors.TEXT_SECONDARY} />
+                <StyledDeviceIcon device={props.device} size={24} color={colors.TEXT_SECONDARY} />
                 <H5>
                     <FormattedMessage
                         {...l10nMessages.TR_CONFIRM_TRANSACTION_ON}
