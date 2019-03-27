@@ -13,3 +13,9 @@ lint:
   script:
     - yarn
     - yarn run lint
+
+lint:
+  stage: test
+  script:
+    - yarn
+    - yarn run test
