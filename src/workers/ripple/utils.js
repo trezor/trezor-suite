@@ -2,7 +2,7 @@
 
 import BigNumber from 'bignumber.js';
 
-import type { Transaction } from '../../types/responses';
+import type { Transaction } from 'types/responses';
 
 export const concatTransactions = (
     txs: Array<Transaction>,

@@ -7,8 +7,8 @@ export type Deferred<T> = {
     reject: (e: Error) => void,
 };
 
-export { Message } from './messages';
-export { Response } from './responses';
+export { Message } from 'types/messages';
+export { Response } from 'types/responses';
 
 export type BlockchainSettings = {
     name: string,

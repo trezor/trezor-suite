@@ -1,5 +1,5 @@
 /* @flow */
-import type { Deferred } from '../types';
+import type { Deferred } from 'types';
 
 export function create<T>(id: number): Deferred<T> {
     let localResolve: (t: T) => void = () => {};

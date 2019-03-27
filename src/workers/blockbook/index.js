@@ -1,10 +1,10 @@
 /* @flow */
-import { MESSAGES, RESPONSES } from '../../constants';
-import * as common from '../common';
-import Connection from './websocket';
+import * as common from 'workers/common';
+import { MESSAGES, RESPONSES } from 'constants';
+import Connection from 'workers/blockbook/websocket';
 
-import type { Message, Response } from '../../types';
-import * as MessageTypes from '../../types/messages';
+import type { Message, Response } from 'types';
+import * as MessageTypes from 'types/messages';
 
 declare function postMessage(data: Response): void;
 declare function onmessage(event: { data: Message }): void;

@@ -2,13 +2,13 @@
 
 import { RippleAPI } from 'ripple-lib';
 import BigNumber from 'bignumber.js';
-import { MESSAGES, RESPONSES } from '../../constants';
-import * as common from '../common';
-import * as utils from './utils';
+import * as common from 'workers/common';
+import { MESSAGES, RESPONSES } from 'constants';
+import * as utils from 'workers/ripple/utils';
 
-import type { Message } from '../../types';
-import * as MessageTypes from '../../types/messages';
-import * as ResponseTypes from '../../types/responses';
+import type { Message } from 'types';
+import * as MessageTypes from 'types/messages';
+import * as ResponseTypes from 'types/responses';
 
 declare function onmessage(event: { data: Message }): void;
 
