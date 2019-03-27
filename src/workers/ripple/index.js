@@ -31,7 +31,7 @@ onmessage = (event) => {
         case MESSAGES.GET_INFO:
             getInfo(data);
             break;
-        case MESSAGES.GET_ACCOUNT_INFO:
+        case MESSAGES.GET_ACCOUNT_INFO: 
             getAccountInfo(data);
             break;
         case MESSAGES.ESTIMATE_FEE:
@@ -99,7 +99,7 @@ const connect = async (): Promise<RippleAPI> => {
 
     common.debug('Connecting to', _endpoints[0]);
     const api = new RippleAPI({ server: _endpoints[0] });
-   
+
     try {
         await api.connect();
     } catch (error) {
@@ -220,9 +220,15 @@ const getRawTransactions = async (account: string, options): Promise<Array<Respo
     return raw.transactions.map(tx => utils.transformTransactionHistory(account, tx));
 };
 
-const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo): Promise<void> => {
+const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise<void> => {
     const { payload } = data;
-    const options: MessageTypes.GetAccountInfoOptions = payload.options || {};
+    
+    const options: MessageTypes.GetAccountInfoOptions = payload || {};
+
+    if(options.details === 'tokens' || options.details === 'tokenBalances' || options.details === 'txids') {
+        const error = `parameter ${options.details} is not supported by ripple`;
+        common.errorHandler({ id: data.id, error});
+    }
 
     const account = {
         address: payload.descriptor,
@@ -269,8 +275,7 @@ const getAccountInfo = async (data: { id: number } & MessageTypes.GetAccountInfo
     }
 
     // get the reserve
-
-    if (options.type !== 'transactions') {
+    if (options.details !== 'txs') {
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
