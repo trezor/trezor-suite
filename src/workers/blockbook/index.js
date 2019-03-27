@@ -42,7 +42,7 @@ onmessage = (event) => {
         default:
             common.errorHandler({
                 id: data.id,
-                error: new Error(`Unknown message type ${data.type}`)
+                error: new Error(`Unknown message type ${data.type}`),
             });
             break;
     }
@@ -79,7 +79,7 @@ const connect = async (): Promise<Connection> => {
         if (_endpoints.length < 1) {
             throw new Error('All backends are down');
         }
-        return await connect();
+        await connect();
     }
 
     _connection.on('disconnected', () => {
@@ -94,7 +94,7 @@ const connect = async (): Promise<Connection> => {
 
     common.debug('Connected');
     return _connection;
-}
+};
 
 const cleanup = () => {
     if (_connection) {
@@ -103,52 +103,52 @@ const cleanup = () => {
     }
     common.removeAddresses(common.getAddresses());
     common.clearSubscriptions();
-}
+};
 
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
     try {
         const socket = await connect();
         const info = await socket.getServerInfo();
-        console.warn("getInfo", info, data)
+        console.warn('getInfo', info, data);
         postMessage({
             id: data.id,
             type: RESPONSES.GET_INFO,
-            payload: info
+            payload: info,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
-}
+};
 
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
         const socket = await connect();
         const resp = await socket.estimateFee(data);
-        console.warn("estimateFee", resp, data)
+        console.warn('estimateFee', resp, data);
         postMessage({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,
-            payload: resp
+            payload: resp,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
-}
+};
 
 const pushTransaction = async (data: { id: number } & MessageTypes.PushTransaction): Promise<void> => {
     try {
         const socket = await connect();
         const resp = await socket.pushTransaction(data.payload);
-        console.warn("pushTransaction", resp, data)
+        console.warn('pushTransaction', resp, data);
         postMessage({
             id: data.id,
             type: RESPONSES.PUSH_TRANSACTION,
-            payload: resp
+            payload: resp,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
-}
+};
 
 const getAccountInfo = async (data: { id: number } & MessageTypes.getAccountInfo): Promise<void> => {
     const { payload } = data;
@@ -183,7 +183,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
         type: RESPONSES.SUBSCRIBE,
         payload: true,
     });
-}
+};
 
 const subscribeAddresses = async (addresses: Array<string>) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
@@ -197,7 +197,7 @@ const subscribeAddresses = async (addresses: Array<string>) => {
     if (uniqueAddresses.length > 0) {
         await socket.subscribeAddresses(uniqueAddresses);
     }
-}
+};
 
 const subscribeBlock = async () => {
     if (common.getSubscription('block')) return;
@@ -225,7 +225,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
         type: RESPONSES.SUBSCRIBE,
         payload: true,
     });
-}
+};
 
 const unsubscribeAddresses = async (addresses: Array<string>) => {
     const subscribed = common.removeAddresses(addresses);
@@ -238,7 +238,7 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
         // socket.off('notification', onTransaction);
         common.removeSubscription('notification');
     }
-}
+};
 
 const unsubscribeBlock = async () => {
     if (!common.getSubscription('block')) return;
@@ -246,7 +246,7 @@ const unsubscribeBlock = async () => {
     socket.removeListener('block', onNewBlock);
     common.removeSubscription('block');
     await socket.unsubscribeBlock();
-}
+};
 
 const disconnect = async (data: { id: number }) => {
     if (!_connection) {
@@ -268,7 +268,7 @@ const onNewBlock = (data: any) => {
         payload: {
             type: 'block',
             payload: data,
-        }
+        },
     });
 };
 
@@ -279,7 +279,7 @@ const onTransaction = (event: any) => {
         payload: {
             type: 'notification',
             payload: event,
-        }
+        },
     });
 };
 

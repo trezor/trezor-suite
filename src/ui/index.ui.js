@@ -17,7 +17,7 @@ const handleClick = (event: MouseEvent) => {
     // const blockchain: Blockchain<Ripple> = BlockchainLink.get('Ripple Testnet');
     const blockchain = instances.find(b => b.settings.name === network);
     if (!blockchain) return;
-    
+
     const parentContainer = target.parentElement;
     const onResponse = handleResponse.bind(this, parentContainer);
     const onError = handleError.bind(this, parentContainer);
@@ -30,16 +30,16 @@ const handleClick = (event: MouseEvent) => {
         case 'get-info':
             blockchain.getInfo().then(onResponse).catch(onError);
             break;
-        
+
         case 'get-account-info': {
             const payload = {
                 descriptor: getInputValue('get-account-info-address'),
                 details: getInputValue('get-account-info-mode') || 'basic',
                 pageSize: getInputValue('get-account-info-pageSize') || 25,
-                tokens: getInputValue('get-account-info-tokens') ||'derived',
+                tokens: getInputValue('get-account-info-tokens') || 'derived',
                 page: parseInt(getInputValue('get-account-info-page'), 2) || 10,
-                from: parseInt(getInputValue('get-account-info-from'), 2) ,
-                to: parseInt(getInputValue('get-account-info-to'), 2) ,
+                from: parseInt(getInputValue('get-account-info-from'), 2),
+                to: parseInt(getInputValue('get-account-info-to'), 2),
                 contractFilter: getInputValue('get-account-info-contract') || '',
             };
             blockchain.getAccountInfo(payload).then(onResponse).catch(onError);
@@ -56,33 +56,33 @@ const handleClick = (event: MouseEvent) => {
 
         case 'subscribe-block':
             blockchain.subscribe({
-                type: 'block'
+                type: 'block',
             }).catch(onError);
             break;
 
         case 'unsubscribe-block':
             blockchain.unsubscribe({
-                type: 'block'
+                type: 'block',
             }).catch(onError);
             break;
 
         case 'subscribe-address':
             blockchain.subscribe({
                 type: 'notification',
-                addresses: getInputValue('subscribe-addresses').split(","),
+                addresses: getInputValue('subscribe-addresses').split(','),
             }).catch(onError);
             break;
 
         case 'unsubscribe-address':
             blockchain.unsubscribe({
                 type: 'notification',
-                addresses: getInputValue('subscribe-addresses').split(","),
+                addresses: getInputValue('subscribe-addresses').split(','),
             }).catch(onError);
             break;
 
         default: break;
     }
-}
+};
 
 const handleResponse = (parent: any, response: any) => prepareResponse(parent, response);
 
@@ -93,7 +93,7 @@ const handleBlockEvent = (blockchain: BlockchainLink, notification: any): void =
     if (blockchain.settings.name !== network) return;
     const parent = (document.getElementById('notification-block'): any);
     prepareResponse(parent, notification);
-}
+};
 
 const handleNotificationEvent = (blockchain: BlockchainLink, notification: any) => {
     const network: string = getInputValue('network-type');
@@ -101,7 +101,7 @@ const handleNotificationEvent = (blockchain: BlockchainLink, notification: any) 
 
     const parent = (document.getElementById('notification-address'): any);
     prepareResponse(parent, notification);
-}
+};
 
 const handleConnectionEvent = (blockchain: BlockchainLink, status: boolean) => {
     const parent = (document.getElementById('notification-status'): any);
@@ -109,12 +109,12 @@ const handleConnectionEvent = (blockchain: BlockchainLink, status: boolean) => {
         blockchain: blockchain.settings.name,
         connected: status,
     }, !status);
-}
+};
 
 const handleErrorEvent = (blockchain: BlockchainLink, message: any) => {
     const parent = (document.getElementById('notification-status'): any);
     prepareResponse(parent, message, true);
-}
+};
 
 const prepareResponse = (parent: HTMLElement, response, isError: boolean = false) => {
     const div = document.createElement('pre');
@@ -123,10 +123,10 @@ const prepareResponse = (parent: HTMLElement, response, isError: boolean = false
     close.className = 'close';
     close.onclick = () => {
         if (div.parentElement) div.parentElement.removeChild(div);
-    }
+    };
     div.append(close);
     const pre = document.createElement('pre');
-    pre.innerHTML = JSON.stringify(response, null , 2);
+    pre.innerHTML = JSON.stringify(response, null, 2);
     div.appendChild(pre);
 
     const otherResponses = parent.getElementsByClassName('response');
@@ -138,7 +138,7 @@ const prepareResponse = (parent: HTMLElement, response, isError: boolean = false
     } else {
         parent.appendChild(div);
     }
-}
+};
 
 
 // utils
@@ -149,34 +149,34 @@ const onClear = () => {
         const r = responses[0];
         if (r.parentElement) r.parentElement.removeChild(r);
     }
-}
+};
 
 const getInputValue = (id: string): string => {
     const value: string = (document.getElementById(id): any).value;
     return value;
-}
+};
 
 const setInputValue = (id: string, value: string): void => {
     const element = (document.getElementById(id): any);
     element.value = value;
-}
+};
 
 const onSelectChange = (event) => {
     const value = event.target.value;
     const b = CONFIG.find(i => i.blockchain.name === value);
     fillValues(b.data);
     onClear();
-}
+};
 
 const onAccountInfoModeChange = (event) => {
     const advanced = (document.getElementById('get-account-info-advanced'): any);
     advanced.style.display = event.target.value === 'advanced' ? 'block' : 'none';
-}
+};
 
 const onEstimateFeeModeChange = (event) => {
     const advanced = (document.getElementById('estimate-fee-advanced'): any);
     advanced.style.display = event.target.value === 'advanced' ? 'block' : 'none';
-}
+};
 
 const fillValues = (data) => {
     setInputValue('get-account-info-address', data.address);
@@ -184,18 +184,17 @@ const fillValues = (data) => {
     setInputValue('estimate-fee-options', JSON.stringify(data.estimateFeeOptions, null, 2));
     setInputValue('push-transaction-tx', data.tx);
     setInputValue('subscribe-addresses', data.subscribe);
-}
+};
 
 const init = (instances: Array<any>) => {
     const select = (document.getElementById('network-type'): any);
-    select.innerHTML = instances.map(i => {
+    select.innerHTML = instances.map((i) => {
         const b = i.blockchain;
         if (i.selected) {
             fillValues(i.data);
             return `<option value="${b.name}" selected>${b.name}</option>`;
-        } else {
-            return `<option value="${b.name}">${b.name}</option>`;
         }
+        return `<option value="${b.name}">${b.name}</option>`;
     });
     select.onchange = onSelectChange;
 
@@ -207,12 +206,12 @@ const init = (instances: Array<any>) => {
 
     const estimateFeeMode = (document.getElementById('estimate-fee-mode'): any);
     estimateFeeMode.onchange = onEstimateFeeModeChange;
-}
+};
 
 init(CONFIG);
 
 const instances: Array<BlockchainLink> = [];
-CONFIG.forEach(i => {
+CONFIG.forEach((i) => {
     const b = new BlockchainLink(i.blockchain);
     b.on('connected', handleConnectionEvent.bind(this, b, true));
     b.on('disconnected', handleConnectionEvent.bind(this, b, false));

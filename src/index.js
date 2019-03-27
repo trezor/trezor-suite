@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 
 import { MESSAGES, RESPONSES } from './constants';
 import { create as createDeferred } from './utils/deferred';
-import type { 
+import type {
     BlockchainSettings,
     Deferred,
 } from './types';
@@ -35,22 +35,25 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
             settings,
         });
         dfd.resolve(worker);
-    }
+    };
 
     worker.onerror = (error: any) => {
         worker.onmessage = null;
         worker.onerror = null;
         const msg = error.message ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}` : 'Worker handshake error';
         dfd.reject(new Error(msg));
-    }
+    };
 
     return dfd.promise;
-}
+};
 
 class BlockchainLink extends EventEmitter {
     settings: BlockchainSettings;
+
     messageId: number = 0;
+
     worker: Worker;
+
     deferred: Array<Deferred<any>> = [];
 
     constructor(settings: BlockchainSettings) {
@@ -80,55 +83,55 @@ class BlockchainLink extends EventEmitter {
     }
 
     async connect(): Promise<boolean> {
-        return await this.__send({
+        await this.__send({
             type: MESSAGES.CONNECT,
         });
     }
 
     async getInfo(): Promise<$ElementType<ResponseTypes.GetInfo, 'payload'>> {
-        return await this.__send({
+        await this.__send({
             type: MESSAGES.GET_INFO,
         });
     }
 
     async getAccountInfo(payload: $ElementType<MessageTypes.GetAccountInfo, 'payload'>): Promise<$ElementType<ResponseTypes.GetAccountInfo, 'payload'>> {
-        return await this.__send({
+        await this.__send({
             type: MESSAGES.GET_ACCOUNT_INFO,
-            payload
+            payload,
         });
     }
 
     async estimateFee(payload: $ElementType<MessageTypes.EstimateFee, 'payload'>): Promise<$ElementType<ResponseTypes.EstimateFee, 'payload'>> {
-        return await this.__send({
+        await this.__send({
             type: MESSAGES.ESTIMATE_FEE,
-            payload
+            payload,
         });
     }
 
     async subscribe(payload: $ElementType<MessageTypes.Subscribe, 'payload'>): Promise<$ElementType<ResponseTypes.Subscribe, 'payload'>> {
-        return await this.__send({
+        await this.__send({
             type: MESSAGES.SUBSCRIBE,
-            payload
+            payload,
         });
     }
 
     async unsubscribe(payload: $ElementType<MessageTypes.Subscribe, 'payload'>): Promise<$ElementType<ResponseTypes.Unsubscribe, 'payload'>> {
-        return await this.__send({
+        await this.__send({
             type: MESSAGES.UNSUBSCRIBE,
-            payload
+            payload,
         });
     }
 
     async pushTransaction(payload: $ElementType<MessageTypes.PushTransaction, 'payload'>): Promise<$ElementType<ResponseTypes.PushTransaction, 'payload'>> {
-        return await this.__send({
+        await this.__send({
             type: MESSAGES.PUSH_TRANSACTION,
-            payload
+            payload,
         });
     }
 
     async disconnect(): Promise<boolean> {
         if (!this.worker) return true;
-        return await this.__send({
+        await this.__send({
             type: MESSAGES.DISCONNECT,
         });
     }
@@ -155,7 +158,6 @@ class BlockchainLink extends EventEmitter {
             dfd.resolve(data.payload);
         }
         this.deferred = this.deferred.filter(d => d !== dfd);
-        
     }
 
     onEvent: (event: {data: ResponseTypes.Response}) => void = (event) => {
@@ -176,12 +178,12 @@ class BlockchainLink extends EventEmitter {
     onNotification: (notification: any) => void = (notification) => {
         this.emit(notification.type, notification.payload);
     }
-    
+
     onError: (error: { message: ?string, lineno: number, filename: string }) => void = (error) => {
         const message = error.message ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}` : 'Worker handshake error';
         const e = new Error(message);
         // reject all pending responses
-        this.deferred.forEach(d => {
+        this.deferred.forEach((d) => {
             d.reject(e);
         });
         this.deferred = [];

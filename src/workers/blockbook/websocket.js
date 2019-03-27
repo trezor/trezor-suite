@@ -7,13 +7,19 @@ import Promise from 'es6-promise';
 type WsCallback = (result: Object) => void;
 export default class Socket extends EventEmitter {
     _url: string;
+
     _ws: ?WebSocket;
+
     _state: number = 0;
 
     _messageID: number = 0;
+
     _pendingMessages: { [string]: WsCallback } = {};
+
     _subscriptions: { [string]: WsCallback } = {};
+
     _subscribeNewBlockId: string = '';
+
     _subscribeAddressesId: string = '';
 
     _send(method: string, params: {}, callback: WsCallback): string {
@@ -25,8 +31,8 @@ export default class Socket extends EventEmitter {
         const req = {
             id,
             method,
-            params
-        }
+            params,
+        };
         ws.send(JSON.stringify(req));
         return id;
     }
@@ -40,8 +46,8 @@ export default class Socket extends EventEmitter {
         const req = {
             id,
             method,
-            params
-        }
+            params,
+        };
         ws.send(JSON.stringify(req));
         return id;
     }
@@ -54,8 +60,8 @@ export default class Socket extends EventEmitter {
         const req = {
             id,
             method,
-            params
-        }
+            params,
+        };
         ws.send(JSON.stringify(req));
         return id;
     }
@@ -63,16 +69,15 @@ export default class Socket extends EventEmitter {
     _onmessage(m: string) {
         const resp = JSON.parse(m);
         const f = this._pendingMessages[resp.id];
-        if (f != undefined) {
+        if (f !== undefined) {
             delete this._pendingMessages[resp.id];
             f(resp.data);
         } else {
             const s = this._subscriptions[resp.id];
-            if (s != undefined) {
+            if (s !== undefined) {
                 s(resp.data);
-            }
-            else {
-                console.log('unknown response ' + resp.id);
+            } else {
+                console.log(`unknown response ${resp.id}`);
             }
         }
     }
@@ -82,13 +87,13 @@ export default class Socket extends EventEmitter {
         // we will have a listener for each outstanding request,
         // so we have to raise the limit (the default is 10)
         if (typeof websocket.setMaxListeners === 'function') {
-            websocket.setMaxListeners(Infinity)
+            websocket.setMaxListeners(Infinity);
         }
         return websocket;
     }
 
     _onOpenError(err: Error) {
-        console.error('OpenError', err)
+        console.error('OpenError', err);
     }
 
     constructor(url: string) {
@@ -110,9 +115,9 @@ export default class Socket extends EventEmitter {
                 reject(new Error('Cannot connect because no server was specified'));
             }
             if (this._state === WebSocket.OPEN) {
-                resolve()
+                resolve();
             } else if (this._ws && this._state === WebSocket.CONNECTING) {
-                this._ws.once('open', resolve)
+                this._ws.once('open', resolve);
             } else {
                 const ws = this._createWebSocket();
                 ws.once('error', this._onOpenError.bind(this));
@@ -136,8 +141,7 @@ export default class Socket extends EventEmitter {
 
     disconnect(): Promise {
         return new Promise(() => {
-            if (this._ws)
-                this._ws.close();
+            if (this._ws) { this._ws.close(); }
         });
     }
 
@@ -148,7 +152,7 @@ export default class Socket extends EventEmitter {
 
     getServerInfo(): Promise<any> {
         return new Promise((resolve) => {
-            this._send('getInfo', {}, response => {
+            this._send('getInfo', {}, (response) => {
                 resolve({
                     block: response.bestheight,
                     // network: response.result.network,
@@ -164,7 +168,7 @@ export default class Socket extends EventEmitter {
                 delete this._subscriptions[this._subscribeNewBlockId];
                 this._subscribeNewBlockId = '';
             }
-            this._subscribeNewBlockId = this._subscribe('subscribeNewBlock', {}, result => {
+            this._subscribeNewBlockId = this._subscribe('subscribeNewBlock', {}, (result) => {
                 this.emit('block', {
                     block: result.height,
                     hash: result.hash,
@@ -176,7 +180,7 @@ export default class Socket extends EventEmitter {
     unsubscribeBlock(): Promise {
         return new Promise((resolve) => {
             if (this._subscribeNewBlockId) {
-                this._unsubscribe('unsubscribeNewBlock', this._subscribeNewBlockId, {}, result => {
+                this._unsubscribe('unsubscribeNewBlock', this._subscribeNewBlockId, {}, (result) => {
                     this._subscribeNewBlockId = '';
                 });
             }
@@ -187,13 +191,13 @@ export default class Socket extends EventEmitter {
         return new Promise((resolve) => {
             const method = 'subscribeAddresses';
             const params = {
-                addresses
+                addresses,
             };
             if (this._subscribeAddressesId) {
                 delete this._subscriptions[this._subscribeAddressesId];
-                this._subscribeAddressesId = "";
+                this._subscribeAddressesId = '';
             }
-            this._subscribeAddressesId = this._subscribe(method, params, result => {
+            this._subscribeAddressesId = this._subscribe(method, params, (result) => {
                 this.emit('notification', result);
             });
         });
@@ -202,7 +206,7 @@ export default class Socket extends EventEmitter {
     unsubscribeAddresses(addresses: Array<string>): Promise {
         return new Promise((resolve) => {
             if (this._subscribeAddressesId) {
-                this._unsubscribe('unsubscribeAddresses', this._subscribeAddressesId, {}, result => {
+                this._unsubscribe('unsubscribeAddresses', this._subscribeAddressesId, {}, (result) => {
                     this._subscribeAddressesId = '';
                 });
             }
@@ -211,9 +215,9 @@ export default class Socket extends EventEmitter {
 
     getAccountInfo(payload: any): Promise {
         return new Promise((resolve) => {
-            this._send('getAccountInfo', 
-                payload, 
-                response => {
+            this._send('getAccountInfo',
+                payload,
+                (response) => {
                     resolve(response);
                 });
         });
@@ -224,7 +228,7 @@ export default class Socket extends EventEmitter {
             this._send('estimateFee', {
                 blocks: [2, 5, 10, 20],
                 specific: undefined,
-            }, response => {
+            }, (response) => {
                 resolve(response);
             });
         });
@@ -232,7 +236,7 @@ export default class Socket extends EventEmitter {
 
     pushTransaction(hex: string): Promise {
         return new Promise((resolve) => {
-            this._send('sendTransaction', { hex }, response => {
+            this._send('sendTransaction', { hex }, (response) => {
                 resolve(response);
             });
         });

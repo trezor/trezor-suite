@@ -11,7 +11,7 @@ export function create<T>(id: number): Deferred<T> {
     });
 
     return {
-        id: id,
+        id,
         resolve: localResolve,
         reject: localReject,
         promise,

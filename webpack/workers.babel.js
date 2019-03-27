@@ -22,7 +22,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
+                use: ['babel-loader'],
             },
             {
                 type: 'javascript/auto',
@@ -42,16 +42,16 @@ module.exports = {
                     name: '[name].[hash].[ext]',
                 },
             },
-        ]
+        ],
     },
     resolve: {
-        modules: [ SRC, 'node_modules' ],
+        modules: [SRC, 'node_modules'],
         alias: {
 
-        }
+        },
     },
     performance: {
-        hints: false
+        hints: false,
     },
     plugins: [
 
@@ -80,16 +80,15 @@ module.exports = {
     //     ]
     // },
     optimization: {
-        minimize: false
+        minimize: false,
     },
-
 
 
     // ignoring Node.js import in fastxpub (hd-wallet)
     node: {
-        fs: "empty",
-        net: "empty",
-        tls: "empty",
-        path: "empty",
-    }
-}
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty',
+        path: 'empty',
+    },
+};

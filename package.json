@@ -27,7 +27,7 @@
     "build": "rm -rf ./build && yarn build:lib && yarn build:workers && babel ./build/lib --out-dir ./build/lib",
     "build:lib": "babel-node ./scripts/build.lib.js",
     "build:workers": "babel-node ./scripts/build.workers.js",
-    "eslint": "npx eslint ./src ./webpack",
+    "eslint": "eslint ./src ./webpack",
     "flow": "flow check ./src",
     "test": "mocha --opts ./tests/mocha.opts ./tests/index.js"
   },
@@ -49,6 +49,7 @@
     "chai-as-promised": "^7.1.1",
     "es6-promise": "^4.2.5",
     "eslint": "^5.7.0",
+    "eslint-config-airbnb-base": "^13.1.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-flowtype": "^3.0.0",
     "eslint-plugin-import": "^2.14.0",
@@ -67,9 +68,9 @@
     "ws": "^6.1.2"
   },
   "dependencies": {
-    "events": "^3.0.0",
     "bignumber.js": "^8.0.1",
     "es6-promise": "^4.2.5",
+    "events": "^3.0.0",
     "ripple-lib": "^1.0.2",
     "tiny-worker": "^2.1.2",
     "ws": "^6.1.2"

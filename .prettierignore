@@ -3,8 +3,8 @@ build
 coverage
 cache/**
 **/_old/*
-src/ui/**
 node_modules
 src/flowtype/npm
 scripts/solidity/.*
 **/_old/*
+src/ui/**

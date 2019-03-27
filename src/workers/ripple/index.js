@@ -16,7 +16,7 @@ declare function onmessage(event: { data: Message }): void;
 onmessage = (event) => {
     if (!event.data) return;
     const { data } = event;
-    
+
     common.debug('onmessage', data);
     switch (data.type) {
         case MESSAGES.HANDSHAKE:
@@ -31,7 +31,7 @@ onmessage = (event) => {
         case MESSAGES.GET_INFO:
             getInfo(data);
             break;
-        case MESSAGES.GET_ACCOUNT_INFO: 
+        case MESSAGES.GET_ACCOUNT_INFO:
             getAccountInfo(data);
             break;
         case MESSAGES.ESTIMATE_FEE:
@@ -52,7 +52,7 @@ onmessage = (event) => {
         default:
             common.errorHandler({
                 id: data.id,
-                error: new Error(`Unknown message type ${data.type}`)
+                error: new Error(`Unknown message type ${data.type}`),
             });
             break;
     }
@@ -77,10 +77,10 @@ const timeoutHandler = async () => {
             await _api.getServerInfo();
             _pingTimeout = setTimeout(timeoutHandler, 5000);
         } catch (error) {
-            common.debug(`Error in timeout ping request: ${error}`)
+            common.debug(`Error in timeout ping request: ${error}`);
         }
     }
-}
+};
 
 const connect = async (): Promise<RippleAPI> => {
     if (_api) {
@@ -117,11 +117,9 @@ const connect = async (): Promise<RippleAPI> => {
     // disable reconnecting
     // workaround: RippleApi which doesn't have possibility to disable reconnection
     // override private method and return never ending promise
-    api.connection._retryConnect = () => {
-        return new Promise(() => {});
-    };
+    api.connection._retryConnect = () => new Promise(() => {});
 
-    api.on('ledger', ledger => {
+    api.on('ledger', (ledger) => {
         clearTimeout(_pingTimeout);
         _pingTimeout = setTimeout(timeoutHandler, 5000);
 
@@ -159,7 +157,7 @@ const connect = async (): Promise<RippleAPI> => {
 
     _api = api;
     return _api;
-}
+};
 
 const cleanup = () => {
     if (_api) {
@@ -168,7 +166,7 @@ const cleanup = () => {
     }
     common.removeAddresses(common.getAddresses());
     common.clearSubscriptions();
-}
+};
 
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
     try {
@@ -222,12 +220,12 @@ const getRawTransactions = async (account: string, options): Promise<Array<Respo
 
 const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise<void> => {
     const { payload } = data;
-    
+
     const options: MessageTypes.GetAccountInfoOptions = payload || {};
 
-    if(options.details === 'tokens' || options.details === 'tokenBalances' || options.details === 'txids') {
+    if (options.details === 'tokens' || options.details === 'tokenBalances' || options.details === 'txids') {
         const error = `parameter ${options.details} is not supported by ripple`;
-        common.errorHandler({ id: data.id, error});
+        common.errorHandler({ id: data.id, error });
     }
 
     const account = {
@@ -298,7 +296,7 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
             minLedgerVersion,
             maxLedgerVersion,
             limit: fetchAll ? TX_LIMIT : options.limit,
-        }
+        };
 
         let transactions: Array<ResponseTypes.Transaction> = [];
         if (!fetchAll) {
@@ -325,12 +323,12 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
                 ...account,
                 transactions,
                 block,
-            }
+            },
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
-}
+};
 
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
@@ -339,7 +337,7 @@ const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Pro
         // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
         // investigate more...
         const drops = api.xrpToDrops(fee);
-        const payload = data.payload && Array.isArray(data.payload.levels) ? data.payload.levels.map(l => ({ name: l.name, value: drops })) : [ { name: 'Normal', value: drops } ];
+        const payload = data.payload && Array.isArray(data.payload.levels) ? data.payload.levels.map(l => ({ name: l.name, value: drops })) : [{ name: 'Normal', value: drops }];
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,
@@ -369,7 +367,7 @@ const pushTransaction = async (data: { id: number } & MessageTypes.PushTransacti
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
-}
+};
 
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
     const { payload } = data;
@@ -389,7 +387,7 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
         type: RESPONSES.SUBSCRIBE,
         payload: true,
     });
-}
+};
 
 const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = true) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
@@ -407,10 +405,10 @@ const subscribeAddresses = async (addresses: Array<string>, mempool: boolean = t
             accounts: uniqueAddresses,
             accounts_proposed: mempool ? uniqueAddresses : [],
         };
-    
+
         await api.request('subscribe', request);
     }
-}
+};
 
 const subscribeBlock = async () => {
     if (common.getSubscription('ledger')) return;
@@ -437,7 +435,7 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Subscribe): Promi
         type: RESPONSES.SUBSCRIBE,
         payload: true,
     });
-}
+};
 
 const unsubscribeAddresses = async (addresses: Array<string>) => {
     const subscribed = common.removeAddresses(addresses);
@@ -454,16 +452,16 @@ const unsubscribeAddresses = async (addresses: Array<string>) => {
         // remove listeners
         api.connection.removeListener('transaction', onTransaction);
         // api.connection.off('ledgerClosed', onLedgerClosed);
-        common.removeSubscription('transaction')
+        common.removeSubscription('transaction');
     }
-}
+};
 
 const unsubscribeBlock = async () => {
     if (!common.getSubscription('ledger')) return;
     const api = await connect();
     api.removeListener('ledger', onNewBlock);
     common.removeSubscription('ledger');
-}
+};
 
 const disconnect = async (data: { id: number }) => {
     if (!_api) {
@@ -476,7 +474,7 @@ const disconnect = async (data: { id: number }) => {
     } catch (error) {
         common.errorHandler({ id: data.id, error });
     }
-}
+};
 
 const onNewBlock = (event: any) => {
     common.response({
@@ -487,10 +485,10 @@ const onNewBlock = (event: any) => {
             payload: {
                 block: event.ledgerVersion,
                 hash: event.ledgerHash,
-            }
-        }
+            },
+        },
     });
-}
+};
 
 const onTransaction = (event: any) => {
     if (event.type !== 'transaction') return;
@@ -507,7 +505,7 @@ const onTransaction = (event: any) => {
             payload: {
                 type: 'notification',
                 payload: utils.transformTransactionEvent(subscribed[sender], event),
-            }
+            },
         });
     }
 
@@ -518,7 +516,7 @@ const onTransaction = (event: any) => {
             payload: {
                 type: 'notification',
                 payload: utils.transformTransactionEvent(subscribed[receiver], event),
-            }
+            },
         });
     }
     /*
@@ -573,12 +571,10 @@ const onTransaction = (event: any) => {
         });
     }
     */
-}
+};
 
 // postMessage(1/x); // Intentional error.
 common.handshake();
-
-
 
 
 // // Testnet account

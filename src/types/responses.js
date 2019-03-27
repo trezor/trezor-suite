@@ -74,7 +74,7 @@ export type Transaction = {
     descriptor: string,
     inputs: Array<Input>,
     outputs: Array<Output>,
-    
+
     hash: string,
     amount: string,
     fee: string,
@@ -112,7 +112,7 @@ type WithoutPayload = {
 }
 
 // extended
-export type Response = 
+export type Response =
     WithoutPayload |
     { id: number, +type: typeof RESPONSES.DISCONNECTED, +payload: boolean } |
     { id: number } & Error |
