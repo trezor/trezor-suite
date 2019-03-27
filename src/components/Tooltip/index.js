@@ -18,6 +18,7 @@ const ContentWrapper = styled.div`
     font-size: ${FONT_SIZE.SMALL};
     /* min-height: 34px; */
     padding: 8px 0px;
+    text-align: left;
 `;
 
 const CTAWrapper = styled.div`
@@ -52,7 +53,9 @@ const Tooltip = ({ maxWidth, placement, content, ctaText, ctaLink, children, ...
 
     return (
         <Tippy placement={placement} content={Overlay} offset={4} arrow interactive {...rest}>
-            {children}
+            // TODO: Figure out why styled-components does not forward ref from the Icon component.
+            https://github.com/atomiks/tippy.js-react#component-children
+            <span>{children}</span>
         </Tippy>
     );
 };
