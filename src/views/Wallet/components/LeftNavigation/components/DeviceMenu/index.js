@@ -58,8 +58,7 @@ class DeviceMenu extends PureComponent<Props> {
         window.addEventListener('mousedown', this.mouseDownHandler, false);
         // window.addEventListener('blur', this.blurHandler, false);
         const { transport } = this.props.connect;
-        if (transport.type && transport.version.indexOf('webusb') >= 0)
-            TrezorConnect.renderWebUSBButton();
+        if (deviceUtils.isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
     }
 
     componentDidUpdate() {
