@@ -35,7 +35,7 @@ const handleClick = (event: MouseEvent) => {
             const payload = {
                 descriptor: getInputValue('get-account-info-address'),
                 details: getInputValue('get-account-info-mode') || 'basic',
-                pageSize: getInputValue('get-account-info-pageSize') || 25,
+                pageSize: parseInt(getInputValue('get-account-info-pageSize'), 10) || 25,
                 tokens: getInputValue('get-account-info-tokens') || 'derived',
                 page: parseInt(getInputValue('get-account-info-page'), 10) || 10,
                 from: parseInt(getInputValue('get-account-info-from'), 10),
