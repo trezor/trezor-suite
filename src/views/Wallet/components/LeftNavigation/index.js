@@ -32,6 +32,11 @@ const DeviceIconWrapper = styled.div`
     margin: 0 3px;
 `;
 
+const WalletIconWrapper = styled.div`
+    padding-bottom: 1px;
+    margin: 0 3px;
+`;
+
 const Counter = styled.div`
     display: flex;
     justify-content: center;
@@ -308,7 +313,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                         placement="bottom"
                                         delay={500}
                                     >
-                                        <DeviceIconWrapper>
+                                        <WalletIconWrapper>
                                             <WalletTypeIcon
                                                 onClick={e => {
                                                     if (selectedDevice && isDeviceReady) {
@@ -325,7 +330,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                                 size={16}
                                                 color={colors.TEXT_SECONDARY}
                                             />
-                                        </DeviceIconWrapper>
+                                        </WalletIconWrapper>
                                     </Tooltip>
                                 )}
                                 {this.props.devices.length > 1 && (
