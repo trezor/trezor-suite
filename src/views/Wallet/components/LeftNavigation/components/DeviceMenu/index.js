@@ -33,7 +33,7 @@ const Overlay = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.1);
     animation: ${FADE_IN} 0.25s;
 `;
 
