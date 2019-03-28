@@ -37,9 +37,9 @@ const handleClick = (event: MouseEvent) => {
                 details: getInputValue('get-account-info-mode') || 'basic',
                 pageSize: getInputValue('get-account-info-pageSize') || 25,
                 tokens: getInputValue('get-account-info-tokens') || 'derived',
-                page: parseInt(getInputValue('get-account-info-page'), 2) || 10,
-                from: parseInt(getInputValue('get-account-info-from'), 2),
-                to: parseInt(getInputValue('get-account-info-to'), 2),
+                page: parseInt(getInputValue('get-account-info-page'), 10) || 10,
+                from: parseInt(getInputValue('get-account-info-from'), 10),
+                to: parseInt(getInputValue('get-account-info-to'), 10),
                 contractFilter: getInputValue('get-account-info-contract') || '',
             };
             blockchain.getAccountInfo(payload).then(onResponse).catch(onError);

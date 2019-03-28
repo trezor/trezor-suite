@@ -129,8 +129,8 @@ const connect = async (): Promise<RippleAPI> => {
         RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
         RESERVE.OWNER = api.xrpToDrops(ledger.reserveIncrementXRP);
         const availableBlocks = ledger.validatedLedgerVersions.split('-');
-        BLOCKS.MIN = parseInt(availableBlocks[0]);
-        BLOCKS.MAX = parseInt(availableBlocks[1]);
+        BLOCKS.MIN = parseInt(availableBlocks[0], 10);
+        BLOCKS.MAX = parseInt(availableBlocks[1], 10);
     });
 
     api.on('disconnected', () => {
@@ -146,13 +146,13 @@ const connect = async (): Promise<RippleAPI> => {
 
     try {
         const availableBlocks = api.connection._availableLedgerVersions.serialize().split('-');
-        BLOCKS.MIN = parseInt(availableBlocks[0]);
-        BLOCKS.MAX = parseInt(availableBlocks[1]);
+        BLOCKS.MIN = parseInt(availableBlocks[0], 10);
+        BLOCKS.MAX = parseInt(availableBlocks[1], 10);
     } catch (error) {
         const info = await api.getServerInfo();
         const availableBlocks = info.completeLedgers.split('-');
-        BLOCKS.MIN = parseInt(availableBlocks[0]);
-        BLOCKS.MAX = parseInt(availableBlocks[1]);
+        BLOCKS.MIN = parseInt(availableBlocks[0], 10);
+        BLOCKS.MAX = parseInt(availableBlocks[1], 10);
     }
 
     common.response({ id: -1, type: RESPONSES.CONNECTED });
@@ -173,7 +173,7 @@ const cleanup = () => {
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
     try {
         const api = await connect();
-        const info = await api.getServerInfo();
+        // const info = await api.getServerInfo();
         const block = await api.getLedgerVersion();
         common.response({
             id: data.id,

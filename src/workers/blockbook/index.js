@@ -158,6 +158,7 @@ const getAccountInfo = async (
     const { payload } = data;
     try {
         const socket = await connect();
+        console.log('payload', payload);
         const info = await socket.getAccountInfo(payload);
         common.response({
             id: data.id,

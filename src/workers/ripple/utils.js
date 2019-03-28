@@ -74,3 +74,5 @@ export const transformTransactionEvent = (descriptor: string, event: any): Trans
         blockHash: event.ledger_hash,
     };
 };
+
+export const addPagination = () => {};
