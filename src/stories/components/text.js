@@ -12,6 +12,13 @@ import Tooltip from 'components/Tooltip';
 
 import colors from 'config/colors';
 
+const Center = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 100px 0px;
+`;
+
 const Wrapper = styled.div`
     padding: 1.6rem;
 `;
@@ -250,27 +257,26 @@ storiesOf('Typography', module)
     .add(
         'Tooltip',
         () => (
-            <Tooltip
-                maxWidth={number('Max width', 280)}
-                placement={select(
-                    'Placement',
-                    {
-                        Top: 'top',
-                        Bottom: 'bottom',
-                        Left: 'left',
-                        Right: 'right',
-                    },
-                    'bottom'
-                )}
-                content={text(
-                    'Content',
-                    'Passphrase is an optional feature of the Trezor device that is recommended for advanced users only. It is a word or a sentence of your choice. Its main purpose is to access a hidden wallet.'
-                )}
-                ctaLink={text('CTA link', 'https://wiki.trezor.io/Passphrase')}
-                ctaText={text('CTA Text', 'Learn more')}
-            >
-                <span>Text with tooltip</span>
-            </Tooltip>
+            <Center>
+                <Tooltip
+                    maxWidth={number('Max width', 280)}
+                    placement={select(
+                        'Placement',
+                        {
+                            Top: 'top',
+                            Bottom: 'bottom',
+                            Left: 'left',
+                            Right: 'right',
+                        },
+                        'bottom'
+                    )}
+                    content={text('Content', 'Passphrase is an optional feature.')}
+                    ctaLink={text('CTA link', 'https://wiki.trezor.io/Passphrase')}
+                    ctaText={text('CTA Text', 'Learn more')}
+                >
+                    <span>Text with tooltip</span>
+                </Tooltip>
+            </Center>
         ),
         {
             info: {
@@ -279,7 +285,7 @@ storiesOf('Typography', module)
             ~~~js
             import { Tooltip } from 'trezor-ui-components';
             ~~~
-            *<Tooltip> is a wrapper around [rc-tooltip](https://github.com/react-component/tooltip) component. See the [official documentation](https://github.com/react-component/tooltip) for more information about its props and usage.*
+            *<Tooltip> is a wrapper around [Tippy.js for React](https://github.com/atomiks/tippy.js-react) component. See the [official documentation](https://github.com/atomiks/tippy.js-react) for more information about its props and usage.*
             `,
             },
         }

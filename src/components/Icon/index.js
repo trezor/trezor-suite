@@ -61,6 +61,7 @@ const Icon = ({
     onMouseLeave,
     onFocus,
     onClick,
+    ...rest
 }) => {
     // if string is passed to the icon prop use it as a key in icons object
     const iconObject = typeof icon === 'string' ? icons[icon] : icon;
@@ -82,6 +83,7 @@ const Icon = ({
             onMouseLeave={onMouseLeave}
             onFocus={onFocus}
             onClick={onClick}
+            {...rest}
         >
             {iconObject.paths.map(path => (
                 <Path key={path} isActive={isActive} color={color} d={path} />
