@@ -59,7 +59,7 @@
         "raven-js": "^3.27.0",
         "rc-tooltip": "^3.7.3",
         "react": "^16.8.1",
-        "react-dom": "^16.8.1",
+        "react-dom": "^16.8.5",
         "react-hot-loader": "^4.6.5",
         "react-intl": "^2.8.0",
         "react-json-view": "^1.19.1",
