@@ -155,7 +155,7 @@ export const init = (): AsyncAction => async (
     if (buildUtils.isDev()) {
         // eslint-disable-next-line
         window.__TREZOR_CONNECT_SRC =
-            typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect/'; // eslint-disable-line no-underscore-dangle
+            typeof LOCAL === 'string' ? LOCAL : 'https://sisyfos.trezor.io/connect-electron/'; // eslint-disable-line no-underscore-dangle
         // window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : 'https://localhost:8088/'; // eslint-disable-line no-underscore-dangle
         window.TrezorConnect = TrezorConnect;
     }
