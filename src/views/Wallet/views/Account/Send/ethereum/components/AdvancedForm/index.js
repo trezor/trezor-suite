@@ -132,7 +132,7 @@ const StyledLink = styled(Link)`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
-    padding-right: 1px;
+    margin-right: 1px;
 `;
 
 const TooltipContainer = styled.div`

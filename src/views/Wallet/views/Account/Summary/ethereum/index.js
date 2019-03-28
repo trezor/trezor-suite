@@ -51,6 +51,7 @@ const AccountTitle = styled.div`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
+    margin-right: 1px;
 `;
 
 const TooltipContainer = styled.div`
@@ -118,7 +119,9 @@ const AccountSummary = (props: Props) => {
                         <Tooltip
                             maxWidth={200}
                             placement="top"
-                            content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
+                            content={props.intl.formatMessage(
+                                l10nSummaryMessages.TR_INSERT_TOKEN_NAME
+                            )}
                         >
                             <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
                         </Tooltip>

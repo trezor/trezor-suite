@@ -66,7 +66,7 @@ const AdvancedSettingsSendButtonWrapper = styled.div`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
-    padding-right: 1px;
+    margin-right: 1px;
 `;
 
 const TooltipContainer = styled.div`
@@ -121,23 +121,27 @@ const AdvancedForm = (props: Props) => {
                             <Left>
                                 <FormattedMessage {...l10nSendMessages.TR_FEE} />
                                 <TooltipContainer>
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage {...l10nMessages.TR_XRP_TRANSFER_COST} />
-                                    }
-                                    maxWidth={100}
-                                    ctaLink="https://developers.ripple.com/transaction-cost.html"
-                                    ctaText={
-                                        <FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />
-                                    }
-                                    placement="top"
-                                >
-                                    <StyledIcon
-                                        icon={ICONS.HELP}
-                                        color={colors.TEXT_SECONDARY}
-                                        size={12}
-                                    />
-                                </Tooltip>
+                                    <Tooltip
+                                        content={
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_XRP_TRANSFER_COST}
+                                            />
+                                        }
+                                        maxWidth={100}
+                                        ctaLink="https://developers.ripple.com/transaction-cost.html"
+                                        ctaText={
+                                            <FormattedMessage
+                                                {...l10nCommonMessages.TR_LEARN_MORE}
+                                            />
+                                        }
+                                        placement="top"
+                                    >
+                                        <StyledIcon
+                                            icon={ICONS.HELP}
+                                            color={colors.TEXT_SECONDARY}
+                                            size={12}
+                                        />
+                                    </Tooltip>
                                 </TooltipContainer>
                             </Left>
                         </InputLabelWrapper>
@@ -163,25 +167,27 @@ const AdvancedForm = (props: Props) => {
                             <Left>
                                 <FormattedMessage {...l10nMessages.TR_XRP_DESTINATION_TAG} />
                                 <TooltipContainer>
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage
-                                            {...l10nMessages.TR_XRP_DESTINATION_TAG_EXPLAINED}
+                                    <Tooltip
+                                        content={
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_XRP_DESTINATION_TAG_EXPLAINED}
+                                            />
+                                        }
+                                        maxWidth={200}
+                                        ctaLink="https://wiki.trezor.io/Ripple_(XRP)"
+                                        ctaText={
+                                            <FormattedMessage
+                                                {...l10nCommonMessages.TR_LEARN_MORE}
+                                            />
+                                        }
+                                        placement="top"
+                                    >
+                                        <StyledIcon
+                                            icon={ICONS.HELP}
+                                            color={colors.TEXT_SECONDARY}
+                                            size={12}
                                         />
-                                    }
-                                    maxWidth={200}
-                                    ctaLink="https://wiki.trezor.io/Ripple_(XRP)"
-                                    ctaText={
-                                        <FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />
-                                    }
-                                    placement="top"
-                                >
-                                    <StyledIcon
-                                        icon={ICONS.HELP}
-                                        color={colors.TEXT_SECONDARY}
-                                        size={12}
-                                    />
-                                </Tooltip>
+                                    </Tooltip>
                                 </TooltipContainer>
                             </Left>
                         </InputLabelWrapper>
