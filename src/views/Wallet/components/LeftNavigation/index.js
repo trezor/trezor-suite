@@ -301,7 +301,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                         }
                                         maxWidth={200}
                                         placement="bottom"
-                                        mouseEnterDelay={0.5}
+                                        delay={500}
                                     >
                                         <DeviceIconWrapper>
                                             <WalletTypeIcon
@@ -332,7 +332,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                         }
                                         maxWidth={200}
                                         placement="bottom"
-                                        mouseEnterDelay={0.5}
+                                        delay={500}
                                     >
                                         <DeviceIconWrapper>
                                             <Counter>{this.props.devices.length}</Counter>
@@ -347,7 +347,7 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                                 }
                                 maxWidth={200}
                                 placement="bottom"
-                                mouseEnterDelay={0.5}
+                                delay={500}
                             >
                                 <WalletTypeIconWrapper>
                                     <Link to={getPattern('wallet-settings')}>
