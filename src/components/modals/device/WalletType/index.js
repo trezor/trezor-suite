@@ -30,6 +30,7 @@ const Header = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-bottom: 5px;
 
     color: ${colors.TEXT_PRIMARY};
 `;
