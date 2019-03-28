@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H1 } from 'components/Heading';
-import P from 'components/Paragraph';
+import { H4, P } from 'trezor-ui-components';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
@@ -21,21 +20,22 @@ const Row = styled.div`
 `;
 
 const StyledP = styled(P)`
-    padding: 0 0 15px 0;
-    text-align: center;
+    && {
+        padding: 0 0 15px 0;
+    }
 `;
 
-const StyledH1 = styled(H1)`
+const Heading = styled(H4)`
     text-align: center;
 `;
 
 const Bootloader = () => (
     <Wrapper>
         <Row>
-            <StyledH1>
+            <Heading>
                 <FormattedMessage {...l10nMessages.TR_YOUR_DEVICE_IS_IN_FIRMWARE} />
-            </StyledH1>
-            <StyledP>
+            </Heading>
+            <StyledP textAlign="center">
                 <FormattedMessage {...l10nMessages.TR_PLEASE_RECONNECT_IT} />
             </StyledP>
         </Row>

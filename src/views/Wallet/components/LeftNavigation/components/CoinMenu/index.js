@@ -2,12 +2,10 @@
 
 import styled from 'styled-components';
 import coins from 'constants/coins';
-import colors from 'config/colors';
-import ICONS from 'config/icons';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Link, colors, icons as ICONS } from 'trezor-ui-components';
 import { NavLink } from 'react-router-dom';
-import Link from 'components/Link';
 import { FormattedMessage } from 'react-intl';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';
@@ -20,6 +18,12 @@ const Wrapper = styled.div``;
 
 const ExternalWallet = styled.div`
     cursor: pointer;
+`;
+
+const StyledLink = styled(Link)`
+    &:hover {
+        text-decoration: none;
+    }
 `;
 
 class CoinMenu extends PureComponent<Props> {
@@ -49,7 +53,7 @@ class CoinMenu extends PureComponent<Props> {
                         iconRight={{
                             type: ICONS.SKIP,
                             color: colors.TEXT_SECONDARY,
-                            size: 27,
+                            size: 13,
                         }}
                     />
                 );
@@ -64,9 +68,9 @@ class CoinMenu extends PureComponent<Props> {
                         </ExternalWallet>
                     );
                 return (
-                    <Link key={coin.id} href={coin.url} target="_top">
+                    <StyledLink isGray key={coin.id} href={coin.url} target="_top">
                         {row}
-                    </Link>
+                    </StyledLink>
                 );
             });
     }

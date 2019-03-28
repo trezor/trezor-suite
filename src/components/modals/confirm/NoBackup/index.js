@@ -4,15 +4,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import icons from 'config/icons';
 import { getOldWalletUrl } from 'utils/url';
-import colors from 'config/colors';
 
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Icon from 'components/Icon';
-import Button from 'components/Button';
-import Link from 'components/Link';
+import { H5, P, Icon, Button, Link, colors, icons } from 'trezor-ui-components';
 
 import type { TrezorDevice } from 'flowtype';
 import type { Props as BaseProps } from '../../Container';
@@ -56,7 +50,10 @@ const ProceedButton = styled(Button)`
 `;
 
 const StyledP = styled(P)`
-    padding-bottom: 20px;
+    /* boost-specificity hack to override P base styling */
+    && {
+        padding-bottom: 20px;
+    }
 `;
 
 const Row = styled.div`
@@ -67,11 +64,11 @@ const Row = styled.div`
 const Confirmation = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={() => props.onReceiveConfirmation(false)}>
-            <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+            <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
-        <H2>Your Trezor is not backed up</H2>
-        <Icon size={48} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
-        <StyledP isSmaller>
+        <H5>Your Trezor is not backed up</H5>
+        <Icon size={32} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
+        <StyledP size="small">
             If your device is ever lost or damaged, your funds will be lost. Backup your device
             first, to protect your coins against such events.
         </StyledP>

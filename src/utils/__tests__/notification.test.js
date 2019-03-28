@@ -1,6 +1,5 @@
 import * as utils from 'utils/notification';
-import colors from 'config/colors';
-import icons from 'config/icons';
+import { colors, icons } from 'trezor-ui-components';
 
 describe('notification utils', () => {
     it('get primary color from status', () => {

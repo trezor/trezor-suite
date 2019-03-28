@@ -2,12 +2,9 @@
 import React, { PureComponent } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import Icon from 'components/Icon';
-import colors from 'config/colors';
-import ICONS from 'config/icons';
+import { Icon, Tooltip, colors, icons as ICONS } from 'trezor-ui-components';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import Tooltip from 'components/Tooltip';
 import type { Network, State as ReducersState } from 'flowtype';
 import l10nMessages from '../../../components/Balance/index.messages';
 
@@ -94,7 +91,9 @@ const Label = styled.div`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
+    margin-left: 6px;
     margin-top: -5px;
+    align-items: center;
 `;
 
 const TooltipWrapper = styled.div`
@@ -146,7 +145,7 @@ class AccountBalance extends PureComponent<Props, State> {
                 placement="top"
                 content="Fiat rates are not currently available."
             >
-                <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={26} />
+                <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
             </Tooltip>
         );
 
@@ -158,7 +157,7 @@ class AccountBalance extends PureComponent<Props, State> {
                         isActive={this.state.isHidden}
                         icon={ICONS.ARROW_UP}
                         color={colors.TEXT_SECONDARY}
-                        size={26}
+                        size={14}
                     />
                 </HideBalanceIconWrapper>
                 {!this.state.isHidden && (

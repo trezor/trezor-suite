@@ -1,10 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Icon from 'components/Icon';
-import ICONS from 'config/icons';
-import colors from 'config/colors';
-import Notification from 'components/Notification';
+import { colors, Notification, Icon, icons as ICONS } from 'trezor-ui-components';
 import { getIcon, getPrimaryColor } from 'utils/notification';
 
 const Wrapper = styled.div``;
@@ -40,6 +37,10 @@ const StyledNotification = styled(Notification)`
     }
 `;
 
+const StyledIcon = styled(Icon)`
+    margin-right: 6px;
+`;
+
 class Group extends PureComponent {
     constructor() {
         super();
@@ -71,7 +72,7 @@ class Group extends PureComponent {
                 {groupNotifications.length > 1 && (
                     <Header onClick={this.toggle}>
                         <Left>
-                            <Icon color={color} size={30} icon={getIcon(type)} />
+                            <StyledIcon color={color} size={16} icon={getIcon(type)} />
                             <Title color={color}>
                                 {groupNotifications.length}{' '}
                                 {groupNotifications.length > 1 ? `${type}s` : type}
@@ -81,7 +82,7 @@ class Group extends PureComponent {
                             <Icon
                                 icon={ICONS.ARROW_DOWN}
                                 color={colors.TEXT_SECONDARY}
-                                size={24}
+                                size={14}
                                 isActive={!this.state.visible}
                                 canAnimate
                             />

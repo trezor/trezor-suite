@@ -5,7 +5,7 @@ import { getPattern } from 'support/routes';
 
 import { NavLink } from 'react-router-dom';
 
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from 'views/common.messages';

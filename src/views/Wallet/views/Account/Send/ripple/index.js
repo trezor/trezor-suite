@@ -2,18 +2,12 @@
 
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Select } from 'components/Select';
 import { FormattedMessage } from 'react-intl';
-import Button from 'components/Button';
-import Input from 'components/inputs/Input';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
-import ICONS from 'config/icons';
-import { FONT_SIZE, FONT_WEIGHT, TRANSITION, SCREEN_SIZE } from 'config/variables';
+
+import { Button, Select, Input, Icon, Link, P, colors, icons as ICONS } from 'trezor-ui-components';
+import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
 import { FIAT_CURRENCIES } from 'config/app';
-import colors from 'config/colors';
 import Title from 'views/Wallet/components/Title';
-import P from 'components/Paragraph';
 import l10nCommonMessages from 'views/common.messages';
 import Content from 'views/Wallet/components/Content';
 import PendingTransactions from '../components/PendingTransactions';
@@ -23,10 +17,6 @@ import l10nMessages from './index.messages';
 import l10nSendMessages from '../../common.messages';
 
 import type { Props } from './Container';
-
-// TODO: Decide on a small screen width for the whole app
-// and put it inside config/variables.js
-const SmallScreenWidth = '850px';
 
 const AmountInputLabelWrapper = styled.div`
     display: flex;
@@ -43,42 +33,12 @@ const InputRow = styled.div`
 `;
 
 const SetMaxAmountButton = styled(Button)`
-    height: 40px;
     padding: 0 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
     font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.SMALLEST};
-    color: ${colors.TEXT_SECONDARY};
-
+    transition: all 0s;
     border-radius: 0;
-    border: 1px solid ${colors.DIVIDER};
     border-right: 0;
     border-left: 0;
-    background: transparent;
-    transition: ${TRANSITION.HOVER};
-
-    &:hover {
-        background: ${colors.GRAY_LIGHT};
-    }
-
-    ${props =>
-        props.isActive &&
-        css`
-            color: ${colors.WHITE};
-            background: ${colors.GREEN_PRIMARY};
-            border-color: ${colors.GREEN_PRIMARY};
-
-            &:hover {
-                background: ${colors.GREEN_SECONDARY};
-            }
-
-            &:active {
-                background: ${colors.GREEN_TERTIARY};
-            }
-        `}
 `;
 
 const CurrencySelect = styled(Select)`
@@ -136,7 +96,7 @@ const ToggleAdvancedSettingsWrapper = styled.div`
     flex-direction: row;
     justify-content: space-between;
 
-    @media screen and (max-width: ${SmallScreenWidth}) {
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         ${props =>
             props.isAdvancedSettingsHidden &&
             css`
@@ -151,14 +111,15 @@ const ToggleAdvancedSettingsButton = styled(Button)`
     display: flex;
     flex: 1 1 0;
     align-items: center;
-    font-weight: ${FONT_WEIGHT.SEMIBOLD};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+    justify-content: flex-start;
 `;
 
 const FormButtons = styled.div`
     display: flex;
     flex: 1 1;
 
-    @media screen and (max-width: ${SmallScreenWidth}) {
+    @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         margin-top: ${props => (props.isAdvancedSettingsHidden ? '10px' : 0)};
     }
 
@@ -233,13 +194,18 @@ const EqualsSign = styled.div`
         display: none;
     }
 `;
+
+const StyledIcon = styled(Icon)`
+    margin-right: 6px;
+`;
+
 // render helpers
 const getAddressInputState = (
     address: string,
     addressErrors: string,
     addressWarnings: string
-): string => {
-    let state = '';
+): ?string => {
+    let state = null;
     if (address && !addressErrors) {
         state = 'success';
     }
@@ -252,8 +218,8 @@ const getAddressInputState = (
     return state;
 };
 
-const getAmountInputState = (amountErrors: string, amountWarnings: string): string => {
-    let state = '';
+const getAmountInputState = (amountErrors: string, amountWarnings: string): ?string => {
+    let state = null;
     if (amountWarnings && !amountErrors) {
         state = 'warning';
     }
@@ -389,11 +355,17 @@ const AccountSend = (props: Props) => {
                     onChange={event => onAmountChange(event.target.value)}
                     bottomText={errors.amount || warnings.amount || infos.amount}
                     sideAddons={[
-                        <SetMaxAmountButton key="icon" onClick={() => onSetMax()} isActive={setMax}>
+                        <SetMaxAmountButton key="icon" onClick={() => onSetMax()} isWhite={!setMax}>
                             {!setMax && (
-                                <Icon icon={ICONS.TOP} size={25} color={colors.TEXT_SECONDARY} />
+                                <StyledIcon
+                                    icon={ICONS.TOP}
+                                    size={14}
+                                    color={colors.TEXT_SECONDARY}
+                                />
                             )}
-                            {setMax && <Icon icon={ICONS.CHECKED} size={25} color={colors.WHITE} />}
+                            {setMax && (
+                                <StyledIcon icon={ICONS.SUCCESS} size={14} color={colors.WHITE} />
+                            )}
                             <FormattedMessage {...l10nSendMessages.TR_SET_MAX} />
                         </SetMaxAmountButton>,
                         <CurrencySelect
@@ -437,10 +409,12 @@ const AccountSend = (props: Props) => {
                     </FeeLabel>
                     {feeNeedsUpdate && (
                         <UpdateFeeWrapper>
-                            <Icon icon={ICONS.WARNING} color={colors.WARNING_PRIMARY} size={20} />
-                            <FormattedMessage
-                                {...l10nSendMessages.TR_RECOMMENDED_FEES_UPDATED}
-                            />{' '}
+                            <StyledIcon
+                                icon={ICONS.WARNING}
+                                color={colors.WARNING_PRIMARY}
+                                size={12}
+                            />
+                            <FormattedMessage {...l10nSendMessages.TR_RECOMMENDED_FEES_UPDATED} />{' '}
                             <StyledLink onClick={updateFeeLevels} isGreen>
                                 <FormattedMessage {...l10nSendMessages.TR_CLICK_HERE_TO_USE_THEM} />
                             </StyledLink>
@@ -468,7 +442,7 @@ const AccountSend = (props: Props) => {
                     <AdvancedSettingsIcon
                         icon={ICONS.ARROW_DOWN}
                         color={colors.TEXT_SECONDARY}
-                        size={24}
+                        size={12}
                         isActive={advanced}
                         canAnimate
                     />

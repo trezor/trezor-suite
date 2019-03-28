@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H3, H2 } from 'components/Heading';
 import LandingWrapper from 'views/Landing/components/LandingWrapper';
-import Link from 'components/Link';
+import { Link, H5, H6 } from 'trezor-ui-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,12 +18,12 @@ const Line = styled.div`
 const Version = () => (
     <LandingWrapper>
         <Wrapper>
-            <H3>APPLICATION VERSION</H3>
-            <H2>{VERSION}</H2>
+            <H6>APPLICATION VERSION</H6>
+            <H5>{VERSION}</H5>
             <Line />
-            <H3>LAST COMMIT HASH</H3>
-            <Link href={`https://github.com/trezor/trezor-wallet/commits/${COMMITHASH}`}>
-                <H2>{COMMITHASH}</H2>
+            <H6>LAST COMMIT HASH</H6>
+            <Link isGray href={`https://github.com/trezor/trezor-wallet/commits/${COMMITHASH}`}>
+                <H5>{COMMITHASH}</H5>
             </Link>
         </Wrapper>
     </LandingWrapper>

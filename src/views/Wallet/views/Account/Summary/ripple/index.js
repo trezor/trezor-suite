@@ -1,17 +1,15 @@
 /* @flow */
-import styled from 'styled-components';
 import React from 'react';
-import { H2 } from 'components/Heading';
+import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
-import colors from 'config/colors';
-import Content from 'views/Wallet/components/Content';
 import { FormattedMessage } from 'react-intl';
-import l10nCommonMessages from 'views/common.messages';
-
-import CoinLogo from 'components/images/CoinLogo';
 import * as stateUtils from 'reducers/utils';
-import Link from 'components/Link';
+
+import { CoinLogo, H5, Link, colors } from 'trezor-ui-components';
+import Content from 'views/Wallet/components/Content';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
+
+import l10nCommonMessages from 'views/common.messages';
 import l10nSummaryMessages from '../common.messages';
 import AccountBalance from './components/Balance';
 
@@ -24,7 +22,7 @@ const AccountHeading = styled.div`
     align-items: center;
 `;
 
-const H2Wrapper = styled.div`
+const HeadingWrapper = styled.div`
     display: flex;
     align-items: center;
     padding: 20px 0;
@@ -40,6 +38,10 @@ const AccountTitle = styled.div`
     font-size: ${FONT_SIZE.WALLET_TITLE};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${colors.WALLET_TITLE};
+`;
+
+const StyledCoinLogo = styled(CoinLogo)`
+    margin-right: 10px;
 `;
 
 const AccountSummary = (props: Props) => {
@@ -64,7 +66,7 @@ const AccountSummary = (props: Props) => {
             <React.Fragment>
                 <AccountHeading>
                     <AccountName>
-                        <CoinLogo network={account.network} />
+                        <StyledCoinLogo height={23} network={account.network} />
                         <AccountTitle>
                             <FormattedMessage
                                 {...l10nCommonMessages.TR_ACCOUNT_HASH}
@@ -89,11 +91,11 @@ const AccountSummary = (props: Props) => {
                     isHidden={props.wallet.hideBalance}
                 />
                 {TMP_SHOW_HISTORY && (
-                    <H2Wrapper>
-                        <H2>
+                    <HeadingWrapper>
+                        <H5>
                             <FormattedMessage {...l10nSummaryMessages.TR_HISTORY} />
-                        </H2>
-                    </H2Wrapper>
+                        </H5>
+                    </HeadingWrapper>
                 )}
             </React.Fragment>
         </Content>

@@ -3,15 +3,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import colors from 'config/colors';
-import icons from 'config/icons';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
-import Button from 'components/Button';
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
-import coins from 'constants/coins';
 import { FormattedMessage } from 'react-intl';
+import { Button, H5, Link, P, Icon, icons, colors } from 'trezor-ui-components';
+import coins from 'constants/coins';
 
 import l10nCommonMessages from '../common.messages';
 import l10nMessages from './index.messages';
@@ -51,13 +45,13 @@ const Img = styled.img`
 const StellarWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
-            <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+            <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
         <Img src={StellarImage} />
-        <H2>
+        <H5>
             <FormattedMessage {...l10nMessages.TR_STELLAR_WALLET} />
-        </H2>
-        <P isSmaller>
+        </H5>
+        <P size="small">
             <FormattedMessage {...l10nCommonMessages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL} />
         </P>
 

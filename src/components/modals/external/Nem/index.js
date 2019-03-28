@@ -3,13 +3,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import colors from 'config/colors';
-import icons from 'config/icons';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
-import Button from 'components/Button';
-import { H2, H4 } from 'components/Heading';
-import P from 'components/Paragraph';
+import { H5, Button, P, Icon, Link, icons, colors } from 'trezor-ui-components';
+
 import coins from 'constants/coins';
 import { FormattedMessage } from 'react-intl';
 
@@ -47,17 +42,18 @@ const Img = styled.img`
 const NemWallet = (props: Props) => (
     <Wrapper>
         <StyledLink onClick={props.onCancel}>
-            <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+            <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
-        <H2>
+        <H5>
             <FormattedMessage {...l10nMessages.TR_NEM_WALLET} />
-        </H2>
-        <P isSmaller>
+        </H5>
+        <P size="small">
             <FormattedMessage {...l10nMessages.TR_WE_HAVE_PARTNERED_UP_WITH_THE_NEM} />
+            <br />
+            <strong>
+                <FormattedMessage {...l10nMessages.TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL} />
+            </strong>
         </P>
-        <H4>
-            <FormattedMessage {...l10nMessages.TR_MAKE_SURE_YOU_DOWNLOAD_THE_UNIVERSAL} />
-        </H4>
         <Img src={NemImage} />
         <Link href={coins.find(i => i.id === 'xem').url}>
             <StyledButton onClick={props.onCancel}>

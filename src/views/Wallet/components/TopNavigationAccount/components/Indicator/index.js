@@ -1,7 +1,7 @@
 /* @flow */
 
 import styled, { css } from 'styled-components';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 import React, { PureComponent } from 'react';
 
 type Props = {

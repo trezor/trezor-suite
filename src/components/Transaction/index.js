@@ -3,8 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import colors from 'config/colors';
-import Link from 'components/Link';
+import { Link, colors } from 'trezor-ui-components';
 
 import type { Transaction, Network } from 'flowtype';
 

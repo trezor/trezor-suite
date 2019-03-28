@@ -1,12 +1,9 @@
 /* @flow */
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import Input from 'components/inputs/Input';
-import Textarea from 'components/Textarea';
+import { Input, TextArea, Button, colors } from 'trezor-ui-components';
 import Title from 'views/Wallet/components/Title';
-import Button from 'components/Button';
 import Content from 'views/Wallet/components/Content';
-import colors from 'config/colors';
 import { SCREEN_SIZE } from 'config/variables';
 import { FormattedMessage } from 'react-intl';
 
@@ -116,7 +113,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <Row>
-                            <Textarea
+                            <TextArea
                                 topLabel={this.props.intl.formatMessage(l10nMessages.TR_MESSAGE)}
                                 name="signMessage"
                                 value={signMessage}
@@ -127,7 +124,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <Row>
-                            <Textarea
+                            <TextArea
                                 topLabel={this.props.intl.formatMessage(l10nMessages.TR_SIGNATURE)}
                                 name="signSignature"
                                 value={signSignature}
@@ -170,7 +167,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <Row>
-                            <Textarea
+                            <TextArea
                                 topLabel={this.props.intl.formatMessage(l10nMessages.TR_MESSAGE)}
                                 name="verifyMessage"
                                 value={verifyMessage}
@@ -181,7 +178,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <Row>
-                            <Textarea
+                            <TextArea
                                 topLabel={this.props.intl.formatMessage(l10nMessages.TR_SIGNATURE)}
                                 autoSelect
                                 name="verifySignature"
@@ -197,7 +194,7 @@ class SignVerify extends Component<Props> {
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
-                                isDisabled={verifyAddressError}
+                                isDisabled={!!verifyAddressError}
                                 onClick={() => {
                                     if (errors.length <= 0) {
                                         signVerifyActions.verify(

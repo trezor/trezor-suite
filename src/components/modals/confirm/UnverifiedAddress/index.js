@@ -3,15 +3,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { getOldWalletUrl } from 'utils/url';
-import icons from 'config/icons';
-import colors from 'config/colors';
-
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Icon from 'components/Icon';
-import Button from 'components/Button';
-import Link from 'components/Link';
 import { FormattedMessage } from 'react-intl';
+import { Link, Button, Icon, P, H5, colors, icons } from 'trezor-ui-components';
 
 import type { TrezorDevice } from 'flowtype';
 import l10nMessages from './index.messages';
@@ -45,7 +38,9 @@ const Content = styled.div`
 `;
 
 const StyledP = styled(P)`
-    padding-bottom: 20px;
+    && {
+        padding-bottom: 20px;
+    }
 `;
 
 const Divider = styled.div`
@@ -150,10 +145,10 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
             <Wrapper>
                 <Content>
                     <StyledLink onClick={onCancel}>
-                        <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                        <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                     </StyledLink>
-                    <H2>{deviceStatus}</H2>
-                    <StyledP isSmaller>
+                    <H5>{deviceStatus}</H5>
+                    <StyledP size="small">
                         <FormattedMessage
                             {...l10nMessages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
                             values={{ claim }}
@@ -174,8 +169,8 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                 {needsBackup && (
                     <>
                         <Content>
-                            <H2>Device {device.label} is not backed up</H2>
-                            <StyledP isSmaller>
+                            <H5>Device {device.label} is not backed up</H5>
+                            <StyledP size="small">
                                 If your device is ever lost or damaged, your funds will be lost.
                                 Backup your device first, to protect your coins against such events.
                             </StyledP>

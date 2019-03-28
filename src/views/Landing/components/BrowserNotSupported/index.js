@@ -1,10 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import Link from 'components/Link';
-import Button from 'components/Button';
-import P from 'components/Paragraph';
-import { H2 } from 'components/Heading';
 import { FormattedMessage } from 'react-intl';
+import { Button, P, H5, Link } from 'trezor-ui-components';
 
 import ChromeImage from 'images/browser-chrome.png';
 import FirefoxImage from 'images/browser-firefox.png';
@@ -34,16 +31,16 @@ const Browser = styled.div`
 
 const BrowserNotSupported = () => (
     <Wrapper>
-        <H2>
+        <H5>
             <FormattedMessage {...l10nMessages.TR_YOUR_BROWSER_IS_NOT_SUPPORTED} />
-        </H2>
-        <P>
+        </H5>
+        <P textAlign="center">
             <FormattedMessage {...l10nMessages.TR_PLEASE_CHOOSE_ONE_OF_THE_SUPPORTED} />
         </P>
         <ChooseBrowserWrapper>
             <Browser>
                 <BrowserLogo src={ChromeImage} />
-                <P isSmaller>Google Chrome</P>
+                <P size="small">Google Chrome</P>
                 <Link href="https://www.google.com/chrome/">
                     <Button>
                         <FormattedMessage {...l10nMessages.TR_GET_CHROME} />
@@ -52,7 +49,7 @@ const BrowserNotSupported = () => (
             </Browser>
             <Browser>
                 <BrowserLogo src={FirefoxImage} />
-                <P isSmaller>Mozilla Firefox</P>
+                <P size="small">Mozila Firefox</P>
                 <Link href="https://www.mozilla.org/en-US/firefox/new/">
                     <Button>
                         <FormattedMessage {...l10nMessages.TR_GET_FIREFOX} />

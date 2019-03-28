@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import styled from 'styled-components';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 import { FADE_IN } from 'config/animations';
 
 import { UI } from 'trezor-connect';

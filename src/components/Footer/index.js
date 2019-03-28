@@ -3,13 +3,12 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Link from 'components/Link';
+import { Link, colors } from 'trezor-ui-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
-import colors from 'config/colors';
-import { FONT_SIZE, SCREEN_SIZE } from 'config/variables';
+import { FONT_SIZE, SCREEN_SIZE, FOOTER_HEIGHT } from 'config/variables';
 import * as LogActions from 'actions/LogActions';
 import l10nMessages from './index.messages';
 
@@ -26,7 +25,7 @@ const Wrapper = styled.div`
     color: ${colors.TEXT_SECONDARY};
     padding: 10px 30px;
     display: flex;
-    height: 59px;
+    height: ${FOOTER_HEIGHT};
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;

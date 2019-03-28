@@ -2,17 +2,19 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import colors from 'config/colors';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
-import Link from 'components/Link';
-import Input from 'components/inputs/Input';
-import Textarea from 'components/Textarea';
-import Tooltip from 'components/Tooltip';
-import Icon from 'components/Icon';
-import ICONS from 'config/icons';
+import {
+    Link,
+    Input,
+    TextArea as Textarea,
+    Tooltip,
+    Icon,
+    colors,
+    icons as ICONS,
+} from 'trezor-ui-components';
 import { FONT_SIZE } from 'config/variables';
 
+import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
 
 import type { Props as BaseProps } from '../../Container';
@@ -80,8 +82,8 @@ const AdvancedSettingsSendButtonWrapper = styled.div`
     justify-content: flex-end;
 `;
 
-const getGasLimitInputState = (gasLimitErrors: string, gasLimitWarnings: string): string => {
-    let state = '';
+const getGasLimitInputState = (gasLimitErrors: string, gasLimitWarnings: string): ?string => {
+    let state = null;
     if (gasLimitWarnings && !gasLimitErrors) {
         state = 'warning';
     }
@@ -91,8 +93,8 @@ const getGasLimitInputState = (gasLimitErrors: string, gasLimitWarnings: string)
     return state;
 };
 
-const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string): string => {
-    let state = '';
+const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string): ?string => {
+    let state = null;
     if (gasPriceWarnings && !gasPriceErrors) {
         state = 'warning';
     }
@@ -102,8 +104,8 @@ const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string)
     return state;
 };
 
-const getDataTextareaState = (dataError: string, dataWarning: string): string => {
-    let state = '';
+const getDataTextareaState = (dataError: string, dataWarning: string): ?string => {
+    let state = null;
     if (dataWarning) {
         state = 'warning';
     }
@@ -130,6 +132,11 @@ const StyledLink = styled(Link)`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
+    margin-right: 1px;
+`;
+
+const TooltipContainer = styled.div`
+    margin-left: 6px;
 `;
 
 // stateless component
@@ -180,35 +187,44 @@ const AdvancedForm = (props: Props) => {
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nMessages.TR_GAS_LIMIT} />
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage
-                                            {...l10nMessages.TR_GAS_LIMIT_REFERS_TO}
-                                            values={{
-                                                TR_GAS_QUOTATION: (
-                                                    <GreenSpan>
-                                                        <FormattedMessage
-                                                            {...l10nMessages.TR_GAS_QUOTATION}
-                                                        />
-                                                    </GreenSpan>
-                                                ),
-                                                gasLimitTooltipValue: (
-                                                    <GreenSpan>{gasLimitTooltipValue}</GreenSpan>
-                                                ),
-                                                gasLimitTooltipCurrency,
-                                            }}
+                                <TooltipContainer>
+                                    <Tooltip
+                                        content={
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_GAS_LIMIT_REFERS_TO}
+                                                values={{
+                                                    TR_GAS_QUOTATION: (
+                                                        <GreenSpan>
+                                                            <FormattedMessage
+                                                                {...l10nMessages.TR_GAS_QUOTATION}
+                                                            />
+                                                        </GreenSpan>
+                                                    ),
+                                                    gasLimitTooltipValue: (
+                                                        <GreenSpan>
+                                                            {gasLimitTooltipValue}
+                                                        </GreenSpan>
+                                                    ),
+                                                    gasLimitTooltipCurrency,
+                                                }}
+                                            />
+                                        }
+                                        maxWidth={410}
+                                        ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
+                                        ctaText={
+                                            <FormattedMessage
+                                                {...l10nCommonMessages.TR_LEARN_MORE}
+                                            />
+                                        }
+                                        placement="top"
+                                    >
+                                        <StyledIcon
+                                            icon={ICONS.HELP}
+                                            color={colors.TEXT_SECONDARY}
+                                            size={12}
                                         />
-                                    }
-                                    maxWidth={410}
-                                    readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_limit"
-                                    placement="top"
-                                >
-                                    <StyledIcon
-                                        icon={ICONS.HELP}
-                                        color={colors.TEXT_SECONDARY}
-                                        size={24}
-                                    />
-                                </Tooltip>
+                                    </Tooltip>
+                                </TooltipContainer>
                             </Left>
                             {showDefaultGasLimitButton && (
                                 <Right>
@@ -239,34 +255,41 @@ const AdvancedForm = (props: Props) => {
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nMessages.TR_GAS_PRICE} />
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage
-                                            {...l10nMessages.TR_GAS_PRICE_REFERS_TO}
-                                            values={{
-                                                TR_GAS_PRICE_QUOTATION: (
-                                                    <GreenSpan>
-                                                        <FormattedMessage
-                                                            {...l10nMessages.TR_GAS_PRICE_QUOTATION}
-                                                        />
-                                                    </GreenSpan>
-                                                ),
-                                                recommendedGasPrice: (
-                                                    <GreenSpan>{recommendedGasPrice}</GreenSpan>
-                                                ),
-                                            }}
+                                <TooltipContainer>
+                                    <Tooltip
+                                        content={
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_GAS_PRICE_REFERS_TO}
+                                                values={{
+                                                    TR_GAS_PRICE_QUOTATION: (
+                                                        <GreenSpan>
+                                                            <FormattedMessage
+                                                                {...l10nMessages.TR_GAS_PRICE_QUOTATION}
+                                                            />
+                                                        </GreenSpan>
+                                                    ),
+                                                    recommendedGasPrice: (
+                                                        <GreenSpan>{recommendedGasPrice}</GreenSpan>
+                                                    ),
+                                                }}
+                                            />
+                                        }
+                                        maxWidth={400}
+                                        ctaLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
+                                        ctaText={
+                                            <FormattedMessage
+                                                {...l10nCommonMessages.TR_LEARN_MORE}
+                                            />
+                                        }
+                                        placement="top"
+                                    >
+                                        <StyledIcon
+                                            icon={ICONS.HELP}
+                                            color={colors.TEXT_SECONDARY}
+                                            size={12}
                                         />
-                                    }
-                                    maxWidth={400}
-                                    readMoreLink="https://wiki.trezor.io/Ethereum_Wallet#Gas_price"
-                                    placement="top"
-                                >
-                                    <StyledIcon
-                                        icon={ICONS.HELP}
-                                        color={colors.TEXT_SECONDARY}
-                                        size={24}
-                                    />
-                                </Tooltip>
+                                    </Tooltip>
+                                </TooltipContainer>
                             </Left>
                         </InputLabelWrapper>
                     }
@@ -281,18 +304,22 @@ const AdvancedForm = (props: Props) => {
                     <InputLabelWrapper>
                         <Left>
                             <FormattedMessage {...l10nMessages.TR_DATA} />
-                            <Tooltip
-                                content={
-                                    <FormattedMessage {...l10nMessages.TR_DATA_IS_USUALLY_USED} />
-                                }
-                                placement="top"
-                            >
-                                <StyledIcon
-                                    icon={ICONS.HELP}
-                                    color={colors.TEXT_SECONDARY}
-                                    size={24}
-                                />
-                            </Tooltip>
+                            <TooltipContainer>
+                                <Tooltip
+                                    content={
+                                        <FormattedMessage
+                                            {...l10nMessages.TR_DATA_IS_USUALLY_USED}
+                                        />
+                                    }
+                                    placement="top"
+                                >
+                                    <StyledIcon
+                                        icon={ICONS.HELP}
+                                        color={colors.TEXT_SECONDARY}
+                                        size={12}
+                                    />
+                                </Tooltip>
+                            </TooltipContainer>
                         </Left>
                     </InputLabelWrapper>
                 }

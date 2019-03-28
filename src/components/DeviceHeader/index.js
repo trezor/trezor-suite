@@ -2,9 +2,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import { getStatusColor, getStatusName, getStatus, getVersion } from 'utils/device';
-import TrezorImage from 'components/images/TrezorImage';
-import colors from 'config/colors';
+import { getStatusColor, getStatusName, getStatus } from 'utils/device';
+import { TrezorImage, colors } from 'trezor-ui-components';
+
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 const Wrapper = styled.div`
@@ -72,6 +72,7 @@ const IconWrapper = styled.div`
     display: flex;
     flex: 1 0 0;
     justify-content: flex-end;
+    align-items: center;
 `;
 
 const ImageWrapper = styled.div`
@@ -115,7 +116,10 @@ const DeviceHeader = ({
         >
             <ImageWrapper>
                 <Dot color={getStatusColor(status)} />
-                <TrezorImage model={getVersion(device)} />
+                <TrezorImage
+                    height={28}
+                    model={(device.features && device.features.major_version) || 1}
+                />
             </ImageWrapper>
             <LabelWrapper>
                 <Name>{device.instanceLabel}</Name>

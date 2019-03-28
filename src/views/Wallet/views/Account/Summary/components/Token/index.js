@@ -3,12 +3,8 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import ColorHash from 'color-hash';
 import ScaleText from 'react-scale-text';
-import colors from 'config/colors';
 import { FONT_WEIGHT } from 'config/variables';
-import Button from 'components/Button';
-import Tooltip from 'components/Tooltip';
-import Icon from 'components/Icon';
-import ICONS from 'config/icons';
+import { Button, Icon, Tooltip, colors, icons as ICONS } from 'trezor-ui-components';
 import * as stateUtils from 'reducers/utils';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
@@ -103,7 +99,7 @@ class AddedToken extends PureComponent {
                         >
                             <TooltipIcon
                                 icon={ICONS.EYE_CROSSED}
-                                size={25}
+                                size={14}
                                 color={colors.TEXT_SECONDARY}
                             />
                         </Tooltip>
@@ -115,7 +111,7 @@ class AddedToken extends PureComponent {
                     isTransparent
                     onClick={() => this.props.removeToken(this.props.token)}
                 >
-                    <Icon icon={ICONS.CLOSE} size={23} />
+                    <Icon icon={ICONS.CLOSE} size={12} />
                 </RemoveTokenButton>
             </TokenWrapper>
         );

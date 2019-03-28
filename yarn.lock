@@ -924,6 +924,14 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
+"@tippy.js/react@^2.1.1":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@tippy.js/react/-/react-2.1.2.tgz#2f51a206d3b90ee2423574bf256c76e1cf2b3e53"
+  integrity sha512-5napcBju8l285PiNoNHlVj0rqVHevlwBV2ndXAzbvzUfFgtb3NxoMWUWT9vCBwx6hzK3ljAw8qqTtmkImYvVEg==
+  dependencies:
+    prop-types "^15.6.2"
+    tippy.js "^4.2.1"
+
 "@types/blob-util@1.3.3":
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/@types/blob-util/-/blob-util-1.3.3.tgz#adba644ae34f88e1dd9a5864c66ad651caaf628a"
@@ -8576,6 +8584,11 @@ pngjs@^3.0.0, pngjs@^3.3.3:
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.3.3.tgz#85173703bde3edac8998757b96e5821d0966a21b"
   integrity sha512-1n3Z4p3IOxArEs1VRXnZ/RXdfEniAUS9jb68g58FIXMNkPJeZd+Qh4Uq7/e0LVxAQGos1eIUrqrt4FpjdnEd+Q==
 
+popper.js@^1.14.7:
+  version "1.14.7"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.7.tgz#e31ec06cfac6a97a53280c3e55e4e0c860e7738e"
+  integrity sha512-4q1hNvoUre/8srWsH7hnoSJ5xVmIL4qgz+s4qf2TnJIMyZFUFMGH+9vE7mXynAlHSZ/NdTmmow86muD0myUkVQ==
+
 portfinder@^1.0.9:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.13.tgz#bb32ecd87c27104ae6ee44b5a3ccbf0ebb1aede9"
@@ -9132,25 +9145,15 @@ react-base16-styling@^0.6.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react-dom@^16.8.1:
-  version "16.8.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.1.tgz#ec860f98853d09d39bafd3a6f1e12389d283dbb4"
-  integrity sha512-N74IZUrPt6UiDjXaO7UbDDFXeUXnVhZzeRLy/6iqqN1ipfjrhR60Bp5NuBK+rv3GMdqdIuwIl22u1SYwf330bg==
+react-dom@^16.8.6:
+  version "16.8.6"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.6.tgz#71d6303f631e8b0097f56165ef608f051ff6e10f"
+  integrity sha512-1nL7PIq9LTL3fthPqwkvr2zY7phIPjYrT0jp4HjyEQrEROnw4dG41VVwi/wfoCneoleqrNX7iAD+pXebJZwrwA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    scheduler "^0.13.1"
-
-react-dom@^16.8.5:
-  version "16.8.5"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.5.tgz#b3e37d152b49e07faaa8de41fdf562be3463335e"
-  integrity sha512-VIEIvZLpFafsfu4kgmftP5L8j7P1f0YThfVTrANMhZUFMDOsA6e0kfR6wxw/8xxKs4NB59TZYbxNdPCDW34x4w==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
-    scheduler "^0.13.5"
+    scheduler "^0.13.6"
 
 react-hot-loader@^4.6.5:
   version "4.6.5"
@@ -9332,15 +9335,15 @@ react-transition-group@^2.5.3:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react@^16.8.1:
-  version "16.8.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.8.1.tgz#ae11831f6cb2a05d58603a976afc8a558e852c4a"
-  integrity sha512-wLw5CFGPdo7p/AgteFz7GblI2JPOos0+biSoxf1FPsGxWQZdN/pj6oToJs1crn61DL3Ln7mN86uZ4j74p31ELQ==
+react@^16.8.6:
+  version "16.8.6"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.8.6.tgz#ad6c3a9614fd3a4e9ef51117f54d888da01f2bbe"
+  integrity sha512-pC0uMkhLaHm11ZSJULfOBqV4tIZkx87ZLvbbQYunNixAAvjnC+snJCg0XQXn9VIsttVsbZP/H/ewzgsd5fxKXw==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    scheduler "^0.13.1"
+    scheduler "^0.13.6"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -10005,18 +10008,10 @@ sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
-scheduler@^0.13.1:
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.1.tgz#1a217df1bfaabaf4f1b92a9127d5d732d85a9591"
-  integrity sha512-VJKOkiKIN2/6NOoexuypwSrybx13MY7NSy9RNt8wPvZDMRT1CW6qlpF5jXRToXNHz3uWzbm2elNpZfXfGPqP9A==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-
-scheduler@^0.13.5:
-  version "0.13.5"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.5.tgz#b7226625167041298af3b98088a9dbbf6d7733a8"
-  integrity sha512-K98vjkQX9OIt/riLhp6F+XtDPtMQhqNcf045vsh+pcuvHq+PHy1xCrH3pq1P40m6yR46lpVvVhKdEOtnimuUJw==
+scheduler@^0.13.6:
+  version "0.13.6"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.6.tgz#466a4ec332467b31a91b9bf74e5347072e4cd889"
+  integrity sha512-IWnObHt413ucAYKsD9J1QShUKkbKLQQHdxRyw73sw4FN26iWr3DY/H34xGPe4nmL1DwXyWmSWmMrA9TfQbE/XQ==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -11065,6 +11060,13 @@ timers-browserify@^2.0.4:
   dependencies:
     setimmediate "^1.0.4"
 
+tippy.js@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-4.2.1.tgz#9e4939d976465f77229b05a3cb233b5dc28cf850"
+  integrity sha512-xEE7zYNgQxCDdPcuT6T04f0frPh0wO7CcIqJKMFazU/NqusyjCgYSkLRosIHoiRkZMRzSPOudC8wRN5GjvAyOQ==
+  dependencies:
+    popper.js "^1.14.7"
+
 tmp@0.0.31:
   version "0.0.31"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.31.tgz#8f38ab9438e17315e5dbd8b3657e8bfb277ae4a7"
@@ -11193,20 +11195,17 @@ trezor-translations-manager@^1.0.4:
     request "^2.88.0"
     request-promise-native "^1.0.5"
 
-trezor-ui-components@^1.0.0-beta.4:
-  version "1.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.4.tgz#e68185775e13a130076e548a68ba61053f1053bf"
-  integrity sha512-ikH/k8p4rVonfDqqo8NjZPE3N73aq3P4lk6cvN1XwRSP70lsGELG5qoU71eQsThGsN1dioxhOxWA7HVAazHvDw==
+trezor-ui-components@^1.0.0-beta.12:
+  version "1.0.0-beta.12"
+  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.12.tgz#ce542e9d3348d82f02789b6ddb81dee7aeec2567"
+  integrity sha512-ef5D/wIFT1t+D+DMjXeif2kK0+rSO7YUC/qZTnFQ0ev6v/9pJNaLvpmdNUyBf5vNnxcol+XSM2Z+9ZI5GZcFtg==
   dependencies:
+    "@tippy.js/react" "^2.1.1"
     prop-types "^15.7.2"
-    rc-tooltip "^3.7.3"
-    react "^16.8.1"
-    react-dom "^16.8.1"
     react-router-dom "^4.3.1"
     react-select "^2.3.0"
     react-switch "^4.1.0"
     react-textarea-autosize "^7.1.0"
-    styled-components "^4.1.3"
 
 trim-newlines@^1.0.0:
   version "1.0.0"

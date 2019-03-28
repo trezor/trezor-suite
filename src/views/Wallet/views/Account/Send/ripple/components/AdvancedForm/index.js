@@ -3,13 +3,10 @@
 import * as React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import colors from 'config/colors';
+import { Input, Tooltip, Icon, colors, icons as ICONS } from 'trezor-ui-components';
 
+import l10nCommonMessages from 'views/common.messages';
 import l10nSendMessages from 'views/Wallet/views/Account/common.messages';
-import Input from 'components/inputs/Input';
-import Tooltip from 'components/Tooltip';
-import Icon from 'components/Icon';
-import ICONS from 'config/icons';
 import l10nMessages from './index.messages';
 
 import type { Props as BaseProps } from '../../Container';
@@ -69,10 +66,15 @@ const AdvancedSettingsSendButtonWrapper = styled.div`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
+    margin-right: 1px;
 `;
 
-const getFeeInputState = (feeErrors: string, feeWarnings: string): string => {
-    let state = '';
+const TooltipContainer = styled.div`
+    margin-left: 6px;
+`;
+
+const getFeeInputState = (feeErrors: string, feeWarnings: string): ?string => {
+    let state = null;
     if (feeWarnings && !feeErrors) {
         state = 'warning';
     }
@@ -82,8 +84,8 @@ const getFeeInputState = (feeErrors: string, feeWarnings: string): string => {
     return state;
 };
 
-const getDestinationTagInputState = (errors: string, warnings: string): string => {
-    let state = '';
+const getDestinationTagInputState = (errors: string, warnings: string): ?string => {
+    let state = null;
     if (warnings && !errors) {
         state = 'warning';
     }
@@ -118,20 +120,29 @@ const AdvancedForm = (props: Props) => {
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nSendMessages.TR_FEE} />
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage {...l10nMessages.TR_XRP_TRANSFER_COST} />
-                                    }
-                                    maxWidth={100}
-                                    readMoreLink="https://developers.ripple.com/transaction-cost.html"
-                                    placement="top"
-                                >
-                                    <StyledIcon
-                                        icon={ICONS.HELP}
-                                        color={colors.TEXT_SECONDARY}
-                                        size={24}
-                                    />
-                                </Tooltip>
+                                <TooltipContainer>
+                                    <Tooltip
+                                        content={
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_XRP_TRANSFER_COST}
+                                            />
+                                        }
+                                        maxWidth={100}
+                                        ctaLink="https://developers.ripple.com/transaction-cost.html"
+                                        ctaText={
+                                            <FormattedMessage
+                                                {...l10nCommonMessages.TR_LEARN_MORE}
+                                            />
+                                        }
+                                        placement="top"
+                                    >
+                                        <StyledIcon
+                                            icon={ICONS.HELP}
+                                            color={colors.TEXT_SECONDARY}
+                                            size={12}
+                                        />
+                                    </Tooltip>
+                                </TooltipContainer>
                             </Left>
                         </InputLabelWrapper>
                     }
@@ -155,22 +166,29 @@ const AdvancedForm = (props: Props) => {
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nMessages.TR_XRP_DESTINATION_TAG} />
-                                <Tooltip
-                                    content={
-                                        <FormattedMessage
-                                            {...l10nMessages.TR_XRP_DESTINATION_TAG_EXPLAINED}
+                                <TooltipContainer>
+                                    <Tooltip
+                                        content={
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_XRP_DESTINATION_TAG_EXPLAINED}
+                                            />
+                                        }
+                                        maxWidth={200}
+                                        ctaLink="https://wiki.trezor.io/Ripple_(XRP)"
+                                        ctaText={
+                                            <FormattedMessage
+                                                {...l10nCommonMessages.TR_LEARN_MORE}
+                                            />
+                                        }
+                                        placement="top"
+                                    >
+                                        <StyledIcon
+                                            icon={ICONS.HELP}
+                                            color={colors.TEXT_SECONDARY}
+                                            size={12}
                                         />
-                                    }
-                                    maxWidth={200}
-                                    readMoreLink="https://wiki.trezor.io/Ripple_(XRP)"
-                                    placement="top"
-                                >
-                                    <StyledIcon
-                                        icon={ICONS.HELP}
-                                        color={colors.TEXT_SECONDARY}
-                                        size={24}
-                                    />
-                                </Tooltip>
+                                    </Tooltip>
+                                </TooltipContainer>
                             </Left>
                         </InputLabelWrapper>
                     }

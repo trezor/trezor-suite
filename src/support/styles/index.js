@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 import { FONT_WEIGHT } from 'config/variables';
 
 import tooltipStyles from './Tooltip';
@@ -23,10 +23,11 @@ const baseStyles = createGlobalStyle`
     * {
         margin: 0;
         padding: 0;
+        outline: none;
     }
 
     *::selection, *::-moz-selection, *:focus, *:active, *:active:focus,  {
-        outline: 0 !important;
+        outline: none;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
 

@@ -2,11 +2,9 @@
 
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import Icon from 'components/Icon';
 import DeviceHeader from 'components/DeviceHeader';
 import * as deviceUtils from 'utils/device';
-import icons from 'config/icons';
-import colors from 'config/colors';
+import { Icon, colors, icons } from 'trezor-ui-components';
 
 import type { TrezorDevice } from 'flowtype';
 import type { Props as CommonProps } from '../../../common';
@@ -52,7 +50,7 @@ class DeviceList extends PureComponent<Props> {
                                         >
                                             <Icon
                                                 icon={icons.EJECT}
-                                                size={25}
+                                                size={14}
                                                 color={colors.TEXT_SECONDARY}
                                             />
                                         </IconClick>

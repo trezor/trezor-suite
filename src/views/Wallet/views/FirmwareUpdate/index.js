@@ -1,17 +1,12 @@
 /* @flow */
 
 import React from 'react';
+import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { Button, Link, P, H4, colors } from 'trezor-ui-components';
 import { getOldWalletReleaseUrl } from 'utils/url';
-
-import styled from 'styled-components';
-import { H1 } from 'components/Heading';
-import P from 'components/Paragraph';
-import colors from 'config/colors';
-import Link from 'components/Link';
-import Button from 'components/Button';
 
 import { FONT_SIZE } from 'config/variables';
 import * as deviceUtils from 'utils/device';
@@ -166,9 +161,9 @@ const FirmwareUpdate = (props: Props) => (
                 </g>
             </svg>
         </Image>
-        <H1>
+        <H4>
             <FormattedMessage {...l10nMessages.TR_ITS_TIME_TO_UPDATE_FIRMWARE} />
-        </H1>
+        </H4>
         <StyledP>
             <FormattedMessage {...l10nMessages.TR_PLEASE_USE_OLD_WALLET} />
         </StyledP>

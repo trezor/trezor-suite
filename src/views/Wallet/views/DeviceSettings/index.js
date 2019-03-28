@@ -1,13 +1,7 @@
 /* @flow */
 import React from 'react';
 import styled from 'styled-components';
-import { H1 } from 'components/Heading';
-import Icon from 'components/Icon';
-import colors from 'config/colors';
-import Button from 'components/Button';
-import P from 'components/Paragraph';
-import Link from 'components/Link';
-import ICONS from 'config/icons';
+import { H4, Icon, Button, P, Link, colors, icons as ICONS } from 'trezor-ui-components';
 import { getOldWalletUrl } from 'utils/url';
 import Content from 'views/Wallet/components/Content';
 import { connect } from 'react-redux';
@@ -36,7 +30,7 @@ const StyledP = styled(P)`
     text-align: center;
 `;
 
-const StyledH1 = styled(H1)`
+const StyledHeading = styled(H4)`
     text-align: center;
 `;
 
@@ -45,7 +39,7 @@ const DeviceSettings = (props: Props) => (
         <Section>
             <Row>
                 <Icon size={60} color={colors.WARNING_PRIMARY} icon={ICONS.WARNING} />
-                <StyledH1>Device settings is under construction</StyledH1>
+                <StyledHeading>Device settings is under construction</StyledHeading>
                 <StyledP>
                     Please use Bitcoin wallet interface to change your device settings
                 </StyledP>

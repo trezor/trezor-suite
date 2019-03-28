@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import colors from 'config/colors';
+import { colors } from 'trezor-ui-components';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 const Wrapper = styled.div`

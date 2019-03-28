@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
+import { H5, P } from 'trezor-ui-components';
 import l10nMessages from './index.messages';
 
 const Wrapper = styled.div`
@@ -16,10 +15,6 @@ const Wrapper = styled.div`
 
 const StyledSVG = styled.svg`
     margin-bottom: 24px;
-`;
-
-const StyledP = styled(P)`
-    text-align: center;
 `;
 
 const AddTokenMessage = () => (
@@ -90,12 +85,12 @@ const AddTokenMessage = () => (
                 </g>
             </g>
         </StyledSVG>
-        <H2>
+        <H5>
             <FormattedMessage {...l10nMessages.TR_ADD_YOUR_TOKENS} />
-        </H2>
-        <StyledP isSmaller>
+        </H5>
+        <P textAlign="center" size="small">
             <FormattedMessage {...l10nMessages.TR_SEARCH_FOR_THE_TOKEN} />
-        </StyledP>
+        </P>
     </Wrapper>
 );
 export default AddTokenMessage;

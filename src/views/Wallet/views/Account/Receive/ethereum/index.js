@@ -3,22 +3,13 @@ import React from 'react';
 import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-
+import { Button, Icon, Tooltip, Input, colors, icons as ICONS } from 'trezor-ui-components';
 import Title from 'views/Wallet/components/Title';
-import Button from 'components/Button';
-import Icon from 'components/Icon';
-import Tooltip from 'components/Tooltip';
-import Input from 'components/inputs/Input';
 import DeviceIcon from 'components/images/DeviceIcon';
-
-import ICONS from 'config/icons';
-import colors from 'config/colors';
-import { CONTEXT_DEVICE } from 'actions/constants/modal';
-
 import Content from 'views/Wallet/components/Content';
+import { CONTEXT_DEVICE } from 'actions/constants/modal';
 import l10nCommonMessages from 'views/common.messages';
 import VerifyAddressTooltip from '../components/VerifyAddressTooltip';
-
 import l10nMessages from './index.messages';
 import l10nReceiveMessages from '../common.messages';
 
@@ -42,8 +33,6 @@ const StyledQRCode = styled(QRCode)`
 `;
 
 const ShowAddressButton = styled(Button)`
-    min-width: 195px;
-    padding: 0;
     white-space: nowrap;
     display: flex;
     height: 40px;
@@ -61,18 +50,10 @@ const ShowAddressButton = styled(Button)`
     }
 `;
 
-const ShowAddressIcon = styled(Icon)`
-    margin-right: 7px;
-    position: relative;
-    top: 2px;
-`;
-
 const EyeButton = styled(Button)`
     z-index: 10001;
     padding: 0;
-    width: 30px;
-    background: transparent;
-    top: 5px;
+    top: 12px;
     position: absolute;
     right: 10px;
 
@@ -94,6 +75,10 @@ const Row = styled.div`
 const QrWrapper = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+const StyledDeviceIcon = styled(DeviceIcon)`
+    margin: 0 6px;
 `;
 
 const AccountReceive = (props: Props) => {
@@ -135,7 +120,11 @@ const AccountReceive = (props: Props) => {
                             trezorAction={
                                 isAddressVerifying ? (
                                     <React.Fragment>
-                                        <DeviceIcon device={device} color={colors.WHITE} />
+                                        <StyledDeviceIcon
+                                            size={16}
+                                            device={device}
+                                            color={colors.WHITE}
+                                        />
                                         <FormattedMessage
                                             {...l10nReceiveMessages.TR_CHECK_ADDRESS_ON_TREZOR}
                                         />
@@ -156,9 +145,11 @@ const AccountReceive = (props: Props) => {
                                         }
                                     >
                                         <EyeButton
+                                            isTransparent
                                             onClick={() => props.showAddress(account.accountPath)}
                                         >
                                             <Icon
+                                                size={16}
                                                 icon={
                                                     addressUnverified
                                                         ? ICONS.EYE_CROSSED
@@ -177,10 +168,10 @@ const AccountReceive = (props: Props) => {
                         />
                         {!(addressVerified || addressUnverified) && (
                             <ShowAddressButton
+                                icon={ICONS.EYE}
                                 onClick={() => props.showAddress(account.accountPath)}
                                 isDisabled={device.connected && !discovery.completed}
                             >
-                                <ShowAddressIcon icon={ICONS.EYE} color={colors.WHITE} />
                                 <FormattedMessage {...l10nReceiveMessages.TR_SHOW_FULL_ADDRESS} />
                             </ShowAddressButton>
                         )}

@@ -5,9 +5,8 @@ import styled from 'styled-components';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Log from 'components/Log';
-import Loader from 'components/Loader';
 import ContextNotifications from 'components/notifications/Context';
-import colors from 'config/colors';
+import { colors, Loader } from 'trezor-ui-components';
 
 import InitializationError from '../InitializationError';
 

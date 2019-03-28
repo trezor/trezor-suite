@@ -3,16 +3,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import icons from 'config/icons';
-import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
 
-import { H3 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Button from 'components/Button';
-import Input from 'components/inputs/Input';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
+import { H5, P, Button, Input, Icon, Link, icons, colors } from 'trezor-ui-components';
 
 import { getDuplicateInstanceNumber } from 'reducers/utils';
 
@@ -51,7 +44,9 @@ const Column = styled.div`
 `;
 
 const StyledP = styled(P)`
-    padding: 10px 0px;
+    && {
+        padding: 10px 0px;
+    }
 `;
 
 const StyledButton = styled(Button)`
@@ -137,10 +132,10 @@ class DuplicateDevice extends PureComponent<Props, State> {
         return (
             <Wrapper>
                 <StyledLink onClick={onCancel}>
-                    <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                    <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                 </StyledLink>
-                <H3>Clone {device.label}?</H3>
-                <StyledP isSmaller>
+                <H5>Clone {device.label}?</H5>
+                <StyledP size="small">
                     This will create new instance of device which can be used with different
                     passphrase
                 </StyledP>

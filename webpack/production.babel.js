@@ -26,7 +26,7 @@ module.exports = {
             },
             {
                 test: /\.(png|gif|jpg)$/,
-                exclude: /(node_modules)/,
+                exclude: /node_modules\/(?!(trezor-ui-components)\/).*/,
                 loader: 'file-loader',
                 options: {
                     outputPath: './images',

@@ -4,15 +4,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
-import icons from 'config/icons';
-import colors from 'config/colors';
+import { H5, P, Button, Tooltip, Link, Icon, icons, colors } from 'trezor-ui-components';
 
-import { H2 } from 'components/Heading';
-import P from 'components/Paragraph';
-import Button from 'components/Button';
-import Tooltip from 'components/Tooltip';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
 import WalletTypeIcon from 'components/images/WalletType';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
@@ -37,11 +30,12 @@ const Header = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-bottom: 5px;
 
     color: ${colors.TEXT_PRIMARY};
 `;
 
-const StyledHeading = styled(H2)`
+const StyledHeading = styled(H5)`
     padding: 30px 48px 10px 48px;
 `;
 
@@ -56,13 +50,15 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledIcon = styled(Icon)`
-    position: absolute;
-    top: 10px;
-    right: 15px;
-
     &:hover {
         cursor: pointer;
     }
+`;
+
+const TooltipContainer = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 15px;
 `;
 
 const Content = styled.div`
@@ -79,6 +75,10 @@ const Content = styled.div`
             padding-top: 40px;
             border-bottom: 1px solid ${colors.DIVIDER};
         `}
+`;
+
+const StyledWalletTypeIcon = styled(WalletTypeIcon)`
+    margin-right: 6px;
 `;
 
 class WalletType extends PureComponent<Props> {
@@ -111,7 +111,7 @@ class WalletType extends PureComponent<Props> {
             <Wrapper>
                 {device.state && (
                     <StyledLink onClick={onCancel}>
-                        <Icon size={24} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
+                        <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
                     </StyledLink>
                 )}
                 <StyledHeading>
@@ -129,10 +129,14 @@ class WalletType extends PureComponent<Props> {
                 </StyledHeading>
                 <Content isTop>
                     <Header>
-                        <WalletTypeIcon type="standard" size={32} color={colors.TEXT_PRIMARY} />
+                        <StyledWalletTypeIcon
+                            type="standard"
+                            size={16}
+                            color={colors.TEXT_PRIMARY}
+                        />
                         <FormattedMessage {...l10nMessages.TR_STANDARD_WALLET} />
                     </Header>
-                    <P isSmaller>
+                    <P size="small">
                         <FormattedMessage {...l10nMessages.TR_CONTINUE_TO_ACCESS_STANDARD_WALLET} />
                     </P>
                     <StyledButton onClick={() => onWalletTypeRequest(false)}>
@@ -140,21 +144,24 @@ class WalletType extends PureComponent<Props> {
                     </StyledButton>
                 </Content>
                 <Content>
-                    <Tooltip
-                        maxWidth={285}
-                        placement="top"
-                        content={this.props.intl.formatMessage(
-                            l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE
-                        )}
-                        readMoreLink="https://wiki.trezor.io/Passphrase"
-                    >
-                        <StyledIcon icon={icons.HELP} color={colors.TEXT_SECONDARY} size={26} />
-                    </Tooltip>
+                    <TooltipContainer>
+                        <Tooltip
+                            maxWidth={285}
+                            placement="top"
+                            content={this.props.intl.formatMessage(
+                                l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE
+                            )}
+                            ctaLink="https://wiki.trezor.io/Passphrase"
+                            ctaText={<FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />}
+                        >
+                            <StyledIcon icon={icons.HELP} color={colors.TEXT_SECONDARY} size={16} />
+                        </Tooltip>
+                    </TooltipContainer>
                     <Header>
-                        <WalletTypeIcon type="hidden" size={32} color={colors.TEXT_PRIMARY} />
+                        <StyledWalletTypeIcon type="hidden" size={16} color={colors.TEXT_PRIMARY} />
                         <FormattedMessage {...l10nMessages.TR_HIDDEN_WALLET} />
                     </Header>
-                    <P isSmaller>
+                    <P size="small">
                         <FormattedMessage
                             {...l10nMessages.TR_ASKED_ENTER_YOUR_PASSPHRASE_TO_UNLOCK}
                         />

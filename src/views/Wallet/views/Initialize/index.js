@@ -1,9 +1,7 @@
 /* @flow */
 import styled from 'styled-components';
-import { H1 } from 'components/Heading';
-import Button from 'components/Button';
+import { H4, Button, P } from 'trezor-ui-components';
 import { getOldWalletUrl } from 'utils/url';
-import Paragraph from 'components/Paragraph';
 import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -31,17 +29,19 @@ const Row = styled.div`
 
 const A = styled.a``;
 
-const StyledParagraph = styled(Paragraph)`
-    padding: 0 0 15px 0;
-    text-align: center;
+const StyledParagraph = styled(P)`
+    && {
+        padding: 0 0 15px 0;
+        text-align: center;
+    }
 `;
 
 const Initialize = (props: Props) => (
     <Wrapper data-test="Page__device__not__initialized">
         <Row>
-            <H1>
+            <H4>
                 <FormattedMessage {...l10nMessages.TR_YOUR_DEVICE_IS_NOT_INITIALIZED} />
-            </H1>
+            </H4>
             <StyledParagraph>
                 <FormattedMessage {...l10nMessages.TR_PLEASE_USE_TO_START_INITIALIZATION} />
             </StyledParagraph>

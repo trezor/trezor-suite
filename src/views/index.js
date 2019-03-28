@@ -23,7 +23,7 @@ import AccountSend from 'views/Wallet/views/Account/Send';
 import AccountReceive from 'views/Wallet/views/Account/Receive';
 import AccountSignVerify from 'views/Wallet/views/Account/SignVerify/Container';
 
-import WalletDashboard from 'views/Wallet/views/Dashboard';
+import WalletDashboard from 'views/Wallet/views/Dashboard/Container';
 import WalletDeviceSettings from 'views/Wallet/views/DeviceSettings';
 import WalletSettings from 'views/Wallet/views/WalletSettings/Container';
 import WalletBootloader from 'views/Wallet/views/Bootloader';

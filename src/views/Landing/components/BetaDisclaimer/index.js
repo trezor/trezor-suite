@@ -5,15 +5,9 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { FormattedMessage } from 'react-intl';
+import { Button, Icon, P, H5, colors, icons } from 'trezor-ui-components';
 
-import colors from 'config/colors';
-import icons from 'config/icons';
 import { FONT_SIZE } from 'config/variables';
-
-import Icon from 'components/Icon';
-import Button from 'components/Button';
-import P from 'components/Paragraph';
-import { H2 } from 'components/Heading';
 import * as WalletActions from 'actions/WalletActions';
 import l10nMessages from './index.messages';
 
@@ -59,9 +53,9 @@ const StyledIcon = styled(Icon)`
 const BetaDisclaimer = (props: { close: () => void }) => (
     <Wrapper>
         <ModalWindow>
-            <H2>
+            <H5>
                 <FormattedMessage {...l10nMessages.TR_YOU_ARE_OPENING_TREZOR_BETA_WALLET} />
-            </H2>
+            </H5>
             <StyledP>
                 <FormattedMessage
                     {...l10nMessages.TR_TREZOR_BETA_WALLET_IS}
@@ -97,7 +91,7 @@ const BetaDisclaimer = (props: { close: () => void }) => (
                 />
             </StyledP>
             <StyledP>
-                <StyledIcon size={24} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
+                <StyledIcon size={12} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
                 <FormattedMessage
                     {...l10nMessages.TR_PLEASE_NOTE_THAT_THE_TREZOR}
                     values={{

@@ -1,15 +1,11 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Icon from 'components/Icon';
-import Link from 'components/Link';
-import { Switch } from 'trezor-ui-components';
-import DeviceIcon from 'components/images/DeviceIcon';
 import { FormattedMessage } from 'react-intl';
 import { getPattern } from 'support/routes';
 
-import icons from 'config/icons';
-import colors from 'config/colors';
+import { Switch, Link, Icon, colors, icons } from 'trezor-ui-components';
+import DeviceIcon from 'components/images/DeviceIcon';
 import { FONT_SIZE } from 'config/variables';
 
 import l10nCommonMessages from 'views/common.messages';
@@ -20,7 +16,7 @@ const Wrapper = styled.div`
 `;
 
 const Item = styled.div`
-    padding: 6px 24px;
+    padding: 12px 24px;
     display: flex;
     height: 38px;
     align-items: center;
@@ -40,8 +36,14 @@ const Divider = styled.div`
 `;
 
 const Label = styled.div`
-    padding-left: 15px;
     flex: 1;
+`;
+
+const IconWrapper = styled.div`
+    width: 18px;
+    display: flex;
+    justify-content: center;
+    margin-right: 15px;
 `;
 
 class MenuItems extends PureComponent {
@@ -75,44 +77,52 @@ class MenuItems extends PureComponent {
                 >
                     <Icon
                         icon={icons.COG}
-                        size={25}
+                        size={14}
                         color={colors.TEXT_SECONDARY}
                     />
                     <Label><FormattedMessage {...l10nMessages.TR_DEVICE_SETTINGS} /></Label>
                 </Item> */}
                 {this.showClone() && (
                     <Item onClick={() => this.props.duplicateDevice(device)}>
-                        <Icon
-                            icon={icons.WALLET_STANDARD}
-                            size={25}
-                            color={colors.TEXT_SECONDARY}
-                        />
+                        <IconWrapper>
+                            <Icon
+                                icon={icons.WALLET_STANDARD}
+                                size={14}
+                                color={colors.TEXT_SECONDARY}
+                            />
+                        </IconWrapper>
                         <Label>
                             <FormattedMessage {...l10nMessages.TR_CHANGE_WALLET_TYPE} />
                         </Label>
                     </Item>
                 )}
-                {this.showRenewSession() && (
+                {!this.showRenewSession() && (
                     <Item onClick={() => this.props.acquireDevice()}>
-                        <DeviceIcon
-                            device={this.props.device}
-                            size={25}
-                            color={colors.TEXT_SECONDARY}
-                        />
+                        <IconWrapper>
+                            <DeviceIcon
+                                device={this.props.device}
+                                size={14}
+                                color={colors.TEXT_SECONDARY}
+                            />
+                        </IconWrapper>
                         <Label>
                             <FormattedMessage {...l10nMessages.TR_RENEW_SESSION} />
                         </Label>
                     </Item>
                 )}
                 <Item onClick={() => this.props.forgetDevice(device)}>
-                    <Icon icon={icons.EJECT} size={25} color={colors.TEXT_SECONDARY} />
+                    <IconWrapper>
+                        <Icon icon={icons.EJECT} size={14} color={colors.TEXT_SECONDARY} />
+                    </IconWrapper>
                     <Label>
                         <FormattedMessage {...l10nCommonMessages.TR_FORGET_DEVICE} />
                     </Label>
                 </Item>
                 <Divider />
                 <Item>
-                    <Icon icon={icons.EYE_CROSSED} size={25} color={colors.TEXT_SECONDARY} />
+                    <IconWrapper>
+                        <Icon icon={icons.EYE_CROSSED} size={14} color={colors.TEXT_SECONDARY} />
+                    </IconWrapper>
                     <Label>
                         <FormattedMessage {...l10nCommonMessages.TR_HIDE_BALANCE} />
                     </Label>
@@ -131,7 +141,9 @@ class MenuItems extends PureComponent {
                 <Divider />
                 <Link to={getPattern('wallet-settings')}>
                     <Item>
-                        <Icon icon={icons.COG} size={25} color={colors.TEXT_SECONDARY} />
+                        <IconWrapper>
+                            <Icon icon={icons.COG} size={14} color={colors.TEXT_SECONDARY} />
+                        </IconWrapper>
                         <Label>
                             <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />
                         </Label>

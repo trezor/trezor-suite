@@ -1,8 +1,7 @@
 /* @flow */
 import React from 'react';
 import styled from 'styled-components';
-import colors from 'config/colors';
-import { H2 } from 'components/Heading';
+import { colors, H5 } from 'trezor-ui-components';
 import Transaction from 'components/Transaction';
 
 import type { Network } from 'reducers/LocalStorageReducer';
@@ -25,7 +24,7 @@ const PendingTransactions = (props: Props) => {
 
     return (
         <Wrapper>
-            <H2>Pending transactions</H2>
+            <H5>Pending transactions</H5>
             {pending.map(tx => (
                 <Transaction key={tx.hash} network={props.network} tx={tx} />
             ))}
