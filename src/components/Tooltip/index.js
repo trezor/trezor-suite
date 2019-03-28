@@ -16,7 +16,6 @@ const ContentWrapper = styled.div`
     color: white;
     border-radius: 3px;
     font-size: ${FONT_SIZE.SMALL};
-    /* min-height: 34px; */
     padding: 8px 0px;
     text-align: left;
 `;
