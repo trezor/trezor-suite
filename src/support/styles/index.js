@@ -23,10 +23,11 @@ const baseStyles = createGlobalStyle`
     * {
         margin: 0;
         padding: 0;
+        outline: none;
     }
 
     *::selection, *::-moz-selection, *:focus, *:active, *:active:focus,  {
-        outline: 0 !important;
+        outline: none;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
 
