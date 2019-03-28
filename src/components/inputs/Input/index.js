@@ -146,7 +146,7 @@ const ArrowUp = styled.div`
 
 class Input extends PureComponent {
     getIcon(inputState) {
-        let icon = [];
+        let icon = null;
         if (inputState === 'success') {
             icon = ICONS.SUCCESS;
         } else if (inputState === 'warning') {
@@ -188,7 +188,7 @@ class Input extends PureComponent {
                             autoComplete="off"
                             height={this.props.height}
                             trezorAction={this.props.trezorAction}
-                            hasIcon={this.props.icon || this.getIcon(this.props.state).length > 0}
+                            hasIcon={this.props.icon || this.getIcon(this.props.state)}
                             ref={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
