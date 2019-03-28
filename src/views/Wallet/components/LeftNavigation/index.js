@@ -39,8 +39,9 @@ const Counter = styled.div`
     border: 1px solid ${colors.DIVIDER};
     border-radius: 50%;
     color: ${colors.TEXT_SECONDARY};
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
+    line-height: 0.9rem;
     font-size: ${FONT_SIZE.COUNTER};
 `;
 
