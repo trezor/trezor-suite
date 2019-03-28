@@ -52,7 +52,15 @@ const Tooltip = ({ maxWidth, placement, content, ctaText, ctaLink, children, ...
 
     /* TODO: Figure out why styled-components does not forward ref from the Icon component. https://github.com/atomiks/tippy.js-react#component-children */
     return (
-        <Tippy placement={placement} content={Overlay} offset={4} arrow interactive {...rest}>
+        <Tippy
+            placement={placement}
+            content={Overlay}
+            offset={4}
+            zIndex={10070}
+            arrow
+            interactive
+            {...rest}
+        >
             <span>{children}</span>
         </Tippy>
     );
