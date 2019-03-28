@@ -20,10 +20,14 @@ const Header = styled.div`
     padding: 48px;
 `;
 
+const StyledDeviceIcon = styled(DeviceIcon)`
+    margin-bottom: 30px;
+`;
+
 const ConfirmAction = (props: Props) => (
     <Wrapper>
         <Header>
-            <DeviceIcon device={props.device} size={100} />
+            <StyledDeviceIcon device={props.device} size={50} />
             <H6>
                 <FormattedMessage {...l10nMessages.TR_CONFIRM_ACTION_ON_YOUR} />
             </H6>
