@@ -50,8 +50,11 @@ const AccountTitle = styled.div`
 `;
 
 const StyledIcon = styled(Icon)`
-    margin-left: 6px;
     cursor: pointer;
+`;
+
+const TooltipContainer = styled.div`
+    margin-left: 6px;
 `;
 
 const StyledLink = styled(Link)`
@@ -111,13 +114,15 @@ const AccountSummary = (props: Props) => {
                     <H5>
                         <FormattedMessage {...l10nSummaryMessages.TR_TOKENS} />
                     </H5>
-                    <Tooltip
-                        maxWidth={200}
-                        placement="top"
-                        content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
-                    >
-                        <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
-                    </Tooltip>
+                    <TooltipContainer>
+                        <Tooltip
+                            maxWidth={200}
+                            placement="top"
+                            content={props.intl.formatMessage(l10nSummaryMessages.TR_INSERT_TOKEN_NAME)}
+                        >
+                            <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
+                        </Tooltip>
+                    </TooltipContainer>
                 </TokensHeadingWrapper>
                 <AsyncSelectWrapper>
                     <AsyncSelect

@@ -66,6 +66,10 @@ const AdvancedSettingsSendButtonWrapper = styled.div`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
+    padding-right: 1px;
+`;
+
+const TooltipContainer = styled.div`
     margin-left: 6px;
 `;
 
@@ -116,6 +120,7 @@ const AdvancedForm = (props: Props) => {
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nSendMessages.TR_FEE} />
+                                <TooltipContainer>
                                 <Tooltip
                                     content={
                                         <FormattedMessage {...l10nMessages.TR_XRP_TRANSFER_COST} />
@@ -133,6 +138,7 @@ const AdvancedForm = (props: Props) => {
                                         size={12}
                                     />
                                 </Tooltip>
+                                </TooltipContainer>
                             </Left>
                         </InputLabelWrapper>
                     }
@@ -156,6 +162,7 @@ const AdvancedForm = (props: Props) => {
                         <InputLabelWrapper>
                             <Left>
                                 <FormattedMessage {...l10nMessages.TR_XRP_DESTINATION_TAG} />
+                                <TooltipContainer>
                                 <Tooltip
                                     content={
                                         <FormattedMessage
@@ -175,6 +182,7 @@ const AdvancedForm = (props: Props) => {
                                         size={12}
                                     />
                                 </Tooltip>
+                                </TooltipContainer>
                             </Left>
                         </InputLabelWrapper>
                     }
