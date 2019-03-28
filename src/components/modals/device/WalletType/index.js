@@ -49,13 +49,15 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledIcon = styled(Icon)`
-    position: absolute;
-    top: 10px;
-    right: 15px;
-
     &:hover {
         cursor: pointer;
     }
+`;
+
+const TooltipContainer = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 15px;
 `;
 
 const Content = styled.div`
@@ -141,17 +143,19 @@ class WalletType extends PureComponent<Props> {
                     </StyledButton>
                 </Content>
                 <Content>
-                    <Tooltip
-                        maxWidth={285}
-                        placement="top"
-                        content={this.props.intl.formatMessage(
-                            l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE
-                        )}
-                        ctaLink="https://wiki.trezor.io/Passphrase"
-                        ctaText={<FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />}
-                    >
-                        <StyledIcon icon={icons.HELP} color={colors.TEXT_SECONDARY} size={16} />
-                    </Tooltip>
+                    <TooltipContainer>
+                        <Tooltip
+                            maxWidth={285}
+                            placement="top"
+                            content={this.props.intl.formatMessage(
+                                l10nMessages.TR_PASSPHRASE_IS_OPTIONAL_FEATURE
+                            )}
+                            ctaLink="https://wiki.trezor.io/Passphrase"
+                            ctaText={<FormattedMessage {...l10nCommonMessages.TR_LEARN_MORE} />}
+                        >
+                            <StyledIcon icon={icons.HELP} color={colors.TEXT_SECONDARY} size={16} />
+                        </Tooltip>
+                    </TooltipContainer>
                     <Header>
                         <StyledWalletTypeIcon type="hidden" size={16} color={colors.TEXT_PRIMARY} />
                         <FormattedMessage {...l10nMessages.TR_HIDDEN_WALLET} />
