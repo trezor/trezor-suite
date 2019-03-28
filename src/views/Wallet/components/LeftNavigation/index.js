@@ -11,8 +11,8 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 import DeviceHeader from 'components/DeviceHeader';
 import Backdrop from 'components/Backdrop';
-// import Link from 'components/Link';
 import * as deviceUtils from 'utils/device';
+// import Link from 'components/Link';
 
 import Tooltip from 'components/Tooltip';
 import { FormattedMessage } from 'react-intl';
@@ -59,6 +59,7 @@ const TransitionContentWrapper = styled.div`
 const Footer = styled.div.attrs(props => ({
     style: { position: props.position },
 }))`
+    flex: 0 0 auto;
     width: 320px;
     bottom: 0;
     background: ${colors.MAIN};
@@ -269,7 +270,10 @@ class LeftNavigation extends React.PureComponent<Props, State> {
                     onClick={props.toggleSidebar}
                     animated
                 />
-                <Sidebar isOpen={props.wallet.showSidebar}>
+                <Sidebar
+                    isOpen={props.wallet.showSidebar}
+                    deviceMenuOpened={this.props.wallet.dropdownOpened}
+                >
                     <Header
                         isSelected
                         testId="Main__page__device__header"

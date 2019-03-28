@@ -9,6 +9,7 @@ import { SLIDE_RIGHT, SLIDE_LEFT } from 'config/animations';
 type Props = {
     children?: React.Node,
     isOpen: ?boolean,
+    deviceMenuOpened: boolean,
 };
 
 type State = {
@@ -18,7 +19,7 @@ type State = {
 const AbsoluteWrapper = styled.aside`
     width: 320px;
     position: relative;
-    overflow-y: auto;
+    overflow-y: ${props => (props.deviceMenuOpened ? 'hidden' : 'auto')};
 
     background: ${colors.MAIN};
     border-top-left-radius: 4px;
@@ -28,7 +29,6 @@ const AbsoluteWrapper = styled.aside`
 
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         position: absolute;
-        height: calc(100vh - 52px);
         z-index: 200;
         top: 52px;
         /* Prevents firing SLIDE_LEFT anim on page load.  */
@@ -47,12 +47,19 @@ const SidebarWrapper = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        height: calc(100vh - 52px);
+    }
 `;
 
 export default class Sidebar extends React.PureComponent<Props, State> {
     render() {
         return (
-            <AbsoluteWrapper isOpen={this.props.isOpen}>
+            <AbsoluteWrapper
+                isOpen={this.props.isOpen}
+                deviceMenuOpened={this.props.deviceMenuOpened}
+            >
                 <SidebarWrapper>{this.props.children}</SidebarWrapper>
             </AbsoluteWrapper>
         );
