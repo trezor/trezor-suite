@@ -75,7 +75,7 @@ export const transformTransactionEvent = (descriptor: string, event: any): Trans
     };
 };
 
-export const addPagination = (account, transactions, block, options) => {
+export const getTransactionsPaging = (transactions, options) => {
     const { page, pageSize } = options;
     let pageCount = page;
     const transactionsCount = transactions.length;
@@ -95,8 +95,6 @@ export const addPagination = (account, transactions, block, options) => {
         page: pageCount,
         itemsOnPage: pageSize,
         totalPages,
-        ...account,
         transactions: slicedTransactions,
-        block,
     };
 };
