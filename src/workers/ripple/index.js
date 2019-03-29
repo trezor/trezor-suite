@@ -330,14 +330,14 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
             }
         }
 
+        console.log('aaaaaaaaa');
+
+        const dataWithPaging = utils.addPagination(account, transactions, block, options);
+
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
-            payload: {
-                ...account,
-                transactions,
-                block,
-            },
+            payload: dataWithPaging,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });

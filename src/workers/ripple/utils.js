@@ -75,4 +75,27 @@ export const transformTransactionEvent = (descriptor: string, event: any): Trans
     };
 };
 
-export const addPagination = () => {};
+export const addPagination = (account, transactions, block, options) => {
+    const { page, pageSize } = options;
+    let pageCount = page;
+    const transactionsCount = transactions.length;
+    const totalPages = Math.ceil(transactionsCount / pageSize);
+
+    // page count is higher than page - return last page
+    if (page > totalPages) {
+        pageCount = totalPages;
+    }
+
+    const leftEdge = pageCount === 1 ? 0 : pageCount * pageSize - pageSize;
+    const rightEdge = leftEdge + pageSize;
+
+    const slicedTransactions = transactions.slice(leftEdge, rightEdge);
+
+    return {
+        page: pageCount,
+        totalPages,
+        ...account,
+        transactions: slicedTransactions,
+        block,
+    };
+};

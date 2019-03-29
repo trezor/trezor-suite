@@ -37,7 +37,7 @@ const handleClick = (event: MouseEvent) => {
                 details: getInputValue('get-account-info-mode') || 'basic',
                 pageSize: parseInt(getInputValue('get-account-info-pageSize'), 10) || 25,
                 tokens: getInputValue('get-account-info-tokens') || 'derived',
-                page: parseInt(getInputValue('get-account-info-page'), 10) || 10,
+                page: parseInt(getInputValue('get-account-info-page'), 10) || 1,
                 from: parseInt(getInputValue('get-account-info-from'), 10),
                 to: parseInt(getInputValue('get-account-info-to'), 10),
                 contractFilter: getInputValue('get-account-info-contract') || '',
