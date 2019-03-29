@@ -93,6 +93,7 @@ export const addPagination = (account, transactions, block, options) => {
 
     return {
         page: pageCount,
+        itemsOnPage: pageSize,
         totalPages,
         ...account,
         transactions: slicedTransactions,
