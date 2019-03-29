@@ -72,6 +72,7 @@
         "react-select": "^2.3.0",
         "react-textarea-autosize": "^7.1.0",
         "react-transition-group": "^2.5.3",
+        "react-window": "^1.7.1",
         "redbox-react": "^1.6.0",
         "redux": "4.0.1",
         "redux-logger": "^3.0.6",
