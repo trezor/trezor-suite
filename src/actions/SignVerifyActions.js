@@ -141,12 +141,16 @@ const inputChange = (inputName: string, value: string): ThunkAction => (
         type: SIGN_VERIFY.TOUCH,
         inputName,
     });
-    if (inputName === 'verifyAddress' && validateAddress(value) !== null) {
-        dispatch({
-            type: SIGN_VERIFY.ERROR,
-            inputName,
-            message: validateAddress(value),
-        });
+
+    if (inputName === 'verifyAddress') {
+        const error = validateAddress(value);
+        if (error) {
+            dispatch({
+                type: SIGN_VERIFY.ERROR,
+                inputName,
+                message: error,
+            });
+        }
     }
 };
 

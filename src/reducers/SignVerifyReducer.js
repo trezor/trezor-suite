@@ -57,6 +57,8 @@ export default (state: State = initialState, action: Action): State => {
                 return {
                     ...state,
                     touched: [...state.touched, action.inputName],
+                    // reset errors for the input even if it was not touched before
+                    errors: state.errors.filter(error => error.inputName !== inputName),
                 };
             }
             return {

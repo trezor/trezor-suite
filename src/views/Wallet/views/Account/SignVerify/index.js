@@ -140,6 +140,7 @@ class SignVerify extends Component<Props> {
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
+                                isDisabled={!device.connected}
                                 onClick={() =>
                                     signVerifyActions.sign(account.accountPath, signMessage)
                                 }
@@ -194,7 +195,7 @@ class SignVerify extends Component<Props> {
                                 <FormattedMessage {...l10nCommonMessages.TR_CLEAR} />
                             </StyledButton>
                             <StyledButton
-                                isDisabled={!!verifyAddressError}
+                                isDisabled={!!verifyAddressError || !device.connected}
                                 onClick={() => {
                                     if (errors.length <= 0) {
                                         signVerifyActions.verify(
