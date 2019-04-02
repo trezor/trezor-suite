@@ -1,4 +1,4 @@
-module.exports = (api) => {
+module.exports = api => {
     // api.cache.forever();
 
     const presets = [
@@ -27,13 +27,9 @@ module.exports = (api) => {
         [
             'module-resolver',
             {
-                root: [
-                    './src',
-                ],
+                root: ['./src'],
                 alias: {
-                    public: [
-                        './public',
-                    ],
+                    public: ['./public'],
                 },
             },
         ],
@@ -45,15 +41,13 @@ module.exports = (api) => {
     }
 
     if (api.env('translations')) {
-        plugins.push(
-            [
-                'react-intl',
-                {
-                    messagesDir: './translations/extractedMessages/',
-                    extractSourceLocation: true,
-                },
-            ],
-        );
+        plugins.push([
+            'react-intl',
+            {
+                messagesDir: './translations/extractedMessages/',
+                extractSourceLocation: true,
+            },
+        ]);
     }
 
     return {

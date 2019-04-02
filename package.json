@@ -19,7 +19,7 @@
         "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations",
         "flow": "flow check src",
         "lint": "run-s lint:*",
-        "lint:js": "npx eslint ./src ./webpack",
+        "lint:js": "npx eslint .",
         "lint:css": "npx stylelint './src/**/*.js'",
         "lint-fix": "npx eslint ./src ./webpack --fix",
         "test": "run-s test:*",
