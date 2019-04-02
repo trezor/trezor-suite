@@ -18,6 +18,7 @@ import {
 import Content from 'views/Wallet/components/Content';
 import { FONT_WEIGHT, FONT_SIZE } from 'config/variables';
 import l10nCommonMessages from 'views/common.messages';
+import MenuList from '../components/MenuList';
 import l10nSummaryMessages from '../common.messages';
 import AccountBalance from '../components/Balance';
 import AddedToken from '../components/Token';
@@ -134,6 +135,7 @@ const AccountSummary = (props: Props) => {
                         defaultOptions
                         value={null}
                         isMulti={false}
+                        components={{ MenuList }}
                         placeholder={props.intl.formatMessage(
                             l10nSummaryMessages.TR_TYPE_IN_A_TOKEN_NAME
                         )}
