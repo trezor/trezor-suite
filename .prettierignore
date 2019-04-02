@@ -2,6 +2,7 @@ public
 build
 coverage
 cache/**
+scripts/solidity/**
 node_modules
 src/flowtype/npm
 scripts/solidity/.*
