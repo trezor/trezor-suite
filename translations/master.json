@@ -16,6 +16,23 @@
       ]
     }
   },
+  "TR_WE_THANK_OUR_TRANSLATORS": {
+    "source": "We thank our translators for their {TR_CONTRIBUTION}",
+    "meta": {
+      "occurrences": [
+        "src/components/Footer/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONTRIBUTION": {
+    "source": "contribution",
+    "meta": {
+      "comment": "Part of the sentence: We thank our translators for their contribution",
+      "occurrences": [
+        "src/components/Footer/index.messages.js"
+      ]
+    }
+  },
   "TR_MENU": {
     "source": "Menu",
     "meta": {
@@ -82,6 +99,22 @@
     "source": "Log",
     "meta": {
       "comment": "application event and error",
+      "occurrences": [
+        "src/components/Log/index.messages.js"
+      ]
+    }
+  },
+  "TR_COPY_TO_CLIPBOARD": {
+    "source": "Copy to clipboard",
+    "meta": {
+      "occurrences": [
+        "src/components/Log/index.messages.js"
+      ]
+    }
+  },
+  "TR_COPIED": {
+    "source": "Copied!",
+    "meta": {
       "occurrences": [
         "src/components/Log/index.messages.js"
       ]
@@ -156,6 +189,14 @@
   },
   "TR_DEVICE_LABEL_IS_NOT_CONNECTED": {
     "source": "Device {deviceLabel} is not connected",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_LABEL_IS_NOT_BACKED_UP": {
+    "source": "Device {deviceLabel} is not backed up",
     "meta": {
       "occurrences": [
         "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
@@ -377,6 +418,14 @@
     "meta": {
       "occurrences": [
         "src/components/modals/external/Stellar/index.messages.js"
+      ]
+    }
+  },
+  "TR_TEZOS_WALLET": {
+    "source": "Tezos wallet",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/external/Tezos/index.messages.js"
       ]
     }
   },
@@ -615,6 +664,14 @@
       ]
     }
   },
+  "TR_APPLICATION_SETTINGS": {
+    "source": "Application settings",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
   "TR_ACCOUNT_HASH": {
     "source": "Account #{number}",
     "meta": {
@@ -716,6 +773,62 @@
   },
   "TR_FORGET_DEVICE": {
     "source": "Forget device",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_CLOSE": {
+    "source": "Close",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_HIDE_BALANCE": {
+    "source": "Hide balance",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_THE_ACCOUNT_BALANCE_IS_HIDDEN": {
+    "source": "The account balance is hidden.",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_IF_YOUR_DEVICE_IS_EVER_LOST": {
+    "source": "If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_CREATE_BACKUP_IN_3_MINUTES": {
+    "source": "Create a backup in 3 minutes",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_YOUR_TREZOR_IS_NOT_BACKED_UP": {
+    "source": "Your Trezor is not backed up",
+    "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK": {
+    "source": "Show address, I will take the risk",
     "meta": {
       "occurrences": [
         "src/views/common.messages.js"
@@ -867,6 +980,14 @@
       ]
     }
   },
+  "TR_UNPLUG_DEVICE_LABEL": {
+    "source": "Unplug \"{deviceLabel}\" device",
+    "meta": {
+      "occurrences": [
+        "src/views/Landing/components/ConnectDevice/index.messages.js"
+      ]
+    }
+  },
   "TR_NEW_COMMUNICATION_TOOL": {
     "source": "New communication tool to facilitate the connection between your Trezor and your internet browser.",
     "meta": {
@@ -974,14 +1095,6 @@
   },
   "TR_OTHER_COINS": {
     "source": "Other coins",
-    "meta": {
-      "occurrences": [
-        "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
-      ]
-    }
-  },
-  "TR_YOU_WILL_BE_REDIRECTED": {
-    "source": "(You will be redirected)",
     "meta": {
       "occurrences": [
         "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
@@ -1529,6 +1642,23 @@
       ]
     }
   },
+  "TR_RESERVE": {
+    "source": "Reserve",
+    "meta": {
+      "comment": "Label for minimal XRP account reserve",
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/components/Balance/index.messages.js"
+      ]
+    }
+  },
+  "TR_FIAT_RATES_ARE_NOT_CURRENTLY": {
+    "source": "Fiat rates are not currently available.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/components/Balance/index.messages.js"
+      ]
+    }
+  },
   "TR_DEVICE_USED_IN_OTHER": {
     "source": "Device is used in other window",
     "meta": {
@@ -1621,6 +1751,14 @@
       ]
     }
   },
+  "TR_PLEASE_USE_TO_CREATE_BACKUP": {
+    "source": "Please use Bitcoin wallet interface to create a backup.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/NoBackup/index.messages.js"
+      ]
+    }
+  },
   "TR_DEVICE_IS_INITIALIZED_IN_SEEDLESS_MODE": {
     "source": "Device is initialized in seedless mode and therefore not allowed to access wallet",
     "meta": {
@@ -1650,6 +1788,30 @@
     "meta": {
       "occurrences": [
         "src/views/Wallet/views/UnreadableDevice/index.messages.js"
+      ]
+    }
+  },
+  "TR_LOCAL_CURRENCY": {
+    "source": "Local currency",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/WalletSettings/index.messages.js"
+      ]
+    }
+  },
+  "TR_HIDE_BALANCE_EXPLAINED": {
+    "source": "Hides your account balance so you don't have to worry about anyone looking over your shoulder.",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/WalletSettings/index.messages.js"
+      ]
+    }
+  },
+  "TR_THE_CHANGES_ARE_SAVED": {
+    "source": "The changes are saved automatically as they are made",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/WalletSettings/index.messages.js"
       ]
     }
   }
