@@ -13,14 +13,13 @@ export const concatTransactions = (
     return txs.concat(unique);
 };
 
-export const transformTransactionHistory = (descriptor: string, raw: any): Transaction => {
+export const transformTransactionHistory = (descriptor, raw) => {
     const { tx } = raw;
 
     if (tx.TransactionType !== 'Payment') {
         // https://github.com/ripple/ripple-lib/blob/develop/docs/index.md#transaction-types
         console.warn('Transform tx type:', tx.TransactionType, tx);
     }
-
     const type = tx.Account === descriptor ? 'send' : 'recv';
     const hash = tx.hash;
     const amount = tx.Amount;
@@ -32,8 +31,8 @@ export const transformTransactionHistory = (descriptor: string, raw: any): Trans
         timestamp: tx.date,
 
         descriptor,
-        inputs: [{ addresses: [tx.Account] }],
-        outputs: [{ addresses: [tx.Destination] }],
+        vin: [{ addresses: [tx.Account] }],
+        vout: [{ addresses: [tx.Destination] }],
 
         hash,
         amount,
@@ -72,29 +71,5 @@ export const transformTransactionEvent = (descriptor: string, event: any): Trans
 
         blockHeight: event.ledger_index,
         blockHash: event.ledger_hash,
-    };
-};
-
-export const getTransactionsPaging = (transactions, options) => {
-    const { page, pageSize } = options;
-    let pageCount = page;
-    const transactionsCount = transactions.length;
-    const totalPages = Math.ceil(transactionsCount / pageSize);
-
-    // page count is higher than page - return last page
-    if (page > totalPages) {
-        pageCount = totalPages;
-    }
-
-    const leftEdge = pageCount === 1 ? 0 : pageCount * pageSize - pageSize;
-    const rightEdge = leftEdge + pageSize;
-
-    const slicedTransactions = transactions.slice(leftEdge, rightEdge);
-
-    return {
-        page: pageCount,
-        itemsOnPage: pageSize,
-        totalPages,
-        transactions: slicedTransactions,
     };
 };

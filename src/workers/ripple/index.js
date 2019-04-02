@@ -220,8 +220,9 @@ const getRawTransactions = async (
         account,
         ledger_index_max: options.maxLedgerVersion,
         ledger_index_min: options.minLedgerVersion,
-        limit: options.limit,
+        limit: options.pageSize,
     });
+
     return raw.transactions.map(tx => utils.transformTransactionHistory(account, tx));
 };
 
@@ -230,18 +231,10 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
 
     const options: MessageTypes.GetAccountInfoOptions = payload || {};
 
-    if (
-        options.details === 'tokens' ||
-        options.details === 'tokenBalances' ||
-        options.details === 'txids'
-    ) {
-        const error = `parameter ${options.details} is not supported by ripple`;
-        common.errorHandler({ id: data.id, error });
-    }
-
     const account = {
         address: payload.descriptor,
-        transactions: 0,
+        transactions: [],
+        tokens: [],
         block: 0,
         balance: '0',
         availableBalance: '0',
@@ -304,41 +297,25 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
         const block = await api.getLedgerVersion();
         const minLedgerVersion = options.from ? Math.max(options.from, BLOCKS.MIN) : BLOCKS.MIN;
         const maxLedgerVersion = options.to ? Math.max(options.to, BLOCKS.MAX) : undefined;
-        // determines if there is bottom limit
-        const fetchAll: boolean = typeof options.limit !== 'number';
+        const limit = options.pageSize || 25;
+
         const requestOptions = {
             minLedgerVersion,
             maxLedgerVersion,
-            limit: fetchAll ? TX_LIMIT : options.limit,
+            pageSize: limit,
         };
 
         let transactions: Array<ResponseTypes.Transaction> = [];
-        if (!fetchAll) {
-            // get only one page
-            transactions = await getRawTransactions(payload.descriptor, requestOptions);
-        } else {
-            // get all pages at once
-            let hasNextPage: boolean = true;
-            while (hasNextPage) {
-                const response = await getRawTransactions(payload.descriptor, requestOptions);
-                transactions = utils.concatTransactions(transactions, response);
-                // hasNextPage = response.length >= TX_LIMIT && transactions.length < 10000;
-                hasNextPage = response.length >= TX_LIMIT;
-                if (hasNextPage) {
-                    requestOptions.maxLedgerVersion = response[response.length - 1].blockHeight;
-                }
-            }
-        }
-
-        const transactionsWithPaging = utils.getTransactionsPaging(transactions, options);
+        transactions = await getRawTransactions(payload.descriptor, requestOptions);
 
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: {
                 ...account,
-                ...transactionsWithPaging,
+                transactions,
                 block,
+                lastTransaction: transactions[transactions.length - 1],
             },
         });
     } catch (error) {
