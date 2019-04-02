@@ -1,6 +1,6 @@
 /* @flow */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 
@@ -267,6 +267,8 @@ const AccountSend = (props: Props) => {
         onClear,
     } = props.sendFormActions;
 
+    const [touched, setTouched] = useState(false);
+
     if (!device || !account || !discovery || !network || !shouldRender) {
         const { loader, exceptionPage } = props.selectedAccount;
         return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
@@ -437,14 +439,20 @@ const AccountSend = (props: Props) => {
             </InputRow>
 
             <ToggleAdvancedSettingsWrapper isAdvancedSettingsHidden={isAdvancedSettingsHidden}>
-                <ToggleAdvancedSettingsButton isTransparent onClick={toggleAdvanced}>
+                <ToggleAdvancedSettingsButton
+                    isTransparent
+                    onClick={() => {
+                        toggleAdvanced();
+                        setTouched(true);
+                    }}
+                >
                     <FormattedMessage {...l10nSendMessages.TR_ADVANCED_SETTINGS} />
                     <AdvancedSettingsIcon
                         icon={ICONS.ARROW_DOWN}
                         color={colors.TEXT_SECONDARY}
                         size={12}
                         isActive={advanced}
-                        canAnimate
+                        canAnimate={touched || advanced}
                     />
                 </ToggleAdvancedSettingsButton>
 
