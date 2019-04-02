@@ -11,10 +11,7 @@ module.exports = {
         'utils/promiseUtils.js',
         'utils/networkUtils.js',
     ],
-    collectCoverageFrom: [
-        'utils/**.js',
-        'reducers/utils/**.js',
-    ],
+    collectCoverageFrom: ['utils/**.js', 'reducers/utils/**.js'],
     // coverageThreshold: {
     //     global: {
     //         branches: 100,
@@ -23,9 +20,7 @@ module.exports = {
     //         statements: 100,
     //     },
     // },
-    setupFiles: [
-        './support/setupJest.js',
-    ],
+    setupFiles: ['./support/setupJest.js'],
     transform: {
         '^.+\\.jsx?$': 'babel-jest',
     },
