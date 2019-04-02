@@ -110,7 +110,7 @@ const Body = styled.div`
 `;
 
 const Wallet = (props: Props) => (
-    <AppWrapper>
+    <AppWrapper lang={props.wallet.language}>
         <Header
             sidebarEnabled={!!props.wallet.selectedDevice}
             sidebarOpened={props.wallet.showSidebar}
