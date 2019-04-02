@@ -34,7 +34,6 @@ describe('Ripple call', () => {
 
     it('Get fee', async () => {
         const result = await blockchain.estimateFee();
-        // expect(result).to.deep.equal({ id: 0, type: RESPONSES.GET_FEE, payload: '12' });
-        expect(result).to.equal('12');
+        expect(result).to.deep.equal([{ name: 'Normal', value: '12' }]);
     });
 });
