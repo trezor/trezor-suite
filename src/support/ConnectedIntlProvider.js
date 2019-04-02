@@ -62,11 +62,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
 });
 
 const ReactIntlProvider = ({ children, locale, messages }: Props) => (
-    <IntlProvider
-        key={locale} // forces rerender IntlProvider when lang file is downloaded
-        locale={locale}
-        messages={messages}
-    >
+    <IntlProvider locale={locale} messages={messages}>
         {children}
     </IntlProvider>
 );
