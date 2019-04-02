@@ -33,6 +33,10 @@ const definedMessages: Messages = defineMessages({
         description: 'Part of the sentence: Dont have a Trezor? Get one',
         defaultMessage: 'Get one',
     },
+    TR_UNPLUG_DEVICE_LABEL: {
+        id: 'TR_UNPLUG_DEVICE_LABEL',
+        defaultMessage: 'Unplug "{deviceLabel}" device',
+    },
 });
 
 export default definedMessages;

@@ -1,7 +1,8 @@
 /* @flow */
 import * as React from 'react';
 import { Notification } from 'trezor-ui-components';
-
+import { FormattedMessage } from 'react-intl';
+import l10nCommonMessages from 'views/common.messages';
 import type { Props } from '../../index';
 
 export default (props: Props) => {
@@ -13,11 +14,13 @@ export default (props: Props) => {
         <Notification
             key="no-backup"
             type="warning"
-            title="Your Trezor is not backed up!"
-            message="If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events."
+            title={<FormattedMessage {...l10nCommonMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP} />}
+            message={<FormattedMessage {...l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />}
             actions={[
                 {
-                    label: 'Create a backup',
+                    label: (
+                        <FormattedMessage {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
+                    ),
                     callback: props.routerActions.gotoBackup,
                 },
             ]}

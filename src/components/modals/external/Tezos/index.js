@@ -6,8 +6,11 @@ import styled from 'styled-components';
 import { Button, H5, Link, P, Icon, icons, colors } from 'trezor-ui-components';
 import coins from 'constants/coins';
 
+import { FormattedMessage } from 'react-intl';
 import TezosImage from './images/xtz.png';
 import type { Props as BaseProps } from '../../Container';
+import l10nCommonMessages from '../common.messages';
+import l10nMessages from './index.messages';
 
 type Props = {
     onCancel: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>,
@@ -44,11 +47,17 @@ const TezosWallet = (props: Props) => (
             <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
         <Img src={TezosImage} />
-        <H5>Tezos wallet</H5>
-        <P isSmaller>You will be redirected to external wallet</P>
+        <H5>
+            <FormattedMessage {...l10nMessages.TR_TEZOS_WALLET} />
+        </H5>
+        <P size="small">
+            <FormattedMessage {...l10nCommonMessages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL} />
+        </P>
 
         <Link href={coins.find(i => i.id === 'xtz').url}>
-            <StyledButton onClick={props.onCancel}>Go to external wallet</StyledButton>
+            <StyledButton onClick={props.onCancel}>
+                <FormattedMessage {...l10nCommonMessages.TR_GO_TO_EXTERNAL_WALLET} />
+            </StyledButton>
         </Link>
     </Wrapper>
 );

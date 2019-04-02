@@ -7,6 +7,10 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_DEVICE_LABEL_IS_NOT_CONNECTED',
         defaultMessage: 'Device {deviceLabel} is not connected',
     },
+    TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
+        id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
+        defaultMessage: 'Device {deviceLabel} is not backed up',
+    },
     TR_DEVICE_LABEL_IS_UNAVAILABLE: {
         id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
         defaultMessage: 'Device {deviceLabel} is unavailable',
