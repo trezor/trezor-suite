@@ -44,7 +44,7 @@ const StyledButton = styled(Button)`
 
 const Column = styled.div`
     display: flex;
-    flex: 1 1 50%;
+    flex: 1 1 auto;
     flex-direction: column;
 
     @media screen and (max-width: ${SCREEN_SIZE.MD}) {
