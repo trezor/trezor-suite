@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { Link, Button, Icon, P, H5, colors, icons } from 'trezor-ui-components';
 
 import type { TrezorDevice } from 'flowtype';
+import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
 
 import type { Props as BaseProps } from '../../Container';
@@ -169,16 +170,26 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                 {needsBackup && (
                     <>
                         <Content>
-                            <H5>Device {device.label} is not backed up</H5>
+                            <H5>
+                                <FormattedMessage
+                                    {...l10nMessages.TR_DEVICE_LABEL_IS_NOT_BACKED_UP}
+                                    values={{ deviceLabel: device.label }}
+                                />
+                            </H5>
                             <StyledP size="small">
-                                If your device is ever lost or damaged, your funds will be lost.
-                                Backup your device first, to protect your coins against such events.
+                                <FormattedMessage
+                                    {...l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}
+                                />
                             </StyledP>
                         </Content>
                         <Content>
                             <Row>
                                 <Link href={`${getOldWalletUrl(device)}/?backup`}>
-                                    <BackupButton>Create a backup in 3 minutes</BackupButton>
+                                    <BackupButton>
+                                        <FormattedMessage
+                                            {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES}
+                                        />
+                                    </BackupButton>
                                 </Link>
                             </Row>
                         </Content>

@@ -150,7 +150,12 @@ class ConnectDevice extends PureComponent<Props> {
 
                 <Wrapper>
                     <ConnectTrezorWrapper>
-                        {this.props.showDisconnect && `Unplug "${this.props.deviceLabel}" device`}
+                        {this.props.showDisconnect && (
+                            <FormattedMessage
+                                {...l10nMessages.TR_UNPLUG_DEVICE_LABEL}
+                                values={{ deviceLabel: this.props.deviceLabel }}
+                            />
+                        )}
                         {!this.props.showDisconnect && (
                             <React.Fragment>
                                 {this.getTrezorDeviceImage()}

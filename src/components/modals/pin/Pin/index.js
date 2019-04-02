@@ -48,9 +48,7 @@ const StyledP = styled(P)`
     padding-top: 5px;
 `;
 
-const StyledLink = styled(Link)`
-    padding-left: 5px;
-`;
+const StyledLink = styled(Link)``;
 
 const Footer = styled.div`
     margin: 20px 0 10px 0;
