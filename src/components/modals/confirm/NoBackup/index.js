@@ -3,10 +3,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
+import { FormattedMessage } from 'react-intl';
 import { getOldWalletUrl } from 'utils/url';
 
 import { H5, P, Icon, Button, Link, colors, icons } from 'trezor-ui-components';
+import l10nCommonMessages from 'views/common.messages';
 
 import type { TrezorDevice } from 'flowtype';
 import type { Props as BaseProps } from '../../Container';
@@ -66,20 +67,21 @@ const Confirmation = (props: Props) => (
         <StyledLink onClick={() => props.onReceiveConfirmation(false)}>
             <Icon size={12} color={colors.TEXT_SECONDARY} icon={icons.CLOSE} />
         </StyledLink>
-        <H5>Your Trezor is not backed up</H5>
+        <H5>
+            <FormattedMessage {...l10nCommonMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP} />
+        </H5>
         <Icon size={32} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
         <StyledP size="small">
-            If your device is ever lost or damaged, your funds will be lost. Backup your device
-            first, to protect your coins against such events.
+            <FormattedMessage {...l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
         </StyledP>
         <Row>
             <Link href={`${getOldWalletUrl(props.device)}/?backup`} target="_self">
                 <BackupButton onClick={() => props.onReceiveConfirmation(false)}>
-                    Create a backup in 3 minutes
+                    <FormattedMessage {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
                 </BackupButton>
             </Link>
             <ProceedButton isWhite onClick={() => props.onReceiveConfirmation(true)}>
-                Show address, I will take the risk
+                <FormattedMessage {...l10nCommonMessages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK} />
             </ProceedButton>
         </Row>
     </Wrapper>

@@ -16,6 +16,10 @@ const definedMessages: Messages = defineMessages({
         defaultMessage: 'Reserve',
         description: 'Label for minimal XRP account reserve',
     },
+    TR_FIAT_RATES_ARE_NOT_CURRENTLY: {
+        id: 'TR_FIAT_RATES_ARE_NOT_CURRENTLY',
+        defaultMessage: 'Fiat rates are not currently available.',
+    },
 });
 
 export default definedMessages;

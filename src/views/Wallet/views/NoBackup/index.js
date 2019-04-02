@@ -3,8 +3,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, Link, P, H4, colors, icons } from 'trezor-ui-components';
 import { getOldWalletUrl } from 'utils/url';
-
+import { FormattedMessage } from 'react-intl';
+import l10nCommonMessages from 'views/common.messages';
 import type { TrezorDevice } from 'flowtype';
+import l10nMessages from './index.messages';
 
 type Props = {
     device: ?TrezorDevice,
@@ -40,24 +42,29 @@ const StyledIcon = styled(Icon)`
     margin-bottom: 15px;
 `;
 
-const FirmwareUpdate = (props: Props) => (
+const NoBackup = (props: Props) => (
     <Wrapper>
         <StyledIcon size={64} color={colors.WARNING_PRIMARY} icon={icons.WARNING} />
-        <StyledH>Your Trezor is not backed up!</StyledH>
+        <StyledH>
+            <FormattedMessage {...l10nCommonMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP} />
+        </StyledH>
         <Message>
             <StyledP>
-                If your device is ever lost or damaged, your funds will be lost. Backup your device
-                first, to protect your coins against such events.
+                <FormattedMessage {...l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
             </StyledP>
-            <P>Please use Bitcoin wallet interface to create a backup.</P>
+            <P>
+                <FormattedMessage {...l10nMessages.TR_PLEASE_USE_TO_CREATE_BACKUP} />
+            </P>
         </Message>
         <Link href={`${getOldWalletUrl(props.device)}?backup=1`} target="_self">
-            <Button>Take me to the Bitcoin wallet</Button>
+            <Button>
+                <FormattedMessage {...l10nCommonMessages.TR_TAKE_ME_TO_BITCOIN_WALLET} />
+            </Button>
         </Link>
         <StyledNavLink isGray to="/">
-            I’ll do that later.
+            <FormattedMessage {...l10nCommonMessages.TR_I_WILL_DO_THAT_LATER} />
         </StyledNavLink>
     </Wrapper>
 );
 
-export default FirmwareUpdate;
+export default NoBackup;
