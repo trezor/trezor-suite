@@ -44,10 +44,7 @@ export const load = ($input: string, network: string): AsyncAction => async (
     );
 
     if (result.length > 0) {
-        // TODO: Temporary fix for async select
-        // async react-select starts getting very laggy
-        // when options is a large list (>200 items)
-        return result.slice(0, 100);
+        return result;
     }
 
     const info = await dispatch(BlockchainActions.getTokenInfo(input, network));
