@@ -24,8 +24,7 @@ onmessage = event => {
             break;
         case MESSAGES.CONNECT:
             connect()
-                .then(async api => {
-                    const block = await api.connection.getLedgerVersion();
+                .then(async () => {
                     common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
                 })
                 .catch(error => common.errorHandler({ id: data.id, error }));
@@ -71,7 +70,6 @@ const BLOCKS = {
     MIN: 0,
     MAX: 0,
 };
-const TX_LIMIT: number = 100;
 
 const timeoutHandler = async () => {
     if (_api && _api.isConnected()) {
@@ -296,11 +294,13 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
         const minLedgerVersion = options.from ? Math.max(options.from, BLOCKS.MIN) : BLOCKS.MIN;
         const maxLedgerVersion = options.to ? Math.max(options.to, BLOCKS.MAX) : undefined;
         const limit = options.pageSize || 25;
+        const marker = options.page || '';
 
         const requestOptions = {
             minLedgerVersion,
             maxLedgerVersion,
             pageSize: limit,
+            marker,
         };
 
         const transactionsData = await getRawTransactionsData(payload.descriptor, requestOptions);
