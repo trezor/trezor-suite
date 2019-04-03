@@ -304,7 +304,6 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
         };
 
         const transactionsData = await getRawTransactionsData(payload.descriptor, requestOptions);
-        console.log('transactionsData', transactionsData);
         const transformedTransactions = transactionsData.transactions.map(tx =>
             utils.transformTransactionHistory(account, tx)
         );
