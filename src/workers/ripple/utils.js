@@ -13,7 +13,7 @@ export const concatTransactions = (
     return txs.concat(unique);
 };
 
-export const transformTransactionHistory = (descriptor, raw) => {
+export const transformTransactionHistory = (descriptor, raw, marker) => {
     const { tx } = raw;
 
     if (tx.TransactionType !== 'Payment') {
@@ -28,6 +28,7 @@ export const transformTransactionHistory = (descriptor, raw) => {
 
     return {
         type,
+        marker,
         timestamp: tx.date,
 
         descriptor,

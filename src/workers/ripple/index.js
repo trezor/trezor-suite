@@ -211,19 +211,17 @@ const getMempoolAccountInfo = async (
 
 // Custom request
 // RippleApi returns parsed/formatted transactions, use own parsing
-const getRawTransactions = async (
+const getRawTransactionsData = async (
     account: string,
     options
 ): Promise<Array<ResponseTypes.Transaction>> => {
     const api = await connect();
-    const raw = await api.request('account_tx', {
+    return await api.request('account_tx', {
         account,
         ledger_index_max: options.maxLedgerVersion,
         ledger_index_min: options.minLedgerVersion,
         limit: options.pageSize,
     });
-
-    return raw.transactions.map(tx => utils.transformTransactionHistory(account, tx));
 };
 
 const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise<void> => {
@@ -305,17 +303,20 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
             pageSize: limit,
         };
 
-        let transactions: Array<ResponseTypes.Transaction> = [];
-        transactions = await getRawTransactions(payload.descriptor, requestOptions);
+        const transactionsData = await getRawTransactionsData(payload.descriptor, requestOptions);
+        console.log('transactionsData', transactionsData);
+        const transformedTransactions = transactionsData.transactions.map(tx =>
+            utils.transformTransactionHistory(account, tx)
+        );
 
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: {
                 ...account,
-                transactions,
+                marker: transactionsData.marker,
+                transactions: transformedTransactions,
                 block,
-                lastTransaction: transactions[transactions.length - 1],
             },
         });
     } catch (error) {
