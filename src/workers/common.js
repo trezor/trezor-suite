@@ -1,7 +1,7 @@
 /* @flow */
 
-import { MESSAGES, RESPONSES } from 'constants';
-import type { Response, BlockchainSettings } from 'types';
+import type { Response, BlockchainSettings } from '../types';
+import { MESSAGES, RESPONSES } from '../constants';
 
 declare function postMessage(data: Response): void;
 

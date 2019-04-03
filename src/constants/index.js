@@ -1,7 +1,7 @@
 /* @flow */
 
-import * as MESSAGES from 'constants/messages';
-import * as RESPONSES from 'constants/responses';
+import * as MESSAGES from './messages';
+import * as RESPONSES from './responses';
 
 export { MESSAGES, RESPONSES };
 

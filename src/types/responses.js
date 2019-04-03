@@ -1,7 +1,7 @@
 /* @flow */
 
-import { HANDSHAKE } from 'constants/messages';
-import * as RESPONSES from 'constants/responses';
+import { HANDSHAKE } from '../constants/messages';
+import * as RESPONSES from '../constants/responses';
 
 // messages sent from worker to blockchain.js
 

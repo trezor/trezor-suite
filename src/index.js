@@ -2,13 +2,13 @@
 
 import EventEmitter from 'events';
 
-import { MESSAGES, RESPONSES } from 'constants';
-import { create as createDeferred } from 'utils/deferred';
-import type { BlockchainSettings, Deferred } from 'types';
-import * as MessageTypes from 'types/messages';
-import * as ResponseTypes from 'types/responses';
+import { MESSAGES, RESPONSES } from './constants';
+import { create as createDeferred } from './utils/deferred';
+import type { BlockchainSettings, Deferred } from './types';
+import * as ResponseTypes from './types/responses';
+import * as MessageTypes from './types/messages';
 
-export type { GetAccountInfoOptions, EstimateFeeOptions } from 'types/messages';
+export type { GetAccountInfoOptions, EstimateFeeOptions } from './types/messages';
 
 const workerWrapper = (factory: string | Function): Worker => {
     if (typeof factory === 'function') return new factory();

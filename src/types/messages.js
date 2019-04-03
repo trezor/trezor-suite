@@ -1,7 +1,7 @@
 /* @flow */
 
-import type { BlockchainSettings } from 'types';
-import * as MESSAGES from 'constants/messages';
+import type { BlockchainSettings } from './index';
+import * as MESSAGES from '../constants/messages';
 
 // messages sent from blockchain.js to worker
 
