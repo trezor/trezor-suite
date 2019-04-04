@@ -18,6 +18,13 @@ onmessage = event => {
         case MESSAGES.HANDSHAKE:
             common.setSettings(data.settings);
             break;
+        case MESSAGES.CONNECT:
+            connect()
+                .then(async () => {
+                    common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
+                })
+                .catch(error => common.errorHandler({ id: data.id, error }));
+            break;
         case MESSAGES.GET_INFO:
             getInfo(data);
             break;
