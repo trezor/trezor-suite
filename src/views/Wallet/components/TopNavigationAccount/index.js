@@ -90,8 +90,10 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
     render() {
         const { state, pathname } = this.props.router.location;
         if (!state) return null;
-        const { network } = this.props.selectedAccount;
+        const { network, account } = this.props.selectedAccount;
         if (!network) return null;
+
+        const isAccountImported = account && account.imported;
 
         const basePath = `/device/${state.device}/network/${state.network}/account/${
             state.account
@@ -108,7 +110,7 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
                 <StyledNavLink to={`${basePath}/send`}>
                     <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
                 </StyledNavLink>
-                {network.type === 'ethereum' && (
+                {network.type === 'ethereum' && !isAccountImported && (
                     <StyledNavLink to={`${basePath}/signverify`}>
                         <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
                     </StyledNavLink>
