@@ -28,8 +28,6 @@ const Text = styled.span`
 const RowAccountWrapper = styled.div`
     width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
     padding: ${LEFT_NAVIGATION_ROW.PADDING};
     font-size: ${FONT_SIZE.BASE};
     color: ${colors.TEXT_PRIMARY};
@@ -86,6 +84,21 @@ const DiscoveryLoadingText = styled.span`
     margin-left: 14px;
 `;
 
+const Col = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+`;
+
+const Badge = styled.div`
+    padding: 4px 8px;
+    background: lightslategray;
+    color: white;
+    font-size: ${FONT_SIZE.BADGE};
+    border-radius: 3px;
+    align-self: flex-end;
+`;
+
 // TODO: Refactorize deviceStatus & selectedAccounts
 const AccountMenu = (props: Props) => {
     const selected = props.wallet.selectedDevice;
@@ -105,7 +118,12 @@ const AccountMenu = (props: Props) => {
 
     const selectedAccounts = deviceAccounts.map((account, i) => {
         // const url: string = `${baseUrl}/network/${location.state.network}/account/${i}`;
-        const url: string = location.pathname.replace(/account+\/([0-9]*)/, `account/${i}`);
+        let url: string;
+        if (account.imported) {
+            url = location.pathname.replace(/account+\/(i?[0-9]*)/, `account/i${account.index}`);
+        } else {
+            url = location.pathname.replace(/account+\/(i?[0-9]*)/, `account/${account.index}`);
+        }
 
         let balance: ?string = null;
         const fiatRates = props.fiat.find(f => f.network === network.shortcut);
@@ -125,37 +143,38 @@ const AccountMenu = (props: Props) => {
             }
         }
 
-        const urlAccountIndex = parseInt(props.router.location.state.account, 10);
         return (
-            <NavLink to={url} key={account.index}>
+            <NavLink to={url} key={url}>
                 <Row column>
-                    <RowAccountWrapper
-                        isSelected={urlAccountIndex === account.index}
-                        borderTop={account.index === 0}
-                    >
-                        <FormattedMessage
-                            {...l10nCommonMessages.TR_ACCOUNT_HASH}
-                            values={{ number: account.index + 1 }}
-                        />
-                        {balance && !props.wallet.hideBalance && (
-                            <Text>
-                                {balance}
-                                {fiatRates && (
-                                    <FormattedNumber
-                                        currency={localCurrency}
-                                        value={fiat}
-                                        minimumFractionDigits={2}
-                                        // eslint-disable-next-line react/style-prop-object
-                                        style="currency"
-                                    />
-                                )}
-                            </Text>
-                        )}
-                        {!balance && (
-                            <Text>
-                                <FormattedMessage {...l10nMessages.TR_LOADING_DOT_DOT_DOT} />
-                            </Text>
-                        )}
+                    <RowAccountWrapper isSelected={location.pathname === url} borderTop={i === 0}>
+                        <Col>
+                            <FormattedMessage
+                                {...(account.imported
+                                    ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
+                                    : l10nCommonMessages.TR_ACCOUNT_HASH)}
+                                values={{ number: account.index + 1 }}
+                            />
+                            {balance && !props.wallet.hideBalance && (
+                                <Text>
+                                    {balance}
+                                    {fiatRates && (
+                                        <FormattedNumber
+                                            currency={localCurrency}
+                                            value={fiat}
+                                            minimumFractionDigits={2}
+                                            // eslint-disable-next-line react/style-prop-object
+                                            style="currency"
+                                        />
+                                    )}
+                                </Text>
+                            )}
+                            {!balance && (
+                                <Text>
+                                    <FormattedMessage {...l10nMessages.TR_LOADING_DOT_DOT_DOT} />
+                                </Text>
+                            )}
+                        </Col>
+                        <Col>{account.imported && <Badge>watch-only</Badge>}</Col>
                     </RowAccountWrapper>
                 </Row>
             </NavLink>

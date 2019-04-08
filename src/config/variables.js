@@ -39,6 +39,7 @@ export const FONT_SIZE = {
     H3: '1rem',
     H4: '0.8571rem',
     COUNTER: '0.7857rem',
+    BADGE: '0.7857rem',
 };
 
 export const FONT_WEIGHT = {

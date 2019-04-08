@@ -52,6 +52,7 @@ const { STORAGE_PATH } = storageUtils;
 const KEY_VERSION: string = `${STORAGE_PATH}version`;
 const KEY_DEVICES: string = `${STORAGE_PATH}devices`;
 const KEY_ACCOUNTS: string = `${STORAGE_PATH}accounts`;
+const KEY_IMPORTED_ACCOUNTS: string = `${STORAGE_PATH}importedAccounts`;
 const KEY_DISCOVERY: string = `${STORAGE_PATH}discovery`;
 const KEY_TOKENS: string = `${STORAGE_PATH}tokens`;
 const KEY_PENDING: string = `${STORAGE_PATH}pending`;
@@ -320,4 +321,21 @@ export const setLocalCurrency = (): ThunkAction => (
 ): void => {
     const { localCurrency } = getState().wallet;
     storageUtils.set(TYPE, KEY_LOCAL_CURRENCY, JSON.stringify(localCurrency));
+};
+
+export const setImportedAccount = (account: Account): ThunkAction => (): void => {
+    const prevImportedAccounts: ?string = JSON.parse(storageUtils.get(TYPE, KEY_IMPORTED_ACCOUNTS));
+    let importedAccounts = [account];
+    if (prevImportedAccounts) {
+        importedAccounts = importedAccounts.concat(prevImportedAccounts);
+    }
+    storageUtils.set(TYPE, KEY_IMPORTED_ACCOUNTS, JSON.stringify(importedAccounts));
+};
+
+export const getImportedAccounts = (): Array<Account> => {
+    const importedAccounts: ?string = storageUtils.get(TYPE, KEY_IMPORTED_ACCOUNTS);
+    if (importedAccounts) {
+        return JSON.parse(importedAccounts);
+    }
+    return importedAccounts;
 };
