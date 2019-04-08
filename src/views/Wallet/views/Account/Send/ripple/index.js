@@ -279,7 +279,9 @@ const AccountSend = (props: Props) => {
         total === '0' ||
         amount.length === 0 ||
         address.length === 0 ||
-        sending;
+        sending ||
+        account.imported;
+
     let sendButtonText = <FormattedMessage {...l10nSendMessages.TR_SEND} values={{ amount: '' }} />;
     if (total !== '0') {
         sendButtonText = (
@@ -481,13 +483,14 @@ const AccountSend = (props: Props) => {
                 </AdvancedForm>
             )}
 
-            {props.selectedAccount.pending.length > 0 && (
-                <PendingTransactions
-                    pending={props.selectedAccount.pending}
-                    tokens={props.selectedAccount.tokens}
-                    network={network}
-                />
-            )}
+            {props.selectedAccount.pending.length > 0 ||
+                (account.imported && (
+                    <PendingTransactions
+                        pending={props.selectedAccount.pending}
+                        tokens={props.selectedAccount.tokens}
+                        network={network}
+                    />
+                ))}
         </Content>
     );
 };

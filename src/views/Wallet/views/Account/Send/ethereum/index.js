@@ -312,7 +312,9 @@ const AccountSend = (props: Props) => {
         total === '0' ||
         amount.length === 0 ||
         address.length === 0 ||
-        sending;
+        sending ||
+        account.imported;
+
     let amountText = '';
     if (networkSymbol !== currency && amount.length > 0 && !errors.amount) {
         amountText = `${amount} ${currency.toUpperCase()}`;
@@ -516,13 +518,14 @@ const AccountSend = (props: Props) => {
                 </AdvancedForm>
             )}
 
-            {props.selectedAccount.pending.length > 0 && (
-                <PendingTransactions
-                    pending={props.selectedAccount.pending}
-                    tokens={props.selectedAccount.tokens}
-                    network={network}
-                />
-            )}
+            {props.selectedAccount.pending.length > 0 ||
+                (account.imported && (
+                    <PendingTransactions
+                        pending={props.selectedAccount.pending}
+                        tokens={props.selectedAccount.tokens}
+                        network={network}
+                    />
+                ))}
         </Content>
     );
 };
