@@ -1,7 +1,13 @@
 {
     "compilerOptions": {
+      "plugins": [
+        {
+          "name": "typescript-styled-plugin"
+        }
+      ],
       "baseUrl": "./src",
       "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true,
       "module": "es2015",
       "target": "es5",
       "lib": ["es6", "dom"],

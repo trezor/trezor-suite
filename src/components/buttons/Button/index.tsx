@@ -158,7 +158,7 @@ const Button = ({
     additionalClassName,
     onClick,
     onMouseEnter,
-    onMouseLeave,
+    onMouseLeave, 
     onFocus,
     isDisabled = false,
     isWhite = false,
