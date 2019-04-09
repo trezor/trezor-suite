@@ -54,7 +54,7 @@ const Import = (props: Props) => {
                 <StyledSelect
                     value={selectedNetwork}
                     options={networks
-                        .sort((a, b) => a.shortcut > b.shortcut)
+                        .sort((a, b) => a.shortcut.localeCompare(b.shortcut))
                         .map(net => ({
                             label: net.shortcut,
                             value: net,

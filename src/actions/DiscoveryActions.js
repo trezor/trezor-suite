@@ -385,7 +385,7 @@ export const addAccount = (): ThunkAction => (dispatch: Dispatch, getState: GetS
 
 export const addImportedAccounts = (): ThunkAction => (dispatch: Dispatch): void => {
     // get imported accounts from local storage
-    const importedAccounts = dispatch(LocalStorageActions.getImportedAccounts());
+    const importedAccounts = LocalStorageActions.getImportedAccounts();
     if (importedAccounts) {
         // create each account
         importedAccounts.forEach(account => {

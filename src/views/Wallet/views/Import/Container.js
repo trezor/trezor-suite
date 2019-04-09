@@ -5,12 +5,12 @@ import { bindActionCreators } from 'redux';
 import * as AccountsAction from 'actions/AccountsActions';
 
 import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { Device, State, Dispatch } from 'flowtype';
+import type { TrezorDevice, Config, State, Dispatch } from 'flowtype';
 import ImportView from './index';
 
 export type StateProps = {
-    transport: $ElementType<$ElementType<State, 'connect'>, 'transport'>,
-    device: ?Device,
+    device: ?TrezorDevice,
+    config: Config,
     children?: React.Node,
 };
 

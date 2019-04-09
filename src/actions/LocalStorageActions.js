@@ -323,8 +323,8 @@ export const setLocalCurrency = (): ThunkAction => (
     storageUtils.set(TYPE, KEY_LOCAL_CURRENCY, JSON.stringify(localCurrency));
 };
 
-export const setImportedAccount = (account: Account): ThunkAction => (dispatch: Dispatch): void => {
-    const prevImportedAccounts: ?Array<Account> = dispatch(getImportedAccounts());
+export const setImportedAccount = (account: Account): ThunkAction => (): void => {
+    const prevImportedAccounts: ?Array<Account> = getImportedAccounts();
     let importedAccounts = [account];
     if (prevImportedAccounts) {
         importedAccounts = importedAccounts.concat(prevImportedAccounts);
@@ -332,18 +332,18 @@ export const setImportedAccount = (account: Account): ThunkAction => (dispatch: 
     storageUtils.set(TYPE, KEY_IMPORTED_ACCOUNTS, JSON.stringify(importedAccounts));
 };
 
-export const getImportedAccounts = (): ThunkAction => (): ?Array<Account> => {
+export const getImportedAccounts = (): ?Array<Account> => {
     const importedAccounts: ?string = storageUtils.get(TYPE, KEY_IMPORTED_ACCOUNTS);
     if (importedAccounts) {
         return JSON.parse(importedAccounts);
     }
-    return importedAccounts;
+    return null;
 };
 
 export const removeImportedAccounts = (device: TrezorDevice): ThunkAction => (
     dispatch: Dispatch
 ): void => {
-    const importedAccounts: ?Array<Account> = dispatch(getImportedAccounts());
+    const importedAccounts: ?Array<Account> = getImportedAccounts();
     if (!importedAccounts) return;
 
     const deviceId = device.features ? device.features.device_id : null;

@@ -2,7 +2,7 @@
 
 import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
-import type { Action, TrezorDevice, Network } from 'flowtype';
+import type { Action, AsyncAction, TrezorDevice, Network, Dispatch, GetState } from 'flowtype';
 import type { Account, State } from 'reducers/AccountsReducer';
 import * as BlockchainActions from 'actions/ethereum/BlockchainActions';
 import * as LocalStorageActions from 'actions/LocalStorageActions';
@@ -27,13 +27,17 @@ export const update = (account: Account): Action => ({
 export const importAddress = (
     address: string,
     network: Network,
-    device: TrezorDevice
+    device: ?TrezorDevice
 ): AsyncAction => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     if (!device) return;
 
     let payload;
     const index = getState().accounts.filter(
-        a => a.imported === true && a.network === network.shortcut && a.deviceState === device.state
+        a =>
+            a.imported === true &&
+            a.network === network.shortcut &&
+            device &&
+            a.deviceState === device.state
     ).length;
 
     try {
@@ -58,9 +62,22 @@ export const importAddress = (
                 transactions: account.transactions,
                 empty,
 
-                networkType: network.type,
+                networkType: 'ethereum',
                 nonce: account.nonce,
             };
+            dispatch({
+                type: ACCOUNT.CREATE,
+                payload,
+            });
+            dispatch(LocalStorageActions.setImportedAccount(payload));
+            dispatch({
+                type: NOTIFICATION.ADD,
+                payload: {
+                    type: 'success',
+                    title: 'The account has been successfully imported',
+                    cancelable: true,
+                },
+            });
         } else if (network.type === 'ripple') {
             const response = await TrezorConnect.rippleGetAccountInfo({
                 account: {
@@ -93,24 +110,24 @@ export const importAddress = (
                 transactions: account.transactions,
                 empty,
 
-                networkType: network.type,
+                networkType: 'ripple',
                 sequence: account.sequence,
                 reserve: toDecimalAmount(account.reserve, network.decimals),
             };
+            dispatch({
+                type: ACCOUNT.CREATE,
+                payload,
+            });
+            dispatch(LocalStorageActions.setImportedAccount(payload));
+            dispatch({
+                type: NOTIFICATION.ADD,
+                payload: {
+                    type: 'success',
+                    title: 'The account has been successfully imported',
+                    cancelable: true,
+                },
+            });
         }
-        dispatch({
-            type: ACCOUNT.CREATE,
-            payload,
-        });
-        dispatch(LocalStorageActions.setImportedAccount(payload));
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                type: 'success',
-                title: 'The account has been successfully imported',
-                cancelable: true,
-            },
-        });
     } catch (error) {
         dispatch({
             type: NOTIFICATION.ADD,
