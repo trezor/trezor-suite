@@ -3,9 +3,16 @@ import styled, { css } from 'styled-components';
 
 import { FONT_SIZE } from 'config/variables';
 import Icon from 'components/Icon';
-import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import icons from 'config/icons';
+
+interface Props {
+    isChecked: boolean
+}
+
+interface State {
+
+}
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,7 +26,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<Props>`
     display: flex;
     border-radius: 2px;
     justify-content: center;
@@ -41,7 +48,7 @@ const IconWrapper = styled.div`
     }
 `;
 
-const Label = styled.div`
+const Label = styled.div<Props>`
     display: flex;
     padding-left: 10px;
     justify-content: center;
@@ -54,8 +61,8 @@ const Label = styled.div`
     }
 `;
 
-class Checkbox extends PureComponent {
-    handleKeyboard(event) {
+class Checkbox extends PureComponent<Props> {
+    handleKeyboard(event: KeyboardEvent) {
         if (event.keyCode === 32) {
             this.props.onClick(event);
         }
@@ -80,11 +87,5 @@ class Checkbox extends PureComponent {
         );
     }
 }
-
-Checkbox.propTypes = {
-    onClick: PropTypes.func.isRequired,
-    isChecked: PropTypes.bool,
-    children: PropTypes.string,
-};
 
 export default Checkbox;
