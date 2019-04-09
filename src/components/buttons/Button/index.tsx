@@ -3,10 +3,19 @@ import styled, { css } from 'styled-components';
 import Icon from 'components/Icon';
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { ReactNode} from 'react';
 import colors from 'config/colors';
 
-const Wrapper = styled.button`
+interface Props {
+    isDisabled: boolean
+    isInverse: boolean
+    isWhite: boolean
+    isTransparent: boolean
+    additionalClassName: string
+    children: ReactNode
+}
+
+const Wrapper = styled.button<Props>`
     display: flex;
     position: relative;
     align-items: center;
@@ -152,7 +161,7 @@ const Wrapper = styled.button`
         `}
 `;
 
-const Button = ({
+const Button =({
     children,
     className,
     additionalClassName,
