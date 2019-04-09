@@ -15,7 +15,7 @@ import l10nCommonMessages from 'views/common.messages';
 import VerifyAddressTooltip from '../components/VerifyAddressTooltip';
 
 import l10nMessages from './index.messages';
-import l10nReceiveMessages from '../../common.messages';
+import l10nReceiveMessages from '../common.messages';
 
 import type { Props } from './Container';
 
