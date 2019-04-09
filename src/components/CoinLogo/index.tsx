@@ -8,7 +8,7 @@ const CoinLogo = ({ network, className, ...rest }) => {
     return (
         <Logo
             className={className}
-                src={require(`../../images/coins/${network}.png`)} // eslint-disable-line
+                src={require(`../../images/coins/${network}.png`)}
             {...rest}
         />
     );

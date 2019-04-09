@@ -5,6 +5,11 @@
           "name": "typescript-styled-plugin"
         }
       ],
+      "paths": {
+        "components/*": ["components/*"],
+        "utils/*": ["utils/*"],
+        "config/*": ["config/*"]
+      },
       "baseUrl": "./src",
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,
@@ -16,7 +21,7 @@
       "jsx": "react",
       "moduleResolution": "node",
       "rootDir": "../",
-      "outDir": "dist",
+      "outDir": "build",
       "noImplicitReturns": true,
       "noImplicitThis": true,
       "noImplicitAny": true,
