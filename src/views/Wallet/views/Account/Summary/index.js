@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import type { State } from 'flowtype';
 import EthereumTypeSummary from './ethereum/Container';
 import RippleTypeSummary from './ripple/Container';
+import BitcoinTypeSummary from './bitcoin/Container';
 
 type WrapperProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,
@@ -25,6 +26,8 @@ export default connect(
             return <EthereumTypeSummary />;
         case 'ripple':
             return <RippleTypeSummary />;
+        case 'bitcoin':
+            return <BitcoinTypeSummary />;
         default:
             return null;
     }

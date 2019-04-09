@@ -3,9 +3,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import type { State } from 'flowtype';
-import EthereumTypeSendForm from './components/ethereum/Container';
-import RippleTypeSendForm from './components/ripple/Container';
-import BitcoinTypeSendForm from './components/bitcoin/Container';
+import EthereumTypeSendForm from './ethereum/Container';
+import RippleTypeSendForm from './ripple/Container';
+import BitcoinTypeSendForm from './bitcoin/Container';
 
 export type BaseProps = {
     selectedAccount: $ElementType<State, 'selectedAccount'>,

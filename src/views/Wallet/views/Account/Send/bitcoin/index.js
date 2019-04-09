@@ -2,12 +2,12 @@ import React from 'react';
 import Content from 'views/Wallet/components/Content';
 import Title from 'views/Wallet/components/Title';
 
-const AccountSend = () => {
+const BitcoinSend = () => {
     return (
         <Content>
-            <Title>bitcoin</Title>
+            <Title>Send bitcoin</Title>
         </Content>
     );
 };
 
-export default AccountSend;
+export default BitcoinSend;
