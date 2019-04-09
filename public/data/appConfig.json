@@ -1,6 +1,13 @@
 {
     "networks": [
         {
+            "order": 1,
+            "type": "bitcoin",
+            "name": "Bitcoin",
+            "symbol": "BTC",
+            "shortcut": "btc"
+        },
+        {
             "order": 2,
             "type": "ethereum",
             "name": "Ethereum",

@@ -5,7 +5,7 @@ import { colors, H5 } from 'trezor-ui-components';
 import Transaction from 'components/Transaction';
 
 import type { Network } from 'reducers/LocalStorageReducer';
-import type { BaseProps } from '../../index';
+import type { BaseProps } from '../../../index';
 // import testData from './test.data';
 
 type Props = {

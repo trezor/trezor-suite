@@ -14,7 +14,7 @@ import PendingTransactions from '../components/PendingTransactions';
 import AdvancedForm from './components/AdvancedForm';
 
 import l10nMessages from './index.messages';
-import l10nSendMessages from '../../common.messages';
+import l10nSendMessages from '../../../common.messages';
 
 import type { Props } from './Container';
 
