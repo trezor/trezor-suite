@@ -15,7 +15,7 @@ export const LANGUAGE = [
     { code: 'ru', name: 'Русский', en: 'Russian' },
     { code: 'uk', name: 'Українська', en: 'Ukrainian' },
     { code: 'zh', name: '中文(简体)', en: 'Chinese Simplified' },
-    { code: 'zh_TW', name: '中文(台灣)', en: 'Chinese Traditional' },
+    { code: 'zh-TW', name: '中文(台灣)', en: 'Chinese Traditional' },
 ];
 
 export const FIAT_CURRENCIES = [
