@@ -323,8 +323,8 @@ export const setLocalCurrency = (): ThunkAction => (
     storageUtils.set(TYPE, KEY_LOCAL_CURRENCY, JSON.stringify(localCurrency));
 };
 
-export const setImportedAccount = (account: Account): void => {
-    const prevImportedAccounts: ?Array<Account> = getImportedAccounts();
+export const setImportedAccount = (account: Account): ThunkAction => (dispatch: Dispatch): void => {
+    const prevImportedAccounts: ?Array<Account> = dispatch(getImportedAccounts());
     let importedAccounts = [account];
     if (prevImportedAccounts) {
         importedAccounts = importedAccounts.concat(prevImportedAccounts);
@@ -332,7 +332,7 @@ export const setImportedAccount = (account: Account): void => {
     storageUtils.set(TYPE, KEY_IMPORTED_ACCOUNTS, JSON.stringify(importedAccounts));
 };
 
-export const getImportedAccounts = (): ?Array<Account> => {
+export const getImportedAccounts = (): ThunkAction => (): ?Array<Account> => {
     const importedAccounts: ?string = storageUtils.get(TYPE, KEY_IMPORTED_ACCOUNTS);
     if (importedAccounts) {
         return JSON.parse(importedAccounts);
@@ -340,15 +340,18 @@ export const getImportedAccounts = (): ?Array<Account> => {
     return importedAccounts;
 };
 
-export const removeImportedAccounts = (device: TrezorDevice): void => {
-    const importedAccounts: ?Array<Account> = getImportedAccounts();
+export const removeImportedAccounts = (device: TrezorDevice): ThunkAction => (
+    dispatch: Dispatch
+): void => {
+    const importedAccounts: ?Array<Account> = dispatch(getImportedAccounts());
     if (!importedAccounts) return;
 
+    const deviceId = device.features ? device.features.device_id : null;
     const filteredImportedAccounts = importedAccounts.filter(
-        account => account.deviceState !== device.state
+        account => account.deviceID !== deviceId
     );
     storageUtils.remove(TYPE, KEY_IMPORTED_ACCOUNTS);
     filteredImportedAccounts.forEach(account => {
-        setImportedAccount(account);
+        dispatch(setImportedAccount(account));
     });
 };

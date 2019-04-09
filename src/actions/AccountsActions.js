@@ -102,7 +102,7 @@ export const importAddress = (
             type: ACCOUNT.CREATE,
             payload,
         });
-        LocalStorageActions.setImportedAccount(payload);
+        dispatch(LocalStorageActions.setImportedAccount(payload));
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {

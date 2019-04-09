@@ -59,7 +59,7 @@ const LocalStorageService: Middleware = (api: MiddlewareAPI) => (next: Middlewar
         case CONNECT.FORGET_SINGLE:
         case CONNECT.FORGET_SILENT:
             api.dispatch(LocalStorageActions.save());
-            LocalStorageActions.removeImportedAccounts(action.device);
+            api.dispatch(LocalStorageActions.removeImportedAccounts(action.device));
             break;
 
         case CONNECT.RECEIVE_WALLET_TYPE:
