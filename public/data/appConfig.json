@@ -2,6 +2,7 @@
     "networks": [
         {
             "order": 1,
+            "isHidden": true,
             "type": "bitcoin",
             "name": "Bitcoin",
             "symbol": "BTC",
