@@ -89,18 +89,9 @@ export const getSelectedAccount = (state: State): ?Account => {
         ? parseInt(locationState.account.substr(1), 10)
         : parseInt(locationState.account, 10);
 
-    if (isImported) {
-        return state.accounts.find(
-            a =>
-                a.imported === true &&
-                a.deviceState === device.state &&
-                a.index === index &&
-                a.network === locationState.network
-        );
-    }
     return state.accounts.find(
         a =>
-            a.imported === false &&
+            a.imported === isImported &&
             a.deviceState === device.state &&
             a.index === index &&
             a.network === locationState.network
