@@ -115,6 +115,9 @@ const AccountMenu = (props: Props) => {
     if (!selected || !network) return null;
 
     const deviceAccounts: Accounts = findDeviceAccounts(accounts, selected, location.state.network);
+    const discoveryAccounts: Accounts = deviceAccounts.filter(
+        account => account.imported === false
+    );
 
     const selectedAccounts = deviceAccounts.map((account, i) => {
         // const url: string = `${baseUrl}/network/${location.state.network}/account/${i}`;
@@ -187,7 +190,7 @@ const AccountMenu = (props: Props) => {
     );
 
     if (discovery && discovery.completed) {
-        const lastAccount = deviceAccounts[deviceAccounts.length - 1];
+        const lastAccount = discoveryAccounts[discoveryAccounts.length - 1];
         if (!selected.connected) {
             discoveryStatus = (
                 <Tooltip
