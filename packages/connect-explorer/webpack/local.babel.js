@@ -71,6 +71,10 @@ module.exports = {
                     name: '[name].[ext]',
                 },
             },
+            // {
+            //     test: /.blake2b\.wasm$/,
+            //     use: '/Users/szymon.lesisz/Workspace/SatoshiLabs/trezor-connect/node_modules/blake2b-wasm/blake2b.js'
+            // },
             {
                 type: 'javascript/auto',
                 test: /\.wasm$/,
@@ -94,13 +98,15 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules', `${TREZOR_CONNECT_ROOT}/node_modules`],
         alias: {
-            'trezor-connect': `${TREZOR_CONNECT}`
+            'trezor-connect': `${TREZOR_CONNECT}`,
         }
     },
     performance: {
         hints: false
     },
     plugins: [
+        new webpack.NormalModuleReplacementPlugin(/.blake2b$/, './blake2b.js'),
+
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: '[id].css',
