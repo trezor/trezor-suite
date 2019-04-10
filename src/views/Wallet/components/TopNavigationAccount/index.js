@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { colors } from 'trezor-ui-components';
 import type { State } from 'flowtype';
 import { FormattedMessage } from 'react-intl';
+import navigationConstants from './constants/navigation';
 
 import l10nMessages from './index.messages';
 import Indicator from './components/Indicator';
@@ -108,7 +109,7 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
                 <StyledNavLink to={`${basePath}/send`}>
                     <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
                 </StyledNavLink>
-                {network.type === 'ethereum' && (
+                {navigationConstants.HAS_SIGN_VERIFY.includes(network.type) && (
                     <StyledNavLink to={`${basePath}/signverify`}>
                         <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
                     </StyledNavLink>
