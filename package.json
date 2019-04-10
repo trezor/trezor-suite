@@ -52,7 +52,6 @@
     "eslint": "^5.7.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^4.1.0",
-    "eslint-import-resolver-babel-module": "^5.0.1",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-flowtype": "^3.0.0",
     "eslint-plugin-import": "^2.14.0",
@@ -73,7 +72,6 @@
     "ws": "^6.1.2"
   },
   "dependencies": {
-    "babel-plugin-module-resolver": "^3.2.0",
     "bignumber.js": "^8.0.1",
     "es6-promise": "^4.2.5",
     "events": "^3.0.0",

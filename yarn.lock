@@ -746,17 +746,6 @@ babel-plugin-check-es2015-constants@^6.22.0:
   dependencies:
     babel-runtime "^6.22.0"
 
-babel-plugin-module-resolver@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-module-resolver/-/babel-plugin-module-resolver-3.2.0.tgz#ddfa5e301e3b9aa12d852a9979f18b37881ff5a7"
-  integrity sha512-tjR0GvSndzPew/Iayf4uICWZqjBwnlMWjSx6brryfQ81F9rxBVqwDJtFCV8oOs0+vJeefK9TmdZtkIFdFe1UnA==
-  dependencies:
-    find-babel-config "^1.1.0"
-    glob "^7.1.2"
-    pkg-up "^2.0.0"
-    reselect "^3.0.1"
-    resolve "^1.4.0"
-
 babel-plugin-syntax-async-functions@^6.8.0:
   version "6.13.0"
   resolved "http://registry.npmjs.org/babel-plugin-syntax-async-functions/-/babel-plugin-syntax-async-functions-6.13.0.tgz#cad9cad1191b5ad634bf30ae0872391e0647be95"
@@ -2134,14 +2123,6 @@ eslint-config-prettier@^4.1.0:
   dependencies:
     get-stdin "^6.0.0"
 
-eslint-import-resolver-babel-module@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/eslint-import-resolver-babel-module/-/eslint-import-resolver-babel-module-5.0.1.tgz#02e36fbefa7aaf8ff0d298ed2651ea48ad26dd1e"
-  integrity sha512-q1IDVrpXAKz90t4x/S9RUeQgSK5wfH1AF/tR3iUAmLeCiAEVep/tNtX9EhQjut8DLgloUfUHoJWd8QCAJXhv+A==
-  dependencies:
-    pkg-up "^2.0.0"
-    resolve "^1.10.0"
-
 eslint-import-resolver-node@^0.3.1:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/eslint-import-resolver-node/-/eslint-import-resolver-node-0.3.2.tgz#58f15fb839b8d0576ca980413476aab2472db66a"
@@ -2517,14 +2498,6 @@ finalhandler@1.1.1:
     parseurl "~1.3.2"
     statuses "~1.4.0"
     unpipe "~1.0.0"
-
-find-babel-config@^1.1.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/find-babel-config/-/find-babel-config-1.2.0.tgz#a9b7b317eb5b9860cda9d54740a8c8337a2283a2"
-  integrity sha512-jB2CHJeqy6a820ssiqwrKMeyC6nNdmrcgkKWJWmpoxpE8RKciYJXCcXRq1h2AzCo5I5BJeN2tkGEO3hLTuePRA==
-  dependencies:
-    json5 "^0.5.1"
-    path-exists "^3.0.0"
 
 find-cache-dir@^0.1.1:
   version "0.1.1"
@@ -4248,13 +4221,6 @@ pkg-dir@^3.0.0:
   dependencies:
     find-up "^3.0.0"
 
-pkg-up@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/pkg-up/-/pkg-up-2.0.0.tgz#c819ac728059a461cab1c3889a2be3c49a004d7f"
-  integrity sha1-yBmscoBZpGHKscOImivjxJoATX8=
-  dependencies:
-    find-up "^2.1.0"
-
 pluralize@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-7.0.0.tgz#298b89df8b93b0221dbf421ad2b1b1ea23fc6777"
@@ -4591,11 +4557,6 @@ requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
-reselect@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
-  integrity sha1-79qpjqdFEyTQkrKyFjpqHXqaIUc=
-
 resolve-async@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/resolve-async/-/resolve-async-1.0.1.tgz#6bf9f26451e9a64a58a13edb82e615ddfcbda86b"
@@ -4621,7 +4582,7 @@ resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
 
-resolve@^1.10.0, resolve@^1.3.2, resolve@^1.4.0:
+resolve@^1.3.2:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.10.0.tgz#3bdaaeaf45cc07f375656dfd2e54ed0810b101ba"
   integrity sha512-3sUr9aq5OfSg2S9pNtPA9hL1FVEAjvfOC4leW0SNf/mpnaakz2a9femSd6LqAww2RaFctwyf1lCqnTHuF1rxDg==
