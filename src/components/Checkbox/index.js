@@ -84,7 +84,7 @@ class Checkbox extends PureComponent {
 Checkbox.propTypes = {
     onClick: PropTypes.func.isRequired,
     isChecked: PropTypes.bool,
-    children: PropTypes.string,
+    children: PropTypes.node,
 };
 
 export default Checkbox;
