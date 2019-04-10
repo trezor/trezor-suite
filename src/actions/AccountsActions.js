@@ -85,7 +85,6 @@ export const importAddress = (
                 },
                 coin: network.shortcut,
             });
-            console.log(response);
 
             // handle TREZOR response error
             if (!response.success) {
