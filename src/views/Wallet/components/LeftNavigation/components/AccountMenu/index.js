@@ -181,7 +181,11 @@ const AccountMenu = (props: Props) => {
                                 </Text>
                             )}
                         </Col>
-                        <RightCol>{account.imported && <Badge>watch-only</Badge>}</RightCol>
+                        {account.imported && (
+                            <RightCol>
+                                <Badge>watch-only</Badge>
+                            </RightCol>
+                        )}
                     </RowAccountWrapper>
                 </Row>
             </NavLink>
