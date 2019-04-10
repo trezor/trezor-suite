@@ -2,6 +2,7 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import type { State } from 'connected-react-router';
+import type { Action } from 'flowtype';
 
 import log from 'reducers/LogReducer';
 import localStorage from 'reducers/LocalStorageReducer';
@@ -60,8 +61,8 @@ export type Reducers = typeof reducers;
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;
 export type ReducersState = $ObjMap<Reducers, $ExtractFunctionReturn>;
 
-export default (history: any) =>
-    combineReducers({
+export default (history: Object) =>
+    combineReducers<Reducers, Action>({
         ...reducers,
         router: connectRouter(history),
     });

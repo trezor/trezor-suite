@@ -2,11 +2,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import type { MapStateToProps } from 'react-redux';
 import type { State } from 'flowtype';
 import RootView from './index';
 
-export type StateProps = {
+type OwnProps = {|
+    children?: React.Node,
+|};
+export type StateProps = {|
     localStorage: $ElementType<State, 'localStorage'>,
     modal: $ElementType<State, 'modal'>,
     wallet: $ElementType<State, 'wallet'>,
@@ -15,16 +17,13 @@ export type StateProps = {
     wallet: $ElementType<State, 'wallet'>,
     devices: $ElementType<State, 'devices'>,
     children?: React.Node,
-};
+|};
 
-type DispatchProps = {};
-type OwnProps = {};
+type DispatchProps = {||};
 
-export type Props = StateProps & DispatchProps;
+export type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
-    state: State
-): StateProps => ({
+const mapStateToProps = (state: State): StateProps => ({
     localStorage: state.localStorage,
     modal: state.modal,
     wallet: state.wallet,
@@ -33,7 +32,6 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
     devices: state.devices,
 });
 
-export default connect(
-    mapStateToProps,
-    null
-)(RootView);
+export default connect<Props, OwnProps, StateProps, DispatchProps, State, _>(mapStateToProps)(
+    RootView
+);

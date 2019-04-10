@@ -7,16 +7,24 @@ import { Link, colors } from 'trezor-ui-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import type { State, Dispatch } from 'flowtype';
 
 import { FONT_SIZE, SCREEN_SIZE, FOOTER_HEIGHT } from 'config/variables';
 import * as LogActions from 'actions/LogActions';
 import l10nMessages from './index.messages';
 
-type Props = {
-    opened: boolean,
+type OwnProps = {|
     isLanding: boolean,
-    toggle: () => any,
-};
+|};
+type StateProps = {|
+    opened: boolean,
+|};
+
+type DispatchProps = {|
+    toggle: typeof LogActions.toggle,
+|};
+
+type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
 
 const Wrapper = styled.div`
     width: 100%;
@@ -134,15 +142,15 @@ Footer.propTypes = {
     toggle: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: State): StateProps => ({
     opened: state.log.opened,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     toggle: bindActionCreators(LogActions.toggle, dispatch),
 });
 
-export default connect(
+export default connect<Props, OwnProps, StateProps, DispatchProps, State, Dispatch>(
     mapStateToProps,
     mapDispatchToProps
 )(Footer);

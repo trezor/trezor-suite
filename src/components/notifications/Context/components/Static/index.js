@@ -12,7 +12,7 @@ export default (props: Props) => {
     const { selectedAccount } = props;
     const { account } = selectedAccount;
     const { location } = props.router;
-    const notifications: Array<Notification> = [];
+    const notifications = [];
 
     if (!location || !selectedAccount || !account) return null;
 

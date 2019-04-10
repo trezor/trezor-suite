@@ -17,6 +17,7 @@
 ./src/flowtype/npm/react-redux_v5.x.x.js
 ./src/flowtype/npm/react-router_v4.x.x.js
 ./src/flowtype/npm/react-router-dom_v4.x.x.js
+; ./src/flowtype/npm/react-intl_v2.x.x.js // TODO: uncomment to get proper flow support for intl (needs some flow fixing) 
 ./src/flowtype/npm/connected-react-router.js
 ./src/flowtype/npm/bignumber.js
 ./src/flowtype/npm/ethereum-types.js

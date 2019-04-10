@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { H4, P } from 'trezor-ui-components';
 import React from 'react';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
 import l10nMessages from './index.messages';
@@ -37,7 +36,4 @@ const Seedless = () => (
     </Wrapper>
 );
 
-export default connect(
-    null,
-    null
-)(Seedless);
+export default Seedless;

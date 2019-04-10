@@ -12,12 +12,18 @@ import * as LogActions from 'actions/LogActions';
 import type { State, Dispatch } from 'flowtype';
 import l10nMessages from './index.messages';
 
-type Props = {
+type OwnProps = {||};
+type StateProps = {|
     log: $ElementType<State, 'log'>,
+|};
+
+type DispatchProps = {|
     toggle: typeof LogActions.toggle,
     copyToClipboard: typeof LogActions.copyToClipboard,
     resetCopyState: typeof LogActions.resetCopyState,
-};
+|};
+
+type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
 
 const Wrapper = styled.div`
     position: relative;
@@ -64,7 +70,7 @@ const ButtonCopy = styled(Button)`
     margin-top: 10px;
 `;
 
-const Log = (props: Props): ?React$Element<string> => {
+const Log = (props: Props) => {
     if (!props.log.opened) return null;
 
     const copyBtn = (
@@ -103,11 +109,11 @@ const Log = (props: Props): ?React$Element<string> => {
     );
 };
 
-export default connect(
-    (state: State) => ({
+export default connect<Props, OwnProps, StateProps, DispatchProps, State, Dispatch>(
+    (state: State): StateProps => ({
         log: state.log,
     }),
-    (dispatch: Dispatch) => ({
+    (dispatch: Dispatch): DispatchProps => ({
         toggle: bindActionCreators(LogActions.toggle, dispatch),
         copyToClipboard: bindActionCreators(LogActions.copyToClipboard, dispatch),
         resetCopyState: bindActionCreators(LogActions.resetCopyState, dispatch),

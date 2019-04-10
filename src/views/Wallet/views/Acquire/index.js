@@ -4,17 +4,26 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import type { IntlShape } from 'react-intl';
 
 import { colors, Notification } from 'trezor-ui-components';
 import * as TrezorConnectActions from 'actions/TrezorConnectActions';
 import type { State, Dispatch } from 'flowtype';
 import l10nMessages from './index.messages';
 
-type Props = {
-    intl: any,
+type OwnProps = {|
+    intl: IntlShape,
+|};
+
+type StateProps = {|
     acquiring: boolean,
+|};
+
+type DispatchProps = {|
     acquireDevice: typeof TrezorConnectActions.acquire,
-};
+|};
+
+type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,12 +52,12 @@ const Acquire = (props: Props) => (
     </Wrapper>
 );
 
-export default injectIntl(
-    connect(
-        (state: State) => ({
+export default injectIntl<OwnProps>(
+    connect<Props, OwnProps, StateProps, DispatchProps, State, Dispatch>(
+        (state: State): StateProps => ({
             acquiring: state.connect.acquiringDevice,
         }),
-        (dispatch: Dispatch) => ({
+        (dispatch: Dispatch): DispatchProps => ({
             acquireDevice: bindActionCreators(TrezorConnectActions.acquire, dispatch),
         })
     )(Acquire)
