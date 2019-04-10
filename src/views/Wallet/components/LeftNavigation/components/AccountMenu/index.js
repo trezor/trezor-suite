@@ -88,6 +88,10 @@ const Col = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
+`
+
+const RightCol = styled(Col)`
+    justify-content: center;
 `;
 
 const Badge = styled.div`
@@ -177,7 +181,7 @@ const AccountMenu = (props: Props) => {
                                 </Text>
                             )}
                         </Col>
-                        <Col>{account.imported && <Badge>watch-only</Badge>}</Col>
+                        <RightCol>{account.imported && <Badge>watch-only</Badge>}</RightCol>
                     </RowAccountWrapper>
                 </Row>
             </NavLink>
