@@ -5,27 +5,51 @@ import { select } from './common';
 const name = 'signTransaction';
 const docs = 'methods/signTransaction.md';
 
-const test = {
+const bch = {
     inputs: `[
     {
-        address_n: [(44 | 0x80000000) >>> 0, (1 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
-        amount: "123456789",
+        address_n: [44 | 0x80000000, 145 | 0x80000000, 0 | 0x80000000, 0, 0],
+        amount: '1995344',
+        prev_hash: 'bc37c28dfb467d2ecb50261387bf752a3977d7e5337915071bb4151e6b711a78',
         prev_index: 0,
-        prev_hash: "20912f98ea3ed849042efed0fdac8cb4fc301961c5988cba56902d8ffb61c337",
-    }
+        script_type: 'SPENDADDRESS',
+    },
 ]`,
     outputs: `[
     {
-        address: "1MJ2tj2ThBE62zXbBYA5ZaN3fdve5CPAz1",
-        amount: "12300000",
-        script_type: "PAYTOADDRESS"
+        address_n: [44 | 0x80000000, 145 | 0x80000000, 0 | 0x80000000, 1, 0],
+        amount: '1896050',
+        script_type: 'PAYTOADDRESS',
     },
     {
-        address_n: [(49 | 0x80000000) >>> 0, (1 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 2, 0],
-        script_type: "PAYTOADDRESS",
-        amount: Number(123456789 - 11000 - 12300000).toString(),
-    }
+        address: 'bitcoincash:qr23ajjfd9wd73l87j642puf8cad20lfmqdgwvpat4',
+        amount: '73452',
+        script_type: 'PAYTOADDRESS',
+    },
 ]`
+};
+
+const test = {
+    inputs: `[
+        {
+            address_n: [(44 | 0x80000000) >>> 0, (1 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
+            amount: "123456789",
+            prev_index: 0,
+            prev_hash: "20912f98ea3ed849042efed0fdac8cb4fc301961c5988cba56902d8ffb61c337",
+        }
+    ]`,
+        outputs: `[
+        {
+            address: "1MJ2tj2ThBE62zXbBYA5ZaN3fdve5CPAz1",
+            amount: "12300000",
+            script_type: "PAYTOADDRESS"
+        },
+        {
+            address_n: [(49 | 0x80000000) >>> 0, (1 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 2, 0],
+            script_type: "PAYTOADDRESS",
+            amount: Number(123456789 - 11000 - 12300000).toString(),
+        }
+    ]`
 };
 
 const dash = {
@@ -124,10 +148,51 @@ const zcash4 = {
     ]`,
 }
 
+const doge2 = {
+    inputs: `[
+        {
+            address_n: [(44 | 0x80000000) >>> 0, (3 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
+            prev_index: 12,
+            prev_hash: "0a4cb7d5c27455333701f0e53812e4be56a0272ad7f168279acfed7b065ee118",
+        },
+]`,
+    outputs: `[
+    {
+        address: "D9vbBhmwXgRegm5kVAcx8j6H2GDM87D58T",
+        amount: "11351855234633976",
+        script_type: "PAYTOADDRESS"
+    },
+]`
+}
+
+const doge = {
+    inputs: `[
+        {
+            address_n: [(44 | 0x80000000) >>> 0, (3 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
+            prev_index: 12,
+            prev_hash: "0a4cb7d5c27455333701f0e53812e4be56a0272ad7f168279acfed7b065ee118",
+        },
+]`,
+    outputs: `[
+        {
+            address: "D9vbBhmwXgRegm5kVAcx8j6H2GDM87D58T",
+            amount: "1351855234633976",
+            script_type: "PAYTOADDRESS"
+        },
+        {
+            address_n: [(44 | 0x80000000) >>> 0, (3 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
+            amount: "10000000000000000",
+            script_type: "PAYTOADDRESS"
+        },
+]`
+}
+
 const examples = {
+    bch,
     test,
     dash,
     zcash,
+    doge,
 }
 
 export default [
@@ -140,7 +205,7 @@ export default [
             {
                 name: 'coin',
                 type: 'select',
-                value: 'dash',
+                value: 'bch',
                 affect: ['inputs', 'outputs'],
                 data: select.map(v => {
                     const example = examples[v.value];

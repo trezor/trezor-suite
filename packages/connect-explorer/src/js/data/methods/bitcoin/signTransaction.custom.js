@@ -35,23 +35,23 @@ export default [
             },
             {
                 name: 'locktime',
-                type: 'input',
+                type: 'number',
                 value: ''
             },
             {
                 name: 'timestamp',
-                type: 'input',
+                type: 'number',
                 value: ''
             },
             {
                 name: 'version',
-                type: 'input',
+                type: 'number',
                 value: ''
             },
             {
                 name: 'versionGroupId',
                 label: 'Version group id',
-                type: 'input',
+                type: 'number',
                 value: ''
             },
             {
@@ -63,12 +63,12 @@ export default [
             {
                 name: 'branchId',
                 label: 'Branch id',
-                type: 'input',
+                type: 'number',
                 value: ''
             },
             {
                 name: 'expiry',
-                type: 'input',
+                type: 'number',
                 value: ''
             },
             {
