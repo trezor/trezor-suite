@@ -50,7 +50,9 @@ const getParam = (field, $params) => {
             params[field.name] = `Invalid function, ${ error.toString() }`
         }
     } else if(field.type === 'number') {
-        params[field.name] = parseInt(field.value, 16);
+        if (!isNaN(parseInt(field.value))) {
+            params[field.name] = parseInt(field.value);
+        }
     } else {
         params[field.name] = field.value;
     }
