@@ -83,7 +83,9 @@ const Import = (props: Props) => {
 
                 <ButtonWrapper>
                     <Button
-                        isDisabled={!selectedNetwork || address === ''}
+                        isDisabled={
+                            !selectedNetwork || address === '' || props.importAccount.loading
+                        }
                         onClick={() =>
                             props.importAddress(address, selectedNetwork.value, props.device)
                         }

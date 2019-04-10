@@ -88,7 +88,7 @@ const Col = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-`
+`;
 
 const RightCol = styled(Col)`
     justify-content: center;
