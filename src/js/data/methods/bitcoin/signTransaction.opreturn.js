@@ -8,23 +8,24 @@ const docs = 'methods/signTransaction.md';
 const test = {
     inputs: `[
     {
-        address_n: [(44 | 0x80000000) >>> 0, (1 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
-        amount: "123456789",
+        address_n: [(49 | 0x80000000) >>> 0, (1 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
+        amount: "999500",
         prev_index: 0,
-        prev_hash: "20912f98ea3ed849042efed0fdac8cb4fc301961c5988cba56902d8ffb61c337",
+        prev_hash: "dcd403a9109821e07f928f46895c33c990f56a6d8ad9679b40f6d4f3532514c2",
+        script_type: "SPENDP2SHWITNESS"
     }
 ]`,
     outputs: `[
     {
-        address: "1MJ2tj2ThBE62zXbBYA5ZaN3fdve5CPAz1",
-        amount: "12300000",
-        script_type: "PAYTOADDRESS"
+        op_return_data: 'deadbeef',
+        amount: '0',
+        script_type: "PAYTOOPRETURN"
     },
     {
-        address_n: [(49 | 0x80000000) >>> 0, (1 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 2, 0],
-        script_type: "PAYTOADDRESS",
-        amount: Number(123456789 - 11000 - 12300000).toString(),
-    }
+        address_n: [(49 | 0x80000000) >>> 0, (1 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
+        amount: '999320',
+        script_type: "PAYTOP2SHWITNESS"
+    },
 ]`
 };
 
