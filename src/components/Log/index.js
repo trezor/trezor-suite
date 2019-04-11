@@ -70,6 +70,11 @@ const ButtonCopy = styled(Button)`
     margin-top: 10px;
 `;
 
+const TooltipContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
+
 const Log = (props: Props) => {
     if (!props.log.opened) return null;
 
@@ -93,13 +98,16 @@ const Log = (props: Props) => {
                 <ReactJson src={props.log.entries} />
             </LogWrapper>
             {props.log.copied ? (
-                <Tooltip
-                    maxWidth={285}
-                    placement="top"
-                    content={<FormattedMessage {...l10nMessages.TR_COPIED} />}
-                >
-                    {copyBtn}
-                </Tooltip>
+                <TooltipContainer>
+                    <Tooltip
+                        maxWidth={285}
+                        placement="top"
+                        content={<FormattedMessage {...l10nMessages.TR_COPIED} />}
+                        onHidden={props.resetCopyState}
+                    >
+                        {copyBtn}
+                    </Tooltip>
+                </TooltipContainer>
             ) : (
                 <CopyWrapper>{copyBtn}</CopyWrapper>
             )}
