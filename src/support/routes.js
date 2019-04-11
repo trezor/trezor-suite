@@ -23,9 +23,9 @@ export const routes: Array<Route> = [
         fields: ['bridge'],
     },
     {
-        name: 'landing-import',
-        pattern: '/import',
-        fields: ['import'],
+        name: 'wallet-import',
+        pattern: '/device/:device/import',
+        fields: ['device', 'import'],
     },
     {
         name: 'wallet-settings',

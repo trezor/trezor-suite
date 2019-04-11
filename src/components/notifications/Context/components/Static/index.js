@@ -4,20 +4,25 @@ import * as React from 'react';
 import { Notification, Link } from 'trezor-ui-components';
 import Bignumber from 'bignumber.js';
 import { FormattedMessage } from 'react-intl';
+import { withRouter } from 'react-router-dom';
+import type { ContextRouter } from 'react-router';
+
 import l10nCommonMessages from 'views/common.messages';
+import { matchPath } from 'react-router';
+import { getPattern } from 'support/routes';
 import l10nMessages from './index.messages';
 import type { Props } from '../../index';
 
-export default (props: Props) => {
+export default withRouter<Props>((props: {| ...Props, ...ContextRouter |}) => {
     const { selectedAccount } = props;
     const { account } = selectedAccount;
     const { location } = props.router;
     const notifications = [];
 
-    if (!location || !selectedAccount || !account) return null;
+    if (!location) return null;
 
     // Ripple minimum reserve notification
-    if (account.networkType === 'ripple') {
+    if (selectedAccount && account && account.networkType === 'ripple') {
         const { reserve, balance } = account;
         const bigBalance = new Bignumber(balance);
         const bigReserve = new Bignumber(reserve);
@@ -51,5 +56,28 @@ export default (props: Props) => {
         }
     }
 
+    // Import tool notification
+    if (matchPath(location.pathname, { path: getPattern('wallet-import') })) {
+        notifications.push(
+            <Notification
+                key="import-warning"
+                type="warning"
+                title="Use at your own risk"
+                message="This is an advanced interface intended for developer use only. Never use this process unless you really know what you are doing."
+            />
+        );
+    }
+
+    if (account && account.imported) {
+        notifications.push(
+            <Notification
+                key="watch-only-info"
+                type="info"
+                title="The account is watch-only"
+                message="A watch-only account is a public address you’ve imported into your wallet, allowing the wallet to watch for outputs but not spend them."
+            />
+        );
+    }
+
     return <React.Fragment>{notifications}</React.Fragment>;
-};
+});

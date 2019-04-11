@@ -83,10 +83,15 @@ export const getSelectedAccount = (state: State): ?Account => {
     const locationState = state.router.location.state;
     if (!device || !locationState.network || !locationState.account) return null;
 
-    const index: number = parseInt(locationState.account, 10);
+    // imported account index has 'i' prefix
+    const isImported = /^i\d+$/i.test(locationState.account);
+    const index: number = isImported
+        ? parseInt(locationState.account.substr(1), 10)
+        : parseInt(locationState.account, 10);
 
     return state.accounts.find(
         a =>
+            a.imported === isImported &&
             a.deviceState === device.state &&
             a.index === index &&
             a.network === locationState.network

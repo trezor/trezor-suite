@@ -2,6 +2,7 @@
 import * as LogActions from 'actions/LogActions';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 import * as DISCOVERY from 'actions/constants/discovery';
+import * as ACCOUNT from 'actions/constants/account';
 
 import type { Middleware, MiddlewareAPI, MiddlewareDispatch, Action } from 'flowtype';
 
@@ -10,6 +11,7 @@ const actions: Array<string> = [
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
     DISCOVERY.START,
+    ACCOUNT.CREATE,
 ];
 
 /**
@@ -39,6 +41,9 @@ const LogService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispatch
             break;
         case DISCOVERY.START:
             api.dispatch(LogActions.add('Discovery started', action));
+            break;
+        case ACCOUNT.CREATE:
+            api.dispatch(LogActions.add('Account created', action));
             break;
         default:
             break;

@@ -101,10 +101,11 @@ const AccountReceive = (props: Props) => {
     const isAddressVerifying =
         props.modal.context === CONTEXT_DEVICE &&
         props.modal.windowType === 'ButtonRequest_Address';
-    const isAddressHidden = !isAddressVerifying && !addressVerified && !addressUnverified;
+    const isAddressHidden =
+        !isAddressVerifying && !addressVerified && !addressUnverified && !account.imported;
 
     let address = `${account.descriptor.substring(0, 20)}...`;
-    if (addressVerified || addressUnverified || isAddressVerifying) {
+    if (addressVerified || addressUnverified || isAddressVerifying || account.imported) {
         address = account.descriptor;
     }
 
@@ -172,7 +173,7 @@ const AccountReceive = (props: Props) => {
                                 )
                             }
                         />
-                        {!(addressVerified || addressUnverified) && (
+                        {!(addressVerified || addressUnverified) && !account.imported && (
                             <ShowAddressButton
                                 onClick={() => props.showAddress(account.accountPath)}
                                 isDisabled={device.connected && !discovery.completed}
@@ -182,20 +183,21 @@ const AccountReceive = (props: Props) => {
                             </ShowAddressButton>
                         )}
                     </Row>
-                    {(addressVerified || addressUnverified) && !isAddressVerifying && (
-                        <QrWrapper>
-                            <Label>
-                                <FormattedMessage {...l10nReceiveMessages.TR_QR_CODE} />
-                            </Label>
-                            <StyledQRCode
-                                bgColor="#FFFFFF"
-                                fgColor="#000000"
-                                level="Q"
-                                style={{ width: 150 }}
-                                value={account.descriptor}
-                            />
-                        </QrWrapper>
-                    )}
+                    {((addressVerified || addressUnverified) && !isAddressVerifying) ||
+                        (account.imported && (
+                            <QrWrapper>
+                                <Label>
+                                    <FormattedMessage {...l10nReceiveMessages.TR_QR_CODE} />
+                                </Label>
+                                <StyledQRCode
+                                    bgColor="#FFFFFF"
+                                    fgColor="#000000"
+                                    level="Q"
+                                    style={{ width: 150 }}
+                                    value={account.descriptor}
+                                />
+                            </QrWrapper>
+                        ))}
                 </AddressWrapper>
             </React.Fragment>
         </Content>

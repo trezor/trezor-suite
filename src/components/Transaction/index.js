@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
+import { SCREEN_SIZE } from 'config/variables';
 import { Link, colors } from 'trezor-ui-components';
 
 import type { Transaction, Network } from 'flowtype';
@@ -17,14 +17,19 @@ const Wrapper = styled.div`
     padding: 14px 0;
     display: flex;
     flex-direction: row;
+    word-break: break-all;
 
     &:last-child {
         border-bottom: 0px;
     }
+
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
 `;
 
 const Addresses = styled.div`
-    flex: 1;
+    flex: 1 1 auto;
 `;
 
 const Address = styled.div`
@@ -43,9 +48,16 @@ const Date = styled(Link)`
     line-height: 18px;
     padding-right: 8px;
     border-bottom: 0px;
+    flex: 0 1 auto;
+    word-break: normal;
+`;
+
+const TransactionHash = styled(Date)`
+    word-break: break-all;
 `;
 
 const Value = styled.div`
+    flex: 1 1 auto;
     padding-left: 8px;
     white-space: nowrap;
     text-align: right;
@@ -100,9 +112,9 @@ const TransactionItem = ({ tx, network }: Props) => {
                     <Address key={addr}>{addr}</Address>
                 ))}
                 {!tx.blockHeight && (
-                    <Date href={url} isGray>
+                    <TransactionHash href={url} isGray>
                         Transaction hash: {tx.hash}
-                    </Date>
+                    </TransactionHash>
                 )}
             </Addresses>
             <Value className={tx.type}>

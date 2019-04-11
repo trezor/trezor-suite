@@ -95,7 +95,11 @@ const complete = (state: State, action: DiscoveryCompleteAction): State => {
 const accountCreate = (state: State, account: Account): State => {
     const index: number = findIndex(state, account.network, account.deviceState);
     const newState: State = [...state];
-    newState[index].accountIndex++;
+    // do not increment index when adding imported account
+    // imported accounts should not interfere with the index used in discovery proccess.
+    if (!account.imported) {
+        newState[index].accountIndex++;
+    }
     return newState;
 };
 
