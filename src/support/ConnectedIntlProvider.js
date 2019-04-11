@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import type { MapStateToProps } from 'react-redux';
 import type { State } from 'flowtype';
 
 import { IntlProvider, addLocaleData } from 'react-intl';
@@ -43,31 +42,35 @@ addLocaleData([
     ...zh,
 ]);
 
-type OwnProps = {
+type OwnProps = {|
     children: React.Node,
-};
+|};
 
-type StateProps = {
+type StateProps = {|
     locale: string,
     messages: { [string]: string },
-};
+|};
 
-type Props = StateProps & OwnProps;
+type Props = {|
+    ...OwnProps,
+    ...StateProps,
+|};
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
-    state: State
-): StateProps => ({
+const mapStateToProps = (state: State): StateProps => ({
     locale: state.wallet.language,
     messages: state.wallet.messages,
 });
 
 const ReactIntlProvider = ({ children, locale, messages }: Props) => (
-    <IntlProvider locale={locale} messages={messages}>
+    <IntlProvider
+        locale={locale}
+        messages={messages}
+        key={locale} // forces rerender IntlProvider when lang file is downloaded
+    >
         {children}
     </IntlProvider>
 );
 
-export default connect(
-    mapStateToProps,
-    null
-)(ReactIntlProvider);
+export default connect<Props, OwnProps, StateProps, _, State, _>(mapStateToProps)(
+    ReactIntlProvider
+);

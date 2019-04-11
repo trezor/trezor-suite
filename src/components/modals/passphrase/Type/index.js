@@ -18,12 +18,16 @@ const Wrapper = styled.div`
     padding: 30px 48px;
 `;
 
+const StyledDeviceIcon = styled(DeviceIcon)`
+    margin-bottom: 10px;
+`;
+
 const Header = styled.div``;
 
 const PassphraseType = (props: Props) => (
     <Wrapper>
         <Header>
-            <DeviceIcon device={props.device} size={60} color={colors.TEXT_SECONDARY} />
+            <StyledDeviceIcon device={props.device} size={32} color={colors.TEXT_SECONDARY} />
             <H5>Complete the action on {props.device.label} device</H5>
             <P size="small">
                 If you enter a wrong passphrase, you will not unlock the desired hidden wallet.

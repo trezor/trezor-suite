@@ -12,10 +12,15 @@ import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
 import Indicator from './components/Indicator';
 
-type Props = {
+type OwnProps = {||};
+
+type StateProps = {|
     router: $ElementType<State, 'router'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-};
+|};
+
+type Props = {| ...OwnProps, ...StateProps |};
+
 type LocalState = {
     wrapper: ?HTMLElement,
 };
@@ -72,7 +77,7 @@ const StyledNavLink = styled(NavLink)`
 `;
 
 class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             wrapper: null,
@@ -121,10 +126,9 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
     }
 }
 
-export default connect(
-    (state: State): Props => ({
+export default connect<Props, OwnProps, StateProps, _, State, _>(
+    (state: State): StateProps => ({
         router: state.router,
         selectedAccount: state.selectedAccount,
-    }),
-    null
+    })
 )(TopNavigationAccount);

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { H4, Button, P } from 'trezor-ui-components';
 import { getOldWalletUrl } from 'utils/url';
 import React from 'react';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
 import l10nCommonMessages from 'views/common.messages';
@@ -54,7 +53,4 @@ const Initialize = (props: Props) => (
     </Wrapper>
 );
 
-export default connect(
-    null,
-    null
-)(Initialize);
+export default Initialize;

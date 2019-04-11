@@ -2,34 +2,31 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import * as TokenActions from 'actions/TokenActions';
 
 import type { State, Dispatch } from 'flowtype';
 import Summary from './index';
 
-type OwnProps = {};
+type OwnProps = {||};
 
-type StateProps = {
+type StateProps = {|
     selectedAccount: $ElementType<State, 'selectedAccount'>,
     summary: $ElementType<State, 'summary'>,
     wallet: $ElementType<State, 'wallet'>,
     tokens: $ElementType<State, 'tokens'>,
     fiat: $ElementType<State, 'fiat'>,
     localStorage: $ElementType<State, 'localStorage'>,
-};
+|};
 
-type DispatchProps = {
+type DispatchProps = {|
     addToken: typeof TokenActions.add,
     loadTokens: typeof TokenActions.load,
     removeToken: typeof TokenActions.remove,
-};
+|};
 
-export type Props = StateProps & DispatchProps;
+export type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
-    state: State
-): StateProps => ({
+const mapStateToProps = (state: State): StateProps => ({
     selectedAccount: state.selectedAccount,
     summary: state.summary,
     wallet: state.wallet,
@@ -38,15 +35,13 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
     localStorage: state.localStorage,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
-    dispatch: Dispatch
-): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     addToken: bindActionCreators(TokenActions.add, dispatch),
     loadTokens: bindActionCreators(TokenActions.load, dispatch),
     removeToken: bindActionCreators(TokenActions.remove, dispatch),
 });
 
-export default connect(
+export default connect<Props, OwnProps, StateProps, DispatchProps, State, Dispatch>(
     mapStateToProps,
     mapDispatchToProps
 )(Summary);
