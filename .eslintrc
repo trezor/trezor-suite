@@ -53,14 +53,23 @@
         "cypress"
     ],
     "settings": {
-        "import/resolver": {
-            "babel-module": {}
-        },
         "import/ignore": [
             "\\.(scss|less|css)$"
-        ]
+        ],
+        "import/parsers": {
+            "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+            "typescript": {
+                "directory": "./.storybook/tsconfig.json"
+            }
+        }
     },
     "parserOptions": {
+        "parser":  "@typescript-eslint/parser",
+        "extends":  [
+            "plugin:@typescript-eslint/recommended"
+        ],
         "ecmaVersion": 2018,
         "sourceType": "module",
         "ecmaFeatures": {

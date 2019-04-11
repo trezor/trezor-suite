@@ -10,7 +10,7 @@
         "utils/*": ["utils/*"],
         "config/*": ["config/*"]
       },
-      "baseUrl": "../src",
+      "baseUrl": "src",
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,
       "module": "es2015",
@@ -20,7 +20,7 @@
       "allowJs": false,
       "jsx": "react",
       "moduleResolution": "node",
-      "rootDir": "../",
+      "rootDir": "src",
       "outDir": "build",
       "noImplicitReturns": true,
       "noImplicitThis": true,
