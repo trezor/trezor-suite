@@ -96,7 +96,7 @@ class MenuItems extends PureComponent {
                         </Label>
                     </Item>
                 )}
-                {!this.showRenewSession() && (
+                {this.showRenewSession() && (
                     <Item onClick={() => this.props.acquireDevice()}>
                         <IconWrapper>
                             <DeviceIcon
