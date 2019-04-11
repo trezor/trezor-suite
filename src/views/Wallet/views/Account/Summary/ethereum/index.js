@@ -94,7 +94,9 @@ const AccountSummary = (props: Props) => {
                         <StyledCoinLogo height={23} network={account.network} />
                         <AccountTitle>
                             <FormattedMessage
-                                {...l10nCommonMessages.TR_ACCOUNT_HASH}
+                                {...(account.imported
+                                    ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
+                                    : l10nCommonMessages.TR_ACCOUNT_HASH)}
                                 values={{ number: parseInt(account.index, 10) + 1 }}
                             />
                         </AccountTitle>

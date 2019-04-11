@@ -11,6 +11,7 @@ import notifications from 'reducers/NotificationReducer';
 import modal from 'reducers/ModalReducer';
 import web3 from 'reducers/Web3Reducer';
 import accounts from 'reducers/AccountsReducer';
+import importAccount from 'reducers/ImportAccountReducer';
 import selectedAccount from 'reducers/SelectedAccountReducer';
 import sendFormEthereum from 'reducers/SendFormEthereumReducer';
 import sendFormRipple from 'reducers/SendFormRippleReducer';
@@ -32,6 +33,7 @@ const reducers = {
     notifications,
     modal,
     web3,
+    importAccount,
     accounts,
     selectedAccount,
     sendFormEthereum,

@@ -44,6 +44,10 @@ const StyledCoinLogo = styled(CoinLogo)`
     margin-right: 10px;
 `;
 
+const StyledLink = styled(Link)`
+    font-size: ${FONT_SIZE.SMALL};
+`;
+
 const AccountSummary = (props: Props) => {
     const device = props.wallet.selectedDevice;
     const { account, network, pending, shouldRender } = props.selectedAccount;
@@ -69,17 +73,19 @@ const AccountSummary = (props: Props) => {
                         <StyledCoinLogo height={23} network={account.network} />
                         <AccountTitle>
                             <FormattedMessage
-                                {...l10nCommonMessages.TR_ACCOUNT_HASH}
+                                {...(account.imported
+                                    ? l10nCommonMessages.TR_IMPORTED_ACCOUNT_HASH
+                                    : l10nCommonMessages.TR_ACCOUNT_HASH)}
                                 values={{ number: parseInt(account.index, 10) + 1 }}
                             />
                         </AccountTitle>
                     </AccountName>
                     {!account.empty && (
-                        <Link href={explorerLink} isGray>
+                        <StyledLink href={explorerLink} isGray>
                             <FormattedMessage
                                 {...l10nSummaryMessages.TR_SEE_FULL_TRANSACTION_HISTORY}
                             />
-                        </Link>
+                        </StyledLink>
                     )}
                 </AccountHeading>
                 <AccountBalance

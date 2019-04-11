@@ -40,11 +40,14 @@ const Loading = styled.div`
     flex-direction: column;
 `;
 
+const LoaderWrapper = styled.div`
+    margin-right: 10px;
+`;
+
 const Title = styled(H4)`
     font-size: ${FONT_SIZE.BIGGER};
     font-weight: ${FONT_WEIGHT.NORMAL};
     color: ${props => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
-    margin-left: 10px;
     text-align: center;
     padding: 0;
 `;
@@ -80,7 +83,11 @@ const Content = ({ className, children, isLoading = false, loader, exceptionPage
         {isLoading && loader && (
             <Loading>
                 <Row>
-                    {loader.type === 'progress' && <Loader size={30} />}
+                    {loader.type === 'progress' && (
+                        <LoaderWrapper>
+                            <Loader size={30} />
+                        </LoaderWrapper>
+                    )}
                     <Title type={loader.type}>
                         {loader.title || (
                             <FormattedMessage {...l10nMessages.TR_INITIALIZING_ACCOUNTS} />

@@ -16,6 +16,11 @@ const definedMessages: Messages = defineMessages({
         defaultMessage: 'Account #{number}',
         description: 'Used in auto-generated account label',
     },
+    TR_IMPORTED_ACCOUNT_HASH: {
+        id: 'TR_IMPORTED_ACCOUNT_HASH',
+        defaultMessage: 'Imported account #{number}',
+        description: 'Used in auto-generated label for imported accounts',
+    },
     TR_CLEAR: {
         id: 'TR_CLEAR',
         defaultMessage: 'Clear',

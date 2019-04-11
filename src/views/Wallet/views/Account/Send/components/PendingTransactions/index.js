@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import styled from 'styled-components';
-import { colors, H5 } from 'trezor-ui-components';
+import { colors, H5, P } from 'trezor-ui-components';
 import Transaction from 'components/Transaction';
 
 import type { Network } from 'reducers/LocalStorageReducer';
@@ -18,6 +18,8 @@ const Wrapper = styled.div`
     border-top: 1px solid ${colors.DIVIDER};
 `;
 
+const NoTransactions = styled(P)``;
+
 const PendingTransactions = (props: Props) => {
     // const pending = props.pending.filter(tx => !tx.rejected).concat(testData);
     const pending = props.pending.filter(tx => !tx.rejected);
@@ -25,6 +27,9 @@ const PendingTransactions = (props: Props) => {
     return (
         <Wrapper>
             <H5>Pending transactions</H5>
+            {pending.length === 0 && (
+                <NoTransactions>There are no pending transactions</NoTransactions>
+            )}
             {pending.map(tx => (
                 <Transaction key={tx.hash} network={props.network} tx={tx} />
             ))}

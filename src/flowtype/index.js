@@ -32,6 +32,7 @@ import type { TokenAction } from 'actions/TokenActions';
 import type { TrezorConnectAction } from 'actions/TrezorConnectActions';
 import type { WalletAction } from 'actions/WalletActions';
 import type { Web3Action } from 'actions/Web3Actions';
+import type { ImportAccountAction } from 'actions/ImportAccountActions';
 import type { FiatRateAction } from 'services/CoingeckoService'; // this service has no action file, all is written inside one file
 
 import type {
@@ -142,7 +143,8 @@ export type Action =
     | TrezorConnectAction
     | WalletAction
     | Web3Action
-    | FiatRateAction;
+    | FiatRateAction
+    | ImportAccountAction;
 
 export type State = ReducersState;
 
