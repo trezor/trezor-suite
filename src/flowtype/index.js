@@ -120,8 +120,15 @@ type UiEventAction = {
     // },
 };
 
+// TODO: join this message with uiMessage
+type IFrameHandshake = {
+    type: 'iframe_handshake',
+    payload: any,
+};
+
 export type Action =
     | RouterAction
+    | IFrameHandshake
     | TransportEventAction
     | DeviceEventAction
     | UiEventAction

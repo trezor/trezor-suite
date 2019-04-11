@@ -94,11 +94,9 @@ const Log = (props: Props) => {
             </LogWrapper>
             {props.log.copied ? (
                 <Tooltip
-                    defaultVisible
                     maxWidth={285}
                     placement="top"
                     content={<FormattedMessage {...l10nMessages.TR_COPIED} />}
-                    afterVisibleChange={props.resetCopyState}
                 >
                     {copyBtn}
                 </Tooltip>

@@ -11140,10 +11140,10 @@ trezor-bridge-communicator@1.0.2:
     request "^2.88.0"
     whatwg-fetch "^3.0.0"
 
-trezor-connect@7.0.2-electron.4:
-  version "7.0.2-electron.4"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-7.0.2-electron.4.tgz#2fad96f11f0136dada5ae6a4dbc4a24b8408a131"
-  integrity sha512-c+DyAnaSI5GeSw7ETSK3CzekDsHR2vI5qltNavpmg8B16aBLvyeL89VCkXZQrxdZGESvO5/vcOMbr1Rdp/sGPQ==
+trezor-connect@7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-7.0.2.tgz#8b1b0d1b3b6dc6564bc3d22fe8f54ba826f2a242"
+  integrity sha512-KAFOqxEHHaFvrG8NGLFlM/QxHcwIa3gwfXcgTjCYM0g0zRpwIQBwe35AKsjAQO5yiTJQGa0Cu5MZufGJRGYjjw==
   dependencies:
     "@babel/runtime" "^7.3.1"
     events "^3.0.0"
