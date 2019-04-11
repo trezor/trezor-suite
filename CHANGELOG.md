@@ -10,7 +10,6 @@ __added__
 
 __updated__
 - flow-bin 0.9.0
-- trezor-connect 7.0.2-electron.4
 
 __changed__
 - Ripple explorer to xrpscan 
