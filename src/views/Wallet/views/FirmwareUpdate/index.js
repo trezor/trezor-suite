@@ -17,9 +17,17 @@ import l10nCommonMessages from 'views/common.messages';
 import type { TrezorDevice, State, Dispatch } from 'flowtype';
 import l10nMessages from './index.messages';
 
-type Props = {
+type OwnProps = {||};
+
+type StateProps = {|
     device: ?TrezorDevice,
-};
+|};
+
+type DispatchProps = {|
+    cancel: typeof RouterActions.selectFirstAvailableDevice,
+|};
+
+type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
 
 const Wrapper = styled.section`
     display: flex;
@@ -180,11 +188,11 @@ const FirmwareUpdate = (props: Props) => (
     </Wrapper>
 );
 
-export default connect(
-    (state: State) => ({
+export default connect<Props, OwnProps, StateProps, DispatchProps, State, Dispatch>(
+    (state: State): StateProps => ({
         device: state.wallet.selectedDevice,
     }),
-    (dispatch: Dispatch) => ({
+    (dispatch: Dispatch): DispatchProps => ({
         cancel: bindActionCreators(RouterActions.selectFirstAvailableDevice, dispatch),
     })
 )(FirmwareUpdate);

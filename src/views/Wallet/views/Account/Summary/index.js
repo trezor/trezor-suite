@@ -6,17 +6,16 @@ import type { State } from 'flowtype';
 import EthereumTypeSummary from './ethereum/Container';
 import RippleTypeSummary from './ripple/Container';
 
-type WrapperProps = {
+type WrapperProps = {|
     selectedAccount: $ElementType<State, 'selectedAccount'>,
-};
+|};
 
 // return container for requested network type
-export default connect(
+export default connect<WrapperProps, any, _, _, _, _>(
     (state: State): WrapperProps => ({
         selectedAccount: state.selectedAccount,
-    }),
-    null
-)(props => {
+    })
+)((props: WrapperProps) => {
     const { network } = props.selectedAccount;
     if (!network) return null;
 

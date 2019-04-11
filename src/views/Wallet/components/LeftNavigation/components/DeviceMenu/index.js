@@ -109,7 +109,7 @@ class DeviceMenu extends PureComponent<Props> {
 
     mouseDownHandler: (event: MouseEvent) => void;
 
-    blurHandler: (event: FocusEvent) => void;
+    blurHandler: () => void;
 
     showDivider() {
         return this.props.devices.length > 1;

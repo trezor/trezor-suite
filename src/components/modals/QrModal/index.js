@@ -6,6 +6,7 @@ import QrReader from 'react-qr-reader';
 import styled from 'styled-components';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, Icon, P, H5, icons, colors } from 'trezor-ui-components';
+import type { IntlShape } from 'react-intl';
 
 import { parseUri } from 'utils/cryptoUriParser';
 import type { parsedURI } from 'utils/cryptoUriParser';
@@ -55,7 +56,7 @@ type Props = {
     onScan: (data: parsedURI) => any,
     onError?: (error: any) => any,
     onCancel?: $ElementType<$ElementType<BaseProps, 'modalActions'>, 'onCancel'>,
-    intl: any,
+    intl: IntlShape,
 };
 
 type State = {

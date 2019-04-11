@@ -7,11 +7,9 @@ import { connect } from 'react-redux';
 import { Route, withRouter } from 'react-router-dom';
 import { getPattern } from 'support/routes';
 
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
-import type { State } from 'flowtype';
+import type { State, Dispatch } from 'flowtype';
 
-import type { WalletAction } from 'actions/WalletActions';
-import { toggleSidebar } from 'actions/WalletActions';
+import * as WalletActions from 'actions/WalletActions';
 import { bindActionCreators } from 'redux';
 
 import Header from 'components/Header';
@@ -29,18 +27,19 @@ import TopNavigationAccount from './components/TopNavigationAccount';
 import TopNavigationDeviceSettings from './components/TopNavigationDeviceSettings';
 import TopNavigationWalletSettings from './components/TopNavigationWalletSettings';
 
-type StateProps = {
+type StateProps = {|
     wallet: $ElementType<State, 'wallet'>,
+|};
+
+type DispatchProps = {|
+    toggleSidebar: typeof WalletActions.toggleSidebar,
+|};
+
+type OwnProps = {|
     children?: React.Node,
-};
+|};
 
-type DispatchProps = {
-    toggleSidebar: WalletAction,
-};
-
-type OwnProps = {};
-
-export type Props = StateProps & DispatchProps;
+export type Props = {| ...StateProps, ...DispatchProps, ...OwnProps |};
 
 const AppWrapper = styled.div`
     position: relative;
@@ -137,26 +136,22 @@ const Wallet = (props: Props) => (
                 <ContextNotifications />
                 <Log />
                 <Body>{props.children}</Body>
-                <Footer />
+                <Footer isLanding={false} />
             </MainContent>
         </WalletWrapper>
         <ModalContainer />
     </AppWrapper>
 );
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
-    state: State
-): StateProps => ({
+const mapStateToProps = (state: State): StateProps => ({
     wallet: state.wallet,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
-    dispatch: Dispatch
-): DispatchProps => ({
-    toggleSidebar: bindActionCreators(toggleSidebar, dispatch),
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+    toggleSidebar: bindActionCreators(WalletActions.toggleSidebar, dispatch),
 });
 
-export default withRouter(
+export default withRouter<Props>(
     connect(
         mapStateToProps,
         mapDispatchToProps
