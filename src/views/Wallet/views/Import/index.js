@@ -87,7 +87,11 @@ const Import = (props: Props) => {
                             !selectedNetwork || address === '' || props.importAccount.loading
                         }
                         onClick={() =>
-                            props.importAddress(address, selectedNetwork.value, props.device)
+                            props.importAddress(
+                                address,
+                                (selectedNetwork || {}).value,
+                                props.device
+                            )
                         }
                     >
                         Import

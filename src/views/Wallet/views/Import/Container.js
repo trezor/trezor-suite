@@ -3,13 +3,15 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as ImportAccountActions from 'actions/ImportAccountActions';
-import type { State, Dispatch } from 'flowtype';
+import type { State, Dispatch, TrezorDevice, Config } from 'flowtype';
 import ImportView from './index';
 
 type OwnProps = {|
     children?: React.Node,
 |};
 export type StateProps = {|
+    device: ?TrezorDevice,
+    config: Config,
     importAccount: $ElementType<State, 'importAccount'>,
 |};
 

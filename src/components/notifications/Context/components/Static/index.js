@@ -5,6 +5,7 @@ import { Notification, Link } from 'trezor-ui-components';
 import Bignumber from 'bignumber.js';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
+import type { ContextRouter } from 'react-router';
 
 import l10nCommonMessages from 'views/common.messages';
 import { matchPath } from 'react-router';
@@ -12,7 +13,7 @@ import { getPattern } from 'support/routes';
 import l10nMessages from './index.messages';
 import type { Props } from '../../index';
 
-export default withRouter((props: Props) => {
+export default withRouter<Props>((props: {| ...Props, ...ContextRouter |}) => {
     const { selectedAccount } = props;
     const { account } = selectedAccount;
     const { location } = props.router;
