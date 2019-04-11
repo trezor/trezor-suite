@@ -5,7 +5,7 @@ import styled, { keyframes } from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import l10nCommonMessages from 'views/common.messages';
 
-import { Button, P, H5, Link, icons, colors } from 'trezor-ui-components';
+import { Button, P, H1, Link, icons, colors } from 'trezor-ui-components';
 
 import { PULSATE } from 'config/animations';
 import { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } from 'config/variables';
@@ -140,9 +140,9 @@ class ConnectDevice extends PureComponent<Props> {
         return (
             <StyledConnectDevice>
                 <Title>
-                    <H5 claim>
+                    <H1 claim>
                         <FormattedMessage {...l10nMessages.TR_THE_PRIVATE_BANK_IN_YOUR_HANDS} />
-                    </H5>
+                    </H1>
                     <P>
                         <FormattedMessage {...l10nMessages.TR_TREZOR_WALLET_IS_AN_EASY_DASH} />
                     </P>
