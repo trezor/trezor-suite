@@ -5,6 +5,7 @@ __added__
 - Fiat currency switcher
 - Application settings
 - Button to copy log to clipboard
+- Import tool (for support)
 - Prettier
 
 __updated__
