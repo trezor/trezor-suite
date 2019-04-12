@@ -29,11 +29,16 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         api.dispatch(WalletActions.init());
         // set initial url
         // TODO: validate if initial url is potentially correct
-        api.dispatch({
-            type: WALLET.SET_INITIAL_URL,
-            pathname: action.payload.location.pathname,
-            state: {},
-        });
+        // exclude landing page url
+        const { pathname } = action.payload.location;
+        const isValidPath = !api.dispatch(RouterActions.isLandingPageUrl(pathname, true));
+        if (isValidPath) {
+            api.dispatch({
+                type: WALLET.SET_INITIAL_URL,
+                pathname: action.payload.location.pathname,
+                state: {},
+            });
+        }
         // pass action and break process
         return next(action);
     }
@@ -62,6 +67,29 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
 
     // update common values ONLY if application is ready
     if (!api.getState().wallet.ready) return action;
+
+    // observe common values in WallerReducer
+    if (!(await api.dispatch(WalletActions.observe(prevState, action)))) {
+        // if "selectedDevice" didn't change observe common values in SelectedAccountReducer
+        if (!(await api.dispatch(SelectedAccountActions.observe(prevState, action)))) {
+            // if "selectedAccount" didn't change observe send form props changes
+            api.dispatch(SendFormActions.observe(prevState, action));
+        }
+    } else {
+        // no changes in common values
+        if (action.type === CONNECT.RECEIVE_WALLET_TYPE) {
+            if (action.device.state) {
+                // redirect to root view (Dashboard) if device was authenticated before
+                api.dispatch(RouterActions.selectFirstAvailableDevice(true));
+            }
+            api.dispatch(TrezorConnectActions.authorizeDevice());
+        }
+        if (action.type === CONNECT.AUTH_DEVICE) {
+            // selected device did changed
+            // try to restore discovery after device authentication
+            api.dispatch(DiscoveryActions.restore());
+        }
+    }
 
     // double verification needed
     // Corner case: LOCATION_CHANGE was called but pathname didn't changed (redirection from RouterService)
@@ -94,29 +122,6 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
 
         // clear notifications
         api.dispatch(NotificationActions.clear(prevLocation.state, currentLocation.state));
-    }
-
-    // observe common values in WallerReducer
-    if (!(await api.dispatch(WalletActions.observe(prevState, action)))) {
-        // if "selectedDevice" didn't change observe common values in SelectedAccountReducer
-        if (!(await api.dispatch(SelectedAccountActions.observe(prevState, action)))) {
-            // if "selectedAccount" didn't change observe send form props changes
-            api.dispatch(SendFormActions.observe(prevState, action));
-        }
-    } else {
-        // no changes in common values
-        if (action.type === CONNECT.RECEIVE_WALLET_TYPE) {
-            if (action.device.state) {
-                // redirect to root view (Dashboard) if device was authenticated before
-                api.dispatch(RouterActions.selectFirstAvailableDevice(true));
-            }
-            api.dispatch(TrezorConnectActions.authorizeDevice());
-        }
-        if (action.type === CONNECT.AUTH_DEVICE) {
-            // selected device did changed
-            // try to restore discovery after device authentication
-            api.dispatch(DiscoveryActions.restore());
-        }
     }
 
     // even if "selectedDevice" didn't change because it was updated on DEVICE.CHANGED before DEVICE.CONNECT action

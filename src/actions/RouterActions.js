@@ -430,29 +430,42 @@ export const setInitialUrl = (): PayloadAction<boolean> => (
     getState: GetState
 ): boolean => {
     const { initialPathname } = getState().wallet;
-    if (typeof initialPathname === 'string' && !dispatch(isLandingPageUrl(initialPathname, true))) {
-        const valid = dispatch(
-            getValidUrl({
-                type: LOCATION_CHANGE,
-                payload: {
-                    location: {
-                        pathname: initialPathname,
-                        hash: '',
-                        search: '',
-                        state: {},
-                    },
-                },
-            })
-        );
+    if (typeof initialPathname !== 'string') return false;
 
-        if (valid === initialPathname) {
-            // reset initial url
-            dispatch({
-                type: SET_INITIAL_URL,
-            });
-            dispatch(goto(valid));
-            return true;
-        }
+    // DEVICE.CONNECT race condition, "selectDevice" method was called but currently selectedDevice is in getState (auth) process
+    // if so, consume this action (return true) to break "selectDevice" process
+    // "setInitialUrl" will be called again after AUTH_DEVICE action
+    const { selectedDevice } = getState().wallet;
+    if (
+        selectedDevice &&
+        selectedDevice.type === 'acquired' &&
+        !selectedDevice.features.passphrase_protection &&
+        !selectedDevice.state
+    )
+        return true;
+
+    const valid = dispatch(
+        getValidUrl({
+            type: LOCATION_CHANGE,
+            payload: {
+                location: {
+                    pathname: initialPathname,
+                    hash: '',
+                    search: '',
+                    state: {},
+                },
+            },
+        })
+    );
+
+    if (valid === initialPathname) {
+        // reset initial url
+        dispatch({
+            type: SET_INITIAL_URL,
+        });
+        dispatch(goto(valid));
+        return true;
     }
+
     return false;
 };
