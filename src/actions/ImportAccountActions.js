@@ -33,15 +33,15 @@ export const importAddress = (
     });
 
     let payload;
-    const index = getState().accounts.filter(
-        a => a.imported === true && a.network === network.shortcut
-    ).length;
-
     try {
         if (network.type === 'ethereum') {
             const account = await dispatch(
                 BlockchainActions.discoverAccount(device, address, network.shortcut)
             );
+
+            const index = getState().accounts.filter(
+                a => a.imported === true && a.network === network.shortcut
+            ).length;
 
             const empty = account.nonce <= 0 && account.balance === '0';
             payload = {
@@ -93,6 +93,9 @@ export const importAddress = (
 
             const account = response.payload;
             const empty = account.sequence <= 0 && account.balance === '0';
+            const index = getState().accounts.filter(
+                a => a.imported === true && a.network === network.shortcut
+            ).length;
 
             payload = {
                 imported: true,
