@@ -429,19 +429,13 @@ export const setInitialUrl = (): PayloadAction<boolean> => (
     dispatch: Dispatch,
     getState: GetState
 ): boolean => {
-    const { initialPathname } = getState().wallet;
-    if (typeof initialPathname !== 'string') return false;
-
     // DEVICE.CONNECT race condition, "selectDevice" method was called but currently selectedDevice is in getState (auth) process
     // if so, consume this action (return true) to break "selectDevice" process
     const { selectedDevice } = getState().wallet;
-    if (
-        selectedDevice &&
-        selectedDevice.type === 'acquired' &&
-        !selectedDevice.features.passphrase_protection &&
-        !selectedDevice.state
-    )
-        return true;
+    if (selectedDevice && selectedDevice.type === 'acquired' && !selectedDevice.state) return true;
+
+    const { initialPathname } = getState().wallet;
+    if (typeof initialPathname !== 'string') return false;
 
     const valid = dispatch(
         getValidUrl({
