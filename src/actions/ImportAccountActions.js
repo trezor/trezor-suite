@@ -34,11 +34,7 @@ export const importAddress = (
 
     let payload;
     const index = getState().accounts.filter(
-        a =>
-            a.imported === true &&
-            a.network === network.shortcut &&
-            device &&
-            a.deviceState === device.state
+        a => a.imported === true && a.network === network.shortcut
     ).length;
 
     try {

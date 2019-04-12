@@ -48,7 +48,12 @@ export const findAccount = (
     deviceState: string,
     network: string
 ): ?Account =>
-    state.find(a => a.deviceState === deviceState && a.index === index && a.network === network);
+    state.find(
+        a =>
+            (a.deviceState === deviceState || a.imported) &&
+            a.index === index &&
+            a.network === network
+    );
 
 export const findDeviceAccounts = (
     state: State,
@@ -56,9 +61,11 @@ export const findDeviceAccounts = (
     network: string
 ): Array<Account> => {
     if (network) {
-        return state.filter(addr => addr.deviceState === device.state && addr.network === network);
+        return state.filter(
+            addr => (addr.deviceState === device.state || addr.imported) && addr.network === network
+        );
     }
-    return state.filter(addr => addr.deviceState === device.state);
+    return state.filter(addr => addr.deviceState === device.state || addr.imported);
 };
 
 const createAccount = (state: State, account: Account): State => {

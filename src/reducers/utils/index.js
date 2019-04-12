@@ -92,7 +92,7 @@ export const getSelectedAccount = (state: State): ?Account => {
     return state.accounts.find(
         a =>
             a.imported === isImported &&
-            a.deviceState === device.state &&
+            (a.deviceState === device.state || a.imported) &&
             a.index === index &&
             a.network === locationState.network
     );
