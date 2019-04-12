@@ -5,12 +5,12 @@ Put your path into TREZOR_CONNECT_ROOT field
 
 Then:
 
-npm install / yarn
+`npm install` / `yarn`
 
 If you want to compile project with TrezorConnect version with popup call:
 
-npm run dev:connect / yarn run dev:connect
+`npm run dev:local` / `yarn dev:local`
 
 otherwise
 
-npm run dev / yarn run dev
+`npm run dev` / `yarn dev`

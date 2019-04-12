@@ -30,7 +30,7 @@ const getParam = (field, $params) => {
     if (field.omit) {
         return params;
     } else if (field.optional) {
-        if (field.value && field.value !== '') {
+        if ((field.value || field.value === 0) && field.value !== '') {
             params[field.name] = field.value;
         }
     } else if (field.hasOwnProperty('defaultValue')) {
