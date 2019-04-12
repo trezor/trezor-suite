@@ -1,7 +1,9 @@
 import { LANGUAGE } from 'config/app';
 
-export const getInitialLocale = (defaultLocale = 'en') => {
-    const browserLocale = navigator.language.split('-')[0];
+export const getInitialLocale = (navigatorLanguage, defaultLocale = 'en') => {
+    if (!navigatorLanguage) return defaultLocale;
+
+    const browserLocale = navigatorLanguage.split('-')[0];
     if (LANGUAGE.some(e => e.code === browserLocale)) {
         // Array of supported languages contains the locale we're looking for
         return browserLocale;

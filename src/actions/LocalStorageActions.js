@@ -277,7 +277,7 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
     if (language) {
         dispatch(WalletActions.fetchLocale(JSON.parse(language)));
     } else {
-        dispatch(WalletActions.fetchLocale(l10nUtils.getInitialLocale()));
+        dispatch(WalletActions.fetchLocale(l10nUtils.getInitialLocale(navigator.language)));
     }
 
     const localCurrency: ?string = storageUtils.get(TYPE, KEY_LOCAL_CURRENCY);
