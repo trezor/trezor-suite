@@ -32,13 +32,12 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         // exclude landing page url
         const { pathname } = action.payload.location;
         const isValidPath = !api.dispatch(RouterActions.isLandingPageUrl(pathname, true));
-        if (isValidPath) {
-            api.dispatch({
-                type: WALLET.SET_INITIAL_URL,
-                pathname: action.payload.location.pathname,
-                state: {},
-            });
-        }
+        api.dispatch({
+            type: WALLET.SET_INITIAL_URL,
+            pathname: isValidPath ? pathname : null,
+            state: {},
+        });
+
         // pass action and break process
         return next(action);
     }
@@ -48,7 +47,7 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
 
     switch (action.type) {
         case WALLET.SET_INITIAL_URL:
-            if (action.pathname) {
+            if (action.hasOwnProperty('pathname')) {
                 api.dispatch(LocalStorageActions.loadData());
             }
             break;

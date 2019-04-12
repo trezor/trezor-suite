@@ -434,7 +434,6 @@ export const setInitialUrl = (): PayloadAction<boolean> => (
 
     // DEVICE.CONNECT race condition, "selectDevice" method was called but currently selectedDevice is in getState (auth) process
     // if so, consume this action (return true) to break "selectDevice" process
-    // "setInitialUrl" will be called again after AUTH_DEVICE action
     const { selectedDevice } = getState().wallet;
     if (
         selectedDevice &&
