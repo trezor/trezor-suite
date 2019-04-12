@@ -409,16 +409,40 @@ export default [
         name: 'Device management',
         children: [
             {
+                name: 'Apply settings',
+                url: '/method/applySettings',
+            },
+            {
+                name: 'Apply flags',
+                url: '/method/applyFlags',
+            },
+            {
+                name: 'Backup device',
+                url: '/method/backupDevice',
+            },
+            {
+                name: 'Change PIN',
+                url: '/method/changePin',
+            },
+            {
+                name: 'Firmware erase',
+                url: '/method/firmwareErase',
+            },
+            {
                 name: 'Get features',
                 url: '/method/getFeatures',
             },
             {
-                name: 'Wipe device',
-                url: '/method/wipeDevice',
+                name: 'Recover device',
+                url: '/method/recoverDevice',
             },
             {
                 name: 'Reset device',
                 url: '/method/resetDevice',
+            },
+            {
+                name: 'Wipe device',
+                url: '/method/wipeDevice',
             },
             {
                 name: 'DebugLink',
