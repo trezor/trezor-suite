@@ -23,7 +23,7 @@ export type WalletAction =
     | {
           type: typeof WALLET.SET_INITIAL_URL,
           state?: RouterLocationState,
-          pathname?: ?string,
+          pathname?: string,
       }
     | {
           type: typeof WALLET.TOGGLE_DEVICE_DROPDOWN,
