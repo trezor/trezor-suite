@@ -1,26 +1,20 @@
 /* @flow */
 import { connect } from 'react-redux';
-import type { MapStateToProps } from 'react-redux';
-import type { State } from 'flowtype';
+import type { State, Dispatch } from 'flowtype';
 import Dashboard from './index';
 
-type OwnProps = {};
+type OwnProps = {||};
 
-type StateProps = {
+type StateProps = {|
     localStorage: $ElementType<State, 'localStorage'>,
     wallet: $ElementType<State, 'wallet'>,
-};
+|};
 
-export type Props = StateProps;
+export type Props = {| ...StateProps |};
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
-    state: State
-): StateProps => ({
+const mapStateToProps = (state: State): StateProps => ({
     localStorage: state.localStorage,
     wallet: state.wallet,
 });
 
-export default connect(
-    mapStateToProps,
-    null
-)(Dashboard);
+export default connect<Props, OwnProps, StateProps, _, State, Dispatch>(mapStateToProps)(Dashboard);

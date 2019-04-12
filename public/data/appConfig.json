@@ -105,8 +105,8 @@
                 ]
             },
             "explorer": {
-                "tx": "https://xrpcharts.ripple.com/#/transactions/",
-                "address": "https://xrpcharts.ripple.com/#/graph/"
+                "tx": "https://xrpscan.com/tx/",
+                "address": "https://xrpscan.com/account/"
             },
             "hasSignVerify": false
         },

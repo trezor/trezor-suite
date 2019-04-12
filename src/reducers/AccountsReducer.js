@@ -75,6 +75,11 @@ const createAccount = (state: State, account: Account): State => {
     }
     const newState: State = [...state];
     newState.push(account);
+
+    // sort the accounts array so the imported accounts always come before discovered accounts
+    if (account.imported) {
+        newState.sort((a, b) => Number(b.imported) - Number(a.imported) || a.index - b.index);
+    }
     return newState;
 };
 

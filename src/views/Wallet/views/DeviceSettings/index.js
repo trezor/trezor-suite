@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { H4, Icon, Button, P, Link, colors, icons as ICONS } from 'trezor-ui-components';
 import { getOldWalletUrl } from 'utils/url';
 import Content from 'views/Wallet/components/Content';
-import { connect } from 'react-redux';
 
 import type { TrezorDevice } from 'flowtype';
 
@@ -51,7 +50,4 @@ const DeviceSettings = (props: Props) => (
     </Content>
 );
 
-export default connect(
-    null,
-    null
-)(DeviceSettings);
+export default DeviceSettings;

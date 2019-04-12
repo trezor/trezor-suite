@@ -9,7 +9,18 @@ import { Button, Icon, P, H5, colors, icons } from 'trezor-ui-components';
 
 import { FONT_SIZE } from 'config/variables';
 import * as WalletActions from 'actions/WalletActions';
+import type { State, Dispatch } from 'flowtype';
 import l10nMessages from './index.messages';
+
+type OwnProps = {||};
+
+type StateProps = {||};
+
+type DispatchProps = {|
+    close: typeof WalletActions.hideBetaDisclaimer,
+|};
+
+type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
 
 const Wrapper = styled.div`
     width: 100%;
@@ -50,7 +61,7 @@ const StyledIcon = styled(Icon)`
     top: -1px;
 `;
 
-const BetaDisclaimer = (props: { close: () => void }) => (
+const BetaDisclaimer = (props: Props) => (
     <Wrapper>
         <ModalWindow>
             <H5>
@@ -115,9 +126,9 @@ const BetaDisclaimer = (props: { close: () => void }) => (
     </Wrapper>
 );
 
-export default connect(
+export default connect<Props, OwnProps, StateProps, DispatchProps, State, Dispatch>(
     null,
-    (dispatch: Dispatch) => ({
+    (dispatch: Dispatch): DispatchProps => ({
         close: bindActionCreators(WalletActions.hideBetaDisclaimer, dispatch),
     })
 )(BetaDisclaimer);

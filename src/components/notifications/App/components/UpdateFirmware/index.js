@@ -5,11 +5,16 @@ import l10nCommonMessages from 'views/common.messages';
 import { withRouter } from 'react-router-dom';
 import { matchPath } from 'react-router';
 import { getPattern } from 'support/routes';
-import type { Props } from '../../index';
+import type { ContextRouter } from 'react-router';
+import type { Props as BaseProps } from '../../index';
 
 import l10nMessages from './index.messages';
 
-export default withRouter((props: Props & { location: any }) => {
+type OwnProps = {||};
+
+export type Props = {| ...OwnProps, ...BaseProps |};
+
+const UpdateFirmware = (props: {| ...Props, ...ContextRouter |}) => {
     const { selectedDevice } = props.wallet;
     const outdated =
         selectedDevice && selectedDevice.features && selectedDevice.firmware === 'outdated';
@@ -36,4 +41,6 @@ export default withRouter((props: Props & { location: any }) => {
             ]}
         />
     );
-});
+};
+
+export default withRouter<{| ...Props |}>(UpdateFirmware);

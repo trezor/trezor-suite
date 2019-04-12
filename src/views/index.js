@@ -14,7 +14,6 @@ import { getPattern } from 'support/routes';
 // landing views
 import RootView from 'views/Landing/views/Root/Container';
 import InstallBridge from 'views/Landing/views/InstallBridge/Container';
-import ImportView from 'views/Landing/views/Import/Container';
 
 // wallet views
 import WalletContainer from 'views/Wallet';
@@ -23,6 +22,7 @@ import AccountSend from 'views/Wallet/views/Account/Send';
 import AccountReceive from 'views/Wallet/views/Account/Receive';
 import AccountSignVerify from 'views/Wallet/views/Account/SignVerify/Container';
 
+import WalletImport from 'views/Wallet/views/Import/Container';
 import WalletDashboard from 'views/Wallet/views/Dashboard/Container';
 import WalletDeviceSettings from 'views/Wallet/views/DeviceSettings';
 import WalletSettings from 'views/Wallet/views/WalletSettings/Container';
@@ -44,11 +44,16 @@ const App = () => (
                     <Route exact path={getPattern('landing-home')} component={RootView} />
                     <Route exact path={getPattern('landing-version')} component={Version} />
                     <Route exact path={getPattern('landing-bridge')} component={InstallBridge} />
-                    <Route exact path={getPattern('landing-import')} component={ImportView} />
                     <Route>
                         <ErrorBoundary>
                             <ImagesPreloader />
                             <WalletContainer>
+                                <Route
+                                    exact
+                                    path={getPattern('wallet-import')}
+                                    component={WalletImport}
+                                />
+
                                 <Route
                                     exact
                                     path={getPattern('wallet-settings')}

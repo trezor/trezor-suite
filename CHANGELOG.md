@@ -1,3 +1,33 @@
+## 1.2.0-beta
+__added__
+- Localization
+- Ability to hide balances
+- Fiat currency switcher
+- Application settings
+- Button to copy log to clipboard
+- Import tool (for support)
+- Prettier
+
+__updated__
+- flow-bin 0.9.0
+
+__changed__
+- Ripple explorer to xrpscan 
+- Coins sorted by market cap
+- Link to "Bitcoin wallet" opens in the same tab
+- Most components are now from trezor-ui-components
+
+__removed__
+- Text "you will be redirected" from coins menu
+
+__fixed__
+- Arrow animation in Send tab
+- Sign and Verify columns size
+- Sign and Verify validation for disabling submit buttons
+- Token select shows all tokens options
+- "Check for devices" button in device menu
+- Close xlm, xem modals when opening external wallet
+
 ## 1.1.1-beta
 __added__
 - Ripple destination tag option

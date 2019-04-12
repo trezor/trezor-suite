@@ -12,11 +12,10 @@ import Raven from 'raven-js';
 import RavenMiddleware from 'redux-raven-middleware';
 import * as buildUtils from 'utils/build';
 
-import type { Action, GetState } from 'flowtype';
+import type { State, Action, Dispatch, GetState } from 'flowtype';
 
 export const history: History = createHistory({ queryKey: false });
 
-const initialState: any = {};
 const enhancers = [];
 
 const middlewares = [thunk, routerMiddleware(history)];
@@ -61,4 +60,4 @@ if (buildUtils.isDev()) {
     );
 }
 
-export default createStore(createRootReducer(history), initialState, composedEnhancers);
+export default createStore<State, Action, Dispatch>(createRootReducer(history), composedEnhancers);

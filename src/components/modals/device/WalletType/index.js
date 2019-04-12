@@ -3,6 +3,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+import type { IntlShape } from 'react-intl';
 
 import { H5, P, Button, Tooltip, Link, Icon, icons, colors } from 'trezor-ui-components';
 
@@ -15,7 +16,7 @@ import l10nMessages from './index.messages';
 import type { Props as BaseProps } from '../../Container';
 
 type Props = {
-    intl: any,
+    intl: IntlShape,
     device: TrezorDevice,
     onWalletTypeRequest: $ElementType<
         $ElementType<BaseProps, 'modalActions'>,

@@ -6,14 +6,13 @@ import { withRouter } from 'react-router-dom';
 import ModalActions from 'actions/ModalActions';
 import ReceiveActions from 'actions/ReceiveActions';
 
-import type { MapStateToProps, MapDispatchToProps } from 'react-redux';
 import type { State, Dispatch } from 'flowtype';
 
 import Modal from './index';
 
-type OwnProps = {};
+type OwnProps = {||};
 
-type StateProps = {
+type StateProps = {|
     modal: $ElementType<State, 'modal'>,
     accounts: $ElementType<State, 'accounts'>,
     devices: $ElementType<State, 'devices'>,
@@ -24,18 +23,16 @@ type StateProps = {
     receive: $ElementType<State, 'receive'>,
     localStorage: $ElementType<State, 'localStorage'>,
     wallet: $ElementType<State, 'wallet'>,
-};
+|};
 
-type DispatchProps = {
+type DispatchProps = {|
     modalActions: typeof ModalActions,
     receiveActions: typeof ReceiveActions,
-};
+|};
 
-export type Props = StateProps & DispatchProps;
+export type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
 
-const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
-    state: State
-): StateProps => ({
+const mapStateToProps = (state: State): StateProps => ({
     modal: state.modal,
     accounts: state.accounts,
     devices: state.devices,
@@ -48,15 +45,13 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (
     wallet: state.wallet,
 });
 
-const mapDispatchToProps: MapDispatchToProps<Dispatch, OwnProps, DispatchProps> = (
-    dispatch: Dispatch
-): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     modalActions: bindActionCreators(ModalActions, dispatch),
     receiveActions: bindActionCreators(ReceiveActions, dispatch),
 });
 
 // export default connect(mapStateToProps, mapDispatchToProps)(Modal);
-export default withRouter(
+export default withRouter<OwnProps>(
     connect(
         mapStateToProps,
         mapDispatchToProps

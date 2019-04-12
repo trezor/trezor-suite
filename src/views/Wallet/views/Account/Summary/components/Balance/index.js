@@ -92,9 +92,12 @@ const Label = styled.div`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
-    margin-left: 6px;
     align-items: center;
     margin-top: -5px;
+`;
+
+const TooltipContainer = styled.div`
+    margin-left: 6px;
 `;
 
 const TooltipWrapper = styled.div`
@@ -138,13 +141,15 @@ class AccountBalance extends PureComponent<Props, State> {
         }
 
         const NoRatesTooltip = (
-            <Tooltip
-                maxWidth={285}
-                placement="top"
-                content={<FormattedMessage {...l10nMessages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
-            >
-                <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
-            </Tooltip>
+            <TooltipContainer>
+                <Tooltip
+                    maxWidth={285}
+                    placement="top"
+                    content={<FormattedMessage {...l10nMessages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
+                >
+                    <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
+                </Tooltip>
+            </TooltipContainer>
         );
 
         return (

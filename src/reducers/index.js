@@ -2,6 +2,7 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import type { State } from 'connected-react-router';
+import type { Action } from 'flowtype';
 
 import log from 'reducers/LogReducer';
 import localStorage from 'reducers/LocalStorageReducer';
@@ -10,6 +11,7 @@ import notifications from 'reducers/NotificationReducer';
 import modal from 'reducers/ModalReducer';
 import web3 from 'reducers/Web3Reducer';
 import accounts from 'reducers/AccountsReducer';
+import importAccount from 'reducers/ImportAccountReducer';
 import selectedAccount from 'reducers/SelectedAccountReducer';
 import sendFormEthereum from 'reducers/SendFormEthereumReducer';
 import sendFormRipple from 'reducers/SendFormRippleReducer';
@@ -31,6 +33,7 @@ const reducers = {
     notifications,
     modal,
     web3,
+    importAccount,
     accounts,
     selectedAccount,
     sendFormEthereum,
@@ -60,8 +63,8 @@ export type Reducers = typeof reducers;
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;
 export type ReducersState = $ObjMap<Reducers, $ExtractFunctionReturn>;
 
-export default (history: any) =>
-    combineReducers({
+export default (history: Object) =>
+    combineReducers<Reducers, Action>({
         ...reducers,
         router: connectRouter(history),
     });
