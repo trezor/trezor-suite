@@ -74,16 +74,18 @@ const Dashboard = (props: Props) => (
                     <FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} />
                 </StyledP>
                 <Coins>
-                    {props.localStorage.config.networks.map(network => (
-                        <StyledNavLink
-                            key={network.shortcut}
-                            to={`${getBaseUrl(props.wallet.selectedDevice)}/network/${
-                                network.shortcut
-                            }/account/0`}
-                        >
-                            <StyledCoinLogo network={network.shortcut} height={32} />
-                        </StyledNavLink>
-                    ))}
+                    {props.localStorage.config.networks
+                        .filter(item => !item.isHidden)
+                        .map(network => (
+                            <StyledNavLink
+                                key={network.shortcut}
+                                to={`${getBaseUrl(props.wallet.selectedDevice)}/network/${
+                                    network.shortcut
+                                }/account/0`}
+                            >
+                                <StyledCoinLogo network={network.shortcut} height={32} />
+                            </StyledNavLink>
+                        ))}
                 </Coins>
             </Row>
         </Wrapper>

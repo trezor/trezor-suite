@@ -14,6 +14,7 @@ type NetworkFeeLevel = {
 
 export type Network = {
     order: number,
+    isHidden: ?boolean,
     type: string,
     name: string,
     testnet?: boolean,

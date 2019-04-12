@@ -17,6 +17,7 @@ type OwnProps = {||};
 type StateProps = {|
     router: $ElementType<State, 'router'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
+    localStorage: $ElementType<State, 'localStorage'>,
 |};
 
 type Props = {| ...OwnProps, ...StateProps |};
@@ -93,12 +94,13 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
     wrapper: ?HTMLElement;
 
     render() {
+        const { config } = this.props.localStorage;
         const { state, pathname } = this.props.router.location;
         if (!state) return null;
-        const { network, account } = this.props.selectedAccount;
+        const { network } = this.props.selectedAccount;
         if (!network) return null;
-
-        const isAccountImported = account && account.imported;
+        const networkConfig = config.networks.find(c => c.shortcut === network.shortcut);
+        if (!networkConfig) return null;
 
         const basePath = `/device/${state.device}/network/${state.network}/account/${
             state.account
@@ -115,7 +117,7 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
                 <StyledNavLink to={`${basePath}/send`}>
                     <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
                 </StyledNavLink>
-                {network.type === 'ethereum' && !isAccountImported && (
+                {networkConfig.hasSignVerify && (
                     <StyledNavLink to={`${basePath}/signverify`}>
                         <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
                     </StyledNavLink>
@@ -130,5 +132,7 @@ export default connect<Props, OwnProps, StateProps, _, State, _>(
     (state: State): StateProps => ({
         router: state.router,
         selectedAccount: state.selectedAccount,
-    })
+        localStorage: state.localStorage,
+    }),
+    null
 )(TopNavigationAccount);

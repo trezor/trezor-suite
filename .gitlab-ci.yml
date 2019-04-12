@@ -160,23 +160,23 @@ delete review:
   tags:
     - deploy
 
-integration tests:
-  image: docker:latest
-  services:
-    - docker:dind
-  stage: integration tests
-  script:
-    - 'export SHARED_PATH="$(dirname ${CI_PROJECT_DIR})/shared"'
-    - rm -r ${SHARED_PATH} || true
-    - docker build -f Dockerfile.test -t wallet-emulator-bridge-tests .
-    - mkdir -p ${SHARED_PATH}/trezor-wallet/screenshots
-    - mkdir -p ${SHARED_PATH}/trezor-wallet/videos
-    - docker run --volume ${SHARED_PATH}/trezor-wallet/screenshots:/trezor-wallet/test/screenshots --volume ${SHARED_PATH}/trezor-wallet/videos:/trezor-wallet/test/videos --rm wallet-emulator-bridge-tests
-    - find ${SHARED_PATH}
-    - mkdir trezor-wallet
-    - cp -r ${SHARED_PATH}/ trezor-wallet/
-  artifacts:
-    when: always
-    expire_in: 1 week
-    paths:
-      - trezor-wallet/
+# integration tests:
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   stage: integration tests
+#   script:
+#     - 'export SHARED_PATH="$(dirname ${CI_PROJECT_DIR})/shared"'
+#     - rm -r ${SHARED_PATH} || true
+#     - docker build -f Dockerfile.test -t wallet-emulator-bridge-tests .
+#     - mkdir -p ${SHARED_PATH}/trezor-wallet/screenshots
+#     - mkdir -p ${SHARED_PATH}/trezor-wallet/videos
+#     - docker run --volume ${SHARED_PATH}/trezor-wallet/screenshots:/trezor-wallet/test/screenshots --volume ${SHARED_PATH}/trezor-wallet/videos:/trezor-wallet/test/videos --rm wallet-emulator-bridge-tests
+#     - find ${SHARED_PATH}
+#     - mkdir trezor-wallet
+#     - cp -r ${SHARED_PATH}/ trezor-wallet/
+#   artifacts:
+#     when: always
+#     expire_in: 1 week
+#     paths:
+#       - trezor-wallet/

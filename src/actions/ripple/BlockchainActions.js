@@ -138,6 +138,7 @@ export const onNotification = (
         },
         coin: account.network,
     });
+
     if (!updatedAccount.success) return;
 
     dispatch(

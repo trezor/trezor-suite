@@ -80,6 +80,7 @@ class CoinMenu extends PureComponent<Props> {
         return (
             <Wrapper data-test="Main__page__coin__menu">
                 {config.networks
+                    .filter(item => !item.isHidden)
                     .sort((a, b) => a.order - b.order)
                     .map(item => (
                         <NavLink
