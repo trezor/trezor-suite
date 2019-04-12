@@ -42,19 +42,6 @@ export type State = Array<Account>;
 
 const initialState: State = [];
 
-export const findAccount = (
-    state: State,
-    index: number,
-    deviceState: string,
-    network: string
-): ?Account =>
-    state.find(
-        a =>
-            (a.deviceState === deviceState || a.imported) &&
-            a.index === index &&
-            a.network === network
-    );
-
 export const findDeviceAccounts = (
     state: State,
     device: TrezorDevice,
