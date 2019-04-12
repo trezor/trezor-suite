@@ -6,7 +6,8 @@
             "type": "bitcoin",
             "name": "Bitcoin",
             "symbol": "BTC",
-            "shortcut": "btc"
+            "shortcut": "btc",
+            "hasSignVerify": true
         },
         {
             "order": 2,
@@ -27,7 +28,8 @@
             "explorer": {
                 "tx": "https://etherscan.io/tx/",
                 "address": "https://etherscan.io/address/"
-            }
+            },
+            "hasSignVerify": true
         },
         {
             "order": 18,
@@ -48,7 +50,8 @@
             "explorer": {
                 "tx": "https://gastracker.io/tx/",
                 "address": "https://gastracker.io/addr/"
-            }
+            },
+            "hasSignVerify": true
         },
         {
             "order": 2,
@@ -82,7 +85,8 @@
             "explorer": {
                 "tx": "https://ropsten.etherscan.io/tx/",
                 "address": "https://ropsten.etherscan.io/address/"
-            }
+            },
+            "hasSignVerify": true
         },
         {
             "order": 3,
@@ -103,7 +107,8 @@
             "explorer": {
                 "tx": "https://xrpcharts.ripple.com/#/transactions/",
                 "address": "https://xrpcharts.ripple.com/#/graph/"
-            }
+            },
+            "hasSignVerify": false
         },
         {
             "order": 3,
@@ -125,7 +130,8 @@
             "explorer": {
                 "tx": "https://sisyfos.trezor.io/ripple-testnet-explorer/tx/",
                 "address": "https://sisyfos.trezor.io/ripple-testnet-explorer/address/"
-            }
+            },
+            "hasSignVerify": false
         }
     ],
 

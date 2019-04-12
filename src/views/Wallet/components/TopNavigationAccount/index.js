@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import { colors } from 'trezor-ui-components';
 import type { State } from 'flowtype';
 import { FormattedMessage } from 'react-intl';
-import navigationConstants from './constants/navigation';
 
 import l10nMessages from './index.messages';
 import Indicator from './components/Indicator';
@@ -16,6 +15,7 @@ import Indicator from './components/Indicator';
 type Props = {
     router: $ElementType<State, 'router'>,
     selectedAccount: $ElementType<State, 'selectedAccount'>,
+    localStorage: $ElementType<State, 'localStorage'>,
 };
 type LocalState = {
     wrapper: ?HTMLElement,
@@ -89,10 +89,13 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
     wrapper: ?HTMLElement;
 
     render() {
+        const { config } = this.props.localStorage;
         const { state, pathname } = this.props.router.location;
         if (!state) return null;
         const { network } = this.props.selectedAccount;
         if (!network) return null;
+        const networkConfig = config.networks.find(c => c.shortcut === network.shortcut);
+        if (!networkConfig) return null;
 
         const basePath = `/device/${state.device}/network/${state.network}/account/${
             state.account
@@ -109,7 +112,7 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
                 <StyledNavLink to={`${basePath}/send`}>
                     <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
                 </StyledNavLink>
-                {navigationConstants.HAS_SIGN_VERIFY.includes(network.type) && (
+                {networkConfig.hasSignVerify && (
                     <StyledNavLink to={`${basePath}/signverify`}>
                         <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
                     </StyledNavLink>
@@ -124,6 +127,7 @@ export default connect(
     (state: State): Props => ({
         router: state.router,
         selectedAccount: state.selectedAccount,
+        localStorage: state.localStorage,
     }),
     null
 )(TopNavigationAccount);
