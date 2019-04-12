@@ -62,10 +62,17 @@ export const findDeviceAccounts = (
 ): Array<Account> => {
     if (network) {
         return state.filter(
-            addr => (addr.deviceState === device.state || addr.imported) && addr.network === network
+            addr =>
+                (addr.deviceState === device.state ||
+                    (addr.imported && addr.deviceID === (device.features || {}).device_id)) &&
+                addr.network === network
         );
     }
-    return state.filter(addr => addr.deviceState === device.state || addr.imported);
+    return state.filter(
+        addr =>
+            addr.deviceState === device.state ||
+            (addr.imported && addr.deviceID === (device.features || {}).device_id)
+    );
 };
 
 const createAccount = (state: State, account: Account): State => {

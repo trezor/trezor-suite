@@ -3,7 +3,7 @@
 import * as ACCOUNT from 'actions/constants/account';
 import * as IMPORT from 'actions/constants/importAccount';
 import * as NOTIFICATION from 'actions/constants/notification';
-import type { AsyncAction, TrezorDevice, Network, Dispatch, GetState } from 'flowtype';
+import type { AsyncAction, Account, TrezorDevice, Network, Dispatch, GetState } from 'flowtype';
 import * as BlockchainActions from 'actions/ethereum/BlockchainActions';
 import * as LocalStorageActions from 'actions/LocalStorageActions';
 import TrezorConnect from 'trezor-connect';
@@ -20,6 +20,13 @@ export type ImportAccountAction =
           type: typeof IMPORT.FAIL,
           error: ?string,
       };
+
+
+const findIndex = (accounts: Array<Account>, network: Network, device: TrezorDevice): number => {
+    return accounts.filter(
+        a => a.imported === true && a.network === network.shortcut && a.deviceID === (device.features|| {}).device_id
+    ).length;
+}
 
 export const importAddress = (
     address: string,
@@ -39,9 +46,7 @@ export const importAddress = (
                 BlockchainActions.discoverAccount(device, address, network.shortcut)
             );
 
-            const index = getState().accounts.filter(
-                a => a.imported === true && a.network === network.shortcut
-            ).length;
+            const index = findIndex(getState().accounts, network, device);
 
             const empty = account.nonce <= 0 && account.balance === '0';
             payload = {
@@ -93,9 +98,7 @@ export const importAddress = (
 
             const account = response.payload;
             const empty = account.sequence <= 0 && account.balance === '0';
-            const index = getState().accounts.filter(
-                a => a.imported === true && a.network === network.shortcut
-            ).length;
+            const index = findIndex(getState().accounts, network, device);
 
             payload = {
                 imported: true,
