@@ -1,7 +1,7 @@
 /* @flow */
 import { MESSAGES, RESPONSES } from '../../constants';
 import Connection from './websocket';
-import utils from './utils';
+import { transformAccountInfo } from './utils';
 
 import type { Message, Response } from '../../types';
 import * as MessageTypes from '../../types/messages';
@@ -166,9 +166,8 @@ const getAccountInfo = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        console.log('payload', payload);
         const info = await socket.getAccountInfo(payload);
-        const transformedInfo = utils.transformAccountInfo(info);
+        const transformedInfo = transformAccountInfo(info, payload.details);
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
