@@ -21,12 +21,14 @@ export type ImportAccountAction =
           error: ?string,
       };
 
-
 const findIndex = (accounts: Array<Account>, network: Network, device: TrezorDevice): number => {
     return accounts.filter(
-        a => a.imported === true && a.network === network.shortcut && a.deviceID === (device.features|| {}).device_id
+        a =>
+            a.imported === true &&
+            a.network === network.shortcut &&
+            a.deviceID === (device.features || {}).device_id
     ).length;
-}
+};
 
 export const importAddress = (
     address: string,
