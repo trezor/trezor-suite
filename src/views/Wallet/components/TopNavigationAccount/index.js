@@ -97,7 +97,7 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
         const { config } = this.props.localStorage;
         const { state, pathname } = this.props.router.location;
         if (!state) return null;
-        const { network, account } = this.props.selectedAccount;
+        const { network } = this.props.selectedAccount;
         if (!network) return null;
         const networkConfig = config.networks.find(c => c.shortcut === network.shortcut);
         if (!networkConfig) return null;
