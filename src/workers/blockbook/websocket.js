@@ -97,15 +97,16 @@ export default class Socket extends EventEmitter {
     }
 
     constructor(url: string) {
+        let newUrl = url;
         super();
         this.setMaxListeners(Infinity);
-        if (url.startsWith('http')) {
-            url = url.replace('http', 'ws');
+        if (newUrl.startsWith('http')) {
+            newUrl = newUrl.replace('http', 'ws');
         }
         if (!url.endsWith('/websocket')) {
-            url += '/websocket';
+            newUrl += '/websocket';
         }
-        this._url = url;
+        this._url = newUrl;
     }
 
     connect(): Promise {
@@ -165,7 +166,7 @@ export default class Socket extends EventEmitter {
     }
 
     subscribeBlock(): Promise {
-        return new Promise(resolve => {
+        return new Promise(() => {
             if (this._subscribeNewBlockId) {
                 delete this._subscriptions[this._subscribeNewBlockId];
                 this._subscribeNewBlockId = '';
@@ -180,7 +181,7 @@ export default class Socket extends EventEmitter {
     }
 
     unsubscribeBlock(): Promise {
-        return new Promise(resolve => {
+        return new Promise(() => {
             if (this._subscribeNewBlockId) {
                 this._unsubscribe('unsubscribeNewBlock', this._subscribeNewBlockId, {}, result => {
                     this._subscribeNewBlockId = '';
