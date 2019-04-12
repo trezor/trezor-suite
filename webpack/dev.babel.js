@@ -1,6 +1,7 @@
 /* @flow */
-
+// eslint-disable-next-line import/no-extraneous-dependencies
 import webpack from 'webpack';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 // import FlowWebpackPlugin from 'flow-webpack-plugin';
 
@@ -34,12 +35,12 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     'babel-loader',
-                    // {
-                    //     loader: 'eslint-loader',
-                    //     options: {
-                    //         emitWarning: true,
-                    //     },
-                    // },
+                    {
+                        loader: 'eslint-loader',
+                        options: {
+                            emitWarning: true,
+                        },
+                    },
                 ],
             },
         ],
