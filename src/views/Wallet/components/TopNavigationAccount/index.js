@@ -102,8 +102,6 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
         const networkConfig = config.networks.find(c => c.shortcut === network.shortcut);
         if (!networkConfig) return null;
 
-        const isAccountImported = account && account.imported;
-
         const basePath = `/device/${state.device}/network/${state.network}/account/${
             state.account
         }`;
