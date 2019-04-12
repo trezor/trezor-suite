@@ -16,10 +16,6 @@ export default [
             optional: true,
             defaultValue: false,
             value: false,
-        }, {
-            label: 'kokot',
-            name: 'kokot',
-            type: 'input',
         }]
     },
 ]
