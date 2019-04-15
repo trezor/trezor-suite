@@ -227,6 +227,7 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
 
     const options: MessageTypes.GetAccountInfoOptions = payload || {};
 
+    // initial state
     const account = {
         address: payload.descriptor,
         transactions: [],
@@ -234,8 +235,10 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
         block: 0,
         balance: '0',
         availableBalance: '0',
-        reserve: RESERVE.BASE,
         sequence: 0,
+        coinSpecific: {
+            reserve: RESERVE.BASE,
+        },
     };
 
     try {
@@ -250,7 +253,7 @@ const getAccountInfo = async (data: MessageTypes.GetAccountInfoOptions): Promise
         account.balance = api.xrpToDrops(info.xrpBalance);
         account.availableBalance = account.balance;
         account.sequence = info.sequence;
-        account.reserve = new BigNumber(RESERVE.BASE).plus(ownersReserve).toString();
+        account.coinSpecific.reserve = new BigNumber(RESERVE.BASE).plus(ownersReserve).toString();
     } catch (error) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account

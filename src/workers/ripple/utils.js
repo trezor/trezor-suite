@@ -27,18 +27,14 @@ export const transformTransactionHistory = (descriptor, raw) => {
     const total = new BigNumber(amount).plus(fee).toString();
 
     return {
-        type,
-        timestamp: tx.date,
-
-        descriptor,
-        vin: [{ addresses: [tx.Account] }],
-        vout: [{ addresses: [tx.Destination] }],
-
-        hash,
-        amount,
-        fee,
+        txid: hash,
+        vin: [{ n: 0, addresses: [tx.Account] }],
+        vout: [{ n: 0, addresses: [tx.Destination] }],
+        blocktime: tx.date,
+        value: amount,
+        fees: fee,
         total,
-
+        type,
         blockHeight: tx.ledger_index,
         blockHash: tx.ledger_hash,
     };
@@ -59,12 +55,11 @@ export const transformTransactionEvent = (descriptor: string, event: any): Trans
     return {
         type,
         timestamp: tx.date,
-        descriptor,
         inputs: [{ addresses: [tx.Account] }],
         outputs: [{ addresses: [tx.Destination] }],
 
         hash,
-        amount,
+        value: amount,
         fee,
         total,
         tokens,

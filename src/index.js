@@ -23,6 +23,7 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
     const worker = workerWrapper(settings.worker);
     worker.onmessage = (message: any) => {
         if (message.data.type !== MESSAGES.HANDSHAKE) return;
+        // eslint-disable-next-line no-param-reassign
         delete settings.worker;
         worker.postMessage({
             type: MESSAGES.HANDSHAKE,

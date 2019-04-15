@@ -148,9 +148,9 @@ export default class Socket extends EventEmitter {
         });
     }
 
-    isConnected(): boolean {
+    isConnected(): ?boolean {
         const ws = this._ws;
-        return ws && ws.readyState == WebSocket.OPEN;
+        return ws && ws.readyState === WebSocket.OPEN;
     }
 
     getServerInfo(): Promise<any> {
@@ -183,7 +183,7 @@ export default class Socket extends EventEmitter {
     unsubscribeBlock(): Promise {
         return new Promise(() => {
             if (this._subscribeNewBlockId) {
-                this._unsubscribe('unsubscribeNewBlock', this._subscribeNewBlockId, {}, result => {
+                this._unsubscribe('unsubscribeNewBlock', this._subscribeNewBlockId, {}, () => {
                     this._subscribeNewBlockId = '';
                 });
             }
@@ -191,7 +191,7 @@ export default class Socket extends EventEmitter {
     }
 
     subscribeAddresses(addresses: Array<string>): Promise {
-        return new Promise(resolve => {
+        return new Promise(() => {
             const method = 'subscribeAddresses';
             const params = {
                 addresses,
@@ -206,17 +206,12 @@ export default class Socket extends EventEmitter {
         });
     }
 
-    unsubscribeAddresses(addresses: Array<string>): Promise {
-        return new Promise(resolve => {
+    unsubscribeAddresses(): Promise {
+        return new Promise(() => {
             if (this._subscribeAddressesId) {
-                this._unsubscribe(
-                    'unsubscribeAddresses',
-                    this._subscribeAddressesId,
-                    {},
-                    result => {
-                        this._subscribeAddressesId = '';
-                    }
-                );
+                this._unsubscribe('unsubscribeAddresses', this._subscribeAddressesId, {}, () => {
+                    this._subscribeAddressesId = '';
+                });
             }
         });
     }
@@ -229,7 +224,7 @@ export default class Socket extends EventEmitter {
         });
     }
 
-    estimateFee(options: any): Promise {
+    estimateFee(): Promise {
         return new Promise(resolve => {
             this._send(
                 'estimateFee',
