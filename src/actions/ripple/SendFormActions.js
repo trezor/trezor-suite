@@ -7,6 +7,7 @@ import { initialState } from 'reducers/SendFormRippleReducer';
 import * as reducerUtils from 'reducers/utils';
 import { fromDecimalAmount } from 'utils/formatUtils';
 import { toFiatCurrency, fromFiatCurrency } from 'utils/fiatConverter';
+import { debounce } from 'utils/common';
 
 import type {
     Dispatch,
@@ -22,6 +23,15 @@ import * as SessionStorageActions from '../SessionStorageActions';
 
 import * as BlockchainActions from './BlockchainActions';
 import * as ValidationActions from './SendFormValidationActions';
+
+const debouncedValidation = debounce((dispatch: Dispatch, prevState: ReducersState) => {
+    const validated = dispatch(ValidationActions.validation(prevState.sendFormRipple));
+    dispatch({
+        type: SEND.VALIDATION,
+        networkType: 'ripple',
+        state: validated,
+    });
+}, 300);
 
 /*
  * Called from WalletService
@@ -71,12 +81,7 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
     }
 
     if (shouldUpdate) {
-        const validated = dispatch(ValidationActions.validation(prevState.sendFormRipple));
-        dispatch({
-            type: SEND.VALIDATION,
-            networkType: 'ripple',
-            state: validated,
-        });
+        debouncedValidation(dispatch, prevState);
     }
 };
 

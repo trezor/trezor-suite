@@ -11,6 +11,7 @@ import { initialState } from 'reducers/SendFormEthereumReducer';
 import * as reducerUtils from 'reducers/utils';
 import * as ethUtils from 'utils/ethUtils';
 import { toFiatCurrency, fromFiatCurrency } from 'utils/fiatConverter';
+import { debounce } from 'utils/common';
 
 import type {
     Dispatch,
@@ -35,6 +36,15 @@ const actions = [
     WEB3.GAS_PRICE_UPDATED,
     ...Object.values(SEND).filter(v => typeof v === 'string'),
 ];
+
+const debouncedValidation = debounce((dispatch: Dispatch) => {
+    const validated = dispatch(ValidationActions.validation());
+    dispatch({
+        type: SEND.VALIDATION,
+        networkType: 'ethereum',
+        state: validated,
+    });
+}, 300);
 
 /*
  * Called from WalletService
@@ -108,12 +118,7 @@ export const observe = (prevState: ReducersState, action: Action): ThunkAction =
     }
 
     if (shouldUpdate) {
-        const validated = dispatch(ValidationActions.validation());
-        dispatch({
-            type: SEND.VALIDATION,
-            networkType: 'ethereum',
-            state: validated,
-        });
+        debouncedValidation(dispatch);
     }
 };
 
