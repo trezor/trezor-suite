@@ -29,11 +29,16 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         api.dispatch(WalletActions.init());
         // set initial url
         // TODO: validate if initial url is potentially correct
-        api.dispatch({
-            type: WALLET.SET_INITIAL_URL,
-            pathname: action.payload.location.pathname,
-            state: {},
-        });
+        // exclude landing page url
+        const { pathname } = action.payload.location;
+        const isValidPath = !api.dispatch(RouterActions.isLandingPageUrl(pathname, true));
+        if (isValidPath) {
+            api.dispatch({
+                type: WALLET.SET_INITIAL_URL,
+                pathname,
+                state: {},
+            });
+        }
         // pass action and break process
         return next(action);
     }
@@ -42,10 +47,8 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
     next(action);
 
     switch (action.type) {
-        case WALLET.SET_INITIAL_URL:
-            if (action.pathname) {
-                api.dispatch(LocalStorageActions.loadData());
-            }
+        case WALLET.SET_FIRST_LOCATION_CHANGE:
+            api.dispatch(LocalStorageActions.loadData());
             break;
         case WALLET.SET_SELECTED_DEVICE:
             // try to authorize device
@@ -62,6 +65,9 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
 
     // update common values ONLY if application is ready
     if (!api.getState().wallet.ready) return action;
+
+    // check for "selectedDevice" change before any action
+    const selectedDeviceDidChange = await api.dispatch(WalletActions.observe(prevState, action));
 
     // double verification needed
     // Corner case: LOCATION_CHANGE was called but pathname didn't changed (redirection from RouterService)
@@ -96,9 +102,8 @@ const WalletService: Middleware = (api: MiddlewareAPI) => (next: MiddlewareDispa
         api.dispatch(NotificationActions.clear(prevLocation.state, currentLocation.state));
     }
 
-    // observe common values in WallerReducer
-    if (!(await api.dispatch(WalletActions.observe(prevState, action)))) {
-        // if "selectedDevice" didn't change observe common values in SelectedAccountReducer
+    // if "selectedDevice" didn't change observe common values in SelectedAccountReducer
+    if (!selectedDeviceDidChange) {
         if (!(await api.dispatch(SelectedAccountActions.observe(prevState, action)))) {
             // if "selectedAccount" didn't change observe send form props changes
             api.dispatch(SendFormActions.observe(prevState, action));

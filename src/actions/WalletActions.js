@@ -169,15 +169,11 @@ export const observe = (prevState: State, action: Action): PayloadAction<boolean
 
     const state: State = getState();
 
-    const locationChanged = reducerUtils.observeChanges(
-        prevState.router.location,
-        state.router.location
-    );
     const device = reducerUtils.getSelectedDevice(state);
     const selectedDeviceChanged = reducerUtils.observeChanges(state.wallet.selectedDevice, device);
 
     // handle devices state change (from trezor-connect events or location change)
-    if (locationChanged || selectedDeviceChanged) {
+    if (selectedDeviceChanged) {
         if (device && deviceUtils.isSelectedDevice(state.wallet.selectedDevice, device)) {
             dispatch({
                 type: WALLET.UPDATE_SELECTED_DEVICE,

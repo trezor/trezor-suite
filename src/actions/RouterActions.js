@@ -429,30 +429,36 @@ export const setInitialUrl = (): PayloadAction<boolean> => (
     dispatch: Dispatch,
     getState: GetState
 ): boolean => {
-    const { initialPathname } = getState().wallet;
-    if (typeof initialPathname === 'string' && !dispatch(isLandingPageUrl(initialPathname, true))) {
-        const valid = dispatch(
-            getValidUrl({
-                type: LOCATION_CHANGE,
-                payload: {
-                    location: {
-                        pathname: initialPathname,
-                        hash: '',
-                        search: '',
-                        state: {},
-                    },
-                },
-            })
-        );
+    // DEVICE.CONNECT race condition, "selectDevice" method was called but currently selectedDevice is in getState (auth) process
+    // if so, consume this action (return true) to break "selectDevice" process
+    const { selectedDevice } = getState().wallet;
+    if (selectedDevice && selectedDevice.type === 'acquired' && !selectedDevice.state) return true;
 
-        if (valid === initialPathname) {
-            // reset initial url
-            dispatch({
-                type: SET_INITIAL_URL,
-            });
-            dispatch(goto(valid));
-            return true;
-        }
+    const { initialPathname } = getState().wallet;
+    if (typeof initialPathname !== 'string') return false;
+
+    const valid = dispatch(
+        getValidUrl({
+            type: LOCATION_CHANGE,
+            payload: {
+                location: {
+                    pathname: initialPathname,
+                    hash: '',
+                    search: '',
+                    state: {},
+                },
+            },
+        })
+    );
+
+    if (valid === initialPathname) {
+        // reset initial url
+        dispatch({
+            type: SET_INITIAL_URL,
+        });
+        dispatch(goto(valid));
+        return true;
     }
+
     return false;
 };
