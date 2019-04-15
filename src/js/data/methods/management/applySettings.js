@@ -40,6 +40,7 @@ export default [
                 label: 'auto lock delay (ms)',
                 name: 'auto_lock_delay_ms',
                 type: 'number',
+                value: '',
             },
             {
                 label: 'display rotation',
