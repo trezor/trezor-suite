@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import Icon from 'components/Icon';
 
 import PropTypes from 'prop-types';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import colors from 'config/colors';
 
 interface Props {

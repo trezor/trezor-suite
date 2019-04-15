@@ -6,11 +6,7 @@ const Logo = styled.img``;
 
 const CoinLogo = ({ network, className, ...rest }) => {
     return (
-        <Logo
-            className={className}
-                src={require(`../../images/coins/${network}.png`)}
-            {...rest}
-        />
+        <Logo className={className} src={require(`../../images/coins/${network}.png`)} {...rest} />
     );
 };
 

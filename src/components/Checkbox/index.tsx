@@ -7,12 +7,10 @@ import colors from 'config/colors';
 import icons from 'config/icons';
 
 interface Props {
-    isChecked: boolean
+    isChecked: boolean;
 }
 
-interface State {
-
-}
+interface State {}
 
 const Wrapper = styled.div`
     display: flex;
