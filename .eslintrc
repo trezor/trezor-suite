@@ -4,7 +4,8 @@
         "prettier",
         "prettier/babel",
         "prettier/flowtype",
-        "prettier/react"
+        "prettier/react",
+        "plugin:@typescript-eslint/recommended"
     ],
     "globals": {
         "LOCAL": true,
@@ -50,7 +51,8 @@
         "import",
         "prettier",
         "react",
-        "cypress"
+        "cypress",
+        "@typescript-eslint"
     ],
     "settings": {
         "import/ignore": [
@@ -67,6 +69,7 @@
     },
     "parserOptions": {
         "parser":  "@typescript-eslint/parser",
+        "project": "./.storybook/tsconfig.json",
         "extends":  [
             "plugin:@typescript-eslint/recommended"
         ],
