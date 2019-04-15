@@ -15,6 +15,14 @@ const TrezorConnectService = store => next => action => {
     if (action.type === LOCATION_CHANGE && !inited) {
         inited = true;
 
+        const customSrc = getQueryVariable('src');
+        if (customSrc) {
+            window.__TREZOR_CONNECT_SRC = customSrc;
+        } else {
+            window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : undefined;
+        }
+        window.TrezorConnect = TrezorConnect;
+
         TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
             // post event to reducer
             store.dispatch({
@@ -40,34 +48,26 @@ const TrezorConnectService = store => next => action => {
             // This needs to be explicity set to make address validation work
         });
 
-        const customSrc = getQueryVariable('src');
-        if (customSrc) {
-            window.__TREZOR_CONNECT_SRC = customSrc;
-        } else {
-            window.__TREZOR_CONNECT_SRC = typeof LOCAL === 'string' ? LOCAL : undefined;
-        }
-        window.TrezorConnect = TrezorConnect;
-
-        TrezorConnect.manifest({
-            email: 'info@trezor.io',
-            appUrl: window.location.host
-        });
-
-        // TrezorConnect.init({
-        //     // connectSrc: 'https://connect.trezor.io/7/',
-        //     webusb: true,
-        //     // transportReconnect: false,
-        //     popup: true,
-        //     debug: true,
-        //     // excludedDevices: ["web02"]
-        //     manifest: {
-        //         email: 'info@trezor.io',
-        //         appUrl: window.location.host
-        //     }
-        // })
-        // .catch(error => {
-        //     console.log("ERROR", error);
+        // TrezorConnect.manifest({
+        //     email: 'info@trezor.io',
+        //     appUrl: window.location.host
         // });
+
+        TrezorConnect.init({
+            // connectSrc: 'https://connect.trezor.io/7/',
+            webusb: true,
+            // transportReconnect: false,
+            popup: true,
+            debug: true,
+            lazyLoad: true,
+            manifest: {
+                email: 'info@trezor.io',
+                appUrl: window.location.host
+            }
+        })
+        .catch(error => {
+            console.log("ERROR", error);
+        });
     }
 };
 
