@@ -237,6 +237,16 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
         });
     }
 
+    const importedAccounts = getImportedAccounts();
+    if (importedAccounts) {
+        importedAccounts.forEach(account => {
+            dispatch({
+                type: ACCOUNT.CREATE,
+                payload: account,
+            });
+        });
+    }
+
     const userTokens: ?string = storageUtils.get(TYPE, KEY_TOKENS);
     if (userTokens) {
         dispatch({

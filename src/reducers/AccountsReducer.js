@@ -42,23 +42,24 @@ export type State = Array<Account>;
 
 const initialState: State = [];
 
-export const findAccount = (
-    state: State,
-    index: number,
-    deviceState: string,
-    network: string
-): ?Account =>
-    state.find(a => a.deviceState === deviceState && a.index === index && a.network === network);
-
 export const findDeviceAccounts = (
     state: State,
     device: TrezorDevice,
     network: string
 ): Array<Account> => {
     if (network) {
-        return state.filter(addr => addr.deviceState === device.state && addr.network === network);
+        return state.filter(
+            addr =>
+                (addr.deviceState === device.state ||
+                    (addr.imported && addr.deviceID === (device.features || {}).device_id)) &&
+                addr.network === network
+        );
     }
-    return state.filter(addr => addr.deviceState === device.state);
+    return state.filter(
+        addr =>
+            addr.deviceState === device.state ||
+            (addr.imported && addr.deviceID === (device.features || {}).device_id)
+    );
 };
 
 const createAccount = (state: State, account: Account): State => {
@@ -83,8 +84,16 @@ const createAccount = (state: State, account: Account): State => {
     return newState;
 };
 
-const removeAccounts = (state: State, device: TrezorDevice): State =>
-    state.filter(account => account.deviceState !== device.state);
+const removeAccounts = (
+    state: State,
+    device: TrezorDevice,
+    keepImportedAccounts = false
+): State => {
+    if (keepImportedAccounts) {
+        return state.filter(account => account.deviceState !== device.state || account.imported);
+    }
+    return state.filter(account => account.deviceState !== device.state);
+};
 
 const clear = (state: State, devices: Array<TrezorDevice>): State => {
     let newState: State = [...state];
@@ -114,8 +123,10 @@ export default (state: State = initialState, action: Action): State => {
         case CONNECT.FORGET:
         case CONNECT.FORGET_SINGLE:
         case CONNECT.FORGET_SILENT:
-        case CONNECT.RECEIVE_WALLET_TYPE:
             return removeAccounts(state, action.device);
+
+        case CONNECT.RECEIVE_WALLET_TYPE:
+            return removeAccounts(state, action.device, true); // removes all accounts except imported ones
 
         case WALLET.CLEAR_UNAVAILABLE_DEVICE_DATA:
             return clear(state, action.devices);

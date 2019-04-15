@@ -16,7 +16,6 @@ import type {
     Account,
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
-import * as LocalStorageActions from 'actions/LocalStorageActions';
 import * as BlockchainActions from './BlockchainActions';
 import * as EthereumDiscoveryActions from './ethereum/DiscoveryActions';
 import * as RippleDiscoveryActions from './ripple/DiscoveryActions';
@@ -121,7 +120,6 @@ const start = (device: TrezorDevice, network: string, ignoreCompleted?: boolean)
     }
 
     if (!discoveryProcess) {
-        dispatch(addImportedAccounts());
         dispatch(begin(device, network));
     } else if (discoveryProcess.completed && !ignoreCompleted) {
         dispatch({
@@ -381,18 +379,4 @@ export const addAccount = (): ThunkAction => (dispatch: Dispatch, getState: GetS
     const selected = getState().wallet.selectedDevice;
     if (!selected) return;
     dispatch(start(selected, getState().router.location.state.network, true));
-};
-
-export const addImportedAccounts = (): ThunkAction => (dispatch: Dispatch): void => {
-    // get imported accounts from local storage
-    const importedAccounts = LocalStorageActions.getImportedAccounts();
-    if (importedAccounts) {
-        // create each account
-        importedAccounts.forEach(account => {
-            dispatch({
-                type: ACCOUNT.CREATE,
-                payload: account,
-            });
-        });
-    }
 };
