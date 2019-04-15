@@ -7,7 +7,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
         "lint": "run-s lint:*",
-        "lint:js": "eslint .",
+        "lint:js": "eslint . --ext .tsx,.ts",
         "lint:css": "npx stylelint './src/**/*.js'",
         "lint-fix": "npx eslint ./src --fix",
         "storybook": "start-storybook -s ./public -p 9001 -c .storybook",

@@ -3,7 +3,6 @@
         "eslint-config-airbnb",
         "prettier",
         "prettier/babel",
-        "prettier/flowtype",
         "prettier/react",
         "plugin:@typescript-eslint/recommended"
     ],
@@ -67,8 +66,8 @@
             }
         }
     },
+    "parser":  "@typescript-eslint/parser",
     "parserOptions": {
-        "parser":  "@typescript-eslint/parser",
         "project": "./.storybook/tsconfig.json",
         "extends":  [
             "plugin:@typescript-eslint/recommended"
