@@ -141,6 +141,7 @@ export const onNotification = (
 
     if (!updatedAccount.success) return;
 
+    const empty = updatedAccount.payload.sequence <= 0 && updatedAccount.payload.balance === '0';
     dispatch(
         AccountsActions.update({
             networkType: 'ripple',
@@ -153,6 +154,7 @@ export const onNotification = (
             block: updatedAccount.payload.block,
             sequence: updatedAccount.payload.sequence,
             reserve: '0',
+            empty,
         })
     );
 };
