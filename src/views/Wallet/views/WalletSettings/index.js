@@ -17,6 +17,7 @@ import {
 import { FIAT_CURRENCIES } from 'config/app';
 import { FONT_SIZE } from 'config/variables';
 import l10nCommonMessages from 'views/common.messages';
+import Coins from './components/Coins';
 import l10nMessages from './index.messages';
 import type { Props } from './Container';
 
@@ -108,6 +109,9 @@ const WalletSettings = (props: Props) => (
                     checked={props.wallet.hideBalance}
                 />
             </Row>
+        </Section>
+        <Section>
+            <Coins networks={props.localStorage.config.networks} />
         </Section>
         <Actions>
             <Info>
