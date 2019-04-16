@@ -53,7 +53,7 @@ const ShowAddressButton = styled(Button)`
 const EyeButton = styled(Button)`
     z-index: 10001;
     padding: 0;
-    top: 12px;
+    top: 10px;
     position: absolute;
     right: 10px;
 
@@ -135,19 +135,19 @@ const AccountReceive = (props: Props) => {
                             icon={
                                 (addressVerified || addressUnverified) &&
                                 !isAddressVerifying && (
-                                    <Tooltip
-                                        placement="left"
-                                        content={
-                                            <VerifyAddressTooltip
-                                                isConnected={device.connected}
-                                                isAvailable={device.available}
-                                                addressUnverified={addressUnverified}
-                                            />
-                                        }
+                                    <EyeButton
+                                        isTransparent
+                                        onClick={() => props.showAddress(account.accountPath)}
                                     >
-                                        <EyeButton
-                                            isTransparent
-                                            onClick={() => props.showAddress(account.accountPath)}
+                                        <Tooltip
+                                            placement="top"
+                                            content={
+                                                <VerifyAddressTooltip
+                                                    isConnected={device.connected}
+                                                    isAvailable={device.available}
+                                                    addressUnverified={addressUnverified}
+                                                />
+                                            }
                                         >
                                             <Icon
                                                 size={16}
@@ -162,8 +162,8 @@ const AccountReceive = (props: Props) => {
                                                         : colors.TEXT_PRIMARY
                                                 }
                                             />
-                                        </EyeButton>
-                                    </Tooltip>
+                                        </Tooltip>
+                                    </EyeButton>
                                 )
                             }
                         />
