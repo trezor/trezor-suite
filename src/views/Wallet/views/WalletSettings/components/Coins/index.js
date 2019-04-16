@@ -4,7 +4,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { FONT_SIZE } from 'config/variables';
 
-import { Tooltip, Icon, icons as ICONS, colors, Switch, CoinLogo } from 'trezor-ui-components';
+import { colors, Switch, CoinLogo } from 'trezor-ui-components';
 import l10nMessages from '../../index.messages';
 
 const Wrapper = styled.div`
@@ -21,11 +21,6 @@ const Label = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: column;
-`;
-
-const TooltipIcon = styled(Icon)`
-    margin-left: 6px;
-    cursor: pointer;
 `;
 
 const Content = styled.div`
@@ -72,13 +67,6 @@ const CoinsSettings = (props: Props) => (
         <Row>
             <Label>
                 <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS} />
-                <Tooltip
-                    content={<FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXPLAINED} />}
-                    maxWidth={210}
-                    placement="right"
-                >
-                    <TooltipIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
-                </Tooltip>
             </Label>
             <Content>
                 {props.networks
