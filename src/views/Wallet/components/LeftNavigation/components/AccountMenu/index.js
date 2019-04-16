@@ -8,15 +8,17 @@ import { toFiatCurrency } from 'utils/fiatConverter';
 import * as stateUtils from 'reducers/utils';
 import { findDeviceAccounts } from 'reducers/AccountsReducer';
 
-import { Icon, Loader, Tooltip, icons as ICONS, colors } from 'trezor-ui-components';
+import { Loader, icons as ICONS, colors } from 'trezor-ui-components';
 import { FONT_SIZE, BORDER_WIDTH, LEFT_NAVIGATION_ROW } from 'config/variables';
 
 import type { Accounts } from 'flowtype';
 import l10nCommonMessages from 'views/common.messages';
+import { SETTINGS } from 'config/app';
 import type { Props } from '../common';
 import Row from '../Row';
 import RowCoin from '../RowCoin';
 import l10nMessages from './index.messages';
+import AddAccountButton from './components/AddAccountButton';
 
 const Wrapper = styled.div``;
 
@@ -53,22 +55,6 @@ const RowAccountWrapper = styled.div`
                 background-color: ${colors.WHITE};
             }
         `}
-`;
-
-const RowAddAccountWrapper = styled.div`
-    width: 100%;
-    padding: ${LEFT_NAVIGATION_ROW.PADDING};
-    display: flex;
-    align-items: center;
-    color: ${colors.TEXT_SECONDARY};
-    &:hover {
-        cursor: ${props => (props.disabled ? 'default' : 'pointer')};
-        color: ${props => (props.disabled ? colors.TEXT_SECONDARY : colors.TEXT_PRIMARY)};
-    }
-`;
-
-const AddAccountIconWrapper = styled.div`
-    margin-right: 12px;
 `;
 
 const DiscoveryLoadingWrapper = styled.div`
@@ -201,48 +187,32 @@ const AccountMenu = (props: Props) => {
         const lastAccount = discoveryAccounts[discoveryAccounts.length - 1];
         if (!selected.connected) {
             discoveryStatus = (
-                <Tooltip
-                    maxWidth={200}
-                    content={<FormattedMessage {...l10nMessages.TR_TO_ADD_ACCOUNTS} />}
-                    placement="bottom"
-                >
-                    <Row>
-                        <RowAddAccountWrapper disabled>
-                            <AddAccountIconWrapper>
-                                <Icon icon={ICONS.PLUS} size={14} color={colors.TEXT_SECONDARY} />
-                            </AddAccountIconWrapper>
-                            <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
-                        </RowAddAccountWrapper>
-                    </Row>
-                </Tooltip>
+                <AddAccountButton
+                    disabled
+                    tooltipContent={<FormattedMessage {...l10nMessages.TR_TO_ADD_ACCOUNTS} />}
+                />
+            );
+        } else if (discoveryAccounts.length >= SETTINGS.MAX_ACCOUNTS) {
+            discoveryStatus = (
+                <AddAccountButton
+                    disabled
+                    tooltipContent={
+                        <FormattedMessage
+                            {...l10nMessages.TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS}
+                        />
+                    }
+                />
             );
         } else if (lastAccount && !lastAccount.empty) {
-            discoveryStatus = (
-                <Row onClick={props.addAccount}>
-                    <RowAddAccountWrapper>
-                        <AddAccountIconWrapper>
-                            <Icon icon={ICONS.PLUS} size={14} color={colors.TEXT_SECONDARY} />
-                        </AddAccountIconWrapper>
-                        <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
-                    </RowAddAccountWrapper>
-                </Row>
-            );
+            discoveryStatus = <AddAccountButton onClick={props.addAccount} />;
         } else {
             discoveryStatus = (
-                <Tooltip
-                    maxWidth={200}
-                    content={<FormattedMessage {...l10nMessages.TR_TO_ADD_A_NEW_ACCOUNT_LAST} />}
-                    placement="bottom"
-                >
-                    <Row>
-                        <RowAddAccountWrapper disabled>
-                            <AddAccountIconWrapper>
-                                <Icon icon={ICONS.PLUS} size={14} color={colors.TEXT_SECONDARY} />
-                            </AddAccountIconWrapper>
-                            <FormattedMessage {...l10nMessages.TR_ADD_ACCOUNT} />
-                        </RowAddAccountWrapper>
-                    </Row>
-                </Tooltip>
+                <AddAccountButton
+                    disabled
+                    tooltipContent={
+                        <FormattedMessage {...l10nMessages.TR_TO_ADD_A_NEW_ACCOUNT_LAST} />
+                    }
+                />
             );
         }
     } else {

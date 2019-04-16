@@ -66,3 +66,7 @@ export const FIAT_CURRENCIES = [
     'xag',
     'xau',
 ];
+
+export const SETTINGS = {
+    MAX_ACCOUNTS: 10,
+};

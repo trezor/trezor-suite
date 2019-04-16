@@ -15,6 +15,10 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_ADD_ACCOUNT',
         defaultMessage: 'Add account',
     },
+    TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS: {
+        id: 'TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS',
+        defaultMessage: 'You cannot add more than 10 accounts',
+    },
 });
 
 export default definedMessages;
