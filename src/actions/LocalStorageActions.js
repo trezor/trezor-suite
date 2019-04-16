@@ -248,6 +248,14 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
         });
     }
 
+    const hiddenCoins = getHiddenCoins();
+    if (hiddenCoins) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS,
+            hiddenCoins,
+        });
+    }
+
     const userTokens: ?string = storageUtils.get(TYPE, KEY_TOKENS);
     if (userTokens) {
         dispatch({
