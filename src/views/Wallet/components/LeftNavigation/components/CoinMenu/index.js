@@ -26,6 +26,13 @@ const StyledLink = styled(Link)`
     }
 `;
 
+const Empty = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50px;
+`;
+
 class CoinMenu extends PureComponent<Props> {
     getBaseUrl() {
         const { selectedDevice } = this.props.wallet;
@@ -78,11 +85,24 @@ class CoinMenu extends PureComponent<Props> {
             });
     }
 
+    isEmpty(networks) {
+        const numberOfVisibleNetworks = networks
+            .filter(item => !item.isHidden) // hide coins globally in config
+            .filter(item => this.props.wallet.hiddenCoins.includes(item.shortcut));
+
+        return numberOfVisibleNetworks.length <= 0;
+    }
+
     render() {
         const { hiddenCoins } = this.props.wallet;
         const { config } = this.props.localStorage;
         return (
             <Wrapper data-test="Main__page__coin__menu">
+                {this.isEmpty(config.networks) && (
+                    <Empty>
+                        Please <Link to="/settings"> select a coin </Link> in application settings
+                    </Empty>
+                )}
                 {config.networks
                     .filter(item => !item.isHidden) // hide coins globally in config
                     .filter(item => hiddenCoins.includes(item.shortcut)) // hide coins by user settings
