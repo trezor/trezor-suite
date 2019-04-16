@@ -76,11 +76,13 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     render() {
+        const { hiddenCoins } = this.props.wallet;
         const { config } = this.props.localStorage;
         return (
             <Wrapper data-test="Main__page__coin__menu">
                 {config.networks
-                    .filter(item => !item.isHidden)
+                    .filter(item => !item.isHidden) // filter coins globally in config
+                    .filter(item => hiddenCoins.includes(item.shortcut)) // filter coins by user settings
                     .sort((a, b) => a.order - b.order)
                     .map(item => (
                         <NavLink
