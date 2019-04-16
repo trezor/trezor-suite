@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { FONT_SIZE } from 'config/variables';
+import coins from 'constants/coins';
 
 import { colors, Switch, CoinLogo } from 'trezor-ui-components';
 import l10nMessages from '../../index.messages';
@@ -85,6 +86,26 @@ const CoinsSettings = (props: Props) => (
                                         props.handleCoinVisibility(network.shortcut, !isVisible);
                                     }}
                                     checked={props.hiddenCoins.includes(network.shortcut)}
+                                />
+                            </Right>
+                        </CoinRow>
+                    ))}
+                {coins
+                    .sort((a, b) => a.order - b.order)
+                    .map(network => (
+                        <CoinRow key={network.id}>
+                            <Left>
+                                <LogoWrapper>
+                                    <CoinLogo height="23" network={network.id} />
+                                </LogoWrapper>
+                                <Name>{network.coinName}</Name>
+                            </Left>
+                            <Right>
+                                <Switch
+                                    onChange={isVisible => {
+                                        props.handleCoinVisibility(network.id, !isVisible);
+                                    }}
+                                    checked={props.hiddenCoins.includes(network.id)}
                                 />
                             </Right>
                         </CoinRow>
