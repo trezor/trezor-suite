@@ -212,7 +212,7 @@ storiesOf('Form', module)
             const withDropdownIndicator = boolean('withDropdownIndicator', true);
             return (
                 <Select
-                    {...(isSearchable ? { isSearchable } : {})}
+                    {...(!isSearchable ? { isSearchable } : {})}
                     {...(isClearable ? { isClearable } : {})}
                     {...(isDisabled ? { isDisabled } : {})}
                     {...(withDropdownIndicator ? {} : { withDropdownIndicator })}
