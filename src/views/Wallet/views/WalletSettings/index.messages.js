@@ -20,6 +20,10 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_VISIBLE_COINS',
         defaultMessage: 'Visible coins',
     },
+    TR_VISIBLE_COINS_EXTERNAL: {
+        id: 'TR_VISIBLE_COINS',
+        defaultMessage: 'Visible external coins',
+    },
     TR_VISIBLE_COINS_EXPLAINED: {
         id: 'TR_VISIBLE_COINS_EXPLAINED',
         defaultMessage: 'The changes are saved automatically as they are made',

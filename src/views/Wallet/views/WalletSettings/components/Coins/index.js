@@ -15,6 +15,7 @@ const Wrapper = styled.div`
 
 const Label = styled.div`
     display: flex;
+    padding: 10px 0;
     color: ${colors.TEXT_SECONDARY};
     align-items: center;
 `;
@@ -26,7 +27,7 @@ const Row = styled.div`
 
 const Content = styled.div`
     display: flex;
-    margin-top: 20px;
+    margin: 20px 0;
     flex-direction: column;
 `;
 
@@ -40,6 +41,10 @@ const CoinRow = styled.div`
 
     &:first-child {
         border-top: 1px solid ${colors.DIVIDER};
+    }
+
+    &:last-child {
+        border-bottom: 0;
     }
 `;
 
@@ -66,10 +71,10 @@ const LogoWrapper = styled.div`
 const CoinsSettings = (props: Props) => (
     <Wrapper>
         <Row>
-            <Label>
-                <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS} />
-            </Label>
             <Content>
+                <Label>
+                    <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS} />
+                </Label>
                 {props.networks
                     .filter(network => !network.isHidden)
                     .map(network => (
@@ -90,6 +95,11 @@ const CoinsSettings = (props: Props) => (
                             </Right>
                         </CoinRow>
                     ))}
+            </Content>
+            <Content>
+                <Label>
+                    <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXTERNAL} />
+                </Label>
                 {coins
                     .sort((a, b) => a.order - b.order)
                     .map(network => (
