@@ -212,11 +212,13 @@ export const updateAccount = (
     const instance: Web3Instance = await dispatch(initWeb3(network));
     const balance = await instance.web3.eth.getBalance(account.descriptor);
     const nonce = await instance.web3.eth.getTransactionCount(account.descriptor);
+    const empty = nonce <= 0 && balance === '0';
     dispatch(
         AccountsActions.update({
             networkType: 'ethereum',
             ...account,
             ...newAccount,
+            empty,
             nonce,
             balance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
             availableBalance: EthereumjsUnits.convert(balance, 'wei', 'ether'),
