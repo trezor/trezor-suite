@@ -354,7 +354,7 @@ export const getImportedAccounts = (): ?Array<Account> => {
 export const handleCoinVisibility = (
     coinShortcut: String,
     shouldBeVisible: boolean
-): ThunkAction => (): void => {
+): ThunkAction => (dispatch: Dispatch): void => {
     const configuration: ?Array<String> = getHiddenCoins();
     let newConfig = configuration;
     const isAlreadyHidden = configuration.find(coin => coin === coinShortcut);
@@ -366,6 +366,10 @@ export const handleCoinVisibility = (
     }
 
     storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(newConfig));
+    dispatch({
+        type: WALLET.SET_HIDDEN_COINS,
+        hiddenCoins: newConfig,
+    });
 };
 
 export const getHiddenCoins = (): ?Array<String> => {
