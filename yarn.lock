@@ -11164,10 +11164,10 @@ trezor-translations-manager@^1.0.4:
     request "^2.88.0"
     request-promise-native "^1.0.5"
 
-trezor-ui-components@^1.0.0-beta.12:
-  version "1.0.0-beta.12"
-  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.12.tgz#ce542e9d3348d82f02789b6ddb81dee7aeec2567"
-  integrity sha512-ef5D/wIFT1t+D+DMjXeif2kK0+rSO7YUC/qZTnFQ0ev6v/9pJNaLvpmdNUyBf5vNnxcol+XSM2Z+9ZI5GZcFtg==
+trezor-ui-components@^1.0.0-beta.13:
+  version "1.0.0-beta.13"
+  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.13.tgz#44cd5e1d29b0d5aa230a0011a8f7707ea7ba16f7"
+  integrity sha512-Lhh6D0Kf5YnjvaQYtR00ddJBiM/Ddh8R2+gd2Xh/PjhyJT5/q/xj47R+FwiHW75KpP9W7C6naBvfZCmXHrpmKg==
   dependencies:
     "@tippy.js/react" "^2.1.1"
     prop-types "^15.7.2"
