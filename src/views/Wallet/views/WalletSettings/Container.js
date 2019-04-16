@@ -5,6 +5,7 @@ import { injectIntl } from 'react-intl';
 import type { IntlShape } from 'react-intl';
 
 import * as WalletActions from 'actions/WalletActions';
+import * as LocalStorageActions from 'actions/LocalStorageActions';
 import type { State, Dispatch } from 'flowtype';
 import WalletSettings from './index';
 
@@ -21,6 +22,7 @@ type StateProps = {|
 type DispatchProps = {|
     setLocalCurrency: typeof WalletActions.setLocalCurrency,
     setHideBalance: typeof WalletActions.setHideBalance,
+    handleCoinVisibility: typeof LocalStorageActions.handleCoinVisibility,
 |};
 
 export type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
@@ -34,6 +36,7 @@ const mapStateToProps = (state: State): StateProps => ({
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     setLocalCurrency: bindActionCreators(WalletActions.setLocalCurrency, dispatch),
     setHideBalance: bindActionCreators(WalletActions.setHideBalance, dispatch),
+    handleCoinVisibility: bindActionCreators(LocalStorageActions.handleCoinVisibility, dispatch),
 });
 
 export default injectIntl<OwnProps>(

@@ -60,6 +60,7 @@ const KEY_BETA_MODAL: string = '/betaModalPrivacy'; // this key needs to be comp
 const KEY_LANGUAGE: string = `${STORAGE_PATH}language`;
 const KEY_LOCAL_CURRENCY: string = `${STORAGE_PATH}localCurrency`;
 const KEY_HIDE_BALANCE: string = `${STORAGE_PATH}hideBalance`;
+const KEY_HIDDEN_COINS: string = `${STORAGE_PATH}hiddenCoins`;
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js
 // or
@@ -348,6 +349,31 @@ export const getImportedAccounts = (): ?Array<Account> => {
         return JSON.parse(importedAccounts);
     }
     return null;
+};
+
+export const handleCoinVisibility = (
+    coinShortcut: String,
+    shouldBeVisible: boolean
+): ThunkAction => (): void => {
+    const configuration: ?Array<String> = getHiddenCoins();
+    let newConfig = configuration;
+    const isAlreadyHidden = configuration.find(coin => coin === coinShortcut);
+
+    if (isAlreadyHidden && shouldBeVisible) {
+        newConfig = configuration.filter(coin => coin !== coinShortcut);
+    } else if (!isAlreadyHidden) {
+        newConfig = [...configuration, coinShortcut];
+    }
+
+    storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(newConfig));
+};
+
+export const getHiddenCoins = (): ?Array<String> => {
+    const coinsConfig: ?string = storageUtils.get(TYPE, KEY_HIDDEN_COINS);
+    if (coinsConfig) {
+        return JSON.parse(coinsConfig);
+    }
+    return [];
 };
 
 export const removeImportedAccounts = (device: TrezorDevice): ThunkAction => (

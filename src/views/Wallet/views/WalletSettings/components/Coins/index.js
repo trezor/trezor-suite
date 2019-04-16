@@ -1,6 +1,6 @@
 /* @flow */
 import styled from 'styled-components';
-import React from 'react';
+import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { FONT_SIZE } from 'config/variables';
 
@@ -62,31 +62,41 @@ const LogoWrapper = styled.div`
     align-items: center;
 `;
 
-const CoinsSettings = (props: Props) => (
-    <Wrapper>
-        <Row>
-            <Label>
-                <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS} />
-            </Label>
-            <Content>
-                {props.networks
-                    .filter(network => !network.isHidden)
-                    .map(network => (
-                        <CoinRow key={network.shortcut}>
-                            <Left>
-                                <LogoWrapper>
-                                    <CoinLogo height="23" network={network.shortcut} />
-                                </LogoWrapper>
-                                <Name>{network.name}</Name>
-                            </Left>
-                            <Right>
-                                <Switch onChange={() => {}} checked />
-                            </Right>
-                        </CoinRow>
-                    ))}
-            </Content>
-        </Row>
-    </Wrapper>
-);
+class CoinsSettings extends Component {
+    render() {
+        const { networks, handleCoinVisibility } = this.props;
+        return (
+            <Wrapper>
+                <Row>
+                    <Label>
+                        <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS} />
+                    </Label>
+                    <Content>
+                        {networks
+                            .filter(network => !network.isHidden)
+                            .map(network => (
+                                <CoinRow key={network.shortcut}>
+                                    <Left>
+                                        <LogoWrapper>
+                                            <CoinLogo height="23" network={network.shortcut} />
+                                        </LogoWrapper>
+                                        <Name>{network.name}</Name>
+                                    </Left>
+                                    <Right>
+                                        <Switch
+                                            onChange={isVisible => {
+                                                handleCoinVisibility(network.shortcut, !isVisible);
+                                            }}
+                                            checked
+                                        />
+                                    </Right>
+                                </CoinRow>
+                            ))}
+                    </Content>
+                </Row>
+            </Wrapper>
+        );
+    }
+}
 
 export default CoinsSettings;

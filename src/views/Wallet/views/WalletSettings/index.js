@@ -78,6 +78,7 @@ const buildCurrencyOption = currency => {
 
 const WalletSettings = (props: Props) => (
     <StyledContent>
+        {console.log(props.localStorage)}
         <Section>
             <LabelTop>
                 <FormattedMessage {...l10nMessages.TR_LOCAL_CURRENCY} />
@@ -111,7 +112,10 @@ const WalletSettings = (props: Props) => (
             </Row>
         </Section>
         <Section>
-            <Coins networks={props.localStorage.config.networks} />
+            <Coins
+                networks={props.localStorage.config.networks}
+                handleCoinVisibility={props.handleCoinVisibility}
+            />
         </Section>
         <Actions>
             <Info>
