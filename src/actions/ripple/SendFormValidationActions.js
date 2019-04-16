@@ -20,6 +20,7 @@ import AddressValidator from 'wallet-address-validator';
 const ABS_RE = new RegExp('^[0-9]+$');
 const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
 const XRP_6_RE = new RegExp('^(0|0\\.([0-9]{0,6})?|[1-9][0-9]*\\.?([0-9]{0,6})?|\\.[0-9]{0,6})$');
+const U_INT_32 = 0xffffffff;
 
 /*
  * Called from SendFormActions.observe
@@ -338,9 +339,15 @@ export const destinationTagValidation = ($state: State): PayloadAction<State> =>
     if (!state.touched.destinationTag) return state;
 
     const { destinationTag } = state;
+
     if (destinationTag.length > 0 && !destinationTag.match(ABS_RE)) {
         state.errors.destinationTag = 'Destination tag must be an absolute number';
     }
+
+    if (parseInt(destinationTag, 10) > U_INT_32) {
+        state.errors.destinationTag = 'Number is too big';
+    }
+
     return state;
 };
 
