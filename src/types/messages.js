@@ -14,8 +14,9 @@ export type GetInfo = {
 };
 
 export type GetAccountInfoOptions = {
-    +type?: string,
+    +details?: string,
     +page?: number,
+    +pageSize?: number,
     +from?: number,
     +to?: number,
     +contract?: string,

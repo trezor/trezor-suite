@@ -13,7 +13,7 @@ export const concatTransactions = (
     return txs.concat(unique);
 };
 
-export const transformTransactionHistory = (descriptor, raw) => {
+export const transformTransactionHistory = (descriptor: string, raw) => {
     const { tx } = raw;
 
     if (tx.TransactionType !== 'Payment') {
@@ -29,9 +29,8 @@ export const transformTransactionHistory = (descriptor, raw) => {
     return {
         txid: hash,
         vin: [{ n: 0, addresses: [tx.Account] }],
-        vout: [{ n: 0, addresses: [tx.Destination] }],
+        vout: [{ value: amount, n: 0, addresses: [tx.Destination] }],
         blocktime: tx.date,
-        value: amount,
         fees: fee,
         total,
         type,
@@ -48,6 +47,7 @@ export const transformTransactionEvent = (descriptor: string, event: any): Trans
     const amount = tx.Amount;
     const fee = tx.Fee;
     const total = isPayment ? new BigNumber(amount).plus(fee).toString() : '0';
+
     const tokens = !isPayment
         ? [{ name: tx.TransactionType, shortcut: '', value: '0' }]
         : undefined;

@@ -77,7 +77,7 @@ export type Transaction = {
 
     hash: string,
     amount: string,
-    fee: string,
+    fees: string,
     total: string,
 
     tokens?: Array<Token>,
