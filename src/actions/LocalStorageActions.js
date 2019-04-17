@@ -360,11 +360,11 @@ export const getImportedAccounts = (): ?Array<Account> => {
 };
 
 export const handleCoinVisibility = (
-    coinShortcut: String,
+    coinShortcut: string,
     shouldBeVisible: boolean
 ): ThunkAction => (dispatch: Dispatch): void => {
-    const configuration: Array<String> = getHiddenCoins();
-    let newConfig: Array<String> = configuration;
+    const configuration: Array<string> = getHiddenCoins();
+    let newConfig: Array<string> = configuration;
     const isAlreadyHidden = configuration.find(coin => coin === coinShortcut);
 
     if (isAlreadyHidden && shouldBeVisible) {
@@ -380,7 +380,7 @@ export const handleCoinVisibility = (
     });
 };
 
-export const getHiddenCoins = (): ?Array<String> => {
+export const getHiddenCoins = (): Array<string> => {
     const coinsConfig: ?string = storageUtils.get(TYPE, KEY_HIDDEN_COINS);
     if (coinsConfig) {
         return JSON.parse(coinsConfig);

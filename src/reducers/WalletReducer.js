@@ -24,7 +24,7 @@ type State = {
     firstLocationChange: boolean,
     disconnectRequest: ?TrezorDevice,
     selectedDevice: ?TrezorDevice,
-    hiddenCoins: ?Array<String>,
+    hiddenCoins: Array<string>,
 };
 
 const initialState: State = {

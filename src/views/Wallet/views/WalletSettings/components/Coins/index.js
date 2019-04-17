@@ -4,9 +4,17 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { FONT_SIZE } from 'config/variables';
 import coins from 'constants/coins';
+import * as LocalStorageActions from 'actions/LocalStorageActions';
+import type { Network } from 'flowtype';
 
 import { colors, Switch, CoinLogo, Tooltip, Icon, icons as ICONS } from 'trezor-ui-components';
 import l10nMessages from '../../index.messages';
+
+type Props = {
+    networks: Array<Network>,
+    hiddenCoins: Array<string>,
+    handleCoinVisibility: typeof LocalStorageActions.handleCoinVisibility,
+};
 
 const Wrapper = styled.div`
     display: flex;
