@@ -363,8 +363,8 @@ export const handleCoinVisibility = (
     coinShortcut: String,
     shouldBeVisible: boolean
 ): ThunkAction => (dispatch: Dispatch): void => {
-    const configuration: ?Array<String> = getHiddenCoins();
-    let newConfig = configuration;
+    const configuration: Array<String> = getHiddenCoins();
+    let newConfig: Array<String> = configuration;
     const isAlreadyHidden = configuration.find(coin => coin === coinShortcut);
 
     if (isAlreadyHidden && shouldBeVisible) {
