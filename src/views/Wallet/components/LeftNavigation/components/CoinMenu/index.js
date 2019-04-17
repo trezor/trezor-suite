@@ -26,11 +26,19 @@ const StyledLink = styled(Link)`
     }
 `;
 
-const Empty = styled.div`
+const Empty = styled.span`
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 50px;
+`;
+
+const StyledLinkEmpty = styled(Link)`
+    padding: 0 5px;
+`;
+
+const Gray = styled.span`
+    color: ${colors.TEXT_SECONDARY};
 `;
 
 class CoinMenu extends PureComponent<Props> {
@@ -85,12 +93,25 @@ class CoinMenu extends PureComponent<Props> {
             });
     }
 
-    isEmpty(networks) {
-        const numberOfVisibleNetworks = networks
+    isTopMenuEmpty() {
+        const numberOfVisibleNetworks = this.props.localStorage.config.networks
             .filter(item => !item.isHidden) // hide coins globally in config
             .filter(item => this.props.wallet.hiddenCoins.includes(item.shortcut));
 
         return numberOfVisibleNetworks.length <= 0;
+    }
+
+    isBottomMenuEmpty() {
+        const { hiddenCoins } = this.props.wallet;
+        const numberOfVisibleNetworks = coins
+            .filter(item => !item.isHidden)
+            .filter(item => hiddenCoins.includes(item.id));
+
+        return numberOfVisibleNetworks.length <= 0;
+    }
+
+    isMenuEmpty() {
+        return this.isTopMenuEmpty() && this.isBottomMenuEmpty();
     }
 
     render() {
@@ -98,9 +119,10 @@ class CoinMenu extends PureComponent<Props> {
         const { config } = this.props.localStorage;
         return (
             <Wrapper data-test="Main__page__coin__menu">
-                {this.isEmpty(config.networks) && (
+                {this.isMenuEmpty() && (
                     <Empty>
-                        Please <Link to="/settings"> select a coin </Link> in application settings
+                        <StyledLinkEmpty to="/settings">Select a coin</StyledLinkEmpty>
+                        <Gray> in application settings</Gray>
                     </Empty>
                 )}
                 {config.networks
@@ -120,11 +142,13 @@ class CoinMenu extends PureComponent<Props> {
                             />
                         </NavLink>
                     ))}
-                <Divider
-                    testId="Main__page__coin__menu__divider"
-                    textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
-                    hasBorder
-                />
+                {!this.isBottomMenuEmpty() && (
+                    <Divider
+                        testId="Main__page__coin__menu__divider"
+                        textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
+                        hasBorder
+                    />
+                )}
                 {this.getOtherCoins()}
             </Wrapper>
         );
