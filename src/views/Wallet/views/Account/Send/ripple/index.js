@@ -395,7 +395,7 @@ const AccountSend = (props: Props) => {
                         sideAddons={[
                             <LocalCurrencySelect
                                 key="local-currency"
-                                isSearchable={false}
+                                isSearchable
                                 isClearable={false}
                                 onChange={option => onLocalCurrencyChange(option)}
                                 value={buildCurrencyOption(localCurrency)}
