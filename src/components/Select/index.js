@@ -70,14 +70,14 @@ const propTypes = {
     isSearchable: PropTypes.bool,
     withDropdownIndicator: PropTypes.bool,
 };
-const Select = ({ isSearchable, withDropdownIndicator = true, ...rest }) => (
+const Select = ({ isSearchable = true, withDropdownIndicator = true, ...rest }) => (
     <ReactSelect
         styles={styles(isSearchable, withDropdownIndicator)}
         isSearchable={isSearchable}
         {...rest}
     />
 );
-const AsyncSelect = ({ isSearchable, withDropdownIndicator = true, ...rest }) => (
+const AsyncSelect = ({ isSearchable = true, withDropdownIndicator = true, ...rest }) => (
     <ReactAsyncSelect
         styles={styles(isSearchable, withDropdownIndicator)}
         isSearchable={isSearchable}
