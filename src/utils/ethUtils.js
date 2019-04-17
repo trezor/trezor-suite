@@ -46,3 +46,15 @@ export const isHex = (str: string): boolean => {
     const regExp = /^(0x|0X)?[0-9A-Fa-f]+$/g;
     return regExp.test(str);
 };
+
+export const hasUppercase = (value: string) => {
+    const UPPERCASE_RE = new RegExp('^(.*[A-Z].*)$');
+    return UPPERCASE_RE.test(value);
+};
+
+export const isEthereumNumber = (value: string, decimals: number = 18) => {
+    const ETH_18_RE = new RegExp(
+        `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?)$`
+    );
+    return ETH_18_RE.test(value);
+};

@@ -11,22 +11,6 @@ import * as ethUtils from 'utils/ethUtils';
 import type { Dispatch, GetState, PayloadAction } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormEthereumReducer';
 
-// general regular expressions
-const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
-const UPPERCASE_RE = new RegExp('^(.*[A-Z].*)$');
-const ABS_RE = new RegExp('^[0-9]+$');
-const ETH_18_RE = new RegExp(
-    '^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$'
-);
-const dynamicRegexp = (decimals: number): RegExp => {
-    if (decimals > 0) {
-        return new RegExp(
-            `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?|\\.[0-9]{1,${decimals}})$`
-        );
-    }
-    return ABS_RE;
-};
-
 /*
  * Called from SendFormActions.observe
  * Reaction for WEB3.GAS_PRICE_UPDATED action
@@ -168,7 +152,7 @@ export const addressValidation = ($state: State): PayloadAction<State> => (): St
         state.errors.address = 'Address is not set';
     } else if (!EthereumjsUtil.isValidAddress(address)) {
         state.errors.address = 'Address is not valid';
-    } else if (address.match(UPPERCASE_RE) && !EthereumjsUtil.isValidChecksumAddress(address)) {
+    } else if (ethUtils.hasUppercase(address) && !EthereumjsUtil.isValidChecksumAddress(address)) {
         state.errors.address = 'Address is not a valid checksum';
     }
     return state;
@@ -244,7 +228,7 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
     const { amount } = state;
     if (amount.length < 1) {
         state.errors.amount = 'Amount is not set';
-    } else if (amount.length > 0 && !amount.match(NUMBER_RE)) {
+    } else if (amount.length > 0 && !ethUtils.isEthereumNumber(amount)) {
         state.errors.amount = 'Amount is not a number';
     } else {
         const isToken: boolean = state.currency !== state.networkSymbol;
@@ -258,9 +242,8 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
                 account.deviceState
             );
             if (!token) return state;
-            const decimalRegExp = dynamicRegexp(parseInt(token.decimals, 0));
 
-            if (!state.amount.match(decimalRegExp)) {
+            if (!ethUtils.isEthereumNumber(state.amount, parseInt(token.decimals, 0))) {
                 state.errors.amount = `Maximum ${token.decimals} decimals allowed`;
             } else if (new BigNumber(state.total).isGreaterThan(account.balance)) {
                 state.errors.amount = `Not enough ${state.networkSymbol} to cover transaction fee`;
@@ -273,7 +256,7 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
             } else if (new BigNumber(state.amount).isLessThanOrEqualTo('0')) {
                 state.errors.amount = 'Amount is too low';
             }
-        } else if (!state.amount.match(ETH_18_RE)) {
+        } else if (!ethUtils.isEthereumNumber(state.amount, 18)) {
             state.errors.amount = 'Maximum 18 decimals allowed';
         } else if (
             new BigNumber(state.total).isGreaterThan(
@@ -302,7 +285,7 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
     const { gasLimit } = state;
     if (gasLimit.length < 1) {
         state.errors.gasLimit = 'Gas limit is not set';
-    } else if (gasLimit.length > 0 && !gasLimit.match(NUMBER_RE)) {
+    } else if (gasLimit.length > 0 && !ethUtils.isEthereumNumber(gasLimit)) {
         state.errors.gasLimit = 'Gas limit is not a number';
     } else {
         const gl: BigNumber = new BigNumber(gasLimit);
@@ -331,7 +314,7 @@ export const gasPriceValidation = ($state: State): PayloadAction<State> => (): S
     const { gasPrice } = state;
     if (gasPrice.length < 1) {
         state.errors.gasPrice = 'Gas price is not set';
-    } else if (gasPrice.length > 0 && !gasPrice.match(NUMBER_RE)) {
+    } else if (gasPrice.length > 0 && !ethUtils.isEthereumNumber(gasPrice)) {
         state.errors.gasPrice = 'Gas price is not a number';
     } else {
         const gp: BigNumber = new BigNumber(gasPrice);
