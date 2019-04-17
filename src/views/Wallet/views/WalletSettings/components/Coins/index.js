@@ -5,19 +5,12 @@ import { FormattedMessage } from 'react-intl';
 import { FONT_SIZE } from 'config/variables';
 import coins from 'constants/coins';
 
-import { colors, Switch, CoinLogo } from 'trezor-ui-components';
+import { colors, Switch, CoinLogo, Tooltip, Icon, icons as ICONS } from 'trezor-ui-components';
 import l10nMessages from '../../index.messages';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-`;
-
-const Label = styled.div`
-    display: flex;
-    padding: 10px 0;
-    color: ${colors.TEXT_SECONDARY};
-    align-items: center;
 `;
 
 const Row = styled.div`
@@ -29,6 +22,18 @@ const Content = styled.div`
     display: flex;
     margin: 20px 0;
     flex-direction: column;
+`;
+
+const Label = styled.div`
+    display: flex;
+    padding: 10px 0;
+    color: ${colors.TEXT_SECONDARY};
+    align-items: center;
+`;
+
+const TooltipIcon = styled(Icon)`
+    margin-left: 6px;
+    cursor: pointer;
 `;
 
 const CoinRow = styled.div`
@@ -74,6 +79,13 @@ const CoinsSettings = (props: Props) => (
             <Content>
                 <Label>
                     <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS} />
+                    <Tooltip
+                        content={<FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXPLAINED} />}
+                        maxWidth={210}
+                        placement="right"
+                    >
+                        <TooltipIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
+                    </Tooltip>
                 </Label>
                 {props.networks
                     .filter(network => !network.isHidden)
@@ -99,6 +111,13 @@ const CoinsSettings = (props: Props) => (
             <Content>
                 <Label>
                     <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXTERNAL} />
+                    <Tooltip
+                        content={<FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXPLAINED} />}
+                        maxWidth={210}
+                        placement="right"
+                    >
+                        <TooltipIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
+                    </Tooltip>
                 </Label>
                 {coins
                     .sort((a, b) => a.order - b.order)
