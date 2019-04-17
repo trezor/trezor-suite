@@ -16,6 +16,8 @@ __changed__
 - Coins sorted by market cap
 - Link to "Bitcoin wallet" opens in the same tab
 - Most components are now from trezor-ui-components
+- Limit max number of accounts to 10
+- Debounced validation in send forms
 
 __removed__
 - Text "you will be redirected" from coins menu
@@ -27,6 +29,10 @@ __fixed__
 - Token select shows all tokens options
 - "Check for devices" button in device menu
 - Close xlm, xem modals when opening external wallet
+- Peding tx overflow
+- Update account empty flag after receiving tx
+- Width of inputs in xrp send form advanced settings
+- Ripple destination tag validation
 
 ## 1.1.1-beta
 __added__
