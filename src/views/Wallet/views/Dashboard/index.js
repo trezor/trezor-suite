@@ -52,6 +52,10 @@ const StyledCoinLogo = styled(CoinLogo)`
     }
 `;
 
+const StyledH4 = styled(H4)`
+    text-align: center;
+`;
+
 const getBaseUrl = device => {
     let baseUrl = '';
     if (device && device.features) {
@@ -67,9 +71,9 @@ const Dashboard = (props: Props) => (
     <Content>
         <Wrapper>
             <Row data-test="Dashboard__page__content">
-                <H4>
+                <StyledH4>
                     <FormattedMessage {...l10nMessages.TR_PLEASE_SELECT_YOUR} />
-                </H4>
+                </StyledH4>
                 <StyledP>
                     <FormattedMessage {...l10nMessages.TR_YOU_WILL_GAIN_ACCESS} />
                 </StyledP>
