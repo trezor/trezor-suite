@@ -13,11 +13,6 @@ import type { Props as BaseProps } from '../../Container';
 
 type Props = {| ...BaseProps, children: React.Node |};
 
-// TODO: Decide on a small screen width for the whole app
-// and put it inside config/variables.js
-// same variable also in "AccountSend/index.js"
-const SmallScreenWidth = '850px';
-
 const InputLabelWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -36,24 +31,10 @@ const AdvancedSettingsWrapper = styled.div`
 const InputRow = styled.div`
     width: 100%;
     display: flex;
-
-    @media screen and (max-width: ${SmallScreenWidth}) {
-        flex-direction: column;
-    }
 `;
 
 const StyledInput = styled(Input)`
-    /* min-height: 85px; */
     padding-bottom: 28px;
-    &:first-child {
-        padding-right: 20px;
-    }
-
-    @media screen and (max-width: ${SmallScreenWidth}) {
-        &:first-child {
-            padding-right: 0;
-        }
-    }
 `;
 
 const AdvancedSettingsSendButtonWrapper = styled.div`
