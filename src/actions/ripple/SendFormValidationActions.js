@@ -5,6 +5,7 @@ import * as SEND from 'actions/constants/send';
 import { findDevice, getPendingAmount } from 'reducers/utils';
 import { toDecimalAmount } from 'utils/formatUtils';
 import { toFiatCurrency } from 'utils/fiatConverter';
+import * as validators from 'utils/validators';
 
 import type {
     Dispatch,
@@ -16,10 +17,8 @@ import type {
 import type { State, FeeLevel } from 'reducers/SendFormRippleReducer';
 
 import AddressValidator from 'wallet-address-validator';
+
 // general regular expressions
-const ABS_RE = new RegExp('^[0-9]+$');
-const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
-const XRP_6_RE = new RegExp('^(0|0\\.([0-9]{0,6})?|[1-9][0-9]*\\.?([0-9]{0,6})?|\\.[0-9]{0,6})$');
 const U_INT_32 = 0xffffffff;
 
 /*
@@ -270,11 +269,11 @@ const amountValidation = ($state: State): PayloadAction<State> => (
     const { amount } = state;
     if (amount.length < 1) {
         state.errors.amount = 'Amount is not set';
-    } else if (amount.length > 0 && !amount.match(NUMBER_RE)) {
+    } else if (amount.length > 0 && !validators.isRippleNumber(amount)) {
         state.errors.amount = 'Amount is not a number';
     } else {
         const pendingAmount: BigNumber = getPendingAmount(pending, state.networkSymbol);
-        if (!state.amount.match(XRP_6_RE)) {
+        if (!validators.isRippleNumber(state.amount)) {
             state.errors.amount = 'Maximum 6 decimals allowed';
         } else if (
             new BigNumber(state.total).isGreaterThan(
@@ -319,7 +318,7 @@ export const feeValidation = ($state: State): PayloadAction<State> => (
     const { fee } = state;
     if (fee.length < 1) {
         state.errors.fee = 'Fee is not set';
-    } else if (fee.length > 0 && !fee.match(ABS_RE)) {
+    } else if (fee.length > 0 && !validators.isAbs(fee)) {
         state.errors.fee = 'Fee must be an absolute number';
     } else {
         const gl: BigNumber = new BigNumber(fee);
@@ -340,7 +339,7 @@ export const destinationTagValidation = ($state: State): PayloadAction<State> =>
 
     const { destinationTag } = state;
 
-    if (destinationTag.length > 0 && !destinationTag.match(ABS_RE)) {
+    if (destinationTag.length > 0 && !validators.isAbs(destinationTag)) {
         state.errors.destinationTag = 'Destination tag must be an absolute number';
     }
 

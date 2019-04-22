@@ -7,6 +7,7 @@ import { findDevice, getPendingAmount, findToken } from 'reducers/utils';
 import { toFiatCurrency } from 'utils/fiatConverter';
 import * as SEND from 'actions/constants/send';
 import * as ethUtils from 'utils/ethUtils';
+import * as validators from 'utils/validators';
 
 import type { Dispatch, GetState, PayloadAction } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormEthereumReducer';
@@ -152,7 +153,10 @@ export const addressValidation = ($state: State): PayloadAction<State> => (): St
         state.errors.address = 'Address is not set';
     } else if (!EthereumjsUtil.isValidAddress(address)) {
         state.errors.address = 'Address is not valid';
-    } else if (ethUtils.hasUppercase(address) && !EthereumjsUtil.isValidChecksumAddress(address)) {
+    } else if (
+        validators.hasUppercase(address) &&
+        !EthereumjsUtil.isValidChecksumAddress(address)
+    ) {
         state.errors.address = 'Address is not a valid checksum';
     }
     return state;
@@ -228,7 +232,7 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
     const { amount } = state;
     if (amount.length < 1) {
         state.errors.amount = 'Amount is not set';
-    } else if (amount.length > 0 && !ethUtils.isEthereumNumber(amount)) {
+    } else if (amount.length > 0 && !validators.isEthereumNumber(amount)) {
         state.errors.amount = 'Amount is not a number';
     } else {
         const isToken: boolean = state.currency !== state.networkSymbol;
@@ -243,7 +247,7 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
             );
             if (!token) return state;
 
-            if (!ethUtils.isEthereumNumber(state.amount, parseInt(token.decimals, 0))) {
+            if (!validators.isNumber(state.amount, parseInt(token.decimals, 0))) {
                 state.errors.amount = `Maximum ${token.decimals} decimals allowed`;
             } else if (new BigNumber(state.total).isGreaterThan(account.balance)) {
                 state.errors.amount = `Not enough ${state.networkSymbol} to cover transaction fee`;
@@ -256,7 +260,7 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
             } else if (new BigNumber(state.amount).isLessThanOrEqualTo('0')) {
                 state.errors.amount = 'Amount is too low';
             }
-        } else if (!ethUtils.isEthereumNumber(state.amount, 18)) {
+        } else if (!validators.isEthereumNumber(state.amount)) {
             state.errors.amount = 'Maximum 18 decimals allowed';
         } else if (
             new BigNumber(state.total).isGreaterThan(
@@ -285,7 +289,7 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
     const { gasLimit } = state;
     if (gasLimit.length < 1) {
         state.errors.gasLimit = 'Gas limit is not set';
-    } else if (gasLimit.length > 0 && !ethUtils.isEthereumNumber(gasLimit)) {
+    } else if (gasLimit.length > 0 && !validators.isEthereumNumber(gasLimit)) {
         state.errors.gasLimit = 'Gas limit is not a number';
     } else {
         const gl: BigNumber = new BigNumber(gasLimit);
@@ -314,7 +318,7 @@ export const gasPriceValidation = ($state: State): PayloadAction<State> => (): S
     const { gasPrice } = state;
     if (gasPrice.length < 1) {
         state.errors.gasPrice = 'Gas price is not set';
-    } else if (gasPrice.length > 0 && !ethUtils.isEthereumNumber(gasPrice)) {
+    } else if (gasPrice.length > 0 && !validators.isEthereumNumber(gasPrice)) {
         state.errors.gasPrice = 'Gas price is not a number';
     } else {
         const gp: BigNumber = new BigNumber(gasPrice);
@@ -343,7 +347,7 @@ export const nonceValidation = ($state: State): PayloadAction<State> => (
     const { nonce } = state;
     if (nonce.length < 1) {
         state.errors.nonce = 'Nonce is not set';
-    } else if (!nonce.match(ABS_RE)) {
+    } else if (!validators.isAbs(nonce)) {
         state.errors.nonce = 'Nonce is not a valid number';
     } else {
         const n: BigNumber = new BigNumber(nonce);

@@ -136,6 +136,10 @@ export const update = (event: StorageEvent): ThunkAction => (dispatch: Dispatch)
     }
 
     if (event.key === KEY_ACCOUNTS) {
+        console.log('omg');
+        console.log(event);
+        console.log(JSON.parse(event.newValue));
+        console.log(event.oldValue);
         dispatch({
             type: ACCOUNT.FROM_STORAGE,
             payload: JSON.parse(event.newValue),
