@@ -232,7 +232,7 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
     const { amount } = state;
     if (amount.length < 1) {
         state.errors.amount = 'Amount is not set';
-    } else if (amount.length > 0 && !validators.isEthereumNumber(amount)) {
+    } else if (amount.length > 0 && !validators.isNumber(amount)) {
         state.errors.amount = 'Amount is not a number';
     } else {
         const isToken: boolean = state.currency !== state.networkSymbol;
@@ -247,7 +247,7 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
             );
             if (!token) return state;
 
-            if (!validators.isNumber(state.amount, parseInt(token.decimals, 0))) {
+            if (!validators.hasDecimals(state.amount, parseInt(token.decimals, 0))) {
                 state.errors.amount = `Maximum ${token.decimals} decimals allowed`;
             } else if (new BigNumber(state.total).isGreaterThan(account.balance)) {
                 state.errors.amount = `Not enough ${state.networkSymbol} to cover transaction fee`;
@@ -260,7 +260,7 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
             } else if (new BigNumber(state.amount).isLessThanOrEqualTo('0')) {
                 state.errors.amount = 'Amount is too low';
             }
-        } else if (!validators.isEthereumNumber(state.amount)) {
+        } else if (!validators.hasDecimals(state.amount, 18)) {
             state.errors.amount = 'Maximum 18 decimals allowed';
         } else if (
             new BigNumber(state.total).isGreaterThan(
@@ -289,7 +289,7 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
     const { gasLimit } = state;
     if (gasLimit.length < 1) {
         state.errors.gasLimit = 'Gas limit is not set';
-    } else if (gasLimit.length > 0 && !validators.isEthereumNumber(gasLimit)) {
+    } else if (gasLimit.length > 0 && !validators.isNumber(gasLimit)) {
         state.errors.gasLimit = 'Gas limit is not a number';
     } else {
         const gl: BigNumber = new BigNumber(gasLimit);
@@ -318,7 +318,7 @@ export const gasPriceValidation = ($state: State): PayloadAction<State> => (): S
     const { gasPrice } = state;
     if (gasPrice.length < 1) {
         state.errors.gasPrice = 'Gas price is not set';
-    } else if (gasPrice.length > 0 && !validators.isEthereumNumber(gasPrice)) {
+    } else if (gasPrice.length > 0 && !validators.isNumber(gasPrice)) {
         state.errors.gasPrice = 'Gas price is not a number';
     } else {
         const gp: BigNumber = new BigNumber(gasPrice);

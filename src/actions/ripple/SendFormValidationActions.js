@@ -269,11 +269,11 @@ const amountValidation = ($state: State): PayloadAction<State> => (
     const { amount } = state;
     if (amount.length < 1) {
         state.errors.amount = 'Amount is not set';
-    } else if (amount.length > 0 && !validators.isRippleNumber(amount)) {
+    } else if (amount.length > 0 && !validators.isNumber(amount)) {
         state.errors.amount = 'Amount is not a number';
     } else {
         const pendingAmount: BigNumber = getPendingAmount(pending, state.networkSymbol);
-        if (!validators.isRippleNumber(state.amount)) {
+        if (!validators.hasDecimals(state.amount, 6)) {
             state.errors.amount = 'Maximum 6 decimals allowed';
         } else if (
             new BigNumber(state.total).isGreaterThan(
