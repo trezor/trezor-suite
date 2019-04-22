@@ -10,10 +10,10 @@ export const hasDecimals = (value: string, decimals: number) => {
         return isAbs(value);
     }
 
-    const ETH_18_RE = new RegExp(
+    const ETH_DECIMALS_RE = new RegExp(
         `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?)$`
     );
-    return ETH_18_RE.test(value);
+    return ETH_DECIMALS_RE.test(value);
 };
 
 export const isAbs = (value: string) => {
@@ -22,6 +22,6 @@ export const isAbs = (value: string) => {
 };
 
 export const isNumber = (value: string) => {
-    const ETH_18_RE = new RegExp(`^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?)$`);
-    return ETH_18_RE.test(value);
+    const NUMBER_RE = new RegExp(`^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?)$`);
+    return NUMBER_RE.test(value);
 };
