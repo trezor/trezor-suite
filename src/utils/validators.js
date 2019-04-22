@@ -5,7 +5,7 @@ export const hasUppercase = (value: string) => {
     return UPPERCASE_RE.test(value);
 };
 
-export const isNumber = (value: string, decimals: number = 18) => {
+export const isNumber = (value: string, decimals: number) => {
     if (decimals === 0) {
         return isAbs(value);
     }
