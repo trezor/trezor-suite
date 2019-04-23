@@ -1,6 +1,7 @@
 /* @flow */
 
 import TrezorConnect, { UI } from 'trezor-connect';
+import * as BLOCKCHAIN_ACTION from 'actions/constants/blockchain';
 import * as DISCOVERY from 'actions/constants/discovery';
 import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
@@ -325,11 +326,27 @@ const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction 
     });
 };
 
-export const reconnect = (network: string): PromiseAction<void> => async (
+export const reconnect = (network: string, timeout: number = 30): PromiseAction<void> => async (
     dispatch: Dispatch
 ): Promise<void> => {
-    await dispatch(BlockchainActions.subscribe(network));
-    dispatch(restore());
+    // Runs two promises.
+    // First promise is a subscribe action which will never resolve in case of completely lost connection to the backend
+    // That's why there is a second promise that rejects after the specified timeout.
+    return Promise.race([
+        dispatch(BlockchainActions.subscribe(network)),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout)),
+    ])
+        .catch(() => {
+            // catch error from first promises that rejects (most likely timeout)
+            dispatch({
+                type: BLOCKCHAIN_ACTION.FAIL_SUBSCRIBE,
+                shortcut: network,
+            });
+        })
+        .then(() => {
+            // dispatch restore when subscribe promise resolves
+            dispatch(restore());
+        });
 };
 
 // Called after DEVICE.CONNECT ('trezor-connect') or CONNECT.AUTH_DEVICE actions in WalletService
