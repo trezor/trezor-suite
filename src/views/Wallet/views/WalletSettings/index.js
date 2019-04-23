@@ -103,6 +103,11 @@ const WalletSettings = (props: Props) => (
                     </Tooltip>
                 </Label>
                 <Switch
+                    width={36}
+                    height={18}
+                    handleDiameter={14}
+                    checkedIcon={false}
+                    uncheckedIcon={false}
                     onChange={checked => {
                         props.setHideBalance(checked);
                     }}

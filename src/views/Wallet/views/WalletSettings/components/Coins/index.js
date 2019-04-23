@@ -35,6 +35,7 @@ const Content = styled.div`
 const Label = styled.div`
     display: flex;
     padding: 10px 0;
+    justify-content: space-between;
     color: ${colors.TEXT_SECONDARY};
     align-items: center;
 `;
@@ -66,7 +67,10 @@ const Left = styled.div`
     align-items: center;
 `;
 
-const Right = styled.div``;
+const Right = styled.div`
+    display: flex;
+    align-items: center;
+`;
 
 const Name = styled.div`
     display: flex;
@@ -86,14 +90,23 @@ const CoinsSettings = (props: Props) => (
         <Row>
             <Content>
                 <Label>
-                    <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS} />
-                    <Tooltip
-                        content={<FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXPLAINED} />}
-                        maxWidth={210}
-                        placement="right"
-                    >
-                        <TooltipIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
-                    </Tooltip>
+                    <Left>
+                        <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS} />
+                        <Tooltip
+                            content={
+                                <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXPLAINED} />
+                            }
+                            maxWidth={210}
+                            placement="right"
+                        >
+                            <TooltipIcon
+                                icon={ICONS.HELP}
+                                color={colors.TEXT_SECONDARY}
+                                size={12}
+                            />
+                        </Tooltip>
+                    </Left>
+                    <Right>Show all</Right>
                 </Label>
                 {props.networks
                     .filter(network => !network.isHidden)
@@ -107,6 +120,11 @@ const CoinsSettings = (props: Props) => (
                             </Left>
                             <Right>
                                 <Switch
+                                    width={36}
+                                    height={18}
+                                    handleDiameter={14}
+                                    checkedIcon={false}
+                                    uncheckedIcon={false}
                                     onChange={visible => {
                                         props.handleCoinVisibility(network.shortcut, visible);
                                     }}
@@ -118,14 +136,23 @@ const CoinsSettings = (props: Props) => (
             </Content>
             <Content>
                 <Label>
-                    <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXTERNAL} />
-                    <Tooltip
-                        content={<FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXPLAINED} />}
-                        maxWidth={210}
-                        placement="right"
-                    >
-                        <TooltipIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
-                    </Tooltip>
+                    <Left>
+                        <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXTERNAL} />
+                        <Tooltip
+                            content={
+                                <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS_EXPLAINED} />
+                            }
+                            maxWidth={210}
+                            placement="right"
+                        >
+                            <TooltipIcon
+                                icon={ICONS.HELP}
+                                color={colors.TEXT_SECONDARY}
+                                size={12}
+                            />
+                        </Tooltip>
+                    </Left>
+                    <Right>Show all</Right>
                 </Label>
                 {coins
                     .sort((a, b) => a.order - b.order)
@@ -139,6 +166,11 @@ const CoinsSettings = (props: Props) => (
                             </Left>
                             <Right>
                                 <Switch
+                                    width={36}
+                                    height={18}
+                                    handleDiameter={14}
+                                    checkedIcon={false}
+                                    uncheckedIcon={false}
                                     onChange={visible => {
                                         props.handleCoinVisibility(network.id, visible);
                                     }}

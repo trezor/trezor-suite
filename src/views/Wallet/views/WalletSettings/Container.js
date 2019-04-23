@@ -23,6 +23,7 @@ type DispatchProps = {|
     setLocalCurrency: typeof WalletActions.setLocalCurrency,
     setHideBalance: typeof WalletActions.setHideBalance,
     handleCoinVisibility: typeof LocalStorageActions.handleCoinVisibility,
+    // handleAllCoinsVisibility: typeof LocalStorageActions.handleAllCoinsVisibility,
 |};
 
 export type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
@@ -37,6 +38,10 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     setLocalCurrency: bindActionCreators(WalletActions.setLocalCurrency, dispatch),
     setHideBalance: bindActionCreators(WalletActions.setHideBalance, dispatch),
     handleCoinVisibility: bindActionCreators(LocalStorageActions.handleCoinVisibility, dispatch),
+    // handleAllCoinsVisibility: bindActionCreators(
+    //     LocalStorageActions.handleAllCoinsVisibility,
+    //     dispatch
+    // ),
 });
 
 export default injectIntl<OwnProps>(

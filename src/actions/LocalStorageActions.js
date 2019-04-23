@@ -380,6 +380,8 @@ export const handleCoinVisibility = (
     });
 };
 
+// export const handleAllCoinsVisibility => ();
+
 export const getHiddenCoins = (): Array<string> => {
     const coinsConfig: ?string = storageUtils.get(TYPE, KEY_HIDDEN_COINS);
     if (coinsConfig) {
