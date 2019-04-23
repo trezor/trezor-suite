@@ -34,7 +34,7 @@ const Empty = styled.span`
 `;
 
 const StyledLinkEmpty = styled(Link)`
-    padding: 0 5px;
+    padding: 0;
 `;
 
 const Gray = styled.span`
@@ -121,8 +121,10 @@ class CoinMenu extends PureComponent<Props> {
             <Wrapper data-test="Main__page__coin__menu">
                 {this.isMenuEmpty() && (
                     <Empty>
-                        <StyledLinkEmpty to="/settings">Select a coin</StyledLinkEmpty>
-                        <Gray> in application settings</Gray>
+                        <Gray>
+                            Select a coin in{' '}
+                            <StyledLinkEmpty to="/settings"> application settings</StyledLinkEmpty>
+                        </Gray>
                     </Empty>
                 )}
                 {config.networks
