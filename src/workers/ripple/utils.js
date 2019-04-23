@@ -30,7 +30,7 @@ export const transformTransactionHistory = (descriptor: string, raw) => {
         txid: hash,
         vin: [{ n: 0, addresses: [tx.Account] }],
         vout: [{ value: amount, n: 0, addresses: [tx.Destination] }],
-        blocktime: tx.date,
+        blockTime: tx.date,
         fees: fee,
         total,
         type,
