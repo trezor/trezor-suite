@@ -106,7 +106,7 @@ const CoinsSettings = (props: Props) => (
                             />
                         </Tooltip>
                     </Left>
-                    <Right>Show all</Right>
+                    <Right />
                 </Label>
                 {props.networks
                     .filter(network => !network.isHidden)
@@ -150,7 +150,7 @@ const CoinsSettings = (props: Props) => (
                             />
                         </Tooltip>
                     </Left>
-                    <Right>Show all</Right>
+                    <Right />
                 </Label>
                 {coins
                     .sort((a, b) => a.order - b.order)
