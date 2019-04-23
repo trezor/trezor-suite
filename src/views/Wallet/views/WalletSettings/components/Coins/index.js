@@ -107,10 +107,10 @@ const CoinsSettings = (props: Props) => (
                             </Left>
                             <Right>
                                 <Switch
-                                    onChange={isVisible => {
-                                        props.handleCoinVisibility(network.shortcut, !isVisible);
+                                    onChange={visible => {
+                                        props.handleCoinVisibility(network.shortcut, visible);
                                     }}
-                                    checked={props.hiddenCoins.includes(network.shortcut)}
+                                    checked={!props.hiddenCoins.includes(network.shortcut)}
                                 />
                             </Right>
                         </CoinRow>
@@ -139,10 +139,10 @@ const CoinsSettings = (props: Props) => (
                             </Left>
                             <Right>
                                 <Switch
-                                    onChange={isVisible => {
-                                        props.handleCoinVisibility(network.id, !isVisible);
+                                    onChange={visible => {
+                                        props.handleCoinVisibility(network.id, visible);
                                     }}
-                                    checked={props.hiddenCoins.includes(network.id)}
+                                    checked={!props.hiddenCoins.includes(network.id)}
                                 />
                             </Right>
                         </CoinRow>

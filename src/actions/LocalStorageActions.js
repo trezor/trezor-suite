@@ -367,7 +367,7 @@ export const handleCoinVisibility = (
     let newConfig: Array<string> = configuration;
     const isAlreadyHidden = configuration.find(coin => coin === coinShortcut);
 
-    if (isAlreadyHidden && shouldBeVisible) {
+    if (shouldBeVisible) {
         newConfig = configuration.filter(coin => coin !== coinShortcut);
     } else if (!isAlreadyHidden) {
         newConfig = [...configuration, coinShortcut];

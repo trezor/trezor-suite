@@ -60,7 +60,7 @@ class CoinMenu extends PureComponent<Props> {
         return coins
             .sort((a, b) => a.order - b.order)
             .filter(item => !item.isHidden) // hide coins globally in config
-            .filter(item => hiddenCoins.includes(item.id))
+            .filter(item => !hiddenCoins.includes(item.id))
             .map(coin => {
                 const row = (
                     <RowCoin
@@ -105,7 +105,7 @@ class CoinMenu extends PureComponent<Props> {
         const { hiddenCoins } = this.props.wallet;
         const numberOfVisibleNetworks = coins
             .filter(item => !item.isHidden)
-            .filter(item => hiddenCoins.includes(item.id));
+            .filter(item => !hiddenCoins.includes(item.id));
 
         return numberOfVisibleNetworks.length <= 0;
     }
@@ -129,7 +129,7 @@ class CoinMenu extends PureComponent<Props> {
                 )}
                 {config.networks
                     .filter(item => !item.isHidden) // hide coins globally in config
-                    .filter(item => hiddenCoins.includes(item.shortcut)) // hide coins by user settings
+                    .filter(item => !hiddenCoins.includes(item.shortcut)) // hide coins by user settings
                     .sort((a, b) => a.order - b.order)
                     .map(item => (
                         <NavLink

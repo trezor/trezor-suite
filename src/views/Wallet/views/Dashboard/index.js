@@ -76,7 +76,7 @@ const Dashboard = (props: Props) => (
                 <Coins>
                     {props.localStorage.config.networks
                         .filter(item => !item.isHidden)
-                        .filter(item => props.wallet.hiddenCoins.includes(item.shortcut))
+                        .filter(item => !props.wallet.hiddenCoins.includes(item.shortcut))
                         .map(network => (
                             <StyledNavLink
                                 key={network.shortcut}
