@@ -27,7 +27,7 @@ const definedMessages: Messages = defineMessages({
     TR_VISIBLE_COINS_EXPLAINED: {
         id: 'TR_VISIBLE_COINS_EXPLAINED',
         defaultMessage:
-            'Select the coins you wish to see in the walet interface. You will be able to change your preferences later.',
+            'Select the coins you wish to see in the wallet interface. You will be able to change your preferences later.',
     },
 });
 
