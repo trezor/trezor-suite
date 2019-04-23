@@ -122,8 +122,18 @@ class CoinMenu extends PureComponent<Props> {
                 {this.isMenuEmpty() && (
                     <Empty>
                         <Gray>
-                            Select a coin in{' '}
-                            <StyledLinkEmpty to="/settings"> application settings</StyledLinkEmpty>
+                            <FormattedMessage
+                                {...l10nMessages.TR_SELECT_COINS}
+                                values={{
+                                    TR_SELECT_COINS_LINK: (
+                                        <StyledLinkEmpty to="/settings">
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_SELECT_COINS_LINK}
+                                            />
+                                        </StyledLinkEmpty>
+                                    ),
+                                }}
+                            />{' '}
                         </Gray>
                     </Empty>
                 )}
