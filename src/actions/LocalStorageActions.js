@@ -12,7 +12,6 @@ import * as buildUtils from 'utils/build';
 import * as storageUtils from 'utils/storage';
 import * as WalletActions from 'actions/WalletActions';
 import * as l10nUtils from 'utils/l10n';
-
 import { getAccountTokens } from 'reducers/utils';
 import type { Account } from 'reducers/AccountsReducer';
 import type { Token } from 'reducers/TokensReducer';
@@ -380,7 +379,35 @@ export const handleCoinVisibility = (
     });
 };
 
-// export const handleAllCoinsVisibility => ();
+export const handleAllCoinsVisibility = (
+    checked: boolean,
+    allCoins: Array<string>,
+    hiddenCoins: Array<string>
+): ThunkAction => (dispatch: Dispatch) => {
+    const configuration: Array<string> = getHiddenCoins();
+    const newConfig: Array<string> = configuration;
+    let result = [];
+
+    console.log('old config', newConfig);
+
+    if (checked) {
+        const intersection = allCoins.filter(x => hiddenCoins.includes(x));
+        if (intersection) {
+            result = newConfig.filter(x => !intersection.includes(x));
+        }
+    } else {
+        const intersection = allCoins.filter(x => hiddenCoins.includes(x));
+        console.log('intersection', intersection);
+        result = [configuration, ...intersection];
+    }
+
+    dispatch({
+        type: WALLET.SET_HIDDEN_COINS,
+        hiddenCoins: result,
+    });
+
+    storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(result));
+};
 
 export const getHiddenCoins = (): Array<string> => {
     const coinsConfig: ?string = storageUtils.get(TYPE, KEY_HIDDEN_COINS);

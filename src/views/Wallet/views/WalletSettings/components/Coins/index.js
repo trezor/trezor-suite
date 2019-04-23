@@ -14,6 +14,7 @@ type Props = {
     networks: Array<Network>,
     hiddenCoins: Array<string>,
     handleCoinVisibility: typeof LocalStorageActions.handleCoinVisibility,
+    handleAllCoinsVisibility: typeof LocalStorageActions.handleAllCoinsVisibility,
 };
 
 const Wrapper = styled.div`
@@ -85,6 +86,10 @@ const LogoWrapper = styled.div`
     align-items: center;
 `;
 
+const ToggleAll = styled.span`
+    cursor: pointer;
+`;
+
 const CoinsSettings = (props: Props) => (
     <Wrapper>
         <Row>
@@ -106,7 +111,25 @@ const CoinsSettings = (props: Props) => (
                             />
                         </Tooltip>
                     </Left>
-                    <Right>Show all</Right>
+                    <Right>
+                        <ToggleAll
+                            onClick={checked => {
+                                const allCoins = props.networks
+                                    .filter(x => !x.isHidden)
+                                    .map(item => item.shortcut);
+
+                                props.handleAllCoinsVisibility(
+                                    checked,
+                                    allCoins,
+                                    props.hiddenCoins
+                                );
+                            }}
+                        >
+                            {props.hiddenCoins.every(val => props.networks.includes(val))
+                                ? 'Hide all'
+                                : 'Show all'}
+                        </ToggleAll>
+                    </Right>
                 </Label>
                 {props.networks
                     .filter(network => !network.isHidden)
@@ -150,7 +173,23 @@ const CoinsSettings = (props: Props) => (
                             />
                         </Tooltip>
                     </Left>
-                    <Right>Show all</Right>
+                    <Right>
+                        <ToggleAll
+                            onClick={checked => {
+                                const allCoins = coins
+                                    .filter(x => !x.isHidden)
+                                    .map(coin => coin.id);
+
+                                props.handleAllCoinsVisibility(
+                                    checked,
+                                    allCoins,
+                                    props.hiddenCoins
+                                );
+                            }}
+                        >
+                            Show all
+                        </ToggleAll>
+                    </Right>
                 </Label>
                 {coins
                     .sort((a, b) => a.order - b.order)

@@ -73,7 +73,10 @@ const TooltipIcon = styled(Icon)`
 `;
 
 const buildCurrencyOption = currency => {
-    return { value: currency, label: currency.toUpperCase() };
+    return {
+        value: currency,
+        label: currency.toUpperCase(),
+    };
 };
 
 const WalletSettings = (props: Props) => (
@@ -117,6 +120,7 @@ const WalletSettings = (props: Props) => (
             <Coins
                 networks={props.localStorage.config.networks}
                 handleCoinVisibility={props.handleCoinVisibility}
+                handleAllCoinsVisibility={props.handleAllCoinsVisibility}
                 hiddenCoins={props.wallet.hiddenCoins}
             />
         </Section>
