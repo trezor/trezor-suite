@@ -96,7 +96,7 @@ class CoinMenu extends PureComponent<Props> {
     isTopMenuEmpty() {
         const numberOfVisibleNetworks = this.props.localStorage.config.networks
             .filter(item => !item.isHidden) // hide coins globally in config
-            .filter(item => this.props.wallet.hiddenCoins.includes(item.shortcut));
+            .filter(item => !this.props.wallet.hiddenCoins.includes(item.shortcut));
 
         return numberOfVisibleNetworks.length <= 0;
     }
