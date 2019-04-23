@@ -120,9 +120,7 @@ const CoinsSettings = (props: Props) => (
                             </Left>
                             <Right>
                                 <Switch
-                                    width={36}
-                                    height={18}
-                                    handleDiameter={14}
+                                    isSmall
                                     checkedIcon={false}
                                     uncheckedIcon={false}
                                     onChange={visible => {
@@ -166,9 +164,7 @@ const CoinsSettings = (props: Props) => (
                             </Left>
                             <Right>
                                 <Switch
-                                    width={36}
-                                    height={18}
-                                    handleDiameter={14}
+                                    isSmall
                                     checkedIcon={false}
                                     uncheckedIcon={false}
                                     onChange={visible => {

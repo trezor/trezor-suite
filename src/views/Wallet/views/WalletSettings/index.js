@@ -103,9 +103,7 @@ const WalletSettings = (props: Props) => (
                     </Tooltip>
                 </Label>
                 <Switch
-                    width={36}
-                    height={18}
-                    handleDiameter={14}
+                    isSmall
                     checkedIcon={false}
                     uncheckedIcon={false}
                     onChange={checked => {
