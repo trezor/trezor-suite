@@ -310,7 +310,7 @@
     }
   },
   "TR_CHANGE_WALLET_TYPE_FOR": {
-    "source": "Select wallet type for {deviceLabel}",
+    "source": "Change wallet type for {deviceLabel}",
     "meta": {
       "occurrences": [
         "src/components/modals/device/WalletType/index.messages.js"
@@ -676,6 +676,15 @@
     "source": "Account #{number}",
     "meta": {
       "comment": "Used in auto-generated account label",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_IMPORTED_ACCOUNT_HASH": {
+    "source": "Imported account #{number}",
+    "meta": {
+      "comment": "Used in auto-generated label for imported accounts",
       "occurrences": [
         "src/views/common.messages.js"
       ]
@@ -1093,6 +1102,14 @@
       ]
     }
   },
+  "TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS": {
+    "source": "You cannot add more than 10 accounts",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js"
+      ]
+    }
+  },
   "TR_OTHER_COINS": {
     "source": "Other coins",
     "meta": {
@@ -1177,6 +1194,7 @@
   "TR_NAV_SUMMARY": {
     "source": "Summary",
     "meta": {
+      "comment": "Title of the navigation tab that contains information about selected account (balance, tx history).",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1185,6 +1203,7 @@
   "TR_NAV_RECEIVE": {
     "source": "Receive",
     "meta": {
+      "comment": "Title of the navigation tab that contains the account address",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1193,6 +1212,7 @@
   "TR_NAV_SEND": {
     "source": "Send",
     "meta": {
+      "comment": "Title of the navigation tab that contains a form for sending funds",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1201,6 +1221,7 @@
   "TR_NAV_SIGN_AND_VERIFY": {
     "source": "Sign & Verify",
     "meta": {
+      "comment": "Title of the navigation tab that contains a form for signing and verifying messages",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
