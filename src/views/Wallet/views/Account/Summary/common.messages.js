@@ -23,10 +23,6 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_TOKEN_NOT_FOUND',
         defaultMessage: 'Token not found',
     },
-    TR_ALREADY_USED: {
-        id: 'TR_ALREADY_USED',
-        defaultMessage: 'Already used',
-    },
     TR_HISTORY: {
         id: 'TR_HISTORY',
         defaultMessage: 'History',
