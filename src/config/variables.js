@@ -1,3 +1,15 @@
+// Bootstrap 3 breakpoints
+/* XS - Extra Small Devices, Phones */
+/* SM - Small Devices, Tablets */
+/* MD - Medium Devices, Desktops */
+/* LG - Large Devices, Wide Screens */
+export const SCREEN_SIZE = {
+    XS: '480px',
+    SM: '768px',
+    MD: '992px',
+    LG: '1170px',
+};
+
 export const FONT_SIZE = {
     SMALL: '0.8571rem',
     BASE: '1rem',

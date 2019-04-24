@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
-import { withKnobs, select, number, color, boolean } from '@storybook/addon-knobs';
+import StoryRouter from 'storybook-react-router';
+import { withKnobs, select, number, color, text, object, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 
 import CoinLogo from 'components/CoinLogo';
@@ -10,6 +11,7 @@ import TrezorImage from 'components/TrezorImage';
 import Icon from 'components/Icon';
 import { H1 } from 'components/Heading';
 import Prompt from 'components/Prompt';
+import Header from 'components/Header';
 
 import colors from 'config/colors';
 import icons from 'config/icons';
@@ -256,6 +258,50 @@ storiesOf('Other', module)
         import { TrezorIMage } from 'trezor-ui-components';
         ~~~
         *<TrezorIMage> is just a styled <img> tag. See the [documentation](https://www.w3schools.com/tags/tag_img.asp) for more information about its props and usage.*
+        `,
+            },
+        }
+    )
+    .addDecorator(StoryRouter())
+    .add(
+        'Header',
+        () => {
+            return (
+                <Header
+                    sidebarEnabled={boolean('sidebarEnabled', true)}
+                    sidebarOpened={boolean('sidebarOpened', false)}
+                    toggleSidebar={null}
+                    togglerOpenText={text('togglerOpenText', 'Menu')}
+                    togglerCloseText={text('togglerCloseText', 'Close')}
+                    rightAddon={null}
+                    links={object('links', [
+                        {
+                            href: 'https://trezor.io/',
+                            title: 'Trezor',
+                        },
+                        {
+                            href: 'https://wiki.trezor.io/',
+                            title: 'Wiki',
+                        },
+                        {
+                            href: 'https://blog.trezor.io/',
+                            title: 'Blog',
+                        },
+                        {
+                            href: 'https://trezor.io/support/',
+                            title: 'Support',
+                        },
+                    ])}
+                />
+            );
+        },
+        {
+            info: {
+                text: `
+        ## Import
+        ~~~js
+        import { Header } from 'trezor-ui-components';
+        ~~~
         `,
             },
         }
