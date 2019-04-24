@@ -401,21 +401,9 @@ export const toggleGroupCoinsVisibility = (
     checked: boolean,
     isExternal: boolean
 ): ThunkAction => (dispatch: Dispatch) => {
-    if (checked && isExternal) {
-        dispatch({
-            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
-            hiddenCoinsExternal: [],
-        });
-        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify([]));
-    }
+    // supported coins
 
-    if (!checked && isExternal) {
-        dispatch({
-            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
-            hiddenCoinsExternal: allCoins,
-        });
-        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify(allCoins));
-    }
+    console.log('checked', checked);
 
     if (checked && !isExternal) {
         dispatch({
@@ -431,6 +419,23 @@ export const toggleGroupCoinsVisibility = (
             hiddenCoins: allCoins,
         });
         storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(allCoins));
+    }
+
+    // external coins
+    if (checked && isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+            hiddenCoinsExternal: [],
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify([]));
+    }
+
+    if (!checked && isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+            hiddenCoinsExternal: allCoins,
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify(allCoins));
     }
 };
 
