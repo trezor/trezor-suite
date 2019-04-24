@@ -177,21 +177,21 @@ const AccountReceive = (props: Props) => {
                             </ShowAddressButton>
                         )}
                     </Row>
-                    {((addressVerified || addressUnverified) && !isAddressVerifying) ||
-                        (account.imported && (
-                            <QrWrapper>
-                                <Label>
-                                    <FormattedMessage {...l10nReceiveMessages.TR_QR_CODE} />
-                                </Label>
-                                <StyledQRCode
-                                    bgColor="#FFFFFF"
-                                    fgColor="#000000"
-                                    level="Q"
-                                    style={{ width: 150 }}
-                                    value={account.descriptor}
-                                />
-                            </QrWrapper>
-                        ))}
+                    {(((addressVerified || addressUnverified) && !isAddressVerifying) ||
+                        account.imported) && (
+                        <QrWrapper>
+                            <Label>
+                                <FormattedMessage {...l10nReceiveMessages.TR_QR_CODE} />
+                            </Label>
+                            <StyledQRCode
+                                bgColor="#FFFFFF"
+                                fgColor="#000000"
+                                level="Q"
+                                style={{ width: 150 }}
+                                value={account.descriptor}
+                            />
+                        </QrWrapper>
+                    )}
                 </AddressWrapper>
             </React.Fragment>
         </Content>
