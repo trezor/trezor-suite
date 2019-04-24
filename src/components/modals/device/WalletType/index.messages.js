@@ -9,7 +9,7 @@ const definedMessages: Messages = defineMessages({
     },
     TR_CHANGE_WALLET_TYPE_FOR: {
         id: 'TR_CHANGE_WALLET_TYPE_FOR',
-        defaultMessage: 'Select wallet type for {deviceLabel}',
+        defaultMessage: 'Change wallet type for {deviceLabel}',
     },
     TR_STANDARD_WALLET: {
         id: 'TR_STANDARD_WALLET',
