@@ -10,7 +10,6 @@ import type { State } from 'flowtype';
 import { FormattedMessage } from 'react-intl';
 
 import l10nMessages from './index.messages';
-import Indicator from './components/Indicator';
 
 type OwnProps = {||};
 
@@ -27,14 +26,13 @@ type LocalState = {
 };
 
 const Wrapper = styled.div`
-    position: relative;
     display: flex;
     height: 100%;
     flex: 1;
     align-items: center;
-    padding: 0px 30px 0 35px;
     overflow-y: hidden;
     overflow-x: auto;
+    padding: 0px 30px 0 35px;
 
     @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         justify-content: space-between;
@@ -51,7 +49,10 @@ const StyledNavLink = styled(NavLink)`
     color: ${colors.TEXT_SECONDARY};
     margin: 0px 4px;
     padding: 20px 35px;
+    display: flex;
+    height: 100%;
     white-space: nowrap;
+    border-bottom: 2px solid ${colors.WHITE};
 
     @media screen and (max-width: ${SCREEN_SIZE.MD}) {
         padding: 20px 10px;
@@ -64,7 +65,6 @@ const StyledNavLink = styled(NavLink)`
 
     &.active,
     &:hover {
-        transition: all 0.3s ease-in-out;
         color: ${colors.TEXT_PRIMARY};
     }
 
@@ -75,27 +75,23 @@ const StyledNavLink = styled(NavLink)`
     &:last-child {
         margin-right: 0px;
     }
+
+    &.has-bottom-border {
+        border-bottom: 2px solid ${colors.GREEN_PRIMARY};
+    }
+`;
+
+const LinkContent = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 4px;
 `;
 
 class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            wrapper: null,
-        };
-    }
-
-    wrapperRefCallback = (element: ?HTMLElement) => {
-        this.setState({
-            wrapper: element,
-        });
-    };
-
-    wrapper: ?HTMLElement;
-
     render() {
         const { config } = this.props.localStorage;
-        const { state, pathname } = this.props.router.location;
+        const { state } = this.props.router.location;
         if (!state) return null;
         const { network } = this.props.selectedAccount;
         if (!network) return null;
@@ -107,22 +103,32 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
         }`;
 
         return (
-            <Wrapper className="account-tabs" ref={this.wrapperRefCallback}>
-                <StyledNavLink exact to={`${basePath}`}>
-                    <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />
+            <Wrapper>
+                <StyledNavLink activeClassName="has-bottom-border" exact to={`${basePath}`}>
+                    <LinkContent>
+                        <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />
+                    </LinkContent>
                 </StyledNavLink>
-                <StyledNavLink to={`${basePath}/receive`}>
-                    <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />
+                <StyledNavLink activeClassName="has-bottom-border" to={`${basePath}/receive`}>
+                    <LinkContent>
+                        <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />
+                    </LinkContent>
                 </StyledNavLink>
-                <StyledNavLink to={`${basePath}/send`}>
-                    <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
+                <StyledNavLink activeClassName="has-bottom-border" to={`${basePath}/send`}>
+                    <LinkContent>
+                        <FormattedMessage {...l10nMessages.TR_NAV_SEND} />
+                    </LinkContent>
                 </StyledNavLink>
                 {networkConfig.hasSignVerify && (
-                    <StyledNavLink to={`${basePath}/signverify`}>
-                        <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
+                    <StyledNavLink
+                        activeClassName="has-bottom-border"
+                        to={`${basePath}/signverify`}
+                    >
+                        <LinkContent>
+                            <FormattedMessage {...l10nMessages.TR_NAV_SIGN_AND_VERIFY} />
+                        </LinkContent>
                     </StyledNavLink>
                 )}
-                <Indicator pathname={pathname} wrapper={() => this.state.wrapper} />
             </Wrapper>
         );
     }
