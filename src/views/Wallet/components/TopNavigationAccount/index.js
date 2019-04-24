@@ -30,6 +30,8 @@ const Wrapper = styled.div`
     height: 100%;
     flex: 1;
     align-items: center;
+    overflow-y: hidden;
+    overflow-x: auto;
     padding: 0px 30px 0 35px;
 
     @media screen and (max-width: ${SCREEN_SIZE.MD}) {
