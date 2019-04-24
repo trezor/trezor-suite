@@ -310,7 +310,7 @@
     }
   },
   "TR_CHANGE_WALLET_TYPE_FOR": {
-    "source": "Select wallet type for {deviceLabel}",
+    "source": "Change wallet type for {deviceLabel}",
     "meta": {
       "occurrences": [
         "src/components/modals/device/WalletType/index.messages.js"
