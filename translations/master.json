@@ -681,6 +681,15 @@
       ]
     }
   },
+  "TR_IMPORTED_ACCOUNT_HASH": {
+    "source": "Imported account #{number}",
+    "meta": {
+      "comment": "Used in auto-generated label for imported accounts",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
   "TR_CLEAR": {
     "source": "Clear",
     "meta": {
@@ -1087,6 +1096,14 @@
   },
   "TR_ADD_ACCOUNT": {
     "source": "Add account",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS": {
+    "source": "You cannot add more than 10 accounts",
     "meta": {
       "occurrences": [
         "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js"
