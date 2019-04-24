@@ -1194,6 +1194,7 @@
   "TR_NAV_SUMMARY": {
     "source": "Summary",
     "meta": {
+      "comment": "Title of the navigation tab that contains information about selected account (balance, tx history).",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1202,6 +1203,7 @@
   "TR_NAV_RECEIVE": {
     "source": "Receive",
     "meta": {
+      "comment": "Title of the navigation tab that contains the account address",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1210,6 +1212,7 @@
   "TR_NAV_SEND": {
     "source": "Send",
     "meta": {
+      "comment": "Title of the navigation tab that contains a form for sending funds",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1218,6 +1221,7 @@
   "TR_NAV_SIGN_AND_VERIFY": {
     "source": "Sign & Verify",
     "meta": {
+      "comment": "Title of the navigation tab that contains a form for signing and verifying messages",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
