@@ -30,6 +30,10 @@ export type WalletAction =
           hiddenCoins: Array<string>,
       }
     | {
+          type: typeof WALLET.SET_HIDDEN_COINS_EXTERNAL,
+          hiddenCoinsExternal: Array<string>,
+      }
+    | {
           type: typeof WALLET.TOGGLE_DEVICE_DROPDOWN,
           opened: boolean,
       }
