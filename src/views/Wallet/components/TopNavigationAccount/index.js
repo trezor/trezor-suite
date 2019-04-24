@@ -63,7 +63,6 @@ const StyledNavLink = styled(NavLink)`
 
     &.active,
     &:hover {
-        transition: all 0.3s ease-in-out;
         color: ${colors.TEXT_PRIMARY};
     }
 
