@@ -1,6 +1,6 @@
 {
     "name": "trezor-ui-components",
-    "version": "1.0.0-beta.13",
+    "version": "1.0.0-beta.14",
     "main": "lib/index.js",
     "repository": "https://github.com/trezor/trezor-ui-components",
     "author": "SatoshiLabs s.r.o.",
@@ -66,7 +66,7 @@
         "@tippy.js/react": "^2.1.1",
         "prop-types": "^15.7.2",
         "react-router-dom": "^4.3.1",
-        "react-select": "^2.3.0",
+        "react-select": "^2.4.3",
         "react-switch": "^4.1.0",
         "react-textarea-autosize": "^7.1.0"
     },
