@@ -60,6 +60,7 @@ const KEY_LANGUAGE: string = `${STORAGE_PATH}language`;
 const KEY_LOCAL_CURRENCY: string = `${STORAGE_PATH}localCurrency`;
 const KEY_HIDE_BALANCE: string = `${STORAGE_PATH}hideBalance`;
 const KEY_HIDDEN_COINS: string = `${STORAGE_PATH}hiddenCoins`;
+const KEY_HIDDEN_COINS_EXTERNAL: string = `${STORAGE_PATH}hiddenCoinsExternal`;
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js
 // or
@@ -247,13 +248,18 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
         });
     }
 
-    const hiddenCoins = getHiddenCoins();
-    if (hiddenCoins) {
-        dispatch({
-            type: WALLET.SET_HIDDEN_COINS,
-            hiddenCoins,
-        });
-    }
+    const hiddenCoins = getHiddenCoins(false);
+    dispatch({
+        type: WALLET.SET_HIDDEN_COINS,
+        hiddenCoins,
+    });
+
+    const isExternal = true;
+    const hiddenCoinsExternal = getHiddenCoins(isExternal);
+    dispatch({
+        type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+        hiddenCoinsExternal,
+    });
 
     const userTokens: ?string = storageUtils.get(TYPE, KEY_TOKENS);
     if (userTokens) {
@@ -360,9 +366,10 @@ export const getImportedAccounts = (): ?Array<Account> => {
 
 export const handleCoinVisibility = (
     coinShortcut: string,
-    shouldBeVisible: boolean
+    shouldBeVisible: boolean,
+    isExternal: boolean
 ): ThunkAction => (dispatch: Dispatch): void => {
-    const configuration: Array<string> = getHiddenCoins();
+    const configuration: Array<string> = getHiddenCoins(isExternal);
     let newConfig: Array<string> = configuration;
     const isAlreadyHidden = configuration.find(coin => coin === coinShortcut);
 
@@ -372,45 +379,68 @@ export const handleCoinVisibility = (
         newConfig = [...configuration, coinShortcut];
     }
 
-    storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(newConfig));
-    dispatch({
-        type: WALLET.SET_HIDDEN_COINS,
-        hiddenCoins: newConfig,
-    });
+    console.log(coinShortcut, shouldBeVisible, isExternal);
+
+    if (isExternal) {
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify(newConfig));
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+            hiddenCoinsExternal: newConfig,
+        });
+    } else {
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(newConfig));
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS,
+            hiddenCoins: newConfig,
+        });
+    }
 };
 
-export const handleAllCoinsVisibility = (
-    checked: boolean,
+export const toggleGroupCoinsVisibility = (
     allCoins: Array<string>,
-    hiddenCoins: Array<string>
+    checked: boolean,
+    isExternal: boolean
 ): ThunkAction => (dispatch: Dispatch) => {
-    const configuration: Array<string> = getHiddenCoins();
-    const newConfig: Array<string> = configuration;
-    let result = [];
-
-    console.log('old config', newConfig);
-
-    if (checked) {
-        const intersection = allCoins.filter(x => hiddenCoins.includes(x));
-        if (intersection) {
-            result = newConfig.filter(x => !intersection.includes(x));
-        }
-    } else {
-        const intersection = allCoins.filter(x => hiddenCoins.includes(x));
-        console.log('intersection', intersection);
-        result = [configuration, ...intersection];
+    if (checked && isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+            hiddenCoinsExternal: [],
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify([]));
     }
 
-    dispatch({
-        type: WALLET.SET_HIDDEN_COINS,
-        hiddenCoins: result,
-    });
+    if (!checked && isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+            hiddenCoinsExternal: allCoins,
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify(allCoins));
+    }
 
-    storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(result));
+    if (checked && !isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS,
+            hiddenCoins: [],
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify([]));
+    }
+
+    if (!checked && !isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS,
+            hiddenCoins: allCoins,
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(allCoins));
+    }
 };
 
-export const getHiddenCoins = (): Array<string> => {
-    const coinsConfig: ?string = storageUtils.get(TYPE, KEY_HIDDEN_COINS);
+export const getHiddenCoins = (isExternal: boolean): Array<string> => {
+    let coinsConfig: ?string = '';
+    if (isExternal) {
+        coinsConfig = storageUtils.get(TYPE, KEY_HIDDEN_COINS_EXTERNAL);
+    } else {
+        coinsConfig = storageUtils.get(TYPE, KEY_HIDDEN_COINS);
+    }
     if (coinsConfig) {
         return JSON.parse(coinsConfig);
     }

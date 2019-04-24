@@ -120,8 +120,9 @@ const WalletSettings = (props: Props) => (
             <Coins
                 networks={props.localStorage.config.networks}
                 handleCoinVisibility={props.handleCoinVisibility}
-                handleAllCoinsVisibility={props.handleAllCoinsVisibility}
+                toggleGroupCoinsVisibility={props.toggleGroupCoinsVisibility}
                 hiddenCoins={props.wallet.hiddenCoins}
+                hiddenCoinsExternal={props.wallet.hiddenCoinsExternal}
             />
         </Section>
         <Actions>

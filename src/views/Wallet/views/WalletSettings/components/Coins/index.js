@@ -13,8 +13,9 @@ import l10nMessages from '../../index.messages';
 type Props = {
     networks: Array<Network>,
     hiddenCoins: Array<string>,
+    hiddenCoinsExternal: Array<string>,
     handleCoinVisibility: typeof LocalStorageActions.handleCoinVisibility,
-    handleAllCoinsVisibility: typeof LocalStorageActions.handleAllCoinsVisibility,
+    toggleGroupCoinsVisibility: typeof LocalStorageActions.toggleGroupCoinsVisibility,
 };
 
 const Wrapper = styled.div`
@@ -118,16 +119,10 @@ const CoinsSettings = (props: Props) => (
                                     .filter(x => !x.isHidden)
                                     .map(item => item.shortcut);
 
-                                props.handleAllCoinsVisibility(
-                                    checked,
-                                    allCoins,
-                                    props.hiddenCoins
-                                );
+                                props.toggleGroupCoinsVisibility(allCoins, checked, false);
                             }}
                         >
-                            {props.hiddenCoins.every(val => props.networks.includes(val))
-                                ? 'Hide all'
-                                : 'Show all'}
+                            {props.hiddenCoins.length > 0 ? 'Show all' : 'Hide all'}
                         </ToggleAll>
                     </Right>
                 </Label>
@@ -147,7 +142,11 @@ const CoinsSettings = (props: Props) => (
                                     checkedIcon={false}
                                     uncheckedIcon={false}
                                     onChange={visible => {
-                                        props.handleCoinVisibility(network.shortcut, visible);
+                                        props.handleCoinVisibility(
+                                            network.shortcut,
+                                            visible,
+                                            false
+                                        );
                                     }}
                                     checked={!props.hiddenCoins.includes(network.shortcut)}
                                 />
@@ -180,11 +179,7 @@ const CoinsSettings = (props: Props) => (
                                     .filter(x => !x.isHidden)
                                     .map(coin => coin.id);
 
-                                props.handleAllCoinsVisibility(
-                                    checked,
-                                    allCoins,
-                                    props.hiddenCoins
-                                );
+                                props.toggleGroupCoinsVisibility(allCoins, checked, true);
                             }}
                         >
                             Show all
@@ -207,9 +202,9 @@ const CoinsSettings = (props: Props) => (
                                     checkedIcon={false}
                                     uncheckedIcon={false}
                                     onChange={visible => {
-                                        props.handleCoinVisibility(network.id, visible);
+                                        props.handleCoinVisibility(network.id, visible, true);
                                     }}
-                                    checked={!props.hiddenCoins.includes(network.id)}
+                                    checked={!props.hiddenCoinsExternal.includes(network.id)}
                                 />
                             </Right>
                         </CoinRow>
