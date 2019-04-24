@@ -111,9 +111,6 @@ class CoinsSettings extends PureComponent<Props, State> {
             <Wrapper>
                 <Row>
                     <Content>
-                        {console.log('hidden coins', props.hiddenCoins)}
-                        {console.log('hidden coins', props.hiddenCoins)}
-                        {console.log('hidden coins external', props.hiddenCoinsExternal)}
                         <Label>
                             <Left>
                                 <FormattedMessage {...l10nMessages.TR_VISIBLE_COINS} />

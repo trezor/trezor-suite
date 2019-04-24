@@ -379,8 +379,6 @@ export const handleCoinVisibility = (
         newConfig = [...configuration, coinShortcut];
     }
 
-    console.log(coinShortcut, shouldBeVisible, isExternal);
-
     if (isExternal) {
         storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify(newConfig));
         dispatch({
@@ -402,9 +400,6 @@ export const toggleGroupCoinsVisibility = (
     isExternal: boolean
 ): ThunkAction => (dispatch: Dispatch) => {
     // supported coins
-
-    console.log('checked', checked);
-
     if (checked && !isExternal) {
         dispatch({
             type: WALLET.SET_HIDDEN_COINS,

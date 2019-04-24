@@ -56,11 +56,11 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     getOtherCoins() {
-        const { hiddenCoins } = this.props.wallet;
+        const { hiddenCoinsExternal } = this.props.wallet;
         return coins
             .sort((a, b) => a.order - b.order)
             .filter(item => !item.isHidden) // hide coins globally in config
-            .filter(item => !hiddenCoins.includes(item.id))
+            .filter(item => !hiddenCoinsExternal.includes(item.id))
             .map(coin => {
                 const row = (
                     <RowCoin
@@ -102,10 +102,10 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     isBottomMenuEmpty() {
-        const { hiddenCoins } = this.props.wallet;
+        const { hiddenCoinsExternal } = this.props.wallet;
         const numberOfVisibleNetworks = coins
             .filter(item => !item.isHidden)
-            .filter(item => !hiddenCoins.includes(item.id));
+            .filter(item => !hiddenCoinsExternal.includes(item.id));
 
         return numberOfVisibleNetworks.length <= 0;
     }
