@@ -3,6 +3,10 @@ image: node:10.15.1
 variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
 
+before_script:
+  - "apt-get update"
+  - "apt-get install -y build-essential"
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
