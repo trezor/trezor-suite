@@ -1,6 +1,8 @@
 # trezor-translations-manager
 [![npm version](https://badge.fury.io/js/trezor-translations-manager.svg)](https://badge.fury.io/js/trezor-translations-manager)
 
+CLI tool for synchronizing localization resources with Crowdin service.
+
 ## Features
 
 ## Installation
@@ -28,7 +30,7 @@ Example configuration in the `babel.config.js`
 ```
 
 You can also build your own custom extraction process. Just make sure that the JSON file containing the messages matches following format:
-```json
+```
 [
     {
     "source": "Source string that is to be translated to target language",
@@ -90,7 +92,8 @@ Now you are able to run the whole flow  with `yarn run translations-sync`.
 - `project.apiKeyEnv`: Name of an environment variable which contains API key
 - `languages`: [Crowdin language codes](https://support.crowdin.com/api/language-codes/). Codes are also used as filenames for generated lang-specific JSON files with translations. Be aware that they do not have to match codes returned by `navigator.language`.
 - `langToFileNameMap`: Object of language:filename pairs. Allows to overrides default filenames of generated locales JSON files
-`l10n.config.json` file example
+
+`l10n.config.json` example
 ```json
 {
     "extractedMessagesFilePattern": "translations/extractedMessages/**/*.json",
