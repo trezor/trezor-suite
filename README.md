@@ -50,6 +50,7 @@ This package also serves as CLI tool. Configuration is stored in a JSON file. By
     
     Options
         --config, -c  Config file
+        --version, -v  Show ttm version
 
     Commands
         merge-msgs
@@ -82,9 +83,10 @@ Now you are able to run the whole flow  with `yarn run translations-sync`.
 #### Configuration
 ##### Fields
 - `extractedMessagesFilePattern`: [Glob](https://github.com/isaacs/node-glob) pattern used to look for React Intl messages that were extracted via [babel-plugin-react-intl](https://github.com/yahoo/babel-plugin-react-intl).
-- `outputDir` - Directory which contains master JSON file with messages to translate.
+- `outputDir` - Directory which contains JSON file with messages to translate.
 - `localesOutputDir`: Output directory where lang-specific json files will be generated.
 - `project.identifier`: Crowdin identifier of project 
+- `project.filename`: Name of the file in `outputDir` with extracted messages (without an extension) 
 - `project.apiKeyEnv`: Name of an environment variable which contains API key
 - `languages`: [Crowdin language codes](https://support.crowdin.com/api/language-codes/). Codes are also used as filenames for generated lang-specific JSON files with translations. Be aware that they do not have to match codes returned by `navigator.language`.
 - `langToFileNameMap`: Object of language:filename pairs. Allows to overrides default filenames of generated locales JSON files
@@ -96,6 +98,7 @@ Now you are able to run the whole flow  with `yarn run translations-sync`.
     "outputDir": "translations/",
     "project": {
         "identifier": "trezor-wallet-test",
+        "filename": "master",
         "apiKeyEnv": "CROWDIN_API_KEY"
     },
     "languages": ["af", "ar", "bn", "zh-CN", "zh-TW", "cs", "nl", "en", "et", "fr", "de", "el", "he", "hi", "hu", "id", "it", "ja", "ko", "no", "fa", "pl", "pt-PT", "ru", "es-ES", "sv-SE", "tr", "uk", "vi"],
@@ -132,7 +135,7 @@ Format of an input file is same as format of the file created by mergeMessages()
 - `languages`: Array of [Crowdin language codes](https://support.crowdin.com/api/language-codes/) that are appended to CSV header
 
 #### buildLocales(inputFilePath, outputDir, languages, langToFileNameMap = null, deleteCSV = true)
-Build language json files from a translated master.csv downloaded from Crowdin
+Build language json files from a translated CSV file (downloaded from Crowdin)
 - `inputFilePath`: Path to the CSV file downloaded from Crowdin.
 - `outputDir`: Directory where locales should be generated.
 - `languages`: Array of [Crowdin language codes](https://support.crowdin.com/api/language-codes/). Used for naming generated JSON locales files.
