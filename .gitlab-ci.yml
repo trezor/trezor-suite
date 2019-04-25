@@ -99,6 +99,7 @@ deploy review:
     name: $CI_BUILD_REF_NAME
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
     on_stop: delete review
+  before_script: []
   script:
     - echo "Deploy a review app"
     - '[ -z "${DEPLOY_BASE_DIR}" ] && echo "Deploy base dir cannot be empty" && exit 255'
@@ -122,6 +123,7 @@ deploy stage beta:
   when: manual
   dependencies:
     - build beta
+  before_script: []
   script:
     - scripts/s3sync.sh stage beta
   only:
@@ -138,6 +140,7 @@ deploy stage stable:
   when: manual
   dependencies:
     - build stable
+  before_script: []
   script:
     - scripts/s3sync.sh stage stable
   only:
@@ -154,6 +157,7 @@ delete review:
   environment:
     name: $CI_BUILD_REF_NAME
     action: stop
+  before_script: []
   script:
     - '[ -z "${DEPLOY_BASE_DIR}" ] && echo "Deploy dir can not be empty" && exit 1'
     - '[ -z "${CI_BUILD_REF_NAME}" ] && echo "Build name can not be empty" && exit 1'
