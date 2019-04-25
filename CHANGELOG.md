@@ -2,6 +2,20 @@
 
 __added__
 - Coin visibility settings
+- Complete russian and ukrainian localization
+- Auto reconnect to a backend after losing connection
+
+__changed__
+- static (without animation) active tab indicator
+- input validation - mandatory leading 0 for float numbers
+- regexps refactored to functions, added unit tests
+
+__removed__
+- Text "already used" from token select in case of already added tokens 
+
+__fixed__
+- react hot loader
+- minor l10n fixes
 
 ## 1.2.0-beta
 __added__
