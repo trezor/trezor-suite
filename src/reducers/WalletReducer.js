@@ -24,6 +24,8 @@ type State = {
     firstLocationChange: boolean,
     disconnectRequest: ?TrezorDevice,
     selectedDevice: ?TrezorDevice,
+    hiddenCoins: Array<string>,
+    hiddenCoinsExternal: Array<string>,
 };
 
 const initialState: State = {
@@ -41,6 +43,8 @@ const initialState: State = {
     initialPathname: null,
     disconnectRequest: null,
     selectedDevice: null,
+    hiddenCoins: [],
+    hiddenCoinsExternal: [],
 };
 
 export default function wallet(state: State = initialState, action: Action): State {
@@ -143,6 +147,18 @@ export default function wallet(state: State = initialState, action: Action): Sta
             return {
                 ...state,
                 hideBalance: action.toggled,
+            };
+
+        case WALLET.SET_HIDDEN_COINS:
+            return {
+                ...state,
+                hiddenCoins: action.hiddenCoins,
+            };
+
+        case WALLET.SET_HIDDEN_COINS_EXTERNAL:
+            return {
+                ...state,
+                hiddenCoinsExternal: action.hiddenCoinsExternal,
             };
 
         default:

@@ -12,7 +12,6 @@ import * as buildUtils from 'utils/build';
 import * as storageUtils from 'utils/storage';
 import * as WalletActions from 'actions/WalletActions';
 import * as l10nUtils from 'utils/l10n';
-
 import { getAccountTokens } from 'reducers/utils';
 import type { Account } from 'reducers/AccountsReducer';
 import type { Token } from 'reducers/TokensReducer';
@@ -60,6 +59,8 @@ const KEY_BETA_MODAL: string = '/betaModalPrivacy'; // this key needs to be comp
 const KEY_LANGUAGE: string = `${STORAGE_PATH}language`;
 const KEY_LOCAL_CURRENCY: string = `${STORAGE_PATH}localCurrency`;
 const KEY_HIDE_BALANCE: string = `${STORAGE_PATH}hideBalance`;
+const KEY_HIDDEN_COINS: string = `${STORAGE_PATH}hiddenCoins`;
+const KEY_HIDDEN_COINS_EXTERNAL: string = `${STORAGE_PATH}hiddenCoinsExternal`;
 
 // https://github.com/STRML/react-localstorage/blob/master/react-localstorage.js
 // or
@@ -247,6 +248,19 @@ const loadStorageData = (): ThunkAction => (dispatch: Dispatch): void => {
         });
     }
 
+    const hiddenCoins = getHiddenCoins(false);
+    dispatch({
+        type: WALLET.SET_HIDDEN_COINS,
+        hiddenCoins,
+    });
+
+    const isExternal = true;
+    const hiddenCoinsExternal = getHiddenCoins(isExternal);
+    dispatch({
+        type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+        hiddenCoinsExternal,
+    });
+
     const userTokens: ?string = storageUtils.get(TYPE, KEY_TOKENS);
     if (userTokens) {
         dispatch({
@@ -348,6 +362,89 @@ export const getImportedAccounts = (): ?Array<Account> => {
         return JSON.parse(importedAccounts);
     }
     return null;
+};
+
+export const handleCoinVisibility = (
+    coinShortcut: string,
+    shouldBeVisible: boolean,
+    isExternal: boolean
+): ThunkAction => (dispatch: Dispatch): void => {
+    const configuration: Array<string> = getHiddenCoins(isExternal);
+    let newConfig: Array<string> = configuration;
+    const isAlreadyHidden = configuration.find(coin => coin === coinShortcut);
+
+    if (shouldBeVisible) {
+        newConfig = configuration.filter(coin => coin !== coinShortcut);
+    } else if (!isAlreadyHidden) {
+        newConfig = [...configuration, coinShortcut];
+    }
+
+    if (isExternal) {
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify(newConfig));
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+            hiddenCoinsExternal: newConfig,
+        });
+    } else {
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(newConfig));
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS,
+            hiddenCoins: newConfig,
+        });
+    }
+};
+
+export const toggleGroupCoinsVisibility = (
+    allCoins: Array<string>,
+    checked: boolean,
+    isExternal: boolean
+): ThunkAction => (dispatch: Dispatch) => {
+    // supported coins
+    if (checked && !isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS,
+            hiddenCoins: [],
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify([]));
+    }
+
+    if (!checked && !isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS,
+            hiddenCoins: allCoins,
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS, JSON.stringify(allCoins));
+    }
+
+    // external coins
+    if (checked && isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+            hiddenCoinsExternal: [],
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify([]));
+    }
+
+    if (!checked && isExternal) {
+        dispatch({
+            type: WALLET.SET_HIDDEN_COINS_EXTERNAL,
+            hiddenCoinsExternal: allCoins,
+        });
+        storageUtils.set(TYPE, KEY_HIDDEN_COINS_EXTERNAL, JSON.stringify(allCoins));
+    }
+};
+
+export const getHiddenCoins = (isExternal: boolean): Array<string> => {
+    let coinsConfig: ?string = '';
+    if (isExternal) {
+        coinsConfig = storageUtils.get(TYPE, KEY_HIDDEN_COINS_EXTERNAL);
+    } else {
+        coinsConfig = storageUtils.get(TYPE, KEY_HIDDEN_COINS);
+    }
+    if (coinsConfig) {
+        return JSON.parse(coinsConfig);
+    }
+    return [];
 };
 
 export const removeImportedAccounts = (device: TrezorDevice): ThunkAction => (
