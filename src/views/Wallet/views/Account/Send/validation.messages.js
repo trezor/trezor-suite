@@ -39,6 +39,22 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_ADDRESS_CHECKSUM_IS_NOT_VALID',
         defaultMessage: 'Address checksum is not valid',
     },
+    TR_GAS_LIMIT_IS_NOT_SET: {
+        id: 'TR_GAS_LIMIT_IS_NOT_SET',
+        defaultMessage: 'Gas limit is not set',
+    },
+    TR_GAS_LIMIT_IS_NOT_A_NUMBER: {
+        id: 'TR_GAS_LIMIT_IS_NOT_A_NUMBER',
+        defaultMessage: 'Gas limit is not a number',
+    },
+    TR_GAS_LIMIT_IS_TOO_LOW: {
+        id: 'TR_GAS_LIMIT_IS_TOO_LOW',
+        defaultMessage: 'Gas limit is too low',
+    },
+    TR_GAS_LIMIT_IS_BELOW_RECOMMENDED: {
+        id: 'TR_GAS_LIMIT_IS_BELOW_RECOMMENDED',
+        defaultMessage: 'Gas limit is below recommended',
+    },
 });
 
 export default definedMessages;

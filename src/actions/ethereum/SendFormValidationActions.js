@@ -321,15 +321,23 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
     const { network } = getState().selectedAccount;
     if (!network) return state;
 
+    // get react-intl imperative api
+    const { language, messages } = getState().wallet;
+    const intlProvider = new IntlProvider({ language, messages });
+    const { intl } = intlProvider.getChildContext();
+
     const { gasLimit } = state;
     if (gasLimit.length < 1) {
-        state.errors.gasLimit = 'Gas limit is not set';
+        // state.errors.gasLimit = 'Gas limit is not set';
+        state.errors.gasLimit = intl.formatMessage(l10nMessages.TR_GAS_LIMIT_IS_NOT_SET);
     } else if (gasLimit.length > 0 && !validators.isNumber(gasLimit)) {
-        state.errors.gasLimit = 'Gas limit is not a number';
+        // state.errors.gasLimit = 'Gas limit is not a number';
+        state.errors.gasLimit = intl.formatMessage(l10nMessages.TR_GAS_LIMIT_IS_NOT_A_NUMBER);
     } else {
         const gl: BigNumber = new BigNumber(gasLimit);
         if (gl.isLessThan(1)) {
-            state.errors.gasLimit = 'Gas limit is too low';
+            // state.errors.gasLimit = 'Gas limit is too low';
+            state.errors.gasLimit = intl.formatMessage(l10nMessages.TR_GAS_LIMIT_IS_TOO_LOW);
         } else if (
             gl.isLessThan(
                 state.currency !== state.networkSymbol
@@ -337,7 +345,10 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
                     : network.defaultGasLimit
             )
         ) {
-            state.warnings.gasLimit = 'Gas limit is below recommended';
+            // state.warnings.gasLimit = 'Gas limit is below recommended';
+            state.warnings.gasLimit = intl.formatMessage(
+                l10nMessages.TR_GAS_LIMIT_IS_BELOW_RECOMMENDED
+            );
         }
     }
     return state;
