@@ -196,7 +196,6 @@
 	"TR_INSERT_TOKEN_NAME": "Insert token name, symbol or address to be able to send it.",
 	"TR_TYPE_IN_A_TOKEN_NAME": "Type in a token name or a token address.",
 	"TR_TOKEN_NOT_FOUND": "Token not found",
-	"TR_ALREADY_USED": "Already used",
 	"TR_HISTORY": "History",
 	"TR_ADD_YOUR_TOKENS": "Add your tokens",
 	"TR_SEARCH_FOR_THE_TOKEN": "Search for the token or add them manually by pasting token address into search input.",
