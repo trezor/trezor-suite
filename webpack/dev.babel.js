@@ -88,6 +88,7 @@ module.exports = {
             public: PUBLIC,
         },
         modules: [SRC, 'node_modules'],
+        symlinks: false,
     },
     performance: {
         hints: false,
