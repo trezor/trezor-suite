@@ -16,6 +16,19 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_THE_CHANGES_ARE_SAVED',
         defaultMessage: 'The changes are saved automatically as they are made',
     },
+    TR_VISIBLE_COINS: {
+        id: 'TR_VISIBLE_COINS',
+        defaultMessage: 'Visible coins',
+    },
+    TR_VISIBLE_COINS_EXTERNAL: {
+        id: 'TR_VISIBLE_COINS',
+        defaultMessage: 'Visible external coins',
+    },
+    TR_VISIBLE_COINS_EXPLAINED: {
+        id: 'TR_VISIBLE_COINS_EXPLAINED',
+        defaultMessage:
+            'Select the coins you wish to see in the wallet interface. You will be able to change your preferences later.',
+    },
 });
 
 export default definedMessages;

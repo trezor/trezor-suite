@@ -69,21 +69,21 @@ build stable:
       - build/stable
       - scripts/s3sync.sh 
 
-build emulator and bridge image:
-  variables:
-    CONTAINER_NAME: "$CI_REGISTRY/emulator-bridge-tests"
-  image: docker:latest
-  services:
-    - docker:dind
-  before_script:
-    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-  stage: build
-  when: manual
-  script:
-    - docker pull $CONTAINER_NAME:latest || true
-    - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
-    - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
-    - docker push $CONTAINER_NAME:latest
+# build emulator and bridge image:
+#   variables:
+#     CONTAINER_NAME: "$CI_REGISTRY/emulator-bridge-tests"
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   before_script:
+#     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+#   stage: build
+#   when: manual
+#   script:
+#     - docker pull $CONTAINER_NAME:latest || true
+#     - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
+#     - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
+#     - docker push $CONTAINER_NAME:latest
 
 deploy review:
   stage: deploy

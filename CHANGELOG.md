@@ -1,3 +1,8 @@
+## next release
+
+__added__
+- Coin visibility settings
+
 ## 1.2.0-beta
 __added__
 - Localization

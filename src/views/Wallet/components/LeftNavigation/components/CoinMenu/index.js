@@ -26,6 +26,21 @@ const StyledLink = styled(Link)`
     }
 `;
 
+const Empty = styled.span`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50px;
+`;
+
+const StyledLinkEmpty = styled(Link)`
+    padding: 0;
+`;
+
+const Gray = styled.span`
+    color: ${colors.TEXT_SECONDARY};
+`;
+
 class CoinMenu extends PureComponent<Props> {
     getBaseUrl() {
         const { selectedDevice } = this.props.wallet;
@@ -41,8 +56,11 @@ class CoinMenu extends PureComponent<Props> {
     }
 
     getOtherCoins() {
+        const { hiddenCoinsExternal } = this.props.wallet;
         return coins
             .sort((a, b) => a.order - b.order)
+            .filter(item => !item.isHidden) // hide coins globally in config
+            .filter(item => !hiddenCoinsExternal.includes(item.id))
             .map(coin => {
                 const row = (
                     <RowCoin
@@ -75,12 +93,53 @@ class CoinMenu extends PureComponent<Props> {
             });
     }
 
+    isTopMenuEmpty() {
+        const numberOfVisibleNetworks = this.props.localStorage.config.networks
+            .filter(item => !item.isHidden) // hide coins globally in config
+            .filter(item => !this.props.wallet.hiddenCoins.includes(item.shortcut));
+
+        return numberOfVisibleNetworks.length <= 0;
+    }
+
+    isBottomMenuEmpty() {
+        const { hiddenCoinsExternal } = this.props.wallet;
+        const numberOfVisibleNetworks = coins
+            .filter(item => !item.isHidden)
+            .filter(item => !hiddenCoinsExternal.includes(item.id));
+
+        return numberOfVisibleNetworks.length <= 0;
+    }
+
+    isMenuEmpty() {
+        return this.isTopMenuEmpty() && this.isBottomMenuEmpty();
+    }
+
     render() {
+        const { hiddenCoins } = this.props.wallet;
         const { config } = this.props.localStorage;
         return (
             <Wrapper data-test="Main__page__coin__menu">
+                {this.isMenuEmpty() && (
+                    <Empty>
+                        <Gray>
+                            <FormattedMessage
+                                {...l10nMessages.TR_SELECT_COINS}
+                                values={{
+                                    TR_SELECT_COINS_LINK: (
+                                        <StyledLinkEmpty to="/settings">
+                                            <FormattedMessage
+                                                {...l10nMessages.TR_SELECT_COINS_LINK}
+                                            />
+                                        </StyledLinkEmpty>
+                                    ),
+                                }}
+                            />{' '}
+                        </Gray>
+                    </Empty>
+                )}
                 {config.networks
-                    .filter(item => !item.isHidden)
+                    .filter(item => !item.isHidden) // hide coins globally in config
+                    .filter(item => !hiddenCoins.includes(item.shortcut)) // hide coins by user settings
                     .sort((a, b) => a.order - b.order)
                     .map(item => (
                         <NavLink
@@ -95,11 +154,13 @@ class CoinMenu extends PureComponent<Props> {
                             />
                         </NavLink>
                     ))}
-                <Divider
-                    testId="Main__page__coin__menu__divider"
-                    textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
-                    hasBorder
-                />
+                {!this.isBottomMenuEmpty() && (
+                    <Divider
+                        testId="Main__page__coin__menu__divider"
+                        textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
+                        hasBorder
+                    />
+                )}
                 {this.getOtherCoins()}
             </Wrapper>
         );

@@ -17,6 +17,7 @@ import {
 import { FIAT_CURRENCIES } from 'config/app';
 import { FONT_SIZE } from 'config/variables';
 import l10nCommonMessages from 'views/common.messages';
+import Coins from './components/Coins';
 import l10nMessages from './index.messages';
 import type { Props } from './Container';
 
@@ -72,7 +73,10 @@ const TooltipIcon = styled(Icon)`
 `;
 
 const buildCurrencyOption = currency => {
-    return { value: currency, label: currency.toUpperCase() };
+    return {
+        value: currency,
+        label: currency.toUpperCase(),
+    };
 };
 
 const WalletSettings = (props: Props) => (
@@ -102,12 +106,24 @@ const WalletSettings = (props: Props) => (
                     </Tooltip>
                 </Label>
                 <Switch
+                    isSmall
+                    checkedIcon={false}
+                    uncheckedIcon={false}
                     onChange={checked => {
                         props.setHideBalance(checked);
                     }}
                     checked={props.wallet.hideBalance}
                 />
             </Row>
+        </Section>
+        <Section>
+            <Coins
+                networks={props.localStorage.config.networks}
+                handleCoinVisibility={props.handleCoinVisibility}
+                toggleGroupCoinsVisibility={props.toggleGroupCoinsVisibility}
+                hiddenCoins={props.wallet.hiddenCoins}
+                hiddenCoinsExternal={props.wallet.hiddenCoinsExternal}
+            />
         </Section>
         <Actions>
             <Info>

@@ -4,6 +4,7 @@
     "outputDir": "translations/",
     "project": {
         "identifier": "trezor-wallet-test",
+        "filename": "master",
         "apiKeyEnv": "CROWDIN_API_KEY"
     },
     "languages": [
