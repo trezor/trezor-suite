@@ -6,6 +6,7 @@ import meow from 'meow';
 import { mergeMessages, buildCSV, buildLocales } from './index';
 import Crowdin from './services/crowdin';
 
+
 dotenv.config();
 
 const cli = meow(`
@@ -14,6 +15,7 @@ Usage
     
     Options
         --config, -c  Config file
+        --version, -v Show ttm version
 
     Commands
         merge-msgs 
@@ -37,6 +39,10 @@ Usage
             alias: 'c',
             default: 'l10n.config.json',
         },
+        version: {
+            type: 'boolean',
+            alias: 'v',
+        },
     },
 });
 
@@ -46,6 +52,10 @@ if (cli.input.length === 0) {
 }
 
 const command = cli.input[0];
+
+if (cli.flags.version) {
+    console.log(cli.showVersion());
+}
 
 const configFilePath = cli.flags.config;
 if (!configFilePath) {
@@ -61,23 +71,27 @@ const {
 
 // Crowdin API key should be stored in an env variable which name is specified in the config 'apiKeyEnv' field
 const projectId = config.project.identifier;
+const projectFilename = config.project.filename;
 const apiKey = process.env[config.project.apiKeyEnv];
 const crowdin = new Crowdin(projectId, apiKey);
 
+const mergedJSONFile = path.join(outputDir, `${projectFilename}.json`);
+const mergedCSVFile = path.join(outputDir, `${projectFilename}.csv`);
+
 switch (command) {
 case 'merge-msgs':
-    console.log(`Merging messages to ${path.join(outputDir, 'master.json')}`);
-    mergeMessages(extractedMessagesFilePattern, path.join(outputDir, 'master.json'));
+    console.log(`Merging messages to ${mergedJSONFile}`);
+    mergeMessages(extractedMessagesFilePattern, mergedJSONFile);
     break;
 
 case 'build-csv':
-    console.log(`Building csv file ${path.join(outputDir, 'master.csv')}`);
-    buildCSV(path.join(outputDir, 'master.json'), path.join(outputDir, 'master.csv'), languages);
+    console.log(`Building csv file ${mergedCSVFile}`);
+    buildCSV(mergedJSONFile, mergedCSVFile, languages);
     break;
 
 case 'upload':
-    console.log(`Updating csv file '${path.join(outputDir, 'master.csv')}' to Crowdin project '${projectId}'`);
-    crowdin.updateFile(path.join(outputDir, 'master.csv'))
+    console.log(`Updating csv file '${mergedCSVFile}' to Crowdin project '${projectId}'`);
+    crowdin.updateFile(mergedCSVFile)
         .catch((err) => {
             let crowdinErr = JSON.parse(err.error);
 
@@ -86,14 +100,14 @@ case 'upload':
             if (crowdinErr.error.code === 8) {
                 console.log("File doesn't exist in Crowdin, adding a new file.");
                 const csvScheme = `identifier,source_phrase,context,${languages.join(',')}`;
-                crowdin.addFile(path.join(outputDir, 'master.csv'), csvScheme)
+                crowdin.addFile(mergedCSVFile, csvScheme)
                     .catch((addErr) => {
                         crowdinErr = JSON.parse(addErr.error);
-                        console.log('Failed to upload new master.csv file to Crowdin');
+                        console.log(`Failed to upload new ${projectFilename}.csv file to Crowdin`);
                         console.log(crowdinErr);
                     });
             } else {
-                console.log('Failed to upload new master.csv to Crowdin');
+                console.log(`Failed to upload new ${projectFilename}.csv to Crowdin`);
                 console.log(crowdinErr);
             }
         });
@@ -113,7 +127,7 @@ case 'export-translations':
     console.log(`Exporting translations for a project '${projectId}'`);
     crowdin.exportTranslations(localesOutputDir).then(() => {
         console.log(`Generating locales files in a directory ${localesOutputDir}`);
-        buildLocales(path.join(localesOutputDir, 'master.csv'), localesOutputDir, languages, langToFileNameMap, true);
+        buildLocales(path.join(localesOutputDir, `${projectFilename}.csv`), localesOutputDir, languages, langToFileNameMap, true);
     });
     break;
 
