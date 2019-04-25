@@ -134,7 +134,7 @@
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.5.2",
         "stylelint-webpack-plugin": "^0.10.5",
-        "trezor-translations-manager": "^1.0.4",
+        "trezor-translations-manager": "^1.0.5",
         "webpack-cli": "^3.2.3",
         "webpack-dev-server": "^3.1.14"
     },
