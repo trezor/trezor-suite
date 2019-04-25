@@ -1,6 +1,6 @@
 {
     "name": "trezor-ui-components",
-    "version": "1.0.0-beta.14",
+    "version": "1.0.0-beta.15",
     "main": "lib/index.js",
     "repository": "https://github.com/trezor/trezor-ui-components",
     "author": "SatoshiLabs s.r.o.",
