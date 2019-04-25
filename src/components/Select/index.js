@@ -53,9 +53,10 @@ const styles = (isSearchable, withDropdownIndicator = true) => ({
         borderRight: `1px solid ${colors.DIVIDER}`,
         borderBottom: `1px solid ${colors.DIVIDER}`,
     }),
-    option: (base, { isFocused }) => ({
+    option: (base, { isFocused, isSelected }) => ({
         ...base,
         color: colors.TEXT_SECONDARY,
+        display: isSelected ? 'none' : 'block',
         background: isFocused ? colors.SELECT_HOVER : colors.WHITE,
         borderRadius: 0,
         '&:hover': {
