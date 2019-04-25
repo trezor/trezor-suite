@@ -5,13 +5,14 @@ import EthereumjsUtil from 'ethereumjs-util';
 import EthereumjsUnits from 'ethereumjs-units';
 import { findDevice, getPendingAmount, findToken } from 'reducers/utils';
 import { toFiatCurrency } from 'utils/fiatConverter';
+import { IntlProvider } from 'react-intl';
 import * as SEND from 'actions/constants/send';
 import * as ethUtils from 'utils/ethUtils';
 import * as validators from 'utils/validators';
 
 import type { Dispatch, GetState, PayloadAction } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormEthereumReducer';
-
+import l10nMessages from 'views/Wallet/views/Account/Send/validation.messages';
 /*
  * Called from SendFormActions.observe
  * Reaction for WEB3.GAS_PRICE_UPDATED action
@@ -143,21 +144,32 @@ export const updateCustomFeeLabel = ($state: State): PayloadAction<State> => ():
 /*
  * Address value validation
  */
-export const addressValidation = ($state: State): PayloadAction<State> => (): State => {
+export const addressValidation = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
+    // get react-intl imperative api
+    const { language, messages } = getState().wallet;
+    const intlProvider = new IntlProvider({ language, messages });
+    const { intl } = intlProvider.getChildContext();
+
     const state = { ...$state };
     if (!state.touched.address) return state;
 
     const { address } = state;
 
     if (address.length < 1) {
-        state.errors.address = 'Address is not set';
+        // state.errors.address = 'Address is not set';
+        state.errors.address = intl.formatMessage(l10nMessages.TR_ADDRESS_IS_NOT_SET);
     } else if (!EthereumjsUtil.isValidAddress(address)) {
-        state.errors.address = 'Address is not valid';
+        // state.errors.address = 'Address is not valid';
+        state.errors.address = intl.formatMessage(l10nMessages.TR_ADDRESS_IS_NOT_VALID);
     } else if (
         validators.hasUppercase(address) &&
         !EthereumjsUtil.isValidChecksumAddress(address)
     ) {
-        state.errors.address = 'Address is not a valid checksum';
+        // state.errors.address = 'Address is not a valid checksum';
+        state.errors.address = intl.formatMessage(l10nMessages.TR_ADDRESS_CHECKSUM_IS_NOT_VALID);
     }
     return state;
 };
@@ -229,11 +241,18 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
     const { account, tokens, pending } = getState().selectedAccount;
     if (!account) return state;
 
+    // get react-intl imperative api
+    const { language, messages } = getState().wallet;
+    const intlProvider = new IntlProvider({ language, messages });
+    const { intl } = intlProvider.getChildContext();
+
     const { amount } = state;
     if (amount.length < 1) {
-        state.errors.amount = 'Amount is not set';
+        // state.errors.amount = 'Amount is not set';
+        state.errors.amount = intl.formatMessage(l10nMessages.TR_AMOUNT_IS_NOT_SET);
     } else if (amount.length > 0 && !validators.isNumber(amount)) {
-        state.errors.amount = 'Amount is not a number';
+        // state.errors.amount = 'Amount is not a number';
+        state.errors.amount = intl.formatMessage(l10nMessages.TR_AMOUNT_IS_NOT_A_NUMBER);
     } else {
         const isToken: boolean = state.currency !== state.networkSymbol;
         const pendingAmount: BigNumber = getPendingAmount(pending, state.currency, isToken);
@@ -248,26 +267,42 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
             if (!token) return state;
 
             if (!validators.hasDecimals(state.amount, parseInt(token.decimals, 0))) {
-                state.errors.amount = `Maximum ${token.decimals} decimals allowed`;
+                // state.errors.amount = `Maximum ${token.decimals} decimals allowed`;
+                state.errors.amount = intl.formatMessage(l10nMessages.TR_MAXIMUM_DECIMALS_ALLOWED, {
+                    decimals: token.decimals,
+                });
             } else if (new BigNumber(state.total).isGreaterThan(account.balance)) {
-                state.errors.amount = `Not enough ${state.networkSymbol} to cover transaction fee`;
+                state.errors.amount = intl.formatMessage(
+                    l10nMessages.TR_NOT_ENOUGH_FUNDS_TO_COVER_TRANSACTION,
+                    {
+                        networkSymbol: state.networkSymbol,
+                    }
+                );
+                // state.errors.amount = `Not enough ${state.networkSymbol} to cover transaction fee`;
             } else if (
                 new BigNumber(state.amount).isGreaterThan(
                     new BigNumber(token.balance).minus(pendingAmount)
                 )
             ) {
-                state.errors.amount = 'Not enough funds';
+                // state.errors.amount = 'Not enough funds';
+                state.errors.amount = intl.formatMessage(l10nMessages.TR_NOT_ENOUGH_FUNDS);
             } else if (new BigNumber(state.amount).isLessThanOrEqualTo('0')) {
-                state.errors.amount = 'Amount is too low';
+                // TODO: this is never gonna happen! It will fail in second if condiftion (isNumber validation)
+                // state.errors.amount = 'Amount is too low';
+                state.errors.amount = intl.formatMessage(l10nMessages.TR_AMOUNT_IS_TOO_LOW);
             }
         } else if (!validators.hasDecimals(state.amount, 18)) {
-            state.errors.amount = 'Maximum 18 decimals allowed';
+            // state.errors.amount = 'Maximum 18 decimals allowed';
+            state.errors.amount = intl.formatMessage(l10nMessages.TR_MAXIMUM_DECIMALS_ALLOWED, {
+                decimals: 18,
+            });
         } else if (
             new BigNumber(state.total).isGreaterThan(
                 new BigNumber(account.balance).minus(pendingAmount)
             )
         ) {
-            state.errors.amount = 'Not enough funds';
+            // state.errors.amount = 'Not enough funds';
+            state.errors.amount = intl.formatMessage(l10nMessages.TR_NOT_ENOUGH_FUNDS);
         }
     }
     return state;
