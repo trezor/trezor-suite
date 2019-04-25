@@ -58,7 +58,7 @@
         "rc-tooltip": "^3.7.3",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
-        "react-hot-loader": "^4.6.5",
+        "react-hot-loader": "^4.8.4",
         "react-intl": "^2.8.0",
         "react-json-view": "^1.19.1",
         "react-qr-reader": "^2.1.2",
