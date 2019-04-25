@@ -27,6 +27,7 @@ import CoinLogo from './components/CoinLogo';
 import Loader from './components/Loader';
 import Notification from './components/Notification';
 import Prompt from './components/Prompt';
+import Header from './components/Header';
 
 module.exports = {
     colors,
@@ -64,4 +65,5 @@ module.exports = {
     Loader,
     Notification,
     Prompt,
+    Header,
 };
