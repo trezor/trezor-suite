@@ -357,21 +357,33 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
 /*
  * Gas price value validation
  */
-export const gasPriceValidation = ($state: State): PayloadAction<State> => (): State => {
+export const gasPriceValidation = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.gasPrice) return state;
 
+    // get react-intl imperative api
+    const { language, messages } = getState().wallet;
+    const intlProvider = new IntlProvider({ language, messages });
+    const { intl } = intlProvider.getChildContext();
+
     const { gasPrice } = state;
     if (gasPrice.length < 1) {
-        state.errors.gasPrice = 'Gas price is not set';
+        // state.errors.gasPrice = 'Gas price is not set';
+        state.errors.gasPrice = intl.formatMessage(l10nMessages.TR_GAS_PRICE_IS_NOT_SET);
     } else if (gasPrice.length > 0 && !validators.isNumber(gasPrice)) {
-        state.errors.gasPrice = 'Gas price is not a number';
+        // state.errors.gasPrice = 'Gas price is not a number';
+        state.errors.gasPrice = intl.formatMessage(l10nMessages.TR_GAS_PRICE_IS_NOT_A_NUMBER);
     } else {
         const gp: BigNumber = new BigNumber(gasPrice);
         if (gp.isGreaterThan(1000)) {
-            state.warnings.gasPrice = 'Gas price is too high';
+            // state.warnings.gasPrice = 'Gas price is too high';
+            state.warnings.gasPrice = intl.formatMessage(l10nMessages.TR_GAS_PRICE_IS_TOO_HIGH);
         } else if (gp.isLessThanOrEqualTo('0')) {
-            state.errors.gasPrice = 'Gas price is too low';
+            // state.errors.gasPrice = 'Gas price is too low';
+            state.errors.gasPrice = intl.formatMessage(l10nMessages.TR_GAS_PRICE_IS_TOO_LOW);
         }
     }
     return state;
@@ -387,33 +399,56 @@ export const nonceValidation = ($state: State): PayloadAction<State> => (
     const state = { ...$state };
     if (!state.touched.nonce) return state;
 
+    // get react-intl imperative api
+    const { language, messages } = getState().wallet;
+    const intlProvider = new IntlProvider({ language, messages });
+    const { intl } = intlProvider.getChildContext();
+
     const { account } = getState().selectedAccount;
     if (!account || account.networkType !== 'ethereum') return state;
 
     const { nonce } = state;
     if (nonce.length < 1) {
-        state.errors.nonce = 'Nonce is not set';
+        // state.errors.nonce = 'Nonce is not set';
+        state.errors.nonce = intl.formatMessage(l10nMessages.TR_NONCE_IS_NOT_SET);
     } else if (!validators.isAbs(nonce)) {
-        state.errors.nonce = 'Nonce is not a valid number';
+        // state.errors.nonce = 'Nonce is not a valid number';
+        state.errors.nonce = intl.formatMessage(l10nMessages.TR_NONCE_IS_NOT_A_NUMBER);
     } else {
         const n: BigNumber = new BigNumber(nonce);
         if (n.isLessThan(account.nonce)) {
-            state.warnings.nonce = 'Nonce is lower than recommended';
+            // state.warnings.nonce = 'Nonce is lower than recommended';
+            state.warnings.nonce = intl.formatMessage(
+                l10nMessages.TR_NONCE_IS_LOWER_THAN_RECOMMENDED
+            );
         } else if (n.isGreaterThan(account.nonce)) {
-            state.warnings.nonce = 'Nonce is greater than recommended';
+            // state.warnings.nonce = 'Nonce is greater than recommended';
+            state.warnings.nonce = intl.formatMessage(
+                l10nMessages.TR_NONCE_IS_GREATER_THAN_RECOMMENDED
+            );
         }
     }
     return state;
 };
 
 /*
- * Gas price value validation
+ * Data validation
  */
-export const dataValidation = ($state: State): PayloadAction<State> => (): State => {
+export const dataValidation = ($state: State): PayloadAction<State> => (
+    dispatch: Dispatch,
+    getState: GetState
+): State => {
     const state = { ...$state };
     if (!state.touched.data || state.data.length === 0) return state;
+
+    // get react-intl imperative api
+    const { language, messages } = getState().wallet;
+    const intlProvider = new IntlProvider({ language, messages });
+    const { intl } = intlProvider.getChildContext();
+
     if (!ethUtils.isHex(state.data)) {
-        state.errors.data = 'Data is not valid hexadecimal';
+        // state.errors.data = 'Data is not valid hexadecimal';
+        state.errors.data = intl.formatMessage(l10nMessages.TR_DATA_IS_NOT_VALID_HEX);
     }
     return state;
 };

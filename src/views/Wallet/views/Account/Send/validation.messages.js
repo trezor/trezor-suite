@@ -55,6 +55,42 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_GAS_LIMIT_IS_BELOW_RECOMMENDED',
         defaultMessage: 'Gas limit is below recommended',
     },
+    TR_GAS_PRICE_IS_NOT_A_NUMBER: {
+        id: 'TR_GAS_PRICE_IS_NOT_A_NUMBER',
+        defaultMessage: 'Gas price is not a number',
+    },
+    TR_GAS_PRICE_IS_NOT_SET: {
+        id: 'TR_GAS_PRICE_IS_NOT_SET',
+        defaultMessage: 'Gas price is not set',
+    },
+    TR_GAS_PRICE_IS_TOO_LOW: {
+        id: 'TR_GAS_PRICE_IS_TOO_LOW',
+        defaultMessage: 'Gas price is too low',
+    },
+    TR_GAS_PRICE_IS_TOO_HIGH: {
+        id: 'TR_GAS_PRICE_IS_TOO_HIGH',
+        defaultMessage: 'Gas price is too high',
+    },
+    TR_NONCE_IS_NOT_A_NUMBER: {
+        id: 'TR_NONCE_IS_NOT_A_NUMBER',
+        defaultMessage: 'Nonce is not a valid number',
+    },
+    TR_NONCE_IS_NOT_SET: {
+        id: 'TR_NONCE_IS_NOT_SET',
+        defaultMessage: 'Nonce is not set',
+    },
+    TR_NONCE_IS_GREATER_THAN_RECOMMENDED: {
+        id: 'TR_NONCE_IS_GREATER_THAN_RECOMMENDED',
+        defaultMessage: 'Nonce is greater than recommended',
+    },
+    TR_NONCE_IS_LOWER_THAN_RECOMMENDED: {
+        id: 'TR_NONCE_IS_LOWER_THAN_RECOMMENDED',
+        defaultMessage: 'Nonce is lower than recommended',
+    },
+    TR_DATA_IS_NOT_VALID_HEX: {
+        id: 'TR_DATA_IS_NOT_VALID_HEX',
+        defaultMessage: 'Data is not valid hexadecimal',
+    },
 });
 
 export default definedMessages;
