@@ -1615,8 +1615,8 @@
       ]
     }
   },
-  "TR_ALREADY_USED": {
-    "source": "Already used",
+  "TR_ALREADY_Added": {
+    "source": "Already added",
     "meta": {
       "occurrences": [
         "src/views/Wallet/views/Account/Summary/common.messages.js"
