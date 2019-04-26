@@ -156,7 +156,15 @@ const AccountSummary = (props: Props) => {
                             }
                         }}
                         loadOptions={input => props.loadTokens(input, account.network)}
-                        formatOptionLabel={option => option.name}
+                        formatOptionLabel={option => {
+                            const isAdded = tokens.find(t => t.symbol === option.symbol);
+                            if (isAdded) {
+                                return `${option.name} (${props.intl.formatMessage(
+                                    l10nSummaryMessages.TR_ALREADY_USED
+                                )})`;
+                            }
+                            return option.name;
+                        }}
                         getOptionLabel={option => option.name}
                         getOptionValue={option => option.symbol}
                     />
