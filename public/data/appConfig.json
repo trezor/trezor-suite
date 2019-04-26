@@ -149,7 +149,7 @@
             "url": "https://api.coingecko.com/api/v3/coins/ripple"
         }
     ],
-
+    "transactions": true,
     "supportedBrowsers": {
         "chrome": {
             "version": 59,

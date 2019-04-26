@@ -18,6 +18,7 @@ import InstallBridge from 'views/Landing/views/InstallBridge/Container';
 // wallet views
 import WalletContainer from 'views/Wallet';
 import AccountSummary from 'views/Wallet/views/Account/Summary';
+import AccountTransactions from 'views/Wallet/views/Account/Transactions';
 import AccountSend from 'views/Wallet/views/Account/Send';
 import AccountReceive from 'views/Wallet/views/Account/Receive';
 import AccountSignVerify from 'views/Wallet/views/Account/SignVerify/Container';
@@ -108,6 +109,10 @@ const App = () => (
                                     exact
                                     path={getPattern('wallet-account-summary')}
                                     component={AccountSummary}
+                                />
+                                <Route
+                                    path={getPattern('wallet-account-transactions')}
+                                    component={AccountTransactions}
                                 />
                                 <Route
                                     path={getPattern('wallet-account-send')}
