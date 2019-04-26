@@ -33,6 +33,7 @@
     },
     "dependencies": {
         "@babel/polyfill": "^7.2.5",
+        "@hot-loader/react-dom": "16.8.6",
         "bignumber.js": "8.0.2",
         "color-hash": "^1.0.3",
         "commander": "^2.19.0",

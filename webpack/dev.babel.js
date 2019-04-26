@@ -88,6 +88,7 @@ module.exports = {
         alias: {
             public: PUBLIC,
             react: path.resolve('./node_modules/react'),
+            'react-dom': '@hot-loader/react-dom',
         },
         modules: [SRC, 'node_modules'],
         symlinks: false,
