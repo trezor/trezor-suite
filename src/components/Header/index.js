@@ -1,8 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-
 import Icon from 'components/Icon';
 import { SCREEN_SIZE } from 'config/variables';
 import icons from 'config/icons';
