@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
 import StoryRouter from 'storybook-react-router';
+import { Link } from 'react-router-dom';
 import { withKnobs, select, number, color, text, object, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 
@@ -274,6 +275,7 @@ storiesOf('Other', module)
                     togglerOpenText={text('togglerOpenText', 'Menu')}
                     togglerCloseText={text('togglerCloseText', 'Close')}
                     rightAddon={null}
+                    logoLinkComponent={<Link to="/" />}
                     links={object('links', [
                         {
                             href: 'https://trezor.io/',
