@@ -52,7 +52,7 @@ const TooltipContainer = styled.div`
     margin-left: 6px;
 `;
 
-const getFeeInputState = (feeErrors: string, feeWarnings: string): ?string => {
+const getFeeInputState = (feeErrors: boolean, feeWarnings: boolean): ?string => {
     let state = null;
     if (feeWarnings && !feeErrors) {
         state = 'warning';
@@ -63,7 +63,7 @@ const getFeeInputState = (feeErrors: string, feeWarnings: string): ?string => {
     return state;
 };
 
-const getDestinationTagInputState = (errors: string, warnings: string): ?string => {
+const getDestinationTagInputState = (errors: boolean, warnings: boolean): ?string => {
     let state = null;
     if (warnings && !errors) {
         state = 'warning';
@@ -90,7 +90,7 @@ const AdvancedForm = (props: Props) => {
         <AdvancedSettingsWrapper>
             <InputRow>
                 <StyledInput
-                    state={getFeeInputState(errors.fee, warnings.fee)}
+                    state={getFeeInputState(!!errors.fee, !!warnings.fee)}
                     autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
@@ -125,7 +125,13 @@ const AdvancedForm = (props: Props) => {
                             </Left>
                         </InputLabelWrapper>
                     }
-                    bottomText={errors.fee || warnings.fee || infos.fee}
+                    bottomText={
+                        <>
+                            {(errors.fee && <FormattedMessage {...errors.fee} />) ||
+                                (warnings.fee && <FormattedMessage {...warnings.fee} />) ||
+                                (infos.fee && <FormattedMessage {...infos.fee} />)}
+                        </>
+                    }
                     value={fee}
                     onChange={event => onFeeChange(event.target.value)}
                 />
@@ -134,8 +140,8 @@ const AdvancedForm = (props: Props) => {
             <InputRow>
                 <StyledInput
                     state={getDestinationTagInputState(
-                        errors.destinationTag,
-                        warnings.destinationTag
+                        !!errors.destinationTag,
+                        !!warnings.destinationTag
                     )}
                     autoComplete="off"
                     autoCorrect="off"
@@ -172,7 +178,17 @@ const AdvancedForm = (props: Props) => {
                         </InputLabelWrapper>
                     }
                     bottomText={
-                        errors.destinationTag || warnings.destinationTag || infos.destinationTag
+                        <>
+                            {(errors.destinationTag && (
+                                <FormattedMessage {...errors.destinationTag} />
+                            )) ||
+                                (warnings.destinationTag && (
+                                    <FormattedMessage {...warnings.destinationTag} />
+                                )) ||
+                                (infos.destinationTag && (
+                                    <FormattedMessage {...infos.destinationTag} />
+                                ))}
+                        </>
                     }
                     value={destinationTag}
                     onChange={event => onDestinationTagChange(event.target.value)}

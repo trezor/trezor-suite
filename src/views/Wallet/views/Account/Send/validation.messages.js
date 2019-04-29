@@ -91,6 +91,44 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_DATA_IS_NOT_VALID_HEX',
         defaultMessage: 'Data is not valid hexadecimal',
     },
+    TR_CANNOT_SEND_TO_MYSELF: {
+        id: 'TR_CANNOT_SEND_TO_MYSELF',
+        defaultMessage: 'Cannot send to myself',
+    },
+    TR_NOT_ENOUGH_FUNDS_RESERVED_AMOUNT: {
+        id: 'TR_NOT_ENOUGH_FUNDS_RESERVED_AMOUNT',
+        defaultMessage:
+            'Not enough funds. Reserved amount for this account is {reservedAmount} {networkSymbol}',
+    },
+    TR_AMOUNT_IS_TOO_LOW_MINIMUM_AMOUNT_FOR_CREATING: {
+        id: 'TR_AMOUNT_IS_TOO_LOW_MINIMUM_AMOUNT_FOR_CREATING',
+        defaultMessage:
+            'Amount is too low. Minimum amount for creating a new account is {minimalAmount} {networkSymbol}',
+    },
+    TR_FEE_IS_NOT_SET: {
+        id: 'TR_FEE_IS_NOT_SET',
+        defaultMessage: 'Fee is not set',
+    },
+    TR_FEE_MUST_ME_AN_ABSOLUT_NUMBER: {
+        id: 'TR_FEE_MUST_ME_AN_ABSOLUT_NUMBER',
+        defaultMessage: 'Fee must be an absolute number',
+    },
+    TR_FEE_IS_BELOW_RECOMMENDED: {
+        id: 'TR_FEE_IS_BELOW_RECOMMENDED',
+        defaultMessage: 'Fee is below recommended',
+    },
+    TR_FEE_IS_ABOVE_RECOMMENDED: {
+        id: 'TR_FEE_IS_ABOVE_RECOMMENDED',
+        defaultMessage: 'Fee is above recommended',
+    },
+    TR_DESTINATION_TAG_MUST_BE_AN_ABSOLUTE: {
+        id: 'TR_DESTINATION_TAG_MUST_BE_AN_ABSOLUTE',
+        defaultMessage: 'Destination tag must be an absolute number',
+    },
+    TR_DESTINATION_TAG_IS_NOT_VALID: {
+        id: 'TR_DESTINATION_TAG_IS_NOT_VALID',
+        defaultMessage: 'Destination tag is not valid',
+    },
 });
 
 export default definedMessages;

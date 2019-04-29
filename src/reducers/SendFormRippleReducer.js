@@ -3,12 +3,13 @@
 import * as SEND from 'actions/constants/send';
 import * as ACCOUNT from 'actions/constants/account';
 
-import type { Action } from 'flowtype';
+import type { Action, MessageDescriptor } from 'flowtype';
 
 export type FeeLevel = {
     label: string,
     fee: string,
     value: string,
+    localizedValue?: MessageDescriptor,
 };
 
 export type State = {
@@ -33,9 +34,9 @@ export type State = {
     destinationTag: string,
     total: string,
 
-    errors: { [k: string]: string },
-    warnings: { [k: string]: string },
-    infos: { [k: string]: string },
+    errors: { [k: string]: MessageDescriptor },
+    warnings: { [k: string]: MessageDescriptor },
+    infos: { [k: string]: MessageDescriptor },
 
     sending: boolean,
 };

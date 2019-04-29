@@ -23,8 +23,9 @@ const definedMessages: Messages = defineMessages({
     },
     TR_LOOKS_LIKE_IT_IS_DEVICE_LABEL: {
         id: 'TR_LOOKS_LIKE_IT_IS_DEVICE_LABEL',
-        defaultMessage: 'Looks like it is {deviceLabel} Account #{number} of {network}',
-        description: 'Example: Looks like it is My Trezor Account #1 of ETH',
+        defaultMessage:
+            'Looks like it is {deviceLabel} Account #{number} address of {network} network',
+        description: 'Example: Looks like it is My Trezor Account #1 address of ETH network',
     },
     TR_IMPORTED_ACCOUNT_HASH: {
         id: 'TR_IMPORTED_ACCOUNT_HASH',

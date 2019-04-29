@@ -202,8 +202,8 @@ const StyledIcon = styled(Icon)`
 // render helpers
 const getAddressInputState = (
     address: string,
-    addressErrors: string,
-    addressWarnings: string
+    addressErrors: boolean,
+    addressWarnings: boolean
 ): ?string => {
     let state = null;
     if (address && !addressErrors) {
@@ -218,7 +218,7 @@ const getAddressInputState = (
     return state;
 };
 
-const getAmountInputState = (amountErrors: string, amountWarnings: string): ?string => {
+const getAmountInputState = (amountErrors: boolean, amountWarnings: boolean): ?string => {
     let state = null;
     if (amountWarnings && !amountErrors) {
         state = 'warning';
@@ -317,13 +317,19 @@ const AccountSend = (props: Props) => {
             </Title>
             <InputRow>
                 <Input
-                    state={getAddressInputState(address, errors.address, warnings.address)}
+                    state={getAddressInputState(address, !!errors.address, !!warnings.address)}
                     autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck="false"
                     topLabel={props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
-                    bottomText={errors.address || warnings.address || infos.address}
+                    bottomText={
+                        <>
+                            {(errors.address && <FormattedMessage {...errors.address} />) ||
+                                (warnings.address && <FormattedMessage {...warnings.address} />) ||
+                                (infos.address && <FormattedMessage {...infos.address} />)}
+                        </>
+                    }
                     value={address}
                     onChange={event => onAddressChange(event.target.value)}
                     sideAddons={[
@@ -335,7 +341,7 @@ const AccountSend = (props: Props) => {
             </InputRow>
             <AmountRow>
                 <Input
-                    state={getAmountInputState(errors.amount, warnings.amount)}
+                    state={getAmountInputState(!!errors.amount, !!warnings.amount)}
                     autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
@@ -357,7 +363,13 @@ const AccountSend = (props: Props) => {
                     }
                     value={amount}
                     onChange={event => onAmountChange(event.target.value)}
-                    bottomText={errors.amount || warnings.amount || infos.amount}
+                    bottomText={
+                        <>
+                            {(errors.amount && <FormattedMessage {...errors.amount} />) ||
+                                (warnings.amount && <FormattedMessage {...warnings.amount} />) ||
+                                (infos.amount && <FormattedMessage {...infos.amount} />)}
+                        </>
+                    }
                     sideAddons={[
                         <SetMaxAmountButton key="icon" onClick={() => onSetMax()} isWhite={!setMax}>
                             {!setMax && (
@@ -385,7 +397,7 @@ const AccountSend = (props: Props) => {
                 <LocalAmountWrapper>
                     <EqualsSign>=</EqualsSign>
                     <LocalAmountInput
-                        state={getAmountInputState(errors.amount, warnings.amount)}
+                        state={getAmountInputState(!!errors.amount, !!warnings.amount)}
                         autoComplete="off"
                         autoCorrect="off"
                         autoCapitalize="off"
