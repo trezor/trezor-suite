@@ -1,6 +1,6 @@
 /* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype/npm/react-intl';
+import type { Messages } from 'flowtype';
 
 const definedMessages: Messages = defineMessages({
     TR_THE_PIN_LAYOUT_IS_DISPLAYED_ON: {

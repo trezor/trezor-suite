@@ -56,6 +56,20 @@ type Props = {|
     ...StateProps,
 |};
 
+export type MessageDescriptor = {
+    // A unique, stable identifier for the message
+    id: string,
+    // The default message (probably in English)
+    defaultMessage: string,
+    // Context for the translator about how it's used in the UI
+    description?: string,
+    values: { [key: string]: any },
+};
+
+export type Messages = {
+    [key: string]: MessageDescriptor,
+};
+
 const mapStateToProps = (state: State): StateProps => ({
     locale: state.wallet.language,
     messages: state.wallet.messages,
