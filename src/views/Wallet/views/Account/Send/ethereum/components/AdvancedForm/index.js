@@ -234,7 +234,15 @@ const AdvancedForm = (props: Props) => {
                             )}
                         </InputLabelWrapper>
                     }
-                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
+                    bottomText={
+                        <>
+                            {(errors.gasLimit && <FormattedMessage {...errors.gasLimit} />) ||
+                                (warnings.gasLimit && (
+                                    <FormattedMessage {...warnings.gasLimit} />
+                                )) ||
+                                (infos.gasLimit && <FormattedMessage {...infos.gasLimit} />)}
+                        </>
+                    }
                     value={
                         calculatingGasLimit
                             ? props.intl.formatMessage(l10nMessages.TR_CALCULATING_DOT_DOT)
@@ -292,7 +300,15 @@ const AdvancedForm = (props: Props) => {
                             </Left>
                         </InputLabelWrapper>
                     }
-                    bottomText={errors.gasPrice || warnings.gasPrice || infos.gasPrice}
+                    bottomText={
+                        <>
+                            {(errors.gasPrice && <FormattedMessage {...errors.gasPrice} />) ||
+                                (warnings.gasPrice && (
+                                    <FormattedMessage {...warnings.gasPrice} />
+                                )) ||
+                                (infos.v && <FormattedMessage {...infos.gasPrice} />)}
+                        </>
+                    }
                     value={gasPrice}
                     onChange={event => onGasPriceChange(event.target.value)}
                 />
@@ -323,7 +339,13 @@ const AdvancedForm = (props: Props) => {
                     </InputLabelWrapper>
                 }
                 state={getDataTextareaState(!!errors.data, !!warnings.data)}
-                bottomText={errors.data || warnings.data || infos.data}
+                bottomText={
+                    <>
+                        {(errors.data && <FormattedMessage {...errors.data} />) ||
+                            (warnings.data && <FormattedMessage {...warnings.data} />) ||
+                            (infos.data && <FormattedMessage {...infos.data} />)}
+                    </>
+                }
                 isDisabled={networkSymbol !== currency}
                 value={networkSymbol !== currency ? '' : data}
                 onChange={event => onDataChange(event.target.value)}

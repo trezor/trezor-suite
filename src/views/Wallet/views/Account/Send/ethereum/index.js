@@ -355,9 +355,9 @@ const AccountSend = (props: Props) => {
                     topLabel={props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
                     bottomText={
                         <>
-                            {errors.address && <FormattedMessage {...errors.address} />}
-                            {warnings.address && <FormattedMessage {...warnings.address} />}
-                            {infos.address && <FormattedMessage {...infos.address} />}
+                            {(errors.address && <FormattedMessage {...errors.address} />) ||
+                                (warnings.address && <FormattedMessage {...warnings.address} />) ||
+                                (infos.address && <FormattedMessage {...infos.address} />)}
                         </>
                     }
                     value={address}
@@ -399,9 +399,9 @@ const AccountSend = (props: Props) => {
                     onChange={event => onAmountChange(event.target.value)}
                     bottomText={
                         <>
-                            {errors.amount && <FormattedMessage {...errors.amount} />}
-                            {warnings.amount && <FormattedMessage {...warnings.amount} />}
-                            {infos.amount && <FormattedMessage {...infos.amount} />}
+                            {(errors.amount && <FormattedMessage {...errors.amount} />) ||
+                                (warnings.amount && <FormattedMessage {...warnings.amount} />) ||
+                                (infos.amount && <FormattedMessage {...infos.amount} />)}
                         </>
                     }
                     sideAddons={[
