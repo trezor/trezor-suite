@@ -12,7 +12,7 @@ const definedMessages: Messages = defineMessages({
         defaultMessage: 'Amount is not a number',
     },
     TR_MAXIMUM_DECIMALS_ALLOWED: {
-        id: 'TR_AMOUNT_IS_NOT_A_NUMBER',
+        id: 'TR_MAXIMUM_DECIMALS_ALLOWED:',
         defaultMessage: 'Maximum {decimals} decimals allowed',
     },
     TR_NOT_ENOUGH_FUNDS_TO_COVER_TRANSACTION: {

@@ -14,7 +14,7 @@ const definedMessages: Messages = defineMessages({
         description: 'Device status',
     },
     TR_CONNECTED_NOT_INITIALIZED: {
-        id: 'TR_CONNECTED',
+        id: 'TR_CONNECTED_NOT_INITIALIZED',
         defaultMessage: 'Connected (not initialized)',
         description: 'Device status',
     },
