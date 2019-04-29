@@ -63,7 +63,7 @@ export type MessageDescriptor = {
     defaultMessage: string,
     // Context for the translator about how it's used in the UI
     description?: string,
-    values: { [key: string]: any },
+    values?: { [key: string]: any },
 };
 
 export type Messages = {

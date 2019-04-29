@@ -427,7 +427,8 @@ export const onFeeLevelChange = (feeLevel: FeeLevel): ThunkAction => (
         }
         newGasPrice = feeLevel.gasPrice;
     }
-
+    console.log('selected');
+    console.log(feeLevel);
     dispatch({
         type: SEND.CHANGE,
         networkType: 'ethereum',
