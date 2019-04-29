@@ -1,5 +1,6 @@
 /* @flow */
-
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import TrezorConnect, { UI } from 'trezor-connect';
 import * as BLOCKCHAIN_ACTION from 'actions/constants/blockchain';
 import * as DISCOVERY from 'actions/constants/discovery';
@@ -17,6 +18,8 @@ import type {
     Account,
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
+import l10nMessages from 'components/notifications/Context/actions.messages';
+import l10nCommonMessages from 'views/common.messages';
 import * as BlockchainActions from './BlockchainActions';
 import * as EthereumDiscoveryActions from './ethereum/DiscoveryActions';
 import * as RippleDiscoveryActions from './ripple/DiscoveryActions';
@@ -176,12 +179,12 @@ const begin = (device: TrezorDevice, networkName: string): AsyncAction => async 
             type: NOTIFICATION.ADD,
             payload: {
                 type: 'error',
-                title: 'Discovery error',
+                title: <FormattedMessage {...l10nMessages.TR_ACCOUNT_DISCOVERY_ERROR} />,
                 message: error.message,
                 cancelable: true,
                 actions: [
                     {
-                        label: 'Try again',
+                        label: <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />,
                         callback: () => {
                             dispatch(start(device, networkName));
                         },
@@ -264,12 +267,12 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
             type: NOTIFICATION.ADD,
             payload: {
                 type: 'error',
-                title: 'Account discovery error',
+                title: <FormattedMessage {...l10nMessages.TR_ACCOUNT_DISCOVERY_ERROR} />,
                 message: error.message,
                 cancelable: true,
                 actions: [
                     {
-                        label: 'Try again',
+                        label: <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />,
                         callback: () => {
                             dispatch(start(device, discoveryProcess.network));
                         },

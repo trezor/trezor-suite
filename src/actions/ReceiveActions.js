@@ -1,5 +1,6 @@
 /* @flow */
-
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import TrezorConnect from 'trezor-connect';
 import * as RECEIVE from 'actions/constants/receive';
 import * as NOTIFICATION from 'actions/constants/notification';
@@ -8,6 +9,8 @@ import { initialState } from 'reducers/ReceiveReducer';
 import type { State } from 'reducers/ReceiveReducer';
 
 import type { TrezorDevice, ThunkAction, AsyncAction, Action, GetState, Dispatch } from 'flowtype';
+import l10nMessages from 'components/notifications/Context/actions.messages';
+import l10nCommonMessages from 'views/common.messages';
 
 export type ReceiveAction =
     | {
@@ -112,12 +115,12 @@ export const showAddress = (path: Array<number>): AsyncAction => async (
             type: NOTIFICATION.ADD,
             payload: {
                 type: 'error',
-                title: 'Verifying address error',
+                title: <FormattedMessage {...l10nMessages.TR_VERIFYING_ADDRESS_ERROR} />,
                 message: response.payload.error,
                 cancelable: true,
                 actions: [
                     {
-                        label: 'Try again',
+                        label: <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />,
                         callback: () => {
                             dispatch(showAddress(path));
                         },

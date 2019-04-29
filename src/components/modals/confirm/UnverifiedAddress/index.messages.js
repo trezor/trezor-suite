@@ -33,11 +33,6 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_SHOW_UNVERIFIED_ADDRESS',
         defaultMessage: 'Show unverified address',
     },
-    TR_TRY_AGAIN: {
-        id: 'TR_TRY_AGAIN',
-        defaultMessage: 'Try again',
-        description: 'Try to verify the address again',
-    },
     TR_TO_PREVENT_PHISHING_ATTACKS_COMMA: {
         id: 'TR_TO_PREVENT_PHISHING_ATTACKS_COMMA',
         defaultMessage:

@@ -41,6 +41,18 @@ const StyledIcon = styled(Icon)`
     margin-right: 6px;
 `;
 
+// const getLocalizedMessage = msg => {
+//     if (
+//         typeof msg === 'object' &&
+//         msg.hasOwnProperty('id') &&
+//         msg.hasOwnProperty('defaultMessage')
+//     ) {
+//         //messageDescriptor
+//         return <FormattedMessage {...msg} />;
+//     }
+//     return msg;
+// };
+
 class Group extends PureComponent {
     constructor() {
         super();
@@ -114,7 +126,16 @@ Group.propTypes = {
         PropTypes.shape({
             key: PropTypes.object,
             type: PropTypes.string,
-            title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+            title: PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.node,
+                PropTypes.shape({
+                    id: PropTypes.string,
+                    defaultMessage: PropTypes.string,
+                    description: PropTypes.string,
+                    values: PropTypes.object,
+                }),
+            ]),
             message: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
         })
     ),

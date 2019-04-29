@@ -131,6 +131,11 @@ const definedMessages: Messages = defineMessages({
         defaultMessage: 'Custom',
         description: 'fee level',
     },
+    TR_TRY_AGAIN: {
+        id: 'TR_TRY_AGAIN',
+        defaultMessage: 'Try again',
+        description: 'Try to run the proccess again',
+    },
 });
 
 export default definedMessages;
