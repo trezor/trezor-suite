@@ -415,7 +415,7 @@ export const getFeeLevels = (
     // map BlockchainFeeLevel to SendFormReducer FeeLevel
     const levels = feeLevels.map(level => ({
         value: level.name,
-        localizedValue: l10nFeeMap[level.value] || level.value,
+        localizedValue: l10nFeeMap[level.value],
         fee: level.value,
         label: `${toDecimalAmount(level.value, network.decimals)} ${network.symbol}`,
     }));
