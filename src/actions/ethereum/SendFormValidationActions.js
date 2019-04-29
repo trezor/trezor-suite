@@ -492,10 +492,6 @@ export const getFeeLevels = (
                   label: '',
               };
 
-    console.log(l10nCommonMessages.TR_LOW_FEE);
-    console.log(l10nCommonMessages.TR_NORMAL_FEE);
-    console.log(l10nCommonMessages.TR_HIGH_FEE);
-    console.log(l10nCommonMessages.TR_CUSTOM_FEE);
     return [
         {
             value: 'High',

@@ -110,7 +110,6 @@ export const init = (): AsyncAction => async (
 
     const blockchainFeeLevels = dispatch(BlockchainActions.getFeeLevels(network));
     const feeLevels = dispatch(ValidationActions.getFeeLevels(blockchainFeeLevels));
-    console.log(feeLevels);
     const selectedFeeLevel = ValidationActions.getSelectedFeeLevel(
         feeLevels,
         initialState.selectedFeeLevel

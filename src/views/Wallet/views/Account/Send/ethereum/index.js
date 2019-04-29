@@ -480,7 +480,6 @@ const AccountSend = (props: Props) => {
                     options={feeLevels}
                     formatOptionLabel={option => (
                         <FeeOptionWrapper>
-                            {console.log(option)}
                             <OptionValue>
                                 <FormattedMessage {...option.localizedValue} />
                             </OptionValue>
