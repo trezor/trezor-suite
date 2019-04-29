@@ -4,7 +4,7 @@ import * as React from 'react';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { Input, Tooltip, Icon, colors, icons as ICONS } from 'trezor-ui-components';
-
+import { getBottomText } from 'utils/uiUtils';
 import l10nCommonMessages from 'views/common.messages';
 import l10nSendMessages from 'views/Wallet/views/Account/common.messages';
 import l10nMessages from './index.messages';
@@ -125,13 +125,7 @@ const AdvancedForm = (props: Props) => {
                             </Left>
                         </InputLabelWrapper>
                     }
-                    bottomText={
-                        <>
-                            {(errors.fee && <FormattedMessage {...errors.fee} />) ||
-                                (warnings.fee && <FormattedMessage {...warnings.fee} />) ||
-                                (infos.fee && <FormattedMessage {...infos.fee} />)}
-                        </>
-                    }
+                    bottomText={getBottomText(errors.fee, warnings.fee, infos.fee)}
                     value={fee}
                     onChange={event => onFeeChange(event.target.value)}
                 />
@@ -177,19 +171,11 @@ const AdvancedForm = (props: Props) => {
                             </Left>
                         </InputLabelWrapper>
                     }
-                    bottomText={
-                        <>
-                            {(errors.destinationTag && (
-                                <FormattedMessage {...errors.destinationTag} />
-                            )) ||
-                                (warnings.destinationTag && (
-                                    <FormattedMessage {...warnings.destinationTag} />
-                                )) ||
-                                (infos.destinationTag && (
-                                    <FormattedMessage {...infos.destinationTag} />
-                                ))}
-                        </>
-                    }
+                    bottomText={getBottomText(
+                        errors.destinationTag,
+                        warnings.destinationTag,
+                        infos.destinationTag
+                    )}
                     value={destinationTag}
                     onChange={event => onDestinationTagChange(event.target.value)}
                 />

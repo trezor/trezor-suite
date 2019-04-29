@@ -15,7 +15,7 @@ import {
 import type { IntlShape } from 'react-intl';
 
 import { FONT_SIZE } from 'config/variables';
-
+import { getBottomText } from 'utils/uiUtils';
 import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
 
@@ -234,15 +234,7 @@ const AdvancedForm = (props: Props) => {
                             )}
                         </InputLabelWrapper>
                     }
-                    bottomText={
-                        <>
-                            {(errors.gasLimit && <FormattedMessage {...errors.gasLimit} />) ||
-                                (warnings.gasLimit && (
-                                    <FormattedMessage {...warnings.gasLimit} />
-                                )) ||
-                                (infos.gasLimit && <FormattedMessage {...infos.gasLimit} />)}
-                        </>
-                    }
+                    bottomText={getBottomText(errors.gasLimit, warnings.gasLimit, infos.gasLimit)}
                     value={
                         calculatingGasLimit
                             ? props.intl.formatMessage(l10nMessages.TR_CALCULATING_DOT_DOT)
@@ -300,15 +292,7 @@ const AdvancedForm = (props: Props) => {
                             </Left>
                         </InputLabelWrapper>
                     }
-                    bottomText={
-                        <>
-                            {(errors.gasPrice && <FormattedMessage {...errors.gasPrice} />) ||
-                                (warnings.gasPrice && (
-                                    <FormattedMessage {...warnings.gasPrice} />
-                                )) ||
-                                (infos.v && <FormattedMessage {...infos.gasPrice} />)}
-                        </>
-                    }
+                    bottomText={getBottomText(errors.gasPrice, warnings.gasPrice, infos.gasPrice)}
                     value={gasPrice}
                     onChange={event => onGasPriceChange(event.target.value)}
                 />
@@ -339,13 +323,7 @@ const AdvancedForm = (props: Props) => {
                     </InputLabelWrapper>
                 }
                 state={getDataTextareaState(!!errors.data, !!warnings.data)}
-                bottomText={
-                    <>
-                        {(errors.data && <FormattedMessage {...errors.data} />) ||
-                            (warnings.data && <FormattedMessage {...warnings.data} />) ||
-                            (infos.data && <FormattedMessage {...infos.data} />)}
-                    </>
-                }
+                bottomText={getBottomText(errors.data, warnings.data, infos.data)}
                 isDisabled={networkSymbol !== currency}
                 value={networkSymbol !== currency ? '' : data}
                 onChange={event => onDataChange(event.target.value)}

@@ -12,6 +12,7 @@ import * as stateUtils from 'reducers/utils';
 import type { Token } from 'flowtype';
 import { FormattedMessage } from 'react-intl';
 import l10nCommonMessages from 'views/common.messages';
+import { getBottomText } from 'utils/uiUtils';
 import AdvancedForm from './components/AdvancedForm';
 import PendingTransactions from '../components/PendingTransactions';
 
@@ -353,13 +354,7 @@ const AccountSend = (props: Props) => {
                     autoCapitalize="off"
                     spellCheck="false"
                     topLabel={props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
-                    bottomText={
-                        <>
-                            {(errors.address && <FormattedMessage {...errors.address} />) ||
-                                (warnings.address && <FormattedMessage {...warnings.address} />) ||
-                                (infos.address && <FormattedMessage {...infos.address} />)}
-                        </>
-                    }
+                    bottomText={getBottomText(errors.address, warnings.address, infos.address)}
                     value={address}
                     onChange={event => onAddressChange(event.target.value)}
                     sideAddons={[
@@ -397,13 +392,7 @@ const AccountSend = (props: Props) => {
                     }
                     value={amount}
                     onChange={event => onAmountChange(event.target.value)}
-                    bottomText={
-                        <>
-                            {(errors.amount && <FormattedMessage {...errors.amount} />) ||
-                                (warnings.amount && <FormattedMessage {...warnings.amount} />) ||
-                                (infos.amount && <FormattedMessage {...infos.amount} />)}
-                        </>
-                    }
+                    bottomText={getBottomText(errors.amount, warnings.amount, infos.amount)}
                     sideAddons={[
                         <SetMaxAmountButton key="icon" onClick={() => onSetMax()} isWhite={!setMax}>
                             {!setMax && (

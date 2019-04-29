@@ -10,9 +10,9 @@ import { FIAT_CURRENCIES } from 'config/app';
 import Title from 'views/Wallet/components/Title';
 import l10nCommonMessages from 'views/common.messages';
 import Content from 'views/Wallet/components/Content';
+import { getBottomText } from 'utils/uiUtils';
 import PendingTransactions from '../components/PendingTransactions';
 import AdvancedForm from './components/AdvancedForm';
-
 import l10nMessages from './index.messages';
 import l10nSendMessages from '../../common.messages';
 
@@ -323,13 +323,7 @@ const AccountSend = (props: Props) => {
                     autoCapitalize="off"
                     spellCheck="false"
                     topLabel={props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
-                    bottomText={
-                        <>
-                            {(errors.address && <FormattedMessage {...errors.address} />) ||
-                                (warnings.address && <FormattedMessage {...warnings.address} />) ||
-                                (infos.address && <FormattedMessage {...infos.address} />)}
-                        </>
-                    }
+                    bottomText={getBottomText(errors.address, warnings.address, infos.address)}
                     value={address}
                     onChange={event => onAddressChange(event.target.value)}
                     sideAddons={[
@@ -363,13 +357,7 @@ const AccountSend = (props: Props) => {
                     }
                     value={amount}
                     onChange={event => onAmountChange(event.target.value)}
-                    bottomText={
-                        <>
-                            {(errors.amount && <FormattedMessage {...errors.amount} />) ||
-                                (warnings.amount && <FormattedMessage {...warnings.amount} />) ||
-                                (infos.amount && <FormattedMessage {...infos.amount} />)}
-                        </>
-                    }
+                    bottomText={getBottomText(errors.amount, warnings.amount, infos.amount)}
                     sideAddons={[
                         <SetMaxAmountButton key="icon" onClick={() => onSetMax()} isWhite={!setMax}>
                             {!setMax && (
