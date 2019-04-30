@@ -2,8 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from 'components/buttons/Button';
 import ButtonPin from 'components/buttons/Pin';
-import ButtonNotification from 'components/buttons/Notification';
-import { H1 } from 'components/Heading';
+import { H1, H3, H5 } from 'components/Heading';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
@@ -18,9 +17,12 @@ const Wrapper = styled.div`
 
 const Row = styled.div`
     display: flex;
-    justify-content: space-evenly;
-    padding: 1rem 0;
     margin: 0.5rem 0 2rem;
+    flex-wrap: wrap;
+
+    button {
+        margin: 10px 10px;
+    }
 `;
 
 const BtnLink = styled.button`
@@ -41,10 +43,17 @@ const BtnLink = styled.button`
 storiesOf('Buttons', module).add('All', () => (
     <Wrapper>
         <H1>
-            Default <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button />'}</BtnLink>
+            Basic <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button />'}</BtnLink>
         </H1>
         <Row>
-            <Button data-test="Button__default">Button</Button>
+            <Button variant="success" data-test="Button__default">
+                Button
+            </Button>
+            <Button variant="info">Button</Button>
+            <Button variant="warning">Button</Button>
+            <Button variant="error">Button</Button>
+        </Row>
+        <Row>
             <Button data-test="Button__white" isWhite>
                 White
             </Button>
@@ -55,30 +64,159 @@ storiesOf('Buttons', module).add('All', () => (
                 Disabled
             </Button>
         </Row>
+
+        <H5>
+            with an icon{' '}
+            <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button icon="PLUS" />'}</BtnLink>
+        </H5>
+        <Row>
+            <Button icon="PLUS" variant="success" data-test="Button__default">
+                Button
+            </Button>
+            <Button icon="PLUS" variant="info">
+                Button
+            </Button>
+            <Button icon="PLUS" variant="warning">
+                Button
+            </Button>
+            <Button icon="PLUS" variant="error">
+                Button
+            </Button>
+        </Row>
+        <Row>
+            <Button icon="PLUS" ata-test="Button__white" isWhite>
+                White
+            </Button>
+            <Button icon="PLUS" data-test="Button__transparent" isTransparent>
+                Transparent
+            </Button>
+            <Button icon="PLUS" ata-test="Button__disabled" isDisabled>
+                Disabled
+            </Button>
+        </Row>
+
+        <H5>
+            with loading{' '}
+            <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button isLoading />'}</BtnLink>
+        </H5>
+        <Row>
+            <Button isLoading variant="success" data-test="Button__default">
+                Button
+            </Button>
+            <Button isLoading variant="info">
+                Button
+            </Button>
+            <Button isLoading variant="warning">
+                Button
+            </Button>
+            <Button isLoading variant="error">
+                Button
+            </Button>
+        </Row>
+        <Row>
+            <Button isLoading ata-test="Button__white" isWhite>
+                White
+            </Button>
+            <Button isLoading data-test="Button__transparent" isTransparent>
+                Transparent
+            </Button>
+            <Button isLoading ata-test="Button__disabled" isDisabled>
+                Disabled
+            </Button>
+        </Row>
+
         <H1>
             Inverse{' '}
             <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button isInverse />'}</BtnLink>
         </H1>
         <Row>
-            <Button isInverse>Inverse</Button>
-            <Button isInverse icon={icons.PLUS}>
-                Icon
+            <Button isInverse variant="success" data-test="Button__default">
+                Button
             </Button>
-            <Button isInverse icon={icons.PLUS} isDisabled>
-                Icon Disabled
+            <Button isInverse variant="info">
+                Button
+            </Button>
+            <Button isInverse variant="warning">
+                Button
+            </Button>
+            <Button isInverse variant="error">
+                Button
             </Button>
         </Row>
-        <H1>
-            Notification{' '}
-            <BtnLink onClick={linkTo('Buttons', 'Button Notification')}>
-                {'<ButtonNotification />'}
-            </BtnLink>
-        </H1>
         <Row>
-            <ButtonNotification type="success">Confirm!</ButtonNotification>
-            <ButtonNotification type="info">Info!</ButtonNotification>
-            <ButtonNotification type="warning">Warning!</ButtonNotification>
-            <ButtonNotification type="error">Error!</ButtonNotification>
+            <Button isInverse data-test="Button__white" isWhite>
+                White
+            </Button>
+            <Button isInverse data-test="Button__transparent" isTransparent>
+                Transparent
+            </Button>
+            <Button isInverse data-test="Button__disabled" isDisabled>
+                Disabled
+            </Button>
+        </Row>
+
+        <H5>
+            with an icon{' '}
+            <BtnLink onClick={linkTo('Buttons', 'Button')}>
+                {'<Button isInverse icon="PLUS" />'}
+            </BtnLink>
+        </H5>
+        <Row>
+            <Button isInverse icon="PLUS" variant="success" data-test="Button__default">
+                Button
+            </Button>
+            <Button isInverse icon="PLUS" variant="info">
+                Button
+            </Button>
+            <Button isInverse icon="PLUS" variant="warning">
+                Button
+            </Button>
+            <Button isInverse icon="PLUS" variant="error">
+                Button
+            </Button>
+        </Row>
+        <Row>
+            <Button isInverse icon="PLUS" ata-test="Button__white" isWhite>
+                White
+            </Button>
+            <Button isInverse icon="PLUS" data-test="Button__transparent" isTransparent>
+                Transparent
+            </Button>
+            <Button isInverse icon="PLUS" ata-test="Button__disabled" isDisabled>
+                Disabled
+            </Button>
+        </Row>
+
+        <H5>
+            with loading{' '}
+            <BtnLink onClick={linkTo('Buttons', 'Button')}>
+                {'<Button isInverse isLoading />'}
+            </BtnLink>
+        </H5>
+        <Row>
+            <Button isInverse isLoading variant="success" data-test="Button__default">
+                Button
+            </Button>
+            <Button isInverse isLoading variant="info">
+                Button
+            </Button>
+            <Button isInverse isLoading variant="warning">
+                Button
+            </Button>
+            <Button isInverse isLoading variant="error">
+                Button
+            </Button>
+        </Row>
+        <Row>
+            <Button isInverse isLoading ata-test="Button__white" isWhite>
+                White
+            </Button>
+            <Button isInverse isLoading data-test="Button__transparent" isTransparent>
+                Transparent
+            </Button>
+            <Button isInverse isLoading ata-test="Button__disabled" isDisabled>
+                Disabled
+            </Button>
         </Row>
         <H1>
             Pin <BtnLink onClick={linkTo('Buttons', 'Button Pin')}>{'<ButtonPin />'}</BtnLink>
@@ -118,6 +256,17 @@ storiesOf('Buttons', module)
             const isDisabled = boolean('Disabled', false);
             const isLoading = boolean('Loading', false);
             const buttonText = text('Text', 'Button Text');
+            const variant = select(
+                'Variant',
+                {
+                    None: null,
+                    info: 'info',
+                    success: 'success',
+                    warning: 'warning',
+                    error: 'error',
+                },
+                'success'
+            );
             const icon = select(
                 'Icon',
                 {
@@ -153,6 +302,7 @@ storiesOf('Buttons', module)
             return (
                 <Button
                     {...(isDisabled ? { isDisabled } : {})}
+                    {...(variant ? { variant } : {})}
                     {...(isTransparent ? { isTransparent } : {})}
                     {...(isWhite ? { isWhite } : {})}
                     {...(isInverse ? { isInverse } : {})}
@@ -183,37 +333,4 @@ storiesOf('Buttons', module)
             ~~~
             `,
         },
-    })
-    .add(
-        'Button Notification',
-        () => {
-            const type = select(
-                'Type',
-                {
-                    Success: 'success',
-                    Info: 'info',
-                    Warning: 'warning',
-                    Error: 'error',
-                },
-                'success'
-            );
-            const isLoading = boolean('Loading', false);
-            const buttonText = text('Text', 'Confirm!');
-
-            return (
-                <ButtonNotification type={type} {...(isLoading ? { isLoading } : {})}>
-                    {buttonText}
-                </ButtonNotification>
-            );
-        },
-        {
-            info: {
-                text: `
-            ## Import
-            ~~~js
-            import { ButtonNotification } from 'trezor-ui-components';
-            ~~~
-            `,
-            },
-        }
-    );
+    });
