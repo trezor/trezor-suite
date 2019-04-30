@@ -24,8 +24,8 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_PASSPHRASES_DO_NOT_MATCH',
         defaultMessage: 'Passphrases do not match!',
     },
-    TR_PASSPHRASES_IS_TOO_LONG: {
-        id: 'TR_PASSPHRASES_IS_TOO_LONG',
+    TR_PASSPHRASE_IS_TOO_LONG: {
+        id: 'TR_PASSPHRASE_IS_TOO_LONG',
         defaultMessage: 'Passphrase is too long!',
     },
     TR_SHOW_PASSPHRASE: {

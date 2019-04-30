@@ -198,7 +198,7 @@ class Passphrase extends PureComponent<Props, State> {
         if (this.state.byteLength > 50) {
             error = (
                 <PassphraseError>
-                    <FormattedMessage {...l10nMessages.TR_PASSPHRASES_IS_TOO_LONG} />
+                    <FormattedMessage {...l10nMessages.TR_PASSPHRASE_IS_TOO_LONG} />
                 </PassphraseError>
             );
         } else if (!this.state.doPassphraseInputsMatch) {
