@@ -4,7 +4,6 @@ import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { getIcon, getPrimaryColor, getSecondaryColor } from 'utils/notification';
 
 import Icon from 'components/Icon';
-import Loader from 'components/Loader';
 import ButtonNotification from 'components/buttons/Notification';
 import icons from 'config/icons';
 import styled from 'styled-components';
@@ -83,7 +82,6 @@ const Notification = props => {
     return (
         <Wrapper className={props.className} type={props.type}>
             <Content>
-                {props.loading && <Loader size={50} />}
                 <Body>
                     <IconWrapper>
                         <StyledIcon
@@ -132,7 +130,6 @@ Notification.propTypes = {
     title: PropTypes.node,
     message: PropTypes.node,
     cancelable: PropTypes.bool,
-    loading: PropTypes.bool,
     isActionInProgress: PropTypes.bool,
     actions: PropTypes.array,
     className: PropTypes.string,
