@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Header } from 'trezor-ui-components';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import type { toggleSidebar as toggleSidebarType } from 'actions/WalletActions';
 import l10nMessages from './index.messages';
@@ -40,6 +41,7 @@ const MyHeader = ({ sidebarEnabled, sidebarOpened, toggleSidebar }: MyProps) => 
                 title: <FormattedMessage {...l10nMessages.TR_SUPPORT} />,
             },
         ]}
+        logoLinkComponent={<Link to="/" />}
         rightAddon={<LanguagePicker />}
     />
 );
