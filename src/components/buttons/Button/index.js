@@ -7,6 +7,50 @@ import React from 'react';
 import colors from 'config/colors';
 import { SPIN } from 'config/animations';
 
+const getPrimaryColor = type => {
+    let color;
+    switch (type) {
+        case 'info':
+            color = colors.INFO_PRIMARY;
+            break;
+        case 'error':
+            color = colors.ERROR_PRIMARY;
+            break;
+        case 'warning':
+            color = colors.WARNING_PRIMARY;
+            break;
+        case 'success':
+            color = colors.SUCCESS_PRIMARY;
+            break;
+        default:
+            color = null;
+    }
+
+    return color;
+};
+
+const getSecondaryColor = type => {
+    let color;
+    switch (type) {
+        case 'info':
+            color = colors.INFO_SECONDARY;
+            break;
+        case 'error':
+            color = colors.ERROR_SECONDARY;
+            break;
+        case 'warning':
+            color = colors.WARNING_SECONDARY;
+            break;
+        case 'success':
+            color = colors.SUCCESS_SECONDARY;
+            break;
+        default:
+            color = null;
+    }
+
+    return color;
+};
+
 const FluidSpinner = styled.div`
     /* https://loading.io/css/ */
     width: 16px;
@@ -58,13 +102,13 @@ const Wrapper = styled.button`
     font-weight: ${FONT_WEIGHT.LIGHT};
     cursor: pointer;
     outline: none;
-    background: ${colors.GREEN_PRIMARY};
+    background: ${props => getPrimaryColor(props.variant)};
     color: ${colors.WHITE};
-    border: 1px solid ${colors.GREEN_PRIMARY};
+    border: 1px solid ${props => getPrimaryColor(props.variant)};
     transition: ${TRANSITION.HOVER};
 
     &:hover {
-        background: ${colors.GREEN_SECONDARY};
+        background: ${props => getSecondaryColor(props.variant)};
     }
 
     &:focus {
@@ -72,7 +116,7 @@ const Wrapper = styled.button`
     }
 
     &:active {
-        background: ${colors.GREEN_TERTIARY};
+        background: ${props => getSecondaryColor(props.variant)};
     }
 
     ${props =>
@@ -90,11 +134,11 @@ const Wrapper = styled.button`
         !props.isDisabled &&
         css`
             background: transparent;
-            color: ${colors.GREEN_PRIMARY};
-            border: 1px solid ${colors.GREEN_PRIMARY};
+            color: ${getPrimaryColor(props.variant)};
+            border: 1px solid ${getPrimaryColor(props.variant)};
             &:hover,
             &:active {
-                background: ${colors.GREEN_PRIMARY};
+                background: ${getSecondaryColor(props.variant)};
                 color: ${colors.WHITE};
 
                 &:before,
@@ -110,7 +154,7 @@ const Wrapper = styled.button`
             }
 
             &:active {
-                background: ${colors.GREEN_TERTIARY};
+                background: ${getSecondaryColor(props.variant)};
             }
         `}
 
@@ -204,6 +248,7 @@ const Button = ({
     onMouseEnter,
     onMouseLeave,
     onFocus,
+    variant = 'success',
     isDisabled = false,
     isWhite = false,
     isTransparent = false,
@@ -225,6 +270,7 @@ const Button = ({
             isTransparent={isTransparent}
             isInverse={isInverse}
             isLoading={isLoading}
+            variant={variant}
             icon={icon}
             {...rest}
         >
@@ -243,7 +289,7 @@ const Button = ({
                     <Icon
                         icon={icon}
                         size={14}
-                        color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE}
+                        color={isInverse ? getPrimaryColor(variant) : colors.WHITE}
                     />
                 </IconWrapper>
             )}
@@ -266,6 +312,7 @@ Button.propTypes = {
     isInverse: PropTypes.bool,
     isLoading: PropTypes.bool,
     icon: PropTypes.object,
+    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
 };
 
 export default Button;

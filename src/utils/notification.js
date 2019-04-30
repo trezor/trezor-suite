@@ -27,16 +27,16 @@ const getSecondaryColor = type => {
     let color;
     switch (type) {
         case 'info':
-            color = colors.INFO_SECONDARY;
+            color = colors.INFO_LIGHT;
             break;
         case 'error':
-            color = colors.ERROR_SECONDARY;
+            color = colors.ERROR_LIGHT;
             break;
         case 'warning':
-            color = colors.WARNING_SECONDARY;
+            color = colors.WARNING_LIGHT;
             break;
         case 'success':
-            color = colors.SUCCESS_SECONDARY;
+            color = colors.SUCCESS_LIGHT;
             break;
         default:
             color = null;

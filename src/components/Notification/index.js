@@ -4,7 +4,7 @@ import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import { getIcon, getPrimaryColor, getSecondaryColor } from 'utils/notification';
 
 import Icon from 'components/Icon';
-import ButtonNotification from 'components/buttons/Notification';
+import Button from 'components/buttons/Button';
 import icons from 'config/icons';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -76,6 +76,10 @@ const ActionContent = styled.div`
     align-items: flex-end;
 `;
 
+const ButtonNotification = styled(Button)`
+    padding: 12px 36px;
+`;
+
 const Notification = props => {
     const close = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
 
@@ -100,8 +104,9 @@ const Notification = props => {
                         <ActionContent>
                             {props.actions.map(action => (
                                 <ButtonNotification
+                                    isInverse
                                     key={action.label}
-                                    type={props.type}
+                                    variant={props.type}
                                     isLoading={props.isActionInProgress}
                                     onClick={() => {
                                         close();
