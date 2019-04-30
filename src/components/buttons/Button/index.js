@@ -5,6 +5,47 @@ import Icon from 'components/Icon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import colors from 'config/colors';
+import { SPIN } from 'config/animations';
+
+const FluidSpinner = styled.div`
+    /* https://loading.io/css/ */
+    width: 16px;
+    height: 16px;
+
+    div {
+        position: absolute;
+        box-sizing: border-box;
+        width: 16px;
+        height: 16px;
+        border: ${props => (props.strokeWidth ? `${props.strokeWidth}px` : '1px')} solid transparent;
+        border-radius: 50%;
+        animation: ${SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: #fff transparent transparent transparent;
+        border-top-color: ${props => (props.color ? props.color : 'inherit')};
+    }
+
+    div:nth-child(1) {
+        animation-delay: -0.45s;
+    }
+
+    div:nth-child(2) {
+        animation-delay: -0.3s;
+    }
+
+    div:nth-child(3) {
+        animation-delay: -0.15s;
+    }
+`;
+
+// Simple sweet css spinner without bullshit
+// const Spinner = styled.div`
+//     border: 2px solid ${colors.white};
+//     border-top: 2px solid transparent;
+//     border-radius: 50%;
+//     width: ${props => `${props.size}px`};
+//     height: ${props => `${props.size}px`};
+//     animation: ${SPIN} 1s linear infinite;
+// `;
 
 const Wrapper = styled.button`
     display: flex;
@@ -38,7 +79,6 @@ const Wrapper = styled.button`
         props.icon &&
         css`
             svg {
-                margin-right: 0.8rem;
                 path {
                     transition: ${TRANSITION.HOVER};
                 }
@@ -152,6 +192,10 @@ const Wrapper = styled.button`
         `}
 `;
 
+const IconWrapper = styled.div`
+    margin-right: 0.8rem;
+`;
+
 const Button = ({
     children,
     className,
@@ -164,6 +208,7 @@ const Button = ({
     isWhite = false,
     isTransparent = false,
     isInverse = false,
+    isLoading = false,
     icon = null,
     ...rest
 }) => {
@@ -179,15 +224,28 @@ const Button = ({
             isWhite={isWhite}
             isTransparent={isTransparent}
             isInverse={isInverse}
+            isLoading={isLoading}
             icon={icon}
             {...rest}
         >
-            {icon && (
-                <Icon
-                    icon={icon}
-                    size={14}
-                    color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE}
-                />
+            {isLoading && (
+                <IconWrapper>
+                    <FluidSpinner>
+                        <div />
+                        <div />
+                        <div />
+                        <div />
+                    </FluidSpinner>
+                </IconWrapper>
+            )}
+            {!isLoading && icon && (
+                <IconWrapper>
+                    <Icon
+                        icon={icon}
+                        size={14}
+                        color={isInverse ? colors.GREEN_PRIMARY : colors.WHITE}
+                    />
+                </IconWrapper>
             )}
             {children}
         </Wrapper>
@@ -206,6 +264,7 @@ Button.propTypes = {
     isWhite: PropTypes.bool,
     isTransparent: PropTypes.bool,
     isInverse: PropTypes.bool,
+    isLoading: PropTypes.bool,
     icon: PropTypes.object,
 };
 

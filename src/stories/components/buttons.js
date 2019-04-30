@@ -116,6 +116,7 @@ storiesOf('Buttons', module)
         () => {
             const isInverse = boolean('Inverse', false);
             const isDisabled = boolean('Disabled', false);
+            const isLoading = boolean('Loading', false);
             const buttonText = text('Text', 'Button Text');
             const icon = select(
                 'Icon',
@@ -156,6 +157,7 @@ storiesOf('Buttons', module)
                     {...(isWhite ? { isWhite } : {})}
                     {...(isInverse ? { isInverse } : {})}
                     {...(icon ? { icon } : {})}
+                    {...(isLoading ? { isLoading } : {})}
                 >
                     {buttonText}
                 </Button>
