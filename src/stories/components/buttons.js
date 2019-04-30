@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from 'components/buttons/Button';
 import ButtonPin from 'components/buttons/Pin';
-import { H1, H3, H5 } from 'components/Heading';
+import { H1, H5 } from 'components/Heading';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
