@@ -187,7 +187,7 @@ class Passphrase extends PureComponent<Props, State> {
     handleKeyPress(event: KeyboardEvent) {
         if (event.key === 'Enter') {
             event.preventDefault();
-            if (this.state.doPassphraseInputsMatch && this.state.byteLength < 50) {
+            if (this.state.doPassphraseInputsMatch && this.state.byteLength <= 50) {
                 this.submitPassphrase();
             }
         }
