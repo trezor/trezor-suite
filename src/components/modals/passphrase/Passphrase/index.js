@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { byteLength } from 'utils/formatUtils';
 import { FormattedMessage } from 'react-intl';
 import { Button, Input, Checkbox, P, H5, colors } from 'trezor-ui-components';
 import { FONT_SIZE } from 'config/variables';
@@ -24,6 +25,7 @@ type State = {
     passphraseCheckInputValue: string,
     doPassphraseInputsMatch: boolean,
     isPassphraseHidden: boolean,
+    byteLength: number,
 };
 
 const Wrapper = styled.div`
@@ -91,6 +93,7 @@ class Passphrase extends PureComponent<Props, State> {
             passphraseCheckInputValue: '',
             doPassphraseInputsMatch: true,
             isPassphraseHidden: true,
+            byteLength: 0,
         };
     }
 
@@ -117,6 +120,9 @@ class Passphrase extends PureComponent<Props, State> {
 
             let doPassphraseInputsMatch = false;
             if (inputName === 'passphraseInputValue') {
+                this.setState({
+                    byteLength: byteLength(inputValue),
+                });
                 // If passphrase is not hidden the second input should get filled automatically
                 // and should be disabled
                 if (this.state.isPassphraseHidden) {
@@ -181,13 +187,28 @@ class Passphrase extends PureComponent<Props, State> {
     handleKeyPress(event: KeyboardEvent) {
         if (event.key === 'Enter') {
             event.preventDefault();
-            if (this.state.doPassphraseInputsMatch) {
+            if (this.state.doPassphraseInputsMatch && this.state.byteLength < 50) {
                 this.submitPassphrase();
             }
         }
     }
 
     render() {
+        let error = null;
+        if (this.state.byteLength > 50) {
+            error = (
+                <PassphraseError>
+                    <FormattedMessage {...l10nMessages.TR_PASSPHRASES_IS_TOO_LONG} />
+                </PassphraseError>
+            );
+        } else if (!this.state.doPassphraseInputsMatch) {
+            error = (
+                <PassphraseError>
+                    <FormattedMessage {...l10nMessages.TR_PASSPHRASES_DO_NOT_MATCH} />
+                </PassphraseError>
+            );
+        }
+
         return (
             <Wrapper>
                 <H5>
@@ -236,11 +257,7 @@ class Passphrase extends PureComponent<Props, State> {
                         />
                     </Row>
                 )}
-                {!this.state.doPassphraseInputsMatch && (
-                    <PassphraseError>
-                        <FormattedMessage {...l10nMessages.TR_PASSPHRASES_DO_NOT_MATCH} />
-                    </PassphraseError>
-                )}
+                {error}
                 <Row>
                     <Checkbox
                         isChecked={!this.state.isPassphraseHidden}
@@ -250,10 +267,7 @@ class Passphrase extends PureComponent<Props, State> {
                     </Checkbox>
                 </Row>
                 <Row>
-                    <Button
-                        isDisabled={!this.state.doPassphraseInputsMatch}
-                        onClick={() => this.submitPassphrase()}
-                    >
+                    <Button isDisabled={!!error} onClick={() => this.submitPassphrase()}>
                         <FormattedMessage {...l10nMessages.TR_ENTER} />
                     </Button>
                 </Row>
