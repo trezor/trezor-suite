@@ -355,18 +355,14 @@ export const gasPriceValidation = ($state: State): PayloadAction<State> => (): S
 
     const { gasPrice } = state;
     if (gasPrice.length < 1) {
-        // state.errors.gasPrice = 'Gas price is not set';
         state.errors.gasPrice = l10nMessages.TR_GAS_PRICE_IS_NOT_SET;
     } else if (gasPrice.length > 0 && !validators.isNumber(gasPrice)) {
-        // state.errors.gasPrice = 'Gas price is not a number';
         state.errors.gasPrice = l10nMessages.TR_GAS_PRICE_IS_NOT_A_NUMBER;
     } else {
         const gp: BigNumber = new BigNumber(gasPrice);
         if (gp.isGreaterThan(1000)) {
-            // state.warnings.gasPrice = 'Gas price is too high';
             state.warnings.gasPrice = l10nMessages.TR_GAS_PRICE_IS_TOO_HIGH;
         } else if (gp.isLessThanOrEqualTo('0')) {
-            // state.errors.gasPrice = 'Gas price is too low';
             state.errors.gasPrice = l10nMessages.TR_GAS_PRICE_IS_TOO_LOW;
         }
     }
@@ -388,18 +384,14 @@ export const nonceValidation = ($state: State): PayloadAction<State> => (
 
     const { nonce } = state;
     if (nonce.length < 1) {
-        // state.errors.nonce = 'Nonce is not set';
         state.errors.nonce = l10nMessages.TR_NONCE_IS_NOT_SET;
     } else if (!validators.isAbs(nonce)) {
-        // state.errors.nonce = 'Nonce is not a valid number';
         state.errors.nonce = l10nMessages.TR_NONCE_IS_NOT_A_NUMBER;
     } else {
         const n: BigNumber = new BigNumber(nonce);
         if (n.isLessThan(account.nonce)) {
-            // state.warnings.nonce = 'Nonce is lower than recommended';
             state.warnings.nonce = l10nMessages.TR_NONCE_IS_LOWER_THAN_RECOMMENDED;
         } else if (n.isGreaterThan(account.nonce)) {
-            // state.warnings.nonce = 'Nonce is greater than recommended';
             state.warnings.nonce = l10nMessages.TR_NONCE_IS_GREATER_THAN_RECOMMENDED;
         }
     }
@@ -414,7 +406,6 @@ export const dataValidation = ($state: State): PayloadAction<State> => (): State
     if (!state.touched.data || state.data.length === 0) return state;
 
     if (!ethUtils.isHex(state.data)) {
-        // state.errors.data = 'Data is not valid hexadecimal';
         state.errors.data = l10nMessages.TR_DATA_IS_NOT_VALID_HEX;
     }
     return state;
@@ -482,7 +473,6 @@ export const getFeeLevels = (
                   value: 'Custom',
                   localizedValue: l10nCommonMessages.TR_CUSTOM_FEE,
                   gasPrice: selected.gasPrice,
-                  // label: `${ calculateFee(gasPrice, gasLimit) } ${ symbol }`
                   label: `${calculateFee(selected.gasPrice, gasLimit)} ${symbol}`,
               }
             : {
