@@ -4,7 +4,6 @@ import icons from './config/icons';
 import * as variables from './config/variables';
 
 import Button from './components/buttons/Button';
-import ButtonNotification from './components/buttons/Notification';
 import ButtonPin from './components/buttons/Pin';
 
 import Input from './components/inputs/Input';
@@ -36,7 +35,6 @@ module.exports = {
     variables,
 
     Button,
-    ButtonNotification,
     ButtonPin,
 
     Input,
