@@ -269,30 +269,7 @@ storiesOf('Buttons', module)
             );
             const icon = select(
                 'Icon',
-                {
-                    None: null,
-                    TOP: icons.TOP,
-                    EYE_CROSSED: icons.EYE_CROSSED,
-                    EYE: icons.EYE,
-                    BACK: icons.BACK,
-                    HELP: icons.HELP,
-                    REFRESH: icons.REFRESH,
-                    T1: icons.T1,
-                    COG: icons.COG,
-                    EJECT: icons.EJECT,
-                    CLOSE: icons.CLOSE,
-                    DOWNLOAD: icons.DOWNLOAD,
-                    PLUS: icons.PLUS,
-                    ARROW_UP: icons.ARROW_UP,
-                    ARROW_LEFT: icons.ARROW_LEFT,
-                    ARROW_DOWN: icons.ARROW_DOWN,
-                    CHAT: icons.CHAT,
-                    SKIP: icons.SKIP,
-                    WARNING: icons.WARNING,
-                    INFO: icons.INFO,
-                    ERROR: icons.ERROR,
-                    SUCCESS: icons.SUCCESS,
-                },
+                { None: null, ...Object.fromEntries(Object.keys(icons).map(key => [key, key])) },
                 null
             );
 
