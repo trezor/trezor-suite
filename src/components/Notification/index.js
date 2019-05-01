@@ -15,8 +15,8 @@ const Wrapper = styled.div`
     position: relative;
     display: flex;
     justify-content: center;
-    color: ${props => getPrimaryColor(props.type)};
-    background: ${props => getNotificationBgColor(props.type)};
+    color: ${props => getPrimaryColor(props.variant)};
+    background: ${props => getNotificationBgColor(props.variant)};
 `;
 
 const Content = styled.div`
@@ -96,14 +96,14 @@ const Notification = props => {
     const close = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
 
     return (
-        <Wrapper className={props.className} type={props.type}>
+        <Wrapper className={props.className} variant={props.variant}>
             <Content>
                 <Col>
                     <Body>
                         <IconWrapper>
                             <StyledIcon
-                                color={getPrimaryColor(props.type)}
-                                icon={getStateIcon(props.type)}
+                                color={getPrimaryColor(props.variant)}
+                                icon={getStateIcon(props.variant)}
                                 size={16}
                             />
                         </IconWrapper>
@@ -119,7 +119,7 @@ const Notification = props => {
                                     <ButtonNotification
                                         isInverse
                                         key={action.label}
-                                        variant={props.type}
+                                        variant={props.variant}
                                         isLoading={props.isActionInProgress}
                                         onClick={() => {
                                             close();
@@ -135,7 +135,7 @@ const Notification = props => {
                 </Col>
                 {props.cancelable && (
                     <CloseClick onClick={() => close()}>
-                        <Icon color={getPrimaryColor(props.type)} icon={icons.CLOSE} size={10} />
+                        <Icon color={getPrimaryColor(props.variant)} icon={icons.CLOSE} size={10} />
                     </CloseClick>
                 )}
             </Content>
@@ -145,7 +145,7 @@ const Notification = props => {
 
 Notification.propTypes = {
     close: PropTypes.func,
-    type: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
+    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
     title: PropTypes.node,
     message: PropTypes.node,
     cancelable: PropTypes.bool,

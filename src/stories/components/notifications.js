@@ -54,35 +54,35 @@ storiesOf('Notifications', module).add('All', () => (
             </BtnLink>
         </H1>
         <Row>
-            <StyledNotification type="info" title="Notification title" message={notMessage} />
-            <StyledNotification type="success" title="Notification title" message={notMessage} />
-            <StyledNotification type="warning" title="Notification title" message={notMessage} />
-            <StyledNotification type="error" title="Notification title" message={notMessage} />
+            <StyledNotification variant="info" title="Notification title" message={notMessage} />
+            <StyledNotification variant="success" title="Notification title" message={notMessage} />
+            <StyledNotification variant="warning" title="Notification title" message={notMessage} />
+            <StyledNotification variant="error" title="Notification title" message={notMessage} />
         </Row>
         <Row />
 
         <H5>cancellable </H5>
         <Row>
             <StyledNotification
-                type="info"
+                variant="info"
                 title="Notification title"
                 message={notMessage}
                 cancelable
             />
             <StyledNotification
-                type="success"
+                variant="success"
                 title="Notification title"
                 message={notMessage}
                 cancelable
             />
             <StyledNotification
-                type="warning"
+                variant="warning"
                 title="Notification title"
                 message={notMessage}
                 cancelable
             />
             <StyledNotification
-                type="error"
+                variant="error"
                 title="Notification title"
                 message={notMessage}
                 cancelable
@@ -96,7 +96,7 @@ storiesOf('Notifications', module).add('All', () => (
         </H5>
         <Row>
             <StyledNotification
-                type="info"
+                variant="info"
                 title="Notification title"
                 message={notMessage}
                 cancelable
@@ -108,7 +108,7 @@ storiesOf('Notifications', module).add('All', () => (
                 ]}
             />
             <StyledNotification
-                type="success"
+                variant="success"
                 title="Notification title"
                 message={notMessage}
                 cancelable
@@ -120,7 +120,7 @@ storiesOf('Notifications', module).add('All', () => (
                 ]}
             />
             <StyledNotification
-                type="warning"
+                variant="warning"
                 title="Notification title"
                 message={notMessage}
                 cancelable
@@ -132,7 +132,7 @@ storiesOf('Notifications', module).add('All', () => (
                 ]}
             />
             <StyledNotification
-                type="error"
+                variant="error"
                 title="Notification title"
                 message={notMessage}
                 cancelable
@@ -153,7 +153,7 @@ storiesOf('Notifications', module).add('All', () => (
         </H5>
         <Row>
             <StyledNotification
-                type="info"
+                variant="info"
                 title="Notification title"
                 message={notMessage}
                 cancelable
@@ -166,7 +166,7 @@ storiesOf('Notifications', module).add('All', () => (
                 ]}
             />
             <StyledNotification
-                type="success"
+                variant="success"
                 title="Notification title"
                 message={notMessage}
                 cancelable
@@ -179,7 +179,7 @@ storiesOf('Notifications', module).add('All', () => (
                 ]}
             />
             <StyledNotification
-                type="warning"
+                variant="warning"
                 title="Notification title"
                 message={notMessage}
                 cancelable
@@ -192,7 +192,7 @@ storiesOf('Notifications', module).add('All', () => (
                 ]}
             />
             <StyledNotification
-                type="error"
+                variant="error"
                 title="Notification title"
                 message={notMessage}
                 cancelable
@@ -233,7 +233,7 @@ storiesOf('Notifications', module)
         'Notification',
         () => {
             const type = select(
-                'Type',
+                'Variant',
                 {
                     Success: 'success',
                     Warning: 'warning',
@@ -247,9 +247,9 @@ storiesOf('Notifications', module)
             const cancelable = boolean('Cancelable', false);
 
             if (cancelable) {
-                return <Notification type={type} title={title} message={message} cancelable />;
+                return <Notification variant={type} title={title} message={message} cancelable />;
             }
-            return <Notification type={type} title={title} message={message} />;
+            return <Notification variant={type} title={title} message={message} />;
         },
         {
             info: {
@@ -266,8 +266,8 @@ storiesOf('Notifications', module)
         'Notification with CTA',
         () => (
             <Notification
-                type={select(
-                    'Type',
+                variant={select(
+                    'Variant',
                     {
                         Success: 'success',
                         Warning: 'warning',
