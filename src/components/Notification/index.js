@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import { getIcon, getPrimaryColor, getSecondaryColor } from 'utils/notification';
+import { getPrimaryColor, getNotificationBgColor } from 'utils/colors';
+import { getStateIcon } from 'utils/icons';
 
 import Icon from 'components/Icon';
 import Button from 'components/buttons/Button';
@@ -15,7 +16,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     color: ${props => getPrimaryColor(props.type)};
-    background: ${props => getSecondaryColor(props.type)};
+    background: ${props => getNotificationBgColor(props.type)};
 `;
 
 const Content = styled.div`
@@ -90,7 +91,7 @@ const Notification = props => {
                     <IconWrapper>
                         <StyledIcon
                             color={getPrimaryColor(props.type)}
-                            icon={getIcon(props.type)}
+                            icon={getStateIcon(props.type)}
                             size={16}
                         />
                     </IconWrapper>

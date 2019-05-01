@@ -1,5 +1,6 @@
 import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT } from 'config/variables';
 import styled, { css } from 'styled-components';
+import { getPrimaryColor } from 'utils/colors';
 
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -146,18 +147,6 @@ const ArrowUp = styled.div`
 `;
 
 class TextArea extends PureComponent {
-    getColor(inputState) {
-        let color = '';
-        if (inputState === 'success') {
-            color = colors.SUCCESS_PRIMARY;
-        } else if (inputState === 'warning') {
-            color = colors.WARNING_PRIMARY;
-        } else if (inputState === 'error') {
-            color = colors.ERROR_PRIMARY;
-        }
-        return color;
-    }
-
     render() {
         return (
             <Wrapper className={this.props.className}>
@@ -180,14 +169,14 @@ class TextArea extends PureComponent {
                     onClick={this.props.autoSelect ? event => event.target.select() : null}
                     placeholder={this.props.placeholder}
                     onChange={this.props.onChange}
-                    border={this.getColor(this.props.state)}
+                    border={getPrimaryColor(this.props.state)}
                 />
                 <TrezorAction action={this.props.trezorAction}>
                     <ArrowUp />
                     {this.props.trezorAction}
                 </TrezorAction>
                 {this.props.bottomText && (
-                    <BottomText color={this.getColor(this.props.state)}>
+                    <BottomText color={getPrimaryColor(this.props.state)}>
                         {this.props.bottomText}
                     </BottomText>
                 )}

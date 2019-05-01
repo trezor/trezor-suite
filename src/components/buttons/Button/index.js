@@ -1,67 +1,24 @@
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import styled, { css } from 'styled-components';
 import Icon from 'components/Icon';
+import { getPrimaryColor, getSecondaryColor } from 'utils/colors';
 
 import PropTypes from 'prop-types';
 import React from 'react';
 import colors from 'config/colors';
 import { SPIN } from 'config/animations';
 
-const getPrimaryColor = type => {
-    let color;
-    switch (type) {
-        case 'info':
-            color = colors.INFO_PRIMARY;
-            break;
-        case 'error':
-            color = colors.ERROR_PRIMARY;
-            break;
-        case 'warning':
-            color = colors.WARNING_PRIMARY;
-            break;
-        case 'success':
-            color = colors.SUCCESS_PRIMARY;
-            break;
-        default:
-            color = null;
-    }
-
-    return color;
-};
-
-const getSecondaryColor = type => {
-    let color;
-    switch (type) {
-        case 'info':
-            color = colors.INFO_SECONDARY;
-            break;
-        case 'error':
-            color = colors.ERROR_SECONDARY;
-            break;
-        case 'warning':
-            color = colors.WARNING_SECONDARY;
-            break;
-        case 'success':
-            color = colors.SUCCESS_SECONDARY;
-            break;
-        default:
-            color = null;
-    }
-
-    return color;
-};
-
 const FluidSpinner = styled.div`
     /* https://loading.io/css/ */
-    width: 16px;
-    height: 16px;
+    width: 16px; /* change to 1em to scale based on used font-size */
+    height: 16px; /* change to 1em to scale based on used font-size */
 
     div {
         position: absolute;
         box-sizing: border-box;
-        width: 16px;
-        height: 16px;
-        border: ${props => (props.strokeWidth ? `${props.strokeWidth}px` : '1px')} solid transparent;
+        width: 16px; /* change to 1em to scale based on used font-size */
+        height: 16px; /* change to 1em to scale based on used font-size */
+        border: ${props => (props.strokeWidth ? `${props.strokeWidth}px` : '1px')} solid transparent; /* change to 0.1em to scale based on used font-size */
         border-radius: 50%;
         animation: ${SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         border-color: #fff transparent transparent transparent;
@@ -80,16 +37,6 @@ const FluidSpinner = styled.div`
         animation-delay: -0.15s;
     }
 `;
-
-// Simple sweet css spinner without bullshit
-// const Spinner = styled.div`
-//     border: 2px solid ${colors.white};
-//     border-top: 2px solid transparent;
-//     border-radius: 50%;
-//     width: ${props => `${props.size}px`};
-//     height: ${props => `${props.size}px`};
-//     animation: ${SPIN} 1s linear infinite;
-// `;
 
 const Wrapper = styled.button`
     display: flex;
