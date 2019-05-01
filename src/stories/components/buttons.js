@@ -70,7 +70,7 @@ storiesOf('Buttons', module).add('All', () => (
             <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button icon="PLUS" />'}</BtnLink>
         </H5>
         <Row>
-            <Button icon="PLUS" variant="success" data-test="Button__default">
+            <Button icon="PLUS" variant="success">
                 Button
             </Button>
             <Button icon="PLUS" variant="info">
@@ -84,13 +84,13 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
         <Row>
-            <Button icon="PLUS" ata-test="Button__white" isWhite>
+            <Button icon="PLUS" isWhite>
                 White
             </Button>
-            <Button icon="PLUS" data-test="Button__transparent" isTransparent>
+            <Button icon="PLUS" isTransparent>
                 Transparent
             </Button>
-            <Button icon="PLUS" ata-test="Button__disabled" isDisabled>
+            <Button icon="PLUS" isDisabled>
                 Disabled
             </Button>
         </Row>
@@ -100,7 +100,7 @@ storiesOf('Buttons', module).add('All', () => (
             <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button isLoading />'}</BtnLink>
         </H5>
         <Row>
-            <Button isLoading variant="success" data-test="Button__default">
+            <Button isLoading variant="success">
                 Button
             </Button>
             <Button isLoading variant="info">
@@ -114,13 +114,13 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
         <Row>
-            <Button isLoading ata-test="Button__white" isWhite>
+            <Button isLoading isWhite>
                 White
             </Button>
-            <Button isLoading data-test="Button__transparent" isTransparent>
+            <Button isLoading isTransparent>
                 Transparent
             </Button>
-            <Button isLoading ata-test="Button__disabled" isDisabled>
+            <Button isLoading isDisabled>
                 Disabled
             </Button>
         </Row>
@@ -130,7 +130,7 @@ storiesOf('Buttons', module).add('All', () => (
             <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button isInverse />'}</BtnLink>
         </H1>
         <Row>
-            <Button isInverse variant="success" data-test="Button__default">
+            <Button isInverse variant="success">
                 Button
             </Button>
             <Button isInverse variant="info">
@@ -144,13 +144,13 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
         <Row>
-            <Button isInverse data-test="Button__white" isWhite>
+            <Button isInverse isWhite>
                 White
             </Button>
-            <Button isInverse data-test="Button__transparent" isTransparent>
+            <Button isInverse isTransparent>
                 Transparent
             </Button>
-            <Button isInverse data-test="Button__disabled" isDisabled>
+            <Button isInverse isDisabled>
                 Disabled
             </Button>
         </Row>
@@ -162,7 +162,7 @@ storiesOf('Buttons', module).add('All', () => (
             </BtnLink>
         </H5>
         <Row>
-            <Button isInverse icon="PLUS" variant="success" data-test="Button__default">
+            <Button isInverse icon="PLUS" variant="success">
                 Button
             </Button>
             <Button isInverse icon="PLUS" variant="info">
@@ -176,13 +176,13 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
         <Row>
-            <Button isInverse icon="PLUS" ata-test="Button__white" isWhite>
+            <Button isInverse icon="PLUS" isWhite>
                 White
             </Button>
-            <Button isInverse icon="PLUS" data-test="Button__transparent" isTransparent>
+            <Button isInverse icon="PLUS" isTransparent>
                 Transparent
             </Button>
-            <Button isInverse icon="PLUS" ata-test="Button__disabled" isDisabled>
+            <Button isInverse icon="PLUS" isDisabled>
                 Disabled
             </Button>
         </Row>
@@ -194,7 +194,7 @@ storiesOf('Buttons', module).add('All', () => (
             </BtnLink>
         </H5>
         <Row>
-            <Button isInverse isLoading variant="success" data-test="Button__default">
+            <Button isInverse isLoading variant="success">
                 Button
             </Button>
             <Button isInverse isLoading variant="info">
@@ -208,13 +208,13 @@ storiesOf('Buttons', module).add('All', () => (
             </Button>
         </Row>
         <Row>
-            <Button isInverse isLoading ata-test="Button__white" isWhite>
+            <Button isInverse isLoading isWhite>
                 White
             </Button>
-            <Button isInverse isLoading data-test="Button__transparent" isTransparent>
+            <Button isInverse isLoading isTransparent>
                 Transparent
             </Button>
-            <Button isInverse isLoading ata-test="Button__disabled" isDisabled>
+            <Button isInverse isLoading isDisabled>
                 Disabled
             </Button>
         </Row>
