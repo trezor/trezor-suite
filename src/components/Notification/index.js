@@ -22,15 +22,24 @@ const Wrapper = styled.div`
 const Content = styled.div`
     width: 100%;
     max-width: 1170px;
-    padding: 24px;
+    padding: 24px 24px 14px 24px;
     display: flex;
     flex-direction: row;
     text-align: left;
     align-items: center;
 `;
 
+const Col = styled.div`
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-self: flex-start;
+`;
+
 const Body = styled.div`
     display: flex;
+    flex: 1 1 auto;
+    padding-bottom: 10px;
 `;
 
 const Message = styled.div`
@@ -68,7 +77,9 @@ const AdditionalContent = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
-    flex: 1;
+    flex: 1 1 auto;
+    padding-left: 30px;
+    padding-bottom: 10px;
 `;
 
 const ActionContent = styled.div`
@@ -87,39 +98,41 @@ const Notification = props => {
     return (
         <Wrapper className={props.className} type={props.type}>
             <Content>
-                <Body>
-                    <IconWrapper>
-                        <StyledIcon
-                            color={getPrimaryColor(props.type)}
-                            icon={getStateIcon(props.type)}
-                            size={16}
-                        />
-                    </IconWrapper>
-                    <Texts>
-                        <Title>{props.title}</Title>
-                        {props.message ? <Message>{props.message}</Message> : ''}
-                    </Texts>
-                </Body>
-                <AdditionalContent>
-                    {props.actions && props.actions.length > 0 && (
-                        <ActionContent>
-                            {props.actions.map(action => (
-                                <ButtonNotification
-                                    isInverse
-                                    key={action.label}
-                                    variant={props.type}
-                                    isLoading={props.isActionInProgress}
-                                    onClick={() => {
-                                        close();
-                                        action.callback();
-                                    }}
-                                >
-                                    {action.label}
-                                </ButtonNotification>
-                            ))}
-                        </ActionContent>
-                    )}
-                </AdditionalContent>
+                <Col>
+                    <Body>
+                        <IconWrapper>
+                            <StyledIcon
+                                color={getPrimaryColor(props.type)}
+                                icon={getStateIcon(props.type)}
+                                size={16}
+                            />
+                        </IconWrapper>
+                        <Texts>
+                            <Title>{props.title}</Title>
+                            {props.message ? <Message>{props.message}</Message> : ''}
+                        </Texts>
+                    </Body>
+                    <AdditionalContent>
+                        {props.actions && props.actions.length > 0 && (
+                            <ActionContent>
+                                {props.actions.map(action => (
+                                    <ButtonNotification
+                                        isInverse
+                                        key={action.label}
+                                        variant={props.type}
+                                        isLoading={props.isActionInProgress}
+                                        onClick={() => {
+                                            close();
+                                            action.callback();
+                                        }}
+                                    >
+                                        {action.label}
+                                    </ButtonNotification>
+                                ))}
+                            </ActionContent>
+                        )}
+                    </AdditionalContent>
+                </Col>
                 {props.cancelable && (
                     <CloseClick onClick={() => close()}>
                         <Icon color={getPrimaryColor(props.type)} icon={icons.CLOSE} size={10} />
