@@ -71,6 +71,7 @@ storiesOf('Form', module)
                     bottomText={bottomText}
                     topLabel={topLabel}
                     onChange={() => {}}
+                    tooltipAction={text('tooltipAction', '')}
                     {...(state ? { state } : {})}
                     {...(isDisabled ? { isDisabled } : {})}
                 />
