@@ -79,6 +79,7 @@ const Wrapper = styled.button`
     ${props =>
         props.isInverse &&
         !props.isDisabled &&
+        !props.isLoading &&
         css`
             background: transparent;
             color: ${getPrimaryColor(props.variant)};
