@@ -85,7 +85,7 @@ const Wrapper = styled.button`
             border: 1px solid ${getPrimaryColor(props.variant)};
             &:hover,
             &:active {
-                background: ${getSecondaryColor(props.variant)};
+                background: ${getPrimaryColor(props.variant)};
                 color: ${colors.WHITE};
 
                 &:before,
@@ -101,7 +101,7 @@ const Wrapper = styled.button`
             }
 
             &:active {
-                background: ${getSecondaryColor(props.variant)};
+                background: ${getPrimaryColor(props.variant)};
             }
         `}
 
