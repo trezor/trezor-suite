@@ -10,14 +10,14 @@ import { SPIN } from 'config/animations';
 
 const FluidSpinner = styled.div`
     /* https://loading.io/css/ */
-    width: 16px; /* change to 1em to scale based on used font-size */
-    height: 16px; /* change to 1em to scale based on used font-size */
+    width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
+    height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
 
     div {
         position: absolute;
         box-sizing: border-box;
-        width: 16px; /* change to 1em to scale based on used font-size */
-        height: 16px; /* change to 1em to scale based on used font-size */
+        width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
+        height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
         border: ${props => (props.strokeWidth ? `${props.strokeWidth}px` : '1px')} solid transparent; /* change to 0.1em to scale based on used font-size */
         border-radius: 50%;
         animation: ${SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
@@ -223,7 +223,7 @@ const Button = ({
         >
             {isLoading && (
                 <IconWrapper>
-                    <FluidSpinner>
+                    <FluidSpinner size={16}>
                         <div />
                         <div />
                         <div />
