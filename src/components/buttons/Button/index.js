@@ -186,6 +186,7 @@ const Wrapper = styled.button`
 
 const IconWrapper = styled.div`
     margin-right: 0.8rem;
+    display: flex;
 `;
 
 const Button = ({
