@@ -119,6 +119,7 @@ storiesOf('Form', module)
                     placeholder={text('Placeholder', 'placeholder...')}
                     bottomText={text('Bottom text', 'bottom text')}
                     topLabel={text('Top label', 'Textarea label')}
+                    tooltipAction={text('tooltipAction', '')}
                     {...(isDisabled ? { isDisabled } : {})}
                     {...(state ? { state } : {})} // hack to hide state prop if its value is null
                 />

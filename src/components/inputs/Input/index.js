@@ -114,7 +114,7 @@ const Overlay = styled.div`
 `;
 
 const TooltipAction = styled.div`
-    display: ${props => (props.tooltipAction ? 'flex' : 'none')};
+    display: ${props => (props.action ? 'flex' : 'none')};
     align-items: center;
     height: 37px;
     margin: 0px 10px;
@@ -180,7 +180,7 @@ class Input extends PureComponent {
                             name={this.props.name}
                             data-lpignore="true"
                         />
-                        <TooltipAction tooltipAction={this.props.tooltipAction}>
+                        <TooltipAction action={this.props.tooltipAction}>
                             <ArrowUp />
                             {this.props.tooltipAction}
                         </TooltipAction>

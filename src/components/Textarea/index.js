@@ -97,13 +97,9 @@ const StyledTextarea = styled(Textarea)`
     }
 
     ${props =>
-        props.trezorAction &&
+        props.tooltipAction &&
         css`
             z-index: 10001; /* bigger than modal container */
-            border-color: ${colors.WHITE};
-            border-width: 2px;
-            transform: translate(-1px, -1px);
-            background: ${colors.DIVIDER};
             pointer-events: none;
         `}
 `;
@@ -119,7 +115,7 @@ const BottomText = styled.span`
     margin-top: 10px;
 `;
 
-const TrezorAction = styled.div`
+const TooltipAction = styled.div`
     display: ${props => (props.action ? 'flex' : 'none')};
     align-items: center;
     margin: 0px 10px;
@@ -171,10 +167,10 @@ class TextArea extends PureComponent {
                     onChange={this.props.onChange}
                     border={getPrimaryColor(this.props.state)}
                 />
-                <TrezorAction action={this.props.trezorAction}>
+                <TooltipAction action={this.props.tooltipAction}>
                     <ArrowUp />
-                    {this.props.trezorAction}
-                </TrezorAction>
+                    {this.props.tooltipAction}
+                </TooltipAction>
                 {this.props.bottomText && (
                     <BottomText color={getPrimaryColor(this.props.state)}>
                         {this.props.bottomText}
@@ -203,7 +199,7 @@ TextArea.propTypes = {
     state: PropTypes.oneOf(['success', 'warning', 'error']),
     autoSelect: PropTypes.bool,
     bottomText: PropTypes.string,
-    trezorAction: PropTypes.node,
+    tooltipAction: PropTypes.node,
 };
 
 export default TextArea;
