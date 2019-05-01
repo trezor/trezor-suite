@@ -118,7 +118,7 @@ const TooltipAction = styled.div`
     align-items: center;
     height: 37px;
     margin: 0px 10px;
-    padding: 0 14px 0 5px;
+    padding: 0 14px;
     position: absolute;
     top: 45px;
     background: black;

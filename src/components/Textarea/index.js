@@ -119,7 +119,7 @@ const TooltipAction = styled.div`
     display: ${props => (props.action ? 'flex' : 'none')};
     align-items: center;
     margin: 0px 10px;
-    padding: 0 14px 0 5px;
+    padding: 0 14px;
     position: absolute;
     background: black;
     bottom: -25px;
