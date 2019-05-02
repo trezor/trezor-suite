@@ -239,7 +239,7 @@ Input.propTypes = {
     autoSelect: PropTypes.bool,
     onChange: PropTypes.func,
     state: PropTypes.oneOf(['success', 'warning', 'error']),
-    bottomText: PropTypes.string,
+    bottomText: PropTypes.node,
     topLabel: PropTypes.node,
     trezorAction: PropTypes.node,
     sideAddons: PropTypes.arrayOf(PropTypes.node),
