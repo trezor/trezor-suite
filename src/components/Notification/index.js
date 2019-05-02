@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import { getIcon, getPrimaryColor, getSecondaryColor } from 'utils/notification';
+import { getPrimaryColor, getNotificationBgColor } from 'utils/colors';
+import { getStateIcon } from 'utils/icons';
 
 import Icon from 'components/Icon';
-import Loader from 'components/Loader';
-import ButtonNotification from 'components/buttons/Notification';
+import Button from 'components/buttons/Button';
 import icons from 'config/icons';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     color: ${props => getPrimaryColor(props.type)};
-    background: ${props => getSecondaryColor(props.type)};
+    background: ${props => getNotificationBgColor(props.type)};
 `;
 
 const Content = styled.div`
@@ -77,18 +77,21 @@ const ActionContent = styled.div`
     align-items: flex-end;
 `;
 
+const ButtonNotification = styled(Button)`
+    padding: 12px 36px;
+`;
+
 const Notification = props => {
     const close = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
 
     return (
         <Wrapper className={props.className} type={props.type}>
             <Content>
-                {props.loading && <Loader size={50} />}
                 <Body>
                     <IconWrapper>
                         <StyledIcon
                             color={getPrimaryColor(props.type)}
-                            icon={getIcon(props.type)}
+                            icon={getStateIcon(props.type)}
                             size={16}
                         />
                     </IconWrapper>
@@ -102,8 +105,9 @@ const Notification = props => {
                         <ActionContent>
                             {props.actions.map(action => (
                                 <ButtonNotification
+                                    isInverse
                                     key={action.label}
-                                    type={props.type}
+                                    variant={props.type}
                                     isLoading={props.isActionInProgress}
                                     onClick={() => {
                                         close();
@@ -132,7 +136,6 @@ Notification.propTypes = {
     title: PropTypes.node,
     message: PropTypes.node,
     cancelable: PropTypes.bool,
-    loading: PropTypes.bool,
     isActionInProgress: PropTypes.bool,
     actions: PropTypes.array,
     className: PropTypes.string,

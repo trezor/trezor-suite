@@ -84,6 +84,7 @@ storiesOf('Notifications', module)
                 )}
                 title={text('Title', 'Notification title')}
                 message={text('Text', 'Text of the notification.')}
+                isActionInProgress={boolean('isActionInProgress', false)}
                 cancelable={boolean('Cancelable', false)}
                 actions={[
                     {

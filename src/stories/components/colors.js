@@ -141,12 +141,20 @@ storiesOf('Other', module).add('Colors', () => (
                     <ColorBox color={colors.SUCCESS_SECONDARY}>{colors.SUCCESS_SECONDARY}</ColorBox>
                 </Color>
                 <Color>
+                    <Title>SUCCESS_LIGHT</Title>
+                    <ColorBox color={colors.SUCCESS_LIGHT}>{colors.SUCCESS_LIGHT}</ColorBox>
+                </Color>
+                <Color>
                     <Title>INFO_PRIMARY</Title>
                     <ColorBox color={colors.INFO_PRIMARY}>{colors.INFO_PRIMARY}</ColorBox>
                 </Color>
                 <Color>
                     <Title>INFO_SECONDARY</Title>
                     <ColorBox color={colors.INFO_SECONDARY}>{colors.INFO_SECONDARY}</ColorBox>
+                </Color>
+                <Color>
+                    <Title>INFO_LIGHT</Title>
+                    <ColorBox color={colors.INFO_LIGHT}>{colors.INFO_LIGHT}</ColorBox>
                 </Color>
                 <Color>
                     <Title>WARNING_PRIMARY</Title>
@@ -157,12 +165,20 @@ storiesOf('Other', module).add('Colors', () => (
                     <ColorBox color={colors.WARNING_SECONDARY}>{colors.WARNING_SECONDARY}</ColorBox>
                 </Color>
                 <Color>
+                    <Title>WARNING_LIGHT</Title>
+                    <ColorBox color={colors.WARNING_LIGHT}>{colors.WARNING_LIGHT}</ColorBox>
+                </Color>
+                <Color>
                     <Title>ERROR_PRIMARY</Title>
                     <ColorBox color={colors.ERROR_PRIMARY}>{colors.ERROR_PRIMARY}</ColorBox>
                 </Color>
                 <Color>
                     <Title>ERROR_SECONDARY</Title>
                     <ColorBox color={colors.ERROR_SECONDARY}>{colors.ERROR_SECONDARY}</ColorBox>
+                </Color>
+                <Color>
+                    <Title>ERROR_LIGHT</Title>
+                    <ColorBox color={colors.ERROR_LIGHT}>{colors.ERROR_LIGHT}</ColorBox>
                 </Color>
             </Column>
         </Wrapper>
