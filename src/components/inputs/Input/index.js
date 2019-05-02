@@ -161,7 +161,7 @@ class Input extends PureComponent {
                             autoComplete="off"
                             height={this.props.height}
                             tooltipAction={this.props.tooltipAction}
-                            hasIcon={this.props.icon || this.getStateIcon(this.props.state)}
+                            hasIcon={this.props.icon || getStateIcon(this.props.state)}
                             ref={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
