@@ -21,4 +21,14 @@ describe('format utils', () => {
         expect(utils.fromDecimalAmount('a', 'a')).toBe('0');
         expect(utils.fromDecimalAmount('a', '1')).toBe('0');
     });
+
+    describe('byteLength', () => {
+        it('should return correct byte length for strings with special ASCII characters', () => {
+            expect(utils.byteLength('testString')).toEqual(10);
+            expect(utils.byteLength('~!@#$%^&*()_+{}|:?><')).toEqual(20);
+            expect(utils.byteLength('😀')).toEqual(4);
+            expect(utils.byteLength('ä')).toEqual(2);
+            expect(utils.byteLength('áľščť')).toEqual(10);
+        });
+    });
 });
