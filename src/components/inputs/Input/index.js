@@ -75,14 +75,10 @@ const StyledInput = styled.input`
     }
 
     ${props =>
-        props.trezorAction &&
+        props.tooltipAction &&
         css`
-            z-index: 10001;
-            position: relative; /* bigger than modal container */
-            border-color: ${colors.WHITE};
-            border-width: 2px;
-            transform: translate(-1px, -1px);
-            background: ${colors.DIVIDER};
+            z-index: 10001; /* bigger than modal container */
+            position: relative;
         `};
 `;
 
@@ -117,12 +113,12 @@ const Overlay = styled.div`
         `}
 `;
 
-const TrezorAction = styled.div`
+const TooltipAction = styled.div`
     display: ${props => (props.action ? 'flex' : 'none')};
     align-items: center;
     height: 37px;
     margin: 0px 10px;
-    padding: 0 14px 0 5px;
+    padding: 0 14px;
     position: absolute;
     top: 45px;
     background: black;
@@ -164,7 +160,7 @@ class Input extends PureComponent {
                         <StyledInput
                             autoComplete="off"
                             height={this.props.height}
-                            trezorAction={this.props.trezorAction}
+                            tooltipAction={this.props.tooltipAction}
                             hasIcon={this.props.icon || getStateIcon(this.props.state)}
                             ref={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
@@ -184,10 +180,10 @@ class Input extends PureComponent {
                             name={this.props.name}
                             data-lpignore="true"
                         />
-                        <TrezorAction action={this.props.trezorAction}>
+                        <TooltipAction action={this.props.tooltipAction}>
                             <ArrowUp />
-                            {this.props.trezorAction}
-                        </TrezorAction>
+                            {this.props.tooltipAction}
+                        </TooltipAction>
                     </InputIconWrapper>
                     {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
                 </InputWrapper>
@@ -218,7 +214,7 @@ Input.propTypes = {
     state: PropTypes.oneOf(['success', 'warning', 'error']),
     bottomText: PropTypes.node,
     topLabel: PropTypes.node,
-    trezorAction: PropTypes.node,
+    tooltipAction: PropTypes.node,
     sideAddons: PropTypes.arrayOf(PropTypes.node),
     isDisabled: PropTypes.bool,
     name: PropTypes.string,
