@@ -14,7 +14,7 @@ const UnreadableDevice = ({ intl }: { intl: IntlShape }) => (
         <Notification
             title={intl.formatMessage(l10nMessages.TR_UNREADABLE_DEVICE)}
             message={intl.formatMessage(l10nMessages.TR_PLEASE_INSTALL_TREZOR_BRIDGE)}
-            type="error"
+            variant="error"
             cancelable={false}
         />
     </Wrapper>

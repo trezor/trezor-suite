@@ -30,7 +30,7 @@ export default withRouter<Props>((props: {| ...Props, ...ContextRouter |}) => {
             notifications.push(
                 <Notification
                     key="xrp-warning"
-                    type="warning"
+                    variant="warning"
                     title={
                         <FormattedMessage {...l10nMessages.TR_MINIMUM_ACCOUNT_RESERVE_REQUIRED} />
                     }
@@ -61,7 +61,7 @@ export default withRouter<Props>((props: {| ...Props, ...ContextRouter |}) => {
         notifications.push(
             <Notification
                 key="import-warning"
-                type="warning"
+                variant="warning"
                 title="Use at your own risk"
                 message="This is an advanced interface intended for developer use only. Never use this process unless you really know what you are doing."
             />
@@ -72,7 +72,7 @@ export default withRouter<Props>((props: {| ...Props, ...ContextRouter |}) => {
         notifications.push(
             <Notification
                 key="watch-only-info"
-                type="info"
+                variant="info"
                 title="The account is watch-only"
                 message="A watch-only account is a public address you’ve imported into your wallet, allowing the wallet to watch for outputs but not spend them."
             />

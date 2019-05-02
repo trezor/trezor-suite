@@ -28,7 +28,7 @@ const UpdateFirmware = (props: {| ...Props, ...ContextRouter |}) => {
     return (
         <Notification
             key="update-firmware"
-            type="warning"
+            variant="warning"
             title={props.intl.formatMessage(l10nMessages.TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT)}
             message={props.intl.formatMessage(
                 l10nCommonMessages.TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT

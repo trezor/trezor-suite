@@ -175,7 +175,7 @@ const begin = (device: TrezorDevice, networkName: string): AsyncAction => async 
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: 'Discovery error',
                 message: error.message,
                 cancelable: true,
@@ -263,7 +263,7 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: 'Account discovery error',
                 message: error.message,
                 cancelable: true,

@@ -11,7 +11,7 @@ export default (props: Props) => {
     return (
         <Notification
             key="wallet-offline"
-            type="error"
+            variant="error"
             title={props.intl.formatMessage(l10nMessages.TR_YOU_WERE_DISCONNECTED_DOT)}
             message={props.intl.formatMessage(l10nMessages.TR_PLEASE_RELOAD_THE_PAGE_DOT)}
         />

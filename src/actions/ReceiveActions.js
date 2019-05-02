@@ -111,7 +111,7 @@ export const showAddress = (path: Array<number>): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: 'Verifying address error',
                 message: response.payload.error,
                 cancelable: true,
