@@ -92,37 +92,47 @@ const ButtonNotification = styled(Button)`
     padding: 12px 36px;
 `;
 
-const Notification = props => {
-    const close = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
+const Notification = ({
+    className,
+    variant,
+    title,
+    message,
+    actions,
+    cancelable,
+    isActionInProgress,
+    close,
+    ...rest
+}) => {
+    const closeFunc = typeof close === 'function' ? close : () => {}; // TODO: add default close action
 
     return (
-        <Wrapper className={props.className} variant={props.variant}>
+        <Wrapper className={className} variant={variant} {...rest}>
             <Content>
                 <Col>
                     <Body>
                         <IconWrapper>
                             <StyledIcon
-                                color={getPrimaryColor(props.variant)}
-                                icon={getStateIcon(props.variant)}
+                                color={getPrimaryColor(variant)}
+                                icon={getStateIcon(variant)}
                                 size={16}
                             />
                         </IconWrapper>
                         <Texts>
-                            <Title>{props.title}</Title>
-                            {props.message ? <Message>{props.message}</Message> : ''}
+                            <Title>{title}</Title>
+                            {message ? <Message>{message}</Message> : ''}
                         </Texts>
                     </Body>
                     <AdditionalContent>
-                        {props.actions && props.actions.length > 0 && (
+                        {actions && actions.length > 0 && (
                             <ActionContent>
-                                {props.actions.map(action => (
+                                {actions.map(action => (
                                     <ButtonNotification
                                         isInverse
                                         key={action.label}
-                                        variant={props.variant}
-                                        isLoading={props.isActionInProgress}
+                                        variant={variant}
+                                        isLoading={isActionInProgress}
                                         onClick={() => {
-                                            close();
+                                            closeFunc();
                                             action.callback();
                                         }}
                                     >
@@ -133,9 +143,9 @@ const Notification = props => {
                         )}
                     </AdditionalContent>
                 </Col>
-                {props.cancelable && (
-                    <CloseClick onClick={() => close()}>
-                        <Icon color={getPrimaryColor(props.variant)} icon={icons.CLOSE} size={10} />
+                {cancelable && (
+                    <CloseClick onClick={() => closeFunc()}>
+                        <Icon color={getPrimaryColor(variant)} icon={icons.CLOSE} size={10} />
                     </CloseClick>
                 )}
             </Content>
