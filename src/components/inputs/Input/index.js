@@ -141,61 +141,79 @@ const ArrowUp = styled.div`
     z-index: 10001;
 `;
 
-class Input extends PureComponent {
-    render() {
-        return (
-            <Wrapper className={this.props.className}>
-                {this.props.topLabel && <TopLabel>{this.props.topLabel}</TopLabel>}
-                <InputWrapper>
-                    <InputIconWrapper>
-                        {this.props.state && (
-                            <StyledIcon
-                                icon={getStateIcon(this.props.state)}
-                                color={getPrimaryColor(this.props.state)}
-                                size={16}
-                            />
-                        )}
-                        <Overlay isPartiallyHidden={this.props.isPartiallyHidden} />
-                        {this.props.icon}
-                        <StyledInput
-                            autoComplete="off"
-                            height={this.props.height}
-                            tooltipAction={this.props.tooltipAction}
-                            hasIcon={this.props.icon || getStateIcon(this.props.state)}
-                            ref={this.props.innerRef}
-                            hasAddon={!!this.props.sideAddons}
-                            type={this.props.type}
-                            color={getPrimaryColor(this.props.state)}
-                            placeholder={this.props.placeholder}
-                            autoCorrect={this.props.autocorrect}
-                            autoCapitalize={this.props.autocapitalize}
-                            spellCheck={this.props.spellCheck}
-                            isSmallText={this.props.isSmallText}
-                            value={this.props.value}
-                            readOnly={this.props.readOnly}
-                            onChange={this.props.onChange}
-                            onClick={this.props.autoSelect ? event => event.target.select() : null}
-                            border={getPrimaryColor(this.props.state)}
-                            disabled={this.props.isDisabled}
-                            name={this.props.name}
-                            data-lpignore="true"
+const Input = ({
+    className,
+    innerRef,
+    placeholder,
+    type,
+    height,
+    autocorrect,
+    autocapitalize,
+    icon,
+    spellCheck,
+    value,
+    readOnly,
+    autoSelect,
+    onChange,
+    state,
+    bottomText,
+    topLabel,
+    tooltipAction,
+    sideAddons,
+    isDisabled,
+    name,
+    isSmallText,
+    isPartiallyHidden,
+    ...rest
+}) => {
+    return (
+        <Wrapper className={className} {...rest}>
+            {topLabel && <TopLabel>{topLabel}</TopLabel>}
+            <InputWrapper>
+                <InputIconWrapper>
+                    {state && (
+                        <StyledIcon
+                            icon={getStateIcon(state)}
+                            color={getPrimaryColor(state)}
+                            size={16}
                         />
-                        <TooltipAction action={this.props.tooltipAction}>
-                            <ArrowUp />
-                            {this.props.tooltipAction}
-                        </TooltipAction>
-                    </InputIconWrapper>
-                    {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
-                </InputWrapper>
-                {this.props.bottomText && (
-                    <BottomText color={getPrimaryColor(this.props.state)}>
-                        {this.props.bottomText}
-                    </BottomText>
-                )}
-            </Wrapper>
-        );
-    }
-}
+                    )}
+                    <Overlay isPartiallyHidden={isPartiallyHidden} />
+                    {icon}
+                    <StyledInput
+                        autoComplete="off"
+                        height={height}
+                        tooltipAction={tooltipAction}
+                        hasIcon={icon || getStateIcon(state)}
+                        ref={innerRef}
+                        hasAddon={!!sideAddons}
+                        type={type}
+                        color={getPrimaryColor(state)}
+                        placeholder={placeholder}
+                        autoCorrect={autocorrect}
+                        autoCapitalize={autocapitalize}
+                        spellCheck={spellCheck}
+                        isSmallText={isSmallText}
+                        value={value}
+                        readOnly={readOnly}
+                        onChange={onChange}
+                        onClick={autoSelect ? event => event.target.select() : null}
+                        border={getPrimaryColor(state)}
+                        disabled={isDisabled}
+                        name={name}
+                        data-lpignore="true"
+                    />
+                    <TooltipAction action={tooltipAction}>
+                        <ArrowUp />
+                        {tooltipAction}
+                    </TooltipAction>
+                </InputIconWrapper>
+                {sideAddons && sideAddons.map(sideAddon => sideAddon)}
+            </InputWrapper>
+            {bottomText && <BottomText color={getPrimaryColor(state)}>{bottomText}</BottomText>}
+        </Wrapper>
+    );
+};
 
 Input.propTypes = {
     className: PropTypes.string,
