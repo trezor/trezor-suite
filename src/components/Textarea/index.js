@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { getPrimaryColor } from 'utils/colors';
 
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import Textarea from 'react-textarea-autosize';
 import colors from 'config/colors';
 

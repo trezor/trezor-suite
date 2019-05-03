@@ -1,5 +1,5 @@
 import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT, TRANSITION } from 'config/variables';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { getStateIcon } from 'utils/icons';
 import { getPrimaryColor } from 'utils/colors';
