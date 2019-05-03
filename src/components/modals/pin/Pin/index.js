@@ -23,12 +23,12 @@ type State = {
 
 const Wrapper = styled.div`
     padding: 30px 48px;
+    max-width: 260px;
 `;
 
 const InputWrapper = styled.div`
     margin-top: 24px;
     margin-bottom: 10px;
-    max-width: 260px;
 `;
 const PinRow = styled.div`
     display: flex;
