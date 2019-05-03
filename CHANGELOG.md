@@ -9,6 +9,7 @@ __changed__
 - static (without animation) active tab indicator
 - input validation - mandatory leading 0 for float numbers
 - regexps refactored to functions, added unit tests
+- limit passphrase length to 50 bytes
 
 __removed__
 - Text "already used" from token select in case of already added tokens 

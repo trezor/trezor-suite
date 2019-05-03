@@ -77,17 +77,17 @@ class Group extends PureComponent {
     };
 
     render() {
-        const { type, groupNotifications, close } = this.props;
-        const color = getPrimaryColor(type);
+        const { variant, groupNotifications, close } = this.props;
+        const color = getPrimaryColor(variant);
         return (
             <Wrapper>
                 {groupNotifications.length > 1 && (
                     <Header onClick={this.toggle}>
                         <Left>
-                            <StyledIcon color={color} size={16} icon={getIcon(type)} />
+                            <StyledIcon color={color} size={16} icon={getIcon(variant)} />
                             <Title color={color}>
                                 {groupNotifications.length}{' '}
-                                {groupNotifications.length > 1 ? `${type}s` : type}
+                                {groupNotifications.length > 1 ? `${variant}s` : variant}
                             </Title>
                         </Left>
                         <Right>
@@ -105,7 +105,7 @@ class Group extends PureComponent {
                     {groupNotifications.slice(0, this.state.visibleCount).map(notification => (
                         <StyledNotification
                             key={notification.key}
-                            type={notification.type}
+                            variant={notification.variant}
                             title={notification.title}
                             message={notification.message}
                             cancelable={notification.cancelable}
@@ -120,7 +120,7 @@ class Group extends PureComponent {
 }
 
 Group.propTypes = {
-    type: PropTypes.string,
+    variant: PropTypes.string,
     close: PropTypes.func.isRequired,
     groupNotifications: PropTypes.arrayOf(
         PropTypes.shape({

@@ -114,7 +114,7 @@ export const showAddress = (path: Array<number>): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: <FormattedMessage {...l10nMessages.TR_VERIFYING_ADDRESS_ERROR} />,
                 message: response.payload.error,
                 cancelable: true,

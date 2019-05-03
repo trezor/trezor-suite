@@ -13,7 +13,7 @@ const InitializationError = (props: { error: string }) => (
         <Notification
             title="Initialization error"
             message={props.error}
-            type="error"
+            variant="error"
             cancelable={false}
         />
     </Wrapper>

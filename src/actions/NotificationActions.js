@@ -16,7 +16,7 @@ export type NotificationAction =
     | {
           type: typeof NOTIFICATION.ADD,
           payload: {
-              +type: string,
+              +variant: string,
               +title: React.Node | MessageDescriptor | string,
               +message?: ?(React.Node | string),
               +cancelable: boolean,

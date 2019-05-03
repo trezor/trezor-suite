@@ -717,7 +717,7 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: <FormattedMessage {...l10nMessages.TR_TRANSACTION_ERROR} />,
                 message: signedTransaction.payload.error,
                 cancelable: true,
@@ -807,7 +807,7 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'success',
+                variant: 'success',
                 title: <FormattedMessage {...l10nMessages.TR_TRANSACTION_SUCCESS} />,
                 message: (
                     <Link href={`${network.explorer.tx}${txid}`} isGreen>
@@ -822,7 +822,7 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: <FormattedMessage {...l10nMessages.TR_TRANSACTION_ERROR} />,
                 message: error.message || error,
                 cancelable: true,

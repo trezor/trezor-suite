@@ -86,6 +86,7 @@ const Import = (props: Props) => {
                         isDisabled={
                             !selectedNetwork || address === '' || props.importAccount.loading
                         }
+                        isLoading={props.importAccount.loading}
                         onClick={() =>
                             props.importAddress(
                                 address,

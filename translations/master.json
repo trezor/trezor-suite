@@ -1615,6 +1615,14 @@
       ]
     }
   },
+  "TR_ALREADY_ADDED": {
+    "source": "Already added",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Summary/common.messages.js"
+      ]
+    }
+  },
   "TR_HISTORY": {
     "source": "History",
     "meta": {

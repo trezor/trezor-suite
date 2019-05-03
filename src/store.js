@@ -20,8 +20,8 @@ const enhancers = [];
 
 const middlewares = [thunk, routerMiddleware(history)];
 
-// sentry io middleware only in dev and beta build
-if (buildUtils.isDev() || buildUtils.isBeta()) {
+// sentry io middleware only in beta build
+if (buildUtils.isBeta()) {
     const RAVEN_KEY = 'https://34b8c09deb6c4cd2a4dc3f0029cd02d8@sentry.io/1279550';
     const ravenMiddleware = RavenMiddleware(RAVEN_KEY);
     Raven.config(RAVEN_KEY).install();

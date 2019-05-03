@@ -80,7 +80,7 @@ export const importAddress = (
             dispatch({
                 type: NOTIFICATION.ADD,
                 payload: {
-                    type: 'success',
+                    variant: 'success',
                     title: 'The account has been successfully imported',
                     cancelable: true,
                 },
@@ -132,7 +132,7 @@ export const importAddress = (
             dispatch({
                 type: NOTIFICATION.ADD,
                 payload: {
-                    type: 'success',
+                    variant: 'success',
                     title: 'The account has been successfully imported',
                     cancelable: true,
                 },
@@ -147,7 +147,7 @@ export const importAddress = (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: 'Import account error',
                 message: error.message,
                 cancelable: true,
