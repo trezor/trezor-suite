@@ -716,7 +716,7 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: 'Transaction error',
                 message: signedTransaction.payload.error,
                 cancelable: true,
@@ -806,7 +806,7 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'success',
+                variant: 'success',
                 title: 'Transaction success',
                 message: (
                     <Link href={`${network.explorer.tx}${txid}`} isGreen>
@@ -821,7 +821,7 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: 'Transaction error',
                 message: error.message || error,
                 cancelable: true,

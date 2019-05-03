@@ -64,7 +64,7 @@ const sign = (path: Array<number>, message: string, hex: boolean = false): Async
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: 'Sign error',
                 message: response.payload.error,
                 cancelable: true,
@@ -109,7 +109,7 @@ const verify = (
             dispatch({
                 type: NOTIFICATION.ADD,
                 payload: {
-                    type: 'success',
+                    variant: 'success',
                     title: 'Verify success',
                     message: 'signature is valid',
                     cancelable: true,
@@ -119,7 +119,7 @@ const verify = (
             dispatch({
                 type: NOTIFICATION.ADD,
                 payload: {
-                    type: 'error',
+                    variant: 'error',
                     title: 'Verify error',
                     message: response.payload.error,
                     cancelable: true,

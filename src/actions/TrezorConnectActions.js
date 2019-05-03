@@ -263,7 +263,7 @@ export const authorizeDevice = (): AsyncAction => async (
             type: NOTIFICATION.ADD,
             payload: {
                 devicePath: selected.path,
-                type: 'error',
+                variant: 'error',
                 title: 'Authentication error',
                 message: response.payload.error,
                 cancelable: false,
@@ -350,6 +350,7 @@ export function acquire(): AsyncAction {
                 type: NOTIFICATION.ADD,
                 payload: {
                     type: 'error',
+                    variant: 'error',
                     title: 'Acquire device error',
                     message: response.payload.error,
                     cancelable: true,

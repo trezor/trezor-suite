@@ -454,7 +454,7 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: 'Transaction error',
                 message: signedTransaction.payload.error,
                 cancelable: true,
@@ -473,7 +473,7 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
+                variant: 'error',
                 title: 'Transaction error',
                 message: push.payload.error,
                 cancelable: true,
@@ -496,7 +496,7 @@ export const onSend = (): AsyncAction => async (
     dispatch({
         type: NOTIFICATION.ADD,
         payload: {
-            type: 'success',
+            variant: 'success',
             title: 'Transaction success',
             message: txid,
             cancelable: true,

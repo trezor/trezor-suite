@@ -11,7 +11,7 @@ export default (props: Props) => {
         return (
             <Notification
                 key="update-bridge"
-                type="warning"
+                variant="warning"
                 title={props.intl.formatMessage(l10nMessages.TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE)}
                 message={props.intl.formatMessage(
                     l10nCommonMessages.TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT
