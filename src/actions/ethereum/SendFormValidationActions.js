@@ -152,16 +152,13 @@ export const addressValidation = ($state: State): PayloadAction<State> => (): St
     const { address } = state;
 
     if (address.length < 1) {
-        // state.errors.address = 'Address is not set';
         state.errors.address = l10nMessages.TR_ADDRESS_IS_NOT_SET;
     } else if (!EthereumjsUtil.isValidAddress(address)) {
-        // state.errors.address = 'Address is not valid';
         state.errors.address = l10nMessages.TR_ADDRESS_IS_NOT_VALID;
     } else if (
         validators.hasUppercase(address) &&
         !EthereumjsUtil.isValidChecksumAddress(address)
     ) {
-        // state.errors.address = 'Address is not a valid checksum';
         state.errors.address = l10nMessages.TR_ADDRESS_CHECKSUM_IS_NOT_VALID;
     }
     return state;
@@ -262,7 +259,6 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
             if (!token) return state;
 
             if (!validators.hasDecimals(state.amount, parseInt(token.decimals, 0))) {
-                // state.errors.amount = `Maximum ${token.decimals} decimals allowed`;
                 state.errors.amount = {
                     ...l10nMessages.TR_MAXIMUM_DECIMALS_ALLOWED,
                     values: { decimals: token.decimals },
@@ -274,21 +270,17 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
                         networkSymbol: state.networkSymbol,
                     },
                 };
-                // state.errors.amount = `Not enough ${state.networkSymbol} to cover transaction fee`;
             } else if (
                 new BigNumber(state.amount).isGreaterThan(
                     new BigNumber(token.balance).minus(pendingAmount)
                 )
             ) {
-                // state.errors.amount = 'Not enough funds';
                 state.errors.amount = l10nMessages.TR_NOT_ENOUGH_FUNDS;
             } else if (new BigNumber(state.amount).isLessThanOrEqualTo('0')) {
                 // TODO: this is never gonna happen! It will fail in second if condiftion (isNumber validation)
-                // state.errors.amount = 'Amount is too low';
                 state.errors.amount = l10nMessages.TR_AMOUNT_IS_TOO_LOW;
             }
         } else if (!validators.hasDecimals(state.amount, 18)) {
-            // state.errors.amount = 'Maximum 18 decimals allowed';
             state.errors.amount = {
                 ...l10nMessages.TR_MAXIMUM_DECIMALS_ALLOWED,
                 values: {
@@ -300,7 +292,6 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
                 new BigNumber(account.balance).minus(pendingAmount)
             )
         ) {
-            // state.errors.amount = 'Not enough funds';
             state.errors.amount = l10nMessages.TR_NOT_ENOUGH_FUNDS;
         }
     }
@@ -322,15 +313,12 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
 
     const { gasLimit } = state;
     if (gasLimit.length < 1) {
-        // state.errors.gasLimit = 'Gas limit is not set';
         state.errors.gasLimit = l10nMessages.TR_GAS_LIMIT_IS_NOT_SET;
     } else if (gasLimit.length > 0 && !validators.isNumber(gasLimit)) {
-        // state.errors.gasLimit = 'Gas limit is not a number';
         state.errors.gasLimit = l10nMessages.TR_GAS_LIMIT_IS_NOT_A_NUMBER;
     } else {
         const gl: BigNumber = new BigNumber(gasLimit);
         if (gl.isLessThan(1)) {
-            // state.errors.gasLimit = 'Gas limit is too low';
             state.errors.gasLimit = l10nMessages.TR_GAS_LIMIT_IS_TOO_LOW;
         } else if (
             gl.isLessThan(
@@ -339,7 +327,6 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
                     : network.defaultGasLimit
             )
         ) {
-            // state.warnings.gasLimit = 'Gas limit is below recommended';
             state.warnings.gasLimit = l10nMessages.TR_GAS_LIMIT_IS_BELOW_RECOMMENDED;
         }
     }
