@@ -41,18 +41,6 @@ const StyledIcon = styled(Icon)`
     margin-right: 6px;
 `;
 
-// const getLocalizedMessage = msg => {
-//     if (
-//         typeof msg === 'object' &&
-//         msg.hasOwnProperty('id') &&
-//         msg.hasOwnProperty('defaultMessage')
-//     ) {
-//         //messageDescriptor
-//         return <FormattedMessage {...msg} />;
-//     }
-//     return msg;
-// };
-
 class Group extends PureComponent {
     constructor() {
         super();

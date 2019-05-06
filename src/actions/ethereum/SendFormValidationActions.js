@@ -240,10 +240,8 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
 
     const { amount } = state;
     if (amount.length < 1) {
-        // state.errors.amount = 'Amount is not set';
         state.errors.amount = l10nMessages.TR_AMOUNT_IS_NOT_SET;
     } else if (amount.length > 0 && !validators.isNumber(amount)) {
-        // state.errors.amount = 'Amount is not a number';
         state.errors.amount = l10nMessages.TR_AMOUNT_IS_NOT_A_NUMBER;
     } else {
         const isToken: boolean = state.currency !== state.networkSymbol;
