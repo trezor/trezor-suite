@@ -260,7 +260,7 @@ Button.propTypes = {
     isTransparent: PropTypes.bool,
     isInverse: PropTypes.bool,
     isLoading: PropTypes.bool,
-    icon: PropTypes.object,
+    icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
 };
 
