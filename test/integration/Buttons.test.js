@@ -4,6 +4,7 @@ describe('Buttons', () => {
         cy.visit(
             'http://localhost:9001/iframe.html?selectedKind=Buttons&selectedStory=All&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs'
         );
+        cy.wait(200);
     });
 
     it('button_basic_success', () => {
