@@ -1,4 +1,4 @@
-describe('Buttons', () => {
+describe('Notifications', () => {
     beforeEach(() => {
         cy.viewport(1024, 768);
         cy.visit(
