@@ -39,7 +39,7 @@
         "babel-plugin-module-resolver": "^3.2.0",
         "babel-plugin-styled-components": "^1.10.0",
         "cypress": "^3.1.5",
-        "cypress-image-snapshot": "^3.0.0",
+        "cypress-image-snapshot": "^3.0.1",
         "eslint": "^5.13.0",
         "eslint-config-airbnb": "^17.1.0",
         "eslint-config-prettier": "^4.1.0",
