@@ -23,7 +23,7 @@ type State = {
 
 const Wrapper = styled.div`
     padding: 30px 48px;
-    max-width: 260px;
+    max-width: 350px;
 `;
 
 const InputWrapper = styled.div`
