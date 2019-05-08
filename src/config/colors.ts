@@ -14,6 +14,7 @@ export default {
 
     GRAY_LIGHT: '#F2F2F2',
     DIVIDER: '#E3E3E3',
+    HEADER_DIVIDER: '#E3E3E3',
 
     GREEN_PRIMARY: '#01B757',
     GREEN_SECONDARY: '#00AB51',
