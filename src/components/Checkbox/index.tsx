@@ -8,8 +8,13 @@ import colors from 'config/colors';
 import icons from 'config/icons';
 
 interface Props {
+    onClick: (event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => any;
     isChecked: boolean;
+    propTypes: any;
 }
+
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+type IconWrapperProps = Omit<Props, 'onClick' | 'propTypes'>;
 
 interface State {}
 
@@ -25,7 +30,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const IconWrapper = styled.div<Props>`
+const IconWrapper = styled.div<IconWrapperProps>`
     display: flex;
     border-radius: 2px;
     justify-content: center;
@@ -47,7 +52,7 @@ const IconWrapper = styled.div<Props>`
     }
 `;
 
-const Label = styled.div<Props>`
+const Label = styled.div<IconWrapperProps>`
     display: flex;
     padding-left: 10px;
     justify-content: center;
@@ -61,7 +66,13 @@ const Label = styled.div<Props>`
 `;
 
 class Checkbox extends PureComponent<Props> {
-    handleKeyboard(event: KeyboardEvent) {
+    static propTypes = {
+        onClick: PropTypes.func.isRequired,
+        isChecked: PropTypes.bool,
+        children: PropTypes.node,
+    };
+
+    handleKeyboard(event: React.KeyboardEvent<HTMLElement>) {
         if (event.keyCode === 32) {
             this.props.onClick(event);
         }
@@ -91,11 +102,5 @@ class Checkbox extends PureComponent<Props> {
         );
     }
 }
-
-Checkbox.propTypes = {
-    onClick: PropTypes.func.isRequired,
-    isChecked: PropTypes.bool,
-    children: PropTypes.node,
-};
 
 export default Checkbox;
