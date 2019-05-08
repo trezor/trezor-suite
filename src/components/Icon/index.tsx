@@ -62,11 +62,15 @@ interface Props {
     className?: string;
 
     icon: string | iconShape;
-    size: number;
+    size?: number;
     color: string;
     isActive?: boolean;
     canAnimate?: boolean;
     hoverColor?: string;
+    onClick?: (event: React.MouseEvent<SVGSVGElement>) => any;
+    onMouseEnter?: (event: React.MouseEvent<SVGSVGElement>) => any;
+    onMouseLeave?: (event: React.MouseEvent<SVGSVGElement>) => any;
+    onFocus?: (event: React.FocusEvent<SVGSVGElement>) => any;
 }
 
 const Icon = ({
@@ -77,6 +81,10 @@ const Icon = ({
     canAnimate,
     hoverColor,
     className,
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
+    onFocus,
     ...rest
 }: Props) => {
     // if string is passed to the icon prop use it as a key in icons object
@@ -87,6 +95,10 @@ const Icon = ({
             className={className}
             canAnimate={canAnimate}
             hoverColor={hoverColor}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onFocus={onFocus}
             isActive={isActive}
             style={{
                 display: 'inline-block',
