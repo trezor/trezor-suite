@@ -4,7 +4,12 @@ import PropTypes from 'prop-types';
 
 const Logo = styled.img``;
 
-const CoinLogo = ({ network, className, ...rest }) => {
+interface Props {
+    network: string;
+    className?: string;
+}
+
+const CoinLogo = ({ network, className, ...rest }: Props) => {
     return (
         <Logo className={className} src={require(`../../images/coins/${network}.png`)} {...rest} />
     );
