@@ -1,5 +1,6 @@
 import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT } from 'config/variables';
 import styled, { css } from 'styled-components';
+import { getPrimaryColor } from 'utils/colors';
 
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -96,13 +97,9 @@ const StyledTextarea = styled(Textarea)`
     }
 
     ${props =>
-        props.trezorAction &&
+        props.tooltipAction &&
         css`
             z-index: 10001; /* bigger than modal container */
-            border-color: ${colors.WHITE};
-            border-width: 2px;
-            transform: translate(-1px, -1px);
-            background: ${colors.DIVIDER};
             pointer-events: none;
         `}
 `;
@@ -118,11 +115,11 @@ const BottomText = styled.span`
     margin-top: 10px;
 `;
 
-const TrezorAction = styled.div`
+const TooltipAction = styled.div`
     display: ${props => (props.action ? 'flex' : 'none')};
     align-items: center;
     margin: 0px 10px;
-    padding: 0 14px 0 5px;
+    padding: 0 14px;
     position: absolute;
     background: black;
     bottom: -25px;
@@ -146,18 +143,6 @@ const ArrowUp = styled.div`
 `;
 
 class TextArea extends PureComponent {
-    getColor(inputState) {
-        let color = '';
-        if (inputState === 'success') {
-            color = colors.SUCCESS_PRIMARY;
-        } else if (inputState === 'warning') {
-            color = colors.WARNING_PRIMARY;
-        } else if (inputState === 'error') {
-            color = colors.ERROR_PRIMARY;
-        }
-        return color;
-    }
-
     render() {
         return (
             <Wrapper className={this.props.className}>
@@ -180,14 +165,14 @@ class TextArea extends PureComponent {
                     onClick={this.props.autoSelect ? event => event.target.select() : null}
                     placeholder={this.props.placeholder}
                     onChange={this.props.onChange}
-                    border={this.getColor(this.props.state)}
+                    border={getPrimaryColor(this.props.state)}
                 />
-                <TrezorAction action={this.props.trezorAction}>
+                <TooltipAction action={this.props.tooltipAction}>
                     <ArrowUp />
-                    {this.props.trezorAction}
-                </TrezorAction>
+                    {this.props.tooltipAction}
+                </TooltipAction>
                 {this.props.bottomText && (
-                    <BottomText color={this.getColor(this.props.state)}>
+                    <BottomText color={getPrimaryColor(this.props.state)}>
                         {this.props.bottomText}
                     </BottomText>
                 )}
@@ -214,7 +199,7 @@ TextArea.propTypes = {
     state: PropTypes.oneOf(['success', 'warning', 'error']),
     autoSelect: PropTypes.bool,
     bottomText: PropTypes.string,
-    trezorAction: PropTypes.node,
+    tooltipAction: PropTypes.node,
 };
 
 export default TextArea;

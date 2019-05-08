@@ -71,6 +71,7 @@ storiesOf('Form', module)
                     bottomText={bottomText}
                     topLabel={topLabel}
                     onChange={() => {}}
+                    tooltipAction={text('tooltipAction', undefined)}
                     {...(state ? { state } : {})}
                     {...(isDisabled ? { isDisabled } : {})}
                 />
@@ -118,6 +119,7 @@ storiesOf('Form', module)
                     placeholder={text('Placeholder', 'placeholder...')}
                     bottomText={text('Bottom text', 'bottom text')}
                     topLabel={text('Top label', 'Textarea label')}
+                    tooltipAction={text('tooltipAction', undefined)}
                     {...(isDisabled ? { isDisabled } : {})}
                     {...(state ? { state } : {})} // hack to hide state prop if its value is null
                 />
@@ -212,7 +214,7 @@ storiesOf('Form', module)
             const withDropdownIndicator = boolean('withDropdownIndicator', true);
             return (
                 <Select
-                    {...(isSearchable ? { isSearchable } : {})}
+                    {...(!isSearchable ? { isSearchable } : {})}
                     {...(isClearable ? { isClearable } : {})}
                     {...(isDisabled ? { isDisabled } : {})}
                     {...(withDropdownIndicator ? {} : { withDropdownIndicator })}

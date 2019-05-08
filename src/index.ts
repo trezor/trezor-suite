@@ -4,7 +4,6 @@ import icons from './config/icons';
 import * as variables from './config/variables';
 
 import Button from './components/buttons/Button';
-import ButtonNotification from './components/buttons/Notification';
 import ButtonPin from './components/buttons/Pin';
 
 import Input from './components/inputs/Input';
@@ -27,6 +26,7 @@ import CoinLogo from './components/CoinLogo';
 import Loader from './components/Loader';
 import Notification from './components/Notification';
 import Prompt from './components/Prompt';
+import Header from './components/Header';
 
 module.exports = {
     colors,
@@ -35,7 +35,6 @@ module.exports = {
     variables,
 
     Button,
-    ButtonNotification,
     ButtonPin,
 
     Input,
@@ -64,4 +63,5 @@ module.exports = {
     Loader,
     Notification,
     Prompt,
+    Header,
 };

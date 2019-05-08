@@ -1,8 +1,9 @@
 import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT, TRANSITION } from 'config/variables';
 import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
+import { getStateIcon } from 'utils/icons';
+import { getPrimaryColor } from 'utils/colors';
 
-import ICONS from 'config/icons';
 import Icon from 'components/Icon';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
@@ -74,14 +75,10 @@ const StyledInput = styled.input`
     }
 
     ${props =>
-        props.trezorAction &&
+        props.tooltipAction &&
         css`
-            z-index: 10001;
-            position: relative; /* bigger than modal container */
-            border-color: ${colors.WHITE};
-            border-width: 2px;
-            transform: translate(-1px, -1px);
-            background: ${colors.DIVIDER};
+            z-index: 10001; /* bigger than modal container */
+            position: relative;
         `};
 `;
 
@@ -116,12 +113,12 @@ const Overlay = styled.div`
         `}
 `;
 
-const TrezorAction = styled.div`
+const TooltipAction = styled.div`
     display: ${props => (props.action ? 'flex' : 'none')};
     align-items: center;
     height: 37px;
     margin: 0px 10px;
-    padding: 0 14px 0 5px;
+    padding: 0 14px;
     position: absolute;
     top: 45px;
     background: black;
@@ -145,30 +142,6 @@ const ArrowUp = styled.div`
 `;
 
 class Input extends PureComponent {
-    getIcon(inputState) {
-        let icon = null;
-        if (inputState === 'success') {
-            icon = ICONS.SUCCESS;
-        } else if (inputState === 'warning') {
-            icon = ICONS.WARNING;
-        } else if (inputState === 'error') {
-            icon = ICONS.ERROR;
-        }
-        return icon;
-    }
-
-    getColor(inputState) {
-        let color = '';
-        if (inputState === 'success') {
-            color = colors.SUCCESS_PRIMARY;
-        } else if (inputState === 'warning') {
-            color = colors.WARNING_PRIMARY;
-        } else if (inputState === 'error') {
-            color = colors.ERROR_PRIMARY;
-        }
-        return color;
-    }
-
     render() {
         return (
             <Wrapper className={this.props.className}>
@@ -177,8 +150,8 @@ class Input extends PureComponent {
                     <InputIconWrapper>
                         {this.props.state && (
                             <StyledIcon
-                                icon={this.getIcon(this.props.state)}
-                                color={this.getColor(this.props.state)}
+                                icon={getStateIcon(this.props.state)}
+                                color={getPrimaryColor(this.props.state)}
                                 size={16}
                             />
                         )}
@@ -187,12 +160,12 @@ class Input extends PureComponent {
                         <StyledInput
                             autoComplete="off"
                             height={this.props.height}
-                            trezorAction={this.props.trezorAction}
-                            hasIcon={this.props.icon || this.getIcon(this.props.state)}
+                            tooltipAction={this.props.tooltipAction}
+                            hasIcon={this.props.icon || getStateIcon(this.props.state)}
                             ref={this.props.innerRef}
                             hasAddon={!!this.props.sideAddons}
                             type={this.props.type}
-                            color={this.getColor(this.props.state)}
+                            color={getPrimaryColor(this.props.state)}
                             placeholder={this.props.placeholder}
                             autoCorrect={this.props.autocorrect}
                             autoCapitalize={this.props.autocapitalize}
@@ -202,20 +175,20 @@ class Input extends PureComponent {
                             readOnly={this.props.readOnly}
                             onChange={this.props.onChange}
                             onClick={this.props.autoSelect ? event => event.target.select() : null}
-                            border={this.getColor(this.props.state)}
+                            border={getPrimaryColor(this.props.state)}
                             disabled={this.props.isDisabled}
                             name={this.props.name}
                             data-lpignore="true"
                         />
-                        <TrezorAction action={this.props.trezorAction}>
+                        <TooltipAction action={this.props.tooltipAction}>
                             <ArrowUp />
-                            {this.props.trezorAction}
-                        </TrezorAction>
+                            {this.props.tooltipAction}
+                        </TooltipAction>
                     </InputIconWrapper>
                     {this.props.sideAddons && this.props.sideAddons.map(sideAddon => sideAddon)}
                 </InputWrapper>
                 {this.props.bottomText && (
-                    <BottomText color={this.getColor(this.props.state)}>
+                    <BottomText color={getPrimaryColor(this.props.state)}>
                         {this.props.bottomText}
                     </BottomText>
                 )}
@@ -239,9 +212,9 @@ Input.propTypes = {
     autoSelect: PropTypes.bool,
     onChange: PropTypes.func,
     state: PropTypes.oneOf(['success', 'warning', 'error']),
-    bottomText: PropTypes.string,
+    bottomText: PropTypes.node,
     topLabel: PropTypes.node,
-    trezorAction: PropTypes.node,
+    tooltipAction: PropTypes.node,
     sideAddons: PropTypes.arrayOf(PropTypes.node),
     isDisabled: PropTypes.bool,
     name: PropTypes.string,

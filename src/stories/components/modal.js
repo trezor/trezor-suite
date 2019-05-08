@@ -14,6 +14,7 @@ import { withInfo } from '@storybook/addon-info';
 
 const ModalWrapper = styled.div`
     padding: 30px 48px;
+    max-width: 260px;
 `;
 const InputWrapper = styled.div`
     margin-top: 24px;
@@ -142,6 +143,7 @@ storiesOf('Examples', module)
             ~~~js
             const ModalWrapper = styled.div\`
                 padding: 30px 45px;
+                max-width: 260px;
             \`;
             ~~~
 

@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import { getIcon, getPrimaryColor, getSecondaryColor } from 'utils/notification';
+import { getPrimaryColor, getNotificationBgColor } from 'utils/colors';
+import { getStateIcon } from 'utils/icons';
 
 import Icon from 'components/Icon';
-import Loader from 'components/Loader';
-import ButtonNotification from 'components/buttons/Notification';
+import Button from 'components/buttons/Button';
 import icons from 'config/icons';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -15,22 +15,31 @@ const Wrapper = styled.div`
     position: relative;
     display: flex;
     justify-content: center;
-    color: ${props => getPrimaryColor(props.type)};
-    background: ${props => getSecondaryColor(props.type)};
+    color: ${props => getPrimaryColor(props.variant)};
+    background: ${props => getNotificationBgColor(props.variant)};
 `;
 
 const Content = styled.div`
     width: 100%;
     max-width: 1170px;
-    padding: 24px;
+    padding: 24px 24px 14px 24px;
     display: flex;
     flex-direction: row;
     text-align: left;
     align-items: center;
 `;
 
+const Col = styled.div`
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-self: flex-start;
+`;
+
 const Body = styled.div`
     display: flex;
+    flex: 1 1 auto;
+    padding-bottom: 10px;
 `;
 
 const Message = styled.div`
@@ -68,7 +77,9 @@ const AdditionalContent = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
-    flex: 1;
+    flex: 1 1 auto;
+    padding-left: 30px;
+    padding-bottom: 10px;
 `;
 
 const ActionContent = styled.div`
@@ -77,48 +88,54 @@ const ActionContent = styled.div`
     align-items: flex-end;
 `;
 
+const ButtonNotification = styled(Button)`
+    padding: 12px 36px;
+`;
+
 const Notification = props => {
     const close = typeof props.close === 'function' ? props.close : () => {}; // TODO: add default close action
 
     return (
-        <Wrapper className={props.className} type={props.type}>
+        <Wrapper className={props.className} variant={props.variant}>
             <Content>
-                {props.loading && <Loader size={50} />}
-                <Body>
-                    <IconWrapper>
-                        <StyledIcon
-                            color={getPrimaryColor(props.type)}
-                            icon={getIcon(props.type)}
-                            size={16}
-                        />
-                    </IconWrapper>
-                    <Texts>
-                        <Title>{props.title}</Title>
-                        {props.message ? <Message>{props.message}</Message> : ''}
-                    </Texts>
-                </Body>
-                <AdditionalContent>
-                    {props.actions && props.actions.length > 0 && (
-                        <ActionContent>
-                            {props.actions.map(action => (
-                                <ButtonNotification
-                                    key={action.label}
-                                    type={props.type}
-                                    isLoading={props.isActionInProgress}
-                                    onClick={() => {
-                                        close();
-                                        action.callback();
-                                    }}
-                                >
-                                    {action.label}
-                                </ButtonNotification>
-                            ))}
-                        </ActionContent>
-                    )}
-                </AdditionalContent>
+                <Col>
+                    <Body>
+                        <IconWrapper>
+                            <StyledIcon
+                                color={getPrimaryColor(props.variant)}
+                                icon={getStateIcon(props.variant)}
+                                size={16}
+                            />
+                        </IconWrapper>
+                        <Texts>
+                            <Title>{props.title}</Title>
+                            {props.message ? <Message>{props.message}</Message> : ''}
+                        </Texts>
+                    </Body>
+                    <AdditionalContent>
+                        {props.actions && props.actions.length > 0 && (
+                            <ActionContent>
+                                {props.actions.map(action => (
+                                    <ButtonNotification
+                                        isInverse
+                                        key={action.label}
+                                        variant={props.variant}
+                                        isLoading={props.isActionInProgress}
+                                        onClick={() => {
+                                            close();
+                                            action.callback();
+                                        }}
+                                    >
+                                        {action.label}
+                                    </ButtonNotification>
+                                ))}
+                            </ActionContent>
+                        )}
+                    </AdditionalContent>
+                </Col>
                 {props.cancelable && (
                     <CloseClick onClick={() => close()}>
-                        <Icon color={getPrimaryColor(props.type)} icon={icons.CLOSE} size={10} />
+                        <Icon color={getPrimaryColor(props.variant)} icon={icons.CLOSE} size={10} />
                     </CloseClick>
                 )}
             </Content>
@@ -128,11 +145,10 @@ const Notification = props => {
 
 Notification.propTypes = {
     close: PropTypes.func,
-    type: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
+    variant: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
     title: PropTypes.node,
     message: PropTypes.node,
     cancelable: PropTypes.bool,
-    loading: PropTypes.bool,
     isActionInProgress: PropTypes.bool,
     actions: PropTypes.array,
     className: PropTypes.string,
