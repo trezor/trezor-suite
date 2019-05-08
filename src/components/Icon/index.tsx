@@ -5,7 +5,7 @@ import React from 'react';
 import colors from 'config/colors';
 import icons from 'config/icons';
 
-const chooseIconAnimationType = (canAnimate, isActive) => {
+const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
     if (canAnimate) {
         if (isActive) {
             return rotate180up;
@@ -34,7 +34,7 @@ const rotate180down = keyframes`
     }
 `;
 
-const SvgWrapper = styled.svg`
+const SvgWrapper = styled.svg<WrapperProps>`
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;
 
@@ -45,9 +45,29 @@ const SvgWrapper = styled.svg`
     }
 `;
 
-const Path = styled.path`
+const Path = styled.path<{ color: string }>`
     fill: ${props => props.color};
 `;
+
+interface iconShape {
+    paths: string[];
+    viewBox: string;
+    ratio?: number;
+}
+
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+type WrapperProps = Omit<Props, 'icon' | 'size'>;
+interface Props {
+    className?: string;
+
+    icon: string | iconShape;
+    size: number;
+    color: string;
+    isActive?: boolean;
+    canAnimate?: boolean;
+    hoverColor?: string;
+}
 
 const Icon = ({
     icon,
@@ -57,14 +77,10 @@ const Icon = ({
     canAnimate,
     hoverColor,
     className,
-    onMouseEnter,
-    onMouseLeave,
-    onFocus,
-    onClick,
     ...rest
-}) => {
+}: Props) => {
     // if string is passed to the icon prop use it as a key in icons object
-    const iconObject = typeof icon === 'string' ? icons[icon] : icon;
+    const iconObject: iconShape = typeof icon === 'string' ? icons[icon] : icon;
     if (!iconObject) return null;
     return (
         <SvgWrapper
@@ -79,14 +95,11 @@ const Icon = ({
             width={`${size * (iconObject.ratio || 1)}`}
             height={`${size}`}
             viewBox={iconObject.viewBox || '0 0 1024 1024'}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onFocus={onFocus}
-            onClick={onClick}
+            color={color}
             {...rest}
         >
-            {iconObject.paths.map(path => (
-                <Path key={path} isActive={isActive} color={color} d={path} />
+            {iconObject.paths.map((path: string) => (
+                <Path key={path} color={color} d={path} />
             ))}
         </SvgWrapper>
     );
