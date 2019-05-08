@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { getPrimaryColor } from 'utils/colors';
 
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import Textarea from 'react-textarea-autosize';
 import colors from 'config/colors';
 
@@ -142,44 +142,58 @@ const ArrowUp = styled.div`
     z-index: 10001;
 `;
 
-class TextArea extends PureComponent {
-    render() {
-        return (
-            <Wrapper className={this.props.className}>
-                {this.props.topLabel && <TopLabel>{this.props.topLabel}</TopLabel>}
-                <StyledTextarea
-                    spellCheck="false"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    maxRows={this.props.maxRows}
-                    maxLength={this.props.maxLength}
-                    rows={this.props.rows}
-                    className={this.props.className}
-                    disabled={this.props.isDisabled}
-                    name={this.props.name}
-                    style={this.props.customStyle}
-                    onFocus={this.props.onFocus}
-                    onBlur={this.props.onBlur}
-                    value={this.props.value}
-                    readOnly={this.props.readOnly}
-                    onClick={this.props.autoSelect ? event => event.target.select() : null}
-                    placeholder={this.props.placeholder}
-                    onChange={this.props.onChange}
-                    border={getPrimaryColor(this.props.state)}
-                />
-                <TooltipAction action={this.props.tooltipAction}>
-                    <ArrowUp />
-                    {this.props.tooltipAction}
-                </TooltipAction>
-                {this.props.bottomText && (
-                    <BottomText color={getPrimaryColor(this.props.state)}>
-                        {this.props.bottomText}
-                    </BottomText>
-                )}
-            </Wrapper>
-        );
-    }
-}
+const TextArea = ({
+    className,
+    onFocus,
+    onBlur,
+    onChange,
+    customStyle,
+    placeholder,
+    value,
+    readOnly,
+    maxRows,
+    maxLength,
+    rows,
+    name,
+    isDisabled,
+    topLabel,
+    state,
+    autoSelect,
+    bottomText,
+    tooltipAction,
+    ...rest
+}) => {
+    return (
+        <Wrapper className={className} {...rest}>
+            {topLabel && <TopLabel>{topLabel}</TopLabel>}
+            <StyledTextarea
+                spellCheck="false"
+                autoCorrect="off"
+                autoCapitalize="off"
+                maxRows={maxRows}
+                maxLength={maxLength}
+                rows={rows}
+                className={className}
+                disabled={isDisabled}
+                name={name}
+                style={customStyle}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                value={value}
+                readOnly={readOnly}
+                onClick={autoSelect ? event => event.target.select() : null}
+                placeholder={placeholder}
+                onChange={onChange}
+                border={getPrimaryColor(state)}
+            />
+            <TooltipAction action={tooltipAction}>
+                <ArrowUp />
+                {tooltipAction}
+            </TooltipAction>
+            {bottomText && <BottomText color={getPrimaryColor(state)}>{bottomText}</BottomText>}
+        </Wrapper>
+    );
+};
 
 TextArea.propTypes = {
     className: PropTypes.string,

@@ -44,7 +44,7 @@
         "babel-plugin-module-resolver": "^3.2.0",
         "babel-plugin-styled-components": "^1.10.0",
         "cypress": "^3.1.5",
-        "cypress-image-snapshot": "^3.0.0",
+        "cypress-image-snapshot": "^3.0.1",
         "eslint": "^5.13.0",
         "eslint-config-airbnb": "^17.1.0",
         "eslint-config-prettier": "^4.1.0",
@@ -78,9 +78,9 @@
         "prop-types": "^15.7.2",
         "react-router-dom": "^4.3.1",
         "react-select": "^2.4.3",
-        "react-switch": "^4.1.0",
-        "react-textarea-autosize": "^7.1.0",
-        "typescript": "3.3.1"
+        "typescript": "3.3.1",
+        "react-switch": "^5.0.0",
+        "react-textarea-autosize": "^7.1.0"
     },
     "peerDependencies": {
         "react": "^16.8",
