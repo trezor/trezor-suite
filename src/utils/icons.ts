@@ -1,6 +1,6 @@
 import icons from 'config/icons';
 
-const getStateIcon = type => {
+const getStateIcon = (type: string) => {
     let icon = null;
     switch (type) {
         case 'info':
