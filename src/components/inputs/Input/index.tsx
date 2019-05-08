@@ -31,7 +31,7 @@ const TopLabel = styled.span`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const StyledInput = styled.input`
+const StyledInput = styled.input<InputProps>`
     width: 100%;
     height: ${props => (props.height ? `${props.height}px` : '40px')};
     padding: 5px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
@@ -52,7 +52,7 @@ const StyledInput = styled.input`
             border-bottom-right-radius: 0;
         `}
 
-    border: 1px solid ${props => props.border || colors.INPUT_BORDER};
+    border: 1px solid ${props => props.border};
 
     background-color: ${colors.WHITE};
     transition: ${TRANSITION.HOVER};
@@ -95,7 +95,7 @@ const BottomText = styled.span`
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
 `;
 
-const Overlay = styled.div`
+const Overlay = styled.div<InputProps>`
     ${props =>
         props.isPartiallyHidden &&
         css`
@@ -114,7 +114,7 @@ const Overlay = styled.div`
 `;
 
 const TooltipAction = styled.div`
-    display: ${props => (props.action ? 'flex' : 'none')};
+    display: ${(props: { action?: React.ReactNode }) => (props.action ? 'flex' : 'none')};
     align-items: center;
     height: 37px;
     margin: 0px 10px;
@@ -141,19 +141,50 @@ const ArrowUp = styled.div`
     z-index: 10001;
 `;
 
+interface InputProps {
+    hasIcon?: boolean;
+    hasAddon?: boolean;
+    isPartiallyHidden?: boolean;
+    isSmallText?: boolean;
+    border?: string;
+    tooltipAction?: React.ReactNode;
+}
+interface Props {
+    className?: string;
+    innerRef?: any;
+    placeholder?: string;
+    type: string;
+    height?: number;
+    autocorrect?: string;
+    autocapitalize?: string;
+    icon?: any;
+    spellCheck?: boolean;
+    value: string;
+    readOnly?: boolean;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    state?: 'info' | 'success' | 'warning' | 'error';
+    bottomText?: React.ReactNode;
+    topLabel?: React.ReactNode;
+    tooltipAction?: React.ReactNode;
+    sideAddons?: React.ReactNode[];
+    isDisabled?: boolean;
+    name?: string;
+    isSmallText?: boolean;
+    isPartiallyHidden?: boolean;
+}
+
 const Input = ({
     className,
     innerRef,
     placeholder,
-    type,
-    height,
+    type = 'text',
+    height = 40,
     autocorrect,
     autocapitalize,
     icon,
     spellCheck,
     value,
     readOnly,
-    autoSelect,
     onChange,
     state,
     bottomText,
@@ -165,20 +196,20 @@ const Input = ({
     isSmallText,
     isPartiallyHidden,
     ...rest
-}) => {
+}: Props) => {
+    const stateIcon = getStateIcon(state);
+    const stateColor = getPrimaryColor(state) || undefined;
+
     return (
         <Wrapper className={className} {...rest}>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <InputWrapper>
                 <InputIconWrapper>
-                    {state && (
-                        <StyledIcon
-                            icon={getStateIcon(state)}
-                            color={getPrimaryColor(state)}
-                            size={16}
-                        />
+                    {stateIcon && stateColor && (
+                        <StyledIcon icon={stateIcon} color={stateColor} size={16} />
                     )}
                     <Overlay isPartiallyHidden={isPartiallyHidden} />
+                    {/* TODO: this icon should be most likely removed */}
                     {icon}
                     <StyledInput
                         autoComplete="off"
@@ -188,7 +219,7 @@ const Input = ({
                         ref={innerRef}
                         hasAddon={!!sideAddons}
                         type={type}
-                        color={getPrimaryColor(state)}
+                        color={stateColor}
                         placeholder={placeholder}
                         autoCorrect={autocorrect}
                         autoCapitalize={autocapitalize}
@@ -197,8 +228,7 @@ const Input = ({
                         value={value}
                         readOnly={readOnly}
                         onChange={onChange}
-                        onClick={autoSelect ? event => event.target.select() : null}
-                        border={getPrimaryColor(state)}
+                        border={stateColor || colors.INPUT_BORDER}
                         disabled={isDisabled}
                         name={name}
                         data-lpignore="true"
@@ -210,7 +240,7 @@ const Input = ({
                 </InputIconWrapper>
                 {sideAddons && sideAddons.map(sideAddon => sideAddon)}
             </InputWrapper>
-            {bottomText && <BottomText color={getPrimaryColor(state)}>{bottomText}</BottomText>}
+            {bottomText && <BottomText color={stateColor}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };
@@ -227,7 +257,6 @@ Input.propTypes = {
     spellCheck: PropTypes.string,
     value: PropTypes.string,
     readOnly: PropTypes.bool,
-    autoSelect: PropTypes.bool,
     onChange: PropTypes.func,
     state: PropTypes.oneOf(['success', 'warning', 'error']),
     bottomText: PropTypes.node,
@@ -238,12 +267,6 @@ Input.propTypes = {
     name: PropTypes.string,
     isSmallText: PropTypes.bool,
     isPartiallyHidden: PropTypes.bool,
-};
-
-Input.defaultProps = {
-    type: 'text',
-    autoSelect: false,
-    height: 40,
 };
 
 export default Input;
