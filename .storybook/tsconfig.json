@@ -21,7 +21,7 @@
       "jsx": "react",
       "moduleResolution": "node",
       "rootDir": "../",
-      "outDir": "build",
+      "outDir": "../ts_build",
       "noImplicitReturns": true,
       "noImplicitThis": true,
       "noImplicitAny": true,
