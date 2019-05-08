@@ -4,7 +4,7 @@ import { FONT_SIZE } from 'config/variables';
 import colors from 'config/colors';
 
 interface Props {
-    textAlign: 'left' | 'center' | 'right' | 'justify';
+    textAlign?: 'left' | 'center' | 'right' | 'justify';
 }
 
 const textAlignStyle = css`

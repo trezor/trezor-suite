@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import colors from 'config/colors';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<Props>`
     position: relative;
     width: ${props => `${props.size}px`};
     height: ${props => `${props.size}px`};
@@ -24,7 +24,11 @@ const SvgWrapper = styled.svg`
     transform-origin: center center;
 `;
 
-const CircleWrapper = styled.circle`
+type Circleprops = Props & {
+    isRoute?: boolean;
+    isPath?: boolean;
+};
+const CircleWrapper = styled.circle<Circleprops>`
     ${props =>
         props.isRoute &&
         css`
@@ -43,10 +47,21 @@ const CircleWrapper = styled.circle`
         `};
 `;
 
-const StyledParagraph = styled(Paragraph)`
+const StyledParagraph = styled(Paragraph)<Props>`
     font-size: ${props => (props.isSmallText ? FONT_SIZE.SMALL : FONT_SIZE.BIG)};
     color: ${props => (props.isWhiteText ? colors.WHITE : colors.TEXT_PRIMARY)};
 `;
+
+interface Props {
+    className?: string;
+    text?: string;
+    isWhiteText?: boolean;
+    isSmallText?: boolean;
+    transparentRoute?: boolean;
+    size?: number;
+    strokeWidth?: number;
+    animationColor?: any;
+}
 
 const Loader = ({
     className,
@@ -57,7 +72,7 @@ const Loader = ({
     animationColor,
     transparentRoute,
     strokeWidth = 1,
-}) => (
+}: Props) => (
     <Wrapper className={className} size={size}>
         <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>
             {text}
