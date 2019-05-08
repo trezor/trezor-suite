@@ -1,14 +1,19 @@
+import * as React from 'react';
 import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from 'config/variables';
 import styled, { css } from 'styled-components';
 import Icon from 'components/Icon';
 import { getPrimaryColor, getSecondaryColor } from 'utils/colors';
 
 import PropTypes from 'prop-types';
-import React from 'react';
 import colors from 'config/colors';
 import { SPIN } from 'config/animations';
 
-const FluidSpinner = styled.div`
+interface FluidSpinnerProps {
+    size: number;
+    strokeWidth?: number;
+}
+
+const FluidSpinner = styled.div<FluidSpinnerProps>`
     /* https://loading.io/css/ */
     width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
     height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
@@ -38,14 +43,24 @@ const FluidSpinner = styled.div`
     }
 `;
 
+interface iconShape {
+    paths: string[];
+    viewBox: string;
+    ratio?: number;
+}
 interface Props {
+    className: string;
+    additionalClassName?: string;
+    children: React.ReactNode;
+
+    variant: 'success' | 'info' | 'warning' | 'error';
     isDisabled: boolean;
     isInverse: boolean;
-    aaa: string;
     isWhite: boolean;
     isTransparent: boolean;
-    additionalClassName: string;
-    children: ReactNode;
+    isLoading: boolean;
+
+    icon?: string | iconShape;
 }
 
 const Wrapper = styled.button<Props>`
@@ -203,27 +218,19 @@ const Button = ({
     children,
     className,
     additionalClassName,
-    onClick,
-    onMouseEnter,
-    onMouseLeave,
-    onFocus,
     variant = 'success',
     isDisabled = false,
     isWhite = false,
     isTransparent = false,
     isInverse = false,
     isLoading = false,
-    icon = null,
+    icon,
     ...rest
-}) => {
+}: Props) => {
     const newClassName = additionalClassName ? `${className} ${additionalClassName}` : className;
     return (
         <Wrapper
             className={newClassName}
-            onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onFocus={onFocus}
             isDisabled={isDisabled}
             isWhite={isWhite}
             isTransparent={isTransparent}
@@ -248,7 +255,7 @@ const Button = ({
                     <Icon
                         icon={icon}
                         size={14}
-                        color={isInverse ? getPrimaryColor(variant) : colors.WHITE}
+                        color={isInverse ? getPrimaryColor(variant) || colors.WHITE : colors.WHITE}
                     />
                 </IconWrapper>
             )}
