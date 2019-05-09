@@ -149,59 +149,44 @@ interface InputProps {
     border?: string;
     tooltipAction?: React.ReactNode;
 }
-interface Props extends React.HTMLProps<HTMLInputElement> {
-    className?: string;
+
+// TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
+interface Props extends React.HTMLAttributes<HTMLInputElement> {
     innerRef?: any;
-    placeholder?: string;
-    type: string;
     height?: number;
-    autocorrect?: string;
-    autocapitalize?: string;
     icon?: any;
-    spellCheck?: boolean;
-    value: string;
-    readOnly?: boolean;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     state?: 'info' | 'success' | 'warning' | 'error';
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
     tooltipAction?: React.ReactNode;
     sideAddons?: React.ReactNode[];
     isDisabled?: boolean;
-    name?: string;
     isSmallText?: boolean;
     isPartiallyHidden?: boolean;
+    wrapperProps?: Object;
 }
 
 const Input = ({
     className,
     innerRef,
-    placeholder,
-    type = 'text',
     height = 40,
-    autocorrect,
-    autocapitalize,
     icon,
-    spellCheck,
-    value,
-    readOnly,
-    onChange,
     state,
     bottomText,
     topLabel,
     tooltipAction,
     sideAddons,
     isDisabled,
-    name,
     isSmallText,
     isPartiallyHidden,
+    wrapperProps,
     ...rest
 }: Props) => {
     const stateIcon = getStateIcon(state);
     const stateColor = getPrimaryColor(state) || undefined;
 
     return (
-        <Wrapper className={className} {...rest}>
+        <Wrapper className={className} {...wrapperProps}>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <InputWrapper>
                 <InputIconWrapper>
@@ -218,20 +203,12 @@ const Input = ({
                         hasIcon={icon || getStateIcon(state)}
                         ref={innerRef}
                         hasAddon={!!sideAddons}
-                        type={type}
                         color={stateColor}
-                        placeholder={placeholder}
-                        autoCorrect={autocorrect}
-                        autoCapitalize={autocapitalize}
-                        spellCheck={spellCheck}
                         isSmallText={isSmallText}
-                        value={value}
-                        readOnly={readOnly}
-                        onChange={onChange}
                         border={stateColor || colors.INPUT_BORDER}
                         disabled={isDisabled}
-                        name={name}
                         data-lpignore="true"
+                        {...rest}
                     />
                     <TooltipAction action={tooltipAction}>
                         <ArrowUp />

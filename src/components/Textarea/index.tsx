@@ -68,7 +68,7 @@ const TopLabel = styled.span`
 
 const BottomText = styled.span`
     font-size: ${FONT_SIZE.SMALL};
-    color: ${props => props.color || colors.TEXT_SECONDARY};
+    color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
     margin-top: 10px;
 `;
 
@@ -106,54 +106,40 @@ interface StyledTextareaProps extends BaseTextareaProps {
     border?: string;
     tooltipAction?: React.ReactNode;
 }
+
+// TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
 interface Props extends BaseTextareaProps, StyledTextareaProps {
     isDisabled?: boolean;
     topLabel?: React.ReactNode;
     bottomText?: React.ReactNode;
     state: 'success' | 'info' | 'warning' | 'error';
+    wrapperProps?: Object;
 }
 
 const TextArea = ({
     className,
-    onFocus,
-    onBlur,
-    onChange,
-    placeholder,
-    value,
-    readOnly,
     maxRows,
     maxLength,
-    rows,
-    name,
     isDisabled,
     topLabel,
     state,
     bottomText,
     tooltipAction,
+    wrapperProps,
     ...rest
 }: Omit<Props, 'ref' | 'as'>) => {
     // TODO: figure out why 'ref' and 'as' prop need to be omitted
-    const stateColor = getPrimaryColor(state) || colors.INPUT_BORDER;
+    const stateColor = getPrimaryColor(state) || undefined;
     return (
-        <Wrapper className={className}>
+        <Wrapper className={className} {...wrapperProps}>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <StyledTextarea
                 spellCheck={false}
                 autoCorrect="off"
                 autoCapitalize="off"
-                maxRows={maxRows}
                 maxLength={maxLength}
-                rows={rows}
-                className={className}
                 disabled={isDisabled}
-                name={name}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                value={value}
-                readOnly={readOnly}
-                placeholder={placeholder}
-                onChange={onChange}
-                border={stateColor}
+                border={stateColor || colors.INPUT_BORDER}
                 {...rest}
             />
             <TooltipAction action={tooltipAction}>
