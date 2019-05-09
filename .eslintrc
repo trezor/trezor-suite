@@ -47,6 +47,14 @@
             }
         ]
     },
+    "overrides": [
+        {
+          "files": ["*.ts", "*.tsx"],
+          "rules": {
+            "@typescript-eslint/no-unused-vars": [2, { "args": "none" }]
+          }
+        }
+      ],
     "plugins": [
         "import",
         "react",
@@ -58,9 +66,6 @@
         "import/ignore": [
             "\\.(scss|less|css)$"
         ],
-        "import/parsers": {
-            "@typescript-eslint/parser": [".ts", ".tsx"]
-        },
         "import/resolver": {
             "typescript": {
                 "directory": "./.storybook/tsconfig.json"
