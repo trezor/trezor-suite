@@ -8,6 +8,7 @@
       "paths": {
         "components/*": ["components/*"],
         "utils/*": ["utils/*"],
+        "support/*": ["support/*"],
         "config/*": ["config/*"]
       },
       "baseUrl": "../src",

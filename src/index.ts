@@ -1,4 +1,4 @@
-import animations from './config/animations';
+import * as animations from './config/animations';
 import colors from './config/colors';
 import icons from './config/icons';
 import * as variables from './config/variables';

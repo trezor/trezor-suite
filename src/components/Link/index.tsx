@@ -29,6 +29,7 @@ interface Props {
     to?: any;
     target?: string;
     onClick?: (event: React.MouseEvent<any>) => void;
+    children?: React.ReactNode;
 }
 
 class Link extends PureComponent<Props> {

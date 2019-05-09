@@ -1,8 +1,4 @@
-export interface iconShape {
-    paths: string[];
-    viewBox: string;
-    ratio?: number;
-}
+import { iconShape } from 'support/types';
 
 // TODO: typecheck the exact key match
 const icons: { [key: string]: iconShape } = {

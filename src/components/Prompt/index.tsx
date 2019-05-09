@@ -3,8 +3,8 @@ import styled, { keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 
-import icons, { iconShape } from 'config/icons';
-import { Omit } from 'support/types';
+import icons from 'config/icons';
+import { Omit, iconShape } from 'support/types';
 import colors from 'config/colors';
 
 const PulseAnimation = keyframes`

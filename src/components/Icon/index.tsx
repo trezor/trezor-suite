@@ -50,17 +50,11 @@ const Path = styled.path<{ color: string }>`
     fill: ${props => props.color};
 `;
 
-interface iconShape {
-    paths: string[];
-    viewBox: string;
-    ratio?: number;
-}
-
 type WrapperProps = Omit<Props, 'icon' | 'size'>;
 interface Props {
     className?: string;
 
-    icon: string | iconShape;
+    icon: string | import('support/types').iconShape;
     size?: number;
     color: string;
     isActive?: boolean;
@@ -87,7 +81,8 @@ const Icon = ({
     ...rest
 }: Props) => {
     // if string is passed to the icon prop use it as a key in icons object
-    const iconObject: iconShape = typeof icon === 'string' ? icons[icon] : icon;
+    const iconObject: import('support/types').iconShape =
+        typeof icon === 'string' ? icons[icon] : icon;
     if (!iconObject) return null;
     return (
         <SvgWrapper
