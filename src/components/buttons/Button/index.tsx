@@ -197,10 +197,7 @@ const IconWrapper = styled.div`
 
 // TODO: Error messages are not helpful. Find a better way to extend html button props.
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    className?: string;
     additionalClassName?: string;
-    children: React.ReactNode;
-
     variant: 'success' | 'info' | 'warning' | 'error';
     isDisabled?: boolean;
     isInverse?: boolean;

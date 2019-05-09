@@ -8,16 +8,6 @@ import colors from 'config/colors';
 import icons from 'config/icons';
 import { Omit } from 'support/types';
 
-interface Props {
-    onClick: (event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => any;
-    isChecked: boolean;
-    propTypes: any;
-}
-
-type IconWrapperProps = Omit<Props, 'onClick' | 'propTypes'>;
-
-interface State {}
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -64,6 +54,14 @@ const Label = styled.div<IconWrapperProps>`
         color: ${props => (props.isChecked ? colors.TEXT_PRIMARY : colors.TEXT_PRIMARY)};
     }
 `;
+
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+    onClick: (event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => any;
+    isChecked: boolean;
+    propTypes: any;
+}
+
+type IconWrapperProps = Omit<Props, 'onClick' | 'propTypes'>;
 
 class Checkbox extends PureComponent<Props> {
     static propTypes = {

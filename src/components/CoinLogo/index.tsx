@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const Logo = styled.img``;
 
-interface Props {
+interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
     network: string;
     className?: string;
 }

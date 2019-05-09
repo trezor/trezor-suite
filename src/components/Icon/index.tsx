@@ -51,7 +51,7 @@ const Path = styled.path<{ color: string }>`
 `;
 
 type WrapperProps = Omit<Props, 'icon' | 'size'>;
-interface Props {
+interface Props extends React.SVGAttributes<SVGElement> {
     className?: string;
 
     icon: string | import('support/types').iconShape;

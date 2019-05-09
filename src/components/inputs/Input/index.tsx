@@ -149,7 +149,7 @@ interface InputProps {
     border?: string;
     tooltipAction?: React.ReactNode;
 }
-interface Props {
+interface Props extends React.HTMLProps<HTMLInputElement> {
     className?: string;
     innerRef?: any;
     placeholder?: string;
