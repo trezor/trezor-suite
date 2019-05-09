@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import colors from 'config/colors';
 import icons from 'config/icons';
+import { Omit } from 'support/types';
 
 const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
     if (canAnimate) {
@@ -54,8 +55,6 @@ interface iconShape {
     viewBox: string;
     ratio?: number;
 }
-
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 type WrapperProps = Omit<Props, 'icon' | 'size'>;
 interface Props {

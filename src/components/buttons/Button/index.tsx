@@ -7,6 +7,7 @@ import { getPrimaryColor, getSecondaryColor } from 'utils/colors';
 import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import { SPIN } from 'config/animations';
+import { iconShape } from 'support/types';
 
 interface FluidSpinnerProps {
     size: number;
@@ -42,26 +43,6 @@ const FluidSpinner = styled.div<FluidSpinnerProps>`
         animation-delay: -0.15s;
     }
 `;
-
-interface iconShape {
-    paths: string[];
-    viewBox: string;
-    ratio?: number;
-}
-interface Props {
-    className: string;
-    additionalClassName?: string;
-    children: React.ReactNode;
-
-    variant: 'success' | 'info' | 'warning' | 'error';
-    isDisabled: boolean;
-    isInverse: boolean;
-    isWhite: boolean;
-    isTransparent: boolean;
-    isLoading: boolean;
-
-    icon?: string | iconShape;
-}
 
 const Wrapper = styled.button<Props>`
     display: flex;
@@ -213,6 +194,22 @@ const IconWrapper = styled.div`
     margin-right: 0.8rem;
     display: flex;
 `;
+
+// TODO: Error messages are not helpful. Find a better way to extend html button props.
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    className?: string;
+    additionalClassName?: string;
+    children: React.ReactNode;
+
+    variant: 'success' | 'info' | 'warning' | 'error';
+    isDisabled?: boolean;
+    isInverse?: boolean;
+    isWhite?: boolean;
+    isTransparent?: boolean;
+    isLoading?: boolean;
+
+    icon?: string | iconShape;
+}
 
 const Button = ({
     children,

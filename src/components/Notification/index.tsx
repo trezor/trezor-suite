@@ -10,7 +10,7 @@ import icons from 'config/icons';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<WrapperProps>`
     width: 100%;
     position: relative;
     display: flex;
@@ -92,9 +92,30 @@ const ButtonNotification = styled(Button)`
     padding: 12px 36px;
 `;
 
+interface ctaShape {
+    label: string;
+    callback: () => any;
+}
+
+type variantShape = 'success' | 'info' | 'warning' | 'error';
+interface WrapperProps {
+    className?: string;
+    variant?: variantShape;
+}
+interface Props {
+    className?: string;
+    variant: variantShape;
+    title: React.ReactNode;
+    message?: React.ReactNode;
+    actions?: ctaShape[];
+    cancelable?: boolean;
+    isActionInProgress?: boolean;
+    close?: () => any;
+}
+
 const Notification = ({
     className,
-    variant,
+    variant = 'info',
     title,
     message,
     actions,
@@ -102,8 +123,11 @@ const Notification = ({
     isActionInProgress,
     close,
     ...rest
-}) => {
+}: Props) => {
     const closeFunc = typeof close === 'function' ? close : () => {}; // TODO: add default close action
+    const stateIcon = getStateIcon(variant);
+    const stateColor = getPrimaryColor(variant) || undefined;
+    if (!stateIcon || !stateColor) return null;
 
     return (
         <Wrapper className={className} variant={variant} {...rest}>
@@ -111,11 +135,7 @@ const Notification = ({
                 <Col>
                     <Body>
                         <IconWrapper>
-                            <StyledIcon
-                                color={getPrimaryColor(variant)}
-                                icon={getStateIcon(variant)}
-                                size={16}
-                            />
+                            <StyledIcon color={stateColor} icon={stateIcon} size={16} />
                         </IconWrapper>
                         <Texts>
                             <Title>{title}</Title>
@@ -125,7 +145,7 @@ const Notification = ({
                     <AdditionalContent>
                         {actions && actions.length > 0 && (
                             <ActionContent>
-                                {actions.map(action => (
+                                {actions.map((action: ctaShape) => (
                                     <ButtonNotification
                                         isInverse
                                         key={action.label}
@@ -145,7 +165,7 @@ const Notification = ({
                 </Col>
                 {cancelable && (
                     <CloseClick onClick={() => closeFunc()}>
-                        <Icon color={getPrimaryColor(variant)} icon={icons.CLOSE} size={10} />
+                        <Icon color={stateColor} icon={icons.CLOSE} size={10} />
                     </CloseClick>
                 )}
             </Content>

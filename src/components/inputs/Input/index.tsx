@@ -258,7 +258,7 @@ Input.propTypes = {
     value: PropTypes.string,
     readOnly: PropTypes.bool,
     onChange: PropTypes.func,
-    state: PropTypes.oneOf(['success', 'warning', 'error']),
+    state: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
     bottomText: PropTypes.node,
     topLabel: PropTypes.node,
     tooltipAction: PropTypes.node,

@@ -38,6 +38,8 @@
         "@storybook/addons": "^4.1.11",
         "@storybook/react": "^4.1.11",
         "@types/react-router-dom": "^4.3.3",
+        "@types/react-select": "^2.0.17",
+        "@types/react-textarea-autosize": "^4.3.4",
         "@typescript-eslint/eslint-plugin": "^1.6.0",
         "@typescript-eslint/parser": "^1.6.0",
         "awesome-typescript-loader": "^5.2.1",

@@ -6,6 +6,7 @@ import { FONT_SIZE } from 'config/variables';
 import Icon from 'components/Icon';
 import colors from 'config/colors';
 import icons from 'config/icons';
+import { Omit } from 'support/types';
 
 interface Props {
     onClick: (event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => any;
@@ -13,7 +14,6 @@ interface Props {
     propTypes: any;
 }
 
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 type IconWrapperProps = Omit<Props, 'onClick' | 'propTypes'>;
 
 interface State {}

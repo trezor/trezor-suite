@@ -466,10 +466,12 @@ storiesOf('Form', module).add('All', () => (
             Checkbox <BtnLink onClick={linkTo('Form', 'Checkbox')}>{'<Checkbox />'}</BtnLink>
         </H1>
         <Row>
-            <Checkbox data-test="checkbox_unchecked">Label</Checkbox>
+            <Checkbox onClick={() => {}} data-test="checkbox_unchecked">
+                Label
+            </Checkbox>
         </Row>
         <Row>
-            <Checkbox isChecked data-test="checkbox_checked">
+            <Checkbox onClick={() => {}} isChecked data-test="checkbox_checked">
                 Label
             </Checkbox>
         </Row>
@@ -481,13 +483,13 @@ storiesOf('Form', module).add('All', () => (
         </H5>
         <Row>
             <DataWrapper data-test="switch_basic_unchecked">
-                <Switch />
+                <Switch onChange={() => {}} />
             </DataWrapper>
             <DataWrapper data-test="switch_basic_checked">
-                <Switch checked />
+                <Switch onChange={() => {}} checked />
             </DataWrapper>
             <DataWrapper data-test="switch_basic_disabled">
-                <Switch disabled />
+                <Switch onChange={() => {}} disabled />
             </DataWrapper>
         </Row>
 
@@ -496,15 +498,15 @@ storiesOf('Form', module).add('All', () => (
         </H5>
         <Row>
             <DataWrapper data-test="switch_small_unchecked">
-                <Switch isSmall />
+                <Switch onChange={() => {}} isSmall />
             </DataWrapper>
 
             <DataWrapper data-test="switch_small_checked">
-                <Switch isSmall checked />
+                <Switch onChange={() => {}} isSmall checked />
             </DataWrapper>
 
             <DataWrapper data-test="switch_small_disabled">
-                <Switch isSmall disabled />
+                <Switch onChange={() => {}} isSmall disabled />
             </DataWrapper>
         </Row>
         <H5>
@@ -515,25 +517,37 @@ storiesOf('Form', module).add('All', () => (
         </H5>
         <Row>
             <DataWrapper data-test="switch_noicon_unchecked">
-                <Switch uncheckedIcon={null} checkedIcon={null} />
+                <Switch onChange={() => {}} uncheckedIcon={null} checkedIcon={null} />
             </DataWrapper>
             <DataWrapper data-test="switch_noicon_checked">
-                <Switch uncheckedIcon={null} checkedIcon={null} checked />
+                <Switch onChange={() => {}} uncheckedIcon={null} checkedIcon={null} checked />
             </DataWrapper>
 
             <DataWrapper data-test="switch_noicon_disabled">
-                <Switch uncheckedIcon={null} checkedIcon={null} disabled />
+                <Switch onChange={() => {}} uncheckedIcon={null} checkedIcon={null} disabled />
             </DataWrapper>
         </Row>
         <Row>
             <DataWrapper data-test="switch_noicon_small_unchecked">
-                <Switch uncheckedIcon={null} checkedIcon={null} isSmall />
+                <Switch onChange={() => {}} uncheckedIcon={null} checkedIcon={null} isSmall />
             </DataWrapper>
             <DataWrapper data-test="switch_noicon_small_checked">
-                <Switch iuncheckedIcon={null} checkedIcon={null} sSmall checked />
+                <Switch
+                    onChange={() => {}}
+                    uncheckedIcon={null}
+                    checkedIcon={null}
+                    isSmall
+                    checked
+                />
             </DataWrapper>
             <DataWrapper data-test="switch_noicon_small_disabled">
-                <Switch uncheckedIcon={null} checkedIcon={null} isSmall disabled />
+                <Switch
+                    onChange={() => {}}
+                    uncheckedIcon={null}
+                    checkedIcon={null}
+                    isSmall
+                    disabled
+                />
             </DataWrapper>
         </Row>
     </Wrapper>
@@ -703,9 +717,7 @@ storiesOf('Form', module)
             return (
                 <Switch
                     key={`force-unmount-${isSmall}`}
-                    onChange={() => {
-                        return true;
-                    }}
+                    onChange={() => {}}
                     checked={checked}
                     {...(disabled ? { disabled } : {})}
                     {...(isSmall ? { isSmall } : {})}
