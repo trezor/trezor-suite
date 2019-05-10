@@ -1,0 +1,24 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": ".",
+        "paths": {
+            "@suite/*": ["./packages/suite/src/*"],
+            "@native/*": ["./packages/suite-native/src/*"],
+            "@desktop/*": ["./packages/suite-desktop/src/*"],
+        },
+        "jsx": "react-native",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "noEmit": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "target": "esnext",
+    },
+    "exclude": ["node_modules", "**/api/generated/**/*.*", "**/_old/**/*.*"]
+}

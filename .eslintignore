@@ -1,0 +1,10 @@
+.next
+_old
+build
+
+node_modules
+generated
+
+next.config.js
+packages/suite-desktop/src/electron.js
+packages/suite-desktop/src/preload.js
