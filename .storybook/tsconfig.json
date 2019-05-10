@@ -22,7 +22,7 @@
       "jsx": "react",
       "moduleResolution": "node",
       "rootDir": "../src",
-      "outDir": "../ts_build",
+      "outDir": "../lib",
       "noImplicitReturns": true,
       "noImplicitThis": true,
       "noImplicitAny": true,
