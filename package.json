@@ -11,9 +11,9 @@
         "lint:css": "npx stylelint './src/**/*.js'",
         "lint-fix": "npx eslint ./src --fix",
         "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
-        "build": "rm -rf lib && yarn check-types && npx babel --extensions '.ts,.tsx' src -d lib --ignore './src/stories/**/*.js' && babel-node ./scripts/build.js",
+        "build": "rm -rf lib && yarn tsc && npx babel --extensions '.ts,.tsx' src -d lib --ignore './src/stories/**/*.js' && babel-node ./scripts/build.js",
         "build:gh-pages": "build-storybook -c .storybook -o /docs",
-        "check-types": "tsc",
+        "check-types": "tsc --project tsconfig.types.json",
         "prepublishOnly": "npm run build",
         "ci-test:e2e": "yarn storybook & wait-on http://localhost:9001 && cypress run --browser electron",
         "run-integration-tests:ui": "cypress open"

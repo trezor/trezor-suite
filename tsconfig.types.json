@@ -9,10 +9,7 @@
 		"strict": true,
 		// Import non-ES modules as default imports.
         "esModuleInterop": true,
-        // Only emit ‘.d.ts’ declaration files.
-        "emitDeclarationOnly": true,
-        "declarationMap": true,
-        "allowJs": false,
-        "checkJs": false,
+        // Don't emit; allow Babel to transform files.
+		"noEmit": true,
     }
 }
