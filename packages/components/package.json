@@ -1,0 +1,13 @@
+{
+    "name": "@trezor/components",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "react": "16.8.6",
+        "react-native": "0.59.4"
+    },
+    "devDependencies": {
+        "@types/react": "^16.7.11",
+        "@types/react-native": "^0.57.41"
+    }
+}
