@@ -11,7 +11,7 @@
         "esModuleInterop": true,
         // Only emit ‘.d.ts’ declaration files.
         "emitDeclarationOnly": true,
-        "declarationMap": true,
+        "declarationMap": false,
         "allowJs": false,
         "checkJs": false,
     }
