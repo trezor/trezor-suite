@@ -38,4 +38,4 @@ class TrezorSuiteApp extends App<Props> {
     }
 }
 
-export default withRedux(initStore, { debug: true })(TrezorSuiteApp);
+export default withRedux(initStore)(TrezorSuiteApp);
