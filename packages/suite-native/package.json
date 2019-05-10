@@ -1,0 +1,30 @@
+{
+    "name": "@trezor/suite-native",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev:ios": "react-native run-ios --no-packager && yarn workspace @trezor/suite-native start",
+        "dev:android": "react-native run-android --no-packager && yarn workspace @trezor/suite-native start",
+        "start": "node ../../node_modules/react-native/local-cli/cli.js start --projectRoot ../../",
+        "start:clean": "yarn workspace @trezor/suite-native clean && yarn workspace @trezor/suite-native start -- --reset-cache",
+        "clean": "watchman watch-del-all && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-*"
+    },
+    "dependencies": {
+        "@trezor/components": "1.0.0",
+        "react": "16.8.6",
+        "react-native": "0.59.4",
+        "react-native-router-flux": "^4.0.6",
+        "react-redux": "^7.0.3",
+        "redux": "^4.0.1",
+        "redux-async-initial-state": "^0.3.0",
+        "redux-thunk": "^2.3.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.4.3",
+        "@babel/runtime": "^7.4.3",
+        "@types/react": "^16.8.13",
+        "@types/react-native": "^0.57.45",
+        "metro-react-native-babel-preset": "^0.53.1",
+        "typescript": "^3.4.3"
+    }
+}

@@ -13,10 +13,11 @@ class Theme {
     text: TextStyle;
     // container: ViewStyle;
 
+    // TODO: https://medium.com/react-native-training/react-native-custom-fonts-ccc9aacf9e5e
     constructor(colors: Colors) {
         this.text = {
-            fontFamily:
-                '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+            // fontFamily:
+            //    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
             fontSize: baseFontSize,
             lineHeight: baseLineHeight,
             color: colors.text,
