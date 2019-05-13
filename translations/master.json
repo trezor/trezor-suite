@@ -758,7 +758,7 @@
   "TR_TRANSACTION_ERROR": {
     "source": "Transaction error",
     "meta": {
-      "comment": "Error during signing transaction",
+      "comment": "Error during signing a transaction",
       "occurrences": [
         "src/components/notifications/Context/actions.messages.js"
       ]
@@ -789,7 +789,7 @@
     }
   },
   "TR_SIGN_MESSAGE_ERROR": {
-    "source": "Sign error",
+    "source": "Failed to sign message",
     "meta": {
       "occurrences": [
         "src/components/notifications/Context/actions.messages.js"
@@ -797,7 +797,7 @@
     }
   },
   "TR_VERIFY_MESSAGE_ERROR": {
-    "source": "Verify error",
+    "source": "Failed to verify message",
     "meta": {
       "occurrences": [
         "src/components/notifications/Context/actions.messages.js"
