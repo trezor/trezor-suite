@@ -120,7 +120,6 @@ const AccountReceive = (props: Props) => {
                         <Input
                             type="text"
                             readOnly
-                            autoSelect
                             topLabel={props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
                             value={address}
                             isPartiallyHidden={isAddressHidden}

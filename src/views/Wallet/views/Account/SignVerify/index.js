@@ -108,7 +108,6 @@ class SignVerify extends Component<Props> {
                                 name="signAddress"
                                 value={account.descriptor}
                                 type="text"
-                                autoSelect
                                 readOnly
                             />
                         </Row>
@@ -129,7 +128,6 @@ class SignVerify extends Component<Props> {
                                 name="signSignature"
                                 value={signSignature}
                                 rows={4}
-                                autoSelect
                                 maxRows={4}
                                 maxLength={255}
                                 readOnly
@@ -158,7 +156,6 @@ class SignVerify extends Component<Props> {
                                 topLabel={this.props.intl.formatMessage(
                                     l10nCommonMessages.TR_ADDRESS
                                 )}
-                                autoSelect
                                 name="verifyAddress"
                                 value={verifyAddress}
                                 onChange={this.handleInputChange}
@@ -181,7 +178,6 @@ class SignVerify extends Component<Props> {
                         <Row>
                             <TextArea
                                 topLabel={this.props.intl.formatMessage(l10nMessages.TR_SIGNATURE)}
-                                autoSelect
                                 name="verifySignature"
                                 value={verifySignature}
                                 onChange={this.handleInputChange}
