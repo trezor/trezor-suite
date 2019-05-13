@@ -14,7 +14,7 @@ variables:
 
 build image:
   variables:
-    CONTAINER_NAME: "$CI_REGISTRY/trezor-ui-components"
+    CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
   image: docker:latest
   services:
     - docker:dind
@@ -29,7 +29,7 @@ build image:
     - docker push $CONTAINER_NAME:latest
 
 test snapshots:
-  image: $CI_REGISTRY/trezor-ui-components:latest
+  image: $CI_REGISTRY/$CONTAINER_NAME:$CI_COMMIT_SHA
   stage: test
   script:
     - yarn storybook
