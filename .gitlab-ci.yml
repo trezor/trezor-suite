@@ -1,7 +1,6 @@
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - .npm
     - cache/Cypress
     - node_modules
 
@@ -15,7 +14,7 @@ variables:
   CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
 
 install:
-  image: cypress/base:10
+  image: cypress/base
   stage: build
   script:
     - yarn
