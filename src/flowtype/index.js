@@ -163,6 +163,9 @@ export type { Token } from 'reducers/TokensReducer';
 export type { Web3Instance } from 'reducers/Web3Reducer';
 export type { BlockchainFeeLevel } from 'reducers/BlockchainReducer';
 
+export type { MessageDescriptor } from 'support/ConnectedIntlProvider'; // this service has no action file, all is written inside one file
+export type { Messages } from 'support/ConnectedIntlProvider'; // this service has no action file, all is written inside one file
+
 export type Accounts = $ElementType<State, 'accounts'>;
 export type LocalStorage = $ElementType<State, 'localStorage'>;
 export type Config = $PropertyType<$ElementType<State, 'localStorage'>, 'config'>;

@@ -1,6 +1,6 @@
 /* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype/npm/react-intl';
+import type { Messages } from 'flowtype';
 
 const definedMessages: Messages = defineMessages({
     TR_LOCAL_CURRENCY: {
@@ -21,7 +21,7 @@ const definedMessages: Messages = defineMessages({
         defaultMessage: 'Visible coins',
     },
     TR_VISIBLE_COINS_EXTERNAL: {
-        id: 'TR_VISIBLE_COINS',
+        id: 'TR_VISIBLE_COINS_EXTERNAL:',
         defaultMessage: 'Visible external coins',
     },
     TR_VISIBLE_COINS_EXPLAINED: {

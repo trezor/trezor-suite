@@ -6,6 +6,8 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { CONTEXT_NONE } from 'actions/constants/modal';
 import urlConstants from 'constants/urls';
 import * as CONNECT from 'actions/constants/TrezorConnect';
@@ -34,6 +36,9 @@ import type {
     Device,
     TrezorDevice,
 } from 'flowtype';
+
+import l10nCommonMessages from 'views/common.messages';
+import l10nMessages from 'components/notifications/Context/actions.messages';
 
 export type TrezorConnectAction =
     | {
@@ -264,12 +269,12 @@ export const authorizeDevice = (): AsyncAction => async (
             payload: {
                 devicePath: selected.path,
                 variant: 'error',
-                title: 'Authentication error',
+                title: <FormattedMessage {...l10nMessages.TR_AUTHENTICATION_ERROR} />,
                 message: response.payload.error,
                 cancelable: false,
                 actions: [
                     {
-                        label: 'Try again',
+                        label: <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />,
                         callback: () => {
                             dispatch({
                                 type: NOTIFICATION.CLOSE,
@@ -351,7 +356,7 @@ export function acquire(): AsyncAction {
                 payload: {
                     type: 'error',
                     variant: 'error',
-                    title: 'Acquire device error',
+                    title: <FormattedMessage {...l10nMessages.TR_ACQUIRE_DEVICE_ERROR} />,
                     message: response.payload.error,
                     cancelable: true,
                     // actions: [

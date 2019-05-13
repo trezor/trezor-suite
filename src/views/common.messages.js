@@ -1,6 +1,6 @@
 /* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype/npm/react-intl';
+import type { Messages } from 'flowtype';
 
 const definedMessages: Messages = defineMessages({
     TR_DEVICE_SETTINGS: {
@@ -15,6 +15,17 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_ACCOUNT_HASH',
         defaultMessage: 'Account #{number}',
         description: 'Used in auto-generated account label',
+    },
+    TR_DEVICE_LABEL_ACCOUNT_HASH: {
+        id: 'TR_DEVICE_LABEL_ACCOUNT_HASH',
+        defaultMessage: '{deviceLabel} Account #{number}',
+        description: 'Used in auto-generated account label',
+    },
+    TR_LOOKS_LIKE_IT_IS_DEVICE_LABEL: {
+        id: 'TR_LOOKS_LIKE_IT_IS_DEVICE_LABEL',
+        defaultMessage:
+            'Looks like it is {deviceLabel} Account #{number} address of {network} network',
+        description: 'Example: Looks like it is My Trezor Account #1 address of ETH network',
     },
     TR_IMPORTED_ACCOUNT_HASH: {
         id: 'TR_IMPORTED_ACCOUNT_HASH',
@@ -99,6 +110,31 @@ const definedMessages: Messages = defineMessages({
     TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK: {
         id: 'TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK',
         defaultMessage: 'Show address, I will take the risk',
+    },
+    TR_HIGH_FEE: {
+        id: 'TR_HIGH_FEE',
+        defaultMessage: 'High',
+        description: 'fee level',
+    },
+    TR_NORMAL_FEE: {
+        id: 'TR_NORMAL_FEE',
+        defaultMessage: 'Normal',
+        description: 'fee level',
+    },
+    TR_LOW_FEE: {
+        id: 'TR_LOW_FEE',
+        defaultMessage: 'Low',
+        description: 'fee level',
+    },
+    TR_CUSTOM_FEE: {
+        id: 'TR_CUSTOM_FEE',
+        defaultMessage: 'Custom',
+        description: 'fee level',
+    },
+    TR_TRY_AGAIN: {
+        id: 'TR_TRY_AGAIN',
+        defaultMessage: 'Try again',
+        description: 'Try to run the proccess again',
     },
 });
 

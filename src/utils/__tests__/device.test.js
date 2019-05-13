@@ -76,15 +76,4 @@ describe('device utils', () => {
         expect(utils.getStatusColor('disconnected')).toBe(colors.ERROR_PRIMARY);
         expect(utils.getStatusColor('unavailable')).toBe(colors.ERROR_PRIMARY);
     });
-
-    it('get status name', () => {
-        expect(utils.getStatusName(0)).toBe('Status unknown');
-        expect(utils.getStatusName(null)).toBe('Status unknown');
-        expect(utils.getStatusName('sdsdsdsd')).toBe('Status unknown');
-        expect(utils.getStatusName('used-in-other-window')).toBe('Used in other window');
-        expect(utils.getStatusName('connected')).toBe('Connected');
-        expect(utils.getStatusName('unacquired')).toBe('Used in other window');
-        expect(utils.getStatusName('disconnected')).toBe('Disconnected');
-        expect(utils.getStatusName('unavailable')).toBe('Unavailable');
-    });
 });

@@ -6,6 +6,8 @@ import { findDevice, getPendingAmount } from 'reducers/utils';
 import { toDecimalAmount } from 'utils/formatUtils';
 import { toFiatCurrency } from 'utils/fiatConverter';
 import * as validators from 'utils/validators';
+import l10nMessages from 'views/Wallet/views/Account/Send/validation.messages';
+import l10nCommonMessages from 'views/common.messages';
 
 import type {
     Dispatch,
@@ -150,11 +152,11 @@ const addressValidation = ($state: State): PayloadAction<State> => (
     const { address } = state;
 
     if (address.length < 1) {
-        state.errors.address = 'Address is not set';
+        state.errors.address = l10nMessages.TR_ADDRESS_IS_NOT_SET;
     } else if (!AddressValidator.validate(address, 'XRP')) {
-        state.errors.address = 'Address is not valid';
+        state.errors.address = l10nMessages.TR_ADDRESS_IS_NOT_VALID;
     } else if (address.toLowerCase() === account.descriptor.toLowerCase()) {
-        state.errors.address = 'Cannot send to myself';
+        state.errors.address = l10nMessages.TR_CANNOT_SEND_TO_MYSELF;
     }
     return state;
 };
@@ -226,9 +228,13 @@ const addressLabel = ($state: State): PayloadAction<State> => (
                 currentNetworkAccount.deviceState
             );
             if (device) {
-                state.infos.address = `${
-                    device.instanceLabel
-                } Account #${currentNetworkAccount.index + 1}`;
+                state.infos.address = {
+                    ...l10nCommonMessages.TR_DEVICE_LABEL_ACCOUNT_HASH,
+                    values: {
+                        deviceLabel: device.instanceLabel,
+                        number: currentNetworkAccount.index + 1,
+                    },
+                };
             }
         } else {
             // corner-case: the same derivation path is used on different networks
@@ -241,11 +247,14 @@ const addressLabel = ($state: State): PayloadAction<State> => (
             const { networks } = getState().localStorage.config;
             const otherNetwork = networks.find(c => c.shortcut === otherNetworkAccount.network);
             if (device && otherNetwork) {
-                state.warnings.address = `Looks like it's ${
-                    device.instanceLabel
-                } Account #${otherNetworkAccount.index + 1} address of ${
-                    otherNetwork.name
-                } network`;
+                state.warnings.address = {
+                    ...l10nCommonMessages.TR_LOOKS_LIKE_IT_IS_DEVICE_LABEL,
+                    values: {
+                        deviceLabel: device.instanceLabel,
+                        number: otherNetworkAccount.index + 1,
+                        network: otherNetwork.name,
+                    },
+                };
             }
         }
     }
@@ -268,19 +277,22 @@ const amountValidation = ($state: State): PayloadAction<State> => (
 
     const { amount } = state;
     if (amount.length < 1) {
-        state.errors.amount = 'Amount is not set';
+        state.errors.amount = l10nMessages.TR_AMOUNT_IS_NOT_SET;
     } else if (amount.length > 0 && !validators.isNumber(amount)) {
-        state.errors.amount = 'Amount is not a number';
+        state.errors.amount = l10nMessages.TR_AMOUNT_IS_NOT_A_NUMBER;
     } else {
         const pendingAmount: BigNumber = getPendingAmount(pending, state.networkSymbol);
         if (!validators.hasDecimals(state.amount, 6)) {
-            state.errors.amount = 'Maximum 6 decimals allowed';
+            state.errors.amount = {
+                ...l10nMessages.TR_MAXIMUM_DECIMALS_ALLOWED,
+                values: { decimals: 6 },
+            };
         } else if (
             new BigNumber(state.total).isGreaterThan(
                 new BigNumber(account.balance).minus(pendingAmount)
             )
         ) {
-            state.errors.amount = 'Not enough funds';
+            state.errors.amount = l10nMessages.TR_NOT_ENOUGH_FUNDS;
         }
     }
 
@@ -288,15 +300,23 @@ const amountValidation = ($state: State): PayloadAction<State> => (
         !state.errors.amount &&
         new BigNumber(account.balance).minus(state.total).lt(account.reserve)
     ) {
-        state.errors.amount = `Not enough funds. Reserved amount for this account is ${
-            account.reserve
-        } ${state.networkSymbol}`;
+        state.errors.amount = {
+            ...l10nMessages.TR_NOT_ENOUGH_FUNDS_RESERVED_AMOUNT,
+            values: {
+                reservedAmount: account.reserve,
+                networkSymbol: state.networkSymbol,
+            },
+        };
     }
 
     if (!state.errors.amount && new BigNumber(state.amount).lt(state.minAmount)) {
-        state.errors.amount = `Amount is too low. Minimum amount for creating a new account is ${
-            state.minAmount
-        } ${state.networkSymbol}`;
+        state.errors.amount = {
+            ...l10nMessages.TR_AMOUNT_IS_TOO_LOW_MINIMUM_AMOUNT_FOR_CREATING,
+            values: {
+                reservedAmount: state.minAmount,
+                networkSymbol: state.networkSymbol,
+            },
+        };
     }
 
     return state;
@@ -317,15 +337,15 @@ export const feeValidation = ($state: State): PayloadAction<State> => (
 
     const { fee } = state;
     if (fee.length < 1) {
-        state.errors.fee = 'Fee is not set';
+        state.errors.fee = l10nMessages.TR_FEE_IS_NOT_SET;
     } else if (fee.length > 0 && !validators.isAbs(fee)) {
-        state.errors.fee = 'Fee must be an absolute number';
+        state.errors.fee = l10nMessages.TR_FEE_MUST_ME_AN_ABSOLUT_NUMBER;
     } else {
         const gl: BigNumber = new BigNumber(fee);
         if (gl.isLessThan(network.fee.minFee)) {
-            state.errors.fee = 'Fee is below recommended';
+            state.errors.fee = l10nMessages.TR_FEE_IS_BELOW_RECOMMENDED;
         } else if (gl.isGreaterThan(network.fee.maxFee)) {
-            state.errors.fee = 'Fee is above recommended';
+            state.errors.fee = l10nMessages.TR_FEE_IS_ABOVE_RECOMMENDED;
         }
     }
     return state;
@@ -340,11 +360,11 @@ export const destinationTagValidation = ($state: State): PayloadAction<State> =>
     const { destinationTag } = state;
 
     if (destinationTag.length > 0 && !validators.isAbs(destinationTag)) {
-        state.errors.destinationTag = 'Destination tag must be an absolute number';
+        state.errors.destinationTag = l10nMessages.TR_DESTINATION_TAG_MUST_BE_AN_ABSOLUTE;
     }
 
     if (parseInt(destinationTag, 10) > U_INT_32) {
-        state.errors.destinationTag = 'Number is too big';
+        state.errors.destinationTag = l10nMessages.TR_DESTINATION_TAG_IS_NOT_VALID;
     }
 
     return state;
@@ -386,9 +406,16 @@ export const getFeeLevels = (
     const { network } = getState().selectedAccount;
     if (!network) return []; // flowtype fallback
 
+    const l10nFeeMap = {
+        Low: l10nCommonMessages.TR_LOW_FEE,
+        Normal: l10nCommonMessages.TR_NORMAL_FEE,
+        High: l10nCommonMessages.TR_HIGH_FEE,
+    };
+
     // map BlockchainFeeLevel to SendFormReducer FeeLevel
     const levels = feeLevels.map(level => ({
         value: level.name,
+        localizedValue: l10nFeeMap[level.value],
         fee: level.value,
         label: `${toDecimalAmount(level.value, network.decimals)} ${network.symbol}`,
     }));
@@ -398,11 +425,13 @@ export const getFeeLevels = (
         selected && selected.value === 'Custom'
             ? {
                   value: 'Custom',
+                  localizedValue: l10nCommonMessages.TR_CUSTOM_FEE,
                   fee: selected.fee,
                   label: `${toDecimalAmount(selected.fee, network.decimals)} ${network.symbol}`,
               }
             : {
                   value: 'Custom',
+                  localizedValue: l10nCommonMessages.TR_CUSTOM_FEE,
                   fee: '0',
                   label: '',
               };

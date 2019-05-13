@@ -8,7 +8,7 @@ import { DEVICE } from 'trezor-connect';
 import type { Action } from 'flowtype';
 
 export type CallbackAction = {
-    label: string,
+    label: React.Node,
     callback: Function,
 };
 
