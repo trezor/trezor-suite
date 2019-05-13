@@ -5,6 +5,4 @@ WORKDIR /trezor-ui-components
 COPY package.json /trezor-ui-components
 COPY yarn.lock /trezor-ui-components
 
-RUN yarn install
-
 COPY . /trezor-ui-components
