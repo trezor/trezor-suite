@@ -1,4 +1,4 @@
-image: debian:latest
+image: node:10.15.1
 
 before_script:
   - apt-get update
