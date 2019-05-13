@@ -24,11 +24,11 @@ const SvgWrapper = styled.svg`
     transform-origin: center center;
 `;
 
-type Circleprops = Props & {
+type CircleProps = Props & {
     isRoute?: boolean;
     isPath?: boolean;
 };
-const CircleWrapper = styled.circle<Circleprops>`
+const CircleWrapper = styled.circle<CircleProps>`
     ${props =>
         props.isRoute &&
         css`
