@@ -36,7 +36,7 @@ test snapshots:
   script:
     - yarn
     - yarn storybook
-    - yarn ci:test:snapshots -c baseUrl=https://trezor.github.io/trezor-ui-components
+    - yarn ci:test:snapshots
   artifacts:
     expire_in: 1 day
     when: always

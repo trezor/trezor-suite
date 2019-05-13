@@ -16,9 +16,9 @@
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
         "prepublishOnly": "npm run build",
-        "ci:test:snapshots": "cypress run -c baseUrl=https://localhost:9001/#/",
-        "ci:test:snapshots:references": "cypress run -c baseUrl=https://localhost:9001/#/ --env updateSnapshots=true",
-        "run-integration-tests:ui": "cypress open"
+        "ci:storybook": "start-storybook -s --ci ./public -p 9001 -c .storybook",
+        "ci:test:snapshots": "start-server-and-test storybook https://localhost:9001 & cypress run -c baseUrl=https://localhost:9001/#/",
+        "ci:test:snapshots:references": "start-server-and-test storybook https://localhost:9001 & cypress run -c baseUrl=https://localhost:9001/#/ --env updateSnapshots=true"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",
@@ -68,6 +68,7 @@
         "react": "16.8.6",
         "react-docgen-typescript-loader": "^3.1.0",
         "react-dom": "16.8.6",
+        "start-server-and-test": "^1.9.0",
         "storybook-react-router": "^1.0.5",
         "styled-components": "^4.2.0",
         "stylelint": "^9.9.0",
