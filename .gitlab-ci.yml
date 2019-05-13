@@ -1,9 +1,5 @@
 image: node:10.15.1
 
-before_script:
-  - "apt-get update"
-  - "apt-get install -y build-essential"
-
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
@@ -30,32 +26,14 @@ lint:
     - yarn
     - yarn run lint
 
-test snapshots:
-  image: docker:latest
-  services:
-    - docker:dind
+test-snapshots:
+  image: cypress/browsers:chrome67
   stage: test
   script:
-    - yarn
-    - yarn ci:test:snapshots
+    - yarn ci:test:snapshots -c baseUrl=https://trezor-wallet-dev.trezor.io/${CI_BUILD_REF_NAME}
   artifacts:
     expire_in: 1 day
     when: always
     paths:
       - /builds/trezor/trezor-ui-components/test/screenshots
-      - /builds/trezor/trezor-ui-components/test/snapshots
-
-make snapshots references:
-  image: docker:latest
-  services:
-    - docker:dind
-  stage: test
-  when: manual
-  script:
-    - yarn
-    - yarn ci:test:snapshots:references
-  artifacts:
-    expire_in: 1 day
-    when: always
-    paths:
       - /builds/trezor/trezor-ui-components/test/snapshots

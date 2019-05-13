@@ -16,8 +16,8 @@
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
         "prepublishOnly": "npm run build",
-        "ci:test:snapshots": "./scripts/run.sh && storybook & wait-on http://localhost:9001 && cypress run --browser chrome",
-        "ci:test:snapshots:references": "./scripts/run.sh && storybook & wait-on http://localhost:9001 && cypress run --browser chrome --env updateSnapshots=true",
+        "ci:test:snapshots": "cypress run",
+        "ci:test:snapshots:references": "cypress run --env updateSnapshots=true",
         "run-integration-tests:ui": "cypress open"
     },
     "devDependencies": {
