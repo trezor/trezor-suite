@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -11,6 +12,7 @@ interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
 
 const CoinLogo = ({ network, className, ...rest }: Props) => {
     return (
+        // eslint-disable-next-line import/no-dynamic-require
         <Logo className={className} src={require(`../../images/coins/${network}.png`)} {...rest} />
     );
 };
