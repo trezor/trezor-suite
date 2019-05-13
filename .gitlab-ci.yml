@@ -1,3 +1,15 @@
+image: node:10.15.1
+
+variables:
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+  CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
+
+before_script:
+  - "apt-get update"
+  # - "apt-get install -y build-essential"
+  # - "apt-get install xvfb"
+  # - "apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2"
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
@@ -8,17 +20,9 @@ stages:
   - test
   - cleanup
 
-variables:
-  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
-  CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
-
 install:
   image: cypress/base:latest
   stage: build
-  before_script:
-    - "apt-get update"
-    - "apt-get install -y build-essential"
-    - "apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2"
   script:
     - yarn install --frozen-lockfile
     - $(yarn bin)/cypress cache path
