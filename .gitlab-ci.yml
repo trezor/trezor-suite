@@ -1,9 +1,8 @@
-image: node:10.15.1
+image: debian:latest
 
 before_script:
-  - "apt-get update"
-  - "apt-get install -y build-essential"
-  - "apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2"
+  - apt-get update
+  - apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
