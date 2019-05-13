@@ -27,7 +27,7 @@ lint:
     - yarn run lint
 
 test-snapshots:
-  image: cypress/browsers:chrome67
+  image: cypress/base:10
   stage: test
   script:
     - yarn ci:test:snapshots -c baseUrl=https://trezor-wallet-dev.trezor.io/${CI_BUILD_REF_NAME}
