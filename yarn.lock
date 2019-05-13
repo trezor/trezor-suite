@@ -9285,10 +9285,10 @@ react-select@^2.4.3:
     react-input-autosize "^2.2.1"
     react-transition-group "^2.2.1"
 
-react-switch@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-switch/-/react-switch-4.1.0.tgz#93379df044c9febe86d0b1485cb14b2a364562b6"
-  integrity sha512-mINolJx85ZojtsKdH+DE+p9i073a1mQscEADF6y/FLBshSmyciZffBWP0xu8jWyqRIg7tWykFLJt+2xlMya7sw==
+react-switch@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-switch/-/react-switch-5.0.0.tgz#ecbb666f8789cb8138b3ba1160bc3745390ab502"
+  integrity sha512-+zxY9xj9dMc8Y4gv/kkqQrirfEiIQ+SlQfJDW1Wi81L3xoh1fcbBYyJyh0TnhM/U/b6HxuBmkmU4Ooxgtuoavw==
   dependencies:
     prop-types "^15.6.2"
 
@@ -11204,16 +11204,16 @@ trezor-translations-manager@^1.0.5:
     request "^2.88.0"
     request-promise-native "^1.0.5"
 
-trezor-ui-components@^1.0.0-beta.18:
-  version "1.0.0-beta.18"
-  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.18.tgz#2408dbdedc83e986abcde9d8b2aec3ec37bbdc43"
-  integrity sha512-mwS7dqrAUto25ytZpF9K2BQpjTBH78/PJjHVGBoZrLJkONogqOvCCdIbkrUSkNR+ZTep4MoxDF3ZN7SXGsFr+g==
+trezor-ui-components@^1.0.0-beta.19:
+  version "1.0.0-beta.19"
+  resolved "https://registry.yarnpkg.com/trezor-ui-components/-/trezor-ui-components-1.0.0-beta.19.tgz#bcf07148cbbe9298b8870c2637e1ca8d6f93736a"
+  integrity sha512-8YmB0QqqNiiJmVJFNkzgL4sxyQGF45ErUwfYc4JSlxMd6+rfA/sBnsL/H9dmHtDXMmL212yv62fFJs1GpiNNPA==
   dependencies:
     "@tippy.js/react" "^2.1.1"
     prop-types "^15.7.2"
     react-router-dom "^4.3.1"
     react-select "^2.4.3"
-    react-switch "^4.1.0"
+    react-switch "^5.0.0"
     react-textarea-autosize "^7.1.0"
 
 trim-newlines@^1.0.0:
