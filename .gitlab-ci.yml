@@ -1,5 +1,9 @@
 image: node:10.15.1
 
+before_script:
+  - "apt-get update"
+  - "apt-get install -y build-essential"
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
