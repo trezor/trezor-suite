@@ -1,8 +1,7 @@
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - cache/Cypress
-    - node_modules
+    - ~/.cache
 
 stages:
   - build
@@ -17,7 +16,7 @@ install:
   image: cypress/base:latest
   stage: build
   script:
-    - yarn
+    - yarn install --frozen-lockfile
     - $(yarn bin)/cypress cache path
     - $(yarn bin)/cypress cache list
     - $(yarn bin)/cypress verify
@@ -40,7 +39,6 @@ test snapshots:
   image: $CONTAINER_NAME:$CI_COMMIT_SHA
   stage: test
   script:
-    - yarn
     - yarn ci:test:snapshots
   artifacts:
     expire_in: 1 day
