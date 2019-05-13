@@ -2,7 +2,7 @@
 
 __added__
 - Coin visibility settings
-- Complete russian and ukrainian localization
+- Almost complete russian, ukrainian and spanish localization
 - Auto reconnect to a backend after losing connection
 
 __changed__
