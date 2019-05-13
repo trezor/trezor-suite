@@ -30,7 +30,8 @@ test-snapshots:
   image: cypress/base:10
   stage: test
   script:
-    - yarn ci:test:snapshots -c baseUrl=https://trezor-wallet-dev.trezor.io/${CI_BUILD_REF_NAME}
+    # - yarn ci:test:snapshots -c baseUrl=https://trezor-wallet-dev.trezor.io/${CI_BUILD_REF_NAME}
+    - yarn ci:test:snapshots -c baseUrl=https://trezor.github.io/trezor-ui-components
   artifacts:
     expire_in: 1 day
     when: always
