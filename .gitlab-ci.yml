@@ -8,6 +8,7 @@ cache:
 stages:
   - build
   - test
+  - afterTest
 
 variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
@@ -21,7 +22,7 @@ build image:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   services:
     - docker:dind
-  stage: test
+  stage: build
   when: always
   script:
     - docker pull $CONTAINER_NAME:latest || true
@@ -46,11 +47,11 @@ test snapshots:
 
 delete image:
   image: docker:latest
+  stage: afterTest
   services:
     - docker:dind
   before_script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-  stage: test
   when: always
   script:
     - docker rmi $CONTAINER_NAME:$CI_COMMIT_SHA
