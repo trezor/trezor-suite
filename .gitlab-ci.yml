@@ -39,14 +39,15 @@ test snapshots:
       - /builds/trezor/trezor-ui-components/test/screenshots
       - /builds/trezor/trezor-ui-components/test/snapshots
 
-make snapshots references:
+ make snapshots references:
   image: cypress/browsers:chrome67
   stage: test
+  when: manual
   script:
     - yarn
     - yarn ci:test:snapshots:references
   artifacts:
     expire_in: 1 day
-    when: manually
+    when: always
     paths:
       - /builds/trezor/trezor-ui-components/test/snapshots
