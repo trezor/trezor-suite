@@ -53,12 +53,12 @@ test snapshots:
 make snapshot references:
   image: $CONTAINER_NAME:$CI_COMMIT_SHA
   stage: test
+  when: manual
   script:
     - yarn
     - yarn ci:test:snapshots:references
   artifacts:
     expire_in: 1 day
-    when: manual
     paths:
       - /builds/trezor/trezor-ui-components/test/snapshots
 
