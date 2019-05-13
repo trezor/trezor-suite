@@ -39,7 +39,7 @@ test snapshots:
       - /builds/trezor/trezor-ui-components/test/screenshots
       - /builds/trezor/trezor-ui-components/test/snapshots
 
- make snapshots references:
+make snapshots references:
   image: cypress/browsers:chrome67
   stage: test
   when: manual
