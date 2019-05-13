@@ -15,7 +15,7 @@ import {
 import type { IntlShape } from 'react-intl';
 
 import { FONT_SIZE } from 'config/variables';
-
+import { getBottomText } from 'utils/uiUtils';
 import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
 
@@ -81,7 +81,7 @@ const AdvancedSettingsSendButtonWrapper = styled.div`
     justify-content: flex-end;
 `;
 
-const getGasLimitInputState = (gasLimitErrors: string, gasLimitWarnings: string): ?string => {
+const getGasLimitInputState = (gasLimitErrors: boolean, gasLimitWarnings: boolean): ?string => {
     let state = null;
     if (gasLimitWarnings && !gasLimitErrors) {
         state = 'warning';
@@ -92,7 +92,7 @@ const getGasLimitInputState = (gasLimitErrors: string, gasLimitWarnings: string)
     return state;
 };
 
-const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string): ?string => {
+const getGasPriceInputState = (gasPriceErrors: boolean, gasPriceWarnings: boolean): ?string => {
     let state = null;
     if (gasPriceWarnings && !gasPriceErrors) {
         state = 'warning';
@@ -103,7 +103,7 @@ const getGasPriceInputState = (gasPriceErrors: string, gasPriceWarnings: string)
     return state;
 };
 
-const getDataTextareaState = (dataError: string, dataWarning: string): ?string => {
+const getDataTextareaState = (dataError: boolean, dataWarning: boolean): ?string => {
     let state = null;
     if (dataWarning) {
         state = 'warning';
@@ -177,7 +177,7 @@ const AdvancedForm = (props: Props) => {
         <AdvancedSettingsWrapper>
             <GasInputRow>
                 <GasInput
-                    state={getGasLimitInputState(errors.gasLimit, warnings.gasLimit)}
+                    state={getGasLimitInputState(!!errors.gasLimit, !!warnings.gasLimit)}
                     autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
@@ -234,7 +234,7 @@ const AdvancedForm = (props: Props) => {
                             )}
                         </InputLabelWrapper>
                     }
-                    bottomText={errors.gasLimit || warnings.gasLimit || infos.gasLimit}
+                    bottomText={getBottomText(errors.gasLimit, warnings.gasLimit, infos.gasLimit)}
                     value={
                         calculatingGasLimit
                             ? props.intl.formatMessage(l10nMessages.TR_CALCULATING_DOT_DOT)
@@ -245,7 +245,7 @@ const AdvancedForm = (props: Props) => {
                 />
 
                 <GasInput
-                    state={getGasPriceInputState(errors.gasPrice, warnings.gasPrice)}
+                    state={getGasPriceInputState(!!errors.gasPrice, !!warnings.gasPrice)}
                     autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
@@ -292,7 +292,7 @@ const AdvancedForm = (props: Props) => {
                             </Left>
                         </InputLabelWrapper>
                     }
-                    bottomText={errors.gasPrice || warnings.gasPrice || infos.gasPrice}
+                    bottomText={getBottomText(errors.gasPrice, warnings.gasPrice, infos.gasPrice)}
                     value={gasPrice}
                     onChange={event => onGasPriceChange(event.target.value)}
                 />
@@ -322,8 +322,8 @@ const AdvancedForm = (props: Props) => {
                         </Left>
                     </InputLabelWrapper>
                 }
-                state={getDataTextareaState(errors.data, warnings.data)}
-                bottomText={errors.data || warnings.data || infos.data}
+                state={getDataTextareaState(!!errors.data, !!warnings.data)}
+                bottomText={getBottomText(errors.data, warnings.data, infos.data)}
                 isDisabled={networkSymbol !== currency}
                 value={networkSymbol !== currency ? '' : data}
                 onChange={event => onDataChange(event.target.value)}

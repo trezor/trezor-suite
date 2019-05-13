@@ -3,7 +3,8 @@
 import * as SEND from 'actions/constants/send';
 import * as ACCOUNT from 'actions/constants/account';
 
-import type { Action } from 'flowtype';
+import type { Action, MessageDescriptor } from 'flowtype';
+import l10nCommonMessages from 'views/common.messages';
 
 export type FeeLevel = {
     label: string,
@@ -36,9 +37,9 @@ export type State = {
     nonce: string,
     total: string,
 
-    errors: { [k: string]: string },
-    warnings: { [k: string]: string },
-    infos: { [k: string]: string },
+    errors: { [k: string]: MessageDescriptor },
+    warnings: { [k: string]: MessageDescriptor },
+    infos: { [k: string]: MessageDescriptor },
 
     sending: boolean,
 };
@@ -62,6 +63,7 @@ export const initialState: State = {
         label: 'Normal',
         gasPrice: '0',
         value: 'Normal',
+        localizedValue: l10nCommonMessages.TR_NORMAL_FEE,
     },
     recommendedGasPrice: '0',
     gasPriceNeedsUpdate: false,

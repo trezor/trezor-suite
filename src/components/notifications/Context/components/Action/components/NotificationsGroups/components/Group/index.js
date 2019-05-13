@@ -114,7 +114,16 @@ Group.propTypes = {
         PropTypes.shape({
             key: PropTypes.object,
             type: PropTypes.string,
-            title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+            title: PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.node,
+                PropTypes.shape({
+                    id: PropTypes.string,
+                    defaultMessage: PropTypes.string,
+                    description: PropTypes.string,
+                    values: PropTypes.object,
+                }),
+            ]),
             message: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
         })
     ),

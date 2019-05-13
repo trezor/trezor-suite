@@ -145,7 +145,7 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                 <Content>
                     <Row>
                         <Button onClick={() => (!account ? this.verifyAddress() : 'false')}>
-                            <FormattedMessage {...l10nMessages.TR_TRY_AGAIN} />
+                            <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />
                         </Button>
                         <Button
                             isInverse
