@@ -469,6 +469,14 @@
       ]
     }
   },
+  "TR_PASSPHRASE_IS_TOO_LONG": {
+    "source": "Passphrase is too long!",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
   "TR_SHOW_PASSPHRASE": {
     "source": "Show passphrase",
     "meta": {
@@ -1112,6 +1120,23 @@
   },
   "TR_OTHER_COINS": {
     "source": "Other coins",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_SELECT_COINS": {
+    "source": "Select a coin in {TR_SELECT_COINS_LINK}",
+    "meta": {
+      "comment": "COMPLETE SENTENCE: Select a coin in application settings",
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_SELECT_COINS_LINK": {
+    "source": "application settings",
     "meta": {
       "occurrences": [
         "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
@@ -1830,6 +1855,30 @@
   },
   "TR_THE_CHANGES_ARE_SAVED": {
     "source": "The changes are saved automatically as they are made",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/WalletSettings/index.messages.js"
+      ]
+    }
+  },
+  "TR_VISIBLE_COINS": {
+    "source": "Visible coins",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/WalletSettings/index.messages.js"
+      ]
+    }
+  },
+  "TR_VISIBLE_COINS_EXTERNAL": {
+    "source": "Visible external coins",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/WalletSettings/index.messages.js"
+      ]
+    }
+  },
+  "TR_VISIBLE_COINS_EXPLAINED": {
+    "source": "Select the coins you wish to see in the wallet interface. You will be able to change your preferences later.",
     "meta": {
       "occurrences": [
         "src/views/Wallet/views/WalletSettings/index.messages.js"
