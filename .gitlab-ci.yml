@@ -34,6 +34,7 @@ test snapshots:
   image: $CONTAINER_NAME:$CI_COMMIT_SHA
   stage: test
   script:
+    - yarn
     - yarn storybook
     - yarn ci:test:snapshots -c baseUrl=https://trezor.github.io/trezor-ui-components
   artifacts:
