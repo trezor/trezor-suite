@@ -26,15 +26,27 @@ lint:
     - yarn
     - yarn run lint
 
-e2e-chrome:
+test snapshots:
   image: cypress/browsers:chrome67
   stage: test
   script:
     - yarn
-    - yarn ci-test:e2e
+    - yarn ci:test:snapshots
   artifacts:
     expire_in: 1 day
     when: always
     paths:
       - /builds/trezor/trezor-ui-components/test/screenshots
+      - /builds/trezor/trezor-ui-components/test/snapshots
+
+make snapshots references:
+  image: cypress/browsers:chrome67
+  stage: test
+  script:
+    - yarn
+    - yarn ci:test:snapshots:references
+  artifacts:
+    expire_in: 1 day
+    when: manually
+    paths:
       - /builds/trezor/trezor-ui-components/test/snapshots
