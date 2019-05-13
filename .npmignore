@@ -13,3 +13,6 @@ yarn.lock
 public
 scripts
 test
+
+.*
+cypress.json
