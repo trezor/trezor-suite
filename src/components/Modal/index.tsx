@@ -27,7 +27,11 @@ const ModalWindow = styled.div`
     text-align: center;
 `;
 
-const Modal = ({ children }) => (
+interface Props {
+    children: React.ReactNode;
+}
+
+const Modal = ({ children }: Props) => (
     <ModalContainer>
         <ModalWindow>{children}</ModalWindow>
     </ModalContainer>

@@ -1,10 +1,10 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
-
 import Icon from 'components/Icon';
 
 import icons from 'config/icons';
+import { Omit, iconShape } from 'support/types';
 import colors from 'config/colors';
 
 const PulseAnimation = keyframes`
@@ -37,7 +37,7 @@ const Pulse = styled.div`
     height: 100%;
 `;
 
-const ImgWrapper = styled.div`
+const ImgWrapper = styled.div<Omit<Props, 'model'>>`
     position: relative;
     height: ${props => props.size}px;
     width: ${props => props.size}px;
@@ -58,15 +58,19 @@ const ContentWrapper = styled.div`
     margin: 5px;
 `;
 
-const modelToIcon = model => {
-    const mapping = {
+const modelToIcon = (model: number) => {
+    const mapping: { [key: number]: iconShape } = {
         1: icons.T1,
         2: icons.T2,
     };
     return mapping[model];
 };
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+    model: number;
+    size?: number;
+}
 
-const Prompt = ({ model, size, children }) => {
+const Prompt = ({ model, size, children }: Props) => {
     return (
         <Wrapper>
             <ImgWrapper size={size}>

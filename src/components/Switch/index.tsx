@@ -1,16 +1,32 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ReactSwitch from 'react-switch';
+import ReactSwitch, { ReactSwitchProps } from 'react-switch';
 import colors from 'config/colors';
 
-class Switch extends Component {
-    constructor() {
-        super();
+interface Props extends ReactSwitchProps {
+    onChange: (checked: boolean) => any;
+    disabled?: boolean;
+    isSmall?: boolean;
+}
+
+interface StateProps {
+    checked: boolean;
+}
+
+class Switch extends Component<Props, StateProps> {
+    static propTypes = {
+        onChange: PropTypes.func.isRequired,
+        disabled: PropTypes.bool,
+        isSmall: PropTypes.bool,
+    };
+
+    constructor(props: Props) {
+        super(props);
         this.state = { checked: false };
         this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(checked) {
+    handleChange(checked: boolean) {
         const shouldUpdateState = this.props.onChange(checked);
         if (shouldUpdateState !== false) {
             this.setState({ checked });
@@ -18,7 +34,8 @@ class Switch extends Component {
     }
 
     render() {
-        const { onChange, disabled, isSmall, ...rest } = this.props;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { onChange, disabled, isSmall, ...rest }: Props = this.props;
         const smallProps = isSmall
             ? {
                   width: 36,
@@ -38,10 +55,5 @@ class Switch extends Component {
         );
     }
 }
-Switch.propTypes = {
-    onChange: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    isSmall: PropTypes.bool,
-};
 
 export default Switch;

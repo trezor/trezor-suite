@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
 
+import PropTypes from 'prop-types';
 import { FONT_SIZE } from 'config/variables';
 import Icon from 'components/Icon';
-import PropTypes from 'prop-types';
 import colors from 'config/colors';
 import icons from 'config/icons';
+import { Omit } from 'support/types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,7 +20,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<IconWrapperProps>`
     display: flex;
     border-radius: 2px;
     justify-content: center;
@@ -41,7 +42,7 @@ const IconWrapper = styled.div`
     }
 `;
 
-const Label = styled.div`
+const Label = styled.div<IconWrapperProps>`
     display: flex;
     padding-left: 10px;
     justify-content: center;
@@ -54,8 +55,22 @@ const Label = styled.div`
     }
 `;
 
-class Checkbox extends PureComponent {
-    handleKeyboard(event) {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+    onClick: (event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => any;
+    isChecked: boolean;
+    propTypes: any;
+}
+
+type IconWrapperProps = Omit<Props, 'onClick' | 'propTypes'>;
+
+class Checkbox extends PureComponent<Props> {
+    static propTypes = {
+        onClick: PropTypes.func.isRequired,
+        isChecked: PropTypes.bool,
+        children: PropTypes.node,
+    };
+
+    handleKeyboard(event: React.KeyboardEvent<HTMLElement>) {
         if (event.keyCode === 32) {
             this.props.onClick(event);
         }
@@ -85,11 +100,5 @@ class Checkbox extends PureComponent {
         );
     }
 }
-
-Checkbox.propTypes = {
-    onClick: PropTypes.func.isRequired,
-    isChecked: PropTypes.bool,
-    children: PropTypes.node,
-};
 
 export default Checkbox;

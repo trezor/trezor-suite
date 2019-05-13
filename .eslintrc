@@ -3,7 +3,6 @@
         "eslint-config-airbnb",
         "prettier",
         "prettier/babel",
-        "prettier/flowtype",
         "prettier/react"
     ],
     "globals": {
@@ -26,7 +25,9 @@
         "react/forbid-prop-types": 0,
         "react/destructuring-assignment": 0,
         "react/jsx-one-expression-per-line": 0,
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"]}],
+        "react/jsx-filename-extension": [1, {
+            "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        }],
         "no-console": 0,
         "no-alert": 0,
         "no-prototype-builtins": 0,
@@ -41,26 +42,42 @@
             {
                 "devDependencies": [
                     ".storybook/**",
-                    "src/stories/**" 
+                    "src/stories/**"
                 ]
             }
         ]
     },
+    "overrides": [
+        {
+          "files": ["*.ts", "*.tsx"],
+          "rules": {
+            "@typescript-eslint/no-unused-vars": [2, { "args": "none" }]
+          }
+        }
+      ],
     "plugins": [
         "import",
-        "prettier",
         "react",
-        "cypress"
+        "cypress",
+        "prettier",
+        "@typescript-eslint"
     ],
     "settings": {
-        "import/resolver": {
-            "babel-module": {}
-        },
         "import/ignore": [
             "\\.(scss|less|css)$"
-        ]
+        ],
+        "import/resolver": {
+            "typescript": {
+                "directory": "./.storybook/tsconfig.json"
+            }
+        }
     },
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
+        "project": "./.storybook/tsconfig.json",
+        "extends": [
+            "plugin:@typescript-eslint/recommended"
+        ],
         "ecmaVersion": 2018,
         "sourceType": "module",
         "ecmaFeatures": {

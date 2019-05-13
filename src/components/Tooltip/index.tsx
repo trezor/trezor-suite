@@ -1,12 +1,12 @@
 import Link from 'components/Link';
 import PropTypes from 'prop-types';
-import Tippy from '@tippy.js/react';
+import Tippy, { TippyProps } from '@tippy.js/react';
 import React from 'react';
 import colors from 'config/colors';
 import { FONT_SIZE } from 'config/variables';
 import styled from 'styled-components';
 
-const Content = styled.div`
+const Content = styled.div<{ maxWidth?: number }>`
     max-width: ${props => `${props.maxWidth}px` || 'auto'};
 `;
 
@@ -38,7 +38,13 @@ const StyledLink = styled(Link)`
     }
 `;
 
-const Tooltip = ({ maxWidth, placement, content, ctaText, ctaLink, children, ...rest }) => {
+interface Props extends TippyProps {
+    maxWidth?: number;
+    ctaText?: React.ReactNode;
+    ctaLink?: string;
+}
+
+const Tooltip = ({ maxWidth, placement, content, ctaText, ctaLink, children, ...rest }: Props) => {
     const Overlay = (
         <ContentWrapper>
             <Content maxWidth={maxWidth}>{content}</Content>

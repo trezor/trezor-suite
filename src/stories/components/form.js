@@ -80,7 +80,7 @@ storiesOf('Form', module).add('All', () => (
                 value=""
                 placeholder="Placeholder"
                 onChange={() => {}}
-                data-test="input_basic"
+                wrapperProps={{ 'data-test': 'input_basic' }}
             />
 
             <StyledInput
@@ -88,7 +88,7 @@ storiesOf('Form', module).add('All', () => (
                 value=""
                 placeholder="Placeholder"
                 onChange={() => {}}
-                data-test="input_basic_info"
+                wrapperProps={{ 'data-test': 'input_basic_info' }}
                 state="info"
             />
 
@@ -97,7 +97,7 @@ storiesOf('Form', module).add('All', () => (
                 value=""
                 placeholder="Placeholder"
                 onChange={() => {}}
-                data-test="input_basic_success"
+                wrapperProps={{ 'data-test': 'input_basic_success' }}
                 state="success"
             />
             <StyledInput
@@ -105,7 +105,7 @@ storiesOf('Form', module).add('All', () => (
                 value=""
                 placeholder="Placeholder"
                 onChange={() => {}}
-                data-test="input_basic_warning"
+                wrapperProps={{ 'data-test': 'input_basic_warning' }}
                 state="warning"
             />
             <StyledInput
@@ -113,7 +113,7 @@ storiesOf('Form', module).add('All', () => (
                 value=""
                 placeholder="Placeholder"
                 onChange={() => {}}
-                data-test="input_basic_error"
+                wrapperProps={{ 'data-test': 'input_basic_error' }}
                 state="error"
             />
 
@@ -122,7 +122,7 @@ storiesOf('Form', module).add('All', () => (
                 value=""
                 placeholder="Placeholder"
                 onChange={() => {}}
-                data-test="input_basic_disabled"
+                wrapperProps={{ 'data-test': 'input_basic_disabled' }}
                 isDisabled
             />
         </Row>
@@ -141,7 +141,7 @@ storiesOf('Form', module).add('All', () => (
                 bottomText="bottomText"
                 topLabel="Label"
                 onChange={() => {}}
-                data-test="input_label_bottomText"
+                wrapperProps={{ 'data-test': 'input_label_bottomText' }}
             />
 
             <StyledInput
@@ -151,7 +151,7 @@ storiesOf('Form', module).add('All', () => (
                 bottomText="bottomText"
                 topLabel="Label"
                 onChange={() => {}}
-                data-test="input_label_bottomText_info"
+                wrapperProps={{ 'data-test': 'input_label_bottomText_info' }}
                 state="info"
             />
 
@@ -162,7 +162,7 @@ storiesOf('Form', module).add('All', () => (
                 bottomText="bottomText"
                 topLabel="Label"
                 onChange={() => {}}
-                data-test="input_label_bottomText_success"
+                wrapperProps={{ 'data-test': 'input_label_bottomText_success' }}
                 state="success"
             />
             <StyledInput
@@ -172,7 +172,7 @@ storiesOf('Form', module).add('All', () => (
                 bottomText="bottomText"
                 topLabel="Label"
                 onChange={() => {}}
-                data-test="input_label_bottomText_warning"
+                wrapperProps={{ 'data-test': 'input_label_bottomText_warning' }}
                 state="warning"
             />
             <StyledInput
@@ -182,7 +182,7 @@ storiesOf('Form', module).add('All', () => (
                 bottomText="bottomText"
                 topLabel="Label"
                 onChange={() => {}}
-                data-test="input_label_bottomText_error"
+                wrapperProps={{ 'data-test': 'input_label_bottomText_error' }}
                 state="error"
             />
 
@@ -193,7 +193,7 @@ storiesOf('Form', module).add('All', () => (
                 bottomText="bottomText"
                 topLabel="Label"
                 onChange={() => {}}
-                data-test="input_label_bottomText_disabled"
+                wrapperProps={{ 'data-test': 'input_label_bottomText_disabled' }}
                 isDisabled
             />
         </Row>
@@ -211,7 +211,7 @@ storiesOf('Form', module).add('All', () => (
                 placeholder="Placeholder"
                 onChange={() => {}}
                 tooltipAction="Example tooltipAction"
-                data-test="input_tooltipAction"
+                wrapperProps={{ 'data-test': 'input_tooltipAction' }}
             />
         </Row>
 
@@ -219,7 +219,11 @@ storiesOf('Form', module).add('All', () => (
             PinInput <BtnLink onClick={linkTo('Form', 'Input Pin')}>{'<PinInput />'}</BtnLink>
         </H1>
         <Row>
-            <PinInput value="1234" onDeleteClick={() => {}} data-test="input_pin" />
+            <PinInput
+                value="1234"
+                onDeleteClick={() => {}}
+                wrapperProps={{ 'data-test': 'input_pin' }}
+            />
         </Row>
 
         <H1>
@@ -235,7 +239,7 @@ storiesOf('Form', module).add('All', () => (
                     value=""
                     placeholder="Placeholder"
                     onChange={() => {}}
-                    data-test="textarea_basic"
+                    wrapperProps={{ 'data-test': 'textarea_basic' }}
                 />
             </Margin>
 
@@ -245,7 +249,7 @@ storiesOf('Form', module).add('All', () => (
                     value=""
                     placeholder="Placeholder"
                     onChange={() => {}}
-                    data-test="textarea_basic_info"
+                    wrapperProps={{ 'data-test': 'textarea_basic_info' }}
                     state="info"
                 />
             </Margin>
@@ -256,7 +260,7 @@ storiesOf('Form', module).add('All', () => (
                     value=""
                     placeholder="Placeholder"
                     onChange={() => {}}
-                    data-test="textarea_basic_success"
+                    wrapperProps={{ 'data-test': 'textarea_basic_success' }}
                     state="success"
                 />
             </Margin>
@@ -267,7 +271,7 @@ storiesOf('Form', module).add('All', () => (
                     value=""
                     placeholder="Placeholder"
                     onChange={() => {}}
-                    data-test="textarea_basic_warning"
+                    wrapperProps={{ 'data-test': 'textarea_basic_warning' }}
                     state="warning"
                 />
             </Margin>
@@ -277,7 +281,7 @@ storiesOf('Form', module).add('All', () => (
                     value=""
                     placeholder="Placeholder"
                     onChange={() => {}}
-                    data-test="textarea_basic_error"
+                    wrapperProps={{ 'data-test': 'textarea_basic_error' }}
                     state="error"
                 />
             </Margin>
@@ -288,7 +292,7 @@ storiesOf('Form', module).add('All', () => (
                     value=""
                     placeholder="Placeholder"
                     onChange={() => {}}
-                    data-test="textarea_basic_disabled"
+                    wrapperProps={{ 'data-test': 'textarea_basic_disabled' }}
                     isDisabled
                 />
             </Margin>
@@ -309,7 +313,7 @@ storiesOf('Form', module).add('All', () => (
                     bottomText="bottomText"
                     topLabel="Label"
                     onChange={() => {}}
-                    data-test="textarea_label_bottomText"
+                    wrapperProps={{ 'data-test': 'textarea_label_bottomText' }}
                 />
             </Margin>
             <Margin size="30">
@@ -320,7 +324,7 @@ storiesOf('Form', module).add('All', () => (
                     bottomText="bottomText"
                     topLabel="Label"
                     onChange={() => {}}
-                    data-test="textarea_label_bottomText_info"
+                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_info' }}
                     state="info"
                 />
             </Margin>
@@ -333,7 +337,7 @@ storiesOf('Form', module).add('All', () => (
                     bottomText="bottomText"
                     topLabel="Label"
                     onChange={() => {}}
-                    data-test="textarea_label_bottomText_success"
+                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_success' }}
                     state="success"
                 />
             </Margin>
@@ -346,7 +350,7 @@ storiesOf('Form', module).add('All', () => (
                     bottomText="bottomText"
                     topLabel="Label"
                     onChange={() => {}}
-                    data-test="textarea_label_bottomText_warning"
+                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_warning' }}
                     state="warning"
                 />
             </Margin>
@@ -359,7 +363,7 @@ storiesOf('Form', module).add('All', () => (
                     bottomText="bottomText"
                     topLabel="Label"
                     onChange={() => {}}
-                    data-test="textarea_label_bottomText_error"
+                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_error' }}
                     state="error"
                 />
             </Margin>
@@ -372,7 +376,7 @@ storiesOf('Form', module).add('All', () => (
                     bottomText="bottomText"
                     topLabel="Label"
                     onChange={() => {}}
-                    data-test="textarea_label_bottomText_disabled"
+                    wrapperProps={{ 'data-test': 'textarea_label_bottomText_disabled' }}
                     isDisabled
                 />
             </Margin>
@@ -466,10 +470,12 @@ storiesOf('Form', module).add('All', () => (
             Checkbox <BtnLink onClick={linkTo('Form', 'Checkbox')}>{'<Checkbox />'}</BtnLink>
         </H1>
         <Row>
-            <Checkbox data-test="checkbox_unchecked">Label</Checkbox>
+            <Checkbox onClick={() => {}} data-test="checkbox_unchecked">
+                Label
+            </Checkbox>
         </Row>
         <Row>
-            <Checkbox isChecked data-test="checkbox_checked">
+            <Checkbox onClick={() => {}} isChecked data-test="checkbox_checked">
                 Label
             </Checkbox>
         </Row>
@@ -481,13 +487,13 @@ storiesOf('Form', module).add('All', () => (
         </H5>
         <Row>
             <DataWrapper data-test="switch_basic_unchecked">
-                <Switch />
+                <Switch onChange={() => {}} />
             </DataWrapper>
             <DataWrapper data-test="switch_basic_checked">
-                <Switch checked />
+                <Switch onChange={() => {}} checked />
             </DataWrapper>
             <DataWrapper data-test="switch_basic_disabled">
-                <Switch disabled />
+                <Switch onChange={() => {}} disabled />
             </DataWrapper>
         </Row>
 
@@ -496,15 +502,15 @@ storiesOf('Form', module).add('All', () => (
         </H5>
         <Row>
             <DataWrapper data-test="switch_small_unchecked">
-                <Switch isSmall />
+                <Switch onChange={() => {}} isSmall />
             </DataWrapper>
 
             <DataWrapper data-test="switch_small_checked">
-                <Switch isSmall checked />
+                <Switch onChange={() => {}} isSmall checked />
             </DataWrapper>
 
             <DataWrapper data-test="switch_small_disabled">
-                <Switch isSmall disabled />
+                <Switch onChange={() => {}} isSmall disabled />
             </DataWrapper>
         </Row>
         <H5>
@@ -515,25 +521,37 @@ storiesOf('Form', module).add('All', () => (
         </H5>
         <Row>
             <DataWrapper data-test="switch_noicon_unchecked">
-                <Switch uncheckedIcon={null} checkedIcon={null} />
+                <Switch onChange={() => {}} uncheckedIcon={null} checkedIcon={null} />
             </DataWrapper>
             <DataWrapper data-test="switch_noicon_checked">
-                <Switch uncheckedIcon={null} checkedIcon={null} checked />
+                <Switch onChange={() => {}} uncheckedIcon={null} checkedIcon={null} checked />
             </DataWrapper>
 
             <DataWrapper data-test="switch_noicon_disabled">
-                <Switch uncheckedIcon={null} checkedIcon={null} disabled />
+                <Switch onChange={() => {}} uncheckedIcon={null} checkedIcon={null} disabled />
             </DataWrapper>
         </Row>
         <Row>
             <DataWrapper data-test="switch_noicon_small_unchecked">
-                <Switch uncheckedIcon={null} checkedIcon={null} isSmall />
+                <Switch onChange={() => {}} uncheckedIcon={null} checkedIcon={null} isSmall />
             </DataWrapper>
             <DataWrapper data-test="switch_noicon_small_checked">
-                <Switch iuncheckedIcon={null} checkedIcon={null} sSmall checked />
+                <Switch
+                    onChange={() => {}}
+                    uncheckedIcon={null}
+                    checkedIcon={null}
+                    isSmall
+                    checked
+                />
             </DataWrapper>
             <DataWrapper data-test="switch_noicon_small_disabled">
-                <Switch uncheckedIcon={null} checkedIcon={null} isSmall disabled />
+                <Switch
+                    onChange={() => {}}
+                    uncheckedIcon={null}
+                    checkedIcon={null}
+                    isSmall
+                    disabled
+                />
             </DataWrapper>
         </Row>
     </Wrapper>
@@ -703,9 +721,7 @@ storiesOf('Form', module)
             return (
                 <Switch
                     key={`force-unmount-${isSmall}`}
-                    onChange={() => {
-                        return true;
-                    }}
+                    onChange={() => {}}
                     checked={checked}
                     {...(disabled ? { disabled } : {})}
                     {...(isSmall ? { isSmall } : {})}

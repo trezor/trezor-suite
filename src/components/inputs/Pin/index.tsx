@@ -31,9 +31,14 @@ const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
-const InputPin = ({ value, onDeleteClick, ...rest }) => (
+interface Props {
+    value: string;
+    onDeleteClick: (event?: React.MouseEvent<any>) => void;
+}
+
+const InputPin = ({ value, onDeleteClick, ...rest }: Props) => (
     <Wrapper {...rest}>
-        <StyledInput disabled type="password" maxLength="9" autoComplete="off" value={value} />
+        <StyledInput disabled type="password" maxLength={9} autoComplete="off" value={value} />
         <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon={icons.BACK} />
     </Wrapper>
 );

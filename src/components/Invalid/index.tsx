@@ -8,9 +8,15 @@ const Wrapper = styled.div`
     padding: 24px 48px;
 `;
 
-const InvalidPin = props => (
+interface Props {
+    device: {
+        label: string;
+    };
+}
+
+const InvalidPin = ({ device }: Props) => (
     <Wrapper>
-        <H6>Entered PIN for {props.device.label} is not correct</H6>
+        <H6>Entered PIN for {device.label} is not correct</H6>
         <P size="small">Retrying...</P>
     </Wrapper>
 );

@@ -148,6 +148,22 @@ const A = styled.a`
     }
 `;
 
+interface linkShape {
+    title: string;
+    href: string;
+}
+
+interface Props {
+    sidebarEnabled: boolean;
+    sidebarOpened?: boolean;
+    toggleSidebar?: () => any;
+    togglerOpenText?: string;
+    togglerCloseText?: string;
+    rightAddon?: React.ReactNode;
+    logoLinkComponent?: React.ReactNode;
+    links?: linkShape[];
+}
+
 const Header = ({
     sidebarEnabled,
     sidebarOpened,
@@ -157,7 +173,7 @@ const Header = ({
     rightAddon,
     logoLinkComponent,
     links,
-}) => {
+}: Props) => {
     const logoImage = (
         <>
             <TREZOR>
@@ -195,7 +211,7 @@ const Header = ({
         </>
     );
     const LinkWrapper = logoLinkComponent
-        ? React.cloneElement(logoLinkComponent, {}, logoImage)
+        ? React.cloneElement(logoLinkComponent as React.ReactElement<any>, {}, logoImage)
         : logoImage;
 
     return (

@@ -1,6 +1,8 @@
 import colors from 'config/colors';
 
-const getPrimaryColor = type => {
+type Props = 'info' | 'error' | 'warning' | 'success';
+
+const getPrimaryColor = (type?: Props) => {
     let color;
     switch (type) {
         case 'info':
@@ -22,7 +24,7 @@ const getPrimaryColor = type => {
     return color;
 };
 
-const getSecondaryColor = type => {
+const getSecondaryColor = (type?: Props) => {
     let color;
     switch (type) {
         case 'info':
@@ -44,7 +46,7 @@ const getSecondaryColor = type => {
     return color;
 };
 
-const getNotificationBgColor = type => {
+const getNotificationBgColor = (type?: Props) => {
     let color;
     switch (type) {
         case 'info':

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Textarea from 'react-textarea-autosize';
 import colors from 'config/colors';
+import { Omit } from 'support/types';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -15,14 +16,12 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-const disabledColor = colors.TEXT_PRIMARY;
-
-const StyledTextarea = styled(Textarea)`
+const StyledTextarea = styled(Textarea)<StyledTextareaProps>`
     width: 100%;
     min-height: 85px;
     padding: 10px 12px;
     box-sizing: border-box;
-    border: 1px solid ${props => props.border || colors.INPUT_BORDER};
+    border: 1px solid ${props => props.border};
     border-radius: 2px;
     resize: none;
     outline: none;
@@ -36,28 +35,6 @@ const StyledTextarea = styled(Textarea)`
     white-space: -pre-wrap; /* Opera 4-6 */
     white-space: -o-pre-wrap; /* Opera 7 */
     word-wrap: break-word; /* Internet Explorer 5.5+ */
-
-    /* placeholder styles do not work correctly when groupped into one block */
-
-    &::-webkit-input-placeholder {
-        color: ${colors.LIGHT_GRAY_1};
-        opacity: 1;
-    }
-
-    &::-moz-placeholder {
-        color: ${colors.LIGHT_GRAY_1};
-        opacity: 1;
-    }
-
-    &:-moz-placeholder {
-        color: ${colors.LIGHT_GRAY_1};
-        opacity: 1;
-    }
-
-    &:-ms-input-placeholder {
-        color: ${colors.LIGHT_GRAY_1};
-        opacity: 1;
-    }
 
     &:focus {
         box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
@@ -74,26 +51,6 @@ const StyledTextarea = styled(Textarea)`
         pointer-events: none;
         background: ${colors.GRAY_LIGHT};
         color: ${colors.TEXT_SECONDARY};
-
-        &::-webkit-input-placeholder {
-            color: ${disabledColor};
-            opacity: 1;
-        }
-
-        &::-moz-placeholder {
-            color: ${disabledColor};
-            opacity: 1;
-        }
-
-        &:-moz-placeholder {
-            color: ${disabledColor};
-            opacity: 1;
-        }
-
-        &:-ms-input-placeholder {
-            color: ${disabledColor};
-            opacity: 1;
-        }
     }
 
     ${props =>
@@ -111,11 +68,11 @@ const TopLabel = styled.span`
 
 const BottomText = styled.span`
     font-size: ${FONT_SIZE.SMALL};
-    color: ${props => props.color || colors.TEXT_SECONDARY};
+    color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
     margin-top: 10px;
 `;
 
-const TooltipAction = styled.div`
+const TooltipAction = styled.div<{ action: React.ReactNode }>`
     display: ${props => (props.action ? 'flex' : 'none')};
     align-items: center;
     margin: 0px 10px;
@@ -142,55 +99,54 @@ const ArrowUp = styled.div`
     z-index: 10001;
 `;
 
+type BaseTextareaProps = import('react-textarea-autosize').TextareaAutosizeProps;
+
+interface StyledTextareaProps extends BaseTextareaProps {
+    isSmallText?: boolean;
+    border?: string;
+    tooltipAction?: React.ReactNode;
+}
+
+// TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
+interface Props extends BaseTextareaProps, StyledTextareaProps {
+    isDisabled?: boolean;
+    topLabel?: React.ReactNode;
+    bottomText?: React.ReactNode;
+    state: 'success' | 'info' | 'warning' | 'error';
+    wrapperProps?: Object;
+}
+
 const TextArea = ({
     className,
-    onFocus,
-    onBlur,
-    onChange,
-    customStyle,
-    placeholder,
-    value,
-    readOnly,
     maxRows,
     maxLength,
-    rows,
-    name,
     isDisabled,
     topLabel,
     state,
-    autoSelect,
     bottomText,
     tooltipAction,
+    wrapperProps,
     ...rest
-}) => {
+}: Omit<Props, 'ref' | 'as'>) => {
+    // TODO: figure out why 'ref' and 'as' prop need to be omitted
+    const stateColor = getPrimaryColor(state) || undefined;
     return (
-        <Wrapper className={className} {...rest}>
+        <Wrapper className={className} {...wrapperProps}>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <StyledTextarea
-                spellCheck="false"
+                spellCheck={false}
                 autoCorrect="off"
                 autoCapitalize="off"
-                maxRows={maxRows}
                 maxLength={maxLength}
-                rows={rows}
-                className={className}
                 disabled={isDisabled}
-                name={name}
-                style={customStyle}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                value={value}
-                readOnly={readOnly}
-                onClick={autoSelect ? event => event.target.select() : null}
-                placeholder={placeholder}
-                onChange={onChange}
-                border={getPrimaryColor(state)}
+                border={stateColor || colors.INPUT_BORDER}
+                {...rest}
             />
             <TooltipAction action={tooltipAction}>
                 <ArrowUp />
                 {tooltipAction}
             </TooltipAction>
-            {bottomText && <BottomText color={getPrimaryColor(state)}>{bottomText}</BottomText>}
+            {bottomText && <BottomText color={stateColor}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };
@@ -200,7 +156,6 @@ TextArea.propTypes = {
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
-    customStyle: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.string,
     readOnly: PropTypes.bool,
@@ -210,7 +165,7 @@ TextArea.propTypes = {
     name: PropTypes.string,
     isDisabled: PropTypes.bool,
     topLabel: PropTypes.node,
-    state: PropTypes.oneOf(['success', 'warning', 'error']),
+    state: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
     autoSelect: PropTypes.bool,
     bottomText: PropTypes.string,
     tooltipAction: PropTypes.node,
