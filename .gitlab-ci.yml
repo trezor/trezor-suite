@@ -13,13 +13,15 @@ variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
   CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
 
+# testing stage
+
 build image:
   image: docker:latest
   services:
     - docker:dind
   before_script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-  stage: build
+  stage: test
   when: always
   script:
     - docker pull $CONTAINER_NAME:latest || true
@@ -39,3 +41,14 @@ test snapshots:
     paths:
       - cypress/screenshots
       - cypress/videos
+
+delete image:
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  stage: test
+  when: always
+  script:
+    - docker rmi $CONTAINER_NAME:$CI_COMMIT_SHA
