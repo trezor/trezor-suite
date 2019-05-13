@@ -14,8 +14,6 @@ variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
   CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
 
-# testing stage
-
 build image:
   image: docker:latest
   services:
@@ -35,7 +33,6 @@ test snapshots:
   stage: test
   script:
     - yarn
-    - yarn storybook
     - yarn ci:test:snapshots
   artifacts:
     expire_in: 1 day
