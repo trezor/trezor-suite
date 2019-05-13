@@ -215,12 +215,12 @@ storiesOf('Other', module)
                     '1': 1,
                     '2': 2,
                 },
-                '1'
+                1
             );
 
             return (
-                <Prompt model={model} size={32}>
-                    Complete action on your device
+                <Prompt model={model} size={number('size', 32)}>
+                    {text('children', 'Complete the action on your device')}
                 </Prompt>
             );
         },
