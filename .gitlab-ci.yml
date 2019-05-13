@@ -47,8 +47,7 @@ test snapshots:
     expire_in: 1 day
     when: always
     paths:
-      - cypress/screenshots
-      - cypress/videos
+      - /builds/trezor/trezor-ui-components/test/screenshots
 
 delete image:
   image: docker:latest
