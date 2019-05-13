@@ -56,6 +56,7 @@
 	"TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA": "Wenn Sie Ihre Passphrase vergessen, haben Sie keinen Zugriff mehr auf Ihr Wallet. Es gibt keinen Weg, Ihre Geldmittel wiederherzustellen.",
 	"TR_CONFIRM_PASSPHRASE": "Passphrase bestätigen",
 	"TR_PASSPHRASES_DO_NOT_MATCH": "Die Passphrasen stimmen nicht überein!",
+	"TR_PASSPHRASE_IS_TOO_LONG": "Passphrase is too long!",
 	"TR_SHOW_PASSPHRASE": "Passphrase anzeigen",
 	"TR_ENTER": "Eingeben",
 	"TR_PASSPHRASE": "Passphrase",
@@ -136,6 +137,8 @@
 	"TR_ADD_ACCOUNT": "Konto hinzufügen",
 	"TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS": "You cannot add more than 10 accounts",
 	"TR_OTHER_COINS": "Other coins",
+	"TR_SELECT_COINS": "Select a coin in {TR_SELECT_COINS_LINK}",
+	"TR_SELECT_COINS_LINK": "application settings",
 	"TR_CHANGE_WALLET_TYPE": "Change wallet type",
 	"TR_RENEW_SESSION": "Renew session",
 	"TR_YOU_ARE_IN_YOUR_STANDARD_WALLET": "You are in your standard wallet.",
@@ -196,6 +199,7 @@
 	"TR_INSERT_TOKEN_NAME": "Insert token name, symbol or address to be able to send it.",
 	"TR_TYPE_IN_A_TOKEN_NAME": "Type in a token name or a token address.",
 	"TR_TOKEN_NOT_FOUND": "Token not found",
+	"TR_ALREADY_ADDED": "Already added",
 	"TR_HISTORY": "History",
 	"TR_ADD_YOUR_TOKENS": "Add your tokens",
 	"TR_SEARCH_FOR_THE_TOKEN": "Search for the token or add them manually by pasting token address into search input.",
@@ -221,5 +225,8 @@
 	"TR_PLEASE_INSTALL_TREZOR_BRIDGE": "Please install Trezor Bridge",
 	"TR_LOCAL_CURRENCY": "Local currency",
 	"TR_HIDE_BALANCE_EXPLAINED": "Hides your account balance so you don't have to worry about anyone looking over your shoulder.",
-	"TR_THE_CHANGES_ARE_SAVED": "The changes are saved automatically as they are made"
+	"TR_THE_CHANGES_ARE_SAVED": "The changes are saved automatically as they are made",
+	"TR_VISIBLE_COINS": "Visible coins",
+	"TR_VISIBLE_COINS_EXTERNAL": "Visible external coins",
+	"TR_VISIBLE_COINS_EXPLAINED": "Select the coins you wish to see in the wallet interface. You will be able to change your preferences later."
 }

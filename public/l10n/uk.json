@@ -56,6 +56,7 @@
 	"TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA": "Якщо Ви забудете свою кодову фразу, Ваш гаманець втрачається назавжди. Не існує ніякого способу для його відновлення.",
 	"TR_CONFIRM_PASSPHRASE": "Пiдтвердiть парольну фразу",
 	"TR_PASSPHRASES_DO_NOT_MATCH": "Парольні фрази не співпадають!",
+	"TR_PASSPHRASE_IS_TOO_LONG": "Passphrase is too long!",
 	"TR_SHOW_PASSPHRASE": "Показати парольну фразу",
 	"TR_ENTER": "Ввести",
 	"TR_PASSPHRASE": "Парольна фраза",
@@ -136,6 +137,8 @@
 	"TR_ADD_ACCOUNT": "Додати рахунок",
 	"TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS": "Ви не можете додати більше 10 рахункiв",
 	"TR_OTHER_COINS": "Інші монети",
+	"TR_SELECT_COINS": "Select a coin in {TR_SELECT_COINS_LINK}",
+	"TR_SELECT_COINS_LINK": "application settings",
 	"TR_CHANGE_WALLET_TYPE": "Змінити тип гаманцю",
 	"TR_RENEW_SESSION": "Відновити сеанс",
 	"TR_YOU_ARE_IN_YOUR_STANDARD_WALLET": "Ви знаходитесь у стандартному гаманці.",
@@ -196,6 +199,7 @@
 	"TR_INSERT_TOKEN_NAME": "Вставити ім'я токену, його символ або адресу для того, щоб надіслати його.",
 	"TR_TYPE_IN_A_TOKEN_NAME": "Введіть назву або адресу токену.",
 	"TR_TOKEN_NOT_FOUND": "Токен не знайдено",
+	"TR_ALREADY_ADDED": "Already added",
 	"TR_HISTORY": "Історія",
 	"TR_ADD_YOUR_TOKENS": "Додати токени",
 	"TR_SEARCH_FOR_THE_TOKEN": "Знайдiть токен або додайте його вручну, вставивши адресу токену у пошукове поле.",
@@ -221,5 +225,8 @@
 	"TR_PLEASE_INSTALL_TREZOR_BRIDGE": "Будь ласка, встановіть Trezor Bridge",
 	"TR_LOCAL_CURRENCY": "Місцева валюта",
 	"TR_HIDE_BALANCE_EXPLAINED": "Приховує баланс вашого рахунку, так що вам не доведеться турбуватися, що хтось дивиться вам через плече.",
-	"TR_THE_CHANGES_ARE_SAVED": "Зміни буде автоматично збережено по мiрi виготовлення"
+	"TR_THE_CHANGES_ARE_SAVED": "Зміни буде автоматично збережено по мiрi виготовлення",
+	"TR_VISIBLE_COINS": "Visible coins",
+	"TR_VISIBLE_COINS_EXTERNAL": "Visible external coins",
+	"TR_VISIBLE_COINS_EXPLAINED": "Select the coins you wish to see in the wallet interface. You will be able to change your preferences later."
 }

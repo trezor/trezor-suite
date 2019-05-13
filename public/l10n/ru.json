@@ -56,6 +56,7 @@
 	"TR_IF_YOU_FORGET_YOUR_PASSPHRASE_COMMA": "Если вы забудете кодовую фразу, то средства потеряются навсегда. Другого способа их восстановить нет.",
 	"TR_CONFIRM_PASSPHRASE": "Подтвердите кодовую фразу",
 	"TR_PASSPHRASES_DO_NOT_MATCH": "Кодовые фразы не совпадают!",
+	"TR_PASSPHRASE_IS_TOO_LONG": "Passphrase is too long!",
 	"TR_SHOW_PASSPHRASE": "Показать кодовую фразу",
 	"TR_ENTER": "Ввод",
 	"TR_PASSPHRASE": "Кодовая фраза",
@@ -136,6 +137,8 @@
 	"TR_ADD_ACCOUNT": "Добавить счет",
 	"TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS": "Можно добавить не более 10 счетов",
 	"TR_OTHER_COINS": "Другие монеты",
+	"TR_SELECT_COINS": "Select a coin in {TR_SELECT_COINS_LINK}",
+	"TR_SELECT_COINS_LINK": "application settings",
 	"TR_CHANGE_WALLET_TYPE": "Изменить тип кошелька",
 	"TR_RENEW_SESSION": "Возобновить сессию",
 	"TR_YOU_ARE_IN_YOUR_STANDARD_WALLET": "Вы находитесь в вашем стандартном кошельке.",
@@ -196,6 +199,7 @@
 	"TR_INSERT_TOKEN_NAME": "Впишите название токена, его символ или адрес для того, чтобы иметь возможность отправлять их.",
 	"TR_TYPE_IN_A_TOKEN_NAME": "Впишите имя или адрес токена.",
 	"TR_TOKEN_NOT_FOUND": "Токен не найден",
+	"TR_ALREADY_ADDED": "Already added",
 	"TR_HISTORY": "История",
 	"TR_ADD_YOUR_TOKENS": "Добавьте ваши токены",
 	"TR_SEARCH_FOR_THE_TOKEN": "Найдите токен и добавьте его вручную, скопировав адрес токена в поисковое поле.",
@@ -221,5 +225,8 @@
 	"TR_PLEASE_INSTALL_TREZOR_BRIDGE": "Пожалуйста, установите Trezor Bridge",
 	"TR_LOCAL_CURRENCY": "Местная валюта",
 	"TR_HIDE_BALANCE_EXPLAINED": "Скрывает ваш баланс, так что вам не придётся беспокоиться о тех, кто подглядывает через плечо.",
-	"TR_THE_CHANGES_ARE_SAVED": "Изменения сохраняются автоматически, как только они сделаны"
+	"TR_THE_CHANGES_ARE_SAVED": "Изменения сохраняются автоматически, как только они сделаны",
+	"TR_VISIBLE_COINS": "Visible coins",
+	"TR_VISIBLE_COINS_EXTERNAL": "Visible external coins",
+	"TR_VISIBLE_COINS_EXPLAINED": "Select the coins you wish to see in the wallet interface. You will be able to change your preferences later."
 }
