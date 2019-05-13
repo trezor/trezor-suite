@@ -1,9 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
-import { withInfo } from '@storybook/addon-info';
+import { H1, H5 } from 'components/Heading';
+import { linkTo } from '@storybook/addon-links';
 
+import { withInfo } from '@storybook/addon-info';
 import { AsyncSelect, Select } from 'components/Select';
 import Checkbox from 'components/Checkbox';
 import Switch from 'components/Switch';
@@ -14,9 +16,528 @@ import TextArea from 'components/Textarea';
 import colors from 'config/colors';
 
 const Wrapper = styled.div`
-    min-width: 250px;
+    padding: 1.6rem;
 `;
+
+const StyledInput = styled(Input)`
+    margin-bottom: ${props => (props.tooltipAction ? '30px' : '10px')};
+`;
+const Margin = styled.div`
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-bottom: ${props => `${props.size}px`};
+`;
+
+const Row = styled.div`
+    display: flex;
+    margin: 0.5rem 0 2rem;
+    flex-wrap: wrap;
+`;
+
+const BtnLink = styled.button`
+    font-size: 1rem;
+    color: ${colors.TEXT_SECONDARY};
+    vertical-align: middle;
+    background: ${colors.LANDING};
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+        color: ${colors.TEXT};
+    }
+`;
+
+const StyledSelect = styled(Select)`
+    width: 100%;
+    margin-bottom: 10px;
+`;
+
+const DataWrapper = styled.div`
+    display: flex;
+    ${props =>
+        props.width &&
+        css`
+            width: ${props.width};
+        `}
+`;
+
 Wrapper.displayName = 'Wrapper';
+
+storiesOf('Form', module).add('All', () => (
+    <Wrapper>
+        <H1>
+            Input <BtnLink onClick={linkTo('Form', 'Input')}>{'<Input />'}</BtnLink>
+        </H1>
+        <H5>
+            Basic <BtnLink onClick={linkTo('Form', 'Input')}>{'<Input />'}</BtnLink>
+        </H5>
+        <Row>
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                onChange={() => {}}
+                data-test="input_basic"
+            />
+
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                onChange={() => {}}
+                data-test="input_basic_info"
+                state="info"
+            />
+
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                onChange={() => {}}
+                data-test="input_basic_success"
+                state="success"
+            />
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                onChange={() => {}}
+                data-test="input_basic_warning"
+                state="warning"
+            />
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                onChange={() => {}}
+                data-test="input_basic_error"
+                state="error"
+            />
+
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                onChange={() => {}}
+                data-test="input_basic_disabled"
+                isDisabled
+            />
+        </Row>
+
+        <H5>
+            with label and bottomText{' '}
+            <BtnLink onClick={linkTo('Form', 'Input')}>
+                {'<Input topLabel="Label" bottomText="bottomText"/>'}
+            </BtnLink>
+        </H5>
+        <Row>
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                bottomText="bottomText"
+                topLabel="Label"
+                onChange={() => {}}
+                data-test="input_label_bottomText"
+            />
+
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                bottomText="bottomText"
+                topLabel="Label"
+                onChange={() => {}}
+                data-test="input_label_bottomText_info"
+                state="info"
+            />
+
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                bottomText="bottomText"
+                topLabel="Label"
+                onChange={() => {}}
+                data-test="input_label_bottomText_success"
+                state="success"
+            />
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                bottomText="bottomText"
+                topLabel="Label"
+                onChange={() => {}}
+                data-test="input_label_bottomText_warning"
+                state="warning"
+            />
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                bottomText="bottomText"
+                topLabel="Label"
+                onChange={() => {}}
+                data-test="input_label_bottomText_error"
+                state="error"
+            />
+
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                bottomText="bottomText"
+                topLabel="Label"
+                onChange={() => {}}
+                data-test="input_label_bottomText_disabled"
+                isDisabled
+            />
+        </Row>
+
+        <H5>
+            with tooltipAction{' '}
+            <BtnLink onClick={linkTo('Form', 'Input')}>
+                {'<Input tooltipAction="Example tooltipAction" />'}
+            </BtnLink>
+        </H5>
+        <Row>
+            <StyledInput
+                type="text"
+                value=""
+                placeholder="Placeholder"
+                onChange={() => {}}
+                tooltipAction="Example tooltipAction"
+                data-test="input_tooltipAction"
+            />
+        </Row>
+
+        <H1>
+            PinInput <BtnLink onClick={linkTo('Form', 'Input Pin')}>{'<PinInput />'}</BtnLink>
+        </H1>
+        <Row>
+            <PinInput value="1234" onDeleteClick={() => {}} data-test="input_pin" />
+        </Row>
+
+        <H1>
+            TextArea <BtnLink onClick={linkTo('Form', 'TextArea')}>{'<TextArea />'}</BtnLink>
+        </H1>
+        <H5>
+            Basic <BtnLink onClick={linkTo('Form', 'TextArea')}>{'<TextArea />'}</BtnLink>
+        </H5>
+        <Row>
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    data-test="textarea_basic"
+                />
+            </Margin>
+
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    data-test="textarea_basic_info"
+                    state="info"
+                />
+            </Margin>
+
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    data-test="textarea_basic_success"
+                    state="success"
+                />
+            </Margin>
+
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    data-test="textarea_basic_warning"
+                    state="warning"
+                />
+            </Margin>
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    data-test="textarea_basic_error"
+                    state="error"
+                />
+            </Margin>
+
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    onChange={() => {}}
+                    data-test="textarea_basic_disabled"
+                    isDisabled
+                />
+            </Margin>
+        </Row>
+
+        <H5>
+            with label and bottomText{' '}
+            <BtnLink onClick={linkTo('Form', 'TextArea')}>
+                {'<TextArea topLabel="Label" bottomText="bottomText"/>'}
+            </BtnLink>
+        </H5>
+        <Row>
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    data-test="textarea_label_bottomText"
+                />
+            </Margin>
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    data-test="textarea_label_bottomText_info"
+                    state="info"
+                />
+            </Margin>
+
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    data-test="textarea_label_bottomText_success"
+                    state="success"
+                />
+            </Margin>
+
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    data-test="textarea_label_bottomText_warning"
+                    state="warning"
+                />
+            </Margin>
+
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    data-test="textarea_label_bottomText_error"
+                    state="error"
+                />
+            </Margin>
+
+            <Margin size="30">
+                <TextArea
+                    type="text"
+                    value=""
+                    placeholder="Placeholder"
+                    bottomText="bottomText"
+                    topLabel="Label"
+                    onChange={() => {}}
+                    data-test="textarea_label_bottomText_disabled"
+                    isDisabled
+                />
+            </Margin>
+        </Row>
+
+        <H1>
+            Select <BtnLink onClick={linkTo('Form', 'Select')}>{'<Select />'}</BtnLink>
+        </H1>
+        <Row>
+            <H5>Basic</H5>
+            <DataWrapper width="100%" data-test="select_basic_placeholder">
+                <StyledSelect
+                    isSearchable
+                    placeholder="Example placeholder"
+                    options={[
+                        { value: 'hello', label: 'Hello' },
+                        { value: 'world', label: 'World' },
+                    ]}
+                />
+            </DataWrapper>
+            <DataWrapper width="100%" data-test="select_basic">
+                <StyledSelect
+                    isSearchable
+                    value={{
+                        value: 'hello',
+                        label:
+                            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
+                    }}
+                    options={[
+                        { value: 'hello', label: 'Hello' },
+                        { value: 'world', label: 'World' },
+                    ]}
+                />
+            </DataWrapper>
+            <H5>clearable</H5>
+            <DataWrapper width="100%" data-test="select_clearable">
+                <StyledSelect
+                    isSearchable
+                    isClearable
+                    withDropdownIndicator
+                    value={{
+                        value: 'hello',
+                        label:
+                            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
+                    }}
+                    options={[
+                        { value: 'hello', label: 'Hello' },
+                        { value: 'world', label: 'World' },
+                    ]}
+                />
+            </DataWrapper>
+
+            <H5>without dropdown indicator</H5>
+            <DataWrapper width="100%" data-test="select_withoutDropdown">
+                <StyledSelect
+                    isSearchable
+                    withDropdownIndicator={false}
+                    value={{
+                        value: 'hello',
+                        label:
+                            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
+                    }}
+                    options={[
+                        { value: 'hello', label: 'Hello' },
+                        { value: 'world', label: 'World' },
+                    ]}
+                />
+            </DataWrapper>
+
+            <H5>disabled</H5>
+            <DataWrapper width="100%" data-test="select_disabled">
+                <StyledSelect
+                    isSearchable
+                    isClearable
+                    isDisabled
+                    withDropdownIndicator
+                    value={{
+                        value: 'hello',
+                        label:
+                            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo.',
+                    }}
+                    options={[
+                        { value: 'hello', label: 'Hello' },
+                        { value: 'world', label: 'World' },
+                    ]}
+                />
+            </DataWrapper>
+        </Row>
+
+        <H1>
+            Checkbox <BtnLink onClick={linkTo('Form', 'Checkbox')}>{'<Checkbox />'}</BtnLink>
+        </H1>
+        <Row>
+            <Checkbox data-test="checkbox_unchecked">Label</Checkbox>
+        </Row>
+        <Row>
+            <Checkbox isChecked data-test="checkbox_checked">
+                Label
+            </Checkbox>
+        </Row>
+        <H1>
+            Switch <BtnLink onClick={linkTo('Form', 'Switch')}>{'<Switch />'}</BtnLink>
+        </H1>
+        <H5>
+            basic <BtnLink onClick={linkTo('Form', 'Switch')}>{'<Switch/>'}</BtnLink>
+        </H5>
+        <Row>
+            <DataWrapper data-test="switch_basic_unchecked">
+                <Switch />
+            </DataWrapper>
+            <DataWrapper data-test="switch_basic_checked">
+                <Switch checked />
+            </DataWrapper>
+            <DataWrapper data-test="switch_basic_disabled">
+                <Switch disabled />
+            </DataWrapper>
+        </Row>
+
+        <H5>
+            small <BtnLink onClick={linkTo('Form', 'Switch')}>{'<Switch isSmall />'}</BtnLink>
+        </H5>
+        <Row>
+            <DataWrapper data-test="switch_small_unchecked">
+                <Switch isSmall />
+            </DataWrapper>
+
+            <DataWrapper data-test="switch_small_checked">
+                <Switch isSmall checked />
+            </DataWrapper>
+
+            <DataWrapper data-test="switch_small_disabled">
+                <Switch isSmall disabled />
+            </DataWrapper>
+        </Row>
+        <H5>
+            without icons{' '}
+            <BtnLink onClick={linkTo('Form', 'Switch')}>
+                {'<Switch checkedIcon={null} uncheckedIcon={null} />'}
+            </BtnLink>
+        </H5>
+        <Row>
+            <DataWrapper data-test="switch_noicon_unchecked">
+                <Switch uncheckedIcon={null} checkedIcon={null} />
+            </DataWrapper>
+            <DataWrapper data-test="switch_noicon_checked">
+                <Switch uncheckedIcon={null} checkedIcon={null} checked />
+            </DataWrapper>
+
+            <DataWrapper data-test="switch_noicon_disabled">
+                <Switch uncheckedIcon={null} checkedIcon={null} disabled />
+            </DataWrapper>
+        </Row>
+        <Row>
+            <DataWrapper data-test="switch_noicon_small_unchecked">
+                <Switch uncheckedIcon={null} checkedIcon={null} isSmall />
+            </DataWrapper>
+            <DataWrapper data-test="switch_noicon_small_checked">
+                <Switch iuncheckedIcon={null} checkedIcon={null} sSmall checked />
+            </DataWrapper>
+            <DataWrapper data-test="switch_noicon_small_disabled">
+                <Switch uncheckedIcon={null} checkedIcon={null} isSmall disabled />
+            </DataWrapper>
+        </Row>
+    </Wrapper>
+));
 
 storiesOf('Form', module)
     .addDecorator(

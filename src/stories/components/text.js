@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, select, radios, number } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
+import { linkTo } from '@storybook/addon-links';
 
 import { H1, H2, H3, H4, H5, H6 } from 'components/Heading';
 import Link from 'components/Link';
@@ -19,8 +20,31 @@ const Center = styled.div`
     padding: 100px 0px;
 `;
 
+const Row = styled.div`
+    margin: 0.5rem 0 2rem;
+`;
+
 const Wrapper = styled.div`
     padding: 1.6rem;
+
+    p {
+        margin-bottom: 10px;
+    }
+`;
+
+const BtnLink = styled.button`
+    font-size: 1rem;
+    color: ${colors.TEXT_SECONDARY};
+    vertical-align: middle;
+    background: ${colors.LANDING};
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+`;
+
+const HoverMe = styled.span`
+    padding: 8px;
+    background: #ccc;
 `;
 
 Wrapper.displayName = 'Wrapper';
@@ -29,45 +53,114 @@ H2.displayName = 'H2';
 H3.displayName = 'H3';
 H4.displayName = 'H4';
 
-storiesOf('Typography', module).add('All', () => (
-    <Wrapper>
-        <H1>Heading level 1</H1>
-        <H2>Heading level 2</H2>
-        <H3>Heading level 3</H3>
-        <H4>Heading level 4</H4>
-        <H5>Heading level 5</H5>
-        <H6>Heading level 6</H6>
-        <P size="small">
-            This is a SMALL paragraph with{' '}
-            <Link href="/test" isGreen>
-                link
-            </Link>
-            .
-        </P>
-        <P size="medium">
-            This is a MEDIUM paragraph with{' '}
-            <Link href="/test" isGreen>
-                link
-            </Link>
-            .
-        </P>
-        <P size="large">
-            This is a LARGE paragraph with{' '}
-            <Link href="/test" isGray>
-                {' '}
-                gray link
-            </Link>
-            .
-        </P>
-        <P size="xlarge">
-            This is a XLARGE paragraph with{' '}
-            <Link href="/test" isGreen>
-                link
-            </Link>
-            .
-        </P>
-    </Wrapper>
-));
+storiesOf('Typography', module).add('All', () => {
+    const pContent =
+        'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Et harum quidem rerum facilis est et expedita distinctio. Fusce tellus. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Mauris elementum mauris vitae tortor. Mauris metus.';
+    return (
+        <Wrapper>
+            <H1>
+                Heading <BtnLink onClick={linkTo('Typography', 'Heading')}>{'<H1 />'}</BtnLink>
+            </H1>
+            <Row>
+                <H1 data-test="heading_1">Heading level 1</H1>
+                <H2 data-test="heading_2">Heading level 2</H2>
+                <H3 data-test="heading_3">Heading level 3</H3>
+                <H4 data-test="heading_4">Heading level 4</H4>
+                <H5 data-test="heading_5">Heading level 5</H5>
+                <H6 data-test="heading_6">Heading level 6</H6>
+            </Row>
+            <H1>
+                Paragraph{' '}
+                <BtnLink onClick={linkTo('Typography', 'Paragraph')}>{'<P size={size} />'}</BtnLink>
+            </H1>
+
+            <H5>small</H5>
+            <Row>
+                <P size="small" data-test="paragraph_small">
+                    This is a SMALL paragraph with{' '}
+                    <Link href="/test" isGreen>
+                        link
+                    </Link>
+                    .{pContent}
+                </P>
+            </Row>
+
+            <H5>medium</H5>
+            <Row>
+                <P size="medium" data-test="paragraph_medium">
+                    This is a MEDIUM paragraph with{' '}
+                    <Link href="/test" isGreen>
+                        link
+                    </Link>
+                    .{pContent}
+                </P>
+            </Row>
+
+            <Row>
+                <H5>large</H5>
+                <P size="large" data-test="paragraph_large">
+                    This is a LARGE paragraph with{' '}
+                    <Link href="/test" isGray>
+                        {' '}
+                        gray link
+                    </Link>
+                    .{pContent}
+                </P>
+            </Row>
+
+            <Row>
+                <H5>xlarge</H5>
+                <P size="xlarge" data-test="paragraph_xlarge">
+                    This is a XLARGE paragraph with{' '}
+                    <Link href="/test" isGreen>
+                        link
+                    </Link>
+                    .{pContent}
+                </P>
+            </Row>
+
+            <H1>
+                Tooltip <BtnLink onClick={linkTo('Typography', 'Tooltip')}>{'<Tooltip />'}</BtnLink>
+            </H1>
+            <H5>basic</H5>
+            <Row>
+                <Tooltip
+                    maxWidth={280}
+                    placement="top"
+                    content="Passphrase is an optional feature."
+                >
+                    <HoverMe>Hover me</HoverMe>
+                </Tooltip>
+            </Row>
+
+            <H5>with CTA button</H5>
+            <Row>
+                <Tooltip
+                    maxWidth={280}
+                    placement="top"
+                    content="Passphrase is an optional feature."
+                    ctaLink="https://wiki.trezor.io/Passphrase"
+                    ctaText="Learn more"
+                >
+                    <HoverMe>Hover me</HoverMe>
+                </Tooltip>
+            </Row>
+
+            <H5>maxWidth limit</H5>
+            <Row>
+                <Tooltip
+                    maxWidth={280}
+                    placement="top"
+                    content={`Passphrase is an optional feature. ${pContent}`}
+                    ctaLink="https://wiki.trezor.io/Passphrase"
+                    ctaText="Learn more"
+                >
+                    <HoverMe>Hover me</HoverMe>
+                </Tooltip>
+            </Row>
+        </Wrapper>
+    );
+});
 
 storiesOf('Typography', module)
     .addDecorator(

@@ -54,10 +54,30 @@ storiesOf('Notifications', module).add('All', () => (
             </BtnLink>
         </H1>
         <Row>
-            <StyledNotification variant="info" title="Notification title" message={notMessage} />
-            <StyledNotification variant="success" title="Notification title" message={notMessage} />
-            <StyledNotification variant="warning" title="Notification title" message={notMessage} />
-            <StyledNotification variant="error" title="Notification title" message={notMessage} />
+            <StyledNotification
+                variant="info"
+                title="Notification title"
+                message={notMessage}
+                data-test="notification_basic_info"
+            />
+            <StyledNotification
+                variant="success"
+                title="Notification title"
+                message={notMessage}
+                data-test="notification_basic_success"
+            />
+            <StyledNotification
+                variant="warning"
+                title="Notification title"
+                message={notMessage}
+                data-test="notification_basic_warning"
+            />
+            <StyledNotification
+                variant="error"
+                title="Notification title"
+                message={notMessage}
+                data-test="notification_basic_error"
+            />
         </Row>
         <Row />
 
@@ -68,24 +88,28 @@ storiesOf('Notifications', module).add('All', () => (
                 title="Notification title"
                 message={notMessage}
                 cancelable
+                data-test="notification_cancelable_info"
             />
             <StyledNotification
                 variant="success"
                 title="Notification title"
                 message={notMessage}
                 cancelable
+                data-test="notification_cancelable_success"
             />
             <StyledNotification
                 variant="warning"
                 title="Notification title"
                 message={notMessage}
                 cancelable
+                data-test="notification_cancelable_warning"
             />
             <StyledNotification
                 variant="error"
                 title="Notification title"
                 message={notMessage}
                 cancelable
+                data-test="notification_cancelable_error"
             />
         </Row>
         <H5>
@@ -106,6 +130,7 @@ storiesOf('Notifications', module).add('All', () => (
                         callback: () => {},
                     },
                 ]}
+                data-test="notification_cancelable_action_info"
             />
             <StyledNotification
                 variant="success"
@@ -118,6 +143,7 @@ storiesOf('Notifications', module).add('All', () => (
                         callback: () => {},
                     },
                 ]}
+                data-test="notification_cancelable_action_success"
             />
             <StyledNotification
                 variant="warning"
@@ -130,6 +156,7 @@ storiesOf('Notifications', module).add('All', () => (
                         callback: () => {},
                     },
                 ]}
+                data-test="notification_cancelable_action_warning"
             />
             <StyledNotification
                 variant="error"
@@ -142,6 +169,7 @@ storiesOf('Notifications', module).add('All', () => (
                         callback: () => {},
                     },
                 ]}
+                data-test="notification_cancelable_action_error"
             />
         </Row>
 
@@ -164,6 +192,7 @@ storiesOf('Notifications', module).add('All', () => (
                         callback: () => {},
                     },
                 ]}
+                data-test="notification_cancelable_action_loading_info"
             />
             <StyledNotification
                 variant="success"
@@ -177,6 +206,7 @@ storiesOf('Notifications', module).add('All', () => (
                         callback: () => {},
                     },
                 ]}
+                data-test="notification_cancelable_action_loading_success"
             />
             <StyledNotification
                 variant="warning"
@@ -190,6 +220,7 @@ storiesOf('Notifications', module).add('All', () => (
                         callback: () => {},
                     },
                 ]}
+                data-test="notification_cancelable_action_loading_warning"
             />
             <StyledNotification
                 variant="error"
@@ -203,6 +234,7 @@ storiesOf('Notifications', module).add('All', () => (
                         callback: () => {},
                     },
                 ]}
+                data-test="notification_cancelable_action_loading_error"
             />
         </Row>
     </Wrapper>

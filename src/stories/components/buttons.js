@@ -46,21 +46,27 @@ storiesOf('Buttons', module).add('All', () => (
             Basic <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button />'}</BtnLink>
         </H1>
         <Row>
-            <Button variant="success" data-test="Button__default">
+            <Button variant="success" data-test="button_basic_success">
                 Button
             </Button>
-            <Button variant="info">Button</Button>
-            <Button variant="warning">Button</Button>
-            <Button variant="error">Button</Button>
+            <Button variant="info" data-test="button_basic_info">
+                Button
+            </Button>
+            <Button variant="warning" data-test="button_basic_warning">
+                Button
+            </Button>
+            <Button variant="error" data-test="button_basic_error">
+                Button
+            </Button>
         </Row>
         <Row>
-            <Button data-test="Button__white" isWhite>
+            <Button data-test="button_basic_white" isWhite>
                 White
             </Button>
-            <Button data-test="Button__transparent" isTransparent>
+            <Button data-test="button_basic_transparent" isTransparent>
                 Transparent
             </Button>
-            <Button data-test="Button__disabled" isDisabled>
+            <Button data-test="button_basic_disabled" isDisabled>
                 Disabled
             </Button>
         </Row>
@@ -70,27 +76,27 @@ storiesOf('Buttons', module).add('All', () => (
             <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button icon="PLUS" />'}</BtnLink>
         </H5>
         <Row>
-            <Button icon="PLUS" variant="success">
+            <Button icon="PLUS" variant="success" data-test="button_icon_success">
                 Button
             </Button>
-            <Button icon="PLUS" variant="info">
+            <Button icon="PLUS" variant="info" data-test="button_icon_info">
                 Button
             </Button>
-            <Button icon="PLUS" variant="warning">
+            <Button icon="PLUS" variant="warning" data-test="button_icon_warning">
                 Button
             </Button>
-            <Button icon="PLUS" variant="error">
+            <Button icon="PLUS" variant="error" data-test="button_icon_error">
                 Button
             </Button>
         </Row>
         <Row>
-            <Button icon="PLUS" isWhite>
+            <Button icon="PLUS" isWhite data-test="button_icon_white">
                 White
             </Button>
-            <Button icon="PLUS" isTransparent>
+            <Button icon="PLUS" isTransparent data-test="button_icon_transparent">
                 Transparent
             </Button>
-            <Button icon="PLUS" isDisabled>
+            <Button icon="PLUS" isDisabled data-test="button_icon_disabled">
                 Disabled
             </Button>
         </Row>
@@ -100,27 +106,27 @@ storiesOf('Buttons', module).add('All', () => (
             <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button isLoading />'}</BtnLink>
         </H5>
         <Row>
-            <Button isLoading variant="success">
+            <Button isLoading variant="success" data-test="button_loading_success">
                 Button
             </Button>
-            <Button isLoading variant="info">
+            <Button isLoading variant="info" data-test="button_loading_info">
                 Button
             </Button>
-            <Button isLoading variant="warning">
+            <Button isLoading variant="warning" data-test="button_loading_warning">
                 Button
             </Button>
-            <Button isLoading variant="error">
+            <Button isLoading variant="error" data-test="button_loading_error">
                 Button
             </Button>
         </Row>
         <Row>
-            <Button isLoading isWhite>
+            <Button isLoading isWhite data-test="button_loading_white">
                 White
             </Button>
-            <Button isLoading isTransparent>
+            <Button isLoading isTransparent data-test="button_loading_transparent">
                 Transparent
             </Button>
-            <Button isLoading isDisabled>
+            <Button isLoading isDisabled data-test="button_loading_disabled">
                 Disabled
             </Button>
         </Row>
@@ -130,27 +136,27 @@ storiesOf('Buttons', module).add('All', () => (
             <BtnLink onClick={linkTo('Buttons', 'Button')}>{'<Button isInverse />'}</BtnLink>
         </H1>
         <Row>
-            <Button isInverse variant="success">
+            <Button isInverse variant="success" data-test="button_inverse_success">
                 Button
             </Button>
-            <Button isInverse variant="info">
+            <Button isInverse variant="info" data-test="button_inverse_info">
                 Button
             </Button>
-            <Button isInverse variant="warning">
+            <Button isInverse variant="warning" data-test="button_inverse_warning">
                 Button
             </Button>
-            <Button isInverse variant="error">
+            <Button isInverse variant="error" data-test="button_inverse_error">
                 Button
             </Button>
         </Row>
         <Row>
-            <Button isInverse isWhite>
+            <Button isInverse isWhite data-test="button_inverse_white">
                 White
             </Button>
-            <Button isInverse isTransparent>
+            <Button isInverse isTransparent data-test="button_inverse_transparent">
                 Transparent
             </Button>
-            <Button isInverse isDisabled>
+            <Button isInverse isDisabled data-test="button_inverse_disabled">
                 Disabled
             </Button>
         </Row>
@@ -162,27 +168,27 @@ storiesOf('Buttons', module).add('All', () => (
             </BtnLink>
         </H5>
         <Row>
-            <Button isInverse icon="PLUS" variant="success">
+            <Button isInverse icon="PLUS" variant="success" data-test="button_inverse_icon_success">
                 Button
             </Button>
-            <Button isInverse icon="PLUS" variant="info">
+            <Button isInverse icon="PLUS" variant="info" data-test="button_inverse_icon_info">
                 Button
             </Button>
-            <Button isInverse icon="PLUS" variant="warning">
+            <Button isInverse icon="PLUS" variant="warning" data-test="button_inverse_icon_warning">
                 Button
             </Button>
-            <Button isInverse icon="PLUS" variant="error">
+            <Button isInverse icon="PLUS" variant="error" data-test="button_inverse_icon_error">
                 Button
             </Button>
         </Row>
         <Row>
-            <Button isInverse icon="PLUS" isWhite>
+            <Button isInverse icon="PLUS" isWhite data-test="button_inverse_icon_white">
                 White
             </Button>
-            <Button isInverse icon="PLUS" isTransparent>
+            <Button isInverse icon="PLUS" isTransparent data-test="button_inverse_icon_transparent">
                 Transparent
             </Button>
-            <Button isInverse icon="PLUS" isDisabled>
+            <Button isInverse icon="PLUS" isDisabled data-test="button_inverse_icon_disabled">
                 Disabled
             </Button>
         </Row>
@@ -194,27 +200,42 @@ storiesOf('Buttons', module).add('All', () => (
             </BtnLink>
         </H5>
         <Row>
-            <Button isInverse isLoading variant="success">
+            <Button
+                isInverse
+                isLoading
+                variant="success"
+                data-test="button_inverse_loading_success"
+            >
                 Button
             </Button>
-            <Button isInverse isLoading variant="info">
+            <Button isInverse isLoading variant="info" data-test="button_inverse_loading_info">
                 Button
             </Button>
-            <Button isInverse isLoading variant="warning">
+            <Button
+                isInverse
+                isLoading
+                variant="warning"
+                data-test="button_inverse_loading_warning"
+            >
                 Button
             </Button>
-            <Button isInverse isLoading variant="error">
+            <Button isInverse isLoading variant="error" data-test="button_inverse_loading_error">
                 Button
             </Button>
         </Row>
         <Row>
-            <Button isInverse isLoading isWhite>
+            <Button isInverse isLoading isWhite data-test="button_inverse_loading_white">
                 White
             </Button>
-            <Button isInverse isLoading isTransparent>
+            <Button
+                isInverse
+                isLoading
+                isTransparent
+                data-test="button_inverse_loading_transparent"
+            >
                 Transparent
             </Button>
-            <Button isInverse isLoading isDisabled>
+            <Button isInverse isLoading isDisabled data-test="button_inverse_loading_disabled">
                 Disabled
             </Button>
         </Row>

@@ -31,8 +31,8 @@ const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
-const InputPin = ({ value, onDeleteClick }) => (
-    <Wrapper>
+const InputPin = ({ value, onDeleteClick, ...rest }) => (
+    <Wrapper {...rest}>
         <StyledInput disabled type="password" maxLength="9" autoComplete="off" value={value} />
         <StyledIcon onClick={onDeleteClick} color={colors.TEXT_PRIMARY} icon={icons.BACK} />
     </Wrapper>
