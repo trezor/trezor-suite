@@ -48,6 +48,19 @@ test snapshots:
     when: always
     paths:
       - /builds/trezor/trezor-ui-components/test/screenshots
+      - /builds/trezor/trezor-ui-components/test/snapshots
+
+make snapshot references:
+  image: $CONTAINER_NAME:$CI_COMMIT_SHA
+  stage: test
+  script:
+    - yarn
+    - yarn ci:test:snapshots:references
+  artifacts:
+    expire_in: 1 day
+    when: manual
+    paths:
+      - /builds/trezor/trezor-ui-components/test/snapshots
 
 delete image:
   image: docker:latest
@@ -58,4 +71,4 @@ delete image:
   before_script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
-    - docker rmi trezor-ui-components:$CI_COMMIT_SHA
+    - docker rmi -f trezor/trezor-ui-components:$CI_COMMIT_SHA
