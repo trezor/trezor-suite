@@ -1,10 +1,9 @@
-image: node:10.15.1
-
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - cache/Cypress
-  - node_modules
+    - .npm
+    - cache/Cypress
+    - node_modules
 
 stages:
   - build
@@ -13,28 +12,31 @@ stages:
 variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
 
-install:
-  image: cypress/base:10
+build image:
+  variables:
+    CONTAINER_NAME: "$CI_REGISTRY/trezor-ui-components"
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   stage: build
+  when: always
   script:
-    - yarn
-    - $(yarn bin)/cypress verify
+    - docker pull $CONTAINER_NAME:latest || true
+    - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
+    - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
+    - docker push $CONTAINER_NAME:latest
 
-lint:
-  stage: build
-  script:
-    - yarn
-    - yarn run lint
-
-test-snapshots:
-  image: cypress/base:10
+test snapshots:
+  image: $CI_REGISTRY/trezor-ui-components:latest
   stage: test
   script:
-    # - yarn ci:test:snapshots -c baseUrl=https://trezor-wallet-dev.trezor.io/${CI_BUILD_REF_NAME}
+    - yarn storybook
     - yarn ci:test:snapshots -c baseUrl=https://trezor.github.io/trezor-ui-components
   artifacts:
     expire_in: 1 day
     when: always
     paths:
-      - /builds/trezor/trezor-ui-components/test/screenshots
-      - /builds/trezor/trezor-ui-components/test/snapshots
+      - cypress/screenshots
+      - cypress/videos

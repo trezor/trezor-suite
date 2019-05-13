@@ -16,6 +16,11 @@
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
         "prepublishOnly": "npm run build",
+        "cy:verify": "cypress verify",
+        "cy:version": "cypress version",
+        "cy:run": "cypress run",
+        "cy:run:record": "cypress run --record",
+        "cy:open": "cypress open",
         "ci:test:snapshots": "npx cypress run",
         "ci:test:snapshots:references": "npx cypress run --env updateSnapshots=true",
         "run-integration-tests:ui": "cypress open"
