@@ -14,7 +14,7 @@ variables:
   CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
 
 install:
-  image: cypress/base
+  image: cypress/base:latest
   stage: build
   script:
     - yarn
