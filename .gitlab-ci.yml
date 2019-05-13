@@ -14,6 +14,14 @@ variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
   CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
 
+install:
+  image: cypress/base:10
+  stage: build
+  script:
+    - $(yarn bin)/cypress cache path
+    - $(yarn bin)/cypress cache list
+    - $(yarn bin)/cypress verify
+
 build image:
   image: docker:latest
   services:
