@@ -27,7 +27,9 @@ lint:
     - yarn run lint
 
 test snapshots:
-  image: cypress/browsers:chrome67
+  image: docker:latest
+  services:
+    - docker:dind
   stage: test
   script:
     - yarn
@@ -39,8 +41,10 @@ test snapshots:
       - /builds/trezor/trezor-ui-components/test/screenshots
       - /builds/trezor/trezor-ui-components/test/snapshots
 
-make snapshots references:
-  image: cypress/browsers:chrome67
+ make snapshots references:
+  image: docker:latest
+  services:
+    - docker:dind
   stage: test
   when: manual
   script:
