@@ -8,6 +8,3 @@ COPY yarn.lock /trezor-ui-components
 RUN yarn install
 
 COPY . /trezor-ui-components
-
-EXPOSE 9001
-CMD [ "yarn", "run", "storybook" ]

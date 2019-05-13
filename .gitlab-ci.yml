@@ -11,10 +11,9 @@ stages:
 
 variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+  CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
 
 build image:
-  variables:
-    CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
   image: docker:latest
   services:
     - docker:dind
