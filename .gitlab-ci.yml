@@ -5,9 +5,6 @@ cache:
     - cache/Cypress
     - node_modules
 
-before_script:
-    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-
 stages:
   - build
   - test
@@ -25,6 +22,8 @@ build image:
     - docker:dind
   stage: build
   when: always
+  before_script:
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
     - docker pull $CONTAINER_NAME:latest || true
     - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
@@ -50,5 +49,7 @@ delete image:
   services:
     - docker:dind
   when: always
+  before_script:
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
     - docker rmi $CONTAINER_NAME:$CI_COMMIT_SHA
