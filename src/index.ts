@@ -28,15 +28,13 @@ import Notification from './components/Notification';
 import Prompt from './components/Prompt';
 import Header from './components/Header';
 
-module.exports = {
+export {
     colors,
     icons,
     animations,
     variables,
-
     Button,
     ButtonPin,
-
     Input,
     InputPin,
     TextArea,
@@ -44,7 +42,6 @@ module.exports = {
     Switch,
     Select,
     AsyncSelect,
-
     H1,
     H2,
     H3,
@@ -54,7 +51,6 @@ module.exports = {
     Link,
     P,
     Tooltip,
-
     Modal,
     InvalidPin,
     Icon,
