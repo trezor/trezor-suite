@@ -17,10 +17,10 @@ variables:
 
 build image:
   image: docker:latest
-  services:
-    - docker:dind
   before_script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  services:
+    - docker:dind
   stage: test
   when: always
   script:
@@ -31,6 +31,8 @@ build image:
 
 test snapshots:
   image: $CI_REGISTRY/$CONTAINER_NAME:$CI_COMMIT_SHA
+  before_script:
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   stage: test
   script:
     - yarn storybook
