@@ -18,6 +18,7 @@ install:
   image: cypress/base:10
   stage: build
   script:
+    - npm ci
     - $(yarn bin)/cypress cache path
     - $(yarn bin)/cypress cache list
     - $(yarn bin)/cypress verify
