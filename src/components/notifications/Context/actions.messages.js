@@ -19,7 +19,7 @@ const definedMessages: Messages = defineMessages({
     TR_TRANSACTION_ERROR: {
         id: 'TR_TRANSACTION_ERROR',
         defaultMessage: 'Transaction error',
-        description: 'Error during signing transaction',
+        description: 'Error during signing a transaction',
     },
     TR_TRANSACTION_SUCCESS: {
         id: 'TR_TRANSACTION_SUCCESS',
@@ -35,11 +35,11 @@ const definedMessages: Messages = defineMessages({
     },
     TR_SIGN_MESSAGE_ERROR: {
         id: 'TR_SIGN_MESSAGE_ERROR',
-        defaultMessage: 'Sign error',
+        defaultMessage: 'Failed to sign message',
     },
     TR_VERIFY_MESSAGE_ERROR: {
         id: 'TR_VERIFY_MESSAGE_ERROR',
-        defaultMessage: 'Verify error',
+        defaultMessage: 'Failed to verify message',
     },
     TR_VERIFY_MESSAGE_SUCCESS: {
         id: 'TR_VERIFY_MESSAGE_SUCCESS',

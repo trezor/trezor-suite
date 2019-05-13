@@ -21,7 +21,7 @@ const definedMessages: Messages = defineMessages({
         defaultMessage: 'Visible coins',
     },
     TR_VISIBLE_COINS_EXTERNAL: {
-        id: 'TR_VISIBLE_COINS_EXTERNAL:',
+        id: 'TR_VISIBLE_COINS_EXTERNAL',
         defaultMessage: 'Visible external coins',
     },
     TR_VISIBLE_COINS_EXPLAINED: {
