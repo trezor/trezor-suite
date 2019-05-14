@@ -5,7 +5,6 @@ import { INIT } from '@suite/actions/SuiteActions';
 
 interface Props {
     loaded: State['suite']['loaded'];
-    storage: State['storage'];
     dispatch: Dispatch;
 }
 
@@ -23,12 +22,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
 };
 
 const mapStateToProps = (state: State) => ({
-    ready: state.suite.loaded,
+    loaded: state.suite.loaded,
 });
 
-export default connect(
-    (state: State) => ({
-        ready: state.suite.loaded,
-        storage: state.storage,
-    })
-)(Preloader);
+export default connect(mapStateToProps)(Preloader);
