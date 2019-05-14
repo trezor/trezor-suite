@@ -41,6 +41,42 @@ describe('Form', () => {
             .matchImageSnapshot();
     });
 
+    // with value
+    it('input_value', () => {
+        cy.getTestElement('input_value')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    it('input_value_info', () => {
+        cy.getTestElement('input_value_info')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    it('input_value_success', () => {
+        cy.getTestElement('input_value_success')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    it('input_value_warning', () => {
+        cy.getTestElement('input_value_warning')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+    it('input_value_error', () => {
+        cy.getTestElement('input_value_error')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    it('input_value_disabled', () => {
+        cy.getTestElement('input_value_disabled')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
     //label bottomText
     it('input_label_bottomText', () => {
         cy.getTestElement('input_label_bottomText')
