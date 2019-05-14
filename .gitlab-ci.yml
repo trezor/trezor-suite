@@ -10,9 +10,15 @@ cache:
     - ~/.cache
 
 stages:
+  - lint
   - build
-  - test
-  - cleanup
+  - test snapshots
+
+lint:
+  stage: lint
+  script:
+    - yarn
+    - yarn run lint
 
 install:
   image: cypress/base:10
@@ -32,7 +38,6 @@ build image:
   before_script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
-    - docker pull $CONTAINER_NAME:latest || true
     - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
     - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
     - docker push $CONTAINER_NAME:latest
