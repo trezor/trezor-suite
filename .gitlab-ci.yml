@@ -59,6 +59,7 @@ make snapshot references:
     - yarn ci:test:snapshots:references
   artifacts:
     expire_in: 1 day
+    when: always
     paths:
       - /builds/trezor/trezor-ui-components/test/snapshots
 
