@@ -13,17 +13,17 @@
     "scripts": {
         "deps": "rimraf 'node_modules' '**/node_modules' && yarn",
         "deps:update": "rimraf 'yarn.lock' 'node_modules' '**/node_modules' && yarn",
-        "dev": "wsrun --exclude-missing dev",
-        "dev:ios": "yarn workspace @trezor/suite-native dev:ios",
-        "dev:android": "yarn workspace @trezor/suite-native dev:android",
-        "dev:desktop": "yarn workspace @trezor/suite-desktop dev:desktop",
+        "suite:dev": "yarn workspace @trezor/suite-web dev",
+        "suite:dev:ios": "yarn workspace @trezor/suite-native dev:ios",
+        "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
+        "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev:desktop",
         "lint": "eslint '**/*.{ts,tsx}'",
         "lint:fix": "yarn lint --fix",
         "lint:prettier": "pretty-quick",
         "prettier:check": "eslint --print-config '**/*.{ts,tsx}' | eslint-config-prettier-check",
         "tsc": "tsc",
         "test": "run-s lint tsc",
-        "build": "wsrun --exclude-missing build"
+        "suite:build:web": "yarn workspace @trezor/suite-web build"
     },
     "dependencies": {
         "wsrun": "^3.6.2"
