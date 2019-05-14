@@ -1,67 +1,67 @@
-image: node:10.15.1
+# image: node:10.15.1
 
-variables:
-  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
-  CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
+# variables:
+#   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+#   CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
 
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - ~/.cache
+# cache:
+#   key: ${CI_COMMIT_REF_SLUG}
+#   paths:
+#     - ~/.cache
 
-stages:
-  - build
-  - test
-  - cleanup
+# stages:
+#   - build
+#   - test
+#   - cleanup
 
-install:
-  image: cypress/base:10
-  stage: build
-  script:
-    - yarn install --frozen-lockfile
-    - $(yarn bin)/cypress cache path
-    - $(yarn bin)/cypress cache list
-    - $(yarn bin)/cypress verify
+# install:
+#   image: cypress/base:10
+#   stage: build
+#   script:
+#     - yarn install --frozen-lockfile
+#     - $(yarn bin)/cypress cache path
+#     - $(yarn bin)/cypress cache list
+#     - $(yarn bin)/cypress verify
 
-build image:
-  image: docker:latest
-  services:
-    - docker:dind
-  stage: build
-  when: always
-  before_script:
-    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-  script:
-    - docker pull $CONTAINER_NAME:latest || true
-    - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
-    - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
-    - docker push $CONTAINER_NAME:latest
+# build image:
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   stage: build
+#   when: always
+#   before_script:
+#     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+#   script:
+#     - docker pull $CONTAINER_NAME:latest || true
+#     - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
+#     - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
+#     - docker push $CONTAINER_NAME:latest
 
-test snapshots:
-  image: $CONTAINER_NAME:$CI_COMMIT_SHA
-  stage: test
-  script:
-    - yarn
-    - yarn ci:test:snapshots
-  artifacts:
-    expire_in: 1 day
-    when: always
-    paths:
-      - /builds/trezor/trezor-ui-components/test/screenshots
-      - /builds/trezor/trezor-ui-components/test/snapshots
+# test snapshots:
+#   image: $CONTAINER_NAME:$CI_COMMIT_SHA
+#   stage: test
+#   script:
+#     - yarn
+#     - yarn ci:test:snapshots
+#   artifacts:
+#     expire_in: 1 day
+#     when: always
+#     paths:
+#       - /builds/trezor/trezor-ui-components/test/screenshots
+#       - /builds/trezor/trezor-ui-components/test/snapshots
 
-make snapshot references:
-  image: $CONTAINER_NAME:$CI_COMMIT_SHA
-  stage: test
-  when: manual
-  script:
-    - yarn
-    - yarn ci:test:snapshots:references
-  artifacts:
-    expire_in: 1 day
-    when: always
-    paths:
-      - /builds/trezor/trezor-ui-components/test/snapshots
+# make snapshot references:
+#   image: $CONTAINER_NAME:$CI_COMMIT_SHA
+#   stage: test
+#   when: manual
+#   script:
+#     - yarn
+#     - yarn ci:test:snapshots:references
+#   artifacts:
+#     expire_in: 1 day
+#     when: always
+#     paths:
+#       - /builds/trezor/trezor-ui-components/test/snapshots
 
 delete image:
   image: docker:latest
@@ -72,4 +72,4 @@ delete image:
   before_script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
-    - docker rmi $(docker images --filter=reference="${CONTAINER_NAME}:${CI_COMMIT_SHA}" -q)
+    - docker images | grep "73a21529e269351fe9b8732ae8f20154436ff7bb" | awk '{print $1 ":" $2}' | xargs docker rmi
