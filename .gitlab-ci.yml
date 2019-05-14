@@ -44,7 +44,7 @@ build image:
 
 test snapshots:
   image: $CONTAINER_NAME:$CI_COMMIT_SHA
-  stage: test
+  stage: test snapshots
   script:
     - yarn
     - yarn ci:test:snapshots
@@ -57,7 +57,7 @@ test snapshots:
 
 make snapshot references:
   image: $CONTAINER_NAME:$CI_COMMIT_SHA
-  stage: test
+  stage: test snapshots
   when: manual
   script:
     - yarn
