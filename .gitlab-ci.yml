@@ -9,10 +9,10 @@
 #   paths:
 #     - ~/.cache
 
-# stages:
-#   - build
-#   - test
-#   - cleanup
+stages:
+  - build
+  # - test
+  # - cleanup
 
 # install:
 #   image: cypress/base:10
