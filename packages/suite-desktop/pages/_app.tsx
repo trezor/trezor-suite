@@ -5,11 +5,9 @@ import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 
-import { lightTheme } from '@trezor/components/themes/lightTheme';
-import { ThemeContext } from '@suite/hooks/useTheme';
 import { initStore } from '@suite/reducers/store';
-import TrezorConnect from '@suite/TrezorConnect';
-import RouterHandler from '@suite/RouterHandler';
+import RouterHandler from '@suite/support/RouterHandler';
+import Preloader from '@suite/components/Preloader';
 
 interface Props {
     store: Store;
@@ -27,11 +25,10 @@ class TrezorSuiteApp extends App<Props> {
         return (
             <Container>
                 <ReduxProvider store={store}>
-                    <RouterHandler store={store} />
-                    <TrezorConnect />
-                    <ThemeContext.Provider value={lightTheme}>
+                    <Preloader>
+                        <RouterHandler />
                         <Component {...pageProps} />
-                    </ThemeContext.Provider>
+                    </Preloader>
                 </ReduxProvider>
             </Container>
         );

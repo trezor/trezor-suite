@@ -25,7 +25,7 @@ class TrezorSuiteApp extends App<Props> {
             <Container>
                 <ReduxProvider store={store}>
                     <Preloader>
-                        <RouterHandler store={store} />
+                        <RouterHandler />
                         <Component {...pageProps} />
                     </Preloader>
                 </ReduxProvider>

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
 import { StartButton } from '@trezor/components/StartButton';
-import { useTheme } from '@suite/hooks/useTheme';
 import Wrapper from '@suite/components/SuiteWrapper';
 import { State } from '@suite/types';
 
@@ -17,10 +16,9 @@ interface Props {
 }
 
 const Wallet = (props: Props) => {
-    const theme = useTheme();
     return (
         <Wrapper>
-            <Text style={theme.text}>Wallet {props.router.pathname}</Text>
+            <Text>Wallet {props.router.pathname}</Text>
             <StartButton onPress={onPress} />
         </Wrapper>
     );
