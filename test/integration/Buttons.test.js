@@ -4,202 +4,47 @@ describe('Buttons', () => {
         cy.visit('http://localhost:9001/iframe.html?selectedKind=Buttons&selectedStory=All&full=0');
     });
 
-    it('button_basic_success', () => {
-        cy.getTestElement('button_basic_success')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_basic_info', () => {
-        cy.getTestElement('button_basic_info')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_basic_warning', () => {
-        cy.getTestElement('button_basic_warning')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_basic_error', () => {
-        cy.getTestElement('button_basic_error')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_basic_white', () => {
-        cy.getTestElement('button_basic_white')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_basic_transparent', () => {
-        cy.getTestElement('button_basic_transparent')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_basic_disabled', () => {
-        cy.getTestElement('button_basic_disabled')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    // ICON
-    it('button_icon_success', () => {
-        cy.getTestElement('button_icon_success')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_icon_info', () => {
-        cy.getTestElement('button_icon_info')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_icon_warning', () => {
-        cy.getTestElement('button_icon_warning')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_icon_error', () => {
-        cy.getTestElement('button_icon_error')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_icon_white', () => {
-        cy.getTestElement('button_icon_white')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_icon_transparent', () => {
-        cy.getTestElement('button_icon_transparent')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_icon_disabled', () => {
-        cy.getTestElement('button_icon_disabled')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    // loading
-    it('button_loading_success', () => {
-        cy.getTestElement('button_loading_success')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_loading_info', () => {
-        cy.getTestElement('button_loading_info')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_loading_warning', () => {
-        cy.getTestElement('button_loading_warning')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_loading_error', () => {
-        cy.getTestElement('button_loading_error')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_loading_white', () => {
-        cy.getTestElement('button_loading_white')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_loading_transparent', () => {
-        cy.getTestElement('button_loading_transparent')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_loading_disabled', () => {
-        cy.getTestElement('button_loading_disabled')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    // inverse
-    it('button_inverse_success', () => {
-        cy.getTestElement('button_inverse_success')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_inverse_info', () => {
-        cy.getTestElement('button_inverse_info')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_inverse_warning', () => {
-        cy.getTestElement('button_inverse_warning')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_inverse_error', () => {
-        cy.getTestElement('button_inverse_error')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_inverse_white', () => {
-        cy.getTestElement('button_inverse_white')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_inverse_transparent', () => {
-        cy.getTestElement('button_inverse_transparent')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_inverse_disabled', () => {
-        cy.getTestElement('button_inverse_disabled')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    // inverse_icon
-    it('button_inverse_icon_success', () => {
-        cy.getTestElement('button_inverse_icon_success')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_inverse_icon_info', () => {
-        cy.getTestElement('button_inverse_icon_info')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_inverse_icon_warning', () => {
-        cy.getTestElement('button_inverse_icon_warning')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('button_inverse_icon_error', () => {
-        cy.getTestElement('button_inverse_icon_error')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_inverse_icon_white', () => {
-        cy.getTestElement('button_inverse_icon_white')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_inverse_icon_transparent', () => {
-        cy.getTestElement('button_inverse_icon_transparent')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('button_inverse_icon_disabled', () => {
-        cy.getTestElement('button_inverse_icon_disabled')
-            .should('be.visible')
-            .matchImageSnapshot();
+    [
+        'button_basic_success',
+        'button_basic_info',
+        'button_basic_warning',
+        'button_basic_error',
+        'button_basic_white',
+        'button_basic_transparent',
+        'button_basic_disabled',
+        'button_icon_success',
+        'button_icon_info',
+        'button_icon_warning',
+        'button_icon_error',
+        'button_icon_white',
+        'button_icon_transparent',
+        'button_icon_disabled',
+        'button_loading_success',
+        'button_loading_info',
+        'button_loading_warning',
+        'button_loading_error',
+        'button_loading_white',
+        'button_loading_transparent',
+        'button_loading_disabled',
+        'button_inverse_success',
+        'button_inverse_info',
+        'button_inverse_warning',
+        'button_inverse_error',
+        'button_inverse_white',
+        'button_inverse_transparent',
+        'button_inverse_disabled',
+        'button_inverse_icon_success',
+        'button_inverse_icon_info',
+        'button_inverse_icon_warning',
+        'button_inverse_icon_error',
+        'button_inverse_icon_white',
+        'button_inverse_icon_transparent',
+        'button_inverse_icon_disabled',
+    ].forEach(testName => {
+        it(`${testName}`, () => {
+            cy.getTestElement(testName)
+                .should('be.visible')
+                .matchImageSnapshot();
+        });
     });
 });
