@@ -128,6 +128,56 @@ storiesOf('Form', module).add('All', () => (
         </Row>
 
         <H5>
+            with value <BtnLink onClick={linkTo('Form', 'Input')}>{'<Input />'}</BtnLink>
+        </H5>
+        <Row>
+            <StyledInput
+                type="text"
+                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
+                onChange={() => {}}
+                wrapperProps={{ 'data-test': 'input_value' }}
+            />
+
+            <StyledInput
+                type="text"
+                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
+                onChange={() => {}}
+                wrapperProps={{ 'data-test': 'input_value_info' }}
+                state="info"
+            />
+
+            <StyledInput
+                type="text"
+                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
+                onChange={() => {}}
+                wrapperProps={{ 'data-test': 'input_value_success' }}
+                state="success"
+            />
+            <StyledInput
+                type="text"
+                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
+                onChange={() => {}}
+                wrapperProps={{ 'data-test': 'input_value_warning' }}
+                state="warning"
+            />
+            <StyledInput
+                type="text"
+                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
+                onChange={() => {}}
+                wrapperProps={{ 'data-test': 'input_value_error' }}
+                state="error"
+            />
+
+            <StyledInput
+                type="text"
+                value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer imperdiet lectus quis justo."
+                onChange={() => {}}
+                wrapperProps={{ 'data-test': 'input_value_disabled' }}
+                isDisabled
+            />
+        </Row>
+
+        <H5>
             with label and bottomText{' '}
             <BtnLink onClick={linkTo('Form', 'Input')}>
                 {'<Input topLabel="Label" bottomText="bottomText"/>'}

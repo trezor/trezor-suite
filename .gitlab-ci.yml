@@ -1,40 +1,69 @@
 image: node:10.15.1
 
+variables:
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+  CONTAINER_NAME: "$CI_REGISTRY/trezor/trezor-ui-components"
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - cache/Cypress
-  - node_modules
+    - ~/.cache
 
 stages:
+  - lint
   - build
-  - test
+  - test snapshots
 
-variables:
-  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+lint:
+  stage: lint
+  script:
+    - yarn
+    - yarn run lint
 
 install:
   image: cypress/base:10
   stage: build
   script:
-    - yarn
+    - yarn install --frozen-lockfile
+    - $(yarn bin)/cypress cache path
+    - $(yarn bin)/cypress cache list
     - $(yarn bin)/cypress verify
 
-lint:
+build image:
+  image: docker:latest
+  services:
+    - docker:dind
   stage: build
+  when: always
+  before_script:
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
-    - yarn
-    - yarn run lint
+    - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
+    - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
+    - docker push $CONTAINER_NAME:latest
 
-e2e-chrome:
-  image: cypress/browsers:chrome67
-  stage: test
+test snapshots:
+  image: $CONTAINER_NAME:$CI_COMMIT_SHA
+  stage: test snapshots
   script:
     - yarn
-    - yarn ci-test:e2e
+    - yarn ci:test:snapshots
   artifacts:
     expire_in: 1 day
     when: always
     paths:
       - /builds/trezor/trezor-ui-components/test/screenshots
+      - /builds/trezor/trezor-ui-components/test/snapshots
+
+make snapshot references:
+  image: $CONTAINER_NAME:$CI_COMMIT_SHA
+  stage: test snapshots
+  when: manual
+  script:
+    - yarn
+    - yarn ci:test:snapshots:references
+  artifacts:
+    expire_in: 1 day
+    when: always
+    paths:
       - /builds/trezor/trezor-ui-components/test/snapshots

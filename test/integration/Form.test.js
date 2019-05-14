@@ -34,8 +34,45 @@ describe('Form', () => {
             .should('be.visible')
             .matchImageSnapshot();
     });
-    it('input_basic_error', () => {
+
+    it('input_basic_disabled', () => {
         cy.getTestElement('input_basic_disabled')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    // with value
+    it('input_value', () => {
+        cy.getTestElement('input_value')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    it('input_value_info', () => {
+        cy.getTestElement('input_value_info')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    it('input_value_success', () => {
+        cy.getTestElement('input_value_success')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    it('input_value_warning', () => {
+        cy.getTestElement('input_value_warning')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+    it('input_value_error', () => {
+        cy.getTestElement('input_value_error')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    it('input_value_disabled', () => {
+        cy.getTestElement('input_value_disabled')
             .should('be.visible')
             .matchImageSnapshot();
     });
@@ -64,12 +101,14 @@ describe('Form', () => {
             .should('be.visible')
             .matchImageSnapshot();
     });
+
     it('input_label_bottomText_error', () => {
         cy.getTestElement('input_label_bottomText_error')
             .should('be.visible')
             .matchImageSnapshot();
     });
-    it('input_label_bottomText_error', () => {
+
+    it('input_label_bottomText_disabled', () => {
         cy.getTestElement('input_label_bottomText_disabled')
             .should('be.visible')
             .matchImageSnapshot();
@@ -118,7 +157,8 @@ describe('Form', () => {
             .should('be.visible')
             .matchImageSnapshot();
     });
-    it('textarea_basic_error', () => {
+
+    it('textarea_basic_disabled', () => {
         cy.getTestElement('textarea_basic_disabled')
             .should('be.visible')
             .matchImageSnapshot();
@@ -153,7 +193,8 @@ describe('Form', () => {
             .should('be.visible')
             .matchImageSnapshot();
     });
-    it('textarea_label_bottomText_error', () => {
+
+    it('textarea_label_bottomText_disabled', () => {
         cy.getTestElement('textarea_label_bottomText_disabled')
             .should('be.visible')
             .matchImageSnapshot();
@@ -200,6 +241,7 @@ describe('Form', () => {
     });
 
     // Switch
+
     it('switch_basic_unchecked', () => {
         cy.getTestElement('switch_basic_unchecked')
             .should('be.visible')
@@ -218,47 +260,60 @@ describe('Form', () => {
             .matchImageSnapshot();
     });
 
+    // small
+
     it('switch_small_unchecked', () => {
         cy.getTestElement('switch_small_unchecked')
             .should('be.visible')
             .matchImageSnapshot();
     });
+
     it('switch_small_checked', () => {
         cy.getTestElement('switch_small_checked')
             .should('be.visible')
             .matchImageSnapshot();
     });
+
     it('switch_small_disabled', () => {
         cy.getTestElement('switch_small_disabled')
             .should('be.visible')
             .matchImageSnapshot();
     });
-    it('switch_noicon_checked', () => {
-        cy.getTestElement('switch_noicon_checked')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('switch_noicon_disabled', () => {
-        cy.getTestElement('switch_noicon_disabled')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
+
+    // no icon
+
     it('switch_noicon_checked', () => {
         cy.getTestElement('switch_noicon_checked')
             .should('be.visible')
             .matchImageSnapshot();
     });
 
+    it('switch_noicon_disabled', () => {
+        cy.getTestElement('switch_noicon_disabled')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    it('switch_noicon_unchecked', () => {
+        cy.getTestElement('switch_noicon_unchecked')
+            .should('be.visible')
+            .matchImageSnapshot();
+    });
+
+    // no icon small
+
     it('switch_noicon_small_unchecked', () => {
         cy.getTestElement('switch_noicon_small_unchecked')
             .should('be.visible')
             .matchImageSnapshot();
     });
+
     it('switch_noicon_small_checked', () => {
         cy.getTestElement('switch_noicon_small_checked')
             .should('be.visible')
             .matchImageSnapshot();
     });
+
     it('switch_noicon_small_disabled', () => {
         cy.getTestElement('switch_noicon_small_disabled')
             .should('be.visible')
