@@ -35,3 +35,5 @@ S1 Blocker  | Outage, broken feature with no workaround
 S2 Critical | Broken feature, workaround too complex & unacceptable
 S3 Major    | Broken feature, workaround acceptable
 S4 Low      | Functionality inconvenience or cosmetic issue
+
+
