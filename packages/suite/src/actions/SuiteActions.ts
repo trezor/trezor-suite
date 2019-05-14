@@ -1,7 +1,11 @@
+export const INIT = '@suite/init';
 export const READY = '@suite/ready';
 export const ERROR = '@suite/error';
 
 export type SuiteActions =
+    | {
+          type: typeof INIT;
+      }
     | {
           type: typeof READY;
       }
