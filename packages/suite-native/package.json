@@ -18,7 +18,6 @@
         "react-native-router-flux": "^4.0.6",
         "react-redux": "^7.0.3",
         "redux": "^4.0.1",
-        "redux-async-initial-state": "^0.3.0",
         "redux-thunk": "^2.3.0"
     },
     "devDependencies": {

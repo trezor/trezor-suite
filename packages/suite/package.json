@@ -12,7 +12,6 @@
         "react-native-web": "^0.11.2",
         "react-redux": "^7.0.3",
         "redux": "^4.0.1",
-        "redux-async-initial-state": "^0.3.0",
         "redux-devtools-extension": "^2.13.8",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0"

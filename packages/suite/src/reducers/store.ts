@@ -1,31 +1,17 @@
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
-import * as asyncInitialState from 'redux-async-initial-state';
 
 import commonReducers from './common';
+import commonMiddlewares from '../middlewares';
 
-const combined = combineReducers({
-    ...commonReducers,
-    storage: asyncInitialState.innerReducer,
-});
-const reducers = asyncInitialState.outerReducer<typeof combined>(combined);
+const reducers = combineReducers(commonReducers);
 export type State = ReturnType<typeof reducers>;
 
-const loadStore = (getState: () => State): Promise<State> => {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve({
-                ...getState(),
-                suite: {
-                    ready: true,
-                },
-            });
-        }, 5000);
-    });
-};
-
-const middlewares = [thunkMiddleware, asyncInitialState.middleware(loadStore)];
+const middlewares = [
+    thunkMiddleware,
+    ...commonMiddlewares,
+];
 
 const enhancers: any[] = [];
 
