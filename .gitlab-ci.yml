@@ -72,4 +72,4 @@ delete image:
   before_script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
-    - docker rmi -f trezor/trezor-ui-components:$CI_COMMIT_SHA
+    - docker rmi $(docker images | grep $CI_COMMIT_SHA | tr -s ' ' | cut -d ' ' -f 3)
