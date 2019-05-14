@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
-import { Store } from 'redux';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { Router, Scene, Actions } from 'react-native-router-flux';
 import Index from '@suite/views';
 import Wallet from '@suite/views/wallet';
 import WalletSend from '@suite/views/wallet/send';
 import { onLocationChange } from '@suite/actions/RouterActions';
+import { Dispatch } from '@suite/types';
 
 // sources:
 // https://blog.usejournal.com/react-native-and-redux-part-5-3185f8f0609b
@@ -15,21 +17,17 @@ import { onLocationChange } from '@suite/actions/RouterActions';
 
 // /* <Scene key="launch" component={Launch} title="Launch" initial type={ActionConst.RESET} /> */
 
-interface Props {
-    store: Store;
-}
-const RouterHandler = ({ store }: Props) => {
-    const { dispatch } = store;
+const RouterHandler = ({ onLocationChange }: Props) => {
     useEffect(() => {
         // set initial location
-        dispatch(onLocationChange(Actions.currentScene));
-    }, [dispatch]);
+        onLocationChange(Actions.currentScene);
+    }, [onLocationChange]);
 
     const onRouteChanged = (_prevState: any, _newState: any, action: any) => {
         const { params, routeName } = action;
         if (routeName) {
             const pathname = params && params.hash ? `${routeName}#${params.hash}` : routeName;
-            dispatch(onLocationChange(pathname));
+            onLocationChange(pathname);
         }
     };
 
@@ -54,4 +52,10 @@ const RouterHandler = ({ store }: Props) => {
     );
 };
 
-export default RouterHandler;
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
+    onLocationChange,
+}, dispatch);
+
+type Props = ReturnType<typeof mapDispatchToProps>;
+
+export default connect(null, mapDispatchToProps)(RouterHandler);
