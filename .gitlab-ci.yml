@@ -72,4 +72,4 @@ delete image:
   before_script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
-    -  docker rmi $(docker images --filter=reference="*:$CI_COMMIT_SHA*" -q)
+    -  docker rmi $(docker images --filter=reference="$CONTAINER_NAME:$CI_COMMIT_SHA" -q)
