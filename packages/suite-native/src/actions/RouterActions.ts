@@ -4,10 +4,10 @@ import { Actions } from 'react-native-router-flux';
 export const LOCATION_CHANGE = '@router-location-change';
 export const UPDATE = 'goto';
 
-export const onLocationChange = (pathname: string) => {
+export const onLocationChange = (url: string) => {
     return {
         type: LOCATION_CHANGE,
-        pathname,
+        pathname: url,
     };
 };
 
