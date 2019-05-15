@@ -1,13 +1,18 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { initStore } from './reducers/store';
+import './support/global';
 import RouterHandler from './support/RouterHandler';
+
+import { initStore } from './reducers/store';
+import Preloader from '@suite/components/Preloader';
 
 const TrezorSuite = () => {
     const store = initStore();
     return (
         <Provider store={store}>
-            <RouterHandler store={store} />
+            <Preloader>
+                <RouterHandler />
+            </Preloader>
         </Provider>
     );
 };
