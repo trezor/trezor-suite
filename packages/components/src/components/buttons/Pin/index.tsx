@@ -1,4 +1,4 @@
-import colors from '@c/config/colors';
+import colors from '../../../config/colors';
 import styled from 'styled-components';
 
 const ButtonPin = styled.button`

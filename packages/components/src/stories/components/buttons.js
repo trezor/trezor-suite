@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from 'components/buttons/Button';
-import ButtonPin from 'components/buttons/Pin';
-import { H1, H5 } from 'components/Heading';
+import Button from '../../components/buttons/Button';
+import ButtonPin from '../../components/buttons/Pin';
+import { H1, H5 } from '../../components/Heading';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
 import { linkTo } from '@storybook/addon-links';
 
-import colors from 'config/colors';
-import icons from 'config/icons';
+import colors from '../../config/colors';
+import icons from '../../config/icons';
 
 const Wrapper = styled.div`
     padding: 1.6rem;

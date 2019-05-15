@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Icon from '@c/components/Icon';
-import { SCREEN_SIZE } from '@c/config/variables';
-import icons from '@c/config/icons';
-import colors from '@c/config/colors';
+import Icon from '../Icon';
+import { SCREEN_SIZE } from '../../config/variables';
+import icons from '../../config/icons';
+import colors from '../../config/colors';
 
 const Wrapper = styled.header`
     width: 100%;

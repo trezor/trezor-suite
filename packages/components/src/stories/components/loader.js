@@ -1,11 +1,11 @@
 import React from 'react';
-import Loader from 'components/Loader';
+import Loader from '../../components/Loader';
 
 import { storiesOf } from '@storybook/react';
 import { withKnobs, number, text, boolean } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
 
-import colors from 'config/colors';
+import colors from '../../config/colors';
 
 storiesOf('Other', module)
     .addDecorator(

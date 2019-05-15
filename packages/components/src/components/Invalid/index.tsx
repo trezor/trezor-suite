@@ -1,5 +1,5 @@
-import { H6 } from '@c/components/Heading';
-import P from '@c/components/Paragraph';
+import { H6 } from '../Heading';
+import P from '../Paragraph';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';

@@ -4,12 +4,12 @@ import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
-import { H1, H5 } from 'components/Heading';
+import { H1, H5 } from '../../components/Heading';
 
 import styled from 'styled-components';
 
-import Notification from 'components/Notification';
-import colors from 'config/colors';
+import Notification from '../../components/Notification';
+import colors from '../../config/colors';
 
 const Wrapper = styled.div`
     padding: 1.6rem;

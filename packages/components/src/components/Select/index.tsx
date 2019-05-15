@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactAsyncSelect from 'react-select/lib/Async';
 import ReactSelect from 'react-select';
-import colors from '@c/config/colors';
+import colors from '../../config/colors';
 
 //TODO: proper type checking with types imported from react-select
 

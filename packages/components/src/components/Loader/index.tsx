@@ -1,11 +1,11 @@
-import { DASH, GREEN_COLOR } from '@c/config/animations';
+import { DASH, GREEN_COLOR } from '../../config/animations';
 import styled, { css } from 'styled-components';
 
-import { FONT_SIZE } from '@c/config/variables';
-import Paragraph from '@c/components/Paragraph';
+import { FONT_SIZE } from '../../config/variables';
+import Paragraph from '../Paragraph';
 import PropTypes from 'prop-types';
 import React from 'react';
-import colors from '@c/config/colors';
+import colors from '../../config/colors';
 
 const Wrapper = styled.div<Props>`
     position: relative;

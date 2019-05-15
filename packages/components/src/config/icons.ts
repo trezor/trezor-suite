@@ -1,4 +1,4 @@
-import { iconShape } from 'support/types';
+import { iconShape } from '../support/types';
 
 // TODO: typecheck the exact key match
 const icons: { [key: string]: iconShape } = {

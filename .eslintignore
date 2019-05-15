@@ -7,4 +7,5 @@ generated
 
 next.config.js
 packages/suite-desktop/src/electron.js
+packages/**
 packages/suite-desktop/src/preload.js

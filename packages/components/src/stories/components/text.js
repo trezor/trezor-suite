@@ -6,12 +6,12 @@ import { withKnobs, text, select, radios, number } from '@storybook/addon-knobs'
 import { withInfo } from '@storybook/addon-info';
 import { linkTo } from '@storybook/addon-links';
 
-import { H1, H2, H3, H4, H5, H6 } from 'components/Heading';
-import Link from 'components/Link';
-import P from 'components/Paragraph';
-import Tooltip from 'components/Tooltip';
+import { H1, H2, H3, H4, H5, H6 } from '../../components/Heading';
+import Link from '../../components/Link';
+import P from '../../components/Paragraph';
+import Tooltip from '../../components/Tooltip';
 
-import colors from 'config/colors';
+import colors from '../../config/colors';
 
 const Center = styled.div`
     display: flex;

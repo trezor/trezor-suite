@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
-import Icon from '@c/components/Icon';
+import Icon from '../Icon';
 
-import icons from '@c/config/icons';
+import icons from '../../config/icons';
 import { Omit, iconShape } from 'support/types';
-import colors from '@c/config/colors';
+import colors from '../../config/colors';
 
 const PulseAnimation = keyframes`
     0% {

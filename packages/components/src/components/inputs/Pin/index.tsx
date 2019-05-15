@@ -1,10 +1,10 @@
-import { FONT_SIZE, FONT_WEIGHT } from '@c/config/variables';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 
-import Icon from '@c/components/Icon';
+import Icon from '../../Icon';
 import PropTypes from 'prop-types';
 import React from 'react';
-import colors from '@c/config/colors';
-import icons from '@c/config/icons';
+import colors from '../../../config/colors';
+import icons from '../../../config/icons';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`

@@ -1,4 +1,4 @@
-import icons from '@c/config/icons';
+import icons from '../config/icons';
 
 const getStateIcon = (type?: string) => {
     let icon = null;

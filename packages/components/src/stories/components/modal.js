@@ -1,11 +1,11 @@
-import Modal from 'components/Modal';
+import Modal from '../../components/Modal';
 
-import Button from 'components/buttons/Button';
-import ButtonPin from 'components/buttons/Pin';
-import InputPin from 'components/inputs/Pin';
-import P from 'components/Paragraph';
-import { H5 } from 'components/Heading';
-import Link from 'components/Link';
+import Button from '../../components/buttons/Button';
+import ButtonPin from '../../components/buttons/Pin';
+import InputPin from '../../components/inputs/Pin';
+import P from '../../components/Paragraph';
+import { H5 } from '../../components/Heading';
+import Link from '../../components/Link';
 
 import React from 'react';
 import { storiesOf } from '@storybook/react';

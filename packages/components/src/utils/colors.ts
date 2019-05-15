@@ -1,4 +1,4 @@
-import colors from '@c/config/colors';
+import colors from '../config/colors';
 
 type Props = 'info' | 'error' | 'warning' | 'success';
 

@@ -1,12 +1,12 @@
-import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT } from '@c/config/variables';
+import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT } from '../../config/variables';
 import styled, { css } from 'styled-components';
-import { getPrimaryColor } from '@c/utils/colors';
+import { getPrimaryColor } from '../../utils/colors';
 
 import PropTypes from 'prop-types';
 import React from 'react';
 import Textarea from 'react-textarea-autosize';
-import colors from '@c/config/colors';
-import { Omit } from 'support/types';
+import colors from '../../config/colors';
+import { Omit } from '../../support/types';
 
 const Wrapper = styled.div`
     width: 100%;

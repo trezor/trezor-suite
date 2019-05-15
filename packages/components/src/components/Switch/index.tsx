@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactSwitch, { ReactSwitchProps } from 'react-switch';
-import colors from '@c/config/colors';
+import colors from '../../config/colors';
 
 interface Props extends ReactSwitchProps {
     onChange: (checked: boolean) => any;

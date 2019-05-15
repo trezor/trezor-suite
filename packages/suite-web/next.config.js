@@ -11,7 +11,7 @@ module.exports = withCustomBabelConfig(
             // target: 'serverless',
             transpileModules: [
                 '@trezor', '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
-                '@c', '../packages/components/src'
+                '@components', '../packages/components/src',
             ],
         }),
     ),

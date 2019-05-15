@@ -1,12 +1,12 @@
-import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT, TRANSITION } from '@c/config/variables';
+import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT, TRANSITION } from '../../../config/variables';
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { getStateIcon } from '@c/utils/icons';
-import { getPrimaryColor } from '@c/utils/colors';
+import { getStateIcon } from '../../../utils/icons';
+import { getPrimaryColor } from '../../../utils/colors';
 
-import Icon from '@c/components/Icon';
+import Icon from '../../Icon';
 import PropTypes from 'prop-types';
-import colors from '@c/config/colors';
+import colors from '../../../config/colors';
 
 const Wrapper = styled.div`
     width: 100%;

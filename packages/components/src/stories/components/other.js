@@ -7,16 +7,16 @@ import { Link } from 'react-router-dom';
 import { withKnobs, select, number, color, text, object, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 
-import CoinLogo from 'components/CoinLogo';
-import TrezorImage from 'components/TrezorImage';
-import Icon from 'components/Icon';
-import { H1 } from 'components/Heading';
-import Prompt from 'components/Prompt';
-import Header from 'components/Header';
+import CoinLogo from '../../components/CoinLogo';
+import TrezorImage from '../../components/TrezorImage';
+import Icon from '../../components/Icon';
+import { H1 } from '../../components/Heading';
+import Prompt from '../../components/Prompt';
+import Header from '../../components/Header';
 
-import colors from 'config/colors';
-import icons from 'config/icons';
-import { FONT_SIZE } from 'config/variables';
+import colors from '../../onfig/colors';
+import icons from '../../config/icons';
+import { FONT_SIZE } from '../../config/variables';
 
 const coins = [
     'ada',
