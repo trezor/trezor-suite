@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/trezor/trezor-ui-components
+	branch = master
+	commit = 7fcef243ba00074a69ab3eb1fe4198ca31dcebb2
+	parent = 670a9f7e29a82255ae354fab7bcff4d312d711f7
+	method = merge
+	cmdver = 0.4.0
