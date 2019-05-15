@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
-import { FONT_SIZE } from 'config/variables';
-import colors from 'config/colors';
+import { FONT_SIZE } from '@c/config/variables';
+import colors from '@c/config/colors';
 
 interface Props {
     textAlign?: 'left' | 'center' | 'right' | 'justify';

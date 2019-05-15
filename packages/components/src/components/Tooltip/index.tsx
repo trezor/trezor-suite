@@ -1,9 +1,9 @@
-import Link from 'components/Link';
+import Link from '@c/components/Link';
 import PropTypes from 'prop-types';
 import Tippy, { TippyProps } from '@tippy.js/react';
 import React from 'react';
-import colors from 'config/colors';
-import { FONT_SIZE } from 'config/variables';
+import colors from '@c/config/colors';
+import { FONT_SIZE } from '@c/config/variables';
 import styled from 'styled-components';
 
 const Content = styled.div<{ maxWidth?: number }>`

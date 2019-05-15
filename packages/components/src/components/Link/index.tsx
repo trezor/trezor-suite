@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import colors from 'config/colors';
+import colors from '@c/config/colors';
 
 const A = styled.a<Props>`
     text-decoration: none;

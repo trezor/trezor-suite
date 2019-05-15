@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
-import { getPrimaryColor, getNotificationBgColor } from 'utils/colors';
-import { getStateIcon } from 'utils/icons';
+import { FONT_SIZE, FONT_WEIGHT } from '@c/config/variables';
+import { getPrimaryColor, getNotificationBgColor } from '@c/utils/colors';
+import { getStateIcon } from '@c/utils/icons';
 
-import Icon from 'components/Icon';
-import Button from 'components/buttons/Button';
-import icons from 'config/icons';
+import Icon from '@c/components/Icon';
+import Button from '@c/components/buttons/Button';
+import icons from '@c/config/icons';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 

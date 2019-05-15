@@ -9,6 +9,7 @@ module.exports = api => {
                     alias: {
                         '^react-native$': 'react-native-web',
                         '^@suite/(.+)': '../../packages/suite/src/\\1', // relative to this project
+                        '^@c/(.+)': '../../packages/components/src/\\1', 
                     },
                 },
             ],

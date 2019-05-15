@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
-import { FONT_SIZE } from 'config/variables';
-import Icon from 'components/Icon';
-import colors from 'config/colors';
-import icons from 'config/icons';
+import { FONT_SIZE } from '@c/config/variables';
+import Icon from '@c/components/Icon';
+import colors from '@c/config/colors';
+import icons from '@c/config/icons';
 import { Omit } from 'support/types';
 
 const Wrapper = styled.div`
