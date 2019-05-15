@@ -62,6 +62,7 @@ const loadRateAction = (): AsyncAction => async (
         });
     } catch (error) {
         // ignore error
+        console.error(error);
     }
 
     await resolveAfter(50000);

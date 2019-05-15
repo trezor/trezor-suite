@@ -175,6 +175,7 @@ const begin = (device: TrezorDevice, networkName: string): AsyncAction => async 
                 throw new Error(`DiscoveryActions.begin: Unknown network type: ${network.type}`);
         }
     } catch (error) {
+        console.error(error);
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
@@ -258,6 +259,7 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
             return;
         }
 
+        console.error(error);
         dispatch({
             type: DISCOVERY.STOP,
             device,

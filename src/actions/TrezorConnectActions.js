@@ -178,6 +178,7 @@ export const init = (): AsyncAction => async (
             },
         });
     } catch (error) {
+        console.error(error);
         dispatch({
             type: CONNECT.INITIALIZATION_ERROR,
             error,
