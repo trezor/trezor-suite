@@ -1,4 +1,5 @@
 import { MiddlewareAPI } from 'redux';
+import { TRANSPORT } from 'trezor-connect';
 import { INIT, onSuiteReady } from '@suite/actions/SuiteActions';
 import { load, LOADED } from '@suite/actions/StorageActions';
 import { init } from '@suite/actions/TrezorConnectActions';
@@ -18,7 +19,7 @@ const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (acti
             // load TrezorConnect
             api.dispatch(init());
             break;
-        case 'transport-start':
+        case TRANSPORT.START:
             api.dispatch(onSuiteReady());
             break;
         default:
