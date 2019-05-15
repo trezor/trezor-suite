@@ -313,7 +313,7 @@ const amountValidation = ($state: State): PayloadAction<State> => (
         state.errors.amount = {
             ...l10nMessages.TR_AMOUNT_IS_TOO_LOW_MINIMUM_AMOUNT_FOR_CREATING,
             values: {
-                reservedAmount: state.minAmount,
+                minimalAmount: state.minAmount,
                 networkSymbol: state.networkSymbol,
             },
         };
