@@ -7,7 +7,7 @@
         "dev:android": "run-p metro run-android",
         "run-android": "react-native run-android --no-packager",
         "metro": "yarn workspace @trezor/suite-native start",
-        "start": "node ../../node_modules/react-native/local-cli/cli.js start --projectRoot ../../",
+        "start": "node ../../node_modules/react-native/local-cli/cli.js start --projectRoot ../../ --config ./metro.config.js",
         "start:clean": "yarn workspace @trezor/suite-native clean && yarn workspace @trezor/suite-native start -- --reset-cache",
         "clean": "watchman watch-del-all && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-*"
     },
