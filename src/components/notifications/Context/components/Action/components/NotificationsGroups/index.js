@@ -76,7 +76,6 @@ class NotificationsGroup extends PureComponent {
         //     },
         // ];
         const notificationGroups = this.groupNotifications(notifications);
-        console.log(notificationGroups);
         const sortedNotifications = this.sortByPriority(notificationGroups);
 
         return (
