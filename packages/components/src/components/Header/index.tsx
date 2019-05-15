@@ -148,7 +148,7 @@ const A = styled.a`
     }
 `;
 
-interface linkShape {
+interface LinkShape {
     title: string;
     href: string;
 }
@@ -161,7 +161,7 @@ interface Props {
     togglerCloseText?: string;
     rightAddon?: React.ReactNode;
     logoLinkComponent?: React.ReactNode;
-    links?: linkShape[];
+    links?: LinkShape[];
 }
 
 const Header = ({

@@ -1,8 +1,8 @@
-import { FONT_SIZE, LINE_HEIGHT } from '../../config/variables';
 import styled, { css } from 'styled-components';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FONT_SIZE, LINE_HEIGHT } from '../../config/variables';
 import colors from '../../config/colors';
 
 const P_SIZES: { [key: string]: string } = {

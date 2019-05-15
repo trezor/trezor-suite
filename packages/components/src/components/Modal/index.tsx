@@ -1,8 +1,8 @@
 import * as React from 'react';
-
 import PropTypes from 'prop-types';
-import colors from '../../config/colors';
 import styled from 'styled-components';
+
+import colors from '../../config/colors';
 
 const ModalContainer = styled.div`
     position: fixed;

@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
 import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
+
+import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
 import Icon from '../../Icon';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
- 
-import PropTypes from 'prop-types';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
 import { IconShape } from '../../../support/types';

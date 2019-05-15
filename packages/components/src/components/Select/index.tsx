@@ -7,7 +7,7 @@ import colors from '../../config/colors';
 //TODO: proper type checking with types imported from react-select
 
 const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) => ({
-    singleValue: (base: Object) => ({
+    singleValue: (base: Record<string, any>) => ({
         ...base,
         maxWidth: 'calc(100% - 10px)', // 8px padding + 2px maring-left
         width: '100%',
@@ -16,7 +16,7 @@ const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) =>
             cursor: isSearchable ? 'text' : 'pointer',
         },
     }),
-    control: (base: Object, { isDisabled }: { isDisabled: boolean }) => ({
+    control: (base: Record<string, any>, { isDisabled }: { isDisabled: boolean }) => ({
         ...base,
         minHeight: 'initial',
         height: '40px',
@@ -32,7 +32,7 @@ const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) =>
     indicatorSeparator: () => ({
         display: 'none',
     }),
-    dropdownIndicator: (base: Object, { isDisabled }: { isDisabled: boolean }) => ({
+    dropdownIndicator: (base: Record<string, any>, { isDisabled }: { isDisabled: boolean }) => ({
         ...base,
         display: !withDropdownIndicator || isDisabled ? 'none' : 'block',
         color: colors.TEXT_SECONDARY,
@@ -41,12 +41,12 @@ const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) =>
             color: colors.TEXT_SECONDARY,
         },
     }),
-    menu: (base: Object) => ({
+    menu: (base: Record<string, any>) => ({
         ...base,
         margin: 0,
         boxShadow: 'none',
     }),
-    menuList: (base: Object) => ({
+    menuList: (base: Record<string, any>) => ({
         ...base,
         padding: 0,
         boxShadow: 'none',
@@ -55,7 +55,7 @@ const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) =>
         borderRight: `1px solid ${colors.DIVIDER}`,
         borderBottom: `1px solid ${colors.DIVIDER}`,
     }),
-    option: (base: Object, { isFocused }: { isFocused: boolean }) => ({
+    option: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => ({
         ...base,
         color: colors.TEXT_SECONDARY,
         background: isFocused ? colors.SELECT_HOVER : colors.WHITE,
@@ -81,6 +81,7 @@ const propTypes = {
     isSearchable: PropTypes.bool,
     withDropdownIndicator: PropTypes.bool,
 };
+
 const Select = ({ isSearchable = true, withDropdownIndicator = true, ...rest }: Props) => (
     <ReactSelect
         styles={styles(isSearchable, withDropdownIndicator)}
@@ -88,6 +89,7 @@ const Select = ({ isSearchable = true, withDropdownIndicator = true, ...rest }: 
         {...rest}
     />
 );
+
 const AsyncSelect = ({
     isSearchable = true,
     withDropdownIndicator = true,

@@ -1,10 +1,11 @@
-import Link from '../Link';
+import styled from 'styled-components';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Tippy, { TippyProps } from '@tippy.js/react';
-import React from 'react';
+
+import Link from '../Link';
 import colors from '../../config/colors';
 import { FONT_SIZE } from '../../config/variables';
-import styled from 'styled-components';
 
 const Content = styled.div<{ maxWidth?: number }>`
     max-width: ${props => `${props.maxWidth}px` || 'auto'};

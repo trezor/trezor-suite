@@ -1,8 +1,9 @@
-import { H6 } from '../Heading';
-import P from '../Paragraph';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
+
+import { H6 } from '../Heading';
+import P from '../Paragraph';
 
 const Wrapper = styled.div`
     padding: 24px 48px;

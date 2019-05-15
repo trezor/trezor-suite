@@ -1,10 +1,10 @@
-import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT } from '../../config/variables';
-import styled, { css } from 'styled-components';
-import { getPrimaryColor } from '../../utils/colors';
-
 import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
 import React from 'react';
 import Textarea from 'react-textarea-autosize';
+
+import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT } from '../../config/variables';
+import { getPrimaryColor } from '../../utils/colors';
 import colors from '../../config/colors';
 import { Omit } from '../../support/types';
 
@@ -113,7 +113,7 @@ interface Props extends BaseTextareaProps, StyledTextareaProps {
     topLabel?: React.ReactNode;
     bottomText?: React.ReactNode;
     state: 'success' | 'info' | 'warning' | 'error';
-    wrapperProps?: Object;
+    wrapperProps?: Record<string, any>;
 }
 
 const TextArea = ({

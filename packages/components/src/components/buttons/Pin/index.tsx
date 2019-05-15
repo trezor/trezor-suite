@@ -1,5 +1,5 @@
-import colors from '../../../config/colors';
 import styled from 'styled-components';
+import colors from '../../../config/colors';
 
 const ButtonPin = styled.button`
     width: 80px;

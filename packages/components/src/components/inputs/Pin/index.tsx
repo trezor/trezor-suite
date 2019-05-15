@@ -1,11 +1,11 @@
-import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
-
-import Icon from '../../Icon';
 import PropTypes from 'prop-types';
 import React from 'react';
+import styled from 'styled-components';
+
+import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
+import Icon from '../../Icon';
 import colors from '../../../config/colors';
 import icons from '../../../config/icons';
-import styled from 'styled-components';
 
 const Wrapper = styled.div`
     position: relative;
@@ -34,7 +34,7 @@ const StyledIcon = styled(Icon)`
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
 interface Props {
     value: string;
-    wrapperProps?: Object;
+    wrapperProps?: Record<string, any>;
     onDeleteClick: (event?: React.MouseEvent<any>) => void;
 }
 

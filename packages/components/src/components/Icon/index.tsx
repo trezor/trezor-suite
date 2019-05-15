@@ -81,7 +81,7 @@ const Icon = ({
     ...rest
 }: Props) => {
     // if string is passed to the icon prop use it as a key in icons object
-    const iconObject: import('support/types').IconShape =
+    const iconObject: import('../../support/types').IconShape =
         typeof icon === 'string' ? icons[icon] : icon;
     if (!iconObject) return null;
     return (

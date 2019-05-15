@@ -1,11 +1,17 @@
-import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT, TRANSITION } from '../../../config/variables';
 import React from 'react';
 import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
+
+import {
+    FONT_FAMILY,
+    FONT_SIZE,
+    FONT_WEIGHT,
+    LINE_HEIGHT,
+    TRANSITION,
+} from '../../../config/variables';
 import { getStateIcon } from '../../../utils/icons';
 import { getPrimaryColor } from '../../../utils/colors';
-
 import Icon from '../../Icon';
-import PropTypes from 'prop-types';
 import colors from '../../../config/colors';
 
 const Wrapper = styled.div`
@@ -163,7 +169,7 @@ interface Props extends React.HTMLAttributes<HTMLInputElement> {
     isDisabled?: boolean;
     isSmallText?: boolean;
     isPartiallyHidden?: boolean;
-    wrapperProps?: Object;
+    wrapperProps?: Record<string, any>;
 }
 
 const Input = ({

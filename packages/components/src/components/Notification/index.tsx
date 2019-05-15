@@ -1,14 +1,13 @@
 import * as React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
-import { getPrimaryColor, getNotificationBgColor } from '../..//utils/colors';
-import { getStateIcon } from '../..//utils/icons';
-
+import { getPrimaryColor, getNotificationBgColor } from '../../utils/colors';
+import { getStateIcon } from '../../utils/icons';
 import Icon from '../Icon';
 import Button from '../buttons/Button';
 import icons from '../../config/icons';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 const Wrapper = styled.div<WrapperProps>`
     width: 100%;
@@ -92,7 +91,7 @@ const ButtonNotification = styled(Button)`
     padding: 12px 36px;
 `;
 
-interface ctaShape {
+interface CtaShape {
     label: string;
     callback: () => any;
 }
@@ -107,7 +106,7 @@ interface Props {
     variant: variantShape;
     title: React.ReactNode;
     message?: React.ReactNode;
-    actions?: ctaShape[];
+    actions?: CtaShape[];
     cancelable?: boolean;
     isActionInProgress?: boolean;
     close?: () => any;
