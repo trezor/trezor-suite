@@ -11,9 +11,6 @@ __changed__
 - regexps refactored to functions, added unit tests
 - limit passphrase length to 50 bytes
 
-__removed__
-- Text "already used" from token select in case of already added tokens 
-
 __fixed__
 - react hot loader
 - minor l10n fixes
