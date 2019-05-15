@@ -14,8 +14,15 @@ export type SuiteActions =
           error: any;
       };
 
-export const onSuiteReady = () => {
+export const onSuiteReady = (): SuiteActions => {
     return {
         type: READY,
+    };
+};
+
+export const onSuiteError = (error: any): SuiteActions => {
+    return {
+        type: ERROR,
+        error
     };
 };

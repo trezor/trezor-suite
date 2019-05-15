@@ -29,7 +29,7 @@ export const load = () => async (dispatch: Dispatch, getState: GetState) => {
                     loaded: true,
                 },
             });
-        }, 5000);
+        }, 1000);
     });
 
     return dispatch({
