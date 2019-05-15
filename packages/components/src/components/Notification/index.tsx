@@ -144,7 +144,7 @@ const Notification = ({
                     <AdditionalContent>
                         {actions && actions.length > 0 && (
                             <ActionContent>
-                                {actions.map((action: ctaShape) => (
+                                {actions.map((action: CtaShape) => (
                                     <ButtonNotification
                                         isInverse
                                         key={action.label}

@@ -14,7 +14,7 @@ import { H1 } from '../../components/Heading';
 import Prompt from '../../components/Prompt';
 import Header from '../../components/Header';
 
-import colors from '../../onfig/colors';
+import colors from '../../config/colors';
 import icons from '../../config/icons';
 import { FONT_SIZE } from '../../config/variables';
 

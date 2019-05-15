@@ -39,14 +39,14 @@ addDecorator(
 configureViewport();
 
 function loadStories() {
-    require('stories/components/text.js');
-    require('stories/components/buttons.js');
-    require('stories/components/form.js');
-    require('stories/components/notifications.js');
-    require('stories/components/modal.js');
-    require('stories/components/other.js');
-    require('stories/components/loader.js');
-    require('stories/components/colors.js');
+    require('../src/stories/components/text.js');
+    require('../src/stories/components/buttons.js');
+    require('../src/stories/components/form.js');
+    require('../src/stories/components/notifications.js');
+    require('../src/stories/components/modal.js');
+    require('../src/stories/components/other.js');
+    require('../src/stories/components/loader.js');
+    require('../src/stories/components/colors.js');
 }
 
 configure(loadStories, module);
