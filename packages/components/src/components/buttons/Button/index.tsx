@@ -7,7 +7,7 @@ import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import PropTypes from 'prop-types';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
-import { iconShape } from '../../../support/types';
+import { IconShape } from '../../../support/types';
 
 interface FluidSpinnerProps {
     size: number;
@@ -205,7 +205,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isTransparent?: boolean;
     isLoading?: boolean;
 
-    icon?: string | iconShape;
+    icon?: string | IconShape;
 }
 
 const Button = ({

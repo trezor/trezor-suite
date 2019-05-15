@@ -6,16 +6,6 @@ import colors from '../../config/colors';
 import icons from '../../config/icons';
 import { Omit } from '../../support/types';
 
-const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
-    if (canAnimate) {
-        if (isActive) {
-            return rotate180up;
-        }
-        return rotate180down;
-    }
-    return null;
-};
-
 // TODO: make animation of icons better
 const rotate180up = keyframes`
     from {
@@ -34,6 +24,16 @@ const rotate180down = keyframes`
         transform: rotate(0deg);
     }
 `;
+
+const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
+    if (canAnimate) {
+        if (isActive) {
+            return rotate180up;
+        }
+        return rotate180down;
+    }
+    return null;
+};
 
 const SvgWrapper = styled.svg<WrapperProps>`
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
@@ -54,7 +54,7 @@ type WrapperProps = Omit<Props, 'icon' | 'size'>;
 interface Props extends React.SVGAttributes<SVGElement> {
     className?: string;
 
-    icon: string | import('support/types').iconShape;
+    icon: string | import('support/types').IconShape;
     size?: number;
     color: string;
     isActive?: boolean;
@@ -81,7 +81,7 @@ const Icon = ({
     ...rest
 }: Props) => {
     // if string is passed to the icon prop use it as a key in icons object
-    const iconObject: import('support/types').iconShape =
+    const iconObject: import('support/types').IconShape =
         typeof icon === 'string' ? icons[icon] : icon;
     if (!iconObject) return null;
     return (

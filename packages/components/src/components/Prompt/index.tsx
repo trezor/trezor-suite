@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Icon from '../Icon';
 
 import icons from '../../config/icons';
-import { Omit, iconShape } from 'support/types';
+import { Omit, IconShape } from '../../support/types';
 import colors from '../../config/colors';
 
 const PulseAnimation = keyframes`
@@ -59,7 +59,7 @@ const ContentWrapper = styled.div`
 `;
 
 const modelToIcon = (model: number) => {
-    const mapping: { [key: number]: iconShape } = {
+    const mapping: { [key: number]: IconShape } = {
         1: icons.T1,
         2: icons.T2,
     };
