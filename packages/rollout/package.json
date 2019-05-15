@@ -1,5 +1,5 @@
 {
-  "name": "trezor-rollout",
+  "name": "@trezor/rollout",
   "version": "1.0.5",
   "repository": {
     "type": "git",
