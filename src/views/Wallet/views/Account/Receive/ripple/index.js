@@ -37,8 +37,6 @@ const StyledQRCode = styled(QRCode)`
 `;
 
 const ShowAddressButton = styled(Button)`
-    min-width: 195px;
-    padding: 0;
     white-space: nowrap;
     display: flex;
     height: 40px;
