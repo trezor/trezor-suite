@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
-import { StartButton } from '@trezor/components/StartButton';
+import { Button } from '@trezor/components';
 import Wrapper from '@suite/components/SuiteWrapper';
 import { State } from '@suite/types';
 
@@ -19,7 +19,9 @@ const Wallet = (props: Props) => {
     return (
         <Wrapper>
             <Text>Wallet {props.router.pathname}</Text>
-            <StartButton onPress={onPress} />
+            <Button variant="success" onClick={onPress}>
+                click
+            </Button>
         </Wrapper>
     );
 };
