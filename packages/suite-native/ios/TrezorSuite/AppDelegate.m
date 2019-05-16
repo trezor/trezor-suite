@@ -15,10 +15,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  BOOL isEmulator = NO;
+  #if TARGET_IPHONE_SIMULATOR
+    isEmulator = YES;
+  #endif
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"TrezorSuite"
-                                            initialProperties:nil];
+                                            initialProperties:@{@"isEmulator": @(isEmulator)}];
 
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 

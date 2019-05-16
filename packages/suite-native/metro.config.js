@@ -7,8 +7,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const blacklist = require('metro-config/src/defaults/blacklist');
+const nodejs = require('node-libs-browser');
 /* eslint-enable */
 
+// TODO: multiple webpack entrypoints  https://github.com/zeit/next.js/issues/774
 module.exports = {
     projectRoot: path.resolve(__dirname, '../../'),
     transformer: {
@@ -20,10 +22,12 @@ module.exports = {
         }),
     },
     resolver: {
-        blacklistRE: blacklist([
-            /suite-native\/node_modules\/react-native\/.*/,
-            /android\/.*/,
-            /ios\/.*/,
-        ]),
+        resolverMainFields: ['react-native', 'browser', 'main'],
+        extraNodeModules: {
+            crypto: nodejs.crypto,
+            stream: nodejs.stream,
+            path: nodejs.path,
+            vm: nodejs.vm,
+        },
     },
 };
