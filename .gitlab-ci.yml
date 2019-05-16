@@ -73,7 +73,9 @@ stages:
 build components:
   <<: *components
   <<: *build
+  <<: *deploy-review
 
 build suite web:
   <<: *suite-web
   <<: *build
+  <<: *deploy-review
