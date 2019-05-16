@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
-import { StartButton } from '@trezor/components/StartButton';
+import { Button } from '@trezor/components';
 import Wrapper from '@suite/components/SuiteWrapper';
 import { State } from '@suite/types';
 import TrezorConnect from 'trezor-connect';
@@ -40,7 +40,7 @@ const Index = (props: Props) => {
     return (
         <Wrapper>
             <Text>Home {props.router.pathname}</Text>
-            <StartButton onPress={onClick} />
+            <Button onClick={onClick} />
         </Wrapper>
     );
 };

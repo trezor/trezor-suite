@@ -20,5 +20,10 @@
         "strict": true,
         "target": "esnext",
     },
-    "exclude": ["node_modules", "**/api/generated/**/*.*", "**/_old/**/*.*"]
+    "exclude": [
+        "node_modules", 
+        "**/api/generated/**/*.*", 
+        "**/_old/**/*.*", 
+        ".next"
+    ]
 }
