@@ -3,7 +3,7 @@
   script:
     - cd packages/$PROJECT_NAME
     - echo "project path $(basename $PWD)"
-    - echo "build starting ..."  
+    - echo "build starting ...."  
 
 .suite-web: &suite-web
   variables:
