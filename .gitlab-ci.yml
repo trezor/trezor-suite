@@ -3,7 +3,16 @@
   script:
     - cd packages/$PROJECT_NAME
     - echo "project path $(basename $PWD)"
-    - echo "build starting ..."  
+    - echo "\n"
+    - echo "--- [installing deps] ---"
+    - yarn
+    - echo "\n"
+    - echo "--- [building lib] ---"
+    - yarn build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - build
 
 .suite-web: &suite-web
   variables:
