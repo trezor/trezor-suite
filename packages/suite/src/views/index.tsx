@@ -4,9 +4,15 @@ import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import Wrapper from '@suite/components/SuiteWrapper';
 import { State } from '@suite/types';
+import TrezorConnect from 'trezor-connect';
 
 const onClick = () => {
-    // TrezorConnect.getPublicKey();
+    TrezorConnect.getAddress({
+        path: "m/44'/0'/0'/0/0",
+        coin: "btc"
+    }).then(r => {
+        console.log("R", r)
+    });
 };
 
 // TODO: https://redux.js.org/recipes/isolating-redux-sub-apps
