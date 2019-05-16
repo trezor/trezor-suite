@@ -68,13 +68,13 @@
         ],
         "import/resolver": {
             "typescript": {
-                "directory": ".storybook/tsconfig.json"
+                "directory": "./packages/components/.storybook/tsconfig.json"
             }
         }
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": ".storybook/tsconfig.json",
+        "project": "./packages/components/.storybook/tsconfig.json",
         "extends": [
             "plugin:@typescript-eslint/recommended"
         ],
