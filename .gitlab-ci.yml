@@ -20,7 +20,7 @@ cache:
   artifacts:
     expire_in: 1 hour
     paths:
-      - build
+      - packages/$PROJECT_NAME/build
 
 .suite-web: &suite-web
   variables:
