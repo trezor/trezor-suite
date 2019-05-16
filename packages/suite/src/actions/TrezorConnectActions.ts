@@ -12,18 +12,16 @@ export const init = () => async (dispatch: Dispatch, _getState: GetState) => {
     // set listeners
     TrezorConnect.on(
         DEVICE_EVENT,
-        (event: any) => {
-            dispatch({
-                type: event.type,
-                device: event.payload,
-            });
+        event => {
+            // post event as action
+            const { type, payload } = event;
+            dispatch({ type, payload });
         }
     );
 
     TrezorConnect.on(
         UI_EVENT,
-        (event: any) => {
-
+        event => {
             // TODO: temporary solution for confirmation
             if (event.type === UI.REQUEST_CONFIRMATION) {
                 TrezorConnect.uiResponse({
@@ -32,29 +30,26 @@ export const init = () => async (dispatch: Dispatch, _getState: GetState) => {
                 });
             }
 
-            dispatch({
-                type: event.type,
-                payload: event.payload,
-            });
+            // post event as action
+            const { type, payload } = event;
+            dispatch({ type, payload });
         }
     );
 
     TrezorConnect.on(
         TRANSPORT_EVENT,
-        (event: any) => {
-            // post event to reducers
-            const type = event.type; // eslint-disable-line prefer-destructuring
-            dispatch({
-                type,
-                payload: event.payload,
-            });
+        event => {
+            // post event as action
+            const { type, payload } = event;
+            dispatch({ type, payload });
         }
     );
 
     // post event to reducers
     TrezorConnect.on(
         BLOCKCHAIN_EVENT,
-        (event: any) => {
+        event => {
+            // post event as action
             dispatch(event);
         }
     );
