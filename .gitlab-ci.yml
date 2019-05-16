@@ -1,3 +1,11 @@
+image: node:lts
+
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - node_modules/
+    - packages/*/node_modules
+
 .build: &build
   stage: build
   script:
