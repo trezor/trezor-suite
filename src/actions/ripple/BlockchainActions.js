@@ -47,24 +47,24 @@ export const getFeeLevels = (network: Network): PayloadAction<Array<BlockchainFe
     return blockchain.feeLevels;
 };
 
-export const onBlockMined = (network: string): PromiseAction<void> => async (
+export const onBlockMined = (networkShortcut: string, block: number): PromiseAction<void> => async (
     dispatch: Dispatch,
     getState: GetState
 ): Promise<void> => {
-    const blockchain = getState().blockchain.find(b => b.shortcut === network);
+    const blockchain = getState().blockchain.find(b => b.shortcut === networkShortcut);
     if (!blockchain) return; // flowtype fallback
 
     // if last update was more than 5 minutes ago
     const now = new Date().getTime();
     if (blockchain.feeTimestamp < now - 300000) {
         const feeRequest = await TrezorConnect.blockchainEstimateFee({
-            coin: network,
+            coin: networkShortcut,
         });
         if (feeRequest.success && observeChanges(blockchain.feeLevels, feeRequest.payload)) {
             // check if downloaded fee levels are different
             dispatch({
                 type: BLOCKCHAIN.UPDATE_FEE,
-                shortcut: network,
+                shortcut: networkShortcut,
                 feeLevels: feeRequest.payload,
             });
         }
@@ -72,28 +72,59 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (
 
     // TODO: check for blockchain rollbacks here!
 
-    const accounts: Array<any> = getState().accounts.filter(a => a.network === network);
-    // console.warn('ACCOUNTS', accounts);
-    if (accounts.length > 0) {
-        // const response = await TrezorConnect.rippleGetAccountInfo({
-        //     bundle: accounts,
-        //     level: 'transactions',
-        //     coin: network,
-        // });
-        // if (!response.success) return;
-        // response.payload.forEach((a, i) => {
-        //     if (a.transactions.length > 0) {
-        //         console.warn('APDEJTED!', a, i);
-        //         dispatch(AccountsActions.update({
-        //             ...accounts[i],
-        //             balance: toDecimalAmount(a.balance, DECIMALS),
-        //             availableBalance: toDecimalAmount(a.availableBalance, DECIMALS),
-        //             block: a.block,
-        //             sequence: a.sequence,
-        //         }));
-        //     }
-        // });
-    }
+    const accounts: Array<any> = getState().accounts.filter(a => a.network === networkShortcut);
+    if (accounts.length === 0) return;
+    const { networks } = getState().localStorage.config;
+    const network = networks.find(c => c.shortcut === networkShortcut);
+    if (!network) return;
+
+    // HACK: Since Connect always returns account.transactions as 0
+    // we don't have info about new transactions for the account since last update.
+    // Untill there is a better solution compare accounts block.
+    // If we missed some blocks (wallet was offline) we'll update the account reducer
+    // If we are update to date with the last block that means wallet was online
+    // and we will get Blockchain notification about new transaction if needed
+    accounts.forEach(async account => {
+        const missingBlocks = account.block !== block - 1;
+        if (!missingBlocks) {
+            // account was last updated on account.block, current block is +1, we didn't miss single block
+            // if there was new tx, blockchain notification would let us know
+            // so just update the block for the account
+            dispatch(
+                AccountsActions.update({
+                    ...account,
+                    block,
+                })
+            );
+        } else {
+            // we missed some blocks (wallet was offline). get updated account info from connect
+            const response = await TrezorConnect.rippleGetAccountInfo({
+                account: {
+                    descriptor: account.descriptor,
+                },
+                level: 'transactions',
+                coin: networkShortcut,
+            });
+
+            if (!response.success) return;
+
+            const updatedAccount = response.payload;
+
+            // new txs
+            dispatch(
+                AccountsActions.update({
+                    ...account,
+                    balance: toDecimalAmount(updatedAccount.balance, network.decimals),
+                    availableBalance: toDecimalAmount(
+                        updatedAccount.availableBalance,
+                        network.decimals
+                    ),
+                    block: updatedAccount.block,
+                    sequence: updatedAccount.sequence,
+                })
+            );
+        }
+    });
 };
 
 export const onNotification = (
