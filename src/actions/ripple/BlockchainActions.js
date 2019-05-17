@@ -81,7 +81,7 @@ export const onBlockMined = (networkShortcut: string, block: number): PromiseAct
     // HACK: Since Connect always returns account.transactions as 0
     // we don't have info about new transactions for the account since last update.
     // Untill there is a better solution compare accounts block.
-    // If we missed some blocks (wallet was offline) we'll update the account reducer
+    // If we missed some blocks (wallet was offline) we'll update the account
     // If we are update to date with the last block that means wallet was online
     // and we would get Blockchain notification about new transaction if needed
     accounts.forEach(async account => {
