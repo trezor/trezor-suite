@@ -83,7 +83,7 @@ export const onBlockMined = (networkShortcut: string, block: number): PromiseAct
     // Untill there is a better solution compare accounts block.
     // If we missed some blocks (wallet was offline) we'll update the account reducer
     // If we are update to date with the last block that means wallet was online
-    // and we will get Blockchain notification about new transaction if needed
+    // and we would get Blockchain notification about new transaction if needed
     accounts.forEach(async account => {
         const missingBlocks = account.block !== block - 1;
         if (!missingBlocks) {
