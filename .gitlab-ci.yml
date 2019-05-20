@@ -27,7 +27,7 @@ before_script:
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   before_script: []
   script:
-    - cd $PROJECT_NAME
+    - cd ./$PROJECT_NAME
     - echo "project path $(basename $PWD)"
     - echo "--- [installing deps] ---"
     - yarn
