@@ -18,7 +18,7 @@ variables:
 
 # Components package # --------------------------------
 
-build components:
+components build:
   stage: build
   script:
     - pwd
@@ -32,7 +32,7 @@ build components:
       - packages/components/**
       - .gitlab-ci.yml
   artifacts:
-    name: components-build
+    name: components-build-files
     expire_in: 15 minutes
     paths:
       - $PACKAGE_COMPONENTS/build
@@ -43,7 +43,7 @@ components deploy dev:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components/${CI_BUILD_REF_NAME}
     DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
   dependencies:
-    - build components
+    - components build
   environment:
     name: $CI_BUILD_REF_NAME
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
@@ -60,6 +60,7 @@ components deploy dev:
     - branches
   tags:
     - deploy
+
 
 # Suite web package # --------------------------------
 
@@ -85,10 +86,10 @@ suite-web build:
 suite-web deploy dev:
   stage: deploy
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+    DEPLOY_DIRECTORY: $DEPLOY_BASE_DIR/suite-web/$CI_BUILD_REF_NAME
     DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
   dependencies:
-    - build suite-web
+    - suite-web build
   environment:
     name: $CI_BUILD_REF_NAME
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
