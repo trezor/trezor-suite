@@ -7,59 +7,63 @@ cache:
     - packages/*/node_modules
 
 stages:
+  - build
   - deploy
 
-.deploy to dev: &deploy-to-dev
+variables:
+  PACKAGE_COMPONENTS: 'packages/components'
+  PACKAGE_SUITE_WEB: 'packages/suite-web'
+  GIT_STRATEGY: none
+  DEPLOY_SERVER: https://suite-dev.trezor.io
+
+# Components package # --------------------------------
+
+build components:
+  stage: build
+  script:
+    - cd $PACKAGE_COMPONENTS
+    - echo "--- [installing deps] ---"
+    - yarn
+    - echo "--- [building lib] ---"
+    - yarn build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - $PACKAGE_COMPONENTS/build
+
+# Suite web package # --------------------------------
+
+build suite-web:
+  stage: build
+  script:
+    - cd $PACKAGE_SUITE_WEB
+    - echo "--- [installing deps] ---"
+    - yarn
+    - echo "--- [building lib] ---"
+    - yarn build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - $PACKAGE_SUITE_WEB/build
+
+deploy dev suite-web:
   stage: deploy
   variables:
-    GIT_STRATEGY: none
-    DEPLOY_SERVER: https://suite-dev.trezor.io
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
+  dependencies:
+    - build suite-web
   environment:
     name: $CI_BUILD_REF_NAME
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   before_script: []
   script:
-    - env
-    - pwd
     - cd packages/$PROJECT_NAME
-    - echo "project path $(basename $PWD)"
-    - echo "--- [installing deps] ---"
-    - yarn
-    - echo "--- [building lib] ---"
-    - yarn build
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_DIRECTORY}
-    - rsync --delete -va build/ $DEPLOY_URL
+    - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   only:
     - branches
   tags:
     - deploy
-
-.suite-web: &suite-web
-  variables:
-    PROJECT_NAME: suite-web
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*suite-web.*\]/i
-      - $RUN_JOBS_ALL == "true"
-      - $RUN_JOBS_SUITE_WEB == "true"
-
-.components: &components
-  variables:
-    PROJECT_NAME: components
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*components.*\]/i
-      - $RUN_JOBS_ALL == "true"
-      - $RUN_JOBS_SUITE_WEB == "true"
-
-build components:
-  <<: *components
-  <<: *deploy-to-dev
-
-build suite web:
-  <<: *suite-web
-  <<: *deploy-to-dev
