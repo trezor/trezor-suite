@@ -32,7 +32,7 @@ stages:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
   dependencies:
-    - "&build"
+    - ".build"
   environment:
     name: $CI_BUILD_REF_NAME
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
