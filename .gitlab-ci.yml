@@ -10,21 +10,21 @@ stages:
   - build
   - deploy
 
-before_script:  
+before_script:
   - apt-get update -qq && apt-get install
   - apt-get install -y build-essential
   - apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 --assume-yes
 
 .deploy review: &deploy
   stage: deploy
-  # variables:
-    # GIT_STRATEGY: none
-    # DEPLOY_SERVER: https://suite-dev.trezor.io
-    # DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
-    # DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
-  # environment:
-    # name: $CI_BUILD_REF_NAME
-    # url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
+  variables:
+    GIT_STRATEGY: none
+    DEPLOY_SERVER: https://suite-dev.trezor.io
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
+  environment:
+    name: $CI_BUILD_REF_NAME
+    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   before_script: []
   script:
     - echo $pwd
@@ -46,36 +46,36 @@ before_script:
 
 # packages
 
-.suite-web: &suite-web
-  variables:
-    PROJECT_NAME: suite-web
-    GIT_STRATEGY: none
-    DEPLOY_SERVER: https://suite-dev.trezor.io
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
-    DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*suite-web.*\]/i
-      - $RUN_JOBS_ALL == "true"
-      - $RUN_JOBS_SUITE_WEB == "true"
+# .suite-web: &suite-web
+#   variables:
+#     PROJECT_NAME: suite-web
+#     GIT_STRATEGY: none
+#     DEPLOY_SERVER: https://suite-dev.trezor.io
+#     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
+#     DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
+#   only:
+#     variables:
+#       - $CI_COMMIT_MESSAGE =~ /\[ci job:.*suite-web.*\]/i
+#       - $RUN_JOBS_ALL == "true"
+#       - $RUN_JOBS_SUITE_WEB == "true"
 
-.components: &components
-  variables:
-    PROJECT_NAME: components
-    GIT_STRATEGY: none
-    DEPLOY_SERVER: https://suite-dev.trezor.io
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
-    DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*components.*\]/i
-      - $RUN_JOBS_ALL == "true"
-      - $RUN_JOBS_SUITE_WEB == "true"
+# .components: &components
+#   variables:
+#     PROJECT_NAME: components
+#     GIT_STRATEGY: none
+#     DEPLOY_SERVER: https://suite-dev.trezor.io
+#     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
+#     DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
+#   only:
+#     variables:
+#       - $CI_COMMIT_MESSAGE =~ /\[ci job:.*components.*\]/i
+#       - $RUN_JOBS_ALL == "true"
+#       - $RUN_JOBS_SUITE_WEB == "true"
 
 build components:
-  <<: *components
+  # <<: *components
   <<: *deploy
 
-build suite web:
-  <<: *suite-web
-  <<: *deploy
+# build suite web:
+#   <<: *suite-web
+#   <<: *deploy
