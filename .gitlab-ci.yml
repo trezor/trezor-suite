@@ -28,7 +28,6 @@ stages:
     - yarn
     - echo "--- [building lib] ---"
     - yarn build
-    - cd packages/$PROJECT_NAME
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_DIRECTORY}
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
