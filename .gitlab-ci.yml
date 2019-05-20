@@ -26,6 +26,10 @@ build components:
     - yarn
     - echo "--- [building lib] ---"
     - yarn build
+  only:
+    changes:
+      - packages/components/**
+      - .gitlab-ci.yml
   artifacts:
     expire_in: 1 hour
     paths:
