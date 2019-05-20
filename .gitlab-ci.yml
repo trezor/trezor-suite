@@ -12,6 +12,8 @@ stages:
 
 before_script:  
   - apt-get update -qq && apt-get install
+  - apt-get install -y build-essential
+  - apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 --assume-yes
 
 .deploy review: &deploy
   stage: deploy
@@ -25,6 +27,7 @@ before_script:
     # url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   before_script: []
   script:
+    - echo $pwd
     - dir $(basename $PWD)
     - cd packages/$PROJECT_NAME
     - echo "project path $(basename $PWD)"
