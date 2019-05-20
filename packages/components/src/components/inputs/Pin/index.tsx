@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
-import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../config/variables';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
 import icons from '../../../config/icons';
@@ -15,9 +15,10 @@ const StyledInput = styled.input`
     letter-spacing: 7px;
     width: 100%;
     height: 53px;
+    font-family: ${FONT_FAMILY.DEFAULT};
     font-weight: ${FONT_WEIGHT.SEMIBOLD};
-    font-size: ${FONT_SIZE.BIGGEST};
-    padding: 5px 31px 10px 20px;
+    font-size: ${FONT_SIZE.HUGE};
+    padding: 0 31px 0 20px;
     color: ${colors.TEXT_PRIMARY};
     background: transparent;
     border: 1px solid ${colors.DIVIDER};
