@@ -4,7 +4,6 @@
 import React, { CSSProperties } from 'react';
 import styled from 'styled-components';
 import ReactSelect from 'react-select';
-import { State } from 'react-select/lib/Select';
 
 import colors from 'config/colors';
 import { SCREEN_SIZE } from 'config/variables';
