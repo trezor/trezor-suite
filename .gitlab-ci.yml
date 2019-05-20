@@ -15,6 +15,7 @@ variables:
   PACKAGE_SUITE_WEB: 'packages/suite-web'
   DEV_SERVER_URL: https://suite-dev.trezor.io
 
+
 # Components package # --------------------------------
 
 build components:
@@ -31,13 +32,38 @@ build components:
       - packages/components/**
       - .gitlab-ci.yml
   artifacts:
-    expire_in: 1 hour
+    name: components-build
+    expire_in: 15 minutes
     paths:
       - $PACKAGE_COMPONENTS/build
 
+components deploy dev:
+  stage: deploy
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
+  dependencies:
+    - build components
+  environment:
+    name: $CI_BUILD_REF_NAME
+    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
+  before_script: []
+  script:
+    - env
+    - pwd
+    - cd $PACKAGE_COMPONENTS
+    - echo "Deploy to dev servers"
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+  only:
+    - branches
+  tags:
+    - deploy
+
 # Suite web package # --------------------------------
 
-build suite-web:
+suite-web build:
   stage: build
   script:
     - pwd
@@ -46,16 +72,21 @@ build suite-web:
     - yarn
     - echo "--- [building lib] ---"
     - yarn build
+  only:
+    changes:
+      - packages/suite-web/**
+      - .gitlab-ci.yml
   artifacts:
-    expire_in: 1 hour
+    name: suite-web-build
+    expire_in: 15 minutes
     paths:
       - $PACKAGE_SUITE_WEB/build
 
-deploy dev suite-web:
+suite-web deploy dev:
   stage: deploy
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
-    DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
   dependencies:
     - build suite-web
   environment:
@@ -63,6 +94,8 @@ deploy dev suite-web:
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   before_script: []
   script:
+    - env
+    - pwd
     - cd $PACKAGE_SUITE_WEB
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_DIRECTORY}
