@@ -82,8 +82,8 @@ stages:
 
 build components:
   <<: *components
-  build:suite
+  <<: build:components
 
 build suite web:
   <<: *suite-web
-  build:components
+  <<: build:suite
