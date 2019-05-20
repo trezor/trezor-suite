@@ -18,7 +18,7 @@ const getPrimaryColor = (type?: Props) => {
             color = colors.SUCCESS_PRIMARY;
             break;
         default:
-            color = null;
+            color = colors.SUCCESS_PRIMARY;
     }
 
     return color;
@@ -40,7 +40,7 @@ const getSecondaryColor = (type?: Props) => {
             color = colors.SUCCESS_SECONDARY;
             break;
         default:
-            color = null;
+            color = colors.SUCCESS_SECONDARY;
     }
 
     return color;
@@ -62,7 +62,7 @@ const getNotificationBgColor = (type?: Props) => {
             color = colors.SUCCESS_LIGHT;
             break;
         default:
-            color = null;
+            color = colors.SUCCESS_LIGHT;
     }
 
     return color;

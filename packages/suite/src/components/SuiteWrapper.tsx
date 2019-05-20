@@ -13,7 +13,6 @@ interface Props {
 const Wrapper: FunctionComponent<Props> = props => {
     return (
         <>
-            <Header onClick={props.goto} />
             <Text>Suite wrapper</Text>
             {props.children}
         </>
