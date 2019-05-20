@@ -47,11 +47,14 @@ const HoverMe = styled.span`
     background: #ccc;
 `;
 
+Center.displayName = 'CenterWrapper';
 Wrapper.displayName = 'Wrapper';
 H1.displayName = 'H1';
 H2.displayName = 'H2';
 H3.displayName = 'H3';
 H4.displayName = 'H4';
+H5.displayName = 'H5';
+H6.displayName = 'H6';
 
 storiesOf('Typography', module).add('All', () => {
     const pContent =
