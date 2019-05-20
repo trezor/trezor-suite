@@ -10,6 +10,9 @@ stages:
   - build
   - deploy
 
+before_script:  
+  - apt-get update -qq && apt-get install
+
 .deploy review: &deploy
   stage: deploy
   variables:
