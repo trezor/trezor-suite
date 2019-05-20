@@ -29,7 +29,7 @@ components build:
     - yarn build
   only:
     changes:
-      - packages/components/**
+      - packages/components/**/*
       - .gitlab-ci.yml
   artifacts:
     name: components-build-files
@@ -44,6 +44,10 @@ components deploy dev:
     DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
   dependencies:
     - components build
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
   environment:
     name: $CI_BUILD_REF_NAME
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
@@ -75,7 +79,7 @@ suite-web build:
     - yarn build
   only:
     changes:
-      - packages/suite-web/**
+      - packages/suite-web/**/*
       - .gitlab-ci.yml
   artifacts:
     name: suite-web-build
@@ -90,6 +94,10 @@ suite-web deploy dev:
     DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
   dependencies:
     - suite-web build
+  only:
+    changes:
+      - packages/suite-web/**/*
+      - .gitlab-ci.yml
   environment:
     name: $CI_BUILD_REF_NAME
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
