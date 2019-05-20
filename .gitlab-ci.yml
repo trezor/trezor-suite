@@ -1,7 +1,7 @@
 image: node:lts
 
 cache:
-  key: "$CI_COMMIT_REF_NAME"
+  key: "${CI_COMMIT_REF_NAME}"
   paths:
     - node_modules/
     - packages/*/node_modules
@@ -11,10 +11,9 @@ stages:
   - deploy
 
 variables:
-  PACKAGE_COMPONENTS: 'packages/components'
-  PACKAGE_SUITE_WEB: 'packages/suite-web'
-  DEV_SERVER_URL: https://suite-dev.trezor.io
-
+  PACKAGE_PATH_COMPONENTS: 'packages/components'
+  PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
+  DEV_SERVER_URL: 'https://suite-dev.sldev.cz'
 
 # Components package # --------------------------------
 
@@ -22,7 +21,7 @@ components build:
   stage: build
   script:
     - pwd
-    - cd $PACKAGE_COMPONENTS
+    - cd ${PACKAGE_PATH_COMPONENTS}
     - echo "--- [installing deps] ---"
     - yarn
     - echo "--- [building lib] ---"
@@ -35,12 +34,13 @@ components build:
     name: components-build-files
     expire_in: 15 minutes
     paths:
-      - $PACKAGE_COMPONENTS/build
+      - $PACKAGE_PATH_COMPONENTS/build
 
 components deploy dev:
   stage: deploy
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components/${CI_BUILD_REF_NAME}
+    PACKAGE_NAME: components
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
   dependencies:
     - components build
@@ -57,7 +57,8 @@ components deploy dev:
     - pwd
     - cd $PACKAGE_COMPONENTS
     - echo "Deploy to dev servers"
-    - mkdir -p ${DEPLOY_DIRECTORY}
+    - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME} # create components folder
+    - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   only:
@@ -72,7 +73,7 @@ suite-web build:
   stage: build
   script:
     - pwd
-    - cd $PACKAGE_SUITE_WEB
+    - cd $PACKAGE_PATH_SUITE_WEB
     - echo "--- [installing deps] ---"
     - yarn
     - echo "--- [building lib] ---"
@@ -85,12 +86,13 @@ suite-web build:
     name: suite-web-build
     expire_in: 15 minutes
     paths:
-      - $PACKAGE_SUITE_WEB/build
+      - $PACKAGE_PATH_SUITE_WEB/build
 
 suite-web deploy dev:
   stage: deploy
   variables:
-    DEPLOY_DIRECTORY: $DEPLOY_BASE_DIR/suite-web/$CI_BUILD_REF_NAME
+    PACKAGE_NAME: suite-web
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
   dependencies:
     - suite-web build
@@ -99,15 +101,16 @@ suite-web deploy dev:
       - packages/suite-web/**/*
       - .gitlab-ci.yml
   environment:
-    name: $CI_BUILD_REF_NAME
-    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
   before_script: []
   script:
     - env
     - pwd
-    - cd $PACKAGE_SUITE_WEB
+    - cd ${PACKAGE_PATH_SUITE_WEB}
     - echo "Deploy to dev servers"
-    - mkdir -p ${DEPLOY_DIRECTORY}
+    - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME} # create components folder
+    - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   only:
