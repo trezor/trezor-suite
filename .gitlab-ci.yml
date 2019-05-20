@@ -23,10 +23,10 @@ stages:
     - yarn
     - echo "--- [building lib] ---"
     - yarn build
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - packages/$PROJECT_NAME/build
+    - echo "Deploy to dev servers"
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - rsync --delete -va build/ $DEPLOY_URL
+    - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
 
 .deploy review: &deploy-review
   stage: deploy
