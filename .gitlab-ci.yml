@@ -10,7 +10,7 @@ stages:
   - build
   - deploy
 
-.build: &build
+.build-suite:
   stage: build
   script:
     - cd packages/$PROJECT_NAME
@@ -24,7 +24,21 @@ stages:
     paths:
       - packages/$PROJECT_NAME/build
 
-.deploy review: &deploy-review
+.build-components:
+  stage: build
+  script:
+    - cd packages/$PROJECT_NAME
+    - echo "project path $(basename $PWD)"
+    - echo "--- [installing deps] ---"
+    - yarn
+    - echo "--- [building lib] ---"
+    - yarn build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - packages/$PROJECT_NAME/build
+
+.deploy review suite: &deploy-review
   stage: deploy
   variables:
     GIT_STRATEGY: none
@@ -68,10 +82,8 @@ stages:
 
 build components:
   <<: *components
-  <<: *build
-  <<: *deploy-review
+  build:suite
 
 build suite web:
   <<: *suite-web
-  <<: *build
-  <<: *deploy-review
+  build:components
