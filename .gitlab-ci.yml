@@ -9,9 +9,7 @@ cache:
 stages:
   - deploy
 
-# templates DO NOT TOUCH unless you know what you are doing
-
-.build: &deploy to dev server
+.deploy to dev: &deploy-to-dev
   stage: deploy
   variables:
     GIT_STRATEGY: none
@@ -40,32 +38,6 @@ stages:
   tags:
     - deploy
 
-# .deploy review: &deploy-review
-#   stage: deploy
-#   variables:
-#     GIT_STRATEGY: none
-#     DEPLOY_SERVER: https://suite-dev.trezor.io
-#     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
-#     DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
-#   environment:
-#     name: $CI_BUILD_REF_NAME
-#     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
-#   before_script: []
-#   script:
-#     - env
-#     - pwd
-#     - cd packages/$PROJECT_NAME
-#     - echo "Deploy to dev servers"
-#     - mkdir -p ${DEPLOY_DIRECTORY}
-#     - rsync --delete -va build/ $DEPLOY_URL
-#     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
-#   only:
-#     - branches
-#   tags:
-#     - deploy
-
-# packages
-
 .suite-web: &suite-web
   variables:
     PROJECT_NAME: suite-web
@@ -86,8 +58,8 @@ stages:
 
 build components:
   <<: *components
-  <<: *deploy to dev server
+  <<: *deploy-to-dev
 
 build suite web:
   <<: *suite-web
-  <<: *deploy to dev server
+  <<: *deploy-to-dev
