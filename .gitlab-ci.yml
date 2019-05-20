@@ -10,26 +10,37 @@ stages:
   - build
   - deploy
 
-before_script:
-  - apt-get update -qq && apt-get install
-  - apt-get install -y build-essential
-  - apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 --assume-yes
+# templates DO NOT TOUCH unless you know what you are doing
 
-.deploy review: &deploy
-  stage: deploy
-  environment:
-    name: $CI_BUILD_REF_NAME
-    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
-  before_script: []
+.build: &build
+  stage: build
   script:
-    - pwd
-    - env
-    - cd ./$PROJECT_NAME
+    - cd packages/$PROJECT_NAME
     - echo "project path $(basename $PWD)"
     - echo "--- [installing deps] ---"
     - yarn
     - echo "--- [building lib] ---"
     - yarn build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - packages/$PROJECT_NAME/build
+
+.deploy review: &deploy-review
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    DEPLOY_SERVER: https://suite-dev.trezor.io
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
+  dependencies:
+    - build $PACKAGE_NAME
+  environment:
+    name: $CI_BUILD_REF_NAME
+    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
+  before_script: []
+  script:
+    - cd packages/$PROJECT_NAME
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_DIRECTORY}
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
@@ -41,26 +52,18 @@ before_script:
 
 # packages
 
-# .suite-web: &suite-web
-#   variables:
-#     PROJECT_NAME: suite-web
-#     GIT_STRATEGY: none
-#     DEPLOY_SERVER: https://suite-dev.trezor.io
-#     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
-#     DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
-#   only:
-#     variables:
-#       - $CI_COMMIT_MESSAGE =~ /\[ci job:.*suite-web.*\]/i
-#       - $RUN_JOBS_ALL == "true"
-#       - $RUN_JOBS_SUITE_WEB == "true"
+.suite-web: &suite-web
+  variables:
+    PROJECT_NAME: suite-web
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[ci job:.*suite-web.*\]/i
+      - $RUN_JOBS_ALL == "true"
+      - $RUN_JOBS_SUITE_WEB == "true"
 
 .components: &components
   variables:
     PROJECT_NAME: components
-    GIT_STRATEGY: none
-    DEPLOY_SERVER: https://suite-dev.trezor.io
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
-    DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
   only:
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[ci job:.*components.*\]/i
@@ -69,8 +72,10 @@ before_script:
 
 build components:
   <<: *components
-  <<: *deploy
+  <<: *build
+  <<: *deploy-review
 
-# build suite web:
-#   <<: *suite-web
-#   <<: *deploy
+build suite web:
+  <<: *suite-web
+  <<: *build
+  <<: *deploy-review
