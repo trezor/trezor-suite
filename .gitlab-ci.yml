@@ -13,14 +13,14 @@ stages:
 variables:
   PACKAGE_COMPONENTS: 'packages/components'
   PACKAGE_SUITE_WEB: 'packages/suite-web'
-  GIT_STRATEGY: none
-  DEPLOY_SERVER: https://suite-dev.trezor.io
+  DEV_SERVER_URL: https://suite-dev.trezor.io
 
 # Components package # --------------------------------
 
 build components:
   stage: build
   script:
+    - pwd
     - cd $PACKAGE_COMPONENTS
     - echo "--- [installing deps] ---"
     - yarn
@@ -36,6 +36,7 @@ build components:
 build suite-web:
   stage: build
   script:
+    - pwd
     - cd $PACKAGE_SUITE_WEB
     - echo "--- [installing deps] ---"
     - yarn
@@ -58,7 +59,7 @@ deploy dev suite-web:
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   before_script: []
   script:
-    - cd packages/$PROJECT_NAME
+    - cd $PACKAGE_SUITE_WEB
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_DIRECTORY}
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
