@@ -40,6 +40,8 @@ stages:
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   before_script: []
   script:
+    - env
+    - pwd
     - cd packages/$PROJECT_NAME
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_DIRECTORY}
@@ -73,9 +75,9 @@ stages:
 build components:
   <<: *components
   <<: *build
-  <<: *deploy-review
+  # <<: *deploy-review
 
 build suite web:
   <<: *suite-web
   <<: *build
-  <<: *deploy-review
+  # <<: *deploy-review
