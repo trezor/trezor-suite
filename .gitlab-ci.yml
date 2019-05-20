@@ -10,35 +10,7 @@ stages:
   - build
   - deploy
 
-.build-suite:
-  stage: build
-  script:
-    - cd packages/$PROJECT_NAME
-    - echo "project path $(basename $PWD)"
-    - echo "--- [installing deps] ---"
-    - yarn
-    - echo "--- [building lib] ---"
-    - yarn build
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - packages/$PROJECT_NAME/build
-
-.build-components:
-  stage: build
-  script:
-    - cd packages/$PROJECT_NAME
-    - echo "project path $(basename $PWD)"
-    - echo "--- [installing deps] ---"
-    - yarn
-    - echo "--- [building lib] ---"
-    - yarn build
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - packages/$PROJECT_NAME/build
-
-.deploy review suite: &deploy-review
+.deploy review: &deploy
   stage: deploy
   variables:
     GIT_STRATEGY: none
@@ -50,6 +22,12 @@ stages:
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   before_script: []
   script:
+    - cd packages/$PROJECT_NAME
+    - echo "project path $(basename $PWD)"
+    - echo "--- [installing deps] ---"
+    - yarn
+    - echo "--- [building lib] ---"
+    - yarn build
     - cd packages/$PROJECT_NAME
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_DIRECTORY}
@@ -65,6 +43,10 @@ stages:
 .suite-web: &suite-web
   variables:
     PROJECT_NAME: suite-web
+    GIT_STRATEGY: none
+    DEPLOY_SERVER: https://suite-dev.trezor.io
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PROJECT_NAME}/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: $DEPLOY_SERVER/$DEPLOY_DIRECTORY
   only:
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[ci job:.*suite-web.*\]/i
@@ -82,8 +64,8 @@ stages:
 
 build components:
   <<: *components
-  <<: build:components
+  <<: *deploy
 
 build suite web:
   <<: *suite-web
-  <<: build:suite
+  <<: *deploy
