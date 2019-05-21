@@ -76,7 +76,8 @@ components test snapshots:
       - packages/components/**/*
       - .gitlab-ci.yml
   script:
-    - yarn
+    - env
+    - cd $PACKAGE_PATH_COMPONENTS
     - yarn ci:test:snapshots --baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   artifacts:
     expire_in: 1 day
@@ -94,6 +95,8 @@ components make snapshot references:
       - .gitlab-ci.yml
   when: manual
   script:
+    - env
+    - cd $PACKAGE_PATH_COMPONENTS
     - yarn
     - yarn ci:test:snapshots:references --baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   artifacts:
