@@ -56,7 +56,7 @@ components deploy dev:
   script:
     - env
     - pwd
-    - cd $PACKAGE_COMPONENTS
+    - cd $PACKAGE_PATH_COMPONENTS
     - pwd
     - echo "Deploy to dev servers"
     - pwd
@@ -64,7 +64,6 @@ components deploy dev:
     - pwd # create components folder
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - pwd
-    - cp -R build ${DEPLOY_DIRECTORY}
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   only:
