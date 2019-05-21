@@ -77,7 +77,7 @@ suite-web build:
     - echo "--- [installing deps] ---"
     - yarn
     - echo "--- [building lib] ---"
-    - yarn build
+    - assetPrefix=${DEV_SERVER_URL} yarn build
   only:
     changes:
       - packages/suite-web/**/*
