@@ -71,6 +71,8 @@ components deploy dev:
 components test snapshots:
   image: cypress/base:10
   stage: test snapshots
+  variables:
+     PACKAGE_NAME: components
   only:
     changes:
       - packages/components/**/*
@@ -78,7 +80,7 @@ components test snapshots:
   script:
     - env
     - cd $PACKAGE_PATH_COMPONENTS
-    - yarn ci:test:snapshots --baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+    - CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots
   artifacts:
     expire_in: 1 day
     when: always
@@ -104,6 +106,7 @@ components make snapshot references:
     when: always
     paths:
       - /builds/trezor/trezor-ui-components/test/snapshots
+
 
 # Suite web package # --------------------------------
 
