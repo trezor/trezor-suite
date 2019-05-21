@@ -100,8 +100,8 @@ components test snapshots:
     expire_in: 1 day
     when: always
     paths:
-      - screenshots
-      - snapshots
+      - /builds/trezor/trezor-suite/packages/components/test/snapshots
+      - /builds/trezor/trezor-suite/packages/components/test/screenshots
 
 components make snapshot references:
   image: cypress/base:10
