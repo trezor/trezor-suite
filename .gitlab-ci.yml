@@ -74,7 +74,7 @@ suite-web build:
   variables:
     PACKAGE_NAME: suite-web
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
-    DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
+    DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
   script:
     - pwd
     - cd $PACKAGE_PATH_SUITE_WEB
@@ -97,7 +97,7 @@ suite-web deploy dev:
   variables:
     PACKAGE_NAME: suite-web
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-    DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
+    DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
   dependencies:
     - suite-web build
   only:
