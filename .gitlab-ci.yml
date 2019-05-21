@@ -95,13 +95,13 @@ components test snapshots:
     - env
     - cd $PACKAGE_PATH_COMPONENTS
     - yarn
-    - CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots --env baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+    - CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots --env -c baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   artifacts:
     expire_in: 1 day
     when: always
     paths:
-      - /builds/trezor/trezor-ui-components/test/screenshots
-      - /builds/trezor/trezor-ui-components/test/snapshots
+      - screenshots
+      - snapshots
 
 components make snapshot references:
   image: cypress/base:10
