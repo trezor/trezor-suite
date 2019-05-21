@@ -5,16 +5,18 @@ cache:
   paths:
     - node_modules/
     - packages/*/node_modules
+    - ~/.cache
 
 stages:
   - build
   - deploy
+  - test snapshots
 
 variables:
   PACKAGE_PATH_COMPONENTS: 'packages/components'
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
   PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
   DEV_SERVER_URL: 'https://suite-dev.sldev.cz'
-
 
 # Components package # --------------------------------
 
@@ -66,6 +68,39 @@ components deploy dev:
   tags:
     - deploy
 
+components test snapshots:
+  image: cypress/base:10
+  stage: test snapshots
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
+  script:
+    - yarn
+    - yarn ci:test:snapshots --baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+  artifacts:
+    expire_in: 1 day
+    when: always
+    paths:
+      - /builds/trezor/trezor-ui-components/test/screenshots
+      - /builds/trezor/trezor-ui-components/test/snapshots
+
+components make snapshot references:
+  image: cypress/base:10
+  stage: test snapshots
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
+  when: manual
+  script:
+    - yarn
+    - yarn ci:test:snapshots:references --baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+  artifacts:
+    expire_in: 1 day
+    when: always
+    paths:
+      - /builds/trezor/trezor-ui-components/test/snapshots
 
 # Suite web package # --------------------------------
 
