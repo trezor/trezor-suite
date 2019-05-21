@@ -5,6 +5,7 @@ import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 
 const Spinner = styled.ActivityIndicator`
+    padding-right: 10px;
 `;
 
 const View = styled.View`
@@ -12,18 +13,16 @@ const View = styled.View`
 `;
 
 const Label = styled.Text`
-    font-weight: 700;
+    font-weight: 400;
     align-self: center;
-    padding: 10px;
-    font-size: 20;
+    font-size: 18;
     color: ${(props: any) => props.disabled? colors.TEXT_SECONDARY : colors.WHITE};
 `
 
 const ButtonContainer = styled.TouchableHighlight`
     align-items: center;
     justify-content: center;
-    margin: 10px;
-    padding: 11px 24px;
+    padding: 10px 18px;
     border-radius: 3px;
     background-color: ${(props: any) => getPrimaryColor(props.variant)};
     border: 1px solid ${(props: any) => getPrimaryColor(props.variant)};
@@ -73,10 +72,10 @@ const Button = ({
                 disabled={isDisabled}
             >
                 <View>
-                    <Spinner size="large" color={isDisabled? colors.TEXT_SECONDARY : 'white'}/>
+                    {isLoading && <Spinner size="small" color={isDisabled? colors.TEXT_SECONDARY : 'white'}/>}
 
 
-                    <Label>
+                    <Label disabled={isDisabled}>
                         {children}
                     </Label>
                 </View>
