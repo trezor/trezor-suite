@@ -106,6 +106,8 @@ components test snapshots:
 components make snapshot references:
   image: cypress/base:10
   stage: test snapshots
+  variables:
+     PACKAGE_NAME: components
   only:
     changes:
       - packages/components/**/*
