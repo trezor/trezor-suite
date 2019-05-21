@@ -1,31 +1,120 @@
-.build: &build
-  stage: build
-  script:
-    - cd packages/$PROJECT_NAME
-    - echo "project path $(basename $PWD)"
-    - echo "\n"
-    - echo "--- [installing deps] ---"
-    - yarn
-    - echo "\n"
-    - echo "--- [building lib] ---"
-    - yarn build
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - build
+image: node:lts
 
-.suite-web: &suite-web
-  variables:
-    PROJECT_NAME: suite-web
-  # only:
-    # variables:
-    #   - $CI_COMMIT_MESSAGE =~ /\[ci job:.*suite-web.*\]/i
-    #   - $RUN_JOBS_ALL == "true"
-    #   - $RUN_JOBS_SUITE_WEB == "true"
+cache:
+  key: "${CI_COMMIT_REF_NAME}"
+  paths:
+    - node_modules/
+    - packages/*/node_modules
 
 stages:
-    - build
+  - build
+  - deploy
 
-build suite-web:
-  <<: *suite-web
-  <<: *build
+variables:
+  PACKAGE_PATH_COMPONENTS: 'packages/components'
+  PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
+  DEV_SERVER_URL: 'https://suite-dev.sldev.cz'
+
+
+# Components package # --------------------------------
+
+components build:
+  stage: build
+  script:
+    - env
+    - cd ${PACKAGE_PATH_COMPONENTS}
+    - echo "--- [installing deps] ---"
+    - yarn
+    - echo "--- [building lib] ---"
+    - yarn build
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
+  artifacts:
+    name: components-build-files
+    expire_in: 15 minutes
+    paths:
+      - $PACKAGE_PATH_COMPONENTS/build
+
+components deploy dev:
+  stage: deploy
+  variables:
+    PACKAGE_NAME: components
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+  dependencies:
+    - components build
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - env
+    - cd $PACKAGE_PATH_COMPONENTS
+    - echo "Deploy to dev servers"
+    - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
+    - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+  only:
+    - branches
+  tags:
+    - deploy
+
+
+# Suite web package # --------------------------------
+
+suite-web build:
+  stage: build
+  variables:
+    PACKAGE_NAME: suite-web
+  script:
+    - env
+    - cd $PACKAGE_PATH_SUITE_WEB
+    - echo "--- [installing deps] ---"
+    - yarn
+    - echo "--- [building lib] ---"
+    - assetPrefix=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn build
+  only:
+    changes:
+      - packages/suite-web/**/*
+      - .gitlab-ci.yml
+  artifacts:
+    name: suite-web-build
+    expire_in: 15 minutes
+    paths:
+      - $PACKAGE_PATH_SUITE_WEB/build
+
+suite-web deploy dev:
+  stage: deploy
+  variables:
+    PACKAGE_NAME: suite-web
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
+  dependencies:
+    - suite-web build
+  only:
+    changes:
+      - packages/suite-web/**/*
+      - .gitlab-ci.yml
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - env
+    - cd ${PACKAGE_PATH_SUITE_WEB}
+    - echo "Deploy to dev servers"
+    - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
+    - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+  only:
+    - branches
+  tags:
+    - deploy
