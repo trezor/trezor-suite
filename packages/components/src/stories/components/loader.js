@@ -38,7 +38,7 @@ storiesOf('Other', module)
             return (
                 <Loader
                     size={number('Size', 100)}
-                    strokeWidth={number('Stroke width', 1)}
+                    strokeWidth={number('Stroke width', 2)}
                     text={text('Text', 'loading')}
                     {...(isWhiteText ? { isWhiteText } : {})}
                     {...(isSmallText ? { isSmallText } : {})}
