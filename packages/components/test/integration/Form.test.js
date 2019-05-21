@@ -2,7 +2,7 @@ describe('Form', () => {
     beforeEach(() => {
         cy.viewport(800, 768);
         cy.visit(
-            'http://localhost:9001/iframe.html?selectedKind=Form&selectedStory=All&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs'
+            '/iframe.html?selectedKind=Form&selectedStory=All&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs'
         );
     });
 
