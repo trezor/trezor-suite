@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
 
-import { Header } from '@trezor/components';
 import { goto } from '@suite/actions/RouterActions';
 
 interface Props {

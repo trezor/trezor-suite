@@ -72,13 +72,13 @@ const Button = ({
                 underlayColor={getSecondaryColor(variant)}
                 disabled={isDisabled}
             >
-                        <View>
-                        <Spinner size="large" color={isDisabled? colors.TEXT_SECONDARY : 'white'}/>
+                <View>
+                    <Spinner size="large" color={isDisabled? colors.TEXT_SECONDARY : 'white'}/>
 
 
-                <Label disabled={isDisabled}>
-                    {children}
-                </Label>
+                    <Label>
+                        {children}
+                    </Label>
                 </View>
 
             </ButtonContainer>
