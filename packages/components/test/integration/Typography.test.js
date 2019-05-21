@@ -6,60 +6,22 @@ describe('Typography', () => {
         );
     });
 
-    it('heading_1', () => {
-        cy.getTestElement('heading_1')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('heading_2', () => {
-        cy.getTestElement('heading_2')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('heading_3', () => {
-        cy.getTestElement('heading_3')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-    it('heading_4', () => {
-        cy.getTestElement('heading_4')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('heading_5', () => {
-        cy.getTestElement('heading_5')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('heading_6', () => {
-        cy.getTestElement('heading_6')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('paragraph_small', () => {
-        cy.getTestElement('paragraph_small')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('paragraph_medium', () => {
-        cy.getTestElement('paragraph_medium')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('paragraph_large', () => {
-        cy.getTestElement('paragraph_large')
-            .should('be.visible')
-            .matchImageSnapshot();
-    });
-
-    it('paragraph_xlarge', () => {
-        cy.getTestElement('paragraph_xlarge')
-            .should('be.visible')
-            .matchImageSnapshot();
+    [
+        'heading_1',
+        'heading_2',
+        'heading_3',
+        'heading_4',
+        'heading_5',
+        'heading_6',
+        'paragraph_small',
+        'paragraph_medium',
+        'paragraph_large',
+        'paragraph_xlarge',
+    ].forEach(testName => {
+        it(`${testName}`, () => {
+            cy.getTestElement(testName)
+                .should('be.visible')
+                .matchImageSnapshot();
+        });
     });
 });
