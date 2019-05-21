@@ -133,6 +133,10 @@ components make snapshot references:
 
 suite-web build:
   stage: build
+    only:
+      changes:
+        - packages/suite-web/**/*
+        - .gitlab-ci.yml
   variables:
     PACKAGE_NAME: suite-web
   script:
@@ -142,10 +146,6 @@ suite-web build:
     - yarn
     - echo "--- [building lib] ---"
     - assetPrefix=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn build
-  only:
-    changes:
-      - packages/suite-web/**/*
-      - .gitlab-ci.yml
   artifacts:
     name: suite-web-build
     expire_in: 15 minutes
@@ -154,16 +154,16 @@ suite-web build:
 
 suite-web deploy dev:
   stage: deploy
+    only:
+      changes:
+        - packages/suite-web/**/*
+        - .gitlab-ci.yml
   variables:
     PACKAGE_NAME: suite-web
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
     DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
   dependencies:
     - suite-web build
-  only:
-    changes:
-      - packages/suite-web/**/*
-      - .gitlab-ci.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
