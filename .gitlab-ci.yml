@@ -60,6 +60,7 @@ components deploy dev:
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME} # create components folder
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    - cp -R build ${DEPLOY_DIRECTORY}
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   only:
@@ -112,6 +113,7 @@ suite-web deploy dev:
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME} # create components folder
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    - cp -R build ${DEPLOY_DIRECTORY}
     - echo -e ${DEPLOY_DIRECTORY}
     - cat ${DEPLOY_DIRECTORY}
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
