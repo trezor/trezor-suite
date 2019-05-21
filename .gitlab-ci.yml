@@ -42,7 +42,7 @@ components deploy dev:
   variables:
     PACKAGE_NAME: components
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
-    DEPLOY_URL: $DEV_SERVER_URL/$DEPLOY_DIRECTORY
+    DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   dependencies:
     - components build
   only:
@@ -50,8 +50,8 @@ components deploy dev:
       - packages/components/**/*
       - .gitlab-ci.yml
   environment:
-    name: $CI_BUILD_REF_NAME
-    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
   before_script: []
   script:
     - env
@@ -74,7 +74,7 @@ suite-web build:
   variables:
     PACKAGE_NAME: suite-web
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
-    DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
+    DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   script:
     - env
     - cd $PACKAGE_PATH_SUITE_WEB
