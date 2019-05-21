@@ -55,15 +55,10 @@ components deploy dev:
   before_script: []
   script:
     - env
-    - pwd
     - cd $PACKAGE_PATH_COMPONENTS
-    - pwd
     - echo "Deploy to dev servers"
-    - pwd
     - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
-    - pwd # create components folder
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-    - pwd
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   only:
@@ -111,19 +106,10 @@ suite-web deploy dev:
   before_script: []
   script:
     - env
-    - pwd
     - cd ${PACKAGE_PATH_SUITE_WEB}
-    - pwd
     - echo "Deploy to dev servers"
-    - pwd
     - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
-    - pwd # create components folder
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-    - pwd
-    - cp -R build ${DEPLOY_DIRECTORY}
-    - pwd
-    - echo -e ${DEPLOY_DIRECTORY}
-    - cat ${DEPLOY_DIRECTORY}
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   only:
