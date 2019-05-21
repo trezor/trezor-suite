@@ -15,6 +15,7 @@ variables:
   PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
   DEV_SERVER_URL: 'https://suite-dev.sldev.cz'
 
+
 # Components package # --------------------------------
 
 components build:
