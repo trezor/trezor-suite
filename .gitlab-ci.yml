@@ -95,7 +95,7 @@ components test snapshots:
     - env
     - cd $PACKAGE_PATH_COMPONENTS
     - yarn
-    - CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots
+    - CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots --env baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   artifacts:
     expire_in: 1 day
     when: always
