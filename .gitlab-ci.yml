@@ -21,7 +21,7 @@ variables:
 components build:
   stage: build
   script:
-    - pwd
+    - env
     - cd ${PACKAGE_PATH_COMPONENTS}
     - echo "--- [installing deps] ---"
     - yarn
@@ -76,7 +76,7 @@ suite-web build:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
   script:
-    - pwd
+    - env
     - cd $PACKAGE_PATH_SUITE_WEB
     - echo "--- [installing deps] ---"
     - yarn
