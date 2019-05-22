@@ -278,7 +278,14 @@ storiesOf('Other', module)
                 'horizontal'
             );
 
-            return <TrezorLogo type={type} {...(width ? { width } : {})}  {...(height ? { height } : {})} />;
+            return (
+                <TrezorLogo
+                    type={type} 
+                    {...(width ? { width } : {})}
+                    {...(height ? { height } : {})}
+                    data-test="trezor_logo"
+                />
+            );
         },
         {
             info: {
