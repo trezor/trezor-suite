@@ -1,31 +1,177 @@
-.build: &build
-  stage: build
-  script:
-    - cd packages/$PROJECT_NAME
-    - echo "project path $(basename $PWD)"
-    - echo "\n"
-    - echo "--- [installing deps] ---"
-    - yarn
-    - echo "\n"
-    - echo "--- [building lib] ---"
-    - yarn build
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - build
+image: node:lts
 
-.suite-web: &suite-web
-  variables:
-    PROJECT_NAME: suite-web
-  # only:
-    # variables:
-    #   - $CI_COMMIT_MESSAGE =~ /\[ci job:.*suite-web.*\]/i
-    #   - $RUN_JOBS_ALL == "true"
-    #   - $RUN_JOBS_SUITE_WEB == "true"
+cache:
+  key: "${CI_COMMIT_REF_NAME}"
+  paths:
+    - ~/.cache
+
+before_script:
+  - apt-get update
+  - apt-get install -y build-essential
+  - apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 --assume-yes
 
 stages:
-    - build
+  - install
+  - build
+  - deploy
+  - test snapshots
 
-build suite-web:
-  <<: *suite-web
-  <<: *build
+install:
+  stage: install
+  image: cypress/base:10
+  stage: build
+  script:
+    - yarn install --frozen-lockfile
+    - $(yarn bin)/cypress cache path
+    - $(yarn bin)/cypress cache list
+    - $(yarn bin)/cypress verify
+
+variables:
+  PACKAGE_PATH_COMPONENTS: 'packages/components'
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+  PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
+  DEV_SERVER_URL: 'https://suite-dev.sldev.cz'
+
+# Components package # --------------------------------
+
+components build:
+  stage: build
+  script:
+    - env
+    - cd ${PACKAGE_PATH_COMPONENTS}
+    - echo "--- [installing deps] ---"
+    - yarn
+    - echo "--- [building lib] ---"
+    - yarn build
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
+  artifacts:
+    name: components-build-files
+    expire_in: 15 minutes
+    paths:
+      - $PACKAGE_PATH_COMPONENTS/build
+
+components deploy dev:
+  stage: deploy
+  variables:
+    PACKAGE_NAME: components
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
+  dependencies:
+    - components build
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - env
+    - cd $PACKAGE_PATH_COMPONENTS
+    - echo "Deploy to dev servers"
+    - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
+    - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+  only:
+    - branches
+  tags:
+    - deploy
+
+components test snapshots:
+  image: cypress/base:10
+  stage: test snapshots
+  variables:
+     PACKAGE_NAME: components
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
+  script:
+    - env
+    - cd $PACKAGE_PATH_COMPONENTS
+    - yarn
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots
+  artifacts:
+    expire_in: 1 day
+    when: always
+    paths:
+      - /builds/trezor/trezor-suite/packages/components/test/snapshots
+      - /builds/trezor/trezor-suite/packages/components/test/screenshots
+
+components make snapshot references:
+  image: cypress/base:10
+  stage: test snapshots
+  variables:
+     PACKAGE_NAME: components
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
+  script:
+    - env
+    - cd $PACKAGE_PATH_COMPONENTS
+    - yarn
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots:references
+  artifacts:
+    expire_in: 2 days
+    when: always
+    paths:
+      - /builds/trezor/trezor-suite/packages/components/test/snapshots
+
+
+# Suite web package # --------------------------------
+
+suite-web build:
+  stage: build
+  only:
+    changes:
+      - packages/suite-web/**/*
+      - .gitlab-ci.yml
+  variables:
+    PACKAGE_NAME: suite-web
+  script:
+    - env
+    - cd $PACKAGE_PATH_SUITE_WEB
+    - echo "--- [installing deps] ---"
+    - yarn
+    - echo "--- [building lib] ---"
+    - assetPrefix=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn build
+  artifacts:
+    name: suite-web-build
+    expire_in: 15 minutes
+    paths:
+      - $PACKAGE_PATH_SUITE_WEB/build
+
+suite-web deploy dev:
+  stage: deploy
+  only:
+    changes:
+      - packages/suite-web/**/*
+      - .gitlab-ci.yml
+  variables:
+    PACKAGE_NAME: suite-web
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+    DEPLOY_URL: ${DEV_SERVER_URL}/${DEPLOY_DIRECTORY}
+  dependencies:
+    - suite-web build
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - env
+    - cd ${PACKAGE_PATH_SUITE_WEB}
+    - echo "Deploy to dev servers"
+    - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
+    - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+  only:
+    - branches
+  tags:
+    - deploy
