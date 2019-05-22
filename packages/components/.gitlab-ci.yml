@@ -13,6 +13,7 @@ stages:
   - lint
   - build
   - test snapshots
+  - make snapshot references
 
 lint:
   stage: lint
@@ -57,7 +58,7 @@ test snapshots:
 
 make snapshot references:
   image: $CONTAINER_NAME:$CI_COMMIT_SHA
-  stage: test snapshots
+  stage: make snapshot references
   when: manual
   script:
     - yarn

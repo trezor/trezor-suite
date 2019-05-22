@@ -91,6 +91,6 @@ lib
 
 .DS_Store
 
-test/integration/screenshots
-test/integration/videos
+test/screenshots
+test/videos
 __diff_output__
