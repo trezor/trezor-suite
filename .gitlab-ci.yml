@@ -95,7 +95,10 @@ components test snapshots:
     - env
     - cd $PACKAGE_PATH_COMPONENTS
     - yarn
-    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} \
+      CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} \
+      CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} \
+      yarn ci:test:snapshots
   artifacts:
     expire_in: 1 day
     when: always
@@ -116,7 +119,10 @@ components make snapshot references:
     - env
     - cd $PACKAGE_PATH_COMPONENTS
     - yarn
-    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots:references
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} \
+      CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} \
+      CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} \
+      yarn ci:test:snapshots:references
   artifacts:
     expire_in: 2 days
     when: always
