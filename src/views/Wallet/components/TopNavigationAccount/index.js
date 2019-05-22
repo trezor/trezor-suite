@@ -109,6 +109,16 @@ class TopNavigationAccount extends React.PureComponent<Props, LocalState> {
                         <FormattedMessage {...l10nMessages.TR_NAV_SUMMARY} />
                     </LinkContent>
                 </StyledNavLink>
+                {config.transactions && (
+                    <StyledNavLink
+                        activeClassName="has-bottom-border"
+                        to={`${basePath}/transactions`}
+                    >
+                        <LinkContent>
+                            <FormattedMessage {...l10nMessages.TR_NAV_TRANSACTIONS} />
+                        </LinkContent>
+                    </StyledNavLink>
+                )}
                 <StyledNavLink activeClassName="has-bottom-border" to={`${basePath}/receive`}>
                     <LinkContent>
                         <FormattedMessage {...l10nMessages.TR_NAV_RECEIVE} />

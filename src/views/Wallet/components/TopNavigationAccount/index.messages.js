@@ -3,6 +3,11 @@ import { defineMessages } from 'react-intl';
 import type { Messages } from 'flowtype';
 
 const definedMessages: Messages = defineMessages({
+    TR_NAV_TRANSACTIONS: {
+        id: 'TR_NAV_TRANSACTIONS',
+        defaultMessage: 'Transactions',
+        description: 'Title of the navigation tab that contains tx history.',
+    },
     TR_NAV_SUMMARY: {
         id: 'TR_NAV_SUMMARY',
         defaultMessage: 'Summary',
