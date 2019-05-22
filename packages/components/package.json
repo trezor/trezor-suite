@@ -15,7 +15,7 @@
         "build:lib": "rm -rf lib && npx babel --extensions '.ts,.tsx' src -d lib --ignore './src/stories/**/*.js' && babel-node ./scripts/build.js && tsc",
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "prepublishOnly": "npm run build",
+        "prepublishOnly": "npm run build:lib",
         "ci:storybook": "start-storybook --ci -s ./public -p 9001 -c .storybook",
         "ci:test:snapshots": "start-server-and-test ci:storybook https://localhost:9001 & npx cypress run -c baseUrl=https://localhost:9001/#/",
         "ci:test:snapshots:references": "start-server-and-test ci:storybook https://localhost:9001 & npx cypress run -c baseUrl=https://localhost:9001/#/ --env updateSnapshots=true"
