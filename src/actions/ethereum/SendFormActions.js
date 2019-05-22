@@ -819,6 +819,7 @@ export const onSend = (): AsyncAction => async (
             },
         });
     } catch (error) {
+        console.error(error);
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {

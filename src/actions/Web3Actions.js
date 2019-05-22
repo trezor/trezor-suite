@@ -116,6 +116,7 @@ export const initWeb3 = (
                     const otherWeb3 = await dispatch(initWeb3(network, urlIndex + 1));
                     resolve(otherWeb3);
                 } catch (error) {
+                    console.error(error);
                     reject(error);
                 }
             }

@@ -61,6 +61,7 @@ export const getGasPrice = (
         const gasPrice = await dispatch(Web3Actions.getCurrentGasPrice(network));
         return gasPrice === '0' ? new BigNumber(defaultGasPrice) : new BigNumber(gasPrice);
     } catch (error) {
+        console.error(error);
         return new BigNumber(defaultGasPrice);
     }
 };

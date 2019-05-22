@@ -408,6 +408,7 @@ export const calculateFee = (gasPrice: string, gasLimit: string): string => {
             'ether'
         );
     } catch (error) {
+        console.error(error);
         return '0';
     }
 };
@@ -421,6 +422,7 @@ export const calculateTotal = (amount: string, gasPrice: string, gasLimit: strin
         }
         return bAmount.plus(calculateFee(gasPrice, gasLimit)).toFixed();
     } catch (error) {
+        console.error(error);
         return '0';
     }
 };
@@ -437,6 +439,7 @@ export const calculateMaxAmount = (
         if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {
+        console.error(error);
         return '0';
     }
 };

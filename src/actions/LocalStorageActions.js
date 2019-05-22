@@ -205,6 +205,7 @@ const loadJSON = (): AsyncAction => async (dispatch: Dispatch): Promise<void> =>
             ERC20Abi,
         });
     } catch (error) {
+        console.error(error);
         dispatch({
             type: STORAGE.ERROR,
             error,
