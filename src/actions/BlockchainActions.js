@@ -84,6 +84,7 @@ export const onBlockMined = (
     payload: $ElementType<BlockchainBlock, 'payload'>
 ): PromiseAction<void> => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const shortcut = payload.coin.shortcut.toLowerCase();
+    const { block } = payload;
     if (getState().router.location.state.network !== shortcut) return;
 
     const { config } = getState().localStorage;
@@ -95,7 +96,7 @@ export const onBlockMined = (
             await dispatch(EthereumBlockchainActions.onBlockMined(shortcut));
             break;
         case 'ripple':
-            await dispatch(RippleBlockchainActions.onBlockMined(shortcut));
+            await dispatch(RippleBlockchainActions.onBlockMined(shortcut, block));
             break;
         default:
             break;
