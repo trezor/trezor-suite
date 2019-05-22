@@ -94,3 +94,5 @@ lib
 test/integration/screenshots
 test/integration/videos
 __diff_output__
+
+test/screenshots

@@ -4,6 +4,7 @@ build
 
 node_modules
 generated
+lib
 
 next.config.js
 packages/suite-desktop/src/electron.js
