@@ -8,7 +8,7 @@ import { DEVICE } from 'trezor-connect';
 import type { Action } from 'flowtype';
 
 export type CallbackAction = {
-    label: string,
+    label: React.Node,
     callback: Function,
 };
 
@@ -16,7 +16,7 @@ export type NotificationEntry = {
     +key: string, // React.Key
     +id: ?string,
     +devicePath: ?string,
-    +type: string,
+    +variant: string,
     +title: React.Node | string,
     +message: ?(React.Node | string),
     +cancelable: boolean,
@@ -42,7 +42,7 @@ const addNotification = (state: State, payload: any): State => {
         key: new Date().getTime().toString(),
         id: payload.id,
         devicePath: payload.devicePath,
-        type: payload.type,
+        variant: payload.variant,
         title: payload.title,
         message: payload.message,
         cancelable: payload.cancelable,

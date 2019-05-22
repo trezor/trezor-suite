@@ -1,8 +1,11 @@
 /* @flow */
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import TrezorConnect from 'trezor-connect';
 import type { GetState, Dispatch, ThunkAction, AsyncAction } from 'flowtype';
 import { validateAddress } from 'utils/ethUtils';
 import * as NOTIFICATION from 'actions/constants/notification';
+import l10nMessages from 'components/notifications/Context/actions.messages';
 import * as SIGN_VERIFY from './constants/signVerify';
 
 export type SignVerifyAction =
@@ -64,8 +67,8 @@ const sign = (path: Array<number>, message: string, hex: boolean = false): Async
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
-                title: 'Sign error',
+                variant: 'error',
+                title: <FormattedMessage {...l10nMessages.TR_SIGN_MESSAGE_ERROR} />,
                 message: response.payload.error,
                 cancelable: true,
             },
@@ -109,9 +112,9 @@ const verify = (
             dispatch({
                 type: NOTIFICATION.ADD,
                 payload: {
-                    type: 'success',
-                    title: 'Verify success',
-                    message: 'signature is valid',
+                    variant: 'success',
+                    title: <FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE_SUCCESS} />,
+                    message: <FormattedMessage {...l10nMessages.TR_SIGNATURE_IS_VALID} />,
                     cancelable: true,
                 },
             });
@@ -119,8 +122,8 @@ const verify = (
             dispatch({
                 type: NOTIFICATION.ADD,
                 payload: {
-                    type: 'error',
-                    title: 'Verify error',
+                    variant: 'error',
+                    title: <FormattedMessage {...l10nMessages.TR_VERIFY_MESSAGE_ERROR} />,
                     message: response.payload.error,
                     cancelable: true,
                 },

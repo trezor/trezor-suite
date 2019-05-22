@@ -1,4 +1,5 @@
 import webpack from 'webpack';
+import path from 'path';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackBuildNotifierPlugin from 'webpack-build-notifier';
@@ -86,8 +87,11 @@ module.exports = {
     resolve: {
         alias: {
             public: PUBLIC,
+            react: path.resolve('./node_modules/react'),
+            'react-dom': '@hot-loader/react-dom',
         },
         modules: [SRC, 'node_modules'],
+        symlinks: false,
     },
     performance: {
         hints: false,

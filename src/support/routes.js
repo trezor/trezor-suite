@@ -78,6 +78,11 @@ export const routes: Array<Route> = [
         fields: ['device'],
     },
     {
+        name: 'wallet-account-transactions',
+        pattern: '/device/:device/network/:network/account/:account/transactions',
+        fields: ['device', 'network', 'account', 'transactions'],
+    },
+    {
         name: 'wallet-account-summary',
         pattern: '/device/:device/network/:network/account/:account',
         fields: ['device', 'network', 'account'],

@@ -139,6 +139,7 @@ const getAccountNotification = (
     if (blockchain && !blockchain.connected) {
         return {
             type: 'backend',
+            variant: 'error',
             title: `${network.name} backend is not connected`,
             shouldRender: false,
         };
@@ -148,6 +149,7 @@ const getAccountNotification = (
     if (account && discovery && !discovery.completed && !discovery.waitingForDevice) {
         return {
             type: 'info',
+            variant: 'info',
             title: 'Loading other accounts...',
             shouldRender: true,
         };
@@ -157,6 +159,7 @@ const getAccountNotification = (
     if (!device.connected) {
         return {
             type: 'info',
+            variant: 'info',
             title: `Device ${device.instanceLabel} is disconnected`,
             shouldRender: true,
         };
@@ -167,6 +170,7 @@ const getAccountNotification = (
     if (!device.available) {
         return {
             type: 'info',
+            variant: 'info',
             title: `Device ${device.instanceLabel} is unavailable`,
             message: 'Change passphrase settings to use this device',
             shouldRender: true,

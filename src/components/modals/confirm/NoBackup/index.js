@@ -36,20 +36,6 @@ const BackupButton = styled(Button)`
     margin-bottom: 10px;
 `;
 
-const ProceedButton = styled(Button)`
-    background: transparent;
-    border-color: ${colors.WARNING_PRIMARY};
-    color: ${colors.WARNING_PRIMARY};
-
-    &:focus,
-    &:hover,
-    &:active {
-        color: ${colors.WHITE};
-        background: ${colors.WARNING_PRIMARY};
-        box-shadow: none;
-    }
-`;
-
 const StyledP = styled(P)`
     /* boost-specificity hack to override P base styling */
     && {
@@ -80,9 +66,9 @@ const Confirmation = (props: Props) => (
                     <FormattedMessage {...l10nCommonMessages.TR_CREATE_BACKUP_IN_3_MINUTES} />
                 </BackupButton>
             </Link>
-            <ProceedButton isWhite onClick={() => props.onReceiveConfirmation(true)}>
+            <Button isInverse variant="warning" onClick={() => props.onReceiveConfirmation(true)}>
                 <FormattedMessage {...l10nCommonMessages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK} />
-            </ProceedButton>
+            </Button>
         </Row>
     </Wrapper>
 );

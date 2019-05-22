@@ -1,5 +1,6 @@
 /* @flow */
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Link } from 'trezor-ui-components';
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
@@ -23,10 +24,10 @@ import type {
     TrezorDevice,
 } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormEthereumReducer';
+import l10nMessages from 'components/notifications/Context/actions.messages';
 import * as SessionStorageActions from '../SessionStorageActions';
 import { prepareEthereumTx, serializeEthereumTx } from '../TxActions';
 import * as BlockchainActions from './BlockchainActions';
-
 import * as ValidationActions from './SendFormValidationActions';
 
 // list of all actions which has influence on "sendFormEthereum" reducer
@@ -716,8 +717,8 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
-                title: 'Transaction error',
+                variant: 'error',
+                title: <FormattedMessage {...l10nMessages.TR_TRANSACTION_ERROR} />,
                 message: signedTransaction.payload.error,
                 cancelable: true,
                 actions: [],
@@ -806,11 +807,11 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'success',
-                title: 'Transaction success',
+                variant: 'success',
+                title: <FormattedMessage {...l10nMessages.TR_TRANSACTION_SUCCESS} />,
                 message: (
                     <Link href={`${network.explorer.tx}${txid}`} isGreen>
-                        See transaction detail
+                        <FormattedMessage {...l10nMessages.TR_SEE_TRANSACTION_DETAILS} />
                     </Link>
                 ),
                 cancelable: true,
@@ -818,11 +819,12 @@ export const onSend = (): AsyncAction => async (
             },
         });
     } catch (error) {
+        console.error(error);
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
-                title: 'Transaction error',
+                variant: 'error',
+                title: <FormattedMessage {...l10nMessages.TR_TRANSACTION_ERROR} />,
                 message: error.message || error,
                 cancelable: true,
                 actions: [],

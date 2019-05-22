@@ -1,3 +1,20 @@
+## next release
+
+__added__
+- Coin visibility settings
+- Almost complete russian, ukrainian and spanish localization
+- Auto reconnect to a backend after losing connection
+
+__changed__
+- static (without animation) active tab indicator
+- input validation - mandatory leading 0 for float numbers
+- regexps refactored to functions, added unit tests
+- limit passphrase length to 50 bytes
+
+__fixed__
+- react hot loader
+- minor l10n fixes
+
 ## 1.2.0-beta
 __added__
 - Localization
@@ -16,6 +33,8 @@ __changed__
 - Coins sorted by market cap
 - Link to "Bitcoin wallet" opens in the same tab
 - Most components are now from trezor-ui-components
+- Limit max number of accounts to 10
+- Debounced validation in send forms
 
 __removed__
 - Text "you will be redirected" from coins menu
@@ -27,6 +46,10 @@ __fixed__
 - Token select shows all tokens options
 - "Check for devices" button in device menu
 - Close xlm, xem modals when opening external wallet
+- Peding tx overflow
+- Update account empty flag after receiving tx
+- Width of inputs in xrp send form advanced settings
+- Ripple destination tag validation
 
 ## 1.1.1-beta
 __added__

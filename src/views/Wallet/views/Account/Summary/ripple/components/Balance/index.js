@@ -6,6 +6,7 @@ import { Icon, Tooltip, colors, icons as ICONS } from 'trezor-ui-components';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 import type { Network, State as ReducersState } from 'flowtype';
+import { toFiatCurrency } from 'utils/fiatConverter';
 import l10nMessages from '../../../components/Balance/index.messages';
 
 type Props = {
@@ -129,20 +130,18 @@ class AccountBalance extends PureComponent<Props, State> {
     render() {
         const { network, localCurrency } = this.props;
         const fiatRates = this.props.fiat.find(f => f.network === network.shortcut);
-        let accountBalance = '';
         let fiatRateValue = '';
         let fiat = '';
         if (fiatRates) {
-            accountBalance = new BigNumber(this.props.balance);
             fiatRateValue = new BigNumber(fiatRates.rates[localCurrency]).toFixed(2);
-            fiat = accountBalance.times(fiatRateValue).toFixed(2);
+            fiat = toFiatCurrency(this.props.balance, localCurrency, fiatRates);
         }
 
         const NoRatesTooltip = (
             <Tooltip
                 maxWidth={285}
                 placement="top"
-                content="Fiat rates are not currently available."
+                content={<FormattedMessage {...l10nMessages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
             >
                 <StyledIcon icon={ICONS.HELP} color={colors.TEXT_SECONDARY} size={12} />
             </Tooltip>

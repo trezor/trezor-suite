@@ -1,4 +1,6 @@
 /* @flow */
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import TrezorConnect from 'trezor-connect';
 import * as NOTIFICATION from 'actions/constants/notification';
 import * as SEND from 'actions/constants/send';
@@ -19,6 +21,7 @@ import type {
     TrezorDevice,
 } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormRippleReducer';
+import l10nMessages from 'components/notifications/Context/actions.messages';
 import * as SessionStorageActions from '../SessionStorageActions';
 
 import * as BlockchainActions from './BlockchainActions';
@@ -454,8 +457,8 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
-                title: 'Transaction error',
+                variant: 'error',
+                title: <FormattedMessage {...l10nMessages.TR_TRANSACTION_ERROR} />,
                 message: signedTransaction.payload.error,
                 cancelable: true,
                 actions: [],
@@ -473,8 +476,8 @@ export const onSend = (): AsyncAction => async (
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
-                title: 'Transaction error',
+                variant: 'error',
+                title: <FormattedMessage {...l10nMessages.TR_TRANSACTION_ERROR} />,
                 message: push.payload.error,
                 cancelable: true,
                 actions: [],
@@ -496,8 +499,8 @@ export const onSend = (): AsyncAction => async (
     dispatch({
         type: NOTIFICATION.ADD,
         payload: {
-            type: 'success',
-            title: 'Transaction success',
+            variant: 'success',
+            title: <FormattedMessage {...l10nMessages.TR_TRANSACTION_SUCCESS} />,
             message: txid,
             cancelable: true,
             actions: [],

@@ -1,9 +1,11 @@
 /* @flow */
 
 import { colors } from 'trezor-ui-components';
-
+import type { IntlShape } from 'react-intl';
 import type { Device } from 'trezor-connect';
 import type { TrezorDevice, State } from 'flowtype';
+
+import l10nMessages from 'components/DeviceHeader/index.messages';
 
 type Transport = $ElementType<$ElementType<State, 'connect'>, 'transport'>;
 
@@ -48,32 +50,32 @@ export const getStatus = (device: TrezorDevice): string => {
     return 'unknown';
 };
 
-export const getStatusName = (deviceStatus: string): string => {
+export const getStatusName = (deviceStatus: string, intl: IntlShape): string => {
     switch (deviceStatus) {
         case 'connected':
-            return 'Connected';
+            return intl.formatMessage(l10nMessages.TR_CONNECTED);
         case 'disconnected':
-            return 'Disconnected';
+            return intl.formatMessage(l10nMessages.TR_DISCONNECTED);
         case 'bootloader':
-            return 'Connected (bootloader mode)';
+            return intl.formatMessage(l10nMessages.TR_CONNECTED_BOOTLOADER);
         case 'initialize':
-            return 'Connected (not initialized)';
+            return intl.formatMessage(l10nMessages.TR_CONNECTED_NOT_INITIALIZED);
         case 'seedless':
-            return 'Connected (seedless mode)';
+            return intl.formatMessage(l10nMessages.TR_CONNECTED_SEEDLESS);
         case 'firmware-required':
-            return 'Connected (update required)';
+            return intl.formatMessage(l10nMessages.TR_CONNECTED_UPDATE_REQUIRED);
         case 'firmware-recommended':
-            return 'Connected (update recommended)';
+            return intl.formatMessage(l10nMessages.TR_CONNECTED_UPDATE_RECOMMENDED);
         case 'used-in-other-window':
-            return 'Used in other window';
+            return intl.formatMessage(l10nMessages.TR_USED_IN_ANOTHER_WINDOW);
         case 'unacquired':
-            return 'Used in other window';
+            return intl.formatMessage(l10nMessages.TR_USED_IN_ANOTHER_WINDOW);
         case 'unavailable':
-            return 'Unavailable';
+            return intl.formatMessage(l10nMessages.TR_UNAVAILABLE);
         case 'unreadable':
-            return 'Unreadable';
+            return intl.formatMessage(l10nMessages.TR_UNREADABLE);
         default:
-            return 'Status unknown';
+            return intl.formatMessage(l10nMessages.TR_STATUS_UNKNOWN);
     }
 };
 

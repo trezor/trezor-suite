@@ -1,6 +1,8 @@
 /* @flow */
-
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import TrezorConnect, { UI } from 'trezor-connect';
+import * as BLOCKCHAIN_ACTION from 'actions/constants/blockchain';
 import * as DISCOVERY from 'actions/constants/discovery';
 import * as ACCOUNT from 'actions/constants/account';
 import * as NOTIFICATION from 'actions/constants/notification';
@@ -16,6 +18,8 @@ import type {
     Account,
 } from 'flowtype';
 import type { Discovery, State } from 'reducers/DiscoveryReducer';
+import l10nMessages from 'components/notifications/Context/actions.messages';
+import l10nCommonMessages from 'views/common.messages';
 import * as BlockchainActions from './BlockchainActions';
 import * as EthereumDiscoveryActions from './ethereum/DiscoveryActions';
 import * as RippleDiscoveryActions from './ripple/DiscoveryActions';
@@ -171,16 +175,17 @@ const begin = (device: TrezorDevice, networkName: string): AsyncAction => async 
                 throw new Error(`DiscoveryActions.begin: Unknown network type: ${network.type}`);
         }
     } catch (error) {
+        console.error(error);
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
-                title: 'Discovery error',
+                variant: 'error',
+                title: <FormattedMessage {...l10nMessages.TR_ACCOUNT_DISCOVERY_ERROR} />,
                 message: error.message,
                 cancelable: true,
                 actions: [
                     {
-                        label: 'Try again',
+                        label: <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />,
                         callback: () => {
                             dispatch(start(device, networkName));
                         },
@@ -254,6 +259,7 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
             return;
         }
 
+        console.error(error);
         dispatch({
             type: DISCOVERY.STOP,
             device,
@@ -262,13 +268,13 @@ const discoverAccount = (device: TrezorDevice, discoveryProcess: Discovery): Asy
         dispatch({
             type: NOTIFICATION.ADD,
             payload: {
-                type: 'error',
-                title: 'Account discovery error',
+                variant: 'error',
+                title: <FormattedMessage {...l10nMessages.TR_ACCOUNT_DISCOVERY_ERROR} />,
                 message: error.message,
                 cancelable: true,
                 actions: [
                     {
-                        label: 'Try again',
+                        label: <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />,
                         callback: () => {
                             dispatch(start(device, discoveryProcess.network));
                         },
@@ -325,11 +331,27 @@ const finish = (device: TrezorDevice, discoveryProcess: Discovery): AsyncAction 
     });
 };
 
-export const reconnect = (network: string): PromiseAction<void> => async (
+export const reconnect = (network: string, timeout: number = 30): PromiseAction<void> => async (
     dispatch: Dispatch
 ): Promise<void> => {
-    await dispatch(BlockchainActions.subscribe(network));
-    dispatch(restore());
+    // Runs two promises.
+    // First promise is a subscribe action which will never resolve in case of completely lost connection to the backend
+    // That's why there is a second promise that rejects after the specified timeout.
+    return Promise.race([
+        dispatch(BlockchainActions.subscribe(network)),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout)),
+    ])
+        .catch(() => {
+            // catch error from first promises that rejects (most likely timeout)
+            dispatch({
+                type: BLOCKCHAIN_ACTION.FAIL_SUBSCRIBE,
+                shortcut: network,
+            });
+        })
+        .then(() => {
+            // dispatch restore when subscribe promise resolves
+            dispatch(restore());
+        });
 };
 
 // Called after DEVICE.CONNECT ('trezor-connect') or CONNECT.AUTH_DEVICE actions in WalletService

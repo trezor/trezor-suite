@@ -1,6 +1,6 @@
 /* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype/npm/react-intl';
+import type { Messages } from 'flowtype';
 
 const definedMessages: Messages = defineMessages({
     TR_SELECT_WALLET_TYPE_FOR: {
@@ -9,7 +9,7 @@ const definedMessages: Messages = defineMessages({
     },
     TR_CHANGE_WALLET_TYPE_FOR: {
         id: 'TR_CHANGE_WALLET_TYPE_FOR',
-        defaultMessage: 'Select wallet type for {deviceLabel}',
+        defaultMessage: 'Change wallet type for {deviceLabel}',
     },
     TR_STANDARD_WALLET: {
         id: 'TR_STANDARD_WALLET',

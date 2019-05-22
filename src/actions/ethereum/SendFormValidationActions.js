@@ -7,25 +7,12 @@ import { findDevice, getPendingAmount, findToken } from 'reducers/utils';
 import { toFiatCurrency } from 'utils/fiatConverter';
 import * as SEND from 'actions/constants/send';
 import * as ethUtils from 'utils/ethUtils';
+import * as validators from 'utils/validators';
 
 import type { Dispatch, GetState, PayloadAction } from 'flowtype';
 import type { State, FeeLevel } from 'reducers/SendFormEthereumReducer';
-
-// general regular expressions
-const NUMBER_RE: RegExp = new RegExp('^(0|0\\.([0-9]+)?|[1-9][0-9]*\\.?([0-9]+)?|\\.[0-9]+)$');
-const UPPERCASE_RE = new RegExp('^(.*[A-Z].*)$');
-const ABS_RE = new RegExp('^[0-9]+$');
-const ETH_18_RE = new RegExp(
-    '^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$'
-);
-const dynamicRegexp = (decimals: number): RegExp => {
-    if (decimals > 0) {
-        return new RegExp(
-            `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?|\\.[0-9]{1,${decimals}})$`
-        );
-    }
-    return ABS_RE;
-};
+import l10nMessages from 'views/Wallet/views/Account/Send/validation.messages';
+import l10nCommonMessages from 'views/common.messages';
 
 /*
  * Called from SendFormActions.observe
@@ -165,11 +152,14 @@ export const addressValidation = ($state: State): PayloadAction<State> => (): St
     const { address } = state;
 
     if (address.length < 1) {
-        state.errors.address = 'Address is not set';
+        state.errors.address = l10nMessages.TR_ADDRESS_IS_NOT_SET;
     } else if (!EthereumjsUtil.isValidAddress(address)) {
-        state.errors.address = 'Address is not valid';
-    } else if (address.match(UPPERCASE_RE) && !EthereumjsUtil.isValidChecksumAddress(address)) {
-        state.errors.address = 'Address is not a valid checksum';
+        state.errors.address = l10nMessages.TR_ADDRESS_IS_NOT_VALID;
+    } else if (
+        validators.hasUppercase(address) &&
+        !EthereumjsUtil.isValidChecksumAddress(address)
+    ) {
+        state.errors.address = l10nMessages.TR_ADDRESS_CHECKSUM_IS_NOT_VALID;
     }
     return state;
 };
@@ -201,9 +191,13 @@ export const addressLabel = ($state: State): PayloadAction<State> => (
                 currentNetworkAccount.deviceState
             );
             if (device) {
-                state.infos.address = `${
-                    device.instanceLabel
-                } Account #${currentNetworkAccount.index + 1}`;
+                state.infos.address = {
+                    ...l10nCommonMessages.TR_DEVICE_LABEL_ACCOUNT_HASH,
+                    values: {
+                        deviceLabel: device.instanceLabel,
+                        number: currentNetworkAccount.index + 1,
+                    },
+                };
             }
         } else {
             // corner-case: the same derivation path is used on different networks
@@ -216,11 +210,14 @@ export const addressLabel = ($state: State): PayloadAction<State> => (
             const { networks } = getState().localStorage.config;
             const otherNetwork = networks.find(c => c.shortcut === otherNetworkAccount.network);
             if (device && otherNetwork) {
-                state.warnings.address = `Looks like it's ${
-                    device.instanceLabel
-                } Account #${otherNetworkAccount.index + 1} address of ${
-                    otherNetwork.name
-                } network`;
+                state.warnings.address = {
+                    ...l10nCommonMessages.TR_LOOKS_LIKE_IT_IS_DEVICE_LABEL,
+                    values: {
+                        deviceLabel: device.instanceLabel,
+                        number: otherNetworkAccount.index + 1,
+                        network: otherNetwork.name,
+                    },
+                };
             }
         }
     }
@@ -243,9 +240,9 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
 
     const { amount } = state;
     if (amount.length < 1) {
-        state.errors.amount = 'Amount is not set';
-    } else if (amount.length > 0 && !amount.match(NUMBER_RE)) {
-        state.errors.amount = 'Amount is not a number';
+        state.errors.amount = l10nMessages.TR_AMOUNT_IS_NOT_SET;
+    } else if (amount.length > 0 && !validators.isNumber(amount)) {
+        state.errors.amount = l10nMessages.TR_AMOUNT_IS_NOT_A_NUMBER;
     } else {
         const isToken: boolean = state.currency !== state.networkSymbol;
         const pendingAmount: BigNumber = getPendingAmount(pending, state.currency, isToken);
@@ -258,29 +255,42 @@ export const amountValidation = ($state: State): PayloadAction<State> => (
                 account.deviceState
             );
             if (!token) return state;
-            const decimalRegExp = dynamicRegexp(parseInt(token.decimals, 0));
 
-            if (!state.amount.match(decimalRegExp)) {
-                state.errors.amount = `Maximum ${token.decimals} decimals allowed`;
+            if (!validators.hasDecimals(state.amount, parseInt(token.decimals, 0))) {
+                state.errors.amount = {
+                    ...l10nMessages.TR_MAXIMUM_DECIMALS_ALLOWED,
+                    values: { decimals: token.decimals },
+                };
             } else if (new BigNumber(state.total).isGreaterThan(account.balance)) {
-                state.errors.amount = `Not enough ${state.networkSymbol} to cover transaction fee`;
+                state.errors.amount = {
+                    ...l10nMessages.TR_NOT_ENOUGH_FUNDS_TO_COVER_TRANSACTION,
+                    values: {
+                        networkSymbol: state.networkSymbol,
+                    },
+                };
             } else if (
                 new BigNumber(state.amount).isGreaterThan(
                     new BigNumber(token.balance).minus(pendingAmount)
                 )
             ) {
-                state.errors.amount = 'Not enough funds';
+                state.errors.amount = l10nMessages.TR_NOT_ENOUGH_FUNDS;
             } else if (new BigNumber(state.amount).isLessThanOrEqualTo('0')) {
-                state.errors.amount = 'Amount is too low';
+                // TODO: this is never gonna happen! It will fail in second if condiftion (isNumber validation)
+                state.errors.amount = l10nMessages.TR_AMOUNT_IS_TOO_LOW;
             }
-        } else if (!state.amount.match(ETH_18_RE)) {
-            state.errors.amount = 'Maximum 18 decimals allowed';
+        } else if (!validators.hasDecimals(state.amount, 18)) {
+            state.errors.amount = {
+                ...l10nMessages.TR_MAXIMUM_DECIMALS_ALLOWED,
+                values: {
+                    decimals: 18,
+                },
+            };
         } else if (
             new BigNumber(state.total).isGreaterThan(
                 new BigNumber(account.balance).minus(pendingAmount)
             )
         ) {
-            state.errors.amount = 'Not enough funds';
+            state.errors.amount = l10nMessages.TR_NOT_ENOUGH_FUNDS;
         }
     }
     return state;
@@ -301,13 +311,13 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
 
     const { gasLimit } = state;
     if (gasLimit.length < 1) {
-        state.errors.gasLimit = 'Gas limit is not set';
-    } else if (gasLimit.length > 0 && !gasLimit.match(NUMBER_RE)) {
-        state.errors.gasLimit = 'Gas limit is not a number';
+        state.errors.gasLimit = l10nMessages.TR_GAS_LIMIT_IS_NOT_SET;
+    } else if (gasLimit.length > 0 && !validators.isNumber(gasLimit)) {
+        state.errors.gasLimit = l10nMessages.TR_GAS_LIMIT_IS_NOT_A_NUMBER;
     } else {
         const gl: BigNumber = new BigNumber(gasLimit);
         if (gl.isLessThan(1)) {
-            state.errors.gasLimit = 'Gas limit is too low';
+            state.errors.gasLimit = l10nMessages.TR_GAS_LIMIT_IS_TOO_LOW;
         } else if (
             gl.isLessThan(
                 state.currency !== state.networkSymbol
@@ -315,7 +325,7 @@ export const gasLimitValidation = ($state: State): PayloadAction<State> => (
                     : network.defaultGasLimit
             )
         ) {
-            state.warnings.gasLimit = 'Gas limit is below recommended';
+            state.warnings.gasLimit = l10nMessages.TR_GAS_LIMIT_IS_BELOW_RECOMMENDED;
         }
     }
     return state;
@@ -330,15 +340,15 @@ export const gasPriceValidation = ($state: State): PayloadAction<State> => (): S
 
     const { gasPrice } = state;
     if (gasPrice.length < 1) {
-        state.errors.gasPrice = 'Gas price is not set';
-    } else if (gasPrice.length > 0 && !gasPrice.match(NUMBER_RE)) {
-        state.errors.gasPrice = 'Gas price is not a number';
+        state.errors.gasPrice = l10nMessages.TR_GAS_PRICE_IS_NOT_SET;
+    } else if (gasPrice.length > 0 && !validators.isNumber(gasPrice)) {
+        state.errors.gasPrice = l10nMessages.TR_GAS_PRICE_IS_NOT_A_NUMBER;
     } else {
         const gp: BigNumber = new BigNumber(gasPrice);
         if (gp.isGreaterThan(1000)) {
-            state.warnings.gasPrice = 'Gas price is too high';
+            state.warnings.gasPrice = l10nMessages.TR_GAS_PRICE_IS_TOO_HIGH;
         } else if (gp.isLessThanOrEqualTo('0')) {
-            state.errors.gasPrice = 'Gas price is too low';
+            state.errors.gasPrice = l10nMessages.TR_GAS_PRICE_IS_TOO_LOW;
         }
     }
     return state;
@@ -359,28 +369,29 @@ export const nonceValidation = ($state: State): PayloadAction<State> => (
 
     const { nonce } = state;
     if (nonce.length < 1) {
-        state.errors.nonce = 'Nonce is not set';
-    } else if (!nonce.match(ABS_RE)) {
-        state.errors.nonce = 'Nonce is not a valid number';
+        state.errors.nonce = l10nMessages.TR_NONCE_IS_NOT_SET;
+    } else if (!validators.isAbs(nonce)) {
+        state.errors.nonce = l10nMessages.TR_NONCE_IS_NOT_A_NUMBER;
     } else {
         const n: BigNumber = new BigNumber(nonce);
         if (n.isLessThan(account.nonce)) {
-            state.warnings.nonce = 'Nonce is lower than recommended';
+            state.warnings.nonce = l10nMessages.TR_NONCE_IS_LOWER_THAN_RECOMMENDED;
         } else if (n.isGreaterThan(account.nonce)) {
-            state.warnings.nonce = 'Nonce is greater than recommended';
+            state.warnings.nonce = l10nMessages.TR_NONCE_IS_GREATER_THAN_RECOMMENDED;
         }
     }
     return state;
 };
 
 /*
- * Gas price value validation
+ * Data validation
  */
 export const dataValidation = ($state: State): PayloadAction<State> => (): State => {
     const state = { ...$state };
     if (!state.touched.data || state.data.length === 0) return state;
+
     if (!ethUtils.isHex(state.data)) {
-        state.errors.data = 'Data is not valid hexadecimal';
+        state.errors.data = l10nMessages.TR_DATA_IS_NOT_VALID_HEX;
     }
     return state;
 };
@@ -397,6 +408,7 @@ export const calculateFee = (gasPrice: string, gasLimit: string): string => {
             'ether'
         );
     } catch (error) {
+        console.error(error);
         return '0';
     }
 };
@@ -410,6 +422,7 @@ export const calculateTotal = (amount: string, gasPrice: string, gasLimit: strin
         }
         return bAmount.plus(calculateFee(gasPrice, gasLimit)).toFixed();
     } catch (error) {
+        console.error(error);
         return '0';
     }
 };
@@ -426,6 +439,7 @@ export const calculateMaxAmount = (
         if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {
+        console.error(error);
         return '0';
     }
 };
@@ -445,12 +459,13 @@ export const getFeeLevels = (
         selected && selected.value === 'Custom'
             ? {
                   value: 'Custom',
+                  localizedValue: l10nCommonMessages.TR_CUSTOM_FEE,
                   gasPrice: selected.gasPrice,
-                  // label: `${ calculateFee(gasPrice, gasLimit) } ${ symbol }`
                   label: `${calculateFee(selected.gasPrice, gasLimit)} ${symbol}`,
               }
             : {
                   value: 'Custom',
+                  localizedValue: l10nCommonMessages.TR_CUSTOM_FEE,
                   gasPrice: low,
                   label: '',
               };
@@ -458,16 +473,19 @@ export const getFeeLevels = (
     return [
         {
             value: 'High',
+            localizedValue: l10nCommonMessages.TR_HIGH_FEE,
             gasPrice: high,
             label: `${calculateFee(high, gasLimit)} ${symbol}`,
         },
         {
             value: 'Normal',
+            localizedValue: l10nCommonMessages.TR_NORMAL_FEE,
             gasPrice: gasPrice.toString(),
             label: `${calculateFee(price.toFixed(), gasLimit)} ${symbol}`,
         },
         {
             value: 'Low',
+            localizedValue: l10nCommonMessages.TR_LOW_FEE,
             gasPrice: low,
             label: `${calculateFee(low, gasLimit)} ${symbol}`,
         },

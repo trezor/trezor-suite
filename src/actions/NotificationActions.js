@@ -2,15 +2,22 @@
 import * as React from 'react';
 import * as NOTIFICATION from 'actions/constants/notification';
 
-import type { Action, AsyncAction, GetState, Dispatch, RouterLocationState } from 'flowtype';
+import type {
+    Action,
+    AsyncAction,
+    GetState,
+    Dispatch,
+    RouterLocationState,
+    MessageDescriptor,
+} from 'flowtype';
 import type { CallbackAction } from 'reducers/NotificationReducer';
 
 export type NotificationAction =
     | {
           type: typeof NOTIFICATION.ADD,
           payload: {
-              +type: string,
-              +title: React.Node | string,
+              +variant: string,
+              +title: React.Node | MessageDescriptor | string,
               +message?: ?(React.Node | string),
               +cancelable: boolean,
               actions?: Array<CallbackAction>,

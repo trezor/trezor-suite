@@ -11,13 +11,13 @@ describe('notification utils', () => {
         expect(utils.getPrimaryColor('')).toBe(null);
     });
 
-    it('get secondary color from status', () => {
-        expect(utils.getSecondaryColor('info')).toBe(colors.INFO_SECONDARY);
-        expect(utils.getSecondaryColor('warning')).toBe(colors.WARNING_SECONDARY);
-        expect(utils.getSecondaryColor('error')).toBe(colors.ERROR_SECONDARY);
-        expect(utils.getSecondaryColor('success')).toBe(colors.SUCCESS_SECONDARY);
-        expect(utils.getSecondaryColor('kdsjflds')).toBe(null);
-        expect(utils.getSecondaryColor('')).toBe(null);
+    it('get notification bg color from status', () => {
+        expect(utils.getNotificationBgColor('info')).toBe(colors.INFO_LIGHT);
+        expect(utils.getNotificationBgColor('warning')).toBe(colors.WARNING_LIGHT);
+        expect(utils.getNotificationBgColor('error')).toBe(colors.ERROR_LIGHT);
+        expect(utils.getNotificationBgColor('success')).toBe(colors.SUCCESS_LIGHT);
+        expect(utils.getNotificationBgColor('kdsjflds')).toBe(null);
+        expect(utils.getNotificationBgColor('')).toBe(null);
     });
 
     it('get icon according to status', () => {

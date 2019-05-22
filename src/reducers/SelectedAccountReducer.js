@@ -10,7 +10,7 @@ export type Loader = {
 };
 
 export type Notification = {
-    type: string,
+    variant: string,
     title: string,
     message?: string,
 };

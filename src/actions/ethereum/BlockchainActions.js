@@ -61,6 +61,7 @@ export const getGasPrice = (
         const gasPrice = await dispatch(Web3Actions.getCurrentGasPrice(network));
         return gasPrice === '0' ? new BigNumber(defaultGasPrice) : new BigNumber(gasPrice);
     } catch (error) {
+        console.error(error);
         return new BigNumber(defaultGasPrice);
     }
 };
@@ -141,6 +142,9 @@ export const onBlockMined = (network: string): PromiseAction<void> => async (
                     dispatch(Web3Actions.updateAccount(accounts[i], a, network));
                 } else {
                     // there are no new txs, just update block
+                    // TODO: There still could be internal transactions as a result of contract
+                    // If that's the case, account balance won't be updated
+                    // Currently waiting for deprecating web3 and utilising new blockbook
                     dispatch(AccountsActions.update({ ...accounts[i], block: a.block }));
 
                     // HACK: since blockbook can't work with smart contracts for now

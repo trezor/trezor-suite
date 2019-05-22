@@ -1,6 +1,6 @@
 /* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype/npm/react-intl';
+import type { Messages } from 'flowtype';
 
 const definedMessages: Messages = defineMessages({
     TR_ENTER_DEVICE_PASSPHRASE: {
@@ -23,6 +23,10 @@ const definedMessages: Messages = defineMessages({
     TR_PASSPHRASES_DO_NOT_MATCH: {
         id: 'TR_PASSPHRASES_DO_NOT_MATCH',
         defaultMessage: 'Passphrases do not match!',
+    },
+    TR_PASSPHRASE_IS_TOO_LONG: {
+        id: 'TR_PASSPHRASE_IS_TOO_LONG',
+        defaultMessage: 'Passphrase is too long!',
     },
     TR_SHOW_PASSPHRASE: {
         id: 'TR_SHOW_PASSPHRASE',

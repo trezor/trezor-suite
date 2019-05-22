@@ -48,6 +48,30 @@ const onStartSubscribe = (state: State, shortcut: string): State => {
     ]);
 };
 
+const onFailSubscribe = (state: State, shortcut: string): State => {
+    const network = state.find(b => b.shortcut === shortcut);
+    if (network) {
+        const others = state.filter(b => b !== network);
+        return others.concat([
+            {
+                ...network,
+                connecting: false,
+            },
+        ]);
+    }
+
+    return state.concat([
+        {
+            shortcut,
+            connected: false,
+            connecting: false,
+            block: 0,
+            feeTimestamp: 0,
+            feeLevels: [],
+        },
+    ]);
+};
+
 const onConnect = (state: State, action: BlockchainConnect): State => {
     const shortcut = action.payload.coin.shortcut.toLowerCase();
     const network = state.find(b => b.shortcut === shortcut);
@@ -136,6 +160,8 @@ export default (state: State = initialState, action: Action): State => {
     switch (action.type) {
         case BLOCKCHAIN_ACTION.START_SUBSCRIBE:
             return onStartSubscribe(state, action.shortcut);
+        case BLOCKCHAIN_ACTION.FAIL_SUBSCRIBE:
+            return onFailSubscribe(state, action.shortcut);
         case BLOCKCHAIN_EVENT.CONNECT:
             return onConnect(state, action);
         case BLOCKCHAIN_EVENT.ERROR:

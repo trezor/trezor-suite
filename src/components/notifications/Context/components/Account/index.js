@@ -16,7 +16,7 @@ export default (props: Props) => {
         // TODO: this is a different component with "auto resolve" button
         return (
             <Notification
-                type="error"
+                variant="error"
                 title={notification.title}
                 message={notification.message}
                 isActionInProgress={blockchain && blockchain.connecting}
@@ -33,7 +33,7 @@ export default (props: Props) => {
     }
     return (
         <Notification
-            type={notification.type}
+            variant={notification.variant}
             title={notification.title}
             message={notification.message}
         />

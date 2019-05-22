@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 class NotificationsGroup extends PureComponent {
     groupNotifications = notifications =>
         notifications.reduce((acc, obj) => {
-            const key = obj.type;
+            const key = obj.variant;
             if (!acc[key]) {
                 acc[key] = [];
             }
@@ -20,6 +20,7 @@ class NotificationsGroup extends PureComponent {
         }, {});
 
     sortByPriority(notifications) {
+        //TODO
         return notifications;
     }
 
@@ -29,48 +30,49 @@ class NotificationsGroup extends PureComponent {
         //     {
         //         key: 1,
         //         title: 'this is a title of error notification',
-        //         type: 'error',
+        //         variant: 'error',
         //         message: 'this is a message of error notification',
         //     },
         //     {
         //         key: 2,
         //         title: 'this is a title of warning notification',
-        //         type: 'warning',
+        //         variant: 'warning',
         //         message: 'this is a message of warning notification',
         //     },
         //     {
         //         key: 3,
         //         title: 'this is a title of warning notification',
-        //         type: 'warning',
+        //         variant: 'warning',
         //         message: 'this is a message of warning notification',
         //     },
         //     {
         //         key: 4,
         //         title: 'this is a title of warning notification sds d',
-        //         type: 'warning',
+        //         variant: 'warning',
         //         message: 'this is a message of warning notification',
         //     },
         //     {
         //         key: 5,
         //         title: 'this is a title of warning notification as',
-        //         type: 'success',
+        //         variant: 'success',
         //     },
         //     {
         //         key: 6,
         //         title: 'this is a title of warning notification as',
-        //         type: 'info',
+        //         variant: 'info',
         //         message: 'this is a message of warning notification',
         //     },
         //     {
         //         key: 7,
         //         title: 'this is a title of info notification s ',
-        //         type: 'info',
+        //         variant: 'info',
         //         message: 'this is a message of info notification',
-        //         actions:
-        //             [{
+        //         actions: [
+        //             {
         //                 label: 'Update',
         //                 callback: 'props.routerActions.gotoBridgeUpdate',
-        //             }],
+        //             },
+        //         ],
         //     },
         // ];
         const notificationGroups = this.groupNotifications(notifications);
@@ -82,7 +84,7 @@ class NotificationsGroup extends PureComponent {
                     <Group
                         key={group}
                         groupNotifications={notificationGroups[group]}
-                        type={group}
+                        variant={group}
                         close={close}
                     />
                 ))}

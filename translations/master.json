@@ -1,4 +1,103 @@
 {
+  "TR_CONNECTED": {
+    "source": "Connected",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONNECTED_BOOTLOADER": {
+    "source": "Connected (bootloader mode)",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONNECTED_NOT_INITIALIZED": {
+    "source": "Connected (not initialized)",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONNECTED_SEEDLESS": {
+    "source": "Connected (seedless mode)",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONNECTED_UPDATE_REQUIRED": {
+    "source": "Connected (update required)",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_CONNECTED_UPDATE_RECOMMENDED": {
+    "source": "Connected (update recommended)",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_USED_IN_ANOTHER_WINDOW": {
+    "source": "Used in other window",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_UNAVAILABLE": {
+    "source": "Unavailable",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_UNREADABLE": {
+    "source": "Unreadable",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_DISCONNECTED": {
+    "source": "Disconnected",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
+  "TR_STATUS_UNKNOWN": {
+    "source": "Status unknown",
+    "meta": {
+      "comment": "Device status",
+      "occurrences": [
+        "src/components/DeviceHeader/index.messages.js"
+      ]
+    }
+  },
   "TR_TERMS": {
     "source": "Terms",
     "meta": {
@@ -243,15 +342,6 @@
       ]
     }
   },
-  "TR_TRY_AGAIN": {
-    "source": "Try again",
-    "meta": {
-      "comment": "Try to verify the address again",
-      "occurrences": [
-        "src/components/modals/confirm/UnverifiedAddress/index.messages.js"
-      ]
-    }
-  },
   "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": {
     "source": "To prevent phishing attacks, you should verify the address on your Trezor first. {claim}",
     "meta": {
@@ -310,7 +400,7 @@
     }
   },
   "TR_CHANGE_WALLET_TYPE_FOR": {
-    "source": "Select wallet type for {deviceLabel}",
+    "source": "Change wallet type for {deviceLabel}",
     "meta": {
       "occurrences": [
         "src/components/modals/device/WalletType/index.messages.js"
@@ -463,6 +553,14 @@
   },
   "TR_PASSPHRASES_DO_NOT_MATCH": {
     "source": "Passphrases do not match!",
+    "meta": {
+      "occurrences": [
+        "src/components/modals/passphrase/Passphrase/index.messages.js"
+      ]
+    }
+  },
+  "TR_PASSPHRASE_IS_TOO_LONG": {
+    "source": "Passphrase is too long!",
     "meta": {
       "occurrences": [
         "src/components/modals/passphrase/Passphrase/index.messages.js"
@@ -632,6 +730,96 @@
       ]
     }
   },
+  "TR_ACQUIRE_DEVICE_ERROR": {
+    "source": "Acquire device error",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_AUTHENTICATION_ERROR": {
+    "source": "Authentication error",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_ACCOUNT_DISCOVERY_ERROR": {
+    "source": "Account discovery error",
+    "meta": {
+      "comment": "Error during account discovery",
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_TRANSACTION_ERROR": {
+    "source": "Transaction error",
+    "meta": {
+      "comment": "Error during signing a transaction",
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_TRANSACTION_SUCCESS": {
+    "source": "Transaction has been sent successfully",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_SEE_TRANSACTION_DETAILS": {
+    "source": "See transaction details",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_VERIFYING_ADDRESS_ERROR": {
+    "source": "Verifying address error",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_SIGN_MESSAGE_ERROR": {
+    "source": "Failed to sign message",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_VERIFY_MESSAGE_ERROR": {
+    "source": "Failed to verify message",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_VERIFY_MESSAGE_SUCCESS": {
+    "source": "Message has been successfully verified",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
+  "TR_SIGNATURE_IS_VALID": {
+    "source": "Signature is valid",
+    "meta": {
+      "occurrences": [
+        "src/components/notifications/Context/actions.messages.js"
+      ]
+    }
+  },
   "TR_CONNECT_TO_BACKEND": {
     "source": "Connect",
     "meta": {
@@ -676,6 +864,33 @@
     "source": "Account #{number}",
     "meta": {
       "comment": "Used in auto-generated account label",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_DEVICE_LABEL_ACCOUNT_HASH": {
+    "source": "{deviceLabel} Account #{number}",
+    "meta": {
+      "comment": "Used in auto-generated account label",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_LOOKS_LIKE_IT_IS_DEVICE_LABEL": {
+    "source": "Looks like it is {deviceLabel} Account #{number} address of {network} network",
+    "meta": {
+      "comment": "Example: Looks like it is My Trezor Account #1 address of ETH network",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_IMPORTED_ACCOUNT_HASH": {
+    "source": "Imported account #{number}",
+    "meta": {
+      "comment": "Used in auto-generated label for imported accounts",
       "occurrences": [
         "src/views/common.messages.js"
       ]
@@ -830,6 +1045,51 @@
   "TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK": {
     "source": "Show address, I will take the risk",
     "meta": {
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_HIGH_FEE": {
+    "source": "High",
+    "meta": {
+      "comment": "fee level",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_NORMAL_FEE": {
+    "source": "Normal",
+    "meta": {
+      "comment": "fee level",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_LOW_FEE": {
+    "source": "Low",
+    "meta": {
+      "comment": "fee level",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_CUSTOM_FEE": {
+    "source": "Custom",
+    "meta": {
+      "comment": "fee level",
+      "occurrences": [
+        "src/views/common.messages.js"
+      ]
+    }
+  },
+  "TR_TRY_AGAIN": {
+    "source": "Try again",
+    "meta": {
+      "comment": "Try to run the proccess again",
       "occurrences": [
         "src/views/common.messages.js"
       ]
@@ -1093,8 +1353,33 @@
       ]
     }
   },
+  "TR_YOU_CANNOT_ADD_MORE_THAN_10_ACCOUNTS": {
+    "source": "You cannot add more than 10 accounts",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/AccountMenu/index.messages.js"
+      ]
+    }
+  },
   "TR_OTHER_COINS": {
     "source": "Other coins",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_SELECT_COINS": {
+    "source": "Select a coin in {TR_SELECT_COINS_LINK}",
+    "meta": {
+      "comment": "COMPLETE SENTENCE: Select a coin in application settings",
+      "occurrences": [
+        "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
+      ]
+    }
+  },
+  "TR_SELECT_COINS_LINK": {
+    "source": "application settings",
     "meta": {
       "occurrences": [
         "src/views/Wallet/components/LeftNavigation/components/CoinMenu/index.messages.js"
@@ -1177,6 +1462,7 @@
   "TR_NAV_SUMMARY": {
     "source": "Summary",
     "meta": {
+      "comment": "Title of the navigation tab that contains information about selected account (balance, tx history).",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1185,6 +1471,7 @@
   "TR_NAV_RECEIVE": {
     "source": "Receive",
     "meta": {
+      "comment": "Title of the navigation tab that contains the account address",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1193,6 +1480,7 @@
   "TR_NAV_SEND": {
     "source": "Send",
     "meta": {
+      "comment": "Title of the navigation tab that contains a form for sending funds",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1201,6 +1489,7 @@
   "TR_NAV_SIGN_AND_VERIFY": {
     "source": "Sign & Verify",
     "meta": {
+      "comment": "Title of the navigation tab that contains a form for signing and verifying messages",
       "occurrences": [
         "src/views/Wallet/components/TopNavigationAccount/index.messages.js"
       ]
@@ -1500,6 +1789,254 @@
       ]
     }
   },
+  "TR_AMOUNT_IS_NOT_SET": {
+    "source": "Amount is not set",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_AMOUNT_IS_NOT_A_NUMBER": {
+    "source": "Amount is not a number",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_MAXIMUM_DECIMALS_ALLOWED:": {
+    "source": "Maximum {decimals} decimals allowed",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_NOT_ENOUGH_FUNDS_TO_COVER_TRANSACTION": {
+    "source": "Not enough {networkSymbol} to cover transaction fee",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_NOT_ENOUGH_FUNDS": {
+    "source": "Not enough funds",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_AMOUNT_IS_TOO_LOW": {
+    "source": "Amount is too low",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_ADDRESS_IS_NOT_SET": {
+    "source": "Address is not set",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_ADDRESS_IS_NOT_VALID": {
+    "source": "Address is not valid",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_ADDRESS_CHECKSUM_IS_NOT_VALID": {
+    "source": "Address checksum is not valid",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_LIMIT_IS_NOT_SET": {
+    "source": "Gas limit is not set",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_LIMIT_IS_NOT_A_NUMBER": {
+    "source": "Gas limit is not a number",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_LIMIT_IS_TOO_LOW": {
+    "source": "Gas limit is too low",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_LIMIT_IS_BELOW_RECOMMENDED": {
+    "source": "Gas limit is below recommended",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_PRICE_IS_NOT_A_NUMBER": {
+    "source": "Gas price is not a number",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_PRICE_IS_NOT_SET": {
+    "source": "Gas price is not set",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_PRICE_IS_TOO_LOW": {
+    "source": "Gas price is too low",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_GAS_PRICE_IS_TOO_HIGH": {
+    "source": "Gas price is too high",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_NONCE_IS_NOT_A_NUMBER": {
+    "source": "Nonce is not a valid number",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_NONCE_IS_NOT_SET": {
+    "source": "Nonce is not set",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_NONCE_IS_GREATER_THAN_RECOMMENDED": {
+    "source": "Nonce is greater than recommended",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_NONCE_IS_LOWER_THAN_RECOMMENDED": {
+    "source": "Nonce is lower than recommended",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_DATA_IS_NOT_VALID_HEX": {
+    "source": "Data is not valid hexadecimal",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_CANNOT_SEND_TO_MYSELF": {
+    "source": "Cannot send to myself",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_NOT_ENOUGH_FUNDS_RESERVED_AMOUNT": {
+    "source": "Not enough funds. Reserved amount for this account is {reservedAmount} {networkSymbol}",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_AMOUNT_IS_TOO_LOW_MINIMUM_AMOUNT_FOR_CREATING": {
+    "source": "Amount is too low. Minimum amount for creating a new account is {minimalAmount} {networkSymbol}",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_FEE_IS_NOT_SET": {
+    "source": "Fee is not set",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_FEE_MUST_ME_AN_ABSOLUT_NUMBER": {
+    "source": "Fee must be an absolute number",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_FEE_IS_BELOW_RECOMMENDED": {
+    "source": "Fee is below recommended",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_FEE_IS_ABOVE_RECOMMENDED": {
+    "source": "Fee is above recommended",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_DESTINATION_TAG_MUST_BE_AN_ABSOLUTE": {
+    "source": "Destination tag must be an absolute number",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
+  "TR_DESTINATION_TAG_IS_NOT_VALID": {
+    "source": "Destination tag is not valid",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/Account/Send/validation.messages.js"
+      ]
+    }
+  },
   "TR_MESSAGE": {
     "source": "Message",
     "meta": {
@@ -1594,8 +2131,8 @@
       ]
     }
   },
-  "TR_ALREADY_USED": {
-    "source": "Already used",
+  "TR_ALREADY_ADDED": {
+    "source": "Already added",
     "meta": {
       "occurrences": [
         "src/views/Wallet/views/Account/Summary/common.messages.js"
@@ -1809,6 +2346,30 @@
   },
   "TR_THE_CHANGES_ARE_SAVED": {
     "source": "The changes are saved automatically as they are made",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/WalletSettings/index.messages.js"
+      ]
+    }
+  },
+  "TR_VISIBLE_COINS": {
+    "source": "Visible coins",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/WalletSettings/index.messages.js"
+      ]
+    }
+  },
+  "TR_VISIBLE_COINS_EXTERNAL": {
+    "source": "Visible external coins",
+    "meta": {
+      "occurrences": [
+        "src/views/Wallet/views/WalletSettings/index.messages.js"
+      ]
+    }
+  },
+  "TR_VISIBLE_COINS_EXPLAINED": {
+    "source": "Select the coins you wish to see in the wallet interface. You will be able to change your preferences later.",
     "meta": {
       "occurrences": [
         "src/views/Wallet/views/WalletSettings/index.messages.js"

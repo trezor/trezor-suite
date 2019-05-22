@@ -1,5 +1,5 @@
+import { hot } from 'react-hot-loader/root';
 import React from 'react';
-import { hot } from 'react-hot-loader';
 import { Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
@@ -18,6 +18,7 @@ import InstallBridge from 'views/Landing/views/InstallBridge/Container';
 // wallet views
 import WalletContainer from 'views/Wallet';
 import AccountSummary from 'views/Wallet/views/Account/Summary';
+import AccountTransactions from 'views/Wallet/views/Account/Transactions';
 import AccountSend from 'views/Wallet/views/Account/Send';
 import AccountReceive from 'views/Wallet/views/Account/Receive';
 import AccountSignVerify from 'views/Wallet/views/Account/SignVerify/Container';
@@ -110,6 +111,10 @@ const App = () => (
                                     component={AccountSummary}
                                 />
                                 <Route
+                                    path={getPattern('wallet-account-transactions')}
+                                    component={AccountTransactions}
+                                />
+                                <Route
                                     path={getPattern('wallet-account-send')}
                                     component={AccountSend}
                                 />
@@ -134,4 +139,4 @@ const App = () => (
     </Provider>
 );
 
-export default hot(module)(App);
+export default hot(App);

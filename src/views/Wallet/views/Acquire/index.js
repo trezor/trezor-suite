@@ -37,7 +37,7 @@ const Acquire = (props: Props) => (
         <Notification
             title={props.intl.formatMessage(l10nMessages.TR_DEVICE_USED_IN_OTHER)}
             message={props.intl.formatMessage(l10nMessages.TR_USE_YOUR_DEVICE_IN_THIS_WINDOW)}
-            type="info"
+            variant="info"
             cancelable={false}
             isActionInProgress={props.acquiring}
             actions={[

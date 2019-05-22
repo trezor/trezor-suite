@@ -3,6 +3,10 @@ image: node:10.15.1
 variables:
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
 
+before_script:
+  - "apt-get update"
+  - "apt-get install -y build-essential"
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
@@ -69,21 +73,21 @@ build stable:
       - build/stable
       - scripts/s3sync.sh 
 
-build emulator and bridge image:
-  variables:
-    CONTAINER_NAME: "$CI_REGISTRY/emulator-bridge-tests"
-  image: docker:latest
-  services:
-    - docker:dind
-  before_script:
-    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-  stage: build
-  when: manual
-  script:
-    - docker pull $CONTAINER_NAME:latest || true
-    - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
-    - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
-    - docker push $CONTAINER_NAME:latest
+# build emulator and bridge image:
+#   variables:
+#     CONTAINER_NAME: "$CI_REGISTRY/emulator-bridge-tests"
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   before_script:
+#     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+#   stage: build
+#   when: manual
+#   script:
+#     - docker pull $CONTAINER_NAME:latest || true
+#     - docker build --cache-from $CONTAINER_NAME:latest --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest .
+#     - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
+#     - docker push $CONTAINER_NAME:latest
 
 deploy review:
   stage: deploy
@@ -95,6 +99,7 @@ deploy review:
     name: $CI_BUILD_REF_NAME
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
     on_stop: delete review
+  before_script: []
   script:
     - echo "Deploy a review app"
     - '[ -z "${DEPLOY_BASE_DIR}" ] && echo "Deploy base dir cannot be empty" && exit 255'
@@ -118,6 +123,7 @@ deploy stage beta:
   when: manual
   dependencies:
     - build beta
+  before_script: []
   script:
     - scripts/s3sync.sh stage beta
   only:
@@ -134,6 +140,7 @@ deploy stage stable:
   when: manual
   dependencies:
     - build stable
+  before_script: []
   script:
     - scripts/s3sync.sh stage stable
   only:
@@ -150,6 +157,7 @@ delete review:
   environment:
     name: $CI_BUILD_REF_NAME
     action: stop
+  before_script: []
   script:
     - '[ -z "${DEPLOY_BASE_DIR}" ] && echo "Deploy dir can not be empty" && exit 1'
     - '[ -z "${CI_BUILD_REF_NAME}" ] && echo "Build name can not be empty" && exit 1'

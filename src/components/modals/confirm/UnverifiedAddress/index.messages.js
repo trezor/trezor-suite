@@ -1,6 +1,6 @@
 /* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype/npm/react-intl';
+import type { Messages } from 'flowtype';
 
 const definedMessages: Messages = defineMessages({
     TR_DEVICE_LABEL_IS_NOT_CONNECTED: {
@@ -32,11 +32,6 @@ const definedMessages: Messages = defineMessages({
     TR_SHOW_UNVERIFIED_ADDRESS: {
         id: 'TR_SHOW_UNVERIFIED_ADDRESS',
         defaultMessage: 'Show unverified address',
-    },
-    TR_TRY_AGAIN: {
-        id: 'TR_TRY_AGAIN',
-        defaultMessage: 'Try again',
-        description: 'Try to verify the address again',
     },
     TR_TO_PREVENT_PHISHING_ATTACKS_COMMA: {
         id: 'TR_TO_PREVENT_PHISHING_ATTACKS_COMMA',

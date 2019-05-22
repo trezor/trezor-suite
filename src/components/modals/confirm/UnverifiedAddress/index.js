@@ -64,20 +64,6 @@ const BackupButton = styled(Button)`
     width: 100%;
 `;
 
-const WarnButton = styled(Button)`
-    background: transparent;
-    border-color: ${colors.WARNING_PRIMARY};
-    color: ${colors.WARNING_PRIMARY};
-
-    &:focus,
-    &:hover,
-    &:active {
-        color: ${colors.WHITE};
-        background: ${colors.WARNING_PRIMARY};
-        box-shadow: none;
-    }
-`;
-
 class ConfirmUnverifiedAddress extends PureComponent<Props> {
     componentDidMount(): void {
         this.keyboardHandler = this.keyboardHandler.bind(this);
@@ -159,11 +145,15 @@ class ConfirmUnverifiedAddress extends PureComponent<Props> {
                 <Content>
                     <Row>
                         <Button onClick={() => (!account ? this.verifyAddress() : 'false')}>
-                            <FormattedMessage {...l10nMessages.TR_TRY_AGAIN} />
+                            <FormattedMessage {...l10nCommonMessages.TR_TRY_AGAIN} />
                         </Button>
-                        <WarnButton isWhite onClick={() => this.showUnverifiedAddress()}>
+                        <Button
+                            isInverse
+                            variant="warning"
+                            onClick={() => this.showUnverifiedAddress()}
+                        >
                             <FormattedMessage {...l10nMessages.TR_SHOW_UNVERIFIED_ADDRESS} />
-                        </WarnButton>
+                        </Button>
                     </Row>
                 </Content>
                 {needsBackup && <Divider />}

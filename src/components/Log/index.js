@@ -28,7 +28,7 @@ type Props = {| ...OwnProps, ...StateProps, ...DispatchProps |};
 const Wrapper = styled.div`
     position: relative;
     color: ${colors.INFO_PRIMARY};
-    background: ${colors.INFO_SECONDARY};
+    background: ${colors.INFO_LIGHT};
     padding: 24px;
     display: flex;
     flex-direction: column;

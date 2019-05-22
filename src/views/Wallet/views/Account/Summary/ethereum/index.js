@@ -160,7 +160,7 @@ const AccountSummary = (props: Props) => {
                             const isAdded = tokens.find(t => t.symbol === option.symbol);
                             if (isAdded) {
                                 return `${option.name} (${props.intl.formatMessage(
-                                    l10nSummaryMessages.TR_ALREADY_USED
+                                    l10nSummaryMessages.TR_ALREADY_ADDED
                                 )})`;
                             }
                             return option.name;

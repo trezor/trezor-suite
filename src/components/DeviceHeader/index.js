@@ -1,9 +1,9 @@
-// TODO: l10n for device status
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { getStatusColor, getStatusName, getStatus } from 'utils/device';
 import { TrezorImage, colors } from 'trezor-ui-components';
+import { injectIntl } from 'react-intl';
 
 import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
@@ -102,6 +102,7 @@ const DeviceHeader = ({
     isSelected = false,
     className,
     testId,
+    intl,
 }) => {
     const status = getStatus(device);
     return (
@@ -123,7 +124,7 @@ const DeviceHeader = ({
             </ImageWrapper>
             <LabelWrapper>
                 <Name>{device.instanceLabel}</Name>
-                <Status title={getStatusName(status)}>{getStatusName(status)}</Status>
+                <Status title={getStatusName(status, intl)}>{getStatusName(status, intl)}</Status>
             </LabelWrapper>
             <IconWrapper>{icon && !disabled && isAccessible && icon}</IconWrapper>
         </Wrapper>
@@ -141,6 +142,7 @@ DeviceHeader.propTypes = {
     onClickWrapper: PropTypes.func.isRequired,
     className: PropTypes.string,
     testId: PropTypes.string,
+    intl: PropTypes.any,
 };
 
-export default DeviceHeader;
+export default injectIntl(DeviceHeader);

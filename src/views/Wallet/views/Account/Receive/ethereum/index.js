@@ -78,7 +78,7 @@ const QrWrapper = styled.div`
 `;
 
 const StyledDeviceIcon = styled(DeviceIcon)`
-    margin: 0 6px;
+    margin-right: 6px;
 `;
 
 const AccountReceive = (props: Props) => {
@@ -114,11 +114,10 @@ const AccountReceive = (props: Props) => {
                         <Input
                             type="text"
                             readOnly
-                            autoSelect
                             topLabel={props.intl.formatMessage(l10nCommonMessages.TR_ADDRESS)}
                             value={address}
                             isPartiallyHidden={isAddressHidden}
-                            trezorAction={
+                            tooltipAction={
                                 isAddressVerifying ? (
                                     <React.Fragment>
                                         <StyledDeviceIcon

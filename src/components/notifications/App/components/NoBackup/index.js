@@ -13,7 +13,7 @@ export default (props: Props) => {
     return (
         <Notification
             key="no-backup"
-            type="warning"
+            variant="warning"
             title={<FormattedMessage {...l10nCommonMessages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP} />}
             message={<FormattedMessage {...l10nCommonMessages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />}
             actions={[

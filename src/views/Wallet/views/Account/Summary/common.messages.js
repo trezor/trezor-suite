@@ -1,6 +1,6 @@
 /* @flow */
 import { defineMessages } from 'react-intl';
-import type { Messages } from 'flowtype/npm/react-intl';
+import type { Messages } from 'flowtype';
 
 const definedMessages: Messages = defineMessages({
     TR_SEE_FULL_TRANSACTION_HISTORY: {
@@ -23,9 +23,9 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_TOKEN_NOT_FOUND',
         defaultMessage: 'Token not found',
     },
-    TR_ALREADY_USED: {
-        id: 'TR_ALREADY_USED',
-        defaultMessage: 'Already used',
+    TR_ALREADY_ADDED: {
+        id: 'TR_ALREADY_ADDED',
+        defaultMessage: 'Already added',
     },
     TR_HISTORY: {
         id: 'TR_HISTORY',
