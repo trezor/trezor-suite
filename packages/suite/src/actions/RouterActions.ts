@@ -22,6 +22,8 @@ export interface RouterActions {
  */
 export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
+    console.log(router.pathname);
+    console.log(url);
     if (router.pathname === url) return null;
     // TODO: check if the view is not locked by the device request
 
@@ -47,6 +49,7 @@ export const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState)
 
 // links inside of application
 export const goto = (url: string) => {
+    console.log('suite router action')
     Router.push(url);
     return {
         type: UPDATE,

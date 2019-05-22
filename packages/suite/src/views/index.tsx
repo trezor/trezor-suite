@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Text } from 'react-native';
+import { Text, Platform } from 'react-native';
 import { Button } from '@trezor/components';
 import Wrapper from '@suite/components/SuiteWrapper';
 import { State } from '@suite/types';
 import TrezorConnect from 'trezor-connect';
+import * as RouterActions from '@suite/actions/RouterActions'
 
 const onClick = () => {
     TrezorConnect.getAddress({
@@ -14,6 +15,11 @@ const onClick = () => {
         console.log("R", r)
     });
 };
+
+const gotoUI = () => {
+    console.log("uiii");
+    RouterActions.goto("/ui");
+}
 
 // TODO: https://redux.js.org/recipes/isolating-redux-sub-apps
 
@@ -41,6 +47,7 @@ const Index = (props: Props) => {
         <Wrapper>
             <Text>Home {props.router.pathname}</Text>
             <Button onClick={onClick} variant="success">button</Button>
+            <Button onClick={gotoUI} variant="success">ui</Button>
         </Wrapper>
     );
 };

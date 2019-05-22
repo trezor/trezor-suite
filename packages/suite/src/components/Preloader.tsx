@@ -16,7 +16,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
             return;
         }
     }, [loaded]);
-    return !loaded ? null : <>{props.children}</>;
+    return <>{props.children}</>;
 };
 
 const mapStateToProps = (state: State) => ({

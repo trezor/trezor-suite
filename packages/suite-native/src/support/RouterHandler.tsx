@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Router, Scene, Actions } from 'react-native-router-flux';
 import Index from '@suite/views';
 import Wallet from '@suite/views/wallet';
+import UI from '@suite/views/ui';
 import WalletSend from '@suite/views/wallet/send';
 import { onLocationChange } from '@suite/actions/RouterActions';
 import { Dispatch } from '@suite/types';
@@ -41,6 +42,7 @@ const RouterHandler = ({ onLocationChange }: Props) => {
             <Scene key="root">
                 <Scene key="/" drawer component={Index} initial type="replace" />
                 <Scene key="/wallet" drawer component={Wallet} type="replace" />
+                <Scene key="/ui" drawer component={UI} type="replace" />
                 <Scene
                     key="/wallet/send"
                     drawer

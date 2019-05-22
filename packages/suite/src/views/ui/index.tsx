@@ -21,6 +21,18 @@ const UI = (props: Props) => {
                 <Button variant="warning" onClick={onClick}>Button</Button>
                 <Button variant="error" onClick={onClick}>Button</Button>
                 <Button variant="info" onClick={onClick}>Button</Button>
+                <Button isWhite variant="info" onClick={onClick}>Button</Button>
+                <Button isDisabled variant="info" onClick={onClick}>Button</Button>
+
+                <Button isLoading variant="success" onClick={onClick}>Button</Button>
+                <Button isLoading variant="warning" onClick={onClick}>Button</Button>
+                <Button isLoading variant="error" onClick={onClick}>Button</Button>
+                <Button isLoading variant="info" onClick={onClick}>Button</Button>
+
+                <Button isInverse variant="success" onClick={onClick}>Button</Button>
+                <Button isInverse variant="warning" onClick={onClick}>Button</Button>
+                <Button isInverse variant="error" onClick={onClick}>Button</Button>
+                <Button isInverse variant="info" onClick={onClick}>Button</Button>
              <Button variant="success" onClick={onClick} isDisabled>Button disabled</Button>
         </Wrapper>
     );
