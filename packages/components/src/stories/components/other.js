@@ -47,6 +47,13 @@ const Wrapper = styled.div`
     padding: 1.6rem;
 `;
 
+const LanguageWrapper = styled.div`
+    background-color: ${colors.HEADER};
+    display: flex;
+    justify-content: center;
+`;
+LanguageWrapper.displayName = 'Header';
+
 const Icons = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -309,7 +316,6 @@ storiesOf('Other', module)
             },
         }
     )
-    .addDecorator(StoryRouter())
     .add(
         'LanguagePicker',
         () => {
@@ -324,14 +330,7 @@ storiesOf('Other', module)
                 'en'
             );
             return (
-                <div
-                    style={{
-                        backgroundColor: colors.HEADER,
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}
-                    data-test="language_picker"
-                >
+                <LanguageWrapper>
                     <LanguagePicker
                         language={language}
                         onChange={(value, action) => {
@@ -343,8 +342,9 @@ storiesOf('Other', module)
                             { code: 'cs', name: 'Česky', en: 'Czech' },
                             { code: 'de', name: 'Deutsch', en: 'German' },
                         ]}
+                        data-test="language_picker"
                     />
-                </div>
+                </LanguageWrapper>
             );
         },
         {
