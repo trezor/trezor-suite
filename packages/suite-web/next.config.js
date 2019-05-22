@@ -17,6 +17,7 @@ module.exports = withCustomBabelConfig(
                     '@components',
                     '../packages/components/src',
                 ],
+                assetPrefix: process.env.assetPrefix || null,
             }),
         ),
     ),
