@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { bindActionCreators } from 'redux';
 
 import { goto } from '@suite/actions/RouterActions';
@@ -11,10 +11,10 @@ interface Props {
 
 const Wrapper: FunctionComponent<Props> = props => {
     return (
-        <>
+        <View>
             <Text>Suite wrapper</Text>
             {props.children}
-        </>
+        </View>
     );
 };
 
