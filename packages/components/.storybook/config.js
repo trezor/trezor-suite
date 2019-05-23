@@ -45,7 +45,6 @@ function loadStories() {
     require('../src/stories/components/notifications.js');
     require('../src/stories/components/modal.js');
     require('../src/stories/components/other.js');
-    require('../src/stories/components/loader.js');
     require('../src/stories/components/colors.js');
 }
 
