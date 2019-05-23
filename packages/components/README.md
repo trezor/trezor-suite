@@ -11,7 +11,7 @@ Documentation in [Storybook](https://suite-dev.sldev.cz/components/develop/)
 
 ## Contributing
 
-To enable eslint to lint typescript files in Visual Studio Code add following lines to your settings
+To enable ESLint to lint typescript files in VS Code add following lines to your settings
 ```
 "eslint.validate": [
     "javascript",
