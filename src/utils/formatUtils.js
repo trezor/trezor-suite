@@ -11,7 +11,6 @@ export const toDecimalAmount = (amount: string | number, decimals: number): stri
         }
         return bAmount.div(10 ** decimals).toString(10);
     } catch (error) {
-        console.error(error);
         return '0';
     }
 };
@@ -25,7 +24,6 @@ export const fromDecimalAmount = (amount: string | number, decimals: number): st
         }
         return bAmount.times(10 ** decimals).toString(10);
     } catch (error) {
-        console.error(error);
         return '0';
     }
 };

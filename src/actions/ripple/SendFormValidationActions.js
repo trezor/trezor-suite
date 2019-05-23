@@ -383,7 +383,7 @@ const calculateTotal = (amount: string, fee: string): string => {
         }
         return bAmount.plus(fee).toFixed();
     } catch (error) {
-        console.error(error);
+        // TODO: empty input throws this error.
         return '0';
     }
 };
