@@ -96,17 +96,20 @@ storiesOf('Other', module)
     .add('All', () => (
         <Wrapper>
             <H1>
-                Prompt <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="1" />'}</BtnLink>
+                Prompt
             </H1>
+            <H5>
+                Trezor One <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="1" />'}</BtnLink>
+            </H5>
             <Section>
                 <Prompt model={1} data-test="prompt_1">
                     Complete the action on your device
                 </Prompt>
             </Section>
 
-            <H1>
-                Prompt Model T <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="2" />'}</BtnLink>
-            </H1>
+            <H5>
+                Trezor Model T <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="2" />'}</BtnLink>
+            </H5>
             <Section>
                 <Prompt model={2} data-test="prompt_2">
                     Complete the action on your device
@@ -114,8 +117,11 @@ storiesOf('Other', module)
             </Section>
 
             <H1>
-                TrezorImage Model One <BtnLink onClick={linkTo('Other', 'TrezorImage')}>{'<TrezorImage model="1" />'}</BtnLink>
+                TrezorImage
             </H1>
+            <H5>
+                Trezor One <BtnLink onClick={linkTo('Other', 'TrezorImage')}>{'<TrezorImage model="1" />'}</BtnLink>
+            </H5>
             <Section>
                 <TrezorImage
                     height={310}
@@ -124,9 +130,9 @@ storiesOf('Other', module)
                 />
             </Section>
 
-            <H1>
-                TrezorImage Model T <BtnLink onClick={linkTo('Other', 'TrezorImage')}>{'<TrezorImage model="2" />'}</BtnLink>
-            </H1>
+            <H5>
+                Trezor Model T <BtnLink onClick={linkTo('Other', 'TrezorImage')}>{'<TrezorImage model="2" />'}</BtnLink>
+            </H5>
             <Section>
                 <TrezorImage
                     height={310}
@@ -161,11 +167,8 @@ storiesOf('Other', module)
             </Section>
 
             <H1>
-                Header
+                Header <BtnLink onClick={linkTo('Other', 'Header')}>{'<Header />'}</BtnLink>
             </H1>
-            <H5>
-                Desktop <BtnLink onClick={linkTo('Other', 'Header')}>{'<Header />'}</BtnLink>
-            </H5>
             <Section>
                 <Header
                     sidebarEnabled
@@ -193,11 +196,14 @@ storiesOf('Other', module)
             </Section>
 
             <H1>
-                Loader <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader />'}</BtnLink>
+                Loader
             </H1>
+            <H5>
+                default <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader />'}</BtnLink>
+            </H5>
             <Section>
                 <Loader
-                    size={120}
+                    size={100}
                     strokeWidth={2}
                     text="loading"
                     data-test="loader_default"
