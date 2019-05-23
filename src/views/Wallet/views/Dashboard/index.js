@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { CoinLogo, H4, P, Link } from 'trezor-ui-components';
 import coins from 'constants/coins';
 import { FormattedMessage } from 'react-intl';
+import l10nCommonMessages from 'views/common.messages';
 import l10nMessages from './index.messages';
 import type { Props } from './Container';
 
@@ -94,10 +95,10 @@ const Dashboard = (props: Props) => {
                             <FormattedMessage
                                 {...l10nMessages.TR_PLEASE_SELECT_YOUR_EMPTY}
                                 values={{
-                                    TR_PLEASE_SELECT_YOUR_EMPTY_LINK: (
+                                    TR_SELECT_COINS_LINK: (
                                         <StyledLinkEmpty to="/settings">
                                             <FormattedMessage
-                                                {...l10nMessages.TR_PLEASE_SELECT_YOUR_EMPTY_LINK}
+                                                {...l10nCommonMessages.TR_SELECT_COINS_LINK}
                                             />
                                         </StyledLinkEmpty>
                                     ),

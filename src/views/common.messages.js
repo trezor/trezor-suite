@@ -11,6 +11,10 @@ const definedMessages: Messages = defineMessages({
         id: 'TR_APPLICATION_SETTINGS',
         defaultMessage: 'Application settings',
     },
+    TR_SELECT_COINS_LINK: {
+        id: 'TR_SELECT_COINS_LINK',
+        defaultMessage: 'application settings',
+    },
     TR_ACCOUNT_HASH: {
         id: 'TR_ACCOUNT_HASH',
         defaultMessage: 'Account #{number}',

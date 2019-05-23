@@ -7,6 +7,7 @@ import React, { PureComponent } from 'react';
 import { Link, colors, icons as ICONS } from 'trezor-ui-components';
 import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import l10nCommonMessages from 'views/common.messages';
 import Divider from '../Divider';
 import RowCoin from '../RowCoin';
 
@@ -102,7 +103,9 @@ class CoinMenu extends PureComponent<Props> {
                         values={{
                             TR_SELECT_COINS_LINK: (
                                 <StyledLinkEmpty to="/settings">
-                                    <FormattedMessage {...l10nMessages.TR_SELECT_COINS_LINK} />
+                                    <FormattedMessage
+                                        {...l10nCommonMessages.TR_SELECT_COINS_LINK}
+                                    />
                                 </StyledLinkEmpty>
                             ),
                         }}
