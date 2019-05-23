@@ -1,0 +1,10 @@
+.next
+_old
+build
+
+node_modules
+generated
+
+next.config.js
+src/electron.js
+src/preload.js
