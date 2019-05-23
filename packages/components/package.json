@@ -17,7 +17,7 @@
         "type-check:watch": "yarn type-check -- --watch",
         "prepublishOnly": "npm run build:lib",
         "ci:test:snapshots": "cypress run",
-        "ci:test:snapshots:references": "cypress run --env updateSnapshots=true"
+        "ci:test:snapshots:references": "cypress run --env updateSnapshots=true customSnapshotsDir=./snapshots"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",

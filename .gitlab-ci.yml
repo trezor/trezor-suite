@@ -15,6 +15,7 @@ stages:
   - build
   - deploy
   - test snapshots
+  - make snapshot references
 
 install:
   stage: install
@@ -103,7 +104,7 @@ components test snapshots:
 
 components make snapshot references:
   image: cypress/base:10
-  stage: test snapshots
+  stage: make snapshot references
   variables:
      PACKAGE_NAME: components
   only:

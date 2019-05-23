@@ -1,6 +1,6 @@
-import { RouterActions } from './actions/RouterActions';
 import { ThunkDispatch } from 'redux-thunk';
 import { UiEvent, TransportEvent } from 'trezor-connect';
+import { RouterActions } from './actions/RouterActions';
 
 import { StorageActions } from './actions/StorageActions';
 import { SuiteActions } from './actions/SuiteActions';
