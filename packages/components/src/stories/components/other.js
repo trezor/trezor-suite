@@ -99,7 +99,7 @@ storiesOf('Other', module)
                 Prompt <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="1" />'}</BtnLink>
             </H1>
             <Section>
-                <Prompt model={1}>
+                <Prompt model={1} data-test="prompt_1">
                     Complete the action on your device
                 </Prompt>
             </Section>
@@ -108,7 +108,7 @@ storiesOf('Other', module)
                 Prompt Model T <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="2" />'}</BtnLink>
             </H1>
             <Section>
-                <Prompt model={2}>
+                <Prompt model={2} data-test="prompt_2">
                     Complete the action on your device
                 </Prompt>
             </Section>
@@ -120,6 +120,7 @@ storiesOf('Other', module)
                 <TrezorImage
                     height={310}
                     model={1}
+                    data-test="trezor_image_1"
                 />
             </Section>
 
@@ -130,6 +131,7 @@ storiesOf('Other', module)
                 <TrezorImage
                     height={310}
                     model={2}
+                    data-test="trezor_image_2"
                 />
             </Section>
 
@@ -143,6 +145,7 @@ storiesOf('Other', module)
                 <TrezorLogo
                     type="horizontal"
                     width={'90%'}
+                    data-test="trezor_logo_horizontal"
                 />
             </Section>
 
@@ -153,6 +156,7 @@ storiesOf('Other', module)
                 <TrezorLogo
                     type="vertical"
                     width={'50%'}
+                    data-test="trezor_logo_vertical"
                 />
             </Section>
 
@@ -184,6 +188,7 @@ storiesOf('Other', module)
                         title: 'Blog'
                         }
                     ]}
+                    data-test="header"
                 />
             </Section>
 
@@ -193,8 +198,9 @@ storiesOf('Other', module)
             <Section>
                 <Loader
                     size={120}
-                    strokeWidth={1}
+                    strokeWidth={2}
                     text="loading"
+                    data-test="loader_default"
                 />
             </Section>
 
@@ -204,9 +210,10 @@ storiesOf('Other', module)
             <Section>
                 <Loader
                     size={100}
-                    strokeWidth={1}
+                    strokeWidth={2}
                     text="loading"
                     isSmallText
+                    data-test="loader_small_text"
                 />
             </Section>
 
@@ -219,6 +226,7 @@ storiesOf('Other', module)
                     strokeWidth={2}
                     text="loading"
                     transparentRoute
+                    data-test="loader_transparent_route"
                 />
             </Section>
 
@@ -228,9 +236,10 @@ storiesOf('Other', module)
             <SectionDark>
                 <Loader
                     size={100}
-                    strokeWidth={1}
+                    strokeWidth={2}
                     text="loading"
                     isWhiteText
+                    data-test="loader_white_text"
                 />
             </SectionDark>
 
@@ -240,10 +249,11 @@ storiesOf('Other', module)
             <SectionDark>
                 <Loader
                     size={100}
-                    strokeWidth={1}
+                    strokeWidth={2}
                     text="loading"
                     isWhiteText
                     transparentRoute
+                    data-test="loader_white_text_transparent"
                 />
             </SectionDark>
 
@@ -252,10 +262,11 @@ storiesOf('Other', module)
             </H1>
             <Icons>
                 {Object.keys(icons).map(icon => {
+                    let test = "icon_" + icon.toLowerCase();
                     return (
                         <Item>
                             <Title>{icon}</Title>
-                            <Icon icon={icons[icon]} />
+                            <Icon icon={icons[icon]} data-test={test} />
                         </Item>
                     );
                 })}
@@ -266,11 +277,11 @@ storiesOf('Other', module)
             </H1>
             <Icons>
                 {coins.map(coin => {
-                    console.log(coin);
+                    let test = "coin_" + coin.toLowerCase();
                     return (
                         <Item>
                             <Title>{coin}</Title>
-                            <CoinLogo height="23" network={coin} />
+                            <CoinLogo height="23" network={coin} data-test={test} />
                         </Item>
                     );
                 })}
