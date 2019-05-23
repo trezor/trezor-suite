@@ -5,7 +5,9 @@
     "main": "src/electron.js",
     "scripts": {
         "dev:desktop": "electron .",
-        "build:desktop": "next build && next export -o build"
+        "build:desktop": "next build && next export -o build",
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "tsc": "tsc"
     },
     "dependencies": {
         "electron-is-dev": "^1.1.0",
