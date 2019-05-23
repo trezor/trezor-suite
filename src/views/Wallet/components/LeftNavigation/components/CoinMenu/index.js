@@ -93,6 +93,25 @@ class CoinMenu extends PureComponent<Props> {
             });
     }
 
+    getEmptyContent() {
+        return (
+            <Empty>
+                <Gray>
+                    <FormattedMessage
+                        {...l10nMessages.TR_SELECT_COINS}
+                        values={{
+                            TR_SELECT_COINS_LINK: (
+                                <StyledLinkEmpty to="/settings">
+                                    <FormattedMessage {...l10nMessages.TR_SELECT_COINS_LINK} />
+                                </StyledLinkEmpty>
+                            ),
+                        }}
+                    />{' '}
+                </Gray>
+            </Empty>
+        );
+    }
+
     isTopMenuEmpty() {
         const numberOfVisibleNetworks = this.props.localStorage.config.networks
             .filter(item => !item.isHidden) // hide coins globally in config
@@ -119,24 +138,7 @@ class CoinMenu extends PureComponent<Props> {
         const { config } = this.props.localStorage;
         return (
             <Wrapper data-test="Main__page__coin__menu">
-                {this.isMenuEmpty() && (
-                    <Empty>
-                        <Gray>
-                            <FormattedMessage
-                                {...l10nMessages.TR_SELECT_COINS}
-                                values={{
-                                    TR_SELECT_COINS_LINK: (
-                                        <StyledLinkEmpty to="/settings">
-                                            <FormattedMessage
-                                                {...l10nMessages.TR_SELECT_COINS_LINK}
-                                            />
-                                        </StyledLinkEmpty>
-                                    ),
-                                }}
-                            />{' '}
-                        </Gray>
-                    </Empty>
-                )}
+                {this.isMenuEmpty() || (this.isTopMenuEmpty() && this.getEmptyContent())}
                 {config.networks
                     .filter(item => !item.isHidden) // hide coins globally in config
                     .filter(item => !hiddenCoins.includes(item.shortcut)) // hide coins by user settings
@@ -154,14 +156,15 @@ class CoinMenu extends PureComponent<Props> {
                             />
                         </NavLink>
                     ))}
-                {!this.isBottomMenuEmpty() && (
+                {!this.isMenuEmpty() && (
                     <Divider
                         testId="Main__page__coin__menu__divider"
                         textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
                         hasBorder
                     />
                 )}
-                {this.getOtherCoins()}
+                {this.isBottomMenuEmpty() && this.getEmptyContent()}
+                {!this.isBottomMenuEmpty() && this.getOtherCoins()}
             </Wrapper>
         );
     }
