@@ -5,7 +5,16 @@
     "main": "src/electron.js",
     "scripts": {
         "dev:desktop": "electron .",
-        "build:desktop": "next build && next export -o build"
+        "build:desktop": "next build && next export -o build",
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder",
+        "postinstall": "electron-builder install-app-deps"
+    },
+    "build": {
+        "appId": "your.id",
+        "mac": {
+          "category": "your.app.category.type"
+        }
     },
     "dependencies": {
         "electron-is-dev": "^1.1.0",
@@ -23,6 +32,7 @@
         "@types/react-redux": "^7.0.8",
         "@zeit/next-typescript": "^1.1.1",
         "electron": "^4.1.0",
+        "electron-builder": "^20.40.2",
         "electron-installer-dmg": "^2.0.0",
         "electron-packager": "^13.1.1",
         "electron-winstaller": "^3.0.4",

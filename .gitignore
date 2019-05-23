@@ -29,3 +29,4 @@ translations/*.csv
 
 .env*
 !.env.dev
+dist
