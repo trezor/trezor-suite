@@ -10,8 +10,11 @@ __changed__
 - input validation - mandatory leading 0 for float numbers
 - regexps refactored to functions, added unit tests
 - limit passphrase length to 50 bytes
+- upgrade react-router and connected-react-router
 
 __fixed__
+- xrp accounts not updating in case of remembered device
+- rounding in calculating total balance in local currency
 - react hot loader
 - minor l10n fixes
 
