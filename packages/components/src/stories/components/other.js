@@ -463,7 +463,6 @@ storiesOf('Other', module)
                     type={type} 
                     {...(width ? { width } : {})}
                     {...(height ? { height } : {})}
-                    data-test="trezor_logo"
                 />
             );
         },
