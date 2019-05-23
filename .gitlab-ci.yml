@@ -15,6 +15,7 @@ stages:
   - build
   - deploy
   - test snapshots
+  - make snapshot references
 
 install:
   stage: install
@@ -77,10 +78,6 @@ components deploy dev:
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
-  only:
-    - branches
-  tags:
-    - deploy
 
 components test snapshots:
   image: cypress/base:10
@@ -105,7 +102,7 @@ components test snapshots:
 
 components make snapshot references:
   image: cypress/base:10
-  stage: test snapshots
+  stage: make snapshot references
   variables:
      PACKAGE_NAME: components
   only:
@@ -171,7 +168,3 @@ suite-web deploy dev:
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
-  only:
-    - branches
-  tags:
-    - deploy

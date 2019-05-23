@@ -9,8 +9,8 @@ export type StorageActions =
           type: typeof LOAD;
       }
     | {
-        type: typeof LOADED;
-        payload: State;
+          type: typeof LOADED;
+          payload: State;
       }
     | {
           type: typeof ERROR;
@@ -37,5 +37,3 @@ export const load = () => async (dispatch: Dispatch, getState: GetState) => {
         payload: state,
     });
 };
-
-
