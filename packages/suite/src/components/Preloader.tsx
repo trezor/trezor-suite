@@ -13,9 +13,10 @@ const Preloader: React.FunctionComponent<Props> = props => {
     useEffect(() => {
         if (!loaded) {
             dispatch({ type: INIT });
-            return;
         }
-    }, [loaded]);
+    }, [dispatch, loaded]);
+
+    // return !loaded ? null : <>{props.children}</>;
     return <>{props.children}</>;
 };
 
