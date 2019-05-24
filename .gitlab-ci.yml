@@ -40,7 +40,7 @@ components lint:
   stage: test
   script:
     - yarn
-    - yarn workspace @trezor-components lint
+    - yarn workspace @trezor/components lint
   only:
     changes:
       - packages/components/**/*
@@ -50,7 +50,7 @@ components build:
   stage: build
   script:
     - yarn
-    - yarn workspace @trezor-components build
+    - yarn workspace @trezor/components build
   only:
     changes:
       - packages/components/**/*
