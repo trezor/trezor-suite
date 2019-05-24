@@ -70,9 +70,9 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     size?: number;
 }
 
-const Prompt = ({ model, size, children }: Props) => {
+const Prompt = ({ model, size, children, ...rest }: Props) => {
     return (
-        <Wrapper>
+        <Wrapper {...rest}>
             <ImgWrapper size={size}>
                 <Pulse />
                 <Icon icon={modelToIcon(model)} size={size} color={colors.GREEN_PRIMARY} />

@@ -173,6 +173,7 @@ const Header = ({
     rightAddon,
     logoLinkComponent,
     links,
+    ...rest
 }: Props) => {
     const logoImage = (
         <>
@@ -215,7 +216,7 @@ const Header = ({
         : logoImage;
 
     return (
-        <Wrapper data-test="Main__page__navigation">
+        <Wrapper {...rest}>
             <LayoutWrapper>
                 <Left>
                     {sidebarEnabled && (
