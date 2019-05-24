@@ -22,6 +22,10 @@ install:
   stage: install
   image: cypress/base:10
   stage: build
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
   script:
     - yarn install --frozen-lockfile
     - $(yarn bin)/cypress cache path
