@@ -9,6 +9,9 @@ Projects:
 - @trezor/suite-native
 
 ## Development
+To build react-native application start by following these instructions. Select `React Native CLI Quickstart` and install all required dependencies.
+https://facebook.github.io/react-native/docs/getting-started
+
 - `git clone git@github.com:trezor/trezor-suite.git`
 - `yarn`
 - `yarn suite:dev`
@@ -27,9 +30,6 @@ To enable ESLint on typescript files in VS Code add following lines to your sett
         "autoFix": true
     }
 ]
-
-https://facebook.github.io/react-native/docs/getting-started
-
 ```
 
 ## Contribute
