@@ -28,6 +28,8 @@ To enable ESLint on typescript files in VS Code add following lines to your sett
     }
 ]
 
+https://facebook.github.io/react-native/docs/getting-started
+
 ```
 
 ## Contribute
