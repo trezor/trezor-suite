@@ -67,14 +67,12 @@
             "\\.(scss|less|css)$"
         ],
         "import/resolver": {
-            "typescript": {
-                "directory": "./.storybook/tsconfig.json"
-            }
+            "typescript": {}
         }
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": "./.storybook/tsconfig.json",
+        "project": "tsconfig.json",
         "extends": [
             "plugin:@typescript-eslint/recommended"
         ],
