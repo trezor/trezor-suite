@@ -11,9 +11,9 @@ import { goto } from '@suite/actions/RouterActions'
 const onClick = () => {
     TrezorConnect.getAddress({
         path: "m/44'/0'/0'/0/0",
-        coin: "btc"
+        coin: 'btc',
     }).then(r => {
-        console.log("R", r)
+        console.log('R', r);
     });
 };
 
