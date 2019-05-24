@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import colors from '../../config/colors';
 import icons from '../../config/icons';
-import { Omit } from '../../support/types';
+import { Omit, IconShape } from '../../support/types';
 import Svg, { Path } from 'react-native-svg';
 import { GestureResponderEvent } from 'react-native';
 
@@ -15,7 +15,7 @@ const TouchableWithoutFeedback = styled.TouchableWithoutFeedback`
 
 type WrapperProps = Omit<Props, 'icon' | 'size'>;
 interface Props {
-    icon: string | import('support/types').IconShape;
+    icon: string | IconShape;
     size?: number;
     color: string;
     isActive?: boolean;
@@ -30,7 +30,7 @@ const Icon = ({
     ...rest
 }: Props) => {
     // if string is passed to the icon prop use it as a key in icons object
-    const iconObject: import('../../support/types').IconShape =
+    const iconObject: IconShape =
         typeof icon === 'string' ? icons[icon] : icon;
     if (!iconObject) return null;
     return (
