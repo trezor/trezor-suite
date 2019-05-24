@@ -12,6 +12,7 @@ before_script:
 
 stages:
   - install
+  - test
   - build
   - deploy
   - test snapshots
@@ -35,15 +36,21 @@ variables:
 
 # Components package # --------------------------------
 
+components lint:
+  stage: test
+  script:
+    - yarn
+    - yarn workspace @trezor-components lint
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
+
 components build:
   stage: build
   script:
-    - env
-    - cd ${PACKAGE_PATH_COMPONENTS}
-    - echo "--- [installing deps] ---"
     - yarn
-    - echo "--- [building lib] ---"
-    - yarn build
+    - yarn workspace @trezor-components build
   only:
     changes:
       - packages/components/**/*
@@ -92,9 +99,8 @@ components test snapshots:
       - .gitlab-ci.yml
   script:
     - env
-    - cd $PACKAGE_PATH_COMPONENTS
     - yarn
-    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots
   artifacts:
     expire_in: 2 days
     when: always
@@ -113,9 +119,8 @@ components make snapshot references:
       - .gitlab-ci.yml
   script:
     - env
-    - cd $PACKAGE_PATH_COMPONENTS
     - yarn
-    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots:references
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots:references
   artifacts:
     expire_in: 2 days
     when: always
@@ -124,6 +129,17 @@ components make snapshot references:
 
 
 # Suite web package # --------------------------------
+
+suite-web lint:
+  stage: test
+  script:
+    - env
+    - yarn
+    - yarn workspace @trezor/suite-web lint
+  only:
+    changes:
+      - packages/components/**/*
+      - .gitlab-ci.yml
 
 suite-web build:
   stage: build
@@ -135,12 +151,8 @@ suite-web build:
   variables:
     PACKAGE_NAME: suite-web
   script:
-    - env
-    - cd $PACKAGE_PATH_SUITE_WEB
-    - echo "--- [installing deps] ---"
     - yarn
-    - echo "--- [building lib] ---"
-    - assetPrefix=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn build
+    - assetPrefix=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
   artifacts:
     name: suite-web-build
     expire_in: 15 minutes
