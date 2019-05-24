@@ -6,7 +6,9 @@
         "dev": "next",
         "lint": "eslint . --ext .tsx,.ts",
         "build": "next build && next export -o build",
-        "start": "next start"
+        "start": "next start",
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "tsc": "tsc"
     },
     "dependencies": {
         "@trezor/suite": "1.0.0",

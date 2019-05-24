@@ -204,7 +204,6 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isWhite?: boolean;
     isTransparent?: boolean;
     isLoading?: boolean;
-
     icon?: string | IconShape;
 }
 

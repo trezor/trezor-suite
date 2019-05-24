@@ -17,12 +17,6 @@
         "suite:dev:ios": "yarn workspace @trezor/suite-native dev:ios",
         "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev:desktop",
-        "lint": "eslint '**/*.{ts,tsx}'",
-        "lint:fix": "yarn lint --fix",
-        "lint:prettier": "pretty-quick",
-        "prettier:check": "eslint --print-config '**/*.{ts,tsx}' | eslint-config-prettier-check",
-        "tsc": "tsc",
-        "test": "run-s lint tsc",
         "suite:build:web": "yarn workspace @trezor/suite-web build"
     },
     "dependencies": {
