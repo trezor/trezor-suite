@@ -78,6 +78,8 @@ components deploy dev:
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+  tags:
+    - deploy
 
 components test snapshots:
   image: cypress/base:10
@@ -94,7 +96,7 @@ components test snapshots:
     - yarn
     - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn ci:test:snapshots
   artifacts:
-    expire_in: 1 day
+    expire_in: 2 days
     when: always
     paths:
       - /builds/trezor/trezor-suite/packages/components/test/snapshots
@@ -127,6 +129,7 @@ suite-web build:
   stage: build
   only:
     changes:
+      - packages/suite/**/*
       - packages/suite-web/**/*
       - .gitlab-ci.yml
   variables:
@@ -148,6 +151,7 @@ suite-web deploy dev:
   stage: deploy
   only:
     changes:
+      - packages/suite/**/*
       - packages/suite-web/**/*
       - .gitlab-ci.yml
   variables:
@@ -168,3 +172,5 @@ suite-web deploy dev:
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
+  tags:
+    - deploy

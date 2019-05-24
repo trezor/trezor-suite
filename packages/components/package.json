@@ -12,10 +12,10 @@
         "lint-fix": "npx eslint ./src --fix",
         "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
         "build": "build-storybook -s ./public -c .storybook -o /build",
-        "build:lib": "rm -rf lib && npx babel --extensions '.ts,.tsx' src -d lib --ignore './src/stories/**/*.js' && babel-node ./scripts/build.js",
+        "build:lib": "rm -rf lib && npx babel --extensions '.ts,.tsx' src -d lib --ignore './src/stories/**/*.js' && babel-node ./scripts/build.js && tsc",
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "prepublishOnly": "npm run build",
+        "prepublishOnly": "npm run build:lib",
         "ci:test:snapshots": "cypress run",
         "ci:test:snapshots:references": "cypress run --env updateSnapshots=true customSnapshotsDir=./snapshots"
     },
@@ -80,7 +80,6 @@
     "dependencies": {
         "@tippy.js/react": "^2.1.1",
         "prop-types": "^15.7.2",
-        "react-router-dom": "^4.3.1",
         "react-select": "^2.4.3",
         "react-switch": "^5.0.0",
         "react-textarea-autosize": "^7.1.0"
@@ -88,6 +87,7 @@
     "peerDependencies": {
         "react": "^16.8",
         "react-dom": "^16.8",
+        "react-router-dom": "^5.0.0",
         "styled-components": "^4.1.3"
     }
 }
