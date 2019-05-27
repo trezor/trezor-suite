@@ -91,6 +91,7 @@ lib
 
 .DS_Store
 
+__diff_output__
+test/screenshots
 test/screenshots
 test/videos
-__diff_output__
