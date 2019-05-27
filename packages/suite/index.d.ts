@@ -1,5 +1,3 @@
-
-
 import * as redux from 'redux';
 // TODO: follow bug in redux-thunk types: https://github.com/reduxjs/redux-thunk/pull/224
 declare module 'redux' {
@@ -8,9 +6,13 @@ declare module 'redux' {
      * from thunk actions
      */
     function bindActionCreators<M extends ActionCreatorsMapObject<any>>(
-      actionCreators: M,
-      dispatch: Dispatch,
-    ): { [N in keyof M]: ReturnType<M[N]> extends ThunkAction<any, any, any, any> ? (...args: Parameters<M[N]>) => ReturnType<ReturnType<M[N]>> : M[N] }
+        actionCreators: M,
+        dispatch: Dispatch,
+    ): {
+        [N in keyof M]: ReturnType<M[N]> extends ThunkAction<any, any, any, any>
+            ? (...args: Parameters<M[N]>) => ReturnType<ReturnType<M[N]>>
+            : M[N]
+    };
 }
 
 declare global {

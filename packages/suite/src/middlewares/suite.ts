@@ -5,11 +5,12 @@ import { load, LOADED } from '@suite/actions/StorageActions';
 import { init } from '@suite/actions/TrezorConnectActions';
 import { State, Action, Dispatch } from '@suite/types';
 
-const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (action: Action): Action => {
-
+const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
+    action: Action,
+): Action => {
     // pass action
     next(action);
-    
+
     switch (action.type) {
         case INIT:
             // load storage
@@ -26,6 +27,6 @@ const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (acti
             break;
     }
     return action;
-}
+};
 
 export default suite;

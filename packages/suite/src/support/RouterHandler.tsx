@@ -9,7 +9,7 @@ import { Dispatch } from '@suite/types';
 /**
  * Router handler for 'next/router' used in suite-web and suite-desktop apps
  * next/router and window event handlers needs to be wrapped inside component "onMount" event (useEffect) otherwise next.js compilation fail with error
- * 
+ *
  * Handle changes of Router and window.location.hash and dispatch Action with current url to reducer
  * Optionally block render process if UI is locked by device request
  * @param {*} { store }
@@ -49,11 +49,18 @@ const RouterHandler: FunctionComponent<Props> = ({ onLocationChange, onBeforePop
     return null;
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    onLocationChange,
-    onBeforePopState,
-}, dispatch);
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            onLocationChange,
+            onBeforePopState,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapDispatchToProps>;
 
-export default connect(null, mapDispatchToProps)(RouterHandler);
+export default connect(
+    null,
+    mapDispatchToProps,
+)(RouterHandler);
