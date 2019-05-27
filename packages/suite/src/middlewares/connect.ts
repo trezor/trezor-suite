@@ -1,8 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 import { State, Action, Dispatch } from '@suite/types';
 
-const connect = (_api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (action: Action): Action => {
-    
+const connect = (_api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
+    action: Action,
+): Action => {
     // pass action
     next(action);
 
@@ -11,6 +12,6 @@ const connect = (_api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (a
             break;
     }
     return action;
-}
+};
 
 export default connect;

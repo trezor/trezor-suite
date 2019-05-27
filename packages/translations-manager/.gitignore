@@ -1,14 +1,10 @@
-.next
-_old
 build
-
 
 # Dependency directory
 node_modules
 
 # OSX
 .DS_Store
-dist
 
 # Editors
 .idea
@@ -21,12 +17,7 @@ logs
 *.log
 .yarnclean
 
-coverage
-test/**/__diff_output__
-test/screenshots
+# Lib
+lib
 
-translations/extractedMessages
-translations/*.csv
-
-.env*
-!.env.dev
+.env

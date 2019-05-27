@@ -2,6 +2,10 @@
     "name": "@trezor/suite",
     "version": "1.0.0",
     "private": true,
+    "scripts": {
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "tsc": "tsc"
+    },
     "dependencies": {
         "@trezor/components": "1.0.0",
         "react": "16.8.6",

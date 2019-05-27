@@ -9,7 +9,9 @@
         "run-android": "react-native run-android --no-packager",
         "start": "node ../../node_modules/react-native/local-cli/cli.js start --projectRoot ../../ --config ./metro.config.js",
         "start:clean": "yarn workspace @trezor/suite-native clean && yarn workspace @trezor/suite-native start -- --reset-cache",
-        "clean": "watchman watch-del-all && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-*"
+        "clean": "watchman watch-del-all && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-*",
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "tsc": "tsc"
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
