@@ -56,7 +56,7 @@ interface Props extends React.SVGAttributes<SVGElement> {
 
     icon: string | import('support/types').IconShape;
     size?: number;
-    color: string;
+    color?: string;
     isActive?: boolean;
     canAnimate?: boolean;
     hoverColor?: string;
