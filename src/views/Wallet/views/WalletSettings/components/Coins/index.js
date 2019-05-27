@@ -1,6 +1,6 @@
 /* @flow */
 import styled from 'styled-components';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { FONT_SIZE } from 'config/variables';
 import coins from 'constants/coins';
@@ -21,6 +21,11 @@ type Props = {
 type State = {
     showAllCoins: boolean,
     showAllCoinsExternal: boolean,
+};
+
+type NextProps = {
+    hiddenCoins: Array<string>,
+    hiddenCoinsExternal: Array<string>,
 };
 
 const Wrapper = styled.div`
@@ -96,13 +101,31 @@ const ToggleAll = styled.div`
     cursor: pointer;
 `;
 
-class CoinsSettings extends PureComponent<Props, State> {
+class CoinsSettings extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
             showAllCoins: this.props.hiddenCoins.length === 0,
             showAllCoinsExternal: this.props.hiddenCoinsExternal.length === 0,
         };
+    }
+
+    componentWillReceiveProps(nextProps: NextProps) {
+        if (nextProps.hiddenCoins.length > 0) {
+            this.setState({ showAllCoins: false });
+        } else {
+            this.setState({
+                showAllCoins: true,
+            });
+        }
+
+        if (nextProps.hiddenCoinsExternal.length > 0) {
+            this.setState({ showAllCoinsExternal: false });
+        } else {
+            this.setState({
+                showAllCoinsExternal: true,
+            });
+        }
     }
 
     render() {
@@ -142,13 +165,9 @@ class CoinsSettings extends PureComponent<Props, State> {
                                             !this.state.showAllCoins,
                                             false
                                         );
-
-                                        this.setState(prevState => ({
-                                            showAllCoins: !prevState.showAllCoins,
-                                        }));
                                     }}
                                 >
-                                    {props.hiddenCoins.length > 0 ? 'Show all' : 'Hide all'}
+                                    {props.hiddenCoins.length === 0 ? 'Hide all' : 'Show all'}
                                 </ToggleAll>
                             </Right>
                         </Label>
@@ -212,13 +231,11 @@ class CoinsSettings extends PureComponent<Props, State> {
                                             !this.state.showAllCoinsExternal,
                                             true
                                         );
-
-                                        this.setState(prevState => ({
-                                            showAllCoinsExternal: !prevState.showAllCoinsExternal,
-                                        }));
                                     }}
                                 >
-                                    {props.hiddenCoinsExternal.length > 0 ? 'Show all' : 'Hide all'}
+                                    {props.hiddenCoinsExternal.length === 0
+                                        ? 'Hide all'
+                                        : 'Show all'}
                                 </ToggleAll>
                             </Right>
                         </Label>
