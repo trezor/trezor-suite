@@ -44,6 +44,7 @@ components lint:
   stage: test
   script:
     - yarn
+    - yarn add react-router-dom # peer dep
     - yarn workspace @trezor/components lint
   only:
     changes:
@@ -54,6 +55,7 @@ components build:
   stage: build
   script:
     - yarn
+    - yarn add react-router-dom # peer dep
     - yarn workspace @trezor/components build
   only:
     changes:
@@ -104,6 +106,7 @@ components test snapshots:
   script:
     - env
     - yarn
+    - yarn add react-router-dom # peer dep
     - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots
   artifacts:
     expire_in: 2 days
@@ -124,6 +127,7 @@ components make snapshot references:
   script:
     - env
     - yarn
+    - yarn add react-router-dom # peer dep
     - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER}\
       CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS}\
       CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}\
