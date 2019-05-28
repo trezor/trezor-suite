@@ -47,10 +47,4 @@ export const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState)
 };
 
 // links inside of application
-export const goto = (url: string) => {
-    Router.push(url);
-    return {
-        type: UPDATE,
-        message: url,
-    };
-};
+export const goto = (url: string) => Router.push(url);
