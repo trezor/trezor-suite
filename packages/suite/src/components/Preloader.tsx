@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '@suite/types';
-import { INIT } from '@suite/actions/constants/suite';
+import { SUITE } from '@suite/actions/constants';
 import Wrapper from './SuiteWrapper';
 
 interface Props {
@@ -13,7 +13,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
     const { loaded, dispatch } = props;
     useEffect(() => {
         if (!loaded) {
-            dispatch({ type: INIT });
+            dispatch({ type: SUITE.INIT });
         }
     }, [dispatch, loaded]);
     return !loaded ? (

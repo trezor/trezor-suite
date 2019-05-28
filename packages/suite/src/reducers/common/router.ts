@@ -1,4 +1,4 @@
-import { LOCATION_CHANGE } from '@suite/actions/RouterActions';
+import { LOCATION_CHANGE } from '@suite/actions/routerActions';
 import { Action } from '@suite/types';
 
 interface RouterState {
