@@ -1,13 +1,11 @@
 import React from 'react';
-import styled, { css } from 'styled-components/native';
+import styled from 'styled-components/native';
 
-import PropTypes from 'prop-types';
 import { GestureResponderEvent } from 'react-native';
 import { FONT_SIZE_NATIVE as FONT_SIZE } from '../../config/variables';
 import Icon from '../Icon';
 import colors from '../../config/colors';
 import icons from '../../config/icons';
-import { Omit } from '../../support/types';
 
 const Wrapper = styled.TouchableWithoutFeedback`
     display: flex;

@@ -3,7 +3,9 @@ import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
 
 const models = {
+    // eslint-disable-next-line global-require
     1: require('../../images/trezor-1.png'),
+    // eslint-disable-next-line global-require
     2: require('../../images/trezor-2.png'),
 };
 

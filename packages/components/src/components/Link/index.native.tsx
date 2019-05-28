@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react';
-import { GestureResponderEvent, Linking } from 'react-native';
+import React from 'react';
+import { Linking } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '../../config/colors';
 import { Omit } from '../../support/types';

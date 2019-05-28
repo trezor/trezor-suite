@@ -2,12 +2,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components/native';
 import React from 'react';
 
-import {
-    FONT_FAMILY,
-    FONT_SIZE_NATIVE as FONT_SIZE,
-    FONT_WEIGHT,
-    LINE_HEIGHT,
-} from '../../config/variables';
+import { FONT_FAMILY, FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor } from '../../utils/colors';
 import colors from '../../config/colors';
 import { Omit } from '../../support/types';

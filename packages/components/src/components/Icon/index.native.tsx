@@ -2,6 +2,7 @@ import styled from 'styled-components/native';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+// eslint-disable-next-line import/no-named-as-default
 import Svg, { Path } from 'react-native-svg';
 import { GestureResponderEvent } from 'react-native';
 import colors from '../../config/colors';

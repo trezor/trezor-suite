@@ -8,7 +8,7 @@ const Text = styled.Text``;
 
 interface Props {}
 
-const Loader = ({  }: Props) => (
+const Loader = () => (
     <View>
         <Text>TODO</Text>
     </View>

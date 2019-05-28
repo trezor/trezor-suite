@@ -1,18 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
-import styled, { css } from 'styled-components/native';
+// import styled, { css } from 'styled-components/native';
 import PropTypes from 'prop-types';
-
-import {
-    FONT_FAMILY,
-    FONT_SIZE_NATIVE as FONT_SIZE,
-    FONT_WEIGHT,
-    LINE_HEIGHT,
-    TRANSITION,
-} from '../../../config/variables';
-import { getStateIcon } from '../../../utils/icons';
-import { getPrimaryColor } from '../../../utils/colors';
-import Icon from '../../Icon';
-import colors from '../../../config/colors';
 
 interface InputProps {
     hasIcon?: boolean;
