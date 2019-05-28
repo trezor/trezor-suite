@@ -9,7 +9,6 @@ interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
 }
 
 const TrezorLogo = ({ type, ...rest }: Props) => {
-    // $FlowIssue: `require` must be a string literal.
 	const src = require(`../../images/trezor_logo_${type}_black.svg`); // eslint-disable-line
     return <Img src={src} {...rest} />;
 };
