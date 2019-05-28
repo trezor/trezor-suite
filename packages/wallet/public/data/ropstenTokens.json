@@ -1,0 +1,26 @@
+[
+  {
+    "address":"0x95D7321EdCe519419ba1DbC60A89bAfbF55EAC0D",
+    "name": "PLASMA",
+    "symbol" :"PLASMA",
+    "decimals": 6
+  },
+  {
+    "address": "0x58cda554935e4a1f2acbe15f8757400af275e084",
+    "name": "Trezor01",
+    "symbol": "T01",
+    "decimals": 0
+  },
+  {
+    "address": "0xa04761a776af2bed654a041430a063fd9d20fad4",
+    "name": "Trezor13",
+    "symbol": "T013",
+    "decimals": 13
+  },
+  {
+    "address": "0x58cda554935e4a1f2acbe15f8757400af275e084",
+    "name": "LahodCoin",
+    "symbol": "LAHOD",
+    "decimals": 13
+  }
+]
