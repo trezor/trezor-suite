@@ -14,7 +14,6 @@ import { getPrimaryColor } from '../../../utils/colors';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
 
-
 interface InputProps {
     hasIcon?: boolean;
     hasAddon?: boolean;

@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 
 const models = {
     1: require('../../images/trezor-1.png'),
-    2: require('../../images/trezor-2.png')
-}
+    2: require('../../images/trezor-2.png'),
+};
 
 const Img = styled.Image``;
 

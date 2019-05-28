@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, {css} from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 import { FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
@@ -16,8 +16,8 @@ const Label = styled.Text`
     font-weight: 400;
     align-self: center;
     font-size: 18;
-    color: ${(props: any) => props.disabled? colors.TEXT_SECONDARY : colors.WHITE};
-`
+    color: ${(props: any) => (props.disabled ? colors.TEXT_SECONDARY : colors.WHITE)};
+`;
 
 const ButtonContainer = styled.TouchableHighlight`
     align-items: center;
@@ -33,7 +33,7 @@ const ButtonContainer = styled.TouchableHighlight`
             background-color: ${colors.GRAY_LIGHT};
             border: 1px solid ${colors.DIVIDER};
         `}
-`
+`;
 
 interface Props {
     additionalClassName?: string;
@@ -61,28 +61,25 @@ const Button = ({
     ...rest
 }: Props) => {
     return (
-            <ButtonContainer
-                onPress={onClick}
-                isWhite={isWhite}
-                isTransparent={isTransparent}
-                isInverse={isInverse}
-                isLoading={isLoading}
-                variant={variant}
-                underlayColor={getSecondaryColor(variant)}
-                disabled={isDisabled}
-            >
-                <View>
-                    {isLoading && <Spinner size="small" color={isDisabled? colors.TEXT_SECONDARY : 'white'}/>}
+        <ButtonContainer
+            onPress={onClick}
+            isWhite={isWhite}
+            isTransparent={isTransparent}
+            isInverse={isInverse}
+            isLoading={isLoading}
+            variant={variant}
+            underlayColor={getSecondaryColor(variant)}
+            disabled={isDisabled}
+        >
+            <View>
+                {isLoading && (
+                    <Spinner size="small" color={isDisabled ? colors.TEXT_SECONDARY : 'white'} />
+                )}
 
-
-                    <Label disabled={isDisabled}>
-                        {children}
-                    </Label>
-                </View>
-
-            </ButtonContainer>
+                <Label disabled={isDisabled}>{children}</Label>
+            </View>
+        </ButtonContainer>
     );
 };
-
 
 export default Button;

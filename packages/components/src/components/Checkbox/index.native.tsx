@@ -2,12 +2,12 @@ import React from 'react';
 import styled, { css } from 'styled-components/native';
 
 import PropTypes from 'prop-types';
+import { GestureResponderEvent } from 'react-native';
 import { FONT_SIZE_NATIVE as FONT_SIZE } from '../../config/variables';
 import Icon from '../Icon';
 import colors from '../../config/colors';
 import icons from '../../config/icons';
 import { Omit } from '../../support/types';
-import { GestureResponderEvent } from 'react-native';
 
 const Wrapper = styled.TouchableWithoutFeedback`
     display: flex;
@@ -49,25 +49,22 @@ interface Props {
 
 type IconWrapperProps = Omit<Props, 'onClick' | 'propTypes'>;
 
-const Checkbox = ({isChecked, children, onClick, ...rest}: Props) => {
+const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => {
     return (
-            <Wrapper
-                onPress={onClick}
-                {...rest}
-            >
-                <IconWrapper isChecked={isChecked}>
-                    {isChecked && (
-                        <Icon
-                            hoverColor={colors.WHITE}
-                            size={10}
-                            color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
-                            icon={icons.SUCCESS}
-                        />
-                    )}
-                </IconWrapper>
-                <Label isChecked={isChecked}>{children}</Label>
-            </Wrapper>
+        <Wrapper onPress={onClick} {...rest}>
+            <IconWrapper isChecked={isChecked}>
+                {isChecked && (
+                    <Icon
+                        hoverColor={colors.WHITE}
+                        size={10}
+                        color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
+                        icon={icons.SUCCESS}
+                    />
+                )}
+            </IconWrapper>
+            <Label isChecked={isChecked}>{children}</Label>
+        </Wrapper>
     );
-}
+};
 
 export default Checkbox;

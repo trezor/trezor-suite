@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
 
-const LOGOS: {[key: string]: string} = {
+const LOGOS: { [key: string]: string } = {
     ada: require('../../images/coins/ada.png'),
     bch: require('../../images/coins/bch.png'),
     btc: require('../../images/coins/btc.png'),
@@ -24,7 +24,7 @@ const LOGOS: {[key: string]: string} = {
     xrp: require('../../images/coins/xrp.png'),
     xtz: require('../../images/coins/xtz.png'),
     zec: require('../../images/coins/zec.png'),
-}
+};
 
 const Logo = styled.Image``;
 

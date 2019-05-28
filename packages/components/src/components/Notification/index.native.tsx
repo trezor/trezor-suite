@@ -11,5 +11,5 @@ import icons from '../../config/icons';
 
 const Notification = () => {
     return null;
-}
+};
 export default Notification;

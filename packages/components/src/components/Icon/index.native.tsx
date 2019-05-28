@@ -2,16 +2,15 @@ import styled from 'styled-components/native';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import Svg, { Path } from 'react-native-svg';
+import { GestureResponderEvent } from 'react-native';
 import colors from '../../config/colors';
 import icons from '../../config/icons';
 import { Omit, IconShape } from '../../support/types';
-import Svg, { Path } from 'react-native-svg';
-import { GestureResponderEvent } from 'react-native';
 
 // TODO: rewrite animations using Animated API
 
-const TouchableWithoutFeedback = styled.TouchableWithoutFeedback`
-`;
+const TouchableWithoutFeedback = styled.TouchableWithoutFeedback``;
 
 type WrapperProps = Omit<Props, 'icon' | 'size'>;
 interface Props {
@@ -22,32 +21,23 @@ interface Props {
     onClick?: (event: GestureResponderEvent) => void;
 }
 
-const Icon = ({
-    icon,
-    size = 24,
-    color = colors.TEXT_SECONDARY,
-    onClick,
-    ...rest
-}: Props) => {
+const Icon = ({ icon, size = 24, color = colors.TEXT_SECONDARY, onClick, ...rest }: Props) => {
     // if string is passed to the icon prop use it as a key in icons object
-    const iconObject: IconShape =
-        typeof icon === 'string' ? icons[icon] : icon;
+    const iconObject: IconShape = typeof icon === 'string' ? icons[icon] : icon;
     if (!iconObject) return null;
     return (
-        <TouchableWithoutFeedback
-            onPress={onClick}
-        >
-        <Svg
-            width={`${size * (iconObject.ratio || 1)}`}
-            height={`${size}`}
-            viewBox={iconObject.viewBox || '0 0 1024 1024'}
-            color={color}
-            {...rest}
-        >
-            {iconObject.paths.map((path: string) => (
-                <Path key={path} fill={color} d={path} />
-            ))}
-        </Svg>
+        <TouchableWithoutFeedback onPress={onClick}>
+            <Svg
+                width={`${size * (iconObject.ratio || 1)}`}
+                height={`${size}`}
+                viewBox={iconObject.viewBox || '0 0 1024 1024'}
+                color={color}
+                {...rest}
+            >
+                {iconObject.paths.map((path: string) => (
+                    <Path key={path} fill={color} d={path} />
+                ))}
+            </Svg>
         </TouchableWithoutFeedback>
     );
 };

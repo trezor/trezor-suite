@@ -26,7 +26,7 @@ const Header = ({
     logoLinkComponent,
     links,
 }: Props) => {
-    return null
+    return null;
 };
 
 export default Header;

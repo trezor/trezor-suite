@@ -2,7 +2,12 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components/native';
 import React from 'react';
 
-import { FONT_FAMILY, FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT } from '../../config/variables';
+import {
+    FONT_FAMILY,
+    FONT_SIZE_NATIVE as FONT_SIZE,
+    FONT_WEIGHT,
+    LINE_HEIGHT,
+} from '../../config/variables';
 import { getPrimaryColor } from '../../utils/colors';
 import colors from '../../config/colors';
 import { Omit } from '../../support/types';
@@ -35,17 +40,14 @@ const StyledTextarea = styled.TextInput<StyledTextareaProps>`
         css`
             background: ${colors.GRAY_LIGHT};
             color: ${colors.TEXT_SECONDARY};
-        `
-    }
+        `}
 
     ${props =>
         props.disabled &&
         css`
             background: ${colors.GRAY_LIGHT};
             color: ${colors.TEXT_SECONDARY};
-        `
-        
-    }  
+        `}
 `;
 
 const TopLabel = styled.Text`
@@ -53,7 +55,7 @@ const TopLabel = styled.Text`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const BottomText = styled.Text<{color: string}>`
+const BottomText = styled.Text<{ color: string }>`
     font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
     margin-top: 10px;
@@ -91,7 +93,7 @@ const TextArea = ({
                 spellCheck={false}
                 autoCorrect={false}
                 autoCapitalize="none"
-                multiline={true}
+                multiline
                 numberOfLines={4}
                 editable={!isDisabled || !readOnly}
                 border={stateColor || colors.INPUT_BORDER}
