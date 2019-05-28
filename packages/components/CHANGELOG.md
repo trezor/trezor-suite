@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- minor TS types fixes
+
 
 ## [1.0.0-beta.20]
 ### Fixed
