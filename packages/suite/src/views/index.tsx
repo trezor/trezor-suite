@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { Button } from '@trezor/components';
-import Wrapper from '@suite/components/SuiteWrapper';
 import { State } from '@suite/types';
 import TrezorConnect from 'trezor-connect';
 
@@ -17,9 +16,6 @@ const onClick = () => {
 
 // TODO: https://redux.js.org/recipes/isolating-redux-sub-apps
 
-let tick = 0;
-const started = Date.now();
-
 interface Props {
     suite: State['suite'];
     router: State['router'];
@@ -27,21 +23,13 @@ interface Props {
 
 const Index = (props: Props) => {
     useEffect(() => {
-        const interval = setInterval(() => {
-            tick++;
-            const time = Date.now() - started;
-            console.log('HOME TICK...', tick, time, props); /* eslint-disable-line no-console */
-        }, 3000);
-
-        return () => {
-            clearInterval(interval);
-        };
+        
     }, [props]);
     return (
-        <Wrapper>
+        <>
             <Text>Home {props.router.pathname}</Text>
-            <Button onClick={onClick} />
-        </Wrapper>
+            <Button variant="success" onClick={onClick} />
+        </>
     );
 };
 

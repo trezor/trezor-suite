@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
 import { Button } from '@trezor/components';
-import Wrapper from '@suite/components/SuiteWrapper';
 import { State } from '@suite/types';
 
-const onPress = () => {
+const onClick = () => {
     // TrezorConnect.getPublicKey();
 };
 
@@ -17,12 +16,12 @@ interface Props {
 
 const Wallet = (props: Props) => {
     return (
-        <Wrapper>
+        <>
             <Text>Wallet {props.router.pathname}</Text>
-            <Button variant="success" onClick={onPress}>
+            <Button variant="success" onClick={onClick}>
                 click
             </Button>
-        </Wrapper>
+        </>
     );
 };
 

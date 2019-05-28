@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
 import { Button } from '@trezor/components';
-import Wrapper from '@suite/components/SuiteWrapper';
 import { State } from '@suite/types';
 
 const onPress = () => {
@@ -17,12 +16,12 @@ interface Props {
 
 const Wallet = (props: Props) => {
     return (
-        <Wrapper>
+        <>
             <Text>Wallet/Send {props.router.pathname}</Text>
             <Button variant="success" onClick={onPress}>
                 click
             </Button>
-        </Wrapper>
+        </>
     );
 };
 
