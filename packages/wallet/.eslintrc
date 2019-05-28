@@ -1,0 +1,67 @@
+{
+    "extends": [
+        "eslint-config-airbnb",
+        "prettier",
+        "prettier/babel",
+        "plugin:flowtype/recommended",
+        "prettier/flowtype",
+        "prettier/react",
+        "plugin:jest/recommended"
+    ],
+    "globals": {
+        "LOCAL": true,
+        "COMMITHASH": true,
+        "VERSION": true
+    },
+    "env": {
+        "browser": true,
+        "jest": true,
+        "cypress/globals": true
+    },
+    "rules": {
+        "import/prefer-default-export": 0,
+        "no-use-before-define": 0,
+        "no-plusplus": 0,
+        "jest/no-disabled-tests": 0,
+        "class-methods-use-this": 0,
+        "react/require-default-props": 0,
+        "react/forbid-prop-types": 0,
+        "react/destructuring-assignment": 0,
+        "react/jsx-one-expression-per-line": 0,
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"]}],
+        "no-console": 0,
+        "no-alert": 0,
+        "no-prototype-builtins": 0,
+        "new-cap": 0,
+        "max-len": 0,
+        "eol-last": 0,
+        "spaced-comment": 0,
+        "no-unused-expressions": 0,
+        "chai-friendly/no-unused-expressions": 2,
+        "prettier/prettier": "error"
+    },
+    "plugins": [
+        "import",
+        "prettier",
+        "react",
+        "jest",
+        "flowtype",
+        "cypress",
+        "chai-friendly"
+    ],
+    "settings": {
+        "import/resolver": {
+            "babel-module": {}
+        },
+        "import/ignore": [
+            "\\.(scss|less|css)$"
+        ]
+    },
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    }
+}
