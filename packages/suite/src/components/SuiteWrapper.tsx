@@ -19,10 +19,8 @@ interface Props {
 const Body: FunctionComponent = props => (
     <>
         <Router />
-        <Header
-            sidebarEnabled={false}
-            />
-            { props.children }
+        <Header sidebarEnabled={false} />
+        {props.children}
     </>
 );
 
@@ -30,24 +28,24 @@ const Wrapper: FunctionComponent<Props> = props => {
     const { suite } = props;
 
     if (!suite.transport) {
-        
         // TODO: check in props.router if current url needs device / transport (settings, install bridge, import etc.)
         return <Body />;
     }
     if (!suite.transport.type) {
         // TODO: render "install bridge"
-        return (<Body>
-            <Text>Install bridge</Text>
-        </Body>)
+        return (
+            <Body>
+                <Text>Install bridge</Text>
+            </Body>
+        );
     }
-
 
     // TODO: render "connect device" view
     if (!props.suite.device) {
         return (
             <Body>
                 <Text>Connect Trezor to continue</Text>
-                <Text>Transport: { suite.transport.type }</Text>
+                <Text>Transport: {suite.transport.type}</Text>
             </Body>
         );
     }

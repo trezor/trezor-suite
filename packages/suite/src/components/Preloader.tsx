@@ -16,11 +16,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
             dispatch({ type: SUITE.INIT });
         }
     }, [dispatch, loaded]);
-    return !loaded ? (
-        <>
-            Preloader...
-        </>
-    ) : <Wrapper>{props.children}</Wrapper>;
+    return !loaded ? <>Preloader...</> : <Wrapper>{props.children}</Wrapper>;
 };
 
 const mapStateToProps = (state: State) => ({

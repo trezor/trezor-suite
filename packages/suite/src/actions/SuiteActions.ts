@@ -1,6 +1,6 @@
 import { Device } from 'trezor-connect';
-import * as SUITE from './constants/suite';
 import { Dispatch, GetState, TrezorDevice } from '@suite/types';
+import * as SUITE from './constants/suite';
 
 export type SuiteActions =
     | {
@@ -15,10 +15,11 @@ export type SuiteActions =
     | {
           type: typeof SUITE.ERROR;
           error: any;
-    } | {
-        type: typeof SUITE.SELECT_DEVICE;
-        payload?: TrezorDevice;
-    };
+      }
+    | {
+          type: typeof SUITE.SELECT_DEVICE;
+          payload?: TrezorDevice;
+      };
 
 export const onSuiteReady = (): SuiteActions => {
     return {
@@ -33,7 +34,6 @@ export const onSuiteError = (error: any): SuiteActions => {
     };
 };
 
-
 // Called from "DEVICE.CONNECT/DEVICE.DISCONNECT" events or from UI
 export const selectDevice = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
     // 1. check if ui is not blocked
@@ -42,18 +42,15 @@ export const selectDevice = (device: Device) => (dispatch: Dispatch, getState: G
 
     // 3. check if device is in available mode
 
-    // 4. 
+    // 4.
     const payload = getState().devices.find(d => device.path === d.path);
     dispatch({
         type: SUITE.SELECT_DEVICE,
-        payload
-    })
-
+        payload,
+    });
 };
 
-export const selectFirstAvailableDevice = () => () => {
-
-}
+export const selectFirstAvailableDevice = () => () => {};
 
 // export const handleDeviceEvent = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch) => {
@@ -66,13 +63,15 @@ export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch) => {
     // }
 
     dispatch(selectDevice(device));
+};
 
-}
-
-export const handleDeviceDisconnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
+export const handleDeviceDisconnect = (device: Device) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const selected = getState().suite.device;
     if (!selected) {
-        //TODO: strange error , it should be
+        // TODO: strange error , it should be
         return;
     }
 
@@ -80,12 +79,9 @@ export const handleDeviceDisconnect = (device: Device) => (dispatch: Dispatch, g
         // selected device gets disconnected, decide what to do next (forget?)
         dispatch({
             type: SUITE.SELECT_DEVICE,
-            payload: undefined
-        })
+            payload: undefined,
+        });
     } else {
         // other device
     }
-
-}
-
-
+};

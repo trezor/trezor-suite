@@ -7,17 +7,17 @@ interface SuiteState {
     loaded: boolean;
     error?: string;
     transport?: Transport;
-    device?: TrezorDevice,
+    device?: TrezorDevice;
 }
 
 interface Transport {
-    type?: string,
+    type?: string;
     bridge: {
-        version: [],
-        directory: '',
-        packages: [],
-        changelog: [],
-    },
+        version: [];
+        directory: '';
+        packages: [];
+        changelog: [];
+    };
 }
 
 const initialState: SuiteState = {
@@ -44,20 +44,20 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
             return {
                 ...state,
                 device: action.payload,
-            }
+            };
 
         case TRANSPORT.START:
             return {
                 ...state,
                 transport: action.payload,
-            }
+            };
         case TRANSPORT.ERROR:
             return {
                 ...state,
                 transport: {
                     bridge: action.payload.bridge,
-                }
-            }
+                },
+            };
         default:
             return state;
     }

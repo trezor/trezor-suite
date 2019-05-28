@@ -6,14 +6,11 @@ import * as BLOCKCHAIN from './constants/blockchain';
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
 
-export type BlockchainActions = {
+export interface BlockchainActions {
     type: typeof BLOCKCHAIN.READY;
 }
 
-export const init = () => async (
-    dispatch: Dispatch,
-    getState: GetState
-): Promise<void> => {
+export const init = () => async (dispatch: Dispatch, _getState: GetState): Promise<void> => {
     // TODO: add connections to backend (from wallet)
 
     // continue wallet initialization

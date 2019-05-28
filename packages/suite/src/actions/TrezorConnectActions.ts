@@ -4,13 +4,12 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
     UI,
-    Device,
 } from 'trezor-connect';
 
 import { SUITE } from '@suite/actions/constants';
-import { Dispatch, GetState, TrezorDevice } from '@suite/types';
+import { Dispatch } from '@suite/types';
 
-export const init = () => async (dispatch: Dispatch, getState: GetState) => {
+export const init = () => async (dispatch: Dispatch) => {
     // set listeners
     TrezorConnect.on(DEVICE_EVENT, event => {
         // dispatch event as action
@@ -61,7 +60,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         });
         dispatch({
             type: SUITE.CONNECT_INITIALIZED,
-        })
+        });
     } catch (error) {
         dispatch({
             type: SUITE.ERROR,

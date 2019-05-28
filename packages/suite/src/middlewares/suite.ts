@@ -34,7 +34,6 @@ const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
             api.dispatch({ type: SUITE.READY });
             break;
 
-
         case DEVICE.CONNECT:
         case DEVICE.CONNECT_UNACQUIRED:
             api.dispatch(SuiteActions.handleDeviceConnect(action.payload));
@@ -42,7 +41,6 @@ const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
         case DEVICE.DISCONNECT:
             api.dispatch(SuiteActions.handleDeviceDisconnect(action.payload));
             break;
-
 
         default:
             break;

@@ -27,7 +27,6 @@ export const init = (): LocationChange => {
     };
 };
 
-
 /**
  * Handle changes of window.location and window.location.hash
  * Called from ./support/RouterHandler

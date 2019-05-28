@@ -9,9 +9,7 @@ const onClick = () => {
     TrezorConnect.getAddress({
         path: "m/44'/0'/0'/0/0",
         coin: 'btc',
-    }).then(r => {
-        console.log('R', r);
-    });
+    }).then();
 };
 
 // TODO: https://redux.js.org/recipes/isolating-redux-sub-apps
@@ -22,9 +20,7 @@ interface Props {
 }
 
 const Index = (props: Props) => {
-    useEffect(() => {
-        
-    }, [props]);
+    useEffect(() => {}, [props]);
     return (
         <>
             <Text>Home {props.router.pathname}</Text>
