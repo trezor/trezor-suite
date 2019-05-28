@@ -1,7 +1,7 @@
 .next
 _old
 build
-
+build-electron
 
 # Dependency directory
 node_modules

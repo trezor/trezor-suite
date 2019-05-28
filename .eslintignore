@@ -1,6 +1,7 @@
 .next
 _old
 build
+build-electron
 
 node_modules
 generated

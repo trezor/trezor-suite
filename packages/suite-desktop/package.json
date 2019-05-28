@@ -2,25 +2,42 @@
     "name": "@trezor/suite-desktop",
     "version": "1.0.0",
     "private": true,
+    "author": "Satoshilabs s.r.o",
     "main": "src/electron.js",
+    "homepage": "./build",
     "scripts": {
-        "dev:desktop": "electron .",
-        "build:desktop": "next build && next export -o build",
-        "pack": "electron-builder --dir",
-        "dist": "electron-builder",
+        "dev": "electron .",
+        "build": "next build && next export -o build",
+        "preelectron-pack": "yarn build",
+        "pack": "electron-builder --dir build",
+        "dist": "rimraf ./build-electron && electron-builder",
         "postinstall": "electron-builder install-app-deps"
     },
     "build": {
-        "appId": "your.id",
-        "mac": {
-          "category": "your.app.category.type"
+        "appId": "com.electron.${name}",
+        "productName": "TrezorSuite",
+        "copyright": "Copyright © year ${author}",
+        "directories": {
+            "buildResources": "./build",
+            "output": "build-electron"
+        },
+        "linux": {
+            "target": [
+                "AppImage",
+                "deb"
+            ]
+        },
+        "win": {
+            "target": "squirrel",
+            "icon": "build/icon.ico"
         }
     },
     "dependencies": {
         "electron-is-dev": "^1.1.0",
         "electron-next": "^3.1.5",
         "next": "^8.0.0",
-        "next-redux-wrapper": "^3.0.0-alpha.2"
+        "next-redux-wrapper": "^3.0.0-alpha.2",
+        "rimraf": "^2.6.3"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",
