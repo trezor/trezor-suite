@@ -29,5 +29,6 @@ module.exports = {
             path: nodejs.path,
             vm: nodejs.vm,
         },
+        blacklistRE: blacklist([/lib\/.*/]),
     },
 };
