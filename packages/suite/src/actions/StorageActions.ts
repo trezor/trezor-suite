@@ -1,19 +1,16 @@
 import { State, Dispatch, GetState } from '@suite/types';
-
-export const LOAD = '@storage/load';
-export const LOADED = '@storage/loaded';
-export const ERROR = '@storage/error';
+import * as STORAGE from './constants/storage';
 
 export type StorageActions =
     | {
-          type: typeof LOAD;
+          type: typeof STORAGE.LOAD;
       }
     | {
-          type: typeof LOADED;
+          type: typeof STORAGE.LOADED;
           payload: State;
       }
     | {
-          type: typeof ERROR;
+          type: typeof STORAGE.ERROR;
           error: any;
       };
 
@@ -33,7 +30,7 @@ export const load = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     return dispatch({
-        type: LOADED,
+        type: STORAGE.LOADED,
         payload: state,
     });
 };
