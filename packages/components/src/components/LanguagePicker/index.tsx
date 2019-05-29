@@ -5,8 +5,8 @@ import React, { CSSProperties } from 'react';
 import styled from 'styled-components';
 import ReactSelect from 'react-select';
 
-import colors from 'config/colors';
-import { SCREEN_SIZE } from 'config/variables';
+import colors from '../../config/colors';
+import { SCREEN_SIZE } from '../../config/variables';
 
 const SelectWrapper = styled.div`
     display: flex;
@@ -107,8 +107,8 @@ interface Props {
     languages: Array<Language>;
 }
 
-const LanguagePicker = ({ language, languages, onChange }: Props) => (
-    <SelectWrapper>
+const LanguagePicker = ({ language, languages, onChange, ...rest }: Props) => (
+    <SelectWrapper {...rest}>
         <SelectIcon role="img" aria-label="Select language">
             <svg width="21" height="15">
                 <image
