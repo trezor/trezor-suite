@@ -29,6 +29,11 @@ module.exports = {
             path: nodejs.path,
             vm: nodejs.vm,
         },
-        blacklistRE: blacklist([/lib\/.*/]),
+        blacklistRE: blacklist([
+            /\.\.\/.*\/node_modules\/.*\/node_modules\/react-native\/.*/,
+            /packages\/components\/node_modules\/react-native\/.*/,
+            /\.\.\/node_modules\/.*\/node_modules\/react-native\/.*/,
+            /node_modules\/.*\/node_modules\/react-native\/.*/,
+        ]),
     },
 };
