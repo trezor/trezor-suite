@@ -6,7 +6,7 @@ import { Button } from '@trezor/components';
 import Wrapper from '@suite/components/SuiteWrapper';
 import { State, Dispatch } from '@suite/types';
 import TrezorConnect from 'trezor-connect';
-import { goto } from '@suite/actions/RouterActions';
+import { goto } from '@suite/actions/routerActions';
 
 const onClick = () => {
     TrezorConnect.getAddress({
