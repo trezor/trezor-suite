@@ -9,6 +9,7 @@ import { linkTo } from '@storybook/addon-links';
 
 import CoinLogo from '../../components/CoinLogo';
 import TrezorImage from '../../components/TrezorImage';
+import TrezorLogo from '../../components/TrezorLogo';
 import Icon from '../../components/Icon';
 import { H1 } from '../../components/Heading';
 import Prompt from '../../components/Prompt';
@@ -256,9 +257,44 @@ storiesOf('Other', module)
                 text: `
         ## Import
         ~~~js
-        import { TrezorIMage } from 'trezor-ui-components';
+        import { TrezorImage } from 'trezor-ui-components';
         ~~~
-        *<TrezorIMage> is just a styled <img> tag. See the [documentation](https://www.w3schools.com/tags/tag_img.asp) for more information about its props and usage.*
+        *<TrezorImage> is just a styled <img> tag. See the [documentation](https://www.w3schools.com/tags/tag_img.asp) for more information about its props and usage.*
+        `,
+            },
+        }
+    )
+    .add(
+        'TrezorLogo',
+        () => {
+            const width = number('width', 100);
+            const height = number('height', undefined);
+            const type = select(
+                'type',
+                {
+                    'horizontal': 'horizontal',
+                    'vertical': 'vertical',
+                },
+                'horizontal'
+            );
+
+            return (
+                <TrezorLogo
+                    type={type} 
+                    {...(width ? { width } : {})}
+                    {...(height ? { height } : {})}
+                    data-test="trezor_logo"
+                />
+            );
+        },
+        {
+            info: {
+                text: `
+        ## Import
+        ~~~js
+        import { TrezorLogo } from 'trezor-ui-components';
+        ~~~
+        *<TrezorLogo> is just a styled <img> tag. See the [documentation](https://www.w3schools.com/tags/tag_img.asp) for more information about its props and usage.*
         `,
             },
         }

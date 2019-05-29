@@ -13,11 +13,13 @@ export const onLocationChange = (url: string) => {
 
 // links inside of application
 export const goto = (url: string) => () => {
+    console.log(url);
     // TODO: check if requested url != current url
     const [pathname, hash] = url.split('#');
     try {
         Actions[pathname].call(undefined, hash ? { hash } : undefined);
     } catch (error) {
+        console.error(error);
         // TODO: catch error
     }
 

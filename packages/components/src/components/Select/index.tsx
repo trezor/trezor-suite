@@ -68,8 +68,8 @@ const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) =>
 });
 
 interface Props {
-    isSearchable: boolean;
-    withDropdownIndicator: boolean;
+    isSearchable?: boolean;
+    withDropdownIndicator?: boolean;
 }
 
 interface AsyncProps extends Props {

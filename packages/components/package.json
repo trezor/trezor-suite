@@ -41,7 +41,7 @@
         "@types/react-router-dom": "^4.3.3",
         "@types/react-select": "^2.0.17",
         "@types/react-textarea-autosize": "^4.3.4",
-        "@types/styled-components": "4.1.8",
+        "@types/styled-components": "^4.1.15",
         "@typescript-eslint/eslint-plugin": "^1.6.0",
         "@typescript-eslint/parser": "^1.6.0",
         "awesome-typescript-loader": "^5.2.1",
@@ -65,6 +65,7 @@
         "react": "16.8.6",
         "react-docgen-typescript-loader": "^3.1.0",
         "react-dom": "16.8.6",
+        "react-native": "^0.59.4",
         "react-router-dom": "^5.0.0",
         "start-server-and-test": "^1.9.0",
         "storybook-react-router": "^1.0.5",
@@ -81,6 +82,7 @@
     "dependencies": {
         "@tippy.js/react": "^2.1.1",
         "prop-types": "^15.7.2",
+        "react-native-svg": "^9.4.0",
         "react-select": "^2.4.3",
         "react-switch": "^5.0.0",
         "react-textarea-autosize": "^7.1.0"
@@ -88,6 +90,7 @@
     "peerDependencies": {
         "react": "^16.8",
         "react-dom": "^16.8",
+        "react-native": "^0.59.4",
         "react-router-dom": "^5.0.0",
         "styled-components": "^4.1.3"
     }
