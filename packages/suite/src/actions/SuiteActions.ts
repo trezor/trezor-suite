@@ -23,6 +23,6 @@ export const onSuiteReady = (): SuiteActions => {
 export const onSuiteError = (error: any): SuiteActions => {
     return {
         type: ERROR,
-        error
+        error,
     };
 };

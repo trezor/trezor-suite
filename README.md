@@ -8,6 +8,30 @@ Projects:
 - @trezor/suite-desktop
 - @trezor/suite-native
 
+## Development
+To build react-native application start by following these instructions. Select `React Native CLI Quickstart` and install all required dependencies.
+https://facebook.github.io/react-native/docs/getting-started
+
+- `git clone git@github.com:trezor/trezor-suite.git`
+- `yarn`
+- `yarn suite:dev`
+
+To enable ESLint on typescript files in VS Code add following lines to your settings (`Preferences -> Settings`)
+```
+"eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    {
+        "language": "typescript",
+        "autoFix": true
+    },
+    {
+        "language": "typescriptreact",
+        "autoFix": true
+    }
+]
+```
+
 ## Contribute
 
 Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)

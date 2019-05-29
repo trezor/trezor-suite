@@ -5,12 +5,6 @@
           "name": "typescript-styled-plugin"
         }
       ],
-      "paths": {
-        "components/*": ["components/*"],
-        "utils/*": ["utils/*"],
-        "support/*": ["support/*"],
-        "config/*": ["config/*"]
-      },
       "baseUrl": "../src",
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,

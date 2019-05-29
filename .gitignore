@@ -8,6 +8,7 @@ node_modules
 
 # OSX
 .DS_Store
+dist
 
 # Editors
 .idea
