@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { Header } from '@trezor/components';
 import Router from '@suite/support/Router';
+import DeviceSelection from './DeviceSelection';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
@@ -20,6 +21,7 @@ const Body: FunctionComponent = props => (
     <>
         <Router />
         <Header sidebarEnabled={false} />
+        <DeviceSelection />
         {props.children}
     </>
 );
@@ -29,7 +31,9 @@ const Wrapper: FunctionComponent<Props> = props => {
 
     if (!suite.transport) {
         // TODO: check in props.router if current url needs device / transport (settings, install bridge, import etc.)
-        return <Body />;
+
+        // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
+        return (<Body>Don't have Transport info not yet.... show preloader?</Body>);
     }
     if (!suite.transport.type) {
         // TODO: render "install bridge"
@@ -41,6 +45,7 @@ const Wrapper: FunctionComponent<Props> = props => {
     }
 
     // TODO: render "connect device" view
+    // TODO: check if it's not a onboarding page which is waiting for device connection
     if (!props.suite.device) {
         return (
             <Body>
@@ -50,6 +55,7 @@ const Wrapper: FunctionComponent<Props> = props => {
         );
     }
 
+    // TODO: render requested view
     return (
         <Body>
             <Text>Suite wrapper</Text>

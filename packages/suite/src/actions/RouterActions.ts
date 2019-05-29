@@ -11,7 +11,7 @@ export const UPDATE = '@router/update';
 
 interface LocationChange {
     type: typeof LOCATION_CHANGE;
-    pathname: string;
+    url: string;
 }
 
 export type RouterActions = LocationChange;
@@ -20,10 +20,10 @@ export type RouterActions = LocationChange;
  * Dispatch initial url
  */
 export const init = (): LocationChange => {
-    const pathname = Router.pathname + window.location.hash;
+    const url = Router.pathname + window.location.hash;
     return {
         type: LOCATION_CHANGE,
-        pathname,
+        url,
     };
 };
 
@@ -39,7 +39,7 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
 
     return dispatch({
         type: LOCATION_CHANGE,
-        pathname: url,
+        url,
     });
 };
 
@@ -58,4 +58,10 @@ export const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState)
 };
 
 // links inside of application
-export const goto = (url: string) => Router.push(url);
+export const goto = (url: string, preserveParams: boolean = false) => {
+    if (preserveParams) {
+        Router.push(url + window.location.hash);
+    } else {
+        Router.push(url);
+    }
+}
