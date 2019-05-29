@@ -1,8 +1,6 @@
 /**
  * Router actions for 'next/router' used in web and desktop apps
  * Use override for react-native (@trezor/suite-native/src/actions)
- * @param {*} { store }
- * @returns null
  */
 
 import Router from 'next/router';
@@ -11,10 +9,23 @@ import { Dispatch, GetState } from '@suite/types';
 export const LOCATION_CHANGE = '@router/location-change';
 export const UPDATE = '@router/update';
 
-export interface RouterActions {
+interface LocationChange {
     type: typeof LOCATION_CHANGE;
-    pathname: string;
+    url: string;
 }
+
+export type RouterActions = LocationChange;
+
+/**
+ * Dispatch initial url
+ */
+export const init = (): LocationChange => {
+    const url = Router.pathname + window.location.hash;
+    return {
+        type: LOCATION_CHANGE,
+        url,
+    };
+};
 
 /**
  * Handle changes of window.location and window.location.hash
@@ -28,7 +39,7 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
 
     return dispatch({
         type: LOCATION_CHANGE,
-        pathname: url,
+        url,
     });
 };
 
@@ -47,10 +58,10 @@ export const onBeforePopState = () => (_dispatch: Dispatch, _getState: GetState)
 };
 
 // links inside of application
-export const goto = (url: string) => {
-    Router.push(url);
-    return {
-        type: UPDATE,
-        message: url,
-    };
+export const goto = (url: string, preserveParams: boolean = false) => {
+    if (preserveParams) {
+        Router.push(url + window.location.hash);
+    } else {
+        Router.push(url);
+    }
 };

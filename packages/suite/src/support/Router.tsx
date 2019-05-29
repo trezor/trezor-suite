@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 
-import { onLocationChange, onBeforePopState } from '@suite/actions/RouterActions';
+import { onLocationChange, onBeforePopState } from '@suite/actions/routerActions';
 import { Dispatch } from '@suite/types';
 
 /**
@@ -35,9 +35,6 @@ const RouterHandler: FunctionComponent<Props> = ({ onLocationChange, onBeforePop
 
         Router.events.on('routeChangeComplete', onLocationChange);
         Router.events.on('hashChangeComplete', onLocationChange);
-
-        // dispatch initial location
-        onLocationChange(Router.pathname + window.location.hash);
 
         return () => {
             window.removeEventListener('hashchange', onHashChanged, false);
