@@ -1,0 +1,14 @@
+[
+  {
+    "address": "0x085fb4f24031EAedbC2B611AA528f22343eB52Db",
+    "decimals": 8,
+    "name": "BEC",
+    "symbol": "BEC"
+  },
+  {
+    "address": "0x6ADa6F48C815689502C43eC1a59F1b5DD3C04E1F",
+    "decimals": 18,
+    "name": "UniversalCoin",
+    "symbol": "UNV"
+  }
+]

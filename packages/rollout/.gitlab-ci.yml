@@ -1,0 +1,20 @@
+image: node:11.3.0
+
+cache:
+  paths:
+  - node_modules
+
+stages:
+  - test
+
+lint:
+  stage: test
+  script:
+    - yarn install
+    - yarn run lint
+
+unit:
+  stage: test
+  script:
+    - yarn install
+    - yarn run test
