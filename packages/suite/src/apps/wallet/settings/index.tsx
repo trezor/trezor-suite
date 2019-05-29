@@ -4,10 +4,8 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import { State } from '@suite/types';
+import { goto } from '@suite/actions/routerActions';
 
-const onClick = () => {
-    // TrezorConnect.getPublicKey();
-};
 
 interface Props {
     suite: State['suite'];
@@ -17,9 +15,9 @@ interface Props {
 const Wallet = (props: Props) => {
     return (
         <>
-            <Text>Wallet {props.router.pathname}</Text>
-            <Button variant="success" onClick={onClick}>
-                click
+            <Text>Settings</Text>
+            <Button variant="success" onClick={() => goto('/')}>
+                Back to wallet
             </Button>
         </>
     );

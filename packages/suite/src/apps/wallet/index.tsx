@@ -4,10 +4,8 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import { State } from '@suite/types';
+import { goto } from '@suite/actions/routerActions';
 
-const onPress = () => {
-    // TrezorConnect.getPublicKey();
-};
 
 interface Props {
     suite: State['suite'];
@@ -17,9 +15,16 @@ interface Props {
 const Wallet = (props: Props) => {
     return (
         <>
-            <Text>Wallet/Send {props.router.pathname}</Text>
-            <Button variant="success" onClick={onPress}>
-                click
+            <Text>Wallet homepage</Text>
+            <Button variant="success" onClick={() => goto('/wallet/account#/eth/1')}>
+                Ethereum
+            </Button>
+            <Button variant="success" onClick={() => goto('/wallet/account#/xrp/1')}>
+                Ripple
+            </Button>
+            <Text></Text>
+            <Button variant="success" onClick={() => goto('/wallet/settings')}>
+                Settings
             </Button>
         </>
     );

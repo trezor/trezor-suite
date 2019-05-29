@@ -12,8 +12,6 @@ const onClick = () => {
     }).then();
 };
 
-// TODO: https://redux.js.org/recipes/isolating-redux-sub-apps
-
 interface Props {
     suite: State['suite'];
     router: State['router'];
@@ -24,7 +22,7 @@ const Index = (props: Props) => {
     return (
         <>
             <Text>Home {props.router.pathname}</Text>
-            <Button variant="success" onClick={onClick} />
+            <Button variant="success" onClick={onClick}>START</Button>
         </>
     );
 };
