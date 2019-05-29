@@ -59,16 +59,16 @@ class Link extends PureComponent<Props> {
         //         </StyledNavLink>
         //     );
         // } else {
-            LinkComponent = (
-                <A
-                    href={this.props.href}
-                    target={this.props.target || '_blank'}
-                    rel="noreferrer noopener"
-                    {...this.props}
-                >
-                    {this.props.children}
-                </A>
-            );
+        // LinkComponent = (
+        <A
+            href={this.props.href}
+            target={this.props.target || '_blank'}
+            rel="noreferrer noopener"
+            {...this.props}
+        >
+            {this.props.children}
+        </A>;
+        // );
         //}
 
         return LinkComponent;
