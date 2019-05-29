@@ -7,17 +7,17 @@ import { Link } from 'react-router-dom';
 import { withKnobs, select, number, color, text, object, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 
-import CoinLogo from 'components/CoinLogo';
-import TrezorImage from 'components/TrezorImage';
-import Icon from 'components/Icon';
-import { H1 } from 'components/Heading';
-import Prompt from 'components/Prompt';
-import Header from 'components/Header';
-import LanguagePicker from 'components/LanguagePicker';
+import CoinLogo from '../../components/CoinLogo';
+import TrezorImage from '../../components/TrezorImage';
+import Icon from '../../components/Icon';
+import { H1 } from '../../components/Heading';
+import Prompt from '../../components/Prompt';
+import Header from '../../components/Header';
+import LanguagePicker from '../../components/LanguagePicker';
 
-import colors from 'config/colors';
-import icons from 'config/icons';
-import { FONT_SIZE } from 'config/variables';
+import colors from '../../config/colors';
+import icons from '../../config/icons';
+import { FONT_SIZE } from '../../config/variables';
 
 const coins = [
     'ada',
@@ -326,6 +326,19 @@ storiesOf('Other', module)
                     bn: 'bn',
                     cs: 'cs',
                     de: 'de',
+                    el: 'el',
+                    es: 'es',
+                    fr: 'fr',
+                    id: 'id',
+                    it: 'it',
+                    ja: 'ja',
+                    nl: 'nl',
+                    pl: 'pl',
+                    pt: 'pt',
+                    ru: 'ru',
+                    uk: 'uk',
+                    zh: 'zh',
+                    'zh-TW': 'zh-TW',
                 },
                 'en'
             );
@@ -334,13 +347,30 @@ storiesOf('Other', module)
                     <LanguagePicker
                         language={language}
                         onChange={(value, action) => {
-                            console.log(`value changed. value: ${JSON.stringify(value)} action: ${JSON.stringify(action)}`);
+                            console.log(
+                                `value changed. value: ${JSON.stringify(
+                                    value
+                                )} action: ${JSON.stringify(action)}`
+                            );
                         }}
                         languages={[
                             { code: 'en', name: 'English', en: 'English' },
                             { code: 'bn', name: 'Bengali', en: 'Bengali' },
                             { code: 'cs', name: 'Česky', en: 'Czech' },
                             { code: 'de', name: 'Deutsch', en: 'German' },
+                            { code: 'el', name: 'Ελληνικά', en: 'Greek' },
+                            { code: 'es', name: 'Español', en: 'Spanish' },
+                            { code: 'fr', name: 'Français', en: 'French' },
+                            { code: 'id', name: 'Bahasa Indonesia', en: 'Indonesian' },
+                            { code: 'it', name: 'Italiano', en: 'Italian' },
+                            { code: 'ja', name: '日本語', en: 'Japanese' },
+                            { code: 'nl', name: 'Nederlands', en: 'Dutch' },
+                            { code: 'pl', name: 'Polski', en: 'Polish' },
+                            { code: 'pt', name: 'Português', en: 'Portuguese' },
+                            { code: 'ru', name: 'Русский', en: 'Russian' },
+                            { code: 'uk', name: 'Українська', en: 'Ukrainian' },
+                            { code: 'zh', name: '中文(简体)', en: 'Chinese Simplified' },
+                            { code: 'zh-TW', name: '中文(台灣)', en: 'Chinese Traditional' },
                         ]}
                         data-test="language_picker"
                     />
