@@ -1,9 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { bindActionCreators } from 'redux';
 
-import { Header } from '@trezor/components';
 import { goto } from '@suite/actions/RouterActions';
 
 interface Props {
@@ -12,11 +11,10 @@ interface Props {
 
 const Wrapper: FunctionComponent<Props> = props => {
     return (
-        <>
-            <Header onClick={props.goto} />
+        <View>
             <Text>Suite wrapper</Text>
             {props.children}
-        </>
+        </View>
     );
 };
 

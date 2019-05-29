@@ -2,13 +2,12 @@ export default {
     WHITE: '#FFFFFF',
     BACKGROUND: '#EBEBEB',
 
-    TEXT: '#333333',
-
     HEADER: '#1A1A1A',
     BODY: '#E3E3E3',
     MAIN: '#FBFBFB',
     LANDING: '#F9F9F9',
 
+    TEXT: '#333333',
     TEXT_PRIMARY: '#494949',
     TEXT_SECONDARY: '#757575',
 
@@ -16,6 +15,7 @@ export default {
     DIVIDER: '#E3E3E3',
     HEADER_DIVIDER: '#333333',
 
+    // can be deleted
     GREEN_PRIMARY: '#01B757',
     GREEN_SECONDARY: '#00AB51',
     GREEN_TERTIARY: '#009546',
