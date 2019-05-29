@@ -64,4 +64,4 @@ export const goto = (url: string, preserveParams: boolean = false) => {
     } else {
         Router.push(url);
     }
-}
+};

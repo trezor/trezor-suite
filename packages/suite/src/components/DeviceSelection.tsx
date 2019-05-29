@@ -16,16 +16,16 @@ const Selection: FunctionComponent<Props> = props => {
     const { devices, selectedDevice } = props;
 
     if (!selectedDevice || devices.length < 1) return null;
-    
+
     const options = devices.map(dev => ({
         label: dev.label,
         value: dev.path,
         device: dev,
-    }))
+    }));
 
     const onSelect = (option: any) => {
         props.selectDevice(option.device);
-    }
+    };
 
     const value = options.find(opt => opt.device === selectedDevice);
 
@@ -34,11 +34,12 @@ const Selection: FunctionComponent<Props> = props => {
             isSearchable={false}
             isClearable={false}
             isAsync={false}
-            withDropdownIndicator={true}
+            withDropdownIndicator
             value={value}
             options={options}
-            onChange={(option: string) => onSelect(option)} />
-    )
+            onChange={(option: string) => onSelect(option)}
+        />
+    );
 };
 
 const mapStateToProps = (state: State) => ({

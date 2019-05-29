@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
+
 const onPress = () => {
     // TrezorConnect.getPublicKey();
 };
@@ -16,10 +17,12 @@ interface Props {
 
 const Wallet = (props: Props) => {
     const { pathname, params } = props.router;
-    const baseUrl: string = `${pathname}#/${params.coin}/`;
+    const baseUrl = `${pathname}#/${params.coin}/`;
     return (
         <>
-            <Text>{params.coin} Account {params.accountId} Receive Page</Text>
+            <Text>
+                {params.coin} Account {params.accountId} Receive Page
+            </Text>
             <Text>Other accounts</Text>
             <Button variant="success" onClick={() => goto(`${baseUrl}1`)}>
                 Account#1

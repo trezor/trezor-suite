@@ -5,10 +5,10 @@ import { bindActionCreators } from 'redux';
 
 import { Header } from '@trezor/components';
 import Router from '@suite/support/Router';
-import DeviceSelection from './DeviceSelection';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
+import DeviceSelection from './DeviceSelection';
 
 interface Props {
     router: State['router'];
@@ -33,7 +33,7 @@ const Wrapper: FunctionComponent<Props> = props => {
         // TODO: check in props.router if current url needs device / transport (settings, install bridge, import etc.)
 
         // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-        return (<Body>Don't have Transport info not yet.... show preloader?</Body>);
+        return <Body>Don't have Transport info not yet.... show preloader?</Body>;
     }
     if (!suite.transport.type) {
         // TODO: render "install bridge"

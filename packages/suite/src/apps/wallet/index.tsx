@@ -6,7 +6,6 @@ import { Button } from '@trezor/components';
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
 
-
 interface Props {
     suite: State['suite'];
     router: State['router'];
@@ -22,7 +21,7 @@ const Wallet = (props: Props) => {
             <Button variant="success" onClick={() => goto('/wallet/account#/xrp/1')}>
                 Ripple
             </Button>
-            <Text></Text>
+            <Text />
             <Button variant="success" onClick={() => goto('/wallet/settings')}>
                 Settings
             </Button>

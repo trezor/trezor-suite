@@ -6,7 +6,6 @@ import { Button } from '@trezor/components';
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
 
-
 interface Props {
     suite: State['suite'];
     router: State['router'];

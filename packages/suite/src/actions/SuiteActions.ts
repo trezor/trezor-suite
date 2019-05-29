@@ -1,8 +1,8 @@
 import { Device } from 'trezor-connect';
 import { Dispatch, GetState, TrezorDevice } from '@suite/types';
+import * as routerUtils from '@suite/utils/router';
 import * as SUITE from './constants/suite';
 import * as routerActions from './routerActions';
-import * as routerUtils from '@suite/utils/router';
 
 export type SuiteActions =
     | {
@@ -37,7 +37,10 @@ export const onSuiteError = (error: any): SuiteActions => {
 };
 
 // Called from "DEVICE.CONNECT/DEVICE.DISCONNECT" events or from UI
-export const selectDevice = (device: Device | TrezorDevice | undefined) => (dispatch: Dispatch, getState: GetState) => {
+export const selectDevice = (device: Device | TrezorDevice | undefined) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     // 1. TODO: check if ui is not blocked (by device request, or application itself - for example onboarding)
 
     // 2. TODO: check if device is acquired

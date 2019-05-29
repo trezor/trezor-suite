@@ -22,7 +22,9 @@ const Index = (props: Props) => {
     return (
         <>
             <Text>Home {props.router.pathname}</Text>
-            <Button variant="success" onClick={onClick}>START</Button>
+            <Button variant="success" onClick={onClick}>
+                START
+            </Button>
         </>
     );
 };

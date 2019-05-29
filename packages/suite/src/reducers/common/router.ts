@@ -20,7 +20,7 @@ const initialState: RouterState = {
 };
 
 const onLocationChange = (url: string) => {
-    const [ pathname, hash ] = url.split('#');
+    const [pathname, hash] = url.split('#');
     return {
         url,
         pathname,
