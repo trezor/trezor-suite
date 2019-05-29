@@ -30,9 +30,7 @@ module.exports = {
             vm: nodejs.vm,
         },
         blacklistRE: blacklist([
-            /\.\.\/.*\/node_modules\/.*\/node_modules\/react-native\/.*/,
             /packages\/components\/node_modules\/react-native\/.*/,
-            /\.\.\/node_modules\/.*\/node_modules\/react-native\/.*/,
             /node_modules\/.*\/node_modules\/react-native\/.*/,
         ]),
     },
