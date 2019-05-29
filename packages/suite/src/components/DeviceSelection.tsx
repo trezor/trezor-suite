@@ -32,7 +32,6 @@ const Selection: FunctionComponent<Props> = props => {
     return (
         <Select
             isSearchable={false}
-            isClearable={false}
             isAsync={false}
             withDropdownIndicator
             value={value}

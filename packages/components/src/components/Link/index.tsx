@@ -50,7 +50,7 @@ class Link extends PureComponent<Props> {
     };
 
     render() {
-        const shouldRenderRouterLink = this.props.to;
+        // const shouldRenderRouterLink = this.props.to;
         let LinkComponent;
         // if (shouldRenderRouterLink) {
         //     LinkComponent = (

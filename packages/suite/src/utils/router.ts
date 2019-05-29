@@ -8,9 +8,9 @@ export const isOnboarding = (url: string) => {
 };
 
 export const parseParams = (url: string) => {
-    const [pathname, hash] = url.split('#');
-    if (!hash) return {};
-    const parts = hash.substr(1, hash.length).split('/');
+    const split = url.split('#');
+    if (!split[1]) return {};
+    const parts = split[1].substr(1, split[1].length).split('/');
 
     const params: { [key: string]: string } = {};
     ['coin', 'accountId'].forEach((key, index) => {

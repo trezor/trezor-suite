@@ -3,11 +3,7 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { State } from '@suite/types';
 
-interface Props {
-    suite: State['suite'];
-}
-
-const Index = (props: Props) => {
+const Index = () => {
     return (
         <>
             <Text>ONBOARDING</Text>

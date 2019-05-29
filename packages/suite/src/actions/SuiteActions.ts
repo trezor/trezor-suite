@@ -1,8 +1,6 @@
 import { Device } from 'trezor-connect';
 import { Dispatch, GetState, TrezorDevice } from '@suite/types';
-import * as routerUtils from '@suite/utils/router';
 import * as SUITE from './constants/suite';
-import * as routerActions from './routerActions';
 
 export type SuiteActions =
     | {
