@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { injectIntl } from 'react-intl';
+
+import { State } from '@suite/types';
+import { selectDevice } from '@suite/actions/suiteActions';
 import styled, { css } from 'styled-components';
 import { TrezorImage, colors } from '@trezor/components';
 import { getStatusColor, getStatusName, getStatus } from '../../utils/device';
 
+interface Props {
+    devices: State['devices'];
+    selectedDevice: State['suite']['device'];
+    selectDevice: typeof selectDevice;
+}
+
 // import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 interface Props {
+    devices: State['devices'];
+    selectedDevice: State['suite']['device'];
+    selectDevice: typeof selectDevice;
     isAccessible: boolean;
     device: any; // TODO: add type from connect
     icon: any;
@@ -102,20 +117,40 @@ const Dot = styled.div`
     height: 10px;
 `;
 
-const DeviceHeader = ({
-    isOpen,
-    icon,
-    device,
-    isHoverable = true,
-    onClickWrapper,
-    isAccessible = true,
-    disabled = false,
-    isSelected = false,
-    className,
-    testId,
-    intl,
-}) => {
-    const status = getStatus(device);
+const DeviceSelection: FunctionComponent<Props> = props => {
+    const {
+        devices,
+        selectedDevice,
+        isOpen,
+        icon,
+        device,
+        isHoverable = true,
+        onClickWrapper,
+        isAccessible = true,
+        disabled = false,
+        isSelected = false,
+        className,
+        testId,
+        intl,
+    } = props;
+
+    if (!selectedDevice || devices.length < 1) return null;
+
+    const options = devices.map(dev => ({
+        label: dev.label,
+        value: dev.path,
+        device: dev,
+    }));
+
+    const onSelect = (option: any) => {
+        props.selectDevice(option.device);
+    };
+
+    console.log('selectedDevice', selectedDevice);
+
+    const value = options.find(opt => opt.device === selectedDevice);
+    const status = getStatus(selectedDevice);
+
     return (
         <Wrapper
             isSelected={isSelected}
@@ -130,11 +165,11 @@ const DeviceHeader = ({
                 <Dot color={getStatusColor(status)} />
                 <TrezorImage
                     height={28}
-                    model={(device.features && device.features.major_version) || 1}
+                    model={(selectedDevice.features && selectedDevice.features.major_version) || 1}
                 />
             </ImageWrapper>
             <LabelWrapper>
-                <Name>{device.instanceLabel}</Name>
+                <Name>{selectedDevice.instanceLabel}</Name>
                 <Status title={getStatusName(status, intl)}>{getStatusName(status, intl)}</Status>
             </LabelWrapper>
             <IconWrapper>{icon && !disabled && isAccessible && icon}</IconWrapper>
@@ -142,4 +177,16 @@ const DeviceHeader = ({
     );
 };
 
-export default DeviceHeader;
+const mapStateToProps = (state: State) => ({
+    devices: state.devices,
+    selectedDevice: state.suite.device,
+});
+
+export default injectIntl(
+    connect(
+        mapStateToProps,
+        dispatch => ({
+            selectDevice: bindActionCreators(selectDevice, dispatch),
+        }),
+    )(DeviceSelection),
+);
