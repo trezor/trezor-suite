@@ -2,11 +2,10 @@ import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
-
 import { State } from '@suite/types';
 import { selectDevice } from '@suite/actions/suiteActions';
 import styled, { css } from 'styled-components';
-import { TrezorImage, colors } from '@trezor/components';
+import { TrezorImage, colors, variables } from '@trezor/components';
 import { getStatusColor, getStatusName, getStatus } from '../../utils/device';
 
 interface Props {
@@ -14,8 +13,6 @@ interface Props {
     selectedDevice: State['suite']['device'];
     selectDevice: typeof selectDevice;
 }
-
-// import { FONT_SIZE, FONT_WEIGHT } from 'config/variables';
 
 interface Props {
     devices: State['devices'];
@@ -81,7 +78,7 @@ const Name = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    /* font-weight: ${FONT_WEIGHT.MEDIUM}; */
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.TEXT_PRIMARY};
 `;
 
@@ -90,7 +87,7 @@ const Status = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    /* font-size: ${FONT_SIZE.SMALL}; */
+    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${colors.TEXT_SECONDARY};
 `;
 
