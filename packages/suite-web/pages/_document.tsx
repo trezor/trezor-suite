@@ -7,16 +7,18 @@ import { AppRegistry } from 'react-native';
 // https://github.com/necolas/react-native-web/blob/master/docs/guides/client-side-rendering.md
 const globalStyles = `
     #__next {
-        display:flex;
-        flex-direction:column;
-        height:100%
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
-    input,textarea {
-        outline:none;
+
+    input, textarea {
+        outline: none;
     }
+
     body {
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
 `;
