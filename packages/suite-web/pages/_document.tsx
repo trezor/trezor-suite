@@ -1,4 +1,5 @@
 import Document, { Head, Main, NextDocumentContext, NextScript } from 'next/document';
+import { ServerStyleSheet } from 'styled-components';
 import React from 'react';
 import { AppRegistry } from 'react-native';
 
@@ -28,13 +29,15 @@ export default class MyDocument extends Document {
         AppRegistry.registerComponent('Main', () => Main);
         // @ts-ignore getApplication is React Native Web addition for SSR.
         const { getStyleElement } = AppRegistry.getApplication('Main');
-        const page = renderPage();
+        const sheet = new ServerStyleSheet();
+        const page = renderPage(App => props => sheet.collectStyles(<App {...props} />));
+        const styleTags = sheet.getStyleElement();
         const styles = [
             // eslint-disable-next-line react/no-danger
             <style dangerouslySetInnerHTML={{ __html: globalStyles }} key="styles" />,
             getStyleElement(),
         ];
-        return { ...page, styles: React.Children.toArray(styles) };
+        return { ...page, styleTags, styles: React.Children.toArray(styles) };
     }
 
     render() {
@@ -44,6 +47,7 @@ export default class MyDocument extends Document {
                     <meta charSet="utf-8" />
                     <link media="all" rel="stylesheet" href="/static/fonts/fonts.css" />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    {this.props.styleTags}
                 </Head>
                 <body style={{ height: '100%' }}>
                     <Main />
