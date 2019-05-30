@@ -146,8 +146,6 @@ const DeviceSelection: FunctionComponent<Props> = props => {
         props.selectDevice(option.device);
     };
 
-    console.log('selectedDevice', selectedDevice);
-
     const value = options.find(opt => opt.device === selectedDevice);
     const status = getStatus(selectedDevice);
 

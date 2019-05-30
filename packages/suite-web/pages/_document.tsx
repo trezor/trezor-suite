@@ -6,9 +6,19 @@ import { AppRegistry } from 'react-native';
 // Disable input and textarea outline because blinking caret is enough.
 // https://github.com/necolas/react-native-web/blob/master/docs/guides/client-side-rendering.md
 const globalStyles = `
-  #__next{display:flex;flex-direction:column;height:100%}
-  input,textarea{outline:none}
-  body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    #__next {
+        display:flex;
+        flex-direction:column;
+        height:100%
+    }
+    input,textarea {
+        outline:none;
+    }
+    body {
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    }
 `;
 
 export default class MyDocument extends Document {
@@ -30,6 +40,7 @@ export default class MyDocument extends Document {
             <html lang="en" style={{ height: '100%' }}>
                 <Head>
                     <meta charSet="utf-8" />
+                    <link media="all" rel="stylesheet" href="/static/fonts/fonts.css" />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                 </Head>
                 <body style={{ height: '100%' }}>
