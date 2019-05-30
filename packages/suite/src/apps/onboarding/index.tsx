@@ -30,7 +30,7 @@ const Index = (props: Props) => {
 
         return () => {
             TrezorConnect.off(DEVICE_EVENT, customEventHandler);
-        }
+        };
     }, []);
 
     return (
