@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
-import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../config/variables';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
 import icons from '../../../config/icons';
