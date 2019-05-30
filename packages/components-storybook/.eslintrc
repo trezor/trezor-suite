@@ -36,7 +36,16 @@
         "eol-last": 0,
         "spaced-comment": 0,
         "no-unused-expressions": 0,
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": [
+                    ".storybook/**",
+                    "src/stories/**"
+                ]
+            }
+        ]
     },
     "overrides": [
         {
