@@ -1,3 +1,3 @@
-import Index from '@suite/views';
+import Index from '@suite/apps/wallet';
 
 export default Index;

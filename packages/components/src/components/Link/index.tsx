@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import colors from '../../config/colors';
 
@@ -18,9 +18,9 @@ const A = styled.a<Props>`
     }
 `;
 
-const StyledNavLink = styled(NavLink)<Props>`
-    color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
-`;
+// const StyledNavLink = styled(NavLink)<Props>`
+//     color: ${props => (props.isGray ? colors.TEXT_SECONDARY : colors.GREEN_PRIMARY)};
+// `;
 
 interface Props {
     isGray?: boolean;
@@ -50,26 +50,26 @@ class Link extends PureComponent<Props> {
     };
 
     render() {
-        const shouldRenderRouterLink = this.props.to;
+        // const shouldRenderRouterLink = this.props.to;
         let LinkComponent;
-        if (shouldRenderRouterLink) {
-            LinkComponent = (
-                <StyledNavLink to={this.props.to || ''} {...this.props}>
-                    {this.props.children}
-                </StyledNavLink>
-            );
-        } else {
-            LinkComponent = (
-                <A
-                    href={this.props.href}
-                    target={this.props.target || '_blank'}
-                    rel="noreferrer noopener"
-                    {...this.props}
-                >
-                    {this.props.children}
-                </A>
-            );
-        }
+        // if (shouldRenderRouterLink) {
+        //     LinkComponent = (
+        //         <StyledNavLink to={this.props.to || ''} {...this.props}>
+        //             {this.props.children}
+        //         </StyledNavLink>
+        //     );
+        // } else {
+        // LinkComponent = (
+        <A
+            href={this.props.href}
+            target={this.props.target || '_blank'}
+            rel="noreferrer noopener"
+            {...this.props}
+        >
+            {this.props.children}
+        </A>;
+        // );
+        //}
 
         return LinkComponent;
     }

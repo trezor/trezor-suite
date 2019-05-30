@@ -16,7 +16,6 @@ stages:
   - build
   - deploy
   - test snapshots
-  - make snapshot references
 
 install:
   stage: install
@@ -112,27 +111,6 @@ components test snapshots:
       - /builds/trezor/trezor-suite/packages/components/test/snapshots
       - /builds/trezor/trezor-suite/packages/components/test/screenshots
 
-components make snapshot references:
-  image: cypress/base:10
-  stage: make snapshot references
-  variables:
-     PACKAGE_NAME: components
-  only:
-    changes:
-      - packages/components/**/*
-      - .gitlab-ci.yml
-  when: manual
-  script:
-    - env
-    - yarn
-    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots:references
-  artifacts:
-    expire_in: 2 days
-    when: always
-    paths:
-      - /builds/trezor/trezor-suite/packages/components/test/snapshots
-
-
 # Suite web package # --------------------------------
 
 suite-web lint:
@@ -143,7 +121,8 @@ suite-web lint:
     - yarn workspace @trezor/suite-web lint
   only:
     changes:
-      - packages/components/**/*
+      - packages/suite/**/*
+      - packages/suite-web/**/*
       - .gitlab-ci.yml
 
 suite-web build:
