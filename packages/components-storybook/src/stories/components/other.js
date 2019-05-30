@@ -7,17 +7,20 @@ import { Link } from 'react-router-dom';
 import { withKnobs, select, number, color, text, object, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 
-import CoinLogo from '../../components/CoinLogo';
-import TrezorImage from '../../components/TrezorImage';
-import TrezorLogo from '../../components/TrezorLogo';
-import Icon from '../../components/Icon';
-import { H1 } from '../../components/Heading';
-import Prompt from '../../components/Prompt';
-import Header from '../../components/Header';
+import {
+    icons,
+    colors,
+    Header,
+    Prompt,
+    H1,
+    Icon,
+    TrezorLogo,
+    TrezorImage,
+    CoinLogo,
+    variables,
+} from '@trezor/components';
 
-import colors from '../../config/colors';
-import icons from '../../config/icons';
-import { FONT_SIZE } from '../../config/variables';
+const { FONT_SIZE } = variables;
 
 const coins = [
     'ada',
@@ -272,15 +275,15 @@ storiesOf('Other', module)
             const type = select(
                 'type',
                 {
-                    'horizontal': 'horizontal',
-                    'vertical': 'vertical',
+                    horizontal: 'horizontal',
+                    vertical: 'vertical',
                 },
                 'horizontal'
             );
 
             return (
                 <TrezorLogo
-                    type={type} 
+                    type={type}
                     {...(width ? { width } : {})}
                     {...(height ? { height } : {})}
                     data-test="trezor_logo"

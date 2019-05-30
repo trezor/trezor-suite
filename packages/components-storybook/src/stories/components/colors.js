@@ -1,8 +1,7 @@
 import React from 'react';
-import colors from '../../config/colors';
+import { colors, H1, H2 } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
-import { H1, H2 } from '../../components/Heading';
 
 const Section = styled.div`
     padding: 1.6rem;

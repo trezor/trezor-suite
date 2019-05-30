@@ -2,18 +2,21 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
-import { H1, H5 } from '../../components/Heading';
 import { linkTo } from '@storybook/addon-links';
 
 import { withInfo } from '@storybook/addon-info';
-import { AsyncSelect, Select } from 'components/Select';
-import Checkbox from '../../components/Checkbox';
-import Switch from '../../components/Switch';
-import Input from '../../components/inputs/Input';
-import PinInput from '../../components/inputs/Pin';
-import TextArea from '../../components/Textarea';
-
-import colors from '../../config/colors';
+import {
+    Checkbox,
+    Switch,
+    Input,
+    PinInput,
+    TextArea,
+    AsyncSelect,
+    Select,
+    H1,
+    H5,
+    colors,
+} from '@trezor/components';
 
 const Wrapper = styled.div`
     padding: 1.6rem;

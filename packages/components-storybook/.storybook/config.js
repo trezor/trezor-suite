@@ -2,7 +2,7 @@ import { addDecorator, configure } from '@storybook/react';
 import { withOptions } from '@storybook/addon-options';
 import { withInfo } from '@storybook/addon-info';
 import { configureViewport } from '@storybook/addon-viewport';
-import colors from '../src/config/colors';
+import { colors } from '@trezor/components';
 
 addDecorator(
     withOptions({
