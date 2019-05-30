@@ -108,7 +108,8 @@ components test snapshots:
     expire_in: 2 days
     when: always
     paths:
-      - /builds/trezor/trezor-suite/packages/components/test/snapshots
+      - /builds/trezor/trezor-suite/packages/components/test/integration/snapshots
+      - /builds/trezor/trezor-suite/packages/components/test/integration/diffs
       - /builds/trezor/trezor-suite/packages/components/test/screenshots
 
 # Suite web package # --------------------------------
