@@ -14,8 +14,6 @@ module.exports = withCustomBabelConfig(
                 transpileModules: [
                     '@trezor',
                     '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
-                    '@components',
-                    '../packages/components/src',
                 ],
                 assetPrefix: process.env.assetPrefix || null,
             }),
