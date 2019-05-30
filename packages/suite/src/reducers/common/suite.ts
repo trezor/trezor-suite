@@ -41,6 +41,7 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 error: action.error,
             };
         case SUITE.SELECT_DEVICE:
+        case SUITE.UPDATE_SELECTED_DEVICE:
             return {
                 ...state,
                 device: action.payload,
