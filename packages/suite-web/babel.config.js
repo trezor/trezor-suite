@@ -1,5 +1,5 @@
 module.exports = api => {
-    api.cache(true);
+    // api.cache(true);
 
     const plugins = [
         [
