@@ -11,8 +11,8 @@
         "packages/*"
     ],
     "scripts": {
-        "deps": "rimraf 'node_modules' '**/node_modules' && yarn",
-        "deps:update": "rimraf 'yarn.lock' 'node_modules' '**/node_modules' && yarn",
+        "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
+        "deps:update": "rimraf 'yarn.lock' 'node_modules' '*/**/node_modules' && yarn",
         "suite:dev": "yarn workspace @trezor/suite-web dev",
         "suite:dev:ios": "yarn workspace @trezor/suite-native dev:ios",
         "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",

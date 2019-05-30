@@ -6,7 +6,7 @@ import Index from '@suite/views';
 import Wallet from '@suite/views/wallet';
 import UI from '@suite/views/ui';
 import WalletSend from '@suite/views/wallet/send';
-import { onLocationChange } from '@suite/actions/RouterActions';
+import { onLocationChange } from '@suite/actions/routerActions';
 import { Dispatch } from '@suite/types';
 
 // sources:
@@ -54,10 +54,17 @@ const RouterHandler = ({ onLocationChange }: Props) => {
     );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    onLocationChange,
-}, dispatch);
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            onLocationChange,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapDispatchToProps>;
 
-export default connect(null, mapDispatchToProps)(RouterHandler);
+export default connect(
+    null,
+    mapDispatchToProps,
+)(RouterHandler);

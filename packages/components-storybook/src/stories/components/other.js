@@ -18,6 +18,7 @@ import {
     TrezorImage,
     CoinLogo,
     variables,
+    LanguagePicker
 } from '@trezor/components';
 
 const { FONT_SIZE } = variables;
@@ -49,6 +50,13 @@ const coins = [
 const Wrapper = styled.div`
     padding: 1.6rem;
 `;
+
+const LanguageWrapper = styled.div`
+    background-color: ${colors.HEADER};
+    display: flex;
+    justify-content: center;
+`;
+LanguageWrapper.displayName = 'Header';
 
 const Icons = styled.div`
     display: flex;
@@ -342,6 +350,78 @@ storiesOf('Other', module)
         ## Import
         ~~~js
         import { Header } from 'trezor-ui-components';
+        ~~~
+        `,
+            },
+        }
+    )
+    .add(
+        'LanguagePicker',
+        () => {
+            const language = select(
+                'language',
+                {
+                    en: 'en',
+                    bn: 'bn',
+                    cs: 'cs',
+                    de: 'de',
+                    el: 'el',
+                    es: 'es',
+                    fr: 'fr',
+                    id: 'id',
+                    it: 'it',
+                    ja: 'ja',
+                    nl: 'nl',
+                    pl: 'pl',
+                    pt: 'pt',
+                    ru: 'ru',
+                    uk: 'uk',
+                    zh: 'zh',
+                    'zh-TW': 'zh-TW',
+                },
+                'en'
+            );
+            return (
+                <LanguageWrapper>
+                    <LanguagePicker
+                        language={language}
+                        onChange={(value, action) => {
+                            console.log(
+                                `value changed. value: ${JSON.stringify(
+                                    value
+                                )} action: ${JSON.stringify(action)}`
+                            );
+                        }}
+                        languages={[
+                            { code: 'en', name: 'English', en: 'English' },
+                            { code: 'bn', name: 'Bengali', en: 'Bengali' },
+                            { code: 'cs', name: 'Česky', en: 'Czech' },
+                            { code: 'de', name: 'Deutsch', en: 'German' },
+                            { code: 'el', name: 'Ελληνικά', en: 'Greek' },
+                            { code: 'es', name: 'Español', en: 'Spanish' },
+                            { code: 'fr', name: 'Français', en: 'French' },
+                            { code: 'id', name: 'Bahasa Indonesia', en: 'Indonesian' },
+                            { code: 'it', name: 'Italiano', en: 'Italian' },
+                            { code: 'ja', name: '日本語', en: 'Japanese' },
+                            { code: 'nl', name: 'Nederlands', en: 'Dutch' },
+                            { code: 'pl', name: 'Polski', en: 'Polish' },
+                            { code: 'pt', name: 'Português', en: 'Portuguese' },
+                            { code: 'ru', name: 'Русский', en: 'Russian' },
+                            { code: 'uk', name: 'Українська', en: 'Ukrainian' },
+                            { code: 'zh', name: '中文(简体)', en: 'Chinese Simplified' },
+                            { code: 'zh-TW', name: '中文(台灣)', en: 'Chinese Traditional' },
+                        ]}
+                        data-test="language_picker"
+                    />
+                </LanguageWrapper>
+            );
+        },
+        {
+            info: {
+                text: `
+        ## Import
+        ~~~js
+        import { LanguagePicker } from 'trezor-ui-components';
         ~~~
         `,
             },

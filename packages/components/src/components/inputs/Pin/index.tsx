@@ -17,7 +17,7 @@ const StyledInput = styled.input`
     height: 53px;
     font-weight: ${FONT_WEIGHT.SEMIBOLD};
     font-size: ${FONT_SIZE.BIGGEST};
-    padding: 5px 31px 10px 20px;
+    padding: 0 31px 0 20px;
     color: ${colors.TEXT_PRIMARY};
     background: transparent;
     border: 1px solid ${colors.DIVIDER};
