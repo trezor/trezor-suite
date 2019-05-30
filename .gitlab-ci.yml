@@ -120,7 +120,6 @@ components make snapshot references:
     changes:
       - packages/components/**/*
       - .gitlab-ci.yml
-  when: manual
   script:
     - env
     - yarn
