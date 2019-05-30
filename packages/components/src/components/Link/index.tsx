@@ -50,14 +50,16 @@ class Link extends PureComponent<Props> {
     };
 
     render() {
-        return <A
+        return (
+            <A
                 href={this.props.href}
                 target={this.props.target || '_blank'}
                 rel="noreferrer noopener"
                 {...this.props}
             >
                 {this.props.children}
-            </A>;
+            </A>
+        );
     }
 }
 
