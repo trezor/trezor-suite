@@ -21,12 +21,16 @@ const onClick = async (device?: TrezorDevice) => {
 };
 
 const Index = (props: Props) => {
-    // consider to move "set listeners" to a better place
-    // hot reloading will mount this component again and then there will be two event listeners
+    // don't forget to remove custom event listener!
     useEffect(() => {
-        TrezorConnect.on(DEVICE_EVENT, () => {
+        const customEventHandler = () => {
             // HANDLE DEV EVENT IN OBOARDING
-        });
+        };
+        TrezorConnect.on(DEVICE_EVENT, customEventHandler);
+
+        return () => {
+            TrezorConnect.off(DEVICE_EVENT, customEventHandler);
+        }
     }, []);
 
     return (
