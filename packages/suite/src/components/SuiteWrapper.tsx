@@ -7,7 +7,7 @@ import { Header } from '@trezor/components';
 import Router from '@suite/support/Router';
 
 import { State } from '@suite/types';
-import { goto } from '@suite/actions/RouterActions';
+import { goto } from '@suite/actions/routerActions';
 import DeviceSelection from './DeviceSelection';
 
 interface Props {

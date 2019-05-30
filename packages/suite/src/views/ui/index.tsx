@@ -5,7 +5,7 @@ import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import Wrapper from '@suite/components/SuiteWrapper';
 import { State, Dispatch } from '@suite/types';
-import { goto } from '@suite/actions/RouterActions';
+import { goto } from '@suite/actions/routerActions';
 
 const onClick = () => {
 };
