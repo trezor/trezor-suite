@@ -50,28 +50,14 @@ class Link extends PureComponent<Props> {
     };
 
     render() {
-        // const shouldRenderRouterLink = this.props.to;
-        let LinkComponent;
-        // if (shouldRenderRouterLink) {
-        //     LinkComponent = (
-        //         <StyledNavLink to={this.props.to || ''} {...this.props}>
-        //             {this.props.children}
-        //         </StyledNavLink>
-        //     );
-        // } else {
-        // LinkComponent = (
-        <A
-            href={this.props.href}
-            target={this.props.target || '_blank'}
-            rel="noreferrer noopener"
-            {...this.props}
-        >
-            {this.props.children}
-        </A>;
-        // );
-        //}
-
-        return LinkComponent;
+        return <A
+                href={this.props.href}
+                target={this.props.target || '_blank'}
+                rel="noreferrer noopener"
+                {...this.props}
+            >
+                {this.props.children}
+            </A>;
     }
 }
 
