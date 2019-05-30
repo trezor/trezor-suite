@@ -29,5 +29,10 @@ module.exports = {
             path: nodejs.path,
             vm: nodejs.vm,
         },
+        // https://github.com/facebook/metro/issues/265
+        blacklistRE: blacklist([
+            /packages\/components\/node_modules\/react-native\/.*/,
+            /node_modules\/.*\/node_modules\/react-native\/.*/,
+        ]),
     },
 };
