@@ -279,7 +279,7 @@ storiesOf('Other', module)
         'TrezorLogo',
         () => {
             const width = number('width', 100);
-            const height = number('height', undefined);
+            const height = number('height', NaN);
             const type = select(
                 'type',
                 {
@@ -383,7 +383,7 @@ storiesOf('Other', module)
                 <LanguageWrapper>
                     <LanguagePicker
                         language={language}
-                        onChange={(value, action) => {
+                        onChange={(value: object, action: object) => {
                             console.log(
                                 `value changed. value: ${JSON.stringify(
                                     value

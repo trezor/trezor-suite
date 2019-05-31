@@ -8,7 +8,7 @@ import { getStateIcon } from '../../utils/icons';
 import Icon from '../Icon';
 import Button from '../buttons/Button';
 import icons from '../../config/icons';
-import { FeedbackVariant } from '../../../support/types';
+import { FeedbackVariant } from '../../support/types';
 
 const Wrapper = styled.div<WrapperProps>`
     width: 100%;

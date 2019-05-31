@@ -5,7 +5,7 @@ export interface FeedbackVariant {
 }
 
 export interface FeedbackState {
-    state?: 'success' | 'warning' | 'error';
+    state?: 'success' | 'info' | 'warning' | 'error';
 }
 
 export interface IconShape {

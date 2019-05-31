@@ -158,7 +158,7 @@ interface InputProps {
 }
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
-interface Props extends React.HTMLAttributes<HTMLInputElement>, FeedbackState {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement>, FeedbackState {
     innerRef?: any;
     height?: number;
     icon?: any;
