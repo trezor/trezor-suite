@@ -17,7 +17,8 @@
         "suite:dev:ios": "yarn workspace @trezor/suite-native dev:ios",
         "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev:desktop",
-        "suite:build:web": "yarn workspace @trezor/suite-web build"
+        "suite:build:web": "yarn workspace @trezor/suite-web build",
+        "postinstall": "yarn workspace @trezor/components build:lib"
     },
     "dependencies": {
         "wsrun": "^3.6.2"
