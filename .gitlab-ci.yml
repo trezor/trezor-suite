@@ -52,7 +52,6 @@ components lint:
 
 components type check:
   stage: test
-  allow_failure: true
   script:
     - yarn
     - yarn workspace @trezor/components type-check
