@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components/native';
 import React from 'react';
+import { TextInputProps } from 'react-native';
 
 import { FONT_FAMILY, FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor } from '../../utils/colors';
@@ -31,13 +32,6 @@ const StyledTextarea = styled.TextInput<StyledTextareaProps>`
     font-size: ${FONT_SIZE.BASE};
 
     ${props =>
-        props.readOnly &&
-        css`
-            background: ${colors.GRAY_LIGHT};
-            color: ${colors.TEXT_SECONDARY};
-        `}
-
-    ${props =>
         props.disabled &&
         css`
             background: ${colors.GRAY_LIGHT};
@@ -50,18 +44,19 @@ const TopLabel = styled.Text`
     color: ${colors.TEXT_SECONDARY};
 `;
 
-const BottomText = styled.Text<{ color: string }>`
+const BottomText = styled.Text<{ color?: string }>`
     font-size: ${FONT_SIZE.SMALL};
-    color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
+    color: ${props => props.color};
     margin-top: 10px;
 `;
 
-interface StyledTextareaProps extends React.HTMLProps<HTMLTextAreaElement> {
+interface StyledTextareaProps extends TextInputProps {
     border?: string;
+    disabled?: boolean;
 }
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
-interface Props extends React.HTMLProps<HTMLTextAreaElement>, StyledTextareaProps {
+interface Props extends TextInputProps {
     isDisabled?: boolean;
     topLabel?: React.ReactNode;
     bottomText?: React.ReactNode;
@@ -74,11 +69,10 @@ const TextArea = ({
     topLabel,
     state,
     bottomText,
-    readOnly,
     isDisabled,
     wrapperProps,
     ...rest
-}: Omit<Props, 'ref' | 'as'>) => {
+}: Props) => {
     // TODO: figure out why 'ref' and 'as' prop need to be omitted
     const stateColor = getPrimaryColor(state);
     return (
@@ -90,12 +84,14 @@ const TextArea = ({
                 autoCapitalize="none"
                 multiline
                 numberOfLines={4}
-                editable={!isDisabled || !readOnly}
+                editable={!isDisabled}
                 border={stateColor || colors.INPUT_BORDER}
                 maxLength={maxLength}
                 {...rest}
             />
-            {bottomText && <BottomText color={stateColor}>{bottomText}</BottomText>}
+            {bottomText && (
+                <BottomText color={stateColor || colors.TEXT_SECONDARY}>{bottomText}</BottomText>
+            )}
         </Wrapper>
     );
 };
@@ -109,7 +105,7 @@ TextArea.propTypes = {
     value: PropTypes.string,
     readOnly: PropTypes.bool,
     maxRows: PropTypes.number,
-    maxLength: PropTypes.number,
+    maxLength: PropTypes.string,
     rows: PropTypes.number,
     name: PropTypes.string,
     isDisabled: PropTypes.bool,
