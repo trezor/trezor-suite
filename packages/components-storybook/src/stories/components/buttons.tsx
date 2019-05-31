@@ -284,7 +284,7 @@ storiesOf('Buttons', module)
                 'success'
             );
 
-            let iconOptions:any = {
+            const iconOptions: any = {
                 None: null,
             };
 
@@ -292,11 +292,7 @@ storiesOf('Buttons', module)
                 iconOptions[icon] = icon;
             });
 
-            const icon = select(
-                'Icon',
-                iconOptions,
-                null
-            );
+            const icon = select('Icon', iconOptions, null);
 
             const isTransparent = boolean('Transparent', false);
             const isWhite = boolean('White', false);
