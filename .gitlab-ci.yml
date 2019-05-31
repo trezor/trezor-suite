@@ -132,6 +132,7 @@ components-storybook make snapshot references:
   only:
     changes:
       - packages/components/**/*
+      - packages/components-storybook/**/*
       - .gitlab-ci.yml
   script:
     - env
@@ -141,7 +142,7 @@ components-storybook make snapshot references:
     expire_in: 2 days
     when: always
     paths:
-      - /builds/trezor/trezor-suite/packages/components/test/snapshots
+      - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
 
 
 # Suite web package # --------------------------------
