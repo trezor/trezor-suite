@@ -50,7 +50,7 @@ export const init = () => async (dispatch: Dispatch) => {
             transportReconnect: true,
             debug: false,
             popup: false,
-            webusb: true,
+            webusb: process.env.SUITE_TYPE === 'web',
             // pendingTransportEvent: getState().devices.length < 1, // TODO: add devices reducer
             pendingTransportEvent: true,
             manifest: {
