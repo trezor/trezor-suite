@@ -3,7 +3,7 @@ import { colors, H1, H2 } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
 
-type ColorBoxProps = { color: string, textColor?: string };
+type ColorBoxProps = { color: string; textColor?: string };
 
 const Section = styled.div`
     padding: 1.6rem;
