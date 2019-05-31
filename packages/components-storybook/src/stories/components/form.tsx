@@ -870,7 +870,7 @@ storiesOf('Form', module)
                 ]}
                 cacheOptions={false}
                 onInputChange={() => {}}
-                loadOptions={(inputValue, callback) => {
+                loadOptions={(inputValue: string, callback: (data: any) => void) => {
                     const data = [
                         { value: 'hello', label: 'Hello' },
                         { value: 'world', label: 'World' },
