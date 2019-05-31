@@ -6,7 +6,6 @@ import { TextInputProps } from 'react-native';
 import { FONT_FAMILY, FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor } from '../../utils/colors';
 import colors from '../../config/colors';
-import { Omit } from '../../support/types';
 
 const Wrapper = styled.View`
     width: 100%;
