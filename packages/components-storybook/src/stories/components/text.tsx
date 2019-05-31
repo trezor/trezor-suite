@@ -7,6 +7,9 @@ import { withInfo } from '@storybook/addon-info';
 import { linkTo } from '@storybook/addon-links';
 
 import { Tooltip, P, Link, H1, H2, H3, H4, H5, H6, colors } from '@trezor/components';
+import Popper from 'popper.js';
+
+export type Placement = Popper.Placement;
 
 const Center = styled.div`
     display: flex;
@@ -351,28 +354,32 @@ storiesOf('Typography', module)
     )
     .add(
         'Tooltip',
-        () => (
-            <Center>
-                <Tooltip
-                    maxWidth={number('Max width', 280)}
-                    placement={select(
-                        'Placement',
-                        {
-                            Top: 'top',
-                            Bottom: 'bottom',
-                            Left: 'left',
-                            Right: 'right',
-                        },
-                        'bottom'
-                    )}
-                    content={text('Content', 'Passphrase is an optional feature.')}
-                    ctaLink={text('CTA link', 'https://wiki.trezor.io/Passphrase')}
-                    ctaText={text('CTA Text', 'Learn more')}
-                >
-                    <span>Text with tooltip</span>
-                </Tooltip>
-            </Center>
-        ),
+        () => {
+            const placement: Placement = select(
+                'Placement',
+                {
+                    Top: 'top',
+                    Bottom: 'bottom',
+                    Left: 'left',
+                    Right: 'right',
+                },
+                'bottom'
+            );
+
+            return (
+                <Center>
+                    <Tooltip
+                        maxWidth={number('Max width', 280)}
+                        placement={placement}
+                        content={text('Content', 'Passphrase is an optional feature.')}
+                        ctaLink={text('CTA link', 'https://wiki.trezor.io/Passphrase')}
+                        ctaText={text('CTA Text', 'Learn more')}
+                    >
+                        <span>Text with tooltip</span>
+                    </Tooltip>
+                </Center>
+            );
+        },
         {
             info: {
                 text: `

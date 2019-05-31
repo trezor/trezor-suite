@@ -272,7 +272,7 @@ storiesOf('Buttons', module)
             const isDisabled = boolean('Disabled', false);
             const isLoading = boolean('Loading', false);
             const buttonText = text('Text', 'Button Text');
-            const variant = select(
+            const variant: string | null = select(
                 'Variant',
                 {
                     None: null,

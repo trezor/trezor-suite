@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components/native';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
+import { FeedbackVariant } from '../../../support/types';
 
 const Spinner = styled.ActivityIndicator`
     padding-right: 10px;
@@ -34,8 +35,7 @@ const ButtonContainer = styled.TouchableHighlight`
         `}
 `;
 
-interface Props {
-    variant: 'success' | 'info' | 'warning' | 'error';
+interface Props extends FeedbackVariant {
     isDisabled?: boolean;
     isInverse?: boolean;
     isWhite?: boolean;
