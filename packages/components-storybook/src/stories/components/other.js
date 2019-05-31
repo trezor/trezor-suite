@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
-import StoryRouter from 'storybook-react-router';
 import { Link } from 'react-router-dom';
 import { withKnobs, select, number, color, text, object, boolean } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
@@ -144,12 +143,12 @@ storiesOf('Other', module)
     .add(
         'Coin',
         () => {
-            const coinsObject = {};
+            const coinsObject:any = {};
             coins.forEach(c => {
                 coinsObject[c] = c;
             });
             const coinSelect = select('network', coinsObject, 'ada');
-            const width = number('width', undefined);
+            const width = number('width', NaN);
             const height = number('height', 23);
             return <CoinLogo {...(width ? { width } : {})} height={height} network={coinSelect} />;
         },
@@ -172,9 +171,17 @@ storiesOf('Other', module)
         'Icon',
         () => {
             const iconSize = number('Size', 36);
+
+            let iconOptions:any = {
+                None: null,
+            };
+            Object.keys(icons).forEach(icon => {
+                iconOptions[icon] = icon;
+            });
+
             const iconSelect = select(
                 'Icon',
-                Object.fromEntries(Object.keys(icons).map(key => [key, key])),
+                iconOptions,
                 'TOP'
             );
             const hasHover = boolean('With hover', false);
@@ -250,15 +257,16 @@ storiesOf('Other', module)
     .add(
         'TrezorImage',
         () => {
-            const width = number('width', undefined);
+            const width = number('width', NaN);
             const height = number('height', 310);
+            const modelOptions:any = {
+                '1': 1,
+                '2': 2,
+            };
             const model = select(
                 'model',
-                {
-                    '1': 1,
-                    '2': 2,
-                },
-                '1'
+                modelOptions,
+                1
             );
 
             return <TrezorImage {...(width ? { width } : {})} height={height} model={model} />;
@@ -310,7 +318,6 @@ storiesOf('Other', module)
             },
         }
     )
-    .addDecorator(StoryRouter())
     .add(
         'Header',
         () => {
@@ -318,7 +325,6 @@ storiesOf('Other', module)
                 <Header
                     sidebarEnabled={boolean('sidebarEnabled', true)}
                     sidebarOpened={boolean('sidebarOpened', false)}
-                    toggleSidebar={null}
                     togglerOpenText={text('togglerOpenText', 'Menu')}
                     togglerCloseText={text('togglerCloseText', 'Close')}
                     rightAddon={null}

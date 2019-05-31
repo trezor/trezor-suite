@@ -283,9 +283,18 @@ storiesOf('Buttons', module)
                 },
                 'success'
             );
+
+            let iconOptions:any = {
+                None: null,
+            };
+
+            Object.keys(icons).forEach(icon => {
+                iconOptions[icon] = icon;
+            });
+
             const icon = select(
                 'Icon',
-                { None: null, ...Object.fromEntries(Object.keys(icons).map(key => [key, key])) },
+                iconOptions,
                 null
             );
 
