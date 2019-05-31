@@ -80,7 +80,7 @@ components-storybook build:
 components-storybook deploy dev:
   stage: deploy
   variables:
-    PACKAGE_NAME: components
+    PACKAGE_NAME: components-storybook
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   dependencies:
