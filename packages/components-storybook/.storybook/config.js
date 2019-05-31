@@ -2,7 +2,7 @@ import { addDecorator, configure } from '@storybook/react';
 import { withOptions } from '@storybook/addon-options';
 import { withInfo } from '@storybook/addon-info';
 import { configureViewport } from '@storybook/addon-viewport';
-import colors from '../src/config/colors';
+import { colors } from '@trezor/components';
 
 addDecorator(
     withOptions({
@@ -39,14 +39,14 @@ addDecorator(
 configureViewport();
 
 function loadStories() {
-    require('../src/stories/components/text.js');
-    require('../src/stories/components/buttons.js');
-    require('../src/stories/components/form.js');
-    require('../src/stories/components/notifications.js');
-    require('../src/stories/components/modal.js');
-    require('../src/stories/components/other.js');
-    require('../src/stories/components/loader.js');
-    require('../src/stories/components/colors.js');
+    require('../src/stories/components/text.tsx');
+    require('../src/stories/components/buttons.tsx');
+    require('../src/stories/components/form.tsx');
+    require('../src/stories/components/notifications.tsx');
+    require('../src/stories/components/modal.tsx');
+    require('../src/stories/components/other.tsx');
+    require('../src/stories/components/loader.tsx');
+    require('../src/stories/components/colors.tsx');
 }
 
 configure(loadStories, module);

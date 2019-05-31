@@ -1,8 +1,9 @@
 import React from 'react';
-import colors from '../../config/colors';
+import { colors, H1, H2 } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
-import { H1, H2 } from '../../components/Heading';
+
+type ColorBoxProps = { color: string; textColor?: string };
 
 const Section = styled.div`
     padding: 1.6rem;
@@ -12,7 +13,7 @@ const Color = styled.div`
     margin-bottom: 2rem;
 `;
 
-const ColorBox = styled.div`
+const ColorBox = styled.div<ColorBoxProps>`
     text-align: center;
     height: 20px;
     padding: 20px;
@@ -22,7 +23,7 @@ const ColorBox = styled.div`
     align-items: center;
     background: ${props => props.color};
     border-radius: 5px;
-    color: ${props => props.text || 'inherit'};
+    color: ${props => props.textColor || 'inherit'};
     box-shadow: 0 1px 15px rgba(0, 0, 0, 0.2);
 `;
 
@@ -74,7 +75,7 @@ storiesOf('Other', module).add('Colors', () => (
                 </Color>
                 <Color>
                     <Title>HEADER</Title>
-                    <ColorBox color={colors.HEADER} text={colors.WHITE}>
+                    <ColorBox color={colors.HEADER} textColor={colors.WHITE}>
                         {colors.HEADER}
                     </ColorBox>
                 </Color>
@@ -95,25 +96,25 @@ storiesOf('Other', module).add('Colors', () => (
                 </Color>
                 <Color>
                     <Title>TEXT_SECONDARY</Title>
-                    <ColorBox color={colors.TEXT_SECONDARY} text={colors.WHITE}>
+                    <ColorBox color={colors.TEXT_SECONDARY} textColor={colors.WHITE}>
                         {colors.TEXT_SECONDARY}
                     </ColorBox>
                 </Color>
                 <Color>
                     <Title>TEXT_PRIMARY</Title>
-                    <ColorBox color={colors.TEXT_PRIMARY} text={colors.WHITE}>
+                    <ColorBox color={colors.TEXT_PRIMARY} textColor={colors.WHITE}>
                         {colors.TEXT_PRIMARY}
                     </ColorBox>
                 </Color>
                 <Color>
                     <Title>TEXT</Title>
-                    <ColorBox color={colors.TEXT} text={colors.WHITE}>
+                    <ColorBox color={colors.TEXT} textColor={colors.WHITE}>
                         {colors.TEXT}
                     </ColorBox>
                 </Color>
                 <Color>
                     <Title>TOOLTIP_BACKGROUND</Title>
-                    <ColorBox color={colors.TOOLTIP_BACKGROUND} text={colors.WHITE}>
+                    <ColorBox color={colors.TOOLTIP_BACKGROUND} textColor={colors.WHITE}>
                         {colors.TOOLTIP_BACKGROUND}
                     </ColorBox>
                 </Color>

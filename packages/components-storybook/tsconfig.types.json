@@ -1,11 +1,6 @@
 {
-    "extends": "./tsconfig.json",
+    "extends": "./.storybook/tsconfig.json",
     "compilerOptions": {
-		"plugins": [
-            {
-                "name": "typescript-styled-plugin"
-            }
-        ],
         // Target latest version of ECMAScript.
 		"target": "esnext",
 		// Search under node_modules for non-relative imports.
@@ -14,8 +9,7 @@
 		"strict": true,
 		// Import non-ES modules as default imports.
         "esModuleInterop": true,
-        // Don't emit; this config is just for typechecking on CI
+        // Don't emit; allow Babel to transform files.
 		"noEmit": true,
-		"emitDeclarationOnly": false,
     }
 }

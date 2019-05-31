@@ -1,15 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from '../../components/buttons/Button';
-import ButtonPin from '../../components/buttons/Pin';
-import { H1, H5 } from '../../components/Heading';
+import { Button, ButtonPin, H1, H5, colors, icons } from '@trezor/components';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
 import { withInfo } from '@storybook/addon-info';
 import { linkTo } from '@storybook/addon-links';
-
-import colors from '../../config/colors';
-import icons from '../../config/icons';
 
 const Wrapper = styled.div`
     padding: 1.6rem;
@@ -288,11 +283,16 @@ storiesOf('Buttons', module)
                 },
                 'success'
             );
-            const icon = select(
-                'Icon',
-                { None: null, ...Object.fromEntries(Object.keys(icons).map(key => [key, key])) },
-                null
-            );
+
+            const iconOptions: any = {
+                None: null,
+            };
+
+            Object.keys(icons).forEach(icon => {
+                iconOptions[icon] = icon;
+            });
+
+            const icon = select('Icon', iconOptions, null);
 
             const isTransparent = boolean('Transparent', false);
             const isWhite = boolean('White', false);
