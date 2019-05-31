@@ -50,11 +50,35 @@ components lint:
       - packages/components-storybook/**/*
       - .gitlab-ci.yml
 
+components type check:
+  stage: test
+  allow_failure: true
+  script:
+    - yarn
+    - yarn workspace @trezor/components type-check
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - .gitlab-ci.yml
+
 components-storybook lint:
   stage: test
   script:
     - yarn
     - yarn workspace @trezor/components-storybook lint
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
+      - .gitlab-ci.yml
+
+components-storybook type check:
+  stage: test
+  allow_failure: true
+  script:
+    - yarn
+    - yarn workspace @trezor/components-storybook type-check
   only:
     changes:
       - packages/components/**/*
@@ -153,6 +177,18 @@ suite-web lint:
     - env
     - yarn
     - yarn workspace @trezor/suite-web lint
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-web/**/*
+      - .gitlab-ci.yml
+
+suite-web type check:
+  stage: test
+  allow_failure: true
+  script:
+    - yarn
+    - yarn workspace @trezor/suite-web type-check
   only:
     changes:
       - packages/suite/**/*

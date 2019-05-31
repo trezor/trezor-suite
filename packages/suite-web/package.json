@@ -7,7 +7,8 @@
         "lint": "eslint . --ext .tsx,.ts",
         "build": "next build && next export -o build",
         "start": "next start",
-        "tsc": "tsc"
+        "type-check": "tsc --project tsconfig.json",
+        "type-check:watch": "yarn type-check -- --watch"
     },
     "dependencies": {
         "@trezor/suite": "1.0.0",
