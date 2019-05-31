@@ -1,5 +1,5 @@
 import { LOCATION_CHANGE } from '@suite/actions/routerActions';
-import { parseParams } from '@suite/utils/router';
+import * as routerUtils from '@suite/utils/router';
 import { Action } from '@suite/types';
 
 interface Params {
@@ -11,12 +11,14 @@ interface RouterState {
     pathname: string;
     hash?: string;
     params: Params;
+    app: string;
 }
 
 const initialState: RouterState = {
     url: '/',
     pathname: '/',
     params: {},
+    app: '/',
 };
 
 const onLocationChange = (url: string) => {
@@ -25,7 +27,8 @@ const onLocationChange = (url: string) => {
         url,
         pathname,
         hash,
-        params: parseParams(url),
+        params: routerUtils.getParams(url),
+        app: routerUtils.getApp(url),
     };
 };
 

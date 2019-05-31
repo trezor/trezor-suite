@@ -48,6 +48,10 @@ const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
     // keep suite reducer synchronized with other reducers (selected device)
     // api.dispatch(SuiteActions.handleDeviceChanged(action.payload));
 
+    if (api.dispatch(SuiteActions.observeSelectedDevice(action))) {
+        // device changed
+    }
+
     return action;
 };
 

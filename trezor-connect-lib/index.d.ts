@@ -522,6 +522,8 @@ export namespace TrezorConnect {
   function on(event: typeof DEVICE_EVENT, callback: (event: DeviceEvent) => void): void;
   function on(event: any, callback: (event: any) => void): void;
 
+  function off(event: any, callback: (event: any) => void): void;
+
   function uiResponse(a: UIResponse): void;
 }
 

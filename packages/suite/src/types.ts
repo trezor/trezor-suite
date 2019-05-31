@@ -27,10 +27,13 @@ export type GetState = () => State;
 
 // tmp
 type Features = any;
-type DeviceFirmwareStatus = any;
 type FirmwareRelease = any;
+// type DeviceStatus = 'available' | 'occupied' | 'used';
+// type DeviceMode = 'normal' | 'bootloader' | 'initialize' | 'seedless';
+// type DeviceFirmwareStatus = 'valid' | 'outdated' | 'required' | 'unknown' | 'none';
 type DeviceStatus = any;
 type DeviceMode = any;
+type DeviceFirmwareStatus = any;
 
 export interface AcquiredDevice {
     type: 'acquired';

@@ -1,5 +1,6 @@
-import { Device } from 'trezor-connect';
-import { Dispatch, GetState, TrezorDevice } from '@suite/types';
+import { Device, DEVICE } from 'trezor-connect';
+import { Action, Dispatch, GetState, TrezorDevice } from '@suite/types';
+import * as reducersUtils from '@suite/utils/reducers';
 import * as SUITE from './constants/suite';
 
 export type SuiteActions =
@@ -19,6 +20,10 @@ export type SuiteActions =
     | {
           type: typeof SUITE.SELECT_DEVICE;
           payload?: TrezorDevice;
+      }
+    | {
+          type: typeof SUITE.UPDATE_SELECTED_DEVICE;
+          payload: TrezorDevice;
       };
 
 export const onSuiteReady = (): SuiteActions => {
@@ -87,4 +92,38 @@ export const handleDeviceDisconnect = (device: Device) => (
     } else {
         // other device
     }
+};
+
+// list of all actions which has influence on "selectedDevice" field in "wallet" reducer
+// other actions will be ignored
+const actions: string[] = [
+    // SUITE.AUTH_DEVICE,
+    // SUITE.RECEIVE_WALLET_TYPE,
+    ...Object.values(DEVICE).filter(v => typeof v === 'string'),
+];
+
+export const observeSelectedDevice = (action: Action) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    // ignore not listed actions
+    if (actions.indexOf(action.type) < 0) return false;
+
+    const { device } = getState().suite;
+    if (!device) return false;
+    const deviceFromReducer = reducersUtils.getSelectedDevice(device, getState().devices);
+    if (!deviceFromReducer) {
+        // this shouldn't happen
+        return false;
+    }
+
+    const changed = reducersUtils.observeChanges(device, deviceFromReducer);
+    if (changed) {
+        dispatch({
+            type: SUITE.UPDATE_SELECTED_DEVICE,
+            payload: deviceFromReducer,
+        });
+    }
+
+    return reducersUtils.observeChanges(device, deviceFromReducer);
 };
