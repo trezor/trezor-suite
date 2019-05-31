@@ -58,10 +58,9 @@ const Label = styled.div<IconWrapperProps>`
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     onClick: (event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>) => any;
     isChecked: boolean;
-    propTypes: any;
 }
 
-type IconWrapperProps = Omit<Props, 'onClick' | 'propTypes'>;
+type IconWrapperProps = Omit<Props, 'onClick'>;
 
 class Checkbox extends PureComponent<Props> {
     static propTypes = {

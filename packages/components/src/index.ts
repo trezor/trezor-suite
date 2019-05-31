@@ -20,7 +20,6 @@ import P from './components/Paragraph';
 import Tooltip from './components/Tooltip';
 
 import Modal from './components/Modal';
-import InvalidPin from './components/Invalid';
 import Icon from './components/Icon';
 import CoinLogo from './components/CoinLogo';
 import Loader from './components/Loader';
@@ -52,7 +51,6 @@ export {
     P,
     Tooltip,
     Modal,
-    InvalidPin,
     Icon,
     CoinLogo,
     TrezorImage,

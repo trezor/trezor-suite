@@ -36,16 +36,7 @@
         "eol-last": 0,
         "spaced-comment": 0,
         "no-unused-expressions": 0,
-        "prettier/prettier": "error",
-        "import/no-extraneous-dependencies": [
-            "error",
-            {
-                "devDependencies": [
-                    ".storybook/**",
-                    "src/stories/**"
-                ]
-            }
-        ]
+        "prettier/prettier": "error"
     },
     "overrides": [
         {
@@ -67,14 +58,12 @@
             "\\.(scss|less|css)$"
         ],
         "import/resolver": {
-            "typescript": {
-                "directory": "./packages/components/.storybook/tsconfig.json"
-            }
+            "typescript": {}
         }
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": "./packages/components/.storybook/tsconfig.json",
+        "project": "tsconfig.json",
         "extends": [
             "plugin:@typescript-eslint/recommended"
         ],

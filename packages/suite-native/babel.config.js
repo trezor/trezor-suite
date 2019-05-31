@@ -7,8 +7,8 @@ module.exports = api => {
                 'module-resolver',
                 {
                     alias: {
-                        '^@suite/actions/RouterActions$':
-                            './packages/suite-native/src/actions/RouterActions',
+                        '^@suite/actions/routerActions$':
+                            './packages/suite-native/src/actions/routerActions',
                         '^@suite/(.+)': './packages/suite/src/\\1', // relative to "projectRoot: ../../" defined in package.json
                         'node-fetch': 'whatwg-fetch',
                     },
