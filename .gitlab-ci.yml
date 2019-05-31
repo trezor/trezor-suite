@@ -32,7 +32,7 @@ install:
     - $(yarn bin)/cypress verify
 
 variables:
-  PACKAGE_PATH_COMPONENTS: 'packages/components'
+  PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
   PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
   DEV_SERVER_URL: 'https://suite-dev.sldev.cz'
@@ -47,34 +47,48 @@ components lint:
   only:
     changes:
       - packages/components/**/*
+      - packages/components-storybook/**/*
       - .gitlab-ci.yml
 
-components build:
-  stage: build
+components-storybook lint:
+  stage: test
   script:
     - yarn
-    - yarn workspace @trezor/components build
+    - yarn workspace @trezor/components-storybook lint
   only:
     changes:
       - packages/components/**/*
+      - packages/components-storybook/**/*
+      - .gitlab-ci.yml
+
+components-storybook build:
+  stage: build
+  script:
+    - yarn
+    - yarn workspace @trezor/components-storybook build
+  only:
+    changes:
+      - packages/components/**/*
+      - packages/components-storybook/**/*
       - .gitlab-ci.yml
   artifacts:
     name: components-build-files
     expire_in: 15 minutes
     paths:
-      - $PACKAGE_PATH_COMPONENTS/build
+      - packages/components-storybook/build
 
-components deploy dev:
+components-storybook deploy dev:
   stage: deploy
   variables:
     PACKAGE_NAME: components
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   dependencies:
-    - components build
+    - components-storybook build
   only:
     changes:
       - packages/components/**/*
+      - packages/components-storybook/**/*
       - .gitlab-ci.yml
   environment:
     name: ${CI_BUILD_REF_NAME}
@@ -82,7 +96,7 @@ components deploy dev:
   before_script: []
   script:
     - env
-    - cd $PACKAGE_PATH_COMPONENTS
+    - cd packages/components-storybook
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
@@ -91,27 +105,26 @@ components deploy dev:
   tags:
     - deploy
 
-components test snapshots:
+components-storybook test snapshots:
   image: cypress/base:10
   stage: test snapshots
-  variables:
-     PACKAGE_NAME: components
   only:
     changes:
       - packages/components/**/*
+      - packages/components-storybook/**/*
       - .gitlab-ci.yml
   script:
     - env
     - yarn
-    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots
   artifacts:
     expire_in: 2 days
     when: always
     paths:
-      - /builds/trezor/trezor-suite/packages/components/test/snapshots
-      - /builds/trezor/trezor-suite/packages/components/test/screenshots
+      - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
+      - /builds/trezor/trezor-suite/packages/components-storybook/test/screenshots
 
-components make snapshot references:
+components-storybook make snapshot references:
   image: cypress/base:10
   stage: test snapshots
   variables:
@@ -123,7 +136,7 @@ components make snapshot references:
   script:
     - env
     - yarn
-    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots:references
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots:references
   artifacts:
     expire_in: 2 days
     when: always
