@@ -17,7 +17,7 @@ import {
     TrezorImage,
     CoinLogo,
     variables,
-    LanguagePicker
+    LanguagePicker,
 } from '@trezor/components';
 
 const { FONT_SIZE } = variables;
@@ -143,7 +143,7 @@ storiesOf('Other', module)
     .add(
         'Coin',
         () => {
-            const coinsObject:any = {};
+            const coinsObject: any = {};
             coins.forEach(c => {
                 coinsObject[c] = c;
             });
@@ -172,18 +172,14 @@ storiesOf('Other', module)
         () => {
             const iconSize = number('Size', 36);
 
-            let iconOptions:any = {
+            const iconOptions: any = {
                 None: null,
             };
             Object.keys(icons).forEach(icon => {
                 iconOptions[icon] = icon;
             });
 
-            const iconSelect = select(
-                'Icon',
-                iconOptions,
-                'TOP'
-            );
+            const iconSelect = select('Icon', iconOptions, 'TOP');
             const hasHover = boolean('With hover', false);
 
             let hoverColor;
@@ -259,15 +255,11 @@ storiesOf('Other', module)
         () => {
             const width = number('width', NaN);
             const height = number('height', 310);
-            const modelOptions:any = {
+            const modelOptions: any = {
                 '1': 1,
                 '2': 2,
             };
-            const model = select(
-                'model',
-                modelOptions,
-                1
-            );
+            const model = select('model', modelOptions, 1);
 
             return <TrezorImage {...(width ? { width } : {})} height={height} model={model} />;
         },

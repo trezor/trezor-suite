@@ -9,7 +9,7 @@ import {
     Checkbox,
     Switch,
     Input,
-    PinInput,
+    InputPin,
     TextArea,
     AsyncSelect,
     Select,
@@ -22,18 +22,12 @@ const Wrapper = styled.div`
     padding: 1.6rem;
 `;
 
-const StyledInput =
-    styled(Input) <
-    Input >
-    `
+const StyledInput = styled(Input)<typeof Input>`
     margin-bottom: ${props => (props.tooltipAction ? '30px' : '10px')};
 `;
 
 type MarginProps = { size: string };
-const Margin =
-    styled.div <
-    MarginProps >
-    `
+const Margin = styled.div<MarginProps>`
     display: flex;
     width: 100%;
     flex-wrap: wrap;
@@ -61,19 +55,13 @@ const BtnLink = styled.button`
     }
 `;
 
-const StyledSelect =
-    styled(Select) <
-    Select >
-    `
+const StyledSelect = styled(Select)<typeof Select>`
     width: 100%;
     margin-bottom: 10px;
 `;
 
 type DataWrapperProps = { width?: string };
-const DataWrapper =
-    styled.div <
-    DataWrapperProps >
-    `
+const DataWrapper = styled.div<DataWrapperProps>`
     display: flex;
     ${props =>
         props.width &&
@@ -284,10 +272,10 @@ storiesOf('Form', module).add('All', () => (
         </Row>
 
         <H1>
-            PinInput <BtnLink onClick={linkTo('Form', 'Input Pin')}>{'<PinInput />'}</BtnLink>
+            InputPin <BtnLink onClick={linkTo('Form', 'Input Pin')}>{'<InputPin />'}</BtnLink>
         </H1>
         <Row>
-            <PinInput
+            <InputPin
                 value="1234"
                 onDeleteClick={() => {}}
                 wrapperProps={{ 'data-test': 'input_pin' }}
@@ -722,12 +710,12 @@ storiesOf('Form', module)
             },
         }
     )
-    .add('Input Pin', () => <PinInput value={text('Input value', '')} onDeleteClick={() => {}} />, {
+    .add('Input Pin', () => <InputPin value={text('Input value', '')} onDeleteClick={() => {}} />, {
         info: {
             text: `
             ## Import
             ~~~js
-            import { PinInput } from 'trezor-ui-components';
+            import { InputPin } from 'trezor-ui-components';
             ~~~
             `,
         },
