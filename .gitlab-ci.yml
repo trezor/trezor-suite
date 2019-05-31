@@ -80,7 +80,7 @@ components-storybook build:
 components-storybook deploy dev:
   stage: deploy
   variables:
-    PACKAGE_NAME: components
+    PACKAGE_NAME: components-storybook
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
     DEPLOY_URL: ${DEV_SERVER_URL}/${PACKAGE_NAME}/${CI_BUILD_REF_NAME}
   dependencies:
@@ -116,7 +116,7 @@ components-storybook test snapshots:
   script:
     - env
     - yarn
-    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots
   artifacts:
     expire_in: 2 days
     when: always
@@ -132,16 +132,17 @@ components-storybook make snapshot references:
   only:
     changes:
       - packages/components/**/*
+      - packages/components-storybook/**/*
       - .gitlab-ci.yml
   script:
     - env
     - yarn
-    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components/${CI_BUILD_REF_NAME} yarn workspace @trezor/components ci:test:snapshots:references
+    - CYPRESS_AUTH_USER=${CYPRESS_AUTH_USER} CYPRESS_AUTH_PASS=${CYPRESS_AUTH_PASS} CYPRESS_baseUrl=${DEV_SERVER_URL}/components/${CI_BUILD_REF_NAME} yarn workspace @trezor/components-storybook ci:test:snapshots:references
   artifacts:
     expire_in: 2 days
     when: always
     paths:
-      - /builds/trezor/trezor-suite/packages/components/test/snapshots
+      - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
 
 
 # Suite web package # --------------------------------
