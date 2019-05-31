@@ -28,6 +28,7 @@
         "electron-installer-dmg": "^2.0.0",
         "electron-packager": "^13.1.1",
         "electron-winstaller": "^3.0.4",
+        "git-revision-webpack-plugin": "^3.0.3",
         "next-plugin-custom-babel-config": "^1.0.0",
         "next-transpile-modules": "^2.0.0"
     }
