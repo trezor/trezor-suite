@@ -4,7 +4,7 @@ describe('Buttons', () => {
         cy.visit('/iframe.html?selectedKind=Other&selectedStory=All&full=0');
     });
 
-    let tests = [
+    const tests = [
         'prompt_1',
         'prompt_2',
         'trezor_image_1',

@@ -170,6 +170,7 @@ interface Props extends React.HTMLAttributes<HTMLInputElement> {
     isSmallText?: boolean;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
+    propTypes?: any;
 }
 
 const Input = ({

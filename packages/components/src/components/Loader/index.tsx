@@ -71,7 +71,7 @@ const Loader = ({
     size = 100,
     animationColor,
     transparentRoute,
-    strokeWidth = 1,
+    strokeWidth = 2,
     ...rest
 }: Props) => (
     <Wrapper className={className} size={size} {...rest}>

@@ -12,6 +12,8 @@ import TextArea from './components/Textarea';
 import Checkbox from './components/Checkbox';
 import Switch from './components/Switch';
 import TrezorImage from './components/TrezorImage';
+import TrezorLogo from './components/TrezorLogo';
+import LanguagePicker from './components/LanguagePicker';
 import { AsyncSelect, Select } from './components/Select';
 
 import { H1, H2, H3, H4, H5, H6 } from './components/Heading';
@@ -20,7 +22,6 @@ import P from './components/Paragraph';
 import Tooltip from './components/Tooltip';
 
 import Modal from './components/Modal';
-import InvalidPin from './components/Invalid';
 import Icon from './components/Icon';
 import CoinLogo from './components/CoinLogo';
 import Loader from './components/Loader';
@@ -52,10 +53,11 @@ export {
     P,
     Tooltip,
     Modal,
-    InvalidPin,
     Icon,
     CoinLogo,
     TrezorImage,
+    TrezorLogo,
+    LanguagePicker,
     Loader,
     Notification,
     Prompt,

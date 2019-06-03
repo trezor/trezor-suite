@@ -1,4 +1,4 @@
-import { INIT, READY, ERROR } from '@suite/actions/SuiteActions';
+import { SUITE } from '@suite/actions/constants';
 import { Action } from '@suite/types';
 
 interface SuiteState {
@@ -15,15 +15,15 @@ const initialState: SuiteState = {
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
     switch (action.type) {
-        case INIT:
+        case SUITE.INIT:
             return initialState;
-        case READY:
+        case SUITE.READY:
             return {
                 loading: false,
                 loaded: true,
                 error: null,
             };
-        case ERROR:
+        case SUITE.ERROR:
             return {
                 loading: false,
                 loaded: false,
