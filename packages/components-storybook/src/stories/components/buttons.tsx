@@ -272,16 +272,15 @@ storiesOf('Buttons', module)
             const isDisabled = boolean('Disabled', false);
             const isLoading = boolean('Loading', false);
             const buttonText = text('Text', 'Button Text');
-            const variant: string | null = select(
+            const variant: any = select(
                 'Variant',
                 {
-                    None: null,
+                    Default: null,
                     info: 'info',
-                    success: 'success',
                     warning: 'warning',
                     error: 'error',
                 },
-                'success'
+                null
             );
 
             const iconOptions: any = {
