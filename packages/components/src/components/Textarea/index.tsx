@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import React from 'react';
-import Textarea from 'react-textarea-autosize';
 
 import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT } from '../../config/variables';
 import { getPrimaryColor } from '../../utils/colors';
 import colors from '../../config/colors';
-import { Omit, FeedbackState } from '../../support/types';
+import { FeedbackState } from '../../support/types';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -16,7 +15,7 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-const StyledTextarea = styled(Textarea)<StyledTextareaProps>`
+const StyledTextarea = styled.textarea<StyledTextareaProps>`
     width: 100%;
     min-height: 85px;
     padding: 10px 12px;
@@ -117,7 +116,6 @@ interface Props extends StyledTextareaProps, FeedbackState {
 
 const TextArea = ({
     className,
-    maxRows,
     maxLength,
     isDisabled,
     topLabel,
@@ -126,7 +124,7 @@ const TextArea = ({
     tooltipAction,
     wrapperProps,
     ...rest
-}: Omit<Props, 'ref' | 'as'>) => {
+}: Props) => {
     // TODO: figure out why 'ref' and 'as' prop need to be omitted
     const stateColor = getPrimaryColor(state) || undefined;
     return (
