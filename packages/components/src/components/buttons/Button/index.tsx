@@ -204,7 +204,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isTransparent?: boolean;
     isLoading?: boolean;
     icon?: string | IconShape;
-    variant: FeedbackType;
+    variant?: FeedbackType;
 }
 
 const Button = ({

@@ -13,7 +13,7 @@ import { getStateIcon } from '../../../utils/icons';
 import { getPrimaryColor } from '../../../utils/colors';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
-import { FeedbackState } from '../../../support/types';
+import { FeedbackType } from '../../../support/types';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -158,7 +158,7 @@ interface InputProps {
 }
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
-interface Props extends React.InputHTMLAttributes<HTMLInputElement>, FeedbackState {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: any;
     height?: number;
     icon?: any;
@@ -171,6 +171,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement>, FeedbackSta
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
     propTypes?: any;
+    state?: FeedbackType;
 }
 
 const Input = ({
