@@ -62,7 +62,7 @@ const Body: FunctionComponent = props => (
         <Router />
         <AppHeader sidebarEnabled={false} />
         <SuiteHeader>
-            <DeviceSelection />
+            <DeviceSelection data-test="@suite/device_selection" />
         </SuiteHeader>
         <AppWrapper>{props.children}</AppWrapper>
     </Wrapper>
