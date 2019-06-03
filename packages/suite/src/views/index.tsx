@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
+import { Header as AppHeader, colors } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Header } from '@trezor/components';
 import Router from '@suite/support/Router';
 
 import { State } from '@suite/types';
@@ -20,18 +20,51 @@ interface Props {
 }
 
 const Wrapper = styled.div`
-    border: 1px solid red;
     display: flex;
     flex: 1;
     flex-direction: column;
+    align-items: center;
+`;
+
+const AppWrapper = styled.div`
+    width: 100%;
+    max-width: 1170px;
+    margin: 0 auto;
+    flex: 1;
+    background: ${colors.WHITE};
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px 4px 0px 0px;
+    margin-top: 10px;
+
+    @media screen and (max-width: 1170px) {
+        border-radius: 0px;
+        margin-top: 0px;
+    }
+`;
+
+const SuiteHeader = styled.div`
+    display: flex;
+    padding: 10px;
+    border-radius: 4px 4px 0px 0px;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    background: ${colors.WHITE};
+    max-width: 1170px;
+    margin: 10px auto;
+    height: 80px;
+    flex-direction: row;
 `;
 
 const Body: FunctionComponent = props => (
     <Wrapper>
         <Router />
-        <Header sidebarEnabled={false} />
-        <DeviceSelection />
-        {props.children}
+        <AppHeader sidebarEnabled={false} />
+        <SuiteHeader>
+            <DeviceSelection />
+        </SuiteHeader>
+        <AppWrapper>{props.children}</AppWrapper>
     </Wrapper>
 );
 
@@ -98,12 +131,7 @@ const Index: FunctionComponent<Props> = props => {
     }
 
     // TODO: render requested view
-    return (
-        <Body>
-            <Text>Suite wrapper</Text>
-            {props.children}
-        </Body>
-    );
+    return <Body>{props.children}</Body>;
 };
 
 const mapStateToProps = (state: State) => ({
