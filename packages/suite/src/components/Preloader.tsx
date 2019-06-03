@@ -27,7 +27,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
     }, [dispatch, loaded]);
     return !loaded ? (
         <Wrapper>
-            <Loader text="Loading" size={100} />
+            <Loader text="Loading" size={100} strokeWidth={1} />
         </Wrapper>
     ) : (
         <SuiteWrapper>{props.children}</SuiteWrapper>

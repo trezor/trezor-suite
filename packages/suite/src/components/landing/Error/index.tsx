@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Notification } from 'trezor-ui-components';
+import { Notification } from '@trezor/components';
 
 const Wrapper = styled.div`
     width: 100%;

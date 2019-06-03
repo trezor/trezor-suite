@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
-import { Header as AppHeader, colors } from '@trezor/components';
+import { Header as AppHeader, colors, Button } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
@@ -43,12 +43,19 @@ const AppWrapper = styled.div`
     }
 `;
 
+const Left = styled.div``;
+const Right = styled.div``;
+const Link = styled.div`
+    cursor: pointer;
+`;
+
 const SuiteHeader = styled.div`
     display: flex;
     padding: 10px;
     border-radius: 4px 4px 0px 0px;
     align-items: center;
     box-sizing: border-box;
+    justify-content: space-between;
     width: 100%;
     background: ${colors.WHITE};
     max-width: 1170px;
@@ -61,9 +68,6 @@ const Body: FunctionComponent = props => (
     <Wrapper>
         <Router />
         <AppHeader sidebarEnabled={false} />
-        <SuiteHeader>
-            <DeviceSelection data-test="@suite/device_selection" />
-        </SuiteHeader>
         <AppWrapper>{props.children}</AppWrapper>
     </Wrapper>
 );
@@ -131,7 +135,19 @@ const Index: FunctionComponent<Props> = props => {
     }
 
     // TODO: render requested view
-    return <Body>{props.children}</Body>;
+    return (
+        <Body>
+            <SuiteHeader>
+                <Left>
+                    <DeviceSelection data-test="@suite/device_selection" />
+                </Left>
+                <Right>
+                    <Button onClick={() => goto('/settings')}>device settings</Button>
+                </Right>
+            </SuiteHeader>
+            {props.children}
+        </Body>
+    );
 };
 
 const mapStateToProps = (state: State) => ({

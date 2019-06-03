@@ -1,19 +1,17 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
-import Log from 'components/Log';
-import ContextNotifications from 'components/notifications/Context';
-import { colors, Loader } from 'trezor-ui-components';
+// import Footer from 'components/Footer';
+// import Log from 'components/Log';
+// import ContextNotifications from 'components/notifications/Context';
+import { colors, Loader, Header } from '@trezor/components';
 
-import InitializationError from '../InitializationError';
+import InitializationError from '../Error';
 
-type Props = {
-    loading?: boolean,
-    error?: ?string,
-    children?: React.Node,
-};
+interface Props {
+    loading?: boolean;
+    error?: string;
+}
 
 const Wrapper = styled.div`
     min-height: 100vh;
@@ -41,22 +39,15 @@ const LandingWrapper = (props: Props) => (
         {props.loading && <LandingLoader text="Loading" size={100} />}
         {!props.loading && (
             <React.Fragment>
-                <Header />
-                <ContextNotifications />
+                {/* <ContextNotifications /> */}
                 {props.error && <InitializationError error={props.error} />}
-                <Log />
+                {/* <Log /> */}
                 {!props.error && <LandingContent>{props.children}</LandingContent>}
-                <Footer isLanding />
+                {/* <Footer isLanding /> */}
             </React.Fragment>
         )}
     </Wrapper>
 );
-
-LandingWrapper.propTypes = {
-    loading: PropTypes.bool,
-    error: PropTypes.string,
-    children: PropTypes.node,
-};
 
 LandingWrapper.defaultProps = {
     loading: false,
