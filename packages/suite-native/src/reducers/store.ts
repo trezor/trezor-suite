@@ -8,10 +8,7 @@ import commonMiddlewares from '@suite/middlewares';
 const reducers = combineReducers(commonReducers);
 export type State = ReturnType<typeof reducers>;
 
-const middlewares = [
-    thunkMiddleware,
-    ...commonMiddlewares,
-];
+const middlewares = [thunkMiddleware, ...commonMiddlewares];
 
 const enhancers: any[] = [];
 
