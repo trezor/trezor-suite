@@ -12,6 +12,7 @@ before_script:
 
 stages:
   - install
+  - lint and types
   - test
   - build
   - deploy
@@ -40,7 +41,7 @@ variables:
 # Components package # --------------------------------
 
 components lint:
-  stage: test
+  stage: lint and types
   script:
     - yarn
     - yarn workspace @trezor/components lint
@@ -51,8 +52,7 @@ components lint:
       - .gitlab-ci.yml
 
 components type check:
-  stage: test
-  allow_failure: true
+  stage: lint and types
   script:
     - yarn
     - yarn workspace @trezor/components type-check
@@ -63,7 +63,7 @@ components type check:
       - .gitlab-ci.yml
 
 components-storybook lint:
-  stage: test
+  stage: lint and types
   script:
     - yarn
     - yarn workspace @trezor/components-storybook lint
@@ -74,7 +74,7 @@ components-storybook lint:
       - .gitlab-ci.yml
 
 components-storybook type check:
-  stage: test
+  stage: lint and types
   allow_failure: true
   script:
     - yarn
@@ -172,7 +172,7 @@ components-storybook make snapshot references:
 # Suite web package # --------------------------------
 
 suite-web lint:
-  stage: test
+  stage: lint and types
   script:
     - env
     - yarn
@@ -184,7 +184,7 @@ suite-web lint:
       - .gitlab-ci.yml
 
 suite-web type check:
-  stage: test
+  stage: lint and types
   allow_failure: true
   script:
     - yarn

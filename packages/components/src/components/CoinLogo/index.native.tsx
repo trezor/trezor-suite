@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
 
-const LOGOS: { [key: string]: string } = {
+const LOGOS: { [key: string]: any } = {
     ada: require('../../images/coins/ada.png'),
     bch: require('../../images/coins/bch.png'),
     btc: require('../../images/coins/btc.png'),

@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components/native';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
-import { FeedbackVariant } from '../../../support/types';
+import { Omit, FeedbackVariant } from '../../../support/types';
 
 const Spinner = styled.ActivityIndicator`
     padding-right: 10px;
@@ -12,14 +12,19 @@ const View = styled.View`
     flex-direction: row;
 `;
 
-const Label = styled.Text`
+interface LabelProps {
+    disabled: boolean;
+}
+const Label = styled.Text<LabelProps>`
     font-weight: 400;
     align-self: center;
     font-size: 18;
     color: ${(props: any) => (props.disabled ? colors.TEXT_SECONDARY : colors.WHITE)};
 `;
 
-const ButtonContainer = styled.TouchableHighlight`
+type ButtonContainerProps = Omit<Props, 'children' | 'onClick'>;
+
+const ButtonContainer = styled.TouchableHighlight<ButtonContainerProps>`
     align-items: center;
     justify-content: center;
     padding: 10px 18px;
@@ -41,7 +46,7 @@ interface Props extends FeedbackVariant {
     isWhite?: boolean;
     isTransparent?: boolean;
     isLoading?: boolean;
-    children: string;
+    children?: React.ReactNode;
     onClick: () => void;
     // icon?: string | iconShape;
 }
@@ -64,7 +69,7 @@ const Button = ({
             isInverse={isInverse}
             isLoading={isLoading}
             variant={variant}
-            underlayColor={getSecondaryColor(variant)}
+            underlayColor={getSecondaryColor(variant) || undefined}
             disabled={isDisabled}
         >
             <View>
