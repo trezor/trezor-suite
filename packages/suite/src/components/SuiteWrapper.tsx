@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
 
-import { Header } from '@trezor/components';
+import { Header, LanguagePicker } from '@trezor/components';
 import Router from '@suite/support/Router';
 
 import { State } from '@suite/types';

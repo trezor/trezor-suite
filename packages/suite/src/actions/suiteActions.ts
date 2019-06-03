@@ -24,6 +24,11 @@ export type SuiteActions =
     | {
           type: typeof SUITE.UPDATE_SELECTED_DEVICE;
           payload: TrezorDevice;
+      }
+    | {
+          type: typeof SUITE.SET_LANGUAGE;
+          locale: string;
+          messages: { [key: string]: string };
       };
 
 export const onSuiteReady = (): SuiteActions => {
@@ -92,6 +97,27 @@ export const handleDeviceDisconnect = (device: Device) => (
     } else {
         // other device
     }
+};
+
+export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {
+    fetch(`./l10n/${locale}.json`)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw Error(response.statusText);
+        })
+        .then(messages => {
+            dispatch({
+                type: SUITE.SET_LANGUAGE,
+                locale,
+                messages,
+            });
+        })
+        .catch(error => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+        });
 };
 
 // list of all actions which has influence on "selectedDevice" field in "wallet" reducer
