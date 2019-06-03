@@ -1,36 +1,14 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
-import { State } from '@suite/types';
+import { State, Omit, TrezorDevice } from '@suite/types';
 import { selectDevice } from '@suite/actions/suiteActions';
 import styled, { css } from 'styled-components';
 import { TrezorImage, colors, variables } from '@trezor/components';
 import { getStatusColor, getStatusName, getStatus } from '../../utils/device';
 
-interface Props {
-    devices: State['devices'];
-    selectedDevice: State['suite']['device'];
-    selectDevice: typeof selectDevice;
-}
-
-interface Props {
-    devices: State['devices'];
-    selectedDevice: State['suite']['device'];
-    selectDevice: typeof selectDevice;
-    isAccessible: boolean;
-    device: any; // TODO: add type from connect
-    icon: any;
-    isHoverable: boolean;
-    disabled: boolean;
-    isOpen: boolean;
-    isSelected: boolean;
-    className: string;
-    testId: string;
-    intl: any;
-}
-
-const Wrapper = styled.div<Props>`
+const Wrapper = styled.div<WrapperProps>`
     position: relative;
     height: 70px;
     width: 320px;
@@ -113,34 +91,61 @@ const Dot = styled.div`
     width: 10px;
     height: 10px;
 `;
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+    devices: State['devices'];
+    selectedDevice: State['suite']['device'];
+    selectDevice: typeof selectDevice;
+    isAccessible: boolean;
+    onClickWrapper: () => void;
+    device: any; // TODO: add type from connect
+    icon: any;
+    isHoverable: boolean;
+    disabled: boolean;
+    isOpen: boolean;
+    isSelected: boolean;
+    className: string;
+    intl: any;
+}
 
-const DeviceSelection: FunctionComponent<Props> = props => {
-    const {
-        devices,
-        selectedDevice,
-        isOpen,
-        icon,
-        device,
-        isHoverable = true,
-        onClickWrapper,
-        isAccessible = true,
-        disabled = false,
-        isSelected = false,
-        className,
-        testId,
-        intl,
-    } = props;
+type WrapperProps = Omit<
+    Props,
+    | 'onSelect'
+    | 'devices'
+    | 'selectedDevice'
+    | 'selectDevice'
+    | 'isAccessible'
+    | 'icon'
+    | 'intl'
+    | 'device'
+    | 'onClickWrapper'
+>;
 
+const DeviceSelection = ({
+    devices,
+    selectedDevice,
+    isOpen,
+    icon,
+    device,
+    isHoverable = true,
+    onClickWrapper,
+    isAccessible = true,
+    disabled = false,
+    isSelected = false,
+    className,
+    intl,
+    selectDevice,
+    ...rest
+}: Props) => {
     if (!selectedDevice || devices.length < 1) return null;
 
-    const options = devices.map(dev => ({
+    const options = devices.map((dev: TrezorDevice) => ({
         label: dev.label,
         value: dev.path,
         device: dev,
     }));
 
     const onSelect = (option: any) => {
-        props.selectDevice(option.device);
+        selectDevice(option.device);
     };
 
     const value = options.find(opt => opt.device === selectedDevice);
@@ -149,12 +154,12 @@ const DeviceSelection: FunctionComponent<Props> = props => {
     return (
         <Wrapper
             isSelected={isSelected}
-            data-test={testId}
             isOpen={isOpen}
             isHoverable={isHoverable}
             disabled={disabled}
             className={className}
             onClick={onClickWrapper}
+            {...rest}
         >
             <ImageWrapper>
                 <Dot color={getStatusColor(status)} />

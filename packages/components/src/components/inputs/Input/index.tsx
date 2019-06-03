@@ -170,12 +170,14 @@ interface Props extends React.HTMLAttributes<HTMLInputElement> {
     isSmallText?: boolean;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
+    type?: string; // TODO: type prop should be inherited from basic html input
     propTypes?: any;
 }
 
 const Input = ({
     className,
     innerRef,
+    type = 'text',
     height = 40,
     icon,
     state,
@@ -204,6 +206,7 @@ const Input = ({
                     {/* TODO: this icon should be most likely removed */}
                     {icon}
                     <StyledInput
+                        type={type}
                         autoComplete="off"
                         height={height}
                         tooltipAction={tooltipAction}
