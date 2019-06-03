@@ -1,3 +1,3 @@
-import UI from '@suite/views/ui';
+import UI from '@suite/apps/uitest';
 
 export default UI;
