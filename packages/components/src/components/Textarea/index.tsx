@@ -99,7 +99,7 @@ const ArrowUp = styled.div`
     z-index: 10001;
 `;
 
-type BaseTextareaProps = import('react-textarea-autosize').TextareaAutosizeProps;
+type BaseTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 interface StyledTextareaProps extends BaseTextareaProps {
     isSmallText?: boolean;
@@ -108,7 +108,7 @@ interface StyledTextareaProps extends BaseTextareaProps {
 }
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
-interface Props extends BaseTextareaProps, StyledTextareaProps, FeedbackState {
+interface Props extends StyledTextareaProps, FeedbackState {
     isDisabled?: boolean;
     topLabel?: React.ReactNode;
     bottomText?: React.ReactNode;
