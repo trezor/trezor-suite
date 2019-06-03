@@ -7,9 +7,6 @@ import { withInfo } from '@storybook/addon-info';
 import { linkTo } from '@storybook/addon-links';
 
 import { Tooltip, P, Link, H1, H2, H3, H4, H5, H6, colors } from '@trezor/components';
-import Popper from 'popper.js';
-
-export type Placement = Popper.Placement;
 
 const Center = styled.div`
     display: flex;
@@ -355,7 +352,7 @@ storiesOf('Typography', module)
     .add(
         'Tooltip',
         () => {
-            const placement: Placement = select(
+            const placement: 'top' | 'bottom' | 'left' | 'right' = select(
                 'Placement',
                 {
                     Top: 'top',
