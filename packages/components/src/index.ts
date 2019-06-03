@@ -57,9 +57,9 @@ export {
     CoinLogo,
     TrezorImage,
     TrezorLogo,
-    LanguagePicker,
     Loader,
     Notification,
     Prompt,
     Header,
+    LanguagePicker,
 };

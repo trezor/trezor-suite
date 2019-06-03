@@ -557,7 +557,7 @@ storiesOf('Other', module)
     .add(
         'LanguagePicker',
         () => {
-            const language = select(
+            const language: string = select(
                 'language',
                 {
                     en: 'en',

@@ -579,25 +579,20 @@ storiesOf('Form', module).add('All', () => (
             <DataWrapper data-test="switch_noicon_unchecked">
                 <Switch
                     onChange={() => {}}
-                    uncheckedIcon={undefined}
-                    checkedIcon={undefined}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
                     checked={false}
                 />
             </DataWrapper>
             <DataWrapper data-test="switch_noicon_checked">
-                <Switch
-                    onChange={() => {}}
-                    uncheckedIcon={undefined}
-                    checkedIcon={undefined}
-                    checked
-                />
+                <Switch onChange={() => {}} uncheckedIcon={false} checkedIcon={false} checked />
             </DataWrapper>
 
             <DataWrapper data-test="switch_noicon_disabled">
                 <Switch
                     onChange={() => {}}
-                    uncheckedIcon={undefined}
-                    checkedIcon={undefined}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
                     disabled
                     checked={false}
                 />
@@ -607,8 +602,8 @@ storiesOf('Form', module).add('All', () => (
             <DataWrapper data-test="switch_noicon_small_unchecked">
                 <Switch
                     onChange={() => {}}
-                    uncheckedIcon={undefined}
-                    checkedIcon={undefined}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
                     isSmall
                     checked={false}
                 />
@@ -616,8 +611,8 @@ storiesOf('Form', module).add('All', () => (
             <DataWrapper data-test="switch_noicon_small_checked">
                 <Switch
                     onChange={() => {}}
-                    uncheckedIcon={undefined}
-                    checkedIcon={undefined}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
                     isSmall
                     checked
                 />
@@ -625,8 +620,8 @@ storiesOf('Form', module).add('All', () => (
             <DataWrapper data-test="switch_noicon_small_disabled">
                 <Switch
                     onChange={() => {}}
-                    uncheckedIcon={undefined}
-                    checkedIcon={undefined}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
                     isSmall
                     disabled
                     checked={false}

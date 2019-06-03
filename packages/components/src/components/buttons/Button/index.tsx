@@ -7,7 +7,7 @@ import Icon from '../../Icon';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
 import { SPIN } from '../../../config/animations';
-import { IconShape } from '../../../support/types';
+import { IconShape, FeedbackType } from '../../../support/types';
 
 interface FluidSpinnerProps {
     size: number;
@@ -198,13 +198,13 @@ const IconWrapper = styled.div`
 // TODO: Error messages are not helpful. Find a better way to extend html button props.
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     additionalClassName?: string;
-    variant?: 'success' | 'info' | 'warning' | 'error';
     isDisabled?: boolean;
     isInverse?: boolean;
     isWhite?: boolean;
     isTransparent?: boolean;
     isLoading?: boolean;
     icon?: string | IconShape;
+    variant?: FeedbackType;
 }
 
 const Button = ({

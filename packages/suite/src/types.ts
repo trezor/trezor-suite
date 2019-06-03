@@ -7,7 +7,7 @@ import { StorageActions } from './actions/storageActions';
 import { SuiteActions } from './actions/suiteActions';
 import { State as ReducersState } from './reducers/store';
 
-type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type TrezorConnectEvents =
     | Omit<TransportEvent, 'event'>
     | Omit<UiEvent, 'event'>
