@@ -12,7 +12,9 @@ import {
     Header,
     Prompt,
     H1,
+    H5,
     Icon,
+    Loader,
     TrezorLogo,
     TrezorImage,
     CoinLogo,
@@ -50,6 +52,18 @@ const Wrapper = styled.div`
     padding: 1.6rem;
 `;
 
+const Section = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 2rem 0 3rem;
+`;
+
+const SectionDark = styled(Section)`
+    background: ${colors.HEADER};
+`;
+
 const LanguageWrapper = styled.div`
     background-color: ${colors.HEADER};
     display: flex;
@@ -85,41 +99,200 @@ const BtnLink = styled.button`
     border-radius: 5px;
 `;
 
+storiesOf('Other', module).add('All', () => (
+    <Wrapper>
+        <H1>Prompt</H1>
+        <H5>
+            Trezor One{' '}
+            <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="1" />'}</BtnLink>
+        </H5>
+        <Section>
+            <Prompt model={1} data-test="prompt_1">
+                Complete the action on your device
+            </Prompt>
+        </Section>
+
+        <H5>
+            Trezor Model T{' '}
+            <BtnLink onClick={linkTo('Other', 'Prompt')}>{'<Prompt model="2" />'}</BtnLink>
+        </H5>
+        <Section>
+            <Prompt model={2} data-test="prompt_2">
+                Complete the action on your device
+            </Prompt>
+        </Section>
+
+        <H1>TrezorImage</H1>
+        <H5>
+            Trezor One{' '}
+            <BtnLink onClick={linkTo('Other', 'TrezorImage')}>
+                {'<TrezorImage model="1" />'}
+            </BtnLink>
+        </H5>
+        <Section>
+            <TrezorImage height={310} model={1} data-test="trezor_image_1" />
+        </Section>
+
+        <H5>
+            Trezor Model T{' '}
+            <BtnLink onClick={linkTo('Other', 'TrezorImage')}>
+                {'<TrezorImage model="2" />'}
+            </BtnLink>
+        </H5>
+        <Section>
+            <TrezorImage height={310} model={2} data-test="trezor_image_2" />
+        </Section>
+
+        <H1>TrezorLogo</H1>
+        <H5>
+            Horizontal{' '}
+            <BtnLink onClick={linkTo('Other', 'TrezorLogo')}>
+                {'<TrezorLogo type="horizontal" />'}
+            </BtnLink>
+        </H5>
+        <Section>
+            <TrezorLogo type="horizontal" width="90%" data-test="trezor_logo_horizontal" />
+        </Section>
+
+        <H5>
+            Vertical{' '}
+            <BtnLink onClick={linkTo('Other', 'TrezorLogo')}>
+                {'<TrezorLogo type="vertical" />'}
+            </BtnLink>
+        </H5>
+        <Section>
+            <TrezorLogo type="vertical" width="50%" data-test="trezor_logo_vertical" />
+        </Section>
+
+        <H1>
+            Header <BtnLink onClick={linkTo('Other', 'Header')}>{'<Header />'}</BtnLink>
+        </H1>
+        <Section>
+            <Header
+                sidebarEnabled
+                sidebarOpened={false}
+                toggleSidebar={undefined}
+                togglerOpenText="Menu"
+                togglerCloseText="Close"
+                rightAddon={null}
+                links={[
+                    {
+                        href: 'https://trezor.io/',
+                        title: 'Trezor',
+                    },
+                    {
+                        href: 'https://wiki.trezor.io/',
+                        title: 'Wiki',
+                    },
+                    {
+                        href: 'https://blog.trezor.io/',
+                        title: 'Blog',
+                    },
+                ]}
+                data-test="header"
+            />
+        </Section>
+
+        <H1>Loader</H1>
+        <H5>
+            default <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader />'}</BtnLink>
+        </H5>
+        <Section>
+            <Loader size={100} strokeWidth={2} text="loading" data-test="loader_default" />
+        </Section>
+
+        <H5>
+            small text{' '}
+            <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader isSmallText />'}</BtnLink>
+        </H5>
+        <Section>
+            <Loader
+                size={100}
+                strokeWidth={2}
+                text="loading"
+                isSmallText
+                data-test="loader_small_text"
+            />
+        </Section>
+
+        <H5>
+            transparent route{' '}
+            <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader transparentRoute />'}</BtnLink>
+        </H5>
+        <Section>
+            <Loader
+                size={100}
+                strokeWidth={2}
+                text="loading"
+                transparentRoute
+                data-test="loader_transparent_route"
+            />
+        </Section>
+
+        <H5>
+            white text{' '}
+            <BtnLink onClick={linkTo('Other', 'Loader')}>{'<Loader isWhiteText />'}</BtnLink>
+        </H5>
+        <SectionDark>
+            <Loader
+                size={100}
+                strokeWidth={2}
+                text="loading"
+                isWhiteText
+                data-test="loader_white_text"
+            />
+        </SectionDark>
+
+        <H5>
+            white text &amp; transparent route{' '}
+            <BtnLink onClick={linkTo('Other', 'Loader')}>
+                {'<Loader isWhiteText transparentRoute />'}
+            </BtnLink>
+        </H5>
+        <SectionDark>
+            <Loader
+                size={100}
+                strokeWidth={2}
+                text="loading"
+                isWhiteText
+                transparentRoute
+                data-test="loader_white_text_transparent"
+            />
+        </SectionDark>
+
+        <H1>
+            Icons <BtnLink onClick={linkTo('Other', 'Icon')}>{'<Icon />'}</BtnLink>
+        </H1>
+        <Icons>
+            {Object.keys(icons).map(icon => {
+                const test = `icon_${icon.toLowerCase()}`;
+                return (
+                    <Item>
+                        <Title>{icon}</Title>
+                        <Icon icon={icons[icon]} data-test={test} />
+                    </Item>
+                );
+            })}
+        </Icons>
+
+        <H1>
+            Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink>
+        </H1>
+        <Icons>
+            {coins.map(coin => {
+                const test = `coin_${coin.toLowerCase()}`;
+                return (
+                    <Item>
+                        <Title>{coin}</Title>
+                        <CoinLogo height="23" network={coin} data-test={test} />
+                    </Item>
+                );
+            })}
+        </Icons>
+    </Wrapper>
+));
+
 storiesOf('Other', module)
-    .add('Coins & Icons', () => (
-        <Wrapper>
-            <H1>
-                Icons <BtnLink onClick={linkTo('Other', 'Icon')}>{'<Icon />'}</BtnLink>
-            </H1>
-
-            <Icons>
-                {Object.keys(icons).map(icon => {
-                    return (
-                        <Item>
-                            <Title>{icon}</Title>
-                            <Icon icon={icons[icon]} />
-                        </Item>
-                    );
-                })}
-            </Icons>
-
-            <H1>
-                Coins <BtnLink onClick={linkTo('Other', 'Coin')}>{'<CoinLogo />'}</BtnLink>
-            </H1>
-
-            <Icons>
-                {coins.map(coin => {
-                    console.log(coin);
-                    return (
-                        <Item>
-                            <Title>{coin}</Title>
-                            <CoinLogo height="23" network={coin} />
-                        </Item>
-                    );
-                })}
-            </Icons>
-        </Wrapper>
-    ))
     .addDecorator(
         withInfo({
             header: false,
@@ -294,7 +467,6 @@ storiesOf('Other', module)
                     type={type}
                     {...(width ? { width } : {})}
                     {...(height ? { height } : {})}
-                    data-test="trezor_logo"
                 />
             );
         },
@@ -307,6 +479,35 @@ storiesOf('Other', module)
         ~~~
         *<TrezorLogo> is just a styled <img> tag. See the [documentation](https://www.w3schools.com/tags/tag_img.asp) for more information about its props and usage.*
         `,
+            },
+        }
+    )
+    .add(
+        'Loader',
+        () => {
+            const isWhiteText = boolean('White text', false);
+            const isSmallText = boolean('Small text', false);
+            const transparentRoute = boolean('Transparent route', false);
+
+            return (
+                <Loader
+                    size={number('Size', 100)}
+                    strokeWidth={number('Stroke width', 1)}
+                    text={text('Text', 'loading')}
+                    {...(isWhiteText ? { isWhiteText } : {})}
+                    {...(isSmallText ? { isSmallText } : {})}
+                    {...(transparentRoute ? { transparentRoute } : {})}
+                />
+            );
+        },
+        {
+            info: {
+                text: `
+            ## Import
+            ~~~js
+            import { Loader } from 'trezor-ui-components';
+            ~~~
+            `,
             },
         }
     )
@@ -383,12 +584,8 @@ storiesOf('Other', module)
                 <LanguageWrapper>
                     <LanguagePicker
                         language={language}
-                        onChange={(value: object, action: object) => {
-                            console.log(
-                                `value changed. value: ${JSON.stringify(
-                                    value
-                                )} action: ${JSON.stringify(action)}`
-                            );
+                        onChange={option => {
+                            console.log(`value changed. value: ${JSON.stringify(option)}`);
                         }}
                         languages={[
                             { code: 'en', name: 'English', en: 'English' },

@@ -72,8 +72,9 @@ const Loader = ({
     animationColor,
     transparentRoute,
     strokeWidth = 2,
+    ...rest
 }: Props) => (
-    <Wrapper className={className} size={size}>
+    <Wrapper className={className} size={size} {...rest}>
         <StyledParagraph isSmallText={isSmallText} isWhiteText={isWhiteText}>
             {text}
         </StyledParagraph>
