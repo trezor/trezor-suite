@@ -655,7 +655,7 @@ storiesOf('Form', module)
             const isDisabled = boolean('Disabled', false);
             const value = text('Input value', '');
             const placeholder = text('Placeholder', 'placeholder...');
-            const state = select(
+            const state: any = select(
                 'State',
                 {
                     Default: undefined,
@@ -706,7 +706,7 @@ storiesOf('Form', module)
     .add(
         'TextArea',
         () => {
-            const state = select(
+            const state: any = select(
                 'State',
                 {
                     Default: undefined,
