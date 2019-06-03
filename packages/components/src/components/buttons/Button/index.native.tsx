@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components/native';
 import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
 import colors from '../../../config/colors';
-import { Omit } from '../../../support/types';
+import { Omit, FeedbackType } from '../../../support/types';
 
 const Spinner = styled.ActivityIndicator`
     padding-right: 10px;
@@ -41,13 +41,13 @@ const ButtonContainer = styled.TouchableHighlight<ButtonContainerProps>`
 `;
 
 interface Props {
-    variant: 'success' | 'info' | 'warning' | 'error';
     isDisabled?: boolean;
     isInverse?: boolean;
     isWhite?: boolean;
     isTransparent?: boolean;
     isLoading?: boolean;
     children?: React.ReactNode;
+    variant?: FeedbackType;
     onClick: () => void;
     // icon?: string | iconShape;
 }

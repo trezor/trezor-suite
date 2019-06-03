@@ -1,6 +1,7 @@
 import Document, { Head, Main, NextDocumentContext, NextScript } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
 import React from 'react';
+import { colors } from '@trezor/components';
 import { AppRegistry } from 'react-native';
 
 // Force Next-generated DOM elements to fill their parent's height.
@@ -18,13 +19,18 @@ const globalStyles = `
     }
 
     body {
+      background: ${colors.BACKGROUND};
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
 `;
 
-export default class MyDocument extends Document {
+interface Props {
+    styleTags: any;
+}
+
+export default class MyDocument extends Document<Props> {
     static async getInitialProps({ renderPage }: NextDocumentContext) {
         AppRegistry.registerComponent('Main', () => Main);
         // @ts-ignore getApplication is React Native Web addition for SSR.

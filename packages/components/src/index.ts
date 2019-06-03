@@ -26,6 +26,8 @@ import Loader from './components/Loader';
 import Notification from './components/Notification';
 import Prompt from './components/Prompt';
 import Header from './components/Header';
+import LanguagePicker from './components/LanguagePicker';
+import TrezorLogo from './components/TrezorLogo';
 
 export {
     colors,
@@ -54,8 +56,10 @@ export {
     Icon,
     CoinLogo,
     TrezorImage,
+    TrezorLogo,
     Loader,
     Notification,
     Prompt,
     Header,
+    LanguagePicker,
 };
