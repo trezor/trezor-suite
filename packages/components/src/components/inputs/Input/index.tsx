@@ -13,6 +13,7 @@ import { getStateIcon } from '../../../utils/icons';
 import { getPrimaryColor } from '../../../utils/colors';
 import Icon from '../../Icon';
 import colors from '../../../config/colors';
+import { FeedbackType } from '../../../support/types';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -157,11 +158,10 @@ interface InputProps {
 }
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
-interface Props extends React.HTMLAttributes<HTMLInputElement> {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: any;
     height?: number;
     icon?: any;
-    state?: 'info' | 'success' | 'warning' | 'error';
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
     tooltipAction?: React.ReactNode;
@@ -172,6 +172,7 @@ interface Props extends React.HTMLAttributes<HTMLInputElement> {
     wrapperProps?: Record<string, any>;
     type?: string; // TODO: type prop should be inherited from basic html input
     propTypes?: any;
+    state?: FeedbackType;
 }
 
 const Input = ({
