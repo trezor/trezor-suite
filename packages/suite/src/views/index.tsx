@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
+import styled from 'styled-components';
 
 import { Header } from '@trezor/components';
 import Router from '@suite/support/Router';
@@ -18,16 +19,23 @@ interface Props {
     goto: typeof goto;
 }
 
+const Wrapper = styled.div`
+    border: 1px solid red;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+`;
+
 const Body: FunctionComponent = props => (
-    <>
+    <Wrapper>
         <Router />
         <Header sidebarEnabled={false} />
         <DeviceSelection />
         {props.children}
-    </>
+    </Wrapper>
 );
 
-const Wrapper: FunctionComponent<Props> = props => {
+const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
 
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
@@ -109,4 +117,4 @@ export default connect(
     dispatch => ({
         goto: bindActionCreators(goto, dispatch),
     }),
-)(Wrapper);
+)(Index);
