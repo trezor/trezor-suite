@@ -5,8 +5,6 @@ import ReactSelect from 'react-select';
 import { OptionProps } from 'react-select/lib/types';
 import colors from '../../config/colors';
 
-//TODO: proper type checking with types imported from react-select
-
 const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
