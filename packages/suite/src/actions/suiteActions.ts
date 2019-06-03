@@ -68,6 +68,17 @@ export const selectDevice = (device: Device | TrezorDevice | undefined) => (
     // }
 };
 
+export const updateSelectedDevice = (device: Device | TrezorDevice) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const payload = device;
+    dispatch({
+        type: SUITE.UPDATE_SELECTED_DEVICE,
+        payload,
+    });
+};
+
 export const selectFirstAvailableDevice = () => () => {};
 
 // export const handleDeviceEvent = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
@@ -75,6 +86,13 @@ export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getS
     const selected = getState().suite.device;
     if (!selected) {
         dispatch(selectDevice(device));
+    }
+};
+
+export const handleDeviceChanged = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
+    const selected = getState().suite.device;
+    if (selected) {
+        dispatch(updateSelectedDevice(device));
     }
 };
 

@@ -7,11 +7,13 @@ import { StorageActions } from './actions/storageActions';
 import { SuiteActions } from './actions/suiteActions';
 import { LogActions } from './actions/logActions';
 import { State as ReducersState } from './reducers/store';
+import OnboardingActions from './types/onboarding/actions';
 
 export { MessageDescriptor } from './support/ConnectedIntlProvider';
 export { Messages } from './support/ConnectedIntlProvider';
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+
 type TrezorConnectEvents =
     | Omit<TransportEvent, 'event'>
     | Omit<UiEvent, 'event'>
@@ -24,7 +26,8 @@ export type Action =
     | BlockchainActions
     | StorageActions
     | SuiteActions
-    | LogActions;
+    | LogActions
+    | OnboardingActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
 export type Dispatch = ThunkDispatch<State, any, Action>;

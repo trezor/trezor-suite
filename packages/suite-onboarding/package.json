@@ -1,0 +1,36 @@
+{
+    "name": "@trezor/suite-onboarding",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "next",
+        "lint": "eslint . --ext .tsx,.ts",
+        "build": "next build && next export -o build",
+        "start": "next start",
+        "type-check": "tsc --project tsconfig.json",
+        "type-check:watch": "yarn type-check -- --watch"
+    },
+    "dependencies": {
+        "@trezor/suite": "1.0.0",
+        "next": "^8.0.0",
+        "next-redux-wrapper": "^3.0.0-alpha.2",
+        "react-svg": "^10.0.6",
+        "react-timeout": "^1.2.0",
+        "styled-reset": "^2.0.14",
+        "trezor-flags": "^1.0.2"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.0.0",
+        "@types/next": "^8.0.0",
+        "@types/next-redux-wrapper": "^2.0.2",
+        "@types/react": "^16.7.11",
+        "@types/react-dom": "^16.0.11",
+        "@types/react-native": "^0.57.41",
+        "@types/react-redux": "^7.0.8",
+        "@zeit/next-typescript": "^1.1.1",
+        "git-revision-webpack-plugin": "^3.0.3",
+        "next-images": "^1.1.1",
+        "next-plugin-custom-babel-config": "^1.0.0",
+        "next-transpile-modules": "^2.0.0"
+    }
+}

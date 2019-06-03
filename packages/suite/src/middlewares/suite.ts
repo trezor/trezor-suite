@@ -41,7 +41,9 @@ const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
         case DEVICE.DISCONNECT:
             api.dispatch(SuiteActions.handleDeviceDisconnect(action.payload));
             break;
-
+        case DEVICE.CHANGED:
+            api.dispatch(SuiteActions.handleDeviceChanged(action.payload));
+            break;
         default:
             break;
     }
