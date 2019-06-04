@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchLocale } from '@suite/actions/languageActions';
+import { fetchLocale } from '@suite/actions/languageActions.nonNativeOnly';
 import { LANGUAGES } from '@suite/config/app';
 import { Header as AppHeader, LanguagePicker, colors } from '@trezor/components';
 import Router from '@suite/support/Router';
