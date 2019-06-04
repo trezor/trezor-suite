@@ -1,7 +1,8 @@
 import { colors } from '@trezor/components';
+import { TrezorDevice } from '@suite/types';
 import l10nMessages from '../components/DeviceSelection/index.messages';
 
-export const getStatus = (device): string => {
+export const getStatus = (device: TrezorDevice): string => {
     if (!device.connected) {
         return 'disconnected';
     }
@@ -73,7 +74,7 @@ export const getStatusName = (deviceStatus: string, intl): string => {
 
 export const isWebUSB = transport => !!(transport.type && transport.type === 'webusb');
 
-export const isDisabled = (selectedDevice, devices, transport) => {
+export const isDisabled = (selectedDevice: SelectedDevice, devices: TrezorDevice[], transport) => {
     if (isWebUSB(transport)) return false; // always enabled if webusb
     if (devices.length < 1) return true; // no devices
     if (devices.length === 1) {
@@ -84,19 +85,19 @@ export const isDisabled = (selectedDevice, devices, transport) => {
     return false; // default
 };
 
-export const isDeviceAccessible = (device): boolean => {
+export const isDeviceAccessible = (device: SelectedDevice): boolean => {
     if (!device || !device.features) return false;
     return device.mode === 'normal' && device.firmware !== 'required';
 };
 
-export const isSelectedDevice = (selected, device): boolean =>
+export const isSelectedDevice = (selected: SelectedDevice, device: TrezorDevice): boolean =>
     !!(
         selected &&
         device &&
         (selected.path === device.path && (device.ts && selected.instance === device.instance))
     );
 
-export const getVersion = (device): string => {
+export const getVersion = (device: TrezorDevice): string => {
     let version;
     if (device.features && device.features.major_version > 1) {
         version = 'T';

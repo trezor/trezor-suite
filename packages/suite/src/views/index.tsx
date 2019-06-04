@@ -20,6 +20,7 @@ interface Props {
     suite: State['suite'];
     devices: State['devices'];
     goto: typeof goto;
+    children: ReactElement;
     isLanding: boolean;
 }
 
