@@ -12,7 +12,8 @@ before_script:
 
 stages:
   - install
-  - lint and types
+  - type check
+  - lint
   - test
   - build
   - deploy
@@ -42,7 +43,7 @@ variables:
 # Components package # --------------------------------
 
 components lint:
-  stage: lint and types
+  stage: lint
   script:
     - yarn
     - yarn workspace @trezor/components lint
@@ -53,7 +54,7 @@ components lint:
       - .gitlab-ci.yml
 
 components type check:
-  stage: lint and types
+  stage: type check
   script:
     - yarn
     - yarn workspace @trezor/components type-check
@@ -64,7 +65,7 @@ components type check:
       - .gitlab-ci.yml
 
 components-storybook lint:
-  stage: lint and types
+  stage: lint
   script:
     - yarn
     - yarn workspace @trezor/components-storybook lint
@@ -75,7 +76,7 @@ components-storybook lint:
       - .gitlab-ci.yml
 
 components-storybook type check:
-  stage: lint and types
+  stage: type check
   allow_failure: true
   script:
     - yarn
@@ -173,7 +174,7 @@ components-storybook make snapshot references:
 # Suite web package # --------------------------------
 
 suite-web lint:
-  stage: lint and types
+  stage: lint
   script:
     - env
     - yarn
@@ -185,7 +186,7 @@ suite-web lint:
       - .gitlab-ci.yml
 
 suite-web type check:
-  stage: lint and types
+  stage: type check
   allow_failure: true
   script:
     - yarn
@@ -246,7 +247,7 @@ suite-web deploy dev:
 # Suite native package # --------------------------------
 
 suite-native lint:
-  stage: lint and types
+  stage: lint
   script:
     - env
     - yarn
@@ -258,7 +259,7 @@ suite-native lint:
       - .gitlab-ci.yml
 
 suite-native type check:
-  stage: lint and types
+  stage: type check
   allow_failure: true
   script:
     - yarn
@@ -273,7 +274,7 @@ suite-native type check:
 # Suite native package # --------------------------------
 
 suite-desktop lint:
-  stage: lint and types
+  stage: lint
   script:
     - env
     - yarn
@@ -285,7 +286,7 @@ suite-desktop lint:
       - .gitlab-ci.yml
 
 suite-desktop type check:
-  stage: lint and types
+  stage: type check
   allow_failure: true
   script:
     - yarn
