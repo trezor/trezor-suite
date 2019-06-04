@@ -330,7 +330,7 @@ suite-desktop build mac:
       - packages/suite/**/*
       - packages/suite-desktop/**/*
       - .gitlab-ci.yml
- artifacts:
+  artifacts:
     expire_in: 3 days
     paths:
       - $PACKAGE_PATH_SUITE_DESKTOP/build-electron/mac/TrezorSuite.app
