@@ -183,7 +183,7 @@ suite lint:
       - packages/suite/**/*
       - .gitlab-ci.yml
 
-suite-web type check:
+suite type check:
   stage: type check
   allow_failure: true
   script:
