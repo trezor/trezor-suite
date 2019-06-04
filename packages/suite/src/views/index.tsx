@@ -2,10 +2,17 @@ import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { bindActionCreators } from 'redux';
+import { colors, Button, Loader } from '@trezor/components';
+
+import styled from 'styled-components';
+
+import InstallBridge from '@suite/views/bridge';
+import ConnectDevice from '@suite/components/landing/ConnectDevice';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
 import AcquireDevice from '../components/AcquireDevice';
+import DeviceSelection from '../components/DeviceSelection';
 import Layout from './Layout';
 
 interface Props {
@@ -13,7 +20,28 @@ interface Props {
     suite: State['suite'];
     devices: State['devices'];
     goto: typeof goto;
+    children: React.ReactNode;
 }
+
+const SuiteHeader = styled.div`
+    display: flex;
+    padding: 5px 15px 5px 5px;
+    border-bottom: 1px solid ${colors.BODY};
+    border-radius: 4px 4px 0px 0px;
+    align-items: center;
+    box-sizing: border-box;
+    justify-content: space-between;
+    width: 100%;
+    background: ${colors.WHITE};
+    max-width: 1170px;
+    flex-direction: row;
+`;
+
+const Left = styled.div``;
+const Right = styled.div``;
+const Link = styled.div`
+    cursor: pointer;
+`;
 
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
@@ -21,7 +49,11 @@ const Index: FunctionComponent<Props> = props => {
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
         // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
-        return <Layout>Don't have Transport info not yet.... show preloader?</Layout>;
+        return (
+            <Layout isLanding>
+                <Loader text="Loading" size={100} strokeWidth={1} />
+            </Layout>
+        );
     }
 
     // onboarding handles TrezorConnect events by itself
@@ -37,10 +69,9 @@ const Index: FunctionComponent<Props> = props => {
 
     // no available transport
     if (!suite.transport.type) {
-        // TODO: render "install bridge"
         return (
             <Layout>
-                <Text>Install bridge</Text>
+                <InstallBridge />
             </Layout>
         );
     }
@@ -49,9 +80,8 @@ const Index: FunctionComponent<Props> = props => {
     if (!suite.device) {
         // TODO: render "connect device" view with webusb button
         return (
-            <Layout>
-                <Text>Connect Trezor to continue</Text>
-                <Text>Transport: {suite.transport.type}</Text>
+            <Layout isLanding>
+                <ConnectDevice />
             </Layout>
         );
     }
@@ -78,7 +108,19 @@ const Index: FunctionComponent<Props> = props => {
     }
 
     // TODO: render requested view
-    return <Layout>{props.children}</Layout>;
+    return (
+        <Layout>
+            <SuiteHeader>
+                <Left>
+                    <DeviceSelection data-test="@suite/device_selection" />
+                </Left>
+                <Right>
+                    <Button onClick={() => goto('/settings')}>device settings</Button>
+                </Right>
+            </SuiteHeader>
+            {props.children}
+        </Layout>
+    );
 };
 
 const mapStateToProps = (state: State) => ({

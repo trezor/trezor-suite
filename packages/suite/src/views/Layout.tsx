@@ -2,30 +2,31 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchLocale } from '@suite/actions/languageActions.nonNativeOnly';
+import { fetchLocale } from '@suite/actions/languageActions.useNative';
 import { LANGUAGES } from '@suite/config/app';
 import { Header as AppHeader, LanguagePicker, colors } from '@trezor/components';
 import Router from '@suite/support/Router';
 import { State } from '@suite/types';
-import DeviceSelection from '../components/DeviceSelection';
 
-const Wrapper = styled.div`
+const PageWrapper = styled.div<Props>`
     display: flex;
     flex: 1;
     flex-direction: column;
+    background: ${props => (props.isLanding ? colors.LANDING : 'none')};
     align-items: center;
 `;
 
-const AppWrapper = styled.div`
+const AppWrapper = styled.div<Props>`
     width: 100%;
     max-width: 1170px;
     margin: 0 auto;
     flex: 1;
-    background: ${colors.WHITE};
+    background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
     display: flex;
     flex-direction: column;
+    align-items: center;
     border-radius: 4px 4px 0px 0px;
-    margin-top: 10px;
+    margin-top: 30px;
 
     @media screen and (max-width: 1170px) {
         border-radius: 0px;
@@ -33,29 +34,16 @@ const AppWrapper = styled.div`
     }
 `;
 
-const SuiteHeader = styled.div`
-    display: flex;
-    padding: 10px;
-    border-radius: 4px 4px 0px 0px;
-    align-items: center;
-    box-sizing: border-box;
-    width: 100%;
-    background: ${colors.WHITE};
-    max-width: 1170px;
-    margin: 10px auto;
-    height: 80px;
-    flex-direction: row;
-`;
-
 interface Props {
     router: State['router'];
     suite: State['suite'];
     devices: State['devices'];
     fetchLocale: typeof fetchLocale;
+    isLanding?: boolean;
 }
 
 const Layout = (props: Props) => (
-    <Wrapper>
+    <PageWrapper>
         <Router />
         <AppHeader
             sidebarEnabled={false}
@@ -69,11 +57,8 @@ const Layout = (props: Props) => (
                 />
             }
         />
-        <SuiteHeader>
-            <DeviceSelection data-test="@suite/device_selection" />
-        </SuiteHeader>
-        <AppWrapper />
-    </Wrapper>
+        <AppWrapper isLanding={props.isLanding}>{props.children}</AppWrapper>
+    </PageWrapper>
 );
 
 const mapStateToProps = (state: State) => ({
