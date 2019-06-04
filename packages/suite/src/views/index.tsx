@@ -1,9 +1,12 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
-import { Header as AppHeader, colors } from '@trezor/components';
+import { Header as AppHeader, colors, Button, Loader } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
+
+import InstallBridge from '@suite/views/bridge';
+import ConnectDevice from '@suite/components/landing/ConnectDevice';
 
 import Router from '@suite/support/Router';
 
@@ -17,25 +20,29 @@ interface Props {
     suite: State['suite'];
     devices: State['devices'];
     goto: typeof goto;
+    children: ReactElement;
+    isLanding: boolean;
 }
 
-const Wrapper = styled.div`
+const PageWrapper = styled.div<Props>`
     display: flex;
     flex: 1;
     flex-direction: column;
+    background: ${props => (props.isLanding ? colors.LANDING : 'none')};
     align-items: center;
 `;
 
-const AppWrapper = styled.div`
+const AppWrapper = styled.div<Props>`
     width: 100%;
     max-width: 1170px;
     margin: 0 auto;
     flex: 1;
-    background: ${colors.WHITE};
+    background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
     display: flex;
     flex-direction: column;
+    align-items: center;
     border-radius: 4px 4px 0px 0px;
-    margin-top: 10px;
+    margin-top: 30px;
 
     @media screen and (max-width: 1170px) {
         border-radius: 0px;
@@ -43,29 +50,32 @@ const AppWrapper = styled.div`
     }
 `;
 
+const Left = styled.div``;
+const Right = styled.div``;
+const Link = styled.div`
+    cursor: pointer;
+`;
+
 const SuiteHeader = styled.div`
     display: flex;
-    padding: 10px;
+    padding: 5px 15px 5px 5px;
+    border-bottom: 1px solid ${colors.BODY};
     border-radius: 4px 4px 0px 0px;
     align-items: center;
     box-sizing: border-box;
+    justify-content: space-between;
     width: 100%;
     background: ${colors.WHITE};
     max-width: 1170px;
-    margin: 10px auto;
-    height: 80px;
     flex-direction: row;
 `;
 
-const Body: FunctionComponent = props => (
-    <Wrapper>
+const Body: FunctionComponent<Props> = props => (
+    <PageWrapper isLanding={props.isLanding}>
         <Router />
         <AppHeader sidebarEnabled={false} />
-        <SuiteHeader>
-            <DeviceSelection data-test="@suite/device_selection" />
-        </SuiteHeader>
-        <AppWrapper>{props.children}</AppWrapper>
-    </Wrapper>
+        <AppWrapper isLanding={props.isLanding}>{props.children}</AppWrapper>
+    </PageWrapper>
 );
 
 const Index: FunctionComponent<Props> = props => {
@@ -74,7 +84,11 @@ const Index: FunctionComponent<Props> = props => {
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
         // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
-        return <Body>Don't have Transport info not yet.... show preloader?</Body>;
+        return (
+            <Body isLanding>
+                <Loader text="Loading" size={100} strokeWidth={1} />
+            </Body>
+        );
     }
 
     // onboarding handles TrezorConnect events by itself
@@ -90,10 +104,9 @@ const Index: FunctionComponent<Props> = props => {
 
     // no available transport
     if (!suite.transport.type) {
-        // TODO: render "install bridge"
         return (
             <Body>
-                <Text>Install bridge</Text>
+                <InstallBridge />
             </Body>
         );
     }
@@ -102,9 +115,8 @@ const Index: FunctionComponent<Props> = props => {
     if (!suite.device) {
         // TODO: render "connect device" view with webusb button
         return (
-            <Body>
-                <Text>Connect Trezor to continue</Text>
-                <Text>Transport: {suite.transport.type}</Text>
+            <Body isLanding>
+                <ConnectDevice />
             </Body>
         );
     }
@@ -131,7 +143,19 @@ const Index: FunctionComponent<Props> = props => {
     }
 
     // TODO: render requested view
-    return <Body>{props.children}</Body>;
+    return (
+        <Body>
+            <SuiteHeader>
+                <Left>
+                    <DeviceSelection data-test="@suite/device_selection" />
+                </Left>
+                <Right>
+                    <Button onClick={() => goto('/settings')}>device settings</Button>
+                </Right>
+            </SuiteHeader>
+            {props.children}
+        </Body>
+    );
 };
 
 const mapStateToProps = (state: State) => ({
