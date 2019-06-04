@@ -39,15 +39,14 @@ addLocaleData([
 ]);
 
 const mapStateToProps = state => ({
-    locale: 'en',
-    messages: {},
+    locale: state.suite.language,
+    messages: state.suite.messages,
 });
 
 const ReactIntlProvider = ({ children, locale, messages }) => (
     <IntlProvider
         locale={locale}
         messages={messages}
-        key={locale} // forces rerender IntlProvider when lang file is downloaded
     >
         {children}
     </IntlProvider>
