@@ -7,15 +7,14 @@
     "scripts": {
         "dev:desktop": "electron .",
         "dev": "electron .",
-        "build": "next build && next export -o build",
         "preelectron-pack": "yarn build",
-        "pack": "electron-builder --dir build",
-        "dist": "rimraf ./build-electron && run-p dist:*",
-        "dist:mac": "electron-builder --mac",
-        "dist:linux": "electron-builder --linux",
-        "dist:win": "electron-builder --win",
-        "postinstall": "electron-builder install-app-deps",
+        "pack": "electron-builder --dir",
+        "clean": "rimraf ./build-electron && rimraf ./build",
         "build:desktop": "next build && next export -o build",
+        "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
+        "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
+        "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
+        "postinstall": "electron-builder install-app-deps",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "tsc": "tsc"
     },
@@ -27,7 +26,9 @@
             "output": "build-electron"
         },
         "files": [
-            "build/**/*"
+            "build/**/*",
+            "src/**/*",
+            "package.json"
         ],
         "dmg": {
             "contents": [
