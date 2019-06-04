@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
-import { fetchLocale } from '@suite/actions/suiteActions';
 import AcquireDevice from '../components/AcquireDevice';
 import Layout from './Layout';
 
@@ -92,6 +91,5 @@ export default connect(
     mapStateToProps,
     dispatch => ({
         goto: bindActionCreators(goto, dispatch),
-        fetchLocale: bindActionCreators(fetchLocale, dispatch),
     }),
 )(Index);

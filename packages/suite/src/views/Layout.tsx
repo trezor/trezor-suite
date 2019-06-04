@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchLocale } from '@suite/actions/suiteActions';
+import { fetchLocale } from '@suite/actions/languageActions';
 import { LANGUAGES } from '@suite/config/app';
 import { Header as AppHeader, LanguagePicker, colors } from '@trezor/components';
 import Router from '@suite/support/Router';
-import { State, Dispatch } from '@suite/types';
+import { State } from '@suite/types';
 import DeviceSelection from '../components/DeviceSelection';
 
 const Wrapper = styled.div`

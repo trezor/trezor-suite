@@ -6,10 +6,12 @@
         "lint": "run-s lint:*",
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
-        "tsc": "tsc"
+        "tsc": "tsc",
+        "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations"
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
+        "@trezor/translations-manager": "1.0.5",
         "@types/react-intl": "^2.3.17",
         "react": "16.8.6",
         "react-dom": "16.8.6",

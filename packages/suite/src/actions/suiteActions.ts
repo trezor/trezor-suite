@@ -99,27 +99,6 @@ export const handleDeviceDisconnect = (device: Device) => (
     }
 };
 
-export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {
-    fetch(`./l10n/${locale}.json`)
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            throw Error(response.statusText);
-        })
-        .then(messages => {
-            dispatch({
-                type: SUITE.SET_LANGUAGE,
-                locale,
-                messages,
-            });
-        })
-        .catch(error => {
-            // eslint-disable-next-line no-console
-            console.error(error);
-        });
-};
-
 // list of all actions which has influence on "selectedDevice" field in "wallet" reducer
 // other actions will be ignored
 const actions: string[] = [
