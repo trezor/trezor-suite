@@ -7,7 +7,8 @@
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
         "tsc": "tsc",
-        "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations"
+        "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations",
+        "type-check": "tsc --project tsconfig.json"
     },
     "dependencies": {
         "@trezor/components": "1.0.0",

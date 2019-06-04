@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactAsyncSelect from 'react-select/lib/Async';
 import ReactSelect from 'react-select';
+import { Props as SelectProps } from 'react-select/lib/Select';
+import { OptionProps } from 'react-select/lib/types';
 import colors from '../../config/colors';
-
-//TODO: proper type checking with types imported from react-select
 
 const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) => ({
     singleValue: (base: Record<string, any>) => ({
@@ -67,7 +67,7 @@ const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) =>
     }),
 });
 
-interface Props {
+interface Props extends SelectProps<OptionProps> {
     isSearchable?: boolean;
     withDropdownIndicator?: boolean;
 }

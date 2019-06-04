@@ -17,7 +17,9 @@ const Wallet = (props: Props) => {
     const baseUrl = `${pathname}#/${params.coin}/`;
     return (
         <>
-            <Title>{params.coin} Account {params.accountId} Sign-Verify Page</Title>
+            <Title>
+                {params.coin} Account {params.accountId} Sign-Verify Page
+            </Title>
             <Text>Other accounts</Text>
             <Button variant="success" onClick={() => goto(`${baseUrl}1`)}>
                 Account#1
