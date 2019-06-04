@@ -38,9 +38,9 @@ addLocaleData([
     ...zh,
 ]);
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     locale: 'en',
-    messages: {}
+    messages: {},
 });
 
 const ReactIntlProvider = ({ children, locale, messages }) => (
