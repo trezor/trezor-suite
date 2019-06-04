@@ -12,7 +12,8 @@ before_script:
 
 stages:
   - install
-  - lint and types
+  - lint
+  - type check
   - test
   - build
   - deploy
@@ -36,12 +37,13 @@ variables:
   PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
   PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
+  PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
   DEV_SERVER_URL: 'https://suite-dev.sldev.cz'
 
 # Components package # --------------------------------
 
 components lint:
-  stage: lint and types
+  stage: lint
   script:
     - yarn
     - yarn workspace @trezor/components lint
@@ -52,7 +54,7 @@ components lint:
       - .gitlab-ci.yml
 
 components type check:
-  stage: lint and types
+  stage: type check
   script:
     - yarn
     - yarn workspace @trezor/components type-check
@@ -63,7 +65,7 @@ components type check:
       - .gitlab-ci.yml
 
 components-storybook lint:
-  stage: lint and types
+  stage: lint
   script:
     - yarn
     - yarn workspace @trezor/components-storybook lint
@@ -74,7 +76,7 @@ components-storybook lint:
       - .gitlab-ci.yml
 
 components-storybook type check:
-  stage: lint and types
+  stage: type check
   allow_failure: true
   script:
     - yarn
@@ -169,10 +171,33 @@ components-storybook make snapshot references:
       - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
 
 
+# Suite core package # --------------------------------
+
+suite lint:
+  stage: lint
+  script:
+    - yarn
+    - yarn workspace @trezor/suite lint
+  only:
+    changes:
+      - packages/suite/**/*
+      - .gitlab-ci.yml
+
+suite type check:
+  stage: type check
+  allow_failure: true
+  script:
+    - yarn
+    - yarn workspace @trezor/suite type-check
+  only:
+    changes:
+      - packages/suite/**/*
+      - .gitlab-ci.yml
+
 # Suite web package # --------------------------------
 
 suite-web lint:
-  stage: lint and types
+  stage: lint
   script:
     - env
     - yarn
@@ -184,7 +209,7 @@ suite-web lint:
       - .gitlab-ci.yml
 
 suite-web type check:
-  stage: lint and types
+  stage: type check
   allow_failure: true
   script:
     - yarn
@@ -240,3 +265,57 @@ suite-web deploy dev:
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   tags:
     - deploy
+
+
+# Suite native package # --------------------------------
+
+suite-native lint:
+  stage: lint
+  script:
+    - env
+    - yarn
+    - yarn workspace @trezor/suite-native lint
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-native/**/*
+      - .gitlab-ci.yml
+
+suite-native type check:
+  stage: type check
+  allow_failure: true
+  script:
+    - yarn
+    - yarn workspace @trezor/suite-web type-check
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-native/**/*
+      - .gitlab-ci.yml
+
+
+# Suite native package # --------------------------------
+
+suite-desktop lint:
+  stage: lint
+  script:
+    - env
+    - yarn
+    - yarn workspace @trezor/suite-desktop lint
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-desktop/**/*
+      - .gitlab-ci.yml
+
+suite-desktop type check:
+  stage: type check
+  allow_failure: true
+  script:
+    - yarn
+    - yarn workspace @trezor/suite-desktop type-check
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-native/**/*
+      - .gitlab-ci.yml

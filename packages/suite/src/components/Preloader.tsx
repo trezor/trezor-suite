@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '@suite/types';
 import { Loader } from '@trezor/components';
-import styled from 'styled-components';
+import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite/actions/constants';
 import SuiteWrapper from '../views';
 
@@ -11,12 +11,13 @@ interface Props {
     dispatch: Dispatch;
 }
 
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-`;
+const styles = StyleSheet.create({
+    wrapper: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+    },
+});
 
 const Preloader: React.FunctionComponent<Props> = props => {
     const { loaded, dispatch } = props;
@@ -26,9 +27,9 @@ const Preloader: React.FunctionComponent<Props> = props => {
         }
     }, [dispatch, loaded]);
     return !loaded ? (
-        <Wrapper>
-            <Loader text="Loading" size={100} strokeWidth={1} />
-        </Wrapper>
+        <View style={styles.wrapper}>
+            <Loader text="Loading" size={100} />
+        </View>
     ) : (
         <SuiteWrapper>{props.children}</SuiteWrapper>
     );
