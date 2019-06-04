@@ -20,9 +20,10 @@ interface Props {
     suite: State['suite'];
     devices: State['devices'];
     goto: typeof goto;
+    isLanding: bool;
 }
 
-const PageWrapper = styled.div`
+const PageWrapper = styled.div<Props>`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -30,7 +31,7 @@ const PageWrapper = styled.div`
     align-items: center;
 `;
 
-const AppWrapper = styled.div`
+const AppWrapper = styled.div<Props>`
     width: 100%;
     max-width: 1170px;
     margin: 0 auto;
@@ -69,7 +70,7 @@ const SuiteHeader = styled.div`
     flex-direction: row;
 `;
 
-const Body: FunctionComponent = props => (
+const Body: FunctionComponent<Props> = props => (
     <PageWrapper isLanding={props.isLanding}>
         <Router />
         <AppHeader sidebarEnabled={false} />

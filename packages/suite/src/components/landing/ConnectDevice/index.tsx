@@ -3,10 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 // import l10nCommonMessages from 'views/common.messages';
 
-import { Button, P, H1, Link, icons, colors, variables } from '@trezor/components';
-
-// import { PULSATE } from 'config/animations';
-import CaseImage from '/images/macbook.png';
+import { Button, P, H1, Link, icons, colors, variables, animations } from '@trezor/components';
 
 import { FormattedMessage } from 'react-intl';
 import l10nMessages from './index.messages';
@@ -44,7 +41,7 @@ const ConnectTrezorWrapper = styled.div`
     position: relative;
     top: 1px;
     margin: 15px 15px 0px 15px;
-    /* animation: ${PULSATE} 1.3s ease-out infinite; */
+    animation: ${animations.PULSATE} 1.3s ease-out infinite;
     color: ${colors.GREEN_PRIMARY};
     font-size: ${variables.FONT_SIZE.BIG};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -71,6 +68,8 @@ const Image = styled.img`
 
 const Footer = styled.div`
     margin-bottom: 32px;
+    display: flex;
+    justify-content: center;
 `;
 
 const FooterText = styled.span`
@@ -175,9 +174,7 @@ class ConnectDevice extends PureComponent<Props> {
                         </React.Fragment>
                     )}
                 </Wrapper>
-
-                <Image src="/images/macbook.png" />
-
+                <Image src="/static/images/macbook.png" />
                 <Footer>
                     {this.props.showWebUsb && (
                         <P>
