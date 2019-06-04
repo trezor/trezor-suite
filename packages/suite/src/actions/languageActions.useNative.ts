@@ -2,7 +2,7 @@ import { Dispatch } from '@suite/types';
 import * as SUITE from './constants/suite';
 
 export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {
-    fetch(`./static/l10n/${locale}.json`)
+    fetch(`/static/l10n/${locale}.json`)
         .then(response => {
             if (response.ok) {
                 return response.json();
