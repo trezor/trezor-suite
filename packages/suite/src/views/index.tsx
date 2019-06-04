@@ -26,6 +26,7 @@ const PageWrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
+    background: ${props => (props.isLanding ? colors.LANDING : 'none')};
     align-items: center;
 `;
 
@@ -69,7 +70,7 @@ const SuiteHeader = styled.div`
 `;
 
 const Body: FunctionComponent = props => (
-    <PageWrapper>
+    <PageWrapper isLanding={props.isLanding}>
         <Router />
         <AppHeader sidebarEnabled={false} />
         <AppWrapper isLanding={props.isLanding}>{props.children}</AppWrapper>

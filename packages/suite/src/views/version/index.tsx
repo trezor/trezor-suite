@@ -20,7 +20,7 @@ const Version = () => (
         <H5>version</H5>
         <Line />
         <H6>LAST COMMIT HASH</H6>
-        <Link isGray href={`https://github.com/trezor/trezor-wallet/commits/aaa`}>
+        <Link isGray href="https://github.com/trezor/trezor-wallet/commits/aaa">
             <H5>hash</H5>
         </Link>
     </Wrapper>
