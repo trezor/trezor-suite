@@ -7,7 +7,7 @@
         "dev:desktop": "electron .",
         "build:desktop": "next build && next export -o build",
         "lint": "eslint '**/*{.ts,.tsx}'",
-        "tsc": "tsc"
+        "type-check": "tsc --project tsconfig.json"
     },
     "dependencies": {
         "electron-is-dev": "^1.1.0",

@@ -12,8 +12,8 @@ before_script:
 
 stages:
   - install
-  - type check
   - lint
+  - type check
   - test
   - build
   - deploy
@@ -170,6 +170,29 @@ components-storybook make snapshot references:
     paths:
       - /builds/trezor/trezor-suite/packages/components-storybook/test/snapshots
 
+
+# Suite core package # --------------------------------
+
+suite lint:
+  stage: lint
+  script:
+    - yarn
+    - yarn workspace @trezor/suite lint
+  only:
+    changes:
+      - packages/suite/**/*
+      - .gitlab-ci.yml
+
+suite-web type check:
+  stage: type check
+  allow_failure: true
+  script:
+    - yarn
+    - yarn workspace @trezor/suite type-check
+  only:
+    changes:
+      - packages/suite/**/*
+      - .gitlab-ci.yml
 
 # Suite web package # --------------------------------
 
