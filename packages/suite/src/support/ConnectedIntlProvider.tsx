@@ -44,10 +44,7 @@ const mapStateToProps = state => ({
 });
 
 const ReactIntlProvider = ({ children, locale, messages }) => (
-    <IntlProvider
-        locale={locale}
-        messages={messages}
-    >
+    <IntlProvider locale={locale} messages={messages}>
         {children}
     </IntlProvider>
 );
