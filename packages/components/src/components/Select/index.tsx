@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactAsyncSelect from 'react-select/lib/Async';
 import ReactSelect from 'react-select';
+import { Props as SelectProps } from 'react-select/lib/Select';
 import { OptionProps } from 'react-select/lib/types';
 import colors from '../../config/colors';
 
@@ -66,7 +67,7 @@ const styles = (isSearchable: boolean, withDropdownIndicator: boolean = true) =>
     }),
 });
 
-interface Props extends ReactSelect<OptionProps> {
+interface Props extends SelectProps<OptionProps> {
     isSearchable?: boolean;
     withDropdownIndicator?: boolean;
 }

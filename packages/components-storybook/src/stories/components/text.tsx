@@ -352,7 +352,7 @@ storiesOf('Typography', module)
     .add(
         'Tooltip',
         () => {
-            const placement: 'top' | 'bottom' | 'left' | 'right' = select(
+            const placement: any = select(
                 'Placement',
                 {
                     Top: 'top',
