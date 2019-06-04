@@ -16,7 +16,7 @@
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
         "postinstall": "electron-builder install-app-deps",
         "lint": "eslint '**/*{.ts,.tsx}'",
-        "tsc": "tsc"
+        "type-check": "tsc --project tsconfig.json"
     },
     "build": {
         "appId": "com.electron.${name}",

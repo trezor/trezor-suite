@@ -351,28 +351,32 @@ storiesOf('Typography', module)
     )
     .add(
         'Tooltip',
-        () => (
-            <Center>
-                <Tooltip
-                    maxWidth={number('Max width', 280)}
-                    placement={select(
-                        'Placement',
-                        {
-                            Top: 'top',
-                            Bottom: 'bottom',
-                            Left: 'left',
-                            Right: 'right',
-                        },
-                        'bottom'
-                    )}
-                    content={text('Content', 'Passphrase is an optional feature.')}
-                    ctaLink={text('CTA link', 'https://wiki.trezor.io/Passphrase')}
-                    ctaText={text('CTA Text', 'Learn more')}
-                >
-                    <span>Text with tooltip</span>
-                </Tooltip>
-            </Center>
-        ),
+        () => {
+            const placement: any = select(
+                'Placement',
+                {
+                    Top: 'top',
+                    Bottom: 'bottom',
+                    Left: 'left',
+                    Right: 'right',
+                },
+                'bottom'
+            );
+
+            return (
+                <Center>
+                    <Tooltip
+                        maxWidth={number('Max width', 280)}
+                        placement={placement}
+                        content={text('Content', 'Passphrase is an optional feature.')}
+                        ctaLink={text('CTA link', 'https://wiki.trezor.io/Passphrase')}
+                        ctaText={text('CTA Text', 'Learn more')}
+                    >
+                        <span>Text with tooltip</span>
+                    </Tooltip>
+                </Center>
+            );
+        },
         {
             info: {
                 text: `

@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
+import Title from '@suite/components/wallet/Title';
 
 interface Props {
     suite: State['suite'];
@@ -16,9 +17,9 @@ const Wallet = (props: Props) => {
     const baseUrl = `${pathname}#/${params.coin}/`;
     return (
         <>
-            <Text>
+            <Title>
                 {params.coin} Account {params.accountId} Sign-Verify Page
-            </Text>
+            </Title>
             <Text>Other accounts</Text>
             <Button variant="success" onClick={() => goto(`${baseUrl}1`)}>
                 Account#1

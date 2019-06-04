@@ -1,3 +1,3 @@
-import Settings from '@suite/apps/wallet/settings';
+import Settings from '@suite/views/wallet/settings';
 
 export default Settings;

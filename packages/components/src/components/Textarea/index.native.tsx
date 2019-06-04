@@ -6,6 +6,7 @@ import { TextInputProps } from 'react-native';
 import { FONT_FAMILY, FONT_SIZE_NATIVE as FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 import { getPrimaryColor } from '../../utils/colors';
 import colors from '../../config/colors';
+import { FeedbackType } from '../../support/types';
 
 const Wrapper = styled.View`
     width: 100%;
@@ -55,12 +56,12 @@ interface StyledTextareaProps extends TextInputProps {
 }
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
-interface Props extends TextInputProps {
+interface Props extends StyledTextareaProps {
     isDisabled?: boolean;
     topLabel?: React.ReactNode;
     bottomText?: React.ReactNode;
-    state: 'success' | 'info' | 'warning' | 'error';
     wrapperProps?: Record<string, any>;
+    state?: FeedbackType;
 }
 
 const TextArea = ({

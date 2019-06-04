@@ -10,7 +10,7 @@ interface Props {}
 
 const Loader = () => (
     <View>
-        <Text>TODO</Text>
+        <Text>TODO: Loader</Text>
     </View>
 );
 

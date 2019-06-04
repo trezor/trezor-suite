@@ -261,7 +261,7 @@ storiesOf('Notifications', module)
     .add(
         'Notification',
         () => {
-            const type = select(
+            const variant: any = select(
                 'Variant',
                 {
                     Success: 'success',
@@ -276,9 +276,11 @@ storiesOf('Notifications', module)
             const cancelable = boolean('Cancelable', false);
 
             if (cancelable) {
-                return <Notification variant={type} title={title} message={message} cancelable />;
+                return (
+                    <Notification variant={variant} title={title} message={message} cancelable />
+                );
             }
-            return <Notification variant={type} title={title} message={message} />;
+            return <Notification variant={variant} title={title} message={message} />;
         },
         {
             info: {
@@ -293,30 +295,34 @@ storiesOf('Notifications', module)
     )
     .add(
         'Notification with CTA',
-        () => (
-            <Notification
-                variant={select(
-                    'Variant',
-                    {
-                        Success: 'success',
-                        Warning: 'warning',
-                        Info: 'info',
-                        Error: 'error',
-                    },
-                    'success'
-                )}
-                title={text('Title', 'Notification title')}
-                message={text('Text', 'Text of the notification.')}
-                isActionInProgress={boolean('isActionInProgress', false)}
-                cancelable={boolean('Cancelable', false)}
-                actions={[
-                    {
-                        label: 'Create a backup in 3 minutes',
-                        callback: () => {},
-                    },
-                ]}
-            />
-        ),
+        () => {
+            const variant: any = select(
+                'Variant',
+                {
+                    Success: 'success',
+                    Warning: 'warning',
+                    Info: 'info',
+                    Error: 'error',
+                },
+                'success'
+            );
+
+            return (
+                <Notification
+                    variant={variant}
+                    title={text('Title', 'Notification title')}
+                    message={text('Text', 'Text of the notification.')}
+                    isActionInProgress={boolean('isActionInProgress', false)}
+                    cancelable={boolean('Cancelable', false)}
+                    actions={[
+                        {
+                            label: 'Create a backup in 3 minutes',
+                            callback: () => {},
+                        },
+                    ]}
+                />
+            );
+        },
         {
             info: {
                 text: `

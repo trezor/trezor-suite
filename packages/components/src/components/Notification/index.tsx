@@ -8,6 +8,7 @@ import { getStateIcon } from '../../utils/icons';
 import Icon from '../Icon';
 import Button from '../buttons/Button';
 import icons from '../../config/icons';
+import { FeedbackType } from '../../support/types';
 
 const Wrapper = styled.div<WrapperProps>`
     width: 100%;
@@ -96,19 +97,18 @@ interface CtaShape {
     callback: () => any;
 }
 
-type variantShape = 'success' | 'info' | 'warning' | 'error';
 interface WrapperProps {
     className?: string;
-    variant?: variantShape;
+    variant?: FeedbackType;
 }
 interface Props {
     className?: string;
-    variant: variantShape;
     title: React.ReactNode;
     message?: React.ReactNode;
     actions?: CtaShape[];
     cancelable?: boolean;
     isActionInProgress?: boolean;
+    variant?: FeedbackType;
     close?: () => any;
 }
 

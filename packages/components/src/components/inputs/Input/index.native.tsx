@@ -2,6 +2,7 @@
 import React from 'react';
 // import styled, { css } from 'styled-components/native';
 import PropTypes from 'prop-types';
+import { FeedbackType } from '../../../support/types';
 
 interface InputProps {
     hasIcon?: boolean;
@@ -17,7 +18,6 @@ interface Props extends React.HTMLAttributes<HTMLInputElement> {
     innerRef?: any;
     height?: number;
     icon?: any;
-    state?: 'info' | 'success' | 'warning' | 'error';
     bottomText?: React.ReactNode;
     topLabel?: React.ReactNode;
     tooltipAction?: React.ReactNode;
@@ -26,6 +26,7 @@ interface Props extends React.HTMLAttributes<HTMLInputElement> {
     isSmallText?: boolean;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
+    state?: FeedbackType;
 }
 
 const Input = ({
