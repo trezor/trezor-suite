@@ -36,6 +36,7 @@ variables:
   PACKAGE_PATH_COMPONENTS: 'packages/components-storybook'
   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
   PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
+  PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
   DEV_SERVER_URL: 'https://suite-dev.sldev.cz'
 
 # Components package # --------------------------------
@@ -240,3 +241,57 @@ suite-web deploy dev:
     - curl "https://api.telegram.org/bot699197118:AAGXNTaC5Q-ljmy_dMvaIvAKy1XjlkA3Iss/sendMessage?chat_id=-1001354778014&text=${DEPLOY_URL}"
   tags:
     - deploy
+
+
+# Suite native package # --------------------------------
+
+suite-native lint:
+  stage: lint and types
+  script:
+    - env
+    - yarn
+    - yarn workspace @trezor/suite-native lint
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-native/**/*
+      - .gitlab-ci.yml
+
+suite-native type check:
+  stage: lint and types
+  allow_failure: true
+  script:
+    - yarn
+    - yarn workspace @trezor/suite-web type-check
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-native/**/*
+      - .gitlab-ci.yml
+
+
+# Suite native package # --------------------------------
+
+suite-desktop lint:
+  stage: lint and types
+  script:
+    - env
+    - yarn
+    - yarn workspace @trezor/suite-desktop lint
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-desktop/**/*
+      - .gitlab-ci.yml
+
+suite-desktop type check:
+  stage: lint and types
+  allow_failure: true
+  script:
+    - yarn
+    - yarn workspace @trezor/suite-desktop type-check
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-native/**/*
+      - .gitlab-ci.yml
