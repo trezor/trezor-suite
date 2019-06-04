@@ -20,7 +20,7 @@ interface Props {
     suite: State['suite'];
     devices: State['devices'];
     goto: typeof goto;
-    isLanding: bool;
+    isLanding: boolean;
 }
 
 const PageWrapper = styled.div<Props>`
@@ -41,7 +41,7 @@ const AppWrapper = styled.div<Props>`
     flex-direction: column;
     align-items: center;
     border-radius: 4px 4px 0px 0px;
-    margin-top: 10px;
+    margin-top: 30px;
 
     @media screen and (max-width: 1170px) {
         border-radius: 0px;
@@ -57,7 +57,8 @@ const Link = styled.div`
 
 const SuiteHeader = styled.div`
     display: flex;
-    padding: 10px;
+    padding: 5px 15px 5px 5px;
+    border-bottom: 1px solid ${colors.BODY};
     border-radius: 4px 4px 0px 0px;
     align-items: center;
     box-sizing: border-box;
@@ -65,8 +66,6 @@ const SuiteHeader = styled.div`
     width: 100%;
     background: ${colors.WHITE};
     max-width: 1170px;
-    margin: 10px auto;
-    height: 80px;
     flex-direction: row;
 `;
 
@@ -86,7 +85,7 @@ const Index: FunctionComponent<Props> = props => {
         // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
         return (
             <Body isLanding>
-                <Loader text="Loading" size={100} />
+                <Loader text="Loading" size={100} strokeWidth={1} />
             </Body>
         );
     }
