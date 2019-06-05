@@ -6,14 +6,17 @@
         "lint": "run-s lint:*",
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
+        "tsc": "tsc",
+        "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations && cp -r ../suite-web/static/l10n/ ../suite-native/src/locales/",
         "type-check": "tsc --project tsconfig.json"
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
+        "@trezor/translations-manager": "1.0.5",
         "@types/react-intl": "^2.3.17",
         "react": "16.8.6",
         "react-dom": "16.8.6",
-        "react-intl": "^2.9.0",
+        "react-intl": "3.0.0-beta-6",
         "react-native-web": "^0.11.2",
         "react-redux": "^7.0.3",
         "redux": "^4.0.1",

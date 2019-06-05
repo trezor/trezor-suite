@@ -1,60 +1,27 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
-import { Header as AppHeader, colors, Button, Loader } from '@trezor/components';
 import { bindActionCreators } from 'redux';
+import { colors, Button, Loader } from '@trezor/components';
+
 import styled from 'styled-components';
 
 import InstallBridge from '@suite/views/bridge';
 import ConnectDevice from '@suite/components/landing/ConnectDevice';
 
-import Router from '@suite/support/Router';
-
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
-import DeviceSelection from '../components/DeviceSelection';
 import AcquireDevice from '../components/AcquireDevice';
+import DeviceSelection from '../components/DeviceSelection';
+import Layout from './Layout';
 
 interface Props {
     router: State['router'];
     suite: State['suite'];
     devices: State['devices'];
     goto: typeof goto;
-    children: ReactElement;
-    isLanding: boolean;
+    children: React.ReactNode;
 }
-
-const PageWrapper = styled.div<Props>`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    background: ${props => (props.isLanding ? colors.LANDING : 'none')};
-    align-items: center;
-`;
-
-const AppWrapper = styled.div<Props>`
-    width: 100%;
-    max-width: 1170px;
-    margin: 0 auto;
-    flex: 1;
-    background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 4px 4px 0px 0px;
-    margin-top: 30px;
-
-    @media screen and (max-width: 1170px) {
-        border-radius: 0px;
-        margin-top: 0px;
-    }
-`;
-
-const Left = styled.div``;
-const Right = styled.div``;
-const Link = styled.div`
-    cursor: pointer;
-`;
 
 const SuiteHeader = styled.div`
     display: flex;
@@ -70,13 +37,11 @@ const SuiteHeader = styled.div`
     flex-direction: row;
 `;
 
-const Body: FunctionComponent<Props> = props => (
-    <PageWrapper isLanding={props.isLanding}>
-        <Router />
-        <AppHeader sidebarEnabled={false} />
-        <AppWrapper isLanding={props.isLanding}>{props.children}</AppWrapper>
-    </PageWrapper>
-);
+const Left = styled.div``;
+const Right = styled.div``;
+const Link = styled.div`
+    cursor: pointer;
+`;
 
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
@@ -85,9 +50,9 @@ const Index: FunctionComponent<Props> = props => {
     if (!suite.transport) {
         // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
         return (
-            <Body isLanding>
+            <Layout isLanding>
                 <Loader text="Loading" size={100} strokeWidth={1} />
-            </Body>
+            </Layout>
         );
     }
 
@@ -95,19 +60,19 @@ const Index: FunctionComponent<Props> = props => {
     // and display proper view (install bridge, connect/disconnect device etc.)
     if (router.app === 'onboarding') {
         return (
-            <Body>
+            <Layout>
                 <Text>Onboarding wrapper</Text>
                 {props.children}
-            </Body>
+            </Layout>
         );
     }
 
     // no available transport
     if (!suite.transport.type) {
         return (
-            <Body>
+            <Layout>
                 <InstallBridge />
-            </Body>
+            </Layout>
         );
     }
 
@@ -115,9 +80,9 @@ const Index: FunctionComponent<Props> = props => {
     if (!suite.device) {
         // TODO: render "connect device" view with webusb button
         return (
-            <Body isLanding>
+            <Layout isLanding>
                 <ConnectDevice />
-            </Body>
+            </Layout>
         );
     }
 
@@ -125,9 +90,9 @@ const Index: FunctionComponent<Props> = props => {
     if (suite.device.type !== 'acquired') {
         // TODO: render "acquire device" or "unreadable device" page
         return (
-            <Body>
+            <Layout>
                 <AcquireDevice />
-            </Body>
+            </Layout>
         );
     }
 
@@ -135,16 +100,16 @@ const Index: FunctionComponent<Props> = props => {
         // TODO: render "unexpected mode" page (bootloader, seedless, not initialized)
         // not-initialized should redirect to onboarding
         return (
-            <Body>
+            <Layout>
                 <Text>Device is in unexpected mode: {suite.device.mode}</Text>
                 <Text>Transport: {suite.transport.type}</Text>
-            </Body>
+            </Layout>
         );
     }
 
     // TODO: render requested view
     return (
-        <Body>
+        <Layout>
             <SuiteHeader>
                 <Left>
                     <DeviceSelection data-test="@suite/device_selection" />
@@ -154,7 +119,7 @@ const Index: FunctionComponent<Props> = props => {
                 </Right>
             </SuiteHeader>
             {props.children}
-        </Body>
+        </Layout>
     );
 };
 

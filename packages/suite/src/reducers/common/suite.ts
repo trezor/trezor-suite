@@ -8,6 +8,8 @@ interface SuiteState {
     error?: string;
     transport?: Transport;
     device?: TrezorDevice;
+    language: string;
+    messages: { [key: string]: any };
 }
 
 interface Transport {
@@ -23,6 +25,8 @@ interface Transport {
 const initialState: SuiteState = {
     loading: true,
     loaded: false,
+    language: 'en',
+    messages: {},
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
@@ -31,11 +35,13 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
             return initialState;
         case SUITE.READY:
             return {
+                ...state,
                 loading: false,
                 loaded: true,
             };
         case SUITE.ERROR:
             return {
+                ...state,
                 loading: false,
                 loaded: false,
                 error: action.error,
@@ -45,6 +51,13 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
             return {
                 ...state,
                 device: action.payload,
+            };
+
+        case SUITE.SET_LANGUAGE:
+            return {
+                ...state,
+                language: action.locale,
+                messages: action.messages,
             };
 
         case TRANSPORT.START:

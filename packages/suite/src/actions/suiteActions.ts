@@ -24,6 +24,11 @@ export type SuiteActions =
     | {
           type: typeof SUITE.UPDATE_SELECTED_DEVICE;
           payload: TrezorDevice;
+      }
+    | {
+          type: typeof SUITE.SET_LANGUAGE;
+          locale: string;
+          messages: { [key: string]: string };
       };
 
 export const onSuiteReady = (): SuiteActions => {
