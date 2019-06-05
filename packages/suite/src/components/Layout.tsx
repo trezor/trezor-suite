@@ -2,11 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { injectIntl, InjectedIntlProps } from 'react-intl';
+
 import { fetchLocale } from '@suite/actions/languageActions.useNative';
 import { LANGUAGES } from '@suite/config/app';
 import { Header as AppHeader, LanguagePicker, colors } from '@trezor/components';
 import Router from '@suite/support/Router';
 import { State } from '@suite/types';
+import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
+import l10nMessages from './Layout.messages';
 
 const PageWrapper = styled.div<Props>`
     display: flex;
@@ -42,7 +46,7 @@ interface Props {
     isLanding?: boolean;
 }
 
-const Layout = (props: Props) => (
+const Layout = (props: Props & InjectedIntlProps) => (
     <PageWrapper>
         <Router />
         <AppHeader
@@ -56,6 +60,24 @@ const Layout = (props: Props) => (
                     }}
                 />
             }
+            links={[
+                {
+                    href: TREZOR_URL,
+                    title: 'Trezor',
+                },
+                {
+                    href: WIKI_URL,
+                    title: props.intl.formatMessage(l10nMessages.TR_WIKI),
+                },
+                {
+                    href: BLOG_URL,
+                    title: props.intl.formatMessage(l10nMessages.TR_BLOG),
+                },
+                {
+                    href: SUPPORT_URL,
+                    title: props.intl.formatMessage(l10nMessages.TR_SUPPORT),
+                },
+            ]}
         />
         <AppWrapper isLanding={props.isLanding}>{props.children}</AppWrapper>
     </PageWrapper>
@@ -67,9 +89,11 @@ const mapStateToProps = (state: State) => ({
     devices: state.devices,
 });
 
-export default connect(
-    mapStateToProps,
-    dispatch => ({
-        fetchLocale: bindActionCreators(fetchLocale, dispatch),
-    }),
-)(Layout);
+export default injectIntl(
+    connect(
+        mapStateToProps,
+        dispatch => ({
+            fetchLocale: bindActionCreators(fetchLocale, dispatch),
+        }),
+    )(Layout),
+);

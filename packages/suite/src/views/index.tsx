@@ -13,7 +13,7 @@ import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
 import AcquireDevice from '../components/AcquireDevice';
 import DeviceSelection from '../components/DeviceSelection';
-import Layout from './Layout';
+import Layout from '../components/Layout';
 
 interface Props {
     router: State['router'];
