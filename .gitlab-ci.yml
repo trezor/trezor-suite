@@ -194,6 +194,18 @@ suite type check:
       - packages/suite/**/*
       - .gitlab-ci.yml
 
+suite test unit:
+  stage: test
+  script:
+    - env
+    - yarn
+    - yarn workspace @trezor/suite test
+  only:
+    changes:
+      - packages/suite/**/*
+      - packages/suite-web/**/*
+      - .gitlab-ci.yml
+
 # Suite web package # --------------------------------
 
 suite-web lint:
