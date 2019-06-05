@@ -1,0 +1,11 @@
+import * as utils from '../l10n';
+
+describe(('l10n tests') => {
+   
+
+    test('browser locales', () => {
+        expect(utils.getInitialLocale('zh')).toBe('zh');
+        expect(utils.getInitialLocale('cs-CZ')).toBe('cs');
+        expect(utils.getInitialLocale('en_GB')).toBe('en');
+    });
+});

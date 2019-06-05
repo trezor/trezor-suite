@@ -9,7 +9,7 @@
         "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations && cp -R ./src/locales/ ../suite-web/static/l10n",
         "type-check": "tsc --project tsconfig.json",
         "test": "run-s test:*",
-        "test:unit": "jest",
+        "test:unit": "jest --passWithNoTests",
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
