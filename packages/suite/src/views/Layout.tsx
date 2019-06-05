@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 import { fetchLocale } from '@suite/actions/languageActions.useNative';
 import { LANGUAGES } from '@suite/config/app';
 import { Header as AppHeader, LanguagePicker, colors } from '@trezor/components';
+import Footer from '@suite/components/Footer';
+import Log from '@suite/components/Log';
 import Router from '@suite/support/Router';
 import { State } from '@suite/types';
 
@@ -27,6 +29,7 @@ const AppWrapper = styled.div<Props>`
     align-items: center;
     border-radius: 4px 4px 0px 0px;
     margin-top: 30px;
+    height: 100%;
 
     @media screen and (max-width: 1170px) {
         border-radius: 0px;
@@ -57,7 +60,13 @@ const Layout = (props: Props) => (
                 />
             }
         />
-        <AppWrapper isLanding={props.isLanding}>{props.children}</AppWrapper>
+        <AppWrapper isLanding={props.isLanding}>
+            <>
+                <Log />
+                {props.children}
+            </>
+        </AppWrapper>
+        <Footer isLanding={props.isLanding} />
     </PageWrapper>
 );
 
