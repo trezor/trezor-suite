@@ -5,6 +5,7 @@ import { RouterActions } from './actions/routerActions';
 import { BlockchainActions } from './actions/blockchainActions';
 import { StorageActions } from './actions/storageActions';
 import { SuiteActions } from './actions/suiteActions';
+import { LogActions } from './actions/logActions';
 import { State as ReducersState } from './reducers/store';
 
 export { MessageDescriptor } from './support/ConnectedIntlProvider'; // this service has no action file, all is written inside one file
@@ -22,7 +23,8 @@ export type Action =
     | RouterActions
     | BlockchainActions
     | StorageActions
-    | SuiteActions;
+    | SuiteActions
+    | LogActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
 export type Dispatch = ThunkDispatch<State, any, Action>;
