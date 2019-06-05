@@ -13,7 +13,8 @@
         "electron-is-dev": "^1.1.0",
         "electron-next": "^3.1.5",
         "next": "^8.0.0",
-        "next-redux-wrapper": "^3.0.0-alpha.2"
+        "next-redux-wrapper": "^3.0.0-alpha.2",
+        "react-intl": "^3.0.0-beta-6"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",
