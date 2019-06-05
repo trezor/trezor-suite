@@ -18,7 +18,6 @@ import AcquireDevice from '../components/AcquireDevice';
 import DeviceSelection from '../components/DeviceSelection';
 import Layout from '../components/Layout';
 
-
 interface Props {
     router: State['router'];
     suite: State['suite'];
