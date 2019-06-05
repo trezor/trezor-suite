@@ -10,7 +10,7 @@
         "preelectron-pack": "yarn build",
         "pack": "electron-builder --dir",
         "clean": "rimraf ./build-electron && rimraf ./build",
-        "build:desktop": "next build && next export -o build",
+        "build:desktop": "rimraf ./build && next build && next export -o build",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
