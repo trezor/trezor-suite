@@ -70,6 +70,7 @@ module.exports = {
         // They are fine sometimes.
         'no-nested-ternary': 'off',
         // This is fine.
+        'class-methods-use-this': 'off',
         'lines-between-class-members': 'off',
         // We use it for immer. It should be checked by readonly anyway.
         'no-param-reassign': 'off',
