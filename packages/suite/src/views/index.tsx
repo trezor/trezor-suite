@@ -11,9 +11,9 @@ import ConnectDevice from '@suite/components/landing/ConnectDevice';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
-import Layout from '@suite/components/Layout';
 import AcquireDevice from '../components/AcquireDevice';
 import DeviceSelection from '../components/DeviceSelection';
+import Layout from './Layout';
 
 interface Props {
     router: State['router'];
