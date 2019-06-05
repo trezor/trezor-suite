@@ -78,7 +78,6 @@ const Index: FunctionComponent<Props> = props => {
 
     // no available device
     if (!suite.device) {
-        // TODO: render "connect device" view with webusb button
         return (
             <Layout isLanding>
                 <ConnectDevice />

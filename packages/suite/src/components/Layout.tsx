@@ -30,7 +30,6 @@ const AppWrapper = styled.div<Props>`
     flex-direction: column;
     align-items: center;
     border-radius: 4px 4px 0px 0px;
-    margin-top: 30px;
 
     @media screen and (max-width: 1170px) {
         border-radius: 0px;
@@ -47,7 +46,7 @@ interface Props {
 }
 
 const Layout = (props: Props & InjectedIntlProps) => (
-    <PageWrapper>
+    <PageWrapper isLanding={props.isLanding}>
         <Router />
         <AppHeader
             sidebarEnabled={false}
