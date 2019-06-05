@@ -2,8 +2,5 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "lib": ["dom", "es2017", "esnext.asynciterable"],
-    },
-    "exclude": [
-        "**/*.test.ts"
-    ]
+    }
 }

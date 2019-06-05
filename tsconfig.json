@@ -24,7 +24,6 @@
         "node_modules", 
         "**/api/generated/**/*.*", 
         "**/_old/**/*.*", 
-        ".next",
-        "**/*.test.ts"
+        ".next"
     ]
 }
