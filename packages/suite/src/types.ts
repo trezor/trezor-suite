@@ -8,7 +8,7 @@ import { SuiteActions } from './actions/suiteActions';
 import { LogActions } from './actions/logActions';
 import { State as ReducersState } from './reducers/store';
 
-export { MessageDescriptor } from './support/ConnectedIntlProvider'; // this service has no action file, all is written inside one file
+export { MessageDescriptor } from './support/ConnectedIntlProvider';
 export { Messages } from './support/ConnectedIntlProvider';
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
