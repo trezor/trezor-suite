@@ -13,9 +13,11 @@ import ConnectDevice from '@suite/components/landing/ConnectDevice';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
+import VersionPage from '@suite/views/version';
 import AcquireDevice from '../components/AcquireDevice';
 import DeviceSelection from '../components/DeviceSelection';
 import Layout from '../components/Layout';
+
 
 interface Props {
     router: State['router'];
@@ -47,6 +49,14 @@ const Link = styled.div`
 
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
+
+    if (router.pathname === '/version') {
+        return (
+            <Layout isLanding>
+                <VersionPage />
+            </Layout>
+        );
+    }
 
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
