@@ -80,6 +80,10 @@ const StyledLink = styled(Link)`
     font-size: ${variables.FONT_SIZE.BIG};
 `;
 
+const StyledH1 = styled(H1)`
+    font-size: ${variables.FONT_SIZE.HUGE};
+`;
+
 class ConnectDevice extends PureComponent<Props> {
     componentDidMount() {
         if (this.props.showWebUsb) {
@@ -136,9 +140,9 @@ class ConnectDevice extends PureComponent<Props> {
         return (
             <StyledConnectDevice>
                 <Title>
-                    <H1 claim>
+                    <StyledH1>
                         <FormattedMessage {...l10nMessages.TR_THE_PRIVATE_BANK_IN_YOUR_HANDS} />
-                    </H1>
+                    </StyledH1>
                     <P>
                         <FormattedMessage {...l10nMessages.TR_TREZOR_WALLET_IS_AN_EASY_DASH} />
                     </P>
