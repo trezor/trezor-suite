@@ -1,7 +1,9 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
+import { isWebUSB } from '@suite/utils/device';
 import { bindActionCreators } from 'redux';
+
 import { colors, Button, Loader } from '@trezor/components';
 
 import styled from 'styled-components';
@@ -80,7 +82,9 @@ const Index: FunctionComponent<Props> = props => {
     if (!suite.device) {
         return (
             <Layout isLanding>
-                <ConnectDevice />
+                <ConnectDevice 
+                    showWebUsb={isWebUSB(suite.transport)}
+                />
             </Layout>
         );
     }
