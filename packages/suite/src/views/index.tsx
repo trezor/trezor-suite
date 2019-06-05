@@ -82,9 +82,7 @@ const Index: FunctionComponent<Props> = props => {
     if (!suite.device) {
         return (
             <Layout isLanding>
-                <ConnectDevice
-                    showWebUsb={isWebUSB(suite.transport)}
-                />
+                <ConnectDevice showWebUsb={isWebUSB(suite.transport)} />
             </Layout>
         );
     }
