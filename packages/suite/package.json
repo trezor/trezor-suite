@@ -7,7 +7,7 @@
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
         "tsc": "tsc",
-        "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations && cp -r ../suite-web/static/l10n/ ../suite-native/src/locales/",
+        "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations && cp -R ./src/locales/ ../suite-web/static/l10n",
         "type-check": "tsc --project tsconfig.json"
     },
     "dependencies": {
