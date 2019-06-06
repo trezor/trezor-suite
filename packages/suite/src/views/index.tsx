@@ -72,7 +72,6 @@ const Index: FunctionComponent<Props> = props => {
     if (router.app === 'onboarding') {
         return (
             <Layout>
-                <Text>Onboarding wrapper</Text>
                 {props.children}
             </Layout>
         );

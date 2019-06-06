@@ -90,6 +90,7 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
     flex-direction: column;
     /* min-height: calc(100vh - ${NAVBAR_HEIGHT} ${NAVBAR_HEIGHT_UNIT}); */
     max-width: 100vw;
+    width: 100%;
     overflow-x: hidden;
 
     @media only screen and (min-width: ${SM}px) {
@@ -156,8 +157,7 @@ const TrezorActionOverlay = styled.div`
     margin-bottom: auto;
     width: 100%;
     height: calc(
-        100vh - ${PROGRESSBAR_HEIGHT} ${PROGRESSBAR_HEIGHT_UNIT} - ${NAVBAR_HEIGHT}
-            ${NAVBAR_HEIGHT_UNIT}
+        ${`100vh - ${PROGRESSBAR_HEIGHT}${PROGRESSBAR_HEIGHT_UNIT} - ${NAVBAR_HEIGHT}${NAVBAR_HEIGHT_UNIT}`}
     );
     display: flex;
     justify-content: center;

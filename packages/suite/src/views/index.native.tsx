@@ -37,7 +37,6 @@ const Index: FunctionComponent<Props> = props => {
     if (router.app === 'onboarding') {
         return (
             <Body>
-                <Text>Onboarding wrapper</Text>
                 {props.children}
             </Body>
         );

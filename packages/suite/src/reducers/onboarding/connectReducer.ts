@@ -112,20 +112,23 @@ const connect = (
                     result: null,
                 },
             };
-        case Connect.DEVICE_INTERACTION_EVENT:
+        case 'button':
             return {
                 ...state,
-                uiInteraction: { name: null, counter: 0 },
+                // uiInteraction: { name: null, counter: 0 },
                 deviceInteraction: {
-                    name: action.name,
+                    name: action.payload.code,
                     counter: state.deviceInteraction.counter + 1,
                 },
             };
-        case Connect.UI_INTERACTION_EVENT:
+        case 'ui-button':
             return {
                 ...state,
-                uiInteraction: { name: action.name, counter: state.uiInteraction.counter + 1 },
-                deviceInteraction: { name: null, counter: 0 },
+                uiInteraction: {
+                    name: action.payload.code,
+                    counter: state.uiInteraction.counter + 1,
+                },
+                // deviceInteraction: { name: null, counter: 0 },
             };
         default:
             return state;
