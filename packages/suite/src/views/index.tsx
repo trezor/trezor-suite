@@ -12,7 +12,6 @@ import ConnectDevice from '@suite/components/landing/ConnectDevice';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
-import VersionPage from '@suite/views/version';
 import AcquireDevice from '../components/AcquireDevice';
 import DeviceSelection from '../components/DeviceSelection';
 import Layout from '../components/Layout';
@@ -41,23 +40,12 @@ const SuiteHeader = styled.div`
 
 const Left = styled.div``;
 const Right = styled.div``;
-const Link = styled.div`
-    cursor: pointer;
-`;
 
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
 
-    if (router.pathname === '/version') {
-        return (
-            <Layout isLanding>
-                <VersionPage />
-            </Layout>
-        );
-    }
-
-    // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
+        // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
         // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
         return (
             <Layout isLanding>
@@ -112,9 +100,11 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
+    const isLandingPage = router.pathname === '/bridge' || router.pathname === '/version';
+
     return (
-        <Layout>
-            {router.pathname !== '/bridge' && (
+        <Layout isLanding={isLandingPage}>
+            {!isLandingPage && (
                 <SuiteHeader>
                     <Left>
                         <DeviceSelection data-test="@suite/device_selection" />
