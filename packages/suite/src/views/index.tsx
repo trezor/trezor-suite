@@ -1,7 +1,9 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
+import { isWebUSB } from '@suite/utils/device';
 import { bindActionCreators } from 'redux';
+
 import { colors, Button, Loader } from '@trezor/components';
 
 import styled from 'styled-components';
@@ -11,6 +13,7 @@ import ConnectDevice from '@suite/components/landing/ConnectDevice';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
+import VersionPage from '@suite/views/version';
 import AcquireDevice from '../components/AcquireDevice';
 import DeviceSelection from '../components/DeviceSelection';
 import Layout from '../components/Layout';
@@ -46,6 +49,14 @@ const Link = styled.div`
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
 
+    if (router.pathname === '/version') {
+        return (
+            <Layout isLanding>
+                <VersionPage />
+            </Layout>
+        );
+    }
+
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
         // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
@@ -78,10 +89,9 @@ const Index: FunctionComponent<Props> = props => {
 
     // no available device
     if (!suite.device) {
-        // TODO: render "connect device" view with webusb button
         return (
             <Layout isLanding>
-                <ConnectDevice />
+                <ConnectDevice showWebUsb={isWebUSB(suite.transport)} />
             </Layout>
         );
     }

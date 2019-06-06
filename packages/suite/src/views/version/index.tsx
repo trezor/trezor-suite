@@ -17,11 +17,11 @@ const Line = styled.div`
 const Version = () => (
     <Wrapper>
         <H6>APPLICATION VERSION</H6>
-        <H5>version</H5>
+        <H5>{process.env.VERSION}</H5>
         <Line />
         <H6>LAST COMMIT HASH</H6>
-        <Link isGray href="https://github.com/trezor/trezor-wallet/commits/aaa">
-            <H5>hash</H5>
+        <Link isGray href={`https://github.com/trezor/trezor-wallet/commits/${process.env.COMMITHASH}`}>
+            <H5>{process.env.COMMITHASH}</H5>
         </Link>
     </Wrapper>
 );

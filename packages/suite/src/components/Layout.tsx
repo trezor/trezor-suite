@@ -50,7 +50,7 @@ interface Props {
 }
 
 const Layout = (props: Props & InjectedIntlProps) => (
-    <PageWrapper>
+    <PageWrapper isLanding={props.isLanding}>
         <Router />
         <AppHeader
             sidebarEnabled={false}
