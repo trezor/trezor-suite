@@ -7,12 +7,12 @@ import { injectIntl, InjectedIntlProps } from 'react-intl';
 import { fetchLocale } from '@suite/actions/languageActions.useNative';
 import { LANGUAGES } from '@suite/config/app';
 import { Header as AppHeader, LanguagePicker, colors } from '@trezor/components';
-import Footer from '@suite/components/Footer';
-import Log from '@suite/components/Log';
+import Footer from '@suite/components/suite/Footer';
+import Log from '@suite/components/suite/Log';
 import Router from '@suite/support/Router';
 import { State } from '@suite/types';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
-import l10nMessages from './Layout.messages';
+import l10nMessages from './index.messages';
 
 const PageWrapper = styled.div<Props>`
     display: flex;
