@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import { Dispatch } from '@suite/types';
-import * as SUITE from '@suite/actions/constants/suite';
+import * as SUITE from '@suite-actions/constants/suite';
 
 // TODO
 export const fetchLocale = (locale: string) => (dispatch: Dispatch) => {
