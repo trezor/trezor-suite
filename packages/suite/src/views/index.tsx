@@ -99,8 +99,8 @@ const Index: FunctionComponent<Props> = props => {
             </Layout>
         );
     }
-
-    const isLandingPage = router.pathname === '/bridge' || router.pathname === '/version';
+    const { pathname } = router;
+    const isLandingPage = pathname === '/bridge' || pathname === '/version';
 
     return (
         <Layout isLanding={isLandingPage}>
