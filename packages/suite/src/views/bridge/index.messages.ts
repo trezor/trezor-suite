@@ -1,6 +1,6 @@
 import { defineMessages, Messages } from 'react-intl';
 
-const definedMessages: Messages: Messages = defineMessages({
+const definedMessages: Messages = defineMessages({
     TR_NEW_COMMUNICATION_TOOL: {
         id: 'TR_NEW_COMMUNICATION_TOOL',
         defaultMessage:
