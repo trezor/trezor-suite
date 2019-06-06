@@ -5,7 +5,7 @@ import TrezorConnect from 'trezor-connect';
 
 import { Button } from '@trezor/components';
 import { State, TrezorDevice } from '@suite/types';
-import { selectDevice } from '@suite/actions/suiteActions';
+import { selectDevice } from '@suite-actions/suiteActions';
 
 interface Props {
     devices: State['devices'];

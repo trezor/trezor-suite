@@ -13,7 +13,7 @@ import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import Layout from '@suite-components/Layout';
 
 import { State } from '@suite/types';
-import { goto } from '@suite/actions/routerActions';
+import { goto } from '@suite-actions/routerActions';
 import VersionPage from '@suite-views/version';
 import AcquireDevice from '@suite-components/AcquireDevice';
 

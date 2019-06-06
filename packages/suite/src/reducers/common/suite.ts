@@ -1,5 +1,5 @@
 import { TRANSPORT } from 'trezor-connect';
-import { SUITE } from '@suite/actions/constants';
+import { SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite/types';
 
 interface SuiteState {

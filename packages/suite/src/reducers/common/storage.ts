@@ -1,4 +1,4 @@
-import { SUITE } from '@suite/actions/constants';
+import { SUITE } from '@suite-actions/constants';
 import { Action } from '@suite/types';
 
 interface SuiteState {

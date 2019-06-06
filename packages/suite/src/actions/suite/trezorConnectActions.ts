@@ -6,7 +6,7 @@ import TrezorConnect, {
     UI,
 } from 'trezor-connect';
 
-import { SUITE } from '@suite/actions/constants';
+import { SUITE } from '@suite-actions/constants';
 import { Dispatch } from '@suite/types';
 
 export const init = () => async (dispatch: Dispatch) => {

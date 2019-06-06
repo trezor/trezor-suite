@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl, InjectedIntlProps } from 'react-intl';
 
-import { fetchLocale } from '@suite/actions/languageActions.useNative';
+import { fetchLocale } from '@suite-actions/languageActions.useNative';
 import { LANGUAGES } from '@suite/config/app';
 import { Header as AppHeader, LanguagePicker, colors } from '@trezor/components';
 import Footer from '@suite/components/suite/Footer';
