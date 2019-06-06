@@ -8,7 +8,6 @@ import { colors, Button, Loader } from '@trezor/components';
 
 import styled from 'styled-components';
 
-import InstallBridge from '@suite/views/bridge';
 import ConnectDevice from '@suite/components/landing/ConnectDevice';
 
 import { State } from '@suite/types';
@@ -80,11 +79,7 @@ const Index: FunctionComponent<Props> = props => {
 
     // no available transport
     if (!suite.transport.type) {
-        return (
-            <Layout>
-                <InstallBridge />
-            </Layout>
-        );
+        return () => goto('/bridge');
     }
 
     // no available device
@@ -117,17 +112,18 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
-    // TODO: render requested view
     return (
         <Layout>
-            <SuiteHeader>
-                <Left>
-                    <DeviceSelection data-test="@suite/device_selection" />
-                </Left>
-                <Right>
-                    <Button onClick={() => goto('/settings')}>device settings</Button>
-                </Right>
-            </SuiteHeader>
+            {router.pathname !== '/bridge' && (
+                <SuiteHeader>
+                    <Left>
+                        <DeviceSelection data-test="@suite/device_selection" />
+                    </Left>
+                    <Right>
+                        <Button onClick={() => goto('/settings')}>device settings</Button>
+                    </Right>
+                </SuiteHeader>
+            )}
             {props.children}
         </Layout>
     );

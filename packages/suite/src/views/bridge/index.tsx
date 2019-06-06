@@ -12,8 +12,8 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 500px;
     padding: 0 24px;
+    flex: 1;
 `;
 
 const Top = styled.div`
@@ -21,6 +21,7 @@ const Top = styled.div`
     flex-direction: column;
     justify-content: center;
     max-width: 500px;
+    text-align: center;
     flex: 1;
     padding-top: 30px;
 `;
@@ -70,6 +71,9 @@ const DownloadBridgeButton = styled(Button)``;
 const GoBack = styled.span`
     color: ${colors.GREEN_PRIMARY};
     text-decoration: underline;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
         cursor: pointer;
@@ -135,12 +139,6 @@ class InstallBridge extends PureComponent {
                             </DownloadBridgeButton>
                         </Link>
                     </Download>
-                    {/* <H2><FormattedMessage {...l10nMessages.TR_CHANGELOG} /></H2>
-                    <Ol>
-                        {this.props.transport.bridge.changelog.map(entry => (
-                            <Li key={entry}>{entry}</Li>
-                        ))}
-                    </Ol> */}
                     <P size="small">
                         <LearnMoreText>
                             <FormattedMessage
