@@ -1,4 +1,6 @@
-export const LANGUAGES = [
+import Languages from '@suilte/types/languages';
+
+export const LANGUAGES: Languages = [
     { code: 'en', name: 'English', en: 'English' },
     { code: 'bn', name: 'Bengali', en: 'Bengali' },
     { code: 'cs', name: 'Česky', en: 'Czech' },
