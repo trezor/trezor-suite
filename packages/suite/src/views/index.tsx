@@ -3,20 +3,21 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { isWebUSB } from '@suite/utils/device';
 import { bindActionCreators } from 'redux';
+import styled from 'styled-components';
 
 import { colors, Button, Loader } from '@trezor/components';
 
-import styled from 'styled-components';
+import InstallBridge from '@suite-views/bridge';
 
-import InstallBridge from '@suiteViews/bridge';
-import ConnectDevice from '@suiteComponents/landing/ConnectDevice';
+import ConnectDevice from '@suite-components/landing/ConnectDevice';
+import Layout from '@suite-components/Layout';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
-import VersionPage from '@suiteViews/version';
-import AcquireDevice from '../components/suite/AcquireDevice';
+import VersionPage from '@suite-views/version';
+import AcquireDevice from '@suite-components/AcquireDevice';
+
 import DeviceSelection from '../components/DeviceSelection';
-import Layout from '../components/suite/Layout';
 
 interface Props {
     router: State['router'];
@@ -70,11 +71,7 @@ const Index: FunctionComponent<Props> = props => {
     // onboarding handles TrezorConnect events by itself
     // and display proper view (install bridge, connect/disconnect device etc.)
     if (router.app === 'onboarding') {
-        return (
-            <Layout>
-                {props.children}
-            </Layout>
-        );
+        return <Layout>{props.children}</Layout>;
     }
 
     // no available transport

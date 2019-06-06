@@ -6,6 +6,9 @@
         "baseUrl": ".",
         "paths": {
             "@suite/*": ["./packages/suite/src/*"],
+            "@suite-components/*": ["./packages/suite/src/components/suite/*"],
+            "@suite-views/*": ["./packages/suite/src/views/suite/*"],
+            "@suite-actions/*": ["./packages/suite/src/actions/suite/*"],
             "@native/*": ["./packages/suite-native/src/*"],
             "@desktop/*": ["./packages/suite-desktop/src/*"],
         },
