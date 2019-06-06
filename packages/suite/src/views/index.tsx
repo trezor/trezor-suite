@@ -42,9 +42,20 @@ const SuiteHeader = styled.div`
 
 const Left = styled.div``;
 const Right = styled.div``;
+const Link = styled.div`
+    cursor: pointer;
+`;
 
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
+
+    if (router.pathname === '/version') {
+        return (
+            <Layout isLanding>
+                <VersionPage />
+            </Layout>
+        );
+    }
 
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
