@@ -15,7 +15,7 @@ const { FONT_SIZE, SCREEN_SIZE } = variables;
 const FOOTER_HEIGHT = '59px';
 
 interface Props {
-    isLanding: boolean;
+    isLanding?: boolean;
     opened: boolean;
     toggle: typeof logActions.toggle;
     propTypes?: any;
@@ -81,7 +81,7 @@ const RatesRight = styled.div`
     }
 `;
 
-const Footer = ({ opened, toggle, isLanding }: Props) => {
+const Footer = ({ opened, toggle, isLanding = false }: Props) => {
     const exchangeRates = (
         <FormattedMessage
             {...l10nMessages.TR_EXCHANGE_RATES_BY}
