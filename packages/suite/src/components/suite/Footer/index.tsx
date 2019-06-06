@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { State, Dispatch } from '@suite/types';
 
-import * as logActions from '@suite/actions/logActions';
+import * as logActions from '@suite-actions/logActions';
 import l10nMessages from './index.messages';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;

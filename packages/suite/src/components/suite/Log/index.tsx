@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { Button, Tooltip, H5, P, Icon, icons, colors } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import * as logActions from '@suite/actions/logActions';
+import * as logActions from '@suite-actions/logActions';
 import { State, Dispatch } from '@suite/types';
 import l10nMessages from './index.messages';
 

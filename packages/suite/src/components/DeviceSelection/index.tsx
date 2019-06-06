@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 import { State, Omit, TrezorDevice } from '@suite/types';
-import { selectDevice } from '@suite/actions/suiteActions';
+import { selectDevice } from '@suite-actions/suiteActions';
 import styled, { css } from 'styled-components';
 import { TrezorImage, colors, variables } from '@trezor/components';
 import { getStatusColor, getStatusName, getStatus } from '../../utils/device';
