@@ -92,5 +92,6 @@ module.exports = {
         'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'off',
         'prettier/prettier': 'error',
+        "react/require-default-props": 'off',
     },
 };

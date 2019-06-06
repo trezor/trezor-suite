@@ -5,7 +5,11 @@ import { RouterActions } from './actions/routerActions';
 import { BlockchainActions } from './actions/blockchainActions';
 import { StorageActions } from './actions/storageActions';
 import { SuiteActions } from './actions/suiteActions';
+import { LogActions } from './actions/logActions';
 import { State as ReducersState } from './reducers/store';
+
+export { MessageDescriptor } from './support/ConnectedIntlProvider';
+export { Messages } from './support/ConnectedIntlProvider';
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type TrezorConnectEvents =
@@ -19,7 +23,8 @@ export type Action =
     | RouterActions
     | BlockchainActions
     | StorageActions
-    | SuiteActions;
+    | SuiteActions
+    | LogActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
 export type Dispatch = ThunkDispatch<State, any, Action>;

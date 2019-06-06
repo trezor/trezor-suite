@@ -26,6 +26,13 @@ const globalStyles = `
       -moz-osx-font-smoothing: grayscale;
       font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
+
+    *,
+    *:before,
+    *:after {
+        box-sizing: border-box;
+    }
+
 `;
 
 interface Props {
