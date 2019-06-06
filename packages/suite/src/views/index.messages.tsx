@@ -1,6 +1,6 @@
-import { defineMessages } from 'react-intl';
+import { defineMessages, Messages } from 'react-intl';
 
-const definedMessages = defineMessages({
+const definedMessages: Messages = defineMessages({
     TR_DEVICE_SETTINGS: {
         id: 'TR_DEVICE_SETTINGS',
         defaultMessage: 'Device settings',
