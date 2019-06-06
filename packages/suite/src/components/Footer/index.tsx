@@ -23,7 +23,7 @@ interface Props {
 
 const Wrapper = styled.div`
     width: 100%;
-    max-width: 1170px;
+    max-width: ${SCREEN_SIZE.LG};
     font-size: ${FONT_SIZE.SMALL};
     background: ${colors.LANDING};
     color: ${colors.TEXT_SECONDARY};
