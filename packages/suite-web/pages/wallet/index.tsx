@@ -1,3 +1,3 @@
-import Wallet from '@suite/views/wallet';
+import Wallet from '@wallet-views/wallet';
 
 export default Wallet;
