@@ -9,6 +9,7 @@ import { colors, Button, Loader } from '@trezor/components';
 import styled from 'styled-components';
 
 import ConnectDevice from '@suite/components/landing/ConnectDevice';
+import Bridge from '@suite/views/bridge';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
@@ -23,6 +24,13 @@ interface Props {
     goto: typeof goto;
     children: React.ReactNode;
 }
+
+const LoaderWrapper = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+`;
 
 const SuiteHeader = styled.div`
     display: flex;
@@ -49,7 +57,9 @@ const Index: FunctionComponent<Props> = props => {
         // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
         return (
             <Layout isLanding>
-                <Loader text="Loading" size={100} strokeWidth={1} />
+                <LoaderWrapper>
+                    <Loader text="Loading" size={100} strokeWidth={1} />
+                </LoaderWrapper>
             </Layout>
         );
     }
@@ -67,7 +77,11 @@ const Index: FunctionComponent<Props> = props => {
 
     // no available transport
     if (!suite.transport.type) {
-        return () => goto('/bridge');
+        return (
+            <Layout isLanding>
+                <Bridge />
+            </Layout>
+        );
     }
 
     // no available device
@@ -99,6 +113,7 @@ const Index: FunctionComponent<Props> = props => {
             </Layout>
         );
     }
+
     const { pathname } = router;
     const isLandingPage = pathname === '/bridge' || pathname === '/version';
 
