@@ -8,15 +8,15 @@ import { colors, Button, Loader } from '@trezor/components';
 
 import styled from 'styled-components';
 
-import InstallBridge from '@suite/views/bridge';
-import ConnectDevice from '@suite/components/landing/ConnectDevice';
+import InstallBridge from '@suiteViews/bridge';
+import ConnectDevice from '@suiteComponents/landing/ConnectDevice';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
-import VersionPage from '@suite/views/version';
-import AcquireDevice from '../components/AcquireDevice';
+import VersionPage from '@suiteViews/version';
+import AcquireDevice from '../components/suite/AcquireDevice';
 import DeviceSelection from '../components/DeviceSelection';
-import Layout from '../components/Layout';
+import Layout from '../components/suite/Layout';
 
 interface Props {
     router: State['router'];
