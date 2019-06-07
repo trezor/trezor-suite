@@ -1,12 +1,12 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE } from 'trezor-connect';
-import { BLOCKCHAIN, SUITE, STORAGE } from '@suite/actions/constants';
-import { init as initBlockchain } from '@suite/actions/blockchainActions';
-import { init as initRouter } from '@suite/actions/routerActions';
-import * as SuiteActions from '@suite/actions/suiteActions';
-import { load as loadStorage } from '@suite/actions/storageActions';
-import { init as initTrezorConnect } from '@suite/actions/trezorConnectActions';
-import { State, Action, Dispatch } from '@suite/types';
+import { BLOCKCHAIN, SUITE, STORAGE } from '@suite-actions/constants';
+import { init as initBlockchain } from '@suite-actions/blockchainActions';
+import { init as initRouter } from '@suite-actions/routerActions';
+import * as SuiteActions from '@suite-actions/suiteActions';
+import { load as loadStorage } from '@suite-actions/storageActions';
+import { init as initTrezorConnect } from '@suite-actions/trezorConnectActions';
+import { State, Action, Dispatch } from '@suite-types/index';
 
 const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
     action: Action,
@@ -41,7 +41,9 @@ const suite = (api: MiddlewareAPI<Dispatch, State>) => (next: Dispatch) => (
         case DEVICE.DISCONNECT:
             api.dispatch(SuiteActions.handleDeviceDisconnect(action.payload));
             break;
-
+        case DEVICE.CHANGED:
+            api.dispatch(SuiteActions.handleDeviceChanged(action.payload));
+            break;
         default:
             break;
     }

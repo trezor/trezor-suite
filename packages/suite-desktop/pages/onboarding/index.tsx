@@ -1,3 +1,3 @@
-import Onboarding from '@suite/views/onboarding';
+import Onboarding from '@onboarding-views/index';
 
 export default Onboarding;

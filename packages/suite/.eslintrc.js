@@ -78,6 +78,7 @@ module.exports = {
         'no-plusplus': 'off',
         'no-return-assign': 'off',
         'consistent-return': 'off',
+        'no-console': 'off',
         // TSC checks it.
         '@typescript-eslint/no-unused-vars': 'off',
         'no-undef': 'off',
@@ -93,5 +94,6 @@ module.exports = {
         'import/no-cycle': 'off',
         'prettier/prettier': 'error',
         "react/require-default-props": 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off'
     },
 };

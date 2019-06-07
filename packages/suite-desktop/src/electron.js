@@ -21,7 +21,7 @@ const init = async () => {
     const src = isDev
         ? 'http://localhost:8000/'
         : url.format({
-              pathname: join(__dirname, '../index.html'),
+              pathname: path.join(__dirname, '../build/index.html'),
               protocol: 'file:',
               slashes: true,
           });

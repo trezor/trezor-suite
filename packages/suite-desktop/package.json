@@ -2,18 +2,65 @@
     "name": "@trezor/suite-desktop",
     "version": "1.0.0",
     "private": true,
+    "author": "Satoshilabs s.r.o",
     "main": "src/electron.js",
     "scripts": {
         "dev:desktop": "electron .",
-        "build:desktop": "next build && next export -o build",
+        "dev": "electron .",
+        "preelectron-pack": "yarn build",
+        "pack": "electron-builder --dir",
+        "clean": "rimraf ./build-electron && rimraf ./build",
+        "build:desktop": "rimraf ./build && next build && next export -o build",
+        "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
+        "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
+        "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
+        "postinstall": "electron-builder install-app-deps",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json"
+    },
+    "build": {
+        "appId": "com.electron.${name}",
+        "productName": "TrezorSuite",
+        "copyright": "Copyright © year ${author}",
+        "directories": {
+            "output": "build-electron"
+        },
+        "files": [
+            "build/**/*",
+            "src/**/*",
+            "package.json"
+        ],
+        "dmg": {
+            "contents": [
+                {
+                    "x": 410,
+                    "y": 150,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 130,
+                    "y": 150,
+                    "type": "file"
+                }
+            ]
+        },
+        "mac": {
+            "icon": "build/icons/icon.icns"
+        },
+        "win": {
+            "icon": "build/icons/icon.ico"
+        },
+        "linux": {
+            "icon": "build/icons"
+        }
     },
     "dependencies": {
         "electron-is-dev": "^1.1.0",
         "electron-next": "^3.1.5",
         "next": "^8.0.0",
-        "next-redux-wrapper": "^3.0.0-alpha.2"
+        "next-redux-wrapper": "^3.0.0-alpha.2",
+        "rimraf": "^2.6.3"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",
@@ -25,6 +72,7 @@
         "@types/react-redux": "^7.0.8",
         "@zeit/next-typescript": "^1.1.1",
         "electron": "^4.1.0",
+        "electron-builder": "^20.41.0",
         "electron-installer-dmg": "^2.0.0",
         "electron-packager": "^13.1.1",
         "electron-winstaller": "^3.0.4",

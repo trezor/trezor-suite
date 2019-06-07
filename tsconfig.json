@@ -5,7 +5,33 @@
         "allowSyntheticDefaultImports": true,
         "baseUrl": ".",
         "paths": {
+            // suite root
             "@suite/*": ["./packages/suite/src/*"],
+            // suite 
+            "@suite-components/*": ["./packages/suite/src/components/suite/*"],
+            "@suite-views/*": ["./packages/suite/src/views/suite/*"],
+            "@suite-actions/*": ["./packages/suite/src/actions/suite/*"],
+            "@suite-utils/*": ["./packages/suite/src/utils/suite/*"],
+            "@suite-types/*": ["./packages/suite/src/types/suite/*"],
+            "@suite-reducers/*": ["./packages/suite/src/reducers/suite/*"],
+            "@suite-support/*": ["./packages/suite/src/support/suite/*"],
+            // wallet
+            "@wallet-components/*": ["./packages/wallet/src/components/wallet/*"],
+            "@wallet-views/*": ["./packages/wallet/src/views/wallet/*"],
+            "@wallet-actions/*": ["./packages/wallet/src/actions/wallet/*"],
+            "@wallet-utils/*": ["./packages/wallet/src/utils/wallet/*"],
+            "@wallet-types/*": ["./packages/wallet/src/types/wallet/*"],
+            "@wallet-reducers/*": ["./packages/wallet/src/reducers/wallet/*"],
+            "@wallet-support/*": ["./packages/wallet/src/support/wallet/*"],
+            // onboarding
+            "@onboarding-components/*": ["./packages/onboarding/src/components/onboarding/*"],
+            "@onboarding-views/*": ["./packages/onboarding/src/views/onboarding/*"],
+            "@onboarding-actions/*": ["./packages/onboarding/src/actions/onboarding/*"],
+            "@onboarding-utils/*": ["./packages/onboarding/src/utils/onboarding/*"],
+            "@onboarding-types/*": ["./packages/onboarding/src/types/onboarding/*"],
+            "@onboarding-reducers/*": ["./packages/onboarding/src/reducers/onboarding/*"],
+            "@onboarding-support/*": ["./packages/onboarding/src/support/onboarding/*"],
+            // other
             "@native/*": ["./packages/suite-native/src/*"],
             "@desktop/*": ["./packages/suite-desktop/src/*"],
         },

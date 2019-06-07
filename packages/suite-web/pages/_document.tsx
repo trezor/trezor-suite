@@ -12,7 +12,7 @@ const globalStyles = `
     #__next {
         display: flex;
         flex-direction: column;
-        height: 100%;
+        min-height: 100%;
     }
 
     input, textarea {
@@ -25,6 +25,11 @@ const globalStyles = `
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    a {
+        text-decoration: none;
+        cursor: pointer;
     }
 
     *,

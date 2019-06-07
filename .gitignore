@@ -1,7 +1,7 @@
 .next
 _old
 build
-
+build-electron
 
 # Dependency directory
 node_modules
@@ -30,3 +30,4 @@ translations/*.csv
 
 .env*
 !.env.dev
+dist

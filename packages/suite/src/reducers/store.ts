@@ -2,10 +2,11 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import commonReducers from './common';
+import commonReducers from './suite';
+import onboardingReducers from './onboarding';
 import commonMiddlewares from '../middlewares';
 
-const reducers = combineReducers(commonReducers);
+const reducers = combineReducers({ ...commonReducers, onboarding: onboardingReducers });
 export type State = ReturnType<typeof reducers>;
 
 const middlewares = [thunkMiddleware, ...commonMiddlewares];
