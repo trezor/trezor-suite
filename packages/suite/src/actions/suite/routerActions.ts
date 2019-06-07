@@ -4,7 +4,7 @@
  */
 
 import Router from 'next/router';
-import { Dispatch, GetState } from '@suite/types';
+import { Dispatch, GetState } from '@suite-types/index';
 
 export const LOCATION_CHANGE = '@router/location-change';
 export const UPDATE = '@router/update';

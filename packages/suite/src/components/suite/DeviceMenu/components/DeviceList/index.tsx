@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
-import * as deviceUtils from '@suite/utils/device';
+import * as deviceUtils from '@suite-utils/device';
 import { Icon, colors, icons } from '@trezor/components';
 
-import { TrezorDevice, State } from '@suite/types';
+import { TrezorDevice, State } from '@suite-types/index';
 
 const Wrapper = styled.div``;
 const IconClick = styled.div``;

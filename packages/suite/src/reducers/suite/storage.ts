@@ -1,5 +1,5 @@
 import { SUITE } from '@suite-actions/constants';
-import { Action } from '@suite/types';
+import { Action } from '@suite-types/index';
 
 interface SuiteState {
     loading: boolean;

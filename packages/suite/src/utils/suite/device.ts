@@ -1,5 +1,5 @@
 import { colors } from '@trezor/components';
-import { TrezorDevice } from '@suite/types';
+import { TrezorDevice } from '@suite-types/index';
 import l10nMessages from '@suite-components/DeviceMenu/components/DeviceItem/index.messages';
 
 export const getStatus = (device: TrezorDevice): string => {

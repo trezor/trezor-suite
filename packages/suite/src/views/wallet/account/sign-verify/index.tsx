@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Text } from 'react-native';
 import { Button } from '@trezor/components';
-import { State } from '@suite/types';
+import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
 import Title from '@suite/components/wallet/Title';
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { State } from 'types/redux';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
-import { Dispatch } from '@suite/types';
+import { Dispatch } from '@suite-types/index';
 
 import Step from './index';
 

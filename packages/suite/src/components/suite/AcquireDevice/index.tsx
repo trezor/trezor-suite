@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import TrezorConnect from 'trezor-connect';
 
 import { Button } from '@trezor/components';
-import { State, TrezorDevice } from '@suite/types';
+import { State, TrezorDevice } from '@suite-types/index';
 import { selectDevice } from '@suite-actions/suiteActions';
 
 interface Props {
