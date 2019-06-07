@@ -3,7 +3,7 @@ import { P, Link } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import { UnorderedList } from '@suite/components/onboarding/Lists';
-import { SUPPORT_URL } from '@suite/config/onboarding/urls';
+import { SUPPORT_URL } from '@suite/constants/onboarding/urls';
 import Text from '@suite/components/onboarding/Text';
 
 import l10nMessages from './TroubleshootTooLong.messages';

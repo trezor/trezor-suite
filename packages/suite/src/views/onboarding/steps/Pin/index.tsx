@@ -6,7 +6,7 @@ import { UI } from 'trezor-connect';
 import { Button, Link, Modal } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-import { PIN_MANUAL_URL } from '@suite/config/onboarding/urls';
+import { PIN_MANUAL_URL } from '@suite/constants/onboarding/urls';
 import * as BREAKPOINTS from '@suite/config/onboarding/breakpoints';
 import l10nCommonMessages from '@suite-support/Messages';
 import PinMatrix from '@suite/components/onboarding/PinMatrix';

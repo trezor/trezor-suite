@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect';
 import { OnboardingActions, OnboardingReducer } from '@suite/types/onboarding/onboarding';
 
-import { SUPPORT_URL } from '@suite/config/onboarding/urls';
+import { SUPPORT_URL } from '@suite/constants/onboarding/urls';
 import colors from '@suite/config/onboarding/colors';
 import * as STEP from '@suite/constants/onboarding/steps';
 import { ControlsWrapper } from '@suite/components/onboarding/Wrapper';
