@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import TrezorConnect from 'trezor-connect';
@@ -7,7 +7,7 @@ import { State, Omit, TrezorDevice, AcquiredDevice } from '@suite/types';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
 import { Button, icons, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
-import DeviceItem from '@suite-components/DeviceItem';
+import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import { isDeviceAccessible, isWebUSB } from '@suite/utils/device';
 import l10nCommonMessages from '@suite/views/index.messages';
 import MenuItems from './components/MenuItems';
@@ -132,6 +132,20 @@ const DeviceMenu = ({
         if (isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
     });
 
+    // hooks managing closing the menu on click outside of the menu
+    const ref = useRef<HTMLDivElement>(null);
+    const handleClickOutside = event => {
+        if (ref.current && !ref.current.contains(event.target)) {
+            toggleDeviceMenu(false);
+        }
+    };
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside, true);
+        return () => {
+            document.removeEventListener('click', handleClickOutside, true);
+        };
+    });
+
     if (!selectedDevice) return null; // TODO: can it happen? if so some placeholder would be better
 
     const selectedDeviceAccessible = isDeviceAccessible(selectedDevice);
@@ -146,6 +160,7 @@ const DeviceMenu = ({
             }}
             disabled={!selectedDeviceAccessible && devices.length === 1}
             isOpen={isOpen}
+            ref={ref}
             {...rest}
         >
             <DeviceItem
