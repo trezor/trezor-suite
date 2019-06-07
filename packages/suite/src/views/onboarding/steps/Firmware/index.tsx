@@ -142,9 +142,7 @@ class FirmwareStep extends React.Component<Props & InjectedIntlProps> {
                                 <FormattedMessage
                                     {...l10nMessages.TR_FIRMWARE_INSTALLED_TEXT}
                                     values={{
-                                        version: `${device.features.major_version}.${
-                                            device.features.minor_version
-                                        }.${device.features.patch_version}`,
+                                        version: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
                                     }}
                                 />
                             </Text>

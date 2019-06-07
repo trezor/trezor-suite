@@ -49,9 +49,7 @@ class TroubleshootInitialized extends React.Component<Props, State> {
                             <FormattedMessage
                                 {...l10nMessages.TR_DEVICE_FIRMWARE_VERSION}
                                 values={{
-                                    firmware: `${device.features.major_version}.${
-                                        device.features.minor_version
-                                    }.${device.features.patch_version}`,
+                                    firmware: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
                                 }}
                             />
                         </Text>
