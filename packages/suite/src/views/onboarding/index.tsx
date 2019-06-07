@@ -190,7 +190,6 @@ const TrezorAction = ({ model, event }) => {
     );
 };
 
-
 const UnexpectedStateOverlay = styled.div`
     position: absolute;
     width: 100%;
@@ -305,7 +304,6 @@ class Onboarding extends React.PureComponent<Props> {
 
         const errorState = this.getError();
 
-    
         return (
             <>
                 <BaseStyles />
