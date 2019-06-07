@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { isWebUSB } from '@suite/utils/device';
@@ -6,18 +7,19 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import { colors, Button, Loader } from '@trezor/components';
+import { getRoute } from '@suite/utils/router';
 
 import InstallBridge from '@suite-views/bridge';
 
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
-import Layout from '@suite-components/Layout';
 
 import { State } from '@suite/types';
 import { goto } from '@suite-actions/routerActions';
 import VersionPage from '@suite-views/version';
+import l10nCommonMessages from '@suite/views/index.messages';
 import AcquireDevice from '@suite-components/AcquireDevice';
-
-import DeviceSelection from '../components/DeviceSelection';
+import DeviceMenu from '@suite-components/DeviceMenu';
+import Layout from '@suite-components/Layout';
 
 interface Props {
     router: State['router'];
@@ -29,7 +31,7 @@ interface Props {
 
 const SuiteHeader = styled.div`
     display: flex;
-    padding: 5px 15px 5px 5px;
+    padding: 0px 15px;
     border-bottom: 1px solid ${colors.BODY};
     border-radius: 4px 4px 0px 0px;
     align-items: center;
@@ -43,9 +45,6 @@ const SuiteHeader = styled.div`
 
 const Left = styled.div``;
 const Right = styled.div``;
-const Link = styled.div`
-    cursor: pointer;
-`;
 
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
@@ -118,10 +117,12 @@ const Index: FunctionComponent<Props> = props => {
         <Layout>
             <SuiteHeader>
                 <Left>
-                    <DeviceSelection data-test="@suite/device_selection" />
+                    <DeviceMenu data-test="@suite/device_selection" />
                 </Left>
                 <Right>
-                    <Button onClick={() => goto('/settings')}>device settings</Button>
+                    <Button onClick={() => goto(getRoute('suite-device-settings'))}>
+                        <FormattedMessage {...l10nCommonMessages.TR_DEVICE_SETTINGS} />
+                    </Button>
                 </Right>
             </SuiteHeader>
             {props.children}
