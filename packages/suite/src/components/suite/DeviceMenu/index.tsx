@@ -10,7 +10,7 @@ import DeviceItem from '@suite-components/DeviceItem';
 // import l10nCommonMessages from '@suite/views/index.messages';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
-import { getStatus, isDeviceAccessible } from '../../../utils/device';
+import { isDeviceAccessible } from '../../../utils/device';
 import l10nMessages from './index.messages';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
@@ -48,14 +48,8 @@ const Menu = styled.div`
     border-bottom: 1px solid #e3e3e3;
     border-left: 1px solid #e3e3e3;
     border-right: 1px solid #e3e3e3;
-
-
-
     animation: ${SLIDE_DOWN} 0.2s cubic-bezier(0.17, 0.04, 0.03, 0.94) forwards;
-    /* max-height: ${props => (props.isOpen ? '400px' : '0')}; */
-    /* transition: max-height 0.35s ease-in; */
     background: ${colors.WHITE};
-    
 `;
 
 const IconDivider = styled.div`
@@ -120,10 +114,7 @@ const DeviceMenu = ({
     ...rest
 }: Props) => {
     const [isAnimated, setIsAnimated] = useState(false);
-
-    if (!selectedDevice || devices.length < 1) return null;
-
-    const status = getStatus(selectedDevice);
+    if (!selectedDevice) return null; // TODO: can it happen? if so some placeholder would be better
 
     const selectedDeviceAccessible = isDeviceAccessible(selectedDevice);
     const multipleDevices = devices.length > 1;
@@ -225,7 +216,6 @@ const DeviceMenu = ({
                 }
             />
             {isOpen && (
-                // <Menu isOpen={isOpen}>
                 <Menu>
                     {selectedDeviceAccessible && (
                         <MenuItems device={selectedDevice as AcquiredDevice} />
