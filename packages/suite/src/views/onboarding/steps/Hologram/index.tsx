@@ -11,7 +11,7 @@ import {
 import { MD } from '@suite/config/onboarding/breakpoints';
 
 import Text from '@suite/components/onboarding/Text';
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 
 import {
     StepWrapper,

@@ -10,7 +10,7 @@ import colors from '@suite/config/onboarding/colors';
 import * as STEP from '@suite/constants/onboarding/steps';
 import { ControlsWrapper } from '@suite/components/onboarding/Wrapper';
 import Text from '@suite/components/onboarding/Text';
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 import l10nMessages from './TroubleshootInitialized.messages';
 
 interface Props {

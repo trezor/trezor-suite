@@ -7,7 +7,7 @@ import { ConnectActions, ConnectReducer } from '@suite/types/onboarding/connect'
 import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 import { DEFAULT_LABEL } from '@suite/constants/onboarding/trezor';
 import { validateASCII } from '@suite/utils/onboarding/validate';
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 import Text from '@suite/components/onboarding/Text';
 import {
     StepWrapper,

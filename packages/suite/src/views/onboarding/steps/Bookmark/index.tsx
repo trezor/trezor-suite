@@ -7,7 +7,7 @@ import { Link, Button, P } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
 import { APPLY_FLAGS } from '@suite/actions/onboarding/constants/calls';
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 import { PHISHING_URL } from '@suite/config/onboarding/urls';
 import Key from '@suite/components/onboarding/Key';
 import Text from '@suite/components/onboarding/Text';

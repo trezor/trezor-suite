@@ -21,7 +21,7 @@ import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect'
 import { OnboardingReducer, OnboardingActions } from '@suite/types/onboarding/onboarding';
 import { RecoveryReducer, RecoveryActions } from '@suite/types/onboarding/recovery';
 
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 import l10nMessages from './Recovery.messages';
 
 const sortedBip39 = bip39List.map(item => ({ label: item, value: item }));

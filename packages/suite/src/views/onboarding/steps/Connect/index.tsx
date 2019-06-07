@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { TrezorConnect } from '@suite/components/onboarding/Prompts';
 import { Dots } from '@suite/components/onboarding/Loaders';
 import Text from '@suite/components/onboarding/Text';
-import l10nCommonMessages from '@suite/support/commonMessages';
+import l10nCommonMessages from '@suite-support/Messages';
 import {
     StepWrapper,
     StepHeadingWrapper,
