@@ -2,12 +2,13 @@ import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Text } from 'react-native';
-import { isWebUSB } from '@suite/utils/device';
+
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import { colors, Button, Loader } from '@trezor/components';
-import { getRoute } from '@suite/utils/router';
+import { getRoute } from '@suite-utils/router';
+import { isWebUSB } from '@suite-utils/device';
 
 import InstallBridge from '@suite-views/bridge';
 
@@ -16,7 +17,7 @@ import ConnectDevice from '@suite-components/landing/ConnectDevice';
 import { State } from '@suite/types';
 import { goto } from '@suite-actions/routerActions';
 import VersionPage from '@suite-views/version';
-import l10nCommonMessages from '@suite/views/index.messages';
+import l10nCommonMessages from '@suite-views/index.messages';
 import AcquireDevice from '@suite-components/AcquireDevice';
 import DeviceMenu from '@suite-components/DeviceMenu';
 import Layout from '@suite-components/Layout';

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { State, Dispatch } from '@suite/types';
 import { Loader } from '@trezor/components';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
-import SuiteWrapper from '../../../views';
+import { State, Dispatch } from '@suite/types';
+import SuiteWrapper from '@suite-views/index';
 
 interface Props {
     loaded: State['suite']['loaded'];

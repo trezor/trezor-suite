@@ -8,7 +8,7 @@ import { Switch, Icon, colors, icons, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { AcquiredDevice } from '@suite/types';
 
-import l10nCommonMessages from '@suite/views/index.messages';
+import l10nCommonMessages from '@suite-views/index.messages';
 import l10nMessages from './index.messages';
 
 const { FONT_SIZE } = variables;

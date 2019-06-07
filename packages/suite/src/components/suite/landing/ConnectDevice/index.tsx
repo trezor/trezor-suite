@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled, { keyframes } from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-import l10nCommonMessages from '@suite/views/index.messages';
+import l10nCommonMessages from '@suite-views/index.messages';
 
 import { Button, P, H1, Link, icons, colors, variables, animations } from '@trezor/components';
 
