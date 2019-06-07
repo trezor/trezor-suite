@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
+import TrezorConnect from 'trezor-connect';
 import { bindActionCreators } from 'redux';
 import { State, Omit, TrezorDevice, AcquiredDevice } from '@suite/types';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
-import { icons, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
+import { Button, icons, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
 import DeviceItem from '@suite-components/DeviceItem';
-// import l10nCommonMessages from '@suite/views/index.messages';
+import { isDeviceAccessible, isWebUSB } from '@suite/utils/device';
+import l10nCommonMessages from '@suite/views/index.messages';
 import MenuItems from './components/MenuItems';
 import DeviceList from './components/DeviceList';
-import { isDeviceAccessible } from '../../../utils/device';
 import l10nMessages from './index.messages';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
@@ -78,6 +79,15 @@ const Counter = styled.div`
     font-size: ${FONT_SIZE.COUNTER};
 `;
 
+const ButtonWrapper = styled.div`
+    margin: 10px 0;
+    padding: 0 24px;
+    display: flex;
+`;
+const StyledButton = styled(Button)`
+    flex: 1;
+`;
+
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     devices: State['devices'];
     selectedDevice: State['suite']['device'];
@@ -87,6 +97,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     disabled?: boolean;
     isOpen: boolean;
     isSelected?: boolean;
+    transport: State['suite']['transport'];
     className?: string;
 }
 
@@ -99,6 +110,7 @@ type WrapperProps = Omit<
     | 'icon'
     | 'device'
     | 'toggleDeviceMenu'
+    | 'transport'
 >;
 
 const DeviceMenu = ({
@@ -110,10 +122,16 @@ const DeviceMenu = ({
     className,
     selectDevice,
     toggleDeviceMenu,
+    transport,
     isOpen = false,
     ...rest
 }: Props) => {
     const [isAnimated, setIsAnimated] = useState(false);
+
+    useEffect(() => {
+        if (isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
+    }, [transport]);
+
     if (!selectedDevice) return null; // TODO: can it happen? if so some placeholder would be better
 
     const selectedDeviceAccessible = isDeviceAccessible(selectedDevice);
@@ -227,7 +245,7 @@ const DeviceMenu = ({
                         onSelectDevice={selectDevice}
                         // forgetDevice={forgetDevice}
                     />
-                    {/* {isWebUSB(transport) && (
+                    {isWebUSB(transport) && (
                         <ButtonWrapper>
                             <StyledButton
                                 isInverse
@@ -237,7 +255,7 @@ const DeviceMenu = ({
                                 <FormattedMessage {...l10nCommonMessages.TR_CHECK_FOR_DEVICES} />
                             </StyledButton>
                         </ButtonWrapper>
-                    )} */}
+                    )}
                 </Menu>
             )}
         </Wrapper>
@@ -247,6 +265,7 @@ const DeviceMenu = ({
 const mapStateToProps = (state: State) => ({
     devices: state.devices,
     selectedDevice: state.suite.device,
+    transport: state.suite.transport,
     isOpen: state.suite.deviceMenuOpened,
 });
 
