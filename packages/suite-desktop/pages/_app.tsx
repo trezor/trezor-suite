@@ -6,7 +6,8 @@ import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 
 import { initStore } from '@suite/reducers/store';
-import Preloader from '@suite/components/Preloader';
+import Preloader from '@suite-components/Preloader';
+import IntlProvider from '@suite/support/ConnectedIntlProvider';
 
 interface Props {
     store: Store;
@@ -24,9 +25,11 @@ class TrezorSuiteApp extends App<Props> {
         return (
             <Container>
                 <ReduxProvider store={store}>
-                    <Preloader>
-                        <Component {...pageProps} />
-                    </Preloader>
+                    <IntlProvider>
+                        <Preloader>
+                            <Component {...pageProps} />
+                        </Preloader>
+                    </IntlProvider>
                 </ReduxProvider>
             </Container>
         );

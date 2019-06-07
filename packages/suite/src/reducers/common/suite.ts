@@ -1,5 +1,5 @@
 import { TRANSPORT } from 'trezor-connect';
-import { SUITE } from '@suite/actions/constants';
+import { SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite/types';
 
 interface SuiteState {
@@ -8,6 +8,9 @@ interface SuiteState {
     error?: string;
     transport?: Transport;
     device?: TrezorDevice;
+    language: string;
+    messages: { [key: string]: any };
+    deviceMenuOpened: boolean;
 }
 
 interface Transport {
@@ -23,6 +26,9 @@ interface Transport {
 const initialState: SuiteState = {
     loading: true,
     loaded: false,
+    language: 'en',
+    messages: {},
+    deviceMenuOpened: false,
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
@@ -31,11 +37,13 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
             return initialState;
         case SUITE.READY:
             return {
+                ...state,
                 loading: false,
                 loaded: true,
             };
         case SUITE.ERROR:
             return {
+                ...state,
                 loading: false,
                 loaded: false,
                 error: action.error,
@@ -45,6 +53,19 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
             return {
                 ...state,
                 device: action.payload,
+            };
+
+        case SUITE.SET_LANGUAGE:
+            return {
+                ...state,
+                language: action.locale,
+                messages: action.messages,
+            };
+
+        case SUITE.TOGGLE_DEVICE_MENU:
+            return {
+                ...state,
+                deviceMenuOpened: action.opened,
             };
 
         case TRANSPORT.START:

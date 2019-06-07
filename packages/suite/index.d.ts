@@ -11,7 +11,7 @@ declare module 'redux' {
     ): {
         [N in keyof M]: ReturnType<M[N]> extends ThunkAction<any, any, any, any>
             ? (...args: Parameters<M[N]>) => ReturnType<ReturnType<M[N]>>
-            : M[N]
+            : M[N];
     };
 }
 

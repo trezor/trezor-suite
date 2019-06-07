@@ -1,0 +1,8 @@
+.next
+_old
+build
+
+node_modules
+generated
+
+next.config.js

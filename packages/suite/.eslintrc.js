@@ -70,6 +70,7 @@ module.exports = {
         // They are fine sometimes.
         'no-nested-ternary': 'off',
         // This is fine.
+        'class-methods-use-this': 'off',
         'lines-between-class-members': 'off',
         // We use it for immer. It should be checked by readonly anyway.
         'no-param-reassign': 'off',
@@ -77,6 +78,7 @@ module.exports = {
         'no-plusplus': 'off',
         'no-return-assign': 'off',
         'consistent-return': 'off',
+        'no-console': 'off',
         // TSC checks it.
         '@typescript-eslint/no-unused-vars': 'off',
         'no-undef': 'off',
@@ -91,5 +93,7 @@ module.exports = {
         'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'off',
         'prettier/prettier': 'error',
+        "react/require-default-props": 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off'
     },
 };

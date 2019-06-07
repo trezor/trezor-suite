@@ -19,6 +19,20 @@ import ru from 'react-intl/locale-data/ru';
 import uk from 'react-intl/locale-data/uk';
 import zh from 'react-intl/locale-data/zh';
 
+export interface MessageDescriptor {
+    // A unique, stable identifier for the message
+    id: string;
+    // The default message (probably in English)
+    defaultMessage: string;
+    // Context for the translator about how it's used in the UI
+    description?: string;
+    values?: { [key: string]: any };
+}
+
+export interface Messages {
+    [key: string]: MessageDescriptor;
+}
+
 addLocaleData([
     ...en,
     ...cs,
@@ -39,16 +53,12 @@ addLocaleData([
 ]);
 
 const mapStateToProps = state => ({
-    locale: 'en',
-    messages: {},
+    locale: state.suite.language,
+    messages: state.suite.messages,
 });
 
 const ReactIntlProvider = ({ children, locale, messages }) => (
-    <IntlProvider
-        locale={locale}
-        messages={messages}
-        key={locale} // forces rerender IntlProvider when lang file is downloaded
-    >
+    <IntlProvider locale={locale} messages={messages}>
         {children}
     </IntlProvider>
 );

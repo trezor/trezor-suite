@@ -6,14 +6,20 @@
         "lint": "run-s lint:*",
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
-        "type-check": "tsc --project tsconfig.json"
+        "translations:download": "yarn ttm build-translations && sleep 1 && yarn ttm export-translations && cp -R ./src/locales/ ../suite-web/static/l10n",
+        "type-check": "tsc --project tsconfig.json",
+        "test": "run-s test:*",
+        "test:unit": "jest --passWithNoTests",
+        "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
+        "@trezor/translations-manager": "1.0.5",
+        "@types/jest": "^24.0.13",
         "@types/react-intl": "^2.3.17",
         "react": "16.8.6",
         "react-dom": "16.8.6",
-        "react-intl": "^2.9.0",
+        "react-intl": "3.0.0-beta-6",
         "react-native-web": "^0.11.2",
         "react-redux": "^7.0.3",
         "redux": "^4.0.1",
@@ -28,9 +34,11 @@
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.0.8",
         "@types/redux-logger": "^3.0.7",
+        "jest": "^24.8.0",
         "stylelint": "^10.0.1",
         "stylelint-config-recommended": "^2.2.0",
         "stylelint-config-styled-components": "^0.1.1",
-        "stylelint-processor-styled-components": "^1.8.0"
+        "stylelint-processor-styled-components": "^1.8.0",
+        "ts-jest": "^24.0.2"
     }
 }

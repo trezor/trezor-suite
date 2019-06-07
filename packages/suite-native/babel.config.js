@@ -7,10 +7,22 @@ module.exports = api => {
                 'module-resolver',
                 {
                     alias: {
+                        // TODO: alias for routerActions could be removed
+                        // since it will be handled with resolver for custom .useNative extension
+                        // (after renaming routerActions.ts to routerActions.useNative.ts in suite folder)
                         '^@suite/actions/routerActions$':
                             './packages/suite-native/src/actions/routerActions',
+                        '^@suite/actions/(.+).useNative$':
+                            './packages/suite-native/src/actions/\\1', // every action file in suite/actions with .useNative extension will be replaced by a file in suite-native/actions directory
                         '^@suite/(.+)': './packages/suite/src/\\1', // relative to "projectRoot: ../../" defined in package.json
                         'node-fetch': 'whatwg-fetch',
+                        '^@(.+)-views/(.+)': './packages/suite/src/views/\\1/\\2',
+                        '^@(.+)-components/(.+)': './packages/suite/src/components/\\1/\\2',
+                        '^@(.+)-actions/(.+)': './packages/suite/src/actions/\\1/\\2',
+                        '^@(.+)-reducers/(.+)': './packages/suite/src/reducers/\\1/\\2',
+                        '^@(.+)-config/(.+)': './packages/suite/src/config/\\1/\\2',
+                        '^@(.+)-constants/(.+)': './packages/suite/src/constants/\\1/\\2',
+                        '^@(.+)-support/(.+)': './packages/suite/src/support/\\1/\\2',
                     },
                 },
             ],

@@ -5,7 +5,20 @@
         "allowSyntheticDefaultImports": true,
         "baseUrl": ".",
         "paths": {
+            // suite
             "@suite/*": ["./packages/suite/src/*"],
+            "@suite-components/*": ["./packages/suite/src/components/suite/*"],
+            "@suite-views/*": ["./packages/suite/src/views/suite/*"],
+            "@suite-actions/*": ["./packages/suite/src/actions/suite/*"],
+            // wallet
+            "@wallet-views/*": ["./packages/suite/src/views/wallet/*"],
+            "@wallet-components/*": ["./packages/suite/src/components/wallet/*"],
+            "@wallet-actions/*": ["./packages/suite/src/actions/wallet/*"],
+            // onboarding
+            "@onboarding-views/*": ["./packages/suite/src/views/onboarding/*"],
+            "@onboarding-actions/*": ["./packages/suite/src/actions/onboarding/*"],
+            "@onboarding-components/*": ["./packages/suite/src/components/onboarding/*"],
+            // other
             "@native/*": ["./packages/suite-native/src/*"],
             "@desktop/*": ["./packages/suite-desktop/src/*"],
         },

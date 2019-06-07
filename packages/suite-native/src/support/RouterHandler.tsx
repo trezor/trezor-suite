@@ -5,7 +5,7 @@ import { Router, Scene, Actions } from 'react-native-router-flux';
 import Index from '@suite/views';
 import Wallet from '@suite/views/wallet';
 import WalletSend from '@suite/views/wallet/account/send';
-import { onLocationChange } from '@suite/actions/routerActions';
+import { onLocationChange } from '@suite-actions/routerActions';
 import { Dispatch } from '@suite/types';
 
 // sources:
