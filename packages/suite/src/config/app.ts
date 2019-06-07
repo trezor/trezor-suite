@@ -1,4 +1,4 @@
-import Languages from '@suilte/types/languages';
+import Languages from '@suilte-types/languages';
 
 export const LANGUAGES: Languages = [
     { code: 'en', name: 'English', en: 'English' },

@@ -1,13 +1,13 @@
 import { ThunkDispatch } from 'redux-thunk';
 import { UiEvent, DeviceEvent, TransportEvent } from 'trezor-connect';
-import { RouterActions } from './actions/routerActions';
+import { BlockchainActions } from '@suite-actions/blockchainActions';
+import { RouterActions } from '@suite-actions/routerActions';
 
-import { BlockchainActions } from './actions/blockchainActions';
-import { StorageActions } from './actions/storageActions';
-import { SuiteActions } from './actions/suiteActions';
-import { LogActions } from './actions/logActions';
-import { State as ReducersState } from './reducers/store';
-import OnboardingActions from './types/onboarding/actions';
+import { StorageActions } from '@suite-actions/storageActions';
+import { SuiteActions } from '@suite-actions/suiteActions';
+import { LogActions } from '@suite-actions/logActions';
+import { State as ReducersState } from '@suite/reducers/store';
+import OnboardingActions from '@onboarding-types/actions';
 
 export { MessageDescriptor } from '@suite-support/ConnectedIntlProvider';
 export { Messages } from '@suite-support/ConnectedIntlProvider';
