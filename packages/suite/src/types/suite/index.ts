@@ -9,8 +9,8 @@ import { LogActions } from './actions/logActions';
 import { State as ReducersState } from './reducers/store';
 import OnboardingActions from './types/onboarding/actions';
 
-export { MessageDescriptor } from './support/ConnectedIntlProvider';
-export { Messages } from './support/ConnectedIntlProvider';
+export { MessageDescriptor } from '@suite-support/ConnectedIntlProvider';
+export { Messages } from '@suite-support/ConnectedIntlProvider';
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
