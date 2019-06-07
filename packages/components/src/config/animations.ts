@@ -81,3 +81,30 @@ export const FADE_IN = keyframes`
         opacity: 1;
     }
 `;
+
+export const SLIDE_DOWN = keyframes`
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+`;
+
+export const SLIDE_RIGHT = keyframes`
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+`;
+
+export const SLIDE_LEFT = keyframes`
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+`;

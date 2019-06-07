@@ -34,6 +34,7 @@ const AppWrapper = styled.div<Props>`
     border-radius: 4px 4px 0px 0px;
     margin-top: 30px;
     height: 100%;
+    overflow-y: hidden;
 
     @media screen and (max-width: 1170px) {
         border-radius: 0px;

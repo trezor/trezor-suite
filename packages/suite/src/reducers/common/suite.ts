@@ -10,6 +10,7 @@ interface SuiteState {
     device?: TrezorDevice;
     language: string;
     messages: { [key: string]: any };
+    deviceMenuOpened: boolean;
 }
 
 interface Transport {
@@ -27,6 +28,7 @@ const initialState: SuiteState = {
     loaded: false,
     language: 'en',
     messages: {},
+    deviceMenuOpened: false,
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
@@ -58,6 +60,12 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 ...state,
                 language: action.locale,
                 messages: action.messages,
+            };
+
+        case SUITE.TOGGLE_DEVICE_MENU:
+            return {
+                ...state,
+                deviceMenuOpened: action.opened,
             };
 
         case TRANSPORT.START:
