@@ -3,7 +3,7 @@ import ReactTimeout, { ReactTimeoutProps } from 'react-timeout';
 import { H4, Button } from '@trezor/components';
 import { FormattedMessage } from 'react-intl';
 
-// import { TrezorConnect } from '@suite/components/onboarding/Prompts';
+import { TrezorConnect } from '@suite/components/onboarding/Prompts';
 import { Dots } from '@suite/components/onboarding/Loaders';
 import Text from '@suite/components/onboarding/Text';
 import l10nCommonMessages from '@suite/support/commonMessages';
@@ -47,10 +47,7 @@ class ConnectStep extends React.PureComponent<Props & ReactTimeoutProps, State> 
     };
 
     componentDidMount() {
-        if (
-            this.props.device === null ||
-            (this.props.device && this.props.device.connected === false)
-        ) {
+        if (!this.props.device) {
             this.props.setTimeout(
                 () => this.setState({ isSearching: true }),
                 ConnectStep.IS_SEARCHING_TIMEOUT,
@@ -63,7 +60,7 @@ class ConnectStep extends React.PureComponent<Props & ReactTimeoutProps, State> 
     }
 
     componentWillReceiveProps(nextProps: Props & ReactTimeoutProps) {
-        if (this.props.device && nextProps.device.connected === false) {
+        if (this.props.device && !nextProps.device) {
             this.setState({ isSearching: true });
             this.props.setTimeout(() => this.setState({ isSearchingTooLong: true }), 15 * 1000);
         } else {
@@ -96,7 +93,11 @@ class ConnectStep extends React.PureComponent<Props & ReactTimeoutProps, State> 
                     <FormattedMessage {...l10nMessages.TR_CONNECT_HEADING} />
                 </StepHeadingWrapper>
                 <StepBodyWrapper>
-                    {/* <TrezorConnect model={this.props.model} height={180} loop={!deviceIsConnected} /> */}
+                    <TrezorConnect
+                        model={this.props.model}
+                        height={180}
+                        loop={!deviceIsConnected}
+                    />
 
                     {!deviceIsConnected && (
                         <Text>

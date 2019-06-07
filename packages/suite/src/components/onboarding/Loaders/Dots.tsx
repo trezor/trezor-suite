@@ -27,7 +27,7 @@ class Dots extends React.Component<Props, State> {
 
     willUnmount: boolean = false;
 
-    defaultProps: { [index: string]: any } = {
+    static defaultProps: { [index: string]: any } = {
         maxCount: 3,
         speed: 1000,
     };
