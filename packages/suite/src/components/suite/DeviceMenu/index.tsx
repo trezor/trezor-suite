@@ -7,7 +7,7 @@ import { State, Omit, TrezorDevice, AcquiredDevice } from '@suite/types';
 import styled, { css } from 'styled-components';
 import { toggleDeviceMenu, selectDevice } from '@suite-actions/suiteActions';
 import { Button, icons, colors, variables, animations, Tooltip, Icon } from '@trezor/components';
-import DeviceItem from '@suite-components/DeviceItem';
+import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import { isDeviceAccessible, isWebUSB } from '@suite/utils/device';
 import l10nCommonMessages from '@suite/views/index.messages';
 import MenuItems from './components/MenuItems';
