@@ -6,7 +6,7 @@ import { Link, colors, variables } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { State, Dispatch } from '@suite/types';
+import { State, Dispatch } from '@suite-types/index';
 
 import * as logActions from '@suite-actions/logActions';
 import l10nMessages from './index.messages';

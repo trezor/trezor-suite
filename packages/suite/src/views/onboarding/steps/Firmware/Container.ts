@@ -5,7 +5,7 @@ import { State } from '@suite/types/onboarding/actions';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 import * as firmwareUpdateActions from '@suite/actions/onboarding/firmwareUpdateActions';
 
-import { Dispatch } from '@suite/types';
+import { Dispatch } from '@suite-types/index';
 
 import Step from './index';
 

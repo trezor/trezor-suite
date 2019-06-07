@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Loader } from '@trezor/components';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
-import { State, Dispatch } from '@suite/types';
+import { State, Dispatch } from '@suite-types/index';
 import SuiteWrapper from '@suite-views/index';
 
 interface Props {

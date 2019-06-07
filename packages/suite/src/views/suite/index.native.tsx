@@ -5,7 +5,7 @@ import { Header as AppHeader, colors } from '@trezor/components';
 import { bindActionCreators } from 'redux';
 import Router from '@suite/support/Router';
 
-import { State } from '@suite/types';
+import { State } from '@suite-types/index';
 import { goto } from '@suite/actions/routerActions';
 import AcquireDevice from '../components/suite/AcquireDevice';
 
