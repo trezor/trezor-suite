@@ -1,8 +1,6 @@
-/* @flow */
-
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import DeviceItem from '@suite/components/DeviceItem';
+import DeviceItem from '@suite/components/suite/DeviceItem';
 import * as deviceUtils from '@suite/utils/device';
 import { Icon, colors, icons } from '@trezor/components';
 
