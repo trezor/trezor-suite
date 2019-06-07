@@ -29,6 +29,13 @@ interface Props {
     children: React.ReactNode;
 }
 
+const LoaderWrapper = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+`;
+
 const SuiteHeader = styled.div`
     display: flex;
     padding: 0px 15px;
@@ -49,20 +56,14 @@ const Right = styled.div``;
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;
 
-    if (router.pathname === '/version') {
-        return (
-            <Layout isLanding>
-                <VersionPage />
-            </Layout>
-        );
-    }
-
-    // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
+        // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
         // TODO: check in props.router if current url needs device or transport at all (settings, install bridge, import etc.)
         return (
             <Layout isLanding>
-                <Loader text="Loading" size={100} strokeWidth={1} />
+                <LoaderWrapper>
+                    <Loader text="Loading" size={100} strokeWidth={1} />
+                </LoaderWrapper>
             </Layout>
         );
     }
@@ -76,8 +77,8 @@ const Index: FunctionComponent<Props> = props => {
     // no available transport
     if (!suite.transport.type) {
         return (
-            <Layout>
-                <InstallBridge />
+            <Layout isLanding>
+                <Bridge />
             </Layout>
         );
     }
@@ -112,7 +113,9 @@ const Index: FunctionComponent<Props> = props => {
         );
     }
 
-    // TODO: render requested view
+    const { pathname } = router;
+    const isLandingPage = pathname === '/bridge' || pathname === '/version';
+
     return (
         <Layout>
             <SuiteHeader>
