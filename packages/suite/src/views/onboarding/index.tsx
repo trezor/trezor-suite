@@ -5,7 +5,7 @@ import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { isDev } from '@suite/utils/build';
+import { isDev } from '@suite-utils/build';
 
 import BaseStyles from '@suite/support/onboarding/BaseStyles';
 
