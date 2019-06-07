@@ -67,7 +67,7 @@ import BookmarkStep from '@suite/views/onboarding/steps/Bookmark/Container';
 import FinalStep from '@suite/views/onboarding/steps/Final';
 import NewsletterStep from '@suite/views/onboarding/steps/Newsletter';
 
-import background2 from './background2.jpg';
+import background from './background.jpg';
 
 const BORDER_RADIUS = 12;
 const TRANSITION_PROPS = {
@@ -104,7 +104,7 @@ const WrapperOutside = styled.div<WrapperOutsideProps>`
         ${props =>
             props.animate &&
             css`
-                background-image: url(${background2});
+                background-image: url(${background});
                 background-size: cover;
             `};
     }
