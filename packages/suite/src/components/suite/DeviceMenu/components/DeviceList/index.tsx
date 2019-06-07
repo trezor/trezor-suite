@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import DeviceItem from '@suite/components/suite/DeviceItem';
+import DeviceItem from '@suite-components/DeviceMenu/components/DeviceItem';
 import * as deviceUtils from '@suite-utils/device';
 import { Icon, colors, icons } from '@trezor/components';
 
