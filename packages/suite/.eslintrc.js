@@ -94,5 +94,6 @@ module.exports = {
         'import/no-cycle': 'off',
         'prettier/prettier': 'error',
         "react/require-default-props": 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off'
     },
 };

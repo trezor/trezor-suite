@@ -48,7 +48,7 @@ class NameStep extends React.Component<Props & InjectedIntlProps, State> {
     };
 
     handleInputChange = (event: any) => {
-        this.setState({ label: event.target.value } as State);
+        this.setState({ label: event.target.value });
     };
 
     getStatus = () => {

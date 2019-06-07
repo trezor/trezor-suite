@@ -17,8 +17,9 @@ const OptionWrapper = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
     box-shadow: ${({ isSelected }) =>
         isSelected ? `0px 0px 2px 1px ${colors.brandPrimary}` : '0px 0px 6px 2px rgba(0,0,0,0.05)'};
-    bordercolor: ${({ isSelected }) => (isSelected ? `${colors.brandPrimary}` : `${colors.gray}`)}
-        @media (min-width: ${BREAKPOINTS.SM}px) {
+    border-color: ${({ isSelected }) => (isSelected ? `${colors.brandPrimary}` : `${colors.gray}`)};
+
+    @media (min-width: ${BREAKPOINTS.SM}px) {
         height: 200px;
     }
 `;
