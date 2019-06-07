@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { goto } from '@suite/actions/routerActions';
+import { goto } from '@suite-actions/routerActions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button, Select, P, Link, H1, icons, colors, variables } from '@trezor/components';
@@ -169,7 +169,7 @@ class InstallBridge extends PureComponent {
                         <P>
                             <FormattedMessage {...l10nMessages.TR_DONT_UPGRADE_BRIDGE} />
                             <br />
-                            <GoBack onClick={() => this.props.selectFirstAvailableDevice()}>
+                            <GoBack onClick={() => goto('/wallet')}>
                                 <FormattedMessage {...l10nMessages.TR_TAKE_ME_BACK_TO_WALLET} />
                             </GoBack>
                         </P>

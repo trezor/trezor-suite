@@ -10,12 +10,10 @@ import { colors, Button, Loader } from '@trezor/components';
 
 import { getRoute } from '@suite-utils/router';
 import { isWebUSB } from '@suite-utils/device';
-import InstallBridge from '@suite-views/bridge';
 import ConnectDevice from '@suite-components/landing/ConnectDevice';
 
 import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
-import VersionPage from '@suite-views/version';
 import l10nCommonMessages from '@suite-views/index.messages';
 import AcquireDevice from '@suite-components/AcquireDevice';
 import DeviceMenu from '@suite-components/DeviceMenu';
