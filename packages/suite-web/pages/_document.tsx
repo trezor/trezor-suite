@@ -27,6 +27,11 @@ const globalStyles = `
       font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
 
+    a {
+        text-decoration: none;
+        cursor: pointer;
+    }
+
     *,
     *:before,
     *:after {
