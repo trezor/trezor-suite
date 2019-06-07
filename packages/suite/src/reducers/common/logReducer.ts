@@ -1,6 +1,6 @@
 /* @flow */
 
-import { LOG } from '@suite/actions/constants';
+import { LOG } from '@suite-actions/constants';
 
 import { Action } from '@suite/types';
 

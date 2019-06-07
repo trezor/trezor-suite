@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 
-import { onLocationChange, onBeforePopState } from '@suite/actions/routerActions';
+import { onLocationChange, onBeforePopState } from '@suite-actions/routerActions';
 import { Dispatch } from '@suite/types';
 
 /**

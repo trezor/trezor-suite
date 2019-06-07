@@ -7,7 +7,7 @@ import Router from '@suite/support/Router';
 
 import { State } from '@suite/types';
 import { goto } from '@suite/actions/routerActions';
-import AcquireDevice from '../components/AcquireDevice';
+import AcquireDevice from '../components/suite/AcquireDevice';
 
 interface Props {
     router: State['router'];
@@ -37,7 +37,6 @@ const Index: FunctionComponent<Props> = props => {
     if (router.app === 'onboarding') {
         return (
             <Body>
-                <Text>Onboarding wrapper</Text>
                 {props.children}
             </Body>
         );

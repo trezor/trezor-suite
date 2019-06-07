@@ -1,3 +1,3 @@
-import Account from '@suite/views/wallet/account/send';
+import Account from '@wallet-views/account/send';
 
 export default Account;

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import { State } from '@suite/types';
-import { goto } from '@suite/actions/routerActions';
+import { goto } from '@suite-actions/routerActions';
 import Title from '@suite/components/wallet/Title';
 
 interface Props {
