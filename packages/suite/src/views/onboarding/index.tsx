@@ -14,7 +14,7 @@ import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect'
 import { FetchReducer, FetchActions } from '@suite/types/onboarding/fetch';
 import { RecoveryReducer, RecoveryActions } from '@suite/types/onboarding/recovery';
 import { NewsletterReducer, NewsletterActions } from '@suite/types/onboarding/newsletter';
-import { AnyStepId, Step } from '@suite/types/onboarding/steps';
+import { AnyStepId, AnyStepDisallowedState, Step } from '@suite/types/onboarding/steps';
 import { Dispatch } from '@suite/types/onboarding/actions';
 import {
     FirmwareUpdateReducer,
@@ -166,6 +166,31 @@ const TrezorActionOverlay = styled.div`
     border-radius: ${BORDER_RADIUS}px;
 `;
 
+const TrezorAction = ({ model, event }) => {
+    let TrezorActionText;
+    if (event.name === EVENTS.BUTTON_REQUEST__RESET_DEVICE) {
+        TrezorActionText = () => (
+            <P>
+                Complete action on your device. By clicking continue you agree with{' '}
+                <Link target="_blank" href={TOS_URL}>
+                    Terms of services
+                </Link>
+            </P>
+        );
+    } else {
+        TrezorActionText = () => <P>Complete action on your device.</P>;
+    }
+
+    return (
+        <TrezorActionOverlay>
+            <Prompt model={model} size={100}>
+                <TrezorActionText />
+            </Prompt>
+        </TrezorActionOverlay>
+    );
+};
+
+
 const UnexpectedStateOverlay = styled.div`
     position: absolute;
     width: 100%;
@@ -187,7 +212,6 @@ interface Props {
     deviceCall: ConnectReducer['deviceCall'];
     uiInteraction: ConnectReducer['uiInteraction'];
     deviceInteraction: ConnectReducer['deviceInteraction'];
-    connectError: ConnectReducer['connectError'];
     prevDeviceId: ConnectReducer['prevDeviceId'];
 
     newsletter: NewsletterReducer;
@@ -224,21 +248,19 @@ class Onboarding extends React.PureComponent<Props> {
         return this.props.activeStepId;
     }
 
-    handleErrors() {
+    getError() {
         const { device, prevDeviceId, activeStepId, connectError, uiInteraction } = this.props;
 
         if (!this.getStep(activeStepId).disallowedDeviceStates) {
-            return [];
+            return null;
         }
 
-        const errorStates = [];
-        this.getStep(activeStepId).disallowedDeviceStates.forEach(state => {
-            const fn = getFnForRule(state);
-            if (fn({ device, prevDeviceId, uiInteraction }) === true) {
-                errorStates.push(state);
-            }
-        });
-        return errorStates;
+        return this.getStep(activeStepId).disallowedDeviceStates.find(
+            (state: AnyStepDisallowedState) => {
+                const fn = getFnForRule(state);
+                return fn({ device, prevDeviceId, uiInteraction });
+            },
+        );
     }
 
     isGlobalInteraction() {
@@ -256,6 +278,7 @@ class Onboarding extends React.PureComponent<Props> {
         );
     }
 
+    // todo: reconsider if we need resolved logic.
     isStepResolved(stepId: AnyStepId) {
         return Boolean(this.props.steps.find((step: Step) => step.id === stepId).resolved);
     }
@@ -280,24 +303,9 @@ class Onboarding extends React.PureComponent<Props> {
         } = this.props;
         const model = selectedModel;
 
-        const errorStates = this.handleErrors();
+        const errorState = this.getError();
 
-        // todo: wrap this up to separete component probably
-        let TrezorActionText;
-        if (activeStepId === STEP.ID_START_STEP) {
-            // StartStep call require custom text
-            TrezorActionText = () => (
-                <P>
-                    Complete action on your device. By clicking continue you agree with{' '}
-                    <Link target="_blank" href={TOS_URL}>
-                        Terms of services
-                    </Link>
-                </P>
-            );
-        } else {
-            TrezorActionText = () => <P>Complete action on your device.</P>;
-        }
-
+    
         return (
             <>
                 <BaseStyles />
@@ -306,10 +314,10 @@ class Onboarding extends React.PureComponent<Props> {
                     animate={![STEP.ID_WELCOME_STEP, STEP.ID_FINAL_STEP].includes(activeStepId)}
                 >
                     <WrapperInside isGlobalInteraction={this.isGlobalInteraction()}>
-                        {errorStates.length > 0 && (
+                        {errorState && (
                             <UnexpectedStateOverlay>
                                 <UnexpectedState
-                                    caseType={errorStates[0]}
+                                    caseType={errorState}
                                     model={selectedModel}
                                     connectActions={connectActions}
                                     onboardingActions={onboardingActions}
@@ -332,11 +340,10 @@ class Onboarding extends React.PureComponent<Props> {
                         </ProgressStepsSlot>
                         <ComponentWrapper>
                             {this.isGlobalInteraction() && (
-                                <TrezorActionOverlay>
-                                    <Prompt model={selectedModel} size={100}>
-                                        <TrezorActionText />
-                                    </Prompt>
-                                </TrezorActionOverlay>
+                                <TrezorAction
+                                    model={selectedModel}
+                                    event={deviceInteraction.name}
+                                />
                             )}
 
                             <CSSTransition

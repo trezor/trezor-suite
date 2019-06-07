@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import PropTypes from 'prop-types';
 import Icon from '../Icon';
 
 import icons from '../../config/icons';
@@ -80,12 +79,6 @@ const Prompt = ({ model, size, children, ...rest }: Props) => {
             <ContentWrapper>{children}</ContentWrapper>
         </Wrapper>
     );
-};
-
-Prompt.propTypes = {
-    model: PropTypes.oneOf([1, 2]).isRequired,
-    children: PropTypes.node.isRequired,
-    size: PropTypes.number,
 };
 
 Prompt.defaultProps = {

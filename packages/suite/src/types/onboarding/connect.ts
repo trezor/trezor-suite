@@ -34,14 +34,13 @@ export interface ConnectReducer {
         result: null | Record<string, any>;
     };
     deviceInteraction: {
-        name: null | string;
+        name: null | string; // todo: better
         counter: number;
     };
     uiInteraction: UiInteraction;
 }
 
 export interface ConnectActions {
-    init: typeof init;
     // calls to connect
     resetCall: typeof resetCall;
     getFeatures: typeof getFeatures;
