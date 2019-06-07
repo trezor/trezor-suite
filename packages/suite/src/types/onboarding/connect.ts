@@ -1,5 +1,4 @@
 import {
-    init,
     // calls to connect
     resetCall,
     getFeatures,
@@ -19,12 +18,6 @@ import {
     submitWord,
 } from '@suite/actions/onboarding/connectActions';
 
-export interface Device {
-    connected?: boolean;
-    // todo: typescript extend with connect
-    [key: string]: any;
-}
-
 export interface UiInteraction {
     name: null | string;
     counter: number;
@@ -41,14 +34,13 @@ export interface ConnectReducer {
         result: null | Record<string, any>;
     };
     deviceInteraction: {
-        name: null | string;
+        name: null | string; // todo: better
         counter: number;
     };
     uiInteraction: UiInteraction;
 }
 
 export interface ConnectActions {
-    init: typeof init;
     // calls to connect
     resetCall: typeof resetCall;
     getFeatures: typeof getFeatures;
@@ -88,30 +80,6 @@ export const USED_ELSEWHERE = 'device-used_elsewhere';
 
 export type ActionTypes =
     | {
-          type: typeof TRANSPORT_START;
-          transport: Record<string, any>; // todo: better
-      }
-    | {
-          type: typeof TRANSPORT_ERROR;
-          transport: Record<string, any>;
-      }
-    | {
-          type: typeof DEVICE_CONNECT;
-          device: Device;
-      }
-    | {
-          type: typeof CONNECT_UNACQUIRED;
-          device: Device;
-      }
-    | {
-          type: typeof CHANGED;
-          device: Device;
-      }
-    | {
-          type: typeof DISCONNECT;
-          device: Device;
-      }
-    | {
           type: typeof DEVICE_CALL_RESET;
       }
     | {
@@ -134,14 +102,4 @@ export type ActionTypes =
     | {
           type: typeof UI_INTERACTION_EVENT;
           name: string;
-      }
-    | {
-          type: typeof SET_DEVICE_FEATURES;
-          features: Record<string, any>; // todo: better
-      }
-    | {
-          type: typeof SET_CONNECT_ERROR;
-          error: any; // todo
       };
-
-// export type ActionTypes = TransportStartAction | TransportErrorAction | DeviceConnectAction | DeviceChangedAction | DeviceDisconnectAction | DeviceCallResetAction | DeviceCallStartAction | DeviceCallSuccessAction | DeviceCallErrorAction | DeviceInteractionEventAction | UIInteractionEventAction | SetDeviceFeaturesAction | SetConnectErrorAction;
