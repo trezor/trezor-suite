@@ -1,6 +1,6 @@
 import { colors } from '@trezor/components';
 import { TrezorDevice } from '@suite/types';
-import l10nMessages from '@components-suite/DeviceItem/index.messages';
+import l10nMessages from '@suite-components/DeviceItem/index.messages';
 
 export const getStatus = (device: TrezorDevice): string => {
     if (!device.connected) {

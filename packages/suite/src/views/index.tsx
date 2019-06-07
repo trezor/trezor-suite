@@ -21,7 +21,6 @@ import AcquireDevice from '@suite-components/AcquireDevice';
 import DeviceMenu from '@suite-components/DeviceMenu';
 import Layout from '@suite-components/Layout';
 
-
 interface Props {
     router: State['router'];
     suite: State['suite'];
@@ -46,9 +45,6 @@ const SuiteHeader = styled.div`
 
 const Left = styled.div``;
 const Right = styled.div``;
-const Link = styled.div`
-    cursor: pointer;
-`;
 
 const Index: FunctionComponent<Props> = props => {
     const { suite, router } = props;

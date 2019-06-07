@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { getRoute } from '@suite/utils/router';
 
 import { Switch, Icon, colors, icons, variables } from '@trezor/components';
-import DeviceIcon from '@suite/components/images/DeviceIcon';
+import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { AcquiredDevice } from '@suite/types';
 
 import l10nCommonMessages from '@suite/views/index.messages';
