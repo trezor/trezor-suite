@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { getRoute } from '@suite/utils/router';
 
+import { goto } from '@suite-actions/routerActions';
 import { Switch, Icon, colors, icons, variables } from '@trezor/components';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { AcquiredDevice } from '@suite/types';
@@ -132,16 +133,14 @@ const MenuItems = ({ device }: Props) => {
             </Item> 
             <Divider />
             */}
-            <Link href={getRoute('wallet-settings')}>
-                <Item>
-                    <IconWrapper>
-                        <Icon icon={icons.COG} size={14} color={colors.TEXT_SECONDARY} />
-                    </IconWrapper>
-                    <Label>
-                        <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />
-                    </Label>
-                </Item>
-            </Link>
+            <Item onClick={() => goto(getRoute('wallet-settings'))}>
+                <IconWrapper>
+                    <Icon icon={icons.COG} size={14} color={colors.TEXT_SECONDARY} />
+                </IconWrapper>
+                <Label>
+                    <FormattedMessage {...l10nCommonMessages.TR_APPLICATION_SETTINGS} />
+                </Label>
+            </Item>
         </Wrapper>
     );
 };
