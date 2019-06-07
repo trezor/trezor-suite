@@ -1,9 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
-import { State, Omit, TrezorDevice } from '@suite/types';
-import { selectDevice } from '@suite/actions/suiteActions';
+import { TrezorDevice } from '@suite/types';
 import styled, { css } from 'styled-components';
 import { TrezorImage, colors, variables } from '@trezor/components';
 import { getStatusColor, getStatusName, getStatus } from '../../utils/device';
@@ -21,13 +18,7 @@ const Wrapper = styled.div<WrapperProps>`
     cursor: pointer;
 
     border-radius: 4px 0 0 0;
-    box-shadow: ${props => (props.disabled ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.04)')};
-
-    ${props =>
-        (props.isOpen || !props.isSelected) &&
-        css`
-            box-shadow: none;
-        `}
+    /* box-shadow: ${props => (props.disabled ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.04)')}; */
 
     ${props =>
         props.disabled &&
@@ -92,84 +83,48 @@ const Dot = styled.div`
     height: 10px;
 `;
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    devices: State['devices'];
-    selectedDevice: State['suite']['device'];
-    selectDevice: typeof selectDevice;
-    isAccessible: boolean;
-    onClickWrapper: () => void;
-    device: any; // TODO: add type from connect
-    icon: any;
-    isHoverable: boolean;
-    disabled: boolean;
-    isOpen: boolean;
-    isSelected: boolean;
-    className: string;
+    isAccessible?: boolean;
+    device: TrezorDevice;
+    icon?: React.ReactNode;
+    isHoverable?: boolean;
+    disabled?: boolean;
+    isSelected?: boolean;
+    className?: string;
     intl: any;
 }
 
-type WrapperProps = Omit<
-    Props,
-    | 'onSelect'
-    | 'devices'
-    | 'selectedDevice'
-    | 'selectDevice'
-    | 'isAccessible'
-    | 'icon'
-    | 'intl'
-    | 'device'
-    | 'onClickWrapper'
->;
+type WrapperProps = Pick<Props, 'isSelected' | 'isHoverable' | 'disabled' | 'className'>;
 
-const DeviceSelection = ({
-    devices,
-    selectedDevice,
-    isOpen,
+const DeviceItem = ({
     icon,
     device,
     isHoverable = true,
-    onClickWrapper,
     isAccessible = true,
     disabled = false,
     isSelected = false,
     className,
     intl,
-    selectDevice,
     ...rest
 }: Props) => {
-    if (!selectedDevice || devices.length < 1) return null;
-
-    const options = devices.map((dev: TrezorDevice) => ({
-        label: dev.label,
-        value: dev.path,
-        device: dev,
-    }));
-
-    const onSelect = (option: any) => {
-        selectDevice(option.device);
-    };
-
-    const value = options.find(opt => opt.device === selectedDevice);
-    const status = getStatus(selectedDevice);
+    const status = getStatus(device);
 
     return (
         <Wrapper
             isSelected={isSelected}
-            isOpen={isOpen}
             isHoverable={isHoverable}
             disabled={disabled}
             className={className}
-            onClick={onClickWrapper}
             {...rest}
         >
             <ImageWrapper>
                 <Dot color={getStatusColor(status)} />
                 <TrezorImage
                     height={28}
-                    model={(selectedDevice.features && selectedDevice.features.major_version) || 1}
+                    model={(device.features && device.features.major_version) || 1}
                 />
             </ImageWrapper>
             <LabelWrapper>
-                <Name>{selectedDevice.instanceLabel}</Name>
+                <Name>{device.instanceLabel}</Name>
                 <Status title={getStatusName(status, intl)}>{getStatusName(status, intl)}</Status>
             </LabelWrapper>
             <IconWrapper>{icon && !disabled && isAccessible && icon}</IconWrapper>
@@ -177,16 +132,4 @@ const DeviceSelection = ({
     );
 };
 
-const mapStateToProps = (state: State) => ({
-    devices: state.devices,
-    selectedDevice: state.suite.device,
-});
-
-export default injectIntl(
-    connect(
-        mapStateToProps,
-        dispatch => ({
-            selectDevice: bindActionCreators(selectDevice, dispatch),
-        }),
-    )(DeviceSelection),
-);
+export default injectIntl(DeviceItem);

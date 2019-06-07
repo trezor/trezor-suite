@@ -1,12 +1,13 @@
 import React from 'react';
+import { TrezorDevice } from '@suite/types';
 import { Icon, colors as COLORS, icons } from '@trezor/components';
 
 interface Props {
-    device: any;
+    device: TrezorDevice;
     size: number;
-    color: string;
-    hoverColor: string;
-    onClick: any;
+    color?: string;
+    hoverColor?: string;
+    onClick?: any;
 }
 
 const getDeviceIcon = (majorVersion: number) => {

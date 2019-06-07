@@ -29,6 +29,10 @@ export type SuiteActions =
           type: typeof SUITE.SET_LANGUAGE;
           locale: string;
           messages: { [key: string]: string };
+      }
+    | {
+          type: typeof SUITE.TOGGLE_DEVICE_MENU;
+          opened: boolean;
       };
 
 export const onSuiteReady = (): SuiteActions => {
@@ -98,6 +102,11 @@ export const handleDeviceDisconnect = (device: Device) => (
         // other device
     }
 };
+
+export const toggleDeviceMenu = (opened: boolean) => ({
+    type: SUITE.TOGGLE_DEVICE_MENU,
+    opened,
+});
 
 // list of all actions which has influence on "selectedDevice" field in "wallet" reducer
 // other actions will be ignored
