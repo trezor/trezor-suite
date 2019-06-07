@@ -130,7 +130,7 @@ const DeviceMenu = ({
 
     useEffect(() => {
         if (isWebUSB(transport)) TrezorConnect.renderWebUSBButton();
-    }, [transport]);
+    });
 
     if (!selectedDevice) return null; // TODO: can it happen? if so some placeholder would be better
 
