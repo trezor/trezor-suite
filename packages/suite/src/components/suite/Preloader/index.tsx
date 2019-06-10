@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Loader } from '@trezor/components';
+import { Loader, P, H1 } from '@trezor/components';
 import { View, StyleSheet } from 'react-native';
 import { SUITE } from '@suite-actions/constants';
 import { State, Dispatch } from '@suite-types/index';
@@ -20,12 +20,20 @@ const styles = StyleSheet.create({
 });
 
 const Preloader: React.FunctionComponent<Props> = props => {
-    const { loaded, dispatch } = props;
+    const { loaded, error, dispatch } = props;
     useEffect(() => {
         if (!loaded) {
             dispatch({ type: SUITE.INIT });
         }
     }, [dispatch, loaded]);
+    if (error) {
+        return (
+            <View style={styles.wrapper}>
+                <H1>Failed to load Trezor Suite</H1>
+                <P>Ups, something went wrong. Details: {error}</P>
+            </View>
+        );
+    }
     return !loaded ? (
         <View style={styles.wrapper}>
             <Loader text="Loading" size={100} strokeWidth={1} />
@@ -37,6 +45,7 @@ const Preloader: React.FunctionComponent<Props> = props => {
 
 const mapStateToProps = (state: State) => ({
     loaded: state.suite.loaded,
+    error: state.suite.error,
 });
 
 export default connect(mapStateToProps)(Preloader);
