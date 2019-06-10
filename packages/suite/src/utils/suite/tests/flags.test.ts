@@ -1,4 +1,4 @@
-import { isFlagPresent, addToFlags, HAS_EMAIL_FLAG, HAS_BOOKMARK_FLAG } from '../src/main';
+import { isFlagPresent, addToFlags, HAS_EMAIL_FLAG, HAS_BOOKMARK_FLAG } from '../flags';
 
 describe('flags', () => {
     describe('isFlagPresent', () => {
