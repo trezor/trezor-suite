@@ -1,5 +1,13 @@
-import * as STEP from '@suite/constants/onboarding/steps';
-import { Device, UiInteraction, PrevDeviceId } from '@suite/types/onboarding/connect';
+import {
+    DISALLOWED_IS_NOT_SAME_DEVICE,
+    DISALLOWED_DEVICE_IS_NOT_CONNECTED,
+    DISALLOWED_DEVICE_IS_NOT_USED_HERE,
+    DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
+    DISALLOWED_DEVICE_IS_REQUESTING_PIN,
+} from '@suite/constants/onboarding/steps';
+import { UiInteraction, PrevDeviceId } from '@suite/types/onboarding/connect';
+
+type Device = any; // todo: finish when connect types ready.
 
 export const isNotConnected = ({ device }: { device?: Device }) =>
     device && device !== null && device.connected !== true;
@@ -12,7 +20,7 @@ export const isNotSameDevice = ({
     prevDeviceId: PrevDeviceId;
 }) => {
     // if no device was connected before, assume it is same device
-    const deviceId = device!.features!.device_id;
+    const deviceId = device.features.device_id;
     if (!prevDeviceId || !deviceId) {
         return null;
     }
@@ -53,15 +61,15 @@ export const isRequestingPin = ({
 
 export const getFnForRule = (rule: string) => {
     switch (rule) {
-        case STEP.DISALLOWED_IS_NOT_SAME_DEVICE:
+        case DISALLOWED_IS_NOT_SAME_DEVICE:
             return isNotSameDevice;
-        case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
+        case DISALLOWED_DEVICE_IS_NOT_CONNECTED:
             return isNotConnected;
-        case STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE:
+        case DISALLOWED_DEVICE_IS_NOT_USED_HERE:
             return isNotUsedHere;
-        case STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER:
+        case DISALLOWED_DEVICE_IS_IN_BOOTLOADER:
             return isInBootloader;
-        case STEP.DISALLOWED_DEVICE_IS_REQUESTING_PIN:
+        case DISALLOWED_DEVICE_IS_REQUESTING_PIN:
             return isRequestingPin;
         default:
             throw new Error(`Wrong rule passed: ${rule}`);
