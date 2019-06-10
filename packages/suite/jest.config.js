@@ -5,6 +5,9 @@ module.exports = {
             tsConfig: 'tsconfig.json',
         },
     },
+    moduleNameMapper: {
+        '^@suite/(.+)': '<rootDir>/src/$1',
+    },
     moduleFileExtensions: ['js', 'ts'],
     coverageDirectory: '../coverage/',
     collectCoverage: true,

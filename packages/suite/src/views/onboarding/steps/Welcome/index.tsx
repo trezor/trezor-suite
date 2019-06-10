@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { Dots } from '@suite/components/onboarding/Loaders';
 import { StepBodyWrapper, StepWrapper } from '@suite/components/onboarding/Wrapper';
-import { State } from '@suite/types/onboarding/actions';
+import { State } from '@suite/types/suite';
 import { goToNextStep } from '@suite/actions/onboarding/onboardingActions';
 import l10nMessages from './index.messages';
 
@@ -70,8 +70,7 @@ interface Props {
     onboardingActions: {
         goToNextStep: typeof goToNextStep;
     };
-    transport: State['connect']['transport'];
-    connectError: State['connect']['connectError'];
+    suite: State['suite'];
 }
 
 class WelcomeStep extends React.PureComponent<Props, {}> {

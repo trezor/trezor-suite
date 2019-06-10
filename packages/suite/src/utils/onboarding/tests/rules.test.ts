@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { isNotSameDevice, isNotConnected, isInBootloader, isRequestingPin } from './rules';
+import { isNotSameDevice, isNotConnected, isInBootloader, isRequestingPin } from '../rules';
 
 describe('rules.js', () => {
     describe('isNotConneted', () => {

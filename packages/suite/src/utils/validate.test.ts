@@ -1,4 +1,4 @@
-import { validateEmail, validateASCII } from './validate';
+import { validateEmail, validateASCII } from './onboarding/validate';
 
 describe('validate.js', () => {
     describe('validateEmail', () => {

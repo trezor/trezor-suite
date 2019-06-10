@@ -17,9 +17,10 @@ import { OptionsList } from '@suite/components/onboarding/Options';
 import Text from '@suite/components/onboarding/Text';
 import { ControlsWrapper } from '@suite/components/onboarding/Wrapper';
 
-import { ConnectReducer, ConnectActions } from '@suite/types/onboarding/connect';
-import { OnboardingReducer, OnboardingActions } from '@suite/types/onboarding/onboarding';
-import { RecoveryReducer, RecoveryActions } from '@suite/types/onboarding/recovery';
+import { State } from '@suite/types/suite';
+import { ConnectActions } from '@suite/types/onboarding/connect';
+import { OnboardingActions } from '@suite/types/onboarding/onboarding';
+import { RecoveryActions } from '@suite/types/onboarding/recovery';
 
 import l10nCommonMessages from '@suite-support/Messages';
 import l10nMessages from './Recovery.messages';
@@ -54,9 +55,9 @@ const SelectWrapper = styled.div`
 interface RecoveryStepProps {
     connectActions: ConnectActions;
     onboardingActions: OnboardingActions;
-    deviceCall: ConnectReducer['deviceCall'];
-    uiInteraction: ConnectReducer['uiInteraction'];
-    device: ConnectReducer['device'];
+    deviceCall: State['connect']['deviceCall'];
+    uiInteraction: State['connect']['uiInteraction'];
+    device: State['suite']['device'];
     recovery: RecoveryReducer;
     recoveryActions: RecoveryActions;
 }
