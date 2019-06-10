@@ -12,8 +12,15 @@ import SuiteHeader from '@suite-components/SuiteHeader';
 import suiteConfig from '@suite-config/index';
 import Log from '@suite/components/suite/Log';
 import Router from '@suite-support/Router';
+import ErrorBoundary from '@suite-support/ErrorBoundary';
 import { State } from '@suite-types/index';
 import { TREZOR_URL, SUPPORT_URL, WIKI_URL, BLOG_URL } from '@suite/constants/urls';
+import {
+    HEADER_HEIGHT,
+    HEADER_HEIGHT_UNIT,
+    FOOTER_HEIGHT,
+    FOOTER_HEIGHT_UNIT,
+} from '@suite/constants/suite/layout';
 import l10nMessages from './index.messages';
 
 const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
@@ -27,6 +34,13 @@ const PageWrapper = styled.div<Pick<Props, 'isLanding'>>`
 const AppWrapper = styled.div<Pick<Props, 'isLanding'>>`
     width: 100%;
     max-width: 1170px;
+    min-height: calc(
+        100vh -
+            (
+                ${`${HEADER_HEIGHT}${HEADER_HEIGHT_UNIT}`} +
+                    ${`${FOOTER_HEIGHT}${FOOTER_HEIGHT_UNIT}`}
+            )
+    );
     margin: 0 auto;
     flex: 1;
     background: ${props => (props.isLanding ? 'none' : colors.WHITE)};
@@ -92,13 +106,15 @@ const Layout = (props: Props & InjectedIntlProps) => (
                 },
             ]}
         />
-        <AppWrapper isLanding={props.isLanding}>
-            <>
-                <Log />
-                {props.showSuiteHeader && <SuiteHeader />}
-                {props.children}
-            </>
-        </AppWrapper>
+        <ErrorBoundary>
+            <AppWrapper isLanding={props.isLanding}>
+                <>
+                    <Log />
+                    {props.showSuiteHeader && <SuiteHeader />}
+                    {props.children}
+                </>
+            </AppWrapper>
+        </ErrorBoundary>
         <Footer isLanding={props.isLanding} />
     </PageWrapper>
 );

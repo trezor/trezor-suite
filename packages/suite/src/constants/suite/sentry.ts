@@ -1,2 +1,2 @@
-// todo: deprecated. make sentry global for entire suite.
+// todo: replace with production url;
 export const URL = 'https://e88899600baf4d06a7e46346de24d233@sentry.io/1412652';

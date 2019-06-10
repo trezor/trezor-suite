@@ -5,6 +5,7 @@ import externalCoins from './externalCoins';
 import networks from './networks';
 import flags from './flags';
 import supportedBrowsers from './supportedBrowsers';
+import sentry from './sentry';
 
 export default {
     languages,
@@ -14,4 +15,5 @@ export default {
     networks,
     flags,
     supportedBrowsers,
+    sentry,
 };
