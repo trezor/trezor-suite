@@ -12,7 +12,7 @@ import {
     StepHeadingWrapper,
     ControlsWrapper,
 } from '@suite/components/onboarding/Wrapper';
-import { State } from '@suite/types/onboarding/actions';
+import { State } from '@suite/types/suite';
 import { OnboardingActions } from '@suite/types/onboarding/onboarding';
 import { ConnectActions } from '@suite/types/onboarding/connect';
 import { RecoveryActions } from '@suite/types/onboarding/recovery';
@@ -43,10 +43,10 @@ const RecoverOption = () => (
 interface Props {
     isResolved: boolean;
     activeSubStep: State['onboarding']['activeSubStep'];
-    recovery: State['recovery'];
-    device: State['connect']['device'];
-    uiInteraction: State['connect']['uiInteraction'];
-    deviceCall: State['connect']['deviceCall'];
+    recovery: State['onboarding']['recovery'];
+    device: State['suite']['device'];
+    uiInteraction: State['onboarding']['connect']['uiInteraction'];
+    deviceCall: State['onboarding']['connect']['deviceCall'];
     recoveryActions: RecoveryActions;
     onboardingActions: OnboardingActions;
     connectActions: ConnectActions;

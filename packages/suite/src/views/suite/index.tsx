@@ -76,7 +76,8 @@ const Index: FunctionComponent<Props> = props => {
     if (!suite.transport.type) {
         return (
             <Layout isLanding>
-                <Bridge />
+                <div>Bridge</div>
+                {/* <Bridge /> */}
             </Layout>
         );
     }
