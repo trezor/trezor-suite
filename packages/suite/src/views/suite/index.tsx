@@ -73,13 +73,9 @@ const Index: FunctionComponent<Props> = props => {
     }
 
     // no available transport
+    // TODO: redirect to brige page
     if (!suite.transport.type) {
-        return (
-            <Layout isLanding>
-                <div>Bridge</div>
-                {/* <Bridge /> */}
-            </Layout>
-        );
+        return <Layout isLanding>{/* <Bridge /> */}</Layout>;
     }
 
     // no available device
