@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import { State } from '@suite/types';
 import { goto } from '@suite-actions/routerActions';
+import TopNavigation from '@suite-components/TopNavigation';
 
 interface Props {
     suite: State['suite'];
@@ -16,6 +17,7 @@ const Wallet = (props: Props) => {
     const baseUrl = `${pathname}#/${params.coin}/`;
     return (
         <>
+            <TopNavigation />
             <Text>
                 {params.coin} Account {params.accountId} Receive Page
             </Text>

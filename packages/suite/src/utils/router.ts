@@ -32,6 +32,30 @@ export const routes: Route[] = [
         name: 'wallet-settings',
         pattern: '/wallet/settings',
     },
+    {
+        name: 'wallet-account',
+        pattern: '/wallet/account',
+    },
+    {
+        name: 'wallet-account-summary',
+        pattern: '/wallet/account/summary',
+    },
+    {
+        name: 'wallet-account-transactions',
+        pattern: '/wallet/account/transactions',
+    },
+    {
+        name: 'wallet-account-send',
+        pattern: '/wallet/account/send',
+    },
+    {
+        name: 'wallet-account-receive',
+        pattern: '/wallet/account/receive',
+    },
+    {
+        name: 'wallet-account-sign-verify',
+        pattern: '/wallet/account/sign-verify',
+    },
 ];
 
 export const getRoute = (name: string): string => {
