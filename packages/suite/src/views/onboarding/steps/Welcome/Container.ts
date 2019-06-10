@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { State } from 'types/redux';
+import { State } from '@suite/types/suite';
 import * as onboardingActions from '@suite/actions/onboarding/onboardingActions';
 
 import { Dispatch } from '@suite-types/index';
@@ -12,7 +12,9 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: bindActionCreators(onboardingActions, dispatch),
+    onboardingActions: {
+        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    },
 });
 
 export default connect(
