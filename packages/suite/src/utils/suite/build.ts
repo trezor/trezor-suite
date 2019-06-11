@@ -1,5 +1,3 @@
-/* @flow */
-
 // process.env.BUILD is set by package.json
 // process.env.NODE_ENV is set by webpack.mode
 
