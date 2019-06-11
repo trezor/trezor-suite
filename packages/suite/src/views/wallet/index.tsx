@@ -8,7 +8,10 @@ import { goto } from '@suite-actions/routerActions';
 
 import CoinMenu from '@wallet-components/CoinMenu';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
 
 const Wallet = () => {
     return (

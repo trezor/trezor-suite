@@ -56,8 +56,8 @@ class CoinMenu extends PureComponent<Props> {
         // const { hiddenCoinsExternal } = this.props.wallet;
         return coins
             .sort((a, b) => a.order - b.order)
-            .filter(item => !item.isHidden) // hide coins globally in config
-            .filter(item => !hiddenCoinsExternal.includes(item.id))
+            // .filter(item => !item.isHidden) // hide coins globally in config
+            // .filter(item => !hiddenCoinsExternal.includes(item.id))
             .map(coin => {
                 const row = (
                     <RowCoin
@@ -138,7 +138,7 @@ class CoinMenu extends PureComponent<Props> {
         return (
             <Wrapper data-test="Main__page__coin__menu">
                 {/* {this.isMenuEmpty() || (this.isTopMenuEmpty() && this.getEmptyContent())} */}
-                {config.networks
+                {/* {config.networks
                     // .filter(item => !item.isHidden) // hide coins globally in config
                     // .filter(item => !hiddenCoins.includes(item.shortcut)) // hide coins by user settings
                     .sort((a, b) => a.order - b.order)
@@ -154,12 +154,13 @@ class CoinMenu extends PureComponent<Props> {
                                 }}
                             />
                         </NavLink>
-                    ))}
+                    ))} */}
                 <Divider
                     testId="Main__page__coin__menu__divider"
                     textLeft={<FormattedMessage {...l10nMessages.TR_OTHER_COINS} />}
                     hasBorder
                 />
+                {this.getOtherCoins()}
                 {/* {!this.isMenuEmpty() && (
                     
                 )}
