@@ -81,9 +81,9 @@ interface Props {
 }
 
 const TopNavigation = (props: Props) => {
-    console.log(props.currentPath);
-    const { pathname, params } = props.router;
+    const { pathname } = props.router;
     const currentPath = pathname;
+
     const isPathActive = (path: string) => {
         return currentPath === getRoute(path);
     };
