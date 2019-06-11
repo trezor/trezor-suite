@@ -39,7 +39,7 @@ variables:
   PACKAGE_PATH_SUITE_WEB: 'packages/suite-web'
   PACKAGE_PATH_SUITE_NATIVE: 'packages/suite-native'
   PACKAGE_PATH_SUITE_DESKTOP: 'packages/suite-desktop'
-  DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+  DEV_SERVER_URL: 'https://gitlab.corp.sldev.cz'
 
 # Components package # --------------------------------
 
