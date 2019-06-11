@@ -14,7 +14,6 @@ const { FONT_WEIGHT, FONT_SIZE, SCREEN_SIZE } = variables;
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    height: 100%;
     align-items: center;
     overflow-y: hidden;
     overflow-x: auto;
