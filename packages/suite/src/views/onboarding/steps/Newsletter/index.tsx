@@ -7,7 +7,7 @@ import { FormattedMessage, injectIntl, InjectedIntlProps } from 'react-intl';
 
 import { SOCIAL_FACEBOOK_URL, BLOG_URL, SOCIAL_TWITTER_URL } from '@suite/config/onboarding/urls';
 import { IconSocial } from '@suite/components/onboarding/Icons';
-import { validateEmail } from '@suite/utils/onboarding/validate';
+import { isEmail } from '@suite-utils/validators';
 import { SUBMIT_EMAIL } from '@suite/actions/onboarding/constants/fetchCalls';
 import { APPLY_FLAGS } from '@suite/actions/onboarding/constants/calls';
 import Text from '@suite/components/onboarding/Text';
@@ -89,7 +89,7 @@ class NewsleterStep extends React.Component<Props & InjectedIntlProps> {
         if (!email) {
             return { state: undefined };
         }
-        if (!validateEmail(email)) {
+        if (!isEmail(email)) {
             return {
                 state: 'error',
                 bottomText: this.props.intl.formatMessage(l10nMessages.TR_WRONG_EMAIL_FORMAT),

@@ -15,7 +15,7 @@ type Code =
     | 'ru'
     | 'uk'
     | 'zh'
-    | 'zh_TW';
+    | 'zh-TW';
 
 export interface Language {
     code: Code;
