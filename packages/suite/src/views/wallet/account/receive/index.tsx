@@ -5,7 +5,7 @@ import { Text } from 'react-native';
 import { Button } from '@trezor/components';
 import { State } from '@suite-types/index';
 import { goto } from '@suite-actions/routerActions';
-import TopNavigation from '@suite-components/TopNavigation';
+import Layout from '@wallet-components/Layout';
 
 interface Props {
     suite: State['suite'];
@@ -16,8 +16,7 @@ const Wallet = (props: Props) => {
     const { pathname, params } = props.router;
     const baseUrl = `${pathname}#/${params.coin}/`;
     return (
-        <>
-            <TopNavigation />
+        <Layout>
             <Text>
                 {params.coin} Account {params.accountId} Receive Page
             </Text>
@@ -41,7 +40,7 @@ const Wallet = (props: Props) => {
             <Button variant="success" onClick={() => goto('/wallet/account/sign-verify', true)}>
                 Sign verify
             </Button>
-        </>
+        </Layout>
     );
 };
 
