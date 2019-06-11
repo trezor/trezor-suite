@@ -301,7 +301,6 @@ suite-web deploy dev:
     - deploy
 
 suite-web delete review:
-  before_script: []
   stage: deploy
   variables:
     GIT_STRATEGY: none
@@ -311,7 +310,6 @@ suite-web delete review:
   environment:
     name: ${CI_BUILD_REF_NAME}
     action: stop
-  before_script: []
   script:
     - cd packages/suite-web
     - 'rm -r "${DEPLOY_DIRECTORY}"'
